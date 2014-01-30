@@ -1,7 +1,16 @@
-@(message: String)
+@(config: com.typesafe.config.Config, query: String, url: String, result: String)
 
-@main("Welcome to Play") {
-
-    @play20.welcome(message, style = "Java")
-
+@main("NWBib") {
+    <dl>
+        <dt>nwbib.api</dt>
+        <dd>@config.getString("nwbib.api")</dd>
+        <dt>nwbib.set</dt>
+        <dd>@config.getString("nwbib.set")</dd>
+        <dt>query</dt>
+        <dd>@query</dd>
+        <dt>url</dt>
+        <dd>@url</dd>
+        <dt>result</dt>
+        <dd>@result</dd>
+    </dl>
 }
