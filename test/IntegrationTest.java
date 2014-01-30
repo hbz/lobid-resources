@@ -24,7 +24,7 @@ public class IntegrationTest {
 						browser.goTo("http://localhost:3333");
 						assertThat(browser.pageSource()).contains("nwbib.api")
 								.contains("nwbib.set")
-								.contains("Brühl im Buch");
+								.contains("http://lobid.org/resource/NWBib");
 					}
 				});
 	}

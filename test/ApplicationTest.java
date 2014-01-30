@@ -4,6 +4,7 @@ import static play.test.Helpers.contentType;
 
 import org.junit.Test;
 
+import play.data.Form;
 import play.mvc.Content;
 import controllers.Application;
 
@@ -25,8 +26,8 @@ public class ApplicationTest {
 	public void renderTemplate() {
 		String query = "Buch";
 		String url = Application.url(query);
-		Content html = views.html.index.render(Application.CONFIG, query, url,
-				Application.call(url));
+		Content html = views.html.index.render(Application.CONFIG,
+				Form.form(String.class), url, Application.call(url));
 		assertThat(contentType(html)).isEqualTo("text/html");
 		String text = contentAsString(html);
 		assertThat(text).contains("nwbib.api").contains("nwbib.set")

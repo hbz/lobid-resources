@@ -1,4 +1,6 @@
-@(config: com.typesafe.config.Config, query: String, url: String, result: String)
+@(config: com.typesafe.config.Config, queryForm: play.data.Form[String], url: String, result: String)
+
+@import helper._
 
 @main("NWBib") {
     <dl>
@@ -6,8 +8,11 @@
         <dd>@config.getString("nwbib.api")</dd>
         <dt>nwbib.set</dt>
         <dd>@config.getString("nwbib.set")</dd>
-        <dt>query</dt>
-        <dd>@query</dd>
+    </dl>
+    @form(routes.Application.query()) {
+        @inputText(queryForm("query"))
+    }
+    <dl>
         <dt>url</dt>
         <dd>@url</dd>
         <dt>result</dt>
