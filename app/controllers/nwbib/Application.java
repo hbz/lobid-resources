@@ -1,13 +1,13 @@
 /* Copyright 2014 Fabian Steeg, hbz. Licensed under the Eclipse Public License 1.0 */
 
-package controllers;
+package controllers.nwbib;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 
-import play.api.templates.Html;
 import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
@@ -17,8 +17,11 @@ import com.google.common.io.CharStreams;
 import com.typesafe.config.Config;
 
 public class Application extends Controller {
+	private static final File FILE = new java.io.File("conf/nwbib.conf");
 	public final static Config CONFIG = com.typesafe.config.ConfigFactory
-			.parseFile(new java.io.File("conf/application.conf")).resolve();
+			.parseFile(
+					FILE.exists() ? FILE : new java.io.File(
+							"modules/nwbib/conf/nwbib.conf")).resolve();
 	static Form<String> queryForm = Form.form(String.class);
 
 	static String query = "";
@@ -26,19 +29,19 @@ public class Application extends Controller {
 	static String result = call(url);
 
 	public static Result index() {
-		return ok(views.html.index.render(CONFIG, queryForm, url, result));
+		return ok(views.html.nwbib_index.render(CONFIG, queryForm, url, result));
 	}
 
 	public static Result query() {
 		final Form<String> filledForm = queryForm.bindFromRequest();
 		if (filledForm.hasErrors()) {
-			Html html = views.html.index.render(CONFIG, filledForm, null, null);
-			return badRequest(html);
+			return badRequest(views.html.nwbib_index.render(CONFIG, filledForm,
+					null, null));
 		} else {
 			query = filledForm.data().get("query");
 			url = url(query);
 			result = call(url);
-			return redirect(routes.Application.index());
+			return controllers.nwbib.Application.index();
 		}
 	}
 

@@ -1,3 +1,5 @@
+package tests;
+
 /* Copyright 2014 Fabian Steeg, hbz. Licensed under the Eclipse Public License 1.0 */
 
 import static org.fest.assertions.Assertions.assertThat;
@@ -23,7 +25,7 @@ public class IntegrationTest {
 		running(testServer(3333, fakeApplication(inMemoryDatabase())),
 				HTMLUNIT, new Callback<TestBrowser>() {
 					public void invoke(TestBrowser browser) {
-						browser.goTo("http://localhost:3333");
+						browser.goTo("http://localhost:3333/nwbib");
 						assertThat(browser.pageSource()).contains("nwbib.api")
 								.contains("nwbib.set")
 								.contains("http://lobid.org/resource/NWBib");

@@ -4,14 +4,14 @@
 
 @import helper._
 
-@main("NWBib") {
+@nwbib_main("NWBib") {
     <dl>
         <dt>nwbib.api</dt>
         <dd>@config.getString("nwbib.api")</dd>
         <dt>nwbib.set</dt>
         <dd>@config.getString("nwbib.set")</dd>
     </dl>
-    @form(routes.Application.query()) {
+    @form(controllers.nwbib.routes.Application.query()) {
         @inputText(queryForm("query"))
     }
     <dl>

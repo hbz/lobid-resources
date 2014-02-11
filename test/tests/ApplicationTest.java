@@ -1,3 +1,5 @@
+package tests;
+
 /* Copyright 2014 Fabian Steeg, hbz. Licensed under the Eclipse Public License 1.0 */
 
 import static org.fest.assertions.Assertions.assertThat;
@@ -8,7 +10,7 @@ import org.junit.Test;
 
 import play.data.Form;
 import play.mvc.Content;
-import controllers.Application;
+import controllers.nwbib.Application;
 
 /**
  * 
@@ -28,7 +30,7 @@ public class ApplicationTest {
 	public void renderTemplate() {
 		String query = "Buch";
 		String url = Application.url(query);
-		Content html = views.html.index.render(Application.CONFIG,
+		Content html = views.html.nwbib_index.render(Application.CONFIG,
 				Form.form(String.class), url, Application.call(url));
 		assertThat(contentType(html)).isEqualTo("text/html");
 		String text = contentAsString(html);
