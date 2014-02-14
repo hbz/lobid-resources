@@ -7,11 +7,12 @@
 <html>
     <head>
         <title>@title</title>
-        <link rel="stylesheet" media="screen" href="@controllers.nwbib.routes.Assets.at("stylesheets/main.css")">
+        <link rel="stylesheet" media="screen" href="@controllers.nwbib.routes.Assets.at("stylesheets/nwbib.css")">
         <link rel="shortcut icon" type="image/png" href="@controllers.nwbib.routes.Assets.at("images/favicon.png")">
-        <script src="@controllers.nwbib.routes.Assets.at("javascripts/jquery-1.9.0.min.js")" type="text/javascript"></script>
     </head>
-    <body>
+    <body onload="document.getElementById('nwbibQuery').focus();">
+        <h1>Die Nordrhein-Westfälische Bibliographie: 
+        <a href="http://de.wikipedia.org/wiki/Prototyping_(Softwareentwicklung)">Entwicklungsprototyp</a></h1>
         @content
     </body>
 </html>

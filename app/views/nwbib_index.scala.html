@@ -1,23 +1,27 @@
 @* Copyright 2014 Fabian Steeg, hbz. Licensed under the Eclipse Public License 1.0 *@
 
-@(config: com.typesafe.config.Config, queryForm: play.data.Form[String], url: String, result: String)
+@(config: com.typesafe.config.Config, queryForm: play.data.Form[String], url: String, result: String, q:String)
 
 @import helper._
+@import play.api.libs.json.Json
+@import play.api.libs.json.JsValue
 
 @nwbib_main("NWBib") {
+    @helper.form(action = controllers.nwbib.routes.Application.index(q), 'id -> "nwbibForm") {
+        @helper.inputText(queryForm("query"), 'id -> "nwbibQuery", '_label -> "Suchanfrage")
+    }
+    <dl>
+        @for((doc,i) <- Json.parse(result).asOpt[Seq[JsValue]].getOrElse(Seq()).zipWithIndex) {
+            <dt>Treffer @(i+1): @((doc \ "@id").as[String].split("/")(4))</dt>
+            <dd>@nwbib_doc(doc)</dd>
+        }
+    </dl>
     <dl>
         <dt>nwbib.api</dt>
         <dd>@config.getString("nwbib.api")</dd>
         <dt>nwbib.set</dt>
         <dd>@config.getString("nwbib.set")</dd>
-    </dl>
-    @form(controllers.nwbib.routes.Application.query()) {
-        @inputText(queryForm("query"))
-    }
-    <dl>
-        <dt>url</dt>
+        <dt>request-url</dt>
         <dd>@url</dd>
-        <dt>result</dt>
-        <dd>@result</dd>
     </dl>
 }

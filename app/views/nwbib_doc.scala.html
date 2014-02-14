@@ -1,0 +1,30 @@
+@* Copyright 2013, 2014 Fabian Steeg, hbz. Licensed under the Eclipse Public License 1.0 *@
+@(doc: play.api.libs.json.JsValue)
+@import play.api.libs.json.JsValue
+@import views.TableRow
+@import views.TagHelper
+<table class="table">
+  @nwbib_field("Titel", "title", doc, TableRow.VALUES)
+  @nwbib_field("Titelzusatz", "otherTitleInformation", doc, TableRow.VALUES)
+  @nwbib_field("Werktitel", "workManifested", doc, TableRow.LINKS)
+  @nwbib_field("Autor", "creator", doc, TableRow.VALUES, valueLabel = Option(Seq(
+  	"preferredNameForThePerson")))
+  @nwbib_field("Mitwirkender", "contributor", doc, TableRow.VALUES, valueLabel = Option(Seq(
+  	"preferredNameForThePerson")))
+  @nwbib_field("Erscheinungsjahr", "issued", doc, TableRow.VALUES)
+  @nwbib_field("Volltext", "fulltextOnline", doc, TableRow.LINKS)
+  @nwbib_field("Ausgabe", "edition", doc, TableRow.VALUES)
+  @nwbib_field("Erscheinungsort", "placeOfPublication", doc, TableRow.VALUES)
+  @nwbib_field("Verlag", "publisher", doc, TableRow.VALUES)
+  @nwbib_field("Schlagwort", "subject", doc, TableRow.VALUES, valueLabel = Option(Seq(
+    "preferredNameForTheSubjectHeading", "preferredNameForThePlaceOrGeographicName")))
+  @nwbib_field("ISBN-10", "isbn10", doc, TableRow.VALUES)
+  @nwbib_field("ISBN-13", "isbn13", doc, TableRow.VALUES)
+  @nwbib_field("URN", "urn", doc, TableRow.VALUES)
+  @nwbib_field("Sprache", "language", doc, TableRow.LINKS)
+  @nwbib_field("Exemplar", "exemplar", doc, TableRow.LINKS)
+  @nwbib_field("Lobid", "@id", doc, TableRow.LINKS, node = Option(doc))
+  @nwbib_field("Identische Ressource", "sameAs", doc, TableRow.LINKS)
+  @nwbib_field("Weitere Information", "isPrimaryTopicOf", doc, TableRow.LINKS)
+  @*@nwbib_field("Typ", "@type", doc, TableRow.LINKS, TagHelper.getPrimaryTopicType(doc))*@
+</table>
