@@ -28,13 +28,13 @@ public class ApplicationTest {
 
 	@Test
 	public void renderTemplate() {
-		String query = "Buch";
+		String query = "buch";
 		String url = Application.url(query);
 		Content html = views.html.nwbib_index.render(Application.CONFIG,
 				Form.form(String.class), url, Application.call(url), query);
 		assertThat(contentType(html)).isEqualTo("text/html");
 		String text = contentAsString(html);
 		assertThat(text).contains("nwbib.api").contains("nwbib.set")
-				.contains("Brühl im Buch");
+				.contains("Buch");
 	}
 }
