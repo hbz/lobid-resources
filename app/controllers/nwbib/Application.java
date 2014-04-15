@@ -66,7 +66,13 @@ public class Application extends Controller {
 	}
 
 	public static Result subject(final String q) {
-		return ok(ids(q));
+		JsonNode ids = ids(q);
+		final String[] callback = request() == null
+				|| request().queryString() == null ? null : request()
+				.queryString().get("callback");
+		if (callback != null)
+			return ok(String.format("%s(%s)", callback[0], Json.stringify(ids)));
+		return ok(ids);
 	}
 
 	private static JsonNode ids(String query) {

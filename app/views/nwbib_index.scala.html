@@ -10,6 +10,25 @@
     @helper.form(action = controllers.nwbib.routes.Application.index(q), 'id -> "nwbibForm") {
         @helper.inputText(queryForm("query"), 'id -> "nwbibQuery", '_label -> "Suchanfrage")
     }
+    <script>
+    $('input').each(function() {
+        var $input = $(this);
+        $input.autocomplete({
+            source : function(request, response) {
+                $.ajax({
+                    url : "/nwbib/subject",
+                    dataType : "jsonp",
+                    data : {
+                        query : request.term
+                    },
+                    success : function(data) {
+                        response(data);
+                    }
+                });
+            }
+        });
+    });
+    </script>
     <dl>
         @for((doc,i) <- Json.parse(result).asOpt[Seq[JsValue]].getOrElse(Seq()).zipWithIndex) {
             <dt>Treffer @(i+1): @((doc \ "@id").as[String].split("/")(4))</dt>
