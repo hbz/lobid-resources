@@ -3,7 +3,6 @@
 package controllers.nwbib;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
@@ -119,11 +118,12 @@ public class Application extends Controller {
 	public static String call(final String url) {
 		try {
 			final URLConnection connection = new URL(url).openConnection();
-			return CharStreams.toString(new InputStreamReader(connection
-					.getInputStream(), Charsets.UTF_8));
-		} catch (IOException e) {
+			final String result = CharStreams.toString(new InputStreamReader(
+					connection.getInputStream(), Charsets.UTF_8));
+			return Json.parse(result).toString();
+		} catch (Exception e) {
 			e.printStackTrace();
-			return null;
+			return "[]";
 		}
 	}
 }

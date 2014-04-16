@@ -28,8 +28,10 @@ object TagHelper {
   def valueFor(doc: JsValue, id: String, keys: Seq[String]): String = {
     for (elem <- (doc \ "@graph").as[Seq[JsValue]]; key <- keys) {
       if ((elem \ "@id").as[String] == id
-        && elem.as[Map[String, JsValue]].contains(key))
-        return (elem \ key).as[String]
+        && elem.as[Map[String, JsValue]].contains(key)) {
+        val result = (elem \ key)
+        return result.asOpt[String].getOrElse(result.toString)
+      }
     }
     id
   }
