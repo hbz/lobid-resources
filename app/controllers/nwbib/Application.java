@@ -28,6 +28,9 @@ import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 
 import play.data.Form;
+import play.libs.F.Function;
+import play.libs.F.Function0;
+import play.libs.F.Promise;
 import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
@@ -58,15 +61,14 @@ public class Application extends Controller {
 			.settingsBuilder().put("cluster.name", CLUSTER).build())
 			.addTransportAddress(new InetSocketTransportAddress(SERVER, 9300));
 
-	public static Result index(final String q) {
+	public static Promise<Result> index(final String q) {
 		final Form<String> form = queryForm.bindFromRequest();
 		if (form.hasErrors()) {
-			return badRequest(nwbib_index.render(CONFIG, form, null, null, q));
+			return badRequestPromise(q, form);
 		} else {
 			final String query = form.data().get("query");
 			final String url = url(query != null ? query : q);
-			final String result = call(url);
-			return ok(nwbib_index.render(CONFIG, form, url, result, q));
+			return okPromise(q, form, url);
 		}
 	}
 
@@ -86,6 +88,30 @@ public class Application extends Controller {
 		if (type == null)
 			return badRequest("Unsupported register type: " + t);
 		return ok(nwbib_register.render(classification(type).toString()));
+	}
+
+	private static Promise<Result> badRequestPromise(final String q,
+			final Form<String> form) {
+		return Promise.promise(new Function0<Result>() {
+			public Result apply() {
+				return badRequest(nwbib_index.render(CONFIG, form, null, null,
+						q));
+			}
+		});
+	}
+
+	private static Promise<Result> okPromise(final String q,
+			final Form<String> form, final String url) {
+		Promise<String> p = Promise.promise(new Function0<String>() {
+			public String apply() {
+				return call(url);
+			}
+		});
+		return p.map(new Function<String, Result>() {
+			public Result apply(String s) {
+				return ok(nwbib_index.render(CONFIG, form, url, s, q));
+			}
+		});
 	}
 
 	private static JsonNode classification(String t) {
