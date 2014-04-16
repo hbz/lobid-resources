@@ -1,0 +1,16 @@
+@* Copyright 2013, 2014 Fabian Steeg, hbz. Licensed under the Eclipse Public License 1.0 *@
+@(classification: String)
+@import play.api.libs.json.Json
+@import play.api.libs.json.JsValue
+
+@nwbib_main("NWBib: Register") {
+<ul>
+@for(json <- Json.parse(classification).asOpt[Seq[JsValue]].getOrElse(Seq())){
+    <li>
+        <a href=@nwbib.routes.Application.index((json\"value").as[String])>
+            @((json\"label").as[String])
+        </a>
+    </li>
+}
+</ul>
+}

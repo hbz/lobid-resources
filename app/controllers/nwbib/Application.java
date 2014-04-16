@@ -8,8 +8,12 @@ import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
+import java.text.Collator;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
@@ -18,6 +22,7 @@ import org.elasticsearch.client.Client;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.ImmutableSettings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
+import org.elasticsearch.index.query.MatchAllQueryBuilder;
 import org.elasticsearch.index.query.MatchQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
@@ -27,6 +32,7 @@ import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
 import views.html.nwbib_index;
+import views.html.nwbib_register;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.base.Charsets;
@@ -74,6 +80,31 @@ public class Application extends Controller {
 		return ok(ids);
 	}
 
+	public static Result register(final String t) {
+		String type = t.equalsIgnoreCase("Sachsystematik") ? NWBIB_TYPE : t
+				.equalsIgnoreCase("Raumsystematik") ? NWBIB_SPATIAL_TYPE : null;
+		if (type == null)
+			return badRequest("Unsupported register type: " + t);
+		return ok(nwbib_register.render(classification(type).toString()));
+	}
+
+	private static JsonNode classification(String t) {
+		MatchAllQueryBuilder queryBuilder = QueryBuilders.matchAllQuery();
+		SearchRequestBuilder requestBuilder = client.prepareSearch(INDEX)
+				.setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
+				.setQuery(queryBuilder).setTypes(t).setFrom(0).setSize(1000);
+		SearchResponse response = requestBuilder.execute().actionGet();
+		List<JsonNode> result = ids(response);
+		Collections.sort(result, new Comparator<JsonNode>() {
+			@Override
+			public int compare(JsonNode o1, JsonNode o2) {
+				return Collator.getInstance(Locale.GERMANY).compare(
+						o1.get("label").asText(), o2.get("label").asText());
+			}
+		});
+		return Json.toJson(result);
+	}
+
 	private static JsonNode ids(String query) {
 		MatchQueryBuilder queryBuilder = QueryBuilders.matchQuery(
 				"@graph.http://www.w3.org/2004/02/skos/core#prefLabel.@value",
@@ -91,14 +122,14 @@ public class Application extends Controller {
 		List<JsonNode> result = new ArrayList<JsonNode>();
 		for (SearchHit hit : response.getHits()) {
 			JsonNode json = Json.toJson(hit.getSource());
-			ImmutableMap<String, String> map = ImmutableMap.of(
-					"value",
-					"\"" + hit.getId() + "\"",
-					"label",
-					json.findValue(
-							"http://www.w3.org/2004/02/skos/core#prefLabel")
-							.findValue("@value").asText());
-			result.add(Json.toJson(map));
+			JsonNode label = json
+					.findValue("http://www.w3.org/2004/02/skos/core#prefLabel");
+			if (label != null) {
+				ImmutableMap<String, String> map = ImmutableMap.of("value",
+						"\"" + hit.getId() + "\"", "label",
+						label.findValue("@value").asText());
+				result.add(Json.toJson(map));
+			}
 		}
 		return result;
 	}
