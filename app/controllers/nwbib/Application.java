@@ -93,7 +93,7 @@ public class Application extends Controller {
 			JsonNode json = Json.toJson(hit.getSource());
 			ImmutableMap<String, String> map = ImmutableMap.of(
 					"value",
-					hit.getId(),
+					"\"" + hit.getId() + "\"",
 					"label",
 					json.findValue(
 							"http://www.w3.org/2004/02/skos/core#prefLabel")
@@ -108,11 +108,16 @@ public class Application extends Controller {
 		try {
 			return String.format(template, CONFIG.getString("nwbib.api"),
 					CONFIG.getString("nwbib.set"),
-					URLEncoder.encode(query, "UTF-8"));
+					URLEncoder.encode(preprocess(query), "UTF-8"));
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}
 		return "";
+	}
+
+	private static String preprocess(String query) {
+		/* Workaround for https://github.com/hbz/nwbib/issues/4 */
+		return query.replaceAll("0\\b", "");
 	}
 
 	public static String call(final String url) {
