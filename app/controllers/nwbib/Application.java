@@ -29,6 +29,7 @@ import org.elasticsearch.index.query.MatchQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 
+import play.cache.Cache;
 import play.data.Form;
 import play.libs.F.Function;
 import play.libs.F.Function0;
@@ -86,19 +87,31 @@ public class Application extends Controller {
 	}
 
 	public static Result register(final String t) {
-		String type = elasticsearchTypeFromParam(t);
-		if (type == null)
+		Result cachedResult = (Result) Cache.get("register." + t);
+		if (cachedResult != null)
+			return cachedResult;
+		SearchResponse response = dataFor(t);
+		if (response == null)
 			return badRequest("Unsupported register type: " + t);
-		SearchResponse classificationData = classificationData(type);
-		JsonNode sorted = sorted(classificationData);
-		return ok(nwbib_register.render(sorted.toString()));
+		JsonNode sorted = sorted(response);
+		Result result = ok(nwbib_register.render(sorted.toString()));
+		Cache.set("result." + t, result);
+		return result;
 	}
 
 	public static Result classification(final String t) {
-		String type = elasticsearchTypeFromParam(t);
-		if (type == null)
+		Result cachedResult = (Result) Cache.get("classification." + t);
+		if (cachedResult != null)
+			return cachedResult;
+		SearchResponse response = dataFor(t);
+		if (response == null)
 			return badRequest("Unsupported classification type: " + t);
-		SearchResponse response = classificationData(type);
+		Result result = classificationResult(response);
+		Cache.set("classification." + t, result);
+		return result;
+	}
+
+	private static Result classificationResult(SearchResponse response) {
 		List<JsonNode> topClasses = new ArrayList<JsonNode>();
 		Map<String, List<JsonNode>> subClasses = new HashMap<>();
 		for (SearchHit hit : response.getHits()) {
@@ -139,10 +152,10 @@ public class Application extends Controller {
 		return result;
 	}
 
-	private static String elasticsearchTypeFromParam(final String t) {
-		String type = t.equalsIgnoreCase("Sachsystematik") ? NWBIB_TYPE : t
-				.equalsIgnoreCase("Raumsystematik") ? NWBIB_SPATIAL_TYPE : null;
-		return type;
+	private static SearchResponse dataFor(final String t) {
+		return t.equalsIgnoreCase("Sachsystematik") ? classificationData(NWBIB_TYPE)
+				: t.equalsIgnoreCase("Raumsystematik") ? classificationData(NWBIB_SPATIAL_TYPE)
+						: null;
 	}
 
 	private static Promise<Result> badRequestPromise(final String q,
@@ -159,7 +172,7 @@ public class Application extends Controller {
 			final Form<String> form, final String url) {
 		Promise<String> p = Promise.promise(new Function0<String>() {
 			public String apply() {
-				return call(url);
+				return q.isEmpty() ? "[]" : call(url);
 			}
 		});
 		return p.map(new Function<String, Result>() {
