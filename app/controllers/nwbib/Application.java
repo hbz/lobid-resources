@@ -12,8 +12,10 @@ import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
@@ -34,6 +36,7 @@ import play.libs.F.Promise;
 import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
+import views.html.nwbib_classification;
 import views.html.nwbib_index;
 import views.html.nwbib_register;
 
@@ -83,11 +86,63 @@ public class Application extends Controller {
 	}
 
 	public static Result register(final String t) {
-		String type = t.equalsIgnoreCase("Sachsystematik") ? NWBIB_TYPE : t
-				.equalsIgnoreCase("Raumsystematik") ? NWBIB_SPATIAL_TYPE : null;
+		String type = elasticsearchTypeFromParam(t);
 		if (type == null)
 			return badRequest("Unsupported register type: " + t);
-		return ok(nwbib_register.render(classification(type).toString()));
+		SearchResponse classificationData = classificationData(type);
+		JsonNode sorted = sorted(classificationData);
+		return ok(nwbib_register.render(sorted.toString()));
+	}
+
+	public static Result classification(final String t) {
+		String type = elasticsearchTypeFromParam(t);
+		if (type == null)
+			return badRequest("Unsupported classification type: " + t);
+		SearchResponse response = classificationData(type);
+		List<JsonNode> topClasses = new ArrayList<JsonNode>();
+		Map<String, List<JsonNode>> subClasses = new HashMap<>();
+		for (SearchHit hit : response.getHits()) {
+			JsonNode json = Json.toJson(hit.getSource());
+			JsonNode broader = json
+					.findValue("http://www.w3.org/2004/02/skos/core#broader");
+			if (broader == null)
+				topClasses.addAll(valueAndLabelWithNotation(hit.getId(), json));
+			else
+				addAsSubClass(subClasses, hit.getId(), json, broader);
+		}
+		String topClassesJson = Json.toJson(topClasses).toString();
+		return ok(nwbib_classification.render(topClassesJson, subClasses));
+	}
+
+	private static void addAsSubClass(Map<String, List<JsonNode>> subClasses,
+			String id, JsonNode json, JsonNode broaderJson) {
+		String broader = broaderJson.findValue("@id").asText();
+		if (!subClasses.containsKey(broader))
+			subClasses.put(broader, new ArrayList<JsonNode>());
+		subClasses.get(broader).addAll(valueAndLabelWithNotation(id, json));
+	}
+
+	private static List<JsonNode> valueAndLabelWithNotation(String id,
+			JsonNode json) {
+		List<JsonNode> result = new ArrayList<JsonNode>();
+		JsonNode label = json
+				.findValue("http://www.w3.org/2004/02/skos/core#prefLabel");
+		JsonNode notation = json
+				.findValue("http://www.w3.org/2004/02/skos/core#notation");
+		if (label != null && notation != null) {
+			ImmutableMap<String, String> map = ImmutableMap.of(//
+					"value", id,//
+					"label", notation.findValue("@value").asText() + " "
+							+ label.findValue("@value").asText());
+			result.add(Json.toJson(map));
+		}
+		return result;
+	}
+
+	private static String elasticsearchTypeFromParam(final String t) {
+		String type = t.equalsIgnoreCase("Sachsystematik") ? NWBIB_TYPE : t
+				.equalsIgnoreCase("Raumsystematik") ? NWBIB_SPATIAL_TYPE : null;
+		return type;
 	}
 
 	private static Promise<Result> badRequestPromise(final String q,
@@ -114,12 +169,16 @@ public class Application extends Controller {
 		});
 	}
 
-	private static JsonNode classification(String t) {
+	private static SearchResponse classificationData(String t) {
 		MatchAllQueryBuilder queryBuilder = QueryBuilders.matchAllQuery();
 		SearchRequestBuilder requestBuilder = client.prepareSearch(INDEX)
 				.setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
 				.setQuery(queryBuilder).setTypes(t).setFrom(0).setSize(1000);
 		SearchResponse response = requestBuilder.execute().actionGet();
+		return response;
+	}
+
+	private static JsonNode sorted(SearchResponse response) {
 		List<JsonNode> result = ids(response);
 		Collections.sort(result, new Comparator<JsonNode>() {
 			@Override
@@ -151,9 +210,9 @@ public class Application extends Controller {
 			JsonNode label = json
 					.findValue("http://www.w3.org/2004/02/skos/core#prefLabel");
 			if (label != null) {
-				ImmutableMap<String, String> map = ImmutableMap.of("value",
-						"\"" + hit.getId() + "\"", "label",
-						label.findValue("@value").asText());
+				ImmutableMap<String, String> map = ImmutableMap.of(//
+						"value", "\"" + hit.getId() + "\"",//
+						"label", label.findValue("@value").asText());
 				result.add(Json.toJson(map));
 			}
 		}

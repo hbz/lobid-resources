@@ -1,0 +1,28 @@
+@* Copyright 2013, 2014 Fabian Steeg, hbz. Licensed under the Eclipse Public License 1.0 *@
+@(tops: String, subs: Map[String,List[com.fasterxml.jackson.databind.JsonNode]])
+@import play.api.libs.json.Json
+@import play.api.libs.json.JsValue
+@import com.fasterxml.jackson.databind.JsonNode
+
+@ul(classes: Option[Seq[JsValue]]) = {
+    @if(!classes.isEmpty){
+        <ul>
+        @for(json <- classes.getOrElse(Seq()).sortBy((json:JsValue)=>(json\"label").as[String])){
+            @defining((json\"value").as[String]) { value =>
+            <li>
+                <a href="@nwbib.routes.Application.index("\""+value+"\"")">
+                    @((json\"label").as[String])
+                </a>
+                @if(subs.get(value) != null){
+                    @ul(Some(subs.get(value).map((node: JsonNode) => Json.parse(node.toString)).toSeq))
+                }
+            </li>
+            }
+        }
+        </ul>
+    }
+}
+
+@nwbib_main("NWBib: Systematik") {
+    @ul(Json.parse(tops).asOpt[Seq[JsValue]])
+}
