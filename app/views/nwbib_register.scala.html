@@ -4,13 +4,5 @@
 @import play.api.libs.json.JsValue
 
 @nwbib_main("NWBib: Register") {
-<ul>
-@for(json <- Json.parse(classification).asOpt[Seq[JsValue]].getOrElse(Seq())){
-    <li>
-        <a href=@nwbib.routes.Application.index((json\"value").as[String])>
-            @((json\"label").as[String])
-        </a>
-    </li>
-}
-</ul>
+    @nwbib_list(classification, null)
 }

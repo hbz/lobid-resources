@@ -1,0 +1,42 @@
+@(tops: String, subs: Map[String,List[com.fasterxml.jackson.databind.JsonNode]])
+
+@import play.api.libs.json.Json
+@import play.api.libs.json.JsValue
+@import com.fasterxml.jackson.databind.JsonNode
+
+@ul(classes: Option[Seq[JsValue]], id: String) = {
+    @if(!classes.isEmpty){
+        <ul id="@id">
+        @for(json <- classes.getOrElse(Seq()).sortBy((json:JsValue)=>(json\"label").as[String])){
+            @defining((json\"value").as[String]) { value =>
+            <li>
+                <a href="@nwbib.routes.Application.index("\""+value+"\"")">
+                    @((json\"label").as[String])
+                </a>
+                @if(subs != null && subs.get(value) != null){
+                    @ul(Some(subs.get(value).map((node: JsonNode) => Json.parse(node.toString)).toSeq),"")
+                }
+            </li>
+            }
+        }
+        </ul>
+    }
+}
+
+<dl>
+    <dt>Filter</dt><dd><input type="text" id="nwbibQuery"/></dd>
+    @if(subs!=null && !subs.values.isEmpty){
+    <dt>Optionen</dt><dd><a href="#" id="collapseAll">alle einklappen</a> | <a href="#" id="expandAll">alle ausklappen</a></dd>
+    }
+</dl>
+@ul(Json.parse(tops).asOpt[Seq[JsValue]],"root")
+<script type="text/javascript" src="@controllers.nwbib.routes.Assets.at("javascripts/TreeListFilter.js")"></script>
+<script type="text/javascript" src="@controllers.nwbib.routes.Assets.at("javascripts/FileTreeView.js")"></script>
+<link rel="stylesheet" href="@controllers.nwbib.routes.Assets.at("stylesheets/FileTreeView.css")" />
+<script type="text/javascript">
+    $(function() {
+        $('#nwbibQuery').treeListFilter('#root', 200);
+        $('#root').fileTreeView('#expandAll', '#collapseAll', 'folder');
+        $('#collapseAll').click();
+    });
+</script>
