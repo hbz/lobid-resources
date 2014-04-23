@@ -9,11 +9,14 @@ import static play.test.Helpers.inMemoryDatabase;
 import static play.test.Helpers.running;
 import static play.test.Helpers.testServer;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import play.libs.F.Callback;
 import play.test.TestBrowser;
 
+@Ignore
+/* Uses actual data, not available in CI. Run locally with `play test`. */
 public class IntegrationTest {
 
 	/**
@@ -25,10 +28,11 @@ public class IntegrationTest {
 		running(testServer(3333, fakeApplication(inMemoryDatabase())),
 				HTMLUNIT, new Callback<TestBrowser>() {
 					public void invoke(TestBrowser browser) {
-						browser.goTo("http://localhost:3333/nwbib");
-						assertThat(browser.pageSource()).contains("nwbib.api")
-								.contains("nwbib.set")
-								.contains("http://lobid.org/resource/NWBib");
+						browser.goTo("http://localhost:3333/nwbib/classification?t=Raumsystematik");
+						assertThat(browser.pageSource())
+								.contains("Nordrhein-Westfalen")
+								.contains("Rheinland")
+								.contains("Grafschaft, Herzogtum Jülich");
 					}
 				});
 	}

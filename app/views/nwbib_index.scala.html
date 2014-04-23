@@ -30,9 +30,14 @@
     });
     </script>
     <dl>
-        @for((doc,i) <- Json.parse(result).asOpt[Seq[JsValue]].getOrElse(Seq()).zipWithIndex) {
-            <dt>Treffer @(i+1): @((doc \ "@id").as[String].split("/")(4))</dt>
-            <dd>@nwbib_doc(doc)</dd>
+        @defining(Json.parse(result).asOpt[Seq[JsValue]].getOrElse(Seq()).zipWithIndex) { hits =>
+            @for((doc,i) <- hits) {
+                <dt>Treffer @(i+1): @((doc \ "@id").as[String].split("/")(4))</dt>
+                <dd>@nwbib_doc(doc)</dd>
+            }
+            @if(hits.isEmpty){
+                @nwbib_map()
+            }
         }
     </dl>
     <dl>

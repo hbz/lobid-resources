@@ -1,0 +1,27 @@
+@()
+<div id="map"/>
+<script src="@controllers.nwbib.routes.Assets.at("javascripts/d3.v3.min.js")"></script>
+<script src="@controllers.nwbib.routes.Assets.at("javascripts/topojson.v1.min.js")"></script>
+<script src="@controllers.nwbib.routes.Assets.at("javascripts/datamaps.world.min.js")"></script>
+<script>
+var map = new Datamap({
+    element: document.getElementById('map'),
+    geographyConfig: {
+        dataUrl: '@controllers.nwbib.routes.Assets.at("data/nrw.topo.json")'
+    },
+    scope: 'nrw',
+    setProjection: function(element) {
+        var projection = d3.geo.mercator()
+            .center([7.2, 51.5])
+            .scale(5000)
+            .translate([element.offsetWidth / 2, element.offsetHeight / 2]);
+        var path = d3.geo.path().projection(projection);
+        return {path: path, projection: projection};
+    },
+    done: function(datamap) {
+        datamap.svg.selectAll('.datamaps-subunit').on('click', function(geography) {
+            window.location = "/nwbib?query=" + encodeURIComponent(geography.properties.name);
+        });
+    }
+});
+</script>
