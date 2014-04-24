@@ -1,0 +1,35 @@
+@* Copyright 2014 Fabian Steeg, hbz. Licensed under the Eclipse Public License 1.0 *@
+
+@(config: com.typesafe.config.Config, queryForm: play.data.Form[String], url: String, result: String, q:String)
+
+@import helper._
+@import play.api.libs.json.Json
+@import play.api.libs.json.JsValue
+
+@main("NWBib") {
+    @tags.search_form(queryForm, q)
+    <dl>
+        @defining(Json.parse(result).asOpt[Seq[JsValue]].getOrElse(Seq()).zipWithIndex) { hits =>
+            @for((doc,i) <- hits) {
+                <dt>Treffer @(i+1): @((doc \ "@id").as[String].split("/")(4))</dt>
+                <dd>@tags.result_doc(doc)</dd>
+            }
+            @if(hits.isEmpty && !q.trim.isEmpty){
+                <div class="alert alert-info">Keine Ergebnisse für: <code>@q</code></div>
+            }
+            @if(hits.isEmpty && q.trim.isEmpty){
+                @tags.nrw_map()
+            }
+        }
+    </dl>
+    <!--
+    <dl>
+        <dt>nwbib.api</dt>
+        <dd>@config.getString("nwbib.api")</dd>
+        <dt>nwbib.set</dt>
+        <dd>@config.getString("nwbib.set")</dd>
+        <dt>request-url</dt>
+        <dd>@url</dd>
+    </dl>
+    -->
+}

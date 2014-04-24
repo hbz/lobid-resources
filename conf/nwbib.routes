@@ -3,7 +3,8 @@
 # ~~~~
 
 # Home page
-GET    /nwbib                       controllers.nwbib.Application.index(query?="")
+GET    /nwbib                       controllers.nwbib.Application.index()
+GET    /nwbib/search                controllers.nwbib.Application.search(query?="")
 GET    /nwbib/subject               controllers.nwbib.Application.subject(query?="")
 GET    /nwbib/register              controllers.nwbib.Application.register(t)
 GET    /nwbib/classification        controllers.nwbib.Application.classification(t)

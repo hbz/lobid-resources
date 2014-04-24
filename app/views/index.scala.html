@@ -1,53 +1,12 @@
 @* Copyright 2014 Fabian Steeg, hbz. Licensed under the Eclipse Public License 1.0 *@
 
-@(config: com.typesafe.config.Config, queryForm: play.data.Form[String], url: String, result: String, q:String)
+@(queryForm: play.data.Form[String])
 
 @import helper._
 @import play.api.libs.json.Json
 @import play.api.libs.json.JsValue
 
 @main("NWBib") {
-    @helper.form(action = controllers.nwbib.routes.Application.index(q), 'id -> "nwbibForm") {
-        @helper.inputText(queryForm("query"), 'id -> "nwbibQuery", '_label -> "Suchanfrage", 'class -> "form-control")
-    }
-    <script>
-    $('input').each(function() {
-        var $input = $(this);
-        $input.autocomplete({
-            source : function(request, response) {
-                $.ajax({
-                    url : "/nwbib/subject",
-                    dataType : "jsonp",
-                    data : {
-                        query : request.term
-                    },
-                    success : function(data) {
-                        response(data);
-                    }
-                });
-            }
-        });
-    });
-    </script>
-    <dl>
-        @defining(Json.parse(result).asOpt[Seq[JsValue]].getOrElse(Seq()).zipWithIndex) { hits =>
-            @for((doc,i) <- hits) {
-                <dt>Treffer @(i+1): @((doc \ "@id").as[String].split("/")(4))</dt>
-                <dd>@tags.result_doc(doc)</dd>
-            }
-            @if(hits.isEmpty){
-                @tags.nrw_map()
-            }
-        }
-    </dl>
-    <!--
-    <dl>
-        <dt>nwbib.api</dt>
-        <dd>@config.getString("nwbib.api")</dd>
-        <dt>nwbib.set</dt>
-        <dd>@config.getString("nwbib.set")</dd>
-        <dt>request-url</dt>
-        <dd>@url</dd>
-    </dl>
-    -->
+    @tags.search_form(queryForm, "")
+    @tags.nrw_map()
 }

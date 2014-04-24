@@ -1,0 +1,24 @@
+@(queryForm: play.data.Form[String], q: String)
+
+@helper.form(action = controllers.nwbib.routes.Application.search(q), 'id -> "nwbibForm") {
+    @helper.inputText(queryForm("query"), 'id -> "nwbibQuery", '_label -> "Suchanfrage", 'class -> "form-control")
+}
+<script>
+$('input').each(function() {
+    var $input = $(this);
+    $input.autocomplete({
+        source : function(request, response) {
+            $.ajax({
+                url : "/nwbib/subject",
+                dataType : "jsonp",
+                data : {
+                    query : request.term
+                },
+                success : function(data) {
+                    response(data);
+                }
+            });
+        }
+    });
+});
+</script>

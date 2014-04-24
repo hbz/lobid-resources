@@ -40,6 +40,7 @@ import play.mvc.Result;
 import views.html.browse_classification;
 import views.html.index;
 import views.html.browse_register;
+import views.html.search;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.base.Charsets;
@@ -65,7 +66,16 @@ public class Application extends Controller {
 			.settingsBuilder().put("cluster.name", CLUSTER).build())
 			.addTransportAddress(new InetSocketTransportAddress(SERVER, 9300));
 
-	public static Promise<Result> index(final String q) {
+	public static Result index() {
+		final Form<String> form = queryForm.bindFromRequest();
+		if (form.hasErrors()) {
+			return badRequest(index.render(form));
+		} else {
+			return ok(index.render(form));
+		}
+	}
+
+	public static Promise<Result> search(final String q) {
 		final Form<String> form = queryForm.bindFromRequest();
 		if (form.hasErrors()) {
 			return badRequestPromise(q, form);
@@ -162,8 +172,7 @@ public class Application extends Controller {
 			final Form<String> form) {
 		return Promise.promise(new Function0<Result>() {
 			public Result apply() {
-				return badRequest(index.render(CONFIG, form, null, null,
-						q));
+				return badRequest(search.render(CONFIG, form, null, null, q));
 			}
 		});
 	}
@@ -177,7 +186,7 @@ public class Application extends Controller {
 		});
 		return p.map(new Function<String, Result>() {
 			public Result apply(String s) {
-				return ok(index.render(CONFIG, form, url, s, q));
+				return ok(search.render(CONFIG, form, url, s, q));
 			}
 		});
 	}
