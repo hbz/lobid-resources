@@ -37,9 +37,9 @@ import play.libs.F.Promise;
 import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
-import views.html.nwbib_classification;
-import views.html.nwbib_index;
-import views.html.nwbib_register;
+import views.html.browse_classification;
+import views.html.index;
+import views.html.browse_register;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.base.Charsets;
@@ -94,7 +94,7 @@ public class Application extends Controller {
 		if (response == null)
 			return badRequest("Unsupported register type: " + t);
 		JsonNode sorted = sorted(response);
-		Result result = ok(nwbib_register.render(sorted.toString()));
+		Result result = ok(browse_register.render(sorted.toString()));
 		Cache.set("result." + t, result);
 		return result;
 	}
@@ -124,7 +124,7 @@ public class Application extends Controller {
 				addAsSubClass(subClasses, hit.getId(), json, broader);
 		}
 		String topClassesJson = Json.toJson(topClasses).toString();
-		return ok(nwbib_classification.render(topClassesJson, subClasses));
+		return ok(browse_classification.render(topClassesJson, subClasses));
 	}
 
 	private static void addAsSubClass(Map<String, List<JsonNode>> subClasses,
@@ -162,7 +162,7 @@ public class Application extends Controller {
 			final Form<String> form) {
 		return Promise.promise(new Function0<Result>() {
 			public Result apply() {
-				return badRequest(nwbib_index.render(CONFIG, form, null, null,
+				return badRequest(index.render(CONFIG, form, null, null,
 						q));
 			}
 		});
@@ -177,7 +177,7 @@ public class Application extends Controller {
 		});
 		return p.map(new Function<String, Result>() {
 			public Result apply(String s) {
-				return ok(nwbib_index.render(CONFIG, form, url, s, q));
+				return ok(index.render(CONFIG, form, url, s, q));
 			}
 		});
 	}

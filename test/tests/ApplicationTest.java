@@ -30,7 +30,7 @@ public class ApplicationTest {
 	public void renderTemplate() {
 		String query = "buch";
 		String url = Application.url(query);
-		Content html = views.html.nwbib_index.render(Application.CONFIG,
+		Content html = views.html.index.render(Application.CONFIG,
 				Form.form(String.class), url, Application.call(url), query);
 		assertThat(contentType(html)).isEqualTo("text/html");
 		String text = contentAsString(html);

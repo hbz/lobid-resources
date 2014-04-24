@@ -6,7 +6,7 @@
 @import play.api.libs.json.Json
 @import play.api.libs.json.JsValue
 
-@nwbib_main("NWBib") {
+@main("NWBib") {
     @helper.form(action = controllers.nwbib.routes.Application.index(q), 'id -> "nwbibForm") {
         @helper.inputText(queryForm("query"), 'id -> "nwbibQuery", '_label -> "Suchanfrage", 'class -> "form-control")
     }
@@ -33,10 +33,10 @@
         @defining(Json.parse(result).asOpt[Seq[JsValue]].getOrElse(Seq()).zipWithIndex) { hits =>
             @for((doc,i) <- hits) {
                 <dt>Treffer @(i+1): @((doc \ "@id").as[String].split("/")(4))</dt>
-                <dd>@nwbib_doc(doc)</dd>
+                <dd>@tags.result_doc(doc)</dd>
             }
             @if(hits.isEmpty){
-                @nwbib_map()
+                @tags.nrw_map()
             }
         }
     </dl>
