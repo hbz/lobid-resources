@@ -3,7 +3,11 @@
 @import play.api.libs.json.JsValue
 @import views.TableRow
 @import views.TagHelper
-<table class="table">
+<table class="table table-striped table-condensed">
+  <tr>
+        <th style="width: 30%"></th>
+        <th style="width: 70%"></th>
+  </tr>
   @nwbib_field("Titel", "title", doc, TableRow.VALUES)
   @nwbib_field("Titelzusatz", "otherTitleInformation", doc, TableRow.VALUES)
   @nwbib_field("Werktitel", "workManifested", doc, TableRow.LINKS)

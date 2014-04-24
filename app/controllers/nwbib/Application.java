@@ -224,7 +224,7 @@ public class Application extends Controller {
 					.findValue("http://www.w3.org/2004/02/skos/core#prefLabel");
 			if (label != null) {
 				ImmutableMap<String, String> map = ImmutableMap.of(//
-						"value", "\"" + hit.getId() + "\"",//
+						"value", hit.getId(),//
 						"label", label.findValue("@value").asText());
 				result.add(Json.toJson(map));
 			}

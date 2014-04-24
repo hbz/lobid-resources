@@ -8,7 +8,7 @@
 
 @nwbib_main("NWBib") {
     @helper.form(action = controllers.nwbib.routes.Application.index(q), 'id -> "nwbibForm") {
-        @helper.inputText(queryForm("query"), 'id -> "nwbibQuery", '_label -> "Suchanfrage")
+        @helper.inputText(queryForm("query"), 'id -> "nwbibQuery", '_label -> "Suchanfrage", 'class -> "form-control")
     }
     <script>
     $('input').each(function() {
@@ -40,6 +40,7 @@
             }
         }
     </dl>
+    <!--
     <dl>
         <dt>nwbib.api</dt>
         <dd>@config.getString("nwbib.api")</dd>
@@ -48,4 +49,5 @@
         <dt>request-url</dt>
         <dd>@url</dd>
     </dl>
+    -->
 }

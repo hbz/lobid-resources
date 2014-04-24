@@ -7,7 +7,15 @@
 var map = new Datamap({
     element: document.getElementById('map'),
     geographyConfig: {
-        dataUrl: '@controllers.nwbib.routes.Assets.at("data/nrw.topo.json")'
+        dataUrl: '@controllers.nwbib.routes.Assets.at("data/nrw.topo.json")',
+        borderWidth: 1,
+        borderColor: '#BBBBBB',
+        highlightFillColor: '#DADADA',
+        highlightBorderColor: '7B7B7B',
+        highlightBorderWidth: 2
+    },
+    fills: {
+        defaultFill: '#EBEBEB'
     },
     scope: 'nrw',
     setProjection: function(element) {
