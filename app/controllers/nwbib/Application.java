@@ -75,14 +75,15 @@ public class Application extends Controller {
 		}
 	}
 
-	public static Promise<Result> search(final String q) {
+	public static Promise<Result> search(final String q, final int from,
+			final int size) {
 		final Form<String> form = queryForm.bindFromRequest();
 		if (form.hasErrors()) {
-			return badRequestPromise(q, form);
+			return badRequestPromise(q, form, from, size);
 		} else {
 			final String query = form.data().get("query");
-			final String url = url(query != null ? query : q);
-			return okPromise(q, form, url);
+			final String url = url(query != null ? query : q, from, size);
+			return okPromise(q, form, url, from, size);
 		}
 	}
 
@@ -169,16 +170,18 @@ public class Application extends Controller {
 	}
 
 	private static Promise<Result> badRequestPromise(final String q,
-			final Form<String> form) {
+			final Form<String> form, final int from, final int size) {
 		return Promise.promise(new Function0<Result>() {
 			public Result apply() {
-				return badRequest(search.render(CONFIG, form, null, null, q));
+				return badRequest(search.render(CONFIG, form, null, null, q,
+						from, size));
 			}
 		});
 	}
 
 	private static Promise<Result> okPromise(final String q,
-			final Form<String> form, final String url) {
+			final Form<String> form, final String url, final int from,
+			final int size) {
 		Promise<String> p = Promise.promise(new Function0<String>() {
 			public String apply() {
 				return q.isEmpty() ? "[]" : call(url);
@@ -186,7 +189,7 @@ public class Application extends Controller {
 		});
 		return p.map(new Function<String, Result>() {
 			public Result apply(String s) {
-				return ok(search.render(CONFIG, form, url, s, q));
+				return ok(search.render(CONFIG, form, url, s, q, from, size));
 			}
 		});
 	}
@@ -241,11 +244,11 @@ public class Application extends Controller {
 		return result;
 	}
 
-	public static String url(String query) {
-		final String template = "%s/resource?set=%s&format=full&from=0&size=50&q=%s";
+	public static String url(String query, int from, int size) {
+		final String template = "%s/resource?set=%s&format=full&from=%s&size=%s&q=%s";
 		try {
 			return String.format(template, CONFIG.getString("nwbib.api"),
-					CONFIG.getString("nwbib.set"),
+					CONFIG.getString("nwbib.set"), from, size,
 					URLEncoder.encode(preprocess(query), "UTF-8"));
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();

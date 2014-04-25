@@ -29,9 +29,12 @@ public class ApplicationTest {
 	@Test
 	public void renderTemplate() {
 		String query = "buch";
-		String url = Application.url(query);
+		int from = 0;
+		int size = 10;
+		String url = Application.url(query, from, size);
 		Content html = views.html.search.render(Application.CONFIG,
-				Form.form(String.class), url, Application.call(url), query);
+				Form.form(String.class), url, Application.call(url), query,
+				from, size);
 		assertThat(contentType(html)).isEqualTo("text/html");
 		String text = contentAsString(html);
 		assertThat(text).contains("nwbib.api").contains("nwbib.set")

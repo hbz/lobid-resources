@@ -1,27 +1,42 @@
 @* Copyright 2014 Fabian Steeg, hbz. Licensed under the Eclipse Public License 1.0 *@
 
-@(config: com.typesafe.config.Config, queryForm: play.data.Form[String], url: String, result: String, q:String)
+@(config: com.typesafe.config.Config, queryForm: play.data.Form[String], url: String, result: String, q:String, from: Int, size: Int)
 
 @import helper._
 @import play.api.libs.json.Json
 @import play.api.libs.json.JsValue
 
+@pagination(hits:Int)={
+    @if(hits!=0){
+    <ul class="pagination">
+      <li class="previous @if(from==0){disabled}">
+        <a href="@if(from==0){#} else {@nwbib.routes.Application.search(q,from-size,size)}">&larr; Vorige</a>
+      </li>
+      <li class="disabled"><a href="#">Treffer @(from+1) bis @(Math.min(from+hits,from+size))</a></li>
+      <li class="next @if(from+hits < from+size){disabled}">
+        <a href="@if(from+hits < from+size){#} else {@nwbib.routes.Application.search(q,from+size,size)}">Nächste &rarr;</a>
+      </li>
+    </ul>
+    }
+}
+
 @main("NWBib") {
     @tags.search_form(queryForm, q)
-    <dl>
-        @defining(Json.parse(result).asOpt[Seq[JsValue]].getOrElse(Seq()).zipWithIndex) { hits =>
-            @for((doc,i) <- hits) {
-                <dt>Treffer @(i+1): @((doc \ "@id").as[String].split("/")(4))</dt>
-                <dd>@tags.result_doc(doc)</dd>
-            }
-            @if(hits.isEmpty && !q.trim.isEmpty){
-                <div class="alert alert-info">Keine Ergebnisse für: <code>@q</code></div>
-            }
-            @if(hits.isEmpty && q.trim.isEmpty){
-                @tags.nrw_map()
-            }
+    @defining(Json.parse(result).asOpt[Seq[JsValue]].getOrElse(Seq()).zipWithIndex) { hits =>
+        @pagination(hits.size)
+        <dl>
+        @for((doc,i) <- hits) {
+            <dt>Treffer @(from+i+1): @((doc \ "@id").as[String].split("/")(4))</dt>
+            <dd>@tags.result_doc(doc)</dd>
         }
-    </dl>
+        </dl>
+        @if(hits.isEmpty && !q.trim.isEmpty){
+            <div class="alert alert-info">Keine Ergebnisse für: <code>@q</code></div>
+        }
+        @if(hits.isEmpty && q.trim.isEmpty){
+            @tags.nrw_map()
+        }
+    }
     <!--
     <dl>
         <dt>nwbib.api</dt>
