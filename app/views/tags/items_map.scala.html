@@ -1,0 +1,84 @@
+@(items: play.api.libs.json.JsValue)
+
+@import play.api.libs.ws.WS
+@import play.api.libs.json.JsArray
+@import play.api.libs.json.Json
+@import play.api.libs.json.JsValue
+@import scala.concurrent._
+@import ExecutionContext.Implicits.global
+@import scala.concurrent.duration._
+
+@string(value: JsValue) = { @value.asOpt[String].getOrElse("--") }
+@map(property: String, lon: String, lat: String, doc: JsValue) = {
+@if(
+    !(doc \\ lon).isEmpty && (doc \\ lon).head.asOpt[String].isDefined && 
+    !(doc \\ lat).isEmpty && (doc \\ lat).head.asOpt[String].isDefined) {
+        @defining((doc \ "@id").hashCode()) { id =>
+        <div class="map" id="map-@(id)"></div>
+        <script src="http://www.openlayers.org/api/OpenLayers.js"></script>
+        <script type="text/javascript" src="http://maps.stamen.com/js/tile.stamen.js?v1.2.4"></script>
+        <script>
+            map = new OpenLayers.Map("map-@(id)");
+            map.addLayer(new OpenLayers.Layer.Stamen("toner-lite"));
+            var lonLat = new OpenLayers.LonLat(@string((doc \\ lon).head), @string((doc \\ lat).head))
+                  .transform(
+                    new OpenLayers.Projection("EPSG:4326"), // transform from WGS 1984
+                    map.getProjectionObject() // to Spherical Mercator Projection
+                  );
+            var markers = new OpenLayers.Layer.Markers("Markers");
+            map.addLayer(markers);
+            var size = new OpenLayers.Size(21,25);
+            var offset = new OpenLayers.Pixel(-(size.w/2), -size.h);
+            var icon = new OpenLayers.Icon('/nwbib/assets/images/marker-blue.png', size, offset);
+            markers.addMarker(new OpenLayers.Marker(lonLat, icon));
+            map.setCenter(lonLat, 16);
+            controls = map.getControlsByClass('OpenLayers.Control.Navigation');
+            for(var i = 0; i < controls.length; ++i) controls[i].disableZoomWheel();
+        </script>
+        }
+    }
+}
+
+@defining(items.asOpt[JsArray].getOrElse(Json.arr(items))) { uris =>
+    @for(
+        item <- uris.as[scala.collection.immutable.List[JsValue]].map(_.as[String]);
+        requestUri = item+"?format=full";
+        jsonFuture = WS.url(requestUri).get().map(x=>x.json);
+        itemJson = Await.result(jsonFuture, 5.second);
+        owners = (itemJson\\"owner");
+        if(!owners.isEmpty);
+        owner = owners(0).as[String];
+        signatures = (itemJson\\"callNumber");
+        signature = if(signatures.isEmpty) "" else signatures(0).as[String];
+        ownerRequestUri = owner+"?format=full";
+        json = Await.result(WS.url(ownerRequestUri).get().map(x=>(x.json)), 5.second);
+        ownerName = if((json\\"name").isEmpty) "" else (json\\"name")(0).as[String]) {
+
+        <table class="table table-striped table-condensed">
+             <tr>
+                 <th style="width: 30%"/>
+                 <th style="width: 70%"/>
+             </tr>
+             @if(!ownerName.isEmpty){
+                 <tr>
+                     <td>Einrichtung</td>
+                     <td><a href="@owner">@ownerName</a></td>
+                 </tr>
+             }
+             @if(!signature.isEmpty){
+                 <tr>
+                     <td>Signatur</td>
+                     <td><a href="@item">@signature</a></td>
+                 </tr>
+             }
+        </table>
+        <p>
+            @map("location", "long", "lat", json)
+        </p>
+    }
+    <p class="small">
+        Kartenbild von <a href="http://stamen.com">Stamen Design</a>, 
+        Daten von <a href="http://openstreetmap.org">OpenStreetMap</a>, 
+        beides unter <a href="http://creativecommons.org/licenses/by-sa/3.0">CC BY SA</a>.
+    </p>
+}
