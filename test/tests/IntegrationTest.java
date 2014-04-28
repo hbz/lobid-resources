@@ -17,14 +17,13 @@ import play.test.TestBrowser;
 
 @Ignore
 /* Uses actual data, not available in CI. Run locally with `play test`. */
+/**
+ * See http://www.playframework.com/documentation/2.2.x/JavaFunctionalTest
+ */
 public class IntegrationTest {
 
-	/**
-	 * add your integration test here in this example we just check if the
-	 * welcome page is being shown
-	 */
 	@Test
-	public void test() {
+	public void testSpatialClassification() {
 		running(testServer(3333, fakeApplication(inMemoryDatabase())),
 				HTMLUNIT, new Callback<TestBrowser>() {
 					public void invoke(TestBrowser browser) {
@@ -33,6 +32,20 @@ public class IntegrationTest {
 								.contains("Nordrhein-Westfalen")
 								.contains("Rheinland")
 								.contains("Grafschaft, Herzogtum Jülich");
+					}
+				});
+	}
+
+	@Test
+	public void testClassification() {
+		running(testServer(3333, fakeApplication(inMemoryDatabase())),
+				HTMLUNIT, new Callback<TestBrowser>() {
+					public void invoke(TestBrowser browser) {
+						browser.goTo("http://localhost:3333/nwbib/classification?t=Sachsystematik");
+						assertThat(browser.pageSource())
+								.contains("Allgemeine Landeskunde")
+								.contains("Landesbeschreibungen")
+								.contains("Reiseberichte");
 					}
 				});
 	}

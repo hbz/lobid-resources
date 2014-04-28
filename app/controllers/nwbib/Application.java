@@ -262,7 +262,7 @@ public class Application extends Controller {
 		return result;
 	}
 
-	private static String shortId(String id) {
+	public static String shortId(String id) {
 		return id.substring(id.lastIndexOf('#') + 1);
 	}
 }

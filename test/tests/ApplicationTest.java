@@ -8,30 +8,38 @@ import static play.test.Helpers.contentType;
 
 import org.junit.Test;
 
-import play.mvc.Result;
-import play.test.Helpers;
+import play.data.Form;
+import play.mvc.Content;
+import controllers.nwbib.Application;
 
 /**
- * 
- * Simple (JUnit) tests that can call all parts of a play app. If you are
- * interested in mocking a whole application, see the wiki for more details.
- * 
+ * See http://www.playframework.com/documentation/2.2.x/JavaTest
  */
 public class ApplicationTest {
 
 	@Test
-	public void simpleCheck() {
-		int a = 1 + 1;
-		assertThat(a).isEqualTo(2);
+	public void shortClassificationId() {
+		assertThat(Application.shortId("http://purl.org/lobid/nwbib#s58206"))
+				.as("short classification").isEqualTo("s58206");
+	}
+
+	@Test
+	public void shortSpatialClassificationId() {
+		assertThat(
+				Application.shortId("http://purl.org/lobid/nwbib-spatial#n58"))
+				.as("short spatial classification").isEqualTo("n58");
 	}
 
 	@Test
 	public void renderTemplate() {
-		Result result = Helpers
-				.callAction(controllers.nwbib.routes.ref.Application.search(
-						"buch", 0, 10));
-		assertThat(contentType(result)).isEqualTo("text/html");
-		String text = contentAsString(result);
-		assertThat(text).contains("Buch");
+		String query = "buch";
+		int from = 0;
+		int size = 10;
+		Content html = views.html.search.render(Application.CONFIG,
+				Form.form(String.class).fill(query), "[]", query, from, size);
+		assertThat(contentType(html)).isEqualTo("text/html");
+		String text = contentAsString(html);
+		assertThat(text).contains("NWBib").contains("buch")
+				.contains("Sachsystematik").contains("Raumsystematik");
 	}
 }
