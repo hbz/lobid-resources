@@ -3,11 +3,6 @@
 package controllers.nwbib;
 
 import java.io.File;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
-import java.net.URL;
-import java.net.URLConnection;
-import java.net.URLEncoder;
 import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -29,23 +24,24 @@ import org.elasticsearch.index.query.MatchQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 
+import play.Logger;
 import play.cache.Cache;
 import play.data.Form;
 import play.libs.F.Function;
 import play.libs.F.Function0;
 import play.libs.F.Promise;
 import play.libs.Json;
+import play.libs.WS;
+import play.libs.WS.WSRequestHolder;
 import play.mvc.Controller;
 import play.mvc.Result;
 import views.html.browse_classification;
-import views.html.index;
 import views.html.browse_register;
+import views.html.index;
 import views.html.search;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.io.CharStreams;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 
@@ -82,8 +78,7 @@ public class Application extends Controller {
 			return badRequestPromise(q, form, from, size);
 		} else {
 			final String query = form.data().get("query");
-			final String url = url(query != null ? query : q, from, size);
-			return okPromise(q, form, url, from, size);
+			return okPromise(query != null ? query : q, form, from, size);
 		}
 	}
 
@@ -173,25 +168,47 @@ public class Application extends Controller {
 			final Form<String> form, final int from, final int size) {
 		return Promise.promise(new Function0<Result>() {
 			public Result apply() {
-				return badRequest(search.render(CONFIG, form, null, null, q,
-						from, size));
+				return badRequest(search.render(CONFIG, form, null, q, from,
+						size));
 			}
 		});
 	}
 
 	private static Promise<Result> okPromise(final String q,
-			final Form<String> form, final String url, final int from,
-			final int size) {
-		Promise<String> p = Promise.promise(new Function0<String>() {
-			public String apply() {
-				return q.isEmpty() ? "[]" : call(url);
+			final Form<String> form, final int from, final int size) {
+		final Promise<Result> result = call(q, form, from, size);
+		return result.recover(new Function<Throwable, Result>() {
+			@Override
+			public Result apply(Throwable throwable) throws Throwable {
+				throwable.printStackTrace();
+				return ok(search.render(CONFIG, form, "[]", q, from, size));
 			}
 		});
-		return p.map(new Function<String, Result>() {
-			public Result apply(String s) {
-				return ok(search.render(CONFIG, form, url, s, q, from, size));
+	}
+
+	private static Promise<Result> call(final String q,
+			final Form<String> form, final int from, final int size) {
+		final WSRequestHolder requestHolder = WS
+				.url(CONFIG.getString("nwbib.api"))
+				.setHeader("Accept", "application/json")
+				.setQueryParameter("set", CONFIG.getString("nwbib.set"))
+				.setQueryParameter("format", "full")
+				.setQueryParameter("from", from + "")
+				.setQueryParameter("size", size + "")
+				.setQueryParameter("q", preprocess(q));
+		Logger.info("Request URL {}, query params {} ", requestHolder.getUrl(),
+				requestHolder.getQueryParameters());
+		return requestHolder.get().map(new Function<WS.Response, Result>() {
+			public Result apply(WS.Response response) {
+				String s = q.isEmpty() ? "[]" : response.asJson().toString();
+				return ok(search.render(CONFIG, form, s, q, from, size));
 			}
 		});
+	}
+
+	private static String preprocess(String query) {
+		/* Workaround for https://github.com/hbz/nwbib/issues/4 */
+		return query.replaceAll("0\\b", "");
 	}
 
 	private static SearchResponse classificationData(String t) {
@@ -242,34 +259,5 @@ public class Application extends Controller {
 			}
 		}
 		return result;
-	}
-
-	public static String url(String query, int from, int size) {
-		final String template = "%s/resource?set=%s&format=full&from=%s&size=%s&q=%s";
-		try {
-			return String.format(template, CONFIG.getString("nwbib.api"),
-					CONFIG.getString("nwbib.set"), from, size,
-					URLEncoder.encode(preprocess(query), "UTF-8"));
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		}
-		return "";
-	}
-
-	private static String preprocess(String query) {
-		/* Workaround for https://github.com/hbz/nwbib/issues/4 */
-		return query.replaceAll("0\\b", "");
-	}
-
-	public static String call(final String url) {
-		try {
-			final URLConnection connection = new URL(url).openConnection();
-			final String result = CharStreams.toString(new InputStreamReader(
-					connection.getInputStream(), Charsets.UTF_8));
-			return Json.parse(result).toString();
-		} catch (Exception e) {
-			e.printStackTrace();
-			return "[]";
-		}
 	}
 }
