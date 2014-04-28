@@ -1,7 +1,9 @@
 @(queryForm: play.data.Form[String], q: String)
 
 @helper.form(action = controllers.nwbib.routes.Application.search(q), 'id -> "nwbibForm") {
-    @helper.inputText(queryForm("query"), 'id -> "nwbibQuery", '_label -> "Suchanfrage", 'class -> "form-control")
+    @helper.inputText(queryForm("query"), 'id -> "nwbibQuery", '_label -> "Suchanfrage", 'class -> "form-control",
+        'placeholder -> "Suchoptionen: +einschließen, -ausschließen, unscharf~, \"exakt suchen\""
+    )
 }
 <script>
 $('input').each(function() {

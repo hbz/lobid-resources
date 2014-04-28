@@ -44,7 +44,10 @@
         </div>
         }
         @if(hits.isEmpty && !q.trim.isEmpty){
-            <div class="alert alert-info">Keine Ergebnisse für: <code>@q</code></div>
+            <div class="alert alert-info">
+                Keine Ergebnisse für: <code>@q</code>. Versuchen Sie eine unscharfe Suche: 
+                <code><a href="@nwbib.routes.Application.search(q+"~",from,size)">@q~</a></code>
+            </div>
         }
         @if(hits.isEmpty && q.trim.isEmpty){
             @tags.nrw_map()
