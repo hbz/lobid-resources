@@ -58,6 +58,10 @@ public class Application extends Controller {
 	private static final String CLUSTER = CONFIG.getString("nwbib.cluster");
 	private static final String SERVER = CONFIG.getString("nwbib.server");
 
+	private static enum Label {
+		WITH_NOTATION, PLAIN
+	}
+
 	final static Client client = new TransportClient(ImmutableSettings
 			.settingsBuilder().put("cluster.name", CLUSTER).build())
 			.addTransportAddress(new InetSocketTransportAddress(SERVER, 9300));
@@ -125,37 +129,41 @@ public class Application extends Controller {
 			JsonNode broader = json
 					.findValue("http://www.w3.org/2004/02/skos/core#broader");
 			if (broader == null)
-				topClasses.addAll(valueAndLabelWithNotation(hit.getId(), json));
+				topClasses.addAll(valueAndLabelWithNotation(hit, json));
 			else
-				addAsSubClass(subClasses, hit.getId(), json, broader);
+				addAsSubClass(subClasses, hit, json,
+						shortId(broader.findValue("@id").asText()));
 		}
 		String topClassesJson = Json.toJson(topClasses).toString();
 		return ok(browse_classification.render(topClassesJson, subClasses));
 	}
 
 	private static void addAsSubClass(Map<String, List<JsonNode>> subClasses,
-			String id, JsonNode json, JsonNode broaderJson) {
-		String broader = broaderJson.findValue("@id").asText();
+			SearchHit hit, JsonNode json, String broader) {
 		if (!subClasses.containsKey(broader))
 			subClasses.put(broader, new ArrayList<JsonNode>());
-		subClasses.get(broader).addAll(valueAndLabelWithNotation(id, json));
+		subClasses.get(broader).addAll(valueAndLabelWithNotation(hit, json));
 	}
 
-	private static List<JsonNode> valueAndLabelWithNotation(String id,
+	private static List<JsonNode> valueAndLabelWithNotation(SearchHit hit,
 			JsonNode json) {
 		List<JsonNode> result = new ArrayList<JsonNode>();
-		JsonNode label = json
+		collectLabelAndValue(hit, json, Label.WITH_NOTATION, result);
+		return result;
+	}
+
+	private static void collectLabelAndValue(SearchHit hit, JsonNode json,
+			Label style, List<JsonNode> result) {
+		final JsonNode label = json
 				.findValue("http://www.w3.org/2004/02/skos/core#prefLabel");
-		JsonNode notation = json
-				.findValue("http://www.w3.org/2004/02/skos/core#notation");
-		if (label != null && notation != null) {
-			ImmutableMap<String, String> map = ImmutableMap.of(//
-					"value", id,//
-					"label", notation.findValue("@value").asText() + " "
+		if (label != null) {
+			String shortId = shortId(hit.getId());
+			ImmutableMap<String, String> map = ImmutableMap.of("value",
+					shortId, "label",
+					(style == Label.PLAIN ? "" : shortId.substring(1) + " ")
 							+ label.findValue("@value").asText());
 			result.add(Json.toJson(map));
 		}
-		return result;
 	}
 
 	private static SearchResponse dataFor(final String t) {
@@ -249,15 +257,12 @@ public class Application extends Controller {
 		List<JsonNode> result = new ArrayList<JsonNode>();
 		for (SearchHit hit : response.getHits()) {
 			JsonNode json = Json.toJson(hit.getSource());
-			JsonNode label = json
-					.findValue("http://www.w3.org/2004/02/skos/core#prefLabel");
-			if (label != null) {
-				ImmutableMap<String, String> map = ImmutableMap.of(//
-						"value", hit.getId(),//
-						"label", label.findValue("@value").asText());
-				result.add(Json.toJson(map));
-			}
+			collectLabelAndValue(hit, json, Label.PLAIN, result);
 		}
 		return result;
+	}
+
+	private static String shortId(String id) {
+		return id.substring(id.lastIndexOf('#') + 1);
 	}
 }

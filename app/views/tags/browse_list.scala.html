@@ -10,7 +10,7 @@
         @for(json <- classes.getOrElse(Seq()).sortBy((json:JsValue)=>(json\"label").as[String])){
             @defining((json\"value").as[String]) { value =>
             <li>
-                <a href="@nwbib.routes.Application.search("\""+value+"\"")">
+                <a href="@nwbib.routes.Application.search(value)">
                     @((json\"label").as[String])
                 </a>
                 @if(subs != null && subs.get(value) != null){
