@@ -12,6 +12,7 @@ import org.elasticsearch.action.search.SearchResponse;
 
 import play.Logger;
 import play.cache.Cache;
+import play.cache.Cached;
 import play.data.Form;
 import play.libs.F.Function;
 import play.libs.F.Function0;
@@ -31,6 +32,7 @@ import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 
 public class Application extends Controller {
+
 	static Form<String> queryForm = Form.form(String.class);
 
 	private static final File FILE = new File("conf/nwbib.conf");
@@ -41,6 +43,10 @@ public class Application extends Controller {
 	final static Classification CLASSIFICATION = new Classification(
 			CONFIG.getString("nwbib.cluster"), CONFIG.getString("nwbib.server"));
 
+	private static final int ONE_HOUR = 60 * 60;
+	private static final int ONE_DAY = 24 * ONE_HOUR;
+
+	@Cached(key = "nwbib.index", duration = ONE_HOUR)
 	public static Result index() {
 		final Form<String> form = queryForm.bindFromRequest();
 		if (form.hasErrors()) {
@@ -52,23 +58,46 @@ public class Application extends Controller {
 
 	public static Promise<Result> search(final String q, final int from,
 			final int size) {
-		final Form<String> form = queryForm.bindFromRequest();
-		if (form.hasErrors()) {
-			return badRequestPromise(q, form, from, size);
-		} else {
-			final String query = form.data().get("query");
-			return okPromise(query != null ? query : q, form, from, size);
+		String cacheId = String.format("%s.%s.%s.%s", "search", q, from, size);
+		@SuppressWarnings("unchecked")
+		Promise<Result> cachedResult = (Promise<Result>) Cache.get(cacheId);
+		if (cachedResult != null)
+			return cachedResult;
+		else {
+			Logger.debug("Not cached: {}, will cache for one hour", cacheId);
+			final Form<String> form = queryForm.bindFromRequest();
+			if (form.hasErrors())
+				return badRequestPromise(q, form, from, size);
+			else {
+				String query = form.data().get("query");
+				Promise<Result> result = okPromise(query != null ? query : q,
+						form, from, size);
+				Cache.set(cacheId, result, ONE_HOUR);
+				return result;
+			}
 		}
 	}
 
 	public static Result subject(final String q) {
-		JsonNode ids = CLASSIFICATION.ids(q);
-		final String[] callback = request() == null
-				|| request().queryString() == null ? null : request()
-				.queryString().get("callback");
-		if (callback != null)
-			return ok(String.format("%s(%s)", callback[0], Json.stringify(ids)));
-		return ok(ids);
+		String cacheId = String.format("%s.%s", "subject", q);
+		Result cachedResult = (Result) Cache.get(cacheId);
+		if (cachedResult != null)
+			return cachedResult;
+		else {
+			Logger.debug("Not cached: {}, will cache for one day", cacheId);
+			JsonNode ids = CLASSIFICATION.ids(q);
+			final String[] callback = request() == null
+					|| request().queryString() == null ? null : request()
+					.queryString().get("callback");
+			Result result;
+			if (callback != null)
+				result = ok(String.format("%s(%s)", callback[0],
+						Json.stringify(ids)));
+			else
+				result = ok(ids);
+			Cache.set(cacheId, result, ONE_DAY);
+			return result;
+		}
 	}
 
 	public static Result register(final String t) {
@@ -80,7 +109,7 @@ public class Application extends Controller {
 			return badRequest("Unsupported register type: " + t);
 		JsonNode sorted = CLASSIFICATION.sorted(response);
 		Result result = ok(browse_register.render(sorted.toString()));
-		Cache.set("result." + t, result);
+		Cache.set("result." + t, result, ONE_DAY);
 		return result;
 	}
 
@@ -92,7 +121,7 @@ public class Application extends Controller {
 		if (response == null)
 			return badRequest("Unsupported classification type: " + t);
 		Result result = classificationResult(response);
-		Cache.set("classification." + t, result);
+		Cache.set("classification." + t, result, ONE_DAY);
 		return result;
 	}
 
