@@ -78,21 +78,18 @@ public class Application extends Controller {
 		}
 	}
 
-	public static Promise<Result> subject(final String q) {
-		String cacheId = String.format("%s.%s", "subject", q);
+	public static Promise<Result> subject(final String q, final String callback) {
+		String cacheId = String.format("%s.%s.%s", "subject", q, callback);
 		@SuppressWarnings("unchecked")
 		Promise<Result> cachedResult = (Promise<Result>) Cache.get(cacheId);
 		if (cachedResult != null)
 			return cachedResult;
 		else {
 			Logger.debug("Not cached: {}, will cache for one day", cacheId);
-			final String[] callback = request() == null
-					|| request().queryString() == null ? null : request()
-					.queryString().get("callback");
 			Promise<JsonNode> jsonPromise = classificationJsonPromise(q);
 			Promise<Result> result;
-			if (callback != null)
-				result = jsonPromise.map(okSubject(callback[0]));
+			if (!callback.isEmpty())
+				result = jsonPromise.map(okSubject(callback));
 			else
 				result = jsonPromise.map(okSubject());
 			Cache.set(cacheId, result, ONE_DAY);
