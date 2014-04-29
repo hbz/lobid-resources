@@ -78,23 +78,23 @@ public class Application extends Controller {
 		}
 	}
 
-	public static Result subject(final String q) {
+	public static Promise<Result> subject(final String q) {
 		String cacheId = String.format("%s.%s", "subject", q);
-		Result cachedResult = (Result) Cache.get(cacheId);
+		@SuppressWarnings("unchecked")
+		Promise<Result> cachedResult = (Promise<Result>) Cache.get(cacheId);
 		if (cachedResult != null)
 			return cachedResult;
 		else {
 			Logger.debug("Not cached: {}, will cache for one day", cacheId);
-			JsonNode ids = CLASSIFICATION.ids(q);
 			final String[] callback = request() == null
 					|| request().queryString() == null ? null : request()
 					.queryString().get("callback");
-			Result result;
+			Promise<JsonNode> jsonPromise = classificationJsonPromise(q);
+			Promise<Result> result;
 			if (callback != null)
-				result = ok(String.format("%s(%s)", callback[0],
-						Json.stringify(ids)));
+				result = jsonPromise.map(okSubject(callback[0]));
 			else
-				result = ok(ids);
+				result = jsonPromise.map(okSubject());
 			Cache.set(cacheId, result, ONE_DAY);
 			return result;
 		}
@@ -153,6 +153,31 @@ public class Application extends Controller {
 				return ok(search.render(CONFIG, form, "[]", q, from, size));
 			}
 		});
+	}
+
+	private static Promise<JsonNode> classificationJsonPromise(final String q) {
+		return Promise.promise(new Function0<JsonNode>() {
+			public JsonNode apply() {
+				return CLASSIFICATION.ids(q);
+			}
+		});
+	}
+
+	private static Function<JsonNode, Result> okSubject(final String callback) {
+		return new Function<JsonNode, Result>() {
+			public Result apply(JsonNode json) {
+				return ok(String.format("%s(%s)", callback,
+						Json.stringify(json)));
+			}
+		};
+	}
+
+	private static Function<JsonNode, Result> okSubject() {
+		return new Function<JsonNode, Result>() {
+			public Result apply(JsonNode json) {
+				return ok(json);
+			}
+		};
 	}
 
 	private static Promise<Result> call(final String q,
