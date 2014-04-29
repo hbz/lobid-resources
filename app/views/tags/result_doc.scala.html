@@ -9,7 +9,6 @@
     "preferredNameForTheWork",
     "preferredNameForTheFamily",
     "preferredNameForThePerson",
-    "preferredNameEntityForThePerson",
     "preferredNameForTheCorporateBody",
     "preferredNameForTheSubjectHeading",
     "preferredNameForTheConferenceOrEvent",
@@ -21,9 +20,9 @@
   </tr>
   @result_field("Titel", "title", doc, TableRow.VALUES)
   @result_field("Titelzusatz", "otherTitleInformation", doc, TableRow.VALUES)
-  @result_field("Werktitel", "workManifested", doc, TableRow.LINKS)
   @result_field("Autor", "creator", doc, TableRow.VALUES, valueLabel = gndEntities)
   @result_field("Mitwirkender", "contributor", doc, TableRow.VALUES, valueLabel = gndEntities)
+  @result_field("Herausgeber", "publisher", doc, TableRow.VALUES)
 </table>
 <table class="table table-striped table-condensed">
   <tr>
