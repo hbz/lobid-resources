@@ -1,0 +1,177 @@
+/* Copyright 2014 Fabian Steeg, hbz. Licensed under the GPLv2 */
+
+package controllers.nwbib;
+
+import java.text.Collator;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
+import org.elasticsearch.action.search.SearchRequestBuilder;
+import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.action.search.SearchType;
+import org.elasticsearch.client.Client;
+import org.elasticsearch.client.transport.TransportClient;
+import org.elasticsearch.common.settings.ImmutableSettings;
+import org.elasticsearch.common.settings.Settings;
+import org.elasticsearch.common.transport.InetSocketTransportAddress;
+import org.elasticsearch.index.query.MatchAllQueryBuilder;
+import org.elasticsearch.index.query.MatchQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.search.SearchHit;
+
+import play.libs.Json;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.google.common.collect.ImmutableMap;
+
+/**
+ * NWBib classification and spatial classification data access via Elasticsearch
+ * 
+ * @author Fabian Steeg (fsteeg)
+ */
+public class Classification {
+
+	private static final String INDEX = "nwbib";
+
+	private enum Type {
+		NWBIB("json-ld-nwbib", "Sachsystematik"), //
+		SPATIAL("json-ld-nwbib-spatial", "Raumsystematik");
+
+		String elasticsearchType;
+		String queryParameter;
+
+		private Type(String elasticsearchType, String queryParameter) {
+			this.elasticsearchType = elasticsearchType;
+			this.queryParameter = queryParameter;
+		}
+	}
+
+	private enum Property {
+		LABEL("http://www.w3.org/2004/02/skos/core#prefLabel"), //
+		BROADER("http://www.w3.org/2004/02/skos/core#broader");
+
+		String value;
+
+		private Property(String value) {
+			this.value = value;
+		}
+	}
+
+	private enum Label {
+		WITH_NOTATION, PLAIN
+	}
+
+	private Client client;
+	private String server;
+	private String cluster;
+
+	public Classification(String cluster, String server) {
+		this.cluster = cluster;
+		this.server = server;
+		Settings settings = ImmutableSettings.settingsBuilder()
+				.put("cluster.name", this.cluster).build();
+		InetSocketTransportAddress address = new InetSocketTransportAddress(
+				this.server, 9300);
+		client = new TransportClient(settings).addTransportAddress(address);
+	}
+
+	SearchResponse dataFor(final String tQueryParameter) {
+		for (Type indexType : Type.values())
+			if (indexType.queryParameter.equalsIgnoreCase(tQueryParameter))
+				return classificationData(indexType.elasticsearchType);
+		return null;
+	}
+
+	private SearchResponse classificationData(String type) {
+		MatchAllQueryBuilder queryBuilder = QueryBuilders.matchAllQuery();
+		SearchRequestBuilder requestBuilder = client.prepareSearch(INDEX)
+				.setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
+				.setQuery(queryBuilder).setTypes(type).setFrom(0).setSize(1000);
+		return requestBuilder.execute().actionGet();
+	}
+
+	JsonNode ids(String query) {
+		MatchQueryBuilder queryBuilder = QueryBuilders.matchQuery(//
+				"@graph." + Property.LABEL.value + ".@value", query);
+		SearchRequestBuilder requestBuilder = client
+				.prepareSearch(INDEX)
+				.setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
+				.setQuery(queryBuilder)
+				.setTypes(Type.NWBIB.elasticsearchType,
+						Type.SPATIAL.elasticsearchType);
+		SearchResponse response = requestBuilder.execute().actionGet();
+		List<JsonNode> result = ids(response);
+		return Json.toJson(result);
+	}
+
+	List<JsonNode> ids(SearchResponse response) {
+		List<JsonNode> result = new ArrayList<JsonNode>();
+		for (SearchHit hit : response.getHits()) {
+			JsonNode json = Json.toJson(hit.getSource());
+			collectLabelAndValue(hit, json, Label.PLAIN, result);
+		}
+		return result;
+	}
+
+	JsonNode sorted(SearchResponse response) {
+		List<JsonNode> result = ids(response);
+		Collections.sort(result, new Comparator<JsonNode>() {
+			@Override
+			public int compare(JsonNode o1, JsonNode o2) {
+				return Collator.getInstance(Locale.GERMANY).compare(
+						o1.get("label").asText(), o2.get("label").asText());
+			}
+		});
+		return Json.toJson(result);
+	}
+
+	public static String shortId(String id) {
+		return id.substring(id.lastIndexOf('#') + 1);
+	}
+
+	void buildHierarchy(SearchResponse response, List<JsonNode> topClasses,
+			Map<String, List<JsonNode>> subClasses) {
+		for (SearchHit hit : response.getHits()) {
+			JsonNode json = Json.toJson(hit.getSource());
+			JsonNode broader = json.findValue(Property.BROADER.value);
+			if (broader == null)
+				topClasses.addAll(valueAndLabelWithNotation(hit, json));
+			else
+				addAsSubClass(subClasses, hit, json,
+						Classification.shortId(broader.findValue("@id")
+								.asText()));
+		}
+	}
+
+	private void addAsSubClass(Map<String, List<JsonNode>> subClasses,
+			SearchHit hit, JsonNode json, String broader) {
+		if (!subClasses.containsKey(broader))
+			subClasses.put(broader, new ArrayList<JsonNode>());
+		subClasses.get(broader).addAll(valueAndLabelWithNotation(hit, json));
+	}
+
+	private List<JsonNode> valueAndLabelWithNotation(SearchHit hit,
+			JsonNode json) {
+		List<JsonNode> result = new ArrayList<JsonNode>();
+		collectLabelAndValue(hit, json, Label.WITH_NOTATION, result);
+		return result;
+	}
+
+	private void collectLabelAndValue(SearchHit hit, JsonNode json,
+			Label style, List<JsonNode> result) {
+		final JsonNode label = json.findValue(Property.LABEL.value);
+		if (label != null) {
+			String shortId = shortId(hit.getId());
+			ImmutableMap<String, String> map = ImmutableMap.of("value",
+					shortId, "label",
+					(style == Label.PLAIN ? "" : shortId.substring(1) + " ")
+							+ label.findValue("@value").asText());
+			result.add(Json.toJson(map));
+		}
+	}
+
+}

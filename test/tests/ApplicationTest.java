@@ -1,4 +1,4 @@
-/* Copyright 2014 Fabian Steeg, hbz. Licensed under the Eclipse Public License 1.0 */
+/* Copyright 2014 Fabian Steeg, hbz. Licensed under the GPLv2 */
 
 package tests;
 
@@ -11,6 +11,7 @@ import org.junit.Test;
 import play.data.Form;
 import play.mvc.Content;
 import controllers.nwbib.Application;
+import controllers.nwbib.Classification;
 
 /**
  * See http://www.playframework.com/documentation/2.2.x/JavaTest
@@ -19,14 +20,15 @@ public class ApplicationTest {
 
 	@Test
 	public void shortClassificationId() {
-		assertThat(Application.shortId("http://purl.org/lobid/nwbib#s58206"))
+		assertThat(Classification.shortId("http://purl.org/lobid/nwbib#s58206"))
 				.as("short classification").isEqualTo("s58206");
 	}
 
 	@Test
 	public void shortSpatialClassificationId() {
 		assertThat(
-				Application.shortId("http://purl.org/lobid/nwbib-spatial#n58"))
+				Classification
+						.shortId("http://purl.org/lobid/nwbib-spatial#n58"))
 				.as("short spatial classification").isEqualTo("n58");
 	}
 
