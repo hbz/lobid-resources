@@ -14,6 +14,7 @@ import play.Logger;
 import play.cache.Cache;
 import play.cache.Cached;
 import play.data.Form;
+import play.libs.F;
 import play.libs.F.Function;
 import play.libs.F.Function0;
 import play.libs.F.Promise;
@@ -72,7 +73,7 @@ public class Application extends Controller {
 				String query = form.data().get("query");
 				Promise<Result> result = okPromise(query != null ? query : q,
 						form, from, size);
-				Cache.set(cacheId, result, ONE_HOUR);
+				cacheOnRedeem(cacheId, result, ONE_HOUR);
 				return result;
 			}
 		}
@@ -92,7 +93,7 @@ public class Application extends Controller {
 				result = jsonPromise.map(okSubject(callback));
 			else
 				result = jsonPromise.map(okSubject());
-			Cache.set(cacheId, result, ONE_DAY);
+			cacheOnRedeem(cacheId, result, ONE_DAY);
 			return result;
 		}
 	}
@@ -144,10 +145,19 @@ public class Application extends Controller {
 			final Form<String> form, final int from, final int size) {
 		final Promise<Result> result = call(q, form, from, size);
 		return result.recover(new Function<Throwable, Result>() {
-			@Override
 			public Result apply(Throwable throwable) throws Throwable {
 				throwable.printStackTrace();
 				return ok(search.render(CONFIG, form, "[]", q, from, size));
+			}
+		});
+	}
+
+	private static void cacheOnRedeem(final String cacheId,
+			final Promise<Result> resultPromise, final int duration) {
+		resultPromise.onRedeem(new F.Callback<Result>() {
+			public void invoke(Result result) throws Throwable {
+				if (play.test.Helpers.status(result) == play.test.Helpers.OK)
+					Cache.set(cacheId, resultPromise, duration);
 			}
 		});
 	}
