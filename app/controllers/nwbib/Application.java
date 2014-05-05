@@ -14,9 +14,6 @@ import play.Logger;
 import play.cache.Cache;
 import play.cache.Cached;
 import play.data.Form;
-import play.libs.F;
-import play.libs.F.Function;
-import play.libs.F.Function0;
 import play.libs.F.Promise;
 import play.libs.Json;
 import play.libs.WS;
@@ -68,7 +65,8 @@ public class Application extends Controller {
 			Logger.debug("Not cached: {}, will cache for one hour", cacheId);
 			final Form<String> form = queryForm.bindFromRequest();
 			if (form.hasErrors())
-				return badRequestPromise(q, form, from, size);
+				return Promise.promise(() -> badRequest(search.render(CONFIG,
+						form, null, q, from, size)));
 			else {
 				String query = form.data().get("query");
 				Promise<Result> result = okPromise(query != null ? query : q,
@@ -87,12 +85,14 @@ public class Application extends Controller {
 			return cachedResult;
 		else {
 			Logger.debug("Not cached: {}, will cache for one day", cacheId);
-			Promise<JsonNode> jsonPromise = classificationJsonPromise(q);
+			Promise<JsonNode> jsonPromise = Promise
+					.promise(() -> CLASSIFICATION.ids(q));
 			Promise<Result> result;
 			if (!callback.isEmpty())
-				result = jsonPromise.map(okSubject(callback));
+				result = jsonPromise.map((JsonNode json) -> ok(String.format(
+						"%s(%s)", callback, Json.stringify(json))));
 			else
-				result = jsonPromise.map(okSubject());
+				result = jsonPromise.map((JsonNode json) -> ok(json));
 			cacheOnRedeem(cacheId, result, ONE_DAY);
 			return result;
 		}
@@ -131,60 +131,21 @@ public class Application extends Controller {
 		return ok(browse_classification.render(topClassesJson, subClasses));
 	}
 
-	private static Promise<Result> badRequestPromise(final String q,
-			final Form<String> form, final int from, final int size) {
-		return Promise.promise(new Function0<Result>() {
-			public Result apply() {
-				return badRequest(search.render(CONFIG, form, null, q, from,
-						size));
-			}
-		});
-	}
-
 	private static Promise<Result> okPromise(final String q,
 			final Form<String> form, final int from, final int size) {
 		final Promise<Result> result = call(q, form, from, size);
-		return result.recover(new Function<Throwable, Result>() {
-			public Result apply(Throwable throwable) throws Throwable {
-				throwable.printStackTrace();
-				return ok(search.render(CONFIG, form, "[]", q, from, size));
-			}
+		return result.recover((Throwable throwable) -> {
+			throwable.printStackTrace();
+			return ok(search.render(CONFIG, form, "[]", q, from, size));
 		});
 	}
 
 	private static void cacheOnRedeem(final String cacheId,
 			final Promise<Result> resultPromise, final int duration) {
-		resultPromise.onRedeem(new F.Callback<Result>() {
-			public void invoke(Result result) throws Throwable {
-				if (play.test.Helpers.status(result) == play.test.Helpers.OK)
-					Cache.set(cacheId, resultPromise, duration);
-			}
+		resultPromise.onRedeem((Result result) -> {
+			if (play.test.Helpers.status(result) == play.test.Helpers.OK)
+				Cache.set(cacheId, resultPromise, duration);
 		});
-	}
-
-	private static Promise<JsonNode> classificationJsonPromise(final String q) {
-		return Promise.promise(new Function0<JsonNode>() {
-			public JsonNode apply() {
-				return CLASSIFICATION.ids(q);
-			}
-		});
-	}
-
-	private static Function<JsonNode, Result> okSubject(final String callback) {
-		return new Function<JsonNode, Result>() {
-			public Result apply(JsonNode json) {
-				return ok(String.format("%s(%s)", callback,
-						Json.stringify(json)));
-			}
-		};
-	}
-
-	private static Function<JsonNode, Result> okSubject() {
-		return new Function<JsonNode, Result>() {
-			public Result apply(JsonNode json) {
-				return ok(json);
-			}
-		};
 	}
 
 	private static Promise<Result> call(final String q,
@@ -199,11 +160,9 @@ public class Application extends Controller {
 				.setQueryParameter("q", preprocess(q));
 		Logger.info("Request URL {}, query params {} ", requestHolder.getUrl(),
 				requestHolder.getQueryParameters());
-		return requestHolder.get().map(new Function<WS.Response, Result>() {
-			public Result apply(WS.Response response) {
-				String s = q.isEmpty() ? "[]" : response.asJson().toString();
-				return ok(search.render(CONFIG, form, s, q, from, size));
-			}
+		return requestHolder.get().map((WS.Response response) -> {
+			String s = q.isEmpty() ? "[]" : response.asJson().toString();
+			return ok(search.render(CONFIG, form, s, q, from, size));
 		});
 	}
 

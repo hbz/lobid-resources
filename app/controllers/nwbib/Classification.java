@@ -4,11 +4,10 @@ package controllers.nwbib;
 
 import java.text.Collator;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
@@ -118,15 +117,16 @@ public class Classification {
 	}
 
 	JsonNode sorted(SearchResponse response) {
-		List<JsonNode> result = ids(response);
-		Collections.sort(result, new Comparator<JsonNode>() {
-			@Override
-			public int compare(JsonNode o1, JsonNode o2) {
-				return Collator.getInstance(Locale.GERMANY).compare(
-						o1.get("label").asText(), o2.get("label").asText());
-			}
-		});
+		final List<JsonNode> result = ids(response)
+				.stream()
+				.sorted((JsonNode o1, JsonNode o2) -> Collator.getInstance(
+						Locale.GERMANY).compare(labelText(o1), labelText(o2)))
+				.collect(Collectors.toList());
 		return Json.toJson(result);
+	}
+
+	private String labelText(JsonNode node) {
+		return node.get("label").asText();
 	}
 
 	public static String shortId(String id) {
