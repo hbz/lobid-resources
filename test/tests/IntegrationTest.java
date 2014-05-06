@@ -12,6 +12,10 @@ import static play.test.Helpers.testServer;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import controllers.nwbib.Application;
+import play.data.Form;
+import play.mvc.Content;
+import play.test.Helpers;
 import play.test.TestBrowser;
 
 @Ignore
@@ -44,6 +48,26 @@ public class IntegrationTest {
 							.contains("Allgemeine Landeskunde")
 							.contains("Landesbeschreibungen")
 							.contains("Reiseberichte");
+				});
+	}
+
+	@Test
+	public void renderTemplate() {
+		String query = "buch";
+		int from = 0;
+		int size = 10;
+		running(testServer(3333, fakeApplication(inMemoryDatabase())),
+				HTMLUNIT,
+				(TestBrowser browser) -> {
+					Content html = views.html.search.render(Application.CONFIG,
+							Form.form(String.class).fill(query), "[]", query,
+							from, size, 0L);
+					assertThat(Helpers.contentType(html))
+							.isEqualTo("text/html");
+					String text = Helpers.contentAsString(html);
+					assertThat(text).contains("NWBib").contains("buch")
+							.contains("Sachsystematik")
+							.contains("Raumsystematik");
 				});
 	}
 

@@ -3,14 +3,9 @@
 package tests;
 
 import static org.fest.assertions.Assertions.assertThat;
-import static play.test.Helpers.contentAsString;
-import static play.test.Helpers.contentType;
 
 import org.junit.Test;
 
-import play.data.Form;
-import play.mvc.Content;
-import controllers.nwbib.Application;
 import controllers.nwbib.Classification;
 
 /**
@@ -32,16 +27,4 @@ public class ApplicationTest {
 				.as("short spatial classification").isEqualTo("n58");
 	}
 
-	@Test
-	public void renderTemplate() {
-		String query = "buch";
-		int from = 0;
-		int size = 10;
-		Content html = views.html.search.render(Application.CONFIG,
-				Form.form(String.class).fill(query), "[]", query, from, size);
-		assertThat(contentType(html)).isEqualTo("text/html");
-		String text = contentAsString(html);
-		assertThat(text).contains("NWBib").contains("buch")
-				.contains("Sachsystematik").contains("Raumsystematik");
-	}
 }

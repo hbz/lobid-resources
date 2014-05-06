@@ -8,7 +8,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.action.search.SearchType;
+import org.elasticsearch.index.query.QueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.index.query.MatchQueryBuilder.Operator;
 
 import play.Logger;
 import play.cache.Cache;
@@ -66,7 +71,7 @@ public class Application extends Controller {
 			final Form<String> form = queryForm.bindFromRequest();
 			if (form.hasErrors())
 				return Promise.promise(() -> badRequest(search.render(CONFIG,
-						form, null, q, from, size)));
+						form, null, q, from, size, 0L)));
 			else {
 				String query = form.data().get("query");
 				Promise<Result> result = okPromise(query != null ? query : q,
@@ -133,10 +138,11 @@ public class Application extends Controller {
 
 	private static Promise<Result> okPromise(final String q,
 			final Form<String> form, final int from, final int size) {
-		final Promise<Result> result = call(q, form, from, size);
+		final long hits = getTotalHits(q);
+		final Promise<Result> result = call(q, form, from, size, hits);
 		return result.recover((Throwable throwable) -> {
 			throwable.printStackTrace();
-			return ok(search.render(CONFIG, form, "[]", q, from, size));
+			return ok(search.render(CONFIG, form, "[]", q, from, size, hits));
 		});
 	}
 
@@ -149,7 +155,7 @@ public class Application extends Controller {
 	}
 
 	private static Promise<Result> call(final String q,
-			final Form<String> form, final int from, final int size) {
+			final Form<String> form, final int from, final int size, long hits) {
 		final WSRequestHolder requestHolder = WS
 				.url(CONFIG.getString("nwbib.api"))
 				.setHeader("Accept", "application/json")
@@ -162,12 +168,39 @@ public class Application extends Controller {
 				requestHolder.getQueryParameters());
 		return requestHolder.get().map((WS.Response response) -> {
 			String s = q.isEmpty() ? "[]" : response.asJson().toString();
-			return ok(search.render(CONFIG, form, s, q, from, size));
+			return ok(search.render(CONFIG, form, s, q, from, size, hits));
 		});
 	}
 
 	private static String preprocess(String query) {
 		/* Workaround for https://github.com/hbz/nwbib/issues/4 */
 		return query.replaceAll("0\\b", "");
+	}
+
+	public static long getTotalHits(String q) {
+		/*
+		 * Workaround until Lobid API provides total number of hits, see
+		 * https://github.com/lobid/lodmill/issues/297 for discussion
+		 */
+		Long cachedResult = (Long) Cache.get("total." + q);
+		if (cachedResult != null)
+			return cachedResult;
+		QueryBuilder query = QueryBuilders
+				.boolQuery()
+				.must(q.isEmpty() ? QueryBuilders.matchAllQuery()
+						: QueryBuilders.queryString(preprocess(q))
+								.field("_all"))
+				.must(QueryBuilders.matchQuery(
+						"@graph.http://purl.org/dc/terms/isPartOf.@id",
+						CONFIG.getString("nwbib.set")).operator(Operator.AND));
+		SearchRequestBuilder req = CLASSIFICATION.client
+				.prepareSearch("lobid-resources")
+				.setSearchType(SearchType.DFS_QUERY_THEN_FETCH).setQuery(query)
+				.setTypes("json-ld-lobid").setFrom(0).setSize(0);
+		SearchResponse res = req.execute().actionGet();
+		Long total = res.getHits().getTotalHits();
+		Logger.debug("Total hits for {}: {}, caching for one hour", q, total);
+		Cache.set("total." + q, total, ONE_HOUR);
+		return total;
 	}
 }

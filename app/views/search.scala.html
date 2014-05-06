@@ -1,6 +1,6 @@
 @* Copyright 2014 Fabian Steeg, hbz. Licensed under the Eclipse Public License 1.0 *@
 
-@(config: com.typesafe.config.Config, queryForm: play.data.Form[String], result: String, q:String, from: Int, size: Int)
+@(config: com.typesafe.config.Config, queryForm: play.data.Form[String], result: String, q:String, from: Int, size: Int, allHits: Long)
 
 @import helper._
 @import play.api.libs.json.Json
@@ -12,7 +12,7 @@
       <li class="previous @if(from==0){disabled}">
         <a href="@if(from==0){#} else {@nwbib.routes.Application.search(q,from-size,size)}">&larr; Vorige</a>
       </li>
-      <li class="disabled"><a href="#">Treffer @(from+1) bis @(Math.min(from+hits,from+size))</a></li>
+      <li class="disabled"><a href="#">@(from+1) bis @(Math.min(from+hits,from+size)) von @allHits</a></li>
       <li class="next @if(from+hits < from+size){disabled}">
         <a href="@if(from+hits < from+size){#} else {@nwbib.routes.Application.search(q,from+size,size)}">Nächste &rarr;</a>
       </li>

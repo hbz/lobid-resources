@@ -64,7 +64,7 @@ public class Classification {
 		WITH_NOTATION, PLAIN
 	}
 
-	private Client client;
+	Client client;
 	private String server;
 	private String cluster;
 
