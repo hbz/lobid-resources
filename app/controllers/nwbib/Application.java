@@ -163,18 +163,13 @@ public class Application extends Controller {
 				.setQueryParameter("format", "full")
 				.setQueryParameter("from", from + "")
 				.setQueryParameter("size", size + "")
-				.setQueryParameter("q", preprocess(q));
+				.setQueryParameter("q", q);
 		Logger.info("Request URL {}, query params {} ", requestHolder.getUrl(),
 				requestHolder.getQueryParameters());
 		return requestHolder.get().map((WS.Response response) -> {
 			String s = q.isEmpty() ? "[]" : response.asJson().toString();
 			return ok(search.render(CONFIG, form, s, q, from, size, hits));
 		});
-	}
-
-	private static String preprocess(String query) {
-		/* Workaround for https://github.com/hbz/nwbib/issues/4 */
-		return query.replaceAll("0\\b", "");
 	}
 
 	public static long getTotalHits(String q) {
@@ -188,7 +183,7 @@ public class Application extends Controller {
 		QueryBuilder query = QueryBuilders
 				.boolQuery()
 				.must(q.isEmpty() ? QueryBuilders.matchAllQuery()
-						: QueryBuilders.queryString(preprocess(q))
+						: QueryBuilders.queryString(q)
 								.field("_all"))
 				.must(QueryBuilders.matchQuery(
 						"@graph.http://purl.org/dc/terms/isPartOf.@id",
