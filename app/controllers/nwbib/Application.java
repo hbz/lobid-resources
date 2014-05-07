@@ -11,7 +11,8 @@ import java.util.Map;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
-import org.elasticsearch.index.query.QueryBuilder;
+import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.FilterBuilders;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.MatchQueryBuilder.Operator;
 
@@ -60,8 +61,9 @@ public class Application extends Controller {
 	}
 
 	public static Promise<Result> search(final String q, final int from,
-			final int size) {
-		String cacheId = String.format("%s.%s.%s.%s", "search", q, from, size);
+			final int size, final boolean all) {
+		String cacheId = String.format("%s.%s.%s.%s.%s", "search", q, from,
+				size, all);
 		@SuppressWarnings("unchecked")
 		Promise<Result> cachedResult = (Promise<Result>) Cache.get(cacheId);
 		if (cachedResult != null)
@@ -71,11 +73,11 @@ public class Application extends Controller {
 			final Form<String> form = queryForm.bindFromRequest();
 			if (form.hasErrors())
 				return Promise.promise(() -> badRequest(search.render(CONFIG,
-						form, null, q, from, size, 0L)));
+						form, null, q, from, size, 0L, all)));
 			else {
 				String query = form.data().get("query");
 				Promise<Result> result = okPromise(query != null ? query : q,
-						form, from, size);
+						form, from, size, all);
 				cacheOnRedeem(cacheId, result, ONE_HOUR);
 				return result;
 			}
@@ -137,12 +139,14 @@ public class Application extends Controller {
 	}
 
 	private static Promise<Result> okPromise(final String q,
-			final Form<String> form, final int from, final int size) {
-		final long hits = getTotalHits(q);
-		final Promise<Result> result = call(q, form, from, size, hits);
+			final Form<String> form, final int from, final int size,
+			final boolean all) {
+		final long hits = getTotalHits(q, all);
+		final Promise<Result> result = call(q, form, from, size, hits, all);
 		return result.recover((Throwable throwable) -> {
 			throwable.printStackTrace();
-			return ok(search.render(CONFIG, form, "[]", q, from, size, hits));
+			return ok(search.render(CONFIG, form, "[]", q, from, size, hits,
+					all));
 		});
 	}
 
@@ -155,8 +159,9 @@ public class Application extends Controller {
 	}
 
 	private static Promise<Result> call(final String q,
-			final Form<String> form, final int from, final int size, long hits) {
-		final WSRequestHolder requestHolder = WS
+			final Form<String> form, final int from, final int size, long hits,
+			boolean all) {
+		WSRequestHolder requestHolder = WS
 				.url(CONFIG.getString("nwbib.api"))
 				.setHeader("Accept", "application/json")
 				.setQueryParameter("set", CONFIG.getString("nwbib.set"))
@@ -164,27 +169,28 @@ public class Application extends Controller {
 				.setQueryParameter("from", from + "")
 				.setQueryParameter("size", size + "")
 				.setQueryParameter("q", q);
+		if (!all)
+			requestHolder = requestHolder.setQueryParameter("owner", "*");
 		Logger.info("Request URL {}, query params {} ", requestHolder.getUrl(),
 				requestHolder.getQueryParameters());
 		return requestHolder.get().map((WS.Response response) -> {
 			String s = q.isEmpty() ? "[]" : response.asJson().toString();
-			return ok(search.render(CONFIG, form, s, q, from, size, hits));
+			return ok(search.render(CONFIG, form, s, q, from, size, hits, all));
 		});
 	}
 
-	public static long getTotalHits(String q) {
+	public static long getTotalHits(String q, boolean all) {
 		/*
 		 * Workaround until Lobid API provides total number of hits, see
 		 * https://github.com/lobid/lodmill/issues/297 for discussion
 		 */
-		Long cachedResult = (Long) Cache.get("total." + q);
+		Long cachedResult = (Long) Cache.get(String.format("total.%s.%s", q, all));
 		if (cachedResult != null)
 			return cachedResult;
-		QueryBuilder query = QueryBuilders
+		BoolQueryBuilder query = QueryBuilders
 				.boolQuery()
 				.must(q.isEmpty() ? QueryBuilders.matchAllQuery()
-						: QueryBuilders.queryString(q)
-								.field("_all"))
+						: QueryBuilders.queryString(q).field("_all"))
 				.must(QueryBuilders.matchQuery(
 						"@graph.http://purl.org/dc/terms/isPartOf.@id",
 						CONFIG.getString("nwbib.set")).operator(Operator.AND));
@@ -192,6 +198,9 @@ public class Application extends Controller {
 				.prepareSearch("lobid-resources")
 				.setSearchType(SearchType.DFS_QUERY_THEN_FETCH).setQuery(query)
 				.setTypes("json-ld-lobid").setFrom(0).setSize(0);
+		if (!all)
+			req = req.setPostFilter(FilterBuilders.existsFilter(//
+					"@graph.http://purl.org/vocab/frbr/core#exemplar.@id"));
 		SearchResponse res = req.execute().actionGet();
 		Long total = res.getHits().getTotalHits();
 		Logger.debug("Total hits for {}: {}, caching for one hour", q, total);
