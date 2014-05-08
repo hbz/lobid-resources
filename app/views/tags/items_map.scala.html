@@ -1,4 +1,4 @@
-@(items: play.api.libs.json.JsValue)
+@(hitId: Int, items: play.api.libs.json.JsValue)
 
 @import play.api.libs.ws.WS
 @import play.api.libs.json.JsArray
@@ -9,35 +9,37 @@
 @import scala.concurrent.duration._
 
 @string(value: JsValue) = { @value.asOpt[String].getOrElse("--") }
-@map(property: String, lon: String, lat: String, doc: JsValue) = {
-@if(
-    !(doc \\ lon).isEmpty && (doc \\ lon).head.asOpt[String].isDefined && 
-    !(doc \\ lat).isEmpty && (doc \\ lat).head.asOpt[String].isDefined) {
-        @defining((doc \ "@id").hashCode()) { id =>
-        <div class="map" id="map-@(id)"></div>
-        <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.css" />
-        <script src="http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.js"></script>
-        <script type="text/javascript" src="http://maps.stamen.com/js/tile.stamen.js?v1.2.4"></script>
-        <script>
-        var layer = new L.StamenTileLayer("toner-lite");
-        var lat = @string((doc \\ lat).head)
-        var lon = @string((doc \\ lon).head)
-        var map = new L.Map("map-@(id)", {
-            center: new L.LatLng(lat,lon),
-            zoom: 16,
-            scrollWheelZoom: false,
-            attributionControl: false
-        });
-        map.addLayer(layer);
-        L.marker([lat, lon]).addTo(map);
-        </script>
-        }
-    }
-}
 
 @defining(items.asOpt[JsArray].getOrElse(Json.arr(items))) { uris =>
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.css" />
+    <script src="http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.js"></script>
+    <script type="text/javascript" src="http://maps.stamen.com/js/tile.stamen.js?v1.2.4"></script>
+    <table class="table table-striped table-condensed">
+     <tr>
+         <th style="width: 30%"/>
+         <th style="width: 70%"/>
+     </tr>
+    </table>
+    <p>
+    <div class="map" id="map-@(hitId)"></div>
+    <script>
+    var layer = new L.StamenTileLayer("toner-lite");
+    var nrw = new L.LatLng(51.4, 7.7)
+    var map@(hitId) = new L.Map("map-@(hitId)", {
+        center: nrw,
+        zoom: 7,
+        scrollWheelZoom: false,
+        attributionControl: false
+    });
+    @markers(uris)
+    map@(hitId).addLayer(layer);
+    </script>
+    </p>
+}
+
+@markers(uris: JsArray) = {
     @for(
-        item <- uris.as[scala.collection.immutable.List[JsValue]].map(_.as[String]);
+        (item,i) <- uris.as[scala.collection.immutable.List[JsValue]].map(_.as[String]).zipWithIndex;
         requestUri = item+"?format=full";
         jsonFuture = WS.url(requestUri).get().map(x=>x.json);
         itemJson = Await.result(jsonFuture, 5.second);
@@ -49,27 +51,38 @@
         ownerRequestUri = owner+"?format=full";
         json = Await.result(WS.url(ownerRequestUri).get().map(x=>(x.json)), 5.second);
         ownerName = if((json\\"name").isEmpty) "" else (json\\"name")(0).as[String]) {
-
-        <table class="table table-striped table-condensed">
-             <tr>
-                 <th style="width: 30%"/>
-                 <th style="width: 70%"/>
-             </tr>
-             @if(!ownerName.isEmpty){
-                 <tr>
-                     <td>Einrichtung</td>
-                     <td><a href="@owner">@ownerName</a></td>
-                 </tr>
-             }
-             @if(!signature.isEmpty){
-                 <tr>
-                     <td>Signatur</td>
-                     <td><a href="@item">@signature</a></td>
-                 </tr>
-             }
-        </table>
-        <p>
-            @map("location", "long", "lat", json)
-        </p>
+        @if(
+        !(json \\ "long").isEmpty && (json \\ "long").head.asOpt[String].isDefined &&
+        !(json \\ "lat").isEmpty && (json \\ "lat").head.asOpt[String].isDefined) {
+            @defining(hitId+"_"+i) { id =>
+                var lat = @string((json \\ "lat").head)
+                var lon = @string((json \\ "long").head)
+                var latlng@(id) = L.latLng(lat, lon);
+                var marker@(id) = L.marker([lat, lon],{
+                    title: "@ownerName (Signatur: @signature)"
+                });
+                marker@(id).bindPopup(
+                    '<table class="table-striped table-condensed">'+
+                        '@if(!ownerName.isEmpty){<tr><td>Einrichtung:</td><td><a href="@owner">@ownerName</a></td></tr>}'+
+                        '@if(!signature.isEmpty){<tr><td>Signatur:</td><td><a href="@item">@signature</a></td></tr>}'+
+                    '</table>', {
+                        keepInView: true
+                    });
+                marker@(id).on('click', function(e) {
+                    zoomDetails@(id)();
+                });
+                marker@(id).on('popupclose', function(e) {
+                    map@(hitId).setView(nrw, 7);
+                });
+                marker@(id).addTo(map@(hitId));
+                @if(uris.value.size == 1){
+                    zoomDetails@(id)();
+                }
+                function zoomDetails@(id)() {
+                    map@(hitId).setView(latlng@(id), 16);
+                    marker@(id).openPopup();
+                }
+            }
+        }
     }
 }
