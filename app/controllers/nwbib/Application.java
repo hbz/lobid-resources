@@ -145,8 +145,8 @@ public class Application extends Controller {
 		final Promise<Result> result = call(q, form, from, size, hits, all);
 		return result.recover((Throwable throwable) -> {
 			throwable.printStackTrace();
-			return ok(search.render(CONFIG, form, "[]", q, from, size, hits,
-					all));
+			return internalServerError(search.render(CONFIG, form, "[]", q,
+					from, size, hits, all));
 		});
 	}
 
