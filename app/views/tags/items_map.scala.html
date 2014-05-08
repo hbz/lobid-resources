@@ -15,25 +15,21 @@
     !(doc \\ lat).isEmpty && (doc \\ lat).head.asOpt[String].isDefined) {
         @defining((doc \ "@id").hashCode()) { id =>
         <div class="map" id="map-@(id)"></div>
-        <script src="http://www.openlayers.org/api/OpenLayers.js"></script>
+        <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.css" />
+        <script src="http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.js"></script>
         <script type="text/javascript" src="http://maps.stamen.com/js/tile.stamen.js?v1.2.4"></script>
         <script>
-            map = new OpenLayers.Map("map-@(id)");
-            map.addLayer(new OpenLayers.Layer.Stamen("toner-lite"));
-            var lonLat = new OpenLayers.LonLat(@string((doc \\ lon).head), @string((doc \\ lat).head))
-                  .transform(
-                    new OpenLayers.Projection("EPSG:4326"), // transform from WGS 1984
-                    map.getProjectionObject() // to Spherical Mercator Projection
-                  );
-            var markers = new OpenLayers.Layer.Markers("Markers");
-            map.addLayer(markers);
-            var size = new OpenLayers.Size(21,25);
-            var offset = new OpenLayers.Pixel(-(size.w/2), -size.h);
-            var icon = new OpenLayers.Icon('/nwbib/assets/images/marker-blue.png', size, offset);
-            markers.addMarker(new OpenLayers.Marker(lonLat, icon));
-            map.setCenter(lonLat, 16);
-            controls = map.getControlsByClass('OpenLayers.Control.Navigation');
-            for(var i = 0; i < controls.length; ++i) controls[i].disableZoomWheel();
+        var layer = new L.StamenTileLayer("toner-lite");
+        var lat = @string((doc \\ lat).head)
+        var lon = @string((doc \\ lon).head)
+        var map = new L.Map("map-@(id)", {
+            center: new L.LatLng(lat,lon),
+            zoom: 16,
+            scrollWheelZoom: false,
+            attributionControl: false
+        });
+        map.addLayer(layer);
+        L.marker([lat, lon]).addTo(map);
         </script>
         }
     }
