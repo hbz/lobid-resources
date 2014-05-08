@@ -9,16 +9,14 @@ import static play.test.Helpers.inMemoryDatabase;
 import static play.test.Helpers.running;
 import static play.test.Helpers.testServer;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
-import controllers.nwbib.Application;
 import play.data.Form;
 import play.mvc.Content;
 import play.test.Helpers;
 import play.test.TestBrowser;
+import controllers.nwbib.Application;
 
-@Ignore
 /* Uses actual data, not available in CI. Run locally with `play test`. */
 /**
  * See http://www.playframework.com/documentation/2.2.x/JavaFunctionalTest
