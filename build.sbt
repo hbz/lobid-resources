@@ -5,7 +5,8 @@ version := "0.1.0-SNAPSHOT"
 libraryDependencies ++= Seq(
   cache,
   "com.typesafe.play" % "play-test_2.10" % "2.2.2",
-  "org.elasticsearch" % "elasticsearch" % "1.1.0" withSources()
+  "org.elasticsearch" % "elasticsearch" % "1.1.0" withSources(),
+  "org.mockito" % "mockito-core" % "1.9.5"
 )     
 
 play.Project.playJavaSettings

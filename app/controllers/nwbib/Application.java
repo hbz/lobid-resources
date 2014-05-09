@@ -145,9 +145,16 @@ public class Application extends Controller {
 		final Promise<Result> result = call(q, form, from, size, hits, all);
 		return result.recover((Throwable throwable) -> {
 			throwable.printStackTrace();
+			flashError();
 			return internalServerError(search.render(CONFIG, form, "[]", q,
 					from, size, hits, all));
 		});
+	}
+
+	private static void flashError() {
+		flash("error", "Bei der Suche ist ein Fehler aufgetreten. "
+				+ "Bitte versuchen Sie es erneut oder kontaktieren Sie das "
+				+ "Entwicklerteam (siehe Link 'Kontakt' oben rechts).");
 	}
 
 	private static void cacheOnRedeem(final String cacheId,

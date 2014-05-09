@@ -48,19 +48,23 @@
           }
         </div>
         }
-        @if(hits.isEmpty && !q.trim.isEmpty){
-            <div class="alert alert-info">
-                Keine Ergebnisse@if(!all){ <code>mit Bestand</code>} für <code>@q</code>
-                @if(!all || !q.endsWith("~")){ Versuchen Sie eine }
-                @if(!all){
-                 Suche nach Titeln 
-                 <code><a href="@nwbib.routes.Application.search(q,from,size,true)">ohne Bestand</a></code>
-                 @if(!q.endsWith("~")){ oder eine }
-                }
-                @if(!q.endsWith("~")){
-                    <code><a href="@nwbib.routes.Application.search(q+"~",from,size)">unscharfe Suche</a></code>
-                }
-            </div>
+        @if(flash.get("error")!=null){
+            <div class="alert alert-danger">@flash.get("error")</div>
+        } else {
+            @if(hits.isEmpty && !q.trim.isEmpty){
+                <div class="alert alert-info">
+                    Keine Ergebnisse@if(!all){ <code>mit Bestand</code>} für <code>@q</code>
+                    @if(!all || !q.endsWith("~")){ Versuchen Sie eine }
+                    @if(!all){
+                     Suche nach Titeln 
+                     <code><a href="@nwbib.routes.Application.search(q,from,size,true)">ohne Bestand</a></code>
+                     @if(!q.endsWith("~")){ oder eine }
+                    }
+                    @if(!q.endsWith("~")){
+                        <code><a href="@nwbib.routes.Application.search(q+"~",from,size)">unscharfe Suche</a></code>
+                    }
+                </div>
+            }
         }
         @if(hits.isEmpty && q.trim.isEmpty){
             @tags.nrw_map()

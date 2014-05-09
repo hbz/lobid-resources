@@ -3,16 +3,22 @@
 package tests;
 
 import static org.fest.assertions.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
 import static play.test.Helpers.HTMLUNIT;
 import static play.test.Helpers.fakeApplication;
 import static play.test.Helpers.inMemoryDatabase;
 import static play.test.Helpers.running;
 import static play.test.Helpers.testServer;
 
+import java.util.Collections;
+import java.util.Map;
+
+import org.junit.Before;
 import org.junit.Test;
 
 import play.data.Form;
 import play.mvc.Content;
+import play.mvc.Http;
 import play.test.Helpers;
 import play.test.TestBrowser;
 import controllers.nwbib.Application;
@@ -22,6 +28,17 @@ import controllers.nwbib.Application;
  * See http://www.playframework.com/documentation/2.2.x/JavaFunctionalTest
  */
 public class IntegrationTest {
+
+	@Before
+	public void setUp() throws Exception {
+		Map<String, String> flashData = Collections.emptyMap();
+		Map<String, Object> argData = Collections.emptyMap();
+		play.api.mvc.RequestHeader header = mock(play.api.mvc.RequestHeader.class);
+		Http.Request request = mock(Http.Request.class);
+		Http.Context context = new Http.Context(2L, header, request, flashData,
+				flashData, argData);
+		Http.Context.current.set(context);
+	}
 
 	@Test
 	public void testSpatialClassification() {
