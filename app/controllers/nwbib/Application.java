@@ -141,13 +141,15 @@ public class Application extends Controller {
 	private static Promise<Result> okPromise(final String q,
 			final Form<String> form, final int from, final int size,
 			final boolean all) {
-		final long hits = getTotalHits(q, all);
-		final Promise<Result> result = call(q, form, from, size, hits, all);
-		return result.recover((Throwable throwable) -> {
-			throwable.printStackTrace();
-			flashError();
-			return internalServerError(search.render(CONFIG, form, "[]", q,
-					from, size, hits, all));
+		final Promise<Long> totalHits = getTotalHits(q, all);
+		return totalHits.flatMap((Long hits) -> {
+			final Promise<Result> result = call(q, form, from, size, hits, all);
+			return result.recover((Throwable throwable) -> {
+				throwable.printStackTrace();
+				flashError();
+				return internalServerError(search.render(CONFIG, form, "[]", q,
+						from, size, hits, all));
+			});
 		});
 	}
 
@@ -186,32 +188,41 @@ public class Application extends Controller {
 		});
 	}
 
-	public static long getTotalHits(String q, boolean all) {
-		/*
-		 * Workaround until Lobid API provides total number of hits, see
-		 * https://github.com/lobid/lodmill/issues/297 for discussion
-		 */
-		Long cachedResult = (Long) Cache.get(String.format("total.%s.%s", q, all));
-		if (cachedResult != null)
-			return cachedResult;
-		BoolQueryBuilder query = QueryBuilders
-				.boolQuery()
-				.must(q.isEmpty() ? QueryBuilders.matchAllQuery()
-						: QueryBuilders.queryString(q).field("_all"))
-				.must(QueryBuilders.matchQuery(
-						"@graph.http://purl.org/dc/terms/isPartOf.@id",
-						CONFIG.getString("nwbib.set")).operator(Operator.AND));
-		SearchRequestBuilder req = CLASSIFICATION.client
-				.prepareSearch("lobid-resources")
-				.setSearchType(SearchType.DFS_QUERY_THEN_FETCH).setQuery(query)
-				.setTypes("json-ld-lobid").setFrom(0).setSize(0);
-		if (!all)
-			req = req.setPostFilter(FilterBuilders.existsFilter(//
-					"@graph.http://purl.org/vocab/frbr/core#exemplar.@id"));
-		SearchResponse res = req.execute().actionGet();
-		Long total = res.getHits().getTotalHits();
-		Logger.debug("Total hits for {}: {}, caching for one hour", q, total);
-		Cache.set("total." + q, total, ONE_HOUR);
-		return total;
+	public static Promise<Long> getTotalHits(String q, boolean all) {
+		return Promise.promise(() -> {
+			/*
+			 * Workaround until Lobid API provides total number of hits, see
+			 * https://github.com/lobid/lodmill/issues/297 for discussion
+			 */
+			Long cachedResult = (Long) Cache.get(String.format("total.%s.%s",
+					q, all));
+			if (cachedResult != null)
+				return cachedResult;
+			BoolQueryBuilder query = QueryBuilders
+					.boolQuery()
+					.must(q.isEmpty() ? QueryBuilders.matchAllQuery()
+							: QueryBuilders.queryString(q).field("_all"))
+					.must(QueryBuilders.matchQuery(
+							"@graph.http://purl.org/dc/terms/isPartOf.@id",
+							CONFIG.getString("nwbib.set")).operator(
+							Operator.AND));
+			SearchRequestBuilder req = CLASSIFICATION.client
+					.prepareSearch("lobid-resources")
+					.setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
+					.setQuery(query).setTypes("json-ld-lobid").setFrom(0)
+					.setSize(0);
+			if (!all)
+				req = req.setPostFilter(FilterBuilders.existsFilter(//
+						"@graph.http://purl.org/vocab/frbr/core#exemplar.@id"));
+			SearchResponse res = req.execute().actionGet();
+			Long total = res.getHits().getTotalHits();
+			Logger.debug("Total hits for {}: {}, caching for one hour", q,
+					total);
+			Cache.set("total." + q, total, ONE_HOUR);
+			return total;
+		}).recover((Throwable t) -> {
+			t.printStackTrace();
+			return 0L;
+		});
 	}
 }
