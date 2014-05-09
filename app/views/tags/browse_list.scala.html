@@ -7,6 +7,7 @@
 @ul(classes: Option[Seq[JsValue]], id: String) = {
     @if(!classes.isEmpty){
         <ul id="@id">
+        <script>$('#root').hide()</script>
         @for(json <- classes.getOrElse(Seq()).sortBy((json:JsValue)=>(json\"label").as[String])){
             @defining((json\"value").as[String]) { value =>
             <li>
@@ -41,6 +42,7 @@
             $('#nwbibQuery').treeListFilter('#root', 200);
             $('#root').fileTreeView('#expandAll', '#collapseAll', 'folder');
             $('#collapseAll').click();
+            $('#root').show()
         });
     </script>
 }
