@@ -110,8 +110,11 @@ public class Application extends Controller {
 		if (cachedResult != null)
 			return cachedResult;
 		SearchResponse response = CLASSIFICATION.dataFor(t);
-		if (response == null)
-			return badRequest("Unsupported register type: " + t);
+		if (response == null){
+			Logger.error("Failed to get data for register type: " + t);
+			flashError();
+			return internalServerError(browse_register.render(null));
+		}
 		JsonNode sorted = CLASSIFICATION.sorted(response);
 		Result result = ok(browse_register.render(sorted.toString()));
 		Cache.set("result." + t, result, ONE_DAY);
@@ -123,8 +126,11 @@ public class Application extends Controller {
 		if (cachedResult != null)
 			return cachedResult;
 		SearchResponse response = CLASSIFICATION.dataFor(t);
-		if (response == null)
-			return badRequest("Unsupported classification type: " + t);
+		if (response == null) {
+			Logger.error("Failed to get data for classification type: " + t);
+			flashError();
+			return internalServerError(browse_classification.render(null, null));
+		}
 		Result result = classificationResult(response);
 		Cache.set("classification." + t, result, ONE_DAY);
 		return result;
@@ -154,9 +160,10 @@ public class Application extends Controller {
 	}
 
 	private static void flashError() {
-		flash("error", "Bei der Suche ist ein Fehler aufgetreten. "
+		flash("error", "Es ist ein Fehler aufgetreten. "
 				+ "Bitte versuchen Sie es erneut oder kontaktieren Sie das "
-				+ "Entwicklerteam (siehe Link 'Kontakt' oben rechts).");
+				+ "Entwicklerteam, falls das Problem fortbesteht "
+				+ "(siehe Link 'Kontakt' oben rechts).");
 	}
 
 	private static void cacheOnRedeem(final String cacheId,

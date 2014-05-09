@@ -79,9 +79,13 @@ public class Classification {
 	}
 
 	SearchResponse dataFor(final String tQueryParameter) {
-		for (Type indexType : Type.values())
-			if (indexType.queryParameter.equalsIgnoreCase(tQueryParameter))
-				return classificationData(indexType.elasticsearchType);
+		try {
+			for (Type indexType : Type.values())
+				if (indexType.queryParameter.equalsIgnoreCase(tQueryParameter))
+					return classificationData(indexType.elasticsearchType);
+		} catch (Throwable t) {
+			return null;
+		}
 		return null;
 	}
 
