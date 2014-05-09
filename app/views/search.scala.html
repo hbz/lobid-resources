@@ -5,6 +5,7 @@
 @import helper._
 @import play.api.libs.json.Json
 @import play.api.libs.json.JsValue
+@import play.api.libs.json.JsArray
 
 @pagination(hits:Int)={
     @if(hits!=0){
@@ -40,7 +41,7 @@
               @if(!exemplars.isEmpty){
                   <div class="col-md-5">
                     <dl>
-                    <dt>Bestand</dt>
+                    <dt>Bestand: @exemplars(0).asOpt[JsArray].getOrElse(Json.arr(exemplars(0))).value.size</dt>
                     <dd>@tags.items_map(i, exemplars(0))</dd>
                   </div>
               }
