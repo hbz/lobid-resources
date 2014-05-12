@@ -54,9 +54,9 @@ public class Application extends Controller {
 	public static Result index() {
 		final Form<String> form = queryForm.bindFromRequest();
 		if (form.hasErrors()) {
-			return badRequest(index.render(form));
+			return badRequest(index.render());
 		} else {
-			return ok(index.render(form));
+			return ok(index.render());
 		}
 	}
 
@@ -73,7 +73,7 @@ public class Application extends Controller {
 			final Form<String> form = queryForm.bindFromRequest();
 			if (form.hasErrors())
 				return Promise.promise(() -> badRequest(search.render(CONFIG,
-						form, null, q, from, size, 0L, all)));
+						null, q, from, size, 0L, all)));
 			else {
 				String query = form.data().get("query");
 				Promise<Result> result = okPromise(query != null ? query : q,
@@ -153,7 +153,7 @@ public class Application extends Controller {
 			return result.recover((Throwable throwable) -> {
 				throwable.printStackTrace();
 				flashError();
-				return internalServerError(search.render(CONFIG, form, "[]", q,
+				return internalServerError(search.render(CONFIG, "[]", q,
 						from, size, hits, all));
 			});
 		});
@@ -191,7 +191,7 @@ public class Application extends Controller {
 				requestHolder.getQueryParameters());
 		return requestHolder.get().map((WS.Response response) -> {
 			String s = q.isEmpty() ? "[]" : response.asJson().toString();
-			return ok(search.render(CONFIG, form, s, q, from, size, hits, all));
+			return ok(search.render(CONFIG, s, q, from, size, hits, all));
 		});
 	}
 

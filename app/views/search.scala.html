@@ -1,6 +1,6 @@
 @* Copyright 2014 Fabian Steeg, hbz. Licensed under the Eclipse Public License 1.0 *@
 
-@(config: com.typesafe.config.Config, queryForm: play.data.Form[String], result: String, q:String, from: Int, size: Int, allHits: Long, all: Boolean)
+@(config: com.typesafe.config.Config, result: String, q:String, from: Int, size: Int, allHits: Long, all: Boolean)
 
 @import helper._
 @import play.api.libs.json.Json
@@ -26,7 +26,7 @@
 }
 
 @main("NWBib") {
-    @tags.search_form(queryForm, q)
+    @tags.search_form(q)
     @defining(Json.parse(result).asOpt[Seq[JsValue]].getOrElse(Seq()).zipWithIndex) { hits =>
         @pagination(hits.size)
         @for((doc,i) <- hits) {
