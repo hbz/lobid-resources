@@ -13,7 +13,7 @@
 @defining(items.asOpt[JsArray].getOrElse(Json.arr(items))) { uris =>
     <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.css" />
     <script src="http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.js"></script>
-    <script type="text/javascript" src="http://maps.stamen.com/js/tile.stamen.js?v1.2.4"></script>
+    @*<script type="text/javascript" src="http://maps.stamen.com/js/tile.stamen.js?v1.2.4"></script>*@
     <table id="table-@(hitId)" class="table table-striped table-condensed">
      <tr>
          <th style="width: 30%"/>
@@ -23,7 +23,15 @@
     <p>
     <div class="map" id="map-@(hitId)"></div>
     <script>
-    var layer = new L.StamenTileLayer("toner-lite");
+    // Some alternative tiles:
+    //var layer = L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png');
+    //var layer = L.tileLayer('http://{s}.www.toolserver.org/tiles/germany/{z}/{x}/{y}.png');
+    //var layer0 = new L.StamenTileLayer("watercolor"); // include script above, add both layers
+    //var layer1 = L.tileLayer('http://a.www.toolserver.org/tiles/osm-labels-de/{z}/{x}/{y}.png');
+
+    var layer = L.tileLayer('http://otile{s}.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.png', {
+        subdomains: '1234'
+    });
     var nrw = new L.LatLng(51.4, 7.7)
     var map@(hitId) = new L.Map("map-@(hitId)", {
         center: nrw,
