@@ -4,7 +4,7 @@
 @import play.api.libs.json._
 @import views.TagHelper
 
-@string(value: JsValue) = { @value.asOpt[String].getOrElse("--") }
+@string(value: JsValue) = @{ value.asOpt[String].getOrElse("--") }
 @jsonVal(p: String) = @{ node match {
   case Some(node) => node
   case None => if ((doc \\ p).isEmpty) (doc \ p) else (doc \\ p).head
@@ -26,7 +26,12 @@
         <td property="@property">
             @valueLabel match {
                           case None => {@string(elem)}
-                          case Some(seq) => {<a href="@string(elem)">@TagHelper.valueFor(doc, elem.as[String], seq)</a>}
+                          case Some(seq) => {
+                            @defining(TagHelper.valueFor(doc, elem.as[String], seq)){ value =>
+                            <a href="@string(elem)">@value</a> |
+                            <a href="@nwbib.routes.Application.search("\""+string(elem)+"\"")"><span class="glyphicon glyphicon-search"></span></a>
+                            }
+                          }
                        }
         </td>
       </tr>
