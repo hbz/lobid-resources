@@ -15,11 +15,11 @@
     </ul>
     <ul class="pagination">
       <li class="previous @if(from==0){disabled}">
-        <a href="@if(from==0){#} else {@nwbib.routes.Application.search(q,from-size,size)}">&larr; Vorige</a>
+        <a href="@if(from==0){#} else {@nwbib.routes.Application.search(q,from-size,size,all)}">&larr; Vorige</a>
       </li>
       <li class="disabled"><a href="#">@(from+1) bis @(Math.min(from+hits,from+size))@if(allHits>0){ von @allHits}</a></li>
       <li class="next @if(from+hits < from+size){disabled}">
-        <a href="@if(from+hits < from+size){#} else {@nwbib.routes.Application.search(q,from+size,size)}">Nächste &rarr;</a>
+        <a href="@if(from+hits < from+size){#} else {@nwbib.routes.Application.search(q,from+size,size,all)}">Nächste &rarr;</a>
       </li>
     </ul>
     }
@@ -48,6 +48,7 @@
           }
         </div>
         }
+        @pagination(hits.size)
         @if(flash.get("error")!=null){
             <div class="alert alert-danger">@flash.get("error")</div>
         } else {
