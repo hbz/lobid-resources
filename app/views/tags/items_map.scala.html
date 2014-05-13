@@ -71,9 +71,10 @@
         tableDetails@(hitId) = 
                 '@if(!ownerName.isEmpty){<tr><td>Einrichtung:</td><td><a href="@owner">@ownerName</a></td></tr>}'+
                 '@if(!signature.isEmpty){<tr><td>Signatur:</td><td><a href="@item">@signature</a></td></tr>}';
-        if(tableDetails@(hitId)!='')
-            tableDetails@(hitId) += '<tr><th style="width: 30%"/><th style="width: 70%"/></tr>';
-        allTableDetails@(hitId) += tableDetails@(hitId);
+        if(allTableDetails@(hitId)=='')
+            allTableDetails@(hitId) += tableDetails@(hitId);
+        else
+            allTableDetails@(hitId) += '<tr><th style="width: 30%"/><th style="width: 70%"/></tr>' + tableDetails@(hitId);
         @if(
         !(json \\ "long").isEmpty && (json \\ "long").head.asOpt[String].isDefined &&
         !(json \\ "lat").isEmpty && (json \\ "lat").head.asOpt[String].isDefined) {
