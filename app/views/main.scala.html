@@ -48,7 +48,18 @@
                       </li>
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
-                      <li @if(title=="Kontakt"){class="active"}><a href="http://lobid.org/contact">Kontakt</a></li>
+                      <li @if(title!="NWBib"){class="active"} class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Kontakt<b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                          <li class="dropdown-header">Inhaltlich</li>
+                          <li><a href="http://www.ulb.uni-muenster.de/landesbibliothek/profil/ansprechpartner/index.html">ULB Münster</a></li>
+                          <li><a href="http://www.ulb.hhu.de/nc/die-ulb/organisation/mitarbeiterinnen-und-mitarbeiter.html?pid=100">ULB Düsseldorf</a></li>
+                          <li><a href="http://www.ulb.uni-bonn.de/die-ulb/profil/landesbibliothek/recherche/die-ulb/organisation-ansprechpartner/ansprechpartner-von-a-z/albrink">ULB Bonn</a></li>
+                          <li class="divider"></li>
+                          <li class="dropdown-header">Technisch</li>
+                          <li><a href="http://lobid.org/contact">hbz NRW</a></li>
+                        </ul>
+                      </li>
                     </ul>
                   </div><!--/.nav-collapse -->
                 </div><!--/.container-fluid -->
