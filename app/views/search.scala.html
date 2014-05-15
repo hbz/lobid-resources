@@ -27,7 +27,7 @@
 
 @main("NWBib") {
     @tags.search_form(q)
-    @defining(Json.parse(result).asOpt[Seq[JsValue]].getOrElse(Seq()).zipWithIndex) { hits =>
+    @defining(Json.parse(result).asOpt[Seq[JsValue]].getOrElse(Seq()).zipWithIndex.tail) { hits =>
         @pagination(hits.size)
         @for((doc,i) <- hits) {
         <div class="row">

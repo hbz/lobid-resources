@@ -110,7 +110,7 @@ public class Application extends Controller {
 		if (cachedResult != null)
 			return cachedResult;
 		SearchResponse response = CLASSIFICATION.dataFor(t);
-		if (response == null){
+		if (response == null) {
 			Logger.error("Failed to get data for register type: " + t);
 			flashError();
 			return internalServerError(browse_register.render(null));
@@ -147,15 +147,12 @@ public class Application extends Controller {
 	private static Promise<Result> okPromise(final String q,
 			final Form<String> form, final int from, final int size,
 			final boolean all) {
-		final Promise<Long> totalHits = getTotalHits(q, all);
-		return totalHits.flatMap((Long hits) -> {
-			final Promise<Result> result = call(q, form, from, size, hits, all);
-			return result.recover((Throwable throwable) -> {
-				throwable.printStackTrace();
-				flashError();
-				return internalServerError(search.render(CONFIG, "[]", q,
-						from, size, hits, all));
-			});
+		final Promise<Result> result = call(q, form, from, size, all);
+		return result.recover((Throwable throwable) -> {
+			throwable.printStackTrace();
+			flashError();
+			return internalServerError(search.render(CONFIG, "[]", q, from,
+					size, 0L, all));
 		});
 	}
 
@@ -175,61 +172,48 @@ public class Application extends Controller {
 	}
 
 	private static Promise<Result> call(final String q,
-			final Form<String> form, final int from, final int size, long hits,
-			boolean all) {
-		WSRequestHolder requestHolder = WS
-				.url(CONFIG.getString("nwbib.api"))
-				.setHeader("Accept", "application/json")
-				.setQueryParameter("set", CONFIG.getString("nwbib.set"))
-				.setQueryParameter("format", "full")
-				.setQueryParameter("from", from + "")
-				.setQueryParameter("size", size + "")
-				.setQueryParameter("q", q);
-		if (!all)
-			requestHolder = requestHolder.setQueryParameter("owner", "*");
-		Logger.info("Request URL {}, query params {} ", requestHolder.getUrl(),
-				requestHolder.getQueryParameters());
+			final Form<String> form, final int from, final int size, boolean all) {
+		WSRequestHolder requestHolder = request(q, from, size, all);
 		return requestHolder.get().map((WS.Response response) -> {
-			String s = q.isEmpty() ? "[]" : response.asJson().toString();
+			JsonNode json = response.asJson();
+			Long hits = getTotalResults(json);
+			String s = q.isEmpty() ? "[]" : json.toString();
 			return ok(search.render(CONFIG, s, q, from, size, hits, all));
 		});
 	}
 
-	public static Promise<Long> getTotalHits(String q, boolean all) {
-		return Promise.promise(() -> {
-			/*
-			 * Workaround until Lobid API provides total number of hits, see
-			 * https://github.com/lobid/lodmill/issues/297 for discussion
-			 */
-			Long cachedResult = (Long) Cache.get(String.format("total.%s.%s",
-					q, all));
-			if (cachedResult != null)
+	private static Long getTotalResults(JsonNode json) {
+		return json.findValue("http://sindice.com/vocab/search#totalResults")
+				.asLong();
+	}
+
+	private static WSRequestHolder request(final String q, final int from,
+			final int size, boolean all) {
+		WSRequestHolder requestHolder = WS.url(CONFIG.getString("nwbib.api"))
+				.setHeader("Accept", "application/json")
+				.setQueryParameter("set", CONFIG.getString("nwbib.set"))
+				.setQueryParameter("format", "full")
+				.setQueryParameter("from", from + "")
+				.setQueryParameter("size", size + "").setQueryParameter("q", q);
+		if (!all)
+			requestHolder = requestHolder.setQueryParameter("owner", "*");
+		Logger.info("Request URL {}, query params {} ", requestHolder.getUrl(),
+				requestHolder.getQueryParameters());
+		return requestHolder;
+	}
+
+	public static Promise<Long> getTotalHits() {
+		final Long cachedResult = (Long) Cache.get(String.format("totalHits"));
+		if (cachedResult != null) {
+			return Promise.promise(() -> {
 				return cachedResult;
-			BoolQueryBuilder query = QueryBuilders
-					.boolQuery()
-					.must(q.isEmpty() ? QueryBuilders.matchAllQuery()
-							: QueryBuilders.queryString(q).field("_all"))
-					.must(QueryBuilders.matchQuery(
-							"@graph.http://purl.org/dc/terms/isPartOf.@id",
-							CONFIG.getString("nwbib.set")).operator(
-							Operator.AND));
-			SearchRequestBuilder req = CLASSIFICATION.client
-					.prepareSearch("lobid-resources")
-					.setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
-					.setQuery(query).setTypes("json-ld-lobid").setFrom(0)
-					.setSize(0);
-			if (!all)
-				req = req.setPostFilter(FilterBuilders.existsFilter(//
-						"@graph.http://purl.org/vocab/frbr/core#exemplar.@id"));
-			SearchResponse res = req.execute().actionGet();
-			Long total = res.getHits().getTotalHits();
-			Logger.debug("Total hits for {}: {}, caching for one hour", q,
-					total);
-			Cache.set("total." + q, total, ONE_HOUR);
+			});
+		}
+		WSRequestHolder requestHolder = request("", 0, 0, true);
+		return requestHolder.get().map((WS.Response response) -> {
+			Long total = getTotalResults(response.asJson());
+			Cache.set("totalHits", total, ONE_HOUR);
 			return total;
-		}).recover((Throwable t) -> {
-			t.printStackTrace();
-			return 0L;
 		});
 	}
 }

@@ -75,7 +75,7 @@ public class IntegrationTest {
 				HTMLUNIT,
 				(TestBrowser browser) -> {
 					Content html = views.html.search.render(Application.CONFIG,
-							"[]", query, from, size, 0L, true);
+							"[{}]", query, from, size, 0L, true);
 					assertThat(Helpers.contentType(html))
 							.isEqualTo("text/html");
 					String text = Helpers.contentAsString(html);
