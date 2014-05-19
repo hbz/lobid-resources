@@ -34,7 +34,7 @@
           @defining((doc\\"exemplar")) { exemplars =>
               <div class="col-md-@if(exemplars.isEmpty){12} else {7}">
                 <dl>
-                    <dt>Treffer @(from+i+1): @((doc \ "@id").as[String].split("/")(4))</dt>
+                    <dt>Treffer @(from+i): @((doc \ "@id").as[String].split("/")(4))</dt>
                     <dd>@tags.result_doc(doc)</dd>
                 </dl>
               </div>
