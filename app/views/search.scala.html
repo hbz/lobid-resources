@@ -1,6 +1,6 @@
 @* Copyright 2014 Fabian Steeg, hbz. Licensed under the Eclipse Public License 1.0 *@
 
-@(config: com.typesafe.config.Config, result: String, q:String, from: Int, size: Int, allHits: Long, all: Boolean)
+@(config: com.typesafe.config.Config, result: String, q:String, from: Int, size: Int, allHits: Long, all: Boolean, t: String)
 
 @import helper._
 @import play.api.libs.json.Json
@@ -10,8 +10,8 @@
 @pagination(hits:Int)={
     @if(hits!=0){
     <ul class="nav nav-pills pull-right">
-      <li @if(all==true){class="active"}><a href="@nwbib.routes.Application.search(q,from,size, true)">Alle</a></li>
-      <li @if(all!=true){class="active"}><a href="@nwbib.routes.Application.search(q,from,size, false)">Mit Bestand</a></li>
+      <li @if(all==true){class="active"}><a href="@nwbib.routes.Application.search(q,from,size, true, t)">Alle</a></li>
+      <li @if(all!=true){class="active"}><a href="@nwbib.routes.Application.search(q,from,size, false, t)">Mit Bestand</a></li>
     </ul>
     <ul class="pagination">
       <li class="previous @if(from==0){disabled}">
@@ -21,8 +21,31 @@
       <li class="next @if(from+hits < from+size){disabled}">
         <a href="@if(from+hits < from+size){#} else {@nwbib.routes.Application.search(q,from+size,size,all)}">Nächste &rarr;</a>
       </li>
+      &nbsp;
+      @facets
     </ul>
     }
+}
+
+@facets()={
+    <div class="btn-group"> 
+    @defining(controllers.nwbib.Lobid.getFacets(q, all, "@graph.@type").get(5000).facet("@graph.@type")
+        .asInstanceOf[org.elasticsearch.search.facet.terms.TermsFacet].getEntries){ entries =>
+        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+          Typ: @if(t.isEmpty){Alle} else {@t.split("[/#]").last}
+          <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu">
+          <li @if(t==""){class="active"}>
+            <a href="@nwbib.routes.Application.search(q,from,size, all)">Alle Typen</a></li>
+            @for(e <- entries) {
+                <li @if(t==e.getTerm().toString){class="active"}>
+                <a href="@nwbib.routes.Application.search(q,from,size, all,e.getTerm().toString)">
+                @e.getTerm().toString.split("[/#]").last (@e.getCount())</a></li>
+            }
+        </ul>
+      }
+    </div>
 }
 
 @main("NWBib") {

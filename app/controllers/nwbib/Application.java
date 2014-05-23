@@ -55,9 +55,9 @@ public class Application extends Controller {
 	}
 
 	public static Promise<Result> search(final String q, final int from,
-			final int size, final boolean all) {
-		String cacheId = String.format("%s.%s.%s.%s.%s", "search", q, from,
-				size, all);
+			final int size, final boolean all, String t) {
+		String cacheId = String.format("%s.%s.%s.%s.%s.%s", "search", q, from,
+				size, all, t);
 		@SuppressWarnings("unchecked")
 		Promise<Result> cachedResult = (Promise<Result>) Cache.get(cacheId);
 		if (cachedResult != null)
@@ -67,11 +67,11 @@ public class Application extends Controller {
 			final Form<String> form = queryForm.bindFromRequest();
 			if (form.hasErrors())
 				return Promise.promise(() -> badRequest(search.render(CONFIG,
-						null, q, from, size, 0L, all)));
+						null, q, from, size, 0L, all, t)));
 			else {
 				String query = form.data().get("query");
 				Promise<Result> result = okPromise(query != null ? query : q,
-						form, from, size, all);
+						form, from, size, all, t);
 				cacheOnRedeem(cacheId, result, ONE_HOUR);
 				return result;
 			}
@@ -140,13 +140,13 @@ public class Application extends Controller {
 
 	private static Promise<Result> okPromise(final String q,
 			final Form<String> form, final int from, final int size,
-			final boolean all) {
-		final Promise<Result> result = call(q, form, from, size, all);
+			final boolean all, String t) {
+		final Promise<Result> result = call(q, form, from, size, all, t);
 		return result.recover((Throwable throwable) -> {
 			throwable.printStackTrace();
 			flashError();
 			return internalServerError(search.render(CONFIG, "[]", q, from,
-					size, 0L, all));
+					size, 0L, all, t));
 		});
 	}
 
@@ -166,13 +166,13 @@ public class Application extends Controller {
 	}
 
 	static Promise<Result> call(final String q,
-			final Form<String> form, final int from, final int size, boolean all) {
-		WSRequestHolder requestHolder = Lobid.request(q, from, size, all);
+			final Form<String> form, final int from, final int size, boolean all, String t) {
+		WSRequestHolder requestHolder = Lobid.request(q, from, size, all, t);
 		return requestHolder.get().map((WS.Response response) -> {
 			JsonNode json = response.asJson();
 			Long hits = Lobid.getTotalResults(json);
 			String s = q.isEmpty() ? "[]" : json.toString();
-			return ok(search.render(CONFIG, s, q, from, size, hits, all));
+			return ok(search.render(CONFIG, s, q, from, size, hits, all, t));
 		});
 	}
 
