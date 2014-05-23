@@ -8,13 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
-import org.elasticsearch.action.search.SearchType;
-import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.FilterBuilders;
-import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.index.query.MatchQueryBuilder.Operator;
 
 import play.Logger;
 import play.cache.Cache;
@@ -47,7 +41,7 @@ public class Application extends Controller {
 	final static Classification CLASSIFICATION = new Classification(
 			CONFIG.getString("nwbib.cluster"), CONFIG.getString("nwbib.server"));
 
-	private static final int ONE_HOUR = 60 * 60;
+	static final int ONE_HOUR = 60 * 60;
 	private static final int ONE_DAY = 24 * ONE_HOUR;
 
 	@Cached(key = "nwbib.index", duration = ONE_HOUR)
@@ -171,49 +165,15 @@ public class Application extends Controller {
 		});
 	}
 
-	private static Promise<Result> call(final String q,
+	static Promise<Result> call(final String q,
 			final Form<String> form, final int from, final int size, boolean all) {
-		WSRequestHolder requestHolder = request(q, from, size, all);
+		WSRequestHolder requestHolder = Lobid.request(q, from, size, all);
 		return requestHolder.get().map((WS.Response response) -> {
 			JsonNode json = response.asJson();
-			Long hits = getTotalResults(json);
+			Long hits = Lobid.getTotalResults(json);
 			String s = q.isEmpty() ? "[]" : json.toString();
 			return ok(search.render(CONFIG, s, q, from, size, hits, all));
 		});
 	}
 
-	private static Long getTotalResults(JsonNode json) {
-		return json.findValue("http://sindice.com/vocab/search#totalResults")
-				.asLong();
-	}
-
-	private static WSRequestHolder request(final String q, final int from,
-			final int size, boolean all) {
-		WSRequestHolder requestHolder = WS.url(CONFIG.getString("nwbib.api"))
-				.setHeader("Accept", "application/json")
-				.setQueryParameter("set", CONFIG.getString("nwbib.set"))
-				.setQueryParameter("format", "full")
-				.setQueryParameter("from", from + "")
-				.setQueryParameter("size", size + "").setQueryParameter("q", q);
-		if (!all)
-			requestHolder = requestHolder.setQueryParameter("owner", "*");
-		Logger.info("Request URL {}, query params {} ", requestHolder.getUrl(),
-				requestHolder.getQueryParameters());
-		return requestHolder;
-	}
-
-	public static Promise<Long> getTotalHits() {
-		final Long cachedResult = (Long) Cache.get(String.format("totalHits"));
-		if (cachedResult != null) {
-			return Promise.promise(() -> {
-				return cachedResult;
-			});
-		}
-		WSRequestHolder requestHolder = request("", 0, 0, true);
-		return requestHolder.get().map((WS.Response response) -> {
-			Long total = getTotalResults(response.asJson());
-			Cache.set("totalHits", total, ONE_HOUR);
-			return total;
-		});
-	}
 }
