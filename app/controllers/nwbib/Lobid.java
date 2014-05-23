@@ -1,5 +1,15 @@
 package controllers.nwbib;
 
+import org.elasticsearch.action.search.SearchRequestBuilder;
+import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.action.search.SearchType;
+import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.FilterBuilders;
+import org.elasticsearch.index.query.MatchQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.search.facet.FacetBuilders;
+import org.elasticsearch.search.facet.Facets;
+
 import play.Logger;
 import play.cache.Cache;
 import play.libs.WS;
@@ -50,6 +60,35 @@ public class Lobid {
 			Long total = getTotalResults(response.asJson());
 			Cache.set("totalHits", total, Application.ONE_HOUR);
 			return total;
+		});
+	}
+
+	public static Promise<Facets> getFacets(String q, boolean all, String field) {
+		return Promise.promise(() -> {
+			BoolQueryBuilder query = QueryBuilders
+					.boolQuery()
+					.must(q.isEmpty() ? QueryBuilders.matchAllQuery()
+							: QueryBuilders.queryString(q).field("_all"))
+					.must(QueryBuilders.matchQuery(
+							"@graph.http://purl.org/dc/terms/isPartOf.@id",
+							Application.CONFIG.getString("nwbib.set")).operator(
+							MatchQueryBuilder.Operator.AND));
+			SearchRequestBuilder req = Application.CLASSIFICATION.client
+					.prepareSearch("lobid-resources")
+					.setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
+					.setQuery(query).setTypes("json-ld-lobid").setFrom(0)
+					.addFacet(FacetBuilders.termsFacet(field).field(field))
+					.setSize(0);
+			if (!all)
+				req = req.setPostFilter(FilterBuilders.existsFilter(//
+						"@graph.http://purl.org/vocab/frbr/core#exemplar.@id"));
+			SearchResponse res = req.execute().actionGet();
+			Facets facets = res.getFacets();
+			Logger.debug("Facets for q={}, facets={}: {}", q, field, facets);
+			return facets;
+		}).recover((Throwable t) -> {
+			t.printStackTrace();
+			return null;
 		});
 	}
 }

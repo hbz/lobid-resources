@@ -11,17 +11,23 @@ import static play.test.Helpers.running;
 import static play.test.Helpers.testServer;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
+import org.elasticsearch.search.facet.Facets;
+import org.elasticsearch.search.facet.terms.TermsFacet;
+import org.elasticsearch.search.facet.terms.TermsFacet.Entry;
 import org.junit.Before;
 import org.junit.Test;
 
-import play.data.Form;
+import play.libs.F.Promise;
 import play.mvc.Content;
 import play.mvc.Http;
 import play.test.Helpers;
 import play.test.TestBrowser;
 import controllers.nwbib.Application;
+import controllers.nwbib.Lobid;
 
 /* Uses actual data, not available in CI. Run locally with `play test`. */
 /**
@@ -64,6 +70,32 @@ public class IntegrationTest {
 							.contains("Landesbeschreibungen")
 							.contains("Reiseberichte");
 				});
+	}
+
+	@Test
+	public void testFacets() {
+		String field = "@graph.@type";
+		Promise<Facets> facetsPromise = Lobid.getFacets("köln", false, field);
+		Facets facets = facetsPromise.get(10000);
+		List<? extends Entry> entries = ((TermsFacet) facets.facet(field)).getEntries();
+		assertThat(
+				entries.stream().map(e -> e.getTerm().toString())
+						.collect(Collectors.toList())).contains(
+				"http://purl.org/dc/terms/BibliographicResource",
+				"http://purl.org/vocab/frbr/core#Manifestation",
+				"http://purl.org/ontology/bibo/Document",
+				"http://purl.org/ontology/bibo/Article",
+				"http://purl.org/ontology/bibo/Book",
+				"http://purl.org/ontology/bibo/Collection",
+				"http://iflastandards.info/ns/isbd/terms/mediatype/T1002",
+				"http://purl.org/ontology/bibo/Journal",
+				"http://purl.org/ontology/bibo/Periodical",
+				"http://purl.org/ontology/bibo/MultiVolumeBook");
+		assertThat(
+				entries.stream().map(e -> e.getCount())
+						.collect(Collectors.toList())).contains(29640, 28287,
+				28287, 14454, 13721, 995, 941, 828, 680, 271
+		);
 	}
 
 	@Test
