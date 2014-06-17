@@ -30,7 +30,7 @@
 @facets()={
     <div class="btn-group"> 
     @defining(controllers.nwbib.Lobid.getFacets(q, all, "@graph.@type").get(5000).facet("@graph.@type")
-        .asInstanceOf[org.elasticsearch.search.facet.terms.TermsFacet].getEntries){ entries =>
+        .asInstanceOf[org.elasticsearch.search.facet.terms.TermsFacet].getEntries.drop(3)){ entries =>
         <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
           Typ: @if(t.isEmpty){Alle} else {@t.split("[/#]").last}
           <span class="caret"></span>
