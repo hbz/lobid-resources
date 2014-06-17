@@ -13,8 +13,8 @@ import org.elasticsearch.search.facet.terms.TermsFacetBuilder;
 
 import play.Logger;
 import play.cache.Cache;
-import play.libs.WS;
 import play.libs.F.Promise;
+import play.libs.WS;
 import play.libs.WS.WSRequestHolder;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -96,5 +96,13 @@ public class Lobid {
 			t.printStackTrace();
 			return null;
 		});
+	}
+
+	public static String typeLabel(String type) {
+		Logger.trace("Type: " + type);
+		final String[] segments = type.split("[/#]");
+		final String raw = segments[segments.length - 1];
+		return Application.CONFIG.getObject("type.labels").unwrapped()
+				.getOrDefault(type, raw).toString();
 	}
 }

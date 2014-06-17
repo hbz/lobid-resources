@@ -3,6 +3,7 @@
 @(config: com.typesafe.config.Config, result: String, q:String, from: Int, size: Int, allHits: Long, all: Boolean, t: String)
 
 @import helper._
+@import controllers.nwbib.Lobid
 @import play.api.libs.json.Json
 @import play.api.libs.json.JsValue
 @import play.api.libs.json.JsArray
@@ -32,7 +33,7 @@
     @defining(controllers.nwbib.Lobid.getFacets(q, all, "@graph.@type").get(5000).facet("@graph.@type")
         .asInstanceOf[org.elasticsearch.search.facet.terms.TermsFacet].getEntries.drop(3)){ entries =>
         <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-          Typ: @if(t.isEmpty){Alle} else {@t.split("[/#]").last}
+          Typ: @if(t.isEmpty){Alle} else {@Lobid.typeLabel(t)}
           <span class="caret"></span>
         </button>
         <ul class="dropdown-menu">
@@ -41,7 +42,7 @@
             @for(e <- entries) {
                 <li @if(t==e.getTerm().toString){class="active"}>
                 <a href="@nwbib.routes.Application.search(q,from,size, all,e.getTerm().toString)">
-                @e.getTerm().toString.split("[/#]").last (@e.getCount())</a></li>
+                @Lobid.typeLabel(e.getTerm().toString) (@e.getCount())</a></li>
             }
         </ul>
       }
