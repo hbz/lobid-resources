@@ -24,6 +24,7 @@ import views.html.browse_classification;
 import views.html.browse_register;
 import views.html.index;
 import views.html.search;
+import views.html.details;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.typesafe.config.Config;
@@ -55,7 +56,7 @@ public class Application extends Controller {
 	}
 
 	public static Promise<Result> search(final String q, final int from,
-			final int size, final boolean all, String t) {
+			final int size, final boolean all, String t, boolean details) {
 		String cacheId = String.format("%s.%s.%s.%s.%s.%s", "search", q, from,
 				size, all, t);
 		@SuppressWarnings("unchecked")
@@ -71,11 +72,15 @@ public class Application extends Controller {
 			else {
 				String query = form.data().get("query");
 				Promise<Result> result = okPromise(query != null ? query : q,
-						form, from, size, all, t);
+						form, from, size, all, t, details);
 				cacheOnRedeem(cacheId, result, ONE_HOUR);
 				return result;
 			}
 		}
+	}
+
+	public static Promise<Result> show(final String id) {
+		return search(id, 0, 1, true, "", true);
 	}
 
 	public static Promise<Result> subject(final String q, final String callback) {
@@ -140,8 +145,8 @@ public class Application extends Controller {
 
 	private static Promise<Result> okPromise(final String q,
 			final Form<String> form, final int from, final int size,
-			final boolean all, String t) {
-		final Promise<Result> result = call(q, form, from, size, all, t);
+			final boolean all, String t, boolean details) {
+		final Promise<Result> result = call(q, form, from, size, all, t, details);
 		return result.recover((Throwable throwable) -> {
 			throwable.printStackTrace();
 			flashError();
@@ -165,15 +170,18 @@ public class Application extends Controller {
 		});
 	}
 
-	static Promise<Result> call(final String q,
-			final Form<String> form, final int from, final int size, boolean all, String t) {
+	static Promise<Result> call(final String q, final Form<String> form,
+			final int from, final int size, boolean all, String t,
+			boolean showDetails) {
 		WSRequestHolder requestHolder = Lobid.request(q, from, size, all, t);
-		return requestHolder.get().map((WS.Response response) -> {
-			JsonNode json = response.asJson();
-			Long hits = Lobid.getTotalResults(json);
-			String s = q.isEmpty() ? "[]" : json.toString();
-			return ok(search.render(CONFIG, s, q, from, size, hits, all, t));
-		});
+		return requestHolder.get().map(
+				(WS.Response response) -> {
+					JsonNode json = response.asJson();
+					Long hits = Lobid.getTotalResults(json);
+					String s = q.isEmpty() ? "[]" : json.toString();
+					return ok(showDetails ? details.render(CONFIG, s, q) : search
+							.render(CONFIG, s, q, from, size, hits, all, t));
+				});
 	}
 
 }

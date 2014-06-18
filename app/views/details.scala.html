@@ -1,0 +1,54 @@
+@* Copyright 2014 Fabian Steeg, hbz. Licensed under the Eclipse Public License 1.0 *@
+
+@(config: com.typesafe.config.Config, result: String, q:String)
+
+@import helper._
+@import controllers.nwbib.Lobid
+@import play.api.libs.json.Json
+@import play.api.libs.json.JsValue
+@import play.api.libs.json.JsArray
+
+@main("NWBib") {
+    @defining(Json.parse(result).asOpt[Seq[JsValue]].getOrElse(Seq()).zipWithIndex.tail) { hits =>
+        @for((doc,i) <- hits) {
+        <div class="row">
+          @defining((doc\\"exemplar")) { exemplars =>
+              <div class="col-md-@if(exemplars.isEmpty){12} else {7}">
+                <dl>
+                    <dt>Titel: @((doc \ "@id").as[String].split("/")(4))</dt>
+                    <dd>@tags.result_doc(doc)</dd>
+                </dl>
+              </div>
+              @if(!exemplars.isEmpty){
+                  <div class="col-md-5">
+                    <dl>
+                    <dt>Bestand: @exemplars(0).asOpt[JsArray].getOrElse(Json.arr(exemplars(0))).value.size</dt>
+                    <dd>@tags.items_map(i, exemplars(0))</dd>
+                  </div>
+              }
+          }
+        </div>
+        }
+        @if(flash.get("error")!=null){
+            <div class="alert alert-danger">@flash.get("error")</div>
+        } else {
+            @if(hits.isEmpty && !q.trim.isEmpty){
+                <div class="alert alert-info">
+                    Keine Ergebnisse für <code>@q</code>
+                </div>
+            }
+        }
+        @if(hits.isEmpty && q.trim.isEmpty){
+            @tags.nrw_map()
+        }
+        @if(!hits.isEmpty && !q.trim.isEmpty){
+        <p class="small text-center">
+            Katalog- und Bestandsdaten von <a href="http://lobid.org">lobid.org</a> unter 
+            <a href="http://creativecommons.org/publicdomain/zero/1.0">CC0</a> |
+            Kartenbilder von <a href="http://www.mapquest.com/">MapQuest</a>, 
+            Kartendaten von <a href="http://openstreetmap.org">OpenStreetMap</a> 
+            unter <a href="http://creativecommons.org/licenses/by-sa/3.0">CC-BY-SA</a>
+        </p>
+        }
+    }
+}
