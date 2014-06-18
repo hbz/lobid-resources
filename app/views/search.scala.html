@@ -42,7 +42,9 @@
             @for(e <- entries) {
                 <li @if(t==e.getTerm().toString){class="active"}>
                 <a href="@nwbib.routes.Application.search(q,from,size, all,e.getTerm().toString)">
-                @Lobid.typeLabel(e.getTerm().toString) (@e.getCount())</a></li>
+                <span class="@Lobid.typeIcon(Arrays.asList(e.getTerm().toString))"></span> &nbsp;
+                @Lobid.typeLabel(e.getTerm().toString) (@e.getCount())</a>
+                </li>
             }
         </ul>
       }
@@ -69,7 +71,7 @@
         </tr>
         @for((doc,i) <- hits) {
             <tr>
-              <td> <span class="glyphicon glyphicon-file"></span> </td>
+              <td> <span class="@Lobid.typeIcon((doc\\"@type").last.as[Seq[String]])"></span> </td>
               <td> <a href="@nwbib.routes.Application.show(((doc \ "@id").as[String].split("/")(4)))">
                 @optional(doc, "title", "") @optional(doc, "otherTitleInformation", " | ")</a></td>
               <td style="text-align: right"> @optional(doc, "issued", "") </td>

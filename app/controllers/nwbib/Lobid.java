@@ -1,5 +1,9 @@
 package controllers.nwbib;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
@@ -102,7 +106,27 @@ public class Lobid {
 		Logger.trace("Type: " + type);
 		final String[] segments = type.split("[/#]");
 		final String raw = segments[segments.length - 1];
-		return Application.CONFIG.getObject("type.labels").unwrapped()
-				.getOrDefault(type, raw).toString();
+		@SuppressWarnings("unchecked")
+		List<String> vals = (List<String>) Application.CONFIG
+				.getObject("type.labels").unwrapped().get(type);
+		return vals == null ? raw : vals.get(0);
+	}
+
+	public static String typeIcon(List<String> types) {
+		Logger.debug("Types: " + types);
+		List<String> selected = types
+				.stream()
+				.filter((String t) -> {
+					return !Arrays.asList(
+							"http://purl.org/dc/terms/BibliographicResource",
+							"http://purl.org/vocab/frbr/core#Manifestation",
+							"http://purl.org/ontology/bibo/Document").contains(
+							t);
+				}).collect(Collectors.toList());
+		String type = selected.isEmpty() ? types.get(0) : selected.get(0);
+		@SuppressWarnings("unchecked")
+		List<String> vals = (List<String>) Application.CONFIG
+				.getObject("type.labels").unwrapped().get(type);
+		return vals == null ? "" : vals.get(1);
 	}
 }
