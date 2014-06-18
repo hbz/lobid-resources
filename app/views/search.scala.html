@@ -16,11 +16,11 @@
     </ul>
     <ul class="pagination">
       <li class="previous @if(from==0){disabled}">
-        <a href="@if(from==0){#} else {@nwbib.routes.Application.search(q,from-size,size,all)}">&larr; Vorige</a>
+        <a href="@if(from==0){#} else {@nwbib.routes.Application.search(q,from-size,size,all,t)}">&larr; Vorige</a>
       </li>
       <li class="disabled"><a href="#">@(from+1) bis @(Math.min(from+hits,from+size))@if(allHits>0){ von @allHits}</a></li>
       <li class="next @if(from+hits < from+size){disabled}">
-        <a href="@if(from+hits < from+size){#} else {@nwbib.routes.Application.search(q,from+size,size,all)}">Nächste &rarr;</a>
+        <a href="@if(from+hits < from+size){#} else {@nwbib.routes.Application.search(q,from+size,size,all,t)}">Nächste &rarr;</a>
       </li>
       &nbsp;
       @facets
@@ -31,19 +31,21 @@
 @facets()={
     <div class="btn-group"> 
     @defining(controllers.nwbib.Lobid.getFacets(q, all, "@graph.@type").get(5000).facet("@graph.@type")
-        .asInstanceOf[org.elasticsearch.search.facet.terms.TermsFacet].getEntries.drop(3)){ entries =>
+        .asInstanceOf[org.elasticsearch.search.facet.terms.TermsFacet].getEntries.map(e=>
+          (Lobid.typeLabel(e.getTerm().toString),Lobid.typeIcon(Arrays.asList(e.getTerm().toString)),e.getCount(),e.getTerm().toString))
+          .filter((triple) => !triple._1.isEmpty && !triple._2.isEmpty)){ entries =>
         <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-          Typ: @if(t.isEmpty){Alle} else {@Lobid.typeLabel(t)}
+          Typ: @if(t.isEmpty){Alle} else {@Lobid.typeLabel(t) <span class="@Lobid.typeIcon(Arrays.asList(t))"></span>}
           <span class="caret"></span>
         </button>
         <ul class="dropdown-menu">
           <li @if(t==""){class="active"}>
             <a href="@nwbib.routes.Application.search(q,from,size, all)">Alle Typen</a></li>
-            @for(e <- entries) {
-                <li @if(t==e.getTerm().toString){class="active"}>
-                <a href="@nwbib.routes.Application.search(q,from,size, all,e.getTerm().toString)">
-                <span class="@Lobid.typeIcon(Arrays.asList(e.getTerm().toString))"></span> &nbsp;
-                @Lobid.typeLabel(e.getTerm().toString) (@e.getCount())</a>
+            @for((label, icon, count, term) <- entries) {
+                <li @if(t==term){class="active"}>
+                <a href="@nwbib.routes.Application.search(q,from,size, all,term)">
+                <span class="@icon"></span> &nbsp;
+                @label (@count)</a>
                 </li>
             }
         </ul>
@@ -51,11 +53,11 @@
     </div>
 }
 
-@optional(doc: JsValue, key: String, sep: String)={
+@optional(doc: JsValue, key: String, sep: String, alt: String)={
     @defining((doc \\ key)) { other =>
       @if(!other.isEmpty){
         @sep@(other(0).asOpt[String].getOrElse(other(0).as[Seq[JsValue]].map(_.as[String]).mkString("; ")))
-      }
+      } else {@alt}
     }
 }
 
@@ -73,8 +75,8 @@
             <tr>
               <td> <span class="@Lobid.typeIcon((doc\\"@type").last.as[Seq[String]])"></span> </td>
               <td> <a href="@nwbib.routes.Application.show(((doc \ "@id").as[String].split("/")(4)))">
-                @optional(doc, "title", "") @optional(doc, "otherTitleInformation", " | ")</a></td>
-              <td style="text-align: right"> @optional(doc, "issued", "") </td>
+                @optional(doc, "title", "", "<Kein Titel>") @optional(doc, "otherTitleInformation", " | ", "")</a></td>
+              <td style="text-align: right"> @optional(doc, "issued", "", "") </td>
             </tr>
         }
         </table>

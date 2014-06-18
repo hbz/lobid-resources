@@ -1,6 +1,6 @@
 package controllers.nwbib;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -113,20 +113,17 @@ public class Lobid {
 	}
 
 	public static String typeIcon(List<String> types) {
-		Logger.debug("Types: " + types);
-		List<String> selected = types
-				.stream()
-				.filter((String t) -> {
-					return !Arrays.asList(
-							"http://purl.org/dc/terms/BibliographicResource",
-							"http://purl.org/vocab/frbr/core#Manifestation",
-							"http://purl.org/ontology/bibo/Document").contains(
-							t);
-				}).collect(Collectors.toList());
-		String type = selected.isEmpty() ? types.get(0) : selected.get(0);
+		Logger.trace("Types: " + types);
 		@SuppressWarnings("unchecked")
-		List<String> vals = (List<String>) Application.CONFIG
-				.getObject("type.labels").unwrapped().get(type);
-		return vals == null ? "" : vals.get(1);
+		List<String> selected = types.stream()
+			.map(t -> {
+				List<String> vals = ((List<String>) Application.CONFIG
+				.getObject("type.labels").unwrapped().get(t));
+				return vals == null ? "" : vals.get(1);
+			})
+			.filter(t -> { return !t.isEmpty(); })
+			.collect(Collectors.toList());
+		Collections.sort(selected);
+		return selected.isEmpty() ? types.get(0) : selected.get(0);
 	}
 }
