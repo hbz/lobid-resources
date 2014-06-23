@@ -8,9 +8,11 @@ import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.FilterBuilder;
 import org.elasticsearch.index.query.FilterBuilders;
 import org.elasticsearch.index.query.MatchQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.index.query.QueryFilterBuilder;
 import org.elasticsearch.search.facet.FacetBuilders;
 import org.elasticsearch.search.facet.Facets;
 import org.elasticsearch.search.facet.terms.TermsFacetBuilder;
@@ -25,7 +27,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * Access Lobid title data.
- * 
+ *
  * @author fsteeg
  *
  */
@@ -37,7 +39,7 @@ public class Lobid {
 	}
 
 	static WSRequestHolder request(final String q, final int from,
-			final int size, boolean all, String t) {
+			final int size, String owner, String t) {
 		WSRequestHolder requestHolder = WS
 				.url(Application.CONFIG.getString("nwbib.api"))
 				.setHeader("Accept", "application/json")
@@ -47,8 +49,8 @@ public class Lobid {
 				.setQueryParameter("from", from + "")
 				.setQueryParameter("size", size + "")
 				.setQueryParameter("q", q);
-		if (!all)
-			requestHolder = requestHolder.setQueryParameter("owner", "*");
+		if (!owner.isEmpty())
+			requestHolder = requestHolder.setQueryParameter("owner", owner);
 		if(!t.isEmpty())
 			requestHolder = requestHolder.setQueryParameter("t", t);
 		Logger.info("Request URL {}, query params {} ", requestHolder.getUrl(),
@@ -63,7 +65,7 @@ public class Lobid {
 				return cachedResult;
 			});
 		}
-		WSRequestHolder requestHolder = request("", 0, 0, true, "");
+		WSRequestHolder requestHolder = request("", 0, 0, "", "");
 		return requestHolder.get().map((WS.Response response) -> {
 			Long total = getTotalResults(response.asJson());
 			Cache.set("totalHits", total, Application.ONE_HOUR);
@@ -71,7 +73,7 @@ public class Lobid {
 		});
 	}
 
-	public static Promise<Facets> getFacets(String q, boolean all, String field) {
+	public static Promise<Facets> getFacets(String q, String owner, String field) {
 		return Promise.promise(() -> {
 			BoolQueryBuilder query = QueryBuilders
 					.boolQuery()
@@ -87,14 +89,16 @@ public class Lobid {
 					.setQuery(query).setTypes("json-ld-lobid").setFrom(0)
 					.setSize(0);
 			TermsFacetBuilder facet = FacetBuilders.termsFacet(field).field(field);
-			if (!all){
-				facet = facet.facetFilter(FilterBuilders.existsFilter(//
-						"@graph.http://purl.org/vocab/frbr/core#exemplar.@id"));
+			if (!owner.isEmpty()) {
+				String fieldName = "@graph.http://purl.org/vocab/frbr/core#exemplar.@id";
+				FilterBuilder filter = owner.equals("*") ? FilterBuilders.existsFilter(fieldName)
+						: FilterBuilders.queryFilter(QueryBuilders.matchQuery(fieldName,owner));
+				facet = facet.facetFilter(filter);
 			}
 			req = req.addFacet(facet);
 			SearchResponse res = req.execute().actionGet();
 			Facets facets = res.getFacets();
-			Logger.debug("Facets for q={}, all={}, facets={}: {}", q, all, field, facets);
+			Logger.debug("Facets for q={}, all={}, facets={}: {}", q, owner, field, facets);
 			return facets;
 		}).recover((Throwable t) -> {
 			t.printStackTrace();

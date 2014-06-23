@@ -1,6 +1,6 @@
 @* Copyright 2014 Fabian Steeg, hbz. Licensed under the Eclipse Public License 1.0 *@
 
-@(config: com.typesafe.config.Config, result: String, q:String, from: Int, size: Int, allHits: Long, all: Boolean, t: String)
+@(config: com.typesafe.config.Config, result: String, q:String, from: Int, size: Int, allHits: Long, owner: String, t: String)
 
 @import helper._
 @import controllers.nwbib.Lobid
@@ -11,16 +11,47 @@
 @pagination(hits:Int)={
     @if(hits!=0){
     <ul class="nav nav-pills pull-right">
-      <li @if(all==true){class="active"}><a href="@nwbib.routes.Application.search(q,from,size, true, t)">Alle</a></li>
-      <li @if(all!=true){class="active"}><a href="@nwbib.routes.Application.search(q,from,size, false, t)">Mit Bestand</a></li>
+      <li @if(owner.isEmpty){class="active"}><a href="@nwbib.routes.Application.search(q,from,size, "", t)">Alle</a></li>
+      <li @if(!owner.isEmpty){class="active"}><a href="@nwbib.routes.Application.search(q,from,size, "*", t)">Mit Bestand</a></li>
+      <li>
+        <form class="form-inline" action="/nwbib/search" method="GET">
+            &nbsp;
+            <input type="text" class="owner form-control" id="owner" name="owner" @if(owner!="*"){value="@owner"} placeholder="Einrichtung"/>
+            <button class="btn btn-link" type="submit"><span class="owner glyphicon glyphicon-ok"></span></button>
+            <input type="hidden" name="query" value="@q"/>
+            <input type="hidden" name="from" value="@from"/>
+            <input type="hidden" name="size" value="@size"/>
+            <input type="hidden" name="t" value="@t"/>
+        </form>
+      </li>
+      <script>
+        $('input#owner').each(function() {
+            var $input = $(this);
+            $input.autocomplete({
+                source : function(request, response) {
+                    $.ajax({
+                        url : "http://api.lobid.org/organisation",
+                        dataType : "jsonp",
+                        data : {
+                            name : request.term,
+                            format : "ids"
+                        },
+                        success : function(data) {
+                            response(data);
+                        }
+                    });
+                }
+            });
+        });
+      </script>
     </ul>
     <ul class="pagination">
       <li class="previous @if(from==0){disabled}">
-        <a href="@if(from==0){#} else {@nwbib.routes.Application.search(q,from-size,size,all,t)}">&larr; Vorige</a>
+        <a href="@if(from==0){#} else {@nwbib.routes.Application.search(q,from-size,size,owner,t)}">&larr; Vorige</a>
       </li>
       <li class="disabled"><a href="#">@(from+1) bis @(Math.min(from+hits,from+size))@if(allHits>0){ von @allHits}</a></li>
       <li class="next @if(from+hits < from+size){disabled}">
-        <a href="@if(from+hits < from+size){#} else {@nwbib.routes.Application.search(q,from+size,size,all,t)}">Nächste &rarr;</a>
+        <a href="@if(from+hits < from+size){#} else {@nwbib.routes.Application.search(q,from+size,size,owner,t)}">Nächste &rarr;</a>
       </li>
       &nbsp;
       @facets
@@ -29,8 +60,8 @@
 }
 
 @facets()={
-    <div class="btn-group"> 
-    @defining(controllers.nwbib.Lobid.getFacets(q, all, "@graph.@type").get(5000).facet("@graph.@type")
+    <div class="btn-group">
+    @defining(controllers.nwbib.Lobid.getFacets(q, owner, "@graph.@type").get(5000).facet("@graph.@type")
         .asInstanceOf[org.elasticsearch.search.facet.terms.TermsFacet].getEntries.map(e=>
           (Lobid.typeLabel(e.getTerm().toString),Lobid.typeIcon(Arrays.asList(e.getTerm().toString)),e.getCount(),e.getTerm().toString))
           .filter((triple) => !triple._1.isEmpty && !triple._2.isEmpty)){ entries =>
@@ -40,10 +71,10 @@
         </button>
         <ul class="dropdown-menu">
           <li @if(t==""){class="active"}>
-            <a href="@nwbib.routes.Application.search(q,from,size, all)">Alle Typen</a></li>
+            <a href="@nwbib.routes.Application.search(q,from,size, owner)">Alle Typen</a></li>
             @for((label, icon, count, term) <- entries) {
                 <li @if(t==term){class="active"}>
-                <a href="@nwbib.routes.Application.search(q,from,size, all,term)">
+                <a href="@nwbib.routes.Application.search(q,from,size,owner,term)">
                 <span class="@icon"></span> &nbsp;
                 @label (@count)</a>
                 </li>
@@ -85,11 +116,11 @@
         } else {
             @if(hits.isEmpty && !q.trim.isEmpty){
                 <div class="alert alert-info">
-                    Keine Ergebnisse@if(!all){ <code>mit Bestand</code>} für <code>@q</code>
-                    @if(!all || !q.endsWith("~")){ Versuchen Sie eine }
-                    @if(!all){
-                     Suche nach Titeln 
-                     <code><a href="@nwbib.routes.Application.search(q,from,size,true)">ohne Bestand</a></code>
+                    Keine Ergebnisse@if(!owner.isEmpty){ <code>mit Bestand</code>} für Auswahl und Anfrage <code>@q</code>
+                    @if(!owner.isEmpty || !q.endsWith("~")){ Versuchen Sie eine }
+                    @if(!owner.isEmpty){
+                     Suche nach Titeln
+                     <code><a href="@nwbib.routes.Application.search(q,from,size,"")">ohne Bestand</a></code>
                      @if(!q.endsWith("~")){ oder eine }
                     }
                     @if(!q.endsWith("~")){

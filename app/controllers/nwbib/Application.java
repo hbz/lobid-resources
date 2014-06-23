@@ -56,9 +56,9 @@ public class Application extends Controller {
 	}
 
 	public static Promise<Result> search(final String q, final int from,
-			final int size, final boolean all, String t, boolean details) {
+			final int size, final String owner, String t, boolean details) {
 		String cacheId = String.format("%s.%s.%s.%s.%s.%s", "search", q, from,
-				size, all, t);
+				size, owner, t);
 		@SuppressWarnings("unchecked")
 		Promise<Result> cachedResult = (Promise<Result>) Cache.get(cacheId);
 		if (cachedResult != null)
@@ -68,11 +68,11 @@ public class Application extends Controller {
 			final Form<String> form = queryForm.bindFromRequest();
 			if (form.hasErrors())
 				return Promise.promise(() -> badRequest(search.render(CONFIG,
-						null, q, from, size, 0L, all, t)));
+						null, q, from, size, 0L, owner, t)));
 			else {
 				String query = form.data().get("query");
 				Promise<Result> result = okPromise(query != null ? query : q,
-						form, from, size, all, t, details);
+						form, from, size, owner, t, details);
 				cacheOnRedeem(cacheId, result, ONE_HOUR);
 				return result;
 			}
@@ -80,7 +80,7 @@ public class Application extends Controller {
 	}
 
 	public static Promise<Result> show(final String id) {
-		return search(id, 0, 1, true, "", true);
+		return search(id, 0, 1, "", "", true);
 	}
 
 	public static Promise<Result> subject(final String q, final String callback) {
@@ -145,13 +145,13 @@ public class Application extends Controller {
 
 	private static Promise<Result> okPromise(final String q,
 			final Form<String> form, final int from, final int size,
-			final boolean all, String t, boolean details) {
-		final Promise<Result> result = call(q, form, from, size, all, t, details);
+			final String owner, String t, boolean details) {
+		final Promise<Result> result = call(q, form, from, size, owner, t, details);
 		return result.recover((Throwable throwable) -> {
 			throwable.printStackTrace();
 			flashError();
 			return internalServerError(search.render(CONFIG, "[]", q, from,
-					size, 0L, all, t));
+					size, 0L, owner, t));
 		});
 	}
 
@@ -171,16 +171,16 @@ public class Application extends Controller {
 	}
 
 	static Promise<Result> call(final String q, final Form<String> form,
-			final int from, final int size, boolean all, String t,
+			final int from, final int size, String owner, String t,
 			boolean showDetails) {
-		WSRequestHolder requestHolder = Lobid.request(q, from, size, all, t);
+		WSRequestHolder requestHolder = Lobid.request(q, from, size, owner, t);
 		return requestHolder.get().map(
 				(WS.Response response) -> {
 					JsonNode json = response.asJson();
 					Long hits = Lobid.getTotalResults(json);
 					String s = q.isEmpty() ? "[]" : json.toString();
 					return ok(showDetails ? details.render(CONFIG, s, q) : search
-							.render(CONFIG, s, q, from, size, hits, all, t));
+							.render(CONFIG, s, q, from, size, hits, owner, t));
 				});
 	}
 

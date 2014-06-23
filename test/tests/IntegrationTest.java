@@ -75,7 +75,7 @@ public class IntegrationTest {
 	@Test
 	public void testFacets() {
 		String field = "@graph.@type";
-		Promise<Facets> facetsPromise = Lobid.getFacets("köln", true, field);
+		Promise<Facets> facetsPromise = Lobid.getFacets("köln", "", field);
 		Facets facets = facetsPromise.get(10000);
 		List<? extends Entry> entries = ((TermsFacet) facets.facet(field)).getEntries();
 		assertThat(
@@ -105,7 +105,7 @@ public class IntegrationTest {
 				HTMLUNIT,
 				(TestBrowser browser) -> {
 					Content html = views.html.search.render(Application.CONFIG,
-							"[{}]", query, from, size, 0L, true, "");
+							"[{}]", query, from, size, 0L, "", "");
 					assertThat(Helpers.contentType(html))
 							.isEqualTo("text/html");
 					String text = Helpers.contentAsString(html);
