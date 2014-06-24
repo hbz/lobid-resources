@@ -10,41 +10,6 @@
 
 @pagination(hits:Int)={
     @if(hits!=0){
-    <ul class="nav nav-pills pull-right">
-      <li @if(owner.isEmpty){class="active"}><a href="@nwbib.routes.Application.search(q,from,size, "", t)">Alle</a></li>
-      <li @if(!owner.isEmpty){class="active"}><a href="@nwbib.routes.Application.search(q,from,size, "*", t)">Mit Bestand</a></li>
-      <li>
-        <form class="form-inline" action="/nwbib/search" method="GET">
-            &nbsp;
-            <input type="text" class="owner form-control" id="owner" name="owner" @if(owner!="*"){value="@owner"} placeholder="Einrichtung"/>
-            <button class="btn btn-link" type="submit"><span class="owner glyphicon glyphicon-ok"></span></button>
-            <input type="hidden" name="query" value="@q"/>
-            <input type="hidden" name="from" value="@from"/>
-            <input type="hidden" name="size" value="@size"/>
-            <input type="hidden" name="t" value="@t"/>
-        </form>
-      </li>
-      <script>
-        $('input#owner').each(function() {
-            var $input = $(this);
-            $input.autocomplete({
-                source : function(request, response) {
-                    $.ajax({
-                        url : "http://api.lobid.org/organisation",
-                        dataType : "jsonp",
-                        data : {
-                            name : request.term,
-                            format : "ids"
-                        },
-                        success : function(data) {
-                            response(data);
-                        }
-                    });
-                }
-            });
-        });
-      </script>
-    </ul>
     <ul class="pagination">
       <li class="previous @if(from==0){disabled}">
         <a href="@if(from==0){#} else {@nwbib.routes.Application.search(q,from-size,size,owner,t)}">&larr; Vorige</a>
@@ -81,6 +46,84 @@
             }
         </ul>
       }
+    </div>
+    
+    <div class="btn-group">
+        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+          Bestand: @if(owner.isEmpty){Alle} else { 
+                   @if(owner=="*") {in NRW} else {
+                     @owner.split(",").size Einrichtung@if(owner.split(",").size>1){en} ausgewählt}
+                   }
+          <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu">
+          <li @if(owner.isEmpty){class="active"}><a href="@nwbib.routes.Application.search(q,from,size, "",t)">Mit und ohne Bestand</a></li>
+          <li @if(owner == "*"){class="active"}><a href="@nwbib.routes.Application.search(q,from,size, "*",t)">Mit Bestand in NRW</a></li>
+          @defining(owner.replace("*","").trim.split(",").filterNot(_.isEmpty)) { os =>
+              @if(!os.isEmpty){
+                <li class="divider"></li>
+                <li role="presentation" class="dropdown-header">Mit Bestand in Einrichtung:</li>
+              }
+              @for(o <- os) {
+                <li class="active">
+                    <a href="@nwbib.routes.Application.search(q,from,size,owner.split(",").filter(_!=o).mkString(","),t)">
+                        <span class="glyphicon glyphicon-remove-sign"></span> &nbsp;
+                        @Lobid.organisationLabel(o)
+                    </a>
+                </li>
+              }
+          }
+        </ul>
+        <ul class="nav nav-pills pull-right">
+          <li>
+            <form class="form-inline" action="/nwbib/search" method="GET" name="addOwnerForm">
+                &nbsp;
+                <input type="text" class="owner form-control" id="owner" name="owner" 
+                    placeholder="Filter nach Bestand in Einrichtung hinzufügen"/>
+                <button class="btn btn-link" onclick="addOwnerFun()" id="addOwner">
+                    <span class="glyphicon glyphicon-plus-sign"></span></button>
+                <input type="hidden" name="query" value="@q"/>
+                <input type="hidden" name="from" value="@from"/>
+                <input type="hidden" name="size" value="@size"/>
+                <input type="hidden" name="t" value="@t"/>
+            </form>
+          </li>
+          <script>
+          function addOwnerFun() {
+            @if(!owner.isEmpty() && owner!="*"){
+              var newOwner =  document.getElementById('owner').value;
+              var oldOwner = '@owner';
+              document.getElementById('owner').style.color = 'white';
+              if(oldOwner.indexOf(newOwner) <= -1){
+                document.getElementById('owner').value = oldOwner + ',' + newOwner;
+              } else {
+                document.getElementById('owner').value = oldOwner;
+              }
+            }
+            document.addOwnerForm.submit();
+          }
+          </script>
+          <script>
+            $('input#owner').each(function() {
+                var $input = $(this);
+                $input.autocomplete({
+                    source : function(request, response) {
+                        $.ajax({
+                            url : "http://api.lobid.org/organisation",
+                            dataType : "jsonp",
+                            data : {
+                                name : request.term,
+                                format : "ids"
+                            },
+                            success : function(data) {
+                                response(data);
+                            }
+                        });
+                    }
+                });
+            });
+          </script>
+        </ul>
     </div>
 }
 

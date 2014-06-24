@@ -12,7 +12,6 @@ import org.elasticsearch.index.query.FilterBuilder;
 import org.elasticsearch.index.query.FilterBuilders;
 import org.elasticsearch.index.query.MatchQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.index.query.QueryFilterBuilder;
 import org.elasticsearch.search.facet.FacetBuilders;
 import org.elasticsearch.search.facet.Facets;
 import org.elasticsearch.search.facet.terms.TermsFacetBuilder;
@@ -71,6 +70,22 @@ public class Lobid {
 			Cache.set("totalHits", total, Application.ONE_HOUR);
 			return total;
 		});
+	}
+
+	public static String organisationLabel(String url){
+		final String cachedResult = (String) Cache.get(String.format("org.label."+url));
+		if (cachedResult != null) {
+				return cachedResult;
+		}
+		WSRequestHolder requestHolder = WS
+				.url(url)
+				.setHeader("Accept", "application/json")
+				.setQueryParameter("format","short.name");
+		return requestHolder.get().map((WS.Response response) -> {
+			String label = response.asJson().elements().next().asText();
+			Cache.set("org.label."+url, label, Application.ONE_HOUR);
+			return label;
+		}).get(5000);
 	}
 
 	public static Promise<Facets> getFacets(String q, String owner, String field) {
