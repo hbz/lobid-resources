@@ -7,9 +7,11 @@ import java.util.stream.Collectors;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
+import org.elasticsearch.index.query.BoolFilterBuilder;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.FilterBuilder;
 import org.elasticsearch.index.query.FilterBuilders;
+import org.elasticsearch.index.query.HasChildFilterBuilder;
 import org.elasticsearch.index.query.MatchQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.facet.FacetBuilders;
@@ -48,7 +50,7 @@ public class Lobid {
 				.setQueryParameter("from", from + "")
 				.setQueryParameter("size", size + "")
 				.setQueryParameter("q", q);
-		if (!owner.isEmpty())
+		if (!owner.equals("all"))
 			requestHolder = requestHolder.setQueryParameter("owner", owner);
 		if(!t.isEmpty())
 			requestHolder = requestHolder.setQueryParameter("t", t);
@@ -104,21 +106,35 @@ public class Lobid {
 					.setQuery(query).setTypes("json-ld-lobid").setFrom(0)
 					.setSize(0);
 			TermsFacetBuilder facet = FacetBuilders.termsFacet(field).field(field);
-			if (!owner.isEmpty()) {
+			if (!owner.equals("all")) {
 				String fieldName = "@graph.http://purl.org/vocab/frbr/core#exemplar.@id";
 				FilterBuilder filter = owner.equals("*") ? FilterBuilders.existsFilter(fieldName)
-						: FilterBuilders.queryFilter(QueryBuilders.matchQuery(fieldName,owner));
+						: ownersFilter(owner, fieldName);
 				facet = facet.facetFilter(filter);
 			}
 			req = req.addFacet(facet);
 			SearchResponse res = req.execute().actionGet();
 			Facets facets = res.getFacets();
-			Logger.debug("Facets for q={}, all={}, facets={}: {}", q, owner, field, facets);
+			Logger.debug("Facets for q={}, owner={}, facets={}: {}", q, owner, field, facets);
 			return facets;
-		}).recover((Throwable t) -> {
-			t.printStackTrace();
+		}).recover((Throwable x) -> {
+			x.printStackTrace();
 			return null;
 		});
+	}
+
+	private static FilterBuilder ownersFilter(final String ownerParam,
+			String fieldName) {
+		BoolFilterBuilder boolFilter = FilterBuilders.boolFilter();
+		for (String owner : ownerParam.split(",")) {
+			boolFilter = boolFilter.should(FilterBuilders
+					.queryFilter(QueryBuilders.matchQuery(
+							"@graph.http://purl.org/vocab/frbr/core#owner.@id",
+							owner)));
+		}
+		HasChildFilterBuilder result = FilterBuilders.hasChildFilter(
+				"json-ld-lobid-item", boolFilter);
+		return result;
 	}
 
 	public static String typeLabel(String type) {

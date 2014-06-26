@@ -56,7 +56,8 @@ public class Application extends Controller {
 	}
 
 	public static Promise<Result> search(final String q, final int from,
-			final int size, final String owner, String t, boolean details) {
+			final int size, final String ownerParam, String t, boolean details) {
+		final String owner = ownerParam(ownerParam);
 		String cacheId = String.format("%s.%s.%s.%s.%s.%s", "search", q, from,
 				size, owner, t);
 		@SuppressWarnings("unchecked")
@@ -76,6 +77,16 @@ public class Application extends Controller {
 				cacheOnRedeem(cacheId, result, ONE_HOUR);
 				return result;
 			}
+		}
+	}
+
+	static String ownerParam(final String requestParam) {
+		if (!requestParam.isEmpty()) {
+			session("owner", requestParam);
+			return requestParam;
+		} else {
+			String sessionParam = session("owner");
+			return sessionParam != null ? sessionParam : "all";
 		}
 	}
 

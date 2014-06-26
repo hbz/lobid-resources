@@ -75,7 +75,7 @@ public class IntegrationTest {
 	@Test
 	public void testFacets() {
 		String field = "@graph.@type";
-		Promise<Facets> facetsPromise = Lobid.getFacets("köln", "", field);
+		Promise<Facets> facetsPromise = Lobid.getFacets("köln", "all", field);
 		Facets facets = facetsPromise.get(10000);
 		List<? extends Entry> entries = ((TermsFacet) facets.facet(field)).getEntries();
 		assertThat(
