@@ -8,6 +8,7 @@ GET    /nwbib/search                controllers.nwbib.Application.search(query?=
 GET    /nwbib/subject               controllers.nwbib.Application.subject(query?="", callback?="")
 GET    /nwbib/register              controllers.nwbib.Application.register(t)
 GET    /nwbib/classification        controllers.nwbib.Application.classification(t)
+GET    /nwbib/facets                controllers.nwbib.Application.facets(q,from:Int,size:Int,owner,t,field)
 GET    /nwbib/:id                   controllers.nwbib.Application.show(id)
 
 # Map static resources from the /public folder to the /assets URL path

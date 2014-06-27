@@ -4,11 +4,14 @@ package controllers.nwbib;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.search.facet.terms.TermsFacet;
 
 import play.Logger;
 import play.cache.Cache;
@@ -193,6 +196,34 @@ public class Application extends Controller {
 					return ok(showDetails ? details.render(CONFIG, s, q) : search
 							.render(CONFIG, s, q, from, size, hits, owner, t));
 				});
+	}
+
+	public static Promise<Result> facets(String q, int from, int size, String owner, String t, String field){
+		String key = String.format("facets.%s.%s.%s",q,owner,field);
+		Result cachedResult = (Result) Cache.get(key);
+		if(cachedResult!=null){
+			return Promise.promise(() -> cachedResult);
+		}
+		Promise<Result> promise = Lobid.getFacets(q, owner, field)
+			.map(fs->((TermsFacet)(fs.facet(field))).getEntries())
+			.map(es->es.stream().filter(e -> {
+				String typeLabel = Lobid.typeLabel(e.getTerm().toString());
+				String typeIcon = Lobid.typeIcon(Arrays.asList(e.getTerm().toString()));
+				return !typeLabel.isEmpty() && !typeIcon.isEmpty();
+			})
+			.map(e->{
+				String term = e.getTerm().toString();
+				String icon = Lobid.typeIcon(Arrays.asList(e.getTerm().toString()));
+				String routeUrl = routes.Application.search(q,from,size,owner,term,false).absoluteURL(request());
+				return String.format(
+						"<li><a href='%s'><span class='%s'/>&nbsp;%s (%s)</a></li>",
+						routeUrl,icon,term,e.getCount()
+				);
+			})
+			.collect(Collectors.toList()))
+			.map(lis -> ok(String.join("\n", lis)));
+		promise.onRedeem(r -> Cache.set(key, r, ONE_DAY));
+		return promise;
 	}
 
 }

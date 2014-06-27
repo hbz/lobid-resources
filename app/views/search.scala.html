@@ -24,26 +24,27 @@
 
 @facets()={
     <div class="btn-group">
-    @defining(controllers.nwbib.Lobid.getFacets(q, owner, "@graph.@type").get(10000).facet("@graph.@type")
-        .asInstanceOf[org.elasticsearch.search.facet.terms.TermsFacet].getEntries.map(e=>
-          (Lobid.typeLabel(e.getTerm().toString),Lobid.typeIcon(Arrays.asList(e.getTerm().toString)),e.getCount(),e.getTerm().toString))
-          .filter((triple) => !triple._1.isEmpty && !triple._2.isEmpty)){ entries =>
         <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
           Typ: @if(t.isEmpty){Alle} else {@Lobid.typeLabel(t) <span class="@Lobid.typeIcon(Arrays.asList(t))"></span>}
           <span class="caret"></span>
         </button>
-        <ul class="dropdown-menu">
+        <ul class="dropdown-menu" id="facets-ul">
           <li @if(t==""){class="active"}>
-            <a href="@nwbib.routes.Application.search(q,from,size, owner)">Alle Typen</a></li>
-            @for((label, icon, count, term) <- entries) {
-                <li @if(t==term){class="active"}>
-                <a href="@nwbib.routes.Application.search(q,from,size,owner,term)">
-                <span class="@icon"></span> &nbsp;
-                @label (@count)</a>
-                </li>
-            }
+            <script>
+            $.ajax({
+              url: '/nwbib/facets?q=@q&&from=@from&size=@size&owner=@owner&t=@t&field=@@graph.@@type',
+              success: function(data, textStatus, jqXHR) {
+                $("#facets-ul").append(data);
+                $("#facets-loading").remove();
+              },
+              error: function(jqXHR, textStatus, errorThrown) {
+                console.log(textStatus);
+              }
+            });
+            </script>
+            <a href="@nwbib.routes.Application.search(q,from,size,owner)">Alle Typen</a></li>
+            <li id="facets-loading"><a href="#">Lade Facetten...</a></li>
         </ul>
-      }
     </div>
     
     <div class="btn-group">
