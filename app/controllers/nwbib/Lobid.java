@@ -7,13 +7,13 @@ import java.util.stream.Collectors;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
-import org.elasticsearch.index.query.BoolFilterBuilder;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.FilterBuilder;
 import org.elasticsearch.index.query.FilterBuilders;
 import org.elasticsearch.index.query.HasChildFilterBuilder;
 import org.elasticsearch.index.query.MatchQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.index.query.TermsFilterBuilder;
 import org.elasticsearch.search.facet.FacetBuilders;
 import org.elasticsearch.search.facet.Facets;
 import org.elasticsearch.search.facet.terms.TermsFacetBuilder;
@@ -87,7 +87,7 @@ public class Lobid {
 			String label = response.asJson().elements().next().asText();
 			Cache.set("org.label."+url, label, Application.ONE_HOUR);
 			return label;
-		}).get(5000);
+		}).get(10000);
 	}
 
 	public static Promise<Facets> getFacets(String q, String owner, String field) {
@@ -113,9 +113,11 @@ public class Lobid {
 				facet = facet.facetFilter(filter);
 			}
 			req = req.addFacet(facet);
+			long start = System.currentTimeMillis();
 			SearchResponse res = req.execute().actionGet();
 			Facets facets = res.getFacets();
-			Logger.debug("Facets for q={}, owner={}, facets={}: {}", q, owner, field, facets);
+			Logger.debug("Facets for q={}, owner={}, facets={}: {}; took {} ms.", 
+					q, owner, field, facets, (System.currentTimeMillis() - start));
 			return facets;
 		}).recover((Throwable x) -> {
 			x.printStackTrace();
@@ -125,15 +127,11 @@ public class Lobid {
 
 	private static FilterBuilder ownersFilter(final String ownerParam,
 			String fieldName) {
-		BoolFilterBuilder boolFilter = FilterBuilders.boolFilter();
-		for (String owner : ownerParam.split(",")) {
-			boolFilter = boolFilter.should(FilterBuilders
-					.queryFilter(QueryBuilders.matchQuery(
-							"@graph.http://purl.org/vocab/frbr/core#owner.@id",
-							owner)));
-		}
+		TermsFilterBuilder filter = FilterBuilders.termsFilter(
+				"@graph.http://purl.org/vocab/frbr/core#owner.@id",
+				ownerParam.split(","));
 		HasChildFilterBuilder result = FilterBuilders.hasChildFilter(
-				"json-ld-lobid-item", boolFilter);
+				"json-ld-lobid-item", filter);
 		return result;
 	}
 
