@@ -5,7 +5,7 @@
  * http://wiki.aiwsolutions.net/Snld9
  */
 
-jQuery.fn.fileTreeView = function(expandAll, collapseAll, folderClass) {
+jQuery.fn.fileTreeView = function(expandAll, collapseAll, folderClass, leafIcon) {
     var root = this;
 
     function toggleState(node, expanded) {
@@ -24,9 +24,10 @@ jQuery.fn.fileTreeView = function(expandAll, collapseAll, folderClass) {
 
                 var isFolder = item.find('ul,ol').size() > 0
                         || item.hasClass(folderClass);
+                console.log('leafIcon: ' + leafIcon)
                 var imageHolder = $('<div>', {
-                    'class' : 'treeItemIcon '
-                            + (isFolder ? 'treeFolder' : 'treeFile')
+                    'class' : (leafIcon ? 'treeItemIcon ' : '')
+                            + (isFolder ? 'treeFolder' : (leafIcon ? 'treeFile' : ''))
                 });
 
                 item.prepend(imageHolder);

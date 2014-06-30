@@ -40,7 +40,7 @@
     <script type="text/javascript">
         $(function() {
             $('#nwbibQuery').treeListFilter('#root', 200);
-            $('#root').fileTreeView('#expandAll', '#collapseAll', 'folder');
+            $('#root').fileTreeView('#expandAll', '#collapseAll', 'folder', @if(subs==null||subs.size()==0){false}else{true});
             $('#collapseAll').click();
             $('#root').show()
         });
