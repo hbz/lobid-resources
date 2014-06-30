@@ -145,9 +145,9 @@
           <th style="width: 85%"></th>
           <th style="width: 10%; text-align: right"></th>
         </tr>
-        @for((doc,i) <- hits) {
+        @for((doc,i) <- hits; t = (doc\\"@type").last.asOpt[Seq[String]].getOrElse(Seq((doc\\"@type").last.asOpt[String].get))) {
             <tr>
-              <td> <span class="@Lobid.typeIcon((doc\\"@type").last.as[Seq[String]])"></span> </td>
+              <td> <span class="@Lobid.typeIcon(t)"></span> </td>
               <td> <a href="@nwbib.routes.Application.show(((doc \ "@id").as[String].split("/")(4)))">
                 @optional(doc, "title", "", "<Kein Titel>") @optional(doc, "otherTitleInformation", " | ", "")</a></td>
               <td style="text-align: right"> @optional(doc, "issued", "", "") </td>
