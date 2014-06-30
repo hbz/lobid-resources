@@ -217,7 +217,7 @@ public class Application extends Controller {
 				String routeUrl = routes.Application.search(q,from,size,owner,term,false).absoluteURL(request());
 				return String.format(
 						"<li><a href='%s'><span class='%s'/>&nbsp;%s (%s)</a></li>",
-						routeUrl,icon,term,e.getCount()
+						routeUrl,icon,Lobid.typeLabel(term),e.getCount()
 				);
 			})
 			.collect(Collectors.toList()))
