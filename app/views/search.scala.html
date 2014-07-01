@@ -25,7 +25,7 @@
 @facets()={
     <div class="btn-group">
         <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-          Typ: @if(t.isEmpty){Alle} else {@Lobid.typeLabel(t) <span class="@Lobid.typeIcon(Arrays.asList(t))"></span>}
+          Typ: @if(t.isEmpty){Alle} else {@Lobid.typeLabel(Seq(t)) <span class="@Lobid.typeIcon(Arrays.asList(t))"></span>}
           <span class="caret"></span>
         </button>
         <ul class="dropdown-menu" id="facets-ul">

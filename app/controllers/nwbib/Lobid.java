@@ -135,28 +135,38 @@ public class Lobid {
 		return result;
 	}
 
-	public static String typeLabel(String type) {
-		Logger.trace("Type: " + type);
-		final String[] segments = type.split("[/#]");
-		final String raw = segments[segments.length - 1];
+	public static String typeLabel(List<String> types) {
+		String type = selectType(types);
+		if(type.isEmpty()) return "";
 		@SuppressWarnings("unchecked")
-		List<String> vals = (List<String>) Application.CONFIG
-				.getObject("type.labels").unwrapped().get(type);
-		return vals == null ? raw : vals.get(0);
+		String selected = ((List<String>) Application.CONFIG
+				.getObject("type.labels").unwrapped().get(type)).get(0);
+		return selected.isEmpty() ? types.get(0) : selected;
 	}
 
 	public static String typeIcon(List<String> types) {
+		String type = selectType(types);
+		if(type.isEmpty()) return "";
+		@SuppressWarnings("unchecked")
+		String selected = ((List<String>) Application.CONFIG
+				.getObject("type.labels").unwrapped().get(type)).get(1);
+		return selected.isEmpty() ? types.get(0) : selected;
+	}
+
+	private static String selectType(List<String> types) {
 		Logger.trace("Types: " + types);
 		@SuppressWarnings("unchecked")
 		List<String> selected = types.stream()
 			.map(t -> {
 				List<String> vals = ((List<String>) Application.CONFIG
 				.getObject("type.labels").unwrapped().get(t));
-				return vals == null ? "" : vals.get(1);
+				return vals == null || vals.get(0).isEmpty()
+						|| vals.get(1).isEmpty() ? "" : t;
 			})
 			.filter(t -> { return !t.isEmpty(); })
 			.collect(Collectors.toList());
 		Collections.sort(selected);
-		return selected.isEmpty() ? types.get(0) : selected.get(0);
+		Logger.trace("Selected: " + selected);
+		return selected.isEmpty() ? "" : selected.get(0);
 	}
 }

@@ -207,7 +207,7 @@ public class Application extends Controller {
 		Promise<Result> promise = Lobid.getFacets(q, owner, field)
 			.map(fs->((TermsFacet)(fs.facet(field))).getEntries())
 			.map(es->es.stream().filter(e -> {
-				String typeLabel = Lobid.typeLabel(e.getTerm().toString());
+				String typeLabel = Lobid.typeLabel(Arrays.asList(e.getTerm().toString()));
 				String typeIcon = Lobid.typeIcon(Arrays.asList(e.getTerm().toString()));
 				return !typeLabel.isEmpty() && !typeIcon.isEmpty();
 			})
@@ -217,7 +217,7 @@ public class Application extends Controller {
 				String routeUrl = routes.Application.search(q,from,size,owner,term,false).absoluteURL(request());
 				return String.format(
 						"<li><a href='%s'><span class='%s'/>&nbsp;%s (%s)</a></li>",
-						routeUrl,icon,Lobid.typeLabel(term),e.getCount()
+						routeUrl,icon,Lobid.typeLabel(Arrays.asList(term)),e.getCount()
 				);
 			})
 			.collect(Collectors.toList()))
