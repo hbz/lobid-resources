@@ -36,15 +36,15 @@
                     <ul class="nav navbar-nav">
                       <li @if(title=="NWBib"){class="active"}><a href="@nwbib.routes.Application.index()">Suchen</a></li>
                       <li @if(title!="NWBib"){class="active"} class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Blättern<b class="caret"></b></a>
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Systematik<b class="caret"></b></a>
                         <ul class="dropdown-menu">
                           <li class="dropdown-header">Themen</li>
-                          <li><a href="@nwbib.routes.Application.classification("Sachsystematik")">Sachsystematik</a></li>
-                          <li><a href="@nwbib.routes.Application.register("Sachsystematik")">Register</a></li>
+                          <li><a href="@nwbib.routes.Application.classification("Sachsystematik")"><span class="octicon octicon-list-unordered"></span> Sachsystematik</a></li>
+                          <li><a href="@nwbib.routes.Application.register("Sachsystematik")"><span class="glyphicon glyphicon-sort-by-alphabet"></span> Register</a></li>
                           <li class="divider"></li>
                           <li class="dropdown-header">Orte</li>
-                          <li><a href="@nwbib.routes.Application.classification("Raumsystematik")">Raumsystematik</a></li>
-                          <li><a href="@nwbib.routes.Application.register("Raumsystematik")">Register</a></li>
+                          <li><a href="@nwbib.routes.Application.classification("Raumsystematik")"><span class="octicon octicon-list-unordered"></span> Raumsystematik</a></li>
+                          <li><a href="@nwbib.routes.Application.register("Raumsystematik")"><span class="glyphicon glyphicon-sort-by-alphabet"></span> Register</a></li>
                         </ul>
                       </li>
                     </ul>
