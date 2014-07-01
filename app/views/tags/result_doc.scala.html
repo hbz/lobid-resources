@@ -23,12 +23,38 @@
   @result_field("Titelzusatz", "otherTitleInformation", doc, TableRow.VALUES)
   @result_field("Autor", "creator", doc, TableRow.VALUES, valueLabel = gndEntities)
   @result_field("Mitwirkender", "contributor", doc, TableRow.VALUES, valueLabel = gndEntities)
-  @result_field("Verlag", "publisher", doc, TableRow.VALUES)
   @result_field("Volltext", "fulltextOnline", doc, TableRow.LINKS)
   @defining((doc\\"@type").last.asOpt[Seq[String]].getOrElse(Seq((doc\\"@type").last.asOpt[String].get))){ t =>
     <tr><td>Typ</td><td><span class="@Lobid.typeIcon(t)"></span> @Lobid.typeLabel(t)</td></tr>
   }
 </table>
+
+<table class="table table-striped table-condensed">
+  <tr>
+        <th style="width: 30%"></th>
+        <th style="width: 70%"></th>
+  </tr>
+  @result_field("Erschienen", "issued", doc, TableRow.VALUES)
+  @result_field("Auflage", "edition", doc, TableRow.VALUES)
+  @result_field("Band", "volume", doc, TableRow.VALUES)
+  @result_field("Erscheinungsort", "placeOfPublication", doc, TableRow.VALUES)
+  @result_field("Verlag", "publisher", doc, TableRow.VALUES)
+  @result_field("ISBN-10", "isbn10", doc, TableRow.VALUES)
+  @result_field("ISBN-13", "isbn13", doc, TableRow.VALUES)
+  @result_field("Bestandteil von", "isPartOfName", doc, TableRow.VALUES)
+  @result_field("Verantwortlich", "statementOfResponsibility", doc, TableRow.VALUES)
+  @result_field("Umfang", "extent", doc, TableRow.VALUES)
+</table>
+
+<table class="table table-striped table-condensed">
+  <tr>
+        <th style="width: 30%"></th>
+        <th style="width: 70%"></th>
+  </tr>
+  @result_field("Schlagwort", "subject", doc, TableRow.VALUES, valueLabel = gndEntities)
+  @result_field("Sprache", "language", doc, TableRow.LINKS)
+</table>
+
 <table class="table table-striped table-condensed">
   <tr>
         <th style="width: 30%"></th>
@@ -37,5 +63,6 @@
   @result_field("Weitere Informationen", "@id", doc, TableRow.LINKS, node = Option(doc))
   @result_field("Weitere Informationen", "isPrimaryTopicOf", doc, TableRow.LINKS)
   @result_field("Identische Ressource", "sameAs", doc, TableRow.LINKS)
+  @result_field("Siehe auch", "seeAlso", doc, TableRow.LINKS)
 </table>
 }
