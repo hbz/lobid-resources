@@ -28,8 +28,8 @@
                           case None => {@string(elem)}
                           case Some(seq) => {
                             @defining(TagHelper.valueFor(doc, elem.as[String], seq)){ value =>
-                            <a href="@string(elem)">@value</a> |
-                            <a href="@nwbib.routes.Application.search("\""+string(elem)+"\"")"><span class="glyphicon glyphicon-search"></span></a>
+                            <a href="@nwbib.routes.Application.search("\""+string(elem)+"\"")">@value</a> |
+                            <a href="@string(elem)"><span class="glyphicon glyphicon-link"></span></a>
                             }
                           }
                        }
