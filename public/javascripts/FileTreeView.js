@@ -24,7 +24,7 @@ jQuery.fn.fileTreeView = function(expandAll, collapseAll, folderClass, leafIcon)
 
                 var isFolder = item.find('ul,ol').size() > 0
                         || item.hasClass(folderClass);
-                console.log('leafIcon: ' + leafIcon)
+
                 var imageHolder = $('<div>', {
                     'class' : (leafIcon ? 'treeItemIcon ' : '')
                             + (isFolder ? 'treeFolder' : (leafIcon ? 'treeFile' : ''))
