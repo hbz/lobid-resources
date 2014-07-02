@@ -22,6 +22,7 @@
   @result_field("Titel", "title", doc, TableRow.VALUES)
   @result_field("Titelzusatz", "otherTitleInformation", doc, TableRow.VALUES)
   @result_field("Autor", "creator", doc, TableRow.VALUES, valueLabel = gndEntities)
+  @result_field("Herausgeber", "editor", doc, TableRow.VALUES, valueLabel = gndEntities)
   @result_field("Mitwirkender", "contributor", doc, TableRow.VALUES, valueLabel = gndEntities)
   @defining((doc\\"@type").last.asOpt[Seq[String]].getOrElse(Seq((doc\\"@type").last.asOpt[String].get))){ t =>
     <tr><td>Typ</td><td><span class="@Lobid.typeIcon(t)"></span> @Lobid.typeLabel(t)</td></tr>
