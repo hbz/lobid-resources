@@ -75,8 +75,10 @@
             <div class="panel panel-default nwbib-footer">
               <div class="panel-body">
                 @defining(controllers.nwbib.Lobid.getTotalHits().get(5000)){ hits =>
+                <img class="media-object pull-left nrw-wappen" src="@controllers.nwbib.routes.Assets.at("images/wappen.png")" alt="NRW-Wappen"> 
+                <img class="media-object pull-right hbz-logo" src="@controllers.nwbib.routes.Assets.at("images/hbz.png")" alt="hbz-Logo">
                 Die Nordrhein-Westfälische Bibliographie bietet @if(hits>0){aktuell @hits }Literaturnachweise zum gesamten Land NRW mit seinen Regionen, Orten und Persönlichkeiten. 
-                Sie wird  von den Universitäts- und Landesbibliotheken Düsseldorf, Münster und Bonn in Zusammenarbeit mit dem Hochschulbibliothekszentrum des Landes NRW in Köln herausgegeben.
+                Sie wird  von den <a href="http://www.ulb.hhu.de/">Universitäts- und Landesbibliotheken Düsseldorf</a>, <a href="http://www.ulb.uni-muenster.de/">Münster</a> und <a href="http://www.ulb.uni-bonn.de/">Bonn</a> in Zusammenarbeit mit dem <a href="http://www.hbz-nrw.de/">Hochschulbibliothekszentrum NRW</a> herausgegeben.
                 }
               </div>
             </div>
