@@ -18,7 +18,7 @@ import org.elasticsearch.common.settings.ImmutableSettings;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.index.query.MatchAllQueryBuilder;
-import org.elasticsearch.index.query.MatchQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 
@@ -97,9 +97,14 @@ public class Classification {
 		return requestBuilder.execute().actionGet();
 	}
 
-	JsonNode ids(String query) {
-		MatchQueryBuilder queryBuilder = QueryBuilders.matchQuery(//
-				"@graph." + Property.LABEL.value + ".@value", query);
+	public JsonNode ids(String query) {
+		QueryBuilder queryBuilder = QueryBuilders
+				.boolQuery()
+				.should(QueryBuilders.matchQuery(//
+						"@graph." + Property.LABEL.value + ".@value", query))
+				.should(QueryBuilders.idsQuery(Type.NWBIB.elasticsearchType,
+						Type.SPATIAL.elasticsearchType).ids(query))
+				.minimumNumberShouldMatch(1);
 		SearchRequestBuilder requestBuilder = client
 				.prepareSearch(INDEX)
 				.setSearchType(SearchType.DFS_QUERY_THEN_FETCH)

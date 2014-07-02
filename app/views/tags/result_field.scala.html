@@ -28,7 +28,12 @@
                           case None => {@string(elem)}
                           case Some(seq) => {
                             @defining(TagHelper.valueFor(doc, elem.as[String], seq)){ value =>
-                            <a href="@nwbib.routes.Application.search("\""+string(elem)+"\"")">@value</a> |
+                            @if(value.startsWith("http://purl.org/lobid/nwbib")){
+                              @defining(controllers.nwbib.Application.CLASSIFICATION.ids(value).findValue("label")){label=>
+                                <a href="@nwbib.routes.Application.search("\""+string(elem)+"\"")">
+                                    @if(label!=null){@label.textValue()} else {@value}</a> |
+                              }
+                            } else {<a href="@nwbib.routes.Application.search("\""+string(elem)+"\"")">@value</a> |}
                             <a href="@string(elem)"><span class="glyphicon glyphicon-link"></span></a>
                             }
                           }

@@ -42,7 +42,7 @@ public class Application extends Controller {
 			FILE.exists() ? FILE : new File("modules/nwbib/conf/nwbib.conf"))
 			.resolve();
 
-	final static Classification CLASSIFICATION = new Classification(
+	public final static Classification CLASSIFICATION = new Classification(
 			CONFIG.getString("nwbib.cluster"), CONFIG.getString("nwbib.server"));
 
 	static final int ONE_HOUR = 60 * 60;
