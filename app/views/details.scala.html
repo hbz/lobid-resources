@@ -16,9 +16,9 @@
         <div class="row">
           @defining((doc\\"exemplar")) { exemplars =>
               <div class="col-md-@if(exemplars.isEmpty && !doc.toString.contains("fulltextOnline")){12} else {7}">
-                <dl>
-                    <dt>Titel: @((doc \ "@id").as[String].split("/")(4))</dt>
-                    <dd>@tags.result_doc(doc)</dd>
+                <dl>@defining((doc \ "@id").as[String]){ id =>
+                    <dt>Titel-ID: @(id.split("/")(4)) | <a href="@id"><span class="glyphicon glyphicon-link"></span></a></dt>
+                    }<dd>@tags.result_doc(doc)</dd>
                 </dl>
               </div>
               @if(!exemplars.isEmpty || doc.toString.contains("fulltextOnline")){
