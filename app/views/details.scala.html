@@ -6,6 +6,7 @@
 @import tags._
 @import views.TableRow
 @import controllers.nwbib.Lobid
+@import controllers.nwbib.Application
 @import play.api.libs.json.Json
 @import play.api.libs.json.JsValue
 @import play.api.libs.json.JsArray
@@ -16,8 +17,10 @@
         <div class="row">
           @defining((doc\\"exemplar")) { exemplars =>
               <div class="col-md-@if(exemplars.isEmpty && !doc.toString.contains("fulltextOnline")){12} else {7}">
-                <dl>@defining((doc \ "@id").as[String]){ id =>
-                    <dt>Titel-ID: @(id.split("/")(4)) | <a href="@id"><span class="glyphicon glyphicon-link"></span></a></dt>
+                <dl>@defining((doc \ "@id").as[String].split("/")(4)){ id =>
+                    <dt>
+                    @tags.star_button(id)
+                    Titel-ID: @(id) | <a href="http://lobid.org/resource/@id"><span class="glyphicon glyphicon-link"></span></a></dt>
                     }<dd>@tags.result_doc(doc)</dd>
                 </dl>
               </div>

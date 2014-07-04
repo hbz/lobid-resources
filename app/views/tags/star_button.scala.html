@@ -1,0 +1,37 @@
+@(id: String)
+
+<script>
+function addStar(){
+    $.ajax({
+      url: '@nwbib.routes.Application.star(id)',
+      type: 'POST',
+      success: function(data, textStatus, jqXHR) {
+        $("#star-icon").attr("class","glyphicon glyphicon-star");
+        $("#star-link").attr("onclick","remStar('@id')");
+        $("#star-link").attr("title","Vergessen");
+      },
+      error: function(jqXHR, textStatus, errorThrown) {
+        console.log(textStatus);
+      }
+    });
+};
+function remStar(){
+    $.ajax({
+      url: '@nwbib.routes.Application.unstar(id)',
+      type: 'DELETE',
+      success: function(data, textStatus, jqXHR) {
+        $("#star-icon").attr("class","glyphicon glyphicon-star-empty");
+        $("#star-link").attr("onclick","addStar('@id')");
+        $("#star-link").attr("title","Merken");
+      },
+      error: function(jqXHR, textStatus, errorThrown) {
+        console.log(textStatus);
+      }
+    });
+};
+</script>
+@if(controllers.nwbib.Application.isStarred(id)){
+<a id="star-link" onclick="remStar()" title="Vergessen"><span id="star-icon" class="glyphicon glyphicon-star"></span></a> 
+} else {
+<a id="star-link" onclick="addStar()" title="Merken"><span id="star-icon" class="glyphicon glyphicon-star-empty"></span></a> 
+}

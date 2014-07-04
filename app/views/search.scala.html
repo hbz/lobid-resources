@@ -127,14 +127,6 @@
     </div>
 }
 
-@optional(doc: JsValue, key: String, sep: String, alt: String)={
-    @defining((doc \\ key)) { other =>
-      @if(!other.isEmpty){
-        @sep@(other(0).asOpt[String].getOrElse(other(0).as[Seq[JsValue]].map(_.as[String]).mkString("; ")))
-      } else {@alt}
-    }
-}
-
 @main("NWBib") {
     @tags.search_form(q)
     @defining(Json.parse(result).asOpt[Seq[JsValue]].getOrElse(Seq()).zipWithIndex.drop(1)) { hits =>
@@ -145,13 +137,8 @@
           <th style="width: 85%"></th>
           <th style="width: 10%; text-align: right"></th>
         </tr>
-        @for((doc,i) <- hits; t = (doc\\"@type").last.asOpt[Seq[String]].getOrElse(Seq((doc\\"@type").last.asOpt[String].get))) {
-            <tr>
-              <td> <span class="@Lobid.typeIcon(t)"></span> </td>
-              <td> <a href="@nwbib.routes.Application.show(((doc \ "@id").as[String].split("/")(4)))">
-                @optional(doc, "title", "", "<Kein Titel>") @optional(doc, "otherTitleInformation", " | ", "")</a></td>
-              <td style="text-align: right"> @optional(doc, "issued", "", "") </td>
-            </tr>
+        @for((doc,i) <- hits; id = ((doc \ "@id").as[String].split("/")(4))) {
+            @tags.result_short(id,doc)
         }
         </table>
         @if(flash.get("error")!=null){

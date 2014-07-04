@@ -28,12 +28,15 @@ import views.html.browse_register;
 import views.html.index;
 import views.html.search;
 import views.html.details;
+import views.html.stars;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 
 public class Application extends Controller {
+
+	private static final String STARRED = "starred";
 
 	static Form<String> queryForm = Form.form(String.class);
 
@@ -226,4 +229,41 @@ public class Application extends Controller {
 		return promise;
 	}
 
+	public static boolean isStarred(String id){
+		return starredIds().contains(id);
+	}
+
+	public static Result star(String id){
+		session(STARRED, currentlyStarred() + " " + id);
+		uncache(id);
+		return ok("Starred: " + id);
+	}
+
+	public static Result unstar(String id){
+		List<String> starred = starredIds();
+		starred.remove(id);
+		session(STARRED, String.join(" ", starred));
+		uncache(id);
+		return ok("Unstarred: " + id);
+	}
+
+	public static Result showStars(){
+		return ok(stars.render(starredIds()));
+	}
+
+	private static void uncache(String id) {
+		Cache.remove(
+			String.format("%s.%s.%s.%s.%s.%s", "search", id, 0, 1, ownerParam(""), "", true));
+	}
+
+	private static String currentlyStarred() {
+		String starred = session(STARRED);
+		return starred == null ? "" : starred.trim();
+	}
+
+	private static List<String> starredIds() {
+		return new ArrayList<>(Arrays.asList(
+				currentlyStarred().split(" ")).stream()
+				.filter(s->!s.trim().isEmpty()).collect(Collectors.toList()));
+	}
 }

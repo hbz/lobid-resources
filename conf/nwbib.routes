@@ -9,6 +9,11 @@ GET    /nwbib/subject               controllers.nwbib.Application.subject(query?
 GET    /nwbib/register              controllers.nwbib.Application.register(t)
 GET    /nwbib/classification        controllers.nwbib.Application.classification(t)
 GET    /nwbib/facets                controllers.nwbib.Application.facets(q,from:Int,size:Int,owner,t,field)
+
+GET    /nwbib/stars                 controllers.nwbib.Application.showStars()
+POST   /nwbib/stars/:id             controllers.nwbib.Application.star(id)
+DELETE /nwbib/stars/:id             controllers.nwbib.Application.unstar(id)
+
 GET    /nwbib/:id                   controllers.nwbib.Application.show(id)
 
 # Map static resources from the /public folder to the /assets URL path

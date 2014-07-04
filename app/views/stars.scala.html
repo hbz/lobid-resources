@@ -1,0 +1,35 @@
+@* Copyright 2014 Fabian Steeg, hbz. Licensed under the Eclipse Public License 1.0 *@
+
+@(ids: List[String])
+
+@import helper._
+@import play.api.libs.ws._
+@import scala.concurrent.Future
+@import scala.concurrent.ExecutionContext.Implicits.global
+@import scala.concurrent._
+@import scala.concurrent.duration._
+
+@main("NWBib: Merkliste") {
+    @if(ids.isEmpty){
+        <div class="alert alert-info">
+            Keine gemerkten Titel.
+        </div>
+    } else {
+        <table class="table table-striped table-condensed">
+        <tr>
+          <th style="width: 5%"></th>
+          <th style="width: 85%"></th>
+          <th style="width: 10%; text-align: right"></th>
+        </tr>
+        @for(
+        (id,i) <- ids.zipWithIndex;
+        url = s"http://lobid.org/resource/$id?format=full";
+        doc = Await.result(WS.url(url).get.map{response => response.json}, 10.seconds)) {
+                @tags.result_short(id,doc)
+        }
+        </table>
+    }
+    @if(flash.get("error")!=null){
+        <div class="alert alert-danger">@flash.get("error")</div>
+    }
+}
