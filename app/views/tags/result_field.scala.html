@@ -30,11 +30,11 @@
                             @defining(TagHelper.valueFor(doc, elem.as[String], seq)){ value =>
                             @if(value.startsWith("http://purl.org/lobid/nwbib")){
                               @defining(controllers.nwbib.Application.CLASSIFICATION.ids(value).findValue("label")){label=>
-                                <a href="@nwbib.routes.Application.search("\""+string(elem)+"\"")">
+                                <a title="Nach weiteren Titeln suchen" href="@nwbib.routes.Application.search("\""+string(elem)+"\"")">
                                     @if(label!=null){@label.textValue()} else {@value}</a> |
                               }
-                            } else {<a href="@nwbib.routes.Application.search("\""+string(elem)+"\"")">@value</a> |}
-                            <a href="@string(elem)"><span class="glyphicon glyphicon-link"></span></a>
+                            } else {<a title="Nach weiteren Titeln suchen" href="@nwbib.routes.Application.search("\""+string(elem)+"\"")">@value</a> |}
+                            <a title="Linked-Data-Quelle abrufen" href="@string(elem)"><span class="glyphicon glyphicon-link"></span></a>
                             }
                           }
                        }
@@ -47,7 +47,7 @@
       <tr>
         <td>@label</td>
         <td>
-          @defining(string(elem)) { url => <a rel="@property" href="@url">@url</a> }
+          @defining(string(elem)) { url => <a title="Nach weiteren Titeln suchen" rel="@property" href="@url">@url</a> }
         </td>
       </tr>
     }

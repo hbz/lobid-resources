@@ -65,7 +65,7 @@
               }
               @for(o <- os) {
                 <li class="active">
-                    <a href="@nwbib.routes.Application.search(q,from,size,if(os.size==1) "all" else os.filter(_!=o).mkString(","),t)">
+                    <a title="Filter entfernen" href="@nwbib.routes.Application.search(q,from,size,if(os.size==1) "all" else os.filter(_!=o).mkString(","),t)">
                         <span class="glyphicon glyphicon-remove-sign"></span> &nbsp;
                         @Lobid.organisationLabel(o)
                     </a>
@@ -79,7 +79,7 @@
                 &nbsp;
                 <input type="text" class="owner form-control" id="owner" name="owner" 
                     placeholder="Bestandsfilter für Einrichtung hinzufügen"/>
-                <button class="btn btn-link" onclick="addOwnerFun()" id="addOwner">
+                <button title="Filter hinzufügen" class="btn btn-link" onclick="addOwnerFun()" id="addOwner">
                     <span class="glyphicon glyphicon-plus-sign"></span></button>
                 <input type="hidden" name="query" value="@q"/>
                 <input type="hidden" name="from" value="@from"/>

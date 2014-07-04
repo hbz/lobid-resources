@@ -8,7 +8,7 @@ function addStar(){
       success: function(data, textStatus, jqXHR) {
         $("#star-icon").attr("class","glyphicon glyphicon-star");
         $("#star-link").attr("onclick","remStar('@id')");
-        $("#star-link").attr("title","Vergessen");
+        $("#star-link").attr("title","Titel von Merkliste entfernen");
       },
       error: function(jqXHR, textStatus, errorThrown) {
         console.log(textStatus);
@@ -22,7 +22,7 @@ function remStar(){
       success: function(data, textStatus, jqXHR) {
         $("#star-icon").attr("class","glyphicon glyphicon-star-empty");
         $("#star-link").attr("onclick","addStar('@id')");
-        $("#star-link").attr("title","Merken");
+        $("#star-link").attr("title","Titel zur Merkliste hinzufügen");
       },
       error: function(jqXHR, textStatus, errorThrown) {
         console.log(textStatus);
@@ -31,7 +31,7 @@ function remStar(){
 };
 </script>
 @if(controllers.nwbib.Application.isStarred(id)){
-<a id="star-link" onclick="remStar()" title="Vergessen"><span id="star-icon" class="glyphicon glyphicon-star"></span></a> 
+<a id="star-link" onclick="remStar()" title="Titel von Merkliste entfernen"><span id="star-icon" class="glyphicon glyphicon-star"></span></a> 
 } else {
-<a id="star-link" onclick="addStar()" title="Merken"><span id="star-icon" class="glyphicon glyphicon-star-empty"></span></a> 
+<a id="star-link" onclick="addStar()" title="Titel zur Merkliste hinzufügen"><span id="star-icon" class="glyphicon glyphicon-star-empty"></span></a> 
 }

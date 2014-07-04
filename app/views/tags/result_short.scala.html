@@ -15,7 +15,7 @@
 
 @defining((doc\\"@type").last.asOpt[Seq[String]].getOrElse(Seq((doc\\"@type").last.asOpt[String].get))){t=>
 <tr>
-  <td> <span class="@Lobid.typeIcon(t)"></span> </td>
+  <td> <span title="@Lobid.typeLabel(t)" class="@Lobid.typeIcon(t)"></span> </td>
   <td> <a href="@nwbib.routes.Application.show(id)">
     @optional(doc, "title", "", "<Kein Titel>") @optional(doc, "otherTitleInformation", " | ", "")</a></td>
   <td style="text-align: right"> @optional(doc, "issued", "", "") </td>
