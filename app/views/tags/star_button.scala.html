@@ -1,28 +1,30 @@
 @(id: String)
 
+@jsId() = @{ id.replace("-","_")}
+
 <script>
-function addStar_@(id)(){
+function addStar_@(jsId)(){
     $.ajax({
       url: '@nwbib.routes.Application.star(id)',
       type: 'POST',
       success: function(data, textStatus, jqXHR) {
-        $("#star-icon-@(id)").attr("class","glyphicon glyphicon-star");
-        $("#star-link-@(id)").attr("onclick","remStar_@(id)()");
-        $("#star-link-@(id)").attr("title","Titel von Merkliste entfernen");
+        $("#star-icon-@(jsId)").attr("class","glyphicon glyphicon-star");
+        $("#star-link-@(jsId)").attr("onclick","remStar_@(jsId)()");
+        $("#star-link-@(jsId)").attr("title","Titel von Merkliste entfernen");
       },
       error: function(jqXHR, textStatus, errorThrown) {
         console.log(textStatus);
       }
     });
 };
-function remStar_@(id)(){
+function remStar_@(jsId)(){
     $.ajax({
       url: '@nwbib.routes.Application.unstar(id)',
       type: 'DELETE',
       success: function(data, textStatus, jqXHR) {
-        $("#star-icon-@(id)").attr("class","glyphicon glyphicon-star-empty");
-        $("#star-link-@(id)").attr("onclick","addStar_@(id)()");
-        $("#star-link-@(id)").attr("title","Titel zur Merkliste hinzufügen");
+        $("#star-icon-@(jsId)").attr("class","glyphicon glyphicon-star-empty");
+        $("#star-link-@(jsId)").attr("onclick","addStar_@(jsId)()");
+        $("#star-link-@(jsId)").attr("title","Titel zur Merkliste hinzufügen");
       },
       error: function(jqXHR, textStatus, errorThrown) {
         console.log(textStatus);
@@ -31,7 +33,7 @@ function remStar_@(id)(){
 };
 </script>
 @if(controllers.nwbib.Application.isStarred(id)){
-<a id="star-link-@(id)" onclick="remStar_@(id)()" title="Titel von Merkliste entfernen"><span id="star-icon-@(id)" class="glyphicon glyphicon-star"></span></a> 
+<a id="star-link-@(jsId)" onclick="remStar_@(jsId)()" title="Titel von Merkliste entfernen"><span id="star-icon-@(jsId)" class="glyphicon glyphicon-star"></span></a> 
 } else {
-<a id="star-link-@(id)" onclick="addStar_@(id)()" title="Titel zur Merkliste hinzufügen"><span id="star-icon-@(id)" class="glyphicon glyphicon-star-empty"></span></a> 
+<a id="star-link-@(jsId)" onclick="addStar_@(jsId)()" title="Titel zur Merkliste hinzufügen"><span id="star-icon-@(jsId)" class="glyphicon glyphicon-star-empty"></span></a> 
 }
