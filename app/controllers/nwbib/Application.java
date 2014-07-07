@@ -14,6 +14,8 @@ import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.search.facet.terms.TermsFacet;
 
 import play.Logger;
+import play.Play;
+import play.api.cache.EhCachePlugin;
 import play.cache.Cache;
 import play.cache.Cached;
 import play.data.Form;
@@ -252,8 +254,14 @@ public class Application extends Controller {
 	}
 
 	private static void uncache(String id) {
-		Cache.remove(
-			String.format("%s.%s.%s.%s.%s.%s", "search", id, 0, 1, ownerParam(""), "", true));
+		try {
+			Play.application().plugin(EhCachePlugin.class).manager()
+					.getCache("play").removeAll();
+		} catch (Throwable t) {
+			Logger.error("Could not clear cache", t);
+			Cache.remove(String.format("%s.%s.%s.%s.%s.%s", "search", id, 0, 1,
+					ownerParam(""), "", true));
+		}
 	}
 
 	private static String currentlyStarred() {

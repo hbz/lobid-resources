@@ -1,28 +1,28 @@
 @(id: String)
 
 <script>
-function addStar(){
+function addStar_@(id)(){
     $.ajax({
       url: '@nwbib.routes.Application.star(id)',
       type: 'POST',
       success: function(data, textStatus, jqXHR) {
-        $("#star-icon").attr("class","glyphicon glyphicon-star");
-        $("#star-link").attr("onclick","remStar('@id')");
-        $("#star-link").attr("title","Titel von Merkliste entfernen");
+        $("#star-icon-@(id)").attr("class","glyphicon glyphicon-star");
+        $("#star-link-@(id)").attr("onclick","remStar_@(id)()");
+        $("#star-link-@(id)").attr("title","Titel von Merkliste entfernen");
       },
       error: function(jqXHR, textStatus, errorThrown) {
         console.log(textStatus);
       }
     });
 };
-function remStar(){
+function remStar_@(id)(){
     $.ajax({
       url: '@nwbib.routes.Application.unstar(id)',
       type: 'DELETE',
       success: function(data, textStatus, jqXHR) {
-        $("#star-icon").attr("class","glyphicon glyphicon-star-empty");
-        $("#star-link").attr("onclick","addStar('@id')");
-        $("#star-link").attr("title","Titel zur Merkliste hinzufügen");
+        $("#star-icon-@(id)").attr("class","glyphicon glyphicon-star-empty");
+        $("#star-link-@(id)").attr("onclick","addStar_@(id)()");
+        $("#star-link-@(id)").attr("title","Titel zur Merkliste hinzufügen");
       },
       error: function(jqXHR, textStatus, errorThrown) {
         console.log(textStatus);
@@ -31,7 +31,7 @@ function remStar(){
 };
 </script>
 @if(controllers.nwbib.Application.isStarred(id)){
-<a id="star-link" onclick="remStar()" title="Titel von Merkliste entfernen"><span id="star-icon" class="glyphicon glyphicon-star"></span></a> 
+<a id="star-link-@(id)" onclick="remStar_@(id)()" title="Titel von Merkliste entfernen"><span id="star-icon-@(id)" class="glyphicon glyphicon-star"></span></a> 
 } else {
-<a id="star-link" onclick="addStar()" title="Titel zur Merkliste hinzufügen"><span id="star-icon" class="glyphicon glyphicon-star-empty"></span></a> 
+<a id="star-link-@(id)" onclick="addStar_@(id)()" title="Titel zur Merkliste hinzufügen"><span id="star-icon-@(id)" class="glyphicon glyphicon-star-empty"></span></a> 
 }
