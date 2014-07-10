@@ -39,7 +39,7 @@ public class Lobid {
 				.asLong();
 	}
 
-	static WSRequestHolder request(final String q, final int from,
+	static WSRequestHolder request(final String q, final String author, final String name, final String subject, final int from,
 			final int size, String owner, String t) {
 		WSRequestHolder requestHolder = WS
 				.url(Application.CONFIG.getString("nwbib.api"))
@@ -48,8 +48,15 @@ public class Lobid {
 						Application.CONFIG.getString("nwbib.set"))
 				.setQueryParameter("format", "full")
 				.setQueryParameter("from", from + "")
-				.setQueryParameter("size", size + "")
-				.setQueryParameter("q", q);
+				.setQueryParameter("size", size + "");
+		if(!q.trim().isEmpty())
+			requestHolder = requestHolder.setQueryParameter("q", q);
+		if(!author.trim().isEmpty())
+			requestHolder = requestHolder.setQueryParameter("author", author);
+		if(!name.trim().isEmpty())
+			requestHolder = requestHolder.setQueryParameter("name", name);
+		if(!subject.trim().isEmpty())
+			requestHolder = requestHolder.setQueryParameter("subject", subject);
 		if (!owner.equals("all"))
 			requestHolder = requestHolder.setQueryParameter("owner", owner);
 		if(!t.isEmpty())
@@ -66,7 +73,7 @@ public class Lobid {
 				return cachedResult;
 			});
 		}
-		WSRequestHolder requestHolder = request("", 0, 0, "", "");
+		WSRequestHolder requestHolder = request("", "", "", "", 0, 0, "", "");
 		return requestHolder.get().map((WS.Response response) -> {
 			Long total = getTotalResults(response.asJson());
 			Cache.set("totalHits", total, Application.ONE_HOUR);

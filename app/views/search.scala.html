@@ -11,11 +11,11 @@
 @pagination(hits:Int)={
     <ul class="pagination">
       <li class="previous @if(from==0){disabled}">
-        <a href="@if(from==0){#} else {@nwbib.routes.Application.search(q,from-size,size,owner,t)}">&larr; Vorige</a>
+        <a href="@if(from==0){#} else {@nwbib.routes.Application.search(q,"","","",from-size,size,owner,t)}">&larr; Vorige</a>
       </li>
       <li class="disabled"><a href="#">@if(hits>0){@(from+1) bis @(Math.min(from+hits,from+size))@if(allHits>0){ von @allHits}}else{0 Treffer}</a></li>
       <li class="next @if(from+hits < from+size){disabled}">
-        <a href="@if(from+hits < from+size){#} else {@nwbib.routes.Application.search(q,from+size,size,owner,t)}">Nächste &rarr;</a>
+        <a href="@if(from+hits < from+size){#} else {@nwbib.routes.Application.search(q,"","","",from+size,size,owner,t)}">Nächste &rarr;</a>
       </li>
       &nbsp;
       @facets
@@ -42,7 +42,7 @@
               }
             });
             </script>
-            <a href="@nwbib.routes.Application.search(q,from,size,owner)">Alle Typen</a></li>
+            <a href="@nwbib.routes.Application.search(q,"","","",from,size,owner)">Alle Typen</a></li>
             <li id="facets-loading"><a href="#">Lade Facetten...</a></li>
         </ul>
     </div>
@@ -56,8 +56,8 @@
           <span class="caret"></span>
         </button>
         <ul class="dropdown-menu">
-          <li @if(owner=="all"){class="active"}><a href="@nwbib.routes.Application.search(q,from,size, "all",t)">Alle zeigen</a></li>
-          <li @if(owner == "*"){class="active"}><a href="@nwbib.routes.Application.search(q,from,size, "*",t)">Mit Bestand</a></li>
+          <li @if(owner=="all"){class="active"}><a href="@nwbib.routes.Application.search(q,"","","",from,size, "all",t)">Alle zeigen</a></li>
+          <li @if(owner == "*"){class="active"}><a href="@nwbib.routes.Application.search(q,"","","",from,size, "*",t)">Mit Bestand</a></li>
           @defining(owner.replace("*","").trim.split(",").filterNot(s => {s.isEmpty || s == "all"})) { os =>
               @if(!os.isEmpty){
                 <li class="divider"></li>
@@ -65,7 +65,7 @@
               }
               @for(o <- os) {
                 <li class="active">
-                    <a title="Filter entfernen" href="@nwbib.routes.Application.search(q,from,size,if(os.size==1) "all" else os.filter(_!=o).mkString(","),t)">
+                    <a title="Filter entfernen" href="@nwbib.routes.Application.search(q,"","","",from,size,if(os.size==1) "all" else os.filter(_!=o).mkString(","),t)">
                         <span class="glyphicon glyphicon-remove-sign"></span> &nbsp;
                         @Lobid.organisationLabel(o)
                     </a>
@@ -154,7 +154,7 @@
                      @if(!q.endsWith("~")){ oder eine }
                     }
                     @if(!q.endsWith("~")){
-                        <code><a href="@nwbib.routes.Application.search(q+"~",from,size)">unscharfe Suche</a></code>
+                        <code><a href="@nwbib.routes.Application.search(q+"~","","","",from,size)">unscharfe Suche</a></code>
                     }
                 </div>
             }
