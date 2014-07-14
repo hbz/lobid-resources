@@ -86,7 +86,7 @@ public class Application extends Controller {
 			final Form<String> form = queryForm.bindFromRequest();
 			if (form.hasErrors())
 				return Promise.promise(() -> badRequest(search.render(CONFIG,
-						null, q, from, size, 0L, owner, t)));
+						null, q, author, name, subject, from, size, 0L, owner, t)));
 			else {
 				String query = form.data().get("query");
 				Promise<Result> result = okPromise(query != null ? query : q, author, name, subject,
@@ -178,7 +178,7 @@ public class Application extends Controller {
 		return result.recover((Throwable throwable) -> {
 			throwable.printStackTrace();
 			flashError();
-			return internalServerError(search.render(CONFIG, "[]", q, from,
+			return internalServerError(search.render(CONFIG, "[]", q, author, name, subject, from,
 					size, 0L, owner, t));
 		});
 	}
@@ -208,7 +208,7 @@ public class Application extends Controller {
 					Long hits = Lobid.getTotalResults(json);
 					String s = q.isEmpty() && author.isEmpty() && name.isEmpty() && subject.isEmpty()? "[]" : json.toString();
 					return ok(showDetails ? details.render(CONFIG, s, q) : search
-							.render(CONFIG, s, q, from, size, hits, owner, t));
+							.render(CONFIG, s, q, author, name, subject, from, size, hits, owner, t));
 				});
 	}
 
