@@ -8,10 +8,13 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Spliterators;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import org.elasticsearch.action.search.SearchResponse;
-import org.elasticsearch.search.facet.terms.TermsFacet;
 
 import play.Logger;
 import play.Play;
@@ -209,30 +212,37 @@ public class Application extends Controller {
 				});
 	}
 
-	public static Promise<Result> facets(String q, String author, String name, String subject, int from, int size, String owner, String t, String field){
-		String key = String.format("facets.%s.%s.%s",q,owner,field);
+	public static Promise<Result> facets(String q, String author, String name, String subject, 
+			int from, int size, String owner, String t, String field){
+		String key = String.format("facets.%s.%s.%s.%s.%s.%s",q,author,name,subject,owner,field);
 		Result cachedResult = (Result) Cache.get(key);
 		if(cachedResult!=null){
 			return Promise.promise(() -> cachedResult);
 		}
-		Promise<Result> promise = Lobid.getFacets(q, owner, field)
-			.map(fs->((TermsFacet)(fs.facet(field))).getEntries())
-			.map(es->es.stream().filter(e -> {
-				String typeLabel = Lobid.typeLabel(Arrays.asList(e.getTerm().toString()));
-				String typeIcon = Lobid.typeIcon(Arrays.asList(e.getTerm().toString()));
-				return !typeLabel.isEmpty() && !typeIcon.isEmpty();
-			})
-			.map(e->{
-				String term = e.getTerm().toString();
-				String icon = Lobid.typeIcon(Arrays.asList(e.getTerm().toString()));
-				String routeUrl = routes.Application.search(q,author,name,subject,from,size,owner,term,false).absoluteURL(request());
-				return String.format(
-						"<li><a href='%s'><span class='%s'/>&nbsp;%s (%s)</a></li>",
-						routeUrl,icon,Lobid.typeLabel(Arrays.asList(term)),e.getCount()
-				);
-			})
-			.collect(Collectors.toList()))
-			.map(lis -> ok(String.join("\n", lis)));
+		Predicate<JsonNode> labelled = json -> {
+			String term = json.get("term").asText();
+			String typeLabel = Lobid.typeLabel(Arrays.asList(term));
+			String typeIcon = Lobid.typeIcon(Arrays.asList(term));
+			return !typeLabel.isEmpty() && !typeIcon.isEmpty();
+		};
+		Function<JsonNode, String> toHtml = json -> {
+			String term = json.get("term").asText();
+			int count = json.get("count").asInt();
+			String icon = Lobid.typeIcon(Arrays.asList(term));
+			String routeUrl = routes.Application.search(q, author, name, subject, from, size, owner, term, false)
+					.absoluteURL(request());
+			return String
+					.format("<li><a href='%s'><span class='%s'/>&nbsp;%s (%s)</a></li>",
+							routeUrl, icon, Lobid.typeLabel(Arrays.asList(term)), count);
+		};
+		Promise<Result> promise = Lobid
+				.getFacets(q, author, name, subject, owner, field)
+				.map(json -> StreamSupport.stream(
+						Spliterators.spliteratorUnknownSize(json.findValue("entries").elements(), 0), false)
+						.filter(labelled)
+						.map(toHtml)
+						.collect(Collectors.toList()))
+				.map(lis -> ok(String.join("\n", lis)));
 		promise.onRedeem(r -> Cache.set(key, r, ONE_DAY));
 		return promise;
 	}

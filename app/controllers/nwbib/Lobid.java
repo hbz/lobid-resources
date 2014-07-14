@@ -4,20 +4,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.elasticsearch.action.search.SearchRequestBuilder;
-import org.elasticsearch.action.search.SearchResponse;
-import org.elasticsearch.action.search.SearchType;
-import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.FilterBuilder;
-import org.elasticsearch.index.query.FilterBuilders;
-import org.elasticsearch.index.query.HasChildFilterBuilder;
-import org.elasticsearch.index.query.MatchQueryBuilder;
-import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.index.query.TermsFilterBuilder;
-import org.elasticsearch.search.facet.FacetBuilders;
-import org.elasticsearch.search.facet.Facets;
-import org.elasticsearch.search.facet.terms.TermsFacetBuilder;
-
 import play.Logger;
 import play.cache.Cache;
 import play.libs.F.Promise;
@@ -97,49 +83,22 @@ public class Lobid {
 		}).get(10000);
 	}
 
-	public static Promise<Facets> getFacets(String q, String owner, String field) {
-		return Promise.promise(() -> {
-			BoolQueryBuilder query = QueryBuilders
-					.boolQuery()
-					.must(q.isEmpty() ? QueryBuilders.matchAllQuery()
-							: QueryBuilders.queryString(q).field("_all"))
-					.must(QueryBuilders.matchQuery(
-							"@graph.http://purl.org/dc/terms/isPartOf.@id",
-							Application.CONFIG.getString("nwbib.set")).operator(
-							MatchQueryBuilder.Operator.AND));
-			SearchRequestBuilder req = Application.CLASSIFICATION.client
-					.prepareSearch("lobid-resources")
-					.setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
-					.setQuery(query).setTypes("json-ld-lobid").setFrom(0)
-					.setSize(0);
-			TermsFacetBuilder facet = FacetBuilders.termsFacet(field).field(field);
-			if (!owner.equals("all")) {
-				String fieldName = "@graph.http://purl.org/vocab/frbr/core#exemplar.@id";
-				FilterBuilder filter = owner.equals("*") ? FilterBuilders.existsFilter(fieldName)
-						: ownersFilter(owner, fieldName);
-				facet = facet.facetFilter(filter);
-			}
-			req = req.addFacet(facet);
-			long start = System.currentTimeMillis();
-			SearchResponse res = req.execute().actionGet();
-			Facets facets = res.getFacets();
-			Logger.debug("Facets for q={}, owner={}, facets={}: {}; took {} ms.", 
-					q, owner, field, facets, (System.currentTimeMillis() - start));
-			return facets;
-		}).recover((Throwable x) -> {
-			x.printStackTrace();
-			return null;
+	public static Promise<JsonNode> getFacets(String q, String author, String name, String subject, String owner, String field) {
+		WSRequestHolder requestHolder = WS
+				.url(Application.CONFIG.getString("nwbib.api") + "/facets")
+				.setHeader("Accept", "application/json")
+				.setQueryParameter("set", Application.CONFIG.getString("nwbib.set"))
+				.setQueryParameter("q",q)
+				.setQueryParameter("author",author)
+				.setQueryParameter("name",name)
+				.setQueryParameter("subject",subject)
+				.setQueryParameter("owner",owner.equals("all") ? "" : owner)
+				.setQueryParameter("field",field);
+		Logger.info("Facets request URL {}, query params {} ", requestHolder.getUrl(),
+				requestHolder.getQueryParameters());
+		return requestHolder.get().map((WS.Response response) -> {
+			return response.asJson();
 		});
-	}
-
-	private static FilterBuilder ownersFilter(final String ownerParam,
-			String fieldName) {
-		TermsFilterBuilder filter = FilterBuilders.termsFilter(
-				"@graph.http://purl.org/vocab/frbr/core#owner.@id",
-				ownerParam.split(","));
-		HasChildFilterBuilder result = FilterBuilders.hasChildFilter(
-				"json-ld-lobid-item", filter);
-		return result;
 	}
 
 	public static String typeLabel(List<String> types) {
