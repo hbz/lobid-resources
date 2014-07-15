@@ -1,17 +1,21 @@
-@()
+@(label:String, q:String = "", author: String = "", name: String = "", subject: String = "")
+
+@import scala.collection.Map
 
 <script>
 function addSearchWidget(c){
     var form = $("#nwbib-form");
     var last = $(".search-field").last();
     var add = last.clone().attr("id","search-field-" + c);
-    last.find("#rem-search-field").show();
-    add.find("#rem-search-field").hide();
-    last.find("#add-search-field").remove();
+    last.find("#rem-search-field-"+(c-1)).show();
+    add.find("#rem-search-field-"+(c-1)).attr("id", "rem-search-field-"+c).hide();
+    add.find("#add-search-field-"+(c-1)).attr("id", "add-search-field-"+c)
+    last.find("#add-search-field-"+(c-1)).remove();
     form.append(add);
-    $("#add-search-field").attr("onclick", "addSearchWidget("+(c+1)+")");
+    $("#add-search-field-"+c).attr("onclick", "addSearchWidget("+(c+1)+")");
     form.append($("#nwbib-form > #search-button"));
-    $("#search-field-" + c + " > .add-remove-group > #rem-search-field").attr("onclick", "remSearchWidget("+(c)+")");
+    $("#search-field-" + c + " > .add-remove-group > #rem-search-field-"+c).attr("onclick", "remSearchWidget("+(c)+")");
+    setAutosuggest();
 }
 
 function remSearchWidget(c) {
@@ -66,34 +70,40 @@ function suggests(term){
 
 @helper.form(action = controllers.nwbib.routes.Application.search(), 
     'id -> "nwbib-form", 'role -> "form", 'class -> "form-inline") {
-  <div class="search-field" id="search-field-1">
+  @defining(Map("query"->q,"name"->name,"author"->author,"subject"->subject).filter(!_._2.isEmpty)) { fields =>
+  @for(((k,v),i)<- (if(fields.isEmpty) Map("query" -> "") else fields).zipWithIndex){
+  <div class="search-field" id="search-field-@i">
       <div class="form-group">
             <select id="query-select" class="form-control" onChange="setAutosuggest()">
-              <option value="query">Alle Felder</option>
-              <option value="name">Titel</option>
-              <option value="author">Autor</option>
-              <option value="subject">Schlagwort</option>
+              <option value="query" @if(k=="query"){selected="selected"})>Alle Felder</option>
+              <option value="name" @if(k=="name"){selected="selected"}>Titel</option>
+              <option value="author" @if(k=="author"){selected="selected"}>Autor</option>
+              <option value="subject" @if(k=="subject"){selected="selected"}>Schlagwort</option>
             </select>
       </div>
       <div class="form-group">
-            <input type="text" id="nwbib-query-advanced" class="form-control" placeholder='Suchanfrage'/>
+            <input type="text" id="nwbib-query-advanced" class="form-control" placeholder='Suchanfrage' value="@v"/>
       </div>
       <div class="form-group add-remove-group">
-          <a href="#" id="rem-search-field" class="btn btn-default" onclick="remSearchWidget(1)" title="Kriterium entfernen">
+          <a href="#" id="rem-search-field-@i" class="btn btn-default" onclick="remSearchWidget(@i)" title="Kriterium entfernen">
                   <span class="glyphicon glyphicon-minus-sign"></span></a>
-          <a href="#" id="add-search-field" class="btn btn-default" onclick="addSearchWidget(2)" title="Kriterium hinzufügen">
+          <a href="#" id="add-search-field-@i" class="btn btn-default" onclick="addSearchWidget(@(i+1))" title="Kriterium hinzufügen">
                   <span class="glyphicon glyphicon-plus-sign"></span></a> 
       </div>
+      <script>
+	  $("#add-search-field-@(i-1)").hide();
+	  </script>
   </div>
+  }
   <div class="row" id="search-button">
       <div class="form-group col-md-2 col-md-offset-5">
           <button type=submit class="btn btn-link" onclick="addParameters()">
-                  <span class="glyphicon glyphicon-search"></span> Suchen</button>
+                  <span class="glyphicon glyphicon-search"></span> @label</button>
       </div>
   </div>
+  <script>
+  $("#rem-search-field-@(if(fields.isEmpty) 0 else fields.size-1)").hide();
+  setAutosuggest();
+  </script>
+  }
 }
-
-<script>
-$("#rem-search-field").hide();
-setAutosuggest();
-</script>

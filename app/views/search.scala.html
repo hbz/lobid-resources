@@ -131,7 +131,7 @@
 }
 
 @main("NWBib") {
-    @tags.search_form(q)
+    @tags.search_advanced("Suche aktualisieren", q, author, name, subject)
     @defining(Json.parse(result).asOpt[Seq[JsValue]].getOrElse(Seq()).zipWithIndex.drop(1)) { hits =>
         @pagination(hits.size)
         <table class="table table-striped table-condensed">
