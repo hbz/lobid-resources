@@ -72,8 +72,8 @@ function suggests(term){
     'id -> "nwbib-form", 'role -> "form", 'class -> "form-inline") {
   @defining(Map("query"->q,"name"->name,"author"->author,"subject"->subject).filter(!_._2.isEmpty)) { fields =>
   @for(((k,v),i)<- (if(fields.isEmpty) Map("query" -> "") else fields).zipWithIndex){
-  <div class="search-field" id="search-field-@i">
-      <div class="form-group">
+  <div class="search-field row" id="search-field-@i">
+      <div class="form-group col col-md-2">
             <select id="query-select" class="form-control" onChange="setAutosuggest()">
               <option value="query" @if(k=="query"){selected="selected"})>Alle Felder</option>
               <option value="name" @if(k=="name"){selected="selected"}>Titel</option>
@@ -81,13 +81,13 @@ function suggests(term){
               <option value="subject" @if(k=="subject"){selected="selected"}>Schlagwort</option>
             </select>
       </div>
-      <div class="form-group">
+      <div class="form-group col col-md-9">
             <input type="text" id="nwbib-query-advanced" class="form-control" placeholder='Suchanfrage' value="@v"/>
       </div>
-      <div class="form-group add-remove-group">
-          <a href="#" id="rem-search-field-@i" class="btn btn-default" onclick="remSearchWidget(@i)" title="Kriterium entfernen">
+      <div class="form-group add-remove-group col col-md-1">
+          <a href="#" id="rem-search-field-@i" class="btn btn-default add-remove-button" onclick="remSearchWidget(@i)" title="Kriterium entfernen">
                   <span class="glyphicon glyphicon-minus-sign"></span></a>
-          <a href="#" id="add-search-field-@i" class="btn btn-default" onclick="addSearchWidget(@(i+1))" title="Kriterium hinzufügen">
+          <a href="#" id="add-search-field-@i" class="btn btn-default add-remove-button" onclick="addSearchWidget(@(i+1))" title="Kriterium hinzufügen">
                   <span class="glyphicon glyphicon-plus-sign"></span></a> 
       </div>
       <script>
