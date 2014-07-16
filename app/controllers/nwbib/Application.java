@@ -108,7 +108,7 @@ public class Application extends Controller {
 	}
 
 	public static Promise<Result> show(final String id) {
-		return search(id, "", "", "", 0, 1, "", "", true);
+		return search(id, "", "", "", 0, 1, "all", "", true);
 	}
 
 	public static Promise<Result> subject(final String q, final String callback) {
