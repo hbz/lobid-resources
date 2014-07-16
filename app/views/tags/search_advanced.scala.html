@@ -20,6 +20,7 @@ function addSearchWidget(c){
 
 function remSearchWidget(c) {
     $("#search-field-"+c).remove();
+    $("#search-button").show();
 }
 
 function addParameters(){
@@ -44,6 +45,7 @@ function setAutosuggest() {
         }
         field.find("input").autocomplete({source : source});
     });
+    $("#search-button").show();
 }
 
 function suggests(term){
@@ -82,7 +84,7 @@ function suggests(term){
             </select>
       </div>
       <div class="form-group col col-md-9">
-            <input type="text" id="nwbib-query-advanced" class="form-control" placeholder='Suchanfrage' value="@v"/>
+            <input type="text" id="nwbib-query-advanced" class="form-control" placeholder='Suchanfrage' value="@v" onFocus="$('#search-button').show();"/>
       </div>
       <div class="form-group add-remove-group col col-md-1">
           <a href="#" id="rem-search-field-@i" class="btn btn-default add-remove-button" onclick="remSearchWidget(@i)" title="Kriterium entfernen">
@@ -104,6 +106,7 @@ function suggests(term){
   <script>
   $("#rem-search-field-@(if(fields.isEmpty) 0 else fields.size-1)").hide();
   setAutosuggest();
+  $("#search-button").hide();
   </script>
   }
 }
