@@ -8,5 +8,29 @@
 
 @main("NWBib") {
     @tags.search_form("")
-    @tags.nrw_map()
+    <div class="row">
+	    <div class="col-md-7 intro">
+	        @defining(controllers.nwbib.Lobid.getTotalHits().get(10000)){ hits =>
+	       <p class="lead">
+           Die Nordrhein-Westfälische Bibliographie verzeichnet die Literatur über das Land Nordrhein-Westfalen, 
+           seine Landesteile und Orte sowie über Personen, die im Land wirken oder gewirkt haben. 
+           Sie umfasst alle Lebensbereiche und Sachgebiete in Geschichte und Gegenwart.
+           </p>
+	       <p>
+	       Die Nordrhein-Westfälische Bibliographie ist eine der umfangreichsten Regionalbibliographien Deutschlands. 
+	       Sie weist @if(hits>0){aktuell @hits Titel}else{mehr als 345.000 Titel (Stand: Juli 2014)} nach. Seit 1983 wird sie 
+	       von den Universitäts- und Landesbibliotheken Bonn, Düsseldorf und Münster in Zusammenarbeit mit dem 
+	       Hochschulbibliothekszentrum des Landes Nordrhein-Westfalen (hbz) erstellt.
+	       </p>
+	       <p>
+	       Nutzen Sie zum Einstieg die freie Suche oben oder die Karte rechts. Die Ergebnisse können Sie mit der 
+	       erweiterten Suche sowie über Facetten zu Bestand und Dokumententyp eingrenzen. 
+	       Zur systematischen Suche stehen über die Navigationleiste oben die Sachsystematik, das Register zur Sachsystematik 
+	       sowie die Raumsytematik Register zur Raumsystematik zur Verfügung.
+	       }
+	    </div>
+	    <div class="col-md-5">
+	       @tags.nrw_map()
+	    </div>
+    </div>
 }
