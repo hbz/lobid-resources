@@ -7,6 +7,7 @@ function addSearchWidget(c){
     var form = $("#nwbib-form");
     var last = $(".search-field").last();
     var add = last.clone().attr("id","search-field-" + c);
+    add.find("#nwbib-query-advanced").val("");
     last.find("#rem-search-field-"+(c-1)).show();
     add.find("#rem-search-field-"+(c-1)).attr("id", "rem-search-field-"+c).hide();
     add.find("#add-search-field-"+(c-1)).attr("id", "add-search-field-"+c)
