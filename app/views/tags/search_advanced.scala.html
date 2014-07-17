@@ -1,0 +1,127 @@
+@(label:String, q:String = "", author: String = "", name: String = "", subject: String = "")
+
+@import scala.collection.Map
+
+<script>
+function addSearchWidget(c){
+    var form = $("#nwbib-form");
+    var last = $(".search-field").last();
+    last.find(".rem").removeClass("disabled");
+    var add = last.clone().attr("id","search-field-" + c);
+    add.find(".rem").attr("onclick", "remSearchWidget("+(c)+")");
+    add.find("#nwbib-query-advanced").val("");
+    last.find("#and-search-field-"+(c-1)).show();
+    add.find("#and-search-field-"+(c-1)).attr("id", "and-search-field-"+c).hide();
+    add.find("#add-search-field-"+(c-1)).attr("id", "add-search-field-"+c)
+    last.find("#add-search-field-"+(c-1)).hide();
+    form.append(add);
+    $("#add-search-field-"+c).attr("onclick", "addSearchWidget("+(c+1)+")");
+    form.append($("#nwbib-form > #search-button"));
+    setAutosuggest();
+}
+
+function remSearchWidget(c) {
+    $("#search-field-"+c).remove();
+    $("#search-button").show();
+    var rows = $(".search-field");
+    var last = rows.last();
+    last.find(".and").hide();
+    last.find(".add").show();
+    if(rows.size() == 1){
+      last.find(".rem").addClass("disabled");
+    }
+}
+
+function addParameters(){
+    $(".search-field").each(function( index ) {
+         var param = $(this).find("#query-select").val();
+         var value = $(this).find("#nwbib-query-advanced").val();
+         $("#nwbib-form").append("<input type='hidden' name='"+param+"' value='"+value+"'/>");
+    });
+}
+
+function setAutosuggest() {
+    $('.search-field').each(function() {
+        var field = $(this);
+        var source = function(request, response) {
+            var general = {
+                dataType : "jsonp",
+                success : function(data) { response(data); }
+            };
+            var details = suggests(request.term)[field.find("#query-select").val()];
+            for (var key in details) { general[key] = details[key]; }
+            $.ajax(general)
+        }
+        field.find("input").autocomplete({source : source});
+    });
+    $("#search-button").show();
+}
+
+function suggests(term){
+    return {
+        'query' : {
+            url : "/nwbib/subject",
+            data : { query : term }
+        },
+        'name' : {
+            url : "http://api.lobid.org/resource",
+            data : { name : term, format : "short" }
+        },
+        'author' : {
+            url : "http://api.lobid.org/person",
+            data : { name : term, format : "ids" }
+        },
+        'subject' : {
+            url : "http://api.lobid.org/subject",
+            data : { name : term, format : "ids" }
+        }
+    }
+}
+</script>
+
+@helper.form(action = controllers.nwbib.routes.Application.search(), 
+    'id -> "nwbib-form", 'role -> "form", 'class -> "form-inline") {
+  @defining(Map("query"->q,"name"->name,"author"->author,"subject"->subject).filter(!_._2.isEmpty)) { fields =>
+  @for(((k,v),i)<- (if(fields.isEmpty) Map("query" -> "") else fields).zipWithIndex){
+  <div class="search-field row" id="search-field-@i">
+      <div class="form-group col col-md-2">
+            <select id="query-select" class="form-control" onChange="setAutosuggest()">
+              <option value="query" @if(k=="query"){selected="selected"})>Alle Felder</option>
+              <option value="name" @if(k=="name"){selected="selected"}>Titel</option>
+              <option value="author" @if(k=="author"){selected="selected"}>Autor</option>
+              <option value="subject" @if(k=="subject"){selected="selected"}>Schlagwort</option>
+            </select>
+      </div>
+      <div class="form-group col col-md-9">
+        <div class="input-group">
+            <input type="text" id="nwbib-query-advanced" class="form-control" placeholder='Suchanfrage' value="@v" onFocus="$('#search-button').show();"/>
+            <span class="input-group-btn">
+                <a href="#" title="Kriterium entfernen" class="btn btn-default rem @if(fields.isEmpty||fields.size==1){disabled}" onclick="remSearchWidget(@i)">
+                <span class="octicon octicon-x"></span>
+            </a>
+            </span>
+        </div>
+      </div>
+      <div class="form-group col col-md-1">
+          <a href="#" id="and-search-field-@i" class="btn btn-default add-and-button and disabled" title="UND">UND</a>
+          <a href="#" id="add-search-field-@i" class="btn btn-default add-and-button add" onclick="addSearchWidget(@(i+1))" title="Kriterium hinzufügen">
+                  <span class="glyphicon glyphicon-plus-sign"></span></a> 
+      </div>
+      <script>
+	  $("#add-search-field-@(i-1)").hide();
+	  </script>
+  </div>
+  }
+  <div class="row" id="search-button">
+      <div class="form-group col-md-2 col-md-offset-5">
+          <button type=submit class="btn btn-link" onclick="addParameters()">
+                  <span class="glyphicon glyphicon-search"></span> @label</button>
+      </div>
+  </div>
+  <script>
+  $("#and-search-field-@(if(fields.isEmpty) 0 else fields.size-1)").hide();
+  setAutosuggest();
+  $("#search-button").hide();
+  </script>
+  }
+}

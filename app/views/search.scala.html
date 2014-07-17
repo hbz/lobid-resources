@@ -1,6 +1,6 @@
 @* Copyright 2014 Fabian Steeg, hbz. Licensed under the Eclipse Public License 1.0 *@
 
-@(config: com.typesafe.config.Config, result: String, q:String, from: Int, size: Int, allHits: Long, owner: String, t: String)
+@(config: com.typesafe.config.Config, result: String, q:String, author:String, name:String, subject:String, from: Int, size: Int, allHits: Long, owner: String, t: String)
 
 @import helper._
 @import controllers.nwbib.Lobid
@@ -9,84 +9,93 @@
 @import play.api.libs.json.JsArray
 
 @pagination(hits:Int)={
-    <ul class="pagination">
+    <ul class="pagination fill">
       <li class="previous @if(from==0){disabled}">
-        <a href="@if(from==0){#} else {@nwbib.routes.Application.search(q,from-size,size,owner,t)}">&larr; Vorige</a>
+        <a href="@if(from==0){#} else {@nwbib.routes.Application.search(q,author,name,subject,from-size,size,owner,t)}">&larr; Vorige</a>
       </li>
-      <li class="disabled"><a href="#">@if(hits>0){@(from+1) bis @(Math.min(from+hits,from+size))@if(allHits>0){ von @allHits}}else{0 Treffer}</a></li>
+      <li class="disabled">
+      <a style="width:180px; text-align: center;" href="#">@if(hits>0){@(from+1) bis @(Math.min(from+hits,from+size))@if(allHits>0){ von @allHits}}else{0 Treffer}</a>
+      </li>
       <li class="next @if(from+hits < from+size){disabled}">
-        <a href="@if(from+hits < from+size){#} else {@nwbib.routes.Application.search(q,from+size,size,owner,t)}">Nächste &rarr;</a>
+        <a href="@if(from+hits < from+size){#} else {@nwbib.routes.Application.search(q,author,name,subject,from+size,size,owner,t)}">Nächste &rarr;</a>
       </li>
-      &nbsp;
-      @facets
     </ul>
 }
 
 @facets()={
-    <div class="btn-group">
-        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-          Typ: @if(t.isEmpty){Alle} else {@Lobid.typeLabel(Seq(t)) <span class="@Lobid.typeIcon(Arrays.asList(t))"></span>}
-          <span class="caret"></span>
-        </button>
-        <ul class="dropdown-menu" id="facets-ul">
-          <li @if(t==""){class="active"}>
-            <script>
-            $.ajax({
-              url: '/nwbib/facets?q=@q&&from=@from&size=@size&owner=@owner&t=@t&field=@@graph.@@type',
-              success: function(data, textStatus, jqXHR) {
-                $("#facets-ul").append(data);
-                $("#facets-loading").remove();
-              },
-              error: function(jqXHR, textStatus, errorThrown) {
-                console.log(textStatus);
-              }
-            });
-            </script>
-            <a href="@nwbib.routes.Application.search(q,from,size,owner)">Alle Typen</a></li>
-            <li id="facets-loading"><a href="#">Lade Facetten...</a></li>
-        </ul>
-    </div>
-    
-    <div class="btn-group">
-        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-          Bestandsfilter: @if(owner=="all"){<span class="octicon octicon-x"></span>} else { 
-                   @if(owner=="*") { <span class="octicon octicon-check"></span>} else {
-                     @owner.split(",").size Einrichtung@if(owner.split(",").size>1){en}}
-                   }
-          <span class="caret"></span>
-        </button>
-        <ul class="dropdown-menu">
-          <li @if(owner=="all"){class="active"}><a href="@nwbib.routes.Application.search(q,from,size, "all",t)">Alle zeigen</a></li>
-          <li @if(owner == "*"){class="active"}><a href="@nwbib.routes.Application.search(q,from,size, "*",t)">Mit Bestand</a></li>
-          @defining(owner.replace("*","").trim.split(",").filterNot(s => {s.isEmpty || s == "all"})) { os =>
-              @if(!os.isEmpty){
-                <li class="divider"></li>
-                <li role="presentation" class="dropdown-header">Mit Bestand in Einrichtung:</li>
-              }
-              @for(o <- os) {
-                <li class="active">
-                    <a title="Filter entfernen" href="@nwbib.routes.Application.search(q,from,size,if(os.size==1) "all" else os.filter(_!=o).mkString(","),t)">
-                        <span class="glyphicon glyphicon-remove-sign"></span> &nbsp;
-                        @Lobid.organisationLabel(o)
-                    </a>
-                </li>
-              }
-          }
-        </ul>
-        <ul class="nav nav-pills pull-right">
-          <li>
+	    <div class="btn-group fill">
+	        <button type="button" class="btn btn-default dropdown-toggle fill" data-toggle="dropdown">
+	          Typ: @if(t.isEmpty){Alle} else {@Lobid.typeLabel(Seq(t)) <span class="@Lobid.typeIcon(Arrays.asList(t))"></span>}
+	          <span class="caret"></span>
+	        </button>
+	        <ul class="dropdown-menu" id="facets-ul">
+	          <li @if(t==""){class="active"}>
+	            <script>
+	            $.ajax({
+	              url: '/nwbib/facets?q=@q&author=@author&name=@name&subject=@subject&from=@from&size=@size&owner=@owner&t=@t&field=@@graph.@@type',
+	              success: function(data, textStatus, jqXHR) {
+	                $("#facets-ul").append(data);
+	                $("#facets-loading").remove();
+	              },
+	              error: function(jqXHR, textStatus, errorThrown) {
+	                console.log(textStatus);
+	              }
+	            });
+	            </script>
+	            <a href="@nwbib.routes.Application.search(q,author,name,subject,from,size,owner)">Alle Typen</a></li>
+	            <li id="facets-loading"><a href="#">Lade Facetten...</a></li>
+	        </ul>
+	    </div>
+}
+@ownersDropdown()={
+	    <div class="btn-group fill">
+	        <button type="button" class="btn btn-default dropdown-toggle fill" data-toggle="dropdown">
+	          Bestandsfilter: @if(owner=="all"){<span class="octicon octicon-x"></span>} else { 
+	                   @if(owner=="*") { <span class="octicon octicon-check"></span>} else {
+	                     @owner.split(",").size@* Einrichtung@if(owner.split(",").size>1){en}*@}
+	                   }
+	          <span class="caret"></span>
+	        </button>
+	        <ul class="dropdown-menu">
+	          <li @if(owner=="all"){class="active"}><a href="@nwbib.routes.Application.search(q,author,name,subject,from,size, "all",t)">Alle zeigen</a></li>
+	          <li @if(owner == "*"){class="active"}><a href="@nwbib.routes.Application.search(q,author,name,subject,from,size, "*",t)">Mit Bestand</a></li>
+	          @defining(owner.replace("*","").trim.split(",").filterNot(s => {s.isEmpty || s == "all"})) { os =>
+	              @if(!os.isEmpty){
+	                <li class="divider"></li>
+	                <li role="presentation" class="dropdown-header">Mit Bestand in Einrichtung:</li>
+	              }
+	              @for(o <- os) {
+	                <li class="active">
+	                    <a title="Filter entfernen" href="@nwbib.routes.Application.search(q,author,name,subject,from,size,if(os.size==1) "all" else os.filter(_!=o).mkString(","),t)">
+	                        <span class="glyphicon glyphicon-remove-sign"></span> &nbsp;
+	                        @Lobid.organisationLabel(o)
+	                    </a>
+	                </li>
+	              }
+	          }
+	        </ul>
+	    </div>
+}
+@ownersForm()={
             <form class="form-inline" action="/nwbib/search" method="GET" name="addOwnerForm">
-                &nbsp;
-                <input type="text" class="owner form-control" id="owner" name="owner" 
-                    placeholder="Bestandsfilter für Einrichtung hinzufügen"/>
-                <button title="Filter hinzufügen" class="btn btn-link" onclick="addOwnerFun()" id="addOwner">
-                    <span class="glyphicon glyphicon-plus-sign"></span></button>
+                <div class="form-group fill">
+	                <div class="input-group">
+	                    <input type="text" class="owner form-control" id="owner" name="owner" 
+	                        placeholder="Bestandsfilter für Einrichtung hinzufügen"/>
+	                    <span class="input-group-btn">
+	                       <button title="Filter hinzufügen" class="btn btn-default" onclick="addOwnerFun()" id="addOwner">
+                            <span class="glyphicon glyphicon-filter"></span></button>
+                        </span>
+	               </div>
+                </div>
                 <input type="hidden" name="query" value="@q"/>
+                <input type="hidden" name="author" value="@author"/>
+                <input type="hidden" name="name" value="@name"/>
+                <input type="hidden" name="subject" value="@subject"/>
                 <input type="hidden" name="from" value="@from"/>
                 <input type="hidden" name="size" value="@size"/>
                 <input type="hidden" name="t" value="@t"/>
-            </form>
-          </li>
+           </form>
           <script>
           function addOwnerFun() {
             @if(owner!="all" && owner!="*"){
@@ -123,14 +132,17 @@
                 });
             });
           </script>
-        </ul>
-    </div>
 }
 
 @main("NWBib") {
-    @tags.search_form(q)
+    @tags.search_advanced("Suche aktualisieren", q, author, name, subject)
     @defining(Json.parse(result).asOpt[Seq[JsValue]].getOrElse(Seq()).zipWithIndex.drop(1)) { hits =>
-        @pagination(hits.size)
+        <div class="row pagination-and-facets">
+	        <div class="col col-md-4">@pagination(hits.size)</div>
+	        <div class="col col-md-2">@ownersDropdown</div>
+	        <div class="col col-md-4">@ownersForm</div>
+	        <div class="col col-md-2">@facets</div>
+        </div>
         <table class="table table-striped table-condensed">
         <tr>
           <th style="width: 5%"></th>
@@ -145,22 +157,11 @@
         @if(flash.get("error")!=null){
             <div class="alert alert-danger">@flash.get("error")</div>
         } else {
-            @if(hits.isEmpty && !q.trim.isEmpty){
-                <div class="alert alert-info">
-                    Keine Ergebnisse@if(owner!="all"){ <code>mit Bestand</code>} für Auswahl und Anfrage <code>@q</code>
-                    @if(owner!="all" || !q.endsWith("~")){ Versuchen Sie }
-                    @if(owner!="all"){
-                     andere Filtereinstellungen 
-                     @if(!q.endsWith("~")){ oder eine }
-                    }
-                    @if(!q.endsWith("~")){
-                        <code><a href="@nwbib.routes.Application.search(q+"~",from,size)">unscharfe Suche</a></code>
-                    }
+            @if(hits.isEmpty){
+                <div class="alert alert-info text-center">
+                    Keine Ergebnisse für Auswahl und Anfrage. Versuchen Sie eine andere Anfrage oder andere Filtereinstellungen.
                 </div>
             }
-        }
-        @if(hits.isEmpty && q.trim.isEmpty){
-            @tags.nrw_map()
         }
     }
 }

@@ -11,13 +11,9 @@ import static play.test.Helpers.running;
 import static play.test.Helpers.testServer;
 
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.elasticsearch.search.facet.Facets;
-import org.elasticsearch.search.facet.terms.TermsFacet;
-import org.elasticsearch.search.facet.terms.TermsFacet.Entry;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -26,6 +22,9 @@ import play.mvc.Content;
 import play.mvc.Http;
 import play.test.Helpers;
 import play.test.TestBrowser;
+
+import com.fasterxml.jackson.databind.JsonNode;
+
 import controllers.nwbib.Application;
 import controllers.nwbib.Lobid;
 
@@ -75,11 +74,10 @@ public class IntegrationTest {
 	@Test
 	public void testFacets() {
 		String field = "@graph.@type";
-		Promise<Facets> facetsPromise = Lobid.getFacets("köln", "all", field);
-		Facets facets = facetsPromise.get(10000);
-		List<? extends Entry> entries = ((TermsFacet) facets.facet(field)).getEntries();
+		Promise<JsonNode> jsonPromise = Lobid.getFacets("köln", "", "", "", "all", field);
+		JsonNode facets = jsonPromise.get(10000);
 		assertThat(
-				entries.stream().map(e -> e.getTerm().toString())
+				facets.findValues("term").stream().map(e -> e.asText())
 						.collect(Collectors.toList())).contains(
 				"http://purl.org/dc/terms/BibliographicResource",
 				"http://purl.org/vocab/frbr/core#Manifestation",
@@ -92,7 +90,7 @@ public class IntegrationTest {
 				"http://purl.org/ontology/bibo/Periodical",
 				"http://purl.org/ontology/bibo/MultiVolumeBook");
 		assertThat(
-				entries.stream().map(e -> e.getCount())
+				facets.findValues("count").stream().map(e -> e.intValue())
 						.collect(Collectors.toList())).excludes(0);
 	}
 
@@ -105,7 +103,7 @@ public class IntegrationTest {
 				HTMLUNIT,
 				(TestBrowser browser) -> {
 					Content html = views.html.search.render(Application.CONFIG,
-							"[{}]", query, from, size, 0L, "", "");
+							"[{}]", query, "", "", "", from, size, 0L, "", "");
 					assertThat(Helpers.contentType(html))
 							.isEqualTo("text/html");
 					String text = Helpers.contentAsString(html);
