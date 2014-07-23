@@ -229,8 +229,7 @@ public class Application extends Controller {
 			String term = json.get("term").asText();
 			int count = json.get("count").asInt();
 			String icon = Lobid.typeIcon(Arrays.asList(term));
-			String routeUrl = routes.Application.search(q, author, name, subject, from, size, owner, term, false)
-					.absoluteURL(request());
+			String routeUrl = routes.Application.search(q, author, name, subject, from, size, owner, term, false).url();
 			return String
 					.format("<li><a href='%s'><span class='%s'/>&nbsp;%s (%s)</a></li>",
 							routeUrl, icon, Lobid.typeLabel(Arrays.asList(term)), count);
