@@ -103,7 +103,7 @@ public class IntegrationTest {
 				HTMLUNIT,
 				(TestBrowser browser) -> {
 					Content html = views.html.search.render(Application.CONFIG,
-							"[{}]", query, "", "", "", from, size, 0L, "", "");
+							"[{}]", query, "", "", "", from, size, 0L, "", "", "");
 					assertThat(Helpers.contentType(html))
 							.isEqualTo("text/html");
 					String text = Helpers.contentAsString(html);

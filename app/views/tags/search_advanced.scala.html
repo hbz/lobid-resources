@@ -1,4 +1,4 @@
-@(label:String, q:String = "", author: String = "", name: String = "", subject: String = "")
+@(label:String, q:String = "", author: String = "", name: String = "", subject: String = "", sortParam: String = "")
 
 @import scala.collection.Map
 
@@ -123,5 +123,6 @@ function suggests(term){
   setAutosuggest();
   $("#search-button").hide();
   </script>
+  @if(!sortParam.isEmpty()){<input type="hidden" name="sort" value="@sortParam"/>}
   }
 }
