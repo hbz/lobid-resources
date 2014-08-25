@@ -1,6 +1,6 @@
 @* Copyright 2014 Fabian Steeg, hbz. Licensed under the Eclipse Public License 1.0 *@
 
-@(config: com.typesafe.config.Config, result: String, q:String, author:String, name:String, subject:String, id:String, from: Int, size: Int, allHits: Long, owner: String, t: String, sortParam: String)
+@(config: com.typesafe.config.Config, result: String, q:String, author:String, name:String, subject:String, id:String, publisher:String, issued:String, from: Int, size: Int, allHits: Long, owner: String, t: String, sortParam: String)
 
 @import helper._
 @import controllers.nwbib.Lobid
@@ -11,13 +11,13 @@
 @pagination(hits:Int)={
     <ul class="pagination fill">
       <li class="previous @if(from==0){disabled}">
-        <a href="@if(from==0){#} else {@nwbib.routes.Application.search(q,author,name,subject,id,from-size,size,owner,t,sortParam)}">&larr; Vorige</a>
+        <a href="@if(from==0){#} else {@nwbib.routes.Application.search(q,author,name,subject,id,publisher,issued,from-size,size,owner,t,sortParam)}">&larr; Vorige</a>
       </li>
       <li class="disabled">
       <a style="width:180px; text-align: center;" href="#">@if(hits>0){@(from+1) bis @(Math.min(from+hits,from+size))@if(allHits>0){ von @allHits}}else{0 Treffer}</a>
       </li>
       <li class="next @if(from+hits < from+size){disabled}">
-        <a href="@if(from+hits < from+size){#} else {@nwbib.routes.Application.search(q,author,name,subject,id,from+size,size,owner,t,sortParam)}">Nächste &rarr;</a>
+        <a href="@if(from+hits < from+size){#} else {@nwbib.routes.Application.search(q,author,name,subject,id,publisher,issued,from+size,size,owner,t,sortParam)}">Nächste &rarr;</a>
       </li>
     </ul>
 }
@@ -32,7 +32,7 @@
 	          <li @if(t==""){class="active"}>
 	            <script>
 	            $.ajax({
-	              url: '/nwbib/facets?q=@q&author=@author&name=@name&subject=@subject&from=@from&size=@size&owner=@owner&t=@t&field=@@graph.@@type&sort=@sortParam',
+	              url: '/nwbib/facets?q=@q&author=@author&name=@name&subject=@subject&publisher=@publisher&issued=@issued&from=@from&size=@size&owner=@owner&t=@t&field=@@graph.@@type&sort=@sortParam',
 	              success: function(data, textStatus, jqXHR) {
 	                $("#facets-ul").append(data);
 	                $("#facets-loading").remove();
@@ -42,7 +42,7 @@
 	              }
 	            });
 	            </script>
-	            <a href="@nwbib.routes.Application.search(q,author,name,subject,id,from,size,owner,"",sortParam)">Alle Typen</a></li>
+	            <a href="@nwbib.routes.Application.search(q,author,name,subject,id,publisher,issued,from,size,owner,"",sortParam)">Alle Typen</a></li>
 	            <li id="facets-loading"><a href="#">Lade Facetten...</a></li>
 	        </ul>
 	    </div>
@@ -57,8 +57,8 @@
 	          <span class="caret"></span>
 	        </button>
 	        <ul class="dropdown-menu">
-	          <li @if(owner=="all"){class="active"}><a href="@nwbib.routes.Application.search(q,author,name,subject,id,from,size, "all",t,sortParam)">Alle zeigen</a></li>
-	          <li @if(owner == "*"){class="active"}><a href="@nwbib.routes.Application.search(q,author,name,subject,id,from,size, "*",t,sortParam)">Mit Bestand</a></li>
+	          <li @if(owner=="all"){class="active"}><a href="@nwbib.routes.Application.search(q,author,name,subject,id,publisher,issued,from,size, "all",t,sortParam)">Alle zeigen</a></li>
+	          <li @if(owner == "*"){class="active"}><a href="@nwbib.routes.Application.search(q,author,name,subject,id,publisher,issued,from,size, "*",t,sortParam)">Mit Bestand</a></li>
 	          @defining(owner.replace("*","").trim.split(",").filterNot(s => {s.isEmpty || s == "all"})) { os =>
 	              @if(!os.isEmpty){
 	                <li class="divider"></li>
@@ -66,7 +66,7 @@
 	              }
 	              @for(o <- os) {
 	                <li class="active">
-	                    <a title="Filter entfernen" href="@nwbib.routes.Application.search(q,author,name,subject,id,from,size,if(os.size==1) "all" else os.filter(_!=o).mkString(","),t,sortParam)">
+	                    <a title="Filter entfernen" href="@nwbib.routes.Application.search(q,author,name,subject,id,publisher,issued,from,size,if(os.size==1) "all" else os.filter(_!=o).mkString(","),t,sortParam)">
 	                        <span class="glyphicon glyphicon-remove-sign"></span> &nbsp;
 	                        @Lobid.organisationLabel(o)
 	                    </a>
@@ -141,20 +141,20 @@
             </button>
             <ul class="dropdown-menu" id="facets-ul">
               <li @if(sortParam==""){class="active"}>
-                <a href="@nwbib.routes.Application.search(q,author,name,subject,id,from,size,owner,t,"")">Relevanz</a>
+                <a href="@nwbib.routes.Application.search(q,author,name,subject,id,publisher,issued,from,size,owner,t,"")">Relevanz</a>
               </li>
               <li @if(sortParam=="newest"){class="active"}>
-                <a href="@nwbib.routes.Application.search(q,author,name,subject,id,from,size,owner,t,"newest")">Neueste zuerst</a>
+                <a href="@nwbib.routes.Application.search(q,author,name,subject,id,publisher,issued,from,size,owner,t,"newest")">Neueste zuerst</a>
               </li>
               <li @if(sortParam=="oldest"){class="active"}>
-                <a href="@nwbib.routes.Application.search(q,author,name,subject,id,from,size,owner,t,"oldest")">Älteste zuerst</a>
+                <a href="@nwbib.routes.Application.search(q,author,name,subject,id,publisher,issued,from,size,owner,t,"oldest")">Älteste zuerst</a>
               </li>
             </ul>
         </div>
 }
 
 @main("NWBib") {
-    @tags.search_advanced("Suche aktualisieren", q, author, name, subject, id, sortParam)
+    @tags.search_advanced("Suche aktualisieren", q, author, name, subject, id, publisher, issued, sortParam)
     @defining(Json.parse(result).asOpt[Seq[JsValue]].getOrElse(Seq()).zipWithIndex.drop(1)) { hits =>
         <div class="row pagination-and-facets">
 	        <div class="col col-md-4">@pagination(hits.size)</div>

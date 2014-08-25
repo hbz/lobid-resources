@@ -1,4 +1,4 @@
-@(label:String, q:String = "", author: String = "", name: String = "", subject: String = "", id: String = "", sortParam: String = "")
+@(label:String, q:String = "", author: String = "", name: String = "", subject: String = "", id: String = "", publisher: String = "", issued: String = "", sortParam: String = "")
 
 @import scala.collection.Map
 
@@ -81,16 +81,18 @@ function suggests(term){
 
 @helper.form(action = controllers.nwbib.routes.Application.search(), 
     'id -> "nwbib-form", 'role -> "form", 'class -> "form-inline") {
-  @defining(Map("query"->q,"name"->name,"author"->author,"subject"->subject,"id"->id).filter(!_._2.isEmpty)) { fields =>
+  @defining(Map("query"->q,"name"->name,"author"->author,"subject"->subject,"id"->id,"publisher"->publisher,"issued"->issued).filter(!_._2.isEmpty)) { fields =>
   @for(((k,v),i)<- (if(fields.isEmpty) Map("query" -> "") else fields).zipWithIndex){
   <div class="search-field row" id="search-field-@i">
       <div class="form-group col col-md-2">
             <select id="query-select" class="form-control" onChange="setAutosuggest()">
               <option value="query" @if(k=="query"){selected="selected"})>Alle Felder</option>
+              <option value="id" @if(k=="id"){selected="selected"}>ID</option>
               <option value="name" @if(k=="name"){selected="selected"}>Titel</option>
               <option value="author" @if(k=="author"){selected="selected"}>Autor</option>
               <option value="subject" @if(k=="subject"){selected="selected"}>Schlagwort</option>
-              <option value="id" @if(k=="id"){selected="selected"}>ID</option>
+              <option value="publisher" @if(k=="publisher"){selected="selected"}>Verlag</option>
+              <option value="issued" @if(k=="issued"){selected="selected"}>Erscheinungsjahr</option>
             </select>
       </div>
       <div class="form-group col col-md-9">
