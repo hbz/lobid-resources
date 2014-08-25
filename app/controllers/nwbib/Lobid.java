@@ -25,7 +25,7 @@ public class Lobid {
 				.asLong();
 	}
 
-	static WSRequestHolder request(final String q, final String author, final String name, final String subject, final int from,
+	static WSRequestHolder request(final String q, final String author, final String name, final String subject, final String id, final int from,
 			final int size, String owner, String t, String sort) {
 		WSRequestHolder requestHolder = WS
 				.url(Application.CONFIG.getString("nwbib.api"))
@@ -44,6 +44,8 @@ public class Lobid {
 			requestHolder = requestHolder.setQueryParameter("name", name);
 		if(!subject.trim().isEmpty())
 			requestHolder = requestHolder.setQueryParameter("subject", subject);
+		if(!id.trim().isEmpty())
+			requestHolder = requestHolder.setQueryParameter("id", id);
 		if (!owner.equals("all"))
 			requestHolder = requestHolder.setQueryParameter("owner", owner);
 		if(!t.isEmpty())
@@ -60,7 +62,7 @@ public class Lobid {
 				return cachedResult;
 			});
 		}
-		WSRequestHolder requestHolder = request("", "", "", "", 0, 0, "", "", "");
+		WSRequestHolder requestHolder = request("", "", "", "", "", 0, 0, "", "", "");
 		return requestHolder.get().map((WS.Response response) -> {
 			Long total = getTotalResults(response.asJson());
 			Cache.set("totalHits", total, Application.ONE_HOUR);
@@ -84,7 +86,7 @@ public class Lobid {
 		}).get(10000);
 	}
 
-	public static Promise<JsonNode> getFacets(String q, String author, String name, String subject, String owner, String field) {
+	public static Promise<JsonNode> getFacets(String q, String author, String name, String subject, String id, String owner, String field) {
 		WSRequestHolder requestHolder = WS
 				.url(Application.CONFIG.getString("nwbib.api") + "/facets")
 				.setHeader("Accept", "application/json")
@@ -93,6 +95,7 @@ public class Lobid {
 				.setQueryParameter("author",author)
 				.setQueryParameter("name",name)
 				.setQueryParameter("subject",subject)
+				.setQueryParameter("id", id)
 				.setQueryParameter("owner",owner.equals("all") ? "" : owner)
 				.setQueryParameter("field",field);
 		Logger.info("Facets request URL {}, query params {} ", requestHolder.getUrl(),

@@ -74,7 +74,7 @@ public class IntegrationTest {
 	@Test
 	public void testFacets() {
 		String field = "@graph.@type";
-		Promise<JsonNode> jsonPromise = Lobid.getFacets("köln", "", "", "", "all", field);
+		Promise<JsonNode> jsonPromise = Lobid.getFacets("köln", "", "", "", "", "all", field);
 		JsonNode facets = jsonPromise.get(10000);
 		assertThat(
 				facets.findValues("term").stream().map(e -> e.asText())
@@ -103,7 +103,7 @@ public class IntegrationTest {
 				HTMLUNIT,
 				(TestBrowser browser) -> {
 					Content html = views.html.search.render(Application.CONFIG,
-							"[{}]", query, "", "", "", from, size, 0L, "", "", "");
+							"[{}]", query, "", "", "", "", from, size, 0L, "", "", "");
 					assertThat(Helpers.contentType(html))
 							.isEqualTo("text/html");
 					String text = Helpers.contentAsString(html);

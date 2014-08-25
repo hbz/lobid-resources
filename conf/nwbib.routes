@@ -5,11 +5,11 @@
 # Home page
 GET    /nwbib                       controllers.nwbib.Application.index()
 GET    /nwbib/advanced              controllers.nwbib.Application.advanced()
-GET    /nwbib/search                controllers.nwbib.Application.search(query?="", author?="", name?="", subject?="", from:Int?=0, size:Int?=10, owner?="", t?="", sort ?= "", details:Boolean?=false)
+GET    /nwbib/search                controllers.nwbib.Application.search(query?="", author?="", name?="", subject?="", id?="", from:Int?=0, size:Int?=10, owner?="", t?="", sort ?= "", details:Boolean?=false)
 GET    /nwbib/subject               controllers.nwbib.Application.subject(query?="", callback?="")
 GET    /nwbib/register              controllers.nwbib.Application.register(t)
 GET    /nwbib/classification        controllers.nwbib.Application.classification(t)
-GET    /nwbib/facets                controllers.nwbib.Application.facets(q,author?="", name?="", subject?="",from:Int,size:Int,owner,t,field,sort)
+GET    /nwbib/facets                controllers.nwbib.Application.facets(q,author?="", name?="", subject?="", id?="", from:Int,size:Int,owner,t,field,sort)
 
 GET    /nwbib/stars                 controllers.nwbib.Application.showStars()
 POST   /nwbib/stars/:id             controllers.nwbib.Application.star(id)
