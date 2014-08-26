@@ -17,7 +17,10 @@
 <tr>
   <td> <span title="@Lobid.typeLabel(t)" class="@Lobid.typeIcon(t)"></span> </td>
   <td> <a href="@nwbib.routes.Application.show(id)">
-    @optional(doc, "title", "", "<Kein Titel>") @optional(doc, "otherTitleInformation", " | ", "")</a></td>
+    @optional(doc, "title", "", "<Kein Titel>")
+    @optional(doc, "otherTitleInformation", " | ", "")
+    @optional(doc, "edition", " | ", "")</a></td>
+  <td style="text-align: right"> @optional(doc, "preferredName", "", "") </td>
   <td style="text-align: right"> @optional(doc, "issued", "", "") </td>
   <td style="text-align: right"> @tags.star_button(id) </td>
 </tr>
