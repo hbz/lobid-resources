@@ -20,18 +20,22 @@
 }
 @row match {
   case views.TableRow.VALUES => {
-    @for(elem <- multiSingleOrEmptySeq(jsonVal(property))) {
+    @for(elem <- multiSingleOrEmptySeq(jsonVal(property)).sortBy(_.toString)(Ordering[String].reverse)) {
       <tr>
-        <td>@label</td>
+        <td>@property match {
+          case "subject" if (elem.toString.contains("nwbib#"))=> { Sachsystematik }
+          case "subject" if (elem.toString.contains("nwbib-spatial#"))=> { Raumsystematik }
+          case _ => {@label}
+        }</td>
         <td property="@property">
             @valueLabel match {
                           case None => {@string(elem)}
                           case Some(seq) => {
                             @defining(TagHelper.valueFor(doc, elem.as[String], seq)){ value =>
                             @if(value.startsWith("http://purl.org/lobid/nwbib")){
-                              @defining(controllers.nwbib.Application.CLASSIFICATION.ids(value).findValue("label")){label=>
+                              @defining(controllers.nwbib.Application.CLASSIFICATION.ids(value)){c=>
                                 <a title="Nach weiteren Titeln suchen" href="@nwbib.routes.Application.search("\""+string(elem)+"\"")">
-                                    @if(label!=null){@label.textValue()} else {@value}</a> |
+                                    @if(label!=null){@c.findValue("label").textValue() (@c.findValue("value").textValue().drop(1))} else {@value}</a>  |
                               }
                             } else {<a title="Nach weiteren Titeln suchen" href="@nwbib.routes.Application.search("\""+string(elem)+"\"")">@value</a> |}
                             <a title="Linked-Data-Quelle abrufen" href="@string(elem)"><span class="glyphicon glyphicon-link"></span></a>
