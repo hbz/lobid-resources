@@ -35,4 +35,13 @@ object TagHelper {
     }
     id
   }
+  val gndEntities = Option(Seq(
+    "preferredName",
+    "preferredNameForTheWork",
+    "preferredNameForTheFamily",
+    "preferredNameForThePerson",
+    "preferredNameForTheCorporateBody",
+    "preferredNameForTheSubjectHeading",
+    "preferredNameForTheConferenceOrEvent",
+    "preferredNameForThePlaceOrGeographicName"))
 }

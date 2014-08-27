@@ -3,23 +3,14 @@
 @import play.api.libs.json.JsValue
 @import views.TableRow
 @import views.TagHelper
+@import views.TagHelper._
 @import controllers.nwbib.Lobid
 
-@defining(Option(Seq(
-    "preferredName",
-    "preferredNameForTheWork",
-    "preferredNameForTheFamily",
-    "preferredNameForThePerson",
-    "preferredNameForTheCorporateBody",
-    "preferredNameForTheSubjectHeading",
-    "preferredNameForTheConferenceOrEvent",
-    "preferredNameForThePlaceOrGeographicName"))){ gndEntities =>
 <table class="table table-striped table-condensed">
   <tr>
         <th style="width: 30%"></th>
         <th style="width: 70%"></th>
   </tr>
-  @result_field("Titel", "title", doc, TableRow.VALUES)
   @result_field("Titelzusatz", "otherTitleInformation", doc, TableRow.VALUES)
   @result_field("Autor", "creator", doc, TableRow.VALUES, valueLabel = gndEntities)
   @result_field("Herausgeber", "editor", doc, TableRow.VALUES, valueLabel = gndEntities)
@@ -76,18 +67,12 @@
         <th style="width: 70%"></th>
   </tr>
   @result_field("Schlagwort", "subject", doc, TableRow.VALUES, valueLabel = gndEntities)
-  @result_field("Sprache", "language", doc, TableRow.LINKS)
 </table>
-@*
+
 <table class="table table-striped table-condensed">
   <tr>
         <th style="width: 30%"></th>
         <th style="width: 70%"></th>
   </tr>
   @result_field("Weitere Informationen", "@id", doc, TableRow.LINKS, node = Option(doc))
-  @result_field("Weitere Informationen", "isPrimaryTopicOf", doc, TableRow.LINKS)
-  @result_field("Identische Ressource", "sameAs", doc, TableRow.LINKS)
-  @result_field("Siehe auch", "seeAlso", doc, TableRow.LINKS)
 </table>
-*@
-}

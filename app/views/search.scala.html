@@ -81,7 +81,7 @@
                 <div class="form-group fill">
 	                <div class="input-group">
 	                    <input type="text" class="owner form-control" id="owner" name="owner" 
-	                        placeholder="Einrichtung mit Bestand wählen"/>
+	                        placeholder="Einrichtung suchen"/>
 	                    <span class="input-group-btn">
 	                       <button title="Filter hinzufügen" class="btn btn-default" onclick="addOwnerFun()" id="addOwner">
                             <span class="glyphicon glyphicon-filter"></span></button>
@@ -136,7 +136,11 @@
 @sort()={
         <div class="btn-group fill">
             <button type="button" class="btn btn-default dropdown-toggle fill" data-toggle="dropdown">
-              Sortieren
+              Sortierung: @sortParam match {
+                case "" => { Relevanz }
+                case "newest" => { Neueste }
+                case "oldest" => { Älteste }
+              }
               <span class="caret"></span>
             </button>
             <ul class="dropdown-menu" id="facets-ul">
@@ -158,16 +162,17 @@
     @defining(Json.parse(result).asOpt[Seq[JsValue]].getOrElse(Seq()).zipWithIndex.drop(1)) { hits =>
         <div class="row pagination-and-facets">
 	        <div class="col col-md-4">@pagination(hits.size)</div>
-	        <div class="col col-md-2">@ownersDropdown</div>
-	        <div class="col col-md-3">@ownersForm</div>
 	        <div class="col col-md-2">@facets</div>
-	        <div class="col col-md-1">@sort</div>
+	        <div class="col col-md-2">@sort</div>
+	        <div class="col col-md-2">@ownersDropdown</div>
+	        <div class="col col-md-2">@ownersForm</div>
         </div>
         <table class="table table-striped table-condensed">
         <tr>
           <th style="width: 5%"></th>
-          <th style="width: 80%"></th>
-          <th style="width: 10%; text-align: right"></th>
+          <th style="width: 60%"></th>
+          <th style="width: 25%; text-align: right"></th>
+          <th style="width: 5%; text-align: right"></th>
           <th style="width: 5%; text-align: right"></th>
         </tr>
         @for((doc,i) <- hits; id = ((doc \ "@id").as[String].split("/")(4))) {
