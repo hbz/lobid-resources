@@ -34,12 +34,8 @@
                   </div>
                   <div class="navbar-collapse collapse">
                     <ul class="nav navbar-nav">
-                      <li @if(title=="NWBib"||title=="NWBib: Erweiterte Suche"){class="active"} class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-search"></span> Suche<b class="caret"></b></a>
-                        <ul class="dropdown-menu">
-                          <li><a href="@nwbib.routes.Application.index()"><span class="glyphicon glyphicon-search"></span> Einfache Suche</a></li>
-                          <li><a href="@nwbib.routes.Application.advanced()"><span class="glyphicon glyphicon-cog"></span> Erweiterte Suche</a></li>
-                        </ul>
+                      <li @if(title=="NWBib: Erweiterte Suche"){class="active"}>
+                        <a href="@nwbib.routes.Application.advanced()"><span class="glyphicon glyphicon-search"></span> Suche</a>
                       </li>
                       <li @if(title=="NWBib: Systematik"||title=="NWBib: Register"){class="active"} class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="octicon octicon-list-unordered"></span> Systematik<b class="caret"></b></a>
