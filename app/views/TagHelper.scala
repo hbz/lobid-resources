@@ -26,7 +26,7 @@ object TagHelper {
     }).map(_ \ "@type")
   }
   def valueFor(doc: JsValue, id: String, keys: Seq[String]): String = {
-    for (elem <- (doc \ "@graph").as[Seq[JsValue]]; key <- keys) {
+    for (elem <- ((doc \\ "@graph").head).as[Seq[JsValue]]; key <- keys) {
       if ((elem \ "@id").as[String] == id
         && elem.as[Map[String, JsValue]].contains(key)) {
         val result = (elem \ key)

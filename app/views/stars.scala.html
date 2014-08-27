@@ -18,8 +18,9 @@
         <table class="table table-striped table-condensed">
         <tr>
           <th style="width: 5%"></th>
-          <th style="width: 80%"></th>
-          <th style="width: 10%; text-align: right"></th>
+          <th style="width: 60%"></th>
+          <th style="width: 25%; text-align: right"></th>
+          <th style="width: 5%; text-align: right"></th>
           <th style="width: 5%; text-align: right"></th>
         </tr>
         @for(
@@ -29,6 +30,12 @@
                 @tags.result_short(id,doc)
         }
         </table>
+        <div class="text-center" id="clear-list">
+            <a style="cursor:pointer;" 
+                onclick="$('#clear-list').html('Bestätigung: <a href=\'@nwbib.routes.Application.clearStars()\'>Merkliste dauerhaft löschen</a> | <a style=\'cursor:pointer\'; onclick=\'window.location.reload()\'>Abbrechen</a>')">
+                <span class="glyphicon glyphicon-remove"></span> Merkliste löschen 
+            </a>
+        </div>
     }
     @if(flash.get("error")!=null){
         <div class="alert alert-danger">@flash.get("error")</div>

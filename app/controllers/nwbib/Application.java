@@ -288,6 +288,11 @@ public class Application extends Controller {
 		return ok(stars.render(starredIds()));
 	}
 
+	public static Result clearStars(){
+		session(STARRED, "");
+		return ok(stars.render(starredIds()));
+	}
+
 	private static void uncache(String id) {
 		try {
 			Play.application().plugin(EhCachePlugin.class).manager()
