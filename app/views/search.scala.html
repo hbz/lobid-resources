@@ -1,6 +1,6 @@
 @* Copyright 2014 Fabian Steeg, hbz. Licensed under the Eclipse Public License 1.0 *@
 
-@(config: com.typesafe.config.Config, result: String, q:String, author:String, name:String, subject:String, id:String, publisher:String, issued:String, from: Int, size: Int, allHits: Long, owner: String, t: String, sortParam: String)
+@(config: com.typesafe.config.Config, result: String, q:String, author:String, name:String, subject:String, id:String, publisher:String, issued:String, medium: String, from: Int, size: Int, allHits: Long, owner: String, t: String, sortParam: String)
 
 @import helper._
 @import controllers.nwbib.Lobid
@@ -11,54 +11,54 @@
 @pagination(hits:Int)={
     <ul class="pagination fill">
       <li class="previous @if(from==0){disabled}">
-        <a href="@if(from==0){#} else {@nwbib.routes.Application.search(q,author,name,subject,id,publisher,issued,from-size,size,owner,t,sortParam)}">&larr; Vorige</a>
+        <a href="@if(from==0){#} else {@nwbib.routes.Application.search(q,author,name,subject,id,publisher,issued,medium,from-size,size,owner,t,sortParam)}">&larr;</a>
       </li>
       <li class="disabled">
-      <a style="width:180px; text-align: center;" href="#">@if(hits>0){@(from+1) bis @(Math.min(from+hits,from+size))@if(allHits>0){ von @allHits}}else{0 Treffer}</a>
+      <a style="width:200px; text-align: center;" href="#">@if(hits>0){@(from+1) bis @(Math.min(from+hits,from+size))@if(allHits>0){ von @allHits}}else{0 Treffer}</a>
       </li>
       <li class="next @if(from+hits < from+size){disabled}">
-        <a href="@if(from+hits < from+size){#} else {@nwbib.routes.Application.search(q,author,name,subject,id,publisher,issued,from+size,size,owner,t,sortParam)}">Nächste &rarr;</a>
+        <a href="@if(from+hits < from+size){#} else {@nwbib.routes.Application.search(q,author,name,subject,id,publisher,issued,medium,from+size,size,owner,t,sortParam)}">&rarr;</a>
       </li>
     </ul>
 }
 
-@facets()={
+@facets(facet: String, field: String, current: String)={
 	    <div class="btn-group fill">
 	        <button type="button" class="btn btn-default dropdown-toggle fill" data-toggle="dropdown">
-	          Typ: @if(t.isEmpty){Alle} else {@Lobid.typeLabel(Seq(t)) <span class="@Lobid.typeIcon(Arrays.asList(t))"></span>}
+	          @facet: @if(current.isEmpty()){Alle} else {@Lobid.facetLabel(Seq(current), field) <span class="@Lobid.facetIcon(Arrays.asList(current), field)"></span>}
 	          <span class="caret"></span>
 	        </button>
-	        <ul class="dropdown-menu" id="facets-ul">
-	          <li @if(t==""){class="active"}>
+	        <ul class="dropdown-menu" id="facets-ul-@field.hashCode.abs">
+	          <li @if(current==""){class="active"}>
 	            <script>
 	            $.ajax({
-	              url: '/nwbib/facets?q=@q&author=@author&name=@name&subject=@subject&publisher=@publisher&issued=@issued&from=@from&size=@size&owner=@owner&t=@t&field=@@graph.@@type&sort=@sortParam',
+	              url: '/nwbib/facets?q=@q&author=@author&name=@name&subject=@subject&publisher=@publisher&issued=@issued&medium=@medium&from=@from&size=@size&owner=@owner&t=@t&field=@field&sort=@sortParam',
 	              success: function(data, textStatus, jqXHR) {
-	                $("#facets-ul").append(data);
-	                $("#facets-loading").remove();
+	                $("#facets-ul-@field.hashCode.abs").append(data);
+	                $("#facets-loading-@field.hashCode.abs").remove();
 	              },
 	              error: function(jqXHR, textStatus, errorThrown) {
 	                console.log(textStatus);
 	              }
 	            });
 	            </script>
-	            <a href="@nwbib.routes.Application.search(q,author,name,subject,id,publisher,issued,from,size,owner,"",sortParam)">Alle Typen</a></li>
-	            <li id="facets-loading"><a href="#">Lade Facetten...</a></li>
+	            <a href="@nwbib.routes.Application.search(q,author,name,subject,id,publisher,issued,if (medium==current) "" else medium,from,size,owner,if (t==current) "" else t,sortParam)">Alle</a></li>
+	            <li id="facets-loading-@field.hashCode.abs"><a href="#">Lade Facetten...</a></li>
 	        </ul>
 	    </div>
 }
 @ownersDropdown()={
 	    <div class="btn-group fill">
 	        <button type="button" class="btn btn-default dropdown-toggle fill" data-toggle="dropdown">
-	          Bestandsfilter: @if(owner=="all"){<span class="octicon octicon-x"></span>} else { 
+	          Filter: @if(owner=="all"){<span class="octicon octicon-x"></span>} else { 
 	                   @if(owner=="*") { <span class="octicon octicon-check"></span>} else {
 	                     @owner.split(",").size@* Einrichtung@if(owner.split(",").size>1){en}*@}
 	                   }
 	          <span class="caret"></span>
 	        </button>
 	        <ul class="dropdown-menu">
-	          <li @if(owner=="all"){class="active"}><a href="@nwbib.routes.Application.search(q,author,name,subject,id,publisher,issued,from,size, "all",t,sortParam)">Alle zeigen</a></li>
-	          <li @if(owner == "*"){class="active"}><a href="@nwbib.routes.Application.search(q,author,name,subject,id,publisher,issued,from,size, "*",t,sortParam)">Mit Bestand</a></li>
+	          <li @if(owner=="all"){class="active"}><a href="@nwbib.routes.Application.search(q,author,name,subject,id,publisher,issued,medium,from,size, "all",t,sortParam)">Alle zeigen</a></li>
+	          <li @if(owner == "*"){class="active"}><a href="@nwbib.routes.Application.search(q,author,name,subject,id,publisher,issued,medium,from,size, "*",t,sortParam)">Mit Bestand</a></li>
 	          @defining(owner.replace("*","").trim.split(",").filterNot(s => {s.isEmpty || s == "all"})) { os =>
 	              @if(!os.isEmpty){
 	                <li class="divider"></li>
@@ -66,7 +66,7 @@
 	              }
 	              @for(o <- os) {
 	                <li class="active">
-	                    <a title="Filter entfernen" href="@nwbib.routes.Application.search(q,author,name,subject,id,publisher,issued,from,size,if(os.size==1) "all" else os.filter(_!=o).mkString(","),t,sortParam)">
+	                    <a title="Filter entfernen" href="@nwbib.routes.Application.search(q,author,name,subject,id,publisher,issued,medium,from,size,if(os.size==1) "all" else os.filter(_!=o).mkString(","),t,sortParam)">
 	                        <span class="glyphicon glyphicon-remove-sign"></span> &nbsp;
 	                        @Lobid.organisationLabel(o)
 	                    </a>
@@ -81,7 +81,7 @@
                 <div class="form-group fill">
 	                <div class="input-group">
 	                    <input type="text" class="owner form-control" id="owner" name="owner" 
-	                        placeholder="Einrichtung suchen"/>
+	                        placeholder="Bestand in..."/>
 	                    <span class="input-group-btn">
 	                       <button title="Filter hinzufügen" class="btn btn-default" onclick="addOwnerFun()" id="addOwner">
                             <span class="glyphicon glyphicon-filter"></span></button>
@@ -145,13 +145,13 @@
             </button>
             <ul class="dropdown-menu" id="facets-ul">
               <li @if(sortParam==""){class="active"}>
-                <a href="@nwbib.routes.Application.search(q,author,name,subject,id,publisher,issued,from,size,owner,t,"")">Relevanz</a>
+                <a href="@nwbib.routes.Application.search(q,author,name,subject,id,publisher,issued,medium,from,size,owner,t,"")">Relevanz</a>
               </li>
               <li @if(sortParam=="newest"){class="active"}>
-                <a href="@nwbib.routes.Application.search(q,author,name,subject,id,publisher,issued,from,size,owner,t,"newest")">Neueste zuerst</a>
+                <a href="@nwbib.routes.Application.search(q,author,name,subject,id,publisher,issued,medium,from,size,owner,t,"newest")">Neueste zuerst</a>
               </li>
               <li @if(sortParam=="oldest"){class="active"}>
-                <a href="@nwbib.routes.Application.search(q,author,name,subject,id,publisher,issued,from,size,owner,t,"oldest")">Älteste zuerst</a>
+                <a href="@nwbib.routes.Application.search(q,author,name,subject,id,publisher,issued,medium,from,size,owner,t,"oldest")">Älteste zuerst</a>
               </li>
             </ul>
         </div>
@@ -161,11 +161,12 @@
     @tags.search_advanced("Suche aktualisieren", q, author, name, subject, id, publisher, issued, sortParam)
     @defining(Json.parse(result).asOpt[Seq[JsValue]].getOrElse(Seq()).zipWithIndex.drop(1)) { hits =>
         <div class="row pagination-and-facets">
-	        <div class="col col-md-4">@pagination(hits.size)</div>
-	        <div class="col col-md-2">@facets</div>
+	        <div class="col col-md-3">@pagination(hits.size)</div>
+	        <div class="col col-md-2">@facets("Typ", "@graph.@type", t)</div>
+	        <div class="col col-md-2">@facets("Medium", "@graph.http://purl.org/dc/terms/medium.@id", medium)</div>
 	        <div class="col col-md-2">@sort</div>
-	        <div class="col col-md-2">@ownersDropdown</div>
 	        <div class="col col-md-2">@ownersForm</div>
+	        <div class="col col-md-1">@ownersDropdown</div>
         </div>
         <table class="table table-striped table-condensed">
         <tr>

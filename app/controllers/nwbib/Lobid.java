@@ -2,6 +2,7 @@ package controllers.nwbib;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import play.Logger;
@@ -11,6 +12,7 @@ import play.libs.WS;
 import play.libs.WS.WSRequestHolder;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.google.common.collect.ImmutableMap;
 
 /**
  * Access Lobid title data.
@@ -27,8 +29,8 @@ public class Lobid {
 
 	static WSRequestHolder request(final String q, final String author,
 			final String name, final String subject, final String id,
-			final String publisher, final String issued, final int from,
-			final int size, String owner, String t, String sort) {
+			final String publisher, final String issued, final String medium,
+			final int from, final int size, String owner, String t, String sort) {
 		WSRequestHolder requestHolder = WS
 				.url(Application.CONFIG.getString("nwbib.api"))
 				.setHeader("Accept", "application/json")
@@ -52,6 +54,8 @@ public class Lobid {
 			requestHolder = requestHolder.setQueryParameter("publisher", publisher);
 		if(!issued.trim().isEmpty())
 			requestHolder = requestHolder.setQueryParameter("issued", issued);
+		if(!medium.trim().isEmpty())
+			requestHolder = requestHolder.setQueryParameter("medium", medium);
 		if (!owner.equals("all"))
 			requestHolder = requestHolder.setQueryParameter("owner", owner);
 		if(!t.isEmpty())
@@ -68,7 +72,7 @@ public class Lobid {
 				return cachedResult;
 			});
 		}
-		WSRequestHolder requestHolder = request("", "", "", "", "", "", "", 0, 0, "", "", "");
+		WSRequestHolder requestHolder = request("", "", "", "", "", "", "", "", 0, 0, "", "", "");
 		return requestHolder.get().map((WS.Response response) -> {
 			Long total = getTotalResults(response.asJson());
 			Cache.set("totalHits", total, Application.ONE_HOUR);
@@ -94,7 +98,7 @@ public class Lobid {
 
 	public static Promise<JsonNode> getFacets(String q, String author,
 			String name, String subject, String id, String publisher,
-			String issued, String owner, String field) {
+			String issued, String medium, String owner, String field) {
 		WSRequestHolder requestHolder = WS
 				.url(Application.CONFIG.getString("nwbib.api") + "/facets")
 				.setHeader("Accept", "application/json")
@@ -115,31 +119,45 @@ public class Lobid {
 		});
 	}
 
-	public static String typeLabel(List<String> types) {
-		String type = selectType(types);
+	private static final Map<String,String> keys = ImmutableMap.of(
+			"@graph.@type", "type.labels",//
+			"@graph.http://purl.org/dc/terms/medium.@id", "medium.labels");
+
+	public static String typeIcon(List<String> types){
+		return facetIcon(types, "@graph.@type");
+	}
+
+	public static String typeLabel(List<String> types){
+		return facetLabel(types, "@graph.@type");
+	}
+
+	public static String facetLabel(List<String> types, String field) {
+		String configKey = keys.get(field);
+		String type = selectType(types, configKey);
 		if(type.isEmpty()) return "";
 		@SuppressWarnings("unchecked")
 		String selected = ((List<String>) Application.CONFIG
-				.getObject("type.labels").unwrapped().get(type)).get(0);
+				.getObject(configKey).unwrapped().get(type)).get(0);
 		return selected.isEmpty() ? types.get(0) : selected;
 	}
 
-	public static String typeIcon(List<String> types) {
-		String type = selectType(types);
+	public static String facetIcon(List<String> types, String field) {
+		String configKey = keys.get(field);
+		String type = selectType(types, configKey);
 		if(type.isEmpty()) return "";
 		@SuppressWarnings("unchecked")
 		String selected = ((List<String>) Application.CONFIG
-				.getObject("type.labels").unwrapped().get(type)).get(1);
+				.getObject(configKey).unwrapped().get(type)).get(1);
 		return selected.isEmpty() ? types.get(0) : selected;
 	}
 
-	private static String selectType(List<String> types) {
+	private static String selectType(List<String> types, String configKey) {
 		Logger.trace("Types: " + types);
 		@SuppressWarnings("unchecked")
 		List<String> selected = types.stream()
 			.map(t -> {
 				List<String> vals = ((List<String>) Application.CONFIG
-				.getObject("type.labels").unwrapped().get(t));
+				.getObject(configKey).unwrapped().get(t));
 				return vals == null || vals.get(0).isEmpty()
 						|| vals.get(1).isEmpty() ? "" : t;
 			})
