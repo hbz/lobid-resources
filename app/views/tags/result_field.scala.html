@@ -47,7 +47,7 @@
     }
   }
   case views.TableRow.LINKS => {
-    @for(elem <- multiSingleOrEmptySeq(jsonVal(property))) {
+    @for(elem <- multiSingleOrEmptySeq(jsonVal(property)) if !elem.toString.contains("http://lobid.org/resource/NWBib")) {
       <tr>
         <td>@label</td>
         <td>
