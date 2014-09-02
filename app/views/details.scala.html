@@ -21,6 +21,7 @@
                     <dt>
                     @tags.star_button(id) 
                     Titel: @defining((doc \\ "title")) { titles => @if(titles.size>0) {@(titles.get(0).as[String])} else {@id} 
+                    <a href="@Application.CONFIG.getString("nwbib.api")?id=@id&format=source">&nbsp;</a>
                     </dt>
                     }}<dd>@tags.result_doc(doc)</dd>
                 </dl>
