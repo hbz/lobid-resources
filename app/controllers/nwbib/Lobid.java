@@ -98,7 +98,7 @@ public class Lobid {
 
 	public static Promise<JsonNode> getFacets(String q, String author,
 			String name, String subject, String id, String publisher,
-			String issued, String medium, String owner, String field) {
+			String issued, String medium, String owner, String field, String t) {
 		WSRequestHolder requestHolder = WS
 				.url(Application.CONFIG.getString("nwbib.api") + "/facets")
 				.setHeader("Accept", "application/json")
@@ -112,6 +112,10 @@ public class Lobid {
 				.setQueryParameter("id", id)
 				.setQueryParameter("owner",owner.equals("all") ? "" : owner)
 				.setQueryParameter("field",field);
+		if(!field.equals(Application.MEDIUM_FIELD))
+			requestHolder = requestHolder.setQueryParameter("medium", medium);
+		if(!field.equals(Application.TYPE_FIELD))
+			requestHolder = requestHolder.setQueryParameter("t", t);
 		Logger.info("Facets request URL {}, query params {} ", requestHolder.getUrl(),
 				requestHolder.getQueryParameters());
 		return requestHolder.get().map((WS.Response response) -> {
@@ -120,15 +124,15 @@ public class Lobid {
 	}
 
 	private static final Map<String,String> keys = ImmutableMap.of(
-			"@graph.@type", "type.labels",//
-			"@graph.http://purl.org/dc/terms/medium.@id", "medium.labels");
+			Application.TYPE_FIELD, "type.labels",//
+			Application.MEDIUM_FIELD, "medium.labels");
 
 	public static String typeIcon(List<String> types){
-		return facetIcon(types, "@graph.@type");
+		return facetIcon(types, Application.TYPE_FIELD);
 	}
 
 	public static String typeLabel(List<String> types){
-		return facetLabel(types, "@graph.@type");
+		return facetLabel(types, Application.TYPE_FIELD);
 	}
 
 	public static String facetLabel(List<String> types, String field) {

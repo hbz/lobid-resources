@@ -4,6 +4,7 @@
 
 @import helper._
 @import controllers.nwbib.Lobid
+@import controllers.nwbib.Application
 @import play.api.libs.json.Json
 @import play.api.libs.json.JsValue
 @import play.api.libs.json.JsArray
@@ -162,8 +163,8 @@
     @defining(Json.parse(result).asOpt[Seq[JsValue]].getOrElse(Seq()).zipWithIndex.drop(1)) { hits =>
         <div class="row pagination-and-facets">
 	        <div class="col col-md-3">@pagination(hits.size)</div>
-	        <div class="col col-md-2">@facets("Typ", "@graph.@type", t)</div>
-	        <div class="col col-md-2">@facets("Medium", "@graph.http://purl.org/dc/terms/medium.@id", medium)</div>
+	        <div class="col col-md-2">@facets("Typ", Application.TYPE_FIELD, t)</div>
+	        <div class="col col-md-2">@facets("Medium", Application.MEDIUM_FIELD, medium)</div>
 	        <div class="col col-md-2">@sort</div>
 	        <div class="col col-md-2">@ownersForm</div>
 	        <div class="col col-md-1">@ownersDropdown</div>

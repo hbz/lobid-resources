@@ -43,6 +43,9 @@ public class Application extends Controller {
 
 	private static final String STARRED = "starred";
 
+	public static final String TYPE_FIELD = "@graph.@type";
+	public static final String MEDIUM_FIELD = "@graph.http://purl.org/dc/terms/medium.@id";
+
 	static Form<String> queryForm = Form.form(String.class);
 
 	private static final File FILE = new File("conf/nwbib.conf");
@@ -254,14 +257,14 @@ public class Application extends Controller {
 			// TODO we need a general solution for this when we add more facets
 			String routeUrl = routes.Application.search(q, author, name,
 					subject, id, publisher, issued,
-					isTypeFacet(field) ? medium : term, from, size, owner,
-					isTypeFacet(field) ? term : t, sort, false).url();
+					field.equals(TYPE_FIELD) ? medium : term, from, size, owner,
+					field.equals(TYPE_FIELD) ? term : t, sort, false).url();
 			return String
 					.format("<li><a href='%s'><span class='%s'/>&nbsp;%s (%s)</a></li>",
 							routeUrl, icon, Lobid.facetLabel(Arrays.asList(term), field), count);
 		};
 		Promise<Result> promise = Lobid
-				.getFacets(q, author, name, subject, id, publisher, issued, medium, owner, field)
+				.getFacets(q, author, name, subject, id, publisher, issued, medium, owner, field, t)
 				.map(json -> StreamSupport.stream(
 						Spliterators.spliteratorUnknownSize(json.findValue("entries").elements(), 0), false)
 						.filter(labelled)
@@ -270,10 +273,6 @@ public class Application extends Controller {
 				.map(lis -> ok(String.join("\n", lis)));
 		promise.onRedeem(r -> Cache.set(key, r, ONE_DAY));
 		return promise;
-	}
-
-	private static boolean isTypeFacet(String field) {
-		return field.equals("@graph.@type");
 	}
 
 	public static boolean isStarred(String id){

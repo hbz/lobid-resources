@@ -73,8 +73,8 @@ public class IntegrationTest {
 
 	@Test
 	public void testFacets() {
-		String field = "@graph.@type";
-		Promise<JsonNode> jsonPromise = Lobid.getFacets("köln", "", "", "", "", "", "", "", "all", field);
+		String field = Application.TYPE_FIELD;
+		Promise<JsonNode> jsonPromise = Lobid.getFacets("köln", "", "", "", "", "", "", "", "all", field, "");
 		JsonNode facets = jsonPromise.get(10000);
 		assertThat(
 				facets.findValues("term").stream().map(e -> e.asText())
