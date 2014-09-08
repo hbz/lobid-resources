@@ -13,6 +13,7 @@ import play.libs.WS.WSRequestHolder;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.collect.ImmutableMap;
+import com.typesafe.config.ConfigObject;
 
 /**
  * Access Lobid title data.
@@ -140,8 +141,11 @@ public class Lobid {
 		String type = selectType(types, configKey);
 		if(type.isEmpty()) return "";
 		@SuppressWarnings("unchecked")
-		String selected = ((List<String>) Application.CONFIG
-				.getObject(configKey).unwrapped().get(type)).get(0);
+		List<String> details = ((List<String>) Application.CONFIG
+				.getObject(configKey).unwrapped().get(type));
+		if(details==null)
+			return type;
+		String selected = details.get(0);
 		return selected.isEmpty() ? types.get(0) : selected;
 	}
 
@@ -150,8 +154,11 @@ public class Lobid {
 		String type = selectType(types, configKey);
 		if(type.isEmpty()) return "";
 		@SuppressWarnings("unchecked")
-		String selected = ((List<String>) Application.CONFIG
-				.getObject(configKey).unwrapped().get(type)).get(1);
+		List<String> details = (List<String>) Application.CONFIG
+				.getObject(configKey).unwrapped().get(type);
+		if(details==null)
+			return type;
+		String selected = details.get(1);
 		return selected.isEmpty() ? types.get(0) : selected;
 	}
 
@@ -162,6 +169,7 @@ public class Lobid {
 			.map(t -> {
 				List<String> vals = ((List<String>) Application.CONFIG
 				.getObject(configKey).unwrapped().get(t));
+				if(vals==null) return t;
 				return vals == null || vals.get(0).isEmpty()
 						|| vals.get(1).isEmpty() ? "" : t;
 			})
