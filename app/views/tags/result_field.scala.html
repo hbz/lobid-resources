@@ -23,8 +23,6 @@
     @for(elem <- multiSingleOrEmptySeq(jsonVal(property)).sortBy(_.toString)(Ordering[String].reverse)) {
       <tr>
         <td>@property match {
-          case "subject" if (elem.toString.contains("nwbib#"))=> { Sachsystematik }
-          case "subject" if (elem.toString.contains("nwbib-spatial#"))=> { Raumsystematik }
           case _ => {@label}
         }</td>
         <td property="@property">
