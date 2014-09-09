@@ -33,7 +33,7 @@
 	          <li @if(current==""){class="active"}>
 	            <script>
 	            $.ajax({
-	              url: '/nwbib/facets?q=@q&author=@author&name=@name&subject=@subject&publisher=@publisher&issued=@issued&medium=@medium&from=@from&size=@size&owner=@owner&t=@t&field=@field&sort=@sortParam',
+	              url: '/nwbib/facets?q=@q&author=@author&name=@name&subject=@subject&publisher=@publisher&issued=@issued&medium=@medium.replace("#", "%23")&from=@from&size=@size&owner=@owner&t=@t.replace("#", "%23")&field=@field&sort=@sortParam',
 	              success: function(data, textStatus, jqXHR) {
 	                $("#facets-ul-@field.hashCode.abs").append(data);
 	                $("#facets-loading-@field.hashCode.abs").remove();
