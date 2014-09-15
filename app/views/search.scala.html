@@ -26,7 +26,7 @@
 @facets(facet: String, field: String, current: String)={
 	    <div class="btn-group fill">
 	        <button type="button" class="btn btn-default dropdown-toggle fill" data-toggle="dropdown">
-	          @facet: @if(current.isEmpty()){Alle} else {@Lobid.facetLabel(Seq(current), field) <span class="@Lobid.facetIcon(Arrays.asList(current), field)"></span>}
+	          @if(current.isEmpty()){@facet: Alle} else {@Lobid.facetLabel(Seq(current), field) <span class="@Lobid.facetIcon(Arrays.asList(current), field)"></span>}
 	          <span class="caret"></span>
 	        </button>
 	        <ul class="dropdown-menu" id="facets-ul-@field.hashCode.abs">
@@ -43,7 +43,7 @@
 	              }
 	            });
 	            </script>
-	            <a href="@nwbib.routes.Application.search(q,author,name,subject,id,publisher,issued,if (medium==current) "" else medium,from,size,owner,if (t==current) "" else t,sortParam)">Alle</a></li>
+	            <a href="@nwbib.routes.Application.search(q,author,name,subject,id,publisher,issued,if (medium==current) "" else medium,from,size,owner,if (t==current) "" else t,sortParam)">@facet: Alle</a></li>
 	            <li id="facets-loading-@field.hashCode.abs"><a href="#">Lade Facetten...</a></li>
 	        </ul>
 	    </div>
@@ -163,7 +163,7 @@
     @defining(Json.parse(result).asOpt[Seq[JsValue]].getOrElse(Seq()).zipWithIndex.drop(1)) { hits =>
         <div class="row pagination-and-facets">
 	        <div class="col col-md-3">@pagination(hits.size)</div>
-	        <div class="col col-md-2">@facets("Typ", Application.TYPE_FIELD, t)</div>
+	        <div class="col col-md-2">@facets("Publikationstyp", Application.TYPE_FIELD, t)</div>
 	        <div class="col col-md-2">@facets("Medium", Application.MEDIUM_FIELD, medium)</div>
 	        <div class="col col-md-2">@sort</div>
 	        <div class="col col-md-2">@ownersForm</div>
