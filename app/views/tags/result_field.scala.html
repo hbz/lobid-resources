@@ -20,7 +20,7 @@
 }
 @row match {
   case views.TableRow.VALUES => {
-    @for(elem <- multiSingleOrEmptySeq(jsonVal(property)).sortBy(_.toString)(Ordering[String].reverse)) {
+    @for(elem <- multiSingleOrEmptySeq(jsonVal(property)).sortBy(_.toString)(Ordering[String].reverse) if !elem.toString.contains("http://dewey.info")) {
       <tr>
         <td>@property match {
           case _ => {@label}

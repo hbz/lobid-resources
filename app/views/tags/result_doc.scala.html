@@ -17,7 +17,9 @@
 }
 
 @table(){
+  @result_field("Titel", "title", doc, TableRow.VALUES)
   @result_field("Titelzusatz", "otherTitleInformation", doc, TableRow.VALUES)
+  @result_field("Verantwortlich", "statementOfResponsibility", doc, TableRow.VALUES)
   @result_field("Autor", "creator", doc, TableRow.VALUES, valueLabel = gndEntities)
   @result_field("Herausgeber", "editor", doc, TableRow.VALUES, valueLabel = gndEntities)
   @result_field("Mitwirkender", "contributor", doc, TableRow.VALUES, valueLabel = gndEntities)
@@ -47,9 +49,6 @@
   @defining((doc\\"@type").last.asOpt[Seq[String]].getOrElse(Seq((doc\\"@type").last.asOpt[String].get))){ t =>
     <tr><td>Typ</td><td><span class="@Lobid.typeIcon(t)"></span> @Lobid.typeLabel(t)</td></tr>
   }
-}
-
-@table(){
   @result_field("Erschienen", "issued", doc, TableRow.VALUES)
   @result_field("Auflage", "edition", doc, TableRow.VALUES)
   @result_field("Band", "volume", doc, TableRow.VALUES)
@@ -58,7 +57,6 @@
   @result_field("ISBN-10", "isbn10", doc, TableRow.VALUES)
   @result_field("ISBN-13", "isbn13", doc, TableRow.VALUES)
   @result_field("URN", "urn", doc, TableRow.VALUES)
-  @result_field("Verantwortlich", "statementOfResponsibility", doc, TableRow.VALUES)
   @result_field("Umfang", "extent", doc, TableRow.VALUES)
 }
 
@@ -69,10 +67,7 @@
 }
 
 @table(){
-    @result_field("Spatial", "spatial", doc, TableRow.LINKS)
-}
-
-@table(){
+  @result_field("Spatial", "spatial", doc, TableRow.LINKS)
   @result_field("Bestandteil von", "isPartOfName", doc, TableRow.VALUES)
   @result_field("Bestandteil von", "isPartOf", doc, TableRow.LINKS)
   @result_field("Weitere Informationen (Linked Open Data)", "@id", doc, TableRow.LINKS, node = Option(doc))

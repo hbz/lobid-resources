@@ -18,12 +18,10 @@
           @defining((doc\\"exemplar")) { exemplars =>
               <div class="col-md-@if(exemplars.isEmpty && !doc.toString.contains("fulltextOnline")){12} else {7}">
                 <dl>@defining((doc \ "@id").as[String].split("/")(4)){ id =>
-                    <dt>
-                    @tags.star_button(id) 
-                    Titel: @defining((doc \\ "title")) { titles => @if(titles.size>0) {@(titles.get(0).as[String])} else {@id} 
+                    <dt>@tags.star_button(id) Titeldetails:
                     <a href="@Application.CONFIG.getString("nwbib.api")?id=@id&format=source">&nbsp;</a>
-                    </dt>
-                    }}<dd>@tags.result_doc(doc)</dd>
+                    </dt>}
+                    <dd>@tags.result_doc(doc)</dd>
                 </dl>
               </div>
               @if(!exemplars.isEmpty || doc.toString.contains("fulltextOnline")){
