@@ -1,4 +1,4 @@
-@(label:String, q:String = "", author: String = "", name: String = "", subject: String = "", id: String = "", publisher: String = "", issued: String = "", sortParam: String = "")
+@(label:String, q:String = "", author: String = "", name: String = "", subject: String = "", nwbibspatial: String = "", nwbibsubject: String = "", id: String = "", publisher: String = "", issued: String = "", sortParam: String = "")
 
 @import scala.collection.Map
 
@@ -63,6 +63,14 @@ function suggests(term){
             url : "/nwbib/subject",
             data : { query : term }
         },
+        'nwbibspatial' : {
+            url : "/nwbib/subject",
+            data : { query : term }
+        },
+        'nwbibsubject' : {
+            url : "/nwbib/subject",
+            data : { query : term }
+        },
         'name' : {
             url : "http://api.lobid.org/resource",
             data : { name : term, format : "short" }
@@ -81,7 +89,7 @@ function suggests(term){
 
 @helper.form(action = controllers.nwbib.routes.Application.search(), 
     'id -> "nwbib-form", 'role -> "form", 'class -> "form-inline") {
-  @defining(Map("query"->q,"name"->name,"author"->author,"subject"->subject,"id"->id,"publisher"->publisher,"issued"->issued).filter(!_._2.isEmpty)) { fields =>
+  @defining(Map("query"->q,"name"->name,"author"->author,"subject"->subject,"nwbibspatial"->nwbibspatial, "nwbibsubject"->nwbibsubject, "id"->id,"publisher"->publisher,"issued"->issued).filter(!_._2.isEmpty)) { fields =>
   @for(((k,v),i)<- (if(fields.isEmpty) Map("query" -> "") else fields).zipWithIndex){
   <div class="search-field row" id="search-field-@i">
       <div class="form-group col col-md-2">
@@ -91,6 +99,8 @@ function suggests(term){
               <option value="name" @if(k=="name"){selected="selected"}>Titel</option>
               <option value="author" @if(k=="author"){selected="selected"}>Autor</option>
               <option value="subject" @if(k=="subject"){selected="selected"}>Schlagwort</option>
+              <option value="nwbibspatial" @if(k=="nwbibspatial"){selected="selected"}>Raumsystematik</option>
+              <option value="nwbibsubject" @if(k=="nwbibsubject"){selected="selected"}>Sachsystematik</option>
               <option value="publisher" @if(k=="publisher"){selected="selected"}>Verlag</option>
               <option value="issued" @if(k=="issued"){selected="selected"}>Erscheinungsjahr</option>
             </select>

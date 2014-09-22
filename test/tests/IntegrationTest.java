@@ -74,18 +74,16 @@ public class IntegrationTest {
 	@Test
 	public void testFacets() {
 		String field = Application.TYPE_FIELD;
-		Promise<JsonNode> jsonPromise = Lobid.getFacets("köln", "", "", "", "", "", "", "", "all", field, "");
+		Promise<JsonNode> jsonPromise = Lobid.getFacets("köln", "", "", "", "", "", "", "", "", "", "all", field, "");
 		JsonNode facets = jsonPromise.get(10000);
 		assertThat(
 				facets.findValues("term").stream().map(e -> e.asText())
 						.collect(Collectors.toList())).contains(
 				"http://purl.org/dc/terms/BibliographicResource",
 				"http://purl.org/vocab/frbr/core#Manifestation",
-				"http://purl.org/ontology/bibo/Document",
 				"http://purl.org/ontology/bibo/Article",
 				"http://purl.org/ontology/bibo/Book",
 				"http://purl.org/ontology/bibo/Collection",
-				"http://iflastandards.info/ns/isbd/terms/mediatype/T1002",
 				"http://purl.org/ontology/bibo/Journal",
 				"http://purl.org/ontology/bibo/Periodical",
 				"http://purl.org/ontology/bibo/MultiVolumeBook");
@@ -103,7 +101,7 @@ public class IntegrationTest {
 				HTMLUNIT,
 				(TestBrowser browser) -> {
 					Content html = views.html.search.render(Application.CONFIG,
-							"[{}]", query, "", "", "", "", "", "", "", from, size, 0L, "", "", "");
+							"[{}]", query, "", "", "", "", "", "", "", "", "", from, size, 0L, "", "", "");
 					assertThat(Helpers.contentType(html))
 							.isEqualTo("text/html");
 					String text = Helpers.contentAsString(html);

@@ -1,6 +1,6 @@
 @* Copyright 2014 Fabian Steeg, hbz. Licensed under the Eclipse Public License 1.0 *@
 
-@(config: com.typesafe.config.Config, result: String, q:String, author:String, name:String, subject:String, id:String, publisher:String, issued:String, medium: String, from: Int, size: Int, allHits: Long, owner: String, t: String, sortParam: String)
+@(config: com.typesafe.config.Config, result: String, q:String, author:String, name:String, subject:String, id:String, publisher:String, issued:String, medium: String, nwbibspatial: String, nwbibsubject: String, from: Int, size: Int, allHits: Long, owner: String, t: String, sortParam: String)
 
 @import helper._
 @import controllers.nwbib.Lobid
@@ -12,13 +12,13 @@
 @pagination(hits:Int)={
     <ul class="pagination fill">
       <li class="previous @if(from==0){disabled}">
-        <a href="@if(from==0){#} else {@nwbib.routes.Application.search(q,author,name,subject,id,publisher,issued,medium,from-size,size,owner,t,sortParam)}">&larr;</a>
+        <a href="@if(from==0){#} else {@nwbib.routes.Application.search(q,author,name,subject,id,publisher,issued,medium,nwbibspatial,nwbibsubject,from-size,size,owner,t,sortParam)}">&larr;</a>
       </li>
       <li class="disabled">
       <a style="width:200px; text-align: center;" href="#">@if(hits>0){@(from+1) bis @(Math.min(from+hits,from+size))@if(allHits>0){ von @allHits}}else{0 Treffer}</a>
       </li>
       <li class="next @if(from+hits < from+size){disabled}">
-        <a href="@if(from+hits < from+size){#} else {@nwbib.routes.Application.search(q,author,name,subject,id,publisher,issued,medium,from+size,size,owner,t,sortParam)}">&rarr;</a>
+        <a href="@if(from+hits < from+size){#} else {@nwbib.routes.Application.search(q,author,name,subject,id,publisher,issued,medium,nwbibspatial,nwbibsubject,from+size,size,owner,t,sortParam)}">&rarr;</a>
       </li>
     </ul>
 }
@@ -33,7 +33,7 @@
 	          <li @if(current==""){class="active"}>
 	            <script>
 	            $.ajax({
-	              url: '/nwbib/facets?q=@urlEncode(q)&author=@urlEncode(author)&name=@urlEncode(name)&subject=@urlEncode(subject)&publisher=@urlEncode(publisher)&issued=@urlEncode(issued)&medium=@urlEncode(medium)&from=@from&size=@size&owner=@urlEncode(owner)&t=@urlEncode(t)&field=@urlEncode(field)&sort=@urlEncode(sortParam)',
+	              url: '/nwbib/facets?q=@urlEncode(q)&author=@urlEncode(author)&name=@urlEncode(name)&subject=@urlEncode(subject)&publisher=@urlEncode(publisher)&issued=@urlEncode(issued)&medium=@urlEncode(medium)&nwbibspatial=@urlEncode(nwbibspatial)&nwbibsubject=@urlEncode(nwbibsubject)&from=@from&size=@size&owner=@urlEncode(owner)&t=@urlEncode(t)&field=@urlEncode(field)&sort=@urlEncode(sortParam)',
 	              success: function(data, textStatus, jqXHR) {
 	                $("#facets-ul-@field.hashCode.abs").append(data);
 	                $("#facets-loading-@field.hashCode.abs").remove();
@@ -43,7 +43,7 @@
 	              }
 	            });
 	            </script>
-	            <a href="@nwbib.routes.Application.search(q,author,name,subject,id,publisher,issued,if (medium==current) "" else medium,from,size,owner,if (t==current) "" else t,sortParam)">@facet: Alle</a></li>
+	            <a href="@nwbib.routes.Application.search(q,author,name,subject,id,publisher,issued,if (medium==current) "" else medium,nwbibspatial,nwbibsubject,from,size,owner,if (t==current) "" else t,sortParam)">@facet: Alle</a></li>
 	            <li id="facets-loading-@field.hashCode.abs"><a href="#">Lade Facetten...</a></li>
 	        </ul>
 	    </div>
@@ -58,8 +58,8 @@
 	          <span class="caret"></span>
 	        </button>
 	        <ul class="dropdown-menu">
-	          <li @if(owner=="all"){class="active"}><a href="@nwbib.routes.Application.search(q,author,name,subject,id,publisher,issued,medium,from,size, "all",t,sortParam)">Alle zeigen</a></li>
-	          <li @if(owner == "*"){class="active"}><a href="@nwbib.routes.Application.search(q,author,name,subject,id,publisher,issued,medium,from,size, "*",t,sortParam)">Mit Bestand</a></li>
+	          <li @if(owner=="all"){class="active"}><a href="@nwbib.routes.Application.search(q,author,name,subject,id,publisher,issued,medium,nwbibspatial,nwbibsubject,from,size, "all",t,sortParam)">Alle zeigen</a></li>
+	          <li @if(owner == "*"){class="active"}><a href="@nwbib.routes.Application.search(q,author,name,subject,id,publisher,issued,medium,nwbibspatial,nwbibsubject,from,size, "*",t,sortParam)">Mit Bestand</a></li>
 	          @defining(owner.replace("*","").trim.split(",").filterNot(s => {s.isEmpty || s == "all"})) { os =>
 	              @if(!os.isEmpty){
 	                <li class="divider"></li>
@@ -67,7 +67,7 @@
 	              }
 	              @for(o <- os) {
 	                <li class="active">
-	                    <a title="Filter entfernen" href="@nwbib.routes.Application.search(q,author,name,subject,id,publisher,issued,medium,from,size,if(os.size==1) "all" else os.filter(_!=o).mkString(","),t,sortParam)">
+	                    <a title="Filter entfernen" href="@nwbib.routes.Application.search(q,author,name,subject,id,publisher,issued,medium,nwbibspatial,nwbibsubject,from,size,if(os.size==1) "all" else os.filter(_!=o).mkString(","),t,sortParam)">
 	                        <span class="glyphicon glyphicon-remove-sign"></span> &nbsp;
 	                        @Lobid.organisationLabel(o)
 	                    </a>
@@ -146,20 +146,20 @@
             </button>
             <ul class="dropdown-menu" id="facets-ul">
               <li @if(sortParam==""){class="active"}>
-                <a href="@nwbib.routes.Application.search(q,author,name,subject,id,publisher,issued,medium,from,size,owner,t,"")">Relevanz</a>
+                <a href="@nwbib.routes.Application.search(q,author,name,subject,id,publisher,issued,medium,nwbibspatial,nwbibsubject,from,size,owner,t,"")">Relevanz</a>
               </li>
               <li @if(sortParam=="newest"){class="active"}>
-                <a href="@nwbib.routes.Application.search(q,author,name,subject,id,publisher,issued,medium,from,size,owner,t,"newest")">Neueste zuerst</a>
+                <a href="@nwbib.routes.Application.search(q,author,name,subject,id,publisher,issued,medium,nwbibspatial,nwbibsubject,from,size,owner,t,"newest")">Neueste zuerst</a>
               </li>
               <li @if(sortParam=="oldest"){class="active"}>
-                <a href="@nwbib.routes.Application.search(q,author,name,subject,id,publisher,issued,medium,from,size,owner,t,"oldest")">Älteste zuerst</a>
+                <a href="@nwbib.routes.Application.search(q,author,name,subject,id,publisher,issued,medium,nwbibspatial,nwbibsubject,from,size,owner,t,"oldest")">Älteste zuerst</a>
               </li>
             </ul>
         </div>
 }
 
 @main("NWBib") {
-    @tags.search_advanced("Suche aktualisieren", q, author, name, subject, id, publisher, issued, sortParam)
+    @tags.search_advanced("Suche aktualisieren", q, author, name, subject, nwbibspatial, nwbibsubject, id, publisher, issued, sortParam)
     @defining(Json.parse(result).asOpt[Seq[JsValue]].getOrElse(Seq()).zipWithIndex.drop(1)) { hits =>
         <div class="row pagination-and-facets">
 	        <div class="col col-md-3">@pagination(hits.size)</div>

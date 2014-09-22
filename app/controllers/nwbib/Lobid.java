@@ -31,6 +31,7 @@ public class Lobid {
 	static WSRequestHolder request(final String q, final String author,
 			final String name, final String subject, final String id,
 			final String publisher, final String issued, final String medium,
+			final String nwbibspatial, final String nwbibsubject,
 			final int from, final int size, String owner, String t, String sort) {
 		WSRequestHolder requestHolder = WS
 				.url(Application.CONFIG.getString("nwbib.api"))
@@ -57,6 +58,10 @@ public class Lobid {
 			requestHolder = requestHolder.setQueryParameter("issued", issued);
 		if(!medium.trim().isEmpty())
 			requestHolder = requestHolder.setQueryParameter("medium", medium);
+		if(!nwbibspatial.trim().isEmpty())
+			requestHolder = requestHolder.setQueryParameter("nwbibspatial", nwbibspatial);
+		if(!nwbibsubject.trim().isEmpty())
+			requestHolder = requestHolder.setQueryParameter("nwbibsubject", nwbibsubject);
 		if (!owner.equals("all"))
 			requestHolder = requestHolder.setQueryParameter("owner", owner);
 		if(!t.isEmpty())
@@ -73,7 +78,7 @@ public class Lobid {
 				return cachedResult;
 			});
 		}
-		WSRequestHolder requestHolder = request("", "", "", "", "", "", "", "", 0, 0, "", "", "");
+		WSRequestHolder requestHolder = request("", "", "", "", "", "", "", "", "", "", 0, 0, "", "", "");
 		return requestHolder.get().map((WS.Response response) -> {
 			Long total = getTotalResults(response.asJson());
 			Cache.set("totalHits", total, Application.ONE_HOUR);
@@ -99,7 +104,8 @@ public class Lobid {
 
 	public static Promise<JsonNode> getFacets(String q, String author,
 			String name, String subject, String id, String publisher,
-			String issued, String medium, String owner, String field, String t) {
+			String issued, String medium, String nwbibspatial,
+			String nwbibsubject, String owner, String field, String t) {
 		WSRequestHolder requestHolder = WS
 				.url(Application.CONFIG.getString("nwbib.api") + "/facets")
 				.setHeader("Accept", "application/json")
@@ -112,7 +118,9 @@ public class Lobid {
 				.setQueryParameter("issued",issued)
 				.setQueryParameter("id", id)
 				.setQueryParameter("owner",owner.equals("all") ? "" : owner)
-				.setQueryParameter("field",field);
+				.setQueryParameter("field",field)
+				.setQueryParameter("nwbibspatial",nwbibspatial)
+				.setQueryParameter("nwbibsubject",nwbibsubject);
 		if(!field.equals(Application.MEDIUM_FIELD))
 			requestHolder = requestHolder.setQueryParameter("medium", medium);
 		if(!field.equals(Application.TYPE_FIELD))

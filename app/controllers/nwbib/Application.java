@@ -77,11 +77,14 @@ public class Application extends Controller {
 	public static Promise<Result> search(final String q, final String author,
 			final String name, final String subject, final String id,
 			final String publisher, final String issued, final String medium,
+			final String nwbibspatial, final String nwbibsubject, 
 			final int from, final int size, final String ownerParam, String t,
 			String sort, boolean details) {
 		final String owner = ownerParam(ownerParam);
-		String cacheId = String.format("%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s", "search",
-				q, author, name, subject, id, publisher, issued, medium, from, size, owner, t, sort);
+		String cacheId = String.format(
+				"%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s", "search", q,
+				author, name, subject, id, publisher, issued, medium,
+				nwbibspatial, nwbibsubject, from, size, owner, t, sort);
 		@SuppressWarnings("unchecked")
 		Promise<Result> cachedResult = (Promise<Result>) Cache.get(cacheId);
 		if (cachedResult != null)
@@ -92,12 +95,14 @@ public class Application extends Controller {
 			if (form.hasErrors())
 				return Promise.promise(() -> badRequest(search.render(CONFIG,
 						null, q, author, name, subject, id, publisher, issued,
-						medium, from, size, 0L, owner, t, sort)));
+						medium, nwbibspatial, nwbibsubject, from, size, 0L,
+						owner, t, sort)));
 			else {
 				String query = form.data().get("query");
 				Promise<Result> result = okPromise(query != null ? query : q,
 						author, name, subject, id, publisher, issued, medium,
-						form, from, size, owner, t, sort, details);
+						nwbibspatial, nwbibsubject, form, from, size, owner, t,
+						sort, details);
 				cacheOnRedeem(cacheId, result, ONE_HOUR);
 				return result;
 			}
@@ -115,7 +120,7 @@ public class Application extends Controller {
 	}
 
 	public static Promise<Result> show(final String id) {
-		return search("", "", "", "", id, "", "", "", 0, 1, "all", "", "", true);
+		return search("", "", "", "", id, "", "", "", "", "", 0, 1, "all", "", "", true);
 	}
 
 	public static Promise<Result> subject(final String q, final String callback) {
@@ -181,18 +186,19 @@ public class Application extends Controller {
 	private static Promise<Result> okPromise(final String q,
 			final String author, final String name, final String subject,
 			final String id, final String publisher, final String issued,
-			final String medium, final Form<String> form, final int from,
+			final String medium, final String nwbibspatial,
+			final String nwbibsubject, final Form<String> form, final int from,
 			final int size, final String owner, String t, String sort,
 			boolean details) {
 		final Promise<Result> result = call(q, author, name, subject, id,
-				publisher, issued, medium, form, from, size, owner, t, sort,
-				details);
+				publisher, issued, medium, nwbibspatial, nwbibsubject, form,
+				from, size, owner, t, sort, details);
 		return result.recover((Throwable throwable) -> {
 			throwable.printStackTrace();
 			flashError();
 			return internalServerError(search.render(CONFIG, "[]", q, author,
-					name, subject, id, publisher, issued, medium, from, size,
-					0L, owner, t, sort));
+					name, subject, id, publisher, issued, medium, nwbibspatial,
+					nwbibsubject, from, size, 0L, owner, t, sort));
 		});
 	}
 
@@ -214,10 +220,12 @@ public class Application extends Controller {
 	static Promise<Result> call(final String q, final String author,
 			final String name, final String subject, final String id,
 			final String publisher, final String issued, final String medium,
+			final String nwbibspatial, final String nwbibsubject,
 			final Form<String> form, final int from, final int size,
 			String owner, String t, String sort, boolean showDetails) {
 		WSRequestHolder requestHolder = Lobid.request(q, author, name, subject,
-				id, publisher, issued, medium, from, size, owner, t, sort);
+				id, publisher, issued, medium, nwbibspatial, nwbibsubject,
+				from, size, owner, t, sort);
 		return requestHolder.get().map(
 				(WS.Response response) -> {
 					JsonNode json = response.asJson();
@@ -225,21 +233,25 @@ public class Application extends Controller {
 					String s = q.isEmpty() && author.isEmpty()
 							&& name.isEmpty() && subject.isEmpty()
 							&& id.isEmpty() && publisher.isEmpty()
-							&& issued.isEmpty() && medium.isEmpty() ? "[]" : json.toString();
+							&& issued.isEmpty() && medium.isEmpty()
+							&& nwbibspatial.isEmpty() && nwbibsubject.isEmpty() ? "[]"
+							: json.toString();
 					return ok(showDetails ? details.render(CONFIG, s, q)
 							: search.render(CONFIG, s, q, author, name,
-									subject, id, publisher, issued, medium, from, size,
+									subject, id, publisher, issued, medium,
+									nwbibspatial, nwbibsubject, from, size,
 									hits, owner, t, sort));
 				});
 	}
 
 	public static Promise<Result> facets(String q, String author, String name,
 			String subject, String id, String publisher, String issued,
-			String medium, int from, int size, String owner, String t,
-			String field, String sort){
-		String key = String.format("facets.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s", q,
-				author, name, subject, id, publisher, issued, medium, owner, field,
-				sort, t);
+			String medium, String nwbibspatial, String nwbibsubject, int from,
+			int size, String owner, String t, String field, String sort) {
+		String key = String.format(
+				"facets.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s", q, author,
+				name, subject, id, publisher, issued, medium, nwbibspatial,
+				nwbibsubject, owner, field, sort, t);
 		Result cachedResult = (Result) Cache.get(key);
 		if(cachedResult!=null){
 			return Promise.promise(() -> cachedResult);
@@ -257,14 +269,15 @@ public class Application extends Controller {
 			// TODO we need a general solution for this when we add more facets
 			String routeUrl = routes.Application.search(q, author, name,
 					subject, id, publisher, issued,
-					field.equals(TYPE_FIELD) ? medium : term, from, size, owner,
+					field.equals(TYPE_FIELD) ? medium : term, nwbibspatial, nwbibsubject, from, size, owner,
 					field.equals(TYPE_FIELD) ? term : t, sort, false).url();
 			return String
 					.format("<li><a href='%s'><span class='%s'/>&nbsp;%s (%s)</a></li>",
 							routeUrl, icon, Lobid.facetLabel(Arrays.asList(term), field), count);
 		};
 		Promise<Result> promise = Lobid
-				.getFacets(q, author, name, subject, id, publisher, issued, medium, owner, field, t)
+				.getFacets(q, author, name, subject, id, publisher, issued,
+						medium, nwbibspatial, nwbibsubject, owner, field, t)
 				.map(json -> StreamSupport.stream(
 						Spliterators.spliteratorUnknownSize(json.findValue("entries").elements(), 0), false)
 						.filter(labelled)
