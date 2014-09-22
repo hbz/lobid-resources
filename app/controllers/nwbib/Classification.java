@@ -97,7 +97,7 @@ public class Classification {
 		return requestBuilder.execute().actionGet();
 	}
 
-	public JsonNode ids(String query) {
+	public JsonNode ids(String query, String t) {
 		QueryBuilder queryBuilder = QueryBuilders
 				.boolQuery()
 				.should(QueryBuilders.matchQuery(//
@@ -108,9 +108,17 @@ public class Classification {
 		SearchRequestBuilder requestBuilder = client
 				.prepareSearch(INDEX)
 				.setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
-				.setQuery(queryBuilder)
-				.setTypes(Type.NWBIB.elasticsearchType,
-						Type.SPATIAL.elasticsearchType);
+				.setQuery(queryBuilder);
+		if (t.isEmpty()) {
+			requestBuilder = requestBuilder.setTypes(
+					Type.NWBIB.elasticsearchType,
+					Type.SPATIAL.elasticsearchType);
+		} else {
+			for (Type indexType : Type.values())
+				if (indexType.queryParameter.equalsIgnoreCase(t))
+					requestBuilder = requestBuilder
+							.setTypes(indexType.elasticsearchType);
+		}
 		SearchResponse response = requestBuilder.execute().actionGet();
 		List<JsonNode> result = ids(response);
 		return Json.toJson(result);

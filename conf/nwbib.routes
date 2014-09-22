@@ -6,7 +6,7 @@
 GET    /nwbib                       controllers.nwbib.Application.index()
 GET    /nwbib/advanced              controllers.nwbib.Application.advanced()
 GET    /nwbib/search                controllers.nwbib.Application.search(query?="", author?="", name?="", subject?="", id?="", publisher?="", issued?="", medium ?= "", nwbibspatial ?= "", nwbibsubject ?= "", from:Int?=0, size:Int?=10, owner?="", t?="", sort ?= "newest", details:Boolean?=false)
-GET    /nwbib/subject               controllers.nwbib.Application.subject(query?="", callback?="")
+GET    /nwbib/subject               controllers.nwbib.Application.subject(query?="", callback?="", t?="")
 GET    /nwbib/register              controllers.nwbib.Application.register(t)
 GET    /nwbib/classification        controllers.nwbib.Application.classification(t)
 GET    /nwbib/facets                controllers.nwbib.Application.facets(q,author?="", name?="", subject?="", id?="", publisher?="", issued?="", medium ?= "", nwbibspatial ?= "", nwbibsubject ?= "", from:Int,size:Int,owner,t,field,sort)

@@ -123,8 +123,8 @@ public class Application extends Controller {
 		return search("", "", "", "", id, "", "", "", "", "", 0, 1, "all", "", "", true);
 	}
 
-	public static Promise<Result> subject(final String q, final String callback) {
-		String cacheId = String.format("%s.%s.%s", "subject", q, callback);
+	public static Promise<Result> subject(final String q, final String callback, final String t) {
+		String cacheId = String.format("%s.%s.%s.%s", "subject", q, callback, t);
 		@SuppressWarnings("unchecked")
 		Promise<Result> cachedResult = (Promise<Result>) Cache.get(cacheId);
 		if (cachedResult != null)
@@ -132,7 +132,7 @@ public class Application extends Controller {
 		else {
 			Logger.debug("Not cached: {}, will cache for one day", cacheId);
 			Promise<JsonNode> jsonPromise = Promise
-					.promise(() -> CLASSIFICATION.ids(q));
+					.promise(() -> CLASSIFICATION.ids(q, t));
 			Promise<Result> result;
 			if (!callback.isEmpty())
 				result = jsonPromise.map((JsonNode json) -> ok(String.format(

@@ -31,7 +31,7 @@
                           case Some(seq) => {
                             @defining(TagHelper.valueFor(doc, elem.as[String], seq)){ value =>
                             @if(value.startsWith("http://purl.org/lobid/nwbib")){
-                              @defining(controllers.nwbib.Application.CLASSIFICATION.ids(value)){c=>
+                              @defining(controllers.nwbib.Application.CLASSIFICATION.ids(value, "")){c=>
                                 <a title="Nach weiteren Titeln suchen" href="@nwbib.routes.Application.search("\""+string(elem)+"\"")">
                                     @if(label!=null){@c.findValue("label").textValue() (@c.findValue("value").textValue().drop(1))} else {@value}</a>  |
                               }
