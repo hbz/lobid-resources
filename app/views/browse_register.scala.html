@@ -1,8 +1,8 @@
 @* Copyright 2013, 2014 Fabian Steeg, hbz. Licensed under the Eclipse Public License 1.0 *@
-@(classification: String)
+@(classification: String, t: String)
 @import play.api.libs.json.Json
 @import play.api.libs.json.JsValue
 
 @main("NWBib: Register") {
-    @tags.browse_list(classification, null)
+    @tags.browse_list(classification, null, t)
 }

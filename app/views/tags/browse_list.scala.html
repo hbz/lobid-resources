@@ -1,4 +1,4 @@
-@(tops: String, subs: Map[String,List[com.fasterxml.jackson.databind.JsonNode]])
+@(tops: String, subs: Map[String,List[com.fasterxml.jackson.databind.JsonNode]], t: String)
 
 @import play.api.libs.json.Json
 @import play.api.libs.json.JsValue
@@ -11,7 +11,7 @@
         @for(json <- classes.getOrElse(Seq()).sortBy((json:JsValue)=>(json\"label").as[String])){
             @defining((json\"value").as[String]) { value =>
             <li>
-                <a href="@nwbib.routes.Application.search(value)">
+                <a href="@if(t=="Raumsystematik"){@nwbib.routes.Application.search(nwbibspatial=value)}else{@nwbib.routes.Application.search(nwbibsubject=value)}">
                     @((json\"label").as[String])
                 </a>
                 @if(subs != null && subs.get(value) != null){

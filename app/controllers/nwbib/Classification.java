@@ -146,10 +146,6 @@ public class Classification {
 		return node.get("label").asText();
 	}
 
-	public static String shortId(String id) {
-		return id.substring(id.lastIndexOf('#') + 1);
-	}
-
 	void buildHierarchy(SearchResponse response, List<JsonNode> topClasses,
 			Map<String, List<JsonNode>> subClasses) {
 		for (SearchHit hit : response.getHits()) {
@@ -158,9 +154,8 @@ public class Classification {
 			if (broader == null)
 				topClasses.addAll(valueAndLabelWithNotation(hit, json));
 			else
-				addAsSubClass(subClasses, hit, json,
-						Classification.shortId(broader.findValue("@id")
-								.asText()));
+				addAsSubClass(subClasses, hit, json, broader.findValue("@id")
+						.asText());
 		}
 	}
 
@@ -182,13 +177,17 @@ public class Classification {
 			Label style, List<JsonNode> result) {
 		final JsonNode label = json.findValue(Property.LABEL.value);
 		if (label != null) {
-			String shortId = shortId(hit.getId());
+			String id = hit.getId();
 			ImmutableMap<String, String> map = ImmutableMap.of("value",
-					shortId, "label",
-					(style == Label.PLAIN ? "" : shortId.substring(1) + " ")
+					id, "label",
+					(style == Label.PLAIN ? "" : shortId(id) + " ")
 							+ label.findValue("@value").asText());
 			result.add(Json.toJson(map));
 		}
+	}
+
+	public static String shortId(String id) {
+		return id.split("#")[1].substring(1);
 	}
 
 }

@@ -16,7 +16,7 @@ public class ApplicationTest {
 	@Test
 	public void shortClassificationId() {
 		assertThat(Classification.shortId("http://purl.org/lobid/nwbib#s58206"))
-				.as("short classification").isEqualTo("s58206");
+				.as("short classification").isEqualTo("58206");
 	}
 
 	@Test
@@ -24,7 +24,7 @@ public class ApplicationTest {
 		assertThat(
 				Classification
 						.shortId("http://purl.org/lobid/nwbib-spatial#n58"))
-				.as("short spatial classification").isEqualTo("n58");
+				.as("short spatial classification").isEqualTo("58");
 	}
 
 }

@@ -3,6 +3,7 @@
 
 @import play.api.libs.json._
 @import views.TagHelper
+@import controllers.nwbib.Classification
 
 @string(value: JsValue) = @{ value.asOpt[String].getOrElse("--") }
 @jsonVal(p: String) = @{ node match {
@@ -33,7 +34,7 @@
                             @if(value.startsWith("http://purl.org/lobid/nwbib")){
                               @defining(controllers.nwbib.Application.CLASSIFICATION.ids(value, "")){c=>
                                 <a title="Nach weiteren Titeln suchen" href="@nwbib.routes.Application.search("\""+string(elem)+"\"")">
-                                    @if(label!=null){@c.findValue("label").textValue() (@c.findValue("value").textValue().drop(1))} else {@value}</a>  |
+                                    @if(label!=null){@c.findValue("label").textValue() (@Classification.shortId(c.findValue("value").textValue()))} else {@value}</a>  |
                               }
                             } else {<a title="Nach weiteren Titeln suchen" href="@nwbib.routes.Application.search("\""+string(elem)+"\"")">@value</a> |}
                             <a title="Linked-Data-Quelle abrufen" href="@string(elem)"><span class="glyphicon glyphicon-link"></span></a>

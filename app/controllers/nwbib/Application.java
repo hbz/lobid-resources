@@ -152,10 +152,10 @@ public class Application extends Controller {
 		if (response == null) {
 			Logger.error("Failed to get data for register type: " + t);
 			flashError();
-			return internalServerError(browse_register.render(null));
+			return internalServerError(browse_register.render(null, t));
 		}
 		JsonNode sorted = CLASSIFICATION.sorted(response);
-		Result result = ok(browse_register.render(sorted.toString()));
+		Result result = ok(browse_register.render(sorted.toString(), t));
 		Cache.set("result." + t, result, ONE_DAY);
 		return result;
 	}
@@ -168,19 +168,19 @@ public class Application extends Controller {
 		if (response == null) {
 			Logger.error("Failed to get data for classification type: " + t);
 			flashError();
-			return internalServerError(browse_classification.render(null, null));
+			return internalServerError(browse_classification.render(null, null, t));
 		}
-		Result result = classificationResult(response);
+		Result result = classificationResult(response, t);
 		Cache.set("classification." + t, result, ONE_DAY);
 		return result;
 	}
 
-	private static Result classificationResult(SearchResponse response) {
+	private static Result classificationResult(SearchResponse response, String t) {
 		List<JsonNode> topClasses = new ArrayList<JsonNode>();
 		Map<String, List<JsonNode>> subClasses = new HashMap<>();
 		CLASSIFICATION.buildHierarchy(response, topClasses, subClasses);
 		String topClassesJson = Json.toJson(topClasses).toString();
-		return ok(browse_classification.render(topClassesJson, subClasses));
+		return ok(browse_classification.render(topClassesJson, subClasses, t));
 	}
 
 	private static Promise<Result> okPromise(final String q,
