@@ -185,6 +185,7 @@ public class Lobid {
 			.collect(Collectors.toList());
 		Collections.sort(selected);
 		Logger.trace("Selected: " + selected);
-		return selected.isEmpty() ? "" : selected.get(0);
+		return selected.isEmpty() ? "" : selected.get(0).contains(
+				"Miscellaneous") && selected.size() > 1 ? selected.get(1) : selected.get(0);
 	}
 }
