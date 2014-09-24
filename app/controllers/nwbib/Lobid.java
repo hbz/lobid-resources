@@ -1,5 +1,6 @@
 package controllers.nwbib;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -13,7 +14,6 @@ import play.libs.WS.WSRequestHolder;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.collect.ImmutableMap;
-import com.typesafe.config.ConfigObject;
 
 /**
  * Access Lobid title data.
@@ -43,7 +43,12 @@ public class Lobid {
 				.setQueryParameter("size", size + "")
 				.setQueryParameter("sort", sort);
 		if(!q.trim().isEmpty())
-			requestHolder = requestHolder.setQueryParameter("q", q);
+			requestHolder = requestHolder.setQueryParameter("q",
+					// if query string syntax is used, leave it alone:
+					q.matches(".*?([+\\-~]|AND|OR).*?") ? q :
+					// else prepend '+' to all terms for AND search:
+					Arrays.asList(q.split(" ")).stream().map(x -> "+" + x)
+							.collect(Collectors.joining(" ")));
 		if(!author.trim().isEmpty())
 			requestHolder = requestHolder.setQueryParameter("author", author);
 		if(!name.trim().isEmpty())
