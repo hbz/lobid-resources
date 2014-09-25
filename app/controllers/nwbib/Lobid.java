@@ -43,12 +43,7 @@ public class Lobid {
 				.setQueryParameter("size", size + "")
 				.setQueryParameter("sort", sort);
 		if(!q.trim().isEmpty())
-			requestHolder = requestHolder.setQueryParameter("q",
-					// if query string syntax is used, leave it alone:
-					q.matches(".*?([+\\-~]|AND|OR).*?") ? q :
-					// else prepend '+' to all terms for AND search:
-					Arrays.asList(q.split(" ")).stream().map(x -> "+" + x)
-							.collect(Collectors.joining(" ")));
+			requestHolder = requestHolder.setQueryParameter("q", preprocess(q));
 		if(!author.trim().isEmpty())
 			requestHolder = requestHolder.setQueryParameter("author", author);
 		if(!name.trim().isEmpty())
@@ -115,7 +110,7 @@ public class Lobid {
 				.url(Application.CONFIG.getString("nwbib.api") + "/facets")
 				.setHeader("Accept", "application/json")
 				.setQueryParameter("set", Application.CONFIG.getString("nwbib.set"))
-				.setQueryParameter("q",q)
+				.setQueryParameter("q",preprocess(q))
 				.setQueryParameter("author",author)
 				.setQueryParameter("name",name)
 				.setQueryParameter("subject",subject)
@@ -135,6 +130,14 @@ public class Lobid {
 		return requestHolder.get().map((WS.Response response) -> {
 			return response.asJson();
 		});
+	}
+
+	private static String preprocess(final String q) {
+		return // if query string syntax is used, leave it alone:
+		q.matches(".*?([+\\-~]|AND|OR).*?") ? q :
+		// else prepend '+' to all terms for AND search:
+		Arrays.asList(q.split(" ")).stream().map(x -> "+" + x)
+				.collect(Collectors.joining(" "));
 	}
 
 	private static final Map<String,String> keys = ImmutableMap.of(
