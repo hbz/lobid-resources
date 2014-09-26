@@ -29,7 +29,7 @@ import com.google.common.collect.ImmutableMap;
 
 /**
  * NWBib classification and spatial classification data access via Elasticsearch
- * 
+ *
  * @author Fabian Steeg (fsteeg)
  */
 public class Classification {

@@ -9,8 +9,7 @@ import java.util.stream.Collectors;
 import play.Logger;
 import play.cache.Cache;
 import play.libs.F.Promise;
-import play.libs.WS;
-import play.libs.WS.WSRequestHolder;
+import play.libs.ws.*;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.collect.ImmutableMap;
@@ -79,7 +78,7 @@ public class Lobid {
 			});
 		}
 		WSRequestHolder requestHolder = request("", "", "", "", "", "", "", "", "", "", 0, 0, "", "", "");
-		return requestHolder.get().map((WS.Response response) -> {
+		return requestHolder.get().map((WSResponse response) -> {
 			Long total = getTotalResults(response.asJson());
 			Cache.set("totalHits", total, Application.ONE_HOUR);
 			return total;
@@ -95,7 +94,7 @@ public class Lobid {
 				.url(url)
 				.setHeader("Accept", "application/json")
 				.setQueryParameter("format","short.name");
-		return requestHolder.get().map((WS.Response response) -> {
+		return requestHolder.get().map((WSResponse response) -> {
 			String label = response.asJson().elements().next().asText();
 			Cache.set("org.label."+url, label, Application.ONE_HOUR);
 			return label;
@@ -127,7 +126,7 @@ public class Lobid {
 			requestHolder = requestHolder.setQueryParameter("t", t);
 		Logger.info("Facets request URL {}, query params {} ", requestHolder.getUrl(),
 				requestHolder.getQueryParameters());
-		return requestHolder.get().map((WS.Response response) -> {
+		return requestHolder.get().map((WSResponse response) -> {
 			return response.asJson();
 		});
 	}

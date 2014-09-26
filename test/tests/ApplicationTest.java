@@ -9,7 +9,7 @@ import org.junit.Test;
 import controllers.nwbib.Classification;
 
 /**
- * See http://www.playframework.com/documentation/2.2.x/JavaTest
+ * See http://www.playframework.com/documentation/2.3.x/JavaTest
  */
 public class ApplicationTest {
 

@@ -8,6 +8,7 @@
 @import scala.concurrent.ExecutionContext.Implicits.global
 @import scala.concurrent._
 @import scala.concurrent.duration._
+@import play.api.Play.current
 
 @main("NWBib: Merkliste") {
     @if(ids.isEmpty){
@@ -31,9 +32,9 @@
         }
         </table>
         <div class="text-center" id="clear-list">
-            <a style="cursor:pointer;" 
+            <a style="cursor:pointer;"
                 onclick="$('#clear-list').html('Bestätigung: <a href=\'@nwbib.routes.Application.clearStars()\'>Merkliste dauerhaft löschen</a> | <a style=\'cursor:pointer\'; onclick=\'window.location.reload()\'>Abbrechen</a>')">
-                <span class="glyphicon glyphicon-remove"></span> Merkliste löschen 
+                <span class="glyphicon glyphicon-remove"></span> Merkliste löschen
             </a>
         </div>
     }

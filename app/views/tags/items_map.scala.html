@@ -7,6 +7,7 @@
 @import scala.concurrent._
 @import ExecutionContext.Implicits.global
 @import scala.concurrent.duration._
+@import play.api.Play.current
 
 @string(value: JsValue) = { @value.asOpt[String].getOrElse("--") }
 
@@ -68,7 +69,7 @@
         ownerRequestUri = owner+"?format=full";
         json = Await.result(WS.url(ownerRequestUri).get().map(x=>(x.json)), 5.second);
         ownerName = if((json\\"name").isEmpty) "" else (json\\"name")(0).as[String]) {
-        tableDetails@(hitId) = 
+        tableDetails@(hitId) =
                 '@if(!ownerName.isEmpty){<tr><td>Einrichtung:</td><td><a href="@owner">@ownerName</a></td></tr>}'+
                 '@if(!signature.isEmpty){<tr><td>Signatur:</td><td><a href="@item">@signature</a></td></tr>}';
         if(allTableDetails@(hitId)=='')
@@ -107,7 +108,7 @@
                     marker@(id).bindPopup(
                     '<table class="table-striped table-condensed">'+
                         content+
-                    '</table>', 
+                    '</table>',
                     {
                         keepInView: true
                     });

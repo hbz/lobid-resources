@@ -24,16 +24,10 @@ import play.cache.Cached;
 import play.data.Form;
 import play.libs.F.Promise;
 import play.libs.Json;
-import play.libs.WS;
-import play.libs.WS.WSRequestHolder;
+import play.libs.ws.*;
 import play.mvc.Controller;
 import play.mvc.Result;
-import views.html.browse_classification;
-import views.html.browse_register;
-import views.html.index;
-import views.html.search;
-import views.html.details;
-import views.html.stars;
+import views.html.*;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.typesafe.config.Config;
@@ -77,7 +71,7 @@ public class Application extends Controller {
 	public static Promise<Result> search(final String q, final String author,
 			final String name, final String subject, final String id,
 			final String publisher, final String issued, final String medium,
-			final String nwbibspatial, final String nwbibsubject, 
+			final String nwbibspatial, final String nwbibsubject,
 			final int from, final int size, final String ownerParam, String t,
 			String sort, boolean details) {
 		final String owner = ownerParam(ownerParam);
@@ -227,7 +221,7 @@ public class Application extends Controller {
 				id, publisher, issued, medium, nwbibspatial, nwbibsubject,
 				from, size, owner, t, sort);
 		return requestHolder.get().map(
-				(WS.Response response) -> {
+				(WSResponse response) -> {
 					JsonNode json = response.asJson();
 					Long hits = Lobid.getTotalResults(json);
 					String s = q.isEmpty() && author.isEmpty()

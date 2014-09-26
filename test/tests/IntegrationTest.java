@@ -18,7 +18,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import play.libs.F.Promise;
-import play.mvc.Content;
+import play.twirl.api.Content;
 import play.mvc.Http;
 import play.test.Helpers;
 import play.test.TestBrowser;
@@ -30,7 +30,7 @@ import controllers.nwbib.Lobid;
 
 /* Uses actual data, not available in CI. Run locally with `play test`. */
 /**
- * See http://www.playframework.com/documentation/2.2.x/JavaFunctionalTest
+ * See http://www.playframework.com/documentation/2.3.x/JavaFunctionalTest
  */
 public class IntegrationTest {
 
@@ -73,23 +73,27 @@ public class IntegrationTest {
 
 	@Test
 	public void testFacets() {
-		String field = Application.TYPE_FIELD;
-		Promise<JsonNode> jsonPromise = Lobid.getFacets("köln", "", "", "", "", "", "", "", "", "", "all", field, "");
-		JsonNode facets = jsonPromise.get(10000);
-		assertThat(
-				facets.findValues("term").stream().map(e -> e.asText())
-						.collect(Collectors.toList())).contains(
-				"http://purl.org/dc/terms/BibliographicResource",
-				"http://purl.org/vocab/frbr/core#Manifestation",
-				"http://purl.org/ontology/bibo/Article",
-				"http://purl.org/ontology/bibo/Book",
-				"http://purl.org/ontology/bibo/Collection",
-				"http://purl.org/ontology/bibo/Journal",
-				"http://purl.org/ontology/bibo/Periodical",
-				"http://purl.org/ontology/bibo/MultiVolumeBook");
-		assertThat(
-				facets.findValues("count").stream().map(e -> e.intValue())
-						.collect(Collectors.toList())).excludes(0);
+		running(testServer(3333, fakeApplication(inMemoryDatabase())),
+				HTMLUNIT,
+				(TestBrowser browser) -> {
+					String field = Application.TYPE_FIELD;
+							Promise<JsonNode> jsonPromise = Lobid.getFacets("köln", "", "", "", "", "", "", "", "", "", "all", field, "");
+							JsonNode facets = jsonPromise.get(10000);
+							assertThat(
+									facets.findValues("term").stream().map(e -> e.asText())
+											.collect(Collectors.toList())).contains(
+									"http://purl.org/dc/terms/BibliographicResource",
+									"http://purl.org/vocab/frbr/core#Manifestation",
+									"http://purl.org/ontology/bibo/Article",
+									"http://purl.org/ontology/bibo/Book",
+									"http://purl.org/ontology/bibo/Collection",
+									"http://purl.org/ontology/bibo/Journal",
+									"http://purl.org/ontology/bibo/Periodical",
+									"http://purl.org/ontology/bibo/MultiVolumeBook");
+							assertThat(
+									facets.findValues("count").stream().map(e -> e.intValue())
+											.collect(Collectors.toList())).excludes(0);
+				});
 	}
 
 	@Test
