@@ -34,9 +34,9 @@
     <div class="alert alert-danger">@flash.get("error")</div>
 } else {
     @ul(Json.parse(tops).asOpt[Seq[JsValue]],"root")
-    <script type="text/javascript" src="@controllers.nwbib.routes.Assets.at("javascripts/TreeListFilter.js")"></script>
-    <script type="text/javascript" src="@controllers.nwbib.routes.Assets.at("javascripts/FileTreeView.js")"></script>
-    <link rel="stylesheet" href="@controllers.nwbib.routes.Assets.at("stylesheets/FileTreeView.css")" />
+    <script type="text/javascript" src="@controllers.routes.Assets.at("javascripts/TreeListFilter.js")"></script>
+    <script type="text/javascript" src="@controllers.routes.Assets.at("javascripts/FileTreeView.js")"></script>
+    <link rel="stylesheet" href="@controllers.routes.Assets.at("stylesheets/FileTreeView.css")" />
     <script type="text/javascript">
         $(function() {
             $('#nwbibQuery').treeListFilter('#root', 200);

@@ -2,8 +2,9 @@
 @(label: String, property: String, doc: play.api.libs.json.JsValue, row: views.TableRow, node: Option[play.api.libs.json.JsValue] = None, valueLabel: Option[Seq[String]] = None)
 
 @import play.api.libs.json._
-@import views.TagHelper
 @import controllers.nwbib.Classification
+
+@import scala.collection.immutable.Map
 
 @string(value: JsValue) = @{ value.asOpt[String].getOrElse("--") }
 @jsonVal(p: String) = @{ node match {
@@ -19,6 +20,17 @@
 		case _ => if(value.asOpt[String].isDefined) Seq(jsonVal(property)) else Seq()
 	}
 }
+
+@valueFor(doc: JsValue, id: String, keys: Seq[String]) = @{
+    val res = for (elem <- ((doc \\ "@graph").head).as[Seq[JsValue]]; key <- keys;
+        if ((elem \ "@id").as[String] == id && elem.as[Map[String, JsValue]].contains(key))
+    ) yield {
+        val result = (elem \ key)
+        result.asOpt[String].getOrElse(result.toString)
+    }
+    if(res.isEmpty) id else res.get(0)
+}
+
 @row match {
   case views.TableRow.VALUES => {
     @for(elem <- multiSingleOrEmptySeq(jsonVal(property)).sortBy(_.toString)(Ordering[String].reverse) if !elem.toString.contains("http://dewey.info")) {
@@ -30,7 +42,7 @@
             @valueLabel match {
                           case None => {@string(elem)}
                           case Some(seq) => {
-                            @defining(TagHelper.valueFor(doc, elem.as[String], seq)){ value =>
+                            @defining(valueFor(doc, elem.as[String], seq)){ value =>
                             @if(value.startsWith("http://purl.org/lobid/nwbib")){
                               @defining(controllers.nwbib.Application.CLASSIFICATION.ids(value, "")){c=>
                                 <a title="Nach weiteren Titeln suchen" href="@nwbib.routes.Application.search("\""+string(elem)+"\"")">

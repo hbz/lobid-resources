@@ -1,13 +1,13 @@
 @()
 <div id="map">
-<script src="@controllers.nwbib.routes.Assets.at("javascripts/d3.v3.min.js")"></script>
-<script src="@controllers.nwbib.routes.Assets.at("javascripts/topojson.v1.min.js")"></script>
-<script src="@controllers.nwbib.routes.Assets.at("javascripts/datamaps.world.min.js")"></script>
+<script src="@controllers.routes.Assets.at("javascripts/d3.v3.min.js")"></script>
+<script src="@controllers.routes.Assets.at("javascripts/topojson.v1.min.js")"></script>
+<script src="@controllers.routes.Assets.at("javascripts/datamaps.world.min.js")"></script>
 <script>
 var map = new Datamap({
     element: document.getElementById('map'),
     geographyConfig: {
-        dataUrl: '@controllers.nwbib.routes.Assets.at("data/nrw.topo.json")',
+        dataUrl: '@controllers.routes.Assets.at("data/nrw.topo.json")',
         borderWidth: 1,
         borderColor: '#BBBBBB',
         highlightFillColor: '#DADADA',

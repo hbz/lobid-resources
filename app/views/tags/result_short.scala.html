@@ -2,10 +2,9 @@
 @(id:String, doc: play.api.libs.json.JsValue)
 
 @import play.api.libs.json._
-@import views.TagHelper
-@import views.TagHelper._
 @import views.TableRow
 @import controllers.nwbib.Lobid
+@import scala.collection.immutable.Map
 
 @optional(doc: JsValue, key: String, sep: String, alt: String)={
     @defining((doc \\ key)) { other =>
@@ -15,12 +14,34 @@
     }
 }
 
+@valueFor(doc: JsValue, id: String, keys: Seq[String]) = @{
+    val res = for (elem <- ((doc \\ "@graph").head).as[Seq[JsValue]]; key <- keys;
+        if ((elem \ "@id").as[String] == id && elem.as[Map[String, JsValue]].contains(key))
+    ) yield {
+        val result = (elem \ key)
+        result.asOpt[String].getOrElse(result.toString)
+    }
+    if(res.isEmpty) id else res.get(0)
+}
+
+@gndEntities = @{ 
+	Option(Seq(
+	    "preferredName",
+	    "preferredNameForTheWork",
+	    "preferredNameForTheFamily",
+	    "preferredNameForThePerson",
+	    "preferredNameForTheCorporateBody",
+	    "preferredNameForTheSubjectHeading",
+	    "preferredNameForTheConferenceOrEvent",
+	    "preferredNameForThePlaceOrGeographicName"))
+}
+
 @label(keys: Seq[String])={
     @defining(keys.find(s=>(doc\\s).size>0)){key=>
         <td style="text-align: right">
         @if(key.isEmpty){&lt;Kein Autor&gt;} else {
             @defining((doc\\key.get)){hits=>
-                 @TagHelper.valueFor(doc, hits.get(0).asOpt[String].getOrElse(hits.get(0).as[Seq[String]].get(0)), TagHelper.gndEntities.get)
+                 @valueFor(doc, hits.get(0).asOpt[String].getOrElse(hits.get(0).as[Seq[String]].get(0)), gndEntities.get)
             }
         }
         </td>

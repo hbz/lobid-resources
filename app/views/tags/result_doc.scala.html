@@ -2,8 +2,6 @@
 @(doc: play.api.libs.json.JsValue)
 @import play.api.libs.json.JsValue
 @import views.TableRow
-@import views.TagHelper
-@import views.TagHelper._
 @import controllers.nwbib.Lobid
 
 @table()(body: Html) = {
@@ -14,6 +12,18 @@
   </tr>
   @body
   </table>
+}
+
+@gndEntities = @{ 
+	Option(Seq(
+	    "preferredName",
+	    "preferredNameForTheWork",
+	    "preferredNameForTheFamily",
+	    "preferredNameForThePerson",
+	    "preferredNameForTheCorporateBody",
+	    "preferredNameForTheSubjectHeading",
+	    "preferredNameForTheConferenceOrEvent",
+	    "preferredNameForThePlaceOrGeographicName"))
 }
 
 @table(){
