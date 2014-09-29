@@ -71,10 +71,11 @@ public class Classification {
 	public Classification(String cluster, String server) {
 		this.cluster = cluster;
 		this.server = server;
-		Settings settings = ImmutableSettings.settingsBuilder()
-				.put("cluster.name", this.cluster).build();
-		InetSocketTransportAddress address = new InetSocketTransportAddress(
-				this.server, 9300);
+		Settings settings =
+				ImmutableSettings.settingsBuilder().put("cluster.name", this.cluster)
+						.build();
+		InetSocketTransportAddress address =
+				new InetSocketTransportAddress(this.server, 9300);
 		client = new TransportClient(settings).addTransportAddress(address);
 	}
 
@@ -91,33 +92,35 @@ public class Classification {
 
 	private SearchResponse classificationData(String type) {
 		MatchAllQueryBuilder queryBuilder = QueryBuilders.matchAllQuery();
-		SearchRequestBuilder requestBuilder = client.prepareSearch(INDEX)
-				.setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
-				.setQuery(queryBuilder).setTypes(type).setFrom(0).setSize(1000);
+		SearchRequestBuilder requestBuilder =
+				client.prepareSearch(INDEX)
+						.setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
+						.setQuery(queryBuilder).setTypes(type).setFrom(0).setSize(1000);
 		return requestBuilder.execute().actionGet();
 	}
 
 	public JsonNode ids(String query, String t) {
-		QueryBuilder queryBuilder = QueryBuilders
-				.boolQuery()
-				.should(QueryBuilders.matchQuery(//
-						"@graph." + Property.LABEL.value + ".@value", query))
-				.should(QueryBuilders.idsQuery(Type.NWBIB.elasticsearchType,
-						Type.SPATIAL.elasticsearchType).ids(query))
-				.minimumNumberShouldMatch(1);
-		SearchRequestBuilder requestBuilder = client
-				.prepareSearch(INDEX)
-				.setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
-				.setQuery(queryBuilder);
+		QueryBuilder queryBuilder =
+				QueryBuilders
+						.boolQuery()
+						.should(QueryBuilders.matchQuery(//
+								"@graph." + Property.LABEL.value + ".@value", query))
+						.should(
+								QueryBuilders.idsQuery(Type.NWBIB.elasticsearchType,
+										Type.SPATIAL.elasticsearchType).ids(query))
+						.minimumNumberShouldMatch(1);
+		SearchRequestBuilder requestBuilder =
+				client.prepareSearch(INDEX)
+						.setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
+						.setQuery(queryBuilder);
 		if (t.isEmpty()) {
-			requestBuilder = requestBuilder.setTypes(
-					Type.NWBIB.elasticsearchType,
-					Type.SPATIAL.elasticsearchType);
+			requestBuilder =
+					requestBuilder.setTypes(Type.NWBIB.elasticsearchType,
+							Type.SPATIAL.elasticsearchType);
 		} else {
 			for (Type indexType : Type.values())
 				if (indexType.queryParameter.equalsIgnoreCase(t))
-					requestBuilder = requestBuilder
-							.setTypes(indexType.elasticsearchType);
+					requestBuilder = requestBuilder.setTypes(indexType.elasticsearchType);
 		}
 		SearchResponse response = requestBuilder.execute().actionGet();
 		List<JsonNode> result = ids(response);
@@ -134,11 +137,13 @@ public class Classification {
 	}
 
 	JsonNode sorted(SearchResponse response) {
-		final List<JsonNode> result = ids(response)
-				.stream()
-				.sorted((JsonNode o1, JsonNode o2) -> Collator.getInstance(
-						Locale.GERMANY).compare(labelText(o1), labelText(o2)))
-				.collect(Collectors.toList());
+		final List<JsonNode> result =
+				ids(response)
+						.stream()
+						.sorted(
+								(JsonNode o1, JsonNode o2) -> Collator.getInstance(
+										Locale.GERMANY).compare(labelText(o1), labelText(o2)))
+						.collect(Collectors.toList());
 		return Json.toJson(result);
 	}
 
@@ -154,8 +159,7 @@ public class Classification {
 			if (broader == null)
 				topClasses.addAll(valueAndLabelWithNotation(hit, json));
 			else
-				addAsSubClass(subClasses, hit, json, broader.findValue("@id")
-						.asText());
+				addAsSubClass(subClasses, hit, json, broader.findValue("@id").asText());
 		}
 	}
 
@@ -166,22 +170,20 @@ public class Classification {
 		subClasses.get(broader).addAll(valueAndLabelWithNotation(hit, json));
 	}
 
-	private List<JsonNode> valueAndLabelWithNotation(SearchHit hit,
-			JsonNode json) {
+	private List<JsonNode> valueAndLabelWithNotation(SearchHit hit, JsonNode json) {
 		List<JsonNode> result = new ArrayList<JsonNode>();
 		collectLabelAndValue(hit, json, Label.WITH_NOTATION, result);
 		return result;
 	}
 
-	private void collectLabelAndValue(SearchHit hit, JsonNode json,
-			Label style, List<JsonNode> result) {
+	private void collectLabelAndValue(SearchHit hit, JsonNode json, Label style,
+			List<JsonNode> result) {
 		final JsonNode label = json.findValue(Property.LABEL.value);
 		if (label != null) {
 			String id = hit.getId();
-			ImmutableMap<String, String> map = ImmutableMap.of("value",
-					id, "label",
-					(style == Label.PLAIN ? "" : shortId(id) + " ")
-							+ label.findValue("@value").asText());
+			ImmutableMap<String, String> map =
+					ImmutableMap.of("value", id, "label", (style == Label.PLAIN ? ""
+							: shortId(id) + " ") + label.findValue("@value").asText());
 			result.add(Json.toJson(map));
 		}
 	}
