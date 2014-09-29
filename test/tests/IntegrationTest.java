@@ -32,6 +32,7 @@ import controllers.nwbib.Lobid;
 /**
  * See http://www.playframework.com/documentation/2.3.x/JavaFunctionalTest
  */
+@SuppressWarnings("javadoc")
 public class IntegrationTest {
 
 	@Before

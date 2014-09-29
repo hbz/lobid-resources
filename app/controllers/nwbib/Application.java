@@ -27,6 +27,7 @@ import play.libs.Json;
 import play.libs.ws.WSRequestHolder;
 import play.libs.ws.WSResponse;
 import play.mvc.Controller;
+import play.mvc.Http;
 import play.mvc.Result;
 import views.html.browse_classification;
 import views.html.browse_register;
@@ -39,42 +40,70 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 
+/**
+ * The main application controller.
+ * 
+ * @author Fabian Steeg (fsteeg)
+ */
 public class Application extends Controller {
 
 	private static final String STARRED = "starred";
 
+	/** The internal ES field for the type facet. */
 	public static final String TYPE_FIELD = "@graph.@type";
+	/** The internal ES field for the medium facet. */
 	public static final String MEDIUM_FIELD =
 			"@graph.http://purl.org/dc/terms/medium.@id";
 
-	static Form<String> queryForm = Form.form(String.class);
-
 	private static final File FILE = new File("conf/nwbib.conf");
+	/** Access to the nwbib.conf config file. */
 	public final static Config CONFIG = ConfigFactory.parseFile(
 			FILE.exists() ? FILE : new File("modules/nwbib/conf/nwbib.conf"))
 			.resolve();
 
+	static Form<String> queryForm = Form.form(String.class);
+
+	/** Access to the NWBib classification data stored in ES. */
 	public final static Classification CLASSIFICATION = new Classification(
 			CONFIG.getString("nwbib.cluster"), CONFIG.getString("nwbib.server"));
 
 	static final int ONE_HOUR = 60 * 60;
 	private static final int ONE_DAY = 24 * ONE_HOUR;
 
+	/** @return The NWBib index page. */
 	@Cached(key = "nwbib.index", duration = ONE_HOUR)
 	public static Result index() {
 		final Form<String> form = queryForm.bindFromRequest();
-		if (form.hasErrors()) {
+		if (form.hasErrors())
 			return badRequest(index.render());
-		} else {
-			return ok(index.render());
-		}
+		return ok(index.render());
 	}
 
+	/** @return The NWBib advanced search page. */
 	@Cached(key = "nwbib.advanced", duration = ONE_HOUR)
 	public static Result advanced() {
 		return ok(views.html.advanced.render());
 	}
 
+	/**
+	 * @param q Query to search in all fields
+	 * @param author Query for the resource author
+	 * @param name Query for the resource name (title)
+	 * @param subject Query for the resource subject
+	 * @param id Query for the resource id
+	 * @param publisher Query for the resource author
+	 * @param issued Query for the resource issued year
+	 * @param medium Query for the resource medium
+	 * @param nwbibspatial Query for the resource nwbibspatial classification
+	 * @param nwbibsubject Query for the resource nwbibsubject classification
+	 * @param from The page start (offset of page of resource to return)
+	 * @param size The page size (size of page of resource to return)
+	 * @param ownerParam Owner filter for resource queries
+	 * @param t Type filter for resource queries
+	 * @param sort Sorting order for results ("newest", "oldest", "" -> relevance)
+	 * @param details If true, render details
+	 * @return The search results
+	 */
 	public static Promise<Result> search(final String q, final String author,
 			final String name, final String subject, final String id,
 			final String publisher, final String issued, final String medium,
@@ -90,40 +119,45 @@ public class Application extends Controller {
 		Promise<Result> cachedResult = (Promise<Result>) Cache.get(cacheId);
 		if (cachedResult != null)
 			return cachedResult;
-		else {
-			Logger.debug("Not cached: {}, will cache for one hour", cacheId);
-			final Form<String> form = queryForm.bindFromRequest();
-			if (form.hasErrors())
-				return Promise.promise(() -> badRequest(search.render(CONFIG, null, q,
-						author, name, subject, id, publisher, issued, medium, nwbibspatial,
-						nwbibsubject, from, size, 0L, owner, t, sort)));
-			else {
-				String query = form.data().get("query");
-				Promise<Result> result =
-						okPromise(query != null ? query : q, author, name, subject, id,
-								publisher, issued, medium, nwbibspatial, nwbibsubject, form,
-								from, size, owner, t, sort, details);
-				cacheOnRedeem(cacheId, result, ONE_HOUR);
-				return result;
-			}
-		}
+		Logger.debug("Not cached: {}, will cache for one hour", cacheId);
+		final Form<String> form = queryForm.bindFromRequest();
+		if (form.hasErrors())
+			return Promise.promise(() -> badRequest(search.render(CONFIG, null, q,
+					author, name, subject, id, publisher, issued, medium, nwbibspatial,
+					nwbibsubject, from, size, 0L, owner, t, sort)));
+		String query = form.data().get("query");
+		Promise<Result> result =
+				okPromise(query != null ? query : q, author, name, subject, id,
+						publisher, issued, medium, nwbibspatial, nwbibsubject, from, size,
+						owner, t, sort, details);
+		cacheOnRedeem(cacheId, result, ONE_HOUR);
+		return result;
 	}
 
 	static String ownerParam(final String requestParam) {
 		if (!requestParam.isEmpty()) {
 			session("owner", requestParam);
 			return requestParam;
-		} else {
-			String sessionParam = session("owner");
-			return sessionParam != null ? sessionParam : "all";
 		}
+		String sessionParam = session("owner");
+		return sessionParam != null ? sessionParam : "all";
 	}
 
+	/**
+	 * @param id The resource ID.
+	 * @return The details page for the resource with the given ID.
+	 */
 	public static Promise<Result> show(final String id) {
 		return search("", "", "", "", id, "", "", "", "", "", 0, 1, "all", "", "",
 				true);
 	}
 
+	/**
+	 * @param q The query
+	 * @param callback The JSONP callback
+	 * @param t The type filter ("Raumsystematik" or "Sachsystematik")
+	 * @return Subject data for the given query
+	 */
 	public static Promise<Result> subject(final String q, final String callback,
 			final String t) {
 		String cacheId = String.format("%s.%s.%s.%s", "subject", q, callback, t);
@@ -131,22 +165,24 @@ public class Application extends Controller {
 		Promise<Result> cachedResult = (Promise<Result>) Cache.get(cacheId);
 		if (cachedResult != null)
 			return cachedResult;
-		else {
-			Logger.debug("Not cached: {}, will cache for one day", cacheId);
-			Promise<JsonNode> jsonPromise =
-					Promise.promise(() -> CLASSIFICATION.ids(q, t));
-			Promise<Result> result;
-			if (!callback.isEmpty())
-				result =
-						jsonPromise.map((JsonNode json) -> ok(String.format("%s(%s)",
-								callback, Json.stringify(json))));
-			else
-				result = jsonPromise.map((JsonNode json) -> ok(json));
-			cacheOnRedeem(cacheId, result, ONE_DAY);
-			return result;
-		}
+		Logger.debug("Not cached: {}, will cache for one day", cacheId);
+		Promise<JsonNode> jsonPromise =
+				Promise.promise(() -> CLASSIFICATION.ids(q, t));
+		Promise<Result> result;
+		if (!callback.isEmpty())
+			result =
+					jsonPromise.map((JsonNode json) -> ok(String.format("%s(%s)",
+							callback, Json.stringify(json))));
+		else
+			result = jsonPromise.map((JsonNode json) -> ok(json));
+		cacheOnRedeem(cacheId, result, ONE_DAY);
+		return result;
 	}
 
+	/**
+	 * @param t The register type ("Raumsystematik" or "Sachsystematik")
+	 * @return The alphabetical register for the given classification type
+	 */
 	public static Result register(final String t) {
 		Result cachedResult = (Result) Cache.get("register." + t);
 		if (cachedResult != null)
@@ -163,6 +199,10 @@ public class Application extends Controller {
 		return result;
 	}
 
+	/**
+	 * @param t The register type ("Raumsystematik" or "Sachsystematik")
+	 * @return Classification data for the given type
+	 */
 	public static Result classification(final String t) {
 		Result cachedResult = (Result) Cache.get("classification." + t);
 		if (cachedResult != null)
@@ -179,7 +219,7 @@ public class Application extends Controller {
 	}
 
 	private static Result classificationResult(SearchResponse response, String t) {
-		List<JsonNode> topClasses = new ArrayList<JsonNode>();
+		List<JsonNode> topClasses = new ArrayList<>();
 		Map<String, List<JsonNode>> subClasses = new HashMap<>();
 		CLASSIFICATION.buildHierarchy(response, topClasses, subClasses);
 		String topClassesJson = Json.toJson(topClasses).toString();
@@ -189,13 +229,11 @@ public class Application extends Controller {
 	private static Promise<Result> okPromise(final String q, final String author,
 			final String name, final String subject, final String id,
 			final String publisher, final String issued, final String medium,
-			final String nwbibspatial, final String nwbibsubject,
-			final Form<String> form, final int from, final int size,
-			final String owner, String t, String sort, boolean details) {
+			final String nwbibspatial, final String nwbibsubject, final int from,
+			final int size, final String owner, String t, String sort, boolean details) {
 		final Promise<Result> result =
 				call(q, author, name, subject, id, publisher, issued, medium,
-						nwbibspatial, nwbibsubject, form, from, size, owner, t, sort,
-						details);
+						nwbibspatial, nwbibsubject, from, size, owner, t, sort, details);
 		return result.recover((Throwable throwable) -> {
 			throwable.printStackTrace();
 			flashError();
@@ -215,7 +253,7 @@ public class Application extends Controller {
 	private static void cacheOnRedeem(final String cacheId,
 			final Promise<Result> resultPromise, final int duration) {
 		resultPromise.onRedeem((Result result) -> {
-			if (play.test.Helpers.status(result) == play.test.Helpers.OK)
+			if (play.test.Helpers.status(result) == Http.Status.OK)
 				Cache.set(cacheId, resultPromise, duration);
 		});
 	}
@@ -223,9 +261,8 @@ public class Application extends Controller {
 	static Promise<Result> call(final String q, final String author,
 			final String name, final String subject, final String id,
 			final String publisher, final String issued, final String medium,
-			final String nwbibspatial, final String nwbibsubject,
-			final Form<String> form, final int from, final int size, String owner,
-			String t, String sort, boolean showDetails) {
+			final String nwbibspatial, final String nwbibsubject, final int from,
+			final int size, String owner, String t, String sort, boolean showDetails) {
 		WSRequestHolder requestHolder =
 				Lobid.request(q, author, name, subject, id, publisher, issued, medium,
 						nwbibspatial, nwbibsubject, from, size, owner, t, sort);
@@ -246,6 +283,25 @@ public class Application extends Controller {
 				});
 	}
 
+	/**
+	 * @param q Query to search in all fields
+	 * @param author Query for the resource author
+	 * @param name Query for the resource name (title)
+	 * @param subject Query for the resource subject
+	 * @param id Query for the resource id
+	 * @param publisher Query for the resource author
+	 * @param issued Query for the resource issued year
+	 * @param medium Query for the resource medium
+	 * @param nwbibspatial Query for the resource nwbibspatial classification
+	 * @param nwbibsubject Query for the resource nwbibsubject classification
+	 * @param from The page start (offset of page of resource to return)
+	 * @param size The page size (size of page of resource to return)
+	 * @param owner Owner filter for resource queries
+	 * @param t Type filter for resource queries
+	 * @param field The facet field (the field to facet over)
+	 * @param sort Sorting order for results ("newest", "oldest", "" -> relevance)
+	 * @return The search results
+	 */
 	public static Promise<Result> facets(String q, String author, String name,
 			String subject, String id, String publisher, String issued,
 			String medium, String nwbibspatial, String nwbibsubject, int from,
@@ -295,16 +351,28 @@ public class Application extends Controller {
 		return promise;
 	}
 
+	/**
+	 * @param id The resource ID
+	 * @return True, if the resource with given ID is starred by the user
+	 */
 	public static boolean isStarred(String id) {
 		return starredIds().contains(id);
 	}
 
+	/**
+	 * @param id The resource ID to star
+	 * @return An OK result
+	 */
 	public static Result star(String id) {
 		session(STARRED, currentlyStarred() + " " + id);
 		uncache(id);
 		return ok("Starred: " + id);
 	}
 
+	/**
+	 * @param id The resource ID to unstar
+	 * @return An OK result
+	 */
 	public static Result unstar(String id) {
 		List<String> starred = starredIds();
 		starred.remove(id);
@@ -313,10 +381,12 @@ public class Application extends Controller {
 		return ok("Unstarred: " + id);
 	}
 
+	/** @return A page with all resources starred by the user */
 	public static Result showStars() {
 		return ok(stars.render(starredIds()));
 	}
 
+	/** @return An OK result to confirm deletion of starred resources */
 	public static Result clearStars() {
 		session(STARRED, "");
 		return ok(stars.render(starredIds()));

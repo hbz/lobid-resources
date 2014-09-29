@@ -73,6 +73,7 @@ public class Lobid {
 		return requestHolder;
 	}
 
+	/** @return The full number of hits, ie. the size of our data set. */
 	public static Promise<Long> getTotalHits() {
 		final Long cachedResult = (Long) Cache.get(String.format("totalHits"));
 		if (cachedResult != null) {
@@ -89,22 +90,42 @@ public class Lobid {
 		});
 	}
 
-	public static String organisationLabel(String url) {
+	/**
+	 * @param uri A Lobid-Organisation URI
+	 * @return A human readable label for the given URI
+	 */
+	public static String organisationLabel(String uri) {
 		final String cachedResult =
-				(String) Cache.get(String.format("org.label." + url));
+				(String) Cache.get(String.format("org.label." + uri));
 		if (cachedResult != null) {
 			return cachedResult;
 		}
 		WSRequestHolder requestHolder =
-				WS.url(url).setHeader("Accept", "application/json")
+				WS.url(uri).setHeader("Accept", "application/json")
 						.setQueryParameter("format", "short.name");
 		return requestHolder.get().map((WSResponse response) -> {
 			String label = response.asJson().elements().next().asText();
-			Cache.set("org.label." + url, label, Application.ONE_HOUR);
+			Cache.set("org.label." + uri, label, Application.ONE_HOUR);
 			return label;
 		}).get(10000);
 	}
 
+	/**
+	 * @param q Query to search in all fields
+	 * @param author Query for the resource author
+	 * @param name Query for the resource name (title)
+	 * @param subject Query for the resource subject
+	 * @param id Query for the resource id
+	 * @param publisher Query for the resource author
+	 * @param issued Query for the resource issued year
+	 * @param medium Query for the resource medium
+	 * @param nwbibspatial Query for the resource nwbibspatial classification
+	 * @param nwbibsubject Query for the resource nwbibsubject classification
+	 * @param owner Owner filter for resource queries
+	 * @param t Type filter for resource queries
+	 * @param field The facet field (the field to facet over)
+	 * @return A JSON representation of the requested facets
+	 */
 	public static Promise<JsonNode> getFacets(String q, String author,
 			String name, String subject, String id, String publisher, String issued,
 			String medium, String nwbibspatial, String nwbibsubject, String owner,
@@ -146,17 +167,30 @@ public class Lobid {
 			Application.TYPE_FIELD, "type.labels",//
 			Application.MEDIUM_FIELD, "medium.labels");
 
+	/**
+	 * @param types Some type URIs
+	 * @return An icon CSS class for the URIs
+	 */
 	public static String typeIcon(List<String> types) {
 		return facetIcon(types, Application.TYPE_FIELD);
 	}
 
+	/**
+	 * @param types Some type URIs
+	 * @return A human readable label for the URIs
+	 */
 	public static String typeLabel(List<String> types) {
 		return facetLabel(types, Application.TYPE_FIELD);
 	}
 
-	public static String facetLabel(List<String> types, String field) {
+	/**
+	 * @param uris Some URIs
+	 * @param field The ES field to facet over
+	 * @return A human readable label for the URIs
+	 */
+	public static String facetLabel(List<String> uris, String field) {
 		String configKey = keys.get(field);
-		String type = selectType(types, configKey);
+		String type = selectType(uris, configKey);
 		if (type.isEmpty())
 			return "";
 		@SuppressWarnings("unchecked")
@@ -166,12 +200,17 @@ public class Lobid {
 		if (details == null)
 			return type;
 		String selected = details.get(0);
-		return selected.isEmpty() ? types.get(0) : selected;
+		return selected.isEmpty() ? uris.get(0) : selected;
 	}
 
-	public static String facetIcon(List<String> types, String field) {
+	/**
+	 * @param uris Some URIs
+	 * @param field The ES field to facet over
+	 * @return An icon CSS class for the given URIs
+	 */
+	public static String facetIcon(List<String> uris, String field) {
 		String configKey = keys.get(field);
-		String type = selectType(types, configKey);
+		String type = selectType(uris, configKey);
 		if (type.isEmpty())
 			return "";
 		@SuppressWarnings("unchecked")
@@ -181,7 +220,7 @@ public class Lobid {
 		if (details == null)
 			return type;
 		String selected = details.get(1);
-		return selected.isEmpty() ? types.get(0) : selected;
+		return selected.isEmpty() ? uris.get(0) : selected;
 	}
 
 	private static String selectType(List<String> types, String configKey) {
@@ -197,8 +236,8 @@ public class Lobid {
 													.unwrapped().get(t));
 									if (vals == null)
 										return t;
-									return vals == null || vals.get(0).isEmpty()
-											|| vals.get(1).isEmpty() ? "" : t;
+									return vals.get(0).isEmpty() || vals.get(1).isEmpty() ? ""
+											: t;
 								}).filter(t -> {
 							return !t.isEmpty();
 						}).collect(Collectors.toList());

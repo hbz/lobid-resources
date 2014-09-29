@@ -68,6 +68,11 @@ public class Classification {
 	private String server;
 	private String cluster;
 
+	/**
+	 * @param cluster The ES cluster name
+	 * @param server The ES server name
+	 */
+	@SuppressWarnings("resource")
 	public Classification(String cluster, String server) {
 		this.cluster = cluster;
 		this.server = server;
@@ -99,6 +104,11 @@ public class Classification {
 		return requestBuilder.execute().actionGet();
 	}
 
+	/**
+	 * @param query The query
+	 * @param t The classification type ("Raumsystematik" or "Sachsystematik")
+	 * @return A JSON representation of the classification data for q and t
+	 */
 	public JsonNode ids(String query, String t) {
 		QueryBuilder queryBuilder =
 				QueryBuilders
@@ -128,7 +138,7 @@ public class Classification {
 	}
 
 	List<JsonNode> ids(SearchResponse response) {
-		List<JsonNode> result = new ArrayList<JsonNode>();
+		List<JsonNode> result = new ArrayList<>();
 		for (SearchHit hit : response.getHits()) {
 			JsonNode json = Json.toJson(hit.getSource());
 			collectLabelAndValue(hit, json, Label.PLAIN, result);
@@ -147,7 +157,7 @@ public class Classification {
 		return Json.toJson(result);
 	}
 
-	private String labelText(JsonNode node) {
+	private static String labelText(JsonNode node) {
 		return node.get("label").asText();
 	}
 
@@ -163,21 +173,22 @@ public class Classification {
 		}
 	}
 
-	private void addAsSubClass(Map<String, List<JsonNode>> subClasses,
+	private static void addAsSubClass(Map<String, List<JsonNode>> subClasses,
 			SearchHit hit, JsonNode json, String broader) {
 		if (!subClasses.containsKey(broader))
 			subClasses.put(broader, new ArrayList<JsonNode>());
 		subClasses.get(broader).addAll(valueAndLabelWithNotation(hit, json));
 	}
 
-	private List<JsonNode> valueAndLabelWithNotation(SearchHit hit, JsonNode json) {
-		List<JsonNode> result = new ArrayList<JsonNode>();
+	private static List<JsonNode> valueAndLabelWithNotation(SearchHit hit,
+			JsonNode json) {
+		List<JsonNode> result = new ArrayList<>();
 		collectLabelAndValue(hit, json, Label.WITH_NOTATION, result);
 		return result;
 	}
 
-	private void collectLabelAndValue(SearchHit hit, JsonNode json, Label style,
-			List<JsonNode> result) {
+	private static void collectLabelAndValue(SearchHit hit, JsonNode json,
+			Label style, List<JsonNode> result) {
 		final JsonNode label = json.findValue(Property.LABEL.value);
 		if (label != null) {
 			String id = hit.getId();
@@ -188,8 +199,12 @@ public class Classification {
 		}
 	}
 
-	public static String shortId(String id) {
-		return id.split("#")[1].substring(1);
+	/**
+	 * @param uri The full URI
+	 * @return A short, human readable representation of the URI
+	 */
+	public static String shortId(String uri) {
+		return uri.split("#")[1].substring(1);
 	}
 
 }
