@@ -2,6 +2,7 @@ package controllers.nwbib;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -64,7 +65,7 @@ public class Lobid {
 		if (!nwbibsubject.trim().isEmpty())
 			requestHolder =
 					requestHolder.setQueryParameter("nwbibsubject", nwbibsubject);
-		if (!owner.equals("all"))
+		if (!owner.isEmpty())
 			requestHolder = requestHolder.setQueryParameter("owner", owner);
 		if (!t.isEmpty())
 			requestHolder = requestHolder.setQueryParameter("t", t);
@@ -102,9 +103,16 @@ public class Lobid {
 		}
 		WSRequestHolder requestHolder =
 				WS.url(uri).setHeader("Accept", "application/json")
-						.setQueryParameter("format", "short.name");
+						.setQueryParameter("format", "short.altLabel");
 		return requestHolder.get().map((WSResponse response) -> {
-			String label = response.asJson().elements().next().asText();
+			Iterator<JsonNode> elements = response.asJson().elements();
+			String label = "";
+			if (elements.hasNext()) {
+				label = elements.next().asText();
+				if (label.length() > 30)
+					label = label.substring(0, 30) + "...";
+			} else
+				label = uri.substring(uri.lastIndexOf('/') + 1);
 			Cache.set("org.label." + uri, label, Application.ONE_HOUR);
 			return label;
 		}).get(10000);
@@ -140,14 +148,17 @@ public class Lobid {
 						.setQueryParameter("subject", subject)
 						.setQueryParameter("publisher", publisher)
 						.setQueryParameter("issued", issued).setQueryParameter("id", id)
-						.setQueryParameter("owner", owner.equals("all") ? "" : owner)
 						.setQueryParameter("field", field)
 						.setQueryParameter("nwbibspatial", nwbibspatial)
-						.setQueryParameter("nwbibsubject", nwbibsubject);
+						.setQueryParameter("nwbibsubject", nwbibsubject)
+						.setQueryParameter("from", "0")
+						.setQueryParameter("size", Integer.MAX_VALUE + "");
 		if (!field.equals(Application.MEDIUM_FIELD))
 			requestHolder = requestHolder.setQueryParameter("medium", medium);
 		if (!field.equals(Application.TYPE_FIELD))
 			requestHolder = requestHolder.setQueryParameter("t", t);
+		if (!field.equals(Application.ITEM_FIELD))
+			requestHolder = requestHolder.setQueryParameter("owner", owner);
 		Logger.info("Facets request URL {}, query params {} ",
 				requestHolder.getUrl(), requestHolder.getQueryParameters());
 		return requestHolder.get().map((WSResponse response) -> {
@@ -165,7 +176,8 @@ public class Lobid {
 
 	private static final Map<String, String> keys = ImmutableMap.of(
 			Application.TYPE_FIELD, "type.labels",//
-			Application.MEDIUM_FIELD, "medium.labels");
+			Application.MEDIUM_FIELD, "medium.labels",//
+			Application.ITEM_FIELD, "item.labels");
 
 	/**
 	 * @param types Some type URIs
@@ -189,6 +201,8 @@ public class Lobid {
 	 * @return A human readable label for the URIs
 	 */
 	public static String facetLabel(List<String> uris, String field) {
+		if (uris.size() == 1 && isOrg(uris.get(0)))
+			return Lobid.organisationLabel(uris.get(0));
 		String configKey = keys.get(field);
 		String type = selectType(uris, configKey);
 		if (type.isEmpty())
@@ -209,6 +223,8 @@ public class Lobid {
 	 * @return An icon CSS class for the given URIs
 	 */
 	public static String facetIcon(List<String> uris, String field) {
+		if (uris.size() == 1 && isOrg(uris.get(0)))
+			return "octicon octicon-home";
 		String configKey = keys.get(field);
 		String type = selectType(uris, configKey);
 		if (type.isEmpty())
@@ -245,5 +261,9 @@ public class Lobid {
 		Logger.trace("Selected: " + selected);
 		return selected.isEmpty() ? "" : selected.get(0).contains("Miscellaneous")
 				&& selected.size() > 1 ? selected.get(1) : selected.get(0);
+	}
+
+	static boolean isOrg(String term) {
+		return term.startsWith("http://lobid.org/organisation");
 	}
 }

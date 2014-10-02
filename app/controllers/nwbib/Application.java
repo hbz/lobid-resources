@@ -5,6 +5,7 @@ package controllers.nwbib;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -54,6 +55,9 @@ public class Application extends Controller {
 	/** The internal ES field for the medium facet. */
 	public static final String MEDIUM_FIELD =
 			"@graph.http://purl.org/dc/terms/medium.@id";
+	/** The internal ES field for the item/exemplar facet. */
+	public static final String ITEM_FIELD =
+			"@graph.http://purl.org/vocab/frbr/core#exemplar.@id";
 
 	private static final File FILE = new File("conf/nwbib.conf");
 	/** Access to the nwbib.conf config file. */
@@ -98,7 +102,7 @@ public class Application extends Controller {
 	 * @param nwbibsubject Query for the resource nwbibsubject classification
 	 * @param from The page start (offset of page of resource to return)
 	 * @param size The page size (size of page of resource to return)
-	 * @param ownerParam Owner filter for resource queries
+	 * @param owner Owner filter for resource queries
 	 * @param t Type filter for resource queries
 	 * @param sort Sorting order for results ("newest", "oldest", "" -> relevance)
 	 * @param details If true, render details
@@ -108,9 +112,7 @@ public class Application extends Controller {
 			final String name, final String subject, final String id,
 			final String publisher, final String issued, final String medium,
 			final String nwbibspatial, final String nwbibsubject, final int from,
-			final int size, final String ownerParam, String t, String sort,
-			boolean details) {
-		final String owner = ownerParam(ownerParam);
+			final int size, final String owner, String t, String sort, boolean details) {
 		String cacheId =
 				String.format("%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s",
 						"search", q, author, name, subject, id, publisher, issued, medium,
@@ -134,21 +136,12 @@ public class Application extends Controller {
 		return result;
 	}
 
-	static String ownerParam(final String requestParam) {
-		if (!requestParam.isEmpty()) {
-			session("owner", requestParam);
-			return requestParam;
-		}
-		String sessionParam = session("owner");
-		return sessionParam != null ? sessionParam : "all";
-	}
-
 	/**
 	 * @param id The resource ID.
 	 * @return The details page for the resource with the given ID.
 	 */
 	public static Promise<Result> show(final String id) {
-		return search("", "", "", "", id, "", "", "", "", "", 0, 1, "all", "", "",
+		return search("", "", "", "", id, "", "", "", "", "", 0, 1, "", "", "",
 				true);
 	}
 
@@ -314,28 +307,51 @@ public class Application extends Controller {
 		if (cachedResult != null) {
 			return Promise.promise(() -> cachedResult);
 		}
-		Predicate<JsonNode> labelled = json -> {
-			String term = json.get("term").asText();
-			String typeLabel = Lobid.facetLabel(Arrays.asList(term), field);
-			String typeIcon = Lobid.facetIcon(Arrays.asList(term), field);
-			return !typeLabel.isEmpty() && !typeIcon.isEmpty();
-		};
+		Predicate<JsonNode> labelled =
+				json -> {
+					String term = json.get("term").asText();
+					String typeLabel = Lobid.facetLabel(Arrays.asList(term), field);
+					String typeIcon = Lobid.facetIcon(Arrays.asList(term), field);
+					return !typeLabel.startsWith("http") && !typeLabel.isEmpty()
+							&& !typeIcon.isEmpty();
+				};
+		Function<JsonNode, JsonNode> preprocess =
+				json -> {
+					if (field.equals(ITEM_FIELD)) {
+						return Json.parse(json.toString().replaceAll(
+								"http://lobid\\.org/item/[^:]*?:([^:]+?):[^\"]*",
+								"http://lobid.org/organisation/$1"));
+					}
+					return json;
+				};
 		Function<JsonNode, String> toHtml =
 				json -> {
 					String term = json.get("term").asText();
 					int count = json.get("count").asInt();
 					String icon = Lobid.facetIcon(Arrays.asList(term), field);
-					// TODO we need a general solution for this when we add more facets
+					String label = Lobid.facetLabel(Arrays.asList(term), field);
+					String mediumQuery = !field.equals(MEDIUM_FIELD) ? medium : term;
+					String typeQuery = !field.equals(TYPE_FIELD) ? t : term;
+					String ownerQuery = !field.equals(ITEM_FIELD) ? owner : term;
 					String routeUrl =
 							routes.Application.search(q, author, name, subject, id,
-									publisher, issued, field.equals(TYPE_FIELD) ? medium : term,
-									nwbibspatial, nwbibsubject, from, size, owner,
-									field.equals(TYPE_FIELD) ? term : t, sort, false).url();
-					return String.format(
-							"<li><a href='%s'><span class='%s'/>&nbsp;%s (%s)</a></li>",
-							routeUrl, icon, Lobid.facetLabel(Arrays.asList(term), field),
-							count);
+									publisher, issued, mediumQuery, nwbibspatial, nwbibsubject,
+									from, size, ownerQuery, typeQuery, sort, false).url();
+					String result =
+							String.format(
+									"<li><a href='%s'><span class='%s'/>&nbsp;%s (%s)</a></li>",
+									routeUrl, icon, label, count);
+					if (Lobid.isOrg(term))
+						result = result.replace(" (1)", "");
+					return result;
 				};
+		Comparator<? super JsonNode> sorter = (j1, j2) -> {
+			String t1 = j1.get("term").asText();
+			String t2 = j2.get("term").asText();
+			String l1 = Lobid.facetLabel(Arrays.asList(t1), field);
+			String l2 = Lobid.facetLabel(Arrays.asList(t2), field);
+			return l1.compareTo(l2);
+		};
 		Promise<Result> promise =
 				Lobid
 						.getFacets(q, author, name, subject, id, publisher, issued, medium,
@@ -345,7 +361,8 @@ public class Application extends Controller {
 										.stream(
 												Spliterators.spliteratorUnknownSize(
 														json.findValue("entries").elements(), 0), false)
-										.filter(labelled).map(toHtml).collect(Collectors.toList()))
+										.map(preprocess).distinct().sorted(sorter).filter(labelled)
+										.map(toHtml).collect(Collectors.toList()))
 						.map(lis -> ok(String.join("\n", lis)));
 		promise.onRedeem(r -> Cache.set(key, r, ONE_DAY));
 		return promise;
@@ -398,8 +415,8 @@ public class Application extends Controller {
 					.removeAll();
 		} catch (Throwable t) {
 			Logger.error("Could not clear cache", t);
-			Cache.remove(String.format("%s.%s.%s.%s.%s.%s", "search", id, 0, 1,
-					ownerParam(""), "", true));
+			Cache.remove(String.format("%s.%s.%s.%s.%s.%s", "search", id, 0, 1, "",
+					"", true));
 		}
 	}
 

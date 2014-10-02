@@ -80,8 +80,8 @@ public class IntegrationTest {
 				(TestBrowser browser) -> {
 					String field = Application.TYPE_FIELD;
 					Promise<JsonNode> jsonPromise =
-							Lobid.getFacets("köln", "", "", "", "", "", "", "", "", "",
-									"all", field, "");
+							Lobid.getFacets("köln", "", "", "", "", "", "", "", "", "", "",
+									field, "");
 					JsonNode facets = jsonPromise.get(10000);
 					assertThat(
 							facets.findValues("term").stream().map(e -> e.asText())

@@ -23,13 +23,13 @@
     </ul>
 }
 
-@facets(facet: String, field: String, current: String)={
+@facets(facet: String, field: String, current: String, allLabel:String = "Alle")={
 	    <div class="btn-group fill">
 	        <button type="button" class="btn btn-default dropdown-toggle fill" data-toggle="dropdown">
-	          @if(current.isEmpty()){@facet: Alle} else {@Lobid.facetLabel(Seq(current), field) <span class="@Lobid.facetIcon(Arrays.asList(current), field)"></span>}
+	          @if(current.isEmpty()){@facet: @allLabel} else {@Lobid.facetLabel(Seq(current), field) <span class="@Lobid.facetIcon(Arrays.asList(current), field)"></span>}
 	          <span class="caret"></span>
 	        </button>
-	        <ul class="dropdown-menu" id="facets-ul-@field.hashCode.abs">
+	        <ul class="dropdown-menu scrollable-menu" id="facets-ul-@field.hashCode.abs">
 	          <li @if(current==""){class="active"}>
 	            <script>
 	            $.ajax({
@@ -43,97 +43,12 @@
 	              }
 	            });
 	            </script>
-	            <a href="@nwbib.routes.Application.search(q,author,name,subject,id,publisher,issued,if (medium==current) "" else medium,nwbibspatial,nwbibsubject,from,size,owner,if (t==current) "" else t,sortParam)">@facet: Alle</a></li>
+	            <a href="@nwbib.routes.Application.search(q,author,name,subject,id,publisher,issued,if (medium==current) "" else medium,nwbibspatial,nwbibsubject,from,size,if (owner==current) "" else owner,if (t==current) "" else t,sortParam)">@facet: @allLabel</a></li>
 	            <li id="facets-loading-@field.hashCode.abs"><a href="#">Lade Facetten...</a></li>
 	        </ul>
 	    </div>
 }
-@ownersDropdown()={
-	    <div class="btn-group fill">
-	        <button type="button" class="btn btn-default dropdown-toggle fill" data-toggle="dropdown">
-	          Filter: @if(owner=="all"){<span class="octicon octicon-x"></span>} else { 
-	                   @if(owner=="*") { <span class="octicon octicon-check"></span>} else {
-	                     @owner.split(",").size@* Einrichtung@if(owner.split(",").size>1){en}*@}
-	                   }
-	          <span class="caret"></span>
-	        </button>
-	        <ul class="dropdown-menu">
-	          <li @if(owner=="all"){class="active"}><a href="@nwbib.routes.Application.search(q,author,name,subject,id,publisher,issued,medium,nwbibspatial,nwbibsubject,from,size, "all",t,sortParam)">Alle zeigen</a></li>
-	          <li @if(owner == "*"){class="active"}><a href="@nwbib.routes.Application.search(q,author,name,subject,id,publisher,issued,medium,nwbibspatial,nwbibsubject,from,size, "*",t,sortParam)">Mit Bestand</a></li>
-	          @defining(owner.replace("*","").trim.split(",").filterNot(s => {s.isEmpty || s == "all"})) { os =>
-	              @if(!os.isEmpty){
-	                <li class="divider"></li>
-	                <li role="presentation" class="dropdown-header">Mit Bestand in Einrichtung:</li>
-	              }
-	              @for(o <- os) {
-	                <li class="active">
-	                    <a title="Filter entfernen" href="@nwbib.routes.Application.search(q,author,name,subject,id,publisher,issued,medium,nwbibspatial,nwbibsubject,from,size,if(os.size==1) "all" else os.filter(_!=o).mkString(","),t,sortParam)">
-	                        <span class="glyphicon glyphicon-remove-sign"></span> &nbsp;
-	                        @Lobid.organisationLabel(o)
-	                    </a>
-	                </li>
-	              }
-	          }
-	        </ul>
-	    </div>
-}
-@ownersForm()={
-            <form class="form-inline" action="/nwbib/search" method="GET" name="addOwnerForm">
-                <div class="form-group fill">
-	                <div class="input-group">
-	                    <input type="text" class="owner form-control" id="owner" name="owner" 
-	                        placeholder="Bestand in..."/>
-	                    <span class="input-group-btn">
-	                       <button title="Filter hinzufügen" class="btn btn-default" onclick="addOwnerFun()" id="addOwner">
-                            <span class="glyphicon glyphicon-filter"></span></button>
-                        </span>
-	               </div>
-                </div>
-                <input type="hidden" name="query" value="@q"/>
-                <input type="hidden" name="author" value="@author"/>
-                <input type="hidden" name="name" value="@name"/>
-                <input type="hidden" name="subject" value="@subject"/>
-                <input type="hidden" name="from" value="@from"/>
-                <input type="hidden" name="size" value="@size"/>
-                <input type="hidden" name="t" value="@t"/>
-           </form>
-          <script>
-          function addOwnerFun() {
-            @if(owner!="all" && owner!="*"){
-              var newOwner =  document.getElementById('owner').value;
-              var oldOwner = '@owner';
-              document.getElementById('owner').style.color = 'white';
-              var found = $.inArray(newOwner, oldOwner.split(",")) > -1;
-              if(!found){
-                document.getElementById('owner').value = oldOwner + ',' + newOwner;
-              } else {
-                document.getElementById('owner').value = oldOwner;
-              }
-            }
-            document.addOwnerForm.submit();
-          }
-          </script>
-          <script>
-            $('input#owner').each(function() {
-                var $input = $(this);
-                $input.autocomplete({
-                    source : function(request, response) {
-                        $.ajax({
-                            url : "http://api.lobid.org/organisation",
-                            dataType : "jsonp",
-                            data : {
-                                name : request.term,
-                                format : "ids"
-                            },
-                            success : function(data) {
-                                response(data);
-                            }
-                        });
-                    }
-                });
-            });
-          </script>
-}
+
 @sort()={
         <div class="btn-group fill">
             <button type="button" class="btn btn-default dropdown-toggle fill" data-toggle="dropdown">
@@ -166,8 +81,7 @@
 	        <div class="col col-md-2">@facets("Publikationstyp", Application.TYPE_FIELD, t)</div>
 	        <div class="col col-md-2">@facets("Medium", Application.MEDIUM_FIELD, medium)</div>
 	        <div class="col col-md-2">@sort</div>
-	        <div class="col col-md-2">@ownersForm</div>
-	        <div class="col col-md-1">@ownersDropdown</div>
+	        <div class="col col-md-3">@facets("Bestand", Application.ITEM_FIELD, owner, "mit und ohne Bestand")</div>
         </div>
         <table class="table table-striped table-condensed">
         <tr>
