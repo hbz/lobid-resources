@@ -13,6 +13,7 @@ import java.util.Spliterators;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import org.elasticsearch.action.search.SearchResponse;
@@ -38,6 +39,7 @@ import views.html.search;
 import views.html.stars;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.google.common.collect.ImmutableMap;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 
@@ -315,15 +317,6 @@ public class Application extends Controller {
 					return !typeLabel.startsWith("http") && !typeLabel.isEmpty()
 							&& !typeIcon.isEmpty();
 				};
-		Function<JsonNode, JsonNode> preprocess =
-				json -> {
-					if (field.equals(ITEM_FIELD)) {
-						return Json.parse(json.toString().replaceAll(
-								"http://lobid\\.org/item/[^:]*?:([^:]+?):[^\"]*",
-								"http://lobid.org/organisation/$1"));
-					}
-					return json;
-				};
 		Function<JsonNode, String> toHtml =
 				json -> {
 					String term = json.get("term").asText();
@@ -341,8 +334,6 @@ public class Application extends Controller {
 							String.format(
 									"<li><a href='%s'><span class='%s'/>&nbsp;%s (%s)</a></li>",
 									routeUrl, icon, label, count);
-					if (Lobid.isOrg(term))
-						result = result.replace(" (1)", "");
 					return result;
 				};
 		Comparator<? super JsonNode> sorter = (j1, j2) -> {
@@ -357,15 +348,46 @@ public class Application extends Controller {
 						.getFacets(q, author, name, subject, id, publisher, issued, medium,
 								nwbibspatial, nwbibsubject, owner, field, t)
 						.map(
-								json -> StreamSupport
-										.stream(
-												Spliterators.spliteratorUnknownSize(
-														json.findValue("entries").elements(), 0), false)
-										.map(preprocess).distinct().sorted(sorter).filter(labelled)
-										.map(toHtml).collect(Collectors.toList()))
-						.map(lis -> ok(String.join("\n", lis)));
+								json -> {
+									Stream<JsonNode> stream =
+											StreamSupport.stream(
+													Spliterators.spliteratorUnknownSize(
+															json.findValue("entries").elements(), 0), false);
+									if (field.equals(ITEM_FIELD)) {
+										stream = preprocess(stream);
+									}
+									return stream.sorted(sorter).filter(labelled).map(toHtml)
+											.collect(Collectors.toList());
+								}).map(lis -> ok(String.join("\n", lis)));
 		promise.onRedeem(r -> Cache.set(key, r, ONE_DAY));
 		return promise;
+	}
+
+	private static Stream<JsonNode> preprocess(Stream<JsonNode> stream) {
+		String captureItemUriWithoutSignature =
+				"(http://lobid\\.org/item/[^:]*?:[^:]*?:)[^\"]*";
+		List<String> itemUrisWithoutSignatures =
+				stream
+						.map(
+								json -> json.get("term").asText()
+										.replaceAll(captureItemUriWithoutSignature, "$1"))
+						.distinct().collect(Collectors.toList());
+		return count(itemUrisWithoutSignatures).entrySet().stream()
+				.map(entry -> Json.toJson(ImmutableMap.of(//
+						"term", "http://lobid.org/organisation/" + entry.getKey(),//
+						"count", entry.getValue())));
+	}
+
+	private static Map<String, Integer> count(List<String> itemUris) {
+		String captureIsilOrgIdentifier =
+				"http://lobid\\.org/item/[^:]*?:([^:]*?):[^\"]*";
+		Map<String, Integer> map = new HashMap<>();
+		for (String term : itemUris) {
+			String isil = term.replaceAll(captureIsilOrgIdentifier, "$1");
+			if (!isil.trim().isEmpty())
+				map.put(isil, map.get(isil) == null ? 1 : map.get(isil) + 1);
+		}
+		return map;
 	}
 
 	/**
