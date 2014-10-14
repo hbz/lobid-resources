@@ -42,6 +42,7 @@
         @if(key.isEmpty){&lt;Kein Autor&gt;} else {
             @defining((doc\\key.get)){hits=>
                  @valueFor(doc, hits.get(0).asOpt[String].getOrElse(hits.get(0).as[Seq[String]].get(0)), gndEntities.get)
+                 @if(hits.get(0).asOpt[Seq[String]].getOrElse(Seq()).size>1){ <i>et al.</i> }
             }
         }
         </td>
