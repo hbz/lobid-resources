@@ -31,6 +31,12 @@
     if(res.isEmpty) id else res.get(0)
 }
 
+@process(value: String) = @{
+	if(property=="subjectChain"){
+		value.replaceAll("\\([\\d,]+\\)$","")
+	} else {value}
+}
+
 @row match {
   case views.TableRow.VALUES => {
     @for(elem <- multiSingleOrEmptySeq(jsonVal(property)).sortBy(_.toString)(Ordering[String].reverse) if !elem.toString.contains("http://dewey.info")) {
@@ -40,7 +46,7 @@
         }</td>
         <td property="@property">
             @valueLabel match {
-                          case None => {@string(elem)}
+                          case None => {@process(string(elem))}
                           case Some(seq) => {
                             @defining(valueFor(doc, elem.as[String], seq)){ value =>
                             @if(value.startsWith("http://purl.org/lobid/nwbib")){
