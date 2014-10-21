@@ -330,9 +330,13 @@ public class Application extends Controller {
 							routes.Application.search(q, author, name, subject, id,
 									publisher, issued, mediumQuery, nwbibspatial, nwbibsubject,
 									from, size, ownerQuery, typeQuery, sort, false).url();
+					boolean current =
+							(field.equals(MEDIUM_FIELD) && term.equals(medium) || field
+									.equals(TYPE_FIELD) && term.equals(t))
+									|| field.equals(ITEM_FIELD) && term.equals(owner);
 					String result =
-							String.format(
-									"<li><a href='%s'><span class='%s'/>&nbsp;%s (%s)</a></li>",
+							String.format("<li " + (current ? "class=\"active\"" : "")
+									+ "><a href='%s'><span class='%s'/>&nbsp;%s (%s)</a></li>",
 									routeUrl, icon, label, count);
 					return result;
 				};
