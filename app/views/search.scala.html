@@ -74,7 +74,11 @@
 }
 
 @main("NWBib") {
-    @tags.search_advanced("Suche aktualisieren", q, author, name, subject, nwbibspatial, nwbibsubject, id, publisher, issued, sortParam)
+    @if(Seq(author,name,subject,id,publisher,issued,nwbibspatial,nwbibsubject).exists(!_.isEmpty)){
+      @tags.search_advanced("Suche aktualisieren", q, author, name, subject, nwbibspatial, nwbibsubject, id, publisher, issued, sortParam)
+    } else {
+      @tags.search_form(q)
+    }
     @defining(Json.parse(result).asOpt[Seq[JsValue]].getOrElse(Seq()).zipWithIndex.drop(1)) { hits =>
         <div class="row pagination-and-facets">
 	        <div class="col col-md-3">@pagination(hits.size)</div>
