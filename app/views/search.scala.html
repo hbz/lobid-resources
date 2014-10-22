@@ -73,7 +73,7 @@
         </div>
 }
 
-@main("NWBib") {
+@main("NWBib - Ergebnisliste") {
     @if(Seq(author,name,subject,id,publisher,issued,nwbibspatial,nwbibsubject).exists(!_.isEmpty)){
       @tags.search_advanced("Suche aktualisieren", q, author, name, subject, nwbibspatial, nwbibsubject, id, publisher, issued, sortParam)
     } else {

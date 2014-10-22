@@ -11,7 +11,7 @@
 @import play.api.libs.json.JsValue
 @import play.api.libs.json.JsArray
 
-@main("NWBib") {
+@main("NWBib - Vollanzeige") {
     @defining(Json.parse(result).asOpt[Seq[JsValue]].getOrElse(Seq()).zipWithIndex.tail) { hits =>
         @for((doc,i) <- hits) {
         <div class="row">
