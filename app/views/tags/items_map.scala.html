@@ -14,6 +14,7 @@
 @defining(items.asOpt[JsArray].getOrElse(Json.arr(items))) { uris =>
     <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.css" />
     <script src="http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.js"></script>
+    <script src="@controllers.routes.Assets.at("javascripts/Leaflet.MakiMarkers.js")"></script>
     @*<script type="text/javascript" src="http://maps.stamen.com/js/tile.stamen.js?v1.2.4"></script>*@
     <table id="table-@(hitId)" class="table table-striped table-condensed">
      <tr>
@@ -83,8 +84,10 @@
                 var lat = @string((json \\ "lat").head)
                 var lon = @string((json \\ "long").head)
                 var latlng@(id) = L.latLng(lat, lon);
+                var icon@(id) = L.MakiMarkers.icon({icon: "library", color: "#BB2E30", size: "m"});
                 var marker@(id) = L.marker([lat, lon],{
-                    title: "@ownerName (Signatur: @signature)"
+                    title: "@ownerName (Signatur: @signature)",
+                    icon: icon@(id)
                 });
                 markers@(hitId)[latlng@(id).toString()] = marker@(id);
                 bindPopup@(id)(tableDetails@(hitId));
