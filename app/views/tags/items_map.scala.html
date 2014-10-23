@@ -16,14 +16,17 @@
     <script src="http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.js"></script>
     <script src="@controllers.routes.Assets.at("javascripts/Leaflet.MakiMarkers.js")"></script>
     @*<script type="text/javascript" src="http://maps.stamen.com/js/tile.stamen.js?v1.2.4"></script>*@
-    <table id="table-@(hitId)" class="table table-striped table-condensed">
-     <tr>
-         <th style="width: 30%"/>
-         <th style="width: 70%"/>
-     </tr>
+    <table class="table table-striped table-condensed">
+        <tr>
+            <th style="width: 30%"/>
+            <th style="width: 70%"/>
+        </tr>
     </table>
     <p>
     <div class="map" id="map-@(hitId)"></div>
+    </p>
+    <table id="table-@(hitId)" class="table table-striped table-condensed">
+    </table>
     <script>
     // Some alternative tiles:
     //var layer = L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png');
@@ -46,14 +49,11 @@
     var allTableDetails@(hitId) = '';
     var markers@(hitId) = {};
     @markers(uris)
-    if(markerCount@(hitId) < @uris.value.size){
-        $('#map-@(hitId)').hide();
+    if(markerCount@(hitId) > 1) {
         $('#table-@(hitId)').append(allTableDetails@(hitId));
-    } else {
-        map@(hitId).addLayer(layer);
     }
+    map@(hitId).addLayer(layer);
     </script>
-    </p>
 }
 
 @markers(uris: JsArray) = {
