@@ -259,8 +259,10 @@ public class Application extends Controller {
 			final String nwbibspatial, final String nwbibsubject, final int from,
 			final int size, String owner, String t, String sort, boolean showDetails) {
 		WSRequestHolder requestHolder =
-				Lobid.request(q, author, name, subject, id, publisher, issued, medium,
-						nwbibspatial, nwbibsubject, from, size, owner, t, sort);
+				Lobid
+						.request(q, author, name, subject, id, publisher, issued, medium,
+								nwbibspatial, nwbibsubject, from, size, owner, t, sort,
+								showDetails);
 		return requestHolder.get().map(
 				(WSResponse response) -> {
 					JsonNode json = response.asJson();

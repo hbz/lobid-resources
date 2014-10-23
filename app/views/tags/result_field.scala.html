@@ -32,9 +32,11 @@
 }
 
 @process(value: String) = @{
-	if(property=="subjectChain"){
-		value.replaceAll("\\([\\d,]+\\)$","")
-	} else {value}
+	property match {
+		case "subjectChain" => { value.replaceAll("\\([\\d,]+\\)$","") }
+		case "isPartOf" => { value.replace("http://lobid.org/resource/","http://lobid.org/nwbib/") }
+		case _ => { value }
+	}
 }
 
 @row match {
@@ -68,7 +70,7 @@
       <tr>
         <td>@label</td>
         <td>
-          @defining(string(elem)) { url => <a title="@url" rel="@property" href="@url">@url</a> }
+          @defining(process(string(elem))) { url => <a title="@url" rel="@property" href="@url">@url</a> }
         </td>
       </tr>
     }

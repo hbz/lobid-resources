@@ -56,8 +56,10 @@
   @result_field("Gesang", "singer", doc, TableRow.VALUES, valueLabel = gndEntities)
   @result_field("Gefeierte Person", "honoree", doc, TableRow.VALUES, valueLabel = gndEntities)
   @result_field("Übersetzter", "translator", doc, TableRow.VALUES, valueLabel = gndEntities)
-  @defining((doc\\"@type").last.asOpt[Seq[String]].getOrElse(Seq((doc\\"@type").last.asOpt[String].get))){ t =>
-    <tr><td>Typ</td><td><span class="@Lobid.typeIcon(t)"></span> @Lobid.typeLabel(t)</td></tr>
+  @if(!(doc\\"@type").isEmpty) {
+    @defining((doc\\"@type").last.asOpt[Seq[String]].getOrElse(Seq((doc\\"@type").last.asOpt[String].get))){ t =>
+      <tr><td>Typ</td><td><span class="@Lobid.typeIcon(t)"></span> @Lobid.typeLabel(t)</td></tr>
+    }
   }
   @result_field("Erschienen", "issued", doc, TableRow.VALUES)
   @result_field("Auflage", "edition", doc, TableRow.VALUES)
@@ -69,6 +71,8 @@
   @result_field("URN", "urn", doc, TableRow.VALUES)
   @result_field("Umfang", "extent", doc, TableRow.VALUES)
   @result_field("Quelle", "bibliographicCitation", doc, TableRow.VALUES)
+  @result_field("Bestandteil von", "isPartOfName", doc, TableRow.VALUES)
+  @result_field("Bestandteil von", "isPartOf", doc, TableRow.LINKS)
 }
 
 @table(){
@@ -81,8 +85,6 @@
 
 @table(){
   @result_field("Spatial", "spatial", doc, TableRow.LINKS)
-  @result_field("Bestandteil von", "isPartOfName", doc, TableRow.VALUES)
-  @result_field("Bestandteil von", "isPartOf", doc, TableRow.LINKS)
   @result_field("Weitere Informationen (Linked Open Data)", "@id", doc, TableRow.LINKS, node = Option(doc))
   @result_field("Weitere Informationen (Verbundkatalog)", "isPrimaryTopicOf", doc, TableRow.LINKS)
 }
