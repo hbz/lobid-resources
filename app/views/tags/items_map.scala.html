@@ -49,9 +49,7 @@
     var allTableDetails@(hitId) = '';
     var markers@(hitId) = {};
     @markers(uris)
-    if(markerCount@(hitId) > 1) {
-        $('#table-@(hitId)').append(allTableDetails@(hitId));
-    }
+    $('#table-@(hitId)').append(allTableDetails@(hitId));
     map@(hitId).addLayer(layer);
     </script>
 }
@@ -71,8 +69,8 @@
         json = Await.result(WS.url(ownerRequestUri).get().map(x=>(x.json)), 5.second);
         ownerName = if((json\\"name").isEmpty) "" else (json\\"name")(0).as[String]) {
         tableDetails@(hitId) =
-                '@if(!ownerName.isEmpty){<tr><td>Einrichtung:</td><td><a href="@owner">@ownerName</a></td></tr>}'+
-                '@if(!signature.isEmpty){<tr><td>Signatur:</td><td><a href="@item">@signature</a></td></tr>}';
+                '<tr><td>Einrichtung:</td><td>@if(!ownerName.isEmpty){<a href="@owner">@ownerName</a>}else{&lt;Keine Angabe&gt;}</td></tr>'+
+                '<tr><td>Signatur:</td><td>@if(!signature.isEmpty){<a href="@item">@signature</a>}else{&lt;Keine Angabe&gt;}</td></tr>';
         if(allTableDetails@(hitId)=='')
             allTableDetails@(hitId) += tableDetails@(hitId);
         else
