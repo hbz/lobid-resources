@@ -54,14 +54,11 @@
         @if(flash.get("error")!=null){
             <div class="alert alert-danger">@flash.get("error")</div>
         } else {
-            @if(hits.isEmpty && !q.trim.isEmpty){
-                <div class="alert alert-info">
-                    Keine Ergebnisse für <code>@q</code>
+            @if(hits.isEmpty){
+                <div class="alert alert-info text-center">
+                    Ein Titel mit der ID @q konnte nicht gefunden werden.
                 </div>
             }
-        }
-        @if(hits.isEmpty && q.trim.isEmpty){
-            @tags.nrw_map()
         }
         @if(!hits.isEmpty && !q.trim.isEmpty){
         <p class="small text-center">

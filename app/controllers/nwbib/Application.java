@@ -273,10 +273,10 @@ public class Application extends Controller {
 									&& issued.isEmpty() && medium.isEmpty()
 									&& nwbibspatial.isEmpty() && nwbibsubject.isEmpty() ? "[]"
 									: json.toString();
-					return ok(showDetails ? details.render(CONFIG, s, q) : search.render(
-							CONFIG, s, q, author, name, subject, id, publisher, issued,
-							medium, nwbibspatial, nwbibsubject, from, size, hits, owner, t,
-							sort));
+					return ok(showDetails ? details.render(CONFIG, s, id) : search
+							.render(CONFIG, s, q, author, name, subject, id, publisher,
+									issued, medium, nwbibspatial, nwbibsubject, from, size, hits,
+									owner, t, sort));
 				});
 	}
 
