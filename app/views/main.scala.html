@@ -14,6 +14,7 @@
         <script src="@controllers.routes.Assets.at("javascripts/jquery-1.10.2.min.js")"></script>
         <script src="@controllers.routes.Assets.at("javascripts/jquery-ui.min.js")"></script>
         <script src="@controllers.routes.Assets.at("javascripts/bootstrap.min.js")"></script>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
     </head>
     <body onload="document.getElementById('nwbibQuery').focus();">
         <div class="container">
@@ -30,9 +31,15 @@
             <div class="navbar navbar-default" role="navigation">
                 <div class="container-fluid">
                   <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#nwbib-nav">
+                        <span class="sr-only">Navigation ein/ausblenden</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
                     <a class="navbar-brand" href="@nwbib.routes.Application.index()">NWBib</a>
                   </div>
-                  <div class="navbar-collapse collapse">
+                  <div class="navbar-collapse collapse" id="nwbib-nav">
                     <ul class="nav navbar-nav">
                       <li @if(title=="NWBib: Erweiterte Suche"){class="active"}>
                         <a href="@nwbib.routes.Application.advanced()"><span class="glyphicon glyphicon-search"></span> Erweiterte Suche</a>
