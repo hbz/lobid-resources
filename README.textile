@@ -6,11 +6,16 @@ See the @.travis.yml@ file for details on the CI config used by Travis.
 
 h1. Setup
 
-@wget http://downloads.typesafe.com/play/2.2.2/play-2.2.2.zip@
-@unzip play-2.2.2.zip@
-@./play-2.2.2/play test@
+Prerequisite: Java 8
 
-Replace 'test' with other Play commands, e.g. 'run' or 'eclipse' (to generate Eclipse project config files).
+@git clone https://github.com/hbz/nwbib.git ; cd nwbib@
+@wget http://downloads.typesafe.com/typesafe-activator/1.2.10/typesafe-activator-1.2.10-minimal.zip@
+@unzip typesafe-activator-1.2.10-minimal.zip@
+@./activator-1.2.10-minimal/activator test@
+
+Replace @test@ with other Play commands, e.g. @run@ (run in test mode, recompiles changed files on browser refresh), or @"eclipse with-source=true"@ (generate Eclipse project config files). Use @"start 8000"@ to run in production background mode on port 8000 (hit Ctrl+D to exit logs). To restart a production instance running in the background, you can use the included @restart.sh@ script (configured to use port 8000).
+
+For more information, see the "Play documentation":https://playframework.com/documentation/2.3.x/Home.
 
 h1. License
 
