@@ -105,19 +105,19 @@ public class Classification {
 	}
 
 	/**
-	 * @param query The query
+	 * @param q The query
 	 * @param t The classification type ("Raumsystematik" or "Sachsystematik")
 	 * @return A JSON representation of the classification data for q and t
 	 */
-	public JsonNode ids(String query, String t) {
+	public JsonNode ids(String q, String t) {
 		QueryBuilder queryBuilder =
 				QueryBuilders
 						.boolQuery()
 						.should(QueryBuilders.matchQuery(//
-								"@graph." + Property.LABEL.value + ".@value", query))
+								"@graph." + Property.LABEL.value + ".@value", q))
 						.should(
 								QueryBuilders.idsQuery(Type.NWBIB.elasticsearchType,
-										Type.SPATIAL.elasticsearchType).ids(query))
+										Type.SPATIAL.elasticsearchType).ids(q))
 						.minimumNumberShouldMatch(1);
 		SearchRequestBuilder requestBuilder =
 				client.prepareSearch(INDEX)

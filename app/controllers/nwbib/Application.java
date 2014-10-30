@@ -129,7 +129,7 @@ public class Application extends Controller {
 			return Promise.promise(() -> badRequest(search.render(CONFIG, null, q,
 					author, name, subject, id, publisher, issued, medium, nwbibspatial,
 					nwbibsubject, from, size, 0L, owner, t, sort)));
-		String query = form.data().get("query");
+		String query = form.data().get("q");
 		Promise<Result> result =
 				okPromise(query != null ? query : q, author, name, subject, id,
 						publisher, issued, medium, nwbibspatial, nwbibsubject, from, size,

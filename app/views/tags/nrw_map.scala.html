@@ -28,7 +28,7 @@ var map = new Datamap({
     },
     done: function(datamap) {
         datamap.svg.selectAll('.datamaps-subunit').on('click', function(geography) {
-            window.location = "/nwbib/search?query=" + encodeURIComponent(geography.properties.name);
+            window.location = "/nwbib/search?q=" + encodeURIComponent(geography.properties.name);
         });
     }
 });

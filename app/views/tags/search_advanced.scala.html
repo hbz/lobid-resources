@@ -59,17 +59,17 @@ function setAutosuggest() {
 
 function suggests(term){
     return {
-        'query' : {
+        'q' : {
             url : "/nwbib/subject",
-            data : { query : term }
+            data : { q : term }
         },
         'nwbibspatial' : {
             url : "/nwbib/subject",
-            data : { query : term, t : "Raumsystematik" }
+            data : { q : term, t : "Raumsystematik" }
         },
         'nwbibsubject' : {
             url : "/nwbib/subject",
-            data : { query : term, t : "Sachsystematik" }
+            data : { q : term, t : "Sachsystematik" }
         },
         'name' : {
             url : "http://api.lobid.org/resource",
@@ -89,12 +89,12 @@ function suggests(term){
 
 @helper.form(action = controllers.nwbib.routes.Application.search(), 
     'id -> "nwbib-form", 'role -> "form", 'class -> "form-inline") {
-  @defining(TreeMap("query"->q,"name"->name,"author"->author,"subject"->subject,"nwbibspatial"->nwbibspatial, "nwbibsubject"->nwbibsubject, "id"->id,"publisher"->publisher,"issued"->issued).filter(!_._2.isEmpty)) { fields =>
-  @for(((k,v),i)<- (if(fields.isEmpty) TreeMap("query" -> "") else fields).zipWithIndex){
+  @defining(TreeMap("q"->q,"name"->name,"author"->author,"subject"->subject,"nwbibspatial"->nwbibspatial, "nwbibsubject"->nwbibsubject, "id"->id,"publisher"->publisher,"issued"->issued).filter(!_._2.isEmpty)) { fields =>
+  @for(((k,v),i)<- (if(fields.isEmpty) TreeMap("q" -> "") else fields).zipWithIndex){
   <div class="search-field row" id="search-field-@i">
       <div class="form-group col col-md-2">
             <select id="query-select" class="form-control" onChange="setAutosuggest()">
-              <option value="query" @if(k=="query"){selected="selected"})>Alle Felder</option>
+              <option value="q" @if(k=="q"){selected="selected"})>Alle Felder</option>
               <option value="id" @if(k=="id"){selected="selected"}>ISBN/ISSN</option>
               <option value="name" @if(k=="name"){selected="selected"}>Titel</option>
               <option value="author" @if(k=="author"){selected="selected"}>Autor</option>
