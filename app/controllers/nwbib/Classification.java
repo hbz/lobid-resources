@@ -36,8 +36,13 @@ public class Classification {
 
 	private static final String INDEX = "nwbib";
 
-	private enum Type {
+	/**
+	 * NWBib classification types.
+	 */
+	public enum Type {
+		/** NWBib subject type */
 		NWBIB("json-ld-nwbib", "Sachsystematik"), //
+		/** NWBib spatial type */
 		SPATIAL("json-ld-nwbib-spatial", "Raumsystematik");
 
 		String elasticsearchType;
@@ -135,6 +140,25 @@ public class Classification {
 		SearchResponse response = requestBuilder.execute().actionGet();
 		List<JsonNode> result = ids(response);
 		return Json.toJson(result);
+	}
+
+	/**
+	 * @param uri The NWBib classificationURI
+	 * @param type The ES classification type (see {@link Classification.Type})
+	 * @return The label for the given URI
+	 */
+	public String label(String uri, String type) {
+		String sourceAsString =
+				client.prepareGet(INDEX, type, uri).execute().actionGet()
+						.getSourceAsString();
+		if (sourceAsString != null) {
+			String textValue =
+					Json.parse(sourceAsString)
+							.findValue("http://www.w3.org/2004/02/skos/core#prefLabel")
+							.findValue("@value").textValue();
+			return textValue != null ? textValue : "";
+		}
+		return "";
 	}
 
 	List<JsonNode> ids(SearchResponse response) {

@@ -99,8 +99,8 @@ public class Lobid {
 	 * @return A human readable label for the given URI
 	 */
 	public static String organisationLabel(String uri) {
-		final String cachedResult =
-				(String) Cache.get(String.format("org.label." + uri));
+		String cacheKey = "org.label." + uri;
+		final String cachedResult = (String) Cache.get(cacheKey);
 		if (cachedResult != null) {
 			return cachedResult;
 		}
@@ -111,14 +111,34 @@ public class Lobid {
 			Iterator<JsonNode> elements = response.asJson().elements();
 			String label = "";
 			if (elements.hasNext()) {
-				label = elements.next().asText();
-				if (label.length() > 30)
-					label = label.substring(0, 30) + "...";
+				label = shorten(elements.next().asText());
 			} else
 				label = uri.substring(uri.lastIndexOf('/') + 1);
-			Cache.set("org.label." + uri, label, Application.ONE_HOUR);
+			Cache.set(cacheKey, label, Application.ONE_DAY);
 			return label;
 		}).get(10000);
+	}
+
+	private static String shorten(String label) {
+		int limit = 45;
+		if (label.length() > limit)
+			return label.substring(0, limit) + "...";
+		return label;
+	}
+
+	private static String nwBibLabel(String uri) {
+		String cacheKey = "nwbib.label." + uri;
+		final String cachedResult = (String) Cache.get(cacheKey);
+		if (cachedResult != null) {
+			return cachedResult;
+		}
+		String type =
+				uri.contains("spatial") ? Classification.Type.SPATIAL.elasticsearchType
+						: Classification.Type.NWBIB.elasticsearchType;
+		String label = Application.CLASSIFICATION.label(uri, type);
+		String result = shorten(label);
+		Cache.set(cacheKey, label, Application.ONE_DAY);
+		return result;
 	}
 
 	/**
@@ -141,7 +161,7 @@ public class Lobid {
 			String name, String subject, String id, String publisher, String issued,
 			String medium, String nwbibspatial, String nwbibsubject, String owner,
 			String field, String t) {
-		WSRequestHolder requestHolder =
+		WSRequestHolder request =
 				WS.url(Application.CONFIG.getString("nwbib.api") + "/facets")
 						.setHeader("Accept", "application/json")
 						.setQueryParameter("set", Application.CONFIG.getString("nwbib.set"))
@@ -151,20 +171,21 @@ public class Lobid {
 						.setQueryParameter("subject", subject)
 						.setQueryParameter("publisher", publisher)
 						.setQueryParameter("issued", issued).setQueryParameter("id", id)
-						.setQueryParameter("field", field)
-						.setQueryParameter("nwbibspatial", nwbibspatial)
-						.setQueryParameter("nwbibsubject", nwbibsubject)
-						.setQueryParameter("from", "0")
+						.setQueryParameter("field", field).setQueryParameter("from", "0")
 						.setQueryParameter("size", Integer.MAX_VALUE + "");
 		if (!field.equals(Application.MEDIUM_FIELD))
-			requestHolder = requestHolder.setQueryParameter("medium", medium);
+			request = request.setQueryParameter("medium", medium);
 		if (!field.equals(Application.TYPE_FIELD))
-			requestHolder = requestHolder.setQueryParameter("t", t);
+			request = request.setQueryParameter("t", t);
 		if (!field.equals(Application.ITEM_FIELD))
-			requestHolder = requestHolder.setQueryParameter("owner", owner);
-		Logger.info("Facets request URL {}, query params {} ",
-				requestHolder.getUrl(), requestHolder.getQueryParameters());
-		return requestHolder.get().map((WSResponse response) -> {
+			request = request.setQueryParameter("owner", owner);
+		if (!field.equals(Application.NWBIB_SPATIAL_FIELD))
+			request = request.setQueryParameter("nwbibspatial", nwbibspatial);
+		if (!field.equals(Application.NWBIB_SUBJECT_FIELD))
+			request = request.setQueryParameter("nwbibsubject", nwbibsubject);
+		Logger.info("Facets request URL {}, query params {} ", request.getUrl(),
+				request.getQueryParameters());
+		return request.get().map((WSResponse response) -> {
 			return response.asJson();
 		});
 	}
@@ -180,7 +201,9 @@ public class Lobid {
 	private static final Map<String, String> keys = ImmutableMap.of(
 			Application.TYPE_FIELD, "type.labels",//
 			Application.MEDIUM_FIELD, "medium.labels",//
-			Application.ITEM_FIELD, "item.labels");
+			Application.ITEM_FIELD, "item.labels",//
+			Application.NWBIB_SPATIAL_FIELD, "nwbibspatial.labels",//
+			Application.NWBIB_SUBJECT_FIELD, "nwbibsubject.labels");
 
 	/**
 	 * @param types Some type URIs
@@ -206,6 +229,8 @@ public class Lobid {
 	public static String facetLabel(List<String> uris, String field) {
 		if (uris.size() == 1 && isOrg(uris.get(0)))
 			return Lobid.organisationLabel(uris.get(0));
+		else if (uris.size() == 1 && isNwBibClass(uris.get(0)))
+			return Lobid.nwBibLabel(uris.get(0));
 		String configKey = keys.get(field);
 		String type = selectType(uris, configKey);
 		if (type.isEmpty())
@@ -228,6 +253,8 @@ public class Lobid {
 	public static String facetIcon(List<String> uris, String field) {
 		if (uris.size() == 1 && isOrg(uris.get(0)))
 			return "octicon octicon-home";
+		else if (uris.size() == 1 && isNwBibClass(uris.get(0)))
+			return "octicon octicon-list-unordered";
 		String configKey = keys.get(field);
 		String type = selectType(uris, configKey);
 		if (type.isEmpty())
@@ -268,5 +295,9 @@ public class Lobid {
 
 	static boolean isOrg(String term) {
 		return term.startsWith("http://lobid.org/organisation");
+	}
+
+	static boolean isNwBibClass(String term) {
+		return term.startsWith("http://purl.org/lobid/nwbib");
 	}
 }

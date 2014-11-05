@@ -34,7 +34,7 @@
 @process(value: String) = @{
 	property match {
 		case "subjectChain" => { value.replaceAll("\\([\\d,]+\\)$","") }
-		case "isPartOf" => { value.replace("http://lobid.org/resource/","http://lobid.org/nwbib/") }
+		case "isPartOf" => { value.replace("lobid.org/resource/","lobid.org/nwbib/") }
 		case _ => { value }
 	}
 }
@@ -66,7 +66,7 @@
     }
   }
   case views.TableRow.LINKS => {
-    @for(elem <- multiSingleOrEmptySeq(jsonVal(property)) if !elem.toString.contains("http://lobid.org/resource/NWBib")) {
+    @for(elem <- multiSingleOrEmptySeq(jsonVal(property)) if !elem.toString.contains("lobid.org/resource/NWBib")) {
       <tr>
         <td>@label</td>
         <td>

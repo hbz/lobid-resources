@@ -61,6 +61,13 @@ public class Application extends Controller {
 	public static final String ITEM_FIELD =
 			"@graph.http://purl.org/vocab/frbr/core#exemplar.@id";
 
+	/** The internal ES field for the NWBib subject facet. */
+	public static final String NWBIB_SUBJECT_FIELD =
+			"@graph.http://purl.org/lobid/lv#nwbibsubject.@id";
+	/** The internal ES field for the NWBib spatial facet. */
+	public static final String NWBIB_SPATIAL_FIELD =
+			"@graph.http://purl.org/lobid/lv#nwbibspatial.@id";
+
 	private static final File FILE = new File("conf/nwbib.conf");
 	/** Access to the nwbib.conf config file. */
 	public final static Config CONFIG = ConfigFactory.parseFile(
@@ -74,7 +81,7 @@ public class Application extends Controller {
 			CONFIG.getString("nwbib.cluster"), CONFIG.getString("nwbib.server"));
 
 	static final int ONE_HOUR = 60 * 60;
-	private static final int ONE_DAY = 24 * ONE_HOUR;
+	static final int ONE_DAY = 24 * ONE_HOUR;
 
 	/** @return The NWBib index page. */
 	@Cached(key = "nwbib.index", duration = ONE_HOUR)
@@ -311,31 +318,41 @@ public class Application extends Controller {
 		if (cachedResult != null) {
 			return Promise.promise(() -> cachedResult);
 		}
-		Predicate<JsonNode> labelled =
-				json -> {
-					String term = json.get("term").asText();
-					String typeLabel = Lobid.facetLabel(Arrays.asList(term), field);
-					String typeIcon = Lobid.facetIcon(Arrays.asList(term), field);
-					return !typeLabel.startsWith("http") && !typeLabel.isEmpty()
-							&& !typeIcon.isEmpty();
-				};
+		Predicate<JsonNode> labelled = json -> {
+			String term = json.get("term").asText();
+			String label = Lobid.facetLabel(Arrays.asList(term), field);
+			String icon = Lobid.facetIcon(Arrays.asList(term), field);
+			Logger.trace("LABEL {}, ICON {}", label, icon);
+			return !label.startsWith("http") && !label.isEmpty() && !icon.isEmpty();
+		};
 		Function<JsonNode, String> toHtml =
 				json -> {
 					String term = json.get("term").asText();
 					int count = json.get("count").asInt();
 					String icon = Lobid.facetIcon(Arrays.asList(term), field);
 					String label = Lobid.facetLabel(Arrays.asList(term), field);
+
 					String mediumQuery = !field.equals(MEDIUM_FIELD) ? medium : term;
 					String typeQuery = !field.equals(TYPE_FIELD) ? t : term;
 					String ownerQuery = !field.equals(ITEM_FIELD) ? owner : term;
+					String nwbibsubjectQuery =
+							!field.equals(NWBIB_SUBJECT_FIELD) ? nwbibsubject : term;
+					String nwbibspatialQuery =
+							!field.equals(NWBIB_SPATIAL_FIELD) ? nwbibspatial : term;
+
 					String routeUrl =
 							routes.Application.search(q, author, name, subject, id,
-									publisher, issued, mediumQuery, nwbibspatial, nwbibsubject,
-									from, size, ownerQuery, typeQuery, sort, false).url();
+									publisher, issued, mediumQuery, nwbibspatialQuery,
+									nwbibsubjectQuery, from, size, ownerQuery, typeQuery, sort,
+									false).url();
+					// @formatter:off
 					boolean current =
-							(field.equals(MEDIUM_FIELD) && term.equals(medium) || field
-									.equals(TYPE_FIELD) && term.equals(t))
-									|| field.equals(ITEM_FIELD) && term.equals(owner);
+										 field.equals(MEDIUM_FIELD) && term.equals(medium) 
+									|| field.equals(TYPE_FIELD) && term.equals(t)
+									|| field.equals(ITEM_FIELD) && term.equals(owner)
+									|| field.equals(NWBIB_SPATIAL_FIELD) && term.equals(nwbibspatial)
+									|| field.equals(NWBIB_SUBJECT_FIELD) && term.equals(nwbibsubject);
+					//@formatter:on
 					String result =
 							String.format("<li " + (current ? "class=\"active\"" : "")
 									+ "><a href='%s'><span class='%s'/>&nbsp;%s (%s)</a></li>",
