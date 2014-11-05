@@ -112,7 +112,7 @@
             <div class="row"><div class="col-md-12">@pagination(hits.size)</div></div>
             <div class="row facet"><div class="col-md-12">@sort</div></div>
             </p>
-            <p><strong>Kombinierte Orts- und Sachgruppensuche:</strong></p>
+            <p><strong>Orts- und Themensuche:</strong></p>
             <p>
             <div class="row facet"><div class="col-md-12">@facets("Sachgruppen", Application.NWBIB_SUBJECT_FIELD, nwbibsubject)</div></div>
             <div class="row facet"><div class="col-md-12">@facets("Ortsgruppen", Application.NWBIB_SPATIAL_FIELD, nwbibspatial)</div></div>
@@ -124,7 +124,7 @@
             </p>
             <p><strong>Bestandsnachweise in Bibliotheken:</strong></p>
             <p>
-            <div class="row facet"><div class="col-md-12">@facets("Besitzende Bibliothek", Application.ITEM_FIELD, owner, "mit und ohne Bestand")</div></div>
+            <div class="row facet"><div class="col-md-12">@facets("Besitzende Bibliothek", Application.ITEM_FIELD, owner)</div></div>
             </p>
          </div>
       </div>
