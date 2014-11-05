@@ -10,7 +10,8 @@
 @import play.api.libs.json.JsArray
 
 @pagination(hits:Int)={
-    <ul class="pagination fill">
+  <nav>
+    <ul class="pager">
       <li class="previous @if(from==0){disabled}">
         <a style="width:20%; text-align: center;" href="@if(from==0){#} else {@nwbib.routes.Application.search(q,author,name,subject,id,publisher,issued,medium,nwbibspatial,nwbibsubject,from-size,size,owner,t,sortParam)}">&larr;</a>
       </li>
@@ -21,10 +22,11 @@
         <a style="width:20%; text-align: center;" href="@if(from+hits < from+size){#} else {@nwbib.routes.Application.search(q,author,name,subject,id,publisher,issued,medium,nwbibspatial,nwbibsubject,from+size,size,owner,t,sortParam)}">&rarr;</a>
       </li>
     </ul>
+  </nav>
 }
 
 @facets(facet: String, field: String, current: String, allLabel:String = "Alle")={
-	    <div class="btn-group fill dropup">
+	    <div class="btn-group fill">
 	        <button type="button" class="btn @if(!current.isEmpty()){active} btn-default dropdown-toggle fill" data-toggle="dropdown">
 	          @if(current.isEmpty()){@facet: @allLabel} else {@Lobid.facetLabel(Seq(current), field) <span class="@Lobid.facetIcon(Arrays.asList(current), field)"></span>}
 	          <span class="caret"></span>
@@ -50,24 +52,16 @@
 }
 
 @sort()={
-        <div class="btn-group fill">
-            <button type="button" class="btn btn-default dropdown-toggle fill" data-toggle="dropdown">
-              Sortierung: @sortParam match {
-                case "" => { Relevanz }
-                case "newest" => { Neueste zuerst }
-                case "oldest" => { Älteste zuerst }
-              }
-              <span class="caret"></span>
-            </button>
-            <ul class="dropdown-menu scrollable-menu" id="facets-ul">
+        <div class="sort">
+            <ul class="nav nav-pills" role="tablist">
               <li @if(sortParam==""){class="active"}>
                 <a href="@nwbib.routes.Application.search(q,author,name,subject,id,publisher,issued,medium,nwbibspatial,nwbibsubject,from,size,owner,t,"")">Relevanz</a>
               </li>
               <li @if(sortParam=="newest"){class="active"}>
-                <a href="@nwbib.routes.Application.search(q,author,name,subject,id,publisher,issued,medium,nwbibspatial,nwbibsubject,from,size,owner,t,"newest")">Neueste zuerst</a>
+                <a href="@nwbib.routes.Application.search(q,author,name,subject,id,publisher,issued,medium,nwbibspatial,nwbibsubject,from,size,owner,t,"newest")">Neueste</a>
               </li>
               <li @if(sortParam=="oldest"){class="active"}>
-                <a href="@nwbib.routes.Application.search(q,author,name,subject,id,publisher,issued,medium,nwbibspatial,nwbibsubject,from,size,owner,t,"oldest")">Älteste zuerst</a>
+                <a href="@nwbib.routes.Application.search(q,author,name,subject,id,publisher,issued,medium,nwbibspatial,nwbibsubject,from,size,owner,t,"oldest")">Älteste</a>
               </li>
             </ul>
         </div>
@@ -82,6 +76,10 @@
     @defining(Json.parse(result).asOpt[Seq[JsValue]].getOrElse(Seq()).zipWithIndex.drop(1)) { hits =>
      <div class="row">
          <div class="col-md-8">
+         <div class="row">
+           <div class="col-md-6">@pagination(hits.size)</div>
+           <div class="col-md-6">@sort</div>
+         </div>
          <table class="table table-striped table-condensed">
          <tr>
           <th style="width: 5%"></th>
@@ -106,23 +104,18 @@
          }
         </div>
         <div class="col-md-4">
-            <p><span class="label label-info">Navigation, Sortierung und Eingrenzung der Ergebnisliste</span></p>
-            <p><strong>Ergebnislistennavigation und -sortierung:</strong></p>
+            <p class="lead" style="margin-top:5px">Ergebnisse eingrenzen nach:</p>
+            <p><strong>Orten und Themen</strong></p>
             <p>
-            <div class="row"><div class="col-md-12">@pagination(hits.size)</div></div>
-            <div class="row facet"><div class="col-md-12">@sort</div></div>
+            <div class="row facet"><div class="col-md-12">@facets("Themen", Application.NWBIB_SUBJECT_FIELD, nwbibsubject)</div></div>
+            <div class="row facet"><div class="col-md-12">@facets("Orte", Application.NWBIB_SPATIAL_FIELD, nwbibspatial)</div></div>
             </p>
-            <p><strong>Orts- und Themensuche:</strong></p>
-            <p>
-            <div class="row facet"><div class="col-md-12">@facets("Sachgruppen", Application.NWBIB_SUBJECT_FIELD, nwbibsubject)</div></div>
-            <div class="row facet"><div class="col-md-12">@facets("Ortsgruppen", Application.NWBIB_SPATIAL_FIELD, nwbibspatial)</div></div>
-            </p>
-            <p><strong>Medien- und Publikationstypen:</strong></p>
+            <p><strong>Medien- und Publikationstypen</strong></p>
             <p>
             <div class="row facet"><div class="col-md-12">@facets("Publikationstyp", Application.TYPE_FIELD, t)</div></div>
             <div class="row facet"><div class="col-md-12">@facets("Medium", Application.MEDIUM_FIELD, medium)</div></div>
             </p>
-            <p><strong>Bestandsnachweise in Bibliotheken:</strong></p>
+            <p><strong>Bestandsnachweisen in Bibliotheken</strong></p>
             <p>
             <div class="row facet"><div class="col-md-12">@facets("Besitzende Bibliothek", Application.ITEM_FIELD, owner)</div></div>
             </p>
