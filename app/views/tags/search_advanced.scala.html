@@ -73,7 +73,7 @@ function suggests(term){
         },
         'name' : {
             url : "http://api.lobid.org/resource",
-            data : { name : term, format : "short" }
+            data : { name : term, format : "short", set : '@controllers.nwbib.Application.CONFIG.getString("nwbib.set")' }
         },
         'author' : {
             url : "http://api.lobid.org/person",
