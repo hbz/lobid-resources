@@ -194,7 +194,7 @@ public class Lobid {
 		return // if query string syntax is used, leave it alone:
 		q.trim().isEmpty() || q.matches(".*?([+~]|AND|OR|\\s-).*?") ? q :
 		// else prepend '+' to all terms for AND search:
-				Arrays.asList(q.split(" ")).stream().map(x -> "+" + x)
+				Arrays.asList(q.split("[\\s-]")).stream().map(x -> "+" + x)
 						.collect(Collectors.joining(" "));
 	}
 
