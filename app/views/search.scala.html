@@ -16,7 +16,7 @@
         <a style="width:20%; text-align: center;" href="@if(from==0){#} else {@nwbib.routes.Application.search(q,author,name,subject,id,publisher,issued,medium,nwbibspatial,nwbibsubject,from-size,size,owner,t,sortParam)}">&larr;</a>
       </li>
       <li class="disabled">
-      <a style="width:60%; text-align: center; white-space: nowrap;" href="#">@if(hits>0){Treffer @(from+1) bis @(Math.min(from+hits,from+size))@if(allHits>0){ von @allHits}}else{0 Treffer}</a>
+      <a style="width:60%; text-align: center; white-space: nowrap;" href="#">@if(hits>0){@(from+1) bis @(Math.min(from+hits,from+size))@if(allHits>0){ von @allHits}}else{0 Treffer}</a>
       </li>
       <li class="next @if(from+hits < from+size){disabled}">
         <a style="width:20%; text-align: center;" href="@if(from+hits < from+size){#} else {@nwbib.routes.Application.search(q,author,name,subject,id,publisher,issued,medium,nwbibspatial,nwbibsubject,from+size,size,owner,t,sortParam)}">&rarr;</a>

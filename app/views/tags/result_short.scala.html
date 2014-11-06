@@ -39,7 +39,7 @@
 @label(keys: Seq[String])={
     @defining(keys.find(s=>(doc\\s).size>0)){key=>
         <td style="text-align: right">
-        @if(key.isEmpty){&lt;Kein Autor&gt;} else {
+        @if(!key.isEmpty) {
             @defining((doc\\key.get)){hits=>
                  @valueFor(doc, hits.get(0).asOpt[String].getOrElse(hits.get(0).as[Seq[String]].get(0)), gndEntities.get)
                  @if(hits.get(0).asOpt[Seq[String]].getOrElse(Seq()).size>1){ <i>et al.</i> }
@@ -56,7 +56,7 @@
     @optional(doc, "title", "", "<Kein Titel>")
     @optional(doc, "otherTitleInformation", " | ", "")
     @optional(doc, "edition", " | ", "")</a></td>
-  @label(Seq("creator", "editor", "contributor"))
+  @label(Seq("creator", "editor", "contributor", "statementOfResponsibility"))
   <td style="text-align: right"> @optional(doc, "issued", "", "") </td>
   <td style="text-align: right"> @tags.star_button(id) </td>
 </tr>
