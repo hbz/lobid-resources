@@ -88,13 +88,13 @@
           <th style="width: 5%; text-align: right"></th>
           <th style="width: 5%; text-align: right"></th>
          </tr>
-         @for((doc,i) <- hits; id = ("""http://.+?lobid.org/resource.+?([^/]+).*?""".r findFirstMatchIn ((doc \ "@id").as[String])).get group 1) {
+         @for((doc,i) <- hits; id = ("""http://.*?lobid.org/resource.+?([^/]+).*?""".r findFirstMatchIn ((doc \ "@id").as[String])).get group 1) {
             @tags.result_short(id,doc)
          }
          </table>
 
          @if(flash.get("error")!=null){
-            <div class="alert alert-danger">@flash.get("error")</div>
+            <div class="alert alert-danger text-center">@flash.get("error")</div>
          } else {
             @if(hits.isEmpty){
                 <div class="alert alert-info text-center">
