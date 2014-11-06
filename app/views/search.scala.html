@@ -35,7 +35,7 @@
 	          <li @if(current==""){class="active"}>
 	            <script>
 	            $.ajax({
-	              url: '/nwbib/facets?q=@urlEncode(q)&author=@urlEncode(author)&name=@urlEncode(name)&subject=@urlEncode(subject)&publisher=@urlEncode(publisher)&issued=@urlEncode(issued)&medium=@urlEncode(medium)&nwbibspatial=@urlEncode(nwbibspatial)&nwbibsubject=@urlEncode(nwbibsubject)&from=@from&size=@size&owner=@urlEncode(owner)&t=@urlEncode(t)&field=@urlEncode(field)&sort=@urlEncode(sortParam)',
+	              url: '/nwbib/facets?q=@urlEncode(q)&author=@urlEncode(author)&name=@urlEncode(name)&subject=@urlEncode(subject)&publisher=@urlEncode(publisher)&issued=@urlEncode(issued)&medium=@urlEncode(medium)&nwbibspatial=@urlEncode(nwbibspatial)&nwbibsubject=@urlEncode(nwbibsubject)&from=0&size=@size&owner=@urlEncode(owner)&t=@urlEncode(t)&field=@urlEncode(field)&sort=@urlEncode(sortParam)',
 	              success: function(data, textStatus, jqXHR) {
 	                $("#facets-ul-@field.hashCode.abs").append(data);
 	                $("#facets-loading-@field.hashCode.abs").remove();
