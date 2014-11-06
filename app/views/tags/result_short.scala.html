@@ -6,12 +6,11 @@
 @import controllers.nwbib.Lobid
 @import scala.collection.immutable.Map
 
-@optional(doc: JsValue, key: String, sep: String, alt: String)={
-    @defining((doc \\ key)) { other =>
-      @if(!other.isEmpty){
-        @sep@(other(0).asOpt[String].getOrElse(other(0).as[Seq[JsValue]].map(_.as[String]).mkString("; ")))
-      } else {@alt}
-    }
+@optional(doc: JsValue, key: String, sep: String, alt: String)=@{
+    val other = (doc \\ key)
+    if(!other.isEmpty){
+        sep + other(0).asOpt[String].getOrElse(other(0).as[Seq[JsValue]].map(_.as[String]).mkString("; "))
+    } else {alt}
 }
 
 @valueFor(doc: JsValue, id: String, keys: Seq[String]) = @{
@@ -57,7 +56,7 @@
     @optional(doc, "otherTitleInformation", " | ", "")
     @optional(doc, "edition", " | ", "")</a></td>
   @label(Seq("creator", "editor", "contributor", "statementOfResponsibility"))
-  <td style="text-align: right"> @optional(doc, "issued", "", "") </td>
+  <td style="text-align: right"> @optional(doc, "issued", "", "").split("[,;]")(0) </td>
   <td style="text-align: right"> @tags.star_button(id) </td>
 </tr>
 }
