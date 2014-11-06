@@ -99,6 +99,28 @@ public class Application extends Controller {
 	}
 
 	/**
+	 * @param q The topics query.
+	 * @return The NWBib topics search page.
+	 */
+	public static Promise<Result> topics(String q) {
+		if (q.isEmpty())
+			return Promise.promise(() -> ok(views.html.topics.render(q, "")));
+		String cacheId = "topics." + q;
+		@SuppressWarnings("unchecked")
+		Promise<Result> cachedResult = (Promise<Result>) Cache.get(cacheId);
+		if (cachedResult != null)
+			return cachedResult;
+		WSRequestHolder requestHolder = Lobid.topicRequest(q);
+		Promise<Result> result = requestHolder.get().map((WSResponse response) -> {
+			JsonNode json = response.asJson();
+			String s = json.toString();
+			return ok(views.html.topics.render(q, s));
+		});
+		cacheOnRedeem(cacheId, result, ONE_HOUR);
+		return result;
+	}
+
+	/**
 	 * @param q Query to search in all fields
 	 * @param author Query for the resource author
 	 * @param name Query for the resource name (title)

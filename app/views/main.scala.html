@@ -41,10 +41,13 @@
                   </div>
                   <div class="navbar-collapse collapse" id="nwbib-nav">
                     <ul class="nav navbar-nav">
-                      <li @if(title=="NWBib: Erweiterte Suche"){class="active"}>
+                      <li @if(title=="NWBib - Erweiterte Suche"){class="active"}>
                         <a href="@nwbib.routes.Application.advanced()"><span class="glyphicon glyphicon-search"></span> Erweiterte Suche</a>
                       </li>
-                      <li @if(title=="NWBib: Systematik"||title=="NWBib: Register"){class="active"} class="dropdown">
+                      <li @if(title=="NWBib - Themensuche"){class="active"}>
+                        <a href="@nwbib.routes.Application.topics()"><span class="octicon octicon-tag"></span> Themensuche</a>
+                      </li>
+                      <li @if(title.contains("ystematik")||title.contains("egister")){class="active"} class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="octicon octicon-list-unordered"></span> Systematik<b class="caret"></b></a>
                         <ul class="dropdown-menu">
                           <li class="dropdown-header">Themen</li>
@@ -58,7 +61,7 @@
                       </li>
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
-                      <li @if(title=="NWBib: Merkliste"){class="active"}><a href="@nwbib.routes.Application.showStars()"><span class="glyphicon glyphicon-star-empty"></span> Merkliste</a></li>
+                      <li @if(title=="NWBib - Merkliste"){class="active"}><a href="@nwbib.routes.Application.showStars()"><span class="glyphicon glyphicon-star-empty"></span> Merkliste</a></li>
                       <li class="divider"></li>
                       <li><a href="http://www.landesbibliothek-nrw.de/aufgaben/nrw_bibliographie/">Über die NWBib</a></li>
                       <li @if(title=="NWBib: Kontakt"){class="active"} class="dropdown">

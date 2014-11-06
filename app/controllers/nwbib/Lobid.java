@@ -77,6 +77,22 @@ public class Lobid {
 		return requestHolder;
 	}
 
+	static WSRequestHolder topicRequest(final String q) {
+		WSRequestHolder requestHolder =// @formatter:off
+				WS.url(Application.CONFIG.getString("nwbib.api"))
+						.setHeader("Accept", "application/json")
+						.setQueryParameter("format", "short.subjectChain")
+						.setQueryParameter("from", "" + 0)
+						.setQueryParameter("size", "" + 100)
+						.setQueryParameter("subject", q)
+						.setQueryParameter("set",
+							Application.CONFIG.getString("nwbib.set"));
+		//@formatter:off
+		Logger.info("Request URL {}, query params {} ", requestHolder.getUrl(),
+				requestHolder.getQueryParameters());
+		return requestHolder;
+	}
+
 	/** @return The full number of hits, ie. the size of our data set. */
 	public static Promise<Long> getTotalHits() {
 		final Long cachedResult = (Long) Cache.get(String.format("totalHits"));

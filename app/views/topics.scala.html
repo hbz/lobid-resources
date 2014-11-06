@@ -1,0 +1,34 @@
+@* Copyright 2014 Fabian Steeg, hbz. Licensed under the Eclipse Public License 1.0 *@
+
+@(q: String, result: String)
+
+@import helper._
+@import play.api.libs.json.Json
+@import play.api.libs.json.JsValue
+
+@main("NWBib - Themensuche") {
+    @helper.form(action = controllers.nwbib.routes.Application.topics(q), 'id -> "nwbib-form") {
+     <div class="input-group">
+      <input type="text" name="q" id="nwbibQuery" value="@q" class="form-control" autocomplete="off"/>
+      <span class="input-group-btn"><button class="btn btn-default" type="submit">
+        <span class="glyphicon glyphicon-search"></span></button></span>
+     </div>
+    }
+    @if(!result.isEmpty) {
+     @defining(Json.parse(result).asOpt[Seq[JsValue]].getOrElse(Seq()).drop(1).map(_.as[String].replaceAll("\\([\\d,]+\\)$",""))) { hits =>
+      <ul id="root" style="display:block;">
+         @for(doc <- hits) {
+            <li class="treeItem"><a href="@nwbib.routes.Application.search(q="\""+doc+"\"")">@doc</a></li>
+         }
+      </ul>
+      @if(hits.isEmpty && !q.isEmpty) {
+        <p>
+          <div class="alert alert-info text-center">
+            Keine Themen gefunden für Anfrage: <code>@q</code>
+          </div>
+        </p>
+      }
+     }
+     <link rel="stylesheet" href="@controllers.routes.Assets.at("stylesheets/FileTreeView.css")" />
+   }
+}
