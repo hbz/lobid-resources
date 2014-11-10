@@ -3,11 +3,13 @@
 package controllers.nwbib;
 
 import java.io.File;
+import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Spliterators;
 import java.util.function.Function;
@@ -381,12 +383,13 @@ public class Application extends Controller {
 									routeUrl, icon, label, count);
 					return result;
 				};
+		Collator collator = Collator.getInstance(Locale.GERMAN);
 		Comparator<? super JsonNode> sorter = (j1, j2) -> {
 			String t1 = j1.get("term").asText();
 			String t2 = j2.get("term").asText();
 			String l1 = Lobid.facetLabel(Arrays.asList(t1), field);
 			String l2 = Lobid.facetLabel(Arrays.asList(t2), field);
-			return l1.compareTo(l2);
+			return collator.compare(l1, l2);
 		};
 		Promise<Result> promise =
 				Lobid
