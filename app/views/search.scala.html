@@ -45,7 +45,7 @@
 	              }
 	            });
 	            </script>
-	            <a href="@nwbib.routes.Application.search(q,author,name,subject,id,publisher,issued,if (medium==current) "" else medium,if(nwbibspatial==current) "" else nwbibspatial,if(nwbibsubject==current) "" else nwbibsubject,from,size,if (owner==current) "" else owner,if (t==current) "" else t,sortParam)">@facet: @allLabel</a></li>
+	            <a href="@nwbib.routes.Application.search(q,author,name,if (subject==current) "" else subject,id,publisher,issued,if (medium==current) "" else medium,if(nwbibspatial==current) "" else nwbibspatial,if(nwbibsubject==current) "" else nwbibsubject,from,size,if (owner==current) "" else owner,if (t==current) "" else t,sortParam)">@facet: @allLabel</a></li>
 	            <li id="facets-loading-@field.hashCode.abs"><a href="#">Lade @facet...</a></li>
 	        </ul>
 	    </div>
@@ -68,7 +68,7 @@
 }
 
 @main("NWBib - Ergebnisliste") {
-    @if(Seq(author,name,subject,id,publisher,issued).exists(!_.isEmpty)){
+    @if(Seq(author,name,id,publisher,issued).exists(!_.isEmpty)){
       @tags.search_advanced("Suche aktualisieren", q, author, name, subject, nwbibspatial, nwbibsubject, id, publisher, issued, sortParam)
     } else {
       @tags.search_form(q)
@@ -109,6 +109,10 @@
             <p>
             <div class="row facet"><div class="col-md-12">@facets("Themen", Application.NWBIB_SUBJECT_FIELD, nwbibsubject)</div></div>
             <div class="row facet"><div class="col-md-12">@facets("Orte", Application.NWBIB_SPATIAL_FIELD, nwbibspatial)</div></div>
+            </p>
+            <p style="padding-top:10px;"><strong>Schlagworten</strong></p>
+            <p>
+            <div class="row facet"><div class="col-md-12">@facets("Schlagworte", Application.SUBJECT_FIELD, subject)</div></div>
             </p>
             <p style="padding-top:10px;"><strong>Medien- und Publikationstypen</strong></p>
             <p>

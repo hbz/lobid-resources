@@ -70,6 +70,10 @@ public class Application extends Controller {
 	public static final String NWBIB_SPATIAL_FIELD =
 			"@graph.http://purl.org/lobid/lv#nwbibspatial.@id";
 
+	/** The internal ES field for subjects. */
+	public static final String SUBJECT_FIELD =
+			"@graph.http://purl.org/dc/terms/subject.@id";
+
 	private static final File FILE = new File("conf/nwbib.conf");
 	/** Access to the nwbib.conf config file. */
 	public final static Config CONFIG = ConfigFactory.parseFile(
@@ -363,9 +367,10 @@ public class Application extends Controller {
 							!field.equals(NWBIB_SUBJECT_FIELD) ? nwbibsubject : term;
 					String nwbibspatialQuery =
 							!field.equals(NWBIB_SPATIAL_FIELD) ? nwbibspatial : term;
+					String subjectQuery = !field.equals(SUBJECT_FIELD) ? subject : term;
 
 					String routeUrl =
-							routes.Application.search(q, author, name, subject, id,
+							routes.Application.search(q, author, name, subjectQuery, id,
 									publisher, issued, mediumQuery, nwbibspatialQuery,
 									nwbibsubjectQuery, from, size, ownerQuery, typeQuery, sort,
 									false).url();
@@ -375,7 +380,8 @@ public class Application extends Controller {
 									|| field.equals(TYPE_FIELD) && term.equals(t)
 									|| field.equals(ITEM_FIELD) && term.equals(owner)
 									|| field.equals(NWBIB_SPATIAL_FIELD) && term.equals(nwbibspatial)
-									|| field.equals(NWBIB_SUBJECT_FIELD) && term.equals(nwbibsubject);
+									|| field.equals(NWBIB_SUBJECT_FIELD) && term.equals(nwbibsubject)
+									|| field.equals(SUBJECT_FIELD) && term.equals(subject);
 					//@formatter:on
 					String result =
 							String.format("<li " + (current ? "class=\"active\"" : "")

@@ -128,9 +128,33 @@ public class Lobid {
 			String label = "";
 			if (elements.hasNext()) {
 				label = shorten(elements.next().asText());
-			} else
+			} else {
 				label = uri.substring(uri.lastIndexOf('/') + 1);
-			Cache.set(cacheKey, label, Application.ONE_DAY);
+			}
+			Cache.set(cacheKey, label);
+			return label;
+		}).get(10000);
+	}
+
+	private static String gndLabel(String uri) {
+		String cacheKey = "gnd.label." + uri;
+		final String cachedResult = (String) Cache.get(cacheKey);
+		if (cachedResult != null) {
+			return cachedResult;
+		}
+		WSRequestHolder requestHolder =
+				WS.url("http://api.lobid.org/subject").setHeader("Accept", "application/json")
+						.setQueryParameter("id", uri)
+						.setQueryParameter("format", "full");
+		return requestHolder.get().map((WSResponse response) -> {
+			JsonNode value = response.asJson().findValue("preferredName");
+			String label = "";
+			if(value != null) {
+				label = shorten(value.asText());
+			} else {
+				label = uri.substring(uri.lastIndexOf('/') + 1);
+			}
+			Cache.set(cacheKey, label);
 			return label;
 		}).get(10000);
 	}
@@ -153,7 +177,7 @@ public class Lobid {
 						: Classification.Type.NWBIB.elasticsearchType;
 		String label = Application.CLASSIFICATION.label(uri, type);
 		String result = shorten(label);
-		Cache.set(cacheKey, label, Application.ONE_DAY);
+		Cache.set(cacheKey, label);
 		return result;
 	}
 
@@ -184,7 +208,6 @@ public class Lobid {
 						.setQueryParameter("q", preprocess(q))
 						.setQueryParameter("author", author)
 						.setQueryParameter("name", name)
-						.setQueryParameter("subject", subject)
 						.setQueryParameter("publisher", publisher)
 						.setQueryParameter("issued", issued).setQueryParameter("id", id)
 						.setQueryParameter("field", field).setQueryParameter("from", "0")
@@ -199,6 +222,8 @@ public class Lobid {
 			request = request.setQueryParameter("nwbibspatial", nwbibspatial);
 		if (!field.equals(Application.NWBIB_SUBJECT_FIELD))
 			request = request.setQueryParameter("nwbibsubject", nwbibsubject);
+		if(!field.equals(Application.SUBJECT_FIELD))
+			request = request.setQueryParameter("subject", subject);
 		Logger.info("Facets request URL {}, query params {} ", request.getUrl(),
 				request.getQueryParameters());
 		return request.get().map((WSResponse response) -> {
@@ -216,10 +241,7 @@ public class Lobid {
 
 	private static final Map<String, String> keys = ImmutableMap.of(
 			Application.TYPE_FIELD, "type.labels",//
-			Application.MEDIUM_FIELD, "medium.labels",//
-			Application.ITEM_FIELD, "item.labels",//
-			Application.NWBIB_SPATIAL_FIELD, "nwbibspatial.labels",//
-			Application.NWBIB_SUBJECT_FIELD, "nwbibsubject.labels");
+			Application.MEDIUM_FIELD, "medium.labels");
 
 	/**
 	 * @param types Some type URIs
@@ -247,15 +269,17 @@ public class Lobid {
 			return Lobid.organisationLabel(uris.get(0));
 		else if (uris.size() == 1 && isNwBibClass(uris.get(0)))
 			return Lobid.nwBibLabel(uris.get(0));
-		String configKey = keys.get(field);
+		else if (uris.size() == 1 && isGnd(uris.get(0)))
+			return Lobid.gndLabel(uris.get(0));
+		String configKey = keys.getOrDefault(field,"");
 		String type = selectType(uris, configKey);
 		if (type.isEmpty())
 			return "";
 		@SuppressWarnings("unchecked")
-		List<String> details =
+		List<String> details = configKey.isEmpty() ? uris :
 				((List<String>) Application.CONFIG.getObject(configKey).unwrapped()
 						.get(type));
-		if (details == null)
+		if (details == null || details.size() < 1)
 			return type;
 		String selected = details.get(0);
 		return selected.isEmpty() ? uris.get(0) : selected;
@@ -271,21 +295,25 @@ public class Lobid {
 			return "octicon octicon-home";
 		else if (uris.size() == 1 && isNwBibClass(uris.get(0)))
 			return "octicon octicon-list-unordered";
-		String configKey = keys.get(field);
+		else if (uris.size() == 1 && isGnd(uris.get(0)))
+			return "octicon octicon-tag";
+		String configKey = keys.getOrDefault(field, "");
 		String type = selectType(uris, configKey);
 		if (type.isEmpty())
 			return "";
 		@SuppressWarnings("unchecked")
-		List<String> details =
+		List<String> details = configKey.isEmpty() ? uris :
 				(List<String>) Application.CONFIG.getObject(configKey).unwrapped()
 						.get(type);
-		if (details == null)
+		if (details == null || details.size() < 2)
 			return type;
 		String selected = details.get(1);
 		return selected.isEmpty() ? uris.get(0) : selected;
 	}
 
 	private static String selectType(List<String> types, String configKey) {
+		if(configKey.isEmpty())
+			return types.get(0);
 		Logger.trace("Types: " + types);
 		@SuppressWarnings("unchecked")
 		List<String> selected =
@@ -315,5 +343,9 @@ public class Lobid {
 
 	static boolean isNwBibClass(String term) {
 		return term.startsWith("http://purl.org/lobid/nwbib");
+	}
+
+	private static boolean isGnd(String term) {
+		return term.startsWith("http://d-nb.info/gnd");
 	}
 }
