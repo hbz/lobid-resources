@@ -18,8 +18,8 @@
       <li class="disabled">
       <a style="width:60%; text-align: center; white-space: nowrap;" href="#">@if(hits>0){@(from+1) bis @(Math.min(from+hits,from+size))@if(allHits>0){ von @allHits}}else{0 Treffer}</a>
       </li>
-      <li class="next @if(from+hits < from+size){disabled}">
-        <a style="width:20%; text-align: center;" href="@if(from+hits < from+size){#} else {@nwbib.routes.Application.search(q,author,name,subject,id,publisher,issued,medium,nwbibspatial,nwbibsubject,from+size,size,owner,t,sortParam)}">&rarr;</a>
+      <li class="next @if(from+size >= allHits){disabled}">
+        <a style="width:20%; text-align: center;" href="@if(from+size >= allHits){#} else {@nwbib.routes.Application.search(q,author,name,subject,id,publisher,issued,medium,nwbibspatial,nwbibsubject,from+size,size,owner,t,sortParam)}">&rarr;</a>
       </li>
     </ul>
   </nav>
@@ -105,17 +105,17 @@
         </div>
         <div class="col-md-4">
             <p class="lead" style="margin-top:5px">Ergebnisse eingrenzen nach:</p>
-            <p><strong>Orten und Themen</strong></p>
+            <p style="padding-top:10px;"><strong>Orten und Themen</strong></p>
             <p>
             <div class="row facet"><div class="col-md-12">@facets("Themen", Application.NWBIB_SUBJECT_FIELD, nwbibsubject)</div></div>
             <div class="row facet"><div class="col-md-12">@facets("Orte", Application.NWBIB_SPATIAL_FIELD, nwbibspatial)</div></div>
             </p>
-            <p><strong>Medien- und Publikationstypen</strong></p>
+            <p style="padding-top:10px;"><strong>Medien- und Publikationstypen</strong></p>
             <p>
             <div class="row facet"><div class="col-md-12">@facets("Publikationstyp", Application.TYPE_FIELD, t)</div></div>
             <div class="row facet"><div class="col-md-12">@facets("Medium", Application.MEDIUM_FIELD, medium)</div></div>
             </p>
-            <p><strong>Bestandsnachweisen in Bibliotheken</strong></p>
+            <p style="padding-top:10px;"><strong>Bestand in Bibliotheken</strong></p>
             <p>
             <div class="row facet"><div class="col-md-12">@facets("Besitzende Bibliothek", Application.ITEM_FIELD, owner)</div></div>
             </p>
