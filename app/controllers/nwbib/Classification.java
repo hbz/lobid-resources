@@ -4,6 +4,8 @@ package controllers.nwbib;
 
 import java.text.Collator;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -72,6 +74,10 @@ public class Classification {
 	Client client;
 	private String server;
 	private String cluster;
+
+	static Comparator<JsonNode> comparator =
+			(JsonNode o1, JsonNode o2) -> Collator.getInstance(Locale.GERMAN)
+					.compare(labelText(o1), labelText(o2));
 
 	/**
 	 * @param cluster The ES cluster name
@@ -172,12 +178,7 @@ public class Classification {
 
 	JsonNode sorted(SearchResponse response) {
 		final List<JsonNode> result =
-				ids(response)
-						.stream()
-						.sorted(
-								(JsonNode o1, JsonNode o2) -> Collator.getInstance(
-										Locale.GERMANY).compare(labelText(o1), labelText(o2)))
-						.collect(Collectors.toList());
+				ids(response).stream().sorted(comparator).collect(Collectors.toList());
 		return Json.toJson(result);
 	}
 
@@ -195,13 +196,16 @@ public class Classification {
 			else
 				addAsSubClass(subClasses, hit, json, broader.findValue("@id").asText());
 		}
+		Collections.sort(topClasses, comparator);
 	}
 
 	private static void addAsSubClass(Map<String, List<JsonNode>> subClasses,
 			SearchHit hit, JsonNode json, String broader) {
 		if (!subClasses.containsKey(broader))
 			subClasses.put(broader, new ArrayList<JsonNode>());
-		subClasses.get(broader).addAll(valueAndLabelWithNotation(hit, json));
+		List<JsonNode> list = subClasses.get(broader);
+		list.addAll(valueAndLabelWithNotation(hit, json));
+		Collections.sort(list, comparator);
 	}
 
 	private static List<JsonNode> valueAndLabelWithNotation(SearchHit hit,

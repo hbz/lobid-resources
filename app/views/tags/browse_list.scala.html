@@ -8,7 +8,7 @@
     @if(!classes.isEmpty){
         <ul id="@id">
         <script>$('#root').hide()</script>
-        @for(json <- classes.getOrElse(Seq()).sortBy((json:JsValue)=>(json\"label").as[String])){
+        @for(json <- classes.getOrElse(Seq())){
             @defining((json\"value").as[String]) { value =>
             <li>
                 <a href="@if(t=="Raumsystematik"){@nwbib.routes.Application.search(nwbibspatial=value)}else{@nwbib.routes.Application.search(nwbibsubject=value)}">
