@@ -16,6 +16,7 @@ import play.libs.ws.WSResponse;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.html.HtmlEscapers;
 
 /**
  * Access Lobid title data.
@@ -131,6 +132,7 @@ public class Lobid {
 			} else {
 				label = uri.substring(uri.lastIndexOf('/') + 1);
 			}
+			label = HtmlEscapers.htmlEscaper().escape(label);
 			Cache.set(cacheKey, label);
 			return label;
 		}).get(10000);
@@ -154,16 +156,10 @@ public class Lobid {
 			} else {
 				label = uri.substring(uri.lastIndexOf('/') + 1);
 			}
+			label = HtmlEscapers.htmlEscaper().escape(label);
 			Cache.set(cacheKey, label);
 			return label;
 		}).get(10000);
-	}
-
-	private static String shorten(String label) {
-		int limit = 45;
-		if (label.length() > limit)
-			return label.substring(0, limit) + "...";
-		return label;
 	}
 
 	private static String nwBibLabel(String uri) {
@@ -176,9 +172,17 @@ public class Lobid {
 				uri.contains("spatial") ? Classification.Type.SPATIAL.elasticsearchType
 						: Classification.Type.NWBIB.elasticsearchType;
 		String label = Application.CLASSIFICATION.label(uri, type);
-		String result = shorten(label);
+		label = shorten(label);
+		label = HtmlEscapers.htmlEscaper().escape(label);
 		Cache.set(cacheKey, label);
-		return result;
+		return label;
+	}
+
+	private static String shorten(String label) {
+		int limit = 45;
+		if (label.length() > limit)
+			return label.substring(0, limit) + "...";
+		return label;
 	}
 
 	/**
