@@ -19,6 +19,7 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.common.collect.Iterators;
 
 import play.Logger;
 import play.Play;
@@ -407,6 +408,12 @@ public class Application extends Controller {
 											StreamSupport.stream(
 													Spliterators.spliteratorUnknownSize(
 															json.findValue("entries").elements(), 0), false);
+									long count =
+											Iterators.size(json.findValue("entries").elements());
+									if (count > 1500) {
+										return Arrays
+												.asList("<li><a href=\"#\">(Für diese Facette bitte Treffermenge einschränken)</a></li>");
+									}
 									if (field.equals(ITEM_FIELD)) {
 										stream = preprocess(stream);
 									}
