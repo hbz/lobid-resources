@@ -119,18 +119,34 @@ public class Lobid {
 	 */
 	public static String organisationLabel(String uri) {
 		String cacheKey = "org.label." + uri;
+		String format = "short.altLabel";
+		return lobidLabel(uri, cacheKey, format, true);
+	}
+
+	/**
+	 * @param uri A Lobid-Resources URI
+	 * @return A human readable label for the given URI
+	 */
+	public static String resourceLabel(String uri) {
+		String cacheKey = "res.label." + uri;
+		String format = "short.title";
+		return lobidLabel(uri, cacheKey, format, false);
+	}
+
+	private static String lobidLabel(String uri, String cacheKey, String format, boolean shorten) {
 		final String cachedResult = (String) Cache.get(cacheKey);
 		if (cachedResult != null) {
 			return cachedResult;
 		}
 		WSRequestHolder requestHolder =
 				WS.url(uri).setHeader("Accept", "application/json")
-						.setQueryParameter("format", "short.altLabel");
+						.setQueryParameter("format", format);
 		return requestHolder.get().map((WSResponse response) -> {
 			Iterator<JsonNode> elements = response.asJson().elements();
 			String label = "";
 			if (elements.hasNext()) {
-				label = shorten(elements.next().asText());
+				String full = elements.next().asText();
+				label = shorten ? shorten(full) : full;
 			} else {
 				label = uri.substring(uri.lastIndexOf('/') + 1);
 			}
