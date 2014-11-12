@@ -25,8 +25,8 @@
   </nav>
 }
 
-@facets(facet: String, field: String, current: String, allLabel:String = "Alle")={
-	    <div class="btn-group fill">
+@facets(facet: String, field: String, current: String, addClass:String = "", allLabel:String = "Alle")={
+	    <div class="btn-group fill @addClass">
 	        <button type="button" class="btn @if(!current.isEmpty()){active} btn-default dropdown-toggle fill" data-toggle="dropdown">
 	          @if(current.isEmpty()){@facet: @allLabel} else {@Lobid.facetLabel(Seq(current), field) <span class="@Lobid.facetIcon(Arrays.asList(current), field)"></span>}
 	          <span class="caret"></span>
@@ -112,16 +112,16 @@
             </p>
             <p style="padding-top:10px;"><strong>Schlagwörter</strong></p>
             <p>
-            <div class="row facet"><div class="col-md-12">@facets("Schlagwörter", Application.SUBJECT_FIELD, subject)</div></div>
+            <div class="row facet"><div class="col-md-12">@facets("Schlagwörter", Application.SUBJECT_FIELD, subject, "dropup")</div></div>
             </p>
             <p style="padding-top:10px;"><strong>Medien- und Publikationstypen</strong></p>
             <p>
-            <div class="row facet"><div class="col-md-12">@facets("Publikationstypen", Application.TYPE_FIELD, t)</div></div>
-            <div class="row facet"><div class="col-md-12">@facets("Medien", Application.MEDIUM_FIELD, medium)</div></div>
+            <div class="row facet"><div class="col-md-12">@facets("Publikationstypen", Application.TYPE_FIELD, t, "dropup")</div></div>
+            <div class="row facet"><div class="col-md-12">@facets("Medien", Application.MEDIUM_FIELD, medium, "dropup")</div></div>
             </p>
             <p style="padding-top:10px;"><strong>Bestand in Bibliotheken</strong></p>
             <p>
-            <div class="row facet"><div class="col-md-12">@facets("Besitzende Bibliotheken", Application.ITEM_FIELD, owner)</div></div>
+            <div class="row facet"><div class="col-md-12">@facets("Besitzende Bibliotheken", Application.ITEM_FIELD, owner, "dropup")</div></div>
             </p>
          </div>
       </div>
