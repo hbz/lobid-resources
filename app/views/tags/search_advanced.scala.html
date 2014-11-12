@@ -59,29 +59,9 @@ function setAutosuggest() {
 
 function suggests(term){
     return {
-        'q' : {
-            url : "/nwbib/subject",
-            data : { q : term }
-        },
-        'nwbibspatial' : {
-            url : "/nwbib/subject",
-            data : { q : term, t : "Raumsystematik" }
-        },
-        'nwbibsubject' : {
-            url : "/nwbib/subject",
-            data : { q : term, t : "Sachsystematik" }
-        },
         'name' : {
             url : "http://api.lobid.org/resource",
-            data : { name : term, format : "short", set : '@controllers.nwbib.Application.CONFIG.getString("nwbib.set")' }
-        },
-        'author' : {
-            url : "http://api.lobid.org/person",
-            data : { name : term, format : "ids" }
-        },
-        'subject' : {
-            url : "http://api.lobid.org/subject",
-            data : { name : term, format : "ids" }
+            data : { name : term, format : "short.title", set : '@controllers.nwbib.Application.CONFIG.getString("nwbib.set")' }
         }
     }
 }
@@ -99,8 +79,6 @@ function suggests(term){
               <option value="name" @if(k=="name"){selected="selected"}>Titel</option>
               <option value="author" @if(k=="author"){selected="selected"}>Autor</option>
               <option value="subject" @if(k=="subject"){selected="selected"}>Schlagwort</option>
-              <option value="nwbibspatial" @if(k=="nwbibspatial"){selected="selected"}>Raumsystematik</option>
-              <option value="nwbibsubject" @if(k=="nwbibsubject"){selected="selected"}>Sachsystematik</option>
               <option value="publisher" @if(k=="publisher"){selected="selected"}>Verlag</option>
               <option value="issued" @if(k=="issued"){selected="selected"}>Erscheinungsjahr</option>
             </select>
