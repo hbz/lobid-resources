@@ -36,6 +36,7 @@
 	property match {
 		case "subjectChain" => { value.replaceAll("\\([\\d,]+\\)$","") }
 		case "isPartOf" => { value.replace("lobid.org/resource/","lobid.org/nwbib/") }
+		case "hasPart" => { value.replace("lobid.org/resource/","lobid.org/nwbib/") }
 		case _ => { value }
 	}
 }

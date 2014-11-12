@@ -74,6 +74,9 @@
   @result_field("Quelle", "bibliographicCitation", doc, TableRow.VALUES)
   @result_field("Bestandteil von", "isPartOfName", doc, TableRow.VALUES)
   @result_field("Bestandteil von", "isPartOf", doc, TableRow.LINKS)
+  @if(doc.toString.contains("http://purl.org/ontology/bibo/MultiVolumeBook")){
+    @result_field("Enthält", "hasPart", doc, TableRow.LINKS)
+  }
 }
 
 @table(){
