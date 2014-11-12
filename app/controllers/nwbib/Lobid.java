@@ -215,7 +215,7 @@ public class Lobid {
 						.setQueryParameter("publisher", publisher)
 						.setQueryParameter("issued", issued).setQueryParameter("id", id)
 						.setQueryParameter("field", field).setQueryParameter("from", "0")
-						.setQueryParameter("size", Integer.MAX_VALUE + "");
+						.setQueryParameter("size", Application.MAX_FACETS+"");
 		if (!field.equals(Application.MEDIUM_FIELD))
 			request = request.setQueryParameter("medium", medium);
 		if (!field.equals(Application.TYPE_FIELD))

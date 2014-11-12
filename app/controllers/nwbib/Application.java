@@ -55,6 +55,8 @@ import com.typesafe.config.ConfigFactory;
  */
 public class Application extends Controller {
 
+	static final int MAX_FACETS = 1500;
+
 	private static final String STARRED = "starred";
 
 	/** The internal ES field for the type facet. */
@@ -420,17 +422,19 @@ public class Application extends Controller {
 											StreamSupport.stream(
 													Spliterators.spliteratorUnknownSize(
 															json.findValue("entries").elements(), 0), false);
-									long count =
-											Iterators.size(json.findValue("entries").elements());
-									if (count > 1500) {
-										return Arrays
-												.asList("<li><a href=\"#\">(Für diese Facette bitte Treffermenge einschränken)</a></li>");
-									}
 									if (field.equals(ITEM_FIELD)) {
 										stream = preprocess(stream);
 									}
-									return stream.sorted(sorter).filter(labelled).map(toHtml)
-											.collect(Collectors.toList());
+									List<String> list =
+											stream.sorted(sorter).filter(labelled).map(toHtml)
+													.collect(Collectors.toList());
+									long count =
+											Iterators.size(json.findValue("entries").elements());
+									if (count == MAX_FACETS) {
+										list.add(0,
+												"<li><a href=\"#\">Häufigste (für alle bitte Treffer eingrenzen):</a></li>");
+									}
+									return list;
 								}).map(lis -> ok(String.join("\n", lis)));
 		promise.onRedeem(r -> Cache.set(key, r, ONE_DAY));
 		return promise;
