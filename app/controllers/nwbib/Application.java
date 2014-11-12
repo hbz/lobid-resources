@@ -3,6 +3,8 @@
 package controllers.nwbib;
 
 import java.io.File;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -103,6 +105,16 @@ public class Application extends Controller {
 	@Cached(key = "nwbib.advanced", duration = ONE_HOUR)
 	public static Result advanced() {
 		return ok(views.html.advanced.render());
+	}
+
+	/** @return The current full URI, URL-encoded, or null. */
+	public static String currentUri() {
+		try {
+			return URLEncoder.encode(request().host() + request().uri(), "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 	/**
