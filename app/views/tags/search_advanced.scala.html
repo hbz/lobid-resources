@@ -35,11 +35,15 @@ function remSearchWidget(c) {
 }
 
 function addParameters(){
+    var ps = {};
     $(".search-field").each(function( index ) {
          var param = $(this).find("#query-select").val();
          var value = $(this).find("#nwbib-query-advanced").val();
-         $("#nwbib-form").append("<input type='hidden' name='"+param+"' value='"+value+"'/>");
+         ps[param] = (ps[param] ? ps[param] + " " : "") + value;
     });
+    for (var key in ps) {
+        $("#nwbib-form").append("<input type='hidden' name='"+key+"' value='"+ps[key]+"'/>");
+    }
 }
 
 function setAutosuggest() {
