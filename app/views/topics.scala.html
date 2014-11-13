@@ -17,7 +17,7 @@
     @if(!result.isEmpty) {
      @defining(Json.parse(result).asOpt[Seq[JsValue]].getOrElse(Seq()).drop(1).map(_.as[String].replaceAll("\\([\\d,]+\\)$",""))) { hits =>
       <ul id="root" style="display:block;">
-         @for(doc <- hits) {
+         @for(doc <- hits; if q.split("""[\s\-]""").forall((s:String)=>doc.toLowerCase.contains(s.toLowerCase))) {
             <li class="treeItem"><a href="@nwbib.routes.Application.search(q="\""+doc+"\"")">@doc</a></li>
          }
       </ul>
