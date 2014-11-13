@@ -6,11 +6,11 @@
 GET    /nwbib                       controllers.nwbib.Application.index()
 GET    /nwbib/advanced              controllers.nwbib.Application.advanced()
 GET    /nwbib/topics                controllers.nwbib.Application.topics(q?="")
-GET    /nwbib/search                controllers.nwbib.Application.search(q?="", author?="", name?="", subject?="", id?="", publisher?="", issued?="", medium ?= "", nwbibspatial ?= "", nwbibsubject ?= "", from:Int?=0, size:Int?=10, owner?="", t?="", sort ?= "newest", details:Boolean?=false)
+GET    /nwbib/search                controllers.nwbib.Application.search(q?="", author?="", name?="", subject?="", id?="", publisher?="", issued?="", medium ?= "", nwbibspatial ?= "", nwbibsubject ?= "", from:Int?=0, size:Int?=10, owner?="", t?="", sort ?= "newest", details:Boolean?=false, set?="")
 GET    /nwbib/subject               controllers.nwbib.Application.subject(q?="", callback?="", t?="")
 GET    /nwbib/register              controllers.nwbib.Application.register(t)
 GET    /nwbib/classification        controllers.nwbib.Application.classification(t)
-GET    /nwbib/facets                controllers.nwbib.Application.facets(q,author?="", name?="", subject?="", id?="", publisher?="", issued?="", medium ?= "", nwbibspatial ?= "", nwbibsubject ?= "", from:Int,size:Int,owner,t,field,sort)
+GET    /nwbib/facets                controllers.nwbib.Application.facets(q,author?="", name?="", subject?="", id?="", publisher?="", issued?="", medium ?= "", nwbibspatial ?= "", nwbibsubject ?= "", from:Int,size:Int,owner,t,field,sort,set?="")
 
 GET    /nwbib/stars                 controllers.nwbib.Application.showStars()
 GET    /nwbib/stars/clear           controllers.nwbib.Application.clearStars()

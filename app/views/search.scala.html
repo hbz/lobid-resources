@@ -1,6 +1,6 @@
 @* Copyright 2014 Fabian Steeg, hbz. Licensed under the GPLv2 *@
 
-@(config: com.typesafe.config.Config, result: String, q:String, author:String, name:String, subject:String, id:String, publisher:String, issued:String, medium: String, nwbibspatial: String, nwbibsubject: String, from: Int, size: Int, allHits: Long, owner: String, t: String, sortParam: String)
+@(config: com.typesafe.config.Config, result: String, q:String, author:String, name:String, subject:String, id:String, publisher:String, issued:String, medium: String, nwbibspatial: String, nwbibsubject: String, from: Int, size: Int, allHits: Long, owner: String, t: String, sortParam: String, set: String)
 
 @import helper._
 @import controllers.nwbib.Lobid
@@ -13,13 +13,13 @@
   <nav>
     <ul class="pager">
       <li class="previous @if(from==0){disabled}">
-        <a style="width:20%; text-align: center;" href="@if(from==0){#} else {@nwbib.routes.Application.search(q,author,name,subject,id,publisher,issued,medium,nwbibspatial,nwbibsubject,from-size,size,owner,t,sortParam)}">&larr;</a>
+        <a style="width:20%; text-align: center;" href="@if(from==0){#} else {@nwbib.routes.Application.search(q,author,name,subject,id,publisher,issued,medium,nwbibspatial,nwbibsubject,from-size,size,owner,t,sortParam,set=set)}">&larr;</a>
       </li>
       <li class="disabled">
       <a style="width:60%; text-align: center; white-space: nowrap;" href="#">@if(hits>0){@(from+1) bis @(Math.min(from+hits,from+size))@if(allHits>0){ von @allHits}}else{0 Treffer}</a>
       </li>
       <li class="next @if(from+size >= allHits){disabled}">
-        <a style="width:20%; text-align: center;" href="@if(from+size >= allHits){#} else {@nwbib.routes.Application.search(q,author,name,subject,id,publisher,issued,medium,nwbibspatial,nwbibsubject,from+size,size,owner,t,sortParam)}">&rarr;</a>
+        <a style="width:20%; text-align: center;" href="@if(from+size >= allHits){#} else {@nwbib.routes.Application.search(q,author,name,subject,id,publisher,issued,medium,nwbibspatial,nwbibsubject,from+size,size,owner,t,sortParam,set=set)}">&rarr;</a>
       </li>
     </ul>
   </nav>
@@ -35,7 +35,7 @@
 	          <li @if(current==""){class="active"}>
 	            <script>
 	            $.ajax({
-	              url: '/nwbib/facets?q=@urlEncode(q)&author=@urlEncode(author)&name=@urlEncode(name)&subject=@urlEncode(subject)&publisher=@urlEncode(publisher)&issued=@urlEncode(issued)&medium=@urlEncode(medium)&nwbibspatial=@urlEncode(nwbibspatial)&nwbibsubject=@urlEncode(nwbibsubject)&from=0&size=@size&owner=@urlEncode(owner)&t=@urlEncode(t)&field=@urlEncode(field)&sort=@urlEncode(sortParam)',
+	              url: '/nwbib/facets?q=@urlEncode(q)&author=@urlEncode(author)&name=@urlEncode(name)&subject=@urlEncode(subject)&publisher=@urlEncode(publisher)&issued=@urlEncode(issued)&medium=@urlEncode(medium)&nwbibspatial=@urlEncode(nwbibspatial)&nwbibsubject=@urlEncode(nwbibsubject)&from=0&size=@size&owner=@urlEncode(owner)&t=@urlEncode(t)&field=@urlEncode(field)&sort=@urlEncode(sortParam)&set=@urlEncode(set)',
 	              success: function(data, textStatus, jqXHR) {
 	                $("#facets-ul-@field.hashCode.abs").append(data);
 	                $("#facets-loading-@field.hashCode.abs").remove();
@@ -45,7 +45,7 @@
 	              }
 	            });
 	            </script>
-	            <a href="@nwbib.routes.Application.search(q,author,name,if (subject==current) "" else subject,id,publisher,issued,if (medium==current) "" else medium,if(nwbibspatial==current) "" else nwbibspatial,if(nwbibsubject==current) "" else nwbibsubject,from,size,if (owner==current) "" else owner,if (t==current) "" else t,sortParam)">@facet: @allLabel</a></li>
+	            <a href="@nwbib.routes.Application.search(q,author,name,if (subject==current) "" else subject,id,publisher,issued,if (medium==current) "" else medium,if(nwbibspatial==current) "" else nwbibspatial,if(nwbibsubject==current) "" else nwbibsubject,from,size,if (owner==current) "" else owner,if (t==current) "" else t,sortParam,set=set)">@facet: @allLabel</a></li>
 	            <li id="facets-loading-@field.hashCode.abs"><a href="#">Lade @facet...</a></li>
 	        </ul>
 	    </div>
@@ -55,21 +55,21 @@
         <div class="sort">
             <ul class="nav nav-pills" role="tablist">
               <li @if(sortParam==""){class="active"}>
-                <a href="@nwbib.routes.Application.search(q,author,name,subject,id,publisher,issued,medium,nwbibspatial,nwbibsubject,from,size,owner,t,"")">Relevanz</a>
+                <a href="@nwbib.routes.Application.search(q,author,name,subject,id,publisher,issued,medium,nwbibspatial,nwbibsubject,from,size,owner,t,"",set=set)">Relevanz</a>
               </li>
               <li @if(sortParam=="newest"){class="active"}>
-                <a href="@nwbib.routes.Application.search(q,author,name,subject,id,publisher,issued,medium,nwbibspatial,nwbibsubject,from,size,owner,t,"newest")">Neueste</a>
+                <a href="@nwbib.routes.Application.search(q,author,name,subject,id,publisher,issued,medium,nwbibspatial,nwbibsubject,from,size,owner,t,"newest",set=set)">Neueste</a>
               </li>
               <li @if(sortParam=="oldest"){class="active"}>
-                <a href="@nwbib.routes.Application.search(q,author,name,subject,id,publisher,issued,medium,nwbibspatial,nwbibsubject,from,size,owner,t,"oldest")">Älteste</a>
+                <a href="@nwbib.routes.Application.search(q,author,name,subject,id,publisher,issued,medium,nwbibspatial,nwbibsubject,from,size,owner,t,"oldest",set=set)">Älteste</a>
               </li>
             </ul>
         </div>
 }
 
 @main("NWBib - Ergebnisliste") {
-    @if(Seq(author,name,id,publisher,issued).exists(!_.isEmpty)){
-      @tags.search_advanced("Suche aktualisieren", q, author, name, subject, nwbibspatial, nwbibsubject, id, publisher, issued, sortParam)
+    @if(Seq(author,name,id,publisher,issued,set).exists(!_.isEmpty)){
+      @tags.search_advanced("Suche aktualisieren", q, author, name, subject, nwbibspatial, nwbibsubject, id, publisher, issued, sortParam, set=set)
     } else {
       @tags.search_form(q)
     }

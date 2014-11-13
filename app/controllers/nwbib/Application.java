@@ -158,17 +158,19 @@ public class Application extends Controller {
 	 * @param t Type filter for resource queries
 	 * @param sort Sorting order for results ("newest", "oldest", "" -> relevance)
 	 * @param details If true, render details
+	 * @param set The set, overrides the default NWBib set if not empty
 	 * @return The search results
 	 */
 	public static Promise<Result> search(final String q, final String author,
 			final String name, final String subject, final String id,
 			final String publisher, final String issued, final String medium,
 			final String nwbibspatial, final String nwbibsubject, final int from,
-			final int size, final String owner, String t, String sort, boolean details) {
+			final int size, final String owner, String t, String sort,
+			boolean details, String set) {
 		String cacheId =
-				String.format("%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s",
+				String.format("%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s",
 						"search", q, author, name, subject, id, publisher, issued, medium,
-						nwbibspatial, nwbibsubject, from, size, owner, t, sort);
+						nwbibspatial, nwbibsubject, from, size, owner, t, sort, set);
 		@SuppressWarnings("unchecked")
 		Promise<Result> cachedResult = (Promise<Result>) Cache.get(cacheId);
 		if (cachedResult != null)
@@ -178,12 +180,12 @@ public class Application extends Controller {
 		if (form.hasErrors())
 			return Promise.promise(() -> badRequest(search.render(CONFIG, null, q,
 					author, name, subject, id, publisher, issued, medium, nwbibspatial,
-					nwbibsubject, from, size, 0L, owner, t, sort)));
+					nwbibsubject, from, size, 0L, owner, t, sort, set)));
 		String query = form.data().get("q");
 		Promise<Result> result =
 				okPromise(query != null ? query : q, author, name, subject, id,
 						publisher, issued, medium, nwbibspatial, nwbibsubject, from, size,
-						owner, t, sort, details);
+						owner, t, sort, details, set);
 		cacheOnRedeem(cacheId, result, ONE_HOUR);
 		return result;
 	}
@@ -194,7 +196,7 @@ public class Application extends Controller {
 	 */
 	public static Promise<Result> show(final String id) {
 		return search("", "", "", "", id, "", "", "", "", "", 0, 1, "", "", "",
-				true);
+				true, "");
 	}
 
 	/**
@@ -275,16 +277,18 @@ public class Application extends Controller {
 			final String name, final String subject, final String id,
 			final String publisher, final String issued, final String medium,
 			final String nwbibspatial, final String nwbibsubject, final int from,
-			final int size, final String owner, String t, String sort, boolean details) {
+			final int size, final String owner, String t, String sort,
+			boolean details, String set) {
 		final Promise<Result> result =
 				call(q, author, name, subject, id, publisher, issued, medium,
-						nwbibspatial, nwbibsubject, from, size, owner, t, sort, details);
+						nwbibspatial, nwbibsubject, from, size, owner, t, sort, details,
+						set);
 		return result.recover((Throwable throwable) -> {
 			throwable.printStackTrace();
 			flashError();
 			return internalServerError(search.render(CONFIG, "[]", q, author, name,
 					subject, id, publisher, issued, medium, nwbibspatial, nwbibsubject,
-					from, size, 0L, owner, t, sort));
+					from, size, 0L, owner, t, sort, set));
 		});
 	}
 
@@ -307,12 +311,12 @@ public class Application extends Controller {
 			final String name, final String subject, final String id,
 			final String publisher, final String issued, final String medium,
 			final String nwbibspatial, final String nwbibsubject, final int from,
-			final int size, String owner, String t, String sort, boolean showDetails) {
+			final int size, String owner, String t, String sort, boolean showDetails,
+			String set) {
 		WSRequestHolder requestHolder =
-				Lobid
-						.request(q, author, name, subject, id, publisher, issued, medium,
-								nwbibspatial, nwbibsubject, from, size, owner, t, sort,
-								showDetails);
+				Lobid.request(q, author, name, subject, id, publisher, issued, medium,
+						nwbibspatial, nwbibsubject, from, size, owner, t, sort,
+						showDetails, set);
 		return requestHolder.get().map(
 				(WSResponse response) -> {
 					JsonNode json = response.asJson();
@@ -321,12 +325,12 @@ public class Application extends Controller {
 							q.isEmpty() && author.isEmpty() && name.isEmpty()
 									&& subject.isEmpty() && id.isEmpty() && publisher.isEmpty()
 									&& issued.isEmpty() && medium.isEmpty()
-									&& nwbibspatial.isEmpty() && nwbibsubject.isEmpty() ? "[]"
-									: json.toString();
+									&& nwbibspatial.isEmpty() && nwbibsubject.isEmpty()
+									&& set.isEmpty() ? "[]" : json.toString();
 					return ok(showDetails ? details.render(CONFIG, s, id) : search
 							.render(CONFIG, s, q, author, name, subject, id, publisher,
 									issued, medium, nwbibspatial, nwbibsubject, from, size, hits,
-									owner, t, sort));
+									owner, t, sort, set));
 				});
 	}
 
@@ -347,16 +351,17 @@ public class Application extends Controller {
 	 * @param t Type filter for resource queries
 	 * @param field The facet field (the field to facet over)
 	 * @param sort Sorting order for results ("newest", "oldest", "" -> relevance)
+	 * @param set The set, overrides the default NWBib set if not empty
 	 * @return The search results
 	 */
 	public static Promise<Result> facets(String q, String author, String name,
 			String subject, String id, String publisher, String issued,
 			String medium, String nwbibspatial, String nwbibsubject, int from,
-			int size, String owner, String t, String field, String sort) {
+			int size, String owner, String t, String field, String sort, String set) {
 		String key =
-				String.format("facets.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s", q,
+				String.format("facets.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s", q,
 						author, name, subject, id, publisher, issued, medium, nwbibspatial,
-						nwbibsubject, owner, field, sort, t);
+						nwbibsubject, owner, field, sort, t, set);
 		Result cachedResult = (Result) Cache.get(key);
 		if (cachedResult != null) {
 			return Promise.promise(() -> cachedResult);
@@ -388,7 +393,7 @@ public class Application extends Controller {
 							routes.Application.search(q, author, name, subjectQuery, id,
 									publisher, issued, mediumQuery, nwbibspatialQuery,
 									nwbibsubjectQuery, from, size, ownerQuery, typeQuery, sort,
-									false).url();
+									false, set).url();
 					// @formatter:off
 					boolean current =
 										 field.equals(MEDIUM_FIELD) && term.equals(medium) 
@@ -415,7 +420,7 @@ public class Application extends Controller {
 		Promise<Result> promise =
 				Lobid
 						.getFacets(q, author, name, subject, id, publisher, issued, medium,
-								nwbibspatial, nwbibsubject, owner, field, t)
+								nwbibspatial, nwbibsubject, owner, field, t, set)
 						.map(
 								json -> {
 									Stream<JsonNode> stream =

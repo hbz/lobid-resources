@@ -77,6 +77,10 @@
   @if(doc.toString.contains("http://purl.org/ontology/bibo/MultiVolumeBook")){
     @result_field("Enthält", "hasPart", doc, TableRow.LINKS)
   }
+  @if(Seq("http://purl.org/ontology/bibo/Journal","http://purl.org/ontology/bibo/Series").exists(doc.toString.contains(_))){
+   @defining((("""http://.*?lobid.org/resource.+?([^/]+).*?""".r findFirstMatchIn ((doc \ "@id").as[String])).get group 1)){ id =>
+    <tr><td>Enthält</td><td><a title="Enthaltene Werke suchen" href="@nwbib.routes.Application.search(set=id)">Enthaltene Werke suchen</a></td></tr>
+  }}
 }
 
 @table(){
