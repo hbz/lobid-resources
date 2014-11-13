@@ -16,7 +16,8 @@
         @for((doc,i) <- hits) {
         <div class="row">
           @defining((doc\\"exemplar")) { exemplars =>
-              <div class="col-md-@if(exemplars.isEmpty && !doc.toString.contains("fulltextOnline")){12} else {7}">
+              @defining((doc\\"isPartOf").head.asOpt[Seq[JsValue]].getOrElse(Seq()).size>1 && doc.toString.contains("http://purl.org/ontology/bibo/Article")){superordination =>
+              <div class="col-md-@if(exemplars.isEmpty && !doc.toString.contains("fulltextOnline") && !superordination){12} else {7}">
                 <dl>@defining((doc \ "@id").as[String].split("/")(4)){ id =>
                     <dt>@tags.star_button(id) Titeldetails:
                     <a href="@Application.CONFIG.getString("nwbib.api")?id=@id&format=source">&nbsp;</a>
@@ -24,7 +25,7 @@
                     <dd>@tags.result_doc(doc)</dd>
                 </dl>
               </div>
-              @if(!exemplars.isEmpty || doc.toString.contains("fulltextOnline")){
+              @if(!exemplars.isEmpty || doc.toString.contains("fulltextOnline") || superordination){
                   <div class="col-md-5">
                     <dl>
                     @if(doc.toString.contains("fulltextOnline")){
@@ -39,6 +40,18 @@
                     </table>
                     </dd>
                     }
+                    @if(superordination){
+                    <dt>Zu Bestand siehe Überordnung:</dt>
+                    <dd>
+                    <table class="table table-striped table-condensed">
+                      <tr>
+                            <th style="width: 30%"></th>
+                            <th style="width: 70%"></th>
+                      </tr>
+                      @result_field("Bestandteil von", "isPartOf", doc, TableRow.LINKS)
+                    </table>
+                    </dd>
+                    }
                     @if(!exemplars.isEmpty){
                     @defining(exemplars(0).asOpt[JsArray].getOrElse(Json.arr(exemplars(0))).value.size){num =>
                       <dt>Bestand in @num Einrichtung@if(num>1){en}:</dt>
@@ -47,7 +60,7 @@
                     }
                     </dl>
                   </div>
-              }
+              }}
           }
         </div>
         }
