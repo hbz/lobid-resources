@@ -51,7 +51,7 @@
         }</td>
         <td property="@property">
             @valueLabel match {
-                          case None => {@(process(string(elem))._1)}
+                          case None => {@Html(process(string(elem))._1)}
                           case Some(seq) => {
                             @defining(valueFor(doc, elem.as[String], seq)){ value =>
                             @if(value.startsWith("http://purl.org/lobid/nwbib")){
@@ -77,7 +77,7 @@
       <tr>
         <td>@label</td>
         <td>
-          @defining(process(string(elem))) { case (url,label) => <a title="@url" rel="@property" href="@url">@label</a> }
+          @defining(process(string(elem))) { case (url,label) => <a title="@url" rel="@property" href="@url">@Html(label)</a> }
         </td>
       </tr>
     }
