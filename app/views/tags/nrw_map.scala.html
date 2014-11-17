@@ -30,9 +30,24 @@ var map = new Datamap({
     },
     done: function(datamap) {
         datamap.svg.selectAll('.datamaps-subunit').on('click', function(geography) {
-            window.location = "/nwbib/search?q=" + encodeURIComponent(geography.properties.name);
+            window.location = "/nwbib/search?" + 
+              "location=" + encodeURIComponent(geography.properties.name) 
+              + "|" + transform(geography.geometry.coordinates[0]);
         });
     }
 });
+function transform(coordinates) {
+    var result = '';
+    var flat = [];
+    /* flatten multiple nested polygons into a single polygon if required: */
+    flat = typeof coordinates[0][0] == 'number' ? coordinates : flat.concat.apply(flat, coordinates);
+    for(var i = 0; i < flat.length; i++) {
+        var lon = flat[i][0];
+        var lat = flat[i][1];
+        /* use one decimal digit precision to avoid too large URL: */
+        result += lat.toFixed(1) + "," + lon.toFixed(1) + " ";
+    }
+    return result.trim().replace(' ', '+');
+}
 </script>
 </div>

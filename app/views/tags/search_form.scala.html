@@ -1,9 +1,10 @@
 @* Copyright 2014 Fabian Steeg, hbz. Licensed under the GPLv2 *@
 
-@(q: String)
+@(q: String, location:String = "")
 
-@helper.form(action = controllers.nwbib.routes.Application.search(q), 'id -> "nwbib-form") {
+@helper.form(action = controllers.nwbib.routes.Application.search(q, location=location), 'id -> "nwbib-form") {
     <div class="input-group">
+      <input type="hidden" name="location" value="@location"/>
       <input type="text" name="q" id="nwbibQuery" value="@q" class="form-control" autocomplete="off" 
           title='Suchoptionen: +einschließen, -ausschließen, unscharf~, "exakt suchen"'/>
       <span class="input-group-btn"><button class="btn btn-default" type="submit">

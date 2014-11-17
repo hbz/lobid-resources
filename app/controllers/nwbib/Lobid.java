@@ -38,14 +38,15 @@ public class Lobid {
 			final String publisher, final String issued, final String medium,
 			final String nwbibspatial, final String nwbibsubject, final int from,
 			final int size, String owner, String t, String sort, boolean allData,
-			String set) {
+			String set, String location) {
 		WSRequestHolder requestHolder =
 				WS.url(Application.CONFIG.getString("nwbib.api"))
 						.setHeader("Accept", "application/json")
 						.setQueryParameter("format", "full")
 						.setQueryParameter("from", from + "")
 						.setQueryParameter("size", size + "")
-						.setQueryParameter("sort", sort);
+						.setQueryParameter("sort", sort)
+						.setQueryParameter("location", locationPolygon(location));
 		if (!allData && set.isEmpty())
 			requestHolder =
 					requestHolder.setQueryParameter("set",
@@ -108,7 +109,7 @@ public class Lobid {
 			});
 		}
 		WSRequestHolder requestHolder =
-				request("", "", "", "", "", "", "", "", "", "", 0, 0, "", "", "", false, "");
+				request("", "", "", "", "", "", "", "", "", "", 0, 0, "", "", "", false, "", "");
 		return requestHolder.get().map((WSResponse response) -> {
 			Long total = getTotalResults(response.asJson());
 			Cache.set("totalHits", total, Application.ONE_HOUR);
@@ -221,12 +222,13 @@ public class Lobid {
 	 * @param t Type filter for resource queries
 	 * @param field The facet field (the field to facet over)
 	 * @param set The set, overrides the default NWBib set if not empty
+	 * @param location A polygon describing the subject area of the resources
 	 * @return A JSON representation of the requested facets
 	 */
 	public static Promise<JsonNode> getFacets(String q, String author,
 			String name, String subject, String id, String publisher, String issued,
 			String medium, String nwbibspatial, String nwbibsubject, String owner,
-			String field, String t, String set) {
+			String field, String t, String set, String location) {
 		WSRequestHolder request =
 				WS.url(Application.CONFIG.getString("nwbib.api") + "/facets")
 						.setHeader("Accept", "application/json")
@@ -236,7 +238,8 @@ public class Lobid {
 						.setQueryParameter("publisher", publisher)
 						.setQueryParameter("issued", issued).setQueryParameter("id", id)
 						.setQueryParameter("field", field).setQueryParameter("from", "0")
-						.setQueryParameter("size", Application.MAX_FACETS+"");
+						.setQueryParameter("size", Application.MAX_FACETS+"")
+						.setQueryParameter("location", locationPolygon(location));
 		if(!set.isEmpty())
 			request = request.setQueryParameter("set", set);
 		else
@@ -262,7 +265,7 @@ public class Lobid {
 
 	private static String preprocess(final String q) {
 		return // if query string syntax is used, leave it alone:
-		q.trim().isEmpty() || q.matches(".*?([+~]|AND|OR|\\s-).*?") ? q :
+		q.trim().isEmpty() || q.matches(".*?([+~]|AND|OR|\\s-|\\*).*?") ? q :
 		// else prepend '+' to all terms for AND search:
 				Arrays.asList(q.split("[\\s-]")).stream().map(x -> "+" + x)
 						.collect(Collectors.joining(" "));
@@ -376,5 +379,9 @@ public class Lobid {
 
 	private static boolean isGnd(String term) {
 		return term.startsWith("http://d-nb.info/gnd");
+	}
+
+	private static String locationPolygon(String location) {
+		return location.contains("|") ? location.split("\\|")[1] : location;
 	}
 }
