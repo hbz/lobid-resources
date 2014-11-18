@@ -104,20 +104,23 @@
          }
         </div>
         <div class="col-md-4">
-            <p class="lead" style="margin-top:5px">Ergebnisse eingrenzen:</p>
-            <p style="padding-top:10px;"><strong>Regionen, Orte und Sachgebiete</strong></p>
+            <p style="margin-top:10px; margin-bottom:10px">
+            @if(!location.isEmpty){
+             Titel mit Bezug zu Orten in: 
+             @defining(location.split("\\|")(0)){kreis=>
+              @if(!kreis.toLowerCase.contains("kreis")){Kreis }
+              <span class="label label-default">@kreis</span> | 
+              <a href="@nwbib.routes.Application.search(q,author,name,subject,id,publisher,issued,medium,nwbibspatial,nwbibsubject,from,size,owner,t,sortParam,set=set,location="")" title="Filter entfernen"><span class="octicon octicon-x"></span></a> 
+             }
+            } else {
+              Titel mit Bezug zu Orten in allen Kreisen von NRW | 
+              <a href="@nwbib.routes.Application.index" title="Landkreis auswählen"><span class="octicon octicon-globe"></span></a>
+            }
+            </p>
+            <p class="lead"> Ergebnisse eingrenzen: </p>
+            <p><strong>Regionen, Orte und Sachgebiete</strong></p>
             <div class="row facet"><div class="col-md-12">@facets("Sachgebiete", Application.NWBIB_SUBJECT_FIELD, nwbibsubject)</div></div>
             <div class="row facet"><div class="col-md-12">@facets("Regionen und Orte", Application.NWBIB_SPATIAL_FIELD, nwbibspatial)</div></div>
-            </p>
-            <p style="padding-top:10px;">
-            @if(!location.isEmpty){
-              <strong>Landkreis: </strong>
-              <span class="label label-default">@(location.split("\\|")(0))</span> | 
-              Filter entfernen: <a href="@nwbib.routes.Application.search(q,author,name,subject,id,publisher,issued,medium,nwbibspatial,nwbibsubject,from,size,owner,t,sortParam,set=set,location="")" title="Landkreis entfernen"><span class="octicon octicon-x"></span></a> 
-            } else {
-              <strong>Landkreise: </strong> Alle | 
-              Landkreis auswählen: <a href="@nwbib.routes.Application.index" title="Landkreis auswählen"><span class="octicon octicon-globe"></span></a>
-            }
             </p>
             <p style="padding-top:10px;"><strong>Schlagwörter</strong></p>
             <p>
