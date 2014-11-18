@@ -33,13 +33,12 @@
 }
 
 @process(value: String) = @{
-    if(!value.contains("lobid.org")){(value,value)}else{
 	property match {
 		case "subjectChain" => { (value.replaceAll("\\([\\d,]+\\)$",""),"") }
-		case "isPartOf" => { (value.replace("lobid.org/resource/","lobid.org/nwbib/"), controllers.nwbib.Lobid.resourceLabel(value)) }
-		case "hasPart" => { (value.replace("lobid.org/resource/","lobid.org/nwbib/"), controllers.nwbib.Lobid.resourceLabel(value)) }
+		case "isPartOf" if value.contains("lobid.org") => { (value.replace("lobid.org/resource/","lobid.org/nwbib/"), controllers.nwbib.Lobid.resourceLabel(value)) }
+		case "hasPart" if value.contains("lobid.org")=> { (value.replace("lobid.org/resource/","lobid.org/nwbib/"), controllers.nwbib.Lobid.resourceLabel(value)) }
 		case _ => { (value,value) }
-	}}
+	}
 }
 
 @row match {
