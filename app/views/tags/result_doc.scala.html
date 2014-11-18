@@ -27,6 +27,14 @@
 	    "preferredNameForThePlaceOrGeographicName"))
 }
 
+@with_icon(label: String, property: String, fullField: String) = {
+  @if(!(doc\\property).isEmpty) {
+    @defining((doc\\property).last.asOpt[Seq[String]].getOrElse(Seq((doc\\property).last.asOpt[String].get))){ v =>
+      <tr><td>@label</td><td><span class="@Lobid.facetIcon(v,fullField)"></span> @Lobid.facetLabel(v,fullField)</td></tr>
+    }
+  }
+}
+
 @table(){
   @result_field("Titel", "title", doc, TableRow.VALUES)
   @result_field("Titelzusatz", "otherTitleInformation", doc, TableRow.VALUES)
@@ -57,11 +65,10 @@
   @result_field("Gesang", "singer", doc, TableRow.VALUES, valueLabel = gndEntities)
   @result_field("Gefeierte Person", "honoree", doc, TableRow.VALUES, valueLabel = gndEntities)
   @result_field("Übersetzter", "translator", doc, TableRow.VALUES, valueLabel = gndEntities)
-  @if(!(doc\\"@type").isEmpty) {
-    @defining((doc\\"@type").last.asOpt[Seq[String]].getOrElse(Seq((doc\\"@type").last.asOpt[String].get))){ t =>
-      <tr><td>Typ</td><td><span class="@Lobid.typeIcon(t)"></span> @Lobid.typeLabel(t)</td></tr>
-    }
-  }
+
+  @with_icon("Publikationstyp", "@type", controllers.nwbib.Application.TYPE_FIELD)
+  @with_icon("Medium", "medium", controllers.nwbib.Application.MEDIUM_FIELD)
+
   @result_field("Erschienen", "issued", doc, TableRow.VALUES)
   @result_field("Auflage", "edition", doc, TableRow.VALUES)
   @result_field("Band", "volume", doc, TableRow.VALUES)
