@@ -48,36 +48,52 @@
                       <li @if(title=="NWBib - Themensuche"){class="active"}>
                         <a href="@nwbib.routes.Application.topics()"><span class="octicon octicon-tag"></span> Themensuche</a>
                       </li>
-                      <li @if(title.contains("ystematik")||title.contains("egister")){class="active"} class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="octicon octicon-list-unordered"></span> Systematik<b class="caret"></b></a>
+                      <li @if(title.contains("Raumsystematik")){class="active"} class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="octicon octicon-milestone"></span> Regionen, Orte<b class="caret"></b></a>
                         <ul class="dropdown-menu">
-                          <li class="dropdown-header">Sachgebiete</li>
+                          <li><a href="@nwbib.routes.Application.classification("Raumsystematik")"><span class="octicon octicon-milestone"></span> Raumsystematik</a></li>
+                          <li><a href="@nwbib.routes.Application.register("Raumsystematik")"><span class="glyphicon glyphicon-arrow-down"></span> A-Z Register</a></li>
+                        </ul>
+                      </li>
+                      <li @if(title.contains("Sachsystematik")){class="active"} class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="octicon octicon-list-unordered"></span> Sachgebiete<b class="caret"></b></a>
+                        <ul class="dropdown-menu">
                           <li><a href="@nwbib.routes.Application.classification("Sachsystematik")"><span class="octicon octicon-list-unordered"></span> Sachsystematik</a></li>
                           <li><a href="@nwbib.routes.Application.register("Sachsystematik")"><span class="glyphicon glyphicon-arrow-down"></span> A-Z Register</a></li>
-                          <li class="divider"></li>
-                          <li class="dropdown-header">Regionen und Orte</li>
-                          <li><a href="@nwbib.routes.Application.classification("Raumsystematik")"><span class="octicon octicon-list-unordered"></span> Raumsystematik</a></li>
-                          <li><a href="@nwbib.routes.Application.register("Raumsystematik")"><span class="glyphicon glyphicon-arrow-down"></span> A-Z Register</a></li>
                         </ul>
                       </li>
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
                       <li @if(title=="NWBib - Merkliste"){class="active"}><a href="@nwbib.routes.Application.showStars()"><span class="glyphicon glyphicon-star-empty"></span> Merkliste</a></li>
                       <li class="divider"></li>
-                      <li><a href="http://www.landesbibliothek-nrw.de/aufgaben/nrw_bibliographie/">Über die NWBib</a></li>
-                      <li @if(title=="NWBib: Kontakt"){class="active"} class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Kontakt<b class="caret"></b></a>
+                      <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Links<b class="caret"></b></a>
                         <ul class="dropdown-menu">
-                          <li class="dropdown-header">Fachlich</li>
+                          <li class="dropdown-header">Vorläufer der NWBib (Titel vor 1983)</li>
+                          <li><a href="http://www.landesbibliothek-nrw.de/aufgaben/sammlungen/historische_bestaende_im_rheinland/">Rheinland-Bibliographien</a></li>
+                          <li><a href="http://www.ulb.uni-muenster.de/hbw/">Westfalen-Bibliographien</a></li>
+                          <li class="divider"></li>
+                          <li class="dropdown-header">Sonstige</li>
+                          <li><a href="http://www.landesbibliothek-nrw.de/">Die NRW-Landesbibliotheken</a></li>
+                          <li><a href="http://www.hbz-nrw.de/angebote/verbunddatenbank/">NRW-Verbundkatalog (hbz NRW)</a></li>
+                          <li><a href="http://www.ubka.uni-karlsruhe.de/landesbibliographie/">Virtuelle Deutsche Landesbibliographie (VDL)</a></li>
+                        </ul>
+                      </li>
+                      <li @if(title=="NWBib: Kontakt"){class="active"} class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="octicon octicon-question"></span><b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                          <li><a href="http://www.landesbibliothek-nrw.de/aufgaben/nrw_bibliographie/">Über die NWBib</a></li>
+                          <li class="divider"></li>
+                          <li class="dropdown-header">Fachliche Kontakte</li>
                           <li><a href="http://www.ulb.uni-bonn.de/die-ulb/profil/landesbibliothek/recherche/die-ulb/organisation-ansprechpartner/ansprechpartner-von-a-z/albrink">ULB Bonn</a></li>
                           <li><a href="http://www.ulb.uni-muenster.de/landesbibliothek/profil/ansprechpartner/index.html">ULB Münster</a></li>
                           <li><a href="http://www.ulb.hhu.de/nc/die-ulb/organisation/mitarbeiterinnen-und-mitarbeiter.html?pid=100">ULB Düsseldorf</a></li>
                           <li class="divider"></li>
-                          <li class="dropdown-header">Technisch</li>
+                          <li class="dropdown-header">Technische Kontakte</li>
                           <li><a href="http://www.hbz-nrw.de/recherche/nw_bib/">hbz NRW</a></li>
                           <li><a href="http://lobid.org/contact">Lobid</a></li>
                           <li class="divider"></li>
-                          <li class="dropdown-header">Rechtlich</li>
+                          <li class="dropdown-header">Rechtlicher Kontakt</li>
                           <li><a href="http://www.hbz-nrw.de/impressum/">Impressum</a></li>
                         </ul>
                       </li>
