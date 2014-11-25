@@ -54,7 +54,7 @@
                     }
                     @if(!exemplars.isEmpty){
                     @defining(exemplars(0).asOpt[JsArray].getOrElse(Json.arr(exemplars(0))).value.size){num =>
-                      <dt>Bestand in @num Einrichtung@if(num>1){en}:</dt>
+                      <dt>Bestand in @num Bibliothek@if(num>1){en}:</dt>
                     }
                     <dd>@tags.items_map(i, exemplars(0))</dd>
                     }

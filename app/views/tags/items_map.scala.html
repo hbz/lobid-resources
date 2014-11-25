@@ -69,9 +69,10 @@
         signature = if(signatures.isEmpty) "" else signatures(0).as[String];
         ownerRequestUri = owner+"?format=full";
         json = Await.result(WS.url(ownerRequestUri).get().map(x=>(x.json)), 5.second);
+        ownerUrl = if((json\\"url").isEmpty) owner else (json\\"url")(0).as[String];
         ownerName = if((json\\"name").isEmpty) "" else (json\\"name")(0).as[String]) {
         tableDetails@(hitId) =
-                '<tr><td>Einrichtung:</td><td>@if(!ownerName.isEmpty){<a href="@owner">@ownerName</a>}else{&lt;Keine Angabe&gt;}</td></tr>'+
+                '<tr><td>Bibliothek:</td><td>@if(!ownerName.isEmpty){<a href="@ownerUrl">@ownerName</a>}else{&lt;Keine Angabe&gt;}</td></tr>'+
                 '<tr><td>Signatur:</td><td>@if(!signature.isEmpty){<a href="@item">@signature</a>}else{&lt;Keine Angabe&gt;}</td></tr>';
         if(allTableDetails@(hitId)=='')
             allTableDetails@(hitId) += tableDetails@(hitId);
