@@ -299,7 +299,8 @@ public class Lobid {
 	public static String facetLabel(List<String> uris, String field) {
 		if (uris.size() == 1 && isOrg(uris.get(0)))
 			return Lobid.organisationLabel(uris.get(0));
-		else if (uris.size() == 1 && isNwBibClass(uris.get(0)))
+		else if (uris.size() == 1
+				&& (isNwBibClass(uris.get(0)) || isNwBibSpatial(uris.get(0))))
 			return Lobid.nwBibLabel(uris.get(0));
 		else if (uris.size() == 1 && isGnd(uris.get(0)))
 			return Lobid.gndLabel(uris.get(0));
@@ -327,6 +328,8 @@ public class Lobid {
 			return "octicon octicon-home";
 		else if (uris.size() == 1 && isNwBibClass(uris.get(0)))
 			return "octicon octicon-list-unordered";
+		else if (uris.size() == 1 && isNwBibSpatial(uris.get(0)))
+			return "octicon octicon-milestone";
 		else if (uris.size() == 1 && isGnd(uris.get(0)))
 			return "octicon octicon-tag";
 		String configKey = keys.getOrDefault(field, "");
@@ -342,6 +345,7 @@ public class Lobid {
 		String selected = details.get(1);
 		return selected.isEmpty() ? uris.get(0) : selected;
 	}
+
 
 	private static String selectType(List<String> types, String configKey) {
 		if(configKey.isEmpty())
@@ -374,7 +378,11 @@ public class Lobid {
 	}
 
 	static boolean isNwBibClass(String term) {
-		return term.startsWith("http://purl.org/lobid/nwbib");
+		return term.startsWith("http://purl.org/lobid/nwbib#");
+	}
+
+	private static boolean isNwBibSpatial(String term) {
+		return term.startsWith("http://purl.org/lobid/nwbib-spatial#");
 	}
 
 	private static boolean isGnd(String term) {
