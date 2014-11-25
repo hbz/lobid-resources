@@ -15,9 +15,9 @@
     @defining(Json.parse(result).asOpt[Seq[JsValue]].getOrElse(Seq()).zipWithIndex.tail) { hits =>
         @for((doc,i) <- hits) {
         <div class="row">
-          @defining((doc\\"exemplar")) { exemplars =>
+          @defining(Lobid.items(doc.toString)) { items =>
               @defining(!(doc\\"isPartOf").isEmpty && (doc\\"isPartOf").head.asOpt[Seq[JsValue]].getOrElse(Seq()).size>1 && doc.toString.contains("http://purl.org/ontology/bibo/Article")){superordination =>
-              <div class="col-md-@if(exemplars.isEmpty && !doc.toString.contains("fulltextOnline") && !superordination){12} else {7}">
+              <div class="col-md-@if(items.isEmpty && !doc.toString.contains("fulltextOnline") && !superordination){12} else {7}">
                 <dl>@defining((doc \ "@id").as[String].split("/")(4)){ id =>
                     <dt>@tags.star_button(id) Titeldetails:
                     <a href="@Application.CONFIG.getString("nwbib.api")?id=@id&format=source">&nbsp;</a>
@@ -25,7 +25,7 @@
                     <dd>@tags.result_doc(doc)</dd>
                 </dl>
               </div>
-              @if(!exemplars.isEmpty || doc.toString.contains("fulltextOnline") || superordination){
+              @if(!items.isEmpty || doc.toString.contains("fulltextOnline") || superordination){
                   <div class="col-md-5">
                     <dl>
                     @if(doc.toString.contains("fulltextOnline")){
@@ -52,11 +52,11 @@
                     </table>
                     </dd>
                     }
-                    @if(!exemplars.isEmpty){
-                    @defining(exemplars(0).asOpt[JsArray].getOrElse(Json.arr(exemplars(0))).value.size){num =>
+                    @if(!items.isEmpty){
+                    @defining(items.size){num =>
                       <dt>Bestand in @num Bibliothek@if(num>1){en}:</dt>
                     }
-                    <dd>@tags.items_map(i, exemplars(0))</dd>
+                    <dd>@tags.items_map(i, items)</dd>
                     }
                     </dl>
                   </div>

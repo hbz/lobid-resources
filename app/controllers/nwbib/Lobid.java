@@ -2,8 +2,10 @@
 
 package controllers.nwbib;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -12,11 +14,13 @@ import java.util.stream.Collectors;
 import play.Logger;
 import play.cache.Cache;
 import play.libs.F.Promise;
+import play.libs.Json;
 import play.libs.ws.WS;
 import play.libs.ws.WSRequestHolder;
 import play.libs.ws.WSResponse;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.html.HtmlEscapers;
 
@@ -391,5 +395,33 @@ public class Lobid {
 
 	private static String locationPolygon(String location) {
 		return location.contains("|") ? location.split("\\|")[1] : location;
+	}
+
+	/**
+	 * @param doc The result JSON doc
+	 * @return A mapping of ISILs to item URIs
+	 */
+	public static Map<String,List<String>> items(String doc){
+		JsonNode items = Json.parse(doc).findValue("exemplar");
+		Map<String,List<String>> result = new HashMap<>();
+		if(items != null && items.isArray())
+			mapIsilsToUris(items, result);
+		return result;
+	}
+
+	private static void mapIsilsToUris(JsonNode items,
+			Map<String, List<String>> result) {
+		ArrayNode itemsArray = (ArrayNode) items;
+		for (JsonNode jsonNode : itemsArray) {
+			String itemUri = jsonNode.asText();
+			try{
+				String isil = itemUri.split(":")[2];
+				List<String> uris = result.getOrDefault(isil, new ArrayList<>());
+				uris.add(itemUri);
+				result.put(isil, uris);
+			} catch(ArrayIndexOutOfBoundsException x){
+				Logger.error(x.getMessage());
+			}
+		}
 	}
 }
