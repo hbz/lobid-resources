@@ -39,35 +39,35 @@
   @result_field("Titel", "title", doc, TableRow.VALUES)
   @result_field("Titelzusatz", "otherTitleInformation", doc, TableRow.VALUES)
   @result_field("Verantwortlich", "statementOfResponsibility", doc, TableRow.VALUES)
-  @result_field("Autor", "creator", doc, TableRow.VALUES, valueLabel = gndEntities)
-  @result_field("Herausgeber", "editor", doc, TableRow.VALUES, valueLabel = gndEntities)
-  @result_field("Mitwirkender", "contributor", doc, TableRow.VALUES, valueLabel = gndEntities)
-  @result_field("Schauspieler", "actor", doc, TableRow.VALUES, valueLabel = gndEntities)
+  @result_field("Person", "creator", doc, TableRow.VALUES, valueLabel = gndEntities)
+  @result_field("Herausgeber/in", "editor", doc, TableRow.VALUES, valueLabel = gndEntities)
+  @result_field("Mitwirkung", "contributor", doc, TableRow.VALUES, valueLabel = gndEntities)
+  @result_field("Schauspieler/in", "actor", doc, TableRow.VALUES, valueLabel = gndEntities)
   @result_field("Nachwort", "afterwordBy", doc, TableRow.VALUES, valueLabel = gndEntities)
   @result_field("Einleitung", "introductionBy", doc, TableRow.VALUES, valueLabel = gndEntities)
   @result_field("Drehbuch", "screenwriter", doc, TableRow.VALUES, valueLabel = gndEntities)
-  @result_field("Mitarbeiter", "collaborator", doc, TableRow.VALUES, valueLabel = gndEntities)
-  @result_field("Komponist", "composer", doc, TableRow.VALUES, valueLabel = gndEntities)
-  @result_field("Dirigent", "conductor", doc, TableRow.VALUES, valueLabel = gndEntities)
+  @result_field("Mitarbeit", "collaborator", doc, TableRow.VALUES, valueLabel = gndEntities)
+  @result_field("Komponist/in", "composer", doc, TableRow.VALUES, valueLabel = gndEntities)
+  @result_field("Dirigent/in", "conductor", doc, TableRow.VALUES, valueLabel = gndEntities)
   @result_field("Kamera", "cinematographer", doc, TableRow.VALUES, valueLabel = gndEntities)
-  @result_field("Sammler", "collector", doc, TableRow.VALUES, valueLabel = gndEntities)
-  @result_field("Kartograph", "cartographer", doc, TableRow.VALUES, valueLabel = gndEntities)
+  @result_field("Sammler/in", "collector", doc, TableRow.VALUES, valueLabel = gndEntities)
+  @result_field("Kartographie", "cartographer", doc, TableRow.VALUES, valueLabel = gndEntities)
   @result_field("Regie", "director", doc, TableRow.VALUES, valueLabel = gndEntities)
-  @result_field("Widmungsträger", "dedicatee", doc, TableRow.VALUES, valueLabel = gndEntities)
-  @result_field("Stecher", "engraver", doc, TableRow.VALUES, valueLabel = gndEntities)
-  @result_field("Illustrator", "illustrator", doc, TableRow.VALUES, valueLabel = gndEntities)
-  @result_field("Interviewte", "interviewee", doc, TableRow.VALUES, valueLabel = gndEntities)
-  @result_field("Interviewer", "interviewer", doc, TableRow.VALUES, valueLabel = gndEntities)
+  @result_field("Widmungsträger/in", "dedicatee", doc, TableRow.VALUES, valueLabel = gndEntities)
+  @result_field("Stecher/in", "engraver", doc, TableRow.VALUES, valueLabel = gndEntities)
+  @result_field("Illustration", "illustrator", doc, TableRow.VALUES, valueLabel = gndEntities)
+  @result_field("Interviewte/r", "interviewee", doc, TableRow.VALUES, valueLabel = gndEntities)
+  @result_field("Interviewer/in", "interviewer", doc, TableRow.VALUES, valueLabel = gndEntities)
   @result_field("Musik", "musician", doc, TableRow.VALUES, valueLabel = gndEntities)
-  @result_field("Fotograf", "photographer", doc, TableRow.VALUES, valueLabel = gndEntities)
-  @result_field("Interpret", "performer", doc, TableRow.VALUES, valueLabel = gndEntities)
-  @result_field("Produzent", "producer", doc, TableRow.VALUES, valueLabel = gndEntities)
+  @result_field("Fotografie", "photographer", doc, TableRow.VALUES, valueLabel = gndEntities)
+  @result_field("Interpret/in", "performer", doc, TableRow.VALUES, valueLabel = gndEntities)
+  @result_field("Produktion", "producer", doc, TableRow.VALUES, valueLabel = gndEntities)
   @result_field("Gesang", "singer", doc, TableRow.VALUES, valueLabel = gndEntities)
   @result_field("Gefeierte Person", "honoree", doc, TableRow.VALUES, valueLabel = gndEntities)
-  @result_field("Übersetzter", "translator", doc, TableRow.VALUES, valueLabel = gndEntities)
+  @result_field("Übersetztung", "translator", doc, TableRow.VALUES, valueLabel = gndEntities)
 
   @with_icon("Publikationstyp", "@type", controllers.nwbib.Application.TYPE_FIELD)
-  @with_icon("Medium", "medium", controllers.nwbib.Application.MEDIUM_FIELD)
+  @with_icon("Medienart", "medium", controllers.nwbib.Application.MEDIUM_FIELD)
 
   @result_field("Erschienen", "issued", doc, TableRow.VALUES)
   @result_field("Auflage", "edition", doc, TableRow.VALUES)
@@ -87,7 +87,7 @@
   }
   @if(Seq("http://purl.org/ontology/bibo/Journal","http://purl.org/ontology/bibo/Series").exists(doc.toString.contains(_))){
    @defining((("""http://.*?lobid.org/resource.+?([^/]+).*?""".r findFirstMatchIn ((doc \ "@id").as[String])).get group 1)){ id =>
-    <tr><td>Enthält</td><td><a title="Enthaltene Werke suchen" href="@nwbib.routes.Application.search(set=id)">Enthaltene Werke suchen</a></td></tr>
+    <tr><td>Enthält</td><td><a title="Enthaltene Beiträge anzeigen" href="@nwbib.routes.Application.search(set=id)">Enthaltene Beiträge anzeigen</a></td></tr>
   }}
 }
 
