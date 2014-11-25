@@ -55,7 +55,7 @@ import com.typesafe.config.ConfigFactory;
  */
 public class Application extends Controller {
 
-	static final int MAX_FACETS = 1500;
+	static final int MAX_FACETS = 9999;
 
 	private static final String STARRED = "starred";
 
