@@ -23,7 +23,6 @@ import play.libs.ws.WSRequestHolder;
 import play.libs.ws.WSResponse;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.html.HtmlEscapers;
 
@@ -407,16 +406,17 @@ public class Lobid {
 	public static Map<String,List<String>> items(String doc){
 		JsonNode items = Json.parse(doc).findValue("exemplar");
 		Map<String,List<String>> result = new HashMap<>();
-		if(items != null && items.isArray())
+		if(items != null && (items.isArray() || items.isTextual()))
 			mapIsilsToUris(items, result);
 		return result;
 	}
 
 	private static void mapIsilsToUris(JsonNode items,
 			Map<String, List<String>> result) {
-		ArrayNode itemsArray = (ArrayNode) items;
-		for (JsonNode jsonNode : itemsArray) {
-			String itemUri = jsonNode.asText();
+		Iterator<JsonNode> elements =
+				items.isArray() ? items.elements() : Arrays.asList(items).iterator();
+		while(elements.hasNext()) {
+			String itemUri = elements.next().asText();
 			try{
 				String isil = itemUri.split(":")[2];
 				List<String> uris = result.getOrDefault(isil, new ArrayList<>());
