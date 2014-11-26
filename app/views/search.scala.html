@@ -107,11 +107,8 @@
             <p style="margin-top:10px; margin-bottom:10px">
             @if(!location.isEmpty){
              Titel mit Bezug zu Orten in: 
-             @defining(location.split("\\|")(0)){kreis=>
-              @if(!kreis.toLowerCase.contains("kreis")){Kreis }
-              <span class="label label-default">@kreis</span> | 
+              <span class="label label-default">@location.split("\\|")(0)</span> | 
               <a href="@nwbib.routes.Application.search(q,author,name,subject,id,publisher,issued,medium,nwbibspatial,nwbibsubject,from,size,owner,t,sortParam,set=set,location="")" title="Filter entfernen"><span class="octicon octicon-x"></span></a> 
-             }
             } else {
               Titel mit Bezug zu Orten in allen Kreisen von NRW | 
               <a href="@nwbib.routes.Application.index" title="Landkreis auswählen"><span class="octicon octicon-globe"></span></a>
