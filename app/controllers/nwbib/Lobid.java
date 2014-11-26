@@ -2,6 +2,8 @@
 
 package controllers.nwbib;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -12,6 +14,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import play.Logger;
+import play.Play;
 import play.cache.Cache;
 import play.libs.F.Promise;
 import play.libs.Json;
@@ -423,5 +426,25 @@ public class Lobid {
 				Logger.error(x.getMessage());
 			}
 		}
+	}
+
+	/**
+	 * @param itemUri The lobid item URI
+	 * @return The OPAC URL for the given item, or null
+	 */
+	public static String opacUrl(String itemUri) {
+		try(InputStream stream = Play.application().resourceAsStream("isil2opac_hbzid.json")) {
+			JsonNode json = Json.parse(stream);
+			String[] hbzId_isil_sig = itemUri.substring(itemUri.indexOf("item/") + 5).split(":");
+			String hbzId = hbzId_isil_sig[0];
+			String isil = hbzId_isil_sig[1];
+			Logger.debug("From item URI {}, got ISIL {} and HBZ-ID {}", itemUri, isil, hbzId);
+			JsonNode urlTemplate = json.get(isil);
+			if(urlTemplate != null)
+				return urlTemplate.asText().replace("{hbzid}", hbzId);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 }

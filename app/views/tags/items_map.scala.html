@@ -63,13 +63,15 @@
         ownerName = if((json\\"name").isEmpty) "" else (json\\"name")(0).as[String]) {
 
           var details = '<tr><td><b>Bibliothek:</b></td><td>'+
-            '<b>@if(!ownerName.isEmpty){<a href="@ownerUrl">@ownerName</a>}else{&lt;Keine Angabe&gt;}</b></td></tr>';
+            '<b>@if(!ownerName.isEmpty){<a href="@ownerUrl">@ownerName</a>}else{&lt;Keine Angabe&gt;}</b></td></tr>'
+            @defining(controllers.nwbib.Lobid.opacUrl(items(key).head)){ opacLink =>
+              @if(opacLink!=null){+'<tr><td>Verfügbarkeit:</td>'+'<td><a href="@opacLink">Lokalen Katalog abfragen</a></td></tr>'};
+            }
           tableDetails@(hitId) = details;
           if(allTableDetails@(hitId)=='')
             allTableDetails@(hitId) += tableDetails@(hitId);
           else
             allTableDetails@(hitId) += '<tr><th style="width: 30%"/><th style="width: 70%"/></tr>' + tableDetails@(hitId);
-
         @for((item,i) <- items(key).zipWithIndex;
             requestUri = item+"?format=full";
             jsonFuture = WS.url(requestUri).get().map(x=>x.json);
