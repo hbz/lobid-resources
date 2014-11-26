@@ -4,6 +4,7 @@
 
 # Home page
 GET    /nwbib                       controllers.nwbib.Application.index()
+GET    /nwbib/help                  controllers.nwbib.Application.help()
 GET    /nwbib/advanced              controllers.nwbib.Application.advanced()
 GET    /nwbib/topics                controllers.nwbib.Application.topics(q?="")
 GET    /nwbib/search                controllers.nwbib.Application.search(q?="", author?="", name?="", subject?="", id?="", publisher?="", issued?="", medium ?= "", nwbibspatial ?= "", nwbibsubject ?= "", from:Int?=0, size:Int?=10, owner?="", t?="", sort ?= "newest", details:Boolean?=false, set?="", location ?= "")

@@ -42,6 +42,7 @@ import views.html.details;
 import views.html.index;
 import views.html.search;
 import views.html.stars;
+import views.html.help;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.collect.ImmutableMap;
@@ -101,6 +102,12 @@ public class Application extends Controller {
 		if (form.hasErrors())
 			return badRequest(index.render());
 		return ok(index.render());
+	}
+
+	/** @return The NWBib help page. */
+	@Cached(key = "nwbib.help", duration = ONE_HOUR)
+	public static Result help() {
+		return ok(help.render());
 	}
 
 	/** @return The NWBib advanced search page. */
