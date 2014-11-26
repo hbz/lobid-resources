@@ -1,7 +1,7 @@
 @* Copyright 2014 Fabian Steeg, hbz. Licensed under the GPLv2 *@
 
 @()
-<div id="map">
+<div id="map" class="pull-right">
 <script src="@controllers.routes.Assets.at("javascripts/d3.v3.min.js")"></script>
 <script src="@controllers.routes.Assets.at("javascripts/topojson.v1.min.js")"></script>
 <script src="@controllers.routes.Assets.at("javascripts/datamaps.world.min.js")"></script>
@@ -11,13 +11,43 @@ var map = new Datamap({
     geographyConfig: {
         dataUrl: '@controllers.routes.Assets.at("data/nrw.topo.json")',
         borderWidth: 1,
-        borderColor: '#BBBBBB',
-        highlightFillColor: '#2F994C',//'#DADADA',
-        highlightBorderColor: '#2F994C', // '#BB2E30', //'7B7B7B',
-        highlightBorderWidth: 0
+        borderColor: '#303030',
+        highlightFillColor: '#EBEBEB',
+        highlightBorderColor: '#303030',
+        highlightBorderWidth: 1
     },
     fills: {
-        defaultFill: '#F8F8F8' //'#EBEBEB'
+        defaultFill: '#1ABD66',
+        westfalen: '#FF333B'
+    },
+    data : {
+        "05554": {fillKey: "westfalen"},
+        "05562": {fillKey: "westfalen"},
+        "05512": {fillKey: "westfalen"},
+        "05513": {fillKey: "westfalen"},
+        "05916": {fillKey: "westfalen"},
+        "05911": {fillKey: "westfalen"},
+        "05954": {fillKey: "westfalen"},
+        "05962": {fillKey: "westfalen"},
+        "05966": {fillKey: "westfalen"},
+        "05970": {fillKey: "westfalen"},
+        "05566": {fillKey: "westfalen"},
+        "05558": {fillKey: "westfalen"},
+        "05515": {fillKey: "westfalen"},
+        "05978": {fillKey: "westfalen"},
+        "05913": {fillKey: "westfalen"},
+        "05914": {fillKey: "westfalen"},
+        "05958": {fillKey: "westfalen"},
+        "05974": {fillKey: "westfalen"},
+        "05570": {fillKey: "westfalen"},
+        "05774": {fillKey: "westfalen"},
+        "05915": {fillKey: "westfalen"},
+        "05754": {fillKey: "westfalen"},
+        "05711": {fillKey: "westfalen"},
+        "05758": {fillKey: "westfalen"},
+        "05770": {fillKey: "westfalen"},
+        "05766": {fillKey: "westfalen"},
+        "05762": {fillKey: "westfalen"}
     },
     scope: 'nrw',
     setProjection: function(element) {
