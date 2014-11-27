@@ -28,7 +28,11 @@
 @facets(facet: String, field: String, current: String, addClass:String = "", allLabel:String = "Alle")={
 	    <div class="btn-group fill @addClass">
 	        <button type="button" class="btn @if(!current.isEmpty()){active} btn-default dropdown-toggle fill" data-toggle="dropdown">
-	          @if(current.isEmpty()){@facet: @allLabel} else {@Html(Lobid.facetLabel(Seq(current), field)) <span class="@Lobid.facetIcon(Arrays.asList(current), field)"></span>}
+	          @if(current.isEmpty()){
+	              <span class="@Lobid.facetIcon(Arrays.asList(), field)"></span> <span class="facet-label">@facet: @allLabel</span>
+	          } else {
+	              <span class="@Lobid.facetIcon(Arrays.asList(current), field)"></span> <span class="facet-label">@Html(Lobid.facetLabel(Seq(current), field))</span>
+	          }
 	          <span class="caret"></span>
 	        </button>
 	        <ul class="dropdown-menu scrollable-menu" id="facets-ul-@field.hashCode.abs">
@@ -110,7 +114,7 @@
               <span class="label label-default">@location.split("\\|")(0)</span> | 
               <a href="@nwbib.routes.Application.search(q,author,name,subject,id,publisher,issued,medium,nwbibspatial,nwbibsubject,from,size,owner,t,sortParam,set=set,location="")" title="Filter entfernen"><span class="octicon octicon-x"></span></a> 
             } else {
-              Titel mit Bezug zu Orten in allen Kreisen von NRW | 
+              Titel mit Bezug zu Orten in ganz NRW | 
               <a href="@nwbib.routes.Application.index" title="Landkreis auswählen"><span class="octicon octicon-globe"></span></a>
             }
             </p>
@@ -126,7 +130,7 @@
             <p style="padding-top:10px;"><strong>Medien- und Publikationstypen</strong></p>
             <p>
             <div class="row facet"><div class="col-md-12">@facets("Publikationstypen", Application.TYPE_FIELD, t, "dropup")</div></div>
-            <div class="row facet"><div class="col-md-12">@facets("Medien", Application.MEDIUM_FIELD, medium, "dropup")</div></div>
+            <div class="row facet"><div class="col-md-12">@facets("Medienarten", Application.MEDIUM_FIELD, medium, "dropup")</div></div>
             </p>
             <p style="padding-top:10px;"><strong>Bestand in Bibliotheken</strong></p>
             <p>

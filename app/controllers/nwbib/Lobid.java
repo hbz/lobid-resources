@@ -330,13 +330,13 @@ public class Lobid {
 	 * @return An icon CSS class for the given URIs
 	 */
 	public static String facetIcon(List<String> uris, String field) {
-		if (uris.size() == 1 && isOrg(uris.get(0)))
+		if ((uris.size() == 1 && isOrg(uris.get(0))) || field.equals(Application.ITEM_FIELD))
 			return "octicon octicon-home";
-		else if (uris.size() == 1 && isNwBibClass(uris.get(0)))
+		else if ((uris.size() == 1 && isNwBibClass(uris.get(0))) || field.equals(Application.NWBIB_SUBJECT_FIELD))
 			return "octicon octicon-list-unordered";
-		else if (uris.size() == 1 && isNwBibSpatial(uris.get(0)))
+		else if ((uris.size() == 1 && isNwBibSpatial(uris.get(0))) || field.equals(Application.NWBIB_SPATIAL_FIELD))
 			return "octicon octicon-milestone";
-		else if (uris.size() == 1 && isGnd(uris.get(0)))
+		else if ((uris.size() == 1 && isGnd(uris.get(0))) || field.equals(Application.SUBJECT_FIELD))
 			return "octicon octicon-tag";
 		String configKey = keys.getOrDefault(field, "");
 		String type = selectType(uris, configKey);
