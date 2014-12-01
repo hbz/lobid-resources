@@ -96,16 +96,16 @@
             </div>
             <div class="page-header">
                 <img class="media-object nrw-logo pull-right" src="@controllers.routes.Assets.at("images/wappen.png")" alt="NRW">
-                <h1>Die Nordrhein-Westfälische Bibliographie<br/><small>Über 350.000 Titel aus allen Wissensgebieten</small></h1>
+                <h1>Die Nordrhein-Westfälische Bibliographie<br/><small>Mehr als 350.000 Publikationen über NRW seit 1983</small></h1>
             </div>
             @content
             <div class="panel panel-default nwbib-footer">
               <div class="panel-body">
-                @defining(controllers.nwbib.Lobid.getTotalHits().get(5000)){ hits =>
+                @defining(controllers.nwbib.Lobid.getTotalHits().get(10000)){ hits =>
                 <img class="media-object pull-left nrw-wappen" src="@controllers.routes.Assets.at("images/wappen.png")" alt="NRW-Wappen"> 
                 <img class="media-object pull-right hbz-logo" src="@controllers.routes.Assets.at("images/hbz.png")" alt="hbz-Logo">
-                Die Nordrhein-Westfälische Bibliographie bietet @if(hits>0){aktuell @hits }Literaturnachweise zum gesamten Land NRW mit seinen Regionen, Orten und Persönlichkeiten. 
-                Sie wird  von den <a href="http://www.ulb.hhu.de/">Universitäts- und Landesbibliotheken Düsseldorf</a>, <a href="http://www.ulb.uni-muenster.de/">Münster</a> und <a href="http://www.ulb.uni-bonn.de/">Bonn</a> in Zusammenarbeit mit dem <a href="http://www.hbz-nrw.de/">Hochschulbibliothekszentrum NRW</a> herausgegeben.
+                Die NWBib bietet @if(hits>0){aktuell @hits}else{mehr als 350.000 (Stand: Dezember 2014)} Literaturnachweise. Sie wird von der <a href="http://www.ulb.hhu.de/">Universitäts- und Landesbibliothek (ULB) Düsseldorf</a> und der <a href="http://www.ulb.uni-muenster.de/">ULB Münster</a> 
+	       in Zusammenarbeit mit der <a href="http://www.ulb.uni-bonn.de/">ULB Bonn</a> und dem <a href="http://www.hbz-nrw.de/">Hochschulbibliothekszentrum des Landes Nordrhein-Westfalen (hbz)</a> herausgegeben.
                 }
               </div>
             </div>
