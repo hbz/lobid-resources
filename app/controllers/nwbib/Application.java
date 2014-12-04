@@ -39,10 +39,10 @@ import play.mvc.Result;
 import views.html.browse_classification;
 import views.html.browse_register;
 import views.html.details;
+import views.html.help;
 import views.html.index;
 import views.html.search;
 import views.html.stars;
-import views.html.help;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.collect.ImmutableMap;
@@ -150,11 +150,11 @@ public class Application extends Controller {
 
 	/**
 	 * @param q Query to search in all fields
-	 * @param author Query for the resource author
+	 * @param person Query for a person associated with the resource
 	 * @param name Query for the resource name (title)
 	 * @param subject Query for the resource subject
 	 * @param id Query for the resource id
-	 * @param publisher Query for the resource author
+	 * @param publisher Query for the resource publisher
 	 * @param issued Query for the resource issued year
 	 * @param medium Query for the resource medium
 	 * @param nwbibspatial Query for the resource nwbibspatial classification
@@ -169,7 +169,7 @@ public class Application extends Controller {
 	 * @param location A polygon describing the subject area of the resources
 	 * @return The search results
 	 */
-	public static Promise<Result> search(final String q, final String author,
+	public static Promise<Result> search(final String q, final String person,
 			final String name, final String subject, final String id,
 			final String publisher, final String issued, final String medium,
 			final String nwbibspatial, final String nwbibsubject, final int from,
@@ -177,7 +177,7 @@ public class Application extends Controller {
 			boolean details, String set, String location) {
 		String cacheId =
 				String.format("%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s",
-						"search", q, author, name, subject, id, publisher, issued, medium,
+						"search", q, person, name, subject, id, publisher, issued, medium,
 						nwbibspatial, nwbibsubject, from, size, owner, t, sort, set,
 						location);
 		@SuppressWarnings("unchecked")
@@ -188,11 +188,11 @@ public class Application extends Controller {
 		final Form<String> form = queryForm.bindFromRequest();
 		if (form.hasErrors())
 			return Promise.promise(() -> badRequest(search.render(CONFIG, null, q,
-					author, name, subject, id, publisher, issued, medium, nwbibspatial,
+					person, name, subject, id, publisher, issued, medium, nwbibspatial,
 					nwbibsubject, from, size, 0L, owner, t, sort, set, location)));
 		String query = form.data().get("q");
 		Promise<Result> result =
-				okPromise(query != null ? query : q, author, name, subject, id,
+				okPromise(query != null ? query : q, person, name, subject, id,
 						publisher, issued, medium, nwbibspatial, nwbibsubject, from, size,
 						owner, t, sort, details, set, location);
 		cacheOnRedeem(cacheId, result, ONE_HOUR);
@@ -282,20 +282,20 @@ public class Application extends Controller {
 		return ok(browse_classification.render(topClassesJson, subClasses, t));
 	}
 
-	private static Promise<Result> okPromise(final String q, final String author,
+	private static Promise<Result> okPromise(final String q, final String person,
 			final String name, final String subject, final String id,
 			final String publisher, final String issued, final String medium,
 			final String nwbibspatial, final String nwbibsubject, final int from,
 			final int size, final String owner, String t, String sort,
 			boolean details, String set, String location) {
 		final Promise<Result> result =
-				call(q, author, name, subject, id, publisher, issued, medium,
+				call(q, person, name, subject, id, publisher, issued, medium,
 						nwbibspatial, nwbibsubject, from, size, owner, t, sort, details,
 						set, location);
 		return result.recover((Throwable throwable) -> {
 			throwable.printStackTrace();
 			flashError();
-			return internalServerError(search.render(CONFIG, "[]", q, author, name,
+			return internalServerError(search.render(CONFIG, "[]", q, person, name,
 					subject, id, publisher, issued, medium, nwbibspatial, nwbibsubject,
 					from, size, 0L, owner, t, sort, set, location));
 		});
@@ -316,14 +316,14 @@ public class Application extends Controller {
 		});
 	}
 
-	static Promise<Result> call(final String q, final String author,
+	static Promise<Result> call(final String q, final String person,
 			final String name, final String subject, final String id,
 			final String publisher, final String issued, final String medium,
 			final String nwbibspatial, final String nwbibsubject, final int from,
 			final int size, String owner, String t, String sort, boolean showDetails,
 			String set, String location) {
 		WSRequestHolder requestHolder =
-				Lobid.request(q, author, name, subject, id, publisher, issued, medium,
+				Lobid.request(q, person, name, subject, id, publisher, issued, medium,
 						nwbibspatial, nwbibsubject, from, size, owner, t, sort,
 						showDetails, set, location);
 		return requestHolder.get().map(
@@ -332,7 +332,7 @@ public class Application extends Controller {
 					Long hits = Lobid.getTotalResults(json);
 					String s = json.toString();
 					return ok(showDetails ? details.render(CONFIG, s, id) : search
-							.render(CONFIG, s, q, author, name, subject, id, publisher,
+							.render(CONFIG, s, q, person, name, subject, id, publisher,
 									issued, medium, nwbibspatial, nwbibsubject, from, size, hits,
 									owner, t, sort, set, location));
 				});
@@ -340,11 +340,11 @@ public class Application extends Controller {
 
 	/**
 	 * @param q Query to search in all fields
-	 * @param author Query for the resource author
+	 * @param person Query for a person associated with the resource
 	 * @param name Query for the resource name (title)
 	 * @param subject Query for the resource subject
 	 * @param id Query for the resource id
-	 * @param publisher Query for the resource author
+	 * @param publisher Query for the resource publisher
 	 * @param issued Query for the resource issued year
 	 * @param medium Query for the resource medium
 	 * @param nwbibspatial Query for the resource nwbibspatial classification
@@ -359,14 +359,14 @@ public class Application extends Controller {
 	 * @param location A polygon describing the subject area of the resources
 	 * @return The search results
 	 */
-	public static Promise<Result> facets(String q, String author, String name,
+	public static Promise<Result> facets(String q, String person, String name,
 			String subject, String id, String publisher, String issued,
 			String medium, String nwbibspatial, String nwbibsubject, int from,
 			int size, String owner, String t, String field, String sort, String set,
 			String location) {
 		String key =
 				String.format("facets.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s",
-						q, author, name, subject, id, publisher, issued, medium,
+						q, person, name, subject, id, publisher, issued, medium,
 						nwbibspatial, nwbibsubject, owner, field, sort, t, set, location);
 		Result cachedResult = (Result) Cache.get(key);
 		if (cachedResult != null) {
@@ -396,7 +396,7 @@ public class Application extends Controller {
 					String subjectQuery = !field.equals(SUBJECT_FIELD) ? subject : term;
 
 					String routeUrl =
-							routes.Application.search(q, author, name, subjectQuery, id,
+							routes.Application.search(q, person, name, subjectQuery, id,
 									publisher, issued, mediumQuery, nwbibspatialQuery,
 									nwbibsubjectQuery, from, size, ownerQuery, typeQuery, sort,
 									false, set, location).url();
@@ -425,7 +425,7 @@ public class Application extends Controller {
 		};
 		Promise<Result> promise =
 				Lobid
-						.getFacets(q, author, name, subject, id, publisher, issued, medium,
+						.getFacets(q, person, name, subject, id, publisher, issued, medium,
 								nwbibspatial, nwbibsubject, owner, field, t, set, location)
 						.map(
 								json -> {

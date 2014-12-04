@@ -29,7 +29,7 @@ import com.google.common.html.HtmlEscapers;
 /**
  * Access Lobid title data.
  *
- * @author fsteeg
+ * @author Fabian Steeg (fsteeg)
  *
  */
 public class Lobid {
@@ -39,7 +39,7 @@ public class Lobid {
 				.asLong();
 	}
 
-	static WSRequestHolder request(final String q, final String author,
+	static WSRequestHolder request(final String q, final String person,
 			final String name, final String subject, final String id,
 			final String publisher, final String issued, final String medium,
 			final String nwbibspatial, final String nwbibsubject, final int from,
@@ -61,8 +61,8 @@ public class Lobid {
 			requestHolder = requestHolder.setQueryParameter("set", set);
 		if (!q.trim().isEmpty())
 			requestHolder = requestHolder.setQueryParameter("q", preprocess(q));
-		if (!author.trim().isEmpty())
-			requestHolder = requestHolder.setQueryParameter("author", author);
+		if (!person.trim().isEmpty())
+			requestHolder = requestHolder.setQueryParameter("author", person);
 		if (!name.trim().isEmpty())
 			requestHolder = requestHolder.setQueryParameter("name", name);
 		if (!subject.trim().isEmpty())
@@ -215,11 +215,11 @@ public class Lobid {
 
 	/**
 	 * @param q Query to search in all fields
-	 * @param author Query for the resource author
+	 * @param person Query for a person associated with the resource
 	 * @param name Query for the resource name (title)
 	 * @param subject Query for the resource subject
 	 * @param id Query for the resource id
-	 * @param publisher Query for the resource author
+	 * @param publisher Query for the resource publisher
 	 * @param issued Query for the resource issued year
 	 * @param medium Query for the resource medium
 	 * @param nwbibspatial Query for the resource nwbibspatial classification
@@ -231,7 +231,7 @@ public class Lobid {
 	 * @param location A polygon describing the subject area of the resources
 	 * @return A JSON representation of the requested facets
 	 */
-	public static Promise<JsonNode> getFacets(String q, String author,
+	public static Promise<JsonNode> getFacets(String q, String person,
 			String name, String subject, String id, String publisher, String issued,
 			String medium, String nwbibspatial, String nwbibsubject, String owner,
 			String field, String t, String set, String location) {
@@ -239,7 +239,7 @@ public class Lobid {
 				WS.url(Application.CONFIG.getString("nwbib.api") + "/facets")
 						.setHeader("Accept", "application/json")
 						.setQueryParameter("q", preprocess(q))
-						.setQueryParameter("author", author)
+						.setQueryParameter("author", person)
 						.setQueryParameter("name", name)
 						.setQueryParameter("publisher", publisher)
 						.setQueryParameter("issued", issued).setQueryParameter("id", id)
