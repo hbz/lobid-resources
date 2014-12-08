@@ -101,7 +101,7 @@
             @content
             <div class="panel panel-default nwbib-footer">
               <div class="panel-body">
-                @defining(controllers.nwbib.Lobid.getTotalHits().get(10000)){ hits =>
+                @defining(controllers.nwbib.Lobid.getTotalHits("").get(10000)){ hits =>
                 <img class="media-object pull-left nrw-wappen" src="@controllers.routes.Assets.at("images/wappen.png")" alt="NRW-Wappen"> 
                 <img class="media-object pull-right hbz-logo" src="@controllers.routes.Assets.at("images/hbz.png")" alt="hbz-Logo">
                 Die NWBib bietet @if(hits>0){aktuell @hits}else{mehr als 350.000 (Stand: Dezember 2014)} Literaturnachweise. Sie wird von der <a href="http://www.ulb.hhu.de/">Universitäts- und Landesbibliothek (ULB) Düsseldorf</a> und der <a href="http://www.ulb.uni-muenster.de/">ULB Münster</a> 

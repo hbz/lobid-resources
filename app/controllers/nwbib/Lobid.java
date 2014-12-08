@@ -106,19 +106,23 @@ public class Lobid {
 		return requestHolder;
 	}
 
-	/** @return The full number of hits, ie. the size of our data set. */
-	public static Promise<Long> getTotalHits() {
-		final Long cachedResult = (Long) Cache.get(String.format("totalHits"));
+	/**
+	 * @param set The data set, uses the config file set if empty
+	 * @return The full number of hits, ie. the size of the given data set
+	 */
+	public static Promise<Long> getTotalHits(String set) {
+		String cacheKey = String.format("totalHits.%s", set);
+		final Long cachedResult = (Long) Cache.get(cacheKey);
 		if (cachedResult != null) {
 			return Promise.promise(() -> {
 				return cachedResult;
 			});
 		}
 		WSRequestHolder requestHolder =
-				request("", "", "", "", "", "", "", "", "", "", 0, 0, "", "", "", false, "", "");
+				request("", "", "", "", "", "", "", "", "", "", 0, 0, "", "", "", false, set, "");
 		return requestHolder.get().map((WSResponse response) -> {
 			Long total = getTotalResults(response.asJson());
-			Cache.set("totalHits", total, Application.ONE_HOUR);
+			Cache.set(cacheKey, total, Application.ONE_HOUR);
 			return total;
 		});
 	}

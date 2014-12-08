@@ -87,8 +87,9 @@
   }
   @if(Seq("http://purl.org/ontology/bibo/Journal","http://purl.org/ontology/bibo/Series").exists(doc.toString.contains(_))){
    @defining((("""http://.*?lobid.org/resource.+?([^/]+).*?""".r findFirstMatchIn ((doc \ "@id").as[String])).get group 1)){ id =>
+    @if(Lobid.getTotalHits(id).get(10000) > 0) {
     <tr><td>Enthält</td><td><a title="Enthaltene Beiträge anzeigen" href="@nwbib.routes.Application.search(set=id)">Enthaltene Beiträge anzeigen</a></td></tr>
-  }}
+  }}}
 }
 
 @table(){
