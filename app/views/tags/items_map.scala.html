@@ -55,7 +55,7 @@
     </script>
 
 @markers(items: Map[String,List[String]]) = {
-    @for((key,i) <- items.keySet.toList.sorted.zipWithIndex;
+    @for((key,i) <- items.keySet.toList.sortWith((k1:String,k2:String)=>controllers.nwbib.Lobid.compareIsil(k1,k2)).zipWithIndex;
         owner = "http://lobid.org/organisation/"+key;
         ownerRequestUri = owner+"?format=full";
         json = Await.result(WS.url(ownerRequestUri).get().map(x=>(x.json)), 5.second);

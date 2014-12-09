@@ -451,4 +451,32 @@ public class Lobid {
 		}
 		return null;
 	}
+
+	/**
+	 * Compare ISILs for sorting.
+	 *
+	 * @param i1 The first ISIL
+	 * @param i2 The second ISIL
+	 * @return True, if i1 should come before i2
+	 */
+	public static boolean compareIsil(String i1, String i2) {
+			String[] all1 = i1.split("-");
+			String[] all2 = i2.split("-");
+			if(all1.length == 3 && all2.length == 3) {
+				if(all1[1].equals(all2[1])) {
+					// use secondary if main is equal, e.g. DE-5-11 before DE-5-20
+					return numerical(all1[2]) < numerical(all2[2]);
+				}
+			} else if(all1[1].equals(all2[1])) {
+				// same main sigel, prefer shorter, e.g. DE-5 before DE-5-11
+				return all1.length < all2.length;
+			}
+			// compare by main sigel, e.g. DE-5 before DE-6:
+			return numerical(all1[1]) < numerical(all2[1]);
+	}
+
+	private static int numerical(String s) {
+		// replace non-digits with 9, e.g. for DE-5 before DE-Walb1
+		return Integer.parseInt(s.replaceAll("\\D","9"));
+	}
 }
