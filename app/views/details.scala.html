@@ -16,7 +16,7 @@
         @for((doc,i) <- hits) {
         <div class="row">
           @defining(Lobid.items(doc.toString)) { items =>
-              @defining(!(doc\\"isPartOf").isEmpty && (doc\\"isPartOf").head.asOpt[Seq[JsValue]].getOrElse(Seq()).size>1 && doc.toString.contains("http://purl.org/ontology/bibo/Article")){superordination =>
+              @defining(!(doc\\"isPartOf").isEmpty && doc.toString.contains("http://purl.org/ontology/bibo/Article")){superordination =>
               <div class="col-md-@if(items.isEmpty && !doc.toString.contains("fulltextOnline") && !superordination){12} else {7}">
                 <dl>@defining((doc \ "@id").as[String].split("/")(4)){ id =>
                     <dt>@tags.star_button(id) Titeldetails:
@@ -41,14 +41,14 @@
                     </dd>
                     }
                     @if(superordination){
-                    <dt>Zu Bestand siehe Überordnung:</dt>
+                    <dt>Zum Bestand:</dt>
                     <dd>
                     <table class="table table-striped table-condensed">
                       <tr>
                             <th style="width: 30%"></th>
                             <th style="width: 70%"></th>
                       </tr>
-                      @result_field("Bestandteil von", "isPartOf", doc, TableRow.LINKS)
+                      @result_field("", "isPartOf", doc, TableRow.LINKS)
                     </table>
                     </dd>
                     }
