@@ -44,6 +44,7 @@
 @row match {
   case views.TableRow.VALUES => {
     @for(elem <- multiSingleOrEmptySeq(jsonVal(property)).sortBy(_.toString)(Ordering[String].reverse) if !elem.toString.contains("http://dewey.info")) {
+			@if(!property.startsWith("contributor") || elem.toString.r.findAllIn(doc.toString).toList.length <3 ){
       <tr>
         <td>@property match {
           case _ => {@label}
@@ -70,6 +71,7 @@
         </td>
       </tr>
     }
+	 }
   }
   case views.TableRow.LINKS => {
     @for(elem <- multiSingleOrEmptySeq(jsonVal(property)) if !elem.toString.contains("lobid.org/resource/NWBib")) {
