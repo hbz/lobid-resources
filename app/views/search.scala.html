@@ -11,19 +11,23 @@
 
 @pagination(hits:Int)={
   <nav>
-    <ul class="pager">
+    <ul class="pagination pagination-sm">
       <li class="previous @if(from==0){disabled}">
-        <a style="width:20%; text-align: center;" href="@if(from==0){#} else {@nwbib.routes.Application.search(q,person,name,subject,id,publisher,issued,medium,nwbibspatial,nwbibsubject,from-size,size,owner,t,sortParam,set=set,location=location)}">&larr;</a>
+        <a href="@if(from==0){#} else {@nwbib.routes.Application.search(q,person,name,subject,id,publisher,issued,medium,nwbibspatial,nwbibsubject,from-size,size,owner,t,sortParam,set=set,location=location)}">&larr;</a>
       </li>
-      <li class="disabled">
-      <a style="width:60%; text-align: center; white-space: nowrap;" href="#">@if(hits>0){@(from+1) bis @(Math.min(from+hits,from+size))@if(allHits>0){ von @allHits}}else{0 Treffer}</a>
-      </li>
+      @defining((((from+1)/size)+1,(if(allHits%size==0) allHits/size else allHits/size+1).toInt)) { case (currentPage,lastPage) =>
+          @defining(Math.min(Math.max(1,currentPage-4)+9,lastPage)) { toPage =>
+              @for(i <- Math.max(1,toPage-9) to toPage){
+                  <li @if(currentPage==i){class="active"}><a href="@nwbib.routes.Application.search(q,person,name,subject,id,publisher,issued,medium,nwbibspatial,nwbibsubject,(i*size)-size,size,owner,t,sortParam,set=set,location=location)">@i</a></li>
+              }
+          }
+      }
       <li class="next @if(from+size >= allHits){disabled}">
-        <a style="width:20%; text-align: center;" href="@if(from+size >= allHits){#} else {@nwbib.routes.Application.search(q,person,name,subject,id,publisher,issued,medium,nwbibspatial,nwbibsubject,from+size,size,owner,t,sortParam,set=set,location=location)}">&rarr;</a>
+        <a href="@if(from+size >= allHits){#} else {@nwbib.routes.Application.search(q,person,name,subject,id,publisher,issued,medium,nwbibspatial,nwbibsubject,from+size,size,owner,t,sortParam,set=set,location=location)}">&rarr;</a>
       </li>
     </ul>
   </nav>
-}
+ }
 
 @facets(facet: String, field: String, current: String, addClass:String = "", allLabel:String = "Alle")={
 	    <div class="btn-group fill @addClass">
@@ -80,23 +84,25 @@
     @defining(Json.parse(result).asOpt[Seq[JsValue]].getOrElse(Seq()).zipWithIndex.drop(1)) { hits =>
      <div class="row">
          <div class="col-md-8">
-         <div class="row">
-           <div class="col-md-6">@pagination(hits.size)</div>
-           <div class="col-md-6">@sort</div>
-         </div>
-         <table class="table table-striped table-condensed">
-         <tr>
-          <th style="width: 5%"></th>
-          <th style="width: 60%"></th>
-          <th style="width: 25%; text-align: right"></th>
-          <th style="width: 5%; text-align: right"></th>
-          <th style="width: 5%; text-align: right"></th>
-         </tr>
-         @for((doc,i) <- hits; id = ("""http://.*?lobid.org/resource.+?([^/]+).*?""".r findFirstMatchIn ((doc \ "@id").as[String])).get group 1) {
-            @tags.result_short(id,doc)
+         @if(hits.size>0){
+	         <div class="row">
+	           <div class="col-md-7">@pagination(hits.size)</div>
+	           <div class="col-md-5">@sort</div>
+	         </div>
+	         Ergebnisse @(from+1) bis @(Math.min(from+hits.size,from+size))@if(allHits>0){ von @allHits:}
+	         <table class="table table-striped table-condensed">
+	         <tr>
+	          <th style="width: 5%"></th>
+	          <th style="width: 60%"></th>
+	          <th style="width: 25%; text-align: right"></th>
+	          <th style="width: 5%; text-align: right"></th>
+	          <th style="width: 5%; text-align: right"></th>
+	         </tr>
+	         @for((doc,i) <- hits; id = ("""http://.*?lobid.org/resource.+?([^/]+).*?""".r findFirstMatchIn ((doc \ "@id").as[String])).get group 1) {
+	            @tags.result_short(id,doc)
+	         }
+	         </table>
          }
-         </table>
-
          @if(flash.get("error")!=null){
             <div class="alert alert-danger text-center">@flash.get("error")</div>
          } else {
