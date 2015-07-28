@@ -17,16 +17,15 @@ import java.util.stream.Collectors;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.fasterxml.jackson.databind.JsonNode;
+
+import controllers.nwbib.Application;
+import controllers.nwbib.Lobid;
 import play.libs.F.Promise;
 import play.mvc.Http;
 import play.test.Helpers;
 import play.test.TestBrowser;
 import play.twirl.api.Content;
-
-import com.fasterxml.jackson.databind.JsonNode;
-
-import controllers.nwbib.Application;
-import controllers.nwbib.Lobid;
 
 /* Uses actual data, not available in CI. Run locally with `play test`. */
 /**
@@ -48,12 +47,10 @@ public class IntegrationTest {
 
 	@Test
 	public void testSpatialClassification() {
-		running(
-				testServer(3333, fakeApplication(inMemoryDatabase())),
-				HTMLUNIT,
+		running(testServer(3333, fakeApplication(inMemoryDatabase())), HTMLUNIT,
 				(TestBrowser browser) -> {
-					browser
-							.goTo("http://localhost:3333/nwbib/classification?t=Raumsystematik");
+					browser.goTo(
+							"http://localhost:3333/nwbib/classification?t=Raumsystematik");
 					assertThat(browser.pageSource()).contains("Nordrhein-Westfalen")
 							.contains("Rheinland").contains("Grafschaft, Herzogtum Jülich");
 				});
@@ -61,12 +58,10 @@ public class IntegrationTest {
 
 	@Test
 	public void testClassification() {
-		running(
-				testServer(3333, fakeApplication(inMemoryDatabase())),
-				HTMLUNIT,
+		running(testServer(3333, fakeApplication(inMemoryDatabase())), HTMLUNIT,
 				(TestBrowser browser) -> {
-					browser
-							.goTo("http://localhost:3333/nwbib/classification?t=Sachsystematik");
+					browser.goTo(
+							"http://localhost:3333/nwbib/classification?t=Sachsystematik");
 					assertThat(browser.pageSource()).contains("Allgemeine Landeskunde")
 							.contains("Landesbeschreibungen").contains("Reiseberichte");
 				});
@@ -74,29 +69,24 @@ public class IntegrationTest {
 
 	@Test
 	public void testFacets() {
-		running(
-				testServer(3333, fakeApplication(inMemoryDatabase())),
-				HTMLUNIT,
+		running(testServer(3333, fakeApplication(inMemoryDatabase())), HTMLUNIT,
 				(TestBrowser browser) -> {
 					String field = Application.TYPE_FIELD;
-					Promise<JsonNode> jsonPromise =
-							Lobid.getFacets("köln", "", "", "", "", "", "", "", "", "", "",
-									field, "", "", "");
+					Promise<JsonNode> jsonPromise = Lobid.getFacets("köln", "", "", "",
+							"", "", "", "", "", "", "", field, "", "", "");
 					JsonNode facets = jsonPromise.get(10000);
-					assertThat(
-							facets.findValues("term").stream().map(e -> e.asText())
-									.collect(Collectors.toList())).contains(
-							"http://purl.org/dc/terms/BibliographicResource",
-							"http://purl.org/vocab/frbr/core#Manifestation",
-							"http://purl.org/ontology/bibo/Article",
-							"http://purl.org/ontology/bibo/Book",
-							"http://purl.org/ontology/bibo/Collection",
-							"http://purl.org/ontology/bibo/Journal",
-							"http://purl.org/ontology/bibo/Periodical",
-							"http://purl.org/ontology/bibo/MultiVolumeBook");
-					assertThat(
-							facets.findValues("count").stream().map(e -> e.intValue())
-									.collect(Collectors.toList())).excludes(0);
+					assertThat(facets.findValues("term").stream().map(e -> e.asText())
+							.collect(Collectors.toList())).contains(
+									"http://purl.org/dc/terms/BibliographicResource",
+									"http://purl.org/vocab/frbr/core#Manifestation",
+									"http://purl.org/ontology/bibo/Article",
+									"http://purl.org/ontology/bibo/Book",
+									"http://purl.org/ontology/bibo/Collection",
+									"http://purl.org/ontology/bibo/Journal",
+									"http://purl.org/ontology/bibo/Periodical",
+									"http://purl.org/ontology/bibo/MultiVolumeBook");
+					assertThat(facets.findValues("count").stream().map(e -> e.intValue())
+							.collect(Collectors.toList())).excludes(0);
 				});
 	}
 
@@ -105,14 +95,11 @@ public class IntegrationTest {
 		String query = "buch";
 		int from = 0;
 		int size = 10;
-		running(
-				testServer(3333, fakeApplication(inMemoryDatabase())),
-				HTMLUNIT,
+		running(testServer(3333, fakeApplication(inMemoryDatabase())), HTMLUNIT,
 				(TestBrowser browser) -> {
-					Content html =
-							views.html.search.render(Application.CONFIG, "[{}]", query, "",
-									"", "", "", "", "", "", "", "", from, size, 0L, "", "", "",
-									"", "");
+					Content html = views.html.search.render(Application.CONFIG, "[{}]",
+							query, "", "", "", "", "", "", "", "", "", from, size, 0L, "", "",
+							"", "", "");
 					assertThat(Helpers.contentType(html)).isEqualTo("text/html");
 					String text = Helpers.contentAsString(html);
 					assertThat(text).contains("NWBib").contains("buch")

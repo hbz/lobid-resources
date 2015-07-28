@@ -23,8 +23,8 @@ public class ApplicationTest {
 	@Test
 	public void shortSpatialClassificationId() {
 		assertThat(
-				Classification.shortId("http://purl.org/lobid/nwbib-spatial#n58")).as(
-				"short spatial classification").isEqualTo("58");
+				Classification.shortId("http://purl.org/lobid/nwbib-spatial#n58"))
+						.as("short spatial classification").isEqualTo("58");
 	}
 
 }

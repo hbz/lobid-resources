@@ -13,6 +13,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.html.HtmlEscapers;
+
 import play.Logger;
 import play.Play;
 import play.cache.Cache;
@@ -21,10 +25,6 @@ import play.libs.Json;
 import play.libs.ws.WS;
 import play.libs.ws.WSRequestHolder;
 import play.libs.ws.WSResponse;
-
-import com.fasterxml.jackson.databind.JsonNode;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.html.HtmlEscapers;
 
 /**
  * Access Lobid title data.
@@ -45,18 +45,16 @@ public class Lobid {
 			final String nwbibspatial, final String nwbibsubject, final int from,
 			final int size, String owner, String t, String sort, boolean allData,
 			String set, String location) {
-		WSRequestHolder requestHolder =
-				WS.url(Application.CONFIG.getString("nwbib.api"))
-						.setHeader("Accept", "application/json")
-						.setQueryParameter("format", "full")
-						.setQueryParameter("from", from + "")
-						.setQueryParameter("size", size + "")
-						.setQueryParameter("sort", sort)
-						.setQueryParameter("location", locationPolygon(location));
+		WSRequestHolder requestHolder = WS
+				.url(Application.CONFIG.getString("nwbib.api"))
+				.setHeader("Accept", "application/json")
+				.setQueryParameter("format", "full")
+				.setQueryParameter("from", from + "")
+				.setQueryParameter("size", size + "").setQueryParameter("sort", sort)
+				.setQueryParameter("location", locationPolygon(location));
 		if (!allData && set.isEmpty())
-			requestHolder =
-					requestHolder.setQueryParameter("set",
-							Application.CONFIG.getString("nwbib.set"));
+			requestHolder = requestHolder.setQueryParameter("set",
+					Application.CONFIG.getString("nwbib.set"));
 		if (!set.isEmpty())
 			requestHolder = requestHolder.setQueryParameter("set", set);
 		if (!q.trim().isEmpty())
@@ -91,7 +89,7 @@ public class Lobid {
 	}
 
 	static WSRequestHolder topicRequest(final String q) {
-		WSRequestHolder requestHolder =// @formatter:off
+		WSRequestHolder requestHolder = // @formatter:off
 				WS.url(Application.CONFIG.getString("nwbib.api"))
 						.setHeader("Accept", "application/json")
 						.setQueryParameter("format", "short.subjectChain")
@@ -100,7 +98,7 @@ public class Lobid {
 						.setQueryParameter("subject", q)
 						.setQueryParameter("set",
 							Application.CONFIG.getString("nwbib.set"));
-		//@formatter:off
+		//@formatter:on
 		Logger.info("Request URL {}, query params {} ", requestHolder.getUrl(),
 				requestHolder.getQueryParameters());
 		return requestHolder;
@@ -118,8 +116,8 @@ public class Lobid {
 				return cachedResult;
 			});
 		}
-		WSRequestHolder requestHolder =
-				request("", "", "", "", "", "", "", "", "", "", 0, 0, "", "", "", false, set, "");
+		WSRequestHolder requestHolder = request("", "", "", "", "", "", "", "", "",
+				"", 0, 0, "", "", "", false, set, "");
 		return requestHolder.get().map((WSResponse response) -> {
 			Long total = getTotalResults(response.asJson());
 			Cache.set(cacheKey, total, Application.ONE_HOUR);
@@ -147,7 +145,8 @@ public class Lobid {
 		return lobidLabel(uri, cacheKey, format, false);
 	}
 
-	private static String lobidLabel(String uri, String cacheKey, String format, boolean shorten) {
+	private static String lobidLabel(String uri, String cacheKey, String format,
+			boolean shorten) {
 		final String cachedResult = (String) Cache.get(cacheKey);
 		if (cachedResult != null) {
 			return cachedResult;
@@ -176,14 +175,13 @@ public class Lobid {
 		if (cachedResult != null) {
 			return cachedResult;
 		}
-		WSRequestHolder requestHolder =
-				WS.url("http://api.lobid.org/subject").setHeader("Accept", "application/json")
-						.setQueryParameter("id", uri)
-						.setQueryParameter("format", "full");
+		WSRequestHolder requestHolder = WS.url("http://api.lobid.org/subject")
+				.setHeader("Accept", "application/json").setQueryParameter("id", uri)
+				.setQueryParameter("format", "full");
 		return requestHolder.get().map((WSResponse response) -> {
 			JsonNode value = response.asJson().findValue("preferredName");
 			String label = "";
-			if(value != null) {
+			if (value != null) {
 				label = shorten(value.asText());
 			} else {
 				label = uri.substring(uri.lastIndexOf('/') + 1);
@@ -243,17 +241,17 @@ public class Lobid {
 				WS.url(Application.CONFIG.getString("nwbib.api") + "/facets")
 						.setHeader("Accept", "application/json")
 						.setQueryParameter("q", preprocess(q))
-						.setQueryParameter("author", person)
-						.setQueryParameter("name", name)
+						.setQueryParameter("author", person).setQueryParameter("name", name)
 						.setQueryParameter("publisher", publisher)
 						.setQueryParameter("issued", issued).setQueryParameter("id", id)
 						.setQueryParameter("field", field).setQueryParameter("from", "0")
-						.setQueryParameter("size", Application.MAX_FACETS+"")
+						.setQueryParameter("size", Application.MAX_FACETS + "")
 						.setQueryParameter("location", locationPolygon(location));
-		if(!set.isEmpty())
+		if (!set.isEmpty())
 			request = request.setQueryParameter("set", set);
 		else
-			request = request.setQueryParameter("set", Application.CONFIG.getString("nwbib.set"));
+			request = request.setQueryParameter("set",
+					Application.CONFIG.getString("nwbib.set"));
 		if (!field.equals(Application.MEDIUM_FIELD))
 			request = request.setQueryParameter("medium", medium);
 		if (!field.equals(Application.TYPE_FIELD))
@@ -264,7 +262,7 @@ public class Lobid {
 			request = request.setQueryParameter("nwbibspatial", nwbibspatial);
 		if (!field.equals(Application.NWBIB_SUBJECT_FIELD))
 			request = request.setQueryParameter("nwbibsubject", nwbibsubject);
-		if(!field.equals(Application.SUBJECT_FIELD))
+		if (!field.equals(Application.SUBJECT_FIELD))
 			request = request.setQueryParameter("subject", subject);
 		Logger.info("Facets request URL {}, query params {} ", request.getUrl(),
 				request.getQueryParameters());
@@ -275,15 +273,16 @@ public class Lobid {
 
 	private static String preprocess(final String q) {
 		return // if query string syntax is used, leave it alone:
-		q.trim().isEmpty() || q.matches(".*?([+~]|AND|OR|\\s-|\\*).*?") ? q :
-		// else prepend '+' to all terms for AND search:
+		q.trim().isEmpty() || q.matches(".*?([+~]|AND|OR|\\s-|\\*).*?") ? q
+				:
+				// else prepend '+' to all terms for AND search:
 				Arrays.asList(q.split("[\\s-]")).stream().map(x -> "+" + x)
 						.collect(Collectors.joining(" "));
 	}
 
-	private static final Map<String, String> keys = ImmutableMap.of(
-			Application.TYPE_FIELD, "type.labels",//
-			Application.MEDIUM_FIELD, "medium.labels");
+	private static final Map<String, String> keys =
+			ImmutableMap.of(Application.TYPE_FIELD, "type.labels", //
+					Application.MEDIUM_FIELD, "medium.labels");
 
 	/**
 	 * @param types Some type URIs
@@ -314,13 +313,13 @@ public class Lobid {
 			return Lobid.nwBibLabel(uris.get(0));
 		else if (uris.size() == 1 && isGnd(uris.get(0)))
 			return Lobid.gndLabel(uris.get(0));
-		String configKey = keys.getOrDefault(field,"");
+		String configKey = keys.getOrDefault(field, "");
 		String type = selectType(uris, configKey);
 		if (type.isEmpty())
 			return "";
 		@SuppressWarnings("unchecked")
-		List<String> details = configKey.isEmpty() ? uris :
-				((List<String>) Application.CONFIG.getObject(configKey).unwrapped()
+		List<String> details = configKey.isEmpty() ? uris
+				: ((List<String>) Application.CONFIG.getObject(configKey).unwrapped()
 						.get(type));
 		if (details == null || details.size() < 1)
 			return type;
@@ -334,21 +333,25 @@ public class Lobid {
 	 * @return An icon CSS class for the given URIs
 	 */
 	public static String facetIcon(List<String> uris, String field) {
-		if ((uris.size() == 1 && isOrg(uris.get(0))) || field.equals(Application.ITEM_FIELD))
+		if ((uris.size() == 1 && isOrg(uris.get(0)))
+				|| field.equals(Application.ITEM_FIELD))
 			return "octicon octicon-home";
-		else if ((uris.size() == 1 && isNwBibClass(uris.get(0))) || field.equals(Application.NWBIB_SUBJECT_FIELD))
+		else if ((uris.size() == 1 && isNwBibClass(uris.get(0)))
+				|| field.equals(Application.NWBIB_SUBJECT_FIELD))
 			return "octicon octicon-list-unordered";
-		else if ((uris.size() == 1 && isNwBibSpatial(uris.get(0))) || field.equals(Application.NWBIB_SPATIAL_FIELD))
+		else if ((uris.size() == 1 && isNwBibSpatial(uris.get(0)))
+				|| field.equals(Application.NWBIB_SPATIAL_FIELD))
 			return "octicon octicon-milestone";
-		else if ((uris.size() == 1 && isGnd(uris.get(0))) || field.equals(Application.SUBJECT_FIELD))
+		else if ((uris.size() == 1 && isGnd(uris.get(0)))
+				|| field.equals(Application.SUBJECT_FIELD))
 			return "octicon octicon-tag";
 		String configKey = keys.getOrDefault(field, "");
 		String type = selectType(uris, configKey);
 		if (type.isEmpty())
 			return "";
 		@SuppressWarnings("unchecked")
-		List<String> details = configKey.isEmpty() ? uris :
-				(List<String>) Application.CONFIG.getObject(configKey).unwrapped()
+		List<String> details = configKey.isEmpty() ? uris
+				: (List<String>) Application.CONFIG.getObject(configKey).unwrapped()
 						.get(type);
 		if (details == null || details.size() < 2)
 			return type;
@@ -356,31 +359,25 @@ public class Lobid {
 		return selected.isEmpty() ? uris.get(0) : selected;
 	}
 
-
 	private static String selectType(List<String> types, String configKey) {
-		if(configKey.isEmpty())
+		if (configKey.isEmpty())
 			return types.get(0);
 		Logger.trace("Types: " + types);
 		@SuppressWarnings("unchecked")
-		List<String> selected =
-				types
-						.stream()
-						.map(
-								t -> {
-									List<String> vals =
-											((List<String>) Application.CONFIG.getObject(configKey)
-													.unwrapped().get(t));
-									if (vals == null)
-										return t;
-									return vals.get(0).isEmpty() || vals.get(1).isEmpty() ? ""
-											: t;
-								}).filter(t -> {
-							return !t.isEmpty();
-						}).collect(Collectors.toList());
+		List<String> selected = types.stream().map(t -> {
+			List<String> vals = ((List<String>) Application.CONFIG
+					.getObject(configKey).unwrapped().get(t));
+			if (vals == null)
+				return t;
+			return vals.get(0).isEmpty() || vals.get(1).isEmpty() ? "" : t;
+		}).filter(t -> {
+			return !t.isEmpty();
+		}).collect(Collectors.toList());
 		Collections.sort(selected);
 		Logger.trace("Selected: " + selected);
-		return selected.isEmpty() ? "" : selected.get(0).contains("Miscellaneous")
-				&& selected.size() > 1 ? selected.get(1) : selected.get(0);
+		return selected.isEmpty() ? ""
+				: selected.get(0).contains("Miscellaneous") && selected.size() > 1
+						? selected.get(1) : selected.get(0);
 	}
 
 	static boolean isOrg(String term) {
@@ -407,10 +404,10 @@ public class Lobid {
 	 * @param doc The result JSON doc
 	 * @return A mapping of ISILs to item URIs
 	 */
-	public static Map<String,List<String>> items(String doc){
+	public static Map<String, List<String>> items(String doc) {
 		JsonNode items = Json.parse(doc).findValue("exemplar");
-		Map<String,List<String>> result = new HashMap<>();
-		if(items != null && (items.isArray() || items.isTextual()))
+		Map<String, List<String>> result = new HashMap<>();
+		if (items != null && (items.isArray() || items.isTextual()))
 			mapIsilsToUris(items, result);
 		return result;
 	}
@@ -419,14 +416,14 @@ public class Lobid {
 			Map<String, List<String>> result) {
 		Iterator<JsonNode> elements =
 				items.isArray() ? items.elements() : Arrays.asList(items).iterator();
-		while(elements.hasNext()) {
+		while (elements.hasNext()) {
 			String itemUri = elements.next().asText();
-			try{
+			try {
 				String isil = itemUri.split(":")[2];
 				List<String> uris = result.getOrDefault(isil, new ArrayList<>());
 				uris.add(itemUri);
 				result.put(isil, uris);
-			} catch(ArrayIndexOutOfBoundsException x){
+			} catch (ArrayIndexOutOfBoundsException x) {
 				Logger.error(x.getMessage());
 			}
 		}
@@ -437,14 +434,17 @@ public class Lobid {
 	 * @return The OPAC URL for the given item, or null
 	 */
 	public static String opacUrl(String itemUri) {
-		try(InputStream stream = Play.application().resourceAsStream("isil2opac_hbzid.json")) {
+		try (InputStream stream =
+				Play.application().resourceAsStream("isil2opac_hbzid.json")) {
 			JsonNode json = Json.parse(stream);
-			String[] hbzId_isil_sig = itemUri.substring(itemUri.indexOf("item/") + 5).split(":");
+			String[] hbzId_isil_sig =
+					itemUri.substring(itemUri.indexOf("item/") + 5).split(":");
 			String hbzId = hbzId_isil_sig[0];
 			String isil = hbzId_isil_sig[1];
-			Logger.debug("From item URI {}, got ISIL {} and HBZ-ID {}", itemUri, isil, hbzId);
+			Logger.debug("From item URI {}, got ISIL {} and HBZ-ID {}", itemUri, isil,
+					hbzId);
 			JsonNode urlTemplate = json.get(isil);
-			if(urlTemplate != null)
+			if (urlTemplate != null)
 				return urlTemplate.asText().replace("{hbzid}", hbzId);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -460,23 +460,23 @@ public class Lobid {
 	 * @return True, if i1 should come before i2
 	 */
 	public static boolean compareIsil(String i1, String i2) {
-			String[] all1 = i1.split("-");
-			String[] all2 = i2.split("-");
-			if(all1.length == 3 && all2.length == 3) {
-				if(all1[1].equals(all2[1])) {
-					// use secondary if main is equal, e.g. DE-5-11 before DE-5-20
-					return numerical(all1[2]) < numerical(all2[2]);
-				}
-			} else if(all1[1].equals(all2[1])) {
-				// same main sigel, prefer shorter, e.g. DE-5 before DE-5-11
-				return all1.length < all2.length;
+		String[] all1 = i1.split("-");
+		String[] all2 = i2.split("-");
+		if (all1.length == 3 && all2.length == 3) {
+			if (all1[1].equals(all2[1])) {
+				// use secondary if main is equal, e.g. DE-5-11 before DE-5-20
+				return numerical(all1[2]) < numerical(all2[2]);
 			}
-			// compare by main sigel, e.g. DE-5 before DE-6:
-			return numerical(all1[1]) < numerical(all2[1]);
+		} else if (all1[1].equals(all2[1])) {
+			// same main sigel, prefer shorter, e.g. DE-5 before DE-5-11
+			return all1.length < all2.length;
+		}
+		// compare by main sigel, e.g. DE-5 before DE-6:
+		return numerical(all1[1]) < numerical(all2[1]);
 	}
 
 	private static int numerical(String s) {
 		// replace non-digits with 9, e.g. for DE-5 before DE-Walb1
-		return Integer.parseInt(s.replaceAll("\\D","9"));
+		return Integer.parseInt(s.replaceAll("\\D", "9"));
 	}
 }

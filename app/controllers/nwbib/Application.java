@@ -23,6 +23,11 @@ import java.util.stream.StreamSupport;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.common.collect.Iterators;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.google.common.collect.ImmutableMap;
+import com.typesafe.config.Config;
+import com.typesafe.config.ConfigFactory;
+
 import play.Logger;
 import play.Play;
 import play.api.cache.EhCachePlugin;
@@ -43,11 +48,6 @@ import views.html.help;
 import views.html.index;
 import views.html.search;
 import views.html.stars;
-
-import com.fasterxml.jackson.databind.JsonNode;
-import com.google.common.collect.ImmutableMap;
-import com.typesafe.config.Config;
-import com.typesafe.config.ConfigFactory;
 
 /**
  * The main application controller.
@@ -82,8 +82,9 @@ public class Application extends Controller {
 
 	private static final File FILE = new File("conf/nwbib.conf");
 	/** Access to the nwbib.conf config file. */
-	public final static Config CONFIG = ConfigFactory.parseFile(
-			FILE.exists() ? FILE : new File("modules/nwbib/conf/nwbib.conf"))
+	public final static Config CONFIG = ConfigFactory
+			.parseFile(
+					FILE.exists() ? FILE : new File("modules/nwbib/conf/nwbib.conf"))
 			.resolve();
 
 	static Form<String> queryForm = Form.form(String.class);
@@ -95,7 +96,9 @@ public class Application extends Controller {
 	static final int ONE_HOUR = 60 * 60;
 	static final int ONE_DAY = 24 * ONE_HOUR;
 
-	/** @return The NWBib index page. */
+	/**
+	 * @return The NWBib index page.
+	 */
 	@Cached(key = "nwbib.index", duration = ONE_HOUR)
 	public static Result index() {
 		final Form<String> form = queryForm.bindFromRequest();
@@ -104,19 +107,25 @@ public class Application extends Controller {
 		return ok(index.render());
 	}
 
-	/** @return The NWBib help page. */
+	/**
+	 * @return The NWBib help page.
+	 */
 	@Cached(key = "nwbib.help", duration = ONE_HOUR)
 	public static Result help() {
 		return ok(help.render());
 	}
 
-	/** @return The NWBib advanced search page. */
+	/**
+	 * @return The NWBib advanced search page.
+	 */
 	@Cached(key = "nwbib.advanced", duration = ONE_HOUR)
 	public static Result advanced() {
 		return ok(views.html.advanced.render());
 	}
 
-	/** @return The current full URI, URL-encoded, or null. */
+	/**
+	 * @return The current full URI, URL-encoded, or null.
+	 */
 	public static String currentUri() {
 		try {
 			return URLEncoder.encode(request().host() + request().uri(), "UTF-8");
@@ -175,11 +184,10 @@ public class Application extends Controller {
 			final String nwbibspatial, final String nwbibsubject, final int from,
 			final int size, final String owner, String t, String sort,
 			boolean details, String set, String location) {
-		String cacheId =
-				String.format("%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s",
-						"search", q, person, name, subject, id, publisher, issued, medium,
-						nwbibspatial, nwbibsubject, from, size, owner, t, sort, set,
-						location);
+		String cacheId = String.format(
+				"%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s", "search", q,
+				person, name, subject, id, publisher, issued, medium, nwbibspatial,
+				nwbibsubject, from, size, owner, t, sort, set, location);
 		@SuppressWarnings("unchecked")
 		Promise<Result> cachedResult = (Promise<Result>) Cache.get(cacheId);
 		if (cachedResult != null)
@@ -191,10 +199,9 @@ public class Application extends Controller {
 					person, name, subject, id, publisher, issued, medium, nwbibspatial,
 					nwbibsubject, from, size, 0L, owner, t, sort, set, location)));
 		String query = form.data().get("q");
-		Promise<Result> result =
-				okPromise(query != null ? query : q, person, name, subject, id,
-						publisher, issued, medium, nwbibspatial, nwbibsubject, from, size,
-						owner, t, sort, details, set, location);
+		Promise<Result> result = okPromise(query != null ? query : q, person, name,
+				subject, id, publisher, issued, medium, nwbibspatial, nwbibsubject,
+				from, size, owner, t, sort, details, set, location);
 		cacheOnRedeem(cacheId, result, ONE_HOUR);
 		return result;
 	}
@@ -226,9 +233,8 @@ public class Application extends Controller {
 				Promise.promise(() -> CLASSIFICATION.ids(q, t));
 		Promise<Result> result;
 		if (!callback.isEmpty())
-			result =
-					jsonPromise.map((JsonNode json) -> ok(String.format("%s(%s)",
-							callback, Json.stringify(json))));
+			result = jsonPromise.map((JsonNode json) -> ok(
+					String.format("%s(%s)", callback, Json.stringify(json))));
 		else
 			result = jsonPromise.map((JsonNode json) -> ok(json));
 		cacheOnRedeem(cacheId, result, ONE_DAY);
@@ -274,7 +280,8 @@ public class Application extends Controller {
 		return result;
 	}
 
-	private static Result classificationResult(SearchResponse response, String t) {
+	private static Result classificationResult(SearchResponse response,
+			String t) {
 		List<JsonNode> topClasses = new ArrayList<>();
 		Map<String, List<JsonNode>> subClasses = new HashMap<>();
 		CLASSIFICATION.buildHierarchy(response, topClasses, subClasses);
@@ -288,10 +295,9 @@ public class Application extends Controller {
 			final String nwbibspatial, final String nwbibsubject, final int from,
 			final int size, final String owner, String t, String sort,
 			boolean details, String set, String location) {
-		final Promise<Result> result =
-				call(q, person, name, subject, id, publisher, issued, medium,
-						nwbibspatial, nwbibsubject, from, size, owner, t, sort, details,
-						set, location);
+		final Promise<Result> result = call(q, person, name, subject, id, publisher,
+				issued, medium, nwbibspatial, nwbibsubject, from, size, owner, t, sort,
+				details, set, location);
 		return result.recover((Throwable throwable) -> {
 			throwable.printStackTrace();
 			flashError();
@@ -302,10 +308,11 @@ public class Application extends Controller {
 	}
 
 	private static void flashError() {
-		flash("error", "Es ist ein Fehler aufgetreten. "
-				+ "Bitte versuchen Sie es erneut oder kontaktieren Sie das "
-				+ "Entwicklerteam, falls das Problem fortbesteht "
-				+ "(siehe Link 'Kontakt' oben rechts).");
+		flash("error",
+				"Es ist ein Fehler aufgetreten. "
+						+ "Bitte versuchen Sie es erneut oder kontaktieren Sie das "
+						+ "Entwicklerteam, falls das Problem fortbesteht "
+						+ "(siehe Link 'Kontakt' oben rechts).");
 	}
 
 	private static void cacheOnRedeem(final String cacheId,
@@ -322,20 +329,18 @@ public class Application extends Controller {
 			final String nwbibspatial, final String nwbibsubject, final int from,
 			final int size, String owner, String t, String sort, boolean showDetails,
 			String set, String location) {
-		WSRequestHolder requestHolder =
-				Lobid.request(q, person, name, subject, id, publisher, issued, medium,
-						nwbibspatial, nwbibsubject, from, size, owner, t, sort,
-						showDetails, set, location);
-		return requestHolder.get().map(
-				(WSResponse response) -> {
-					JsonNode json = response.asJson();
-					Long hits = Lobid.getTotalResults(json);
-					String s = json.toString();
-					return ok(showDetails ? details.render(CONFIG, s, id) : search
-							.render(CONFIG, s, q, person, name, subject, id, publisher,
-									issued, medium, nwbibspatial, nwbibsubject, from, size, hits,
-									owner, t, sort, set, location));
-				});
+		WSRequestHolder requestHolder = Lobid.request(q, person, name, subject, id,
+				publisher, issued, medium, nwbibspatial, nwbibsubject, from, size,
+				owner, t, sort, showDetails, set, location);
+		return requestHolder.get().map((WSResponse response) -> {
+			JsonNode json = response.asJson();
+			Long hits = Lobid.getTotalResults(json);
+			String s = json.toString();
+			return ok(showDetails ? details.render(CONFIG, s, id)
+					: search.render(CONFIG, s, q, person, name, subject, id, publisher,
+							issued, medium, nwbibspatial, nwbibsubject, from, size, hits,
+							owner, t, sort, set, location));
+		});
 	}
 
 	/**
@@ -360,9 +365,9 @@ public class Application extends Controller {
 	 * @return The search results
 	 */
 	public static Promise<Result> facets(String q, String person, String name,
-			String subject, String id, String publisher, String issued,
-			String medium, String nwbibspatial, String nwbibsubject, int from,
-			int size, String owner, String t, String field, String sort, String set,
+			String subject, String id, String publisher, String issued, String medium,
+			String nwbibspatial, String nwbibsubject, int from, int size,
+			String owner, String t, String field, String sort, String set,
 			String location) {
 		String key =
 				String.format("facets.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s",
@@ -379,28 +384,27 @@ public class Application extends Controller {
 			Logger.trace("LABEL {}, ICON {}", label, icon);
 			return !label.startsWith("http") && !label.isEmpty() && !icon.isEmpty();
 		};
-		Function<JsonNode, String> toHtml =
-				json -> {
-					String term = json.get("term").asText();
-					int count = json.get("count").asInt();
-					String icon = Lobid.facetIcon(Arrays.asList(term), field);
-					String label = Lobid.facetLabel(Arrays.asList(term), field);
+		Function<JsonNode, String> toHtml = json -> {
+			String term = json.get("term").asText();
+			int count = json.get("count").asInt();
+			String icon = Lobid.facetIcon(Arrays.asList(term), field);
+			String label = Lobid.facetLabel(Arrays.asList(term), field);
 
-					String mediumQuery = !field.equals(MEDIUM_FIELD) ? medium : term;
-					String typeQuery = !field.equals(TYPE_FIELD) ? t : term;
-					String ownerQuery = !field.equals(ITEM_FIELD) ? owner : term;
-					String nwbibsubjectQuery =
-							!field.equals(NWBIB_SUBJECT_FIELD) ? nwbibsubject : term;
-					String nwbibspatialQuery =
-							!field.equals(NWBIB_SPATIAL_FIELD) ? nwbibspatial : term;
-					String subjectQuery = !field.equals(SUBJECT_FIELD) ? subject : term;
+			String mediumQuery = !field.equals(MEDIUM_FIELD) ? medium : term;
+			String typeQuery = !field.equals(TYPE_FIELD) ? t : term;
+			String ownerQuery = !field.equals(ITEM_FIELD) ? owner : term;
+			String nwbibsubjectQuery =
+					!field.equals(NWBIB_SUBJECT_FIELD) ? nwbibsubject : term;
+			String nwbibspatialQuery =
+					!field.equals(NWBIB_SPATIAL_FIELD) ? nwbibspatial : term;
+			String subjectQuery = !field.equals(SUBJECT_FIELD) ? subject : term;
 
-					String routeUrl =
-							routes.Application.search(q, person, name, subjectQuery, id,
-									publisher, issued, mediumQuery, nwbibspatialQuery,
-									nwbibsubjectQuery, from, size, ownerQuery, typeQuery, sort,
-									false, set, location).url();
-					// @formatter:off
+			String routeUrl = routes.Application
+					.search(q, person, name, subjectQuery, id, publisher, issued,
+							mediumQuery, nwbibspatialQuery, nwbibsubjectQuery, from, size,
+							ownerQuery, typeQuery, sort, false, set, location)
+					.url();
+			// @formatter:off
 					boolean current =
 										 field.equals(MEDIUM_FIELD) && term.equals(medium) 
 									|| field.equals(TYPE_FIELD) && term.equals(t)
@@ -409,12 +413,12 @@ public class Application extends Controller {
 									|| field.equals(NWBIB_SUBJECT_FIELD) && term.equals(nwbibsubject)
 									|| field.equals(SUBJECT_FIELD) && term.equals(subject);
 					//@formatter:on
-					String result =
-							String.format("<li " + (current ? "class=\"active\"" : "")
-									+ "><a href='%s'><span class='%s'/>&nbsp;%s (%s)</a></li>",
-									routeUrl, icon, label, count);
-					return result;
-				};
+			String result = String.format(
+					"<li " + (current ? "class=\"active\"" : "")
+							+ "><a href='%s'><span class='%s'/>&nbsp;%s (%s)</a></li>",
+					routeUrl, icon, label, count);
+			return result;
+		};
 		Collator collator = Collator.getInstance(Locale.GERMAN);
 		Comparator<? super JsonNode> sorter = (j1, j2) -> {
 			String t1 = j1.get("term").asText();
@@ -423,30 +427,25 @@ public class Application extends Controller {
 			String l2 = Lobid.facetLabel(Arrays.asList(t2), field);
 			return collator.compare(l1, l2);
 		};
-		Promise<Result> promise =
-				Lobid
-						.getFacets(q, person, name, subject, id, publisher, issued, medium,
-								nwbibspatial, nwbibsubject, owner, field, t, set, location)
-						.map(
-								json -> {
-									Stream<JsonNode> stream =
-											StreamSupport.stream(
-													Spliterators.spliteratorUnknownSize(
-															json.findValue("entries").elements(), 0), false);
-									if (field.equals(ITEM_FIELD)) {
-										stream = preprocess(stream);
-									}
-									List<String> list =
-											stream.sorted(sorter).filter(labelled).map(toHtml)
-													.collect(Collectors.toList());
-									long count =
-											Iterators.size(json.findValue("entries").elements());
-									if (count == MAX_FACETS) {
-										list.add(0,
-												"<li><a href=\"#\">Häufigste (für alle bitte Treffer eingrenzen):</a></li>");
-									}
-									return list;
-								}).map(lis -> ok(String.join("\n", lis)));
+		Promise<Result> promise = Lobid
+				.getFacets(q, person, name, subject, id, publisher, issued, medium,
+						nwbibspatial, nwbibsubject, owner, field, t, set, location)
+				.map(json -> {
+					Stream<JsonNode> stream =
+							StreamSupport.stream(Spliterators.spliteratorUnknownSize(
+									json.findValue("entries").elements(), 0), false);
+					if (field.equals(ITEM_FIELD)) {
+						stream = preprocess(stream);
+					}
+					List<String> list = stream.sorted(sorter).filter(labelled).map(toHtml)
+							.collect(Collectors.toList());
+					long count = Iterators.size(json.findValue("entries").elements());
+					if (count == MAX_FACETS) {
+						list.add(0,
+								"<li><a href=\"#\">Häufigste (für alle bitte Treffer eingrenzen):</a></li>");
+					}
+					return list;
+				}).map(lis -> ok(String.join("\n", lis)));
 		promise.onRedeem(r -> Cache.set(key, r, ONE_DAY));
 		return promise;
 	}
@@ -454,15 +453,13 @@ public class Application extends Controller {
 	private static Stream<JsonNode> preprocess(Stream<JsonNode> stream) {
 		String captureItemUriWithoutSignature =
 				"(http://lobid\\.org/item/[^:]*?:[^:]*?:)[^\"]*";
-		List<String> itemUrisWithoutSignatures =
-				stream
-						.map(
-								json -> json.get("term").asText()
-										.replaceAll(captureItemUriWithoutSignature, "$1"))
-						.distinct().collect(Collectors.toList());
+		List<String> itemUrisWithoutSignatures = stream
+				.map(json -> json.get("term").asText()
+						.replaceAll(captureItemUriWithoutSignature, "$1"))
+				.distinct().collect(Collectors.toList());
 		return count(itemUrisWithoutSignatures).entrySet().stream()
 				.map(entry -> Json.toJson(ImmutableMap.of(//
-						"term", "http://lobid.org/organisation/" + entry.getKey(),//
+						"term", "http://lobid.org/organisation/" + entry.getKey(), //
 						"count", entry.getValue())));
 	}
 
@@ -508,12 +505,16 @@ public class Application extends Controller {
 		return ok("Unstarred: " + id);
 	}
 
-	/** @return A page with all resources starred by the user */
+	/**
+	 * @return A page with all resources starred by the user
+	 */
 	public static Result showStars() {
 		return ok(stars.render(starredIds()));
 	}
 
-	/** @return An OK result to confirm deletion of starred resources */
+	/**
+	 * @return An OK result to confirm deletion of starred resources
+	 */
 	public static Result clearStars() {
 		session(STARRED, "");
 		return ok(stars.render(starredIds()));
@@ -525,8 +526,8 @@ public class Application extends Controller {
 					.removeAll();
 		} catch (Throwable t) {
 			Logger.error("Could not clear cache", t);
-			Cache.remove(String.format("%s.%s.%s.%s.%s.%s", "search", id, 0, 1, "",
-					"", true));
+			Cache.remove(
+					String.format("%s.%s.%s.%s.%s.%s", "search", id, 0, 1, "", "", true));
 		}
 	}
 
@@ -536,7 +537,7 @@ public class Application extends Controller {
 	}
 
 	private static List<String> starredIds() {
-		return new ArrayList<>(Arrays.asList(currentlyStarred().split(" "))
-				.stream().filter(s -> !s.trim().isEmpty()).collect(Collectors.toList()));
+		return new ArrayList<>(Arrays.asList(currentlyStarred().split(" ")).stream()
+				.filter(s -> !s.trim().isEmpty()).collect(Collectors.toList()));
 	}
 }

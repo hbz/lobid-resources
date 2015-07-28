@@ -24,10 +24,10 @@ import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 
-import play.libs.Json;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.collect.ImmutableMap;
+
+import play.libs.Json;
 
 /**
  * NWBib classification and spatial classification data access via Elasticsearch
@@ -87,9 +87,8 @@ public class Classification {
 	public Classification(String cluster, String server) {
 		this.cluster = cluster;
 		this.server = server;
-		Settings settings =
-				ImmutableSettings.settingsBuilder().put("cluster.name", this.cluster)
-						.build();
+		Settings settings = ImmutableSettings.settingsBuilder()
+				.put("cluster.name", this.cluster).build();
 		InetSocketTransportAddress address =
 				new InetSocketTransportAddress(this.server, 9300);
 		client = new TransportClient(settings).addTransportAddress(address);
@@ -108,10 +107,9 @@ public class Classification {
 
 	private SearchResponse classificationData(String type) {
 		MatchAllQueryBuilder queryBuilder = QueryBuilders.matchAllQuery();
-		SearchRequestBuilder requestBuilder =
-				client.prepareSearch(INDEX)
-						.setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
-						.setQuery(queryBuilder).setTypes(type).setFrom(0).setSize(1000);
+		SearchRequestBuilder requestBuilder = client.prepareSearch(INDEX)
+				.setSearchType(SearchType.DFS_QUERY_THEN_FETCH).setQuery(queryBuilder)
+				.setTypes(type).setFrom(0).setSize(1000);
 		return requestBuilder.execute().actionGet();
 	}
 
@@ -121,23 +119,17 @@ public class Classification {
 	 * @return A JSON representation of the classification data for q and t
 	 */
 	public JsonNode ids(String q, String t) {
-		QueryBuilder queryBuilder =
-				QueryBuilders
-						.boolQuery()
-						.should(QueryBuilders.matchQuery(//
-								"@graph." + Property.LABEL.value + ".@value", q))
-						.should(
-								QueryBuilders.idsQuery(Type.NWBIB.elasticsearchType,
-										Type.SPATIAL.elasticsearchType).ids(q))
-						.minimumNumberShouldMatch(1);
-		SearchRequestBuilder requestBuilder =
-				client.prepareSearch(INDEX)
-						.setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
-						.setQuery(queryBuilder);
+		QueryBuilder queryBuilder = QueryBuilders.boolQuery()
+				.should(QueryBuilders.matchQuery(//
+						"@graph." + Property.LABEL.value + ".@value", q))
+				.should(QueryBuilders.idsQuery(Type.NWBIB.elasticsearchType,
+						Type.SPATIAL.elasticsearchType).ids(q))
+				.minimumNumberShouldMatch(1);
+		SearchRequestBuilder requestBuilder = client.prepareSearch(INDEX)
+				.setSearchType(SearchType.DFS_QUERY_THEN_FETCH).setQuery(queryBuilder);
 		if (t.isEmpty()) {
-			requestBuilder =
-					requestBuilder.setTypes(Type.NWBIB.elasticsearchType,
-							Type.SPATIAL.elasticsearchType);
+			requestBuilder = requestBuilder.setTypes(Type.NWBIB.elasticsearchType,
+					Type.SPATIAL.elasticsearchType);
 		} else {
 			for (Type indexType : Type.values())
 				if (indexType.queryParameter.equalsIgnoreCase(t))
@@ -154,14 +146,12 @@ public class Classification {
 	 * @return The label for the given URI
 	 */
 	public String label(String uri, String type) {
-		String sourceAsString =
-				client.prepareGet(INDEX, type, uri).execute().actionGet()
-						.getSourceAsString();
+		String sourceAsString = client.prepareGet(INDEX, type, uri).execute()
+				.actionGet().getSourceAsString();
 		if (sourceAsString != null) {
-			String textValue =
-					Json.parse(sourceAsString)
-							.findValue("http://www.w3.org/2004/02/skos/core#prefLabel")
-							.findValue("@value").textValue();
+			String textValue = Json.parse(sourceAsString)
+					.findValue("http://www.w3.org/2004/02/skos/core#prefLabel")
+					.findValue("@value").textValue();
 			return textValue != null ? textValue : "";
 		}
 		return "";
@@ -220,9 +210,9 @@ public class Classification {
 		final JsonNode label = json.findValue(Property.LABEL.value);
 		if (label != null) {
 			String id = hit.getId();
-			ImmutableMap<String, String> map =
-					ImmutableMap.of("value", id, "label", (style == Label.PLAIN ? ""
-							: shortId(id) + " ") + label.findValue("@value").asText());
+			ImmutableMap<String, String> map = ImmutableMap.of("value", id, "label",
+					(style == Label.PLAIN ? "" : shortId(id) + " ")
+							+ label.findValue("@value").asText());
 			result.add(Json.toJson(map));
 		}
 	}
