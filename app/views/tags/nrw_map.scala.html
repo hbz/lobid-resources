@@ -6,13 +6,21 @@
 <script src="@controllers.routes.Assets.at("javascripts/topojson.v1.min.js")"></script>
 <script src="@controllers.routes.Assets.at("javascripts/datamaps.world.min.js")"></script>
 <script>
+const westfalen = [
+    "05554", "05562", "05512", "05513", "05916", "05911", "05954", "05962",
+    "05966", "05970", "05566", "05558", "05515", "05978", "05913", "05914",
+    "05958", "05974", "05570", "05774", "05915", "05754", "05711", "05758",
+    "05770", "05766", "05762"];
 var map = new Datamap({
     element: document.getElementById('map'),
     geographyConfig: {
         dataUrl: '@controllers.routes.Assets.at("data/nrw.topo.json")',
         borderWidth: 1,
         borderColor: '#BBBBBB',
-        highlightFillColor: '#2F994C',//'#DADADA',
+        highlightFillColor: function(value) {
+            const inWestfalen = westfalen.indexOf(value.id) != -1;
+            return inWestfalen ? '#EE1921' : '#00A34C';
+        },
         highlightBorderColor: '#2F994C', // '#BB2E30', //'7B7B7B',
         highlightBorderWidth: 0
     },
