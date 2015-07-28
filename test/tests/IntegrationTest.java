@@ -78,13 +78,25 @@ public class IntegrationTest {
 					assertThat(facets.findValues("term").stream().map(e -> e.asText())
 							.collect(Collectors.toList())).contains(
 									"http://purl.org/dc/terms/BibliographicResource",
-									"http://purl.org/vocab/frbr/core#Manifestation",
 									"http://purl.org/ontology/bibo/Article",
 									"http://purl.org/ontology/bibo/Book",
-									"http://purl.org/ontology/bibo/Collection",
 									"http://purl.org/ontology/bibo/Journal",
-									"http://purl.org/ontology/bibo/Periodical",
-									"http://purl.org/ontology/bibo/MultiVolumeBook");
+									"http://purl.org/ontology/bibo/MultiVolumeBook",
+									"http://purl.org/ontology/bibo/Thesis",
+									"http://purl.org/lobid/lv#Miscellaneous",
+									"http://purl.org/ontology/bibo/Proceedings",
+									"http://purl.org/lobid/lv#EditedVolume",
+									"http://purl.org/lobid/lv#Biography",
+									"http://purl.org/lobid/lv#Festschrift",
+									"http://purl.org/ontology/bibo/Newspaper",
+									"http://purl.org/lobid/lv#Bibliography",
+									"http://purl.org/ontology/bibo/Series",
+									"http://purl.org/lobid/lv#OfficialPublication",
+									"http://purl.org/ontology/bibo/ReferenceSource",
+									"http://purl.org/ontology/mo/PublishedScore",
+									"http://purl.org/lobid/lv#Legislation",
+									"http://purl.org/ontology/bibo/Image",
+									"http://purl.org/library/Game");
 					assertThat(facets.findValues("count").stream().map(e -> e.intValue())
 							.collect(Collectors.toList())).excludes(0);
 				});
