@@ -41,14 +41,14 @@
                     </dd>
                     }
                     @if(superordination){
-                    <dt>Zum Bestand:</dt>
+                    <dt>@if(!items.isEmpty){Ergänzende }Bestandsangaben:</dt>
                     <dd>
                     <table class="table table-striped table-condensed">
                       <tr>
                             <th style="width: 30%"></th>
                             <th style="width: 70%"></th>
                       </tr>
-                      @result_field("", "isPartOf", doc, TableRow.LINKS)
+                      @result_field("Zum Bestand siehe:", "isPartOf", doc, TableRow.LINKS)
                     </table>
                     </dd>
                     }
