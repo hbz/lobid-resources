@@ -1,6 +1,6 @@
 @* Copyright 2014 Fabian Steeg, hbz. Licensed under the GPLv2 *@
 
-@(config: com.typesafe.config.Config, result: String, q:String, person:String, name:String, subject:String, id:String, publisher:String, issued:String, medium: String, nwbibspatial: String, nwbibsubject: String, from: Int, size: Int, allHits: Long, owner: String, t: String, sortParam: String, set: String, location: String)
+@(config: com.typesafe.config.Config, result: String, q:String, person:String, name:String, subject:String, id:String, publisher:String, issued:String, medium: String, nwbibspatial: String, nwbibsubject: String, from: Int, size: Int, allHits: Long, owner: String, t: String, sortParam: String, set: String, location: String, word: String)
 
 @import helper._
 @import controllers.nwbib.Lobid
@@ -13,17 +13,17 @@
   <nav>
     <ul class="pagination">
       <li class="previous @if(from==0){disabled}">
-        <a href="@if(from==0){#} else {@nwbib.routes.Application.search(q,person,name,subject,id,publisher,issued,medium,nwbibspatial,nwbibsubject,from-size,size,owner,t,sortParam,set=set,location=location)}">&larr;</a>
+        <a href="@if(from==0){#} else {@nwbib.routes.Application.search(q,person,name,subject,id,publisher,issued,medium,nwbibspatial,nwbibsubject,from-size,size,owner,t,sortParam,set=set,location=location,word=word)}">&larr;</a>
       </li>
       @defining((((from+1)/size)+1,(if(allHits%size==0) allHits/size else allHits/size+1).toInt)) { case (currentPage,lastPage) =>
           @defining(Math.min(Math.max(1,currentPage-4)+9,lastPage)) { toPage =>
               @for(i <- Math.max(1,toPage-9) to toPage){
-                  <li @if(currentPage==i){class="active"}><a href="@nwbib.routes.Application.search(q,person,name,subject,id,publisher,issued,medium,nwbibspatial,nwbibsubject,(i*size)-size,size,owner,t,sortParam,set=set,location=location)">@i</a></li>
+                  <li @if(currentPage==i){class="active"}><a href="@nwbib.routes.Application.search(q,person,name,subject,id,publisher,issued,medium,nwbibspatial,nwbibsubject,(i*size)-size,size,owner,t,sortParam,set=set,location=location,word=word)">@i</a></li>
               }
           }
       }
       <li class="next @if(from+size >= allHits){disabled}">
-        <a href="@if(from+size >= allHits){#} else {@nwbib.routes.Application.search(q,person,name,subject,id,publisher,issued,medium,nwbibspatial,nwbibsubject,from+size,size,owner,t,sortParam,set=set,location=location)}">&rarr;</a>
+        <a href="@if(from+size >= allHits){#} else {@nwbib.routes.Application.search(q,person,name,subject,id,publisher,issued,medium,nwbibspatial,nwbibsubject,from+size,size,owner,t,sortParam,set=set,location=location,word=word)}">&rarr;</a>
       </li>
     </ul>
   </nav>
@@ -43,7 +43,7 @@
 	          <li @if(current==""){class="active"}>
 	            <script>
 	            $.ajax({
-	              url: '/nwbib/facets?q=@urlEncode(q)&person=@urlEncode(person)&name=@urlEncode(name)&subject=@urlEncode(subject)&publisher=@urlEncode(publisher)&issued=@urlEncode(issued)&medium=@urlEncode(medium)&nwbibspatial=@urlEncode(nwbibspatial)&nwbibsubject=@urlEncode(nwbibsubject)&from=0&size=@size&owner=@urlEncode(owner)&t=@urlEncode(t)&field=@urlEncode(field)&sort=@urlEncode(sortParam)&set=@urlEncode(set)&location=@urlEncode(location)',
+	              url: '/nwbib/facets?q=@urlEncode(q)&person=@urlEncode(person)&name=@urlEncode(name)&subject=@urlEncode(subject)&publisher=@urlEncode(publisher)&issued=@urlEncode(issued)&medium=@urlEncode(medium)&nwbibspatial=@urlEncode(nwbibspatial)&nwbibsubject=@urlEncode(nwbibsubject)&from=0&size=@size&owner=@urlEncode(owner)&t=@urlEncode(t)&field=@urlEncode(field)&sort=@urlEncode(sortParam)&set=@urlEncode(set)&location=@urlEncode(location)&word=@urlEncode(word)',
 	              success: function(data, textStatus, jqXHR) {
 	                $("#facets-ul-@field.hashCode.abs").append(data);
 	                $("#facets-loading-@field.hashCode.abs").remove();
@@ -53,25 +53,25 @@
 	              }
 	            });
 	            </script>
-	            <a href="@nwbib.routes.Application.search(q,person,name,if (subject==current) "" else subject,id,publisher,issued,if (medium==current) "" else medium,if(nwbibspatial==current) "" else nwbibspatial,if(nwbibsubject==current) "" else nwbibsubject,from,size,if (owner==current) "" else owner,if (t==current) "" else t,sortParam,set=set,location=location)">@facet: @allLabel</a></li>
+	            <a href="@nwbib.routes.Application.search(q,person,name,if (subject==current) "" else subject,id,publisher,issued,if (medium==current) "" else medium,if(nwbibspatial==current) "" else nwbibspatial,if(nwbibsubject==current) "" else nwbibsubject,from,size,if (owner==current) "" else owner,if (t==current) "" else t,sortParam,set=set,location=location,word=word)">@facet: @allLabel</a></li>
 	            <li id="facets-loading-@field.hashCode.abs"><a href="#">Lade @facet...</a></li>
 	        </ul>
 	    </div>
 }
 
 @sort()={
-	<a class="btn btn-default btn-xs @if(sortParam==""){active}" href="@nwbib.routes.Application.search(q,person,name,subject,id,publisher,issued,medium,nwbibspatial,nwbibsubject,from,size,owner,t,"",set=set,location=location)">Relevanz</a>
-	<a class="btn btn-default btn-xs @if(sortParam=="newest"){active}" href="@nwbib.routes.Application.search(q,person,name,subject,id,publisher,issued,medium,nwbibspatial,nwbibsubject,from,size,owner,t,"newest",set=set,location=location)">Neueste</a>
-	<a class="btn btn-default btn-xs @if(sortParam=="oldest"){active}" href="@nwbib.routes.Application.search(q,person,name,subject,id,publisher,issued,medium,nwbibspatial,nwbibsubject,from,size,owner,t,"oldest",set=set,location=location)">Älteste</a>
+	<a class="btn btn-default btn-xs @if(sortParam==""){active}" href="@nwbib.routes.Application.search(q,person,name,subject,id,publisher,issued,medium,nwbibspatial,nwbibsubject,from,size,owner,t,"",set=set,location=location,word=word)">Relevanz</a>
+	<a class="btn btn-default btn-xs @if(sortParam=="newest"){active}" href="@nwbib.routes.Application.search(q,person,name,subject,id,publisher,issued,medium,nwbibspatial,nwbibsubject,from,size,owner,t,"newest",set=set,location=location,word=word)">Neueste</a>
+	<a class="btn btn-default btn-xs @if(sortParam=="oldest"){active}" href="@nwbib.routes.Application.search(q,person,name,subject,id,publisher,issued,medium,nwbibspatial,nwbibsubject,from,size,owner,t,"oldest",set=set,location=location,word=word)">Älteste</a>
 }
 
 @pageLink(num: Int)={
-	<a class="btn btn-default btn-xs @if(size==num){active}" role="button" href="@nwbib.routes.Application.search(q,person,name,subject,id,publisher,issued,medium,nwbibspatial,nwbibsubject,from,num,owner,t,sortParam,set=set,location=location)">@num</a>
+	<a class="btn btn-default btn-xs @if(size==num){active}" role="button" href="@nwbib.routes.Application.search(q,person,name,subject,id,publisher,issued,medium,nwbibspatial,nwbibsubject,from,num,owner,t,sortParam,set=set,location=location,word=word)">@num</a>
 }
 
 @main("NWBib - Ergebnisliste") {
-    @if(Seq(person,name,id,publisher,issued,set).exists(!_.isEmpty)){
-      @tags.search_advanced("Suche aktualisieren", q, person, name, subject, nwbibspatial, nwbibsubject, id, publisher, issued, sortParam, set=set)
+    @if(Seq(person,name,id,publisher,issued,set,word).exists(!_.isEmpty)){
+      @tags.search_advanced("Suche aktualisieren", q, person, name, subject, nwbibspatial, nwbibsubject, id, publisher, issued, sortParam, set=set, word=word)
     } else {
       @tags.search_form(q, location)
     }
@@ -121,7 +121,7 @@
             @if(!location.isEmpty){
              Titel mit Bezug zu Orten in: 
               <span class="label label-default">@location.split("\\|")(0)</span> | 
-              <a href="@nwbib.routes.Application.search(q,person,name,subject,id,publisher,issued,medium,nwbibspatial,nwbibsubject,from,size,owner,t,sortParam,set=set,location="")" title="Filter entfernen"><span class="octicon octicon-x"></span></a> 
+              <a href="@nwbib.routes.Application.search(q,person,name,subject,id,publisher,issued,medium,nwbibspatial,nwbibsubject,from,size,owner,t,sortParam,set=set,location="",word=word)" title="Filter entfernen"><span class="octicon octicon-x"></span></a> 
             } else {
               Titel mit Bezug zu Orten in ganz NRW | 
               <a href="@nwbib.routes.Application.index" title="Landkreis auswählen"><span class="octicon octicon-globe"></span></a>
