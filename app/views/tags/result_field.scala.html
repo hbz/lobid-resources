@@ -1,18 +1,16 @@
-@* Copyright 2014 Fabian Steeg, hbz. Licensed under the GPLv2 *@
+@* Copyright 2014-2015 Fabian Steeg, hbz. Licensed under the GPLv2 *@
 
 @(label: String, property: String, doc: play.api.libs.json.JsValue, row: views.TableRow, node: Option[play.api.libs.json.JsValue] = None, valueLabel: Option[Seq[String]] = None)
 
 @import play.api.libs.json._
-@import controllers.nwbib.Classification
+@import java.util.Optional
 
-@import scala.collection.immutable.Map
-
-@string(value: JsValue) = @{ value.asOpt[String].getOrElse("--") }
 @jsonVal(p: String) = @{ node match {
   case Some(node) => node
   case None => if ((doc \\ p).isEmpty) (doc \ p) else (doc \\ p).head
 	}
 }
+
 @multiSingleOrEmptySeq(value: JsValue) = @{
 	val jsVal = jsonVal(property)
 	value match {
@@ -22,65 +20,9 @@
 	}
 }
 
-@valueFor(doc: JsValue, id: String, keys: Seq[String]) = @{
-    val res = for (elem <- ((doc \\ "@graph").head).as[Seq[JsValue]]; key <- keys;
-        if ((elem \ "@id").as[String] == id && elem.as[Map[String, JsValue]].contains(key))
-    ) yield {
-        val result = (elem \ key)
-        result.asOpt[String].getOrElse(result.toString)
-    }
-    if(res.isEmpty) id else res.get(0)
-}
-
-@process(value: String) = @{
-	property match {
-		case "subjectChain" => { (value.replaceAll("\\([\\d,]+\\)$",""),"") }
-		case "isPartOf" if value.contains("lobid.org") => { (value.replace("lobid.org/resource/","lobid.org/nwbib/"), controllers.nwbib.Lobid.resourceLabel(value)) }
-		case "hasPart" if value.contains("lobid.org")=> { (value.replace("lobid.org/resource/","lobid.org/nwbib/"), controllers.nwbib.Lobid.resourceLabel(value)) }
-		case _ => { (value,value) }
-	}
-}
-
-@row match {
-  case views.TableRow.VALUES => {
-    @for(elem <- multiSingleOrEmptySeq(jsonVal(property)).sortBy(_.toString)(Ordering[String].reverse) if !elem.toString.contains("http://dewey.info")) {
-			@if(!property.startsWith("contributor") || elem.toString.r.findAllIn(doc.toString).toList.length <3 ){
-      <tr>
-        <td>@property match {
-          case _ => {@label}
-        }</td>
-        <td property="@property">
-            @valueLabel match {
-                          case None => {@Html(process(string(elem))._1)}
-                          case Some(seq) => {
-                            @defining(valueFor(doc, elem.as[String], seq)){ value =>
-                            @if(value.startsWith("http://purl.org/lobid/nwbib")){
-                              @defining(controllers.nwbib.Application.CLASSIFICATION.ids(value, "")){c=>
-                                <a title="Nach weiteren Titeln suchen" href="@nwbib.routes.Application.search("\""+string(elem)+"\"")">
-                                  @defining((c.findValue("label"), c.findValue("value"))){ labVal =>
-                                    @if(label!=null&&labVal._1!=null&&labVal._2!=null){
-                                      @labVal._1.textValue() (@Classification.shortId(labVal._2.textValue()))
-                                    } else {@value}</a>  |
-                                  }
-                              }
-                            } else {<a title="Nach weiteren Titeln suchen" href="@nwbib.routes.Application.search("\""+string(elem)+"\"")">@value</a> |}
-                            <a title="Linked-Data-Quelle abrufen" href="@string(elem)"><span class="glyphicon glyphicon-link"></span></a>
-                            }
-                          }
-                       }
-        </td>
-      </tr>
-    }
-	 }
-  }
-  case views.TableRow.LINKS => {
-    @for(elem <- multiSingleOrEmptySeq(jsonVal(property)) if !elem.toString.contains("lobid.org/resource/NWBib")) {
-      <tr>
-        <td>@label</td>
-        <td>
-          @defining(process(string(elem))) { case (url,label) => <a title="@url" rel="@property" href="@url">@Html(label)</a> }
-        </td>
-      </tr>
-    }
-  }
-}
+@Html(row.process(
+	new com.fasterxml.jackson.databind.ObjectMapper().readTree(doc.toString()),
+	property,
+	label,
+	multiSingleOrEmptySeq(jsonVal(property)).map(_.as[String]).sorted(Ordering[String].reverse),
+	if(valueLabel.isEmpty){ Optional.empty() } else { Optional.of(valueLabel.get) }))
