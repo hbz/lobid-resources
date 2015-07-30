@@ -1,6 +1,6 @@
 @* Copyright 2014-2015 Fabian Steeg, hbz. Licensed under the GPLv2 *@
 
-@(label: String, property: String, doc: play.api.libs.json.JsValue, row: views.TableRow, node: Option[play.api.libs.json.JsValue] = None, valueLabel: Option[Seq[String]] = None)
+@(label: String, property: String, doc: play.api.libs.json.JsValue, row: views.TableRow, node: Option[play.api.libs.json.JsValue] = None, valueLabel: Option[Seq[String]] = None, param: String = "q")
 
 @import play.api.libs.json._
 @import java.util.Optional
@@ -23,6 +23,7 @@
 @Html(row.process(
 	new com.fasterxml.jackson.databind.ObjectMapper().readTree(doc.toString()),
 	property,
+	param,
 	label,
 	multiSingleOrEmptySeq(jsonVal(property)).map(_.as[String]).sorted(Ordering[String].reverse),
 	if(valueLabel.isEmpty){ Optional.empty() } else { Optional.of(valueLabel.get) }))

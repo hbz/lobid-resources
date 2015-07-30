@@ -2,6 +2,8 @@
 
 package views;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -12,7 +14,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import controllers.nwbib.Application;
 import controllers.nwbib.Classification;
 import controllers.nwbib.Lobid;
-import play.api.mvc.Call;
 
 /**
  * Different ways of serializing a table row
@@ -25,13 +26,13 @@ public enum TableRow {
 
 	VALUES {
 		@Override
-		public String process(JsonNode doc, String property, String label,
-				List<String> values, Optional<List<String>> keys) {
+		public String process(JsonNode doc, String property, String param,
+				String label, List<String> values, Optional<List<String>> keys) {
 			return values.stream()
 					.filter(value -> !value.contains("http://dewey.info")
 							&& (!property.startsWith("contributor") || count(doc, value) < 3))
 					.map(val -> String.format("<tr><td>%s</td><td>%s</td></tr>", label,
-							label(doc, property, val, keys)))
+							label(doc, property, param, val, keys)))
 					.collect(Collectors.joining("\n"));
 		}
 
@@ -44,14 +45,19 @@ public enum TableRow {
 			return c;
 		}
 
-		private String label(JsonNode doc, String property, String value,
-				Optional<List<String>> labels) {
+		private String label(JsonNode doc, String property, String param,
+				String value, Optional<List<String>> labels) {
 			if (!labels.isPresent()) {
 				return refAndLabel(property, value)[0];
 			}
-			Call search = controllers.nwbib.routes.Application.search(
-					"\"" + value + "\"", "", "", "", "", "", "", "", "", "", 0, 10, "",
-					"", "", false, "", "", "");
+			String term = param.equals("q") ? "\"" + value + "\"" : value;
+			try {
+				term = URLEncoder.encode(term, "UTF-8");
+			} catch (UnsupportedEncodingException e) {
+				e.printStackTrace();
+			}
+			String search = String.format("%s/search?%s=%s",
+					controllers.nwbib.routes.Application.index(), param, term);
 			return String.format(
 					"<a title=\"Nach weiteren Titeln suchen\" href=\"%s\">%s</a> | "
 							+ "<a title=\"Linked-Data-Quelle abrufen\" "
@@ -91,8 +97,8 @@ public enum TableRow {
 	},
 	LINKS {
 		@Override
-		public String process(JsonNode doc, String property, String label,
-				List<String> values, Optional<List<String>> labels) {
+		public String process(JsonNode doc, String property, String param,
+				String label, List<String> values, Optional<List<String>> labels) {
 			return values.stream()
 					.filter(value -> !value.contains("lobid.org/resource/NWBib"))
 					.map(value -> String.format("<tr><td>%s</td><td>%s</td></tr>", label,
@@ -121,6 +127,6 @@ public enum TableRow {
 		return new String[] { value, value };
 	}
 
-	public abstract String process(JsonNode doc, String property, String label,
-			List<String> values, Optional<List<String>> labels);
+	public abstract String process(JsonNode doc, String property, String param,
+			String label, List<String> values, Optional<List<String>> labels);
 }
