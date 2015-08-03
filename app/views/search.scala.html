@@ -59,14 +59,16 @@
 	    </div>
 }
 
-@sort()={
-	<a class="btn btn-default btn-xs @if(sortParam==""){active}" href="@nwbib.routes.Application.search(q,person,name,subject,id,publisher,issued,medium,nwbibspatial,nwbibsubject,from,size,owner,t,"",set=set,location=location,word=word)">Relevanz</a>
-	<a class="btn btn-default btn-xs @if(sortParam=="newest"){active}" href="@nwbib.routes.Application.search(q,person,name,subject,id,publisher,issued,medium,nwbibspatial,nwbibsubject,from,size,owner,t,"newest",set=set,location=location,word=word)">Neueste</a>
-	<a class="btn btn-default btn-xs @if(sortParam=="oldest"){active}" href="@nwbib.routes.Application.search(q,person,name,subject,id,publisher,issued,medium,nwbibspatial,nwbibsubject,from,size,owner,t,"oldest",set=set,location=location,word=word)">Älteste</a>
+@sort(param: String, label: String)={
+<li @if(sortParam==param){class="active"}>
+  <a href="@nwbib.routes.Application.search(q,person,name,subject,id,publisher,issued,medium,nwbibspatial,nwbibsubject,from,size,owner,t,param,set=set,location=location)">@label</a>
+</li>
 }
 
 @pageLink(num: Int)={
-	<a class="btn btn-default btn-xs @if(size==num){active}" role="button" href="@nwbib.routes.Application.search(q,person,name,subject,id,publisher,issued,medium,nwbibspatial,nwbibsubject,from,num,owner,t,sortParam,set=set,location=location,word=word)">@num</a>
+<li @if(size==num){class="active"}>
+  <a href="@nwbib.routes.Application.search(q,person,name,subject,id,publisher,issued,medium,nwbibspatial,nwbibsubject,from,num,owner,t,sortParam,set=set,location=location,word=word)">@num</a>
+</li>
 }
 
 @main("NWBib - Ergebnisliste") {
@@ -79,13 +81,26 @@
      <div class="row">
          <div class="col-md-8">
          @if(hits.size>0){
-             <div class="panel panel-default">
-                 <div class="panel-heading">
-                     <div class="row" >
-                         <div class="col-md-6" style="text-align:left">Sortierung: @sort</div>
-                         <div class="col-md-6" style="text-align:right">Treffer pro Seite: @pageLink(10) @pageLink(25) @pageLink(50) @pageLink(100)</div>
-                     </div>
+             <div class="row" >
+                 <div class="col-md-6" style="text-align:left">
+                   <ul class="nav nav-pills" role="tablist">
+                     <li class="disabled"> <a href="#">Sortierung:</a> </li>
+                     @sort("", "Relevanz")
+                     @sort("newest", "Neueste")
+                     @sort("oldest", "Älteste")
+                  </ul>
                  </div>
+                 <div class="col-md-6 text-right" style="text-align:right">
+                   <ul class="nav nav-pills" style="display:inline-block" role="tablist">
+                     <li class="disabled">  <a href="#">Treffer pro Seite:</a> </li>
+                     @pageLink(10)
+                     @pageLink(25)
+                     @pageLink(50)
+                     @pageLink(100)
+                   </ul>
+                 </div>
+             </div>
+             <div class="panel panel-default">
                  <div class="panel-body" style="text-align:center">
                      @allHits Treffer, zeige @(from+1) bis @(Math.min(from+hits.size,from+size)):
                  </div>
