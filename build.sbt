@@ -7,7 +7,7 @@ scalaVersion := "2.11.2"
 libraryDependencies ++= Seq(
   cache,
   javaWs,
-  "com.typesafe.play" % "play-test_2.11" % "2.3.4",
+  "com.typesafe.play" % "play-test_2.11" % "2.3.10",
   "org.elasticsearch" % "elasticsearch" % "1.3.2" withSources(),
   "org.mockito" % "mockito-core" % "1.9.5"
 )
