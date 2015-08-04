@@ -44,7 +44,7 @@ public class Lobid {
 			final String publisher, final String issued, final String medium,
 			final String nwbibspatial, final String nwbibsubject, final int from,
 			final int size, String owner, String t, String sort, boolean allData,
-			String set, String location, String word) {
+			String set, String location, String word, String corporation) {
 		WSRequestHolder requestHolder = WS
 				.url(Application.CONFIG.getString("nwbib.api"))
 				.setHeader("Accept", "application/json")
@@ -85,6 +85,9 @@ public class Lobid {
 			requestHolder = requestHolder.setQueryParameter("t", t);
 		if (!word.isEmpty())
 			requestHolder = requestHolder.setQueryParameter("word", word);
+		if (!corporation.isEmpty())
+			requestHolder =
+					requestHolder.setQueryParameter("corporation", corporation);
 		Logger.info("Request URL {}, query params {} ", requestHolder.getUrl(),
 				requestHolder.getQueryParameters());
 		return requestHolder;
@@ -119,7 +122,7 @@ public class Lobid {
 			});
 		}
 		WSRequestHolder requestHolder = request("", "", "", "", "", "", "", "", "",
-				"", 0, 0, "", "", "", false, set, "", "");
+				"", 0, 0, "", "", "", false, set, "", "", "");
 		return requestHolder.get().map((WSResponse response) -> {
 			Long total = getTotalResults(response.asJson());
 			Cache.set(cacheKey, total, Application.ONE_HOUR);
@@ -234,12 +237,14 @@ public class Lobid {
 	 * @param set The set, overrides the default NWBib set if not empty
 	 * @param location A polygon describing the subject area of the resources
 	 * @param word A word, a concept from the hbz union catalog
+	 * @param corporation A corporation associated with the resource
 	 * @return A JSON representation of the requested facets
 	 */
 	public static Promise<JsonNode> getFacets(String q, String person,
 			String name, String subject, String id, String publisher, String issued,
 			String medium, String nwbibspatial, String nwbibsubject, String owner,
-			String field, String t, String set, String location, String word) {
+			String field, String t, String set, String location, String word,
+			String corporation) {
 		WSRequestHolder request =
 				WS.url(Application.CONFIG.getString("nwbib.api") + "/facets")
 						.setHeader("Accept", "application/json")
@@ -250,7 +255,8 @@ public class Lobid {
 						.setQueryParameter("field", field).setQueryParameter("from", "0")
 						.setQueryParameter("size", Application.MAX_FACETS + "")
 						.setQueryParameter("location", locationPolygon(location))
-						.setQueryParameter("word", word);
+						.setQueryParameter("word", word)
+						.setQueryParameter("corporation", corporation);
 		if (!set.isEmpty())
 			request = request.setQueryParameter("set", set);
 		else

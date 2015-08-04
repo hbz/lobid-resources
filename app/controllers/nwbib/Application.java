@@ -177,6 +177,7 @@ public class Application extends Controller {
 	 * @param set The set, overrides the default NWBib set if not empty
 	 * @param location A polygon describing the subject area of the resources
 	 * @param word A word, a concept from the hbz union catalog
+	 * @param corporation A corporation associated with the resource
 	 * @return The search results
 	 */
 	public static Promise<Result> search(final String q, final String person,
@@ -184,11 +185,13 @@ public class Application extends Controller {
 			final String publisher, final String issued, final String medium,
 			final String nwbibspatial, final String nwbibsubject, final int from,
 			final int size, final String owner, String t, String sort,
-			boolean details, String set, String location, String word) {
+			boolean details, String set, String location, String word,
+			String corporation) {
 		String cacheId = String.format(
-				"%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s", "search", q,
-				person, name, subject, id, publisher, issued, medium, nwbibspatial,
-				nwbibsubject, from, size, owner, t, sort, set, location, word);
+				"%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s", "search",
+				q, person, name, subject, id, publisher, issued, medium, nwbibspatial,
+				nwbibsubject, from, size, owner, t, sort, set, location, word,
+				corporation);
 		@SuppressWarnings("unchecked")
 		Promise<Result> cachedResult = (Promise<Result>) Cache.get(cacheId);
 		if (cachedResult != null)
@@ -196,13 +199,14 @@ public class Application extends Controller {
 		Logger.debug("Not cached: {}, will cache for one hour", cacheId);
 		final Form<String> form = queryForm.bindFromRequest();
 		if (form.hasErrors())
-			return Promise.promise(() -> badRequest(search.render(CONFIG, null, q,
-					person, name, subject, id, publisher, issued, medium, nwbibspatial,
-					nwbibsubject, from, size, 0L, owner, t, sort, set, location, word)));
+			return Promise.promise(
+					() -> badRequest(search.render(CONFIG, null, q, person, name, subject,
+							id, publisher, issued, medium, nwbibspatial, nwbibsubject, from,
+							size, 0L, owner, t, sort, set, location, word, corporation)));
 		String query = form.data().get("q");
 		Promise<Result> result = okPromise(query != null ? query : q, person, name,
 				subject, id, publisher, issued, medium, nwbibspatial, nwbibsubject,
-				from, size, owner, t, sort, details, set, location, word);
+				from, size, owner, t, sort, details, set, location, word, corporation);
 		cacheOnRedeem(cacheId, result, ONE_HOUR);
 		return result;
 	}
@@ -213,7 +217,7 @@ public class Application extends Controller {
 	 */
 	public static Promise<Result> show(final String id) {
 		return search("", "", "", "", id, "", "", "", "", "", 0, 1, "", "", "",
-				true, "", "", "");
+				true, "", "", "", "");
 	}
 
 	/**
@@ -295,16 +299,17 @@ public class Application extends Controller {
 			final String publisher, final String issued, final String medium,
 			final String nwbibspatial, final String nwbibsubject, final int from,
 			final int size, final String owner, String t, String sort,
-			boolean details, String set, String location, String word) {
+			boolean details, String set, String location, String word,
+			String corporation) {
 		final Promise<Result> result = call(q, person, name, subject, id, publisher,
 				issued, medium, nwbibspatial, nwbibsubject, from, size, owner, t, sort,
-				details, set, location, word);
+				details, set, location, word, corporation);
 		return result.recover((Throwable throwable) -> {
 			throwable.printStackTrace();
 			flashError();
 			return internalServerError(search.render(CONFIG, "[]", q, person, name,
 					subject, id, publisher, issued, medium, nwbibspatial, nwbibsubject,
-					from, size, 0L, owner, t, sort, set, location, word));
+					from, size, 0L, owner, t, sort, set, location, word, corporation));
 		});
 	}
 
@@ -329,10 +334,10 @@ public class Application extends Controller {
 			final String publisher, final String issued, final String medium,
 			final String nwbibspatial, final String nwbibsubject, final int from,
 			final int size, String owner, String t, String sort, boolean showDetails,
-			String set, String location, String word) {
+			String set, String location, String word, String corporation) {
 		WSRequestHolder requestHolder = Lobid.request(q, person, name, subject, id,
 				publisher, issued, medium, nwbibspatial, nwbibsubject, from, size,
-				owner, t, sort, showDetails, set, location, word);
+				owner, t, sort, showDetails, set, location, word, corporation);
 		return requestHolder.get().map((WSResponse response) -> {
 			JsonNode json = response.asJson();
 			Long hits = Lobid.getTotalResults(json);
@@ -340,7 +345,7 @@ public class Application extends Controller {
 			return ok(showDetails ? details.render(CONFIG, s, id)
 					: search.render(CONFIG, s, q, person, name, subject, id, publisher,
 							issued, medium, nwbibspatial, nwbibsubject, from, size, hits,
-							owner, t, sort, set, location, word));
+							owner, t, sort, set, location, word, corporation));
 		});
 	}
 
@@ -364,17 +369,18 @@ public class Application extends Controller {
 	 * @param set The set, overrides the default NWBib set if not empty
 	 * @param location A polygon describing the subject area of the resources
 	 * @param word A word, a concept from the hbz union catalog
+	 * @param corporation A corporation associated with the resource
 	 * @return The search results
 	 */
 	public static Promise<Result> facets(String q, String person, String name,
 			String subject, String id, String publisher, String issued, String medium,
 			String nwbibspatial, String nwbibsubject, int from, int size,
 			String owner, String t, String field, String sort, String set,
-			String location, String word) {
+			String location, String word, String corporation) {
 		String key = String.format(
-				"facets.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s", q, person,
-				name, subject, id, publisher, issued, medium, nwbibspatial,
-				nwbibsubject, owner, field, sort, t, set, location, word);
+				"facets.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s", q,
+				person, name, subject, id, publisher, issued, medium, nwbibspatial,
+				nwbibsubject, owner, field, sort, t, set, location, word, corporation);
 		Result cachedResult = (Result) Cache.get(key);
 		if (cachedResult != null) {
 			return Promise.promise(() -> cachedResult);
@@ -401,12 +407,10 @@ public class Application extends Controller {
 					!field.equals(NWBIB_SPATIAL_FIELD) ? nwbibspatial : term;
 			String subjectQuery = !field.equals(SUBJECT_FIELD) ? subject : term;
 
-			String routeUrl =
-					routes.Application
-							.search(q, person, name, subjectQuery, id, publisher, issued,
-									mediumQuery, nwbibspatialQuery, nwbibsubjectQuery, from, size,
-									ownerQuery, typeQuery, sort, false, set, location, word)
-							.url();
+			String routeUrl = routes.Application.search(q, person, name, subjectQuery,
+					id, publisher, issued, mediumQuery, nwbibspatialQuery,
+					nwbibsubjectQuery, from, size, ownerQuery, typeQuery, sort, false,
+					set, location, word, corporation).url();
 			// @formatter:off
 					boolean current =
 										 field.equals(MEDIUM_FIELD) && term.equals(medium) 
@@ -430,10 +434,9 @@ public class Application extends Controller {
 			String l2 = Lobid.facetLabel(Arrays.asList(t2), field);
 			return collator.compare(l1, l2);
 		};
-		Promise<Result> promise = Lobid
-				.getFacets(q, person, name, subject, id, publisher, issued, medium,
-						nwbibspatial, nwbibsubject, owner, field, t, set, location, word)
-				.map(json -> {
+		Promise<Result> promise = Lobid.getFacets(q, person, name, subject, id,
+				publisher, issued, medium, nwbibspatial, nwbibsubject, owner, field, t,
+				set, location, word, corporation).map(json -> {
 					Stream<JsonNode> stream =
 							StreamSupport.stream(Spliterators.spliteratorUnknownSize(
 									json.findValue("entries").elements(), 0), false);
