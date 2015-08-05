@@ -58,7 +58,9 @@ public class Lobid {
 		if (!set.isEmpty())
 			requestHolder = requestHolder.setQueryParameter("set", set);
 		if (!q.trim().isEmpty())
-			requestHolder = requestHolder.setQueryParameter("q", preprocess(q));
+			requestHolder = requestHolder.setQueryParameter("word", preprocess(q));
+		else if (!word.isEmpty())
+			requestHolder = requestHolder.setQueryParameter("word", preprocess(word));
 		if (!person.trim().isEmpty())
 			requestHolder = requestHolder.setQueryParameter("author", person);
 		if (!name.trim().isEmpty())
@@ -83,8 +85,6 @@ public class Lobid {
 			requestHolder = requestHolder.setQueryParameter("owner", owner);
 		if (!t.isEmpty())
 			requestHolder = requestHolder.setQueryParameter("t", t);
-		if (!word.isEmpty())
-			requestHolder = requestHolder.setQueryParameter("word", word);
 		if (!corporation.isEmpty())
 			requestHolder =
 					requestHolder.setQueryParameter("corporation", corporation);
@@ -248,15 +248,17 @@ public class Lobid {
 		WSRequestHolder request =
 				WS.url(Application.CONFIG.getString("nwbib.api") + "/facets")
 						.setHeader("Accept", "application/json")
-						.setQueryParameter("q", preprocess(q))
 						.setQueryParameter("author", person).setQueryParameter("name", name)
 						.setQueryParameter("publisher", publisher)
 						.setQueryParameter("issued", issued).setQueryParameter("id", id)
 						.setQueryParameter("field", field).setQueryParameter("from", "0")
 						.setQueryParameter("size", Application.MAX_FACETS + "")
 						.setQueryParameter("location", locationPolygon(location))
-						.setQueryParameter("word", word)
 						.setQueryParameter("corporation", corporation);
+		if (!q.isEmpty())
+			request = request.setQueryParameter("word", preprocess(q));
+		else if (!word.isEmpty())
+			request = request.setQueryParameter("word", preprocess(word));
 		if (!set.isEmpty())
 			request = request.setQueryParameter("set", set);
 		else
