@@ -52,8 +52,9 @@ function transform(coordinates) {
     for(var i = 0; i < flat.length; i++) {
         var lon = flat[i][0];
         var lat = flat[i][1];
-        /* use one decimal digit precision to avoid too large URL: */
-        result += lat.toFixed(1) + "," + lon.toFixed(1) + " ";
+        /* use max two decimal digits precision to avoid too large URL: */
+        const digits = flat.length > 250 ? 1 : 2;
+        result += lat.toFixed(digits) + "," + lon.toFixed(digits) + " ";
     }
     return result.trim().replace(' ', '+');
 }
