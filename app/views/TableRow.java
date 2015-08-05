@@ -58,11 +58,16 @@ public enum TableRow {
 			}
 			String search = String.format("%s/search?%s=%s",
 					controllers.nwbib.routes.Application.index(), param, term);
-			return String.format(
-					"<a title=\"Nach weiteren Titeln suchen\" href=\"%s\">%s</a> | "
-							+ "<a title=\"Linked-Data-Quelle abrufen\" "
-							+ "href=\"%s\"><span class=\"glyphicon glyphicon-link\"></span></a>",
-					search, createLabel(doc, value, labels), value);
+			String result = String.format(
+					"<a title=\"Nach weiteren Titeln suchen\" href=\"%s\">%s</a>", search,
+					createLabel(doc, value, labels));
+			if (value.startsWith("http")) {
+				result += String.format(
+						" | <a title=\"Linked-Data-Quelle abrufen\" "
+								+ "href=\"%s\"><span class=\"glyphicon glyphicon-link\"></span></a>",
+						value);
+			}
+			return result;
 		}
 
 		private String createLabel(JsonNode doc, String value,
