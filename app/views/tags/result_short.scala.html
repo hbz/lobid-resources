@@ -1,6 +1,6 @@
 @* Copyright 2014 Fabian Steeg, hbz. Licensed under the GPLv2 *@
 
-@(id:String, doc: play.api.libs.json.JsValue, docType: String = "")
+@(id:String, doc: play.api.libs.json.JsValue)
 
 @import play.api.libs.json._
 @import views.TableRow
@@ -49,7 +49,7 @@
     }
 }
 
-@defining(if(!docType.isEmpty){Seq(docType)}else{(doc\\"@type").last.asOpt[Seq[String]].getOrElse(Seq((doc\\"@type").last.asOpt[String].get))}){t=>
+@defining((doc\\"@type").last.asOpt[Seq[String]].getOrElse(Seq((doc\\"@type").last.asOpt[String].get))){t=>
 <tr>
   <td> <span title="@Lobid.typeLabel(t)" class="@Lobid.typeIcon(t)"></span> </td>
   <td> <a href="@nwbib.routes.Application.show(id)">

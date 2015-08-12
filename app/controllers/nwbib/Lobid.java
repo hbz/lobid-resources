@@ -13,6 +13,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.tuple.Pair;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.html.HtmlEscapers;
@@ -371,25 +373,34 @@ public class Lobid {
 		return selected.isEmpty() ? uris.get(0) : selected;
 	}
 
-	private static String selectType(List<String> types, String configKey) {
+	/**
+	 * @param types The type uris associated with a resource
+	 * @param configKey The key from the config file (icons or labels)
+	 * @return The most specific of the passed types
+	 */
+	public static String selectType(List<String> types, String configKey) {
 		if (configKey.isEmpty())
 			return types.get(0);
 		Logger.trace("Types: " + types);
 		@SuppressWarnings("unchecked")
-		List<String> selected = types.stream().map(t -> {
-			List<String> vals = ((List<String>) Application.CONFIG
+		List<Pair<String, Integer>> selected = types.stream().map(t -> {
+			List<Object> vals = ((List<Object>) Application.CONFIG
 					.getObject(configKey).unwrapped().get(t));
 			if (vals == null)
-				return t;
-			return vals.get(0).isEmpty() || vals.get(1).isEmpty() ? "" : t;
+				return Pair.of(t, 0);
+			Integer specificity = (Integer) vals.get(2);
+			return ((String) vals.get(0)).isEmpty()
+					|| ((String) vals.get(1)).isEmpty() //
+							? Pair.of("", specificity) : Pair.of(t, specificity);
 		}).filter(t -> {
-			return !t.isEmpty();
+			return !t.getLeft().isEmpty();
 		}).collect(Collectors.toList());
-		Collections.sort(selected);
+		Collections.sort(selected, (a, b) -> b.getRight().compareTo(a.getRight()));
 		Logger.trace("Selected: " + selected);
 		return selected.isEmpty() ? ""
-				: selected.get(0).contains("Miscellaneous") && selected.size() > 1
-						? selected.get(1) : selected.get(0);
+				: selected.get(0).getLeft().contains("Miscellaneous")
+						&& selected.size() > 1 ? selected.get(1).getLeft()
+								: selected.get(0).getLeft();
 	}
 
 	static boolean isOrg(String term) {
