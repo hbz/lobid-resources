@@ -20,7 +20,7 @@
               <div class="col-md-@if(items.isEmpty && !doc.toString.contains("fulltextOnline") && !superordination){12} else {7}">
                 <dl>@defining((doc \ "@id").as[String].split("/")(4)){ id =>
                     <dt>@tags.star_button(id) Titeldetails:
-                    <a href="@Application.CONFIG.getString("nwbib.api")?id=@id&format=source">&nbsp;</a>
+                    <a href="@Application.CONFIG.getString("hbz01.api")/@id">&nbsp;</a>
                     </dt>}
                     <dd>@tags.result_doc(doc)</dd>
                 </dl>
