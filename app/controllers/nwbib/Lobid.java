@@ -250,10 +250,12 @@ public class Lobid {
 		WSRequestHolder request =
 				WS.url(Application.CONFIG.getString("nwbib.api") + "/facets")
 						.setHeader("Accept", "application/json")
-						.setQueryParameter("author", person).setQueryParameter("name", name)
-						.setQueryParameter("publisher", publisher)
-						.setQueryParameter("issued", issued).setQueryParameter("id", id)
-						.setQueryParameter("field", field).setQueryParameter("from", "0")
+						.setQueryParameter("author", person)//
+						.setQueryParameter("name", name)
+						.setQueryParameter("publisher", publisher)//
+						.setQueryParameter("id", id)//
+						.setQueryParameter("field", field)//
+						.setQueryParameter("from", "0")
 						.setQueryParameter("size", Application.MAX_FACETS + "")
 						.setQueryParameter("location", locationPolygon(location))
 						.setQueryParameter("corporation", corporation);
@@ -278,6 +280,8 @@ public class Lobid {
 			request = request.setQueryParameter("nwbibsubject", nwbibsubject);
 		if (!field.equals(Application.SUBJECT_FIELD))
 			request = request.setQueryParameter("subject", subject);
+		if (!field.equals(Application.ISSUED_FIELD))
+			request = request.setQueryParameter("issued", issued);
 		Logger.info("Facets request URL {}, query params {} ", request.getUrl(),
 				request.getQueryParameters());
 		return request.get().map((WSResponse response) -> {
@@ -359,6 +363,8 @@ public class Lobid {
 		else if ((uris.size() == 1 && isGnd(uris.get(0)))
 				|| field.equals(Application.SUBJECT_FIELD))
 			return "octicon octicon-tag";
+		else if (field.equals(Application.ISSUED_FIELD))
+			return "glyphicon glyphicon-asterisk";
 		String configKey = keys.getOrDefault(field, "");
 		String type = selectType(uris, configKey);
 		if (type.isEmpty())

@@ -53,7 +53,7 @@
 	              }
 	            });
 	            </script>
-	            <a href="@nwbib.routes.Application.search(q,person,name,if (subject==current) "" else subject,id,publisher,issued,if (medium==current) "" else medium,if(nwbibspatial==current) "" else nwbibspatial,if(nwbibsubject==current) "" else nwbibsubject,from,size,if (owner==current) "" else owner,if (t==current) "" else t,sortParam,set=set,location=location,word=word,corporation=corporation)">@facet: @allLabel</a></li>
+	            <a href="@nwbib.routes.Application.search(q,person,name,if (subject==current) "" else subject,id,publisher,if(issued==current) "" else issued,if (medium==current) "" else medium,if(nwbibspatial==current) "" else nwbibspatial,if(nwbibsubject==current) "" else nwbibsubject,from,size,if (owner==current) "" else owner,if (t==current) "" else t,sortParam,set=set,location=location,word=word,corporation=corporation)">@facet: @allLabel</a></li>
 	            <li id="facets-loading-@field.hashCode.abs"><a href="#">Lade @facet...</a></li>
 	        </ul>
 	    </div>
@@ -72,7 +72,7 @@
 }
 
 @main("NWBib - Ergebnisliste") {
-    @if(Seq(person,name,id,publisher,issued,set,word,corporation).exists(!_.isEmpty)){
+    @if(Seq(person,name,id,publisher,set,word,corporation).exists(!_.isEmpty)){
       @tags.search_advanced("Suche aktualisieren", q, person, name, subject, nwbibspatial, nwbibsubject, id, publisher, issued, sortParam, set=set, word=word, corporation=corporation)
     } else {
       @tags.search_form(q, location)
@@ -143,7 +143,11 @@
             }
             </p>
             <p class="lead"> Ergebnisse eingrenzen: </p>
-            <p><strong>Regionen, Orte und Sachgebiete</strong></p>
+            <p><strong>Erscheinungsjahr</strong></p>
+            <p>
+            <div class="row facet"><div class="col-md-12">@facets("Erscheinungsjahr", Application.ISSUED_FIELD, issued, "dropup")</div></div>
+            </p>
+            <p style="padding-top:10px;"><strong>Regionen, Orte und Sachgebiete</strong></p>
             <div class="row facet"><div class="col-md-12">@facets("Sachgebiete", Application.NWBIB_SUBJECT_FIELD, nwbibsubject)</div></div>
             <div class="row facet"><div class="col-md-12">@facets("Regionen und Orte", Application.NWBIB_SPATIAL_FIELD, nwbibspatial)</div></div>
             </p>

@@ -80,6 +80,10 @@ public class Application extends Controller {
 	public static final String SUBJECT_FIELD =
 			"@graph.http://purl.org/dc/terms/subject.@id";
 
+	/** The internal ES field for issued years. */
+	public static final String ISSUED_FIELD =
+			"@graph.http://purl.org/dc/terms/issued.@value";
+
 	private static final File FILE = new File("conf/nwbib.conf");
 	/** Access to the nwbib.conf config file. */
 	public final static Config CONFIG = ConfigFactory
@@ -406,9 +410,10 @@ public class Application extends Controller {
 			String nwbibspatialQuery =
 					!field.equals(NWBIB_SPATIAL_FIELD) ? nwbibspatial : term;
 			String subjectQuery = !field.equals(SUBJECT_FIELD) ? subject : term;
+			String issuedQuery = !field.equals(ISSUED_FIELD) ? issued : term;
 
 			String routeUrl = routes.Application.search(q, person, name, subjectQuery,
-					id, publisher, issued, mediumQuery, nwbibspatialQuery,
+					id, publisher, issuedQuery, mediumQuery, nwbibspatialQuery,
 					nwbibsubjectQuery, from, size, ownerQuery, typeQuery, sort, false,
 					set, location, word, corporation).url();
 			// @formatter:off
