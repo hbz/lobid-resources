@@ -427,8 +427,8 @@ public class Application extends Controller {
 					//@formatter:on
 			String result = String.format(
 					"<li " + (current ? "class=\"active\"" : "")
-							+ "><a href='%s'><span class='%s'/>&nbsp;%s (%s)</a></li>",
-					routeUrl, icon, label, count);
+							+ "><a class=\"%s-facet-link\" href='%s'><span class='%s'/>&nbsp;%s (%s)</a></li>",
+					Math.abs(field.hashCode()), routeUrl, icon, label, count);
 			return result;
 		};
 		Collator collator = Collator.getInstance(Locale.GERMAN);
