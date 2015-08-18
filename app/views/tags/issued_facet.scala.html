@@ -1,0 +1,108 @@
+@* Copyright 2015 Fabian Steeg, hbz. Licensed under the GPLv2 *@
+
+@import controllers.nwbib.Application
+
+@(issued: String)
+
+@*<script>*@
+
+var years = [];
+var freqs = [];
+var yearsObject = {};
+var thisYear = new Date().getFullYear();
+
+$(".@(Application.ISSUED_FIELD.hashCode.abs)-facet-link").each(function(index) {
+	var yearAndFreq = $(this).text().split(" ")
+	var year = yearAndFreq[0].trim();
+	var freq = parseInt(yearAndFreq[1].replace(/[()]/,""));
+	if(parseInt(year) >= 1983 && parseInt(year) <= thisYear){
+		years.push(year);
+		yearsObject[year]=freq;
+	}
+});
+
+if(years.length==0){
+	years.push(1983);
+	years.push(thisYear);
+	yearsObject[1983]=0;
+	yearsObject[thisYear]=0;
+}
+
+var min = parseInt(years[0]);
+var max = parseInt(years[years.length-1]);
+
+var chartYears = [];
+for(i = min; i<=max; i++){
+	chartYears.push(i);
+	var y = yearsObject[i]
+	freqs.push(y ? y : 0);
+}
+
+var data = {
+	labels: chartYears,
+	datasets: [{
+		fillColor: "rgba(47,153,76,0.2)",
+		strokeColor: "rgba(47,153,76,0.5)",
+		highlightFill: "rgba(47,153,76,0.45)",
+		highlightStroke: "rgba(47,153,76,0.7)",
+		data: freqs
+	}]
+};
+
+var options = {
+	animation: false,
+	scaleShowGridLines : false,
+	barValueSpacing : 1,
+	showScale: false,
+	showTooltips: true,
+	customTooltips: function(tooltip) {
+		$( "#issued-range" ).val(tooltip.text);
+		return;
+	},
+	tooltipTemplate: "<%if (label){%>Erschienen <%=label%>: <%}%><%= value %> Treffer"
+}
+
+var canvas = document.getElementById("issued-chart");
+var ctx = canvas.getContext("2d");
+var barChart = new Chart(ctx).Bar(data, options);
+
+canvas.onclick = function(evt){
+	var activeBars = barChart.getBarsAtEvent(evt);
+	location.href = issuedLink(activeBars[0].label);
+};
+
+canvas.onmouseout = function(evt){
+	$( "#issued-range" ).val("@issued" ? "@issued" : min + "-" + max);
+};
+
+var from = "@issued.split("-")(0)";
+var to = "@(if(issued.contains("-")) issued.split("-")(1) else issued)";
+
+$(function() {
+	$( "#slider-range" ).slider({
+		range: true,
+		min: min,
+		max: max,
+		values: [from.length==0 ? min : from, to.length==0 ? max : to],
+		slide: function( event, ui ) {
+			var fromTo = ui.values[0] + "-" + ui.values[1];
+			$("#issued-range").val(fromTo);
+			$("#issued-link").attr("href", issuedLink(fromTo));
+			$("#issued-link").show();
+		}
+	});
+	var left = $( "#slider-range" ).slider( "values", 0 );
+	var right = $( "#slider-range" ).slider( "values", 1 );
+	$( "#issued-range" ).val(left==right ? left : left + "-" + right);
+});
+
+function issuedLink(newVal) {
+	var oldHref = $("#issued-link").attr("href");
+	var newIssued = "issued="+newVal;
+	var newHref = oldHref.contains("issued=") ?
+		oldHref.replace(/issued=[\d\-]+/, newIssued) :
+		oldHref + (oldHref.contains("?") ? "&" : "?") + newIssued;
+	return newHref;
+}
+
+@*</script>*@

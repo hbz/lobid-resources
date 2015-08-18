@@ -3,6 +3,7 @@
 @(config: com.typesafe.config.Config, result: String, q:String, person:String, name:String, subject:String, id:String, publisher:String, issued:String, medium: String, nwbibspatial: String, nwbibsubject: String, from: Int, size: Int, allHits: Long, owner: String, t: String, sortParam: String, set: String, location: String, word: String, corporation: String)
 
 @import helper._
+@import tags._
 @import controllers.nwbib.Lobid
 @import controllers.nwbib.Application
 @import play.api.libs.json.Json
@@ -30,7 +31,8 @@
  }
 
 @facets(facet: String, field: String, current: String, addClass:String = "", allLabel:String = "Alle")={
-	    <div class="btn-group fill @addClass">
+	    <div class="btn-group fill @addClass" id="@field.hashCode.abs-facet">
+	        <script>$("#@(Application.ISSUED_FIELD.hashCode.abs)-facet").hide();</script>
 	        <button type="button" class="btn @if(!current.isEmpty()){active} btn-default dropdown-toggle fill" data-toggle="dropdown">
 	          @if(current.isEmpty()){
 	              <span class="@Lobid.facetIcon(Arrays.asList(), field)"></span> <span class="facet-label">@facet: @allLabel</span>
@@ -47,10 +49,10 @@
 	              success: function(data, textStatus, jqXHR) {
 	                $("#facets-ul-@field.hashCode.abs").append(data);
 	                $("#facets-loading-@field.hashCode.abs").remove();
-	                @dateSlider(field)
+	                @if(field==Application.ISSUED_FIELD){ @issued_facet(issued) }
 	              },
 	              error: function(jqXHR, textStatus, errorThrown) {
-	                console.log(textStatus);
+	                console.log(textStatus + ": " + errorThrown);
 	              }
 	            });
 	            </script>
@@ -59,48 +61,6 @@
 	        </ul>
 	    </div>
 }
-
-@*<script>*@
-@dateSlider(field: String)={
-  @if(field==Application.ISSUED_FIELD){
-    var years  = []; // for the order
-    var yearsObject = {}; // for a freq histogram
-    $(".@(field.hashCode.abs)-facet-link").each(function(index) {
-      var yearAndFreq = $(this).text().split(" ")
-      var year = yearAndFreq[0].trim();
-      var freq = parseInt(yearAndFreq[1].replace(/[()]/,""));
-      if(parseInt(year) > 0){
-        years.push(year);
-        yearsObject[year]=freq;
-      }
-    });
-    var from = "@issued.split("-")(0)";
-    var to = "@(if(issued.contains("-")) issued.split("-")(1) else issued)";
-    var min = parseInt(years[0]);
-    var max = parseInt(years[years.length-1]);
-    $(function() {
-      $( "#slider-range" ).slider({
-        range: true,
-        min: min,
-        max: max,
-        values: [from.length==0 ? min : from, to.length==0 ? max : to],
-        slide: function( event, ui ) {
-          var fromTo = ui.values[0] + "-" + ui.values[1];
-          $("#issued-range").val(fromTo);
-          var oldHref = $("#issued-link").attr("href");
-          var newIssued = "issued="+fromTo;
-          var newHref = oldHref.contains("issued=") ?
-              oldHref.replace(/issued=[\d\-]+/, newIssued) : oldHref + "&" + newIssued
-          $("#issued-link").attr("href", newHref);
-          $("#issued-link").show();
-        }
-      });
-      $( "#issued-range" ).val($( "#slider-range" ).slider( "values", 0 ) +
-        "-" + $( "#slider-range" ).slider( "values", 1 ) );
-    });
-  }
-}
-@*</script>*@
 
 @sort(param: String, label: String)={
 <li @if(sortParam==param){class="active"}>
@@ -178,7 +138,7 @@
             <p style="margin-top:10px; margin-bottom:10px">
             @if(!location.isEmpty){
              Titel mit Bezug zu Orten in: 
-              <span class="label label-default">@location.split("\\|")(0)</span> | 
+              <span class="label label-default" id="spatial-filter">@location.split("\\|")(0)</span> | 
               <a href="@nwbib.routes.Application.search(q,person,name,subject,id,publisher,issued,medium,nwbibspatial,nwbibsubject,from,size,owner,t,sortParam,set=set,location="",word=word,corporation=corporation)" title="Filter entfernen"><span class="octicon octicon-x"></span></a> 
             } else {
               Titel mit Bezug zu Orten in ganz NRW | 
@@ -189,14 +149,11 @@
             <p><strong>Erscheinungsjahr</strong></p>
             <p>
             <div class="row facet"><div class="col-md-12">@facets("Erscheinungsjahr", Application.ISSUED_FIELD, issued, "dropup")</div></div>
-            <p>
-            <div id="slider-range" style="width: 100%"></div>
-            <input type="text" id="issued-range" readonly style="border:0; text-align: center; width: 100%">
-            <div style="width:100%; text-align: center">
-            <a id="issued-link" href="@nwbib.routes.Application.search(q,person,name,subject,id,publisher,issued,medium,nwbibspatial,nwbibsubject,from,size,owner,t,sortParam,set=set,location=location,word=word,corporation=corporation)">Aktualisieren</a>
-            </div>
+            <div class="row facet"><div class="col-md-12"><canvas id="issued-chart"></canvas></div></div>
+            <div id="slider-range"></div>
+            <input type="text" id="issued-range" readonly>
+            <div id="issued-div"> <a id="issued-link" href="@nwbib.routes.Application.search(q,person,name,subject,id,publisher,issued,medium,nwbibspatial,nwbibsubject,from,size,owner,t,sortParam,set=set,location=location,word=word,corporation=corporation)">Anwenden</a> </div>
             <script> $("#issued-link").hide();</script>
-            </p>
             </p>
             <p style="padding-top:10px;"><strong>Regionen, Orte und Sachgebiete</strong></p>
             <div class="row facet"><div class="col-md-12">@facets("Sachgebiete", Application.NWBIB_SUBJECT_FIELD, nwbibsubject)</div></div>
