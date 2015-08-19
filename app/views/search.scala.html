@@ -146,14 +146,16 @@
             }
             </p>
             <p class="lead"> Ergebnisse eingrenzen: </p>
-            <div id="issued-facet-all" style="display:none"><p><strong>Erscheinungsjahr</strong></p>
+            <p><strong>Erscheinungsjahr</strong></p>
+            <div id="issued-facet-all" style="display:none">
             <p>
             <div class="row facet"><div class="col-md-12">@facets("Erscheinungsjahr", Application.ISSUED_FIELD, issued, "dropup")</div></div>
             <div class="row facet"><div class="col-md-12"><canvas id="issued-chart"></canvas></div></div>
             <div id="slider-range"></div>
-            <input type="text" id="issued-range" readonly>
+            </div>
+            <input type="text" id="issued-range" readonly value="Lade Erscheinungsjahre...">
             <div id="issued-div"> <a id="issued-link" style="display:none" href="@nwbib.routes.Application.search(q,person,name,subject,id,publisher,issued,medium,nwbibspatial,nwbibsubject,from,size,owner,t,sortParam,set=set,location=location,word=word,corporation=corporation)">Anwenden</a> </div>
-            </p></div>
+            </p>
             <p style="padding-top:10px;"><strong>Regionen, Orte und Sachgebiete</strong></p>
             <div class="row facet"><div class="col-md-12">@facets("Sachgebiete", Application.NWBIB_SUBJECT_FIELD, nwbibsubject)</div></div>
             <div class="row facet"><div class="col-md-12">@facets("Regionen und Orte", Application.NWBIB_SPATIAL_FIELD, nwbibspatial)</div></div>
