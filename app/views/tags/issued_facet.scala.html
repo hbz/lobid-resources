@@ -68,7 +68,9 @@ var barChart = new Chart(ctx).Bar(data, options);
 
 canvas.onclick = function(evt){
 	var activeBars = barChart.getBarsAtEvent(evt);
-	location.href = issuedLink(activeBars[0].label);
+	if(activeBars){
+		location.href = issuedLink(activeBars[0].label);
+	}
 };
 
 canvas.onmouseout = function(evt){
@@ -99,9 +101,9 @@ $(function() {
 function issuedLink(newVal) {
 	var oldHref = $("#issued-link").attr("href");
 	var newIssued = "issued="+newVal;
-	var newHref = oldHref.contains("issued=") ?
+	var newHref = oldHref.indexOf("issued=") >= 0 ?
 		oldHref.replace(/issued=[\d\-]+/, newIssued) :
-		oldHref + (oldHref.contains("?") ? "&" : "?") + newIssued;
+		oldHref + (oldHref.indexOf("?") >= 0 ? "&" : "?") + newIssued;
 	return newHref;
 }
 
