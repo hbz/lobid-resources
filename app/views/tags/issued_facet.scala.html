@@ -73,8 +73,10 @@ canvas.onclick = function(evt){
 	}
 };
 
+var lastLabel = ""; // set in setLabel below
+
 canvas.onmouseout = function(evt){
-	$( "#issued-range" ).val("@issued" ? "@issued" : min + "-" + max);
+	$( "#issued-range" ).val(lastLabel);
 };
 
 var from = "@issued.split("-")(0)";
@@ -87,15 +89,18 @@ $(function() {
 		max: max,
 		values: [from.length==0 ? min : from, to.length==0 ? max : to],
 		slide: function( event, ui ) {
-			var fromTo = ui.values[0] + "-" + ui.values[1];
-			$("#issued-range").val(fromTo);
+			var curFrom = ui.values[0];
+			var curTo = ui.values[1];
+			var hits = sumHits(curFrom, curTo);
+			var fromTo = curFrom + "-" + curTo;
+			setLabel(fromTo, "ca. " + hits);
 			$("#issued-link").attr("href", issuedLink(fromTo));
 			$("#issued-link").show();
 		}
 	});
 	var left = $( "#slider-range" ).slider( "values", 0 );
 	var right = $( "#slider-range" ).slider( "values", 1 );
-	$( "#issued-range" ).val(left==right ? left : left + "-" + right);
+	setLabel(left==right ? left : left + "-" + right, "");
 });
 
 function issuedLink(newVal) {
@@ -105,6 +110,20 @@ function issuedLink(newVal) {
 		oldHref.replace(/issued=[\d\-]+/, newIssued) :
 		oldHref + (oldHref.indexOf("?") >= 0 ? "&" : "?") + newIssued;
 	return newHref;
+}
+
+function setLabel(range, hits) {
+	var label = "Erschienen " + range + (hits ? (": " + hits + " Treffer") : "");
+	$("#issued-range").val(label);
+	lastLabel = label;
+}
+
+function sumHits(a, b) {
+	var res = 0;
+	for(i = a; i <= b; i++){
+		res += yearsObject[i] ? yearsObject[i] : 0;
+	}
+	return res;
 }
 
 @*</script>*@
