@@ -58,7 +58,8 @@
 @markers(items: Map[String,List[String]]) = {
     @for((key,i) <- items.keySet.toList.sortWith((k1:String,k2:String)=>controllers.nwbib.Lobid.compareIsil(k1,k2)).zipWithIndex;
         owner = Application.CONFIG.getString("orgs.api")+"/"+key;
-        json = Await.result(WS.url(owner).get().map(x=>(x.json)), 5.second);
+        response = Await.result(WS.url(owner).get(), 5.second);
+        json = if(response.status == play.mvc.Http.Status.OK) response.json else Json.obj();
         ownerUrl = if((json\\"url").isEmpty) owner else (json\\"url")(0).as[String];
         ownerName = if((json\\"name").isEmpty) "" else (json\\"name")(0).as[String]) {
 
