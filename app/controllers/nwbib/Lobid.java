@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -27,6 +28,7 @@ import play.libs.Json;
 import play.libs.ws.WS;
 import play.libs.ws.WSRequestHolder;
 import play.libs.ws.WSResponse;
+import play.mvc.Http;
 
 /**
  * Access Lobid title data.
@@ -282,20 +284,39 @@ public class Lobid {
 			request = request.setQueryParameter("subject", subject);
 		if (!field.equals(Application.ISSUED_FIELD))
 			request = request.setQueryParameter("issued", issued);
-		Logger.info("Facets request URL {}, query params {} ", request.getUrl(),
-				request.getQueryParameters());
+		String url = request.getUrl();
+		Map<String, Collection<String>> parameters = request.getQueryParameters();
+		Logger.info("Facets request URL {}, query params {} ", url, parameters);
 		return request.get().map((WSResponse response) -> {
-			return response.asJson();
+			if (response.getStatus() == Http.Status.OK) {
+				return response.asJson();
+			}
+			Logger.warn("{}: {} ({}, {})", response.getStatus(),
+					response.getStatusText(), url, parameters);
+			return Json.toJson(ImmutableMap.of("entries", Arrays.asList(), "field",
+					field, "count", 0));
 		});
 	}
 
 	private static String preprocess(final String q) {
-		return // if query string syntax is used, leave it alone:
-		q.trim().isEmpty() || q.matches(".*?([+~]|AND|OR|\\s-|\\*).*?") ? q
-				:
-				// else prepend '+' to all terms for AND search:
-				Arrays.asList(q.split("[\\s-]")).stream().map(x -> "+" + x)
-						.collect(Collectors.joining(" "));
+		String result;
+		if (q.trim().isEmpty() || q.matches(".*?([+~]|AND|OR|\\s-|\\*).*?")) {
+			// if supported query string syntax is used, leave it alone:
+			result = q;
+		} else {
+			// else prepend '+' to all terms for AND search:
+			result = Arrays.asList(q.split("[\\s-]")).stream().map(x -> "+" + x)
+					.collect(Collectors.joining(" "));
+		}
+		return result// but escape unsupported query string syntax:
+				.replace("\\", "\\\\").replace(":", "\\:").replace("^", "\\^")
+				.replace("&&", "\\&&").replace("||", "\\||").replace("!", "\\!")
+				.replace("(", "\\(").replace(")", "\\)").replace("{", "\\{")
+				.replace("}", "\\}").replace("[", "\\[").replace("]", "\\]")
+				// `embedded` phrases, like foo"something"bar -> foo\"something\"bar
+				.replaceAll("([^\\s])\"([^\"]+)\"([^\\s])", "$1\\\\\"$2\\\\\"$3")
+				// remove inescapable range query symbols, possibly prepended with `+`:
+				.replaceAll("^\\+?<", "").replace("^\\+?>", "");
 	}
 
 	private static final Map<String, String> keys =

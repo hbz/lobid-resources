@@ -339,13 +339,22 @@ public class Application extends Controller {
 			final String nwbibspatial, final String nwbibsubject, final int from,
 			final int size, String owner, String t, String sort, boolean showDetails,
 			String set, String location, String word, String corporation) {
-		WSRequestHolder requestHolder = Lobid.request(q, person, name, subject, id,
-				publisher, issued, medium, nwbibspatial, nwbibsubject, from, size,
-				owner, t, sort, showDetails, set, location, word, corporation);
+		final WSRequestHolder requestHolder =
+				Lobid.request(q, person, name, subject, id, publisher, issued, medium,
+						nwbibspatial, nwbibsubject, from, size, owner, t, sort, showDetails,
+						set, location, word, corporation);
 		return requestHolder.get().map((WSResponse response) -> {
-			JsonNode json = response.asJson();
-			Long hits = Lobid.getTotalResults(json);
-			String s = json.toString();
+			Long hits = 0L;
+			String s = "{}";
+			if (response.getStatus() == Http.Status.OK) {
+				JsonNode json = response.asJson();
+				hits = Lobid.getTotalResults(json);
+				s = json.toString();
+			} else {
+				Logger.warn("{}: {} ({}, {})", response.getStatus(),
+						response.getStatusText(), requestHolder.getUrl(),
+						requestHolder.getQueryParameters());
+			}
 			return ok(showDetails ? details.render(CONFIG, s, id)
 					: search.render(CONFIG, s, q, person, name, subject, id, publisher,
 							issued, medium, nwbibspatial, nwbibsubject, from, size, hits,
