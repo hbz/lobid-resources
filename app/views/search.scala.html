@@ -158,11 +158,11 @@
             </p>
             <p style="padding-top:10px;"><strong>Regionen, Orte und Sachgebiete</strong></p>
             <div class="row facet"><div class="col-md-12">@facets("Sachgebiete", Application.NWBIB_SUBJECT_FIELD, nwbibsubject)</div></div>
-            <div class="row facet"><div class="col-md-12">@facets("Regionen und Orte", Application.NWBIB_SPATIAL_FIELD, nwbibspatial)</div></div>
+            <div class="row facet"><div class="col-md-12">@facets("Regionen und Orte", Application.NWBIB_SPATIAL_FIELD, if(nwbibspatial.startsWith("http")) nwbibspatial else "")</div></div>
             </p>
             <p style="padding-top:10px;"><strong>Schlagwörter</strong></p>
             <p>
-            <div class="row facet"><div class="col-md-12">@facets("Schlagwörter", Application.SUBJECT_FIELD, subject, "dropup")</div></div>
+            <div class="row facet"><div class="col-md-12">@facets("Schlagwörter", Application.SUBJECT_FIELD, if(subject.startsWith("http")) subject else "", "dropup")</div></div>
             </p>
             <p style="padding-top:10px;"><strong>Medien- und Publikationstypen</strong></p>
             <p>
