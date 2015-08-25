@@ -126,7 +126,7 @@ public enum TableRow {
 	String[] refAndLabel(String property, String value) {
 		if (property.equals("subjectChain")) {
 			return new String[] { value.replaceAll("\\([\\d,]+\\)$", ""), "" };
-		} else if ((property.equals("isPartOf") || property.equals("hasPart")
+		} else if ((property.equals("containedIn") || property.equals("hasPart")
 				|| property.equals("multiVolumeWork") || property.equals("series"))
 				&& value.contains("lobid.org")) {
 			return new String[] {
