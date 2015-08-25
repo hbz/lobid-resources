@@ -71,7 +71,6 @@
 
   @result_field("Erschienen", "issued", doc, TableRow.VALUES)
   @result_field("Auflage", "edition", doc, TableRow.VALUES)
-  @result_field("Band", "volume", doc, TableRow.VALUES)
   @result_field("Erscheinungsort", "placeOfPublication", doc, TableRow.VALUES)
   @result_field("Verlag", "publisher", doc, TableRow.VALUES)
   @result_field("ISBN-10", "isbn10", doc, TableRow.VALUES)
@@ -80,8 +79,10 @@
   @result_field("Umfang", "extent", doc, TableRow.VALUES)
   @result_field("Quelle", "bibliographicCitation", doc, TableRow.VALUES)
   @result_field("Erscheinungsweise", "frequency", doc, TableRow.VALUES)
-  @result_field("Bestandteil von", "isPartOfName", doc, TableRow.VALUES)
-  @result_field("Bestandteil von", "isPartOf", doc, TableRow.LINKS)
+  @result_field("Band", "volumeIn", doc, TableRow.VALUES, valueLabel = Option(Seq("numbering")))
+  @result_field("In", "multiVolumeWork", doc, TableRow.LINKS)
+  @result_field("Band", "inSeries", doc, TableRow.VALUES, valueLabel = Option(Seq("numbering")))
+  @result_field("In", "series", doc, TableRow.LINKS)
   @if(Seq("http://purl.org/ontology/bibo/Journal","http://purl.org/ontology/bibo/Series","http://purl.org/ontology/bibo/MultiVolumeBook","http://purl.org/lobid/lv#EditedVolume").exists(doc.toString.contains(_))){
    @defining((("""http://.*?lobid.org/resource.+?([^/]+).*?""".r findFirstMatchIn ((doc \ "@id").as[String])).get group 1)){ id =>
     @if(Lobid.getTotalHits(id).get(10000) > 0) {

@@ -51,6 +51,7 @@ public enum TableRow {
 				return refAndLabel(property, value)[0];
 			}
 			String term = param.equals("q") ? "\"" + value + "\"" : value;
+
 			try {
 				term = URLEncoder.encode(term, "UTF-8");
 			} catch (UnsupportedEncodingException e) {
@@ -58,9 +59,11 @@ public enum TableRow {
 			}
 			String search = String.format("%s/search?%s=%s",
 					controllers.nwbib.routes.Application.index(), param, term);
-			String result = String.format(
-					"<a title=\"Nach weiteren Titeln suchen\" href=\"%s\">%s</a>", search,
-					createLabel(doc, value, labels));
+			String label = createLabel(doc, value, labels);
+			String result = labels.get().contains("numbering") ? label
+					: String.format(
+							"<a title=\"Nach weiteren Titeln suchen\" href=\"%s\">%s</a>",
+							search, label);
 			if (value.startsWith("http")) {
 				result += String.format(
 						" | <a title=\"Linked-Data-Quelle abrufen\" "
@@ -123,7 +126,8 @@ public enum TableRow {
 	String[] refAndLabel(String property, String value) {
 		if (property.equals("subjectChain")) {
 			return new String[] { value.replaceAll("\\([\\d,]+\\)$", ""), "" };
-		} else if ((property.equals("isPartOf") || property.equals("hasPart"))
+		} else if ((property.equals("isPartOf") || property.equals("hasPart")
+				|| property.equals("multiVolumeWork") || property.equals("series"))
 				&& value.contains("lobid.org")) {
 			return new String[] {
 					value.replace("lobid.org/resource/", "lobid.org/nwbib/"),
