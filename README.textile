@@ -1,0 +1,38 @@
+h1. About
+
+Transform MAB-XML to JSON for Elasticsearch indexing with "Metafacture":https://github.com/culturegraph/metafacture-core/wiki used by the resources endpoint of http://lobid.org/.
+
+This repo is going to substitue big parts of https://github.com/lobid/lodmill .
+This will be the base for the new lobid.org/resources API 2.0.
+The aim is to make things easier, i.e.:
+- get rid of hadoop
+- concentrating only on lobid-resources (and not also gnd, lobid-organisations etc.)
+
+h1. Build
+
+"!https://secure.travis-ci.org/hbz/lobid-resources.png?branch=master!":https://travis-ci.org/hbz/lobid-resources
+
+Prerequisites: Java 8, Maven 3; verify with @mvn -version@
+
+Create and change into a folder where you want to store the projects:
+
+* @mkdir ~/git ; cd ~/git@
+
+Build the hbz metafacture-core fork:
+
+* @git clone https://github.com/hbz/metafacture-core.git@
+* @cd metafacture-core@
+* @mvn clean install -DskipTests@
+* @cd ..@
+
+Build lobid-resources:
+
+* @git clone https://github.com/hbz/lobid-resources.git@
+* @cd lobid-resources@
+* @mvn clean install@
+
+See the @.travis.yml@ file for details on the CI config used by Travis.
+
+h1. License
+
+Eclipse Public License: "http://www.eclipse.org/legal/epl-v10.html":http://www.eclipse.org/legal/epl-v10.html
