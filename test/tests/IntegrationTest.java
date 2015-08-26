@@ -73,7 +73,7 @@ public class IntegrationTest {
 				(TestBrowser browser) -> {
 					String field = Application.TYPE_FIELD;
 					Promise<JsonNode> jsonPromise = Lobid.getFacets("köln", "", "", "",
-							"", "", "", "", "", "", "", field, "", "", "", "", "");
+							"", "", "", "", "", "", "", field, "", "", "", "", "", "");
 					JsonNode facets = jsonPromise.get(10000);
 					assertThat(facets.findValues("term").stream().map(e -> e.asText())
 							.collect(Collectors.toList())).contains(
@@ -109,9 +109,9 @@ public class IntegrationTest {
 		int size = 10;
 		running(testServer(3333, fakeApplication(inMemoryDatabase())), HTMLUNIT,
 				(TestBrowser browser) -> {
-					Content html = views.html.search.render(Application.CONFIG, "[{}]",
-							query, "", "", "", "", "", "", "", "", "", from, size, 0L, "", "",
-							"", "", "", "", "");
+					Content html =
+							views.html.search.render("[{}]", query, "", "", "", "", "", "",
+									"", "", "", from, size, 0L, "", "", "", "", "", "", "", "");
 					assertThat(Helpers.contentType(html)).isEqualTo("text/html");
 					String text = Helpers.contentAsString(html);
 					assertThat(text).contains("NWBib").contains("buch")

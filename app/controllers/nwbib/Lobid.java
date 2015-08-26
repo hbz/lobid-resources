@@ -278,13 +278,14 @@ public class Lobid {
 	 * @param location A polygon describing the subject area of the resources
 	 * @param word A word, a concept from the hbz union catalog
 	 * @param corporation A corporation associated with the resource
+	 * @param raw A query string that's directly (unprocessed) passed to ES
 	 * @return A JSON representation of the requested facets
 	 */
 	public static Promise<JsonNode> getFacets(String q, String person,
 			String name, String subject, String id, String publisher, String issued,
 			String medium, String nwbibspatial, String nwbibsubject, String owner,
 			String field, String t, String set, String location, String word,
-			String corporation) {
+			String corporation, String raw) {
 		WSRequestHolder request =
 				WS.url(Application.CONFIG.getString("nwbib.api") + "/facets")
 						.setHeader("Accept", "application/json")
@@ -301,6 +302,8 @@ public class Lobid {
 			request = request.setQueryParameter("word", preprocess(q));
 		else if (!word.isEmpty())
 			request = request.setQueryParameter("word", preprocess(word));
+		if (!raw.isEmpty())
+			request = request.setQueryParameter("q", raw);
 		if (!set.isEmpty())
 			request = request.setQueryParameter("set", set);
 		else

@@ -182,6 +182,7 @@ public class Application extends Controller {
 	 * @param location A polygon describing the subject area of the resources
 	 * @param word A word, a concept from the hbz union catalog
 	 * @param corporation A corporation associated with the resource
+	 * @param raw A query string that's directly (unprocessed) passed to ES
 	 * @return The search results
 	 */
 	public static Promise<Result> search(final String q, final String person,
@@ -204,9 +205,9 @@ public class Application extends Controller {
 		final Form<String> form = queryForm.bindFromRequest();
 		if (form.hasErrors())
 			return Promise.promise(
-					() -> badRequest(search.render(CONFIG, null, q, person, name, subject,
-							id, publisher, issued, medium, nwbibspatial, nwbibsubject, from,
-							size, 0L, owner, t, sort, set, location, word, corporation)));
+					() -> badRequest(search.render(null, q, person, name, subject, id,
+							publisher, issued, medium, nwbibspatial, nwbibsubject, from, size,
+							0L, owner, t, sort, set, location, word, corporation, raw)));
 		String query = form.data().get("q");
 		Promise<Result> result =
 				okPromise(query != null ? query : q, person, name, subject, id,
@@ -312,9 +313,9 @@ public class Application extends Controller {
 		return result.recover((Throwable throwable) -> {
 			throwable.printStackTrace();
 			flashError();
-			return internalServerError(search.render(CONFIG, "[]", q, person, name,
-					subject, id, publisher, issued, medium, nwbibspatial, nwbibsubject,
-					from, size, 0L, owner, t, sort, set, location, word, corporation));
+			return internalServerError(search.render("[]", q, person, name, subject,
+					id, publisher, issued, medium, nwbibspatial, nwbibsubject, from, size,
+					0L, owner, t, sort, set, location, word, corporation, raw));
 		});
 	}
 
@@ -358,9 +359,9 @@ public class Application extends Controller {
 						requestHolder.getQueryParameters());
 			}
 			return ok(showDetails ? details.render(CONFIG, s, id)
-					: search.render(CONFIG, s, q, person, name, subject, id, publisher,
-							issued, medium, nwbibspatial, nwbibsubject, from, size, hits,
-							owner, t, sort, set, location, word, corporation));
+					: search.render(s, q, person, name, subject, id, publisher, issued,
+							medium, nwbibspatial, nwbibsubject, from, size, hits, owner, t,
+							sort, set, location, word, corporation, raw));
 		});
 	}
 
@@ -385,17 +386,19 @@ public class Application extends Controller {
 	 * @param location A polygon describing the subject area of the resources
 	 * @param word A word, a concept from the hbz union catalog
 	 * @param corporation A corporation associated with the resource
+	 * @param raw A query string that's directly (unprocessed) passed to ES
 	 * @return The search results
 	 */
 	public static Promise<Result> facets(String q, String person, String name,
 			String subject, String id, String publisher, String issued, String medium,
 			String nwbibspatial, String nwbibsubject, int from, int size,
 			String owner, String t, String field, String sort, String set,
-			String location, String word, String corporation) {
+			String location, String word, String corporation, String raw) {
 		String key = String.format(
-				"facets.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s", q,
+				"facets.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s", q,
 				person, name, subject, id, publisher, issued, medium, nwbibspatial,
-				nwbibsubject, owner, field, sort, t, set, location, word, corporation);
+				nwbibsubject, owner, field, sort, t, set, location, word, corporation,
+				raw);
 		Result cachedResult = (Result) Cache.get(key);
 		if (cachedResult != null) {
 			return Promise.promise(() -> cachedResult);
@@ -426,7 +429,7 @@ public class Application extends Controller {
 			String routeUrl = routes.Application.search(q, person, name, subjectQuery,
 					id, publisher, issuedQuery, mediumQuery, nwbibspatialQuery,
 					nwbibsubjectQuery, from, size, ownerQuery, typeQuery, sort, false,
-					set, location, word, corporation, "").url();
+					set, location, word, corporation, raw).url();
 			// @formatter:off
 					boolean current =
 										 field.equals(MEDIUM_FIELD) && term.equals(medium) 
@@ -452,7 +455,7 @@ public class Application extends Controller {
 		};
 		Promise<Result> promise = Lobid.getFacets(q, person, name, subject, id,
 				publisher, issued, medium, nwbibspatial, nwbibsubject, owner, field, t,
-				set, location, word, corporation).map(json -> {
+				set, location, word, corporation, raw).map(json -> {
 					Stream<JsonNode> stream =
 							StreamSupport.stream(Spliterators.spliteratorUnknownSize(
 									json.findValue("entries").elements(), 0), false);
