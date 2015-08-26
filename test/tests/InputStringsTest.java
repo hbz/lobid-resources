@@ -84,7 +84,7 @@ public class InputStringsTest {
 		running(testServer(3333), () -> {
 			Result result = Helpers.callAction(
 					controllers.nwbib.routes.ref.Application.search(input, "", "", "", "",
-							"", "", "", "", "", 0, 10, "", "", "", false, "", "", "", ""),
+							"", "", "", "", "", 0, 10, "", "", "", false, "", "", "", "", ""),
 					new FakeRequest(Helpers.GET, "/")
 							.withFormUrlEncodedBody(ImmutableMap.of()));
 			// we don't expect any server errors (see

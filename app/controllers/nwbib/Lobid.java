@@ -48,7 +48,8 @@ public class Lobid {
 			final String publisher, final String issued, final String medium,
 			final String nwbibspatial, final String nwbibsubject, final int from,
 			final int size, String owner, String t, String sort, boolean allData,
-			String set, String location, String word, String corporation) {
+			String set, String location, String word, String corporation,
+			String raw) {
 		WSRequestHolder requestHolder = WS
 				.url(Application.CONFIG.getString("nwbib.api"))
 				.setHeader("Accept", "application/json")
@@ -61,6 +62,8 @@ public class Lobid {
 					Application.CONFIG.getString("nwbib.set"));
 		if (!set.isEmpty())
 			requestHolder = requestHolder.setQueryParameter("set", set);
+		if (!raw.trim().isEmpty())
+			requestHolder = requestHolder.setQueryParameter("q", raw);
 		if (!q.trim().isEmpty())
 			requestHolder = requestHolder.setQueryParameter("word", preprocess(q));
 		else if (!word.isEmpty())
@@ -126,12 +129,45 @@ public class Lobid {
 			});
 		}
 		WSRequestHolder requestHolder = request("", "", "", "", "", "", "", "", "",
-				"", 0, 0, "", "", "", false, set, "", "", "");
+				"", 0, 0, "", "", "", false, set, "", "", "", "");
 		return requestHolder.get().map((WSResponse response) -> {
 			Long total = getTotalResults(response.asJson());
 			Cache.set(cacheKey, total, Application.ONE_HOUR);
 			return total;
 		});
+	}
+
+	/**
+	 * @param field The Elasticsearch index field
+	 * @param value The value of the given field
+	 * @return The number of hits for the given value in the given field
+	 */
+	public static Promise<Long> getTotalHits(String field, String value) {
+		String f = escapeUri(field);
+		String v = escapeUri(value);
+		String cacheKey = String.format("totalHits.%s.%s", f, v);
+		final Long cachedResult = (Long) Cache.get(cacheKey);
+		if (cachedResult != null) {
+			return Promise.promise(() -> {
+				return cachedResult;
+			});
+		}
+		return WS.url(Application.CONFIG.getString("nwbib.api"))
+				.setQueryParameter("q", f + ":" + v)
+				.setQueryParameter("set", Application.CONFIG.getString("nwbib.set"))
+				.get().map((WSResponse response) -> {
+					Long total = getTotalResults(response.asJson());
+					Cache.set(cacheKey, total, Application.ONE_HOUR);
+					return total;
+				});
+	}
+
+	/**
+	 * @param string The URI string to escape
+	 * @return The URI string, escaped to be usable as an ES field or value
+	 */
+	public static String escapeUri(String string) {
+		return string.replaceAll("([\\.:/])", "\\\\$1");
 	}
 
 	/**

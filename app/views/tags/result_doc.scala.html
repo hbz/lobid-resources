@@ -4,6 +4,7 @@
 @import play.api.libs.json.JsValue
 @import views.TableRow
 @import controllers.nwbib.Lobid
+@import controllers.nwbib.Application.CONFIG
 
 @table()(body: Html) = {
    <table class="table table-striped table-condensed">
@@ -33,6 +34,12 @@
       <tr><td>@label</td><td><span class="@Lobid.facetIcon(v,fullField)"></span> @Lobid.facetLabel(v,fullField)</td></tr>
     }
   }
+}
+
+@subordinated(field:String, id:String, label:String, value:String) = {
+  @defining(Lobid.getTotalHits(field, id).get(10000)){ hits => @if(hits > 0) {
+    <tr><td>@label</td><td><a title="@value" href="@nwbib.routes.Application.search(raw=Lobid.escapeUri(field)+":"+Lobid.escapeUri(id))">@hits @value</a></td></tr>
+  }}
 }
 
 @table(){
@@ -84,11 +91,11 @@
   @result_field("In", "multiVolumeWork", doc, TableRow.LINKS)
   @result_field("Band", "inSeries", doc, TableRow.VALUES, valueLabel = Option(Seq("numbering")))
   @result_field("In", "series", doc, TableRow.LINKS)
-  @if(Seq("http://purl.org/ontology/bibo/Journal","http://purl.org/ontology/bibo/Series","http://purl.org/ontology/bibo/MultiVolumeBook","http://purl.org/lobid/lv#EditedVolume").exists(doc.toString.contains(_))){
-   @defining((("""http://.*?lobid.org/resource.+?([^/]+).*?""".r findFirstMatchIn ((doc \ "@id").as[String])).get group 1)){ id =>
-    @if(Lobid.getTotalHits(id).get(10000) > 0) {
-    <tr><td>Enthält</td><td><a title="Enthaltene Beiträge anzeigen" href="@nwbib.routes.Application.search(set=id)">Enthaltene Beiträge anzeigen</a></td></tr>
-  }}}
+  @defining("http://lobid.org/resource/" + (doc \\ "hbzId")(0).as[String]){ id =>
+   @subordinated("@graph.http://purl.org/lobid/lv#multiVolumeWork.@id", id, "Bände", "zugehörige Bände")
+   @subordinated("@graph.http://purl.org/lobid/lv#series.@id", id, "Enthält", "Titel")
+   @subordinated("@graph.http://purl.org/lobid/lv#containedIn.@id", id, "Enthält", "Beiträge")
+  }
 }
 
 @table(){

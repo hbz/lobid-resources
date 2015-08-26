@@ -190,12 +190,12 @@ public class Application extends Controller {
 			final String nwbibspatial, final String nwbibsubject, final int from,
 			final int size, final String owner, String t, String sort,
 			boolean details, String set, String location, String word,
-			String corporation) {
+			String corporation, String raw) {
 		String cacheId = String.format(
-				"%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s", "search",
-				q, person, name, subject, id, publisher, issued, medium, nwbibspatial,
-				nwbibsubject, from, size, owner, t, sort, set, location, word,
-				corporation);
+				"%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s",
+				"search", q, person, name, subject, id, publisher, issued, medium,
+				nwbibspatial, nwbibsubject, from, size, owner, t, sort, set, location,
+				word, corporation, raw);
 		@SuppressWarnings("unchecked")
 		Promise<Result> cachedResult = (Promise<Result>) Cache.get(cacheId);
 		if (cachedResult != null)
@@ -208,9 +208,10 @@ public class Application extends Controller {
 							id, publisher, issued, medium, nwbibspatial, nwbibsubject, from,
 							size, 0L, owner, t, sort, set, location, word, corporation)));
 		String query = form.data().get("q");
-		Promise<Result> result = okPromise(query != null ? query : q, person, name,
-				subject, id, publisher, issued, medium, nwbibspatial, nwbibsubject,
-				from, size, owner, t, sort, details, set, location, word, corporation);
+		Promise<Result> result =
+				okPromise(query != null ? query : q, person, name, subject, id,
+						publisher, issued, medium, nwbibspatial, nwbibsubject, from, size,
+						owner, t, sort, details, set, location, word, corporation, raw);
 		cacheOnRedeem(cacheId, result, ONE_HOUR);
 		return result;
 	}
@@ -221,7 +222,7 @@ public class Application extends Controller {
 	 */
 	public static Promise<Result> show(final String id) {
 		return search("", "", "", "", id, "", "", "", "", "", 0, 1, "", "", "",
-				true, "", "", "", "");
+				true, "", "", "", "", "");
 	}
 
 	/**
@@ -304,10 +305,10 @@ public class Application extends Controller {
 			final String nwbibspatial, final String nwbibsubject, final int from,
 			final int size, final String owner, String t, String sort,
 			boolean details, String set, String location, String word,
-			String corporation) {
+			String corporation, String raw) {
 		final Promise<Result> result = call(q, person, name, subject, id, publisher,
 				issued, medium, nwbibspatial, nwbibsubject, from, size, owner, t, sort,
-				details, set, location, word, corporation);
+				details, set, location, word, corporation, raw);
 		return result.recover((Throwable throwable) -> {
 			throwable.printStackTrace();
 			flashError();
@@ -338,11 +339,12 @@ public class Application extends Controller {
 			final String publisher, final String issued, final String medium,
 			final String nwbibspatial, final String nwbibsubject, final int from,
 			final int size, String owner, String t, String sort, boolean showDetails,
-			String set, String location, String word, String corporation) {
+			String set, String location, String word, String corporation,
+			String raw) {
 		final WSRequestHolder requestHolder =
 				Lobid.request(q, person, name, subject, id, publisher, issued, medium,
 						nwbibspatial, nwbibsubject, from, size, owner, t, sort, showDetails,
-						set, location, word, corporation);
+						set, location, word, corporation, raw);
 		return requestHolder.get().map((WSResponse response) -> {
 			Long hits = 0L;
 			String s = "{}";
@@ -424,7 +426,7 @@ public class Application extends Controller {
 			String routeUrl = routes.Application.search(q, person, name, subjectQuery,
 					id, publisher, issuedQuery, mediumQuery, nwbibspatialQuery,
 					nwbibsubjectQuery, from, size, ownerQuery, typeQuery, sort, false,
-					set, location, word, corporation).url();
+					set, location, word, corporation, "").url();
 			// @formatter:off
 					boolean current =
 										 field.equals(MEDIUM_FIELD) && term.equals(medium) 
