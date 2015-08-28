@@ -34,8 +34,12 @@ import com.hp.hpl.jena.rdf.model.Model;
 /**
  * Read a directory with records got from lobid.org in ntriple serialization.
  * The records are indexed as JSON-LD in an in-memory elasticsearch instance,
- * then queried and concatenated into one file. This file is compared to the
- * input records. Test is ok if ntriples are equal.
+ * then queried and concatenated into two files:
+ * <ul>
+ * <li>one json file, reflecting the source field of elasticsearch
+ * <li>one ntriple file, which is great to make diffs upon
+ * </ul>
+ * For testing, diffs are done against these files.
  * 
  * @author Pascal Christoph (dr0i)
  * 
@@ -47,7 +51,8 @@ public final class LobidResourcesAsNtriples2ElasticsearchLobidTest {
 
 	private static final String LOBID_RESOURCES = "lobid-resources";
 	private static final String N_TRIPLE = "N-TRIPLE";
-	private static final String TEST_FILENAME = "hbz01.es.nt";
+	private static final String TEST_FILENAME_NTRIPLES = "hbz01.es.nt";
+	private static final String TEST_FILENAME_JSON = "hbz01.es.json";
 
 	@BeforeClass
 	public static void setup() {
@@ -62,15 +67,20 @@ public final class LobidResourcesAsNtriples2ElasticsearchLobidTest {
 	@Test
 	public void testFlow() throws URISyntaxException {
 		buildAndExecuteFlow();
-		String ntriples = getElasticsearchDocumentsAsNtriples();
+		writeFileAndTest(TEST_FILENAME_JSON, ElasticsearchDocuments.getAsJson());
+		writeFileAndTest(TEST_FILENAME_NTRIPLES, ElasticsearchDocuments.getAsNtriples());
+	}
+
+	private void writeFileAndTest(final String TEST_FILENAME, final String DOCUMENTS) {
 		File testFile = new File(TEST_FILENAME);
 		try {
-			FileUtils.writeStringToFile(testFile, ntriples, false);
-		} catch (IOException e) {
+			FileUtils.writeStringToFile(testFile, DOCUMENTS, false);
+			AbstractIngestTests.compareFilesDefaultingBNodes(testFile,
+					new File(Thread.currentThread().getContextClassLoader().getResource(TEST_FILENAME).toURI()));
+
+		} catch (IOException | URISyntaxException e) {
 			e.printStackTrace();
 		}
-		AbstractIngestTests.compareFilesDefaultingBNodes(testFile,
-				new File(Thread.currentThread().getContextClassLoader().getResource(TEST_FILENAME).toURI()));
 		testFile.deleteOnExit();
 	}
 
@@ -97,30 +107,40 @@ public final class LobidResourcesAsNtriples2ElasticsearchLobidTest {
 		return esIndexer;
 	}
 
-	private static String getElasticsearchDocumentsAsNtriples() {
-		SearchResponse actionGet = client.prepareSearch(LOBID_RESOURCES).setQuery(new MatchAllQueryBuilder()).setFrom(0)
-				.setSize(10000).execute().actionGet();
-		return Arrays.asList(actionGet.getHits().getHits()).parallelStream()
-				.flatMap(hit -> Stream.of(toRdf(hit.getSourceAsString()))).collect(Collectors.joining());
-	}
-
-	private static String toRdf(final String jsonLd) {
-		try {
-			final Object jsonObject = JSONUtils.fromString(jsonLd);
-			final JenaTripleCallback callback = new JenaTripleCallback();
-			final Model model = (Model) JsonLdProcessor.toRDF(jsonObject, callback);
-			final StringWriter writer = new StringWriter();
-			model.write(writer, N_TRIPLE);
-			return writer.toString();
-		} catch (IOException | JsonLdError e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
-
 	@AfterClass
 	public static void down() {
 		client.admin().indices().prepareDelete("_all").execute().actionGet();
 		node.close();
+	}
+
+	static class ElasticsearchDocuments {
+		static private SearchResponse getElasticsearchDocuments() {
+			return client.prepareSearch(LOBID_RESOURCES).setQuery(new MatchAllQueryBuilder()).setFrom(0).setSize(10000)
+					.execute().actionGet();
+		}
+
+		static String getAsNtriples() {
+			return Arrays.asList(getElasticsearchDocuments().getHits().getHits()).parallelStream()
+					.flatMap(hit -> Stream.of(toRdf(hit.getSourceAsString()))).collect(Collectors.joining());
+		}
+
+		static String getAsJson() {
+			return Arrays.asList(getElasticsearchDocuments().getHits().getHits()).parallelStream()
+					.flatMap(hit -> Stream.of(hit.getSourceAsString())).collect(Collectors.joining(",\n"));
+		}
+
+		private static String toRdf(final String jsonLd) {
+			try {
+				final Object jsonObject = JSONUtils.fromString(jsonLd);
+				final JenaTripleCallback callback = new JenaTripleCallback();
+				final Model model = (Model) JsonLdProcessor.toRDF(jsonObject, callback);
+				final StringWriter writer = new StringWriter();
+				model.write(writer, N_TRIPLE);
+				return writer.toString();
+			} catch (IOException | JsonLdError e) {
+				e.printStackTrace();
+			}
+			return null;
+		}
 	}
 }
