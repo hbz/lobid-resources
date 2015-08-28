@@ -127,8 +127,8 @@ public enum TableRow {
 		if (property.equals("subjectChain")) {
 			return new String[] { value.replaceAll("\\([\\d,]+\\)$", ""), "" };
 		} else if ((property.equals("containedIn") || property.equals("hasPart")
-				|| property.equals("multiVolumeWork") || property.equals("series"))
-				&& value.contains("lobid.org")) {
+				|| property.equals("isPartOf") || property.equals("multiVolumeWork")
+				|| property.equals("series")) && value.contains("lobid.org")) {
 			return new String[] {
 					value.replace("lobid.org/resource/", "lobid.org/nwbib/"),
 					Lobid.resourceLabel(value) };
