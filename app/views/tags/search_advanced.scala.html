@@ -1,6 +1,6 @@
 @* Copyright 2014 Fabian Steeg, hbz. Licensed under the GPLv2 *@
 
-@(label:String, q:String = "", person: String = "", name: String = "", subject: String = "", nwbibspatial: String = "", nwbibsubject: String = "", id: String = "", publisher: String = "", issued: String = "", sortParam: String = "", set: String = "", word: String = "", corporation: String = "", raw: String = "")
+@(label:String, q:String = "", person: String = "", name: String = "", subject: String = "", nwbibspatial: String = "", nwbibsubject: String = "", id: String = "", publisher: String = "", issued: String = "", sortParam: String = "", set: String = "", word: String = "", corporation: String = "")
 
 @import scala.collection.immutable.TreeMap
 
@@ -75,7 +75,7 @@ function suggests(term){
 
 @helper.form(action = controllers.nwbib.routes.Application.search(), 
     'id -> "nwbib-form", 'role -> "form", 'class -> "form-inline") {
-  @defining(TreeMap("name"->name,"person"->person,"corporation"->corporation,"subject"->subject, "id"->id,"publisher"->publisher,"issued"->issued,"set"->set,"word"->word,"raw"->raw).filter(!_._2.isEmpty)) { fields =>
+  @defining(TreeMap("name"->name,"person"->person,"corporation"->corporation,"subject"->subject, "id"->id,"publisher"->publisher,"issued"->issued,"set"->set,"word"->word).filter(!_._2.isEmpty)) { fields =>
   @for(((k,v),i)<- (if(fields.isEmpty) TreeMap("q" -> "") else fields).zipWithIndex){
   <div class="search-field row" id="search-field-@i">
       <div class="form-group col col-md-2">
@@ -89,7 +89,6 @@ function suggests(term){
               <option value="publisher" @if(k=="publisher"){selected="selected"}>Verlag</option>
               <option value="issued" @if(k=="issued"){selected="selected"}>Erscheinungsjahr</option>
               <option value="set" @if(k=="set"){selected="selected"}>Überordnung</option>
-              <option value="raw" @if(k=="raw"){selected="selected"}>Expertensuche</option>
             </select>
       </div>
       <div class="form-group col col-md-9">
