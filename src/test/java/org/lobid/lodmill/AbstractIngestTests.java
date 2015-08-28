@@ -24,11 +24,13 @@ import org.slf4j.LoggerFactory;
 @SuppressWarnings("javadoc")
 public abstract class AbstractIngestTests {
 
-	private static final Logger LOG = LoggerFactory.getLogger(AbstractIngestTests.class);
+	private static final Logger LOG =
+			LoggerFactory.getLogger(AbstractIngestTests.class);
 
 	protected Metamorph metamorph;
 
-	private static SortedSet<String> linesInFileToSetDefaultingBNodes(final File file) {
+	private static SortedSet<String> linesInFileToSetDefaultingBNodes(
+			final File file) {
 		SortedSet<String> set = null;
 		try (Scanner scanner = new Scanner(file)) {
 			set = asSet(scanner);
@@ -39,21 +41,24 @@ public abstract class AbstractIngestTests {
 	}
 
 	/**
-	 * Tests if two files are of equal content. As BNodes are not fix they are
-	 * not comparable and thus they are defaulted to "_:bnodeDummy" to make the
-	 * files comparable anyhow.
+	 * Tests if two files are of equal content. As BNodes are not fix they are not
+	 * comparable and thus they are defaulted to "_:bnodeDummy" to make the files
+	 * comparable anyhow.
 	 * 
-	 * @param generatedFile
-	 *            the actually generated file
-	 * @param testFile
-	 *            the file which defines how the generatedFile should look like
+	 * @param generatedFile the actually generated file
+	 * @param testFile the file which defines how the generatedFile should look
+	 *          like
 	 */
-	public static void compareFilesDefaultingBNodes(final File generatedFile, final File testFile) {
-		assertSetSize(linesInFileToSetDefaultingBNodes(testFile), linesInFileToSetDefaultingBNodes(generatedFile));
-		assertSetElements(linesInFileToSetDefaultingBNodes(generatedFile), linesInFileToSetDefaultingBNodes(testFile));
+	public static void compareFilesDefaultingBNodes(final File generatedFile,
+			final File testFile) {
+		assertSetSize(linesInFileToSetDefaultingBNodes(testFile),
+				linesInFileToSetDefaultingBNodes(generatedFile));
+		assertSetElements(linesInFileToSetDefaultingBNodes(generatedFile),
+				linesInFileToSetDefaultingBNodes(testFile));
 	}
 
-	private static void assertSetSize(final SortedSet<String> expectedSet, final SortedSet<String> actualSet) {
+	private static void assertSetSize(final SortedSet<String> expectedSet,
+			final SortedSet<String> actualSet) {
 		if (expectedSet.size() != actualSet.size()) {
 			final SortedSet<String> missingSet = new TreeSet<>(expectedSet);
 			missingSet.removeAll(actualSet);
@@ -67,14 +72,16 @@ public abstract class AbstractIngestTests {
 		while (scanner.hasNextLine()) {
 			String actual = scanner.nextLine();
 			if (!actual.isEmpty()) {
-				actual = actual.replaceFirst("(^_:\\w* )|( _:\\w* ?.$)", "_:bnodeDummy ");
+				actual =
+						actual.replaceFirst("(^_:\\w* )|( _:\\w* ?.$)", "_:bnodeDummy ");
 				set.add(actual);
 			}
 		}
 		return set;
 	}
 
-	private static void assertSetElements(final SortedSet<String> expectedSet, final SortedSet<String> actualSet) {
+	private static void assertSetElements(final SortedSet<String> expectedSet,
+			final SortedSet<String> actualSet) {
 		final Iterator<String> expectedIterator = expectedSet.iterator();
 		final Iterator<String> actualIterator = actualSet.iterator();
 		for (int i = 0; i < expectedSet.size(); i++) {

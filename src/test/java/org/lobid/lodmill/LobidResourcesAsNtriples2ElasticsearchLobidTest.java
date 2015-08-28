@@ -56,11 +56,15 @@ public final class LobidResourcesAsNtriples2ElasticsearchLobidTest {
 
 	@BeforeClass
 	public static void setup() {
-		node = nodeBuilder().local(true).settings(ImmutableSettings.settingsBuilder()
-				.put("index.number_of_replicas", "0").put("index.number_of_shards", "1").build()).node();
+		node = nodeBuilder().local(true)
+				.settings(ImmutableSettings.settingsBuilder()
+						.put("index.number_of_replicas", "0")
+						.put("index.number_of_shards", "1").build())
+				.node();
 		client = node.client();
 		client.admin().indices().prepareDelete("_all").execute().actionGet();
-		client.admin().cluster().prepareHealth().setWaitForYellowStatus().execute().actionGet();
+		client.admin().cluster().prepareHealth().setWaitForYellowStatus().execute()
+				.actionGet();
 	}
 
 	@SuppressWarnings("static-method")
@@ -68,15 +72,18 @@ public final class LobidResourcesAsNtriples2ElasticsearchLobidTest {
 	public void testFlow() throws URISyntaxException {
 		buildAndExecuteFlow();
 		writeFileAndTest(TEST_FILENAME_JSON, ElasticsearchDocuments.getAsJson());
-		writeFileAndTest(TEST_FILENAME_NTRIPLES, ElasticsearchDocuments.getAsNtriples());
+		writeFileAndTest(TEST_FILENAME_NTRIPLES,
+				ElasticsearchDocuments.getAsNtriples());
 	}
 
-	private void writeFileAndTest(final String TEST_FILENAME, final String DOCUMENTS) {
+	private void writeFileAndTest(final String TEST_FILENAME,
+			final String DOCUMENTS) {
 		File testFile = new File(TEST_FILENAME);
 		try {
 			FileUtils.writeStringToFile(testFile, DOCUMENTS, false);
 			AbstractIngestTests.compareFilesDefaultingBNodes(testFile,
-					new File(Thread.currentThread().getContextClassLoader().getResource(TEST_FILENAME).toURI()));
+					new File(Thread.currentThread().getContextClassLoader()
+							.getResource(TEST_FILENAME).toURI()));
 
 		} catch (IOException | URISyntaxException e) {
 			e.printStackTrace();
@@ -91,8 +98,10 @@ public final class LobidResourcesAsNtriples2ElasticsearchLobidTest {
 		triple2model.setInput(N_TRIPLE);
 		RecordReader lr = new RecordReader();
 		dirReader.setReceiver(opener).setReceiver(lr).setReceiver(triple2model)
-				.setReceiver(new RdfModel2ElasticsearchJsonLd()).setReceiver(getElasticsearchIndexer());
-		dirReader.process(new File("src/test/resources/hbz01Records").getAbsolutePath());
+				.setReceiver(new RdfModel2ElasticsearchJsonLd())
+				.setReceiver(getElasticsearchIndexer());
+		dirReader
+				.process(new File("src/test/resources/hbz01Records").getAbsolutePath());
 		opener.closeStream();
 		dirReader.closeStream();
 	}
@@ -115,18 +124,22 @@ public final class LobidResourcesAsNtriples2ElasticsearchLobidTest {
 
 	static class ElasticsearchDocuments {
 		static private SearchResponse getElasticsearchDocuments() {
-			return client.prepareSearch(LOBID_RESOURCES).setQuery(new MatchAllQueryBuilder()).setFrom(0).setSize(10000)
+			return client.prepareSearch(LOBID_RESOURCES)
+					.setQuery(new MatchAllQueryBuilder()).setFrom(0).setSize(10000)
 					.execute().actionGet();
 		}
 
 		static String getAsNtriples() {
-			return Arrays.asList(getElasticsearchDocuments().getHits().getHits()).parallelStream()
-					.flatMap(hit -> Stream.of(toRdf(hit.getSourceAsString()))).collect(Collectors.joining());
+			return Arrays.asList(getElasticsearchDocuments().getHits().getHits())
+					.parallelStream()
+					.flatMap(hit -> Stream.of(toRdf(hit.getSourceAsString())))
+					.collect(Collectors.joining());
 		}
 
 		static String getAsJson() {
-			return Arrays.asList(getElasticsearchDocuments().getHits().getHits()).parallelStream()
-					.flatMap(hit -> Stream.of(hit.getSourceAsString())).collect(Collectors.joining(",\n"));
+			return Arrays.asList(getElasticsearchDocuments().getHits().getHits())
+					.parallelStream().flatMap(hit -> Stream.of(hit.getSourceAsString()))
+					.collect(Collectors.joining(",\n"));
 		}
 
 		private static String toRdf(final String jsonLd) {
