@@ -65,18 +65,25 @@ public final class LobidResourcesAsNtriples2ElasticsearchLobidTest {
 		client.admin().indices().prepareDelete("_all").execute().actionGet();
 		client.admin().cluster().prepareHealth().setWaitForYellowStatus().execute()
 				.actionGet();
+		buildAndExecuteFlow();
 	}
 
 	@SuppressWarnings("static-method")
 	@Test
-	public void testFlow() throws URISyntaxException {
-		buildAndExecuteFlow();
+	public void testJson() {
 		writeFileAndTest(TEST_FILENAME_JSON, ElasticsearchDocuments.getAsJson());
 		writeFileAndTest(TEST_FILENAME_NTRIPLES,
 				ElasticsearchDocuments.getAsNtriples());
 	}
 
-	private void writeFileAndTest(final String TEST_FILENAME,
+	@SuppressWarnings("static-method")
+	@Test
+	public void testNtriples() {
+		writeFileAndTest(TEST_FILENAME_NTRIPLES,
+				ElasticsearchDocuments.getAsNtriples());
+	}
+
+	private static void writeFileAndTest(final String TEST_FILENAME,
 			final String DOCUMENTS) {
 		File testFile = new File(TEST_FILENAME);
 		try {
