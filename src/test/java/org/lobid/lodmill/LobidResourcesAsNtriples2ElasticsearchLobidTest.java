@@ -21,6 +21,7 @@ import org.elasticsearch.client.Client;
 import org.elasticsearch.common.settings.ImmutableSettings;
 import org.elasticsearch.index.query.MatchAllQueryBuilder;
 import org.elasticsearch.node.Node;
+import org.elasticsearch.search.SearchHit;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -145,8 +146,8 @@ public final class LobidResourcesAsNtriples2ElasticsearchLobidTest {
 
 		static String getAsJson() {
 			return Arrays.asList(getElasticsearchDocuments().getHits().getHits())
-					.parallelStream().flatMap(hit -> Stream.of(hit.getSourceAsString()))
-					.collect(Collectors.joining(",\n"));
+					.stream().map(SearchHit::getSourceAsString)
+					.collect(Collectors.joining(",\n", "[\n", "\n]"));
 		}
 
 		private static String toRdf(final String jsonLd) {
