@@ -1,6 +1,6 @@
 /* Copyright 2013 Fabian Steeg. Licensed under the Eclipse Public License 1.0 */
 
-package org.lobid.lodmill;
+package org.lobid.resources;
 
 import java.io.File;
 import java.io.IOException;

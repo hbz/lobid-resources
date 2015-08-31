@@ -1,6 +1,6 @@
 /* Copyright 2015  hbz, Pascal Christoph.
  * Licensed under the Eclipse Public License 1.0 */
-package org.lobid.lodmill;
+package org.lobid.resources;
 
 import static org.elasticsearch.node.NodeBuilder.nodeBuilder;
 
@@ -25,6 +25,9 @@ import org.elasticsearch.search.SearchHit;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.lobid.resources.ElasticsearchIndexer;
+import org.lobid.resources.RdfModel2ElasticsearchJsonLd;
+import org.lobid.resources.Triples2RdfModel;
 
 import com.github.jsonldjava.core.JsonLdError;
 import com.github.jsonldjava.core.JsonLdProcessor;
