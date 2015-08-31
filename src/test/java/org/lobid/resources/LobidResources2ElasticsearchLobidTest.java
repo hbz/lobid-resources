@@ -25,9 +25,6 @@ import org.elasticsearch.search.SearchHit;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.lobid.resources.ElasticsearchIndexer;
-import org.lobid.resources.RdfModel2ElasticsearchJsonLd;
-import org.lobid.resources.Triples2RdfModel;
 
 import com.github.jsonldjava.core.JsonLdError;
 import com.github.jsonldjava.core.JsonLdProcessor;
@@ -69,7 +66,7 @@ public final class LobidResources2ElasticsearchLobidTest {
 		client.admin().indices().prepareDelete("_all").execute().actionGet();
 		client.admin().cluster().prepareHealth().setWaitForYellowStatus().execute()
 				.actionGet();
-		buildAndExecuteFlow();
+		buildAndExecuteFlow(client);
 	}
 
 	@SuppressWarnings("static-method")
@@ -102,7 +99,7 @@ public final class LobidResources2ElasticsearchLobidTest {
 		testFile.deleteOnExit();
 	}
 
-	private static void buildAndExecuteFlow() {
+	public static void buildAndExecuteFlow(final Client cl) {
 		final DirReader dirReader = new DirReader();
 		final FileOpener opener = new FileOpener();
 		final Triples2RdfModel triple2model = new Triples2RdfModel();
@@ -110,16 +107,16 @@ public final class LobidResources2ElasticsearchLobidTest {
 		RecordReader lr = new RecordReader();
 		dirReader.setReceiver(opener).setReceiver(lr).setReceiver(triple2model)
 				.setReceiver(new RdfModel2ElasticsearchJsonLd())
-				.setReceiver(getElasticsearchIndexer());
+				.setReceiver(getElasticsearchIndexer(cl));
 		dirReader
 				.process(new File("src/test/resources/hbz01Records").getAbsolutePath());
 		opener.closeStream();
 		dirReader.closeStream();
 	}
 
-	private static ElasticsearchIndexer getElasticsearchIndexer() {
+	private static ElasticsearchIndexer getElasticsearchIndexer(final Client cl) {
 		ElasticsearchIndexer esIndexer = new ElasticsearchIndexer();
-		esIndexer.setElasticsearchClient(client);
+		esIndexer.setElasticsearchClient(cl);
 		esIndexer.setIndexName(LOBID_RESOURCES);
 		esIndexer.setIndexAliasSuffix("");
 		esIndexer.setUpdateNewestIndex(false);
