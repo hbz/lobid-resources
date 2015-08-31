@@ -36,7 +36,7 @@ import com.github.jsonldjava.utils.JSONUtils;
 import com.hp.hpl.jena.rdf.model.Model;
 
 /**
- * Read a directory with records got from lobid.org in ntriple serialization.
+ * Reads a directory with records got from lobid.org in ntriple serialization.
  * The records are indexed as JSON-LD in an in-memory elasticsearch instance,
  * then queried and concatenated into two files:
  * <ul>
@@ -49,7 +49,7 @@ import com.hp.hpl.jena.rdf.model.Model;
  * 
  */
 @SuppressWarnings("javadoc")
-public final class LobidResourcesAsNtriples2ElasticsearchLobidTest {
+public final class LobidResources2ElasticsearchLobidTest {
 	private static Node node;
 	protected static Client client;
 
