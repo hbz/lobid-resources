@@ -73,8 +73,9 @@
   @result_field("Gefeierte Person", "honoree", doc, TableRow.VALUES, valueLabel = gndEntities, param="person")
   @result_field("Übersetztung", "translator", doc, TableRow.VALUES, valueLabel = gndEntities, param="person")
 
-  @with_icon("Publikationstyp", "@type", controllers.nwbib.Application.TYPE_FIELD)
   @with_icon("Medienart", "medium", controllers.nwbib.Application.MEDIUM_FIELD)
+  @with_icon("Publikationstyp", "@type", controllers.nwbib.Application.TYPE_FIELD)
+  @result_field("", "thesisInformation", doc, TableRow.VALUES)
 
   @result_field("Erschienen", "issued", doc, TableRow.VALUES)
   @result_field("Auflage", "edition", doc, TableRow.VALUES)
