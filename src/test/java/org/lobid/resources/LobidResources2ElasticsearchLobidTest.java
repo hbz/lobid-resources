@@ -50,7 +50,7 @@ public final class LobidResources2ElasticsearchLobidTest {
 	private static Node node;
 	protected static Client client;
 
-	private static final String LOBID_RESOURCES = "lobid-resources";
+	private static final String LOBID_RESOURCES = "resources";
 	private static final String N_TRIPLE = "N-TRIPLE";
 	private static final String TEST_FILENAME_NTRIPLES = "hbz01.es.nt";
 	private static final String TEST_FILENAME_JSON = "hbz01.es.json";
