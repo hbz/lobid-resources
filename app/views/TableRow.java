@@ -29,20 +29,10 @@ public enum TableRow {
 		public String process(JsonNode doc, String property, String param,
 				String label, List<String> values, Optional<List<String>> keys) {
 			return values.stream()
-					.filter(value -> !value.contains("http://dewey.info")
-							&& (!property.startsWith("contributor") || count(doc, value) < 3))
+					.filter(value -> !value.contains("http://dewey.info"))
 					.map(val -> String.format("<tr><td>%s</td><td>%s</td></tr>", label,
 							label(doc, property, param, val, keys)))
 					.collect(Collectors.joining("\n"));
-		}
-
-		private int count(JsonNode doc, String id) {
-			int c = 0;
-			int i = -1;
-			while ((i = doc.toString().indexOf(id, i + 1)) > 0) {
-				c++;
-			}
-			return c;
 		}
 
 		private String label(JsonNode doc, String property, String param,
