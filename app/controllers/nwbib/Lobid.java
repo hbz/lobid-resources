@@ -375,15 +375,22 @@ public class Lobid {
 	 * @return A human readable label for the URIs
 	 */
 	public static String typeLabel(List<String> types) {
-		return facetLabel(types, Application.TYPE_FIELD);
+		return facetLabel(types, Application.TYPE_FIELD, "Publikationstypen");
 	}
 
 	/**
 	 * @param uris Some URIs
 	 * @param field The ES field to facet over
+	 * @param label A label for the facet
 	 * @return A human readable label for the URIs
 	 */
-	public static String facetLabel(List<String> uris, String field) {
+	public static String facetLabel(List<String> uris, String field,
+			String label) {
+		if (uris.size() == 1 && uris.get(0).contains(",") && !label.isEmpty()) {
+			int length = Arrays.asList(uris.get(0).split(",")).stream()
+					.filter(s -> !s.trim().isEmpty()).toArray().length;
+			return String.format("%s: %s ausgewählt", label, length);
+		}
 		if (uris.size() == 1 && isOrg(uris.get(0)))
 			return Lobid.organisationLabel(uris.get(0));
 		else if (uris.size() == 1

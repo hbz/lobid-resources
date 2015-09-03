@@ -405,7 +405,7 @@ public class Application extends Controller {
 		}
 		Predicate<JsonNode> labelled = json -> {
 			String term = json.get("term").asText();
-			String label = Lobid.facetLabel(Arrays.asList(term), field);
+			String label = Lobid.facetLabel(Arrays.asList(term), field, "");
 			String icon = Lobid.facetIcon(Arrays.asList(term), field);
 			Logger.trace("LABEL {}, ICON {}", label, icon);
 			return !label.startsWith("http") && !label.isEmpty() && !icon.isEmpty();
@@ -414,44 +414,52 @@ public class Application extends Controller {
 			String term = json.get("term").asText();
 			int count = json.get("count").asInt();
 			String icon = Lobid.facetIcon(Arrays.asList(term), field);
-			String label = Lobid.facetLabel(Arrays.asList(term), field);
+			String label = Lobid.facetLabel(Arrays.asList(term), field, "");
 
-			String mediumQuery = !field.equals(MEDIUM_FIELD) ? medium : term;
-			String typeQuery = !field.equals(TYPE_FIELD) ? t : term;
-			String ownerQuery = !field.equals(ITEM_FIELD) ? owner : term;
-			String nwbibsubjectQuery =
-					!field.equals(NWBIB_SUBJECT_FIELD) ? nwbibsubject : term;
-			String nwbibspatialQuery =
-					!field.equals(NWBIB_SPATIAL_FIELD) ? nwbibspatial : term;
-			String subjectQuery = !field.equals(SUBJECT_FIELD) ? subject : term;
-			String issuedQuery = !field.equals(ISSUED_FIELD) ? issued : term;
+			String mediumQuery = !field.equals(MEDIUM_FIELD) //
+					? medium : queryParam(medium, term);
+			String typeQuery = !field.equals(TYPE_FIELD) //
+					? t : queryParam(t, term);
+			String ownerQuery = !field.equals(ITEM_FIELD) //
+					? owner : queryParam(owner, term);
+			String nwbibsubjectQuery = !field.equals(NWBIB_SUBJECT_FIELD) //
+					? nwbibsubject : queryParam(nwbibsubject, term);
+			String nwbibspatialQuery = !field.equals(NWBIB_SPATIAL_FIELD) //
+					? nwbibspatial : queryParam(nwbibspatial, term);
+			String subjectQuery = !field.equals(SUBJECT_FIELD) //
+					? subject : queryParam(subject, term);
+			String issuedQuery = !field.equals(ISSUED_FIELD) //
+					? issued : queryParam(issued, term);
 
 			String routeUrl = routes.Application.search(q, person, name, subjectQuery,
 					id, publisher, issuedQuery, mediumQuery, nwbibspatialQuery,
 					nwbibsubjectQuery, from, size, ownerQuery, typeQuery, sort, false,
 					set, location, word, corporation, raw).url();
-			// @formatter:off
-					boolean current =
-										 field.equals(MEDIUM_FIELD) && term.equals(medium) 
-									|| field.equals(TYPE_FIELD) && term.equals(t)
-									|| field.equals(ITEM_FIELD) && term.equals(owner)
-									|| field.equals(NWBIB_SPATIAL_FIELD) && term.equals(nwbibspatial)
-									|| field.equals(NWBIB_SUBJECT_FIELD) && term.equals(nwbibsubject)
-									|| field.equals(SUBJECT_FIELD) && term.equals(subject);
-					//@formatter:on
+			boolean current = current(subject, medium, nwbibspatial, nwbibsubject,
+					owner, t, field, term);
 			String result = String.format(
 					"<li " + (current ? "class=\"active\"" : "")
-							+ "><a class=\"%s-facet-link\" href='%s'><span class='%s'/>&nbsp;%s (%s)</a></li>",
-					Math.abs(field.hashCode()), routeUrl, icon, label, count);
+							+ "><a class=\"%s-facet-link\" href='%s'>"
+							+ "<input class=\"facet-checkbox\" type=\"checkbox\" %s>"
+							+ "&nbsp;<span class='%s'/>&nbsp;%s (%s)</input></a></li>",
+					Math.abs(field.hashCode()), routeUrl, current ? "checked" : "", icon,
+					label, count);
 			return result;
 		};
 		Collator collator = Collator.getInstance(Locale.GERMAN);
 		Comparator<? super JsonNode> sorter = (j1, j2) -> {
 			String t1 = j1.get("term").asText();
 			String t2 = j2.get("term").asText();
-			String l1 = Lobid.facetLabel(Arrays.asList(t1), field);
-			String l2 = Lobid.facetLabel(Arrays.asList(t2), field);
-			return collator.compare(l1, l2);
+			boolean t1Current = current(subject, medium, nwbibspatial, nwbibsubject,
+					owner, t, field, t1);
+			boolean t2Current = current(subject, medium, nwbibspatial, nwbibsubject,
+					owner, t, field, t2);
+			if (t1Current == t2Current) {
+				String l1 = Lobid.facetLabel(Arrays.asList(t1), field, "");
+				String l2 = Lobid.facetLabel(Arrays.asList(t2), field, "");
+				return collator.compare(l1, l2);
+			}
+			return t1Current ? -1 : t2Current ? 1 : 0;
 		};
 		Promise<Result> promise = Lobid.getFacets(q, person, name, subject, id,
 				publisher, issued, medium, nwbibspatial, nwbibsubject, owner, field, t,
@@ -473,6 +481,30 @@ public class Application extends Controller {
 				}).map(lis -> ok(String.join("\n", lis)));
 		promise.onRedeem(r -> Cache.set(key, r, ONE_DAY));
 		return promise;
+	}
+
+	private static boolean current(String subject, String medium,
+			String nwbibspatial, String nwbibsubject, String owner, String t,
+			String field, String term) {
+		return field.equals(MEDIUM_FIELD) && contains(medium, term)
+				|| field.equals(TYPE_FIELD) && contains(t, term)
+				|| field.equals(ITEM_FIELD) && contains(owner, term)
+				|| field.equals(NWBIB_SPATIAL_FIELD) && contains(nwbibspatial, term)
+				|| field.equals(NWBIB_SUBJECT_FIELD) && contains(nwbibsubject, term)
+				|| field.equals(SUBJECT_FIELD) && contains(subject, term);
+	}
+
+	private static boolean contains(String medium, String term) {
+		return Arrays.asList(medium.split(",")).contains(term);
+	}
+
+	private static String queryParam(String currentParam, String term) {
+		if (currentParam.isEmpty())
+			return term;
+		else if (contains(currentParam, term))
+			return currentParam.replace(term, "").replaceAll("\\A,|,\\z", "");
+		else
+			return currentParam + "," + term;
 	}
 
 	private static Stream<JsonNode> preprocess(Stream<JsonNode> stream) {

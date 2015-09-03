@@ -31,7 +31,7 @@
 @with_icon(label: String, property: String, fullField: String) = {
   @if(!(doc\\property).isEmpty) {
     @defining((doc\\property).last.asOpt[Seq[String]].getOrElse(Seq((doc\\property).last.asOpt[String].get))){ v =>
-      <tr><td>@label</td><td><span class="@Lobid.facetIcon(v,fullField)"></span> @Lobid.facetLabel(v,fullField)</td></tr>
+      <tr><td>@label</td><td><span class="@Lobid.facetIcon(v,fullField)"></span> @Lobid.facetLabel(v,fullField,"")</td></tr>
     }
   }
 }

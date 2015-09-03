@@ -37,7 +37,7 @@
 	          @if(current.isEmpty()){
 	              <span class="@Lobid.facetIcon(Arrays.asList(), field)"></span> <span class="facet-label">@facet: @allLabel</span>
 	          } else {
-	              <span class="@Lobid.facetIcon(Arrays.asList(current), field)"></span> <span class="facet-label">@Html(Lobid.facetLabel(Seq(current), field))</span>
+	              <span class="@Lobid.facetIcon(Arrays.asList(current), field)"></span> <span class="facet-label">@Html(Lobid.facetLabel(Seq(current), field, facet))</span>
 	          }
 	          <span class="caret"></span>
 	        </button>
