@@ -86,7 +86,7 @@
   @result_field("URN", "urn", doc, TableRow.VALUES)
   @result_field("Umfang", "extent", doc, TableRow.VALUES)
   @result_field("Quelle", "bibliographicCitation", doc, TableRow.VALUES)
-  @result_field(if(doc.toString.contains("bibliographicCitation")) "" else "Enthalten in", "containedIn", doc, TableRow.LINKS)
+  @result_field("In", "containedIn", doc, TableRow.LINKS)
   @result_field("Erscheinungsweise", "frequency", doc, TableRow.VALUES)
   @result_field("Band", "volumeIn", doc, TableRow.VALUES, valueLabel = Option(Seq("numbering")))
   @result_field("In", "multiVolumeWork", doc, TableRow.LINKS)
@@ -94,7 +94,7 @@
   @result_field("In", "series", doc, TableRow.LINKS)
   @defining("http://lobid.org/resource/" + (doc \\ "hbzId")(0).as[String]){ id =>
    @subordinated("@graph.http://purl.org/lobid/lv#multiVolumeWork.@id", id, "Bände", "zugehörige Bände")
-   @subordinated("@graph.http://purl.org/lobid/lv#series.@id", id, "Enthält", "Titel")
+   @subordinated("@graph.http://purl.org/lobid/lv#series.@id", id, "Bände", "zugehörige Bände")
    @subordinated("@graph.http://purl.org/lobid/lv#containedIn.@id", id, "Enthält", "Beiträge")
   }
 }
