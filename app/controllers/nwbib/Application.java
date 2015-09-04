@@ -433,7 +433,8 @@ public class Application extends Controller {
 
 			String routeUrl = routes.Application.search(q, person, name, subjectQuery,
 					id, publisher, issuedQuery, mediumQuery, nwbibspatialQuery,
-					nwbibsubjectQuery, from, size, ownerQuery, typeQuery, sort, false,
+					nwbibsubjectQuery, from, size, ownerQuery, typeQuery,
+					sort(sort, nwbibspatialQuery, nwbibsubjectQuery, subjectQuery), false,
 					set, location, word, corporation, raw).url();
 			boolean current = current(subject, medium, nwbibspatial, nwbibsubject,
 					owner, t, field, term);
@@ -481,6 +482,12 @@ public class Application extends Controller {
 				}).map(lis -> ok(String.join("\n", lis)));
 		promise.onRedeem(r -> Cache.set(key, r, ONE_DAY));
 		return promise;
+	}
+
+	private static String sort(String sort, String nwbibspatialQuery,
+			String nwbibsubjectQuery, String subjectQuery) {
+		return (nwbibspatialQuery + nwbibsubjectQuery + subjectQuery).contains(",")
+				? "" /* relevance */ : sort;
 	}
 
 	private static boolean current(String subject, String medium,
