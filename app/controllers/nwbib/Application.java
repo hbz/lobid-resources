@@ -20,6 +20,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.common.collect.Iterators;
 
@@ -394,27 +395,55 @@ public class Application extends Controller {
 			String nwbibspatial, String nwbibsubject, int from, int size,
 			String owner, String t, String field, String sort, String set,
 			String location, String word, String corporation, String raw) {
+
 		String key = String.format(
-				"facets.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s", q,
-				person, name, subject, id, publisher, issued, medium, nwbibspatial,
-				nwbibsubject, owner, field, sort, t, set, location, word, corporation,
-				raw);
+				"facets.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s", field,
+				q, person, name, id, publisher, set, location, word, corporation, raw,
+				subject, issued, medium, nwbibspatial, nwbibsubject, owner, t);
 		Result cachedResult = (Result) Cache.get(key);
 		if (cachedResult != null) {
 			return Promise.promise(() -> cachedResult);
 		}
-		Predicate<JsonNode> labelled = json -> {
-			String term = json.get("term").asText();
-			String label = Lobid.facetLabel(Arrays.asList(term), field, "");
-			String icon = Lobid.facetIcon(Arrays.asList(term), field);
-			Logger.trace("LABEL {}, ICON {}", label, icon);
-			return !label.startsWith("http") && !label.isEmpty() && !icon.isEmpty();
-		};
-		Function<JsonNode, String> toHtml = json -> {
+
+		String labelTemplate = "<span class='%s'/>&nbsp;%s (%s)";
+
+		Function<JsonNode, Pair<JsonNode, String>> toLabel = json -> {
 			String term = json.get("term").asText();
 			int count = json.get("count").asInt();
 			String icon = Lobid.facetIcon(Arrays.asList(term), field);
 			String label = Lobid.facetLabel(Arrays.asList(term), field, "");
+			String fullLabel = String.format(labelTemplate, icon, label, count);
+			return Pair.of(json, fullLabel);
+		};
+
+		Predicate<Pair<JsonNode, String>> labelled = pair -> {
+			JsonNode json = pair.getLeft();
+			String label = pair.getRight();
+			int count = json.get("count").asInt();
+			return !label.contains("http") && label.length() > String
+					.format(labelTemplate, "", "", count).length();
+		};
+
+		Collator collator = Collator.getInstance(Locale.GERMAN);
+		Comparator<Pair<JsonNode, String>> sorter = (p1, p2) -> {
+			String t1 = p1.getLeft().get("term").asText();
+			String t2 = p2.getLeft().get("term").asText();
+			boolean t1Current = current(subject, medium, nwbibspatial, nwbibsubject,
+					owner, t, field, t1);
+			boolean t2Current = current(subject, medium, nwbibspatial, nwbibsubject,
+					owner, t, field, t2);
+			if (t1Current == t2Current) {
+				String l1 = p1.getRight().substring(p1.getRight().lastIndexOf('>') + 1);
+				String l2 = p2.getRight().substring(p2.getRight().lastIndexOf('>') + 1);
+				return collator.compare(l1, l2);
+			}
+			return t1Current ? -1 : t2Current ? 1 : 0;
+		};
+
+		Function<Pair<JsonNode, String>, String> toHtml = pair -> {
+			JsonNode json = pair.getLeft();
+			String fullLabel = pair.getRight();
+			String term = json.get("term").asText();
 
 			String mediumQuery = !field.equals(MEDIUM_FIELD) //
 					? medium : queryParam(medium, term);
@@ -431,38 +460,26 @@ public class Application extends Controller {
 			String issuedQuery = !field.equals(ISSUED_FIELD) //
 					? issued : queryParam(issued, term);
 
+			boolean current = current(subject, medium, nwbibspatial, nwbibsubject,
+					owner, t, field, term);
+
 			String routeUrl = routes.Application.search(q, person, name, subjectQuery,
 					id, publisher, issuedQuery, mediumQuery, nwbibspatialQuery,
 					nwbibsubjectQuery, from, size, ownerQuery, typeQuery,
 					sort(sort, nwbibspatialQuery, nwbibsubjectQuery, subjectQuery), false,
 					set, location, word, corporation, raw).url();
-			boolean current = current(subject, medium, nwbibspatial, nwbibsubject,
-					owner, t, field, term);
+
 			String result = String.format(
 					"<li " + (current ? "class=\"active\"" : "")
 							+ "><a class=\"%s-facet-link\" href='%s'>"
 							+ "<input onclick=\"location.href='%s'\" class=\"facet-checkbox\" "
-							+ "type=\"checkbox\" %s>&nbsp;<span class='%s'/>&nbsp;%s (%s)</input>"
-							+ "</a></li>",
+							+ "type=\"checkbox\" %s>&nbsp;%s</input>" + "</a></li>",
 					Math.abs(field.hashCode()), routeUrl, routeUrl,
-					current ? "checked" : "", icon, label, count);
+					current ? "checked" : "", fullLabel);
+
 			return result;
 		};
-		Collator collator = Collator.getInstance(Locale.GERMAN);
-		Comparator<? super JsonNode> sorter = (j1, j2) -> {
-			String t1 = j1.get("term").asText();
-			String t2 = j2.get("term").asText();
-			boolean t1Current = current(subject, medium, nwbibspatial, nwbibsubject,
-					owner, t, field, t1);
-			boolean t2Current = current(subject, medium, nwbibspatial, nwbibsubject,
-					owner, t, field, t2);
-			if (t1Current == t2Current) {
-				String l1 = Lobid.facetLabel(Arrays.asList(t1), field, "");
-				String l2 = Lobid.facetLabel(Arrays.asList(t2), field, "");
-				return collator.compare(l1, l2);
-			}
-			return t1Current ? -1 : t2Current ? 1 : 0;
-		};
+
 		Promise<Result> promise = Lobid.getFacets(q, person, name, subject, id,
 				publisher, issued, medium, nwbibspatial, nwbibsubject, owner, field, t,
 				set, location, word, corporation, raw).map(json -> {
@@ -472,7 +489,29 @@ public class Application extends Controller {
 					if (field.equals(ITEM_FIELD)) {
 						stream = preprocess(stream);
 					}
-					List<String> list = stream.sorted(sorter).filter(labelled).map(toHtml)
+					String labelKey = String.format(
+							"facets-labels.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s",
+							field, q, person, name, id, publisher, set, location, word,
+							corporation, raw,
+							/* facet values, include in key only if not the current facet: */
+							field.equals(SUBJECT_FIELD) ? "" : subject,
+							field.equals(ISSUED_FIELD) ? "" : issued,
+							field.equals(MEDIUM_FIELD) ? "" : medium,
+							field.equals(NWBIB_SPATIAL_FIELD) ? "" : nwbibspatial,
+							field.equals(NWBIB_SUBJECT_FIELD) ? "" : nwbibsubject,
+							field.equals(ISSUED_FIELD) ? "" : owner,
+							field.equals(TYPE_FIELD) ? "" : t);
+
+					@SuppressWarnings("unchecked")
+					List<Pair<JsonNode, String>> labelledFacets =
+							(List<Pair<JsonNode, String>>) Cache.get(labelKey);
+					if (labelledFacets == null) {
+						labelledFacets = stream.map(toLabel).filter(labelled)
+								.collect(Collectors.toList());
+						Cache.set(labelKey, labelledFacets, ONE_DAY);
+					}
+
+					List<String> list = labelledFacets.stream().sorted(sorter).map(toHtml)
 							.collect(Collectors.toList());
 					long count = Iterators.size(json.findValue("entries").elements());
 					if (count == MAX_FACETS) {
