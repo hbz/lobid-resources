@@ -89,9 +89,9 @@
   @result_field("In", "containedIn", doc, TableRow.LINKS)
   @result_field("Erscheinungsweise", "frequency", doc, TableRow.VALUES)
   @result_field("Band", "volumeIn", doc, TableRow.VALUES, valueLabel = Option(Seq("numbering")))
-  @result_field("In", "multiVolumeWork", doc, TableRow.LINKS)
+  @result_field("Von", "multiVolumeWork", doc, TableRow.LINKS)
   @result_field("Band", "inSeries", doc, TableRow.VALUES, valueLabel = Option(Seq("numbering")))
-  @result_field("In", "series", doc, TableRow.LINKS)
+  @result_field("Von", "series", doc, TableRow.LINKS)
   @defining("http://lobid.org/resource/" + (doc \\ "hbzId")(0).as[String]){ id =>
    @subordinated("@graph.http://purl.org/lobid/lv#multiVolumeWork.@id", id, "Bände", "zugehörige Bände")
    @subordinated("@graph.http://purl.org/lobid/lv#series.@id", id, "Bände", "zugehörige Bände")
