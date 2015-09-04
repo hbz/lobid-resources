@@ -441,10 +441,11 @@ public class Application extends Controller {
 			String result = String.format(
 					"<li " + (current ? "class=\"active\"" : "")
 							+ "><a class=\"%s-facet-link\" href='%s'>"
-							+ "<input class=\"facet-checkbox\" type=\"checkbox\" %s>"
-							+ "&nbsp;<span class='%s'/>&nbsp;%s (%s)</input></a></li>",
-					Math.abs(field.hashCode()), routeUrl, current ? "checked" : "", icon,
-					label, count);
+							+ "<input onclick=\"location.href='%s'\" class=\"facet-checkbox\" "
+							+ "type=\"checkbox\" %s>&nbsp;<span class='%s'/>&nbsp;%s (%s)</input>"
+							+ "</a></li>",
+					Math.abs(field.hashCode()), routeUrl, routeUrl,
+					current ? "checked" : "", icon, label, count);
 			return result;
 		};
 		Collator collator = Collator.getInstance(Locale.GERMAN);
