@@ -52,7 +52,7 @@
                     </table>
                     </dd>
                     }
-                    @if(!items.isEmpty){
+                    @if(!items.isEmpty && !doc.toString.contains("fulltextOnline")){
                     @defining(items.size){num =>
                       <dt>Bestand in @num Bibliothek@if(num>1){en}:</dt>
                     }
