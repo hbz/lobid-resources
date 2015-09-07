@@ -124,15 +124,15 @@ public class IntegrationTest {
 		running(testServer(3333), () -> {
 			Long hits = Lobid
 					.getTotalHits("@graph.http://purl.org/lobid/lv#multiVolumeWork.@id",
-							"http://lobid.org/resource/HT018486420")
+							"http://lobid.org/resource/HT018486420", "")
 					.get(10000);
 			assertThat(hits).isGreaterThan(0);
 			hits = Lobid.getTotalHits("@graph.http://purl.org/lobid/lv#series.@id",
-					"http://lobid.org/resource/HT002091108").get(10000);
+					"http://lobid.org/resource/HT002091108", "").get(10000);
 			assertThat(hits).isGreaterThan(0);
 			hits =
 					Lobid.getTotalHits("@graph.http://purl.org/lobid/lv#containedIn.@id",
-							"http://lobid.org/resource/HT001387709").get(10000);
+							"http://lobid.org/resource/HT001387709", "").get(10000);
 			assertThat(hits).isGreaterThan(0);
 		});
 	}

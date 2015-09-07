@@ -37,8 +37,8 @@
 }
 
 @subordinated(field:String, id:String, label:String, value:String) = {
-  @defining(Lobid.getTotalHits(field, id).get(10000)){ hits => @if(hits > 0) {
-    <tr><td>@label</td><td><a title="@value" href="@nwbib.routes.Application.search(raw=Lobid.escapeUri(field)+":"+Lobid.escapeUri(id))">@hits @value</a></td></tr>
+  @defining(Lobid.getTotalHits(field, id, "*").get(10000)){ hits => @if(hits > 0) {
+    <tr><td>@label</td><td><a title="@value" href="@nwbib.routes.Application.search(raw=Lobid.escapeUri(field)+":"+Lobid.escapeUri(id),set="*")">@hits @value</a></td></tr>
   }}
 }
 
@@ -94,7 +94,7 @@
   @result_field("Von", "series", doc, TableRow.LINKS)
   @defining("http://lobid.org/resource/" + (doc \\ "hbzId")(0).as[String]){ id =>
    @subordinated("@graph.http://purl.org/lobid/lv#multiVolumeWork.@id", id, "Bände", "zugehörige Bände")
-   @subordinated("@graph.http://purl.org/lobid/lv#series.@id", id, "Bände", "zugehörige Bände")
+   @subordinated("@graph.http://purl.org/lobid/lv#series.@id", id, "Serientitel", "zugehörige Serientitel")
    @subordinated("@graph.http://purl.org/lobid/lv#containedIn.@id", id, "Enthält", "Beiträge")
   }
 }

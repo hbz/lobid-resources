@@ -60,8 +60,11 @@ public class Lobid {
 		if (!allData && set.isEmpty())
 			requestHolder = requestHolder.setQueryParameter("set",
 					Application.CONFIG.getString("nwbib.set"));
-		if (!set.isEmpty())
+		else if (!set.isEmpty() && !set.equals("*"))
 			requestHolder = requestHolder.setQueryParameter("set", set);
+		else {
+			requestHolder = requestHolder.setQueryParameter("set", "");
+		}
 		if (!raw.trim().isEmpty())
 			requestHolder = requestHolder.setQueryParameter("q", raw);
 		if (!q.trim().isEmpty())
@@ -140,12 +143,14 @@ public class Lobid {
 	/**
 	 * @param field The Elasticsearch index field
 	 * @param value The value of the given field
+	 * @param set The data set, uses the config file set if empty
 	 * @return The number of hits for the given value in the given field
 	 */
-	public static Promise<Long> getTotalHits(String field, String value) {
+	public static Promise<Long> getTotalHits(String field, String value,
+			String set) {
 		String f = escapeUri(field);
 		String v = escapeUri(value);
-		String cacheKey = String.format("totalHits.%s.%s", f, v);
+		String cacheKey = String.format("totalHits.%s.%s.%s", f, v, set);
 		final Long cachedResult = (Long) Cache.get(cacheKey);
 		if (cachedResult != null) {
 			return Promise.promise(() -> {
@@ -154,7 +159,9 @@ public class Lobid {
 		}
 		return WS.url(Application.CONFIG.getString("nwbib.api"))
 				.setQueryParameter("q", f + ":" + v)
-				.setQueryParameter("set", Application.CONFIG.getString("nwbib.set"))
+				.setQueryParameter("set",
+						set.isEmpty() ? Application.CONFIG.getString("nwbib.set")
+								: set.equals("*") ? "" : set)
 				.get().map((WSResponse response) -> {
 					Long total = getTotalResults(response.asJson());
 					Cache.set(cacheKey, total, Application.ONE_HOUR);
