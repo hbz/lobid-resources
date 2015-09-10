@@ -5,6 +5,7 @@ package views;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -91,6 +92,48 @@ public enum TableRow {
 				}
 			}
 			return result.isEmpty() ? value : result.get(0);
+		}
+	},
+	VALUES_MULTI {
+		@Override
+		public String process(JsonNode doc, String property, String param,
+				String label, List<String> values, Optional<List<String>> keys) {
+			if (!keys.isPresent()) {
+				throw new IllegalArgumentException("VALUES_MULTI needs valueLabels");
+			}
+			return values.stream()
+					.filter(value -> !value.contains("http://dewey.info"))
+					.map(val -> String.format("<tr><td>%s</td><td>%s</td></tr>", label,
+							label(doc, val, keys.get())))
+					.collect(Collectors.joining("\n"));
+		}
+
+		private String label(JsonNode doc, String value, List<String> properties) {
+			List<String> results = new ArrayList<>();
+			List<String> resultValues = labelsFor(doc, value, properties);
+			for (int i = 0; i < resultValues.size(); i++) {
+				String currentValue = resultValues.get(i);
+				String[] refAndLabel = refAndLabel(properties.get(i), currentValue);
+				String result = properties.get(i).equals("numbering") ? currentValue
+						: String.format(
+								"<a title=\"Nach weiteren Titeln suchen\" href=\"%s\">%s</a>",
+								refAndLabel[0], refAndLabel[1]);
+				results.add(result);
+			}
+			return results.stream().collect(Collectors.joining(" | Band "));
+		}
+
+		private List<String> labelsFor(JsonNode doc, String value,
+				List<String> keys) {
+			List<String> result = new ArrayList<>();
+			for (JsonNode node : doc.get("@graph")) {
+				for (String key : keys) {
+					if (node.get("@id").textValue().equals(value) && node.has(key)) {
+						result.add(node.get(key).textValue());
+					}
+				}
+			}
+			return result.isEmpty() ? Arrays.asList(value) : result;
 		}
 	},
 	LINKS {
