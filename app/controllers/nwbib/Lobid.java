@@ -256,6 +256,7 @@ public class Lobid {
 		String label = Application.CLASSIFICATION.label(uri, type);
 		label = shorten(label);
 		label = HtmlEscapers.htmlEscaper().escape(label);
+		label = label.trim().isEmpty() ? uri : label;
 		Cache.set(cacheKey, label);
 		return label;
 	}

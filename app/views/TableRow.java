@@ -12,7 +12,6 @@ import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
-import controllers.nwbib.Application;
 import controllers.nwbib.Classification;
 import controllers.nwbib.Lobid;
 
@@ -69,8 +68,7 @@ public enum TableRow {
 			String label = "";
 			if (value.startsWith("http://purl.org/lobid/nwbib")) {
 				label = String.format("%s (%s)", //
-						Application.CLASSIFICATION.ids(value, "").findValue("label")
-								.asText(),
+						Lobid.facetLabel(Arrays.asList(value), null, null),
 						Classification.shortId(value));
 			} else {
 				label = labelFor(doc, value, labels);

@@ -420,8 +420,8 @@ public class Application extends Controller {
 			JsonNode json = pair.getLeft();
 			String label = pair.getRight();
 			int count = json.get("count").asInt();
-			return !label.contains("http") && label.length() > String
-					.format(labelTemplate, "", "", count).length();
+			return (!label.contains("http") || label.contains("nwbib")) && label
+					.length() > String.format(labelTemplate, "", "", count).length();
 		};
 
 		Collator collator = Collator.getInstance(Locale.GERMAN);
