@@ -92,7 +92,7 @@
   @result_field("In", "inSeries", doc, TableRow.VALUES_MULTI, valueLabel = Option(Seq("series", "numbering")))
   @defining("http://lobid.org/resource/" + (doc \\ "hbzId")(0).as[String]){ id =>
    @subordinated("@graph.http://purl.org/lobid/lv#multiVolumeWork.@id", id, "Bände", "zugehörige Bände")
-   @subordinated("@graph.http://purl.org/lobid/lv#series.@id", id, "Serientitel", "zugehörige Serientitel")
+   @subordinated("@graph.http://purl.org/lobid/lv#series.@id", id, "Serienbände", "zugehörige Serienbände")
    @subordinated("@graph.http://purl.org/lobid/lv#containedIn.@id", id, "Enthält", "Beiträge")
   }
 }
