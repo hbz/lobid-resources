@@ -111,7 +111,7 @@
                  <div class="panel-body" style="text-align:center">
                      @allHits @if(!raw.isEmpty){ 
                       @defining(Application.CONFIG.getString("nwbib.api") + "/" + raw.substring(raw.lastIndexOf("/")+1)) { lobidUrl =>
-                       @labelRaw in: <a href="@lobidUrl.replace("/resource/","/nwbib/")">@Lobid.resourceLabel(lobidUrl)</a>}}else{Treffer}, 
+                       @labelRaw in: <a href="@lobidUrl.replace("/resource/","/nwbib/")">@Html(Lobid.resourceLabel(lobidUrl))</a>}}else{Treffer}, 
                        zeige @(from+1) bis @(Math.min(from+hits.size,from+size)):
                  </div>
                  <table class="table table-striped table-condensed">
