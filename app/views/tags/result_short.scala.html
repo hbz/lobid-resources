@@ -1,11 +1,13 @@
 @* Copyright 2014 Fabian Steeg, hbz. Licensed under the GPLv2 *@
 
-@(id:String, doc: play.api.libs.json.JsValue)
+@(id:String, doc: play.api.libs.json.JsValue, i: Int = -1, hits: Seq[play.api.libs.json.JsValue] = Seq())
 
 @import play.api.libs.json._
 @import views.TableRow
 @import controllers.nwbib.Lobid
 @import scala.collection.immutable.Map
+@import play.mvc.Controller.session
+@import play.cache.Cache
 
 @optional(doc: JsValue, key: String, sep: String, alt: String)=@{
     val other = (doc \\ key)
@@ -53,6 +55,7 @@
 <tr>
   <td> <span title="@Lobid.typeLabel(t)" class="@Lobid.typeIcon(t)"></span> </td>
   <td> <a href="@nwbib.routes.Application.show(id)">
+    @Cache.set(session("uuid")+"-"+id, (if(i>0 && hits.size>i-1) hits(i-1).as[String] else "") + "," + (if(i+1<hits.size) hits(i+1).as[String] else ""))
     @optional(doc, "title", "", "<Kein Titel>")
     @optional(doc, "otherTitleInformation", " | ", "")
     @optional(doc, "edition", " | ", "")</a></td>

@@ -123,7 +123,7 @@
                   <th style="width: 5%; text-align: right"></th>
                  </tr>
                  @for((doc,i) <- hits; id = ("""http://.*?lobid.org/resource.+?([^/]+).*?""".r findFirstMatchIn ((doc \ "@id").as[String])).get group 1) {
-                    @tags.result_short(id,doc)
+                    @tags.result_short(id,doc,i-1,Json.parse(result)\\"hbzId")
                  }
                  </table>
                  <div class="panel-body" style="text-align:center">

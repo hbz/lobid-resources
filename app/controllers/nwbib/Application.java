@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Spliterators;
+import java.util.UUID;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -193,6 +194,11 @@ public class Application extends Controller {
 			final int size, final String owner, String t, String sort,
 			boolean details, String set, String location, String word,
 			String corporation, String raw) {
+		String uuid = session("uuid");
+		if (uuid == null)
+			session("uuid", UUID.randomUUID().toString());
+		if (id.isEmpty())
+			session("lastSearchUrl", request().uri());
 		String cacheId = String.format(
 				"%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s",
 				"search", q, person, name, subject, id, publisher, issued, medium,
@@ -223,6 +229,13 @@ public class Application extends Controller {
 	 * @return The details page for the resource with the given ID.
 	 */
 	public static Promise<Result> show(final String id) {
+		String prevNext = (String) Cache.get(session("uuid") + "-" + id);
+		if (prevNext != null) {
+			session("prev", prevNext.startsWith(",") ? "" : prevNext.split(",")[0]);
+			session("next", prevNext.endsWith(",") ? "" : prevNext.split(",")[1]);
+		} else {
+			Logger.warn("No pagination session data for {}", id);
+		}
 		return search("", "", "", "", id, "", "", "", "", "", 0, 1, "", "", "",
 				true, "", "", "", "", "");
 	}
@@ -354,6 +367,14 @@ public class Application extends Controller {
 				JsonNode json = response.asJson();
 				hits = Lobid.getTotalResults(json);
 				s = json.toString();
+				if (id.isEmpty()) {
+					List<JsonNode> ids = json.findValues("hbzId");
+					for (JsonNode idNode : ids) {
+						Cache.remove(String.format("search.....%s......0.1........",
+								idNode.asText()));
+					}
+					Cache.set(session("uuid") + "-lastSearch", ids.toString());
+				}
 			} else {
 				Logger.warn("{}: {} ({}, {})", response.getStatus(),
 						response.getStatusText(), requestHolder.getUrl(),
