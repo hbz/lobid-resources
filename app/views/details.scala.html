@@ -13,14 +13,12 @@
 @import play.mvc.Controller.session
 @import play.cache.Cache
 
-@pageLink(last: Seq[String], key: String, label: String) = {
+@pageLink(last: Seq[String], key: String, label: String, clazz: String) = {
   @defining((last.indexOf(session(key))-1,last.indexOf(session(key))+1)) { case (prev,next) =>
-  <li @if(session(key).isEmpty){class="disabled"}>
+  <li class="@clazz @if(session(key).isEmpty){disabled}">
     <a href=@if(session(key).isEmpty) {"#"} else {"@nwbib.routes.Application.show(session(key))"}>
       @session(session(key), (if(prev >=0) last(prev) else "") + "," + (if(next < last.size()) last(next) else ""))
-      @if(key=="prev"){@Html(label)} 
-      @if(!session(key).isEmpty){zu Treffer @if(key=="prev") {@(prev+2)} else {@next} von @last.size()} 
-      @if(key=="next"){@Html(label)}
+      @Html(label)
     </a>
     </li>
   }
@@ -29,6 +27,17 @@
 @main("NWBib - Vollanzeige") {
     @defining(Json.parse(result).asOpt[Seq[JsValue]].getOrElse(Seq()).zipWithIndex.tail) { hits =>
         @for((doc,i) <- hits) {
+        @defining(Cache.get(session("uuid") + "-lastSearch")) { lastSearch => @if(lastSearch != null) {
+          @defining(Json.parse(lastSearch.asInstanceOf[String]).as[JsArray].as[Seq[String]]) { last =>
+           <nav>
+             <ul class="pager">
+               @pageLink(last, "prev", "&larr;", "previous")
+               <li><a href="@session("lastSearchUrl")">Treffer @(last.indexOf((doc\\"hbzId")(0).as[String])+1) von @last.size in der letzten Trefferliste</a></li>
+               @pageLink(last, "next", "&rarr;", "next")
+             </ul>
+           </nav>
+          }
+        }}
         <div class="row">
           @defining(Lobid.items(doc.toString)) { items =>
               @defining(!(doc\\"isPartOf").isEmpty && doc.toString.contains("http://purl.org/ontology/bibo/Article")){superordination =>
@@ -78,17 +87,6 @@
               }}
           }
         </div>
-        @defining(Cache.get(session("uuid") + "-lastSearch")) { lastSearch => @if(lastSearch != null) {
-          @defining(Json.parse(lastSearch.asInstanceOf[String]).as[JsArray].as[Seq[String]]) { last =>
-           <nav>
-             <ul class="pager">
-               @pageLink(last, "prev", "&larr;")
-               <li><a href="@session("lastSearchUrl")">zurück zur letzten Trefferliste</a></li>
-               @pageLink(last, "next", "&rarr;")
-             </ul>
-           </nav>
-          }
-        }}
         }
         @if(flash.get("error")!=null){
             <div class="alert alert-danger">@flash.get("error")</div>
