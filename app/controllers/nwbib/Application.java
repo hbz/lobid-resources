@@ -100,7 +100,8 @@ public class Application extends Controller {
 			CONFIG.getString("nwbib.cluster"), CONFIG.getString("nwbib.server"));
 
 	static final int ONE_HOUR = 60 * 60;
-	static final int ONE_DAY = 24 * ONE_HOUR;
+	/** The number of seconds in one day. */
+	public static final int ONE_DAY = 24 * ONE_HOUR;
 
 	/**
 	 * @return The NWBib index page.
@@ -200,8 +201,8 @@ public class Application extends Controller {
 		if (id.isEmpty())
 			session("lastSearchUrl", request().uri());
 		String cacheId = String.format(
-				"%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s",
-				"search", q, person, name, subject, id, publisher, issued, medium,
+				"%s-%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s",
+				"search", uuid, q, person, name, subject, id, publisher, issued, medium,
 				nwbibspatial, nwbibsubject, from, size, owner, t, sort, set, location,
 				word, corporation, raw);
 		@SuppressWarnings("unchecked")
@@ -370,10 +371,10 @@ public class Application extends Controller {
 				if (id.isEmpty()) {
 					List<JsonNode> ids = json.findValues("hbzId");
 					for (JsonNode idNode : ids) {
-						Cache.remove(String.format("search.....%s......0.1........",
-								idNode.asText()));
+						Cache.remove(String.format("search-%s.....%s......0.1........",
+								session("uuid"), idNode.asText()));
 					}
-					Cache.set(session("uuid") + "-lastSearch", ids.toString());
+					Cache.set(session("uuid") + "-lastSearch", ids.toString(), ONE_DAY);
 				}
 			} else {
 				Logger.warn("{}: {} ({}, {})", response.getStatus(),

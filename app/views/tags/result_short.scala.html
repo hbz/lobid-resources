@@ -8,6 +8,7 @@
 @import scala.collection.immutable.Map
 @import play.mvc.Controller.session
 @import play.cache.Cache
+@import controllers.nwbib.Application
 
 @optional(doc: JsValue, key: String, sep: String, alt: String)=@{
     val other = (doc \\ key)
@@ -55,7 +56,7 @@
 <tr>
   <td> <span title="@Lobid.typeLabel(t)" class="@Lobid.typeIcon(t)"></span> </td>
   <td> <a href="@nwbib.routes.Application.show(id)">
-    @Cache.set(session("uuid")+"-"+id, (if(i>0 && hits.size>i-1) hits(i-1).as[String] else "") + "," + (if(i+1<hits.size) hits(i+1).as[String] else ""))
+    @Cache.set(session("uuid")+"-"+id, (if(i>0 && hits.size>i-1) hits(i-1).as[String] else "") + "," + (if(i+1<hits.size) hits(i+1).as[String] else ""), Application.ONE_DAY)
     @optional(doc, "title", "", "<Kein Titel>")
     @optional(doc, "otherTitleInformation", " | ", "")
     @optional(doc, "edition", " | ", "")</a></td>
