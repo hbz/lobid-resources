@@ -28,7 +28,7 @@
         (id,i) <- ids.zipWithIndex;
         url = s"http://lobid.org/resource/$id?format=full";
         doc = Await.result(WS.url(url).get.map{response => response.json}, 10.seconds)) {
-                @tags.result_short(id,doc)
+                @tags.result_short(id,doc,i,ids)
         }
         </table>
         <div class="text-center" id="clear-list">

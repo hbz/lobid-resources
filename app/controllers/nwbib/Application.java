@@ -31,8 +31,6 @@ import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 
 import play.Logger;
-import play.Play;
-import play.api.cache.EhCachePlugin;
 import play.cache.Cache;
 import play.cache.Cached;
 import play.data.Form;
@@ -198,13 +196,14 @@ public class Application extends Controller {
 		String uuid = session("uuid");
 		if (uuid == null)
 			session("uuid", UUID.randomUUID().toString());
-		if (id.isEmpty())
+		if (id.isEmpty()) {
 			session("lastSearchUrl", request().uri());
-		String cacheId = String.format(
-				"%s-%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s",
-				"search", uuid, q, person, name, subject, id, publisher, issued, medium,
-				nwbibspatial, nwbibsubject, from, size, owner, t, sort, set, location,
-				word, corporation, raw);
+			response().setHeader("Cache-Control",
+					"no-cache, no-store, must-revalidate");
+			response().setHeader("Pragma", "no-cache");
+			response().setHeader("Expires", "0");
+		}
+		String cacheId = String.format("%s-%s", uuid, request().uri());
 		@SuppressWarnings("unchecked")
 		Promise<Result> cachedResult = (Promise<Result>) Cache.get(cacheId);
 		if (cachedResult != null)
@@ -370,10 +369,8 @@ public class Application extends Controller {
 				s = json.toString();
 				if (id.isEmpty()) {
 					List<JsonNode> ids = json.findValues("hbzId");
-					for (JsonNode idNode : ids) {
-						Cache.remove(String.format("search-%s.....%s......0.1........",
-								session("uuid"), idNode.asText()));
-					}
+					uncache(
+							ids.stream().map(j -> j.asText()).collect(Collectors.toList()));
 					Cache.set(session("uuid") + "-lastSearch", ids.toString(), ONE_DAY);
 				}
 			} else {
@@ -386,6 +383,12 @@ public class Application extends Controller {
 							medium, nwbibspatial, nwbibsubject, from, size, hits, owner, t,
 							sort, set, location, word, corporation, raw));
 		});
+	}
+
+	private static void uncache(List<String> ids) {
+		for (String id : ids) {
+			Cache.remove(String.format("%s-/nwbib/%s", session("uuid"), id));
+		}
 	}
 
 	/**
@@ -614,8 +617,12 @@ public class Application extends Controller {
 	 * @return An OK result
 	 */
 	public static Result star(String id) {
-		session(STARRED, currentlyStarred() + " " + id);
-		uncache(id);
+		String starred = currentlyStarred();
+		if (!starred.contains(id)) {
+			session(STARRED, starred + " " + id);
+			uncache(Arrays.asList(id));
+			uncacheLastSearchUrl();
+		}
 		return ok("Starred: " + id);
 	}
 
@@ -627,15 +634,27 @@ public class Application extends Controller {
 		List<String> starred = starredIds();
 		starred.remove(id);
 		session(STARRED, String.join(" ", starred));
-		uncache(id);
+		uncache(Arrays.asList(id));
+		uncacheLastSearchUrl();
 		return ok("Unstarred: " + id);
+	}
+
+	private static void uncacheLastSearchUrl() {
+		String lastSearchUrl = session("lastSearchUrl");
+		if (lastSearchUrl != null)
+			Cache.remove(session("uuid") + "-" + lastSearchUrl);
 	}
 
 	/**
 	 * @return A page with all resources starred by the user
 	 */
 	public static Result showStars() {
-		return ok(stars.render(starredIds()));
+		List<String> starredIds = starredIds();
+		uncache(starredIds);
+		session("lastSearchUrl", routes.Application.showStars().toString());
+		Cache.set(session("uuid") + "-lastSearch", starredIds.stream()
+				.map(s -> "\"" + s + "\"").collect(Collectors.toList()).toString());
+		return ok(stars.render(starredIds));
 	}
 
 	/**
@@ -644,17 +663,6 @@ public class Application extends Controller {
 	public static Result clearStars() {
 		session(STARRED, "");
 		return ok(stars.render(starredIds()));
-	}
-
-	private static void uncache(String id) {
-		try {
-			Play.application().plugin(EhCachePlugin.class).manager().getCache("play")
-					.removeAll();
-		} catch (Throwable t) {
-			Logger.error("Could not clear cache", t);
-			Cache.remove(
-					String.format("%s.%s.%s.%s.%s.%s", "search", id, 0, 1, "", "", true));
-		}
 	}
 
 	private static String currentlyStarred() {
