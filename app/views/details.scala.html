@@ -32,7 +32,10 @@
            <nav>
              <ul class="pager">
                @pageLink(last, "prev", "&larr;", "previous", "Voriger Treffer")
-               <li><a href="@session("lastSearchUrl")">Treffer @(last.indexOf((doc\\"hbzId")(0).as[String])+1) von @last.size in der letzten Trefferliste</a></li>
+               @defining(session("lastSearchUrl")){ lastSearchUrl =>
+                 <li><a href="@lastSearchUrl">Treffer @(last.indexOf((doc\\"hbzId")(0).as[String])+1) von @last.size in der 
+                 @if(lastSearchUrl==nwbib.routes.Application.showStars().toString()) {Merkliste} else {letzten Trefferliste}</a></li>
+               }
                @pageLink(last, "next", "&rarr;", "next", "Nächster Treffer")
              </ul>
            </nav>
