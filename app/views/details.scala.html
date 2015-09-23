@@ -13,10 +13,10 @@
 @import play.mvc.Controller.session
 @import play.cache.Cache
 
-@pageLink(last: Seq[String], key: String, label: String, clazz: String) = {
+@pageLink(last: Seq[String], key: String, label: String, clazz: String, tip: String) = {
   @defining((last.indexOf(session(key))-1,last.indexOf(session(key))+1)) { case (prev,next) =>
   <li class="@clazz @if(session(key).isEmpty){disabled}">
-    <a href=@if(session(key).isEmpty) {"#"} else {"@nwbib.routes.Application.show(session(key))"}>
+    <a title="@tip" href=@if(session(key).isEmpty) {"#"} else {"@nwbib.routes.Application.show(session(key))"}>
       @session(session(key), (if(prev >=0) last(prev) else "") + "," + (if(next < last.size()) last(next) else ""))
       @Html(label)
     </a>
@@ -31,9 +31,9 @@
           @defining(Json.parse(lastSearch.asInstanceOf[String]).as[JsArray].as[Seq[String]]) { last =>
            <nav>
              <ul class="pager">
-               @pageLink(last, "prev", "&larr;", "previous")
+               @pageLink(last, "prev", "&larr;", "previous", "Voriger Treffer")
                <li><a href="@session("lastSearchUrl")">Treffer @(last.indexOf((doc\\"hbzId")(0).as[String])+1) von @last.size in der letzten Trefferliste</a></li>
-               @pageLink(last, "next", "&rarr;", "next")
+               @pageLink(last, "next", "&rarr;", "next", "Nächster Treffer")
              </ul>
            </nav>
           }
