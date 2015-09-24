@@ -1,0 +1,30 @@
+@* Copyright 2015 Fabian Steeg, hbz. Licensed under the GPLv2 *@
+
+@(doc: play.api.libs.json.JsValue)
+
+@import controllers.nwbib.Lobid
+
+@schemaType(lobidType:String) = @{
+	lobidType match {
+		case "http://purl.org/ontology/bibo/Article" => "Article"
+		case "http://purl.org/ontology/bibo/Book" => "Book"
+		case "http://purl.org/ontology/bibo/Journal" => "Periodical"
+
+		case _ => "lobidType" // no mapping, use our type as fallback
+	}
+}
+
+@property(lobidProp: String, schemaProp: String) = {"@schemaProp" : @Html((doc\\lobidProp)(0).toString)}
+
+<script type="application/ld+json">
+{
+	"@@context": "http://schema.org",
+	"@@type": "@schemaType(Lobid.selectType((doc\\"@type")(0).as[Seq[String]], "type.labels"))",
+
+	@property("title", "name"),
+	@property("creator", "creator"),
+	@property("publisher", "publisher"),
+	@property("subject", "about")
+}
+</script>
+
