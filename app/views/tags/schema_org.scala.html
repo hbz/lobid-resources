@@ -2,6 +2,7 @@
 
 @(doc: play.api.libs.json.JsValue)
 
+@import play.api.libs.json._
 @import controllers.nwbib.Lobid
 
 @schemaType(lobidType:String) = @{
@@ -28,10 +29,17 @@
 	}
 }
 
+@types(types: JsValue) = @{
+	types match {
+		case a: JsArray => a.as[Seq[String]]
+		case _ => Seq(types.as[String])
+	}
+}
+
 <script type="application/ld+json">
 {
 	"@@context": "http://schema.org",
-	"@@type": "@schemaType(Lobid.selectType((doc\\"@type")(0).as[Seq[String]], "type.labels"))",
+	"@@type": "@schemaType(Lobid.selectType(types((doc\\"@type")(0)), "type.labels"))",
 	@Html(properties(Seq(
 		"title" -> "name",
 		"creator" -> "creator",
