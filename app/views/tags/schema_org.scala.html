@@ -9,8 +9,16 @@
 		case "http://purl.org/ontology/bibo/Article" => "Article"
 		case "http://purl.org/ontology/bibo/Book" => "Book"
 		case "http://purl.org/ontology/bibo/Journal" => "Periodical"
-
-		case _ => "lobidType" // no mapping, use our type as fallback
+		case "http://purl.org/ontology/bibo/MultiVolumeBook" => "Book"
+		case "http://purl.org/ontology/bibo/Newspaper" => "Newspaper"
+		case "http://purl.org/ontology/bibo/Proceedings" => "Book"
+		case "http://purl.org/ontology/bibo/Thesis" => "Thesis"
+		case "http://purl.org/vocab/frbr/core#Item" => "Offer"
+		case "http://purl.org/library/Game" => "Game"
+		case "http://purl.org/lobid/lv#Miscellaneous" => "CreativeWork"
+		case "http://purl.org/lobid/lv#SchoolBook" => "Book"
+		case "http://purl.org/ontology/mo/PublishedScore" => "MusicComposition"
+		case _ => "CreativeWork" // no mapping, use CreativeWork as fallback
 	}
 }
 
@@ -24,7 +32,47 @@
 	@property("title", "name"),
 	@property("creator", "creator"),
 	@property("publisher", "publisher"),
-	@property("subject", "about")
+	@property("subject", "about"),
+	@property("abstract", "description"),
+	@property("actor" "actor"),
+	@property("afterwordBy" "contributor"),
+	@property("alternativeTitle" "alternativeHeadline"),
+	@property("callNumber" "sku"),
+	@property("cartographer" "contributor"),
+¦-@property("cinematographer" "contributor"),
+¦-@property("collaborator" "contributor"),
+¦-@property("collector" "contributor"),
+¦-@property("conductor" "contributor"),
+¦-@property("contributor" "contributor"),
+¦-@property("engraver" "contributor"),
+¦-@property("interviewee" "contributor"),
+¦-@property("interviewer" "contributor"),
+	@property("introductionBy" "contributor"),
+	@property("performer" "contributor"),
+	@property("photographer" "contributor"),
+	@property("screenwriter" "contributor"),
+¦-@property("singer" "contributor"),
+¦-@property("collectedBy" "isPartOf"),
+¦-@property("composer" "composer"),
+¦-@property("coverage" "about"),
+¦-@property("dateOfBirth" "birthDate"),
+¦-@property("dateOfDeath" "deathDate"),
+¦-@property("director" "director"),
+¦-@property("edition" "bookEdition"),
+¦-@property("editor" "editor"),
+¦-@property("exemplar" "offers"),
+¦-@property("extent" "numberOfPages"),
+¦-@property("fulltextOnline" "url"),
+¦-@property("hasPart" "hasPart"),
+¦-@property("illustrator" "illustrator"),
+¦-@property("isPartOf" "isPartOf"),
+¦-@property("issn" "issn"),
+	@property("issued" "datePublished"),
+¦-@property("language" "inLanguage"),
+¦-@property("nwbibsubject" "about"),
+¦-@property("nwbibspatial" "about"),
+	@property("owner" "seller"),
+¦-@property("translator" "translator"),
 }
 </script>
 
