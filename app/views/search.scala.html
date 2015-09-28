@@ -78,6 +78,12 @@
 	if(raw.contains("multiVolumeWork")) {"Bände"} else if (raw.contains("series")) {"Serienbände"} else if (raw.contains("containedIn")) {"Beiträge"} else {""}
 }
 
+@locationLabel(loc:String)={ @defining(loc.contains(",")) { isLatLon =>
+  Titel mit Bezug zu@if(!isLatLon){ Orten in}: 
+  <span class="label label-default" id="spatial-filter">
+  @if(isLatLon) {@views.ReverseGeoLookup.of(loc)} else {@loc}</span>
+}}
+
 @main("NWBib - Ergebnisliste") {
     @if(Seq(q, location).forall(_.isEmpty)){
       @tags.search_advanced("Suche aktualisieren", q, person, name, subject, nwbibspatial, nwbibsubject, id, publisher, issued, sortParam, set=set, word=word, corporation=corporation)
@@ -144,8 +150,7 @@
         <div class="col-md-4">
             <p style="margin-top:10px; margin-bottom:10px">
             @if(!location.isEmpty){
-             Titel mit Bezug zu Orten in: 
-              <span class="label label-default" id="spatial-filter">@location.split("\\|")(0)</span> | 
+              @locationLabel(location.split("\\|")(0)) | 
               <a href="@nwbib.routes.Application.search(q,person,name,subject,id,publisher,issued,medium,nwbibspatial,nwbibsubject,from,size,owner,t,sortParam,set=set,location="",word=word,corporation=corporation,raw=raw)" title="Filter entfernen"><span class="octicon octicon-x"></span></a> 
             } else {
               Titel mit Bezug zu Orten in ganz NRW | 
@@ -163,6 +168,9 @@
             <input type="text" id="issued-range" readonly value="Lade Erscheinungsjahre...">
             <div id="issued-div"> <a id="issued-link" style="display:none" href="@nwbib.routes.Application.search(q,person,name,subject,id,publisher,issued,medium,nwbibspatial,nwbibsubject,from,size,owner,t,sortParam,set=set,location=location,word=word,corporation=corporation,raw=raw)">Anwenden</a> </div>
             </p>
+            <div id="coverage"><p><strong>Ortsbezug</strong></p>
+            <div class="row facet"><div class="col-md-12">@coverage_map(q,person,name,subject,id,publisher,issued,medium,nwbibspatial,nwbibsubject,owner,t,sortParam,set,location,word,corporation,raw)</div></div>
+            </div>
             <p style="padding-top:10px;"><strong>Regionen, Orte und Sachgebiete</strong></p>
             <div class="row facet"><div class="col-md-12">@facets("Sachgebiete", Application.NWBIB_SUBJECT_FIELD, nwbibsubject)</div></div>
             <div class="row facet"><div class="col-md-12">@facets("Regionen und Orte", Application.NWBIB_SPATIAL_FIELD, nwbibspatial)</div></div>
@@ -183,4 +191,5 @@
          </div>
       </div>
     }
+    <p>@map_credits()</p>
 }

@@ -3,6 +3,7 @@
 package tests;
 
 import static org.fest.assertions.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static play.test.Helpers.HTMLUNIT;
 import static play.test.Helpers.fakeApplication;
@@ -26,6 +27,7 @@ import play.mvc.Http;
 import play.test.Helpers;
 import play.test.TestBrowser;
 import play.twirl.api.Content;
+import views.ReverseGeoLookup;
 
 /* Uses actual data, not available in CI. Run locally with `play test`. */
 /**
@@ -134,6 +136,14 @@ public class IntegrationTest {
 					Lobid.getTotalHits("@graph.http://purl.org/lobid/lv#containedIn.@id",
 							"http://lobid.org/resource/HT001387709", "").get(10000);
 			assertThat(hits).isGreaterThan(0);
+		});
+	}
+
+	@Test
+	public void reverseGeoLookup() {
+		running(testServer(3333), () -> {
+			assertEquals("Menden (Sauerland)",
+					ReverseGeoLookup.of("51.433333391323686,7.800000105053186"));
 		});
 	}
 

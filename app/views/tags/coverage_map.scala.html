@@ -1,0 +1,75 @@
+@* Copyright 2015 Fabian Steeg, hbz. Licensed under the GPLv2 *@
+
+@(q:String, person:String, name:String, subject:String, id:String, publisher:String, issued:String, medium: String, nwbibspatial: String, nwbibsubject: String, owner: String, t: String, sortParam: String, set: String, location: String, word: String, corporation: String, raw: String)
+
+@import helper._
+
+<link rel="stylesheet" href="@controllers.routes.Assets.at("stylesheets/leaflet.css")" />
+<link rel="stylesheet" type="text/css" href="@controllers.routes.Assets.at("stylesheets/MarkerCluster.css")" />
+<link rel="stylesheet" type="text/css" href="@controllers.routes.Assets.at("stylesheets/MarkerCluster.Default.css")" />
+<script src="@controllers.routes.Assets.at("javascripts/leaflet.js")"></script>
+<script src="@controllers.routes.Assets.at("javascripts/Leaflet.MakiMarkers.js")"></script>
+<script type='text/javascript' src='@controllers.routes.Assets.at("javascripts/leaflet.markercluster.js")'></script>
+
+<div class="map-coverage" id="map-coverage"></div>
+
+<script>
+var layer = L.tileLayer('http://otile{s}.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.png', { subdomains: '1234' });
+var nrw = new L.LatLng(51.60, 7.8)
+var map = new L.Map("map-coverage", {
+    center: nrw,
+    zoom: 7,
+    maxZoom: 13,
+    scrollWheelZoom: false,
+    attributionControl: false
+});
+var markers = new L.MarkerClusterGroup();
+var facetFieldName = '@urlEncode("@graph.http://purl.org/lobid/lv#subjectLocation.@value")';
+$.ajax({
+  url: '/nwbib/facets?q=@urlEncode(q)&person=@urlEncode(person)&name=@urlEncode(name)'+
+       '&subject=@urlEncode(subject)&publisher=@urlEncode(publisher)&issued=@urlEncode(issued)'+
+       '&medium=@urlEncode(medium)&nwbibspatial=@urlEncode(nwbibspatial)&nwbibsubject=@urlEncode(nwbibsubject)'+
+       '&from=0&size=9999&owner=@urlEncode(owner)&t=@urlEncode(t)&field='+ facetFieldName +
+       '&sort=@urlEncode(sortParam)&set=@urlEncode(set)&location=@urlEncode(location)&word=@urlEncode(word)'+
+       '&corporation=@urlEncode(corporation)&raw=@urlEncode(raw)',
+  success: function(data, textStatus, jqXHR) {
+    var facets = $.parseHTML(data);
+    if(!facets){
+      $("#coverage").hide();
+    } else {
+      for ( var i = 0; i < facets.length; i++ ) {
+        var latLon = $(facets[i]).find('span').attr('class');
+        if(latLon) {
+          addMarker(latLon);
+        }
+      }
+    }
+  },
+  error: function(jqXHR, textStatus, errorThrown) {
+    console.log(textStatus + ": " + errorThrown);
+  }
+});
+function addMarker(latLon){
+  var lat = latLon.split(",")[0];
+  var lon = latLon.split(",")[1];
+  var latlng = L.latLng(lat, lon);
+  var marker = L.marker([lat,lon],{
+        icon: L.MakiMarkers.icon({icon: "village", color: "#FF333B", size: "m"})
+  });
+  marker.bindPopup(
+  '<table style="text-align: center" class="table-striped table-condensed">'+
+  '<tr><td><a href="/nwbib/search?location=' + lat +',' + lon+'">'+
+    'Titel mit Bezug zu diesem Ort filtern</a></td></td>'+
+  '<tr><td><a style="cursor: pointer" onclick="map.panTo(nrw); map.setView(nrw, 7)">'+
+    '&larr; Zurück zur Übersicht zoomen</a></td></tr>'+
+  '</table>');
+  marker.on('click', function(e) {
+    map.setView(latlng, 13, {reset: true});
+    marker.setOpacity(0.65);
+    marker.openPopup();
+  });
+  markers.addLayer(marker);
+}
+map.addLayer(markers);
+map.addLayer(layer);
+</script>

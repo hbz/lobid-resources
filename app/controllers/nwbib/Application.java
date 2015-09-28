@@ -24,6 +24,7 @@ import java.util.stream.StreamSupport;
 import org.apache.commons.lang3.tuple.Pair;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.common.collect.Iterators;
+import org.elasticsearch.common.geo.GeoPoint;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.collect.ImmutableMap;
@@ -436,6 +437,10 @@ public class Application extends Controller {
 			String term = json.get("term").asText();
 			int count = json.get("count").asInt();
 			String icon = Lobid.facetIcon(Arrays.asList(term), field);
+			if (field.contains("subjectLocation")) {
+				GeoPoint point = new GeoPoint(icon);
+				icon = String.format("%s,%s", point.getLat(), point.getLon());
+			}
 			String label = Lobid.facetLabel(Arrays.asList(term), field, "");
 			String fullLabel = String.format(labelTemplate, icon, label, count);
 			return Pair.of(json, fullLabel);
