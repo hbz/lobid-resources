@@ -40,7 +40,10 @@ $.ajax({
       for ( var i = 0; i < facets.length; i++ ) {
         var latLon = $(facets[i]).find('span').attr('class');
         if(latLon) {
-          addMarker(latLon);
+          var input  = $(facets[i]).text();
+          var pos = input.search(/\(\d+\)/);
+          addMarker(latLon,
+            parseInt(pos >=0 ? input.substring(pos+1,input.length-1) : ""), 10);
         }
       }
     }
@@ -49,18 +52,20 @@ $.ajax({
     console.log(textStatus + ": " + errorThrown);
   }
 });
-function addMarker(latLon){
+function addMarker(latLon, freq){
   var lat = latLon.split(",")[0];
   var lon = latLon.split(",")[1];
   var latlng = L.latLng(lat, lon);
   var marker = L.marker([lat,lon],{
-        icon: L.MakiMarkers.icon({icon: "village", color: "#FF333B", size: "m"})
+        title: freq + " Titel",
+        icon: L.MakiMarkers.icon(
+          {icon: "village", color: "#FF333B", size: freq <= 1 ? "s" : freq <= 5 ? "m" : "l"})
   });
   var locationQueryParams = 'location=' + lat +',' + lon + queryParams;
   marker.bindPopup(
   '<table style="text-align: center" class="table-striped table-condensed">'+
   '<tr><td><a href="/nwbib/search?' + locationQueryParams +'">'+
-    'Titel mit Bezug zu diesem Ort filtern</a></td></td>'+
+    'Titel mit Bezug zu diesem Ort filtern (' + freq + ')</a></td></td>'+
   '<tr><td><a style="cursor: pointer" onclick="map.panTo(nrw); map.setView(nrw, 7)">'+
     '&larr; Zurück zur Übersicht zoomen</a></td></tr>'+
   '</table>');
