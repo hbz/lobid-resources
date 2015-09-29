@@ -25,13 +25,13 @@ var map = new L.Map("map-coverage", {
 });
 var markers = new L.MarkerClusterGroup();
 var facetFieldName = '@urlEncode("@graph.http://purl.org/lobid/lv#subjectLocation.@value")';
+var queryParams = '&q=@urlEncode(q)&person=@urlEncode(person)&name=@urlEncode(name)'+
+'&subject=@urlEncode(subject)&publisher=@urlEncode(publisher)&issued=@urlEncode(issued)'+
+'&medium=@urlEncode(medium)&nwbibspatial=@urlEncode(nwbibspatial)&nwbibsubject=@urlEncode(nwbibsubject)'+
+'&owner=@urlEncode(owner)&t=@urlEncode(t)&sort=@urlEncode(sortParam)&set=@urlEncode(set)'+
+'&location=@urlEncode(location)&word=@urlEncode(word)&corporation=@urlEncode(corporation)&raw=@urlEncode(raw)';
 $.ajax({
-  url: '/nwbib/facets?q=@urlEncode(q)&person=@urlEncode(person)&name=@urlEncode(name)'+
-       '&subject=@urlEncode(subject)&publisher=@urlEncode(publisher)&issued=@urlEncode(issued)'+
-       '&medium=@urlEncode(medium)&nwbibspatial=@urlEncode(nwbibspatial)&nwbibsubject=@urlEncode(nwbibsubject)'+
-       '&from=0&size=9999&owner=@urlEncode(owner)&t=@urlEncode(t)&field='+ facetFieldName +
-       '&sort=@urlEncode(sortParam)&set=@urlEncode(set)&location=@urlEncode(location)&word=@urlEncode(word)'+
-       '&corporation=@urlEncode(corporation)&raw=@urlEncode(raw)',
+  url: '/nwbib/facets?field='+ facetFieldName + queryParams + '&from=0&size=9999',
   success: function(data, textStatus, jqXHR) {
     var facets = $.parseHTML(data);
     if(!facets){
@@ -56,9 +56,10 @@ function addMarker(latLon){
   var marker = L.marker([lat,lon],{
         icon: L.MakiMarkers.icon({icon: "village", color: "#FF333B", size: "m"})
   });
+  var locationQueryParams = 'location=' + lat +',' + lon + queryParams;
   marker.bindPopup(
   '<table style="text-align: center" class="table-striped table-condensed">'+
-  '<tr><td><a href="/nwbib/search?location=' + lat +',' + lon+'">'+
+  '<tr><td><a href="/nwbib/search?' + locationQueryParams +'">'+
     'Titel mit Bezug zu diesem Ort filtern</a></td></td>'+
   '<tr><td><a style="cursor: pointer" onclick="map.panTo(nrw); map.setView(nrw, 7)">'+
     '&larr; Zurück zur Übersicht zoomen</a></td></tr>'+
