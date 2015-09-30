@@ -42,7 +42,7 @@ var queryParams = '&q=@urlEncode(q)&person=@urlEncode(person)&name=@urlEncode(na
 '&subject=@urlEncode(subject)&publisher=@urlEncode(publisher)&issued=@urlEncode(issued)'+
 '&medium=@urlEncode(medium)&nwbibspatial=@urlEncode(nwbibspatial)&nwbibsubject=@urlEncode(nwbibsubject)'+
 '&owner=@urlEncode(owner)&t=@urlEncode(t)&sort=@urlEncode(sortParam)&set=@urlEncode(set)'+
-'&location=@urlEncode(location)&word=@urlEncode(word)&corporation=@urlEncode(corporation)&raw=@urlEncode(raw)';
+'&word=@urlEncode(word)&corporation=@urlEncode(corporation)&raw=@urlEncode(raw)';
 
 var lastLayer;
 var label;
@@ -76,7 +76,7 @@ function areaSearch(label, hull) {
 }
 
 $.ajax({
-  url: '/nwbib/facets?field='+ facetFieldName + queryParams + '&from=0&size=9999',
+  url: '/nwbib/facets?field='+ facetFieldName + queryParams + '&from=0&size=9999&location=@urlEncode(location)',
   success: function(data, textStatus, jqXHR) {
     var facets = $.parseHTML(data);
     if(!facets){
