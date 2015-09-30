@@ -23,13 +23,58 @@ var map = new L.Map("map-coverage", {
     scrollWheelZoom: false,
     attributionControl: false
 });
-var markers = new L.MarkerClusterGroup();
+
+var markers = new L.MarkerClusterGroup({
+    zoomToBoundsOnClick: false,
+    iconCreateFunction: function (cluster) {
+        var childCount = cluster.getChildCount();
+        var c = ' marker-cluster-' + (childCount < 10 ? 'small' : childCount < 50 ? 'medium' : 'large');
+        return new L.DivIcon({ 
+            html: '<div><span>' + childCount + ' Orte</span></div>', 
+            className: 'marker-cluster' + c, 
+            iconSize: new L.Point(40, 40)
+        });
+    }
+});
+
 var facetFieldName = '@urlEncode("@graph.http://purl.org/lobid/lv#subjectLocation.@value")';
 var queryParams = '&q=@urlEncode(q)&person=@urlEncode(person)&name=@urlEncode(name)'+
 '&subject=@urlEncode(subject)&publisher=@urlEncode(publisher)&issued=@urlEncode(issued)'+
 '&medium=@urlEncode(medium)&nwbibspatial=@urlEncode(nwbibspatial)&nwbibsubject=@urlEncode(nwbibsubject)'+
 '&owner=@urlEncode(owner)&t=@urlEncode(t)&sort=@urlEncode(sortParam)&set=@urlEncode(set)'+
 '&location=@urlEncode(location)&word=@urlEncode(word)&corporation=@urlEncode(corporation)&raw=@urlEncode(raw)';
+
+var lastLayer;
+var label;
+markers.on('clusterclick', function (a) {
+    map.setView(a.latlng);
+    lastLayer = a.layer;
+    var places = a.layer.getAllChildMarkers().length;
+    label = places +' Orte aus Kartenauswahl'
+    popup = L.popup()
+     .setLatLng(a.latlng)
+     .setContent(
+         '<table style="text-align: center" class="table-striped table-condensed">'+
+         '<tr><td><a style="cursor: pointer" onclick="map.closePopup(); areaSearch(label, lastLayer.getConvexHull());">'+
+           'Titel mit Bezug zu '+ places +' Orten filtern</a></td></td>'+
+         '<tr><td><a style="cursor: pointer" onclick="map.closePopup(); lastLayer.zoomToBounds()">'+
+           'In diesen Bereich zoomen &rarr;</a></td></tr>'+
+         '</table>')
+     .openOn(map);
+});
+
+function areaSearch(label, hull) {
+    var polygon = [hull.length];
+    for ( var i = 0; i < hull.length; i++ ) {
+      polygon[i] = hull[i].lat+','+hull[i].lng;
+    }
+    var polygonQueryParam = polygon.join('+');
+    console.log(polygonQueryParam);
+    if(polygonQueryParam.length > 0) {
+      location.href='/nwbib/search?location=' + label + '|' + polygonQueryParam + queryParams;
+    }
+}
+
 $.ajax({
   url: '/nwbib/facets?field='+ facetFieldName + queryParams + '&from=0&size=9999',
   success: function(data, textStatus, jqXHR) {
@@ -65,7 +110,7 @@ function addMarker(latLon, freq){
   marker.bindPopup(
   '<table style="text-align: center" class="table-striped table-condensed">'+
   '<tr><td><a href="/nwbib/search?' + locationQueryParams +'">'+
-    'Titel mit Bezug zu diesem Ort filtern (' + freq + ')</a></td></td>'+
+    freq + ' Titel mit Bezug zu diesem Ort filtern</a></td></td>'+
   '<tr><td><a style="cursor: pointer" onclick="map.panTo(nrw); map.setView(nrw, 7)">'+
     '&larr; Zurück zur Übersicht zoomen</a></td></tr>'+
   '</table>');

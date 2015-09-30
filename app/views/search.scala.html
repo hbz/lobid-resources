@@ -79,7 +79,7 @@
 }
 
 @locationLabel(loc:String)={ @defining(loc.contains(",")) { isLatLon =>
-  Titel mit Bezug zu@if(!isLatLon){ Orten in}: 
+  Titel mit Bezug zu: 
   <span class="label label-default" id="spatial-filter">
   @if(isLatLon) {@views.ReverseGeoLookup.of(loc)} else {@loc}</span>
 }}
