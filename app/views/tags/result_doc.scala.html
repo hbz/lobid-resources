@@ -73,7 +73,7 @@
   @result_field("Produktion", "producer", doc, TableRow.VALUES, valueLabel = gndEntities, param="person")
   @result_field("Gesang", "singer", doc, TableRow.VALUES, valueLabel = gndEntities, param="person")
   @result_field("Gefeierte Person", "honoree", doc, TableRow.VALUES, valueLabel = gndEntities, param="person")
-  @result_field("Übersetztung", "translator", doc, TableRow.VALUES, valueLabel = gndEntities, param="person")
+  @result_field("Übersetzung", "translator", doc, TableRow.VALUES, valueLabel = gndEntities, param="person")
 
   @with_icon("Medienart", "medium", controllers.nwbib.Application.MEDIUM_FIELD)
   @with_icon("Publikationstyp", "@type", controllers.nwbib.Application.TYPE_FIELD)
@@ -91,7 +91,7 @@
   @result_field("In", "containedIn", doc, TableRow.LINKS)
   @result_field("Erscheinungsweise", "frequency", doc, TableRow.VALUES)
   @result_field("In", "volumeIn", doc, TableRow.VALUES_MULTI, valueLabel = Option(Seq("multiVolumeWork", "numbering")))
-  @result_field("In", "inSeries", doc, TableRow.VALUES_MULTI, valueLabel = Option(Seq("series", "numbering")))
+  @result_field("Erschienen als", "inSeries", doc, TableRow.VALUES_MULTI, valueLabel = Option(Seq("series", "numbering")))
   @defining("http://lobid.org/resource/" + (doc \\ "hbzId")(0).as[String]){ id =>
    @subordinated("@graph.http://purl.org/lobid/lv#multiVolumeWork.@id", id, "Bände", "zugehörige Bände")
    @subordinated("@graph.http://purl.org/lobid/lv#series.@id", id, "Serienbände", "zugehörige Serienbände")
