@@ -24,6 +24,23 @@ var map = new L.Map("map-coverage", {
     attributionControl: false
 });
 
+var pointsParam = '@(if(location.contains("|")) location.split("\\|")(1) else location)';
+
+if (pointsParam.length > 0) {
+    currentPolygon = new L.Polygon(hull(pointsParam), {color: "#FF333B"});
+    map.addLayer(currentPolygon);
+}
+
+function hull(pointsParam) {
+    var points = pointsParam.split(/[ +]/);
+    var hull = [points.length];
+    for (var i = 0; i < points.length; i++) {
+        var latLon = points[i].split(",");
+        hull[i] = L.latLng(latLon[0],latLon[1]);
+    }
+    return hull;
+}
+
 var markers = new L.MarkerClusterGroup({
     zoomToBoundsOnClick: false,
     iconCreateFunction: function (cluster) {
