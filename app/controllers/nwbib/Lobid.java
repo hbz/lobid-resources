@@ -304,7 +304,6 @@ public class Lobid {
 						.setQueryParameter("field", field)//
 						.setQueryParameter("from", "0")
 						.setQueryParameter("size", Application.MAX_FACETS + "")
-						.setQueryParameter("location", locationPolygon(location))
 						.setQueryParameter("corporation", corporation);
 		if (!q.isEmpty())
 			request = request.setQueryParameter("word", preprocess(q));
@@ -329,6 +328,9 @@ public class Lobid {
 			request = request.setQueryParameter("nwbibsubject", nwbibsubject);
 		if (!field.equals(Application.SUBJECT_FIELD))
 			request = request.setQueryParameter("subject", subject);
+		if (!field.equals(Application.SUBJECT_LOCATION_FIELD))
+			request =
+					request.setQueryParameter("location", locationPolygon(location));
 		if (!field.equals(Application.ISSUED_FIELD))
 			request = request.setQueryParameter("issued", issued);
 		String url = request.getUrl();

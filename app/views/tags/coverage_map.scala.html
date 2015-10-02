@@ -1,6 +1,6 @@
 @* Copyright 2015 Fabian Steeg, hbz. Licensed under the GPLv2 *@
 
-@(q:String, person:String, name:String, subject:String, id:String, publisher:String, issued:String, medium: String, nwbibspatial: String, nwbibsubject: String, owner: String, t: String, sortParam: String, set: String, location: String, word: String, corporation: String, raw: String)
+@(q:String, person:String, name:String, subject:String, id:String, publisher:String, issued:String, medium: String, nwbibspatial: String, nwbibsubject: String, owner: String, t: String, sortParam: String, set: String, location: String, word: String, corporation: String, raw: String, from: Int, size: Int)
 
 @import helper._
 
@@ -93,19 +93,20 @@ function areaSearch(label, hull) {
 }
 
 $.ajax({
-  url: '/nwbib/facets?field='+ facetFieldName + queryParams + '&from=0&size=9999&location=@urlEncode(location)',
+  url: '/nwbib/facets?field='+ facetFieldName + queryParams + '&from=@from&size=@size&location=@urlEncode(location)',
   success: function(data, textStatus, jqXHR) {
     var facets = $.parseHTML(data);
     if(!facets){
       $("#coverage").hide();
     } else {
       for ( var i = 0; i < facets.length; i++ ) {
-        var latLon = $(facets[i]).find('span').attr('class');
-        if(latLon) {
+        var link = $(facets[i]).find('a').attr('href');
+        if(link) {
+          var latLon = link.slice(link.search(/location=[^&]+/)+9).replace("%2C", ",");
           var input  = $(facets[i]).text();
           var pos = input.search(/\(\d+\)/);
-          addMarker(latLon,
-            parseInt(pos >=0 ? input.substring(pos+1,input.length-1) : ""), 10);
+          addMarker(link, latLon,
+            parseInt(pos >=0 ? input.substring(pos+1,input.length-1) : "", 10));
         }
       }
     }
@@ -114,25 +115,23 @@ $.ajax({
     console.log(textStatus + ": " + errorThrown);
   }
 });
-function addMarker(latLon, freq){
+function addMarker(link, latLon, freq){
   var lat = latLon.split(",")[0];
   var lon = latLon.split(",")[1];
-  var latlng = L.latLng(lat, lon);
   var marker = L.marker([lat,lon],{
         title: freq + " Titel",
         icon: L.MakiMarkers.icon(
           {icon: "village", color: "#FF333B", size: freq <= 1 ? "s" : freq <= 5 ? "m" : "l"})
   });
-  var locationQueryParams = 'location=' + lat +',' + lon + queryParams;
   marker.bindPopup(
   '<table style="text-align: center" class="table-striped table-condensed">'+
-  '<tr><td><a href="/nwbib/search?' + locationQueryParams +'">'+
+  '<tr><td><a href="' + link +'">'+
     freq + ' Titel mit Bezug zu diesem Ort filtern</a></td></td>'+
   '<tr><td><a style="cursor: pointer" onclick="map.panTo(nrw); map.setView(nrw, 7)">'+
     '&larr; Zurück zur Übersicht zoomen</a></td></tr>'+
   '</table>');
   marker.on('click', function(e) {
-    map.setView(latlng, 13, {reset: true});
+    map.setView(L.latLng(lat, lon), 13, {reset: true});
     marker.setOpacity(0.65);
     marker.openPopup();
   });
