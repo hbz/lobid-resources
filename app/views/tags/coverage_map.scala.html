@@ -27,8 +27,15 @@ var map = new L.Map("map-coverage", {
 var pointsParam = '@(if(location.contains("|")) location.split("\\|")(1) else location)';
 
 if (pointsParam.length > 0) {
-    currentPolygon = new L.Polygon(hull(pointsParam), {color: "#FF333B"});
-    map.addLayer(currentPolygon);
+    var options = {color: "#FF333B"}
+    var currentPolygon = new L.Polygon(hull(pointsParam), options);
+    if(pointsParam.split(/[ +]/)[0].split(",")[0].split(".")[1].length > 1) {
+        // only draw a polygon if the precision is high enough, else a circle:
+        map.addLayer(currentPolygon);
+    } else {
+        var bounds = currentPolygon.getBounds();
+        map.addLayer(new L.Circle(bounds.getCenter(), 30000, options));
+    }
 }
 
 function hull(pointsParam) {
