@@ -1,0 +1,149 @@
+@* Copyright 2015 Fabian Steeg, hbz. Licensed under the GPLv2 *@
+
+@(q:String, person:String, name:String, subject:String, id:String, publisher:String, issued:String, medium: String, nwbibspatial: String, nwbibsubject: String, owner: String, t: String, sortParam: String, set: String, location: String, word: String, corporation: String, raw: String, from: Int, size: Int)
+
+@import helper._
+
+<link rel="stylesheet" href="@controllers.routes.Assets.at("stylesheets/leaflet.css")" />
+<link rel="stylesheet" type="text/css" href="@controllers.routes.Assets.at("stylesheets/MarkerCluster.css")" />
+<link rel="stylesheet" type="text/css" href="@controllers.routes.Assets.at("stylesheets/MarkerCluster.Default.css")" />
+<script src="@controllers.routes.Assets.at("javascripts/leaflet.js")"></script>
+<script src="@controllers.routes.Assets.at("javascripts/Leaflet.MakiMarkers.js")"></script>
+<script type='text/javascript' src='@controllers.routes.Assets.at("javascripts/leaflet.markercluster.js")'></script>
+
+<div class="map-coverage" id="map-coverage"></div>
+
+<script>
+var layer = L.tileLayer('http://otile{s}.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.png', { subdomains: '1234' });
+var nrw = new L.LatLng(51.60, 7.8)
+var map = new L.Map("map-coverage", {
+    center: nrw,
+    zoom: 7,
+    maxZoom: 13,
+    scrollWheelZoom: false,
+    attributionControl: false
+});
+
+var pointsParam = '@(if(location.contains("|")) location.split("\\|")(1) else location)';
+
+if (pointsParam.length > 0) {
+    var options = {color: "#FF333B"}
+    var currentPolygon = new L.Polygon(hull(pointsParam), options);
+    if(pointsParam.split(/[ +]/)[0].split(",")[0].split(".")[1].length > 1) {
+        // only draw a polygon if the precision is high enough, else a circle:
+        map.addLayer(currentPolygon);
+    } else {
+        var bounds = currentPolygon.getBounds();
+        map.addLayer(new L.Circle(bounds.getCenter(), 30000, options));
+    }
+}
+
+function hull(pointsParam) {
+    var points = pointsParam.split(/[ +]/);
+    var hull = [points.length];
+    for (var i = 0; i < points.length; i++) {
+        var latLon = points[i].split(",");
+        hull[i] = L.latLng(latLon[0],latLon[1]);
+    }
+    return hull;
+}
+
+var markers = new L.MarkerClusterGroup({
+    zoomToBoundsOnClick: false,
+    iconCreateFunction: function (cluster) {
+        var childCount = cluster.getChildCount();
+        var c = ' marker-cluster-' + (childCount < 10 ? 'small' : childCount < 50 ? 'medium' : 'large');
+        return new L.DivIcon({ 
+            html: '<div><span>' + childCount + ' Orte</span></div>', 
+            className: 'marker-cluster' + c, 
+            iconSize: new L.Point(40, 40)
+        });
+    }
+});
+
+var facetFieldName = '@urlEncode("@graph.http://purl.org/lobid/lv#subjectLocation.@value")';
+var queryParams = '&q=@urlEncode(q)&person=@urlEncode(person)&name=@urlEncode(name)'+
+'&subject=@urlEncode(subject)&publisher=@urlEncode(publisher)&issued=@urlEncode(issued)'+
+'&medium=@urlEncode(medium)&nwbibspatial=@urlEncode(nwbibspatial)&nwbibsubject=@urlEncode(nwbibsubject)'+
+'&owner=@urlEncode(owner)&t=@urlEncode(t)&sort=@urlEncode(sortParam)&set=@urlEncode(set)'+
+'&word=@urlEncode(word)&corporation=@urlEncode(corporation)&raw=@urlEncode(raw)';
+
+var lastLayer;
+var label;
+markers.on('clusterclick', function (a) {
+    map.setView(a.latlng);
+    lastLayer = a.layer;
+    var places = a.layer.getAllChildMarkers().length;
+    label = places +' Orte aus Kartenauswahl'
+    popup = L.popup()
+     .setLatLng(a.latlng)
+     .setContent(
+         '<table style="text-align: center" class="table-striped table-condensed">'+
+         '<tr><td><a style="cursor: pointer" onclick="map.closePopup(); areaSearch(label, lastLayer.getConvexHull());">'+
+           'Titel mit Bezug zu '+ places +' Orten filtern</a></td></td>'+
+         '<tr><td><a style="cursor: pointer" onclick="map.closePopup(); lastLayer.zoomToBounds()">'+
+           'In diesen Bereich zoomen &rarr;</a></td></tr>'+
+         '</table>')
+     .openOn(map);
+});
+
+function areaSearch(label, hull) {
+    var polygon = [hull.length];
+    for ( var i = 0; i < hull.length; i++ ) {
+      polygon[i] = hull[i].lat+','+hull[i].lng;
+    }
+    var polygonQueryParam = polygon.join('+');
+    console.log(polygonQueryParam);
+    if(polygonQueryParam.length > 0) {
+      location.href='/nwbib/search?location=' + label + '|' + polygonQueryParam + queryParams;
+    }
+}
+
+$.ajax({
+  url: '/nwbib/facets?field='+ facetFieldName + queryParams + '&from=@from&size=@size&location=@urlEncode(location)',
+  success: function(data, textStatus, jqXHR) {
+    var facets = $.parseHTML(data);
+    if(!facets){
+      $("#coverage").hide();
+    } else {
+      for ( var i = 0; i < facets.length; i++ ) {
+        var link = $(facets[i]).find('a').attr('href');
+        if(link) {
+          var latLon = link.slice(link.search(/location=[^&]+/)+9).replace("%2C", ",");
+          var input  = $(facets[i]).text();
+          var pos = input.search(/\(\d+\)/);
+          addMarker(link, latLon,
+            parseInt(pos >=0 ? input.substring(pos+1,input.length-1) : "", 10));
+        }
+      }
+    }
+  },
+  error: function(jqXHR, textStatus, errorThrown) {
+    console.log(textStatus + ": " + errorThrown);
+  }
+});
+function addMarker(link, latLon, freq){
+  var lat = latLon.split(",")[0];
+  var lon = latLon.split(",")[1];
+  var marker = L.marker([lat,lon],{
+        title: freq + " Titel",
+        icon: L.MakiMarkers.icon(
+          {icon: "village", color: "#FF333B", size: freq <= 1 ? "s" : freq <= 5 ? "m" : "l"})
+  });
+  marker.bindPopup(
+  '<table style="text-align: center" class="table-striped table-condensed">'+
+  '<tr><td><a href="' + link +'">'+
+    freq + ' Titel mit Bezug zu diesem Ort filtern</a></td></td>'+
+  '<tr><td><a style="cursor: pointer" onclick="map.panTo(nrw); map.setView(nrw, 7)">'+
+    '&larr; Zurück zur Übersicht zoomen</a></td></tr>'+
+  '</table>');
+  marker.on('click', function(e) {
+    map.setView(L.latLng(lat, lon), 13, {reset: true});
+    marker.setOpacity(0.65);
+    marker.openPopup();
+  });
+  markers.addLayer(marker);
+}
+map.addLayer(markers);
+map.addLayer(layer);
+</script>

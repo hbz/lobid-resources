@@ -24,6 +24,7 @@ import java.util.stream.StreamSupport;
 import org.apache.commons.lang3.tuple.Pair;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.common.collect.Iterators;
+import org.elasticsearch.common.geo.GeoPoint;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.collect.ImmutableMap;
@@ -75,6 +76,9 @@ public class Application extends Controller {
 	/** The internal ES field for the NWBib spatial facet. */
 	public static final String NWBIB_SPATIAL_FIELD =
 			"@graph.http://purl.org/lobid/lv#nwbibspatial.@id";
+	/** The internal ES field for subject locations. */
+	public static final String SUBJECT_LOCATION_FIELD =
+			"@graph.http://purl.org/lobid/lv#subjectLocation.@value";
 
 	/** The internal ES field for subjects. */
 	public static final String SUBJECT_FIELD =
@@ -469,7 +473,10 @@ public class Application extends Controller {
 			JsonNode json = pair.getLeft();
 			String fullLabel = pair.getRight();
 			String term = json.get("term").asText();
-
+			if (field.equals(SUBJECT_LOCATION_FIELD)) {
+				GeoPoint point = new GeoPoint(term);
+				term = String.format("%s,%s", point.getLat(), point.getLon());
+			}
 			String mediumQuery = !field.equals(MEDIUM_FIELD) //
 					? medium : queryParam(medium, term);
 			String typeQuery = !field.equals(TYPE_FIELD) //
@@ -480,6 +487,8 @@ public class Application extends Controller {
 					? nwbibsubject : queryParam(nwbibsubject, term);
 			String nwbibspatialQuery = !field.equals(NWBIB_SPATIAL_FIELD) //
 					? nwbibspatial : queryParam(nwbibspatial, term);
+			String locationQuery = !field.equals(SUBJECT_LOCATION_FIELD) //
+					? location : term;
 			String subjectQuery = !field.equals(SUBJECT_FIELD) //
 					? subject : queryParam(subject, term);
 			String issuedQuery = !field.equals(ISSUED_FIELD) //
@@ -492,7 +501,7 @@ public class Application extends Controller {
 					id, publisher, issuedQuery, mediumQuery, nwbibspatialQuery,
 					nwbibsubjectQuery, from, size, ownerQuery, typeQuery,
 					sort(sort, nwbibspatialQuery, nwbibsubjectQuery, subjectQuery), false,
-					set, location, word, corporation, raw).url();
+					set, locationQuery, word, corporation, raw).url();
 
 			String result = String.format(
 					"<li " + (current ? "class=\"active\"" : "")
@@ -516,8 +525,8 @@ public class Application extends Controller {
 					}
 					String labelKey = String.format(
 							"facets-labels.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s",
-							field, q, person, name, id, publisher, set, location, word,
-							corporation, raw,
+							field, q, person, name, id, publisher, set, word, corporation,
+							raw,
 							/* facet values, include in key only if not the current facet: */
 							field.equals(SUBJECT_FIELD) ? "" : subject,
 							field.equals(ISSUED_FIELD) ? "" : issued,
@@ -525,7 +534,8 @@ public class Application extends Controller {
 							field.equals(NWBIB_SPATIAL_FIELD) ? "" : nwbibspatial,
 							field.equals(NWBIB_SUBJECT_FIELD) ? "" : nwbibsubject,
 							field.equals(ISSUED_FIELD) ? "" : owner,
-							field.equals(TYPE_FIELD) ? "" : t);
+							field.equals(TYPE_FIELD) ? "" : t,
+							field.equals(SUBJECT_LOCATION_FIELD) ? "" : location);
 
 					@SuppressWarnings("unchecked")
 					List<Pair<JsonNode, String>> labelledFacets =

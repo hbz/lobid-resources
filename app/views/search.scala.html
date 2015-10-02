@@ -78,6 +78,12 @@
 	if(raw.contains("multiVolumeWork")) {"Bände"} else if (raw.contains("series")) {"Serienbände"} else if (raw.contains("containedIn")) {"Beiträge"} else {""}
 }
 
+@locationLabel(loc:String)={ @defining(loc.contains(",")) { isLatLon =>
+  Titel mit Bezug zu: 
+  <span class="label label-default" id="spatial-filter">
+  @if(isLatLon) {@views.ReverseGeoLookup.of(loc)} else {@loc}</span>
+}}
+
 @main("NWBib - Ergebnisliste") {
     @if(Seq(q, location).forall(_.isEmpty)){
       @tags.search_advanced("Suche aktualisieren", q, person, name, subject, nwbibspatial, nwbibsubject, id, publisher, issued, sortParam, set=set, word=word, corporation=corporation)
@@ -100,7 +106,7 @@
                  <div class="col-md-6 text-right" style="text-align:right">
                    <ul class="nav nav-pills" style="display:inline-block" role="tablist">
                      <li class="disabled">  <a href="#">Treffer pro Seite:</a> </li>
-                     @pageLink(10)
+                     @pageLink(15)
                      @pageLink(25)
                      @pageLink(50)
                      @pageLink(100)
@@ -144,8 +150,7 @@
         <div class="col-md-4">
             <p style="margin-top:10px; margin-bottom:10px">
             @if(!location.isEmpty){
-             Titel mit Bezug zu Orten in: 
-              <span class="label label-default" id="spatial-filter">@location.split("\\|")(0)</span> | 
+              @locationLabel(location.split("\\|")(0)) | 
               <a href="@nwbib.routes.Application.search(q,person,name,subject,id,publisher,issued,medium,nwbibspatial,nwbibsubject,from,size,owner,t,sortParam,set=set,location="",word=word,corporation=corporation,raw=raw)" title="Filter entfernen"><span class="octicon octicon-x"></span></a> 
             } else {
               Titel mit Bezug zu Orten in ganz NRW | 
@@ -162,25 +167,30 @@
             </div>
             <input type="text" id="issued-range" readonly value="Lade Erscheinungsjahre...">
             <div id="issued-div"> <a id="issued-link" style="display:none" href="@nwbib.routes.Application.search(q,person,name,subject,id,publisher,issued,medium,nwbibspatial,nwbibsubject,from,size,owner,t,sortParam,set=set,location=location,word=word,corporation=corporation,raw=raw)">Anwenden</a> </div>
-            </p>
+            <p/>
+            <div id="coverage"><p><strong>Ortsbezug</strong></p>
+            <div class="row facet"><div class="col-md-12">@coverage_map(q,person,name,subject,id,publisher,issued,medium,nwbibspatial,nwbibsubject,owner,t,sortParam,set,location,word,corporation,raw,from,size)</div></div>
+            </div>
+            <p/>
             <p style="padding-top:10px;"><strong>Regionen, Orte und Sachgebiete</strong></p>
             <div class="row facet"><div class="col-md-12">@facets("Sachgebiete", Application.NWBIB_SUBJECT_FIELD, nwbibsubject)</div></div>
             <div class="row facet"><div class="col-md-12">@facets("Regionen und Orte", Application.NWBIB_SPATIAL_FIELD, nwbibspatial)</div></div>
-            </p>
+            <p/>
             <p style="padding-top:10px;"><strong>Schlagwörter</strong></p>
             <p>
             <div class="row facet"><div class="col-md-12">@facets("Schlagwörter", Application.SUBJECT_FIELD, if(subject.startsWith("http")) subject else "", "dropup")</div></div>
-            </p>
+            <p/>
             <p style="padding-top:10px;"><strong>Medien- und Publikationstypen</strong></p>
             <p>
             <div class="row facet"><div class="col-md-12">@facets("Publikationstypen", Application.TYPE_FIELD, t, "dropup")</div></div>
             <div class="row facet"><div class="col-md-12">@facets("Medienarten", Application.MEDIUM_FIELD, medium, "dropup")</div></div>
-            </p>
+            <p/>
             <p style="padding-top:10px;"><strong>Bestand in Bibliotheken</strong></p>
             <p>
             <div class="row facet"><div class="col-md-12">@facets("Besitzende Bibliotheken", Application.ITEM_FIELD, owner, "dropup")</div></div>
-            </p>
+            <p/>
          </div>
       </div>
     }
+    <p>@map_credits()</p>
 }
