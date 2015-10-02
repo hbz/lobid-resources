@@ -122,7 +122,7 @@
                   <th style="width: 5%; text-align: right"></th>
                   <th style="width: 5%; text-align: right"></th>
                  </tr>
-                 @for((doc,i) <- hits; id = ("""http://.*?lobid.org/resource.+?([^/]+).*?""".r findFirstMatchIn ((doc \ "@id").as[String])).get group 1) {
+                 @for((doc,i) <- hits; id = (doc\\"hbzId")(0).as[String]) {
                     @tags.result_short(id,doc,i-1,(Json.parse(result)\\"hbzId").map(_.as[String]))
                  }
                  </table>
