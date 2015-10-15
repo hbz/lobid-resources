@@ -49,8 +49,7 @@ public class TestRdfToJsonConversion {
 			.getResourceAsStream("hbz01.es.json")) {
 	    Map<String, Object> actual = new JsonConverter()
 		    .convert(in, RDFFormat.NTRIPLES,
-			    "http://lobid.org/resource/HT018454638")
-		    .getJsonResult();
+			    "http://lobid.org/resource/HT018454638");
 
 	    logger.info("Creates: ");
 	    logger.info(new ObjectMapper().writeValueAsString(actual));

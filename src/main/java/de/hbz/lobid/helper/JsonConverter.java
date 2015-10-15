@@ -29,18 +29,16 @@ public class JsonConverter {
     String subjectOrder = "http://purl.org/lobid/lv#subjectOrder";
 
     List<Statement> all = new ArrayList<Statement>();
-    Map<String, Object> map = new TreeMap<String, Object>();
 
-    public JsonConverter convert(InputStream in, RDFFormat format, String uri) {
+    public Map<String, Object> convert(InputStream in, RDFFormat format,
+	    String uri) {
 	Graph g = RdfUtils.readRdfToGraph(in, format, uri);
-	convert(g, uri);
-	return this;
+	return convert(g, uri);
     }
 
-    public JsonConverter convert(Graph g, String uri) {
+    public Map<String, Object> convert(Graph g, String uri) {
 	collect(g);
-	map = createMap(g, uri);
-	return this;
+	return createMap(g, uri);
     }
 
     private Map<String, Object> createMap(Graph g, String uri) {
@@ -174,9 +172,5 @@ public class JsonConverter {
 	    Statement s = i.next();
 	    all.add(s);
 	}
-    }
-
-    public Map<String, Object> getJsonResult() {
-	return map;
     }
 }
