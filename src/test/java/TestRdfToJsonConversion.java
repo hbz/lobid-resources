@@ -1,6 +1,6 @@
 /*Copyright (c) 2015 "hbz"
 
-This file is part of etikett.
+This file is part of lobid-rdf-to-json.
 
 etikett is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as
@@ -17,6 +17,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 import java.util.Map;
 
 import org.codehaus.jackson.JsonParseException;
@@ -38,7 +39,7 @@ public class TestRdfToJsonConversion {
     final static Logger logger = LoggerFactory
 	    .getLogger(TestRdfToJsonConversion.class);
 
-    @SuppressWarnings("javadoc")
+    @SuppressWarnings({ "javadoc", "unchecked" })
     @Test
     public void test() throws JsonParseException, JsonMappingException,
 	    IOException {
@@ -56,16 +57,47 @@ public class TestRdfToJsonConversion {
 	    logger.info("---------------------------------");
 	    Map<String, Object> expected = new ObjectMapper().readValue(out,
 		    Map.class);
-	    logger.debug("Not tested...");
-	    for (String s : expected.keySet()) {
-		Object o = expected.get(s);
-		if (o instanceof String)
-		    org.junit.Assert.assertEquals((String) o, actual.get(s));
-		else {
-		    logger.debug("Expected: " + o);
-		    logger.debug("Actual: " + actual.get(s));
-		}
-	    }
+	    compare(expected, actual);
 	}
+    }
+
+    private void compare(Map<String, Object> expected,
+	    Map<String, Object> actual) {
+	for (String s : expected.keySet()) {
+	    logger.debug("try to get " + s);
+	    compareObjects(expected.get(s), actual.get(s));
+	}
+
+    }
+
+    private void compareObjects(Object expected, Object actual) {
+	logger.info("Compare: " + expected + "," + actual);
+	if (expected instanceof String) {
+	    compare((String) expected, (String) actual);
+	} else if (expected instanceof Map) {
+	    compare((Map<String, Object>) expected,
+		    (Map<String, Object>) actual);
+	} else if (expected instanceof List) {
+	    compareOrderSensitive((List<Object>) expected,
+		    (List<Object>) actual);
+
+	} else {
+
+	    logger.debug("Expected: " + expected);
+	    logger.debug("Actual: " + actual);
+	}
+    }
+
+    private void compareOrderSensitive(List<Object> expected,
+	    List<Object> actual) {
+	for (int i = 0; i < expected.size(); i++) {
+	    // compareObjects(expected.get(i), actual.get(i));
+	    logger.debug("Expected: " + expected);
+	    logger.debug("Actual: " + actual);
+	}
+    }
+
+    private void compare(String expected, String actual) {
+	org.junit.Assert.assertEquals(expected, actual);
     }
 }

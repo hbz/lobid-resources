@@ -22,7 +22,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
- * This class is used in ApplicationProfile
  * 
  * @author Jan Schnasse
  *
@@ -30,35 +29,36 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @XmlRootElement
 public class Etikett {
 
-    /**
-     * 
-     */
+    @SuppressWarnings("unused")
     private static final long serialVersionUID = 6716611400533458082L;
 
     /**
      * the full id as uri
      */
-    public String uri = null;
+    String uri = null;
 
     /**
      * a label
      */
-    public String label = null;
+    String label = null;
     /**
      * a icon
      */
-    public String icon = null;
+    String icon = null;
 
     /**
      * The name is a short-form for the uri used in JSON-LD
      */
-    public String name = null;
+    String name = null;
 
     /**
      * The expected type of the resource
      */
-    public String referenceType = "class";
+    String referenceType = "class";
 
+    /**
+     * The jaxb needs this
+     */
     public Etikett() {
 	// for jaxb
     }
@@ -71,62 +71,84 @@ public class Etikett {
 	uri = subj;
     }
 
+    /**
+     * @return the uri
+     */
+    public String getUri() {
+	return uri;
+    }
+
+    /**
+     * @param uri
+     */
+    public void setUri(String uri) {
+	this.uri = uri;
+    }
+
+    /**
+     * @return a human readable label
+     */
+    public String getLabel() {
+	return label;
+    }
+
+    /**
+     * @param label
+     */
+    public void setLabel(String label) {
+	this.label = label;
+    }
+
+    /**
+     * @return icon etikett icon
+     */
+    public String getIcon() {
+	return icon;
+    }
+
+    /**
+     * @param icon
+     *            etikett icon
+     */
+    public void setIcon(String icon) {
+	this.icon = icon;
+    }
+
+    /**
+     * @return jsonName
+     */
+    public String getName() {
+	return name;
+    }
+
+    /**
+     * @param name
+     */
+    public void setName(String name) {
+	this.name = name;
+    }
+
+    /**
+     * @return default is class. If you are describing a predicate you should
+     *         use one of the types string,@id, date
+     */
+    public String getReferenceType() {
+	return referenceType;
+    }
+
+    /**
+     * @param referenceType
+     */
+    public void setReferenceType(String referenceType) {
+	this.referenceType = referenceType;
+    }
+
     public String toString() {
 	try {
 	    return new ObjectMapper().writeValueAsString(this);
 	} catch (Exception e) {
 	    return "To String failed " + e.getMessage();
 	}
-    }
-
-    /**
-     * @param e
-     *            attrbutes from e will be copied to this etikett
-     */
-    public void copy(Etikett e) {
-	icon = e.icon;
-	label = e.label;
-	name = e.name;
-    }
-
-    public String getUri() {
-	return uri;
-    }
-
-    public void setUri(String uri) {
-	this.uri = uri;
-    }
-
-    public String getLabel() {
-	return label;
-    }
-
-    public void setLabel(String label) {
-	this.label = label;
-    }
-
-    public String getIcon() {
-	return icon;
-    }
-
-    public void setIcon(String icon) {
-	this.icon = icon;
-    }
-
-    public String getName() {
-	return name;
-    }
-
-    public void setName(String name) {
-	this.name = name;
-    }
-
-    public String getReferenceType() {
-	return referenceType;
-    }
-
-    public void setReferenceType(String referenceType) {
-	this.referenceType = referenceType;
     }
 
 }

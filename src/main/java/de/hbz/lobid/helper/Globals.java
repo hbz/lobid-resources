@@ -1,6 +1,6 @@
 /*Copyright (c) 2015 "hbz"
 
-This file is part of etikett.
+This file is part of lobid-rdf-to-json.
 
 etikett is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as
@@ -23,5 +23,9 @@ package de.hbz.lobid.helper;
  */
 public class Globals {
 
+    /**
+     * Use this to read config files created with etikett
+     * (https://github.com/hbz/etikett)
+     */
     public static EtikettMaker etikette = new EtikettMaker();
 }

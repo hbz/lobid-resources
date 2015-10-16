@@ -1,3 +1,20 @@
+/*Copyright (c) 2015 "hbz"
+
+This file is part of lobid-rdf-to-json.
+
+etikett is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
 package de.hbz.lobid.helper;
 
 import java.io.InputStream;
@@ -30,15 +47,25 @@ public class JsonConverter {
 
     List<Statement> all = new ArrayList<Statement>();
 
+    /**
+     * You can easily convert the map to json using jackson
+     * (https://github.com/FasterXML/jackson) or other jaxb libs
+     * 
+     * @param in
+     *            an input stream containing rdf data
+     * @param format
+     *            the rdf format
+     * @param uri
+     *            the uri from where the rdf ist taken. Can not be null.
+     * @return a map
+     */
     public Map<String, Object> convert(InputStream in, RDFFormat format,
 	    String uri) {
 	Graph g = RdfUtils.readRdfToGraph(in, format, uri);
-	return convert(g, uri);
-    }
-
-    public Map<String, Object> convert(Graph g, String uri) {
 	collect(g);
-	return createMap(g, uri);
+	Map<String, Object> result = createMap(g, uri);
+	result.put("@context", Globals.etikette.context.get("@context"));
+	return result;
     }
 
     private Map<String, Object> createMap(Graph g, String uri) {
@@ -59,7 +86,6 @@ public class JsonConverter {
     private void createObject(Map<String, Object> jsonResult, Statement s,
 	    Etikett e) {
 	String key = e.name;
-
 	if (s.getObject() instanceof org.openrdf.model.Literal) {
 	    addLiteralToJsonResult(jsonResult, key, s.getObject().stringValue());
 	}
@@ -70,11 +96,8 @@ public class JsonConverter {
 			((BNode) s.getObject()).getID());
 	    }
 	} else {
-
 	    addObjectToJsonResult(jsonResult, key, s.getObject().stringValue());
-
 	}
-
     }
 
     private void addListToJsonResult(Map<String, Object> jsonResult,
@@ -86,11 +109,13 @@ public class JsonConverter {
 		if (first.equals(s.getPredicate().stringValue())) {
 		    logger.info("Find next data " + s.getObject().stringValue());
 		    orderedList.add(s.getObject().stringValue());
-		}
-		if (rest.equals(s.getPredicate().stringValue())) {
+		} else if (rest.equals(s.getPredicate().stringValue())) {
 		    logger.info("Find next node " + s.getObject().stringValue());
 		    orderedList
 			    .addAll(traversList(s.getObject().stringValue()));
+		} else {
+		    // In this case, it is an object
+		    // createObject(null);
 		}
 	    }
 	}
@@ -118,21 +143,24 @@ public class JsonConverter {
     private void addObjectToJsonResult(Map<String, Object> jsonResult,
 	    String key, String uri) {
 	if (jsonResult.containsKey(key)) {
+	    @SuppressWarnings("unchecked")
 	    List<Map<String, Object>> literals = (List<Map<String, Object>>) jsonResult
 		    .get(key);
-	    literals.add(createEmbeddedObject(uri));
+	    literals.add(createObject(uri));
 	} else {
 	    List<Map<String, Object>> literals = new ArrayList<Map<String, Object>>();
-	    literals.add(createEmbeddedObject(uri));
+	    literals.add(createObject(uri));
 	    jsonResult.put(key, literals);
 	}
-
     }
 
-    private Map<String, Object> createEmbeddedObject(String uri) {
+    private Map<String, Object> createObject(String uri) {
 	Map<String, Object> newObject = new TreeMap<String, Object>();
-	newObject.put("@id", uri);
-	// newObject.put("prefLabel", Globals.etikette.getEtikett(uri).label);
+	if (uri != null) {
+	    newObject.put("@id", uri);
+	    // newObject.put("prefLabel",
+	    // Globals.etikette.getEtikett(uri).label);
+	}
 	for (Statement s : find(uri)) {
 	    Etikett e = Globals.etikette.getEtikett(s.getPredicate()
 		    .stringValue());
@@ -157,6 +185,7 @@ public class JsonConverter {
     private void addLiteralToJsonResult(Map<String, Object> jsonResult,
 	    String key, String value) {
 	if (jsonResult.containsKey(key)) {
+	    @SuppressWarnings("unchecked")
 	    List<String> literals = (List<String>) jsonResult.get(key);
 	    literals.add(value);
 	} else {
