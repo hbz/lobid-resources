@@ -64,7 +64,7 @@ public class JsonConverter {
 	Graph g = RdfUtils.readRdfToGraph(in, format, uri);
 	collect(g);
 	Map<String, Object> result = createMap(g, uri);
-	result.put("@context", Globals.etikette.context);
+	result.put("@context", Globals.etikette.context.get("@context"));
 	return result;
     }
 
