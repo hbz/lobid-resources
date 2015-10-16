@@ -1,6 +1,6 @@
 /*Copyright (c) 2015 "hbz"
 
-This file is part of etikett.
+This file is part of lobid-rdf-to-json.
 
 etikett is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as
@@ -67,6 +67,32 @@ public class EtikettMaker {
     public EtikettMaker() {
 	initContext();
 	initMaps();
+    }
+
+    /**
+     * @return a map with a json-ld context
+     */
+    public Map<String, Object> getContext() {
+	return context;
+    }
+
+    /**
+     * @param key
+     *            the uri
+     * @return an etikett object contains uri, icon, label, jsonname,
+     *         referenceType
+     */
+    public Etikett getEtikett(String key) {
+	Etikett e = pMap.get(key);
+	if (e == null) {
+	    e = new Etikett(key);
+	    e.name = getJsonName(key);
+	}
+	if (e.label == null) {
+	    e.label = e.uri;
+	}
+	logger.debug("Find name for " + key + " : " + e.name);
+	return e;
     }
 
     private void initContext() {
@@ -137,7 +163,7 @@ public class EtikettMaker {
      * @return The short name of the predicate uses String.split on first index
      *         of '#' or last index of '/'
      */
-    public String getJsonName(String predicate) {
+    String getJsonName(String predicate) {
 	String result = null;
 	Etikett e = pMap.get(predicate);
 	if (e != null) {
@@ -156,64 +182,5 @@ public class EtikettMaker {
 	    result = prefix + predicate;
 	}
 	return result;
-    }
-
-    /**
-     * @param predicate
-     * @return a label for the predicate
-     */
-    public String getLabel(String predicate) {
-	try {
-	    String label = (String) pMap.get(predicate).label;
-	    return label == null ? predicate : label;
-	} catch (Exception e) {
-	    return predicate;
-	}
-    }
-
-    /**
-     * @param predicate
-     * @return a label for the predicate
-     */
-    public String getIcon(String predicate) {
-	try {
-	    String icon = (String) pMap.get(predicate).icon;
-	    return icon == null ? predicate : icon;
-	} catch (Exception e) {
-	    return null;
-	}
-    }
-
-    /**
-     * @param jsonName
-     * @return the corresponding uri to the passed jsonName
-     */
-    public String getUriFromJsonName(String jsonName) {
-	try {
-	    String uri = (String) nMap.get(jsonName).uri;
-	    return uri == null ? jsonName : uri;
-	} catch (Exception e) {
-	    return null;
-	}
-    }
-
-    /**
-     * @return a map with a json-ld context
-     */
-    public Map<String, Object> getContext() {
-	return context;
-    }
-
-    public Etikett getEtikett(String key) {
-	Etikett e = pMap.get(key);
-	if (e == null) {
-	    e = new Etikett(key);
-	    e.name = getJsonName(key);
-	}
-	if (e.label == null) {
-	    e.label = e.uri;
-	}
-	logger.debug("Find name for " + key + " : " + e.name);
-	return e;
     }
 }
