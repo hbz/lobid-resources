@@ -675,6 +675,14 @@ public class Application extends Controller {
 		return ok(stars.render(starredIds()));
 	}
 
+	/**
+	 * @param path The path to redirect to
+	 * @return A 301 MOVED_PERMANENTLY redirect to the path
+	 */
+	public static Result redirect(String path) {
+		return movedPermanently("/" + path);
+	}
+
 	private static String currentlyStarred() {
 		String starred = session(STARRED);
 		return starred == null ? "" : starred.trim();

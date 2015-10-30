@@ -2,6 +2,9 @@
 # This file defines all application routes (Higher priority routes first)
 # ~~~~
 
+# Handle trailing slashes
+GET    /*path/                      controllers.nwbib.Application.redirect(path: String)
+
 # Home page
 GET    /nwbib                       controllers.nwbib.Application.index()
 GET    /nwbib/help                  controllers.nwbib.Application.help()
