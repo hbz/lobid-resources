@@ -44,9 +44,11 @@ import play.mvc.Http;
 import play.mvc.Result;
 import views.html.browse_classification;
 import views.html.browse_register;
+import views.html.classification;
 import views.html.details;
 import views.html.help;
 import views.html.index;
+import views.html.register;
 import views.html.search;
 import views.html.stars;
 
@@ -278,14 +280,19 @@ public class Application extends Controller {
 		Result cachedResult = (Result) Cache.get("register." + t);
 		if (cachedResult != null)
 			return cachedResult;
-		SearchResponse response = CLASSIFICATION.dataFor(t);
-		if (response == null) {
-			Logger.error("Failed to get data for register type: " + t);
-			flashError();
-			return internalServerError(browse_register.render(null, t));
+		Result result = null;
+		if (t.isEmpty()) {
+			result = ok(register.render());
+		} else {
+			SearchResponse response = CLASSIFICATION.dataFor(t);
+			if (response == null) {
+				Logger.error("Failed to get data for register type: " + t);
+				flashError();
+				return internalServerError(browse_register.render(null, t));
+			}
+			JsonNode sorted = CLASSIFICATION.sorted(response);
+			result = ok(browse_register.render(sorted.toString(), t));
 		}
-		JsonNode sorted = CLASSIFICATION.sorted(response);
-		Result result = ok(browse_register.render(sorted.toString(), t));
 		Cache.set("result." + t, result, ONE_DAY);
 		return result;
 	}
@@ -298,13 +305,18 @@ public class Application extends Controller {
 		Result cachedResult = (Result) Cache.get("classification." + t);
 		if (cachedResult != null)
 			return cachedResult;
-		SearchResponse response = CLASSIFICATION.dataFor(t);
-		if (response == null) {
-			Logger.error("Failed to get data for classification type: " + t);
-			flashError();
-			return internalServerError(browse_classification.render(null, null, t));
+		Result result = null;
+		if (t.isEmpty()) {
+			result = ok(classification.render());
+		} else {
+			SearchResponse response = CLASSIFICATION.dataFor(t);
+			if (response == null) {
+				Logger.error("Failed to get data for classification type: " + t);
+				flashError();
+				return internalServerError(browse_classification.render(null, null, t));
+			}
+			result = classificationResult(response, t);
 		}
-		Result result = classificationResult(response, t);
 		Cache.set("classification." + t, result, ONE_DAY);
 		return result;
 	}
