@@ -23,9 +23,9 @@ package de.hbz.lobid.helper;
  */
 public class Globals {
 
-    /**
-     * Use this to read config files created with etikett
-     * (https://github.com/hbz/etikett)
-     */
-    public static EtikettMaker etikette = new EtikettMaker();
+	/**
+	 * Use this to read config files created with etikett
+	 * (https://github.com/hbz/etikett)
+	 */
+	public static EtikettMaker etikette = new EtikettMaker();
 }

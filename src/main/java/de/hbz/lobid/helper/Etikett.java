@@ -29,126 +29,124 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @XmlRootElement
 public class Etikett {
 
-    @SuppressWarnings("unused")
-    private static final long serialVersionUID = 6716611400533458082L;
+	@SuppressWarnings("unused")
+	private static final long serialVersionUID = 6716611400533458082L;
 
-    /**
-     * the full id as uri
-     */
-    String uri = null;
+	/**
+	 * the full id as uri
+	 */
+	String uri = null;
 
-    /**
-     * a label
-     */
-    String label = null;
-    /**
-     * a icon
-     */
-    String icon = null;
+	/**
+	 * a label
+	 */
+	String label = null;
+	/**
+	 * a icon
+	 */
+	String icon = null;
 
-    /**
-     * The name is a short-form for the uri used in JSON-LD
-     */
-    String name = null;
+	/**
+	 * The name is a short-form for the uri used in JSON-LD
+	 */
+	String name = null;
 
-    /**
-     * The expected type of the resource
-     */
-    String referenceType = "class";
+	/**
+	 * The expected type of the resource
+	 */
+	String referenceType = "class";
 
-    /**
-     * The jaxb needs this
-     */
-    public Etikett() {
-	// for jaxb
-    }
-
-    /**
-     * @param subj
-     *            is used as primary key in table
-     */
-    public Etikett(String subj) {
-	uri = subj;
-    }
-
-    /**
-     * @return the uri
-     */
-    public String getUri() {
-	return uri;
-    }
-
-    /**
-     * @param uri
-     */
-    public void setUri(String uri) {
-	this.uri = uri;
-    }
-
-    /**
-     * @return a human readable label
-     */
-    public String getLabel() {
-	return label;
-    }
-
-    /**
-     * @param label
-     */
-    public void setLabel(String label) {
-	this.label = label;
-    }
-
-    /**
-     * @return icon etikett icon
-     */
-    public String getIcon() {
-	return icon;
-    }
-
-    /**
-     * @param icon
-     *            etikett icon
-     */
-    public void setIcon(String icon) {
-	this.icon = icon;
-    }
-
-    /**
-     * @return jsonName
-     */
-    public String getName() {
-	return name;
-    }
-
-    /**
-     * @param name
-     */
-    public void setName(String name) {
-	this.name = name;
-    }
-
-    /**
-     * @return default is class. If you are describing a predicate you should
-     *         use one of the types string,@id, date
-     */
-    public String getReferenceType() {
-	return referenceType;
-    }
-
-    /**
-     * @param referenceType
-     */
-    public void setReferenceType(String referenceType) {
-	this.referenceType = referenceType;
-    }
-
-    public String toString() {
-	try {
-	    return new ObjectMapper().writeValueAsString(this);
-	} catch (Exception e) {
-	    return "To String failed " + e.getMessage();
+	/**
+	 * The jaxb needs this
+	 */
+	public Etikett() {
+		// for jaxb
 	}
-    }
+
+	/**
+	 * @param subj is used as primary key in table
+	 */
+	public Etikett(String subj) {
+		uri = subj;
+	}
+
+	/**
+	 * @return the uri
+	 */
+	public String getUri() {
+		return uri;
+	}
+
+	/**
+	 * @param uri
+	 */
+	public void setUri(String uri) {
+		this.uri = uri;
+	}
+
+	/**
+	 * @return a human readable label
+	 */
+	public String getLabel() {
+		return label;
+	}
+
+	/**
+	 * @param label
+	 */
+	public void setLabel(String label) {
+		this.label = label;
+	}
+
+	/**
+	 * @return icon etikett icon
+	 */
+	public String getIcon() {
+		return icon;
+	}
+
+	/**
+	 * @param icon etikett icon
+	 */
+	public void setIcon(String icon) {
+		this.icon = icon;
+	}
+
+	/**
+	 * @return jsonName
+	 */
+	public String getName() {
+		return name;
+	}
+
+	/**
+	 * @param name
+	 */
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	/**
+	 * @return default is class. If you are describing a predicate you should use
+	 *         one of the types string,@id, date
+	 */
+	public String getReferenceType() {
+		return referenceType;
+	}
+
+	/**
+	 * @param referenceType
+	 */
+	public void setReferenceType(String referenceType) {
+		this.referenceType = referenceType;
+	}
+
+	public String toString() {
+		try {
+			return new ObjectMapper().writeValueAsString(this);
+		} catch (Exception e) {
+			return "To String failed " + e.getMessage();
+		}
+	}
 
 }
