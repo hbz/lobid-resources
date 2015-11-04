@@ -31,26 +31,23 @@ import org.openrdf.rio.helpers.StatementCollector;
  *
  */
 public class RdfUtils {
-    /**
-     * @param inputStream
-     *            an Input stream containing rdf data
-     * @param inf
-     *            the rdf format
-     * @param baseUrl
-     *            see sesame docu
-     * @return a Graph representing the rdf in the input stream
-     */
-    public static Graph readRdfToGraph(InputStream inputStream, RDFFormat inf,
-	    String baseUrl) {
-	try {
-	    RDFParser rdfParser = Rio.createParser(inf);
-	    org.openrdf.model.Graph myGraph = new TreeModel();
-	    StatementCollector collector = new StatementCollector(myGraph);
-	    rdfParser.setRDFHandler(collector);
-	    rdfParser.parse(inputStream, baseUrl);
-	    return myGraph;
-	} catch (Exception e) {
-	    throw new RuntimeException(e);
+	/**
+	 * @param inputStream an Input stream containing rdf data
+	 * @param inf the rdf format
+	 * @param baseUrl see sesame docu
+	 * @return a Graph representing the rdf in the input stream
+	 */
+	public static Graph readRdfToGraph(final InputStream inputStream,
+			final RDFFormat inf, final String baseUrl) {
+		try {
+			final RDFParser rdfParser = Rio.createParser(inf);
+			final org.openrdf.model.Graph myGraph = new TreeModel();
+			final StatementCollector collector = new StatementCollector(myGraph);
+			rdfParser.setRDFHandler(collector);
+			rdfParser.parse(inputStream, baseUrl);
+			return myGraph;
+		} catch (final Exception e) {
+			throw new RuntimeException(e);
+		}
 	}
-    }
 }

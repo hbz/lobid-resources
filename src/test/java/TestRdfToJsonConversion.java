@@ -1,3 +1,4 @@
+
 /*Copyright (c) 2015 "hbz"
 
 This file is part of lobid-rdf-to-json.
@@ -36,68 +37,65 @@ import de.hbz.lobid.helper.JsonConverter;
  */
 public class TestRdfToJsonConversion {
 
-    final static Logger logger = LoggerFactory
-	    .getLogger(TestRdfToJsonConversion.class);
+	final static Logger logger =
+			LoggerFactory.getLogger(TestRdfToJsonConversion.class);
 
-    @SuppressWarnings({ "javadoc", "unchecked" })
-    @Test
-    public void test() throws JsonParseException, JsonMappingException,
-	    IOException {
-	try (InputStream in = Thread.currentThread().getContextClassLoader()
-		.getResourceAsStream("adrianInput.nt");
-		InputStream out = Thread.currentThread()
-			.getContextClassLoader()
-			.getResourceAsStream("hbz01.es.json")) {
-	    Map<String, Object> actual = new JsonConverter()
-		    .convert(in, RDFFormat.NTRIPLES,
-			    "http://lobid.org/resource/HT018454638");
+	private void compare(final Map<String, Object> expected,
+			final Map<String, Object> actual) {
+		for (final String s : expected.keySet()) {
+			TestRdfToJsonConversion.logger.debug("try to get " + s);
+			compareObjects(expected.get(s), actual.get(s));
+		}
 
-	    logger.info("Creates: ");
-	    logger.info(new ObjectMapper().writeValueAsString(actual));
-	    logger.info("---------------------------------");
-	    Map<String, Object> expected = new ObjectMapper().readValue(out,
-		    Map.class);
-	    compare(expected, actual);
-	}
-    }
-
-    private void compare(Map<String, Object> expected,
-	    Map<String, Object> actual) {
-	for (String s : expected.keySet()) {
-	    logger.debug("try to get " + s);
-	    compareObjects(expected.get(s), actual.get(s));
 	}
 
-    }
-
-    private void compareObjects(Object expected, Object actual) {
-	logger.info("Compare: " + expected + "," + actual);
-	if (expected instanceof String) {
-	    compare((String) expected, (String) actual);
-	} else if (expected instanceof Map) {
-	    compare((Map<String, Object>) expected,
-		    (Map<String, Object>) actual);
-	} else if (expected instanceof List) {
-	    compareOrderSensitive((List<Object>) expected,
-		    (List<Object>) actual);
-
-	} else {
-
-	    logger.debug("Expected: " + expected);
-	    logger.debug("Actual: " + actual);
+	private void compare(final String expected, final String actual) {
+		org.junit.Assert.assertEquals(expected, actual);
 	}
-    }
 
-    private void compareOrderSensitive(List<Object> expected,
-	    List<Object> actual) {
-	for (int i = 0; i < expected.size(); i++) {
-	    // compareObjects(expected.get(i), actual.get(i));
-	    logger.debug("Expected: " + expected);
-	    logger.debug("Actual: " + actual);
+	private void compareObjects(final Object expected, final Object actual) {
+		TestRdfToJsonConversion.logger.info("Compare: " + expected + "," + actual);
+		if (expected instanceof String) {
+			compare((String) expected, (String) actual);
+		} else if (expected instanceof Map) {
+			compare((Map<String, Object>) expected, (Map<String, Object>) actual);
+		} else if (expected instanceof List) {
+			compareOrderSensitive((List<Object>) expected, (List<Object>) actual);
+
+		} else {
+			TestRdfToJsonConversion.logger.debug("Expected: " + expected);
+			TestRdfToJsonConversion.logger.debug("Actual: " + actual);
+		}
 	}
-    }
 
-    private void compare(String expected, String actual) {
-	org.junit.Assert.assertEquals(expected, actual);
-    }
+	private void compareOrderSensitive(final List<Object> expected,
+			final List<Object> actual) {
+		for (int i = 0; i < expected.size(); i++) {
+			// compareObjects(expected.get(i), actual.get(i));
+			TestRdfToJsonConversion.logger.debug("Expected ordered: " + expected);
+			TestRdfToJsonConversion.logger.debug("Actual ordered: " + actual);
+		}
+	}
+
+	@SuppressWarnings({ "javadoc", "unchecked" })
+	@Test
+	public void test()
+			throws JsonParseException, JsonMappingException, IOException {
+		try (
+				InputStream in = Thread.currentThread().getContextClassLoader()
+						.getResourceAsStream("adrianInput.nt");
+				InputStream out = Thread.currentThread().getContextClassLoader()
+						.getResourceAsStream("hbz01.es.json")) {
+			final Map<String, Object> actual = new JsonConverter().convert(in,
+					RDFFormat.NTRIPLES, "http://lobid.org/resource/HT018454638");
+
+			TestRdfToJsonConversion.logger.info("Creates: ");
+			TestRdfToJsonConversion.logger
+					.info(new ObjectMapper().writeValueAsString(actual));
+			TestRdfToJsonConversion.logger.info("---------------------------------");
+			final Map<String, Object> expected =
+					new ObjectMapper().readValue(out, Map.class);
+			compare(expected, actual);
+		}
+	}
 }
