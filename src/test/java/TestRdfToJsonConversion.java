@@ -56,13 +56,12 @@ public class TestRdfToJsonConversion {
 	@SuppressWarnings("unchecked")
 	private void compareObjects(final Object expected, final Object actual) {
 		TestRdfToJsonConversion.logger.info("Compare: " + expected + "," + actual);
-		if (expected instanceof String) {
+		if (actual instanceof String) {
 			compare((String) expected, (String) actual);
-		} else if (expected instanceof Map) {
+		} else if (actual instanceof Map) {
 			compare((Map<String, Object>) expected, (Map<String, Object>) actual);
-		} else if (expected instanceof List) {
+		} else if (actual instanceof List) {
 			compareOrderSensitive((List<Object>) expected, (List<Object>) actual);
-
 		} else {
 			TestRdfToJsonConversion.logger.debug("Expected: " + expected);
 			TestRdfToJsonConversion.logger.debug("Actual: " + actual);
