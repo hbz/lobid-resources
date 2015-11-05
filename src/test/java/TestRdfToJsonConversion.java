@@ -49,10 +49,11 @@ public class TestRdfToJsonConversion {
 
 	}
 
-	private void compare(final String expected, final String actual) {
+	private static void compare(final String expected, final String actual) {
 		org.junit.Assert.assertEquals(expected, actual);
 	}
 
+	@SuppressWarnings("unchecked")
 	private void compareObjects(final Object expected, final Object actual) {
 		TestRdfToJsonConversion.logger.info("Compare: " + expected + "," + actual);
 		if (expected instanceof String) {
@@ -68,7 +69,7 @@ public class TestRdfToJsonConversion {
 		}
 	}
 
-	private void compareOrderSensitive(final List<Object> expected,
+	private static void compareOrderSensitive(final List<Object> expected,
 			final List<Object> actual) {
 		for (int i = 0; i < expected.size(); i++) {
 			// compareObjects(expected.get(i), actual.get(i));
@@ -77,7 +78,7 @@ public class TestRdfToJsonConversion {
 		}
 	}
 
-	@SuppressWarnings({ "javadoc", "unchecked" })
+	@SuppressWarnings({ "javadoc" })
 	@Test
 	public void test()
 			throws JsonParseException, JsonMappingException, IOException {
