@@ -19,9 +19,11 @@ package de.hbz.lobid.helper;
 
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 
 import org.openrdf.model.BNode;
@@ -45,7 +47,7 @@ public class JsonConverter {
 	String contributorOrder = "http://purl.org/lobid/lv#contributorOrder";
 	String subjectOrder = "http://purl.org/lobid/lv#subjectOrder";
 
-	List<Statement> all = new ArrayList<Statement>();
+	Set<Statement> all = new HashSet<>();
 
 	/**
 	 * You can easily convert the map to json using jackson
@@ -66,7 +68,7 @@ public class JsonConverter {
 	}
 
 	private Map<String, Object> createMap(Graph g, String uri) {
-		Map<String, Object> jsonResult = new TreeMap<String, Object>();
+		Map<String, Object> jsonResult = new TreeMap<>();
 		Iterator<Statement> i = g.iterator();
 		jsonResult.put("@id", uri);
 		while (i.hasNext()) {
@@ -98,7 +100,7 @@ public class JsonConverter {
 	private void addListToJsonResult(Map<String, Object> jsonResult, String key,
 			String id) {
 		logger.info("Create list for " + key + " pointing to " + id);
-		List<String> orderedList = new ArrayList<String>();
+		List<String> orderedList = new ArrayList<>();
 		for (Statement s : find(id)) {
 			if (id.equals(s.getSubject().stringValue())) {
 				if (first.equals(s.getPredicate().stringValue())) {
@@ -117,7 +119,7 @@ public class JsonConverter {
 	}
 
 	private List<String> traversList(String uri) {
-		List<String> orderedList = new ArrayList<String>();
+		List<String> orderedList = new ArrayList<>();
 		for (Statement s : find(uri)) {
 			if (uri.equals(s.getSubject().stringValue())) {
 				if (first.equals(s.getPredicate().stringValue())) {
@@ -137,18 +139,18 @@ public class JsonConverter {
 			String uri) {
 		if (jsonResult.containsKey(key)) {
 			@SuppressWarnings("unchecked")
-			List<Map<String, Object>> literals =
-					(List<Map<String, Object>>) jsonResult.get(key);
+			Set<Map<String, Object>> literals =
+					(Set<Map<String, Object>>) jsonResult.get(key);
 			literals.add(createObject(uri));
 		} else {
-			List<Map<String, Object>> literals = new ArrayList<Map<String, Object>>();
+			Set<Map<String, Object>> literals = new HashSet<>();
 			literals.add(createObject(uri));
 			jsonResult.put(key, literals);
 		}
 	}
 
 	private Map<String, Object> createObject(String uri) {
-		Map<String, Object> newObject = new TreeMap<String, Object>();
+		Map<String, Object> newObject = new TreeMap<>();
 		if (uri != null) {
 			newObject.put("@id", uri);
 			// newObject.put("prefLabel",
@@ -165,8 +167,8 @@ public class JsonConverter {
 		return newObject;
 	}
 
-	private List<Statement> find(String uri) {
-		List<Statement> result = new ArrayList<Statement>();
+	private Set<Statement> find(String uri) {
+		Set<Statement> result = new HashSet<>();
 		for (Statement i : all) {
 			if (uri.equals(i.getSubject().stringValue()))
 				result.add(i);
@@ -174,14 +176,15 @@ public class JsonConverter {
 		return result;
 	}
 
-	private void addLiteralToJsonResult(Map<String, Object> jsonResult,
-			String key, String value) {
+	private static void addLiteralToJsonResult(
+			final Map<String, Object> jsonResult, final String key,
+			final String value) {
 		if (jsonResult.containsKey(key)) {
 			@SuppressWarnings("unchecked")
-			List<String> literals = (List<String>) jsonResult.get(key);
+			Set<String> literals = (Set<String>) jsonResult.get(key);
 			literals.add(value);
 		} else {
-			List<String> literals = new ArrayList<String>();
+			Set<String> literals = new HashSet<>();
 			literals.add(value);
 			jsonResult.put(key, literals);
 		}
