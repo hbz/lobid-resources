@@ -74,8 +74,12 @@
 </li>
 }
 
+@select(singularPlural:(String,String))=@{
+	if(allHits==1) {singularPlural._1} else {singularPlural._2}
+}
+
 @labelRaw = @{
-	if(raw.contains("multiVolumeWork")) {"Bände"} else if (raw.contains("series")) {"Serienbände"} else if (raw.contains("containedIn")) {"Beiträge"} else {""}
+	if(raw.contains("multiVolumeWork")) {select(("Band","Bände"))} else if (raw.contains("series")) {select(("Serienband","Serienbände"))} else if (raw.contains("containedIn")) {select(("Beitrag","Beiträge"))} else {""}
 }
 
 @locationLabel(loc:String)={ @defining(loc.contains(",")) { isLatLon =>
