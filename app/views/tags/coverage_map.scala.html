@@ -8,7 +8,6 @@
 <link rel="stylesheet" type="text/css" href="@controllers.routes.Assets.at("stylesheets/MarkerCluster.css")" />
 <link rel="stylesheet" type="text/css" href="@controllers.routes.Assets.at("stylesheets/MarkerCluster.Default.css")" />
 <script src="@controllers.routes.Assets.at("javascripts/leaflet.js")"></script>
-<script src="@controllers.routes.Assets.at("javascripts/Leaflet.MakiMarkers.js")"></script>
 <script type='text/javascript' src='@controllers.routes.Assets.at("javascripts/leaflet.markercluster.js")'></script>
 <script type='text/javascript' src='@controllers.routes.Assets.at("javascripts/offset.min.js")'></script>
 
@@ -51,11 +50,12 @@ function hull(pointsParam) {
 
 var markers = new L.MarkerClusterGroup({
     zoomToBoundsOnClick: false,
+    singleMarkerMode: true,
     iconCreateFunction: function (cluster) {
         var childCount = cluster.getChildCount();
         var c = ' marker-cluster-' + (childCount < 10 ? 'small' : childCount < 50 ? 'medium' : 'large');
         return new L.DivIcon({ 
-            html: '<div><span>' + childCount + ' Orte</span></div>', 
+            html: '<div><span>' + childCount + (childCount > 1 ? ' Orte' : '<br/>Ort') + '</span></div>',
             className: 'marker-cluster' + c, 
             iconSize: new L.Point(40, 40)
         });
@@ -135,8 +135,7 @@ function addMarker(link, latLon, freq){
   var lon = latLon.split(",")[1];
   var marker = L.marker([lat,lon],{
         title: freq + " Titel",
-        icon: L.MakiMarkers.icon(
-          {icon: "village", color: "#FF333B", size: freq <= 1 ? "s" : freq <= 5 ? "m" : "l"})
+        icon: L.divIcon()
   });
   marker.bindPopup(
   '<table style="text-align: center" class="table-striped table-condensed">'+
