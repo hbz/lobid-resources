@@ -53,10 +53,9 @@ var markers = new L.MarkerClusterGroup({
     singleMarkerMode: true,
     iconCreateFunction: function (cluster) {
         var childCount = cluster.getChildCount();
-        var c = ' marker-cluster-' + (childCount < 10 ? 'small' : childCount < 50 ? 'medium' : 'large');
         return new L.DivIcon({ 
             html: '<div><span>' + childCount + (childCount > 1 ? ' Orte' : '<br/>Ort') + '</span></div>',
-            className: 'marker-cluster' + c, 
+            className: 'marker-cluster marker-cluster-' + (childCount > 1 ? 'area' : 'place'),
             iconSize: new L.Point(40, 40)
         });
     }
