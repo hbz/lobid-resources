@@ -35,7 +35,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * @author Jan Schnasse
- *
+ * @author Pascal Christoph (dr0i)
  */
 public class JsonConverter {
 
@@ -100,39 +100,42 @@ public class JsonConverter {
 	private void addListToJsonResult(Map<String, Object> jsonResult, String key,
 			String id) {
 		logger.info("Create list for " + key + " pointing to " + id);
-		List<String> orderedList = new ArrayList<>();
-		for (Statement s : find(id)) {
-			if (id.equals(s.getSubject().stringValue())) {
-				if (first.equals(s.getPredicate().stringValue())) {
-					logger.info("Find next data " + s.getObject().stringValue());
-					orderedList.add(s.getObject().stringValue());
-				} else if (rest.equals(s.getPredicate().stringValue())) {
-					logger.info("Find next node " + s.getObject().stringValue());
-					orderedList.addAll(traversList(s.getObject().stringValue()));
-				} else {
-					// In this case, it is an object
-					// createObject(null);
-				}
-			}
-		}
-		jsonResult.put(key, orderedList);
+		jsonResult.put(key, traversList(id, first, new ArrayList<>()));
 	}
 
-	private List<String> traversList(String uri) {
-		List<String> orderedList = new ArrayList<>();
+	/**
+	 * The property "first" has always exactly one property "rest", which itself
+	 * may point to a another "first" node. At the end of that chain the "rest"
+	 * node has the value "nil".
+	 * 
+	 * @param uri
+	 * @param property
+	 * @param orderedList
+	 * @return the ordered list
+	 */
+	private List<String> traversList(String uri, String property,
+			List<String> orderedList) {
 		for (Statement s : find(uri)) {
-			if (uri.equals(s.getSubject().stringValue())) {
-				if (first.equals(s.getPredicate().stringValue())) {
-					logger.info("Find next data " + s.getObject().stringValue());
+			if (uri.equals(s.getSubject().stringValue())
+					&& property.equals(s.getPredicate().stringValue())) {
+				if (property.equals(first)) {
 					orderedList.add(s.getObject().stringValue());
-				}
-				if (rest.equals(s.getPredicate().stringValue())) {
-					logger.info("Find next node " + s.getObject().stringValue());
-					orderedList.addAll(traversList(s.getObject().stringValue()));
+					traverseList(s.getSubject().stringValue(), orderedList, s, "data",
+							rest);
+				} else if (property.equals(rest)) {
+					traverseList(s.getObject().stringValue(), orderedList, s, "node",
+							first);
 				}
 			}
 		}
 		return orderedList;
+	}
+
+	private void traverseList(String uri, List<String> orderedList, Statement s,
+			String message, String property) {
+		logger.debug("Find next " + message + ": " + uri);
+		all.remove(s.getSubject());
+		traversList(uri, property, orderedList);
 	}
 
 	private void addObjectToJsonResult(Map<String, Object> jsonResult, String key,
