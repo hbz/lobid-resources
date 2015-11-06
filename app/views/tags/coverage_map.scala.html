@@ -16,13 +16,24 @@
 
 <script>
 var layer = L.tileLayer('http://otile{s}.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.png', { subdomains: '1234' });
-var nrw = new L.LatLng(51.60, 7.8)
+var nrw = new L.LatLng(51.45, 7.7)
 var map = new L.Map("map-coverage", {
     center: nrw,
     zoom: 7,
     maxZoom: 13,
     scrollWheelZoom: false,
     attributionControl: false
+});
+
+$.getJSON('@controllers.routes.Assets.at("data/nrw.geo.json")', function(json) {
+    L.geoJson(json, {
+      style: {
+        "color": "#2F994C",
+        "weight": 4,
+        "opacity": 0.5,
+        "fillOpacity": 0.1
+      }
+    }).addTo(map);
 });
 
 var pointsParam = '@(if(location.contains("|")) location.split("\\|")(1) else location)';
