@@ -118,7 +118,7 @@ public enum TableRow {
 								refAndLabel[0], refAndLabel[1]);
 				results.add(result);
 			}
-			return results.stream().collect(Collectors.joining(" | Band "));
+			return results.stream().collect(Collectors.joining(", Band "));
 		}
 
 		private List<String> labelsFor(JsonNode doc, String value,
