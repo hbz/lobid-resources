@@ -11,7 +11,7 @@
 <script type='text/javascript' src='@controllers.routes.Assets.at("javascripts/leaflet.markercluster.js")'></script>
 <script type='text/javascript' src='@controllers.routes.Assets.at("javascripts/offset.min.js")'></script>
 
-<div class="map-coverage" id="map-coverage"></div>
+<div class="map" id="map-coverage"></div>
 
 <script>
 var layer = L.tileLayer('http://otile{s}.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.png', { subdomains: '1234' });
@@ -21,7 +21,7 @@ var map = new L.Map("map-coverage", {
     zoom: 7,
     minZoom: 7,
     maxZoom: 13,
-    scrollWheelZoom: false,
+    scrollWheelZoom: true,
     attributionControl: false
 });
 
