@@ -29,7 +29,7 @@
         @for((doc,i) <- hits) {
         @defining(Cache.get(session("uuid") + "-lastSearch")) { lastSearch => @if(lastSearch != null) {
           @defining(Json.parse(lastSearch.asInstanceOf[String]).as[JsArray].as[Seq[String]]) { last =>
-           <nav>
+           <nav id="pager">
              <ul class="pager">
                @pageLink(last, "prev", "&larr;", "Voriger Treffer")
                @defining(session("lastSearchUrl")){ lastSearchUrl =>
@@ -39,6 +39,11 @@
                @pageLink(last, "next", "&rarr;", "Nächster Treffer")
              </ul>
            </nav>
+           <script>
+             if(document.referrer.indexOf('@nwbib.routes.Application.index()') < 0){
+               $("#pager").hide();
+             }
+           </script>
           }
         }}
         <div class="row">
