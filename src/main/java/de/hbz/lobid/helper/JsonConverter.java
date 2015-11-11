@@ -19,9 +19,11 @@ package de.hbz.lobid.helper;
 
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 
 import org.openrdf.model.BNode;
@@ -33,7 +35,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * @author Jan Schnasse
- *
+ * @author Pascal Christoph (dr0i)
  */
 public class JsonConverter {
 
@@ -42,10 +44,8 @@ public class JsonConverter {
 	String first = "http://www.w3.org/1999/02/22-rdf-syntax-ns#first";
 	String rest = "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest";
 	String nil = "http://www.w3.org/1999/02/22-rdf-syntax-ns#nil";
-	String contributorOrder = "http://purl.org/lobid/lv#contributorOrder";
-	String subjectOrder = "http://purl.org/lobid/lv#subjectOrder";
 
-	List<Statement> all = new ArrayList<Statement>();
+	Set<Statement> all = new HashSet<>();
 
 	/**
 	 * You can easily convert the map to json using jackson
@@ -66,7 +66,7 @@ public class JsonConverter {
 	}
 
 	private Map<String, Object> createMap(Graph g, String uri) {
-		Map<String, Object> jsonResult = new TreeMap<String, Object>();
+		Map<String, Object> jsonResult = new TreeMap<>();
 		Iterator<Statement> i = g.iterator();
 		jsonResult.put("@id", uri);
 		while (i.hasNext()) {
@@ -86,69 +86,73 @@ public class JsonConverter {
 			addLiteralToJsonResult(jsonResult, key, s.getObject().stringValue());
 		}
 		if (s.getObject() instanceof org.openrdf.model.BNode) {
-			if (contributorOrder.equals(s.getPredicate().stringValue())
-					|| subjectOrder.equals(s.getPredicate().stringValue())) {
+			if (isList(s)) {
 				addListToJsonResult(jsonResult, key, ((BNode) s.getObject()).getID());
+			} else {
+				addObjectToJsonResult(jsonResult, key, s.getObject().stringValue());
 			}
 		} else {
 			addObjectToJsonResult(jsonResult, key, s.getObject().stringValue());
 		}
 	}
 
+	private boolean isList(Statement statement) {
+		for (Statement s : find(statement.getObject().stringValue())) {
+			if (first.equals(s.getPredicate().stringValue())) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	private void addListToJsonResult(Map<String, Object> jsonResult, String key,
 			String id) {
 		logger.info("Create list for " + key + " pointing to " + id);
-		List<String> orderedList = new ArrayList<String>();
-		for (Statement s : find(id)) {
-			if (id.equals(s.getSubject().stringValue())) {
-				if (first.equals(s.getPredicate().stringValue())) {
-					logger.info("Find next data " + s.getObject().stringValue());
-					orderedList.add(s.getObject().stringValue());
-				} else if (rest.equals(s.getPredicate().stringValue())) {
-					logger.info("Find next node " + s.getObject().stringValue());
-					orderedList.addAll(traversList(s.getObject().stringValue()));
-				} else {
-					// In this case, it is an object
-					// createObject(null);
-				}
-			}
-		}
-		jsonResult.put(key, orderedList);
+		jsonResult.put(key, traverseList(id, first, new ArrayList<>()));
 	}
 
-	private List<String> traversList(String uri) {
-		List<String> orderedList = new ArrayList<String>();
+	/**
+	 * The property "first" has always exactly one property "rest", which itself
+	 * may point to a another "first" node. At the end of that chain the "rest"
+	 * node has the value "nil".
+	 * 
+	 * @param uri
+	 * @param property
+	 * @param orderedList
+	 * @return the ordered list
+	 */
+	private List<String> traverseList(String uri, String property,
+			List<String> orderedList) {
 		for (Statement s : find(uri)) {
-			if (uri.equals(s.getSubject().stringValue())) {
-				if (first.equals(s.getPredicate().stringValue())) {
-					logger.info("Find next data " + s.getObject().stringValue());
+			if (uri.equals(s.getSubject().stringValue())
+					&& property.equals(s.getPredicate().stringValue())) {
+				if (property.equals(first)) {
 					orderedList.add(s.getObject().stringValue());
-				}
-				if (rest.equals(s.getPredicate().stringValue())) {
-					logger.info("Find next node " + s.getObject().stringValue());
-					orderedList.addAll(traversList(s.getObject().stringValue()));
+					traverseList(s.getSubject().stringValue(), rest, orderedList);
+				} else if (property.equals(rest)) {
+					traverseList(s.getObject().stringValue(), first, orderedList);
 				}
 			}
 		}
 		return orderedList;
 	}
 
-	private void addObjectToJsonResult(Map<String, Object> jsonResult, String key,
-			String uri) {
+	private void addObjectToJsonResult(Map<String, Object> jsonResult,
+			String key, String uri) {
 		if (jsonResult.containsKey(key)) {
 			@SuppressWarnings("unchecked")
-			List<Map<String, Object>> literals =
-					(List<Map<String, Object>>) jsonResult.get(key);
+			Set<Map<String, Object>> literals =
+					(Set<Map<String, Object>>) jsonResult.get(key);
 			literals.add(createObject(uri));
 		} else {
-			List<Map<String, Object>> literals = new ArrayList<Map<String, Object>>();
+			Set<Map<String, Object>> literals = new HashSet<>();
 			literals.add(createObject(uri));
 			jsonResult.put(key, literals);
 		}
 	}
 
 	private Map<String, Object> createObject(String uri) {
-		Map<String, Object> newObject = new TreeMap<String, Object>();
+		Map<String, Object> newObject = new TreeMap<>();
 		if (uri != null) {
 			newObject.put("@id", uri);
 			// newObject.put("prefLabel",
@@ -165,8 +169,8 @@ public class JsonConverter {
 		return newObject;
 	}
 
-	private List<Statement> find(String uri) {
-		List<Statement> result = new ArrayList<Statement>();
+	private Set<Statement> find(String uri) {
+		Set<Statement> result = new HashSet<>();
 		for (Statement i : all) {
 			if (uri.equals(i.getSubject().stringValue()))
 				result.add(i);
@@ -174,14 +178,14 @@ public class JsonConverter {
 		return result;
 	}
 
-	private void addLiteralToJsonResult(Map<String, Object> jsonResult,
-			String key, String value) {
+	private static void addLiteralToJsonResult(
+			final Map<String, Object> jsonResult, final String key, final String value) {
 		if (jsonResult.containsKey(key)) {
 			@SuppressWarnings("unchecked")
-			List<String> literals = (List<String>) jsonResult.get(key);
+			Set<String> literals = (Set<String>) jsonResult.get(key);
 			literals.add(value);
 		} else {
-			List<String> literals = new ArrayList<String>();
+			Set<String> literals = new HashSet<>();
 			literals.add(value);
 			jsonResult.put(key, literals);
 		}

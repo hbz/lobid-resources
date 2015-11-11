@@ -18,8 +18,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
@@ -33,12 +35,29 @@ import de.hbz.lobid.helper.JsonConverter;
 
 /**
  * @author Jan Schnasse
+ * @author Pascal Christoph (dr0i)
  *
  */
 public class TestRdfToJsonConversion {
 
 	final static Logger logger =
 			LoggerFactory.getLogger(TestRdfToJsonConversion.class);
+	static boolean areTestFilesEqual = true;
+	static boolean shouldBeEqual;
+
+	@SuppressWarnings({ "javadoc" })
+	@Test
+	public void testEquality()
+			throws JsonParseException, JsonMappingException, IOException {
+		testFiles("adrianInput.nt", "hbz01.es.json", true);
+	}
+
+	@SuppressWarnings({ "javadoc" })
+	@Test
+	public void testWrongContributorOrder()
+			throws JsonParseException, JsonMappingException, IOException {
+		testFiles("adrianInput.nt", "hbz01.es.wrongContributorOrder.json", false);
+	}
 
 	private void compare(final Map<String, Object> expected,
 			final Map<String, Object> actual) {
@@ -46,56 +65,68 @@ public class TestRdfToJsonConversion {
 			TestRdfToJsonConversion.logger.debug("try to get " + s);
 			compareObjects(expected.get(s), actual.get(s));
 		}
-
 	}
 
-	private void compare(final String expected, final String actual) {
-		org.junit.Assert.assertEquals(expected, actual);
+	private static void compare(final String expected, final String actual) {
+		org.junit.Assert.assertTrue(shouldBeEqual ? expected.equals(actual) : true);
+		areTestFilesEqual = (expected.equals(actual) ? areTestFilesEqual : false);
 	}
 
+	@SuppressWarnings("unchecked")
 	private void compareObjects(final Object expected, final Object actual) {
-		TestRdfToJsonConversion.logger.info("Compare: " + expected + "," + actual);
-		if (expected instanceof String) {
-			compare((String) expected, (String) actual);
-		} else if (expected instanceof Map) {
-			compare((Map<String, Object>) expected, (Map<String, Object>) actual);
-		} else if (expected instanceof List) {
-			compareOrderSensitive((List<Object>) expected, (List<Object>) actual);
-
-		} else {
+		if (actual instanceof String) {
 			TestRdfToJsonConversion.logger.debug("Expected: " + expected);
 			TestRdfToJsonConversion.logger.debug("Actual: " + actual);
+			compare((String) expected, (String) actual);
+		} else if (actual instanceof Set) {
+			compare((ArrayList<?>) expected, (Set<Object>) actual);
+		} else if (actual instanceof List) {
+			compareOrderSensitive(expected.toString(), actual.toString());
+		} else if (actual instanceof Map) {
+			compare((Map<String, Object>) expected, (Map<String, Object>) actual);
 		}
 	}
 
-	private void compareOrderSensitive(final List<Object> expected,
-			final List<Object> actual) {
-		for (int i = 0; i < expected.size(); i++) {
-			// compareObjects(expected.get(i), actual.get(i));
-			TestRdfToJsonConversion.logger.debug("Expected ordered: " + expected);
-			TestRdfToJsonConversion.logger.debug("Actual ordered: " + actual);
-		}
+	private static void compare(final ArrayList<?> expected,
+			final Set<Object> actual) {
+		ArrayList<?> al = expected;
+		TestRdfToJsonConversion.logger.debug("Expected unordered: " + expected);
+		((Set<?>) actual).forEach(e -> al.remove(e));
+		TestRdfToJsonConversion.logger.debug("Actual unordered: " + actual);
+		org.junit.Assert.assertTrue(al.size() == 0);
 	}
 
-	@SuppressWarnings({ "javadoc", "unchecked" })
-	@Test
-	public void test()
-			throws JsonParseException, JsonMappingException, IOException {
+	private static void compareOrderSensitive(String expected, String actual) {
+		TestRdfToJsonConversion.logger.debug("Expected ordered: " + expected);
+		TestRdfToJsonConversion.logger.debug("Actual ordered: " + actual);
+		compare(expected.toString(), actual.toString());
+	}
+
+	private void testFiles(String fnameNtriples, String fnameJson,
+			boolean _shouldBeEqual)
+					throws JsonParseException, JsonMappingException, IOException {
+		areTestFilesEqual = true;
+		TestRdfToJsonConversion.logger.info("\n\nNew test, begin converting files");
 		try (
 				InputStream in = Thread.currentThread().getContextClassLoader()
-						.getResourceAsStream("adrianInput.nt");
+						.getResourceAsStream(fnameNtriples);
 				InputStream out = Thread.currentThread().getContextClassLoader()
-						.getResourceAsStream("hbz01.es.json")) {
+						.getResourceAsStream(fnameJson)) {
+			TestRdfToJsonConversion.shouldBeEqual = _shouldBeEqual;
 			final Map<String, Object> actual = new JsonConverter().convert(in,
 					RDFFormat.NTRIPLES, "http://lobid.org/resource/HT018454638");
-
 			TestRdfToJsonConversion.logger.info("Creates: ");
 			TestRdfToJsonConversion.logger
 					.info(new ObjectMapper().writeValueAsString(actual));
-			TestRdfToJsonConversion.logger.info("---------------------------------");
+			TestRdfToJsonConversion.logger
+					.info("\nBegin comparing files: " + fnameNtriples + " against "
+							+ fnameJson + ", expect equality:" + _shouldBeEqual);
 			final Map<String, Object> expected =
 					new ObjectMapper().readValue(out, Map.class);
-			compare(expected, actual);
+			compareObjects(expected, actual);
+			TestRdfToJsonConversion.logger.info("\nEnd. Equality:" + areTestFilesEqual
+					+ ", expected equality:" + _shouldBeEqual);
+			org.junit.Assert.assertTrue(areTestFilesEqual == shouldBeEqual);
 		}
 	}
 }
