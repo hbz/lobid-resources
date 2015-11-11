@@ -44,8 +44,6 @@ public class JsonConverter {
 	String first = "http://www.w3.org/1999/02/22-rdf-syntax-ns#first";
 	String rest = "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest";
 	String nil = "http://www.w3.org/1999/02/22-rdf-syntax-ns#nil";
-	String contributorOrder = "http://purl.org/lobid/lv#contributorOrder";
-	String subjectOrder = "http://purl.org/lobid/lv#subjectOrder";
 
 	Set<Statement> all = new HashSet<>();
 
@@ -88,19 +86,29 @@ public class JsonConverter {
 			addLiteralToJsonResult(jsonResult, key, s.getObject().stringValue());
 		}
 		if (s.getObject() instanceof org.openrdf.model.BNode) {
-			if (contributorOrder.equals(s.getPredicate().stringValue())
-					|| subjectOrder.equals(s.getPredicate().stringValue())) {
+			if (isList(s)) {
 				addListToJsonResult(jsonResult, key, ((BNode) s.getObject()).getID());
+			} else {
+				addObjectToJsonResult(jsonResult, key, s.getObject().stringValue());
 			}
 		} else {
 			addObjectToJsonResult(jsonResult, key, s.getObject().stringValue());
 		}
 	}
 
+	private boolean isList(Statement statement) {
+		for (Statement s : find(statement.getObject().stringValue())) {
+			if (first.equals(s.getPredicate().stringValue())) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	private void addListToJsonResult(Map<String, Object> jsonResult, String key,
 			String id) {
 		logger.info("Create list for " + key + " pointing to " + id);
-		jsonResult.put(key, traversList(id, first, new ArrayList<>()));
+		jsonResult.put(key, traverseList(id, first, new ArrayList<>()));
 	}
 
 	/**
@@ -113,33 +121,24 @@ public class JsonConverter {
 	 * @param orderedList
 	 * @return the ordered list
 	 */
-	private List<String> traversList(String uri, String property,
+	private List<String> traverseList(String uri, String property,
 			List<String> orderedList) {
 		for (Statement s : find(uri)) {
 			if (uri.equals(s.getSubject().stringValue())
 					&& property.equals(s.getPredicate().stringValue())) {
 				if (property.equals(first)) {
 					orderedList.add(s.getObject().stringValue());
-					traverseList(s.getSubject().stringValue(), orderedList, s, "data",
-							rest);
+					traverseList(s.getSubject().stringValue(), rest, orderedList);
 				} else if (property.equals(rest)) {
-					traverseList(s.getObject().stringValue(), orderedList, s, "node",
-							first);
+					traverseList(s.getObject().stringValue(), first, orderedList);
 				}
 			}
 		}
 		return orderedList;
 	}
 
-	private void traverseList(String uri, List<String> orderedList, Statement s,
-			String message, String property) {
-		logger.debug("Find next " + message + ": " + uri);
-		all.remove(s.getSubject());
-		traversList(uri, property, orderedList);
-	}
-
-	private void addObjectToJsonResult(Map<String, Object> jsonResult, String key,
-			String uri) {
+	private void addObjectToJsonResult(Map<String, Object> jsonResult,
+			String key, String uri) {
 		if (jsonResult.containsKey(key)) {
 			@SuppressWarnings("unchecked")
 			Set<Map<String, Object>> literals =
@@ -180,8 +179,7 @@ public class JsonConverter {
 	}
 
 	private static void addLiteralToJsonResult(
-			final Map<String, Object> jsonResult, final String key,
-			final String value) {
+			final Map<String, Object> jsonResult, final String key, final String value) {
 		if (jsonResult.containsKey(key)) {
 			@SuppressWarnings("unchecked")
 			Set<String> literals = (Set<String>) jsonResult.get(key);
