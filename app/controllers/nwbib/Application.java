@@ -474,6 +474,11 @@ public class Application extends Controller {
 			boolean t2Current = current(subject, medium, nwbibspatial, nwbibsubject,
 					owner, t, field, t2);
 			if (t1Current == t2Current) {
+				if (!field.equals(ISSUED_FIELD)) {
+					Integer c1 = p1.getLeft().get("count").asInt();
+					Integer c2 = p2.getLeft().get("count").asInt();
+					return c2.compareTo(c1);
+				}
 				String l1 = p1.getRight().substring(p1.getRight().lastIndexOf('>') + 1);
 				String l2 = p2.getRight().substring(p2.getRight().lastIndexOf('>') + 1);
 				return collator.compare(l1, l2);
