@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+import org.codehaus.jackson.map.ObjectMapper;
 import org.openrdf.model.BNode;
 import org.openrdf.model.Graph;
 import org.openrdf.model.Statement;
@@ -34,6 +35,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * Converts ntriples to a map, ennhancing the data with data constructed via
+ * {@link EtikettMaker}.
+ * 
+ * TODO: this class should either return a Json object or be renamed.
+ * 
  * @author Jan Schnasse
  * @author Pascal Christoph (dr0i)
  */
@@ -45,22 +51,28 @@ public class JsonConverter {
 	String rest = "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest";
 	String nil = "http://www.w3.org/1999/02/22-rdf-syntax-ns#nil";
 
+	private static ObjectMapper objectMapper = new ObjectMapper();
 	Set<Statement> all = new HashSet<>();
 
 	/**
-	 * You can easily convert the map to json using jackson
-	 * (https://github.com/FasterXML/jackson) or other jaxb libs
+	 * You can easily convert the map to json using the object mapper provided by
+	 * {@link #getObjectMapper}.
 	 * 
 	 * @param in an input stream containing rdf data
 	 * @param format the rdf format
-	 * @param uri the uri from where the rdf ist taken. Can not be null.
+	 * @param rootNodePrefix the prefix of the root subject node of the resource
 	 * @return a map
 	 */
 	public Map<String, Object> convert(InputStream in, RDFFormat format,
-			String uri) {
-		Graph g = RdfUtils.readRdfToGraph(in, format, uri);
+			final String rootNodePrefix) {
+		Graph g = RdfUtils.readRdfToGraph(in, format, "");
 		collect(g);
-		Map<String, Object> result = createMap(g, uri);
+		String rootNode =
+				g.parallelStream()
+						.filter(
+								s -> s.getSubject().stringValue().startsWith(rootNodePrefix))
+						.findFirst().get().getSubject().toString();
+		Map<String, Object> result = createMap(g, rootNode);
 		result.put("@context", Globals.etikette.context.get("@context"));
 		return result;
 	}
@@ -84,15 +96,25 @@ public class JsonConverter {
 		String key = e.name;
 		if (s.getObject() instanceof org.openrdf.model.Literal) {
 			addLiteralToJsonResult(jsonResult, key, s.getObject().stringValue());
-		}
-		if (s.getObject() instanceof org.openrdf.model.BNode) {
-			if (isList(s)) {
-				addListToJsonResult(jsonResult, key, ((BNode) s.getObject()).getID());
-			} else {
-				addObjectToJsonResult(jsonResult, key, s.getObject().stringValue());
-			}
 		} else {
-			addObjectToJsonResult(jsonResult, key, s.getObject().stringValue());
+			if (s.getObject() instanceof org.openrdf.model.BNode) {
+				if (isList(s)) {
+					addListToJsonResult(jsonResult, key, ((BNode) s.getObject()).getID());
+				} else {
+					addObjectToJsonResult(jsonResult, key, s.getObject().stringValue());
+				}
+			} else {
+				boolean objectExistsAsSubjectAlready = false;
+				Iterator<Statement> it = all.iterator();
+				while (it.hasNext()) {
+					if (it.next().getSubject().equals(s.getObject())) {
+						objectExistsAsSubjectAlready = true;
+						break;
+					}
+				}
+				if (!objectExistsAsSubjectAlready) // avoid endless recursion
+					addObjectToJsonResult(jsonResult, key, s.getObject().stringValue());
+			}
 		}
 	}
 
@@ -137,8 +159,8 @@ public class JsonConverter {
 		return orderedList;
 	}
 
-	private void addObjectToJsonResult(Map<String, Object> jsonResult,
-			String key, String uri) {
+	private void addObjectToJsonResult(Map<String, Object> jsonResult, String key,
+			String uri) {
 		if (jsonResult.containsKey(key)) {
 			@SuppressWarnings("unchecked")
 			Set<Map<String, Object>> literals =
@@ -179,7 +201,8 @@ public class JsonConverter {
 	}
 
 	private static void addLiteralToJsonResult(
-			final Map<String, Object> jsonResult, final String key, final String value) {
+			final Map<String, Object> jsonResult, final String key,
+			final String value) {
 		if (jsonResult.containsKey(key)) {
 			@SuppressWarnings("unchecked")
 			Set<String> literals = (Set<String>) jsonResult.get(key);
@@ -197,5 +220,14 @@ public class JsonConverter {
 			Statement s = i.next();
 			all.add(s);
 		}
+	}
+
+	/**
+	 * Convert the generated map to json using the {@link ObjectMapper}.
+	 * 
+	 * @return objectMapper for easy converting the map to json
+	 */
+	public static ObjectMapper getObjectMapper() {
+		return objectMapper;
 	}
 }
