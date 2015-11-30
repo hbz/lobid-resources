@@ -101,7 +101,8 @@ public class JsonConverter {
 				if (isList(s)) {
 					addListToJsonResult(jsonResult, key, ((BNode) s.getObject()).getID());
 				} else {
-					addObjectToJsonResult(jsonResult, key, s.getObject().stringValue());
+					addBlankNodeToJsonResult(jsonResult, key,
+							((BNode) s.getObject()).getID());
 				}
 			} else {
 				boolean objectExistsAsSubjectAlready = false;
@@ -165,21 +166,46 @@ public class JsonConverter {
 			@SuppressWarnings("unchecked")
 			Set<Map<String, Object>> literals =
 					(Set<Map<String, Object>>) jsonResult.get(key);
-			literals.add(createObject(uri));
+			literals.add(createObjectWithId(uri));
 		} else {
 			Set<Map<String, Object>> literals = new HashSet<>();
-			literals.add(createObject(uri));
+			literals.add(createObjectWithId(uri));
 			jsonResult.put(key, literals);
 		}
 	}
 
-	private Map<String, Object> createObject(String uri) {
+	private void addBlankNodeToJsonResult(Map<String, Object> jsonResult,
+			String key, String uri) {
+		if (jsonResult.containsKey(key)) {
+			@SuppressWarnings("unchecked")
+			Set<Map<String, Object>> literals =
+					(Set<Map<String, Object>>) jsonResult.get(key);
+			literals.add(createObjectWithoutId(uri));
+		} else {
+			Set<Map<String, Object>> literals = new HashSet<>();
+			literals.add(createObjectWithoutId(uri));
+			jsonResult.put(key, literals);
+		}
+	}
+
+	private Map<String, Object> createObjectWithId(String uri) {
 		Map<String, Object> newObject = new TreeMap<>();
 		if (uri != null) {
 			newObject.put("@id", uri);
-			// newObject.put("prefLabel",
-			// Globals.etikette.getEtikett(uri).label);
+			createObject(uri, newObject);
 		}
+		return newObject;
+	}
+
+	private Map<String, Object> createObjectWithoutId(String uri) {
+		Map<String, Object> newObject = new TreeMap<>();
+		if (uri != null) {
+			createObject(uri, newObject);
+		}
+		return newObject;
+	}
+
+	private void createObject(String uri, Map<String, Object> newObject) {
 		for (Statement s : find(uri)) {
 			Etikett e = Globals.etikette.getEtikett(s.getPredicate().stringValue());
 			if (s.getObject() instanceof org.openrdf.model.Literal) {
@@ -188,7 +214,6 @@ public class JsonConverter {
 				createObject(newObject, s, e);
 			}
 		}
-		return newObject;
 	}
 
 	private Set<Statement> find(String uri) {
