@@ -42,93 +42,115 @@ public class TestRdfToJsonConversion {
 
 	final static Logger logger =
 			LoggerFactory.getLogger(TestRdfToJsonConversion.class);
-	static boolean areTestFilesEqual = true;
-	static boolean shouldBeEqual;
 
 	@SuppressWarnings({ "javadoc" })
 	@Test
-	public void testEquality()
+	public void testEquality_case1()
 			throws JsonParseException, JsonMappingException, IOException {
-		testFiles("adrianInput.nt", "hbz01.es.json", true);
-		testFiles("input/nt/01877/HT018770176.nt",
-				"output/json/01877/HT018770176.json", true);
+		boolean result = testFiles("adrianInput.nt", "hbz01.es.json",
+				"http://lobid.org/resource/HT018454638");
+		TestRdfToJsonConversion.logger
+				.info("\nEnd. Equality:" + false + ", expected equality:" + true);
+		org.junit.Assert.assertTrue(result);
+	}
+
+	@SuppressWarnings({ "javadoc" })
+	@Test
+	public void testEquality_case2()
+			throws JsonParseException, JsonMappingException, IOException {
+		boolean result = testFiles("input/nt/01877/HT018770176.nt",
+				"output/json/01877/HT018770176.json",
+				"http://lobid.org/resource/HT018770176");
+		TestRdfToJsonConversion.logger
+				.info("\nEnd. Equality:" + false + ", expected equality:" + true);
+		org.junit.Assert.assertTrue(result);
 	}
 
 	@SuppressWarnings({ "javadoc" })
 	@Test
 	public void testWrongContributorOrder()
 			throws JsonParseException, JsonMappingException, IOException {
-		testFiles("adrianInput.nt", "hbz01.es.wrongContributorOrder.json", false);
+		boolean result =
+				testFiles("adrianInput.nt", "hbz01.es.wrongContributorOrder.json",
+						"http://lobid.org/resource/HT018454638");
+		TestRdfToJsonConversion.logger
+				.info("\nEnd. Equality:" + false + ", expected equality:" + false);
+		org.junit.Assert.assertFalse(result);
 	}
 
-	private void compare(final Map<String, Object> expected,
+	private boolean compare(final Map<String, Object> expected,
 			final Map<String, Object> actual) {
 		for (final String s : expected.keySet()) {
 			TestRdfToJsonConversion.logger.debug("try to get " + s);
-			compareObjects(expected.get(s), actual.get(s));
+			if (!compareObjects(expected.get(s), actual.get(s))) {
+				return false;
+			}
 		}
-	}
-
-	private static void compare(final String expected, final String actual) {
-		org.junit.Assert.assertTrue(shouldBeEqual ? expected.equals(actual) : true);
-		areTestFilesEqual = (expected.equals(actual) ? areTestFilesEqual : false);
+		return true;
 	}
 
 	@SuppressWarnings("unchecked")
-	private void compareObjects(final Object expected, final Object actual) {
+	private boolean compareObjects(final Object expected, final Object actual) {
+
+		boolean result = false;
+
 		if (actual instanceof String) {
 			TestRdfToJsonConversion.logger.debug("Expected: " + expected);
 			TestRdfToJsonConversion.logger.debug("Actual: " + actual);
-			compare((String) expected, (String) actual);
+			result = expected.equals(actual);
+			if (!result) {
+				logger.warn(
+						"String comparison fail: " + expected + " is not equal " + actual);
+			}
 		} else if (actual instanceof Set) {
-			compare((ArrayList<?>) expected, (Set<Object>) actual);
+			// not order sensitive
+			result = compare((ArrayList<?>) expected, (Set<Object>) actual);
 		} else if (actual instanceof List) {
-			compareOrderSensitive(expected.toString(), actual.toString());
+			// order sensitive
+			result = expected.toString().equals(actual.toString());
+			if (!result) {
+				logger.warn("Order sensitive comparison will fail: " + expected
+						+ " is not equal " + actual);
+			}
 		} else if (actual instanceof Map) {
-			compare((Map<String, Object>) expected, (Map<String, Object>) actual);
+			result =
+					compare((Map<String, Object>) expected, (Map<String, Object>) actual);
 		}
+		return result;
 	}
 
-	private static void compare(final ArrayList<?> expected,
+	private static boolean compare(final ArrayList<?> expected,
 			final Set<Object> actual) {
 		ArrayList<?> al = expected;
 		TestRdfToJsonConversion.logger.debug("Expected unordered: " + expected);
 		((Set<?>) actual).forEach(e -> al.remove(e));
 		TestRdfToJsonConversion.logger.debug("Actual unordered: " + actual);
-		org.junit.Assert.assertTrue(al.size() == 0);
+		boolean result = (al.size() == 0);
+		if (!result) {
+			logger.warn(expected + " is not equal " + actual);
+		}
+		return result;
 	}
 
-	private static void compareOrderSensitive(String expected, String actual) {
-		TestRdfToJsonConversion.logger.debug("Expected ordered: " + expected);
-		TestRdfToJsonConversion.logger.debug("Actual ordered: " + actual);
-		compare(expected.toString(), actual.toString());
-	}
-
-	private void testFiles(String fnameNtriples, String fnameJson,
-			boolean _shouldBeEqual)
-					throws JsonParseException, JsonMappingException, IOException {
-		areTestFilesEqual = true;
+	private boolean testFiles(String fnameNtriples, String fnameJson, String uri)
+			throws JsonParseException, JsonMappingException, IOException {
 		TestRdfToJsonConversion.logger.info("\n\nNew test, begin converting files");
 		try (
 				InputStream in = Thread.currentThread().getContextClassLoader()
 						.getResourceAsStream(fnameNtriples);
 				InputStream out = Thread.currentThread().getContextClassLoader()
 						.getResourceAsStream(fnameJson)) {
-			TestRdfToJsonConversion.shouldBeEqual = _shouldBeEqual;
-			final Map<String, Object> actual = new JsonConverter().convert(in,
-					RDFFormat.NTRIPLES, "http://lobid.org/resource/HT018454638");
+			final Map<String, Object> actual =
+					new JsonConverter().convert(in, RDFFormat.NTRIPLES, uri);
 			TestRdfToJsonConversion.logger.info("Creates: ");
 			TestRdfToJsonConversion.logger
 					.info(new ObjectMapper().writeValueAsString(actual));
 			TestRdfToJsonConversion.logger
 					.info("\nBegin comparing files: " + fnameNtriples + " against "
-							+ fnameJson + ", expect equality:" + _shouldBeEqual);
+							+ fnameJson + ", expect equality:" + false);
 			final Map<String, Object> expected =
 					new ObjectMapper().readValue(out, Map.class);
-			compareObjects(expected, actual);
-			TestRdfToJsonConversion.logger.info("\nEnd. Equality:" + areTestFilesEqual
-					+ ", expected equality:" + _shouldBeEqual);
-			org.junit.Assert.assertTrue(areTestFilesEqual == shouldBeEqual);
+			return compareObjects(expected, actual);
 		}
 	}
 }
