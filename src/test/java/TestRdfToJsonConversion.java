@@ -50,6 +50,8 @@ public class TestRdfToJsonConversion {
 	public void testEquality()
 			throws JsonParseException, JsonMappingException, IOException {
 		testFiles("adrianInput.nt", "hbz01.es.json", true);
+		testFiles("input/nt/01877/HT018770176.nt",
+				"output/json/01877/HT018770176.json", true);
 	}
 
 	@SuppressWarnings({ "javadoc" })
