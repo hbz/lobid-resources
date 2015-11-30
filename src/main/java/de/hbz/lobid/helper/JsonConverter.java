@@ -54,6 +54,8 @@ public class JsonConverter {
 	private static ObjectMapper objectMapper = new ObjectMapper();
 	Set<Statement> all = new HashSet<>();
 
+	private String mainSubjectOfTheResource;
+
 	/**
 	 * You can easily convert the map to json using the object mapper provided by
 	 * {@link #getObjectMapper}.
@@ -67,24 +69,24 @@ public class JsonConverter {
 			final String rootNodePrefix) {
 		Graph g = RdfUtils.readRdfToGraph(in, format, "");
 		collect(g);
-		String rootNode =
+		mainSubjectOfTheResource =
 				g.parallelStream()
 						.filter(
 								s -> s.getSubject().stringValue().startsWith(rootNodePrefix))
 						.findFirst().get().getSubject().toString();
-		Map<String, Object> result = createMap(g, rootNode);
+		Map<String, Object> result = createMap(g);
 		result.put("@context", Globals.etikette.context.get("@context"));
 		return result;
 	}
 
-	private Map<String, Object> createMap(Graph g, String uri) {
+	private Map<String, Object> createMap(Graph g) {
 		Map<String, Object> jsonResult = new TreeMap<>();
 		Iterator<Statement> i = g.iterator();
-		jsonResult.put("@id", uri);
+		jsonResult.put("@id", mainSubjectOfTheResource);
 		while (i.hasNext()) {
 			Statement s = i.next();
 			Etikett e = Globals.etikette.getEtikett(s.getPredicate().stringValue());
-			if (uri.equals(s.getSubject().stringValue())) {
+			if (mainSubjectOfTheResource.equals(s.getSubject().stringValue())) {
 				createObject(jsonResult, s, e);
 			}
 		}
@@ -105,15 +107,7 @@ public class JsonConverter {
 							((BNode) s.getObject()).getID());
 				}
 			} else {
-				boolean objectExistsAsSubjectAlready = false;
-				Iterator<Statement> it = all.iterator();
-				while (it.hasNext()) {
-					if (it.next().getSubject().equals(s.getObject())) {
-						objectExistsAsSubjectAlready = true;
-						break;
-					}
-				}
-				if (!objectExistsAsSubjectAlready) // avoid endless recursion
+				if (!mainSubjectOfTheResource.equals(s.getObject().stringValue()))
 					addObjectToJsonResult(jsonResult, key, s.getObject().stringValue());
 			}
 		}
