@@ -99,8 +99,7 @@ public class TestRdfToJsonConversion {
 			TestRdfToJsonConversion.logger.debug("Actual: " + actual);
 			result = expected.equals(actual);
 			if (!result) {
-				logger.warn(
-						"String comparison fail: " + expected + " is not equal " + actual);
+				warn(expected, actual);
 			}
 		} else if (actual instanceof Set) {
 			// not order sensitive
@@ -109,8 +108,7 @@ public class TestRdfToJsonConversion {
 			// order sensitive
 			result = expected.toString().equals(actual.toString());
 			if (!result) {
-				logger.warn("Order sensitive comparison will fail: " + expected
-						+ " is not equal " + actual);
+				warn(expected, actual);
 			}
 		} else if (actual instanceof Map) {
 			result =
@@ -121,15 +119,13 @@ public class TestRdfToJsonConversion {
 
 	private static boolean compare(final ArrayList<?> expected,
 			final Set<Object> actual) {
-		ArrayList<?> al = expected;
-		TestRdfToJsonConversion.logger.debug("Expected unordered: " + expected);
-		((Set<?>) actual).forEach(e -> al.remove(e));
-		TestRdfToJsonConversion.logger.debug("Actual unordered: " + actual);
-		boolean result = (al.size() == 0);
-		if (!result) {
-			logger.warn(expected + " is not equal " + actual);
-		}
-		return result;
+		return expected.size() == actual.size();
+	}
+
+	private static void warn(Object expected, Object actual) {
+		logger.warn("Order sensitive comparison will fail - Not Equal: \n'"
+				+ expected + "'\n'" + actual + "'\n" + expected.hashCode() + "\n"
+				+ actual.hashCode());
 	}
 
 	private boolean testFiles(String fnameNtriples, String fnameJson, String uri)
