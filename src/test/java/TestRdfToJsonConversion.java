@@ -18,9 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.junit.Test;
 import org.openrdf.rio.RDFFormat;
@@ -29,12 +27,20 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 
 import de.hbz.lobid.helper.JsonConverter;
 
 /**
+ * 
+ * Reads records got from lobid.org in ntriple serialization. These records are
+ * mapped to an @see{JsonConverter} and then compared against json files which
+ * reflects the expected outcome. This is done using @see{CompareJsonMaps}.
+ * 
+ * For testing, diffs are done against these files. The order of values (lists
+ * vs sets) are taken into acxount.
+ *
  * @author Jan Schnasse
  * @author Pascal Christoph (dr0i)
  *
@@ -78,66 +84,8 @@ public class TestRdfToJsonConversion {
 		org.junit.Assert.assertFalse(result);
 	}
 
-	private boolean compare(final Map<String, Object> expected,
-			final Map<String, Object> actual) {
-		for (final String s : expected.keySet()) {
-			TestRdfToJsonConversion.logger.trace("try to get " + s);
-			if (!compareObjects(expected.get(s), actual.get(s))) {
-				return false;
-			}
-		}
-		return true;
-	}
-
-	@SuppressWarnings("unchecked")
-	private boolean compareObjects(final Object expected, final Object actual) {
-		boolean result = false;
-		if (actual instanceof String) {
-			TestRdfToJsonConversion.logger.debug("Compare String");
-			result = expected.equals(actual);
-		} else if (actual instanceof List) {
-			TestRdfToJsonConversion.logger.debug("Compare List");
-			// order sensitive
-			result = expected.toString().equals(actual.toString());
-		} else if (actual instanceof Map) {
-			TestRdfToJsonConversion.logger.debug("Compare Object");
-			result =
-					compare((Map<String, Object>) expected, (Map<String, Object>) actual);
-		} else if (actual instanceof Set) {
-			TestRdfToJsonConversion.logger.debug("Compare Set");
-			// order insensitive
-			result = compareUnordered((List) expected, (Set) actual);
-		}
-		if (!result) {
-			warn(expected, actual);
-		}
-		return result;
-	}
-
-	/**
-	 * 
-	 * @param expected the expected value comes from json data. all json arrays
-	 *          will be converted to lists by jackson object mapper.
-	 * @param actual the actual value comes from n-triples. The JsonConverter uses
-	 *          sets to express multiple occurrences of objects. The datatype list
-	 *          is reserved for rdf-lists.
-	 * @return
-	 */
-	private static boolean compareUnordered(final List<Object> expected,
-			final Set<Object> actual) {
-		ObjectMapper mapper = new ObjectMapper();
-		ArrayNode newExpected = mapper.convertValue(expected, ArrayNode.class);
-		ArrayNode newActual = mapper.convertValue(actual, ArrayNode.class);
-		return newExpected.equals(newActual);
-	}
-
-	private static void warn(Object expected, Object actual) {
-		logger.warn("Comparison will fail - Not Equal: \n'" + expected + "'\n'"
-				+ actual + "'\n");
-	}
-
-	private boolean testFiles(String fnameNtriples, String fnameJson, String uri)
-			throws JsonParseException, JsonMappingException, IOException {
+	private static boolean testFiles(String fnameNtriples, String fnameJson,
+			String uri) throws JsonParseException, JsonMappingException, IOException {
 		TestRdfToJsonConversion.logger.info("\n\nNew test, begin converting files");
 		try (
 				InputStream in = Thread.currentThread().getContextClassLoader()
@@ -146,16 +94,18 @@ public class TestRdfToJsonConversion {
 						.getResourceAsStream(fnameJson)) {
 			final Map<String, Object> actual =
 					new JsonConverter().convert(in, RDFFormat.NTRIPLES, uri);
-			TestRdfToJsonConversion.logger.info("Creates: ");
+			TestRdfToJsonConversion.logger.debug("Creates: ");
 			TestRdfToJsonConversion.logger
-					.info(new ObjectMapper().writeValueAsString(actual));
+					.debug(new ObjectMapper().writeValueAsString(actual));
 			TestRdfToJsonConversion.logger
 					.info("\nBegin comparing files: " + fnameNtriples + " against "
 							+ fnameJson + ", expect equality:" + false);
 			final Map<String, Object> expected =
 					new ObjectMapper().readValue(out, Map.class);
+			return CompareJsonMaps.writeFileAndTestJson(
+					new ObjectMapper().convertValue(actual, JsonNode.class),
+					new ObjectMapper().convertValue(expected, JsonNode.class));
 
-			return compareObjects(expected, actual);
 		}
 	}
 }
