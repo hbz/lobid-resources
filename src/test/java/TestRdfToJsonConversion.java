@@ -102,7 +102,8 @@ public class TestRdfToJsonConversion {
 							+ fnameJson + ", expect equality:" + false);
 			final Map<String, Object> expected =
 					new ObjectMapper().readValue(out, Map.class);
-			return CompareJsonMaps.writeFileAndTestJson(
+
+			return new CompareJsonMaps().writeFileAndTestJson(
 					new ObjectMapper().convertValue(actual, JsonNode.class),
 					new ObjectMapper().convertValue(expected, JsonNode.class));
 
