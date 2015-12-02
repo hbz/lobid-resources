@@ -20,24 +20,26 @@ import com.fasterxml.jackson.databind.node.JsonNodeType;
  * Builds a map with json paths as keys with aggregated values, thus comparing
  * to JsonNodes becomes easy. If a key ends with "Order" it is assumed that the
  * values must be in the given order, so this tests also ordered lists.
+ * Successfully compared elements will be removed from the actual map, thus a
+ * successful comparison leads to an empty 'actual' map (see last line).
  * 
  * @author Pascal Christoph (dr0i)
+ * @author Jan Schnasse
  *
  */
 @SuppressWarnings("javadoc")
 public final class CompareJsonMaps {
-
-	static Stack<String> stack = new Stack<>();
 	final static Logger logger = LoggerFactory.getLogger(CompareJsonMaps.class);
+	Stack<String> stack = new Stack<>();
 
-	static public boolean writeFileAndTestJson(final JsonNode actual,
+	public boolean writeFileAndTestJson(final JsonNode actual,
 			final JsonNode expected) {
 		// generated data to map
 		final HashMap<String, String> actualMap = new HashMap<>();
-		CompareJsonMaps.extractFlatMapFromJsonNode(actual, actualMap);
+		extractFlatMapFromJsonNode(actual, actualMap);
 		// expected data to map
 		final HashMap<String, String> expectedMap = new HashMap<>();
-		CompareJsonMaps.extractFlatMapFromJsonNode(expected, expectedMap);
+		extractFlatMapFromJsonNode(expected, expectedMap);
 		CompareJsonMaps.logger.debug("\n##### remove good entries ###");
 		Iterator<String> it = actualMap.keySet().iterator();
 		removeContext(it);
@@ -101,29 +103,28 @@ public final class CompareJsonMaps {
 	 * @param jnode the JsonNode which should be transformed into a map
 	 * @param map the map constructed out of the JsonNode
 	 */
-	public static void extractFlatMapFromJsonNode(final JsonNode jnode,
+	public void extractFlatMapFromJsonNode(final JsonNode jnode,
 			final HashMap<String, String> map) {
 		if (jnode.getNodeType().equals(JsonNodeType.OBJECT)) {
 			final Iterator<Map.Entry<String, JsonNode>> it = jnode.fields();
 			while (it.hasNext()) {
 				final Map.Entry<String, JsonNode> entry = it.next();
-				CompareJsonMaps.stack.push(entry.getKey());
-				CompareJsonMaps.extractFlatMapFromJsonNode(entry.getValue(), map);
-				CompareJsonMaps.stack.pop();
+				stack.push(entry.getKey());
+				extractFlatMapFromJsonNode(entry.getValue(), map);
+				stack.pop();
 			}
 		} else if (jnode.isArray()) {
 			final Iterator<JsonNode> it = jnode.iterator();
 			while (it.hasNext()) {
-				CompareJsonMaps.extractFlatMapFromJsonNode(it.next(), map);
+				extractFlatMapFromJsonNode(it.next(), map);
 			}
 		} else if (jnode.isValueNode()) {
 			String value = jnode.toString();
-			if (map.containsKey(CompareJsonMaps.stack.toString()))
-				value = map.get(CompareJsonMaps.stack.toString())
-						.concat("," + jnode.toString());
-			map.put(CompareJsonMaps.stack.toString(), value);
-			CompareJsonMaps.logger.trace("Stored this path as key into map:"
-					+ CompareJsonMaps.stack.toString(), value);
+			if (map.containsKey(stack.toString()))
+				value = map.get(stack.toString()).concat("," + jnode.toString());
+			map.put(stack.toString(), value);
+			CompareJsonMaps.logger
+					.trace("Stored this path as key into map:" + stack.toString(), value);
 		}
 	}
 

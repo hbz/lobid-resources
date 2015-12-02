@@ -129,7 +129,7 @@ public class TestRdfToJsonConversion {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		return CompareJsonMaps.writeFileAndTestJson(
+		return new CompareJsonMaps().writeFileAndTestJson(
 				new ObjectMapper().convertValue(actual, JsonNode.class),
 				new ObjectMapper().convertValue(expected, JsonNode.class));
 	}
