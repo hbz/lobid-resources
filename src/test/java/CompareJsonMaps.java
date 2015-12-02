@@ -41,6 +41,8 @@ public final class CompareJsonMaps {
 		CompareJsonMaps.logger.debug("\n##### remove good entries ###");
 		Iterator<String> it = actualMap.keySet().iterator();
 		removeContext(it);
+		it = expectedMap.keySet().iterator();
+		removeContext(it);
 		for (final Entry<String, String> e : expectedMap.entrySet()) {
 			CompareJsonMaps.logger.debug("Trying to remove " + e.getKey() + "...");
 			if (e.getKey().endsWith("Order]")) {
@@ -49,8 +51,9 @@ public final class CompareJsonMaps {
 				handleUnorderedValues(actualMap, e);
 			}
 		}
-		CompareJsonMaps.logger
-				.debug("These elements are missing or the values are not proper:");
+		if (!actualMap.isEmpty())
+			CompareJsonMaps.logger.debug(
+					"These elements were not expected or the values are not proper:");
 		actualMap.forEach((key, val) -> CompareJsonMaps.logger
 				.debug("KEY=" + key + " VALUE=" + val));
 		return (actualMap.size() == 0);
@@ -129,16 +132,13 @@ public final class CompareJsonMaps {
 	 */
 	private static boolean checkIfAllValuesAreContainedUnordered(
 			final String actual, final String expected) {
-		List<String> listA = valuesToList(actual);
-		CompareJsonMaps.logger.trace("Actual value: " + actual);
-		List<String> listE = valuesToList(expected);
-		CompareJsonMaps.logger.trace("Expected value: " + expected);
-		return listA.containsAll(listE);
+		CompareJsonMaps.logger
+				.trace("Actual   value: " + actual + "\nExpected value: " + expected);
+		return valuesToList(actual).containsAll(valuesToList(expected));
 	}
 
 	private static List<String> valuesToList(final String values) {
-		List<String> list =
-				Arrays.asList(values.substring(1, values.length() - 1).split("\",\""));
-		return list;
+		return Arrays
+				.asList(values.substring(1, values.length() - 1).split("\",\""));
 	}
 }
