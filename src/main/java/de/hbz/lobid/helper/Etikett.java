@@ -78,7 +78,7 @@ public class Etikett {
 	}
 
 	/**
-	 * @param uri
+	 * @param uri the uri this etikett is about
 	 */
 	public void setUri(String uri) {
 		this.uri = uri;
@@ -92,7 +92,7 @@ public class Etikett {
 	}
 
 	/**
-	 * @param label
+	 * @param label a human readable label
 	 */
 	public void setLabel(String label) {
 		this.label = label;
@@ -120,7 +120,7 @@ public class Etikett {
 	}
 
 	/**
-	 * @param name
+	 * @param name The name is a short-form for the uri used in JSON-LD
 	 */
 	public void setName(String name) {
 		this.name = name;
@@ -135,12 +135,13 @@ public class Etikett {
 	}
 
 	/**
-	 * @param referenceType
+	 * @param referenceType The expected type of the resource
 	 */
 	public void setReferenceType(String referenceType) {
 		this.referenceType = referenceType;
 	}
 
+	@Override
 	public String toString() {
 		try {
 			return new ObjectMapper().writeValueAsString(this);

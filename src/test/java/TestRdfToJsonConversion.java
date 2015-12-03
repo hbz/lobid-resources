@@ -100,7 +100,6 @@ public class TestRdfToJsonConversion {
 		org.junit.Assert.assertFalse(result);
 	}
 
-	@SuppressWarnings("unchecked")
 	private static boolean testFiles(String fnameNtriples, String fnameJson,
 			String uri) {
 		Map<String, Object> expected = null;

@@ -40,26 +40,26 @@ public class EtikettMaker {
 	/**
 	 * A map with URIs as key and labels,icons, shortnames as values
 	 */
-	Map<String, Etikett> pMap = new HashMap<String, Etikett>();
+	Map<String, Etikett> pMap = new HashMap<>();
 
 	/**
 	 * A map with Shortnames as key and labels,icons, uris as values
 	 */
-	Map<String, Etikett> nMap = new HashMap<String, Etikett>();
+	Map<String, Etikett> nMap = new HashMap<>();
 
 	/**
 	 * The context will be loaded on startup. You can reload the context with POST
 	 * /utils/reloadContext
 	 * 
 	 */
-	Map<String, Object> context = new HashMap<String, Object>();
+	Map<String, Object> context = new HashMap<>();
 
 	/**
 	 * The labels will be loaded on startup. You can reload the context with POST
 	 * /utils/reloadLabels
 	 * 
 	 */
-	List<Etikett> labels = new ArrayList<Etikett>();
+	List<Etikett> labels = new ArrayList<>();
 
 	/**
 	 * The profile provides a json context an labels
@@ -112,9 +112,9 @@ public class EtikettMaker {
 
 	}
 
-	private List<Etikett> createLabels(String fileName) {
+	private static List<Etikett> createLabels(String fileName) {
 		logger.info("Create labels....");
-		List<Etikett> result = new ArrayList<Etikett>();
+		List<Etikett> result = new ArrayList<>();
 
 		result = loadFile(fileName, new ObjectMapper().getTypeFactory()
 				.constructCollectionType(List.class, Etikett.class));
@@ -133,7 +133,7 @@ public class EtikettMaker {
 	 */
 	Map<String, Object> createContext(String fileName) {
 		logger.info("Create context....");
-		Map<String, Object> result = new HashMap<String, Object>();
+		Map<String, Object> result = new HashMap<>();
 
 		result = loadFile(fileName, new ObjectMapper().getTypeFactory()
 				.constructMapLikeType(HashMap.class, String.class, Object.class));
@@ -146,7 +146,7 @@ public class EtikettMaker {
 		return result;
 	}
 
-	private <T> T loadFile(String fileName, TypeBase type) {
+	private static <T> T loadFile(String fileName, TypeBase type) {
 		try (InputStream in = Thread.currentThread().getContextClassLoader()
 				.getResourceAsStream(fileName)) {
 			return new ObjectMapper().readValue(in, type);

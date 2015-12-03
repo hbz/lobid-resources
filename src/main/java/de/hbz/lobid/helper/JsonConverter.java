@@ -66,7 +66,6 @@ public class JsonConverter {
 	 * @param context to create valid json-ld you have to provide either a a map
 	 *          containing a json-ld context or a url to a json-ldContext
 	 * @return a map
-	 * @return a map
 	 */
 	public Map<String, Object> convert(InputStream in, RDFFormat format,
 			final String rootNodePrefix, Object context) {
