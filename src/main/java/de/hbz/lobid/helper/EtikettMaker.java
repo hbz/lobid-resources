@@ -161,23 +161,11 @@ public class EtikettMaker {
 	 *         '#' or last index of '/'
 	 */
 	String getJsonName(String predicate) {
-		String result = null;
 		Etikett e = pMap.get(predicate);
-		if (e != null) {
-			result = e.name;
+		if (e == null) {
+			throw new RuntimeException(predicate
+					+ ": no json name available. Please provide a labels.json file with proper 'name' entry.");
 		}
-		if (result == null || result.isEmpty()) {
-			String prefix = "";
-			if (predicate.startsWith("http://purl.org/dc/elements"))
-				prefix = "dc:";
-			if (predicate.contains("#"))
-				return prefix + predicate.split("#")[1];
-			else if (predicate.startsWith("http")) {
-				int i = predicate.lastIndexOf("/");
-				return prefix + predicate.substring(i + 1);
-			}
-			result = prefix + predicate;
-		}
-		return result;
+		return e.name;
 	}
 }

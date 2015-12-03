@@ -88,8 +88,8 @@ public class JsonConverter {
 		jsonResult.put("@id", mainSubjectOfTheResource);
 		while (i.hasNext()) {
 			Statement s = i.next();
-			Etikett e = Globals.etikette.getEtikett(s.getPredicate().stringValue());
 			if (mainSubjectOfTheResource.equals(s.getSubject().stringValue())) {
+				Etikett e = Globals.etikette.getEtikett(s.getPredicate().stringValue());
 				createObject(jsonResult, s, e);
 			}
 		}
