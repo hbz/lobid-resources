@@ -63,10 +63,13 @@ public class JsonConverter {
 	 * @param in an input stream containing rdf data
 	 * @param format the rdf format
 	 * @param rootNodePrefix the prefix of the root subject node of the resource
+	 * @param context to create valid json-ld you have to provide either a a map
+	 *          containing a json-ld context or a url to a json-ldContext
+	 * @return a map
 	 * @return a map
 	 */
 	public Map<String, Object> convert(InputStream in, RDFFormat format,
-			final String rootNodePrefix) {
+			final String rootNodePrefix, Object context) {
 		Graph g = RdfUtils.readRdfToGraph(in, format, "");
 		collect(g);
 		mainSubjectOfTheResource =
@@ -75,7 +78,7 @@ public class JsonConverter {
 								s -> s.getSubject().stringValue().startsWith(rootNodePrefix))
 						.findFirst().get().getSubject().toString();
 		Map<String, Object> result = createMap(g);
-		result.put("@context", Globals.etikette.context.get("@context"));
+		result.put("@context", context);
 		return result;
 	}
 
@@ -249,4 +252,5 @@ public class JsonConverter {
 	public static ObjectMapper getObjectMapper() {
 		return objectMapper;
 	}
+
 }
