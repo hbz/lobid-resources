@@ -16,24 +16,36 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+import java.io.EOFException;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Map;
-import java.util.Set;
 
-import org.codehaus.jackson.JsonParseException;
-import org.codehaus.jackson.map.JsonMappingException;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Test;
 import org.openrdf.rio.RDFFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import de.hbz.lobid.helper.JsonConverter;
 
 /**
+ * 
+ * Reads records got from lobid.org in ntriple serialization. These records are
+ * mapped to an @see{JsonConverter} and then compared against json files which
+ * reflects the expected outcome. This is done using @see{CompareJsonMaps}.
+ * 
+ * For testing, diffs are done against these files. The order of values (lists
+ * vs sets) are taken into acxount.
+ *
  * @author Jan Schnasse
  * @author Pascal Christoph (dr0i)
  *
@@ -42,91 +54,90 @@ public class TestRdfToJsonConversion {
 
 	final static Logger logger =
 			LoggerFactory.getLogger(TestRdfToJsonConversion.class);
-	static boolean areTestFilesEqual = true;
-	static boolean shouldBeEqual;
+	final static String LOBID_RESOURCES_URI_PREFIX = "http://lobid.org/resource/";
 
 	@SuppressWarnings({ "javadoc" })
 	@Test
-	public void testEquality()
-			throws JsonParseException, JsonMappingException, IOException {
-		testFiles("adrianInput.nt", "hbz01.es.json", true);
+	public void testEquality_caseDirectory() {
+		String path = "src/test/resources/input/nt/";
+		try {
+			Files.walk(Paths.get(path)).filter(Files::isRegularFile)
+					.forEach(
+							e -> org.junit.Assert.assertTrue(testFiles(e.toString(),
+									e.toString().replaceFirst("input/nt", "output/json")
+											.replaceFirst("nt$", "json"),
+									LOBID_RESOURCES_URI_PREFIX)));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	@SuppressWarnings({ "javadoc" })
 	@Test
-	public void testWrongContributorOrder()
-			throws JsonParseException, JsonMappingException, IOException {
-		testFiles("adrianInput.nt", "hbz01.es.wrongContributorOrder.json", false);
+	public void testEquality_case1() {
+		boolean result = testFiles("src/test/resources/input/nt/adrianInput.nt",
+				"src/test/resources/output/json/hbz01.es.json",
+				LOBID_RESOURCES_URI_PREFIX);
+		TestRdfToJsonConversion.logger
+				.info("\n Adrian Input Test - must succeed! \n");
+		org.junit.Assert.assertTrue(result);
 	}
 
-	private void compare(final Map<String, Object> expected,
-			final Map<String, Object> actual) {
-		for (final String s : expected.keySet()) {
-			TestRdfToJsonConversion.logger.debug("try to get " + s);
-			compareObjects(expected.get(s), actual.get(s));
-		}
+	@SuppressWarnings({ "javadoc" })
+	@Test
+	public void testWrongContributorOrder() {
+		boolean result = testFiles("src/test/resources/input/nt/adrianInput.nt",
+				"src/test/resources/output/json/hbz01.es.wrongContributorOrder.json",
+				LOBID_RESOURCES_URI_PREFIX);
+		TestRdfToJsonConversion.logger
+				.info("\n WrongContributorOrder Test - must fail! \n");
+		org.junit.Assert.assertFalse(result);
 	}
 
-	private static void compare(final String expected, final String actual) {
-		org.junit.Assert.assertTrue(shouldBeEqual ? expected.equals(actual) : true);
-		areTestFilesEqual = (expected.equals(actual) ? areTestFilesEqual : false);
-	}
-
-	@SuppressWarnings("unchecked")
-	private void compareObjects(final Object expected, final Object actual) {
-		if (actual instanceof String) {
-			TestRdfToJsonConversion.logger.debug("Expected: " + expected);
-			TestRdfToJsonConversion.logger.debug("Actual: " + actual);
-			compare((String) expected, (String) actual);
-		} else if (actual instanceof Set) {
-			compare((ArrayList<?>) expected, (Set<Object>) actual);
-		} else if (actual instanceof List) {
-			compareOrderSensitive(expected.toString(), actual.toString());
-		} else if (actual instanceof Map) {
-			compare((Map<String, Object>) expected, (Map<String, Object>) actual);
-		}
-	}
-
-	private static void compare(final ArrayList<?> expected,
-			final Set<Object> actual) {
-		ArrayList<?> al = expected;
-		TestRdfToJsonConversion.logger.debug("Expected unordered: " + expected);
-		((Set<?>) actual).forEach(e -> al.remove(e));
-		TestRdfToJsonConversion.logger.debug("Actual unordered: " + actual);
-		org.junit.Assert.assertTrue(al.size() == 0);
-	}
-
-	private static void compareOrderSensitive(String expected, String actual) {
-		TestRdfToJsonConversion.logger.debug("Expected ordered: " + expected);
-		TestRdfToJsonConversion.logger.debug("Actual ordered: " + actual);
-		compare(expected.toString(), actual.toString());
-	}
-
-	private void testFiles(String fnameNtriples, String fnameJson,
-			boolean _shouldBeEqual)
-					throws JsonParseException, JsonMappingException, IOException {
-		areTestFilesEqual = true;
-		TestRdfToJsonConversion.logger.info("\n\nNew test, begin converting files");
-		try (
-				InputStream in = Thread.currentThread().getContextClassLoader()
-						.getResourceAsStream(fnameNtriples);
-				InputStream out = Thread.currentThread().getContextClassLoader()
-						.getResourceAsStream(fnameJson)) {
-			TestRdfToJsonConversion.shouldBeEqual = _shouldBeEqual;
-			final Map<String, Object> actual = new JsonConverter().convert(in,
-					RDFFormat.NTRIPLES, "http://lobid.org/resource/HT018454638");
-			TestRdfToJsonConversion.logger.info("Creates: ");
+	private static boolean testFiles(String fnameNtriples, String fnameJson,
+			String uri) {
+		Map<String, Object> expected = null;
+		Map<String, Object> actual = null;
+		TestRdfToJsonConversion.logger.info("New test, begin converting files");
+		try (InputStream in = new FileInputStream(new File(fnameNtriples));
+				InputStream out = new File(fnameJson).exists()
+						? new FileInputStream(new File(fnameJson)) : makeFile(fnameJson)) {
+			actual = new JsonConverter().convert(in, RDFFormat.NTRIPLES, uri);
+			TestRdfToJsonConversion.logger.debug("Creates: ");
 			TestRdfToJsonConversion.logger
-					.info(new ObjectMapper().writeValueAsString(actual));
-			TestRdfToJsonConversion.logger
-					.info("\nBegin comparing files: " + fnameNtriples + " against "
-							+ fnameJson + ", expect equality:" + _shouldBeEqual);
-			final Map<String, Object> expected =
-					new ObjectMapper().readValue(out, Map.class);
-			compareObjects(expected, actual);
-			TestRdfToJsonConversion.logger.info("\nEnd. Equality:" + areTestFilesEqual
-					+ ", expected equality:" + _shouldBeEqual);
-			org.junit.Assert.assertTrue(areTestFilesEqual == shouldBeEqual);
+					.debug(new ObjectMapper().writeValueAsString(actual));
+			TestRdfToJsonConversion.logger.info(
+					"Begin comparing files: " + fnameNtriples + " against " + fnameJson);
+			try {
+				expected = new ObjectMapper().readValue(out, Map.class);
+			} // if file to test against not yet exists
+			catch (FileNotFoundException | EOFException | JsonMappingException ef) {
+				TestRdfToJsonConversion.logger.info("Json file " + fnameJson
+						+ " to test against does not yet exist. Will create it now.");
+				try {
+					TestRdfToJsonConversion.logger.info(
+							"Creating: \n" + new ObjectMapper().writeValueAsString(actual));
+					JsonConverter.getObjectMapper().defaultPrettyPrintingWriter()
+							.writeValue(new File(fnameJson), actual);
+					expected =
+							new ObjectMapper().readValue(new File(fnameJson), Map.class);
+				} catch (IOException e) {
+					org.junit.Assert
+							.assertFalse("Problems creating file " + e.getMessage(), true);
+				}
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
+		return new CompareJsonMaps().writeFileAndTestJson(
+				new ObjectMapper().convertValue(actual, JsonNode.class),
+				new ObjectMapper().convertValue(expected, JsonNode.class));
+	}
+
+	private static FileInputStream makeFile(String fnameJson) throws IOException {
+		File f = new File(fnameJson);
+		f.getParentFile().mkdirs();
+		f.createNewFile();
+		return new FileInputStream(f);
 	}
 }

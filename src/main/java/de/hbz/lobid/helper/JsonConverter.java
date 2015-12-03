@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+import org.codehaus.jackson.map.ObjectMapper;
 import org.openrdf.model.BNode;
 import org.openrdf.model.Graph;
 import org.openrdf.model.Statement;
@@ -34,6 +35,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * Converts ntriples to a map, ennhancing the data with data constructed via
+ * {@link EtikettMaker}.
+ * 
+ * TODO: this class should either return a Json object or be renamed.
+ * 
  * @author Jan Schnasse
  * @author Pascal Christoph (dr0i)
  */
@@ -45,34 +51,42 @@ public class JsonConverter {
 	String rest = "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest";
 	String nil = "http://www.w3.org/1999/02/22-rdf-syntax-ns#nil";
 
+	private static ObjectMapper objectMapper = new ObjectMapper();
 	Set<Statement> all = new HashSet<>();
 
+	private String mainSubjectOfTheResource;
+
 	/**
-	 * You can easily convert the map to json using jackson
-	 * (https://github.com/FasterXML/jackson) or other jaxb libs
+	 * You can easily convert the map to json using the object mapper provided by
+	 * {@link #getObjectMapper}.
 	 * 
 	 * @param in an input stream containing rdf data
 	 * @param format the rdf format
-	 * @param uri the uri from where the rdf ist taken. Can not be null.
+	 * @param rootNodePrefix the prefix of the root subject node of the resource
 	 * @return a map
 	 */
 	public Map<String, Object> convert(InputStream in, RDFFormat format,
-			String uri) {
-		Graph g = RdfUtils.readRdfToGraph(in, format, uri);
+			final String rootNodePrefix) {
+		Graph g = RdfUtils.readRdfToGraph(in, format, "");
 		collect(g);
-		Map<String, Object> result = createMap(g, uri);
+		mainSubjectOfTheResource =
+				g.parallelStream()
+						.filter(
+								s -> s.getSubject().stringValue().startsWith(rootNodePrefix))
+						.findFirst().get().getSubject().toString();
+		Map<String, Object> result = createMap(g);
 		result.put("@context", Globals.etikette.context.get("@context"));
 		return result;
 	}
 
-	private Map<String, Object> createMap(Graph g, String uri) {
+	private Map<String, Object> createMap(Graph g) {
 		Map<String, Object> jsonResult = new TreeMap<>();
 		Iterator<Statement> i = g.iterator();
-		jsonResult.put("@id", uri);
+		jsonResult.put("@id", mainSubjectOfTheResource);
 		while (i.hasNext()) {
 			Statement s = i.next();
 			Etikett e = Globals.etikette.getEtikett(s.getPredicate().stringValue());
-			if (uri.equals(s.getSubject().stringValue())) {
+			if (mainSubjectOfTheResource.equals(s.getSubject().stringValue())) {
 				createObject(jsonResult, s, e);
 			}
 		}
@@ -84,15 +98,18 @@ public class JsonConverter {
 		String key = e.name;
 		if (s.getObject() instanceof org.openrdf.model.Literal) {
 			addLiteralToJsonResult(jsonResult, key, s.getObject().stringValue());
-		}
-		if (s.getObject() instanceof org.openrdf.model.BNode) {
-			if (isList(s)) {
-				addListToJsonResult(jsonResult, key, ((BNode) s.getObject()).getID());
-			} else {
-				addObjectToJsonResult(jsonResult, key, s.getObject().stringValue());
-			}
 		} else {
-			addObjectToJsonResult(jsonResult, key, s.getObject().stringValue());
+			if (s.getObject() instanceof org.openrdf.model.BNode) {
+				if (isList(s)) {
+					addListToJsonResult(jsonResult, key, ((BNode) s.getObject()).getID());
+				} else {
+					addBlankNodeToJsonResult(jsonResult, key,
+							((BNode) s.getObject()).getID());
+				}
+			} else {
+				if (!mainSubjectOfTheResource.equals(s.getObject().stringValue()))
+					addObjectToJsonResult(jsonResult, key, s.getObject().stringValue());
+			}
 		}
 	}
 
@@ -137,27 +154,52 @@ public class JsonConverter {
 		return orderedList;
 	}
 
-	private void addObjectToJsonResult(Map<String, Object> jsonResult,
+	private void addObjectToJsonResult(Map<String, Object> jsonResult, String key,
+			String uri) {
+		if (jsonResult.containsKey(key)) {
+			@SuppressWarnings("unchecked")
+			Set<Map<String, Object>> literals =
+					(Set<Map<String, Object>>) jsonResult.get(key);
+			literals.add(createObjectWithId(uri));
+		} else {
+			Set<Map<String, Object>> literals = new HashSet<>();
+			literals.add(createObjectWithId(uri));
+			jsonResult.put(key, literals);
+		}
+	}
+
+	private void addBlankNodeToJsonResult(Map<String, Object> jsonResult,
 			String key, String uri) {
 		if (jsonResult.containsKey(key)) {
 			@SuppressWarnings("unchecked")
 			Set<Map<String, Object>> literals =
 					(Set<Map<String, Object>>) jsonResult.get(key);
-			literals.add(createObject(uri));
+			literals.add(createObjectWithoutId(uri));
 		} else {
 			Set<Map<String, Object>> literals = new HashSet<>();
-			literals.add(createObject(uri));
+			literals.add(createObjectWithoutId(uri));
 			jsonResult.put(key, literals);
 		}
 	}
 
-	private Map<String, Object> createObject(String uri) {
+	private Map<String, Object> createObjectWithId(String uri) {
 		Map<String, Object> newObject = new TreeMap<>();
 		if (uri != null) {
 			newObject.put("@id", uri);
-			// newObject.put("prefLabel",
-			// Globals.etikette.getEtikett(uri).label);
+			createObject(uri, newObject);
 		}
+		return newObject;
+	}
+
+	private Map<String, Object> createObjectWithoutId(String uri) {
+		Map<String, Object> newObject = new TreeMap<>();
+		if (uri != null) {
+			createObject(uri, newObject);
+		}
+		return newObject;
+	}
+
+	private void createObject(String uri, Map<String, Object> newObject) {
 		for (Statement s : find(uri)) {
 			Etikett e = Globals.etikette.getEtikett(s.getPredicate().stringValue());
 			if (s.getObject() instanceof org.openrdf.model.Literal) {
@@ -166,7 +208,6 @@ public class JsonConverter {
 				createObject(newObject, s, e);
 			}
 		}
-		return newObject;
 	}
 
 	private Set<Statement> find(String uri) {
@@ -179,7 +220,8 @@ public class JsonConverter {
 	}
 
 	private static void addLiteralToJsonResult(
-			final Map<String, Object> jsonResult, final String key, final String value) {
+			final Map<String, Object> jsonResult, final String key,
+			final String value) {
 		if (jsonResult.containsKey(key)) {
 			@SuppressWarnings("unchecked")
 			Set<String> literals = (Set<String>) jsonResult.get(key);
@@ -197,5 +239,14 @@ public class JsonConverter {
 			Statement s = i.next();
 			all.add(s);
 		}
+	}
+
+	/**
+	 * Convert the generated map to json using the {@link ObjectMapper}.
+	 * 
+	 * @return objectMapper for easy converting the map to json
+	 */
+	public static ObjectMapper getObjectMapper() {
+		return objectMapper;
 	}
 }

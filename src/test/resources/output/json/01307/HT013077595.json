@@ -1,0 +1,550 @@
+{
+  "@context" : {
+    "legacyId" : {
+      "@id" : "http://hbz-nrw.de/regal#legacyId",
+      "label" : "Id Altsystem"
+    },
+    "generator" : {
+      "@type" : "@id",
+      "label" : "",
+      "@id" : "http://downlode.org/Code/RDF/File_Properties/schema#generator"
+    },
+    "inDataset" : {
+      "label" : "",
+      "@id" : "http://www.w3.org/2000/01/rdf-schema#inDataset"
+    },
+    "isbn" : {
+      "@id" : "http://purl.org/ontology/bibo/isbn",
+      "label" : "Isbn"
+    },
+    "deu" : {
+      "label" : "deutsch",
+      "@id" : "http://id.loc.gov/vocabulary/iso639-2/deu"
+    },
+    "contributor" : {
+      "@type" : "@id",
+      "label" : "Mitwirkende",
+      "@id" : "http://purl.org/dc/terms/contributor"
+    },
+    "aus" : {
+      "label" : "Screenwriter",
+      "@id" : "http://id.loc.gov/vocabulary/relators/aus"
+    },
+    "parallelEdition" : {
+      "@type" : "@id",
+      "label" : "Titelkopie",
+      "@id" : "http://hbz-nrw.de/regal#parallelEdition"
+    },
+    "language" : {
+      "@type" : "@id",
+      "label" : "Sprache",
+      "@id" : "http://purl.org/dc/terms/language"
+    },
+    "ismn" : {
+      "label" : "Ismn",
+      "@id" : "http://purl.org/ontology/mo/ismn"
+    },
+    "preferredNameEntityForThePerson" : {
+      "label" : "",
+      "@id" : "http://d-nb.info/standards/elementset/gnd#preferredNameEntityForThePerson"
+    },
+    "dateOfDeath" : {
+      "label" : "Gestorben am",
+      "@id" : "http://d-nb.info/standards/elementset/gnd#dateOfDeath"
+    },
+    "festschrift" : {
+      "icon" : "octicon octicon-gift",
+      "@id" : "http://purl.org/lobid/lv#Festschrift",
+      "label" : "Festschrift",
+      "@type" : "@id"
+    },
+    "fulltextOnline" : {
+      "@type" : "@id",
+      "label" : "Download",
+      "@id" : "http://lobid.org/vocab/lobid#fulltextOnline"
+    },
+    "seeAlso" : {
+      "@id" : "http://www.w3.org/2000/01/rdf-schema#seeAlso",
+      "label" : "Weitere Informationen"
+    },
+    "subjectChain" : {
+      "@id" : "http://purl.org/lobid/lv#subjectChain",
+      "label" : "Schlagwortkette"
+    },
+    "bibliographicCitation" : {
+      "label" : "Veröffentlichungs Details",
+      "@id" : "http://purl.org/dc/terms/bibliographicCitation"
+    },
+    "preferredNameForTheCorporateBody" : {
+      "label" : "",
+      "@id" : "http://d-nb.info/standards/elementset/gnd#preferredNameForTheCorporateBody"
+    },
+    "accessScheme" : {
+      "@id" : "http://hbz-nrw.de/regal#accessScheme",
+      "label" : "Sichtbarkeit Daten"
+    },
+    "publicationStatement" : {
+      "@id" : "http://rdvocab.info/Elements/publicationStatement",
+      "label" : "Ort und Jahr"
+    },
+    "hasData" : {
+      "icon" : "fa fa-download",
+      "@id" : "http://hbz-nrw.de/regal#hasData",
+      "label" : "Download"
+    },
+    "lastModifiedBy" : {
+      "label" : "Bearbeitet von",
+      "@id" : "http://hbz-nrw.de/regal#lastModifiedBy"
+    },
+    "describes" : {
+      "@id" : "http://www.openarchives.org/ore/terms/describes",
+      "@type" : "@id",
+      "label" : "beschreibt"
+    },
+    "size" : {
+      "label" : "Größe",
+      "@id" : "http://downlode.org/Code/RDF/File_Properties/schema#size"
+    },
+    "subject" : {
+      "@id" : "http://purl.org/dc/terms/subject",
+      "icon" : "fa fa-tag",
+      "label" : "Schlagwort",
+      "@type" : "@id"
+    },
+    "aui" : {
+      "@id" : "http://id.loc.gov/vocabulary/relators/aui",
+      "label" : "Autor der Einleitung"
+    },
+    "creatorName" : {
+      "label" : "Titelkopie",
+      "@id" : "http://purl.org/dc/elements/1.1/creator"
+    },
+    "P1053" : {
+      "label" : "Umfang",
+      "@id" : "http://iflastandards.info/ns/isbd/elements/P1053"
+    },
+    "hasPart" : {
+      "@id" : "http://purl.org/dc/terms/hasPart",
+      "label" : "Bestandteile",
+      "@type" : "@id"
+    },
+    "isDescribedBy" : {
+      "@type" : "@id",
+      "label" : "Beschrieben durch",
+      "@id" : "http://www.openarchives.org/ore/terms/isDescribedBy"
+    },
+    "eissn" : {
+      "label" : "Eissn",
+      "@id" : "http://purl.org/ontology/bibo/eissn"
+    },
+    "urn" : {
+      "label" : "Urn",
+      "icon" : "fa fa-exchange",
+      "@id" : "http://purl.org/lobid/lv#urn"
+    },
+    "preferredNameForTheConferenceOrEvent" : {
+      "@id" : "http://d-nb.info/standards/elementset/gnd#preferredNameForTheConferenceOrEvent",
+      "label" : ""
+    },
+    "isPartOfName" : {
+      "label" : "Bestandteil von",
+      "@id" : "http://purl.org/dc/elements/1.1/isPartOf"
+    },
+    "created" : {
+      "label" : "Erstellt am",
+      "@id" : "http://purl.org/dc/terms/created"
+    },
+    "medium" : {
+      "@id" : "http://purl.org/dc/terms/medium",
+      "label" : "Träger",
+      "@type" : "@id"
+    },
+    "hasURN" : {
+      "icon" : "fa fa-exchange",
+      "@id" : "http://geni-orca.renci.org/owl/topology.owl#hasURN",
+      "label" : "Urn"
+    },
+    "hasVersion" : {
+      "@id" : "http://purl.org/dc/terms/hasVersion",
+      "label" : "Vgl."
+    },
+    "hasTransformer" : {
+      "label" : "Transformer",
+      "@id" : "http://hbz-nrw.de/regal#hasTransformer"
+    },
+    "describedby" : {
+      "@type" : "@id",
+      "label" : "Beschrieben durch",
+      "@id" : "http://www.w3.org/2007/05/powder-s#describedby"
+    },
+    "createdBy" : {
+      "@id" : "http://hbz-nrw.de/regal#createdBy",
+      "label" : "Erstellt von"
+    },
+    "contributorName" : {
+      "@id" : "http://purl.org/dc/elements/1.1/contributor",
+      "label" : "Mitwirkende"
+    },
+    "format" : {
+      "label" : "Format",
+      "@id" : "http://purl.org/dc/terms/format"
+    },
+    "isPartOf" : {
+      "label" : "Bestandteil von",
+      "@type" : "@id",
+      "@id" : "http://hbz-nrw.de/regal#isPartOf"
+    },
+    "checksum" : {
+      "@type" : "@id",
+      "label" : "Prüfsumme",
+      "@id" : "http://downlode.org/Code/RDF/File_Properties/schema#checksum",
+      "icon" : "fa fa-barcode"
+    },
+    "contentType" : {
+      "@id" : "http://hbz-nrw.de/regal#contentType",
+      "label" : "Repository Typ"
+    },
+    "preferredNameForThePlaceOrGeographicName" : {
+      "@id" : "http://d-nb.info/standards/elementset/gnd#preferredNameForThePlaceOrGeographicName",
+      "label" : ""
+    },
+    "publisher" : {
+      "@id" : "http://purl.org/dc/elements/1.1/publisher",
+      "label" : "Herausgeber"
+    },
+    "parentPid" : {
+      "@id" : "http://purl.org/dc/terms/isPartOf",
+      "@type" : "@id",
+      "label" : "Bestandteil von"
+    },
+    "lccn" : {
+      "label" : "Lccn",
+      "@id" : "http://purl.org/ontology/bibo/lccn"
+    },
+    "itemID" : {
+      "label" : "Oai Id",
+      "@id" : "http://www.openarchives.org/OAI/2.0/itemID"
+    },
+    "preferredNameForTheWork" : {
+      "label" : "",
+      "@id" : "http://d-nb.info/standards/elementset/gnd#preferredNameForTheWork"
+    },
+    "P1004" : {
+      "@id" : "http://iflastandards.info/ns/isbd/elements/P1004",
+      "label" : "Gesamttitel"
+    },
+    "placeOfPublication" : {
+      "icon" : "fa fa-location-arrow",
+      "@id" : "http://rdvocab.info/Elements/placeOfPublication",
+      "label" : "Ort"
+    },
+    "primaryTopic" : {
+      "@id" : "http://xmlns.com/foaf/0.1/primaryTopic",
+      "@type" : "@id",
+      "label" : "Vgl."
+    },
+    "issued" : {
+      "@id" : "http://purl.org/dc/terms/issued",
+      "label" : "Erschienen"
+    },
+    "isAggregatedBy" : {
+      "@id" : "http://www.openarchives.org/ore/terms/isAggregatedBy",
+      "@type" : "@id",
+      "label" : "Teil von"
+    },
+    "wikipedia" : {
+      "@id" : "http://purl.org/ontology/mo/wikipedia",
+      "label" : "Wikipedia"
+    },
+    "statementOfResponsibility" : {
+      "@id" : "http://rdvocab.info/Elements/statementOfResponsibility",
+      "label" : "Verantwortlich"
+    },
+    "preferredNameForTheFamily" : {
+      "label" : "",
+      "@id" : "http://d-nb.info/standards/elementset/gnd#preferredNameForTheFamily"
+    },
+    "prefLabel" : {
+      "label" : "Label",
+      "@id" : "http://www.w3.org/2004/02/skos/core#prefLabel"
+    },
+    "doi" : {
+      "label" : "Doi",
+      "@id" : "http://purl.org/ontology/bibo/doi"
+    },
+    "oclcnum" : {
+      "@id" : "http://purl.org/ontology/bibo/oclcnum",
+      "label" : "Oclc"
+    },
+    "objectTimestamp" : {
+      "label" : "Objekt bearb.",
+      "@id" : "http://hbz-nrw.de/regal#objectTimestamp"
+    },
+    "act" : {
+      "label" : "Schauspieler",
+      "@id" : "http://id.loc.gov/vocabulary/relators/act"
+    },
+    "P1006" : {
+      "label" : "Titelzusatz",
+      "@id" : "http://iflastandards.info/ns/isbd/elements/P1006"
+    },
+    "hbzId" : {
+      "label" : "Katalog Id",
+      "icon" : "fa fa-bars",
+      "@id" : "http://purl.org/lobid/lv#hbzID"
+    },
+    "importedFrom" : {
+      "label" : "Import",
+      "@id" : "http://hbz-nrw.de/regal#importedFrom"
+    },
+    "subjectName" : {
+      "@id" : "http://purl.org/dc/elements/1.1/subject",
+      "label" : "Schlagwort"
+    },
+    "preferredNameForThePerson" : {
+      "label" : "Name",
+      "@id" : "http://d-nb.info/standards/elementset/gnd#preferredNameForThePerson"
+    },
+    "otherTitleInformation" : {
+      "@id" : "http://rdvocab.info/Elements/otherTitleInformation",
+      "label" : "Titelzusatz weitere"
+    },
+    "T1008" : {
+      "@id" : "http://iflastandards.info/ns/isbd/terms/mediatype/T1008",
+      "label" : "Kombination"
+    },
+    "title" : {
+      "label" : "Titel",
+      "@id" : "http://purl.org/dc/terms/title"
+    },
+    "preferredNameForTheSubjectHeading" : {
+      "@id" : "http://d-nb.info/standards/elementset/gnd#preferredNameForTheSubjectHeading",
+      "label" : ""
+    },
+    "institution" : {
+      "@type" : "@id",
+      "label" : "Institution",
+      "@id" : "http://dbpedia.org/ontology/institution"
+    },
+    "editor" : {
+      "@id" : "http://purl.org/ontology/bibo/editor",
+      "label" : "Herausgeber"
+    },
+    "sameAs" : {
+      "label" : "Identisch zu",
+      "@id" : "http://www.w3.org/2002/07/owl#sameAs"
+    },
+    "label" : {
+      "label" : "Etikett",
+      "icon" : "fa fa-tag",
+      "@id" : "http://www.w3.org/2000/01/rdf-schema#label"
+    },
+    "translator" : {
+      "label" : "Übersetzer",
+      "@id" : "http://purl.org/ontology/bibo/translator"
+    },
+    "exemplar" : {
+      "label" : "Exemplar",
+      "@id" : "http://purl.org/vocab/frbr/core#exemplar"
+    },
+    "aft" : {
+      "label" : "Autor des Nachwortes",
+      "@id" : "http://id.loc.gov/vocabulary/relators/aft"
+    },
+    "modified" : {
+      "label" : "Zuletzt bearbeitet",
+      "@id" : "http://purl.org/dc/terms/modified"
+    },
+    "isPrimaryTopicOf" : {
+      "@id" : "http://xmlns.com/foaf/0.1/isPrimaryTopicOf",
+      "@type" : "@id",
+      "label" : "Gegenstand von"
+    },
+    "dateOfBirth" : {
+      "@id" : "http://d-nb.info/standards/elementset/gnd#dateOfBirth",
+      "label" : "Geboren am"
+    },
+    "type" : {
+      "@type" : "@id",
+      "label" : "Typ",
+      "@id" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type"
+    },
+    "preferredName" : {
+      "label" : "Name",
+      "@id" : "http://d-nb.info/standards/elementset/gnd#preferredName"
+    },
+    "publishScheme" : {
+      "label" : "Sichtbarkeit Metadaten",
+      "@id" : "http://hbz-nrw.de/regal#publishScheme"
+    },
+    "creator" : {
+      "label" : "Autor",
+      "@type" : "@id",
+      "@id" : "http://purl.org/dc/terms/creator"
+    },
+    "P60489" : {
+      "@id" : "http://rdaregistry.info/Elements/u/P60489",
+      "label" : "Hochschulschriftenvermerk"
+    },
+    "P1016" : {
+      "@id" : "http://iflastandards.info/ns/isbd/elements/P1016",
+      "label" : "Ort"
+    },
+    "shortTitle" : {
+      "label" : "Kurztitel",
+      "@id" : "http://purl.org/ontology/bibo/shortTitle"
+    },
+    "similarTo" : {
+      "@type" : "@id",
+      "label" : "Vgl.",
+      "@id" : "http://www.openarchives.org/ore/terms/similarTo"
+    },
+    "tableOfContents" : {
+      "@id" : "http://purl.org/dc/terms/tableOfContents",
+      "icon" : "fa fa-list",
+      "label" : "Inhaltsverzeichnis"
+    },
+    "isLike" : {
+      "@id" : "http://www.umbel.org/specifications/vocabulary#isLike",
+      "label" : "ähnlich zu"
+    },
+    "isbn13" : {
+      "label" : "Isbn13",
+      "@id" : "http://purl.org/ontology/bibo/isbn13"
+    },
+    "alternative" : {
+      "@id" : "http://purl.org/dc/terms/alternative",
+      "label" : "Titelzusatz"
+    },
+    "issn" : {
+      "label" : "Issn",
+      "@id" : "http://purl.org/ontology/bibo/issn"
+    },
+    "subjectOrder" : {
+      "@id" : "http://purl.org/lobid/lv#subjectOrder",
+      "label" : "subjectOrdered",
+      "@container" : "@list"
+    },
+    "contributorOrder" : {
+      "@id" : "http://purl.org/lobid/lv#contributorOrder",
+      "label" : "contributorOrdered",
+      "@container" : "@list"
+    },
+    "name" : {
+      "@id" : "http://hbz-nrw.de/regal#name",
+      "label" : "Interner Name"
+    }
+  },
+  "@id" : "http://lobid.org/resource/HT013077595",
+  "P1053" : [ "VII, 119 S. : Ill., graph. Darst., Kt." ],
+  "collectedBy" : [ {
+    "@id" : "http://lobid.org/resource/NWBib"
+  } ],
+  "contributor" : [ {
+    "@id" : "http://d-nb.info/gnd/128755-2",
+    "preferredName" : "Kreisheimatverein <Coesfeld>",
+    "preferredNameForTheCorporateBody" : "Kreisheimatverein <Coesfeld>"
+  }, {
+    "@id" : "http://d-nb.info/gnd/11079267X",
+    "preferredName" : "Balke, Kirsten",
+    "preferredNameForThePerson" : "Balke, Kirsten"
+  } ],
+  "contributorLabel" : [ "Boer, Hans-Peter", "Boer, Hans Peter", "Balke, Kirsten" ],
+  "contributorOrdered" : [ "http://d-nb.info/gnd/11079267X", "http://d-nb.info/gnd/128755-2", "http://d-nb.info/gnd/4010355-9", "http://d-nb.info/gnd/4024116-6", "Lehrmittel" ],
+  "dc:coverage" : [ "Coesfeld <Kreis>", "Coesfeld" ],
+  "describedby" : [ {
+    "@id" : "http://lobid.org/resource/HT013077595/about",
+    "created" : "20010705",
+    "modified" : "20011113"
+  } ],
+  "exemplar" : [ {
+    "@id" : "http://lobid.org/item/HT013077595:DE-6:AA%2012514",
+    "describedby" : [ {
+      "@id" : "http://lobid.org/item/HT013077595:DE-6:AA%2012514/about"
+    } ],
+    "label" : "AA 12514",
+    "owner" : [ {
+      "@id" : "http://lobid.org/organisation/DE-6"
+    } ],
+    "type" : [ {
+      "@id" : "http://purl.org/vocab/frbr/core#Item"
+    } ]
+  }, {
+    "@id" : "http://lobid.org/item/HT013077595:DE-6:2J%201468",
+    "describedby" : [ {
+      "@id" : "http://lobid.org/item/HT013077595:DE-6:2J%201468/about"
+    } ],
+    "label" : "2J 1468",
+    "owner" : [ {
+      "@id" : "http://lobid.org/organisation/DE-6"
+    } ],
+    "type" : [ {
+      "@id" : "http://purl.org/vocab/frbr/core#Item"
+    } ]
+  }, {
+    "@id" : "http://lobid.org/item/HT013077595:DE-6-290:Y%20401%20-%2036",
+    "describedby" : [ {
+      "@id" : "http://lobid.org/item/HT013077595:DE-6-290:Y%20401%20-%2036/about"
+    } ],
+    "label" : "Y 401 - 36",
+    "owner" : [ {
+      "@id" : "http://lobid.org/organisation/DE-6-290"
+    } ],
+    "type" : [ {
+      "@id" : "http://purl.org/vocab/frbr/core#Item"
+    } ]
+  } ],
+  "hbzId" : [ "HT013077595" ],
+  "isPrimaryTopicOf" : [ {
+    "@id" : "http://193.30.112.134/F/?func=find-c&ccl_term=IDN%3DHT013077595"
+  } ],
+  "issued" : [ "2000" ],
+  "language" : [ {
+    "@id" : "http://id.loc.gov/vocabulary/iso639-2/deu"
+  } ],
+  "medium" : [ {
+    "@id" : "http://rdvocab.info/termList/RDAproductionMethod/1010"
+  } ],
+  "nameOfContributingCorporateBody" : [ "Kreisheimatverein <Coesfeld>" ],
+  "nwbibspatial" : [ {
+    "@id" : "http://purl.org/lobid/nwbib-spatial#n97"
+  } ],
+  "nwbibsubject" : [ {
+    "@id" : "http://purl.org/lobid/nwbib#s240000"
+  }, {
+    "@id" : "http://purl.org/lobid/nwbib#s784080"
+  } ],
+  "otherTitleInformation" : [ "Kirsten Balke. [Hrsg.: Kreisheimatverein Coesfeld e.V. Red.: Hans-Peter Boer ...]" ],
+  "placeOfPublication" : [ "Coesfeld" ],
+  "publicationStatement" : [ "Coesfeld; 2000" ],
+  "red" : [ {
+    "@id" : "http://d-nb.info/gnd/109490312",
+    "preferredName" : "Boer, Hans-Peter",
+    "preferredNameForThePerson" : "Boer, Hans-Peter"
+  } ],
+  "sameAs" : [ {
+    "@id" : "http://hub.culturegraph.org/resource/HBZ-HT013077595"
+  } ],
+  "subject" : [ {
+    "@id" : "http://d-nb.info/gnd/4010355-9",
+    "preferredName" : "Coesfeld",
+    "preferredNameForThePlaceOrGeographicName" : "Coesfeld"
+  }, {
+    "@id" : "http://d-nb.info/gnd/4010356-0",
+    "preferredName" : "Kreis Coesfeld",
+    "preferredNameForThePlaceOrGeographicName" : "Kreis Coesfeld"
+  }, {
+    "@id" : "http://d-nb.info/gnd/4024116-6",
+    "preferredName" : "Heimatkundeunterricht",
+    "preferredNameForTheSubjectHeading" : "Heimatkundeunterricht"
+  } ],
+  "subjectChain" : [ "Coesfeld | Heimatkundeunterricht | Lehrmittel (213)", "Kreis Coesfeld | Heimatkundeunterricht | Lehrmittel (213)" ],
+  "subjectLabel" : [ "Heimatkunde (Unterricht)", "Heimatkundedidaktik", "Kreistag (Kreis Coesfeld)", "Stadt Coesfeld", "Hauptamt (Kreis Coesfeld)", "Kreis Coesfeld. Kreistag", "Coesfeld. Hauptamt", "Coesfeld (Kreis)", "Kosfel'd", "Kreis Coesfeld. Hauptamt", "Coesfeld. Stadtdirektor", "Stadtdirektor (Coesfeld)", "Kreis Coesfeld. Kreisverwaltung", "Heimatkunde / Didaktik", "Coesfeld. Pressestelle", "Oberkreisdirektor (Kreis Coesfeld)", "Landrat (Kreis Coesfeld)", "Hauptamt (Coesfeld)", "Kreis Coesfeld. Oberkreisdirektor", "Landkreis Coesfeld", "Kreis Coesfeld. Landrat", "Kreisverwaltung (Kreis Coesfeld)", "Pressestelle (Coesfeld)" ],
+  "subjectOrder" : [ "http://d-nb.info/gnd/4010356-0", "http://d-nb.info/gnd/4024116-6", "Lehrmittel" ],
+  "title" : [ "Geschichte hier" ],
+  "type" : [ {
+    "@id" : "http://purl.org/dc/terms/BibliographicResource"
+  }, {
+    "@id" : "http://purl.org/ontology/bibo/Book"
+  } ]
+}
