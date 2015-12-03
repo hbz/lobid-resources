@@ -44,7 +44,7 @@ import de.hbz.lobid.helper.JsonConverter;
  * reflects the expected outcome. This is done using @see{CompareJsonMaps}.
  * 
  * For testing, diffs are done against these files. The order of values (lists
- * vs sets) are taken into acxount.
+ * vs sets) are taken into account.
  *
  * @author Jan Schnasse
  * @author Pascal Christoph (dr0i)
