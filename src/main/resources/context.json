@@ -9,6 +9,11 @@
 			"@id":"http://id.loc.gov/vocabulary/relators/cng",
 			"label":"Kamera"
 		},
+		"actor" : {
+			"@id" : "http://id.loc.gov/vocabulary/relators/act",
+			"@type" : "@id",
+			"label" : "Schauspieler/in"
+		},
 		"type":{
 			"@type":"@id",
 			"@id":"http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
@@ -76,7 +81,7 @@
 		"similar":{
 			"@type":"@id",
 			"@id":"http://umbel.org/umbel#isLike",
-			"label":"ähnlich zu"
+			"label":"Ähnlich zu"
 		},
 		"cartographer":{
 			"@type":"@id",
@@ -134,7 +139,8 @@
 		},
 		"contributorOrder":{
 			"@id":"http://purl.org/lobid/lv#contributorOrder",
-			"label":"contributorOrder"
+			"label":"contributorOrder",
+			"@container" : "@list"
 		},
 		"dateOfDeath":{
 			"@id":"http://d-nb.info/standards/elementset/gnd#dateOfDeath",
@@ -187,6 +193,7 @@
 			"label":"Beilage"
 		},
 		"workManifested":{
+			"@type":"@id",
 			"@id":"http://rdvocab.info/RDARelationshipsWEMI/workManifested",
 			"label":"Werkebene"
 		},
@@ -202,11 +209,6 @@
 		"preferredNameForTheConferenceOrEvent":{
 			"@id":"http://d-nb.info/standards/elementset/gnd#preferredNameForTheConferenceOrEvent",
 			"label":"Konferenzname"
-		},
-		"parallelEdition":{
-			"@type":"@id",
-			"@id":"http://hbz-nrw.de/regal#parallelEdition",
-			"label":"Titelkopie"
 		},
 		"hasFormat":{
 			"@type":"@id",
@@ -330,12 +332,7 @@
 		},
 		"frequency":{
 			"@id":"http://rdvocab.info/Elements/frequency",
-			"label":"Frequenz"
-		},
-		"act":{
-			"@type":"@id",
-			"@id":"http://id.loc.gov/vocabulary/relators/act",
-			"label":"Schauspieler"
+			"label":"Erscheinungsweise"
 		},
 		"preferredNameForTheSubjectHeading":{
 			"@id":"http://d-nb.info/standards/elementset/gnd#preferredNameForTheSubjectHeading",
@@ -369,7 +366,8 @@
 		},
 		"subjectOrder":{
 			"@id":"http://purl.org/lobid/lv#subjectOrder",
-			"label":"subjectOrdered"
+			"label":"subjectOrdered",
+			"@container" : "@list"
 		},
 		"created":{
 			"@id":"http://purl.org/dc/terms/created",
@@ -534,6 +532,10 @@
 			"@type":"@id",
 			"@id":"http://purl.org/lobid/lv#webPageArchived",
 			"label":"Archivierte Webseite"
+		},
+		"dateCreated" : {
+			"@id" : "http://purl.org/dc/terms/created",
+			"label" : "Erstellungsdatum"
 		},
 		"dateModified":{
 			"@id":"http://purl.org/dc/terms/modified",
