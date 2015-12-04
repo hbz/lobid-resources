@@ -35,6 +35,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import de.hbz.lobid.helper.CompareJsonMaps;
 import de.hbz.lobid.helper.Globals;
 import de.hbz.lobid.helper.JsonConverter;
 
@@ -75,6 +76,7 @@ public class TestRdfToJsonConversion {
 									LOBID_RESOURCES_URI_PREFIX)));
 		} catch (Exception e) {
 			e.printStackTrace();
+			org.junit.Assert.assertFalse(true);
 		}
 	}
 
