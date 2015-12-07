@@ -1,452 +1,18 @@
 {
-  "@context" : {
-    "legacyId" : {
-      "@id" : "http://hbz-nrw.de/regal#legacyId",
-      "label" : "Id Altsystem"
-    },
-    "generator" : {
-      "@type" : "@id",
-      "label" : "",
-      "@id" : "http://downlode.org/Code/RDF/File_Properties/schema#generator"
-    },
-    "inDataset" : {
-      "label" : "",
-      "@id" : "http://www.w3.org/2000/01/rdf-schema#inDataset"
-    },
-    "isbn" : {
-      "@id" : "http://purl.org/ontology/bibo/isbn",
-      "label" : "Isbn"
-    },
-    "deu" : {
-      "label" : "deutsch",
-      "@id" : "http://id.loc.gov/vocabulary/iso639-2/deu"
-    },
-    "contributor" : {
-      "@type" : "@id",
-      "label" : "Mitwirkende",
-      "@id" : "http://purl.org/dc/terms/contributor"
-    },
-    "aus" : {
-      "label" : "Screenwriter",
-      "@id" : "http://id.loc.gov/vocabulary/relators/aus"
-    },
-    "parallelEdition" : {
-      "@type" : "@id",
-      "label" : "Titelkopie",
-      "@id" : "http://hbz-nrw.de/regal#parallelEdition"
-    },
-    "language" : {
-      "@type" : "@id",
-      "label" : "Sprache",
-      "@id" : "http://purl.org/dc/terms/language"
-    },
-    "ismn" : {
-      "label" : "Ismn",
-      "@id" : "http://purl.org/ontology/mo/ismn"
-    },
-    "preferredNameEntityForThePerson" : {
-      "label" : "",
-      "@id" : "http://d-nb.info/standards/elementset/gnd#preferredNameEntityForThePerson"
-    },
-    "dateOfDeath" : {
-      "label" : "Gestorben am",
-      "@id" : "http://d-nb.info/standards/elementset/gnd#dateOfDeath"
-    },
-    "festschrift" : {
-      "icon" : "octicon octicon-gift",
-      "@id" : "http://purl.org/lobid/lv#Festschrift",
-      "label" : "Festschrift",
-      "@type" : "@id"
-    },
-    "fulltextOnline" : {
-      "@type" : "@id",
-      "label" : "Download",
-      "@id" : "http://lobid.org/vocab/lobid#fulltextOnline"
-    },
-    "seeAlso" : {
-      "@id" : "http://www.w3.org/2000/01/rdf-schema#seeAlso",
-      "label" : "Weitere Informationen"
-    },
-    "subjectChain" : {
-      "@id" : "http://purl.org/lobid/lv#subjectChain",
-      "label" : "Schlagwortkette"
-    },
-    "bibliographicCitation" : {
-      "label" : "Veröffentlichungs Details",
-      "@id" : "http://purl.org/dc/terms/bibliographicCitation"
-    },
-    "preferredNameForTheCorporateBody" : {
-      "label" : "",
-      "@id" : "http://d-nb.info/standards/elementset/gnd#preferredNameForTheCorporateBody"
-    },
-    "accessScheme" : {
-      "@id" : "http://hbz-nrw.de/regal#accessScheme",
-      "label" : "Sichtbarkeit Daten"
-    },
-    "publicationStatement" : {
-      "@id" : "http://rdvocab.info/Elements/publicationStatement",
-      "label" : "Ort und Jahr"
-    },
-    "hasData" : {
-      "icon" : "fa fa-download",
-      "@id" : "http://hbz-nrw.de/regal#hasData",
-      "label" : "Download"
-    },
-    "lastModifiedBy" : {
-      "label" : "Bearbeitet von",
-      "@id" : "http://hbz-nrw.de/regal#lastModifiedBy"
-    },
-    "describes" : {
-      "@id" : "http://www.openarchives.org/ore/terms/describes",
-      "@type" : "@id",
-      "label" : "beschreibt"
-    },
-    "size" : {
-      "label" : "Größe",
-      "@id" : "http://downlode.org/Code/RDF/File_Properties/schema#size"
-    },
-    "subject" : {
-      "@id" : "http://purl.org/dc/terms/subject",
-      "icon" : "fa fa-tag",
-      "label" : "Schlagwort",
-      "@type" : "@id"
-    },
-    "aui" : {
-      "@id" : "http://id.loc.gov/vocabulary/relators/aui",
-      "label" : "Autor der Einleitung"
-    },
-    "creatorName" : {
-      "label" : "Titelkopie",
-      "@id" : "http://purl.org/dc/elements/1.1/creator"
-    },
-    "P1053" : {
-      "label" : "Umfang",
-      "@id" : "http://iflastandards.info/ns/isbd/elements/P1053"
-    },
-    "hasPart" : {
-      "@id" : "http://purl.org/dc/terms/hasPart",
-      "label" : "Bestandteile",
-      "@type" : "@id"
-    },
-    "isDescribedBy" : {
-      "@type" : "@id",
-      "label" : "Beschrieben durch",
-      "@id" : "http://www.openarchives.org/ore/terms/isDescribedBy"
-    },
-    "eissn" : {
-      "label" : "Eissn",
-      "@id" : "http://purl.org/ontology/bibo/eissn"
-    },
-    "urn" : {
-      "label" : "Urn",
-      "icon" : "fa fa-exchange",
-      "@id" : "http://purl.org/lobid/lv#urn"
-    },
-    "preferredNameForTheConferenceOrEvent" : {
-      "@id" : "http://d-nb.info/standards/elementset/gnd#preferredNameForTheConferenceOrEvent",
-      "label" : ""
-    },
-    "isPartOfName" : {
-      "label" : "Bestandteil von",
-      "@id" : "http://purl.org/dc/elements/1.1/isPartOf"
-    },
-    "created" : {
-      "label" : "Erstellt am",
-      "@id" : "http://purl.org/dc/terms/created"
-    },
-    "medium" : {
-      "@id" : "http://purl.org/dc/terms/medium",
-      "label" : "Träger",
-      "@type" : "@id"
-    },
-    "hasURN" : {
-      "icon" : "fa fa-exchange",
-      "@id" : "http://geni-orca.renci.org/owl/topology.owl#hasURN",
-      "label" : "Urn"
-    },
-    "hasVersion" : {
-      "@id" : "http://purl.org/dc/terms/hasVersion",
-      "label" : "Vgl."
-    },
-    "hasTransformer" : {
-      "label" : "Transformer",
-      "@id" : "http://hbz-nrw.de/regal#hasTransformer"
-    },
-    "describedby" : {
-      "@type" : "@id",
-      "label" : "Beschrieben durch",
-      "@id" : "http://www.w3.org/2007/05/powder-s#describedby"
-    },
-    "createdBy" : {
-      "@id" : "http://hbz-nrw.de/regal#createdBy",
-      "label" : "Erstellt von"
-    },
-    "contributorName" : {
-      "@id" : "http://purl.org/dc/elements/1.1/contributor",
-      "label" : "Mitwirkende"
-    },
-    "format" : {
-      "label" : "Format",
-      "@id" : "http://purl.org/dc/terms/format"
-    },
-    "isPartOf" : {
-      "label" : "Bestandteil von",
-      "@type" : "@id",
-      "@id" : "http://hbz-nrw.de/regal#isPartOf"
-    },
-    "checksum" : {
-      "@type" : "@id",
-      "label" : "Prüfsumme",
-      "@id" : "http://downlode.org/Code/RDF/File_Properties/schema#checksum",
-      "icon" : "fa fa-barcode"
-    },
-    "contentType" : {
-      "@id" : "http://hbz-nrw.de/regal#contentType",
-      "label" : "Repository Typ"
-    },
-    "preferredNameForThePlaceOrGeographicName" : {
-      "@id" : "http://d-nb.info/standards/elementset/gnd#preferredNameForThePlaceOrGeographicName",
-      "label" : ""
-    },
-    "publisher" : {
-      "@id" : "http://purl.org/dc/elements/1.1/publisher",
-      "label" : "Herausgeber"
-    },
-    "parentPid" : {
-      "@id" : "http://purl.org/dc/terms/isPartOf",
-      "@type" : "@id",
-      "label" : "Bestandteil von"
-    },
-    "lccn" : {
-      "label" : "Lccn",
-      "@id" : "http://purl.org/ontology/bibo/lccn"
-    },
-    "itemID" : {
-      "label" : "Oai Id",
-      "@id" : "http://www.openarchives.org/OAI/2.0/itemID"
-    },
-    "preferredNameForTheWork" : {
-      "label" : "",
-      "@id" : "http://d-nb.info/standards/elementset/gnd#preferredNameForTheWork"
-    },
-    "P1004" : {
-      "@id" : "http://iflastandards.info/ns/isbd/elements/P1004",
-      "label" : "Gesamttitel"
-    },
-    "placeOfPublication" : {
-      "icon" : "fa fa-location-arrow",
-      "@id" : "http://rdvocab.info/Elements/placeOfPublication",
-      "label" : "Ort"
-    },
-    "primaryTopic" : {
-      "@id" : "http://xmlns.com/foaf/0.1/primaryTopic",
-      "@type" : "@id",
-      "label" : "Vgl."
-    },
-    "issued" : {
-      "@id" : "http://purl.org/dc/terms/issued",
-      "label" : "Erschienen"
-    },
-    "isAggregatedBy" : {
-      "@id" : "http://www.openarchives.org/ore/terms/isAggregatedBy",
-      "@type" : "@id",
-      "label" : "Teil von"
-    },
-    "wikipedia" : {
-      "@id" : "http://purl.org/ontology/mo/wikipedia",
-      "label" : "Wikipedia"
-    },
-    "statementOfResponsibility" : {
-      "@id" : "http://rdvocab.info/Elements/statementOfResponsibility",
-      "label" : "Verantwortlich"
-    },
-    "preferredNameForTheFamily" : {
-      "label" : "",
-      "@id" : "http://d-nb.info/standards/elementset/gnd#preferredNameForTheFamily"
-    },
-    "prefLabel" : {
-      "label" : "Label",
-      "@id" : "http://www.w3.org/2004/02/skos/core#prefLabel"
-    },
-    "doi" : {
-      "label" : "Doi",
-      "@id" : "http://purl.org/ontology/bibo/doi"
-    },
-    "oclcnum" : {
-      "@id" : "http://purl.org/ontology/bibo/oclcnum",
-      "label" : "Oclc"
-    },
-    "objectTimestamp" : {
-      "label" : "Objekt bearb.",
-      "@id" : "http://hbz-nrw.de/regal#objectTimestamp"
-    },
-    "act" : {
-      "label" : "Schauspieler",
-      "@id" : "http://id.loc.gov/vocabulary/relators/act"
-    },
-    "P1006" : {
-      "label" : "Titelzusatz",
-      "@id" : "http://iflastandards.info/ns/isbd/elements/P1006"
-    },
-    "hbzId" : {
-      "label" : "Katalog Id",
-      "icon" : "fa fa-bars",
-      "@id" : "http://purl.org/lobid/lv#hbzID"
-    },
-    "importedFrom" : {
-      "label" : "Import",
-      "@id" : "http://hbz-nrw.de/regal#importedFrom"
-    },
-    "subjectName" : {
-      "@id" : "http://purl.org/dc/elements/1.1/subject",
-      "label" : "Schlagwort"
-    },
-    "preferredNameForThePerson" : {
-      "label" : "Name",
-      "@id" : "http://d-nb.info/standards/elementset/gnd#preferredNameForThePerson"
-    },
-    "otherTitleInformation" : {
-      "@id" : "http://rdvocab.info/Elements/otherTitleInformation",
-      "label" : "Titelzusatz weitere"
-    },
-    "T1008" : {
-      "@id" : "http://iflastandards.info/ns/isbd/terms/mediatype/T1008",
-      "label" : "Kombination"
-    },
-    "title" : {
-      "label" : "Titel",
-      "@id" : "http://purl.org/dc/terms/title"
-    },
-    "preferredNameForTheSubjectHeading" : {
-      "@id" : "http://d-nb.info/standards/elementset/gnd#preferredNameForTheSubjectHeading",
-      "label" : ""
-    },
-    "institution" : {
-      "@type" : "@id",
-      "label" : "Institution",
-      "@id" : "http://dbpedia.org/ontology/institution"
-    },
-    "editor" : {
-      "@id" : "http://purl.org/ontology/bibo/editor",
-      "label" : "Herausgeber"
-    },
-    "sameAs" : {
-      "label" : "Identisch zu",
-      "@id" : "http://www.w3.org/2002/07/owl#sameAs"
-    },
-    "label" : {
-      "label" : "Etikett",
-      "icon" : "fa fa-tag",
-      "@id" : "http://www.w3.org/2000/01/rdf-schema#label"
-    },
-    "translator" : {
-      "label" : "Übersetzer",
-      "@id" : "http://purl.org/ontology/bibo/translator"
-    },
-    "exemplar" : {
-      "label" : "Exemplar",
-      "@id" : "http://purl.org/vocab/frbr/core#exemplar"
-    },
-    "aft" : {
-      "label" : "Autor des Nachwortes",
-      "@id" : "http://id.loc.gov/vocabulary/relators/aft"
-    },
-    "modified" : {
-      "label" : "Zuletzt bearbeitet",
-      "@id" : "http://purl.org/dc/terms/modified"
-    },
-    "isPrimaryTopicOf" : {
-      "@id" : "http://xmlns.com/foaf/0.1/isPrimaryTopicOf",
-      "@type" : "@id",
-      "label" : "Gegenstand von"
-    },
-    "dateOfBirth" : {
-      "@id" : "http://d-nb.info/standards/elementset/gnd#dateOfBirth",
-      "label" : "Geboren am"
-    },
-    "type" : {
-      "@type" : "@id",
-      "label" : "Typ",
-      "@id" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type"
-    },
-    "preferredName" : {
-      "label" : "Name",
-      "@id" : "http://d-nb.info/standards/elementset/gnd#preferredName"
-    },
-    "publishScheme" : {
-      "label" : "Sichtbarkeit Metadaten",
-      "@id" : "http://hbz-nrw.de/regal#publishScheme"
-    },
-    "creator" : {
-      "label" : "Autor",
-      "@type" : "@id",
-      "@id" : "http://purl.org/dc/terms/creator"
-    },
-    "P60489" : {
-      "@id" : "http://rdaregistry.info/Elements/u/P60489",
-      "label" : "Hochschulschriftenvermerk"
-    },
-    "P1016" : {
-      "@id" : "http://iflastandards.info/ns/isbd/elements/P1016",
-      "label" : "Ort"
-    },
-    "shortTitle" : {
-      "label" : "Kurztitel",
-      "@id" : "http://purl.org/ontology/bibo/shortTitle"
-    },
-    "similarTo" : {
-      "@type" : "@id",
-      "label" : "Vgl.",
-      "@id" : "http://www.openarchives.org/ore/terms/similarTo"
-    },
-    "tableOfContents" : {
-      "@id" : "http://purl.org/dc/terms/tableOfContents",
-      "icon" : "fa fa-list",
-      "label" : "Inhaltsverzeichnis"
-    },
-    "isLike" : {
-      "@id" : "http://www.umbel.org/specifications/vocabulary#isLike",
-      "label" : "ähnlich zu"
-    },
-    "isbn13" : {
-      "label" : "Isbn13",
-      "@id" : "http://purl.org/ontology/bibo/isbn13"
-    },
-    "alternative" : {
-      "@id" : "http://purl.org/dc/terms/alternative",
-      "label" : "Titelzusatz"
-    },
-    "issn" : {
-      "label" : "Issn",
-      "@id" : "http://purl.org/ontology/bibo/issn"
-    },
-    "subjectOrder" : {
-      "@id" : "http://purl.org/lobid/lv#subjectOrder",
-      "label" : "subjectOrdered",
-      "@container" : "@list"
-    },
-    "contributorOrder" : {
-      "@id" : "http://purl.org/lobid/lv#contributorOrder",
-      "label" : "contributorOrdered",
-      "@container" : "@list"
-    },
-    "name" : {
-      "@id" : "http://hbz-nrw.de/regal#name",
-      "label" : "Interner Name"
-    }
-  },
+  "@context" : "http://lobid.org/context/lobid-resources.json",
   "@id" : "http://lobid.org/resource/HT002619538",
-  "alternative" : [ "Bulletin annuel de statistiques des transports pour l'Europe et l'Amérique du Nord", "Ežegodnyj bjulleten' statistiki transporta dlja Evropy i Severnoj Ameriki" ],
+  "alternativeTitle" : [ "Bulletin annuel de statistiques des transports pour l'Europe et l'Amérique du Nord", "Ežegodnyj bjulleten' statistiki transporta dlja Evropy i Severnoj Ameriki" ],
+  "contributingCorporateBodyLabel" : [ "Ėkonomičeskaja Komissija dlja Evropy", "CEE", "Európai Gazdasági Bizottság", "ECE", "Vereinte Nationen", "Commission Economique pour l'Europe", "Wirtschaftskommission für Europa", "Economic Commission for Europe", "Evropejskaja Ėkonomičeskaja Komissija", "Wirtschaftsausschuss für Europa", "Vereinte Nationen. Economic Commission for Europe", "Europäische Wirtschaftskommission", "UNECE", "UN-ECE" ],
   "contributor" : [ {
     "@id" : "http://d-nb.info/gnd/2023669-4",
     "preferredName" : "Vereinte Nationen. Economic Commission for Europe",
     "preferredNameForTheCorporateBody" : "Vereinte Nationen. Economic Commission for Europe"
   } ],
-  "contributorOrdered" : [ "http://d-nb.info/gnd/2023669-4" ],
+  "contributorOrder" : [ "http://d-nb.info/gnd/2023669-4" ],
   "describedby" : [ {
     "@id" : "http://lobid.org/resource/HT002619538/about",
-    "created" : "19991118",
-    "modified" : "20131031"
+    "dateCreated" : "19991118",
+    "dateModified" : "20131031"
   } ],
   "exemplar" : [ {
     "@id" : "http://lobid.org/item/HT002619538:DE-38-121:Sh13",
@@ -461,10 +27,10 @@
     } ]
   }, {
     "@id" : "http://lobid.org/item/HT002619538:DE-38:Sh13",
+    "callNumber" : "Sh13",
     "describedby" : [ {
       "@id" : "http://lobid.org/item/HT002619538:DE-38:Sh13/about"
     } ],
-    "label" : "Sh13",
     "owner" : [ {
       "@id" : "http://lobid.org/organisation/DE-38"
     } ],
@@ -472,23 +38,23 @@
       "@id" : "http://purl.org/vocab/frbr/core#Item"
     } ]
   }, {
-    "@id" : "http://lobid.org/item/HT002619538:DE-5:Z%204'%2066%2F103",
+    "@id" : "http://lobid.org/item/HT002619538:DE-6-260:V%20-%20B%20151",
+    "callNumber" : "V - B 151",
     "describedby" : [ {
-      "@id" : "http://lobid.org/item/HT002619538:DE-5:Z%204'%2066%2F103/about"
+      "@id" : "http://lobid.org/item/HT002619538:DE-6-260:V%20-%20B%20151/about"
     } ],
-    "label" : "Z 4' 66/103",
     "owner" : [ {
-      "@id" : "http://lobid.org/organisation/DE-5"
+      "@id" : "http://lobid.org/organisation/DE-6-260"
     } ],
     "type" : [ {
       "@id" : "http://purl.org/vocab/frbr/core#Item"
     } ]
   }, {
     "@id" : "http://lobid.org/item/HT002619538:DE-294:ZRC%20828",
+    "callNumber" : "ZRC 828",
     "describedby" : [ {
       "@id" : "http://lobid.org/item/HT002619538:DE-294:ZRC%20828/about"
     } ],
-    "label" : "ZRC 828",
     "owner" : [ {
       "@id" : "http://lobid.org/organisation/DE-294"
     } ],
@@ -496,13 +62,13 @@
       "@id" : "http://purl.org/vocab/frbr/core#Item"
     } ]
   }, {
-    "@id" : "http://lobid.org/item/HT002619538:DE-6-260:V%20-%20B%20151",
+    "@id" : "http://lobid.org/item/HT002619538:DE-5:Z%204'%2066%2F103",
+    "callNumber" : "Z 4' 66/103",
     "describedby" : [ {
-      "@id" : "http://lobid.org/item/HT002619538:DE-6-260:V%20-%20B%20151/about"
+      "@id" : "http://lobid.org/item/HT002619538:DE-5:Z%204'%2066%2F103/about"
     } ],
-    "label" : "V - B 151",
     "owner" : [ {
-      "@id" : "http://lobid.org/organisation/DE-6-260"
+      "@id" : "http://lobid.org/organisation/DE-5"
     } ],
     "type" : [ {
       "@id" : "http://purl.org/vocab/frbr/core#Item"
@@ -524,7 +90,6 @@
   "medium" : [ {
     "@id" : "http://rdvocab.info/termList/RDAproductionMethod/1010"
   } ],
-  "nameOfContributingCorporateBody" : [ "Ėkonomičeskaja Komissija dlja Evropy", "CEE", "Európai Gazdasági Bizottság", "ECE", "Vereinte Nationen", "Commission Economique pour l'Europe", "Wirtschaftskommission für Europa", "Economic Commission for Europe", "Evropejskaja Ėkonomičeskaja Komissija", "Wirtschaftsausschuss für Europa", "Vereinte Nationen. Economic Commission for Europe", "Europäische Wirtschaftskommission", "UNECE", "UN-ECE" ],
   "placeOfPublication" : [ "Genève [u.a.]" ],
   "publicationStatement" : [ "Genève [u.a.]; UN; 1955" ],
   "publisher" : [ "UN" ],
@@ -548,5 +113,5 @@
   }, {
     "@id" : "http://purl.org/ontology/bibo/Journal"
   } ],
-  "zdbID" : [ "1257-9" ]
+  "zdbId" : [ "1257-9" ]
 }

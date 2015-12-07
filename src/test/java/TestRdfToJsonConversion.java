@@ -35,6 +35,8 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import de.hbz.lobid.helper.CompareJsonMaps;
+import de.hbz.lobid.helper.Globals;
 import de.hbz.lobid.helper.JsonConverter;
 
 /**
@@ -44,7 +46,7 @@ import de.hbz.lobid.helper.JsonConverter;
  * reflects the expected outcome. This is done using @see{CompareJsonMaps}.
  * 
  * For testing, diffs are done against these files. The order of values (lists
- * vs sets) are taken into acxount.
+ * vs sets) are taken into account.
  *
  * @author Jan Schnasse
  * @author Pascal Christoph (dr0i)
@@ -55,6 +57,11 @@ public class TestRdfToJsonConversion {
 	final static Logger logger =
 			LoggerFactory.getLogger(TestRdfToJsonConversion.class);
 	final static String LOBID_RESOURCES_URI_PREFIX = "http://lobid.org/resource/";
+	@SuppressWarnings("unchecked")
+	final static Map<String, Object> fullContext =
+			(Map<String, Object>) Globals.etikette.getContext().get("@context");
+	final static String contextUrl =
+			"http://lobid.org/context/lobid-resources.json";
 
 	@SuppressWarnings({ "javadoc" })
 	@Test
@@ -69,6 +76,7 @@ public class TestRdfToJsonConversion {
 									LOBID_RESOURCES_URI_PREFIX)));
 		} catch (Exception e) {
 			e.printStackTrace();
+			org.junit.Assert.assertFalse(true);
 		}
 	}
 
@@ -102,7 +110,9 @@ public class TestRdfToJsonConversion {
 		try (InputStream in = new FileInputStream(new File(fnameNtriples));
 				InputStream out = new File(fnameJson).exists()
 						? new FileInputStream(new File(fnameJson)) : makeFile(fnameJson)) {
-			actual = new JsonConverter().convert(in, RDFFormat.NTRIPLES, uri);
+
+			actual =
+					new JsonConverter().convert(in, RDFFormat.NTRIPLES, uri, contextUrl);
 			TestRdfToJsonConversion.logger.debug("Creates: ");
 			TestRdfToJsonConversion.logger
 					.debug(new ObjectMapper().writeValueAsString(actual));

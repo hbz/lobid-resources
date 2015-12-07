@@ -1,7 +1,10 @@
+package de.hbz.lobid.helper;
 
 /* Copyright 2015  hbz, Pascal Christoph.
  * Licensed under the Eclipse Public License 1.0 */
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -14,6 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.JsonNodeType;
 
 /**
@@ -31,6 +35,33 @@ import com.fasterxml.jackson.databind.node.JsonNodeType;
 public final class CompareJsonMaps {
 	final static Logger logger = LoggerFactory.getLogger(CompareJsonMaps.class);
 	Stack<String> stack = new Stack<>();
+	static final String JSON_LD_CONTEXT = "[@context";
+	private static boolean IGNORE_CONTEXT = true;
+	private static String filename1;
+	private static String filename2;
+
+	public static void main(String... args) {
+		if (args.length < 2)
+			CompareJsonMaps.logger.info(
+					"Usage: <filename1> <filename2> {<false> if @context should be taken into acount}");
+		filename1 = args[0];
+		filename2 = args[1];
+		CompareJsonMaps.logger
+				.info("\n" + filename1 + " may be referenced in the logs as 'actual'\n"
+						+ filename2 + " may be referenced as 'expected'");
+		if (args.length >= 3 && args[2].equals("false"))
+			IGNORE_CONTEXT = false;
+		try {
+			if (new CompareJsonMaps().writeFileAndTestJson(
+					new ObjectMapper().readValue(new File(args[0]), JsonNode.class),
+					new ObjectMapper().readValue(new File(args[1]), JsonNode.class)))
+				CompareJsonMaps.logger.info("OK. The content is equal.");
+			else
+				CompareJsonMaps.logger.info("Sadeness. The content differs.");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 
 	public boolean writeFileAndTestJson(final JsonNode actual,
 			final JsonNode expected) {
@@ -47,24 +78,30 @@ public final class CompareJsonMaps {
 		removeContext(it);
 		for (final Entry<String, String> e : expectedMap.entrySet()) {
 			CompareJsonMaps.logger.debug("Trying to remove " + e.getKey() + "...");
+			if (!actualMap.containsKey(e.getKey())) {
+				CompareJsonMaps.logger
+						.warn("At least this element is missing in actual: " + e.getKey());
+				return false;
+			}
 			if (e.getKey().endsWith("Order]")) {
 				handleOrderedValues(actualMap, e);
 			} else {
 				handleUnorderedValues(actualMap, e);
 			}
 		}
-		if (!actualMap.isEmpty())
-			CompareJsonMaps.logger.debug(
+		if (!actualMap.isEmpty()) {
+			CompareJsonMaps.logger.warn(
 					"These elements were not expected or the values are not proper:");
-		actualMap.forEach((key, val) -> CompareJsonMaps.logger
-				.debug("KEY=" + key + " VALUE=" + val));
-		return (actualMap.size() == 0);
+			actualMap.forEach((key, val) -> CompareJsonMaps.logger
+					.warn("KEY=" + key + " VALUE=" + val));
+		}
+		return actualMap.size() == 0;
 	}
 
 	private static void removeContext(Iterator<String> it) {
 		while (it.hasNext()) {
 			String se = it.next();
-			if (se.startsWith("[@context")) // don't compare @context
+			if (IGNORE_CONTEXT && se.startsWith(JSON_LD_CONTEXT))
 				it.remove();
 		}
 	}
@@ -76,7 +113,8 @@ public final class CompareJsonMaps {
 			actualMap.remove(e.getKey());
 			CompareJsonMaps.logger.debug("Removed " + e.getKey());
 		} else {
-			CompareJsonMaps.logger.warn("Missing/wrong: " + e.getKey() + "will fail");
+			CompareJsonMaps.logger
+					.debug("Missing/wrong: " + e.getKey() + ", will fail");
 		}
 	}
 
@@ -134,7 +172,7 @@ public final class CompareJsonMaps {
 	private static boolean checkIfAllValuesAreContainedUnordered(
 			final String actual, final String expected) {
 		CompareJsonMaps.logger
-				.trace("Actual   value: " + actual + "\nExpected value: " + expected);
+				.trace("\nActual   value: " + actual + "\nExpected value: " + expected);
 		return valuesToList(actual).containsAll(valuesToList(expected));
 	}
 
