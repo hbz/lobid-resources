@@ -26,7 +26,7 @@
 
 @main("NWBib - Vollanzeige") {
     @defining(Json.parse(result).asOpt[Seq[JsValue]].getOrElse(Seq()).zipWithIndex.tail) { hits =>
-        @for((doc,i) <- hits) {
+        @for((doc,i) <- hits) { @if(Cache.get(session("uuid") + "-" + (doc\\"hbzId")(0).as[String]) != null) {
         @defining(Cache.get(session("uuid") + "-lastSearch")) { lastSearch => @if(lastSearch != null) {
           @defining(Json.parse(lastSearch.asInstanceOf[String]).as[JsArray].as[Seq[String]]) { last =>
            <nav id="pager">
@@ -45,7 +45,7 @@
              }
            </script>
           }
-        }}
+        }}}
         <div class="row">
           @defining(Lobid.items(doc.toString)) { items =>
               @defining(!(doc\\"isPartOf").isEmpty && doc.toString.contains("http://purl.org/ontology/bibo/Article")){superordination =>
