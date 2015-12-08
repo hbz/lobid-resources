@@ -110,7 +110,6 @@ public class TestRdfToJsonConversion {
 		try (InputStream in = new FileInputStream(new File(fnameNtriples));
 				InputStream out = new File(fnameJson).exists()
 						? new FileInputStream(new File(fnameJson)) : makeFile(fnameJson)) {
-
 			actual =
 					new JsonConverter().convert(in, RDFFormat.NTRIPLES, uri, contextUrl);
 			TestRdfToJsonConversion.logger.debug("Creates: ");
