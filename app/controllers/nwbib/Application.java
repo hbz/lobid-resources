@@ -611,7 +611,7 @@ public class Application extends Controller {
 
 	private static boolean isUrisOrGndIds(String currentParam) {
 		return currentParam.startsWith("http")
-				|| currentParam.matches("[\\d\\-,]+");
+				|| currentParam.matches("[\\d\\-,X]+");
 	}
 
 	private static Stream<JsonNode> preprocess(Stream<JsonNode> stream) {
