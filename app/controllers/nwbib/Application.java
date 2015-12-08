@@ -602,8 +602,16 @@ public class Application extends Controller {
 			return term;
 		else if (contains(currentParam, term))
 			return currentParam.replace(term, "").replaceAll("\\A,|,\\z", "");
-		else
+		else if (isUrisOrGndIds(currentParam))
 			return currentParam + "," + term;
+		else
+			return term;
+
+	}
+
+	private static boolean isUrisOrGndIds(String currentParam) {
+		return currentParam.startsWith("http")
+				|| currentParam.matches("[\\d\\-,X]+");
 	}
 
 	private static Stream<JsonNode> preprocess(Stream<JsonNode> stream) {
