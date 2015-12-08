@@ -90,11 +90,12 @@ public final class CompareJsonMaps {
 			}
 		}
 		if (!actualMap.isEmpty()) {
-			CompareJsonMaps.logger.warn(
-					"These elements were not expected or the values are not proper:");
+			CompareJsonMaps.logger
+					.warn("Fail - no Equality! These keys/values were NOT expected:");
 			actualMap.forEach((key, val) -> CompareJsonMaps.logger
 					.warn("KEY=" + key + " VALUE=" + val));
-		}
+		} else
+			CompareJsonMaps.logger.info("Succeeded - resources are equal");
 		return actualMap.size() == 0;
 	}
 
