@@ -326,7 +326,7 @@ public class Lobid {
 			request = request.setQueryParameter("nwbibspatial", nwbibspatial);
 		if (!field.equals(Application.NWBIB_SUBJECT_FIELD))
 			request = request.setQueryParameter("nwbibsubject", nwbibsubject);
-		if (!field.equals(Application.SUBJECT_FIELD))
+		if (!field.equals(Application.SUBJECT_FIELD) || !field.startsWith("http"))
 			request = request.setQueryParameter("subject", subject);
 		if (!field.equals(Application.SUBJECT_LOCATION_FIELD))
 			request =

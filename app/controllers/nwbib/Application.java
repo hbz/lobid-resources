@@ -601,17 +601,10 @@ public class Application extends Controller {
 		if (currentParam.isEmpty())
 			return term;
 		else if (contains(currentParam, term))
-			return currentParam.replace(term, "").replaceAll("\\A,|,\\z", "");
-		else if (isUrisOrGndIds(currentParam))
-			return currentParam + "," + term;
+			return currentParam.replace(term, "").replaceAll("\\A,|,\\z", "")
+					.replaceAll(",+", ",");
 		else
-			return term;
-
-	}
-
-	private static boolean isUrisOrGndIds(String currentParam) {
-		return currentParam.startsWith("http")
-				|| currentParam.matches("[\\d\\-,X]+");
+			return currentParam + "," + term;
 	}
 
 	private static Stream<JsonNode> preprocess(Stream<JsonNode> stream) {
