@@ -544,8 +544,12 @@ public class Application extends Controller {
 							"facets-labels.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s",
 							field, q, person, name, id, publisher, set, word, corporation,
 							raw,
-							/* facet values, include in key only if not the current facet: */
-							field.equals(SUBJECT_FIELD) ? "" : subject,
+							/*
+							 * facet values, include in key only if not the current facet,
+							 * except literal subjects, which can be combined with facet:
+							 */
+							field.equals(SUBJECT_FIELD) && subject.startsWith("http") ? ""
+									: subject,
 							field.equals(ISSUED_FIELD) ? "" : issued,
 							field.equals(MEDIUM_FIELD) ? "" : medium,
 							field.equals(NWBIB_SPATIAL_FIELD) ? "" : nwbibspatial,
