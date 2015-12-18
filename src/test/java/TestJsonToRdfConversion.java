@@ -1,11 +1,19 @@
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringReader;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.Test;
@@ -22,35 +30,107 @@ import de.hbz.lobid.helper.RdfUtils;
  *
  */
 public class TestJsonToRdfConversion {
-	private static final String SRC_TEST_RESOURCES = "src/test/resources/";
+	private static final String BASE = "src/test/resources/";
+	private static final String REVERSE_IN = "reverseTest/input/json/";
+	private static final String REVERSE_OUT = "reverseTest/output/nt/";
+	private static final String TEST_IN = "input/nt/";
+	private static final String TEST_OUT = "output/json/";
+	private static final String TEST_PATH = "src/test/resources/input/nt/";
 	final static Logger logger =
 			LoggerFactory.getLogger(TestJsonToRdfConversion.class);
 
 	@SuppressWarnings({ "javadoc" })
 	@Test
 	public void test_all() {
-		String path = "src/test/resources/reverseTest/input/json/";
+
 		try {
-			Files.walk(Paths.get(path)).filter(Files::isRegularFile).forEach(e -> {
-				String jsonFilename = new File(SRC_TEST_RESOURCES).toURI()
-						.relativize(e.toUri()).getPath();
-				String rdfFilename = new File(SRC_TEST_RESOURCES).toURI()
-						.relativize(e.toUri()).getPath();
-				rdfFilename = rdfFilename.replaceFirst("input/json", "output/nt")
-						.replaceFirst("json$", "nt");
-				compare(jsonFilename, rdfFilename);
-			});
+			Files.walk(Paths.get(BASE + REVERSE_IN)).filter(Files::isRegularFile)
+					.forEach(path -> {
+						String jsonFilename = getRelativePath(BASE + REVERSE_IN, path);
+						String rdfFilename = getRelativePath(BASE + REVERSE_IN, path)
+								.replaceFirst("json$", "nt");
+
+						compare(jsonFilename, rdfFilename);
+					});
 		} catch (Exception e) {
 			e.printStackTrace();
 			org.junit.Assert.assertFalse(true);
 		}
 	}
 
-	// "reverseTest/HT012895751.json"
-	public void compare(String jsonFilename, String rdfFilename) {
-		try {
+	private String getRelativePath(String relpath, Path path) {
+		return new File(relpath).toURI().relativize(path.toUri()).getPath();
+	}
 
+	void compare(String jsonFilename, String rdfFilename) {
+		try {
 			logger.info(jsonFilename + " " + rdfFilename);
+			String jsonString = createJsonString(REVERSE_IN + jsonFilename);
+			String rdfString = RdfUtils.readRdfToString(
+					new ByteArrayInputStream(jsonString.getBytes("utf-8")),
+					RDFFormat.JSONLD, RDFFormat.NTRIPLES, "");
+			// writeToFileIfNotExists(rdfString, REVERSE_OUT + rdfFilename);
+			org.junit.Assert
+					.assertTrue(rdfCompare(rdfString, getExpected(rdfFilename)));
+		} catch (Exception e) {
+			logger.error("", e);
+		}
+	}
+
+	private String getExpected(String rdfFilename) {
+		logger.debug("Read rdf " + TEST_IN + rdfFilename);
+
+		try (InputStream in = Thread.currentThread().getContextClassLoader()
+				.getResourceAsStream(TEST_IN + rdfFilename)) {
+
+			String rdfString = RdfUtils.readRdfToString(in, RDFFormat.NTRIPLES,
+					RDFFormat.NTRIPLES, "");
+
+			return rdfString;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	private boolean rdfCompare(String actual, String expected) {
+		String actualWithoutBlankNodes = removeBlankNodes(actual);
+		String expectedWithoutBlankNodes = removeBlankNodes(expected);
+		String actualSorted = sorted(actualWithoutBlankNodes);
+		String expectedSorted = sorted(expectedWithoutBlankNodes);
+		return actualSorted.equals(expectedSorted);
+	}
+
+	private String removeBlankNodes(String str) {
+		return str.replaceAll("_:[^\\ ]*", "")
+				.replaceAll("\\^\\^<http://www.w3.org/2001/XMLSchema#string>", "");
+	}
+
+	private String sorted(String actualWithoutBlankNodes) {
+		String[] list = createList(actualWithoutBlankNodes);
+		ArrayList<String> words = new ArrayList<String>(Arrays.asList(list));
+		Collections.sort(words, String.CASE_INSENSITIVE_ORDER);
+		logger.debug(words.toString());
+		return words.toString();
+	}
+
+	private String[] createList(String actualWithoutBlankNodes) {
+		try (BufferedReader br =
+				new BufferedReader(new StringReader(actualWithoutBlankNodes))) {
+			List<String> result = new ArrayList<String>();
+			String line;
+			while ((line = br.readLine()) != null) {
+				result.add(line);
+			}
+			String[] ar = new String[result.size()];
+			return result.toArray(ar);
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	private String createJsonString(String jsonFilename) {
+		try {
+			logger.info("Read json " + jsonFilename);
 			// String jsonString = readFileFromClasspath(fileName);
 			Map<String, Object> jsonMap = JsonConverter.getObjectMapper()
 					.readValue(Thread.currentThread().getContextClassLoader()
@@ -58,24 +138,17 @@ public class TestJsonToRdfConversion {
 			jsonMap.put("@context", Globals.etikette.getContext().get("@context"));
 			String jsonString =
 					JsonConverter.getObjectMapper().writeValueAsString(jsonMap);
-			logger.debug(jsonString);
-			String rdf = RdfUtils.readRdfToString(
-					new ByteArrayInputStream(jsonString.getBytes("utf-8")),
-					RDFFormat.JSONLD, RDFFormat.NTRIPLES, "");
-			logger.debug(rdf);
-			writeToFileIfNotExists(rdf, rdfFilename);
+			return jsonString;
 		} catch (Exception e) {
-			logger.error("", e);
+			throw new RuntimeException(e);
 		}
 	}
 
-	private void writeToFileIfNotExists(String rdf, String fileName)
+	private static void writeToFileIfNotExists(String rdf, String fileName)
 			throws URISyntaxException, FileNotFoundException, IOException {
-
 		try {
 			File rdfFile = Paths.get(Thread.currentThread().getContextClassLoader()
 					.getResource(fileName).toURI()).toFile();
-
 		} catch (NullPointerException e) {
 			makeFile(rdf, fileName);
 		}
@@ -88,8 +161,8 @@ public class TestJsonToRdfConversion {
 	}
 
 	private static void makeFile(String rdf, String fileName) throws IOException {
-		logger.info("Try to create: " + SRC_TEST_RESOURCES + fileName);
-		File f = new File(SRC_TEST_RESOURCES + fileName);
+		logger.info("Try to create: " + BASE + fileName);
+		File f = new File(BASE + fileName);
 		f.getParentFile().mkdirs();
 		f.createNewFile();
 		logger.info("Created: " + f.getAbsolutePath());
