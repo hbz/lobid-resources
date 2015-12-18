@@ -114,6 +114,10 @@ public class TestJsonToRdfConversion {
 
 	private static void printErrors(String[] actualSorted,
 			String[] expectedSorted) {
+		if (actualSorted.length != expectedSorted.length) {
+			logger.error("Expected size of " + expectedSorted.length
+					+ " is different to actual size " + actualSorted.length);
+		}
 		for (int i = 0; i < actualSorted.length; i++) {
 			if (actualSorted[i].equals(expectedSorted[i])) {
 				logger.debug("Actual , Expected");
@@ -128,6 +132,7 @@ public class TestJsonToRdfConversion {
 				logger.error("");
 			}
 		}
+
 	}
 
 	private static String removeBlankNodes(String str) {
