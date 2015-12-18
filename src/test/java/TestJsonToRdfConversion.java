@@ -1,11 +1,11 @@
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.Map;
 
 import org.junit.Test;
@@ -77,7 +77,7 @@ public class TestJsonToRdfConversion {
 					.getResource(fileName).toURI()).toFile();
 
 		} catch (NullPointerException e) {
-			makeFile(fileName);
+			makeFile(rdf, fileName);
 		}
 	}
 
@@ -87,12 +87,12 @@ public class TestJsonToRdfConversion {
 				.getContextClassLoader().getResource(fileName).toURI())));
 	}
 
-	private static FileInputStream makeFile(String fileName) throws IOException {
+	private static void makeFile(String rdf, String fileName) throws IOException {
 		logger.info("Try to create: " + SRC_TEST_RESOURCES + fileName);
 		File f = new File(SRC_TEST_RESOURCES + fileName);
 		f.getParentFile().mkdirs();
 		f.createNewFile();
 		logger.info("Created: " + f.getAbsolutePath());
-		return new FileInputStream(f);
+		Files.write(f.toPath(), rdf.getBytes(), StandardOpenOption.CREATE);
 	}
 }

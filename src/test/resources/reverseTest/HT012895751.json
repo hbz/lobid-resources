@@ -1,0 +1,761 @@
+{
+  "@context":{
+		"extent":{
+			"@id":"http://iflastandards.info/ns/isbd/elements/P1053",
+			"label":"Umfang",
+			"@container":"@set"
+		},
+		"cinematographer":{
+			"@type":"@id",
+			"@id":"http://id.loc.gov/vocabulary/relators/cng",
+			"label":"Kamera",
+			"@container":"@set"
+		},
+		"actor":{
+			"@id":"http://id.loc.gov/vocabulary/relators/act",
+			"@type":"@id",
+			"label":"Schauspieler/in",
+			"@container":"@set"
+		},
+		"type":{
+			"@type":"@id",
+			"@id":"http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+			"label":"Typ",
+			"@container":"@set"
+		},
+		"preferredNameForThePlaceOrGeographicName":{
+			"@id":"http://d-nb.info/standards/elementset/gnd#preferredNameForThePlaceOrGeographicName",
+			"label":"Ort",
+			"@container":"@set"
+		},
+		"engraver":{
+			"@type":"@id",
+			"@id":"http://id.loc.gov/vocabulary/relators/egr",
+			"label":"Stecher/in",
+			"@container":"@set"
+		},
+		"T1008":{
+			"@id":"http://iflastandards.info/ns/isbd/terms/mediatype/T1008",
+			"label":"Kombination",
+			"@container":"@set"
+		},
+		"contributorName":{
+			"@id":"http://purl.org/dc/elements/1.1/contributor",
+			"label":"Mitwirkende",
+			"@container":"@set"
+		},
+		"collaborator":{
+			"@type":"@id",
+			"@id":"http://id.loc.gov/vocabulary/relators/clb",
+			"label":"Mitarbeit",
+			"@container":"@set"
+		},
+		"lccn":{
+			"@id":"http://purl.org/ontology/bibo/lccn",
+			"label":"Lccn",
+			"@container":"@set"
+		},
+		"exemplarOf":{
+			"@type":"@id",
+			"@id":"http://purl.org/vocab/frbr/core#exemplarOf",
+			"label":"Exemplar",
+			"@container":"@set"
+		},
+		"exemplar":{
+			"@type":"@id",
+			"@id":"http://purl.org/vocab/frbr/core#exemplar",
+			"label":"Exemplar",
+			"@container":"@set"
+		},
+		"preferredName":{
+			"@id":"http://d-nb.info/standards/elementset/gnd#preferredName",
+			"label":"Name",
+			"@container":"@set"
+		},
+		"issued":{
+			"@id":"http://purl.org/dc/terms/issued",
+			"label":"Erschienen",
+			"@container":"@set"
+		},
+		"spatial":{
+			"@type":"@id",
+			"@id":"http://purl.org/dc/terms/spatial",
+			"label":"Ortsbezug",
+			"@container":"@set"
+		},
+		"hbzId":{
+			"icon":"fa fa-bars",
+			"@id":"http://purl.org/lobid/lv#hbzID",
+			"label":"Katalog Id",
+			"@container":"@set"
+		},
+		"introductionBy":{
+			"@type":"@id",
+			"@id":"http://id.loc.gov/vocabulary/relators/aui",
+			"label":"Einleitung",
+			"@container":"@set"
+		},
+		"similar":{
+			"@type":"@id",
+			"@id":"http://umbel.org/umbel#isLike",
+			"label":"Ähnlich zu",
+			"@container":"@set"
+		},
+		"cartographer":{
+			"@type":"@id",
+			"@id":"http://id.loc.gov/vocabulary/relators/ctg",
+			"label":"Kartographie",
+			"@container":"@set"
+		},
+		"hasPart":{
+			"@type":"@id",
+			"@id":"http://purl.org/dc/terms/hasPart",
+			"label":"Bestandteile",
+			"@container":"@set"
+		},
+		"director":{
+			"@type":"@id",
+			"@id":"http://id.loc.gov/vocabulary/relators/drt",
+			"label":"Regie",
+			"@container":"@set"
+		},
+		"eissn":{
+			"@id":"http://purl.org/ontology/bibo/eissn",
+			"label":"Eissn",
+			"@container":"@set"
+		},
+		"isPartOf":{
+			"@type":"@id",
+			"@id":"http://purl.org/dc/terms/isPartOf",
+			"label":"Bestandteil von",
+			"@container":"@set"
+		},
+		"nwbibspatial":{
+			"@type":"@id",
+			"@id":"http://purl.org/lobid/lv#nwbibspatial",
+			"label":"Raumsystematik",
+			"@container":"@set"
+		},
+		"issn":{
+			"@id":"http://purl.org/ontology/bibo/issn",
+			"label":"Issn",
+			"@container":"@set"
+		},
+		"preferredNameForThePerson":{
+			"@id":"http://d-nb.info/standards/elementset/gnd#preferredNameForThePerson",
+			"label":"Personenname",
+			"@container":"@set"
+		},
+		"isPartOfName":{
+			"@id":"http://purl.org/dc/elements/1.1/isPartOf",
+			"label":"Bestandteil von",
+			"@container":"@set"
+		},
+		"bibliographicCitation":{
+			"@id":"http://purl.org/dc/terms/bibliographicCitation",
+			"label":"Veröffentlichungs Details",
+			"@container":"@set"
+		},
+		"doi":{
+			"@id":"http://purl.org/ontology/bibo/doi",
+			"label":"Doi",
+			"@container":"@set"
+		},
+		"singer":{
+			"@type":"@id",
+			"@id":"http://id.loc.gov/vocabulary/relators/sng",
+			"label":"Gesang",
+			"@container":"@set"
+		},
+		"contributorList":{
+			"@id":"http://purl.org/ontology/bibo/contributorList",
+			"label":"contributorList",
+			"@container":"@list",
+			"@type":"@id"
+		},
+		"dateOfDeath":{
+			"@id":"http://d-nb.info/standards/elementset/gnd#dateOfDeath",
+			"label":"Gestorben am",
+			"@container":"@set"
+		},
+		"longitudeAndLatitude":{
+			"@id":"http://rdvocab.info/Elements/longitudeAndLatitude",
+			"label":"Geokoordinaten",
+			"@container":"@set"
+		},
+		"translator":{
+			"@type":"@id",
+			"@id":"http://purl.org/ontology/bibo/translator",
+			"label":"Übersetzung",
+			"@container":"@set"
+		},
+		"creatorName":{
+			"@id":"http://purl.org/dc/elements/1.1/creator",
+			"label":"Autorenname",
+			"@container":"@set"
+		},
+		"alternativeTitle":{
+			"@id":"http://purl.org/dc/terms/alternative",
+			"label":"Titelzusatz",
+			"@container":"@set"
+		},
+		"fulltextOnline":{
+			"@type":"@id",
+			"@id":"http://purl.org/lobid/lv#fulltextOnline",
+			"label":"Online-Volltext",
+			"@container":"@set"
+		},
+		"volumeIn":{
+			"@type":"@id",
+			"@id":"http://purl.org/lobid/lv#volumeIn",
+			"label":"Gehört zu Band",
+			"@container":"@set"
+		},
+		"inSeries":{
+			"@type":"@id",
+			"@id":"http://purl.org/lobid/lv#inSeries",
+			"label":"In Reihe",
+			"@container":"@set"
+		},
+		"zdbId":{
+			"@id":"http://purl.org/lobid/lv#zdbID",
+			"label":"ZdbID",
+			"@container":"@set"
+		},
+		"wikipedia":{
+			"@type":"@id",
+			"@id":"http://purl.org/ontology/mo/wikipedia",
+			"label":"Wikipedia",
+			"@container":"@set"
+		},
+		"hasSupplement":{
+			"@type":"@id",
+			"@id":"http://rdaregistry.info/Elements/u/P60281",
+			"label":"Beilage",
+			"@container":"@set"
+		},
+		"workManifested":{
+			"@type":"@id",
+			"@id":"http://rdvocab.info/RDARelationshipsWEMI/workManifested",
+			"label":"Werkebene",
+			"@container":"@set"
+		},
+		"musician":{
+			"@type":"@id",
+			"@id":"http://id.loc.gov/vocabulary/relators/mus",
+			"label":"Musik",
+			"@container":"@set"
+		},
+		"preferredNameEntityForThePerson":{
+			"@id":"http://d-nb.info/standards/elementset/gnd#preferredNameEntityForThePerson",
+			"label":"Namensentität der Person",
+			"@container":"@set"
+		},
+		"preferredNameForTheConferenceOrEvent":{
+			"@id":"http://d-nb.info/standards/elementset/gnd#preferredNameForTheConferenceOrEvent",
+			"label":"Konferenzname",
+			"@container":"@set"
+		},
+		"hasFormat":{
+			"@type":"@id",
+			"@id":"http://purl.org/dc/terms/hasFormat",
+			"label":"Hat Format",
+			"@container":"@set"
+		},
+		"editor":{
+			"@type":"@id",
+			"@id":"http://purl.org/ontology/bibo/editor",
+			"label":"Herausgeber/in",
+			"@container":"@set"
+		},
+		"creator":{
+			"@type":"@id",
+			"@id":"http://purl.org/dc/terms/creator",
+			"label":"Autor",
+			"@container":"@set"
+		},
+		"performer":{
+			"@type":"@id",
+			"@id":"http://id.loc.gov/vocabulary/relators/prf",
+			"label":"Interpret",
+			"@container":"@set"
+		},
+		"composer":{
+			"@type":"@id",
+			"@id":"http://id.loc.gov/vocabulary/relators/cmp",
+			"label":"Komponist",
+			"@container":"@set"
+		},
+		"dateOfBirth":{
+			"@id":"http://d-nb.info/standards/elementset/gnd#dateOfBirth",
+			"label":"Geboren am",
+			"@container":"@set"
+		},
+		"abstract":{
+			"@id":"http://purl.org/dc/terms/abstract",
+			"label":"Inhaltsangabe",
+			"@container":"@set"
+		},
+		"conductor":{
+			"@type":"@id",
+			"@id":"http://id.loc.gov/vocabulary/relators/cnd",
+			"label":"Dirigent/in",
+			"@container":"@set"
+		},
+		"otherTitleInformation":{
+			"@id":"http://rdvocab.info/Elements/otherTitleInformation",
+			"label":"Titelzusatz",
+			"@container":"@set"
+		},
+		"urn":{
+			"icon":"fa fa-exchange",
+			"@id":"http://purl.org/lobid/lv#urn",
+			"label":"Urn",
+			"@container":"@set"
+		},
+		"afterwordBy":{
+			"@type":"@id",
+			"@id":"http://id.loc.gov/vocabulary/relators/aft",
+			"label":"Autor des Nachwortes",
+			"@container":"@set"
+		},
+		"subjectLocation":{
+			"@id":"http://purl.org/lobid/lv#subjectLocation",
+			"label":"Geokoordinaten",
+			"@container":"@set"
+		},
+		"callNumber":{
+			"@id":"http://purl.org/ontology/daia/label",
+			"label":"Signatur",
+			"@container":"@set"
+		},
+		"series":{
+			"@type":"@id",
+			"@id":"http://purl.org/lobid/lv#series",
+			"label":"Reihe",
+			"@container":"@set"
+		},
+		"placeOfPublication":{
+			"icon":"fa fa-location-arrow",
+			"@id":"http://rdvocab.info/Elements/placeOfPublication",
+			"label":"Ort der Herausgabe",
+			"@container":"@set"
+		},
+		"thesisInformation":{
+			"@id":"http://rdaregistry.info/Elements/u/P60489",
+			"label":"Hochschulschriftenvermerk",
+			"@container":"@set"
+		},
+		"describedby":{
+			"@type":"@id",
+			"@id":"http://www.w3.org/2007/05/powder-s#describedby",
+			"label":"Beschrieben durch",
+			"@container":"@set"
+		},
+		"ismn":{
+			"@id":"http://purl.org/ontology/mo/ismn",
+			"label":"Ismn",
+			"@container":"@set"
+		},
+		"isFormatOf":{
+			"@type":"@id",
+			"@id":"http://purl.org/dc/terms/isFormatOf",
+			"label":"Format von",
+			"@container":"@set"
+		},
+		"inDataset":{
+			"@type":"@id",
+			"@id":"http://www.w3.org/2000/01/rdf-schema#inDataset",
+			"label":"Gehört zu Datenset",
+			"@container":"@set"
+		},
+		"subject":{
+			"@type":"@id",
+			"icon":"fa fa-tag",
+			"@id":"http://purl.org/dc/terms/subject",
+			"label":"Schlagwort",
+			"@container":"@set"
+		},
+		"titleKeyword":{
+			"@id":"http://purl.org/lobid/lv#titleKeyword",
+			"label":"Titelschlagwort",
+			"@container":"@set"
+		},
+		"language":{
+			"@type":"@id",
+			"@id":"http://purl.org/dc/terms/language",
+			"label":"Sprache",
+			"@container":"@set"
+		},
+		"source":{
+			"@id":"http://purl.org/dc/terms/source",
+			"label":"Quelle",
+			"@container":"@set"
+		},
+		"shortTitle":{
+			"@id":"http://purl.org/ontology/bibo/shortTitle",
+			"label":"Kurztitel",
+			"@container":"@set"
+		},
+		"subjectChain":{
+			"@id":"http://purl.org/lobid/lv#subjectChain",
+			"label":"Schlagwortkette",
+			"@container":"@set"
+		},
+		"frequency":{
+			"@id":"http://rdvocab.info/Elements/frequency",
+			"label":"Erscheinungsweise",
+			"@container":"@set"
+		},
+		"preferredNameForTheSubjectHeading":{
+			"@id":"http://d-nb.info/standards/elementset/gnd#preferredNameForTheSubjectHeading",
+			"label":"Schlagwort",
+			"@container":"@set"
+		},
+		"contributingCorporateBodyLabel":{
+			"@id":"http://purl.org/lobid/lv#nameOfContributingCorporateBody",
+			"label":"Körperschaftsname",
+			"@container":"@set"
+		},
+		"containedIn":{
+			"@type":"@id",
+			"@id":"http://purl.org/lobid/lv#containedIn",
+			"label":"Enthalten in",
+			"@container":"@set"
+		},
+		"isPrimaryTopicOf":{
+			"@type":"@id",
+			"@id":"http://xmlns.com/foaf/0.1/isPrimaryTopicOf",
+			"label":"Weitere Informationen",
+			"@container":"@set"
+		},
+		"contributorLabel":{
+			"@id":"http://purl.org/lobid/lv#contributorLabel",
+			"label":"Mitwirkende",
+			"@container":"@set"
+		},
+		"publicationStatement":{
+			"@id":"http://rdvocab.info/Elements/publicationStatement",
+			"label":"Erscheinungsort und -jahr",
+			"@container":"@set"
+		},
+		"numbering":{
+			"@id":"http://purl.org/lobid/lv#numbering",
+			"label":"Nummer",
+			"@container":"@set"
+		},
+		"subjectOrder":{
+			"@id":"http://purl.org/lobid/lv#subjectOrder",
+			"label":"subjectOrdered",
+			"@container":"@list"
+		},
+		"dateCreated":{
+			"@id":"http://purl.org/dc/terms/created",
+			"label":"Erstellt am",
+			"@container":"@set"
+		},
+		"statementOfResponsibility":{
+			"@id":"http://rdvocab.info/Elements/statementOfResponsibility",
+			"label":"Verantwortlich",
+			"@container":"@set"
+		},
+		"volume":{
+			"@type":"@id",
+			"@id":"http://purl.org/ontology/bibo/volume",
+			"label":"Band",
+			"@container":"@set"
+		},
+		"primaryTopic":{
+			"@type":"@id",
+			"@id":"http://xmlns.com/foaf/0.1/primaryTopic",
+			"label":"Beschreibt",
+			"@container":"@set"
+		},
+		"redaktor":{
+			"@type":"@id",
+			"@id":"http://id.loc.gov/vocabulary/relators/red",
+			"label":"Redaktor",
+			"@container":"@set"
+		},
+		"producer":{
+			"@type":"@id",
+			"@id":"http://id.loc.gov/vocabulary/relators/pro",
+			"label":"Produzent",
+			"@container":"@set"
+		},
+		"publisher":{
+			"@id":"http://purl.org/dc/elements/1.1/publisher",
+			"label":"Herausgeber",
+			"@container":"@set"
+		},
+		"tableOfContents":{
+			"@type":"@id",
+			"icon":"fa fa-list",
+			"@id":"http://purl.org/dc/terms/tableOfContents",
+			"label":"Inhaltsverzeichnis",
+			"@container":"@set"
+		},
+		"dedicatee":{
+			"@type":"@id",
+			"@id":"http://id.loc.gov/vocabulary/relators/dte",
+			"label":"Gewidmet",
+			"@container":"@set"
+		},
+		"honoree":{
+			"@type":"@id",
+			"@id":"http://id.loc.gov/vocabulary/relators/hnr",
+			"label":"Gefeierte Person",
+			"@container":"@set"
+		},
+		"oclcnum":{
+			"@id":"http://purl.org/ontology/bibo/oclcnum",
+			"label":"Oclc",
+			"@container":"@set"
+		},
+		"multiVolumeWork":{
+			"@type":"@id",
+			"@id":"http://purl.org/lobid/lv#multiVolumeWork",
+			"label":"Mehrbändiges Werk",
+			"@container":"@set"
+		},
+		"note":{
+			"@id":"http://www.w3.org/2004/02/skos/core#note",
+			"label":"Hinweis",
+			"@container":"@set"
+		},
+		"preferredNameForTheCorporateBody":{
+			"@id":"http://d-nb.info/standards/elementset/gnd#preferredNameForTheCorporateBody",
+			"label":"Bevorzugter Körperschaftsname",
+			"@container":"@set"
+		},
+		"isSupplementTo":{
+			"@id":"http://rdaregistry.info/Elements/u/P60259",
+			"label":"Beilage zu",
+			"@container":"@set"
+		},
+		"hasVersion":{
+			"@type":"@id",
+			"@id":"http://purl.org/dc/terms/hasVersion",
+			"label":"Vgl.",
+			"@container":"@set"
+		},
+		"isbn":{
+			"@id":"http://purl.org/ontology/bibo/isbn",
+			"label":"Isbn",
+			"@container":"@set"
+		},
+		"xsd":{
+			"@id":"http://www.w3.org/2001/XMLSchema#",
+			"label":"XML Schema",
+			"@container":"@set"
+		},
+		"description":{
+			"@id":"http://purl.org/dc/terms/description",
+			"label":"Beschreibung",
+			"@container":"@set"
+		},
+		"edition":{
+			"@id":"http://purl.org/ontology/bibo/edition",
+			"label":"Auflage",
+			"@container":"@set"
+		},
+		"medium":{
+			"@type":"@id",
+			"@id":"http://purl.org/dc/terms/medium",
+			"label":"Träger",
+			"@container":"@set"
+		},
+		"title":{
+			"@id":"http://purl.org/dc/terms/title",
+			"label":"Titel",
+			"@container":"@set"
+		},
+		"collector":{
+			"@type":"@id",
+			"@id":"http://id.loc.gov/vocabulary/relators/col",
+			"label":"Sammler/in",
+			"@container":"@set"
+		},
+		"seeAlso":{
+			"@type":"@id",
+			"@id":"http://www.w3.org/2000/01/rdf-schema#seeAlso",
+			"label":"Weitere Informationen",
+			"@container":"@set"
+		},
+		"contributor":{
+			"@type":"@id",
+			"@id":"http://purl.org/dc/terms/contributor",
+			"label":"Mitwirkende",
+			"@container":"@set"
+		},
+		"photographer":{
+			"@type":"@id",
+			"@id":"http://id.loc.gov/vocabulary/relators/pht",
+			"label":"Fotografie",
+			"@container":"@set"
+		},
+		"subjectLabel":{
+			"@id":"http://purl.org/lobid/lv#subjectLabel",
+			"label":"Schlagwort",
+			"@container":"@set"
+		},
+		"subjectName":{
+			"@id":"http://purl.org/dc/elements/1.1/subject",
+			"label":"Schlagwort",
+			"@container":"@set"
+		},
+		"screenwriter":{
+			"@type":"@id",
+			"@id":"http://id.loc.gov/vocabulary/relators/aus",
+			"label":"Drehbuch",
+			"@container":"@set"
+		},
+		"interviewer":{
+			"@type":"@id",
+			"@id":"http://id.loc.gov/vocabulary/relators/ivr",
+			"label":"Interviewer/in",
+			"@container":"@set"
+		},
+		"coverage":{
+			"@id":"http://purl.org/dc/elements/1.1/coverage",
+			"label":"Raumsystematik",
+			"@container":"@set"
+		},
+		"owner":{
+			"@type":"@id",
+			"@id":"http://purl.org/vocab/frbr/core#owner",
+			"label":"Besitz",
+			"@container":"@set"
+		},
+		"preferredNameForTheWork":{
+			"@id":"http://d-nb.info/standards/elementset/gnd#preferredNameForTheWork",
+			"label":"Werkname",
+			"@container":"@set"
+		},
+		"contributor_":{
+			"@type":"@id",
+			"@id":"http://id.loc.gov/vocabulary/relators/ctb",
+			"label":"Mitwirkende",
+			"@container":"@set"
+		},
+		"prefLabel":{
+			"@id":"http://www.w3.org/2004/02/skos/core#prefLabel",
+			"label":"Etikett",
+			"@container":"@set"
+		},
+		"webPageArchived":{
+			"@type":"@id",
+			"@id":"http://purl.org/lobid/lv#webPageArchived",
+			"label":"Archivierte Webseite",
+			"@container":"@set"
+		},
+		"dateModified":{
+			"@id":"http://purl.org/dc/terms/modified",
+			"label":"Zuletzt bearbeitet",
+			"@container":"@set"
+		},
+		"nwbibsubject":{
+			"@type":"@id",
+			"@id":"http://purl.org/lobid/lv#nwbibsubject",
+			"label":"Sachsystematik",
+			"@container":"@set"
+		},
+		"interviewee":{
+			"@type":"@id",
+			"@id":"http://id.loc.gov/vocabulary/relators/ive",
+			"label":"Interviewte/r",
+			"@container":"@set"
+		},
+		"isDescribedBy":{
+			"@type":"@id",
+			"@id":"http://www.openarchives.org/ore/terms/isDescribedBy",
+			"label":"Beschrieben durch",
+			"@container":"@set"
+		},
+		"collectedBy":{
+			"@type":"@id",
+			"@id":"http://purl.org/ontology/holding#collectedBy",
+			"label":"Gesammelt von",
+			"@container":"@set"
+		},
+		"preferredNameForTheFamily":{
+			"@id":"http://d-nb.info/standards/elementset/gnd#preferredNameForTheFamily",
+			"label":"Familienname",
+			"@container":"@set"
+		},
+		"illustrator":{
+			"@type":"@id",
+			"@id":"http://id.loc.gov/vocabulary/relators/ill",
+			"label":"Illustration",
+			"@container":"@set"
+		},
+		"sameAs":{
+			"@type":"@id",
+			"@id":"http://www.w3.org/2002/07/owl#sameAs",
+			"label":"Identisch zu",
+			"@container":"@set"
+		}
+		
+	},
+  "@id" : "http://lobid.org/resource/HT012895751",
+  "contributorList" : [ "http://d-nb.info/gnd/2037247-4" ],
+  "creator" : [ {
+    "@id" : "http://d-nb.info/gnd/2037247-4",
+    "preferredName" : "Main-Kinzig-Kreis"
+  } ],
+  "describedby" : [ {
+    "@id" : "http://lobid.org/resource/HT012895751/about",
+    "dateCreated" : "20010111",
+    "dateModified" : "20010312"
+  } ],
+  "exemplar" : [ {
+    "@id" : "http://lobid.org/item/HT012895751:DE-929:C2001A%2F13",
+    "callNumber" : "C2001A/13",
+    "describedby" : [ {
+      "@id" : "http://lobid.org/item/HT012895751:DE-929:C2001A%2F13/about"
+    } ],
+    "owner" : [ {
+      "@id" : "http://lobid.org/organisation/DE-929"
+    } ],
+    "type" : [ {
+      "@id" : "http://purl.org/vocab/frbr/core#Item"
+    } ]
+  } ],
+  "extent" : [ "76 S. : zahlr. Ill." ],
+  "hbzId" : [ "HT012895751" ],
+  "isPrimaryTopicOf" : [ {
+    "@id" : "http://193.30.112.134/F/?func=find-c&ccl_term=IDN%3DHT012895751"
+  } ],
+  "issued" : [ "2000" ],
+  "language" : [ {
+    "@id" : "http://id.loc.gov/vocabulary/iso639-2/deu"
+  } ],
+  "medium" : [ {
+    "@id" : "http://rdvocab.info/termList/RDAproductionMethod/1010"
+  } ],
+  "otherTitleInformation" : [ "Informationen für Bürger, Neubürger & Gäste" ],
+  "placeOfPublication" : [ "Bad Kreuznach" ],
+  "publicationStatement" : [ "Bad Kreuznach; FORM-Medien-Verl.-Ges.; 2000" ],
+  "publisher" : [ "FORM-Medien-Verl.-Ges." ],
+  "sameAs" : [ {
+    "@id" : "http://hub.culturegraph.org/resource/HBZ-HT012895751"
+  } ],
+  "subject" : [ {
+    "@id" : "http://d-nb.info/gnd/4037117-7",
+    "preferredName" : "Main-Kinzig-Kreis",
+    "preferredNameForThePlaceOrGeographicName" : "Main-Kinzig-Kreis"
+  }, {
+    "@id" : "http://d-nb.info/gnd/4127794-6",
+    "preferredName" : "Heimatkunde",
+    "preferredNameForTheSubjectHeading" : "Heimatkunde"
+  } ],
+  "subjectChain" : [ "Main-Kinzig-Kreis | Heimatkunde" ],
+  "subjectLabel" : [ "Heimatgeschichte", "Heimatforschung" ],
+  "subjectOrder" : [ "http://d-nb.info/gnd/4037117-7, http://d-nb.info/gnd/4127794-6" ],
+  "title" : [ "Mainz-Kinzig-Kreis" ],
+  "type" : [ {
+    "@id" : "http://purl.org/dc/terms/BibliographicResource"
+  }, {
+    "@id" : "http://purl.org/ontology/bibo/Book"
+  } ]
+}
