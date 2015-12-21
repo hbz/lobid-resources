@@ -31,13 +31,38 @@ import de.hbz.lobid.helper.RdfUtils;
  *
  */
 public class TestJsonToRdfConversion {
-	private static final String BASE = "src/test/resources/";
-	private static final String REVERSE_IN = "output/json/";
-	private static final String REVERSE_OUT = "reverseTest/output/nt/";
-	private static final String TEST_IN = "input/nt/";
+
 	final static Logger logger =
 			LoggerFactory.getLogger(TestJsonToRdfConversion.class);
+
+	/**
+	 * if true, the generated n-triples will be printed to BASE+REVERSE_OUT
+	 */
 	private static final boolean PRINT = false;
+	/**
+	 * if true all comparisons will be executed. No assertion will fail.
+	 */
+	private boolean DEBUG_RUN = false;
+	/**
+	 * The relative location of test resources. Needed to access test resources
+	 * via normal Filesystem operations
+	 */
+	private static final String BASE = "src/test/resources/";
+	/**
+	 * A location relative to BASE. To be used to access resources via class
+	 * loader.
+	 */
+	private static final String REVERSE_IN = "output/json/";
+	/**
+	 * A location relative to BASE. To be used to access resources via class
+	 * loader.
+	 */
+	private static final String REVERSE_OUT = "reverseTest/output/nt/";
+	/**
+	 * A location relative to BASE. To be used to access resources via class
+	 * loader.
+	 */
+	private static final String TEST_IN = "input/nt/";
 
 	@SuppressWarnings({ "javadoc" })
 	@Test
@@ -55,12 +80,17 @@ public class TestJsonToRdfConversion {
 	private void test(Path path) {
 		try {
 			String jsonFilename = getRelativePath(BASE + REVERSE_IN, path);
-			String rdfFilename = getRelativePath(BASE + REVERSE_IN, path);
-			rdfFilename = rdfFilename.replaceFirst("json$", "nt");
+			String rdfFilename = getRdfFileName(path);
 			compare(jsonFilename, rdfFilename);
 		} catch (Exception e) {
 			logger.error("", e);
 		}
+	}
+
+	private static String getRdfFileName(Path path) {
+		String rdfFilename = getRelativePath(BASE + REVERSE_IN, path);
+		rdfFilename = rdfFilename.replaceFirst("json$", "nt");
+		return rdfFilename;
 	}
 
 	private static String getRelativePath(String relpath, Path path) {
@@ -76,7 +106,9 @@ public class TestJsonToRdfConversion {
 				writeToFileIfNotExists(actualRdfString, REVERSE_OUT + rdfFilename);
 			}
 			boolean stringsAreEqual = rdfCompare(actualRdfString, expectedRdfString);
-			org.junit.Assert.assertTrue(stringsAreEqual);
+			if (!DEBUG_RUN) {
+				org.junit.Assert.assertTrue(stringsAreEqual);
+			}
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -132,7 +164,6 @@ public class TestJsonToRdfConversion {
 				logger.error("");
 			}
 		}
-
 	}
 
 	private static String removeBlankNodes(String str) {
