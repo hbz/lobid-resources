@@ -57,6 +57,12 @@ public class Etikett {
 	String referenceType = "class";
 
 	/**
+	 * Describes if the given is expected to occur as a \@set or a \@list. Can be
+	 * null;
+	 */
+	public String container = null;
+
+	/**
 	 * The jaxb needs this
 	 */
 	public Etikett() {
