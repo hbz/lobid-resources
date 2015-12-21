@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.tuple.Pair;
@@ -29,6 +30,7 @@ import play.libs.ws.WS;
 import play.libs.ws.WSRequestHolder;
 import play.libs.ws.WSResponse;
 import play.mvc.Http;
+import views.TableRow;
 
 /**
  * Access Lobid title data.
@@ -227,21 +229,26 @@ public class Lobid {
 		if (cachedResult != null) {
 			return cachedResult;
 		}
-		WSRequestHolder requestHolder = WS.url("http://api.lobid.org/subject")
-				.setHeader("Accept", "application/json").setQueryParameter("id", uri)
-				.setQueryParameter("format", "full");
+		WSRequestHolder requestHolder = WS.url("http://lobid.org/resource")
+				.setHeader("Accept", "application/json")
+				.setQueryParameter("subject", uri).setQueryParameter("format", "full")
+				.setQueryParameter("size", "1");
 		return requestHolder.get().map((WSResponse response) -> {
-			JsonNode value = response.asJson().findValue("preferredName");
-			String label = "";
-			if (value != null) {
-				label = shorten(value.asText());
-			} else {
-				label = uri.substring(uri.lastIndexOf('/') + 1);
-			}
-			label = HtmlEscapers.htmlEscaper().escape(label);
+			JsonNode value = response.asJson().get(1);
+			String label = TableRow.labelForId(uri, value,
+					Optional.of(Arrays.asList( // @formatter:off
+							"preferredName",
+					    "preferredNameForTheWork",
+					    "preferredNameForTheFamily",
+					    "preferredNameForThePerson",
+					    "preferredNameForTheCorporateBody",
+					    "preferredNameForTheSubjectHeading",
+					    "preferredNameForTheConferenceOrEvent",
+					    "preferredNameForThePlaceOrGeographicName"))); // @formatter:on
+			label = HtmlEscapers.htmlEscaper().escape(shorten(label));
 			Cache.set(cacheKey, label);
 			return label;
-		}).get(10000);
+		}).get(50000);
 	}
 
 	private static String nwBibLabel(String uri) {
@@ -262,7 +269,7 @@ public class Lobid {
 	}
 
 	private static String shorten(String label) {
-		int limit = 45;
+		int limit = 40;
 		if (label.length() > limit)
 			return label.substring(0, limit) + "...";
 		return label;
