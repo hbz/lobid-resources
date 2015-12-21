@@ -109,8 +109,7 @@ public class JsonConverter {
 							((BNode) s.getObject()).getID());
 				}
 			} else {
-				if (!mainSubjectOfTheResource.equals(s.getObject().stringValue()))
-					addObjectToJsonResult(jsonResult, key, s.getObject().stringValue());
+				addObjectToJsonResult(jsonResult, key, s.getObject().stringValue());
 			}
 		}
 	}
@@ -207,7 +206,11 @@ public class JsonConverter {
 			if (s.getObject() instanceof org.openrdf.model.Literal) {
 				newObject.put(e.name, s.getObject().stringValue());
 			} else {
-				createObject(newObject, s, e);
+				if (!mainSubjectOfTheResource.equals(s.getObject().stringValue())) {
+					createObject(newObject, s, e);
+				} else {
+					newObject.put(e.name, s.getObject().stringValue());
+				}
 			}
 		}
 	}
