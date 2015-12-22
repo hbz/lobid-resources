@@ -42,7 +42,7 @@ public class TestJsonToRdfConversion {
 	/**
 	 * if true all comparisons will be executed. No assertion will fail.
 	 */
-	private boolean DEBUG_RUN = true;
+	private boolean DEBUG_RUN = false;
 	/**
 	 * The relative location of test resources. Needed to access test resources
 	 * via normal Filesystem operations
@@ -145,14 +145,17 @@ public class TestJsonToRdfConversion {
 		String expectedWithoutBlankNodes = removeBlankNodes(expected);
 		String[] actualSorted = sorted(actualWithoutBlankNodes);
 		String[] expectedSorted = sorted(expectedWithoutBlankNodes);
-		printErrors(actualSorted, expectedSorted);
-		return actualSorted.equals(expectedSorted);
+		return findErrors(actualSorted, expectedSorted);
 	}
 
-	private static void printErrors(String[] actualSorted,
+	private static boolean findErrors(String[] actualSorted,
 			String[] expectedSorted) {
+		boolean result = true;
 		if (actualSorted.length != expectedSorted.length) {
 			logger.error("Expected size of " + expectedSorted.length
+					+ " is different to actual size " + actualSorted.length);
+		} else {
+			logger.info("Expected size of " + expectedSorted.length
 					+ " is different to actual size " + actualSorted.length);
 		}
 		for (int i = 0; i < actualSorted.length; i++) {
@@ -167,9 +170,11 @@ public class TestJsonToRdfConversion {
 				logger.error(actualSorted[i]);
 				logger.error(expectedSorted[i]);
 				logger.error("");
+				result = false;
 				break;
 			}
 		}
+		return result;
 	}
 
 	private static String removeBlankNodes(String str) {
