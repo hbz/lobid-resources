@@ -42,7 +42,7 @@ public class TestJsonToRdfConversion {
 	/**
 	 * if true all comparisons will be executed. No assertion will fail.
 	 */
-	private boolean DEBUG_RUN = false;
+	private boolean DEBUG_RUN = true;
 	/**
 	 * The relative location of test resources. Needed to access test resources
 	 * via normal Filesystem operations
@@ -64,6 +64,8 @@ public class TestJsonToRdfConversion {
 	 */
 	private static final String TEST_IN = "input/nt/";
 
+	boolean stringsAreEqual = true;
+
 	@SuppressWarnings({ "javadoc" })
 	@Test
 	public void test_all() {
@@ -72,6 +74,7 @@ public class TestJsonToRdfConversion {
 					.forEach(path -> {
 						test(path);
 					});
+			org.junit.Assert.assertTrue(stringsAreEqual);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -105,9 +108,11 @@ public class TestJsonToRdfConversion {
 			if (PRINT) {
 				writeToFileIfNotExists(actualRdfString, REVERSE_OUT + rdfFilename);
 			}
-			boolean stringsAreEqual = rdfCompare(actualRdfString, expectedRdfString);
+			boolean areEq = rdfCompare(actualRdfString, expectedRdfString);
+			if (!areEq)
+				this.stringsAreEqual = false;
 			if (!DEBUG_RUN) {
-				org.junit.Assert.assertTrue(stringsAreEqual);
+				org.junit.Assert.assertTrue(areEq);
 			}
 		} catch (Exception e) {
 			throw new RuntimeException(e);
@@ -162,6 +167,7 @@ public class TestJsonToRdfConversion {
 				logger.error(actualSorted[i]);
 				logger.error(expectedSorted[i]);
 				logger.error("");
+				break;
 			}
 		}
 	}
