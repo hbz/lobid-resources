@@ -49,7 +49,7 @@ public enum TableRow {
 			}
 			String search = String.format("%s/search?%s=%s",
 					controllers.nwbib.routes.Application.index(), param, term);
-			String label = createLabel(doc, value, labels);
+			String label = labelForId(value, doc, labels);
 			String result = labels.get().contains("numbering") ? label
 					: String.format(
 							"<a title=\"Nach weiteren Titeln suchen\" href=\"%s\">%s</a>",
@@ -61,35 +61,6 @@ public enum TableRow {
 						value);
 			}
 			return result;
-		}
-
-		private String createLabel(JsonNode doc, String value,
-				Optional<List<String>> labels) {
-			String label = "";
-			if (value.startsWith("http://purl.org/lobid/nwbib")) {
-				label = String.format("%s (%s)", //
-						Lobid.facetLabel(Arrays.asList(value), null, null),
-						Classification.shortId(value));
-			} else {
-				label = labelFor(doc, value, labels);
-			}
-			return label;
-		}
-
-		private String labelFor(JsonNode doc, String value,
-				Optional<List<String>> keys) {
-			if (!keys.isPresent() || keys.get().isEmpty()) {
-				return value;
-			}
-			List<String> result = new ArrayList<>();
-			for (JsonNode node : doc.get("@graph")) {
-				for (String key : keys.get()) {
-					if (node.get("@id").textValue().equals(value) && node.has(key)) {
-						result.add(node.get(key).textValue());
-					}
-				}
-			}
-			return result.isEmpty() ? value : result.get(0);
 		}
 	},
 	VALUES_MULTI {
@@ -153,6 +124,44 @@ public enum TableRow {
 		}
 
 	};
+
+	/**
+	 * @param id The ID
+	 * @param doc The full document
+	 * @param labelKeys Keys of the values to try as labels for the ID
+	 * @return A label for the ID
+	 */
+	public static String labelForId(String id, JsonNode doc,
+			Optional<List<String>> labelKeys) {
+		String label = "";
+		if (id.startsWith("http://purl.org/lobid/nwbib")) {
+			label = String.format("%s (%s)", //
+					Lobid.facetLabel(Arrays.asList(id), null, null),
+					Classification.shortId(id));
+		} else {
+			label = graphObjectLabelForId(id, doc, labelKeys);
+		}
+		return label;
+	}
+
+	private static String graphObjectLabelForId(String id, JsonNode doc,
+			Optional<List<String>> labelKeys) {
+		if (!labelKeys.isPresent() || labelKeys.get().isEmpty()) {
+			return id;
+		}
+		for (JsonNode node : doc.get("@graph")) {
+			for (String key : labelKeys.get()) {
+				if (node.get("@id").textValue().equals(id) && node.has(key)) {
+					JsonNode label = node.get(key);
+					if (label != null && label.isTextual()
+							&& !label.textValue().trim().isEmpty()) {
+						return label.textValue();
+					}
+				}
+			}
+		}
+		return id;
+	}
 
 	String[] refAndLabel(String property, String value) {
 		if (property.equals("subjectChain")) {
