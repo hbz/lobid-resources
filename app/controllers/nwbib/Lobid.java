@@ -103,13 +103,13 @@ public class Lobid {
 		return requestHolder;
 	}
 
-	static WSRequestHolder topicRequest(final String q) {
+	static WSRequestHolder topicRequest(final String q, int from, int size) {
 		WSRequestHolder requestHolder = // @formatter:off
 				WS.url(Application.CONFIG.getString("nwbib.api"))
 						.setHeader("Accept", "application/json")
 						.setQueryParameter("format", "short.subjectChain")
-						.setQueryParameter("from", "" + 0)
-						.setQueryParameter("size", "" + 100)
+						.setQueryParameter("from", "" + from)
+						.setQueryParameter("size", "" + size)
 						.setQueryParameter("subject", q)
 						.setQueryParameter("set",
 							Application.CONFIG.getString("nwbib.set"));
