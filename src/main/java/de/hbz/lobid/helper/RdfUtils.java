@@ -18,11 +18,15 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 package de.hbz.lobid.helper;
 
 import java.io.InputStream;
+import java.io.StringWriter;
 
 import org.openrdf.model.Graph;
+import org.openrdf.model.Statement;
 import org.openrdf.model.impl.TreeModel;
 import org.openrdf.rio.RDFFormat;
+import org.openrdf.rio.RDFHandlerException;
 import org.openrdf.rio.RDFParser;
+import org.openrdf.rio.RDFWriter;
 import org.openrdf.rio.Rio;
 import org.openrdf.rio.helpers.StatementCollector;
 
@@ -49,5 +53,41 @@ public class RdfUtils {
 		} catch (final Exception e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	/**
+	 * @param in a rdf input stream
+	 * @param inf the rdf format of the input stream
+	 * @param outf the output format
+	 * @param baseUrl usually the url of the resource
+	 * @return a string representation
+	 */
+	public static String readRdfToString(InputStream in, RDFFormat inf,
+			RDFFormat outf, String baseUrl) {
+		Graph myGraph = null;
+		myGraph = readRdfToGraph(in, inf, baseUrl);
+		return graphToString(myGraph, outf);
+	}
+
+	/**
+	 * Transforms a graph to a string.
+	 * 
+	 * @param myGraph a sesame rdf graph
+	 * @param outf the expected output format
+	 * @return a rdf string
+	 */
+	public static String graphToString(Graph myGraph, RDFFormat outf) {
+		StringWriter out = new StringWriter();
+		RDFWriter writer = Rio.createWriter(outf, out);
+		try {
+			writer.startRDF();
+			for (Statement st : myGraph) {
+				writer.handleStatement(st);
+			}
+			writer.endRDF();
+		} catch (RDFHandlerException e) {
+			throw new RuntimeException(e);
+		}
+		return out.getBuffer().toString();
 	}
 }

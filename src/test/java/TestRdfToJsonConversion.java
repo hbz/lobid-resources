@@ -83,9 +83,8 @@ public class TestRdfToJsonConversion {
 	@SuppressWarnings({ "javadoc" })
 	@Test
 	public void testEquality_case1() {
-		boolean result = testFiles("src/test/resources/input/nt/adrianInput.nt",
-				"src/test/resources/output/json/hbz01.es.json",
-				LOBID_RESOURCES_URI_PREFIX);
+		boolean result = testFiles("src/test/resources/adrianInput.nt",
+				"src/test/resources/hbz01.es.json", LOBID_RESOURCES_URI_PREFIX);
 		TestRdfToJsonConversion.logger
 				.info("\n Adrian Input Test - must succeed! \n");
 		org.junit.Assert.assertTrue(result);
@@ -94,8 +93,8 @@ public class TestRdfToJsonConversion {
 	@SuppressWarnings({ "javadoc" })
 	@Test
 	public void testWrongContributorOrder() {
-		boolean result = testFiles("src/test/resources/input/nt/adrianInput.nt",
-				"src/test/resources/output/json/hbz01.es.wrongContributorOrder.json",
+		boolean result = testFiles("src/test/resources/adrianInput.nt",
+				"src/test/resources/hbz01.es.wrongContributorOrder.json",
 				LOBID_RESOURCES_URI_PREFIX);
 		TestRdfToJsonConversion.logger
 				.info("\n WrongContributorOrder Test - must fail! \n");
