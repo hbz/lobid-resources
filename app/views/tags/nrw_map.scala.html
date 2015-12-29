@@ -5,6 +5,7 @@
 <script src="@controllers.routes.Assets.at("javascripts/d3.v3.min.js")"></script>
 <script src="@controllers.routes.Assets.at("javascripts/topojson.v1.min.js")"></script>
 <script src="@controllers.routes.Assets.at("javascripts/datamaps.world.min.js")"></script>
+<script src="@controllers.routes.Assets.at("javascripts/latlon-geohash.js")"></script>
 <script>
 const westfalen = [
     "05554", "05562", "05512", "05513", "05916", "05911", "05954", "05962",
@@ -38,9 +39,9 @@ var map = new Datamap({
     },
     done: function(datamap) {
         datamap.svg.selectAll('.datamaps-subunit').on('click', function(geography) {
-            window.location = "/nwbib/search?" + 
-              "location=" + encodeURIComponent(geography.properties.name) 
-              + "|" + transform(geography.geometry.coordinates[0]);
+            var label = encodeURIComponent(geography.properties.name);
+            var polygon = transform(geography.geometry.coordinates[0]);
+            window.location = "/nwbib/search?" + "location=" + label + "|" + polygon;
         });
     }
 });
@@ -52,11 +53,9 @@ function transform(coordinates) {
     for(var i = 0; i < flat.length; i++) {
         var lon = flat[i][0];
         var lat = flat[i][1];
-        /* use max two decimal digits precision to avoid too large URL: */
-        const digits = flat.length > 250 ? 1 : 2;
-        result += lat.toFixed(digits) + "," + lon.toFixed(digits) + " ";
+        result += Geohash.encode(lat, lon, 6) + '+';
     }
-    return result.trim().replace(' ', '+');
+    return result.slice(0, -1);
 }
 </script>
 </div>
