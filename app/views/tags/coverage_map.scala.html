@@ -10,6 +10,7 @@
 <script src="@controllers.routes.Assets.at("javascripts/leaflet.js")"></script>
 <script type='text/javascript' src='@controllers.routes.Assets.at("javascripts/leaflet.markercluster.js")'></script>
 <script type='text/javascript' src='@controllers.routes.Assets.at("javascripts/offset.min.js")'></script>
+<script src="@controllers.routes.Assets.at("javascripts/latlon-geohash.js")"></script>
 
 <div class="map" id="map-coverage"></div>
 
@@ -40,24 +41,21 @@ var pointsParam = '@(if(location.contains("|")) location.split("\\|")(1) else lo
 
 if (pointsParam.length > 0) {
     var options = {color: "#FF333B"}
-    var currentPolygon = new L.Polygon(hull(pointsParam), options);
-    if(pointsParam.split(/[ +]/)[0].split(",")[0].split(".")[1].length > 1) {
-        // only draw a polygon if the precision is high enough, else a circle:
-        map.addLayer(currentPolygon);
-    } else {
-        var bounds = currentPolygon.getBounds();
-        map.addLayer(new L.Circle(bounds.getCenter(), 30000, options));
-    }
-}
-
-function hull(pointsParam) {
     var points = pointsParam.split(/[ +]/);
     var hull = [points.length];
-    for (var i = 0; i < points.length; i++) {
-        var latLon = points[i].split(",");
-        hull[i] = L.latLng(latLon[0],latLon[1]);
+    if(points[0].indexOf(",") < 0){
+        for (var i = 0; i < points.length; i++) {
+            var latLon = Geohash.decode(points[i]);
+            hull[i] = L.latLng(latLon.lat,latLon.lon);
+        }
+    } else {
+        for (var i = 0; i < points.length; i++) {
+            var latLon = points[i].split(",");
+            hull[i] = L.latLng(latLon[0],latLon[1]);
+        }
     }
-    return hull;
+    var currentPolygon = new L.Polygon(hull, options);
+    map.addLayer(currentPolygon);
 }
 
 var markers = new L.MarkerClusterGroup({
