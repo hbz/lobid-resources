@@ -99,7 +99,6 @@
 }
 
 @locationLabel(loc:String)={ @defining(loc.contains(",")) { isLatLon =>
-  Titel mit Bezug zu: 
   <span class="label label-default" id="spatial-filter">
   @if(isLatLon) {@views.ReverseGeoLookup.of(loc)} else {@loc}</span>
 }}
@@ -168,15 +167,6 @@
          }
         </div>
         <div class="col-md-4">
-            <p style="margin-top:10px; margin-bottom:10px">
-            @if(!location.isEmpty){
-              @locationLabel(location.split("\\|")(0)) | 
-              <a href="@nwbib.routes.Application.search(q,person,name,subject,id,publisher,issued,medium,nwbibspatial,nwbibsubject,from,size,owner,t,sortParam,set=set,location="",word=word,corporation=corporation,raw=raw)" title="Filter entfernen"><span class="octicon octicon-x"></span></a> 
-            } else {
-              Titel mit Bezug zu Orten in ganz NRW | 
-              <a href="@nwbib.routes.Application.index" title="Landkreis auswählen"><span class="octicon octicon-globe"></span></a>
-            }
-            </p>
             <p class="lead"> Ergebnisse eingrenzen: </p>
             <h4>Erscheinungsjahr</h4>
             <div id="issued-facet-all" style="display:none">
@@ -187,24 +177,19 @@
             </div>
             <input type="text" id="issued-range" readonly value="Lade Erscheinungsjahre...">
             <div id="issued-div"> <a id="issued-link" style="display:none" href="@nwbib.routes.Application.search(q,person,name,subject,id,publisher,issued,medium,nwbibspatial,nwbibsubject,from,size,owner,t,sortParam,set=set,location=location,word=word,corporation=corporation,raw=raw)">Anwenden</a> </div>
-            <p/>
-            <div id="coverage"><h4>Ortsbezug</h4>
-            <div class="row facet"><div class="col-md-12">@coverage_map(q,person,name,subject,id,publisher,issued,medium,nwbibspatial,nwbibsubject,owner,t,sortParam,set,location,word,corporation,raw,from,size)</div></div>
-            </div>
-            <p/>
-            <div class="row facet"><div class="col-md-12">@facets("Sachgebiete", Application.NWBIB_SUBJECT_FIELD, nwbibsubject)</div></div>
             <div class="row facet"><div class="col-md-12">@facets("Regionen", Application.NWBIB_SPATIAL_FIELD, nwbibspatial)</div></div>
             <p/>
-            <p>
+            <div id="coverage"><h4>Ortsbezug <small>@if(!location.isEmpty){
+              @locationLabel(location.split("\\|")(0)) | 
+              <a href="@nwbib.routes.Application.search(q,person,name,subject,id,publisher,issued,medium,nwbibspatial,nwbibsubject,from,size,owner,t,sortParam,set=set,location="",word=word,corporation=corporation,raw=raw)" title="Filter entfernen"><span class="octicon octicon-x"></span></a> 
+            }</small></h4>
+            <div class="row facet"><div class="col-md-12">@coverage_map(q,person,name,subject,id,publisher,issued,medium,nwbibspatial,nwbibsubject,owner,t,sortParam,set,location,word,corporation,raw,from,size)</div></div>
+            </div>
+            <div class="row facet"><div class="col-md-12">@facets("Sachgebiete", Application.NWBIB_SUBJECT_FIELD, nwbibsubject)</div></div>
             <div class="row facet"><div class="col-md-12">@facets("Schlagwörter", Application.SUBJECT_FIELD, if(subject.startsWith("http")) subject else "", "dropup")</div></div>
-            <p/>
-            <p>
-            <div class="row facet"><div class="col-md-12">@facets("Publikationstypen", Application.TYPE_FIELD, t, "dropup")</div></div>
             <div class="row facet"><div class="col-md-12">@facets("Medientypen", Application.MEDIUM_FIELD, medium, "dropup")</div></div>
-            <p/>
-            <p>
+            <div class="row facet"><div class="col-md-12">@facets("Publikationstypen", Application.TYPE_FIELD, t, "dropup")</div></div>
             <div class="row facet"><div class="col-md-12">@facets("Bestand in Bibliotheken", Application.ITEM_FIELD, owner, "dropup")</div></div>
-            <p/>
          </div>
       </div>
     }
