@@ -111,8 +111,8 @@
 }
 
 @main("NWBib - Ergebnisliste") {
-    @if(Seq(q, location).forall(_.isEmpty)){
-      @tags.search_advanced("Suche aktualisieren", q, person, name, subject, nwbibspatial, nwbibsubject, id, publisher, issued, sortParam, set=set, word=word, corporation=corporation)
+    @if(Seq(person, name, subject, id, publisher, issued, word, corporation).exists(!_.isEmpty)){
+      @tags.search_advanced("Suche aktualisieren", q, person, name, subject, nwbibspatial, nwbibsubject, id, publisher, issued, sortParam, word=word, corporation=corporation)
     } else {
       @tags.search_form(q, location)
     }
