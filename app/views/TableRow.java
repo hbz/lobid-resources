@@ -36,7 +36,9 @@ public enum TableRow {
 		}
 
 		private String label(JsonNode doc, String property, String param,
-				String value, Optional<List<String>> labels) {
+				String val, Optional<List<String>> labels) {
+			String value = property.equals("subjectChain")
+					? val.replaceAll("\\([\\d,]+\\)$", "").trim() : val;
 			if (!labels.isPresent()) {
 				return refAndLabel(property, value)[0];
 			}
@@ -164,9 +166,7 @@ public enum TableRow {
 	}
 
 	String[] refAndLabel(String property, String value) {
-		if (property.equals("subjectChain")) {
-			return new String[] { value.replaceAll("\\([\\d,]+\\)$", ""), "" };
-		} else if ((property.equals("containedIn") || property.equals("hasPart")
+		if ((property.equals("containedIn") || property.equals("hasPart")
 				|| property.equals("isPartOf") || property.equals("multiVolumeWork")
 				|| property.equals("series")) && value.contains("lobid.org")) {
 			return new String[] {
