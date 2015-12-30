@@ -29,11 +29,12 @@ public enum TableRow {
 		@Override
 		public String process(JsonNode doc, String property, String param,
 				String label, List<String> values, Optional<List<String>> keys) {
-			return values.stream()
-					.filter(value -> !value.contains("http://dewey.info"))
-					.map(val -> String.format("<tr><td>%s</td><td>%s</td></tr>", label,
-							label(doc, property, param, val, keys)))
-					.collect(Collectors.joining("\n"));
+			return values.isEmpty() ? ""
+					: String.format("<tr><td>%s</td><td>%s</td></tr>", label,
+							values.stream()
+									.filter(value -> !value.contains("http://dewey.info"))
+									.map(val -> label(doc, property, param, val, keys))
+									.collect(Collectors.joining(" | ")));
 		}
 
 		private String label(JsonNode doc, String property, String param,
@@ -59,7 +60,7 @@ public enum TableRow {
 							search, label);
 			if (value.startsWith("http")) {
 				result += String.format(
-						" | <a title=\"Linked-Data-Quelle abrufen\" "
+						" <a title=\"Linked-Data-Quelle abrufen\" "
 								+ "href=\"%s\"><span class=\"glyphicon glyphicon-link\"></span></a>",
 						value);
 			}
