@@ -726,15 +726,16 @@ public class Application extends Controller {
 	}
 
 	/**
+	 * @param format The format to show the current stars in
 	 * @return A page with all resources starred by the user
 	 */
-	public static Result showStars() {
+	public static Result showStars(String format) {
 		List<String> starredIds = starredIds();
 		uncache(starredIds);
-		session("lastSearchUrl", routes.Application.showStars().toString());
+		session("lastSearchUrl", routes.Application.showStars(format).toString());
 		Cache.set(session("uuid") + "-lastSearch", starredIds.stream()
 				.map(s -> "\"" + s + "\"").collect(Collectors.toList()).toString());
-		return ok(stars.render(starredIds));
+		return ok(stars.render(starredIds, format));
 	}
 
 	/**
@@ -742,7 +743,7 @@ public class Application extends Controller {
 	 */
 	public static Result clearStars() {
 		session(STARRED, "");
-		return ok(stars.render(starredIds()));
+		return ok(stars.render(starredIds(), ""));
 	}
 
 	/**

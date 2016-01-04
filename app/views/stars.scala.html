@@ -1,6 +1,6 @@
 @* Copyright 2014 Fabian Steeg, hbz. Licensed under the GPLv2 *@
 
-@(ids: List[String])
+@(ids: List[String], f: String)
 
 @import helper._
 @import play.api.libs.ws._
@@ -28,14 +28,23 @@
         (id,i) <- ids.zipWithIndex;
         url = s"http://lobid.org/resource/$id?format=full";
         doc = Await.result(WS.url(url).get.map{response => response.json}, 10.seconds)) {
-                @tags.result_short(id,doc,i,ids)
+                @if(f=="details"){@tags.result_doc(doc)} else {@tags.result_short(id,doc,i,ids)}
         }
         </table>
         <div class="text-center" id="clear-list">
             <a style="cursor:pointer;"
                 onclick="$('#clear-list').html('Bestätigung: <a href=\'@nwbib.routes.Application.clearStars()\'>Merkliste dauerhaft löschen</a> | <a style=\'cursor:pointer\'; onclick=\'window.location.reload()\'>Abbrechen</a>')">
                 <span class="glyphicon glyphicon-remove"></span> Merkliste löschen
-            </a>
+            </a> |
+            @if(f=="details"){
+              <a href='@nwbib.routes.Application.showStars("")'>
+                <span class="glyphicon glyphicon-info-sign"></span> Kurzansicht
+              </a>
+            } else {
+              <a href='@nwbib.routes.Application.showStars("details")'>
+                <span class="glyphicon glyphicon-info-sign"></span> Detailansicht
+              </a>
+            }
         </div>
     }
     @if(flash.get("error")!=null){
