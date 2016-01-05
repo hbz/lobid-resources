@@ -732,17 +732,28 @@ public class Application extends Controller {
 	 */
 	public static Promise<Result> showStars(String format) {
 		final List<String> starredIds = starredIds();
+		String cacheKey = "starsForIds." + starredIds;
+		Object cachedJson = Cache.get(cacheKey);
+		if (cachedJson != null && cachedJson instanceof List) {
+			@SuppressWarnings("unchecked")
+			List<JsonNode> json = (List<JsonNode>) cachedJson;
+			return Promise.pure(ok(stars.render(starredIds, json, format)));
+		}
 		Stream<Promise<JsonNode>> promises = starredIds.stream()
 				.map(id -> WS
 						.url(String.format("http://lobid.org/resource/%s?format=full", id))
 						.get().map(response -> response.asJson()));
-		return Promise.sequence(promises.collect(Collectors.toList())).map(vals -> {
-			uncache(starredIds);
-			session("lastSearchUrl", routes.Application.showStars(format).toString());
-			Cache.set(session("uuid") + "-lastSearch", starredIds.stream()
-					.map(s -> "\"" + s + "\"").collect(Collectors.toList()).toString());
-			return ok(stars.render(starredIds, vals, format));
-		});
+		return Promise.sequence(promises.collect(Collectors.toList()))
+				.map((List<JsonNode> vals) -> {
+					uncache(starredIds);
+					session("lastSearchUrl",
+							routes.Application.showStars(format).toString());
+					Cache.set(session("uuid") + "-lastSearch",
+							starredIds.stream().map(s -> "\"" + s + "\"")
+									.collect(Collectors.toList()).toString());
+					Cache.set(cacheKey, vals, ONE_DAY);
+					return ok(stars.render(starredIds, vals, format));
+				});
 	}
 
 	/**
