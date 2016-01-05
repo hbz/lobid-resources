@@ -1,6 +1,6 @@
 @* Copyright 2014 Fabian Steeg, hbz. Licensed under the GPLv2 *@
 
-@(ids: List[String], f: String)
+@(ids: List[String], vals: List[com.fasterxml.jackson.databind.JsonNode], f: String)
 
 @import helper._
 @import play.api.libs.ws._
@@ -9,6 +9,7 @@
 @import scala.concurrent._
 @import scala.concurrent.duration._
 @import play.api.Play.current
+@import play.api.libs.json.Json
 
 @main("NWBib - Merkliste") {
     @if(ids.isEmpty){
@@ -24,11 +25,8 @@
           <th style="width: 5%; text-align: right"></th>
           <th style="width: 5%; text-align: right"></th>
         </tr>
-        @for(
-        (id,i) <- ids.zipWithIndex;
-        url = s"http://lobid.org/resource/$id?format=full";
-        doc = Await.result(WS.url(url).get.map{response => response.json}, 10.seconds)) {
-                @if(f=="details"){@tags.result_doc(doc)} else {@tags.result_short(id,doc,i,ids)}
+        @for((id,i) <- ids.zipWithIndex; doc = Json.parse(vals(i).toString())) {
+            @if(f=="details"){@tags.result_doc(doc)} else {@tags.result_short(id,doc,i,ids)}
         }
         </table>
         <div class="text-center" id="clear-list">
