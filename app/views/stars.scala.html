@@ -11,38 +11,40 @@
 @import play.api.Play.current
 @import play.api.libs.json.Json
 
+@entries() = {
+    @for((id,i) <- ids.zipWithIndex; doc = Json.parse(vals(i).toString())) {
+        @if(f=="details"){@tags.result_doc(doc)} else {@tags.result_short(id,doc,i,ids)}
+    }
+}
+
 @main("NWBib - Merkliste") {
     @if(ids.isEmpty){
         <div class="alert alert-info text-center">
             Keine gemerkten Titel. Sie können Titel in der Trefferliste oder der Einzeltrefferanzeige durch Klicken des Sterns hinzufügen.
         </div>
     } else {
-        <table class="table table-striped table-condensed">
-        <tr>
-          <th style="width: 5%"></th>
-          <th style="width: 60%"></th>
-          <th style="width: 25%; text-align: right"></th>
-          <th style="width: 5%; text-align: right"></th>
-          <th style="width: 5%; text-align: right"></th>
-        </tr>
-        @for((id,i) <- ids.zipWithIndex; doc = Json.parse(vals(i).toString())) {
-            @if(f=="details"){@tags.result_doc(doc)} else {@tags.result_short(id,doc,i,ids)}
+        @if(f=="details"){
+          @entries
+        } else {
+          <table class="table table-striped table-condensed">
+            <tr>
+              <th style="width: 5%"></th>
+              <th style="width: 60%"></th>
+              <th style="width: 25%; text-align: right"></th>
+              <th style="width: 5%; text-align: right"></th>
+              <th style="width: 5%; text-align: right"></th>
+            </tr>
+            @entries
+          </table>
         }
-        </table>
         <div class="text-center" id="clear-list">
             <a style="cursor:pointer;"
                 onclick="$('#clear-list').html('Bestätigung: <a href=\'@nwbib.routes.Application.clearStars()\'>Merkliste dauerhaft löschen</a> | <a style=\'cursor:pointer\'; onclick=\'window.location.reload()\'>Abbrechen</a>')">
                 <span class="glyphicon glyphicon-remove"></span> Merkliste löschen
             </a> |
-            @if(f=="details"){
-              <a href='@nwbib.routes.Application.showStars("")'>
-                <span class="glyphicon glyphicon-info-sign"></span> Kurzansicht
-              </a>
-            } else {
-              <a href='@nwbib.routes.Application.showStars("details")'>
-                <span class="glyphicon glyphicon-info-sign"></span> Detailansicht
-              </a>
-            }
+            <a href='@nwbib.routes.Application.showStars(if(f=="details"){""} else {"details"})'>
+              <span class="glyphicon glyphicon-info-sign"></span> @if(f=="details"){Kurzansicht} else {Detailansicht}
+            </a>
         </div>
     }
     @if(flash.get("error")!=null){
