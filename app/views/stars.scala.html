@@ -42,7 +42,7 @@
                 onclick="$('#clear-list').html('Bestätigung: <a href=\'@nwbib.routes.Application.clearStars()\'>Merkliste dauerhaft löschen</a> | <a style=\'cursor:pointer\'; onclick=\'window.location.reload()\'>Abbrechen</a>')">
                 <span class="glyphicon glyphicon-remove"></span> Merkliste löschen
             </a> |
-            <a href='@nwbib.routes.Application.showStars(if(f=="details"){""} else {"details"})'>
+            <a href='@nwbib.routes.Application.showStars(if(f=="details"){""} else {"details"}, ids.mkString(","))'>
               <span class="glyphicon glyphicon-info-sign"></span> @if(f=="details"){Kurzansicht} else {Detailansicht}
             </a>
         </div>
