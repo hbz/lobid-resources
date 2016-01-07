@@ -39,7 +39,7 @@ $.getJSON('@controllers.routes.Assets.at("data/nrw.geo.json")', function(json) {
 var pointsParam = '@(if(location.contains("|")) location.split("\\|")(1) else location)';
 
 if (pointsParam.length > 0) {
-    var options = {color: "#FF333B"}
+    var options = {color: "#2F994C"}
     var currentPolygon = new L.Polygon(hull(pointsParam), options);
     if(pointsParam.split(/[ +]/)[0].split(",")[0].split(".")[1].length > 1) {
         // only draw a polygon if the precision is high enough, else a circle:
