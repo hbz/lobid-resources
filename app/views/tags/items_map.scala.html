@@ -25,10 +25,11 @@
         </tr>
     </table>
     <p>
-    <div class="map" id="map-@(hitId)"></div>
+    <div class="items-map" id="map-@(hitId)"></div>
     </p>
-    <table id="table-@(hitId)" class="table table-striped table-condensed">
+    <table style="display:none;" id="table-@(hitId)" class="table table-striped table-condensed">
     </table>
+    @if(items.size > 1){<a href="#" onclick="$('#table-@(hitId)').show(); $(this).hide()">Details zum Bestand als Liste anzeigen</a>}
     <script>
     // Some alternative tiles:
     //var layer = L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png');
@@ -44,8 +45,10 @@
         center: nrw,
         zoom: 7,
         scrollWheelZoom: true,
-        attributionControl: false
+        attributionControl: false,
+        zoomControl: false
     });
+    new L.Control.Zoom({ position: 'bottomleft' }).addTo(map@(hitId));
     var markerCount@(hitId) = 0;
     var tableDetails@(hitId) = '';
     var allTableDetails@(hitId) = '';
@@ -63,8 +66,8 @@
         ownerUrl = if((json\\"url").isEmpty) owner else (json\\"url")(0).as[String];
         ownerName = if((json\\"name").isEmpty) "" else (json\\"name")(0).as[String]) {
 
-          var details = '<tr><td><b>Bibliothek:</b></td><td>'+
-            '<b>@if(!ownerName.isEmpty){<a href="@ownerUrl">@ownerName</a>}else{&lt;Keine Angabe&gt;}</b></td></tr>'
+          var details = '<tr><td><i>Bibliothek:</i></td><td>'+
+            '<i>@if(!ownerName.isEmpty){<a href="@ownerUrl">@ownerName</a>}else{&lt;Keine Angabe&gt;}</i></td></tr>'
             @defining(controllers.nwbib.Lobid.opacUrl(items(key).head)){ opacLink =>
               @if(opacLink!=null){+'<tr><td>Verfügbarkeit:</td>'+'<td><a href="@opacLink">Lokalen Katalog abfragen</a></td></tr>'};
             }

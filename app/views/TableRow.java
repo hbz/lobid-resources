@@ -3,6 +3,7 @@
 package views;
 
 import java.io.UnsupportedEncodingException;
+import java.net.URI;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -28,17 +29,20 @@ public enum TableRow {
 		@Override
 		public String process(JsonNode doc, String property, String param,
 				String label, List<String> values, Optional<List<String>> keys) {
-			return values.stream()
-					.filter(value -> !value.contains("http://dewey.info"))
-					.map(val -> String.format("<tr><td>%s</td><td>%s</td></tr>", label,
-							label(doc, property, param, val, keys)))
-					.collect(Collectors.joining("\n"));
+			return values.isEmpty() ? ""
+					: String.format("<tr><td>%s</td><td>%s</td></tr>", label,
+							values.stream()
+									.filter(value -> !value.contains("http://dewey.info"))
+									.map(val -> label(doc, property, param, val, keys))
+									.collect(Collectors.joining(" | ")));
 		}
 
 		private String label(JsonNode doc, String property, String param,
-				String value, Optional<List<String>> labels) {
+				String val, Optional<List<String>> labels) {
+			String value = property.equals("subjectChain")
+					? val.replaceAll("\\([\\d,]+\\)$", "").trim() : val;
 			if (!labels.isPresent()) {
-				return refAndLabel(property, value)[0];
+				return refAndLabel(property, value, labels)[0];
 			}
 			String term = param.equals("q") ? "\"" + value + "\"" : value;
 
@@ -56,7 +60,7 @@ public enum TableRow {
 							search, label);
 			if (value.startsWith("http")) {
 				result += String.format(
-						" | <a title=\"Linked-Data-Quelle abrufen\" "
+						" <a title=\"Linked-Data-Quelle abrufen\" "
 								+ "href=\"%s\"><span class=\"glyphicon glyphicon-link\"></span></a>",
 						value);
 			}
@@ -82,7 +86,8 @@ public enum TableRow {
 			List<String> resultValues = labelsFor(doc, value, properties);
 			for (int i = 0; i < resultValues.size(); i++) {
 				String currentValue = resultValues.get(i);
-				String[] refAndLabel = refAndLabel(properties.get(i), currentValue);
+				String[] refAndLabel =
+						refAndLabel(properties.get(i), currentValue, Optional.empty());
 				String result = properties.get(i).equals("numbering") ? currentValue
 						: String.format(
 								"<a title=\"Nach weiteren Titeln suchen\" href=\"%s\">%s</a>",
@@ -112,12 +117,13 @@ public enum TableRow {
 			return values.stream()
 					.filter(value -> !value.contains("lobid.org/resource/NWBib"))
 					.map(value -> String.format("<tr><td>%s</td><td>%s</td></tr>", label,
-							link(property, value)))
+							link(property, value, labels)))
 					.collect(Collectors.joining("\n"));
 		}
 
-		private String link(String property, String val) {
-			String[] refAndLabel = refAndLabel(property, val);
+		private String link(String property, String val,
+				Optional<List<String>> labels) {
+			String[] refAndLabel = refAndLabel(property, val, labels);
 			String href = refAndLabel[0];
 			String label = refAndLabel[1];
 			return String.format("<a title='%s' href='%s'>%s</a>", href, href, label);
@@ -163,17 +169,19 @@ public enum TableRow {
 		return id;
 	}
 
-	String[] refAndLabel(String property, String value) {
-		if (property.equals("subjectChain")) {
-			return new String[] { value.replaceAll("\\([\\d,]+\\)$", ""), "" };
-		} else if ((property.equals("containedIn") || property.equals("hasPart")
+	String[] refAndLabel(String property, String value,
+			Optional<List<String>> labels) {
+		if ((property.equals("containedIn") || property.equals("hasPart")
 				|| property.equals("isPartOf") || property.equals("multiVolumeWork")
 				|| property.equals("series")) && value.contains("lobid.org")) {
 			return new String[] {
 					value.replace("lobid.org/resource/", "lobid.org/nwbib/"),
 					Lobid.resourceLabel(value) };
 		}
-		return new String[] { value, value };
+		String label =
+				labels.isPresent() && labels.get().size() > 0 ? labels.get().get(0)
+						: value.startsWith("http") ? URI.create(value).getHost() : value;
+		return new String[] { value, label };
 	}
 
 	public abstract String process(JsonNode doc, String property, String param,

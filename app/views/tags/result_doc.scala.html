@@ -98,20 +98,16 @@
    @subordinated("@graph.http://purl.org/lobid/lv#series.@id", id, "Serienbände", ("zugehöriger Serienband", "zugehörige Serienbände"))
    @subordinated("@graph.http://purl.org/lobid/lv#containedIn.@id", id, "Enthält", ("Beitrag", "Beiträge"))
   }
-}
 
-@table(){
-  @result_field("Raumsystematik", "coverage", doc, TableRow.VALUES, valueLabel = Option(Seq()), param="nwbibspatial")
+  @result_field("Ortsbezug", "coverage", doc, TableRow.VALUES, valueLabel = Option(Seq()), param="nwbibspatial")
   @result_field("Raumsystematik", "nwbibspatial", doc, TableRow.VALUES, valueLabel = Option(Seq()), param="nwbibspatial")
   @result_field("Sachsystematik", "nwbibsubject", doc, TableRow.VALUES, valueLabel = Option(Seq()), param="nwbibsubject")
-  @result_field("Schlagwort", "subject", doc, TableRow.VALUES, valueLabel = gndEntities, param="subject")
-  @result_field("Schlagwortfolge", "subjectChain", doc, TableRow.VALUES)
-}
+  @result_field("Schlagwörter", "subject", doc, TableRow.VALUES, valueLabel = gndEntities, param="subject")
+  @result_field("Schlagwortfolge", "subjectChain", doc, TableRow.VALUES, valueLabel = Option(Seq()))
 
-@table(){
   @result_field("Inhaltsangabe", "description", doc, TableRow.LINKS)
   @result_field("Inhaltsverzeichnis", "tableOfContents", doc, TableRow.LINKS)
-  @result_field("Weitere Informationen", "isPrimaryTopicOf", doc, TableRow.LINKS)
+  @result_field("Weitere Informationen", "isPrimaryTopicOf", doc, TableRow.LINKS, valueLabel = Option(Seq("hbz-Verbundkatalog")))
 }
 
 @schema_org(doc)
