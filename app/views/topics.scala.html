@@ -1,6 +1,6 @@
 @* Copyright 2014 Fabian Steeg, hbz. Licensed under the GPLv2 *@
 
-@(q: String, result: String)
+@(q: String, topics: List[String])
 
 @import helper._
 @import play.api.libs.json.Json
@@ -14,21 +14,15 @@
         <span class="glyphicon glyphicon-search"></span></button></span>
      </div>
     }
-    @if(!result.isEmpty) {
-     @defining(Json.parse(result).asOpt[Seq[JsValue]].getOrElse(Seq()).drop(1).map(_.as[String].replaceAll("\\([\\d,]+\\)$",""))) { hits =>
-      <ul id="root" style="display:block;">
-         @for(doc <- hits; if q.split("""[\s\-]""").forall((s:String)=>doc.toLowerCase.contains(s.toLowerCase))) {
-            <li class="treeItem"><a href="@nwbib.routes.Application.search(q="\""+doc+"\"")">@doc</a></li>
-         }
-      </ul>
-      @if(hits.isEmpty && !q.isEmpty) {
-        <p>
-          <div class="alert alert-info text-center">
-            Keine Themen gefunden für Anfrage: <code>@q</code>
-          </div>
-        </p>
-      }
-     }
-     <link rel="stylesheet" href="@controllers.routes.Assets.at("stylesheets/FileTreeView.css")" />
-   }
+    @if(!q.isEmpty){
+    <p>
+      <b>@if(topics.isEmpty) {Keine Themen gefunden für Anfrage: <code>@q</code>} else {@topics.size Themen gefunden:}</b>
+    </p>
+    }
+    <ul id="root" style="display:block;">
+       @for(topic <- topics) {
+          <li class="treeItem"><a href="@nwbib.routes.Application.search(q="\""+topic+"\"")">@topic</a></li>
+       }
+    </ul>
+    <link rel="stylesheet" href="@controllers.routes.Assets.at("stylesheets/FileTreeView.css")" />
 }
