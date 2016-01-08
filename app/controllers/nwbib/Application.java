@@ -41,6 +41,7 @@ import play.cache.Cached;
 import play.data.Form;
 import play.libs.F.Promise;
 import play.libs.Json;
+import play.libs.ws.WS;
 import play.libs.ws.WSRequestHolder;
 import play.libs.ws.WSResponse;
 import play.mvc.Controller;
@@ -726,15 +727,40 @@ public class Application extends Controller {
 	}
 
 	/**
+	 * @param format The format to show the current stars in
+	 * @param ids Comma-separated IDs to show, of empty string
 	 * @return A page with all resources starred by the user
 	 */
-	public static Result showStars() {
-		List<String> starredIds = starredIds();
-		uncache(starredIds);
-		session("lastSearchUrl", routes.Application.showStars().toString());
-		Cache.set(session("uuid") + "-lastSearch", starredIds.stream()
-				.map(s -> "\"" + s + "\"").collect(Collectors.toList()).toString());
-		return ok(stars.render(starredIds));
+	public static Promise<Result> showStars(String format, String ids) {
+		final List<String> starred = starredIds();
+		if (ids.isEmpty() && !starred.isEmpty()) {
+			return Promise.pure(redirect(routes.Application.showStars(format,
+					starred.stream().collect(Collectors.joining(",")))));
+		}
+		final List<String> starredIds = starred.isEmpty() && ids.trim().isEmpty()
+				? starred : Arrays.asList(ids.split(","));
+		String cacheKey = "starsForIds." + starredIds;
+		Object cachedJson = Cache.get(cacheKey);
+		if (cachedJson != null && cachedJson instanceof List) {
+			@SuppressWarnings("unchecked")
+			List<JsonNode> json = (List<JsonNode>) cachedJson;
+			return Promise.pure(ok(stars.render(starredIds, json, format)));
+		}
+		Stream<Promise<JsonNode>> promises = starredIds.stream()
+				.map(id -> WS
+						.url(String.format("http://lobid.org/resource/%s?format=full", id))
+						.get().map(response -> response.asJson()));
+		return Promise.sequence(promises.collect(Collectors.toList()))
+				.map((List<JsonNode> vals) -> {
+					uncache(starredIds);
+					session("lastSearchUrl",
+							routes.Application.showStars(format, ids).toString());
+					Cache.set(session("uuid") + "-lastSearch",
+							starredIds.stream().map(s -> "\"" + s + "\"")
+									.collect(Collectors.toList()).toString());
+					Cache.set(cacheKey, vals, ONE_DAY);
+					return ok(stars.render(starredIds, vals, format));
+				});
 	}
 
 	/**
@@ -742,7 +768,7 @@ public class Application extends Controller {
 	 */
 	public static Result clearStars() {
 		session(STARRED, "");
-		return ok(stars.render(starredIds()));
+		return ok(stars.render(starredIds(), Collections.emptyList(), ""));
 	}
 
 	/**
