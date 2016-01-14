@@ -100,10 +100,12 @@ public enum TableRow {
 		private List<String> labelsFor(JsonNode doc, String value,
 				List<String> keys) {
 			List<String> result = new ArrayList<>();
-			for (JsonNode node : doc.findValues("@graph").get(0)) {
-				for (String key : keys) {
-					if (node.get("@id").textValue().equals(value) && node.has(key)) {
-						result.add(node.get(key).textValue());
+			if (doc != null) {
+				for (JsonNode node : doc.findValues("@graph").get(0)) {
+					for (String key : keys) {
+						if (node.get("@id").textValue().equals(value) && node.has(key)) {
+							result.add(node.get(key).textValue());
+						}
 					}
 				}
 			}
@@ -152,7 +154,7 @@ public enum TableRow {
 
 	private static String graphObjectLabelForId(String id, JsonNode doc,
 			Optional<List<String>> labelKeys) {
-		if (!labelKeys.isPresent() || labelKeys.get().isEmpty()) {
+		if (!labelKeys.isPresent() || labelKeys.get().isEmpty() || doc == null) {
 			return id;
 		}
 		for (JsonNode node : doc.findValues("@graph").get(0)) {
