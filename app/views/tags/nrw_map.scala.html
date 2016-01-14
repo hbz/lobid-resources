@@ -7,11 +7,15 @@
 <script src="@controllers.routes.Assets.at("javascripts/datamaps.world.min.js")"></script>
 <script src="@controllers.routes.Assets.at("javascripts/latlon-geohash.js")"></script>
 <script>
-const westfalen = [
+var westfalen = [
     "05554", "05562", "05512", "05513", "05916", "05911", "05954", "05962",
     "05966", "05970", "05566", "05558", "05515", "05978", "05913", "05914",
     "05958", "05974", "05570", "05774", "05915", "05754", "05711", "05758",
     "05770", "05766", "05762"];
+var data = {};
+for(var i = 0; i < westfalen.length; i++) {
+    data[westfalen[i]] = {"fillKey" : "westfalen"};
+}
 var map = new Datamap({
     element: document.getElementById('map'),
     geographyConfig: {
@@ -19,15 +23,17 @@ var map = new Datamap({
         borderWidth: 1,
         borderColor: '#BBBBBB',
         highlightFillColor: function(value) {
-            const inWestfalen = westfalen.indexOf(value.id) != -1;
-            return inWestfalen ? '#EE1921' : '#00A34C';
+            var inWestfalen = data[value.id];
+            return inWestfalen ? 'rgba(238, 25, 33, 1)' : 'rgba(0, 163, 76, 1)';
         },
-        highlightBorderColor: '#2F994C', // '#BB2E30', //'7B7B7B',
-        highlightBorderWidth: 0
+        highlightBorderColor: '#a6a6a6',
+        highlightBorderWidth: 1
     },
     fills: {
-        defaultFill: '#F8F8F8' //'#EBEBEB'
+        defaultFill: 'rgba(0, 163, 76, 0.0625)',
+        westfalen: 'rgba(238, 25, 33, 0.0625)'
     },
+    data : data,
     scope: 'nrw',
     setProjection: function(element) {
         var projection = d3.geo.mercator()
