@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringEscapeUtils;
+
 import com.fasterxml.jackson.databind.JsonNode;
 
 import controllers.nwbib.Classification;
@@ -135,7 +137,7 @@ public enum TableRow {
 	 * @param id The ID
 	 * @param doc The full document
 	 * @param labelKeys Keys of the values to try as labels for the ID
-	 * @return A label for the ID
+	 * @return An HTML-escaped label for the ID
 	 */
 	public static String labelForId(String id, JsonNode doc,
 			Optional<List<String>> labelKeys) {
@@ -147,7 +149,7 @@ public enum TableRow {
 		} else {
 			label = graphObjectLabelForId(id, doc, labelKeys);
 		}
-		return label;
+		return StringEscapeUtils.escapeHtml4(label);
 	}
 
 	private static String graphObjectLabelForId(String id, JsonNode doc,
