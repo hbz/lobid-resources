@@ -205,12 +205,13 @@ public class Application extends Controller {
 	}
 
 	private static List<String> filterSortUnique(String q, List<String> topics) {
-		List<String> filtered =
-				topics.stream().map(topic -> topic.replaceAll("\\([\\d,]+\\)$", ""))
-						.filter(topic -> Arrays.asList(q.split("[\\s\\-]")).stream()
-								.allMatch(queryTerm -> topic.toLowerCase()
-										.contains(queryTerm.toLowerCase())))
-						.map(v -> v.trim()).collect(Collectors.toList());
+		String umlaut = "[äüöß]|ae|ue|oe|ss";
+		List<String> filtered = topics.stream()
+				.map(topic -> topic.replaceAll("\\([\\d,]+\\)$", ""))
+				.filter(topic -> Arrays.asList(q.split("[\\s\\-]")).stream()
+						.allMatch(queryTerm -> topic.toLowerCase().replaceAll(umlaut, "")
+								.contains(queryTerm.toLowerCase().replaceAll(umlaut, ""))))
+				.map(v -> v.trim()).collect(Collectors.toList());
 		SortedSet<String> sortedUnique = new TreeSet<>(
 				(s1, s2) -> Collator.getInstance(Locale.GERMAN).compare(s1, s2));
 		sortedUnique.addAll(filtered);
