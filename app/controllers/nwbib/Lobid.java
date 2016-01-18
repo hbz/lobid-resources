@@ -4,6 +4,7 @@ package controllers.nwbib;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -15,6 +16,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -205,6 +207,12 @@ public class Lobid {
 		if (cachedResult != null) {
 			return cachedResult;
 		}
+		try {
+			URI.create(uri);
+		} catch (Exception x) {
+			x.printStackTrace();
+			return uri;
+		}
 		WSRequestHolder requestHolder =
 				WS.url(uri).setHeader("Accept", "application/json")
 						.setQueryParameter("format", format);
@@ -316,8 +324,6 @@ public class Lobid {
 			request = request.setQueryParameter("word", preprocess(q));
 		else if (!word.isEmpty())
 			request = request.setQueryParameter("word", preprocess(word));
-		if (!raw.isEmpty())
-			request = request.setQueryParameter("q", raw);
 		if (!set.isEmpty())
 			request = request.setQueryParameter("set", set);
 		else
@@ -331,6 +337,9 @@ public class Lobid {
 			request = request.setQueryParameter("owner", owner);
 		if (!field.equals(Application.NWBIB_SPATIAL_FIELD))
 			request = request.setQueryParameter("nwbibspatial", nwbibspatial);
+		if (!field.equals(Application.COVERAGE_FIELD) || (!raw.isEmpty()
+				&& !raw.contains(Lobid.escapeUri(Application.COVERAGE_FIELD))))
+			request = request.setQueryParameter("q", raw);
 		if (!field.equals(Application.NWBIB_SUBJECT_FIELD))
 			request = request.setQueryParameter("nwbibsubject", nwbibsubject);
 		if (!field.equals(Application.SUBJECT_FIELD) || !field.startsWith("http"))
@@ -425,7 +434,7 @@ public class Lobid {
 						.get(type));
 		if (details == null || details.size() < 1)
 			return type;
-		String selected = details.get(0);
+		String selected = StringEscapeUtils.escapeHtml4(details.get(0));
 		return selected.isEmpty() ? uris.get(0) : selected;
 	}
 
@@ -442,7 +451,8 @@ public class Lobid {
 				|| field.equals(Application.NWBIB_SUBJECT_FIELD))
 			return "octicon octicon-list-unordered";
 		else if ((uris.size() == 1 && isNwBibSpatial(uris.get(0)))
-				|| field.equals(Application.NWBIB_SPATIAL_FIELD))
+				|| field.equals(Application.NWBIB_SPATIAL_FIELD)
+				|| field.equals(Application.COVERAGE_FIELD))
 			return "octicon octicon-milestone";
 		else if ((uris.size() == 1 && isGnd(uris.get(0)))
 				|| field.equals(Application.SUBJECT_FIELD))

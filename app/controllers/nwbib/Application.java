@@ -83,6 +83,9 @@ public class Application extends Controller {
 	/** The internal ES field for the NWBib spatial facet. */
 	public static final String NWBIB_SPATIAL_FIELD =
 			"@graph.http://purl.org/lobid/lv#nwbibspatial.@id";
+	/** The internal ES field for the coverage facet. */
+	public static final String COVERAGE_FIELD =
+			"@graph.http://purl.org/dc/elements/1.1/coverage.@value.raw";
 	/** The internal ES field for subject locations. */
 	public static final String SUBJECT_LOCATION_FIELD =
 			"@graph.http://purl.org/lobid/lv#subjectLocation.@value";
@@ -520,9 +523,9 @@ public class Application extends Controller {
 			String t1 = p1.getLeft().get("term").asText();
 			String t2 = p2.getLeft().get("term").asText();
 			boolean t1Current = current(subject, medium, nwbibspatial, nwbibsubject,
-					owner, t, field, t1);
+					owner, t, field, t1, raw);
 			boolean t2Current = current(subject, medium, nwbibspatial, nwbibsubject,
-					owner, t, field, t2);
+					owner, t, field, t2, raw);
 			if (t1Current == t2Current) {
 				if (!field.equals(ISSUED_FIELD)) {
 					Integer c1 = p1.getLeft().get("count").asInt();
@@ -554,6 +557,8 @@ public class Application extends Controller {
 					? nwbibsubject : queryParam(nwbibsubject, term);
 			String nwbibspatialQuery = !field.equals(NWBIB_SPATIAL_FIELD) //
 					? nwbibspatial : queryParam(nwbibspatial, term);
+			String rawQuery = !field.equals(COVERAGE_FIELD) //
+					? raw : rawQueryParam(raw, term);
 			String locationQuery = !field.equals(SUBJECT_LOCATION_FIELD) //
 					? location : term;
 			String subjectQuery = !field.equals(SUBJECT_FIELD) //
@@ -562,13 +567,13 @@ public class Application extends Controller {
 					? issued : queryParam(issued, term);
 
 			boolean current = current(subject, medium, nwbibspatial, nwbibsubject,
-					owner, t, field, term);
+					owner, t, field, term, raw);
 
 			String routeUrl = routes.Application.search(q, person, name, subjectQuery,
 					id, publisher, issuedQuery, mediumQuery, nwbibspatialQuery,
 					nwbibsubjectQuery, from, size, ownerQuery, typeQuery,
 					sort(sort, nwbibspatialQuery, nwbibsubjectQuery, subjectQuery), false,
-					set, locationQuery, word, corporation, raw).url();
+					set, locationQuery, word, corporation, rawQuery).url();
 
 			String result = String.format(
 					"<li " + (current ? "class=\"active\"" : "")
@@ -593,7 +598,6 @@ public class Application extends Controller {
 					String labelKey = String.format(
 							"facets-labels.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s",
 							field, q, person, name, id, publisher, set, word, corporation,
-							raw,
 							/*
 							 * facet values, include in key only if not the current facet,
 							 * except literal subjects, which can be combined with facet:
@@ -604,6 +608,7 @@ public class Application extends Controller {
 							field.equals(MEDIUM_FIELD) ? "" : medium,
 							field.equals(NWBIB_SPATIAL_FIELD) ? "" : nwbibspatial,
 							field.equals(NWBIB_SUBJECT_FIELD) ? "" : nwbibsubject,
+							field.equals(COVERAGE_FIELD) ? "" : raw,
 							field.equals(ISSUED_FIELD) ? "" : owner,
 							field.equals(TYPE_FIELD) ? "" : t,
 							field.equals(SUBJECT_LOCATION_FIELD) ? "" : location);
@@ -638,17 +643,18 @@ public class Application extends Controller {
 
 	private static boolean current(String subject, String medium,
 			String nwbibspatial, String nwbibsubject, String owner, String t,
-			String field, String term) {
+			String field, String term, String raw) {
 		return field.equals(MEDIUM_FIELD) && contains(medium, term)
 				|| field.equals(TYPE_FIELD) && contains(t, term)
 				|| field.equals(ITEM_FIELD) && contains(owner, term)
 				|| field.equals(NWBIB_SPATIAL_FIELD) && contains(nwbibspatial, term)
+				|| field.equals(COVERAGE_FIELD) && rawContains(raw, quotedEscaped(term))
 				|| field.equals(NWBIB_SUBJECT_FIELD) && contains(nwbibsubject, term)
 				|| field.equals(SUBJECT_FIELD) && contains(subject, term);
 	}
 
-	private static boolean contains(String medium, String term) {
-		return Arrays.asList(medium.split(",")).contains(term);
+	private static boolean contains(String value, String term) {
+		return Arrays.asList(value.split(",")).contains(term);
 	}
 
 	private static String queryParam(String currentParam, String term) {
@@ -659,6 +665,30 @@ public class Application extends Controller {
 					.replaceAll(",+", ",");
 		else
 			return currentParam + "," + term;
+	}
+
+	private static String rawQueryParam(String currentParam, String term) {
+		String rawPrefix =
+				Lobid.escapeUri(COVERAGE_FIELD.replace(".raw", "")) + ":";
+		if (currentParam.isEmpty()) {
+			return rawPrefix + quotedEscaped(term);
+		} else if (rawContains(currentParam, quotedEscaped(term))) {
+			String removedTerm =
+					currentParam.replace(rawPrefix, "").replace(quotedEscaped(term), "")
+							.replaceAll("\\A\\+|\\+\\z", "").replaceAll("\\++", "+");
+			return removedTerm.trim().isEmpty() ? "" : rawPrefix + removedTerm;
+		} else
+			return currentParam + "+" + quotedEscaped(term);
+	}
+
+	private static String quotedEscaped(String term) {
+		return "\"" + Lobid.escapeUri(term) + "\"";
+	}
+
+	private static boolean rawContains(String raw, String term) {
+		String[] split = raw.split(":");
+		String terms = split[split.length - 1];
+		return Arrays.asList(terms.split("\\+")).contains(term);
 	}
 
 	private static Stream<JsonNode> preprocess(Stream<JsonNode> stream) {
