@@ -12,6 +12,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.google.common.html.HtmlEscapers;
 
 import controllers.nwbib.Classification;
 import controllers.nwbib.Lobid;
@@ -100,10 +101,12 @@ public enum TableRow {
 		private List<String> labelsFor(JsonNode doc, String value,
 				List<String> keys) {
 			List<String> result = new ArrayList<>();
-			for (JsonNode node : doc.findValues("@graph").get(0)) {
-				for (String key : keys) {
-					if (node.get("@id").textValue().equals(value) && node.has(key)) {
-						result.add(node.get(key).textValue());
+			if (doc != null) {
+				for (JsonNode node : doc.findValues("@graph").get(0)) {
+					for (String key : keys) {
+						if (node.get("@id").textValue().equals(value) && node.has(key)) {
+							result.add(node.get(key).textValue());
+						}
 					}
 				}
 			}
@@ -135,7 +138,7 @@ public enum TableRow {
 	 * @param id The ID
 	 * @param doc The full document
 	 * @param labelKeys Keys of the values to try as labels for the ID
-	 * @return A label for the ID
+	 * @return An HTML-escaped label for the ID
 	 */
 	public static String labelForId(String id, JsonNode doc,
 			Optional<List<String>> labelKeys) {
@@ -147,12 +150,12 @@ public enum TableRow {
 		} else {
 			label = graphObjectLabelForId(id, doc, labelKeys);
 		}
-		return label;
+		return HtmlEscapers.htmlEscaper().escape(label);
 	}
 
 	private static String graphObjectLabelForId(String id, JsonNode doc,
 			Optional<List<String>> labelKeys) {
-		if (!labelKeys.isPresent() || labelKeys.get().isEmpty()) {
+		if (!labelKeys.isPresent() || labelKeys.get().isEmpty() || doc == null) {
 			return id;
 		}
 		for (JsonNode node : doc.findValues("@graph").get(0)) {
