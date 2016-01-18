@@ -253,7 +253,7 @@ public class Lobid {
 					    "preferredNameForTheSubjectHeading",
 					    "preferredNameForTheConferenceOrEvent",
 					    "preferredNameForThePlaceOrGeographicName"))); // @formatter:on
-			label = HtmlEscapers.htmlEscaper().escape(shorten(label));
+			label = shorten(label);
 			Cache.set(cacheKey, label);
 			return label;
 		}).get(50000);
