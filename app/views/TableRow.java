@@ -11,9 +11,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.apache.commons.lang3.StringEscapeUtils;
-
 import com.fasterxml.jackson.databind.JsonNode;
+import com.google.common.html.HtmlEscapers;
 
 import controllers.nwbib.Classification;
 import controllers.nwbib.Lobid;
@@ -149,7 +148,7 @@ public enum TableRow {
 		} else {
 			label = graphObjectLabelForId(id, doc, labelKeys);
 		}
-		return StringEscapeUtils.escapeHtml4(label);
+		return HtmlEscapers.htmlEscaper().escape(label);
 	}
 
 	private static String graphObjectLabelForId(String id, JsonNode doc,
