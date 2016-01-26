@@ -5,8 +5,26 @@
 
 @facets(facet: String, field: String, current: String, addClass:String = "", allLabel:String = "Alle")={
   <div class="@addClass" id="@field.hashCode.abs-facet">
-      <script>$("#@(Application.ISSUED_FIELD.hashCode.abs)-facet").hide();</script>
-      <h4>@facet @facetLabel(current, current.split("[,+]").size + " ausgewählt")</h4>
+      <script>
+        $("#@(Application.ISSUED_FIELD.hashCode.abs)-facet").hide();
+        function toggleFacet(selector) {
+            var elem = $(selector);
+            if(elem.is(':visible')){
+              elem.hide();
+              $(selector+'-icon').attr('class', 'glyphicon glyphicon-menu-right');
+            } else {
+              elem.show();
+              $(selector+'-icon').attr('class', 'glyphicon glyphicon-menu-down');
+            }
+        }
+      </script>
+      <h4>
+        <a href="javascript:void(0)" onclick="toggleFacet('#facets-ul-@field.hashCode.abs');">
+          <span id="facets-ul-@field.hashCode.abs-icon" class="glyphicon glyphicon-menu-down"></span> 
+          @facet
+        </a> 
+        @facetLabel(current, current.split("[,+]").size + " ausgewählt")
+      </h4>
       <ul class="facet" id="facets-ul-@field.hashCode.abs">
           <script>
           $.ajax({
