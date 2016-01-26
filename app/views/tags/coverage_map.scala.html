@@ -84,12 +84,11 @@ markers.on('clusterclick', function (a) {
     map.setView(a.latlng);
     lastLayer = a.layer;
     var places = a.layer.getAllChildMarkers().length;
-    label = places +' Orte aus Kartenauswahl'
     popup = L.popup()
      .setLatLng(a.latlng)
      .setContent(
          '<table style="text-align: center" class="table-striped table-condensed">'+
-         '<tr><td><a style="cursor: pointer" onclick="map.closePopup(); areaSearch(label, lastLayer.getConvexHull());">'+
+         '<tr><td><a style="cursor: pointer" onclick="map.closePopup(); areaSearch(lastLayer.getConvexHull());">'+
            'Titel mit Bezug zu '+ places +' Orten filtern</a></td></td>'+
          '<tr><td><a style="cursor: pointer" onclick="map.closePopup(); lastLayer.zoomToBounds()">'+
            'In diesen Bereich zoomen &rarr;</a></td></tr>'+
@@ -97,7 +96,7 @@ markers.on('clusterclick', function (a) {
      .openOn(map);
 });
 
-function areaSearch(label, hull) {
+function areaSearch(hull) {
     var points = hull.map(function(p) {
         return map.options.crs.latLngToPoint(p, map.getZoom());
     });
@@ -112,7 +111,7 @@ function areaSearch(label, hull) {
     var polygonQueryParam = polygon.join('+');
     console.log(polygonQueryParam);
     if(polygonQueryParam.length > 0) {
-      location.href='/nwbib/search?location=' + label + '|' + polygonQueryParam + queryParams;
+      location.href='/nwbib/search?location=Orte in Kartenauswahl|' + polygonQueryParam + queryParams;
     }
 }
 
