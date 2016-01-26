@@ -1,7 +1,7 @@
 /* Copyright 2013 Fabian Steeg, Pascal Christoph.
  * Licensed under the Eclipse Public License 1.0 */
 
-package org.lobid.lodmill;
+package org.lobid.resources;
 
 import java.net.URI;
 import java.net.URISyntaxException;

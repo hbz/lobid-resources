@@ -2,7 +2,7 @@
  * Licensed under the Eclipse Public License 1.0 
  **/
 
-package org.lobid.lodmill;
+package org.lobid.resources;
 
 import org.culturegraph.mf.framework.DefaultXmlPipe;
 import org.culturegraph.mf.framework.StreamReceiver;

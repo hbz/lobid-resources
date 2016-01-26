@@ -1,4 +1,4 @@
-package org.lobid.lodmill;
+package org.lobid.resources;
 
 import java.io.File;
 import java.io.FileWriter;

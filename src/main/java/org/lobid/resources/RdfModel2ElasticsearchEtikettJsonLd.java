@@ -1,6 +1,6 @@
 /* Copyright 2013-2015 Fabian Steeg, Pascal Christoph, hbz. Licensed under the Eclipse Public License 1.0 */
 
-package org.lobid.lodmill;
+package org.lobid.resources;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;

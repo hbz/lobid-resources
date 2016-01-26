@@ -1,6 +1,6 @@
 /* Copyright 2015  hbz, Pascal Christoph.
  * Licensed under the Eclipse Public License 1.0 */
-package org.lobid.lodmill.run;
+package org.lobid.resources.run;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -16,12 +16,12 @@ import org.culturegraph.mf.stream.pipe.ObjectBatchLogger;
 import org.culturegraph.mf.stream.pipe.StreamTee;
 import org.culturegraph.mf.stream.source.FileOpener;
 import org.culturegraph.mf.stream.source.TarReader;
-import org.lobid.lodmill.ElasticsearchIndexer;
-import org.lobid.lodmill.MabXmlHandler;
-import org.lobid.lodmill.PipeEncodeTriples;
-import org.lobid.lodmill.RdfModel2ElasticsearchEtikettJsonLd;
-import org.lobid.lodmill.Stats;
-import org.lobid.lodmill.Triples2RdfModel;
+import org.lobid.resources.ElasticsearchIndexer;
+import org.lobid.resources.MabXmlHandler;
+import org.lobid.resources.PipeEncodeTriples;
+import org.lobid.resources.RdfModel2ElasticsearchEtikettJsonLd;
+import org.lobid.resources.Stats;
+import org.lobid.resources.Triples2RdfModel;
 
 import com.hp.hpl.jena.rdf.model.Model;
 

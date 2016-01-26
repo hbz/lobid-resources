@@ -106,7 +106,7 @@ public final class LobidResources2ElasticsearchLobidTest {
 		triple2model.setInput(N_TRIPLE);
 		RecordReader lr = new RecordReader();
 		dirReader.setReceiver(opener).setReceiver(lr).setReceiver(triple2model)
-				.setReceiver(new RdfModel2ElasticsearchJsonLd())
+				.setReceiver(new RdfModel2ElasticsearchEtikettJsonLd())
 				.setReceiver(getElasticsearchIndexer(cl));
 		dirReader
 				.process(new File("src/test/resources/hbz01Records").getAbsolutePath());
