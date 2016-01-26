@@ -105,7 +105,11 @@ $(function() {
 	});
 	var left = $( "#slider-range" ).slider( "values", 0 );
 	var right = $( "#slider-range" ).slider( "values", 1 );
-	setLabel(left==right ? left : left + "-" + right, "");
+	@if(issued.isEmpty()) {
+		setLabel(left==right ? left : left + "-" + right, "");
+	} else { // no redundant label, already in facet label
+		setLabel("", "");
+	}
 });
 
 function issuedLink(newVal) {
