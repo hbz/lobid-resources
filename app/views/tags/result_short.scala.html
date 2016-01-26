@@ -55,7 +55,7 @@
 @icon_span(property: String, fullField: String) = {
   @if(!(doc\\property).isEmpty) {
     @defining((doc\\property).last.asOpt[Seq[String]].getOrElse(Seq((doc\\property).last.asOpt[String].get))){ v =>
-      <span title="@Lobid.facetLabel(v,fullField,"")" class="@Lobid.facetIcon(v,fullField)"></span>
+      <span title="@Html(Lobid.facetLabel(v,fullField,""))" class="@Lobid.facetIcon(v,fullField)"></span>
     }
   }
 }
