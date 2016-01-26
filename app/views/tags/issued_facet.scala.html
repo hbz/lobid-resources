@@ -13,12 +13,15 @@ var freqs = [];
 var yearsObject = {};
 var thisYear = new Date().getFullYear();
 
+for(i = 1983; i <= thisYear; i++) {
+	years.push(i);
+}
+
 $(".@(Application.ISSUED_FIELD.hashCode.abs)-facet-link").each(function(index) {
 	var yearAndFreq = $(this).text().split(" ")
 	var year = yearAndFreq[0].trim();
 	var freq = parseInt(yearAndFreq[1].replace(/[()]/,""));
 	if(parseInt(year) >= 1983 && parseInt(year) <= thisYear){
-		years.push(year);
 		yearsObject[year]=freq;
 	}
 });
