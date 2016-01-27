@@ -125,7 +125,7 @@ public class JsonConverter {
 
 	private void addListToJsonResult(Map<String, Object> jsonResult, String key,
 			String id) {
-		logger.info("Create list for " + key + " pointing to " + id);
+		logger.debug("Create list for " + key + " pointing to " + id);
 		jsonResult.put(key, traverseList(id, first, new ArrayList<>()));
 	}
 
