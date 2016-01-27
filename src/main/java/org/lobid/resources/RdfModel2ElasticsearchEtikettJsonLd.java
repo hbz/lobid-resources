@@ -44,13 +44,13 @@ public final class RdfModel2ElasticsearchEtikettJsonLd
 			LoggerFactory.getLogger(RdfModel2ElasticsearchEtikettJsonLd.class);
 	// the items will have their own index type and ES parents
 	private static final String PROPERTY_TO_PARENT = "exemplarOf";
-	private static String LOBID_DOMAIN = "http://lobid.org/";
+	static String LOBID_DOMAIN = "http://lobid.org/";
 	private static String LOBID_ITEM_URI_PREFIX = LOBID_DOMAIN + "item/";
 	// the sub node we want to cling to the main node
 	private static final String KEEP_NODE_PREFIX = "http://d-nb.info/gnd";
 	private static final String KEEP_NODE_MAIN_PREFIX =
 			LOBID_DOMAIN + "resource/";
-	private static String mainNodeId;
+	private static String mainNodeId = null;
 	private static final String TYPE_ITEM = "json-ld-lobid-item";
 	private static final String TYPE_RESOURCE = "json-ld-lobid";
 	private static Object JSONLD_CONTEXT;
@@ -80,6 +80,7 @@ public final class RdfModel2ElasticsearchEtikettJsonLd
 
 	@Override
 	public void process(final Model originModel) {
+		mainNodeId = null;
 		splitModel2ItemAndResourceModel(originModel);
 	}
 
@@ -98,7 +99,8 @@ public final class RdfModel2ElasticsearchEtikettJsonLd
 					if (shouldSubmodelBeExtracted(submodel, subjectResource)) {
 						toJson(submodel, subjectResource.getURI().toString());
 					}
-				} else if (subjectResource.getURI().toString().startsWith(LOBID_DOMAIN))
+				} else if (mainNodeId == null
+						&& subjectResource.getURI().toString().startsWith(LOBID_DOMAIN))
 					mainNodeId = subjectResource.getURI().toString();
 			}
 			if (!submodel.isEmpty()) {
@@ -133,7 +135,9 @@ public final class RdfModel2ElasticsearchEtikettJsonLd
 	 * @param model
 	 * @param id
 	 */
-	private void toJson(Model model, String id) {
+	private void toJson(Model model, String id_) {
+		String id =
+				id_.replaceAll("/about", "").replaceAll(LOBID_DOMAIN + ".*/", "");
 		if (model.isEmpty())
 			return;
 		try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
