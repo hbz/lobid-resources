@@ -19,12 +19,14 @@ var layer = L.tileLayer('http://otile{s}.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.p
 var nrw = new L.LatLng(51.45, 7.7)
 var map = new L.Map("map-coverage", {
     center: nrw,
-    zoom: 7,
-    minZoom: 7,
+    zoom: 6,
+    minZoom: 6,
     maxZoom: 13,
     scrollWheelZoom: true,
-    attributionControl: false
+    attributionControl: false,
+    zoomControl: false
 });
+new L.Control.Zoom({ position: 'bottomleft' }).addTo(map);
 
 $.getJSON('@controllers.routes.Assets.at("data/nrw.geo.json")', function(json) {
     L.geoJson(json, {
@@ -59,6 +61,7 @@ if (pointsParam.length > 0) {
 }
 
 var markers = new L.MarkerClusterGroup({
+    maxClusterRadius: 50,
     zoomToBoundsOnClick: false,
     singleMarkerMode: true,
     iconCreateFunction: function (cluster) {
