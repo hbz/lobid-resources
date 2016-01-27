@@ -28,7 +28,7 @@
       <script>
         $("#@(Application.ISSUED_FIELD.hashCode.abs)-facet").hide();
       </script>
-      <h4>
+      <h4 id="@field.hashCode.abs-header">
         @facetToggle("facets-ul-" + field.hashCode.abs.toString){@facet}
         @facetLabel(current, current.split("[,+]").size + " ausgewählt")
       </h4>
@@ -39,6 +39,9 @@
             success: function(data, textStatus, jqXHR) {
               var lis = data.split("</li>");
               lis = lis.slice(0, lis.length-1);
+              if(lis.length == 0){
+                $('#@field.hashCode.abs-header').hide();
+              }
               var ul = $("#facets-ul-@field.hashCode.abs");
               var c = 0;
               var step = 5;
