@@ -3,26 +3,33 @@
 @import controllers.nwbib.Application
 @import helper._
 
+<script>
+  function toggleFacet(selector) {
+      var elem = $(selector);
+      if(elem.is(':visible')){
+        elem.hide();
+        $(selector+'-icon').attr('class', 'glyphicon glyphicon-menu-right');
+      } else {
+        elem.show();
+        $(selector+'-icon').attr('class', 'glyphicon glyphicon-menu-down');
+      }
+  }
+</script>
+
+@facetToggle(id: String)(content: Html)={
+	<a href="javascript:void(0)" onclick="toggleFacet('#' + '@id');">
+    <span id="@id-icon" class="glyphicon glyphicon-menu-down"></span>
+    @content
+  </a>
+}
+
 @facets(facet: String, field: String, current: String, addClass:String = "", allLabel:String = "Alle")={
   <div class="@addClass" id="@field.hashCode.abs-facet">
       <script>
         $("#@(Application.ISSUED_FIELD.hashCode.abs)-facet").hide();
-        function toggleFacet(selector) {
-            var elem = $(selector);
-            if(elem.is(':visible')){
-              elem.hide();
-              $(selector+'-icon').attr('class', 'glyphicon glyphicon-menu-right');
-            } else {
-              elem.show();
-              $(selector+'-icon').attr('class', 'glyphicon glyphicon-menu-down');
-            }
-        }
       </script>
       <h4>
-        <a href="javascript:void(0)" onclick="toggleFacet('#facets-ul-@field.hashCode.abs');">
-          <span id="facets-ul-@field.hashCode.abs-icon" class="glyphicon glyphicon-menu-down"></span> 
-          @facet
-        </a> 
+        @facetToggle("facets-ul-" + field.hashCode.abs.toString){@facet}
         @facetLabel(current, current.split("[,+]").size + " ausgewählt")
       </h4>
       <ul class="facet" id="facets-ul-@field.hashCode.abs">
@@ -83,20 +90,20 @@
 
 <div class="col-md-4 hide-in-print">
   <p class="lead"> Ergebnisse eingrenzen: </p>
-  <h4>Erscheinungsjahr @facetLabel(issued, issued)</h4>
+  <h4>@facetToggle("issued-facet-all"){Erscheinungsjahr} @facetLabel(issued, issued)</h4>
   <div id="issued-facet-all" style="display:none">
   <p>
   <div class="row facet"><div class="col-md-12">@facets("Erscheinungsjahr", Application.ISSUED_FIELD, issued, "dropup")</div></div>
   <div class="row facet"><div class="col-md-12"><canvas id="issued-chart"></canvas></div></div>
   <div id="slider-range"></div>
-  </div>
   <input type="text" id="issued-range" readonly value="Lade Erscheinungsjahre...">
   <div id="issued-div"> <a id="issued-link" style="display:none" href="@nwbib.routes.Application.search(q,person,name,subject,id,publisher,issued,medium,nwbibspatial,nwbibsubject,from,size,owner,t,sortParam,set=set,location=location,word=word,corporation=corporation,raw=raw)">Anwenden</a> </div>
+  </div>
   <div class="row facet"><div class="col-md-12">@facets("Regionen", Application.NWBIB_SPATIAL_FIELD, nwbibspatial)</div></div>
   <div class="row facet"><div class="col-md-12">@facets("Orte", Application.COVERAGE_FIELD, raw.split(":").last)</div></div>
   <p/>
-  <div id="coverage"><h4>Raumbezug @facetLabel(location, locationLabel(location.split("\\|")(0)))</h4>
-  <div class="row facet"><div class="col-md-12">@coverage_map(q,person,name,subject,id,publisher,issued,medium,nwbibspatial,nwbibsubject,owner,t,sortParam,set,location,word,corporation,raw,from,size)</div></div>
+  <div id="coverage"><h4>@facetToggle("coverage-map"){Raumbezug} @facetLabel(location, locationLabel(location.split("\\|")(0)))</h4>
+  <div class="row facet" id="coverage-map"><div class="col-md-12">@coverage_map(q,person,name,subject,id,publisher,issued,medium,nwbibspatial,nwbibsubject,owner,t,sortParam,set,location,word,corporation,raw,from,size)</div></div>
   </div>
   <div class="row facet"><div class="col-md-12">@facets("Sachgebiete", Application.NWBIB_SUBJECT_FIELD, nwbibsubject)</div></div>
   <div class="row facet"><div class="col-md-12">@facets("Schlagwörter", Application.SUBJECT_FIELD, if(subject.startsWith("http")) subject else "", "dropup")</div></div>
