@@ -26,7 +26,6 @@ import java.util.stream.StreamSupport;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.elasticsearch.action.search.SearchResponse;
-import org.elasticsearch.common.collect.Iterators;
 import org.elasticsearch.common.geo.GeoPoint;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -621,15 +620,8 @@ public class Application extends Controller {
 								.collect(Collectors.toList());
 						Cache.set(labelKey, labelledFacets, ONE_DAY);
 					}
-
-					List<String> list = labelledFacets.stream().sorted(sorter).map(toHtml)
+					return labelledFacets.stream().sorted(sorter).map(toHtml)
 							.collect(Collectors.toList());
-					long count = Iterators.size(json.findValue("entries").elements());
-					if (count == MAX_FACETS) {
-						list.add(0,
-								"<li><a href=\"#\">Häufigste (für alle bitte Treffer eingrenzen):</a></li>");
-					}
-					return list;
 				}).map(lis -> ok(String.join("\n", lis)));
 		promise.onRedeem(r -> Cache.set(key, r, ONE_DAY));
 		return promise;
