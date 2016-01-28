@@ -1,0 +1,7 @@
+language: java
+jdk: oraclejdk8
+before_install:
+  - export JAVA_HOME=/usr/lib/jvm/java-8-oracle/jre
+  - sh install-dependencies.sh
+install:
+  - mvn clean install -e -q --settings settings.xml
