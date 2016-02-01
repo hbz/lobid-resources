@@ -16,6 +16,7 @@ import java.util.stream.Stream;
 import org.apache.commons.io.FileUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.culturegraph.mf.morph.Metamorph;
+import org.culturegraph.mf.stream.converter.xml.AlephMabXmlHandler;
 import org.culturegraph.mf.stream.converter.xml.XmlDecoder;
 import org.culturegraph.mf.stream.source.FileOpener;
 import org.culturegraph.mf.stream.source.TarReader;
@@ -84,7 +85,7 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 		final Triples2RdfModel triple2model = new Triples2RdfModel();
 		triple2model.setInput(N_TRIPLE);
 		opener.setReceiver(new TarReader()).setReceiver(new XmlDecoder())
-				.setReceiver(new MabXmlHandler())
+				.setReceiver(new AlephMabXmlHandler())
 				.setReceiver(
 						new Metamorph("src/main/resources/morph-hbz01-to-lobid.xml"))
 				.setReceiver(new PipeEncodeTriples()).setReceiver(triple2model)

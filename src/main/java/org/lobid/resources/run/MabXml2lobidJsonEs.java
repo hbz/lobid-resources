@@ -10,6 +10,7 @@ import java.util.HashMap;
 import org.culturegraph.mf.framework.DefaultObjectPipe;
 import org.culturegraph.mf.framework.ObjectReceiver;
 import org.culturegraph.mf.morph.Metamorph;
+import org.culturegraph.mf.stream.converter.xml.AlephMabXmlHandler;
 import org.culturegraph.mf.stream.converter.xml.XmlDecoder;
 import org.culturegraph.mf.stream.pipe.BatchLogger;
 import org.culturegraph.mf.stream.pipe.ObjectBatchLogger;
@@ -17,7 +18,6 @@ import org.culturegraph.mf.stream.pipe.StreamTee;
 import org.culturegraph.mf.stream.source.FileOpener;
 import org.culturegraph.mf.stream.source.TarReader;
 import org.lobid.resources.ElasticsearchIndexer;
-import org.lobid.resources.MabXmlHandler;
 import org.lobid.resources.PipeEncodeTriples;
 import org.lobid.resources.RdfModel2ElasticsearchEtikettJsonLd;
 import org.lobid.resources.Stats;
@@ -89,7 +89,7 @@ public final class MabXml2lobidJsonEs {
 				.setReceiver(jsonConverter).setReceiver(objectBatchLogger)
 				.setReceiver(esIndexer);
 		opener.setReceiver(new TarReader()).setReceiver(new XmlDecoder())
-				.setReceiver(new MabXmlHandler())
+				.setReceiver(new AlephMabXmlHandler())
 				.setReceiver(
 						new Metamorph("src/main/resources/morph-hbz01-to-lobid.xml"))
 				.setReceiver(streamTee);
