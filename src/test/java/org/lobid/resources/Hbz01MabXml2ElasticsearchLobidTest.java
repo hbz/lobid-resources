@@ -28,6 +28,8 @@ import org.elasticsearch.search.SearchHit;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.github.jsonldjava.core.JsonLdError;
 import com.github.jsonldjava.core.JsonLdProcessor;
@@ -47,14 +49,14 @@ import com.hp.hpl.jena.rdf.model.Model;
 @SuppressWarnings("javadoc")
 public final class Hbz01MabXml2ElasticsearchLobidTest {
 	private static Node node;
-	protected static Client client;
-
+	static Client client;
+	private static final Logger LOG =
+			LoggerFactory.getLogger(Hbz01MabXml2ElasticsearchLobidTest.class);
 	private static final String LOBID_RESOURCES =
-			"hbz01-mabxml2elasticsearch-lobid-test-"
-					+ LocalDateTime.now().toLocalDate() + "-"
+			"resources-2es-lobid-test-" + LocalDateTime.now().toLocalDate() + "-"
 					+ LocalDateTime.now().toLocalTime();
 	private static final String N_TRIPLE = "N-TRIPLE";
-	private static final String TEST_FILENAME_NTRIPLES = "hbz01.es.nt";
+	static final String TEST_FILENAME_NTRIPLES = "hbz01.es.nt";
 
 	@BeforeClass
 	public static void setup() {
@@ -77,6 +79,7 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 	 */
 	public static void etl(final Client cl,
 			RdfModel2ElasticsearchEtikettJsonLd etikettJsonLdConverter) {
+		client = cl;
 		final FileOpener opener = new FileOpener();
 		final Triples2RdfModel triple2model = new Triples2RdfModel();
 		triple2model.setInput(N_TRIPLE);
@@ -105,7 +108,7 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 				ElasticsearchDocuments.getAsNtriples());
 	}
 
-	private static void writeFileAndTest(final String TEST_FILENAME,
+	static void writeFileAndTest(final String TEST_FILENAME,
 			final String DOCUMENTS) {
 		File testFile = new File(TEST_FILENAME);
 		try {
@@ -113,8 +116,8 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		AbstractIngestTests.compareFilesDefaultingBNodes(testFile,
-				new File("src/test/resources/" + (TEST_FILENAME)));
+		AbstractIngestTests.compareFilesDefaultingBNodesAndCommata(testFile,
+				new File("src/test/resources/" + TEST_FILENAME));
 		testFile.deleteOnExit();
 	}
 
@@ -155,6 +158,10 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 			}
 		}
 
+		/*
+		 * As the 'context' is just bloating the content the context is stripped
+		 * from it.
+		 */
 		private static void stripContextAndSaveAsFile(final String jsonLd) {
 			String jsonLdWithoutContext = null;
 			try {
@@ -174,6 +181,7 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 
 		private static String toRdf(final String jsonLd) {
 			try {
+				LOG.debug("toRdf: " + jsonLd);
 				final Object jsonObject = JSONUtils.fromString(jsonLd);
 				final JenaTripleCallback callback = new JenaTripleCallback();
 				final Model model = (Model) JsonLdProcessor.toRDF(jsonObject, callback);
