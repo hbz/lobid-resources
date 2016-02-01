@@ -58,7 +58,7 @@
     }
     @defining(Json.parse(result).asOpt[Seq[JsValue]].getOrElse(Seq()).zipWithIndex.drop(1)) { hits =>
      <div class="row">
-         <div class="col-md-9">
+         <div class="col-md-@if(allHits > 0){9}else{12}">
          @if(hits.size>0){
              <div class="row hide-in-print" >
                  <div class="col-md-6" style="text-align:left">
@@ -108,12 +108,12 @@
          } else {
             @if(hits.isEmpty){
                 <div class="alert alert-info text-center">
-                    Keine Ergebnisse für Auswahl und Anfrage. Versuchen Sie eine andere Anfrage oder andere Filtereinstellungen.
+                    Keine Ergebnisse. Suchoptionen: Begriffe <code>+</code>einschließen, <code>-</code>ausschließen, unscharf<code>~</code>, <code>"</code>exakt suchen<code>"</code>.
                 </div>
             }
          }
         </div>
-        @facets(q,person,name,subject,id,publisher,issued,medium,nwbibspatial,nwbibsubject,owner,t,sortParam,set,location,word,corporation,raw,from,size)
+        @if(allHits > 0) {@facets(q,person,name,subject,id,publisher,issued,medium,nwbibspatial,nwbibsubject,owner,t,sortParam,set,location,word,corporation,raw,from,size)}
       </div>
     }
     <p>@map_credits()</p>
