@@ -18,6 +18,7 @@ GET    /nwbib/facets                controllers.nwbib.Application.facets(q,perso
 
 GET    /nwbib/stars                 controllers.nwbib.Application.showStars(format?="", ids?="")
 GET    /nwbib/stars/clear           controllers.nwbib.Application.clearStars()
+GET    /nwbib/stars/all             controllers.nwbib.Application.starAll(ids)
 POST   /nwbib/stars/:id             controllers.nwbib.Application.star(id)
 DELETE /nwbib/stars/:id             controllers.nwbib.Application.unstar(id)
 
