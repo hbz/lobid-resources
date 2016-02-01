@@ -31,11 +31,11 @@ public abstract class AbstractIngestTests {
 
 	protected Metamorph metamorph;
 
-	private static SortedSet<String> linesInFileToSetDefaultingBNodes(
+	private static SortedSet<String> linesInFileToSetDefaultingBNodesAndCommata(
 			final File file) {
 		SortedSet<String> set = null;
 		try (Scanner scanner = new Scanner(file)) {
-			set = asSet(scanner);
+			set = asDefaultSet(scanner);
 		} catch (IOException e) {
 			LOG.error(e.getMessage(), e);
 		}
@@ -44,24 +44,34 @@ public abstract class AbstractIngestTests {
 
 	/**
 	 * Tests if two files are of equal content. As BNodes are not fix they are not
-	 * comparable and thus they are defaulted to "_:bnodeDummy" to make the files
-	 * comparable anyhow.
+	 * comparable and thus they are defaulted to "_:bnodeDummy" to make the
+	 * ntriple files comparable anyhow. For the same reason the comma at the end
+	 * of a line is removed to be able to compare json files.
 	 * 
 	 * @param generatedFile the actually generated file
 	 * @param testFile the file which defines how the generatedFile should look
 	 *          like
 	 */
-	public static void compareFilesDefaultingBNodes(final File generatedFile,
-			final File testFile) {
-		assertSetSize(linesInFileToSetDefaultingBNodes(testFile),
-				linesInFileToSetDefaultingBNodes(generatedFile));
-		assertSetElements(linesInFileToSetDefaultingBNodes(generatedFile),
-				linesInFileToSetDefaultingBNodes(testFile));
+	public static void compareFilesDefaultingBNodesAndCommata(
+			final File generatedFile, final File testFile) {
+		assertSetSize(linesInFileToSetDefaultingBNodesAndCommata(testFile),
+				linesInFileToSetDefaultingBNodesAndCommata(generatedFile));
+		assertSetElements(linesInFileToSetDefaultingBNodesAndCommata(generatedFile),
+				linesInFileToSetDefaultingBNodesAndCommata(testFile));
 	}
 
 	private static void assertSetSize(final SortedSet<String> expectedSet,
 			final SortedSet<String> actualSet) {
 		if (expectedSet.size() != actualSet.size()) {
+			LOG.info("expectedSet:");
+			for (String s : expectedSet) {
+				LOG.info(s);
+			}
+			System.out.println();
+			LOG.info("actualSet:");
+			for (String s : actualSet) {
+				LOG.info(s);
+			}
 			final SortedSet<String> missingSet = new TreeSet<>(expectedSet);
 			missingSet.removeAll(actualSet);
 			LOG.error("Missing expected result set entries: " + missingSet);
@@ -69,13 +79,14 @@ public abstract class AbstractIngestTests {
 		Assert.assertEquals(expectedSet.size(), actualSet.size());
 	}
 
-	private static SortedSet<String> asSet(final Scanner scanner) {
+	private static SortedSet<String> asDefaultSet(final Scanner scanner) {
 		final SortedSet<String> set = new TreeSet<>();
 		while (scanner.hasNextLine()) {
 			String actual = scanner.nextLine();
 			if (!actual.isEmpty()) {
 				actual =
 						actual.replaceFirst("(^_:\\w* )|( _:\\w* ?.$)", "_:bnodeDummy ");
+				actual = actual.replaceFirst(",$", "");
 				set.add(actual);
 			}
 		}
