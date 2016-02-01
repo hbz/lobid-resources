@@ -63,7 +63,7 @@ import views.html.stars;
  */
 public class Application extends Controller {
 
-	static final int MAX_FACETS = 9999;
+	static final int MAX_FACETS = 150;
 
 	private static final String STARRED = "starred";
 
