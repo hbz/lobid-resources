@@ -115,7 +115,9 @@ public class ElasticsearchIndexer
 
 	@Override
 	public void process(final HashMap<String, String> json) {
-		LOG.debug("Try to index " + json.get("_id"));
+		LOG.debug("Try to index " + json.get(Properties.ID.getName())
+				+ " in ES type " + json.get(Properties.TYPE.getName()) + " Source:"
+				+ json.get(Properties.GRAPH.getName()));
 		updateRequest = new UpdateRequest(indexName,
 				json.get(Properties.TYPE.getName()), json.get(Properties.ID.getName()));
 		updateRequest.doc(json.get(Properties.GRAPH.getName()));
@@ -125,7 +127,6 @@ public class ElasticsearchIndexer
 		}
 		bulkRequest.add(updateRequest);
 		docs++;
-
 		while (docs > bulkSize && retries > 0) {
 			try {
 				bulkRequest.execute().actionGet();
