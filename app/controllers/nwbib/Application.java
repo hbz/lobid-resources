@@ -763,6 +763,7 @@ public class Application extends Controller {
 	 * @return A page with all resources starred by the user
 	 */
 	public static Promise<Result> showStars(String format, String ids) {
+		uncacheLastSearchUrl();
 		final List<String> starred = starredIds();
 		if (ids.isEmpty() && !starred.isEmpty()) {
 			return Promise.pure(redirect(routes.Application.showStars(format,
@@ -798,6 +799,8 @@ public class Application extends Controller {
 	 * @return An OK result to confirm deletion of starred resources
 	 */
 	public static Result clearStars() {
+		uncache(starredIds());
+		uncacheLastSearchUrl();
 		session(STARRED, "");
 		return ok(stars.render(starredIds(), Collections.emptyList(), ""));
 	}
