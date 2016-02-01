@@ -135,9 +135,7 @@ public final class RdfModel2ElasticsearchEtikettJsonLd
 	 * @param model
 	 * @param id
 	 */
-	private void toJson(Model model, String id_) {
-		String id =
-				id_.replaceAll("/about", "").replaceAll(LOBID_DOMAIN + ".*/", "");
+	private void toJson(Model model, String id) {
 		if (model.isEmpty())
 			return;
 		try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
@@ -156,20 +154,23 @@ public final class RdfModel2ElasticsearchEtikettJsonLd
 
 	private static HashMap<String, String> addInternalProperties(
 			HashMap<String, String> jsonMap, String id, String json) {
+		String idWithoutDomain =
+				id.replaceAll("/about", "").replaceAll(LOBID_DOMAIN + ".*/", "");
 		String internal_parent = "";
 		String type = TYPE_RESOURCE;
 		if (id.startsWith(LOBID_ITEM_URI_PREFIX)) {
 			type = TYPE_ITEM;
 			try {
 				JsonNode node = new ObjectMapper().readValue(json, JsonNode.class);
-				final JsonNode parent = node.findValue(PROPERTY_TO_PARENT);
-				String p = parent != null ? parent.findValue("@id").asText() : null;
+				final JsonNode parent = node.path(PROPERTY_TO_PARENT);
+				String p = parent != null ? parent.findValue("@id").asText()
+						.replaceAll("/about", "").replaceAll(LOBID_DOMAIN + ".*/", "")
+						: null;
 				internal_parent = ",\"_parent\":\"" + p + "\"";
 				if (p == null) {
 					LOG.warn("Item URI " + id + " has no parent declared!");
 					jsonMap.put(ElasticsearchIndexer.Properties.PARENT.getName(),
 							"no_parent");
-
 				} else
 					jsonMap.put(ElasticsearchIndexer.Properties.PARENT.getName(), p);
 			} catch (IOException e) {
@@ -179,7 +180,7 @@ public final class RdfModel2ElasticsearchEtikettJsonLd
 		String jsonDocument = json + internal_parent;
 		jsonMap.put(ElasticsearchIndexer.Properties.GRAPH.getName(), jsonDocument);
 		jsonMap.put(ElasticsearchIndexer.Properties.TYPE.getName(), type);
-		jsonMap.put(ElasticsearchIndexer.Properties.ID.getName(), id);
+		jsonMap.put(ElasticsearchIndexer.Properties.ID.getName(), idWithoutDomain);
 		return jsonMap;
 	}
 
