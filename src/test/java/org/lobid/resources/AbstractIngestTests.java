@@ -56,21 +56,20 @@ public abstract class AbstractIngestTests {
 			final File generatedFile, final File testFile) {
 		assertSetSize(linesInFileToSetDefaultingBNodesAndCommata(testFile),
 				linesInFileToSetDefaultingBNodesAndCommata(generatedFile));
-		assertSetElements(linesInFileToSetDefaultingBNodesAndCommata(generatedFile),
-				linesInFileToSetDefaultingBNodesAndCommata(testFile));
+		assertSetElements(linesInFileToSetDefaultingBNodesAndCommata(testFile),
+				linesInFileToSetDefaultingBNodesAndCommata(generatedFile));
 	}
 
 	private static void assertSetSize(final SortedSet<String> expectedSet,
 			final SortedSet<String> actualSet) {
 		if (expectedSet.size() != actualSet.size()) {
-			LOG.info("expectedSet:");
+			LOG.debug("expectedSet:");
 			for (String s : expectedSet) {
-				LOG.info(s);
+				LOG.debug(s);
 			}
-			System.out.println();
-			LOG.info("actualSet:");
+			LOG.debug("actualSet:");
 			for (String s : actualSet) {
-				LOG.info(s);
+				LOG.debug(s);
 			}
 			final SortedSet<String> missingSet = new TreeSet<>(expectedSet);
 			missingSet.removeAll(actualSet);
@@ -97,14 +96,19 @@ public abstract class AbstractIngestTests {
 			final SortedSet<String> actualSet) {
 		final Iterator<String> expectedIterator = expectedSet.iterator();
 		final Iterator<String> actualIterator = actualSet.iterator();
+		StringBuilder message = new StringBuilder("\n");
+		boolean failed = false;
 		for (int i = 0; i < expectedSet.size(); i++) {
 			String expected = expectedIterator.next();
 			String actual = actualIterator.next();
 			if (!expected.equals(actual)) {
-				LOG.error("Expected: " + expected + "\n but was:" + actual);
+				failed = true;
+				message.append("\nExpected:" + expected + "\nbut was :" + actual);
 			}
 		}
-		Assert.assertEquals(expectedSet, actualSet);
+		if (failed)
+			LOG.error(message.toString() + "\n");
+		Assert.assertFalse("Data not as expected!", failed);
 	}
 
 	protected static void setUpErrorHandler(final Metamorph metamorph) {
