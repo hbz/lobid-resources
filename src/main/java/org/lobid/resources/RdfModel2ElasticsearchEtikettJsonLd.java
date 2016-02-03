@@ -49,10 +49,10 @@ public final class RdfModel2ElasticsearchEtikettJsonLd
 	// the sub node we want to cling to the main node
 	private static final String KEEP_NODE_PREFIX = "http://d-nb.info/gnd";
 	private static final String KEEP_NODE_MAIN_PREFIX =
-			LOBID_DOMAIN + "resource/";
+			LOBID_DOMAIN + "resources/";
 	private static String mainNodeId = null;
-	private static final String TYPE_ITEM = "json-ld-lobid-item";
-	private static final String TYPE_RESOURCE = "json-ld-lobid";
+	private static final String TYPE_ITEM = "item";
+	private static final String TYPE_RESOURCE = "resource";
 	private static Object JSONLD_CONTEXT;
 
 	/**
