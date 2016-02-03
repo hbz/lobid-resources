@@ -101,16 +101,16 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 
 	@SuppressWarnings("static-method")
 	@Test
-	public void testNtriples() {
-		writeSortedFile(TEST_FILENAME_NTRIPLES,
-				ElasticsearchDocuments.getAsNtriples());
-		testFiles(TEST_FILENAME_NTRIPLES);
+	public void testJson() {
+		ElasticsearchDocuments.getAsJson();
 	}
 
 	@SuppressWarnings("static-method")
 	@Test
-	public void testJson() {
-		ElasticsearchDocuments.getAsJson();
+	public void testNtriples() {
+		writeSortedFile(TEST_FILENAME_NTRIPLES,
+				ElasticsearchDocuments.getAsNtriples());
+		testFiles(TEST_FILENAME_NTRIPLES);
 	}
 
 	static void writeSortedFile(final String TEST_FILENAME,
