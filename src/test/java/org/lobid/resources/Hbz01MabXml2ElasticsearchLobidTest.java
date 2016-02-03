@@ -10,6 +10,9 @@ import java.io.StringWriter;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Map;
+import java.util.Scanner;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -105,18 +108,41 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 	@SuppressWarnings("static-method")
 	@Test
 	public void testNtriples() {
-		writeFileAndTest(TEST_FILENAME_NTRIPLES,
+		writeSortedFile(TEST_FILENAME_NTRIPLES,
 				ElasticsearchDocuments.getAsNtriples());
+		testFiles(TEST_FILENAME_NTRIPLES);
 	}
 
-	static void writeFileAndTest(final String TEST_FILENAME,
-			final String DOCUMENTS) {
+	static void writeSortedFile(final String TEST_FILENAME,
+			final String DOCUMENT) {
 		File testFile = new File(TEST_FILENAME);
+		SortedSet<String> set = new TreeSet<>();
+		try (Scanner scanner = new Scanner(DOCUMENT)) {
+			while (scanner.hasNextLine()) {
+				String line = scanner.nextLine();
+				if (!line.isEmpty())
+					set.add(line);
+			}
+		}
 		try {
-			FileUtils.writeStringToFile(testFile, DOCUMENTS, false);
+			FileUtils.writeStringToFile(testFile,
+					set.parallelStream().collect(Collectors.joining("\n")), false);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+	static void writeFile(final String TEST_FILENAME, final String DOCUMENT) {
+		File testFile = new File(TEST_FILENAME);
+		try {
+			FileUtils.writeStringToFile(testFile, DOCUMENT, false);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	static void testFiles(final String TEST_FILENAME) {
+		File testFile = new File(TEST_FILENAME);
 		AbstractIngestTests.compareFilesDefaultingBNodesAndCommata(testFile,
 				new File("src/test/resources/" + TEST_FILENAME));
 		testFile.deleteOnExit();
@@ -174,7 +200,9 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 				String filename =
 						((String) map.get("@id")).replaceAll("/about", "").replaceAll(
 								RdfModel2ElasticsearchEtikettJsonLd.LOBID_DOMAIN + ".*/", "");
-				writeFileAndTest("jsonld/" + filename, jsonLdWithoutContext);
+				String fname = "jsonld/" + filename;
+				writeFile(fname, jsonLdWithoutContext);
+				testFiles(fname);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

@@ -29,8 +29,10 @@ public final class Hbz01MabXml2ElasticsearchLobidTestOnline {
 						new InetSocketTransportAddress("gaia.hbz-nrw.de", 9300)),
 				new RdfModel2ElasticsearchEtikettJsonLd(
 						AbstractIngestTests.LOBID_JSONLD_CONTEXT));
-		Hbz01MabXml2ElasticsearchLobidTest.writeFileAndTest(
+		Hbz01MabXml2ElasticsearchLobidTest.writeSortedFile(
 				Hbz01MabXml2ElasticsearchLobidTest.TEST_FILENAME_NTRIPLES,
 				ElasticsearchDocuments.getAsNtriples());
+		Hbz01MabXml2ElasticsearchLobidTest
+				.testFiles(Hbz01MabXml2ElasticsearchLobidTest.TEST_FILENAME_NTRIPLES);
 	}
 }
