@@ -12,7 +12,7 @@ var westfalen = [
     "05966", "05970", "05566", "05558", "05515", "05978", "05913", "05914",
     "05958", "05974", "05570", "05774", "05915", "05754", "05711", "05758",
     "05770", "05766", "05762"];
-var data = {};
+var data = {"05" : {"fillKey" : "nrw"}};
 for(var i = 0; i < westfalen.length; i++) {
     data[westfalen[i]] = {"fillKey" : "westfalen"};
 }
@@ -21,7 +21,9 @@ var map = new Datamap({
     geographyConfig: {
         dataUrl: '@controllers.routes.Assets.at("data/nrw.topo.json")',
         borderWidth: 1,
-        borderColor: '#BBBBBB',
+        borderColor: function(value) {
+            return value.id === "05" ? 'black' : '#BBBBBB';
+        },
         highlightFillColor: function(value) {
             var inWestfalen = data[value.id];
             return inWestfalen ? 'rgba(238, 25, 33, 1)' : 'rgba(0, 163, 76, 1)';
@@ -31,7 +33,8 @@ var map = new Datamap({
     },
     fills: {
         defaultFill: 'rgba(0, 163, 76, 0.0625)',
-        westfalen: 'rgba(238, 25, 33, 0.0625)'
+        westfalen: 'rgba(238, 25, 33, 0.0625)',
+        nrw: 'rgba(0, 0, 0, 0)'
     },
     data : data,
     scope: 'nrw',
