@@ -8,7 +8,7 @@
 	<!-- most fields have a subfield 'a' -->
 	<!-- => structure of alehp MAB: $field$indicator1$indicator2$subfield -->
 	<vars>
-		<var name="ns-lobid-resource" value="http://lobid.org/resource/"/>
+		<var name="ns-lobid-resource" value="http://lobid.org/resources/"/>
 		<var name="ns-lobid-vocab" value="http://purl.org/lobid/lv#"/>
 		<var name="ns-lobid-organisation" value="http://lobid.org/organisation/"/>
 		<var name="ns-zdb-services" value="http://ld.zdb-services.de/resource/"/>
@@ -867,7 +867,7 @@
 			<data source="@nameOfCreatingCorporateBodyB" name="b"/>
 			<data source="@nameOfCreatingCorporateBodyK" name="k"/>
 		</combine>
-		<combine name="@nameOfCreatingCorporateBodyKHB" value="${k} &lt;${h}&gt;. ${b}">
+		<combine name="@nameOfCreatingCorporateBodyKHB" value="${k} (${h}). ${b}">
 			<data source="@nameOfCreatingCorporateBodyB" name="b"/>
 			<data source="@nameOfCreatingCorporateBodyH" name="h"/>
 			<data source="@nameOfCreatingCorporateBodyK" name="k"/>
@@ -886,7 +886,7 @@
 			<replace pattern="&lt;&lt;" with=""/>
 		</data>
 		<data source="2?[02468][bcfep][12].h" name="@nameOfContributingCorporateBodyH"/>
-		<combine name="@nameOfContributingCorporateBodyKH" value="${k} &lt;${h}&gt;">
+		<combine name="@nameOfContributingCorporateBodyKH" value="${k} (${h})">
 			<data source="@nameOfContributingCorporateBodyK" name="k"/>
 			<data source="@nameOfContributingCorporateBodyH" name="h"/>
 		</combine>
