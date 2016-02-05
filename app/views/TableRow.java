@@ -53,7 +53,7 @@ public enum TableRow {
 				e.printStackTrace();
 			}
 			String search = String.format("%s/search?%s=%s",
-					controllers.nwbib.routes.Application.index(), param, term);
+					controllers.nwbib.routes.Application.index(""), param, term);
 			String label = labelForId(value, doc, labels);
 			String result = labels.get().contains("numbering") ? label
 					: String.format(

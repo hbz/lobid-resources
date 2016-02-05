@@ -1,10 +1,10 @@
 @* Copyright 2014 Fabian Steeg, hbz. Licensed under the GPLv2 *@
 
-@()
+@(scope: String)
 <div id="map" class="pull-right">
 <script src="@controllers.routes.Assets.at("javascripts/d3.v3.min.js")"></script>
 <script src="@controllers.routes.Assets.at("javascripts/topojson.v1.min.js")"></script>
-<script src="@controllers.routes.Assets.at("javascripts/datamaps.world.min.js")"></script>
+<script src="@controllers.routes.Assets.at("javascripts/datamaps.none.min.js")"></script>
 <script src="@controllers.routes.Assets.at("javascripts/latlon-geohash.js")"></script>
 <script>
 var westfalen = [
@@ -16,6 +16,7 @@ var data = {"05" : {"fillKey" : "nrw"}};
 for(var i = 0; i < westfalen.length; i++) {
     data[westfalen[i]] = {"fillKey" : "westfalen"};
 }
+
 var map = new Datamap({
     element: document.getElementById('map'),
     geographyConfig: {
@@ -25,19 +26,30 @@ var map = new Datamap({
             return value.id === "05" ? 'black' : '#BBBBBB';
         },
         highlightFillColor: function(value) {
-            var inWestfalen = data[value.id];
-            return inWestfalen ? 'rgba(238, 25, 33, 1)' : 'rgba(0, 163, 76, 1)';
+            var nrw = value["fillKey"] === "nrw";
+            var inWestfalen = value["fillKey"] === "westfalen";
+            return nrw ? 'rgba(0, 0, 0, 0)' :
+              (inWestfalen ? 'rgba(238, 25, 33, 1)' : 'rgba(0, 163, 76, 1)');
         },
-        highlightBorderColor: '#a6a6a6',
+        highlightBorderColor: function(value) {
+            return value["fillKey"] === "nrw" ? 'black' : 'rgba(0, 0, 0, 0)';
+        },
         highlightBorderWidth: 1
     },
     fills: {
-        defaultFill: 'rgba(0, 163, 76, 0.0625)',
-        westfalen: 'rgba(238, 25, 33, 0.0625)',
-        nrw: 'rgba(0, 0, 0, 0)'
+        nrw : 'rgba(0, 0, 0, 0)',
+        defaultFill: function(value) {
+            for(var i = 0; i < westfalen.length; i++) {
+                if(value.id.startsWith(westfalen[i])){
+                  data[value.id] = {"fillKey" : "westfalen"};
+                  return 'rgba(238, 25, 33, 0.0625)';
+                }
+            }
+            return 'rgba(0, 163, 76, 0.0625)';
+        }
     },
     data : data,
-    scope: 'nrw',
+    scope: '@scope',
     setProjection: function(element) {
         var projection = d3.geo.mercator()
             .center([7.7, 51.4])
@@ -48,9 +60,11 @@ var map = new Datamap({
     },
     done: function(datamap) {
         datamap.svg.selectAll('.datamaps-subunit').on('click', function(geography) {
+          if(geography.properties.name) {
             var label = encodeURIComponent(geography.properties.name);
             var polygon = transform(geography.geometry.coordinates[0]);
             window.location = "/nwbib/search?" + "location=" + label + "|" + polygon;
+          }
         });
     }
 });

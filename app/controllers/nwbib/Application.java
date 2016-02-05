@@ -116,14 +116,14 @@ public class Application extends Controller {
 	public static final int ONE_DAY = 24 * ONE_HOUR;
 
 	/**
+	 * @param map The scope for the NRW map ("kreise" or "gemeinden")
 	 * @return The NWBib index page.
 	 */
-	@Cached(key = "nwbib.index", duration = ONE_HOUR)
-	public static Result index() {
+	public static Result index(String map) {
 		final Form<String> form = queryForm.bindFromRequest();
 		if (form.hasErrors())
-			return badRequest(index.render());
-		return ok(index.render());
+			return badRequest(index.render(map));
+		return ok(index.render(map));
 	}
 
 	/**
