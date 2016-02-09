@@ -1208,7 +1208,7 @@
 			<concat delimiter=", " name="a"
 				flushWith="@subjectNotAPerson|@creatorCorporateBodyId|@contributorCorporateBodyId"
 				sameEntity="true">
-				<data source="1????.[cghknpsz]|[29]??[-abcdfep][12-].[cdghknsz]|8[012]?[-mn][-12].[cghknpsz]"/>
+				<data source="1????.[cghknpsz]|[29]??[-abcdfep][12-].[bcdghknsz]|8[012]?[-mn][-12].[cghknpsz]"/>
 			</concat>
 			<data source="@subjectNotAPerson|@creatorCorporateBodyId|@contributorCorporateBodyId"/>
 		</combine>
@@ -1221,6 +1221,9 @@
 			</data>
 			<data source="@creatorPersonId|@contributorPersonId"/>
 		</combine>
+		
+		
+		
 		<combine name="$[ns-gnd]preferredNameForTheCorporateBody" value="${a}"
 			flushWith="@creatorCorporateBodyId">
 			<data source="@nameOfCreatingCorporateBody" name="a"/>
@@ -1234,6 +1237,8 @@
 			<data source="@subjectLinks"/>
 			<data source="9[01234][27]-[-12].k" name="a"/>
 		</combine>
+		
+		
 		<combine name="@preferredNameP" value="${a}" sameEntity="true">
 			<data source="@subjectLinks"/>
 			<data source="9[01234][27]-[-12].p" name="a">
