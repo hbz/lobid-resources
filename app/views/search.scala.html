@@ -82,15 +82,15 @@
              <div class="panel panel-default">
                  <div class="panel-body" style="text-align:center">
                  <div class="row">
-                    <div class="col-md-1"></div>
-                    <div class="col-md-10">
+                    <div class="col-md-2"></div>
+                    <div class="col-md-8">
                      @allHits @if(!raw.isEmpty && !raw.contains(Lobid.escapeUri(Application.COVERAGE_FIELD.replace(".raw","")))){
                       @defining(Application.CONFIG.getString("nwbib.api") + "/" + raw.substring(raw.lastIndexOf("/")+1)) { lobidUrl =>
                        @labelRaw in: <a href="@lobidUrl.replace("/resource/","/nwbib/")">@Html(Lobid.resourceLabel(lobidUrl))</a>}}else{Treffer}, 
                        zeige @(from+1) bis @(Math.min(from+hits.size,from+size)):
                     </div>
-                    <div class="col-md-1" style="text-align: right; padding-right: 4px;">
-                      <a href='@nwbib.routes.Application.starAll((Json.parse(result)\\"hbzId").map(_.as[String]).mkString(","))' title="Alle Titel dieser Seite zur Merkliste hinzufügen"><span class="glyphicon glyphicon-arrow-down"></span></a>
+                    <div class="col-md-2" style="text-align: right; padding-right: 4px;">
+                      <a href='@nwbib.routes.Application.starAll((Json.parse(result)\\"hbzId").map(_.as[String]).mkString(","))' title="Alle Titel dieser Seite zur Merkliste hinzufügen">Merkliste <span class="glyphicon glyphicon-arrow-down"></span></a>
                     </div>
                  </div>
                  </div>
