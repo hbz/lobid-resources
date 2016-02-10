@@ -35,7 +35,8 @@ public enum TableRow {
 							values.stream()
 									.filter(value -> !value.contains("http://dewey.info"))
 									.map(val -> label(doc, property, param, val, keys))
-									.collect(Collectors.joining(" | ")));
+									.collect(Collectors.joining(
+											property.equals("subjectChain") ? " <br/> " : " | ")));
 		}
 
 		private String label(JsonNode doc, String property, String param,
