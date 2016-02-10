@@ -19,12 +19,14 @@ var layer = L.tileLayer('http://otile{s}.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.p
 var nrw = new L.LatLng(51.45, 7.7)
 var map = new L.Map("map-coverage", {
     center: nrw,
-    zoom: 7,
-    minZoom: 7,
+    zoom: 6,
+    minZoom: 6,
     maxZoom: 13,
     scrollWheelZoom: true,
-    attributionControl: false
+    attributionControl: false,
+    zoomControl: false
 });
+new L.Control.Zoom({ position: 'bottomleft' }).addTo(map);
 
 $.getJSON('@controllers.routes.Assets.at("data/nrw.geo.json")', function(json) {
     L.geoJson(json, {
@@ -59,15 +61,24 @@ if (pointsParam.length > 0) {
 }
 
 var markers = new L.MarkerClusterGroup({
+    maxClusterRadius: 50,
     zoomToBoundsOnClick: false,
     singleMarkerMode: true,
     iconCreateFunction: function (cluster) {
         var childCount = cluster.getChildCount();
-        return new L.DivIcon({ 
-            html: '<div><span>' + childCount + (childCount > 1 ? ' Orte' : '<br/>Ort') + '</span></div>',
-            className: 'marker-cluster marker-cluster-' + (childCount > 1 ? 'area' : 'place'),
-            iconSize: new L.Point(40, 40)
+        if(childCount > 1){
+	        return new L.DivIcon({
+	            html: '<div title="Titel zu ' + childCount +' Orten suchen"><span>' + childCount + ' Orte</span></div>',
+	            className: 'marker-cluster marker-cluster-area',
+	            iconSize: new L.Point(40, 40)
         });
+        } else {
+          return new L.DivIcon({
+                html: '<div><span>' + childCount + '<br/>Ort</span></div>',
+                className: 'marker-cluster marker-cluster-place',
+                iconSize: new L.Point(40, 40)
+          });
+        }
     }
 });
 
@@ -81,19 +92,8 @@ var queryParams = '&q=@urlEncode(q)&person=@urlEncode(person)&name=@urlEncode(na
 var lastLayer;
 var label;
 markers.on('clusterclick', function (a) {
-    map.setView(a.latlng);
     lastLayer = a.layer;
-    var places = a.layer.getAllChildMarkers().length;
-    popup = L.popup()
-     .setLatLng(a.latlng)
-     .setContent(
-         '<table style="text-align: center" class="table-striped table-condensed">'+
-         '<tr><td><a style="cursor: pointer" onclick="map.closePopup(); areaSearch(lastLayer.getConvexHull());">'+
-           'Titel mit Bezug zu '+ places +' Orten filtern</a></td></td>'+
-         '<tr><td><a style="cursor: pointer" onclick="map.closePopup(); lastLayer.zoomToBounds()">'+
-           'In diesen Bereich zoomen &rarr;</a></td></tr>'+
-         '</table>')
-     .openOn(map);
+    areaSearch(lastLayer.getConvexHull());
 });
 
 function areaSearch(hull) {
@@ -142,20 +142,11 @@ function addMarker(link, latLon, freq){
   var lat = latLon.split(",")[0];
   var lon = latLon.split(",")[1];
   var marker = L.marker([lat,lon],{
-        title: freq + " Titel",
+        title: freq + " Titel zu diesem Ort anzeigen",
         icon: L.divIcon()
   });
-  marker.bindPopup(
-  '<table style="text-align: center" class="table-striped table-condensed">'+
-  '<tr><td><a href="' + link +'">'+
-    freq + ' Titel mit Bezug zu diesem Ort filtern</a></td></td>'+
-  '<tr><td><a style="cursor: pointer" onclick="map.panTo(nrw); map.setView(nrw, 7)">'+
-    '&larr; Zurück zur Übersicht zoomen</a></td></tr>'+
-  '</table>');
   marker.on('click', function(e) {
-    map.setView(L.latLng(lat, lon), 13, {reset: true});
-    marker.setOpacity(0.65);
-    marker.openPopup();
+   location.href = link;
   });
   markers.addLayer(marker);
 }

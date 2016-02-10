@@ -30,54 +30,6 @@
   </nav>
  }
 
-@facets(facet: String, field: String, current: String, addClass:String = "", allLabel:String = "Alle")={
-	    <div class="@addClass" id="@field.hashCode.abs-facet">
-	        <script>$("#@(Application.ISSUED_FIELD.hashCode.abs)-facet").hide();</script>
-	        <h4>@facet @facetLabel(current, current.split("[,+]").size + " ausgewählt")</h4>
-	        <ul class="facet" id="facets-ul-@field.hashCode.abs">
-	            <script>
-	            $.ajax({
-	              url: '/nwbib/facets?q=@urlEncode(q)&person=@urlEncode(person)&name=@urlEncode(name)&subject=@urlEncode(subject)&publisher=@urlEncode(publisher)&issued=@urlEncode(issued)&medium=@urlEncode(medium)&nwbibspatial=@urlEncode(nwbibspatial)&nwbibsubject=@urlEncode(nwbibsubject)&from=0&size=@size&owner=@urlEncode(owner)&t=@urlEncode(t)&field=@urlEncode(field)&sort=@urlEncode(sortParam)&set=@urlEncode(set)&location=@urlEncode(location)&word=@urlEncode(word)&corporation=@urlEncode(corporation)&raw=@urlEncode(raw)',
-	              success: function(data, textStatus, jqXHR) {
-	                var lis = data.split("</li>");
-	                lis = lis.slice(0, lis.length-1);
-	                var ul = $("#facets-ul-@field.hashCode.abs");
-	                var c = 0;
-	                var step = 5;
-                  for(i = 0; i < lis.length; i++){
-                    if(i % step == 0 || lis.length-i < step){
-                      var divId = c + "more-@field.hashCode.abs";
-                      ul.append("<div id='" + divId + "' " + (i == 0 ? "" : "style='display:none;'") + ">");
-                      if(c > 0){
-                        step = 15;
-                      }
-                      for(j = i; j < Math.min(i + step, lis.length); j++){
-                        $("#" + divId).append(lis[j] + "</li>");
-                      }
-                      if(j < lis.length) {
-                        var linkId = c + "more-link-@field.hashCode.abs"
-                        var expand = "$(\"" + "#" + (c + 1) + "more-@field.hashCode.abs" + "\").show();$(\"#" + linkId + "\").hide();";
-                        $("#" + divId).append(
-                            "<li class='more-link' id='" + linkId + "'><a style='cursor:pointer;' onclick='" + expand + "'><span class='glyphicon glyphicon-plus' aria-hidden='true'></span> Zeige mehr @facet.split(" ").last</a></li>");
-                      }
-                      i=j-1;
-                      c++;
-                      ul.append("</div>");
-                    }
-                  }
-	                $("#facets-loading-@field.hashCode.abs").remove();
-	                @if(field==Application.ISSUED_FIELD){ @issued_facet(issued) }
-	              },
-	              error: function(jqXHR, textStatus, errorThrown) {
-	                console.log(textStatus + ": " + errorThrown);
-	              }
-	            });
-	            </script>
-	            <li id="facets-loading-@field.hashCode.abs"><a href="#">Lade @facet...</a></li>
-	        </ul>
-	    </div>
-}
-
 @sort(param: String, label: String)={
 <li @if(sortParam==param){class="active"}>
   <a href="@nwbib.routes.Application.search(q,person,name,subject,id,publisher,issued,medium,nwbibspatial,nwbibsubject,from,size,owner,t,param,set=set,location=location,word=word,corporation=corporation,raw=raw)">@label</a>
@@ -98,18 +50,6 @@
 	if(raw.contains("multiVolumeWork")) {select(("Band","Bände"))} else if (raw.contains("series")) {select(("Serienband","Serienbände"))} else if (raw.contains("containedIn")) {select(("Beitrag","Beiträge"))} else {""}
 }
 
-@locationLabel(loc:String)=@{
-  val isLatLon = loc.contains(",")
-  if(isLatLon) {views.ReverseGeoLookup.of(loc)} else {loc}
-}
-
-@facetLabel(current: String, label: String) = {
-	@if(!current.isEmpty){
-     <span class="badge" id="facet-filter">@label</span> 
-      <a href="@nwbib.routes.Application.search(q,person,name,if (subject==current) "" else subject,id,publisher,if(issued==current) "" else issued,if (medium==current) "" else medium,if(nwbibspatial==current) "" else nwbibspatial,if(nwbibsubject==current) "" else nwbibsubject,from,size,if (owner==current) "" else owner,if (t==current) "" else t,sortParam,set=set,location=(if (location==current) "" else location),word=word,corporation=corporation,raw=(if (raw.split(":").last==current) "" else raw)).toString" title="Filter entfernen"><span class="octicon octicon-x"></span></a> 
-    }
-}
-
 @main("NWBib - Ergebnisliste") {
     @if(Seq(person, name, subject, id, publisher, issued, word, corporation).exists(!_.isEmpty)){
       @tags.search_advanced("Suche aktualisieren", q, person, name, subject, nwbibspatial, nwbibsubject, id, publisher, issued, sortParam, word=word, corporation=corporation)
@@ -118,7 +58,7 @@
     }
     @defining(Json.parse(result).asOpt[Seq[JsValue]].getOrElse(Seq()).zipWithIndex.drop(1)) { hits =>
      <div class="row">
-         <div class="col-md-8">
+         <div class="col-md-@if(allHits > 0){9}else{12}">
          @if(hits.size>0){
              <div class="row hide-in-print" >
                  <div class="col-md-6" style="text-align:left">
@@ -168,34 +108,12 @@
          } else {
             @if(hits.isEmpty){
                 <div class="alert alert-info text-center">
-                    Keine Ergebnisse für Auswahl und Anfrage. Versuchen Sie eine andere Anfrage oder andere Filtereinstellungen.
+                    Keine Ergebnisse. Suchoptionen: Begriffe <code>+</code>einschließen, <code>-</code>ausschließen, unscharf<code>~</code>, <code>"</code>exakt suchen<code>"</code>.
                 </div>
             }
          }
         </div>
-        <div class="col-md-4 hide-in-print">
-            <p class="lead"> Ergebnisse eingrenzen: </p>
-            <h4>Erscheinungsjahr @facetLabel(issued, issued)</h4>
-            <div id="issued-facet-all" style="display:none">
-            <p>
-            <div class="row facet"><div class="col-md-12">@facets("Erscheinungsjahr", Application.ISSUED_FIELD, issued, "dropup")</div></div>
-            <div class="row facet"><div class="col-md-12"><canvas id="issued-chart"></canvas></div></div>
-            <div id="slider-range"></div>
-            </div>
-            <input type="text" id="issued-range" readonly value="Lade Erscheinungsjahre...">
-            <div id="issued-div"> <a id="issued-link" style="display:none" href="@nwbib.routes.Application.search(q,person,name,subject,id,publisher,issued,medium,nwbibspatial,nwbibsubject,from,size,owner,t,sortParam,set=set,location=location,word=word,corporation=corporation,raw=raw)">Anwenden</a> </div>
-            <div class="row facet"><div class="col-md-12">@facets("Regionen", Application.NWBIB_SPATIAL_FIELD, nwbibspatial)</div></div>
-            <div class="row facet"><div class="col-md-12">@facets("Orte", Application.COVERAGE_FIELD, raw.split(":").last)</div></div>
-            <p/>
-            <div id="coverage"><h4>Raumbezug @facetLabel(location, locationLabel(location.split("\\|")(0)))</h4>
-            <div class="row facet"><div class="col-md-12">@coverage_map(q,person,name,subject,id,publisher,issued,medium,nwbibspatial,nwbibsubject,owner,t,sortParam,set,location,word,corporation,raw,from,size)</div></div>
-            </div>
-            <div class="row facet"><div class="col-md-12">@facets("Sachgebiete", Application.NWBIB_SUBJECT_FIELD, nwbibsubject)</div></div>
-            <div class="row facet"><div class="col-md-12">@facets("Schlagwörter", Application.SUBJECT_FIELD, if(subject.startsWith("http")) subject else "", "dropup")</div></div>
-            <div class="row facet"><div class="col-md-12">@facets("Medientypen", Application.MEDIUM_FIELD, medium, "dropup")</div></div>
-            <div class="row facet"><div class="col-md-12">@facets("Publikationstypen", Application.TYPE_FIELD, t, "dropup")</div></div>
-            <div class="row facet"><div class="col-md-12">@facets("Bestand in Bibliotheken", Application.ITEM_FIELD, owner, "dropup")</div></div>
-         </div>
+        @if(allHits > 0) {@facets(q,person,name,subject,id,publisher,issued,medium,nwbibspatial,nwbibsubject,owner,t,sortParam,set,location,word,corporation,raw,from,size)}
       </div>
     }
     <p>@map_credits()</p>

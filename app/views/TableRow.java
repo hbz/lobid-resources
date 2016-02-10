@@ -35,7 +35,8 @@ public enum TableRow {
 							values.stream()
 									.filter(value -> !value.contains("http://dewey.info"))
 									.map(val -> label(doc, property, param, val, keys))
-									.collect(Collectors.joining(" | ")));
+									.collect(Collectors.joining(
+											property.equals("subjectChain") ? " <br/> " : " | ")));
 		}
 
 		private String label(JsonNode doc, String property, String param,
@@ -53,7 +54,7 @@ public enum TableRow {
 				e.printStackTrace();
 			}
 			String search = String.format("%s/search?%s=%s",
-					controllers.nwbib.routes.Application.index(), param, term);
+					controllers.nwbib.routes.Application.index(""), param, term);
 			String label = labelForId(value, doc, labels);
 			String result = labels.get().contains("numbering") ? label
 					: String.format(
