@@ -53,8 +53,10 @@ public enum TableRow {
 			} catch (UnsupportedEncodingException e) {
 				e.printStackTrace();
 			}
+			String indexUrl =
+					controllers.nwbib.routes.Application.index("").toString();
 			String search = String.format("%s/search?%s=%s",
-					controllers.nwbib.routes.Application.index(""), param, term);
+					indexUrl.substring(0, indexUrl.indexOf('?')), param, term);
 			String label = labelForId(value, doc, labels);
 			String result = labels.get().contains("numbering") ? label
 					: String.format(
