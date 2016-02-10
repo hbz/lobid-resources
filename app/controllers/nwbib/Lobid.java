@@ -188,7 +188,7 @@ public class Lobid {
 	public static String organisationLabel(String uri) {
 		String cacheKey = "org.label." + uri;
 		String format = "short.altLabel";
-		return lobidLabel(uri, cacheKey, format, true);
+		return lobidLabel(uri, cacheKey, format);
 	}
 
 	/**
@@ -198,11 +198,10 @@ public class Lobid {
 	public static String resourceLabel(String uri) {
 		String cacheKey = "res.label." + uri;
 		String format = "short.title";
-		return lobidLabel(uri, cacheKey, format, false);
+		return lobidLabel(uri, cacheKey, format);
 	}
 
-	private static String lobidLabel(String uri, String cacheKey, String format,
-			boolean shorten) {
+	private static String lobidLabel(String uri, String cacheKey, String format) {
 		final String cachedResult = (String) Cache.get(cacheKey);
 		if (cachedResult != null) {
 			return cachedResult;
@@ -220,8 +219,7 @@ public class Lobid {
 			Iterator<JsonNode> elements = response.asJson().elements();
 			String label = "";
 			if (elements.hasNext()) {
-				String full = elements.next().asText();
-				label = shorten ? shorten(full) : full;
+				label = elements.next().asText();
 			} else {
 				label = uri.substring(uri.lastIndexOf('/') + 1);
 			}
@@ -253,7 +251,6 @@ public class Lobid {
 					    "preferredNameForTheSubjectHeading",
 					    "preferredNameForTheConferenceOrEvent",
 					    "preferredNameForThePlaceOrGeographicName"))); // @formatter:on
-			label = shorten(label);
 			Cache.set(cacheKey, label);
 			return label;
 		}).get(50000);
@@ -269,17 +266,9 @@ public class Lobid {
 				uri.contains("spatial") ? Classification.Type.SPATIAL.elasticsearchType
 						: Classification.Type.NWBIB.elasticsearchType;
 		String label = Application.CLASSIFICATION.label(uri, type);
-		label = shorten(label);
 		label = HtmlEscapers.htmlEscaper().escape(label);
 		label = label.trim().isEmpty() ? uri : label;
 		Cache.set(cacheKey, label);
-		return label;
-	}
-
-	private static String shorten(String label) {
-		int limit = 40;
-		if (label.length() > limit)
-			return label.substring(0, limit) + "...";
 		return label;
 	}
 
