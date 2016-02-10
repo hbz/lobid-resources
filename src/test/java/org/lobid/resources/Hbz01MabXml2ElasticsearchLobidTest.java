@@ -200,9 +200,9 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 				String filename =
 						((String) map.get("@id")).replaceAll("/about", "").replaceAll(
 								RdfModel2ElasticsearchEtikettJsonLd.LOBID_DOMAIN + ".*/", "");
-				String fname = "jsonld/" + filename;
-				writeFile(fname, jsonLdWithoutContext);
-				testFiles(fname);
+				filename = "jsonld/" + filename;
+				writeFile(filename, jsonLdWithoutContext);
+				testFiles(filename);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
