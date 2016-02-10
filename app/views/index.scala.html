@@ -1,6 +1,6 @@
 @* Copyright 2014 Fabian Steeg, hbz. Licensed under the GPLv2 *@
 
-@()
+@(map: String)
 
 @import helper._
 @import play.api.libs.json.Json
@@ -20,7 +20,11 @@
            sondern auch Aufsätze und andere Medien wie etwa Karten, DVDs, Hörbücher und elektronische Publikationen.
            </p>
 	       <p>
-	       Zum raschen Einstieg in die Literatursuche nutzen Sie die Eingabezeile oder die Karte. Für die präzise Recherche steht Ihnen die 
+	       Zum raschen Einstieg nutzen Sie die Eingabezeile oder die Karte mit 
+	       @if(map == "kreise") {Kreisen (oder <a href='@nwbib.routes.Application.index(map="gemeinden")'>Gemeinden</a>)} else {Gemeinden (oder <a href='@nwbib.routes.Application.index(map="kreise")'>Kreisen</a>)}.
+	       </p>
+	       <p>
+	       Für die präzise Recherche steht Ihnen die 
 	       Erweiterte Suche zur Verfügung sowie die Themensuche mit Hilfe inhaltserschließender Schlagwortfolgen. Mit den beiden Sucheinstiegen 
 	       zu Regionen/Orten und Sachgebieten können Sie sich einen systematischen Überblick über den Inhalt der NWBib verschaffen und sich zu 
 	       Titeln Ihres Interesses führen lassen. Bei allen Recherchen haben Sie die Möglichkeit, die Treffer nach Dokumentengruppen und 
@@ -29,7 +33,7 @@
 	       }
 	    </div>
 	    <div class="col-md-5">
-	       @tags.nrw_map()
+	       @tags.nrw_map(map)
 	    </div>
     </div>
     <script type="application/ld+json">
