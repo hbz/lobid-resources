@@ -1218,7 +1218,7 @@
 				flushWith="@subjectNotAPerson|@creatorCorporateBodyId|@contributorCorporateBodyId"
 				sameEntity="true">
 				<data
-					source="1????.[cghknpsz]|[29]??[-abcdfep][12-].[bcdghknsz]|8[012]?[-mn][-12].[cghknpsz]"/>
+					source="1????.[cghknpsz]|[29]??[-abcdfep][12-].[bcdghknsxz]|8[012]?[-mn][-12].[cghknpsz]"/>
 			</concat>
 			<data source="@subjectNotAPerson|@creatorCorporateBodyId|@contributorCorporateBodyId"/>
 		</combine>
@@ -1270,7 +1270,8 @@
 		<combine name="$[ns-gnd]preferredNameForThePlaceOrGeographicName" value="${a}"
 			sameEntity="true">
 			<data source="@subjectLinks"/>
-			<data source="9[01234][27]-[-12].g" name="a"/>
+			<data source="9[01234][27]-[-12].g"/>
+			<data source="@preferredNameConcatSubject" name="a"/>
 		</combine>
 		<!-- /subjects -->
 		<choose name="@preferredName"
