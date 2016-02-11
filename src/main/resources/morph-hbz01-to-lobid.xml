@@ -862,7 +862,11 @@
 			<data source="@nameOfCreatingCorporateBodyK" name="k"/>
 			<data source="@nameOfCreatingCorporateBodyH" name="h"/>
 		</combine>
-		<data source="2?[02468][-a][12].b" name="@nameOfCreatingCorporateBodyB"/>
+		<combine name="@nameOfCreatingCorporateBodyB" value="${a}">
+			<concat delimiter=", " name="a" flushWith="@creatorCorporateBodyId">
+				<data source="2?[02468][-a][12].b"/>
+			</concat>
+		</combine>
 		<combine name="@nameOfCreatingCorporateBodyKB" value="${k}. ${b}">
 			<data source="@nameOfCreatingCorporateBodyB" name="b"/>
 			<data source="@nameOfCreatingCorporateBodyK" name="k"/>
@@ -890,7 +894,12 @@
 			<data source="@nameOfContributingCorporateBodyK" name="k"/>
 			<data source="@nameOfContributingCorporateBodyH" name="h"/>
 		</combine>
-		<data source="2?[02468][bcfep][12].b" name="@nameOfContributingCorporateBodyB"/>
+		<data source="2?[02468][bcfep][12].b" name=""/>
+		<combine name="@nameOfContributingCorporateBodyB" value="${a}">
+			<concat delimiter=", " name="a" flushWith="@contributorCorporateBodyId">
+				<data source="2?[02468][bcfep][12].b"/>
+			</concat>
+		</combine>
 		<combine name="@nameOfContributingCorporateBodyKB" value="${k}. ${b}">
 			<data source="@nameOfContributingCorporateBodyK" name="k"/>
 			<data source="@nameOfContributingCorporateBodyB" name="b"/>
@@ -1208,7 +1217,8 @@
 			<concat delimiter=", " name="a"
 				flushWith="@subjectNotAPerson|@creatorCorporateBodyId|@contributorCorporateBodyId"
 				sameEntity="true">
-				<data source="1????.[cghknpsz]|[29]??[-abcdfep][12-].[bcdghknsz]|8[012]?[-mn][-12].[cghknpsz]"/>
+				<data
+					source="1????.[cghknpsz]|[29]??[-abcdfep][12-].[bcdghknsz]|8[012]?[-mn][-12].[cghknpsz]"/>
 			</concat>
 			<data source="@subjectNotAPerson|@creatorCorporateBodyId|@contributorCorporateBodyId"/>
 		</combine>
@@ -1221,9 +1231,6 @@
 			</data>
 			<data source="@creatorPersonId|@contributorPersonId"/>
 		</combine>
-		
-		
-		
 		<combine name="$[ns-gnd]preferredNameForTheCorporateBody" value="${a}"
 			flushWith="@creatorCorporateBodyId">
 			<data source="@nameOfCreatingCorporateBody" name="a"/>
@@ -1237,8 +1244,6 @@
 			<data source="@subjectLinks"/>
 			<data source="9[01234][27]-[-12].k" name="a"/>
 		</combine>
-		
-		
 		<combine name="@preferredNameP" value="${a}" sameEntity="true">
 			<data source="@subjectLinks"/>
 			<data source="9[01234][27]-[-12].p" name="a">

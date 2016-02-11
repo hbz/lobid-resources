@@ -57,7 +57,7 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 	private static final Logger LOG =
 			LoggerFactory.getLogger(Hbz01MabXml2ElasticsearchLobidTest.class);
 	private static final String LOBID_RESOURCES =
-			"resources-2es-lobid-test-" + LocalDateTime.now().toLocalDate() + "-"
+			"test-resources-" + LocalDateTime.now().toLocalDate() + "-"
 					+ LocalDateTime.now().toLocalTime();
 	private static final String N_TRIPLE = "N-TRIPLE";
 	static final String TEST_FILENAME_NTRIPLES = "hbz01.es.nt";
@@ -200,9 +200,9 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 				String filename =
 						((String) map.get("@id")).replaceAll("/about", "").replaceAll(
 								RdfModel2ElasticsearchEtikettJsonLd.LOBID_DOMAIN + ".*/", "");
-				String fname = "jsonld/" + filename;
-				writeFile(fname, jsonLdWithoutContext);
-				testFiles(fname);
+				filename = "jsonld/" + filename;
+				writeFile(filename, jsonLdWithoutContext);
+				testFiles(filename);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
