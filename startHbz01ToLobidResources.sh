@@ -40,11 +40,12 @@ fi
 
 function indexFile() {
 	git checkout $BRANCH
+	git pull
 	mvn clean assembly:assembly -DdescriptorId=jar-with-dependencies -DskipTests=true -DskipIntegrationTests
 	mvn exec:java -Dexec.mainClass="org.lobid.resources.run.MabXml2lobidJsonEs" -Dexec.args="$1 $INDEX_NAME $INDEX_ALIAS_SUFFIX $ES_NODE $ES_CLUSTER_NAME $UPDATE_NEWEST_INDEX"
 }
 
-git fetch
+bash install-dependencies.sh
 indexFile $FILE
 
 # optionally a file with a list of file names
