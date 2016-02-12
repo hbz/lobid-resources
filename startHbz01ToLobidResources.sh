@@ -44,6 +44,7 @@ function indexFile() {
 	mvn exec:java -Dexec.mainClass="org.lobid.resources.run.MabXml2lobidJsonEs" -Dexec.args="$1 $INDEX_NAME $INDEX_ALIAS_SUFFIX $ES_NODE $ES_CLUSTER_NAME $UPDATE_NEWEST_INDEX"
 }
 
+git fetch
 indexFile $FILE
 
 # optionally a file with a list of file names
