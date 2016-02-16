@@ -1242,7 +1242,7 @@
 		<combine name="$[ns-gnd]preferredNameForTheCorporateBody" value="${a}"
 			sameEntity="true">
 			<data source="@subjectLinks"/>
-			<data source="9[01234][27]-[-12].k" />
+			<data source="9[01234][27]-[-12].k"/>
 			<data source="@preferredName" name="a"/>
 		</combine>
 		<combine name="@preferredNameP" value="${a}" sameEntity="true">
@@ -1273,6 +1273,21 @@
 			<data source="@subjectLinks"/>
 			<data source="9[01234][27]-[-12].g"/>
 			<data source="@preferredNameConcatSubject" name="a"/>
+		</combine>
+
+		<combine name="$[ns-gnd]dateOfBirth" value="${a}" sameEntity="true">
+			<data source="@subjectLinks"/>
+			<data source="@preferredNameP"/>
+			<data source="9[01234][27]-[-12].d" name="a">
+				<regexp match="([0-9]+)-?.*" format="${1}"/>
+			</data>
+		</combine>
+		<combine name="$[ns-gnd]dateOfDeath" value="${a}" sameEntity="true">
+			<data source="@subjectLinks"/>
+			<data source="@preferredNameP"/>
+			<data source="9[01234][27]-[-12].d" name="a">
+				<regexp match="[0-9]+-([0-9]+)" format="${1}"/>
+			</data>
 		</combine>
 		<!-- /subjects -->
 		<choose name="@preferredName"
