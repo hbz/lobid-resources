@@ -28,9 +28,17 @@
 	    "preferredNameForThePlaceOrGeographicName"))
 }
 
+@nestedIds(property: String) = @{
+	(doc\\property).last.as[Seq[JsValue]].map((v: JsValue) => (v \ "@id").as[String])
+}
+
+@singleOrMultiString(property: String) = @{
+	(doc\\property).last.asOpt[Seq[String]].getOrElse(Seq((doc\\property).last.asOpt[String].getOrElse("--")))
+}
+
 @with_icon(label: String, property: String, fullField: String) = {
   @if(!(doc\\property).isEmpty) {
-    @defining((doc\\property).last.asOpt[Seq[String]].getOrElse(Seq((doc\\property).last.asOpt[String].get))){ v =>
+    @defining(if(Lobid.DATA_2) { nestedIds(property) } else { singleOrMultiString(property) }){ v =>
       <tr><td>@label</td><td><span class="@Lobid.facetIcon(v,fullField)"></span> @Lobid.facetLabel(v,fullField,"")</td></tr>
     }
   }
@@ -78,7 +86,7 @@
   @result_field("Übersetzung", "translator", doc, TableRow.VALUES, valueLabel = gndEntities, param="person")
 
   @with_icon("Medientyp", "medium", controllers.nwbib.Application.MEDIUM_FIELD)
-  @with_icon("Publikationstyp", "@type", controllers.nwbib.Application.TYPE_FIELD)
+  @with_icon("Publikationstyp", if(Lobid.DATA_2) { "type" } else { "@type" }, controllers.nwbib.Application.TYPE_FIELD)
   @result_field("", "thesisInformation", doc, TableRow.VALUES)
 
   @result_field("Erschienen", "issued", doc, TableRow.VALUES)
@@ -93,7 +101,7 @@
   @result_field("Erscheinungsweise", "frequency", doc, TableRow.VALUES)
   @result_field("Erschienen als", "volumeIn", doc, TableRow.VALUES_MULTI, valueLabel = Option(Seq("multiVolumeWork", "numbering")))
   @result_field("Erschienen als", "inSeries", doc, TableRow.VALUES_MULTI, valueLabel = Option(Seq("series", "numbering")))
-  @defining("http://lobid.org/resource/" + (doc \\ "hbzId")(0).as[String]){ id =>
+  @defining("http://lobid.org/resource/" + (doc \\ "hbzId")(0).asOpt[String].getOrElse("--")){ id =>
    @subordinated("@graph.http://purl.org/lobid/lv#multiVolumeWork.@id", id, "Bände", ("zugehöriger Band", "zugehörige Bände"))
    @subordinated("@graph.http://purl.org/lobid/lv#series.@id", id, "Serienbände", ("zugehöriger Serienband", "zugehörige Serienbände"))
    @subordinated("@graph.http://purl.org/lobid/lv#containedIn.@id", id, "Enthält", ("Beitrag", "Beiträge"))

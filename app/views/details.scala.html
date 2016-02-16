@@ -53,8 +53,9 @@
                 <dl>@defining((doc \ "@id").as[String].split("/")(4)){ id =>
                     <dt>@tags.star_button(id) Titeldetails:
                     <a href="@Application.CONFIG.getString("hbz01.api")/@id">&nbsp;</a>
-                    </dt>}
-                    <dd>@tags.result_doc(doc)</dd>
+                    </dt>
+                    <dd>@tags.result_doc(if(Lobid.DATA_2) { Json.parse(Lobid.getResource(id).toString) } else { doc })</dd>
+                    }
                 </dl>
               </div>
               @if(!items.isEmpty || doc.toString.contains("fulltextOnline") || superordination){
