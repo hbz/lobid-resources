@@ -731,6 +731,15 @@ public class Application extends Controller {
 	}
 
 	/**
+	 * @param ids The resource IDs to star
+	 * @return A 303 SEE_OTHER result to the referrer
+	 */
+	public static Result starAll(String ids) {
+		Arrays.asList(ids.split(",")).forEach(id -> star(id));
+		return seeOther(request().getHeader(REFERER));
+	}
+
+	/**
 	 * @param id The resource ID to unstar
 	 * @return An OK result
 	 */
