@@ -7,6 +7,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import org.apache.jena.riot.RDFDataMgr;
 import org.culturegraph.mf.framework.DefaultObjectPipe;
@@ -54,6 +55,8 @@ public final class RdfModel2ElasticsearchEtikettJsonLd
 	private static final String TYPE_ITEM = "item";
 	private static final String TYPE_RESOURCE = "resource";
 	private static Object JSONLD_CONTEXT;
+	private final Pattern INTERNAL_ID_PATTERN =
+			Pattern.compile("^" + LOBID_DOMAIN + "(?!.*(ZDB|about)).+");
 
 	/**
 	 * Provides default constructor. Every json ld document gets the whole json ld
@@ -61,6 +64,7 @@ public final class RdfModel2ElasticsearchEtikettJsonLd
 	 */
 	public RdfModel2ElasticsearchEtikettJsonLd() {
 		this(Globals.etikette.getContext().get("@context"));
+
 	}
 
 	/**
@@ -99,16 +103,15 @@ public final class RdfModel2ElasticsearchEtikettJsonLd
 					if (shouldSubmodelBeExtracted(submodel, subjectResource)) {
 						toJson(submodel, subjectResource.getURI().toString());
 					}
-				} else if (mainNodeId == null
-						&& subjectResource.getURI().toString().startsWith(LOBID_DOMAIN))
+				} else if (mainNodeId == null && INTERNAL_ID_PATTERN
+						.matcher(subjectResource.getURI().toString()).matches())
 					mainNodeId = subjectResource.getURI().toString();
 			}
 			if (!submodel.isEmpty()) {
 				// remove the newly created sub model from the main node
 				copyOfOriginalModel.remove(submodel);
 			}
-		}
-		// the main node (with its kept sub node)
+		} // the main node (with its kept sub node)
 		toJson(copyOfOriginalModel, mainNodeId);
 	}
 
@@ -154,10 +157,10 @@ public final class RdfModel2ElasticsearchEtikettJsonLd
 
 	private static HashMap<String, String> addInternalProperties(
 			HashMap<String, String> jsonMap, String id, String json) {
-		String idWithoutDomain =
-				id.replaceAll("/about", "").replaceAll(LOBID_DOMAIN + ".*/", "");
 		String internal_parent = "";
 		String type = TYPE_RESOURCE;
+		String idWithoutDomain = id.replaceAll(LOBID_DOMAIN + ".*/", "");
+
 		if (id.startsWith(LOBID_ITEM_URI_PREFIX)) {
 			type = TYPE_ITEM;
 			try {
@@ -168,7 +171,7 @@ public final class RdfModel2ElasticsearchEtikettJsonLd
 						: null;
 				internal_parent = ",\"_parent\":\"" + p + "\"";
 				if (p == null) {
-					LOG.warn("Item URI " + id + " has no parent declared!");
+					LOG.warn("Item " + idWithoutDomain + " has no parent declared!");
 					jsonMap.put(ElasticsearchIndexer.Properties.PARENT.getName(),
 							"no_parent");
 				} else
