@@ -1,5 +1,5 @@
 #/bin/bash
-# This diffs the jsonld documents using the the cli and copy the jsonld
+# This diffs the jsonld documents using the cli and copy the jsonld
 # documents to be the new test files.
 # You should manually outcomment the method call "testFiles(filename)"
 # when testing the json because the junit test aborts when one document
