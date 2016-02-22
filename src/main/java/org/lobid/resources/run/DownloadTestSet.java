@@ -27,8 +27,7 @@ import com.ning.http.client.Response;
 public class DownloadTestSet {
 
 	private static final String IDS = "src/test/resources/testIds.txt";
-	private static final String API =
-			"http://lobid.org/resource?id=%s&format=source";
+	private static final String API = "http://test.lobid.org/hbz01/%s";
 	private static final String OUT = "src/test/resources/xml";
 
 	/**
@@ -75,7 +74,7 @@ public class DownloadTestSet {
 	private static Predicate<Pair<String, Response>> successAndXml() {
 		return idAndResponse -> idAndResponse != null
 				&& idAndResponse.second.getStatusCode() == 200
-				&& idAndResponse.second.getHeader("Content-Type").equals("text/xml");
+				&& idAndResponse.second.getHeader("Content-Type").contains("text/xml");
 	}
 
 	private static Consumer<Pair<String, Response>> writeToFileIn(String out) {
