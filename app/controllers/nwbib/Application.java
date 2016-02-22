@@ -29,7 +29,6 @@ import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.common.geo.GeoPoint;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.google.common.collect.ImmutableMap;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
@@ -166,50 +165,32 @@ public class Application extends Controller {
 		Promise<Result> cachedResult = (Promise<Result>) Cache.get(cacheId);
 		if (cachedResult != null)
 			return cachedResult;
-		int requestResultSize = 100;
-		WSRequestHolder requestHolder = Lobid.topicRequest(q, 0, requestResultSize);
-		Promise<Result> result = requestHolder.get().map((WSResponse response) -> {
-			JsonNode json = response.asJson();
-			List<String> topics = new ArrayList<>();
-			for (int i = 1; i < json.size(); i++)
-				topics.add(json.get(i).textValue().trim());
-			long allHits = Lobid.getTotalResults(json);
-			if (allHits > requestResultSize)
-				additionalRequestsAddTo(topics, allHits, q);
-			return ok(views.html.topics.render(q, filterSortUnique(q, topics)));
+		WSRequestHolder request = // @formatter:off
+				WS.url(Application.CONFIG.getString("nwbib.api") + "/facets")
+						.setHeader("Accept", "application/json")
+						.setQueryParameter("subject", q)
+						.setQueryParameter("field", "@graph.http://purl.org/lobid/lv#subjectChain.@value.raw")
+						.setQueryParameter("set", Application.CONFIG.getString("nwbib.set"))
+						.setQueryParameter("from", "0")
+						.setQueryParameter("size", "9999"); // @formatter:on
+		Promise<Result> result = request.get().map((WSResponse response) -> {
+			if (response.getStatus() == Http.Status.OK) {
+				List<JsonNode> terms = response.asJson().findValues("term");
+				return ok(views.html.topics.render(q, filterSortUnique(q, terms)));
+			}
+			Logger.error(new String(response.asByteArray()));
+			return ok(views.html.topics.render(q,
+					filterSortUnique(q, Collections.emptyList())));
 		});
 		cacheOnRedeem(cacheId, result, ONE_HOUR);
 		return result;
 	}
 
-	private static void additionalRequestsAddTo(List<String> topics, long allHits,
-			String q) {
-		long remainingHits = allHits - 100;
-		long remainingCalls =
-				remainingHits / 100 + (remainingHits % 100 == 0 ? 0 : 1);
-		Logger.info(
-				"Need additional topics requests: {} remaining hits, {} remaining calls",
-				remainingHits, remainingCalls);
-		List<Promise<WSResponse>> promises = new ArrayList<>();
-		for (int i = 1; i <= remainingCalls; i++) {
-			WSRequestHolder topicRequest = Lobid.topicRequest(q, i * 100, 100);
-			promises.add(topicRequest.get());
-		}
-		List<WSResponse> responses =
-				Promise.sequence(promises).get(10000 * remainingCalls);
-		responses.forEach(response -> {
-			JsonNode jsonResponse = response.asJson();
-			ArrayNode moreJson = (ArrayNode) jsonResponse;
-			for (int i = 1; i < moreJson.size(); i++) {
-				topics.add(moreJson.get(i).textValue().trim());
-			}
-		});
-	}
-
-	private static List<String> filterSortUnique(String q, List<String> topics) {
+	private static List<String> filterSortUnique(String q,
+			List<JsonNode> topics) {
 		String umlaut = "[äüöß]|ae|ue|oe|ss";
 		List<String> filtered = topics.stream()
-				.map(topic -> topic.replaceAll("\\([\\d,]+\\)$", ""))
+				.map(topic -> topic.textValue().replaceAll("\\([\\d,]+\\)$", ""))
 				.filter(topic -> Arrays.asList(q.split("[\\s\\-]")).stream()
 						.allMatch(queryTerm -> topic.toLowerCase().replaceAll(umlaut, "")
 								.contains(queryTerm.toLowerCase().replaceAll(umlaut, ""))))
