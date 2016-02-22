@@ -57,7 +57,8 @@ public enum TableRow {
 					controllers.nwbib.routes.Application.index("").toString();
 			String search = String.format("%s/search?%s=%s",
 					indexUrl.substring(0, indexUrl.indexOf('?')), param, term);
-			String label = labelForId(value, doc, labels);
+			JsonNode node = Lobid.DATA_2 ? doc.get(property) : doc;
+			String label = labelForId(value, node, labels);
 			String result = labels.get().contains("numbering") ? label
 					: String.format(
 							"<a title=\"Nach weiteren Titeln suchen\" href=\"%s\">%s</a>",
@@ -161,9 +162,12 @@ public enum TableRow {
 		if (!labelKeys.isPresent() || labelKeys.get().isEmpty() || doc == null) {
 			return id;
 		}
-		for (JsonNode node : doc.findValues("@graph").get(0)) {
+
+		List<JsonNode> graphs = doc.findValues("@graph");
+		for (JsonNode node : graphs.isEmpty() ? doc : graphs.get(0)) {
 			for (String key : labelKeys.get()) {
-				if (node.get("@id").textValue().equals(id) && node.has(key)) {
+				if (node.has(key) && node.has("@id")
+						&& node.get("@id").textValue().equals(id)) {
 					JsonNode label = node.get(key);
 					if (label != null && label.isTextual()
 							&& !label.textValue().trim().isEmpty()) {
@@ -180,9 +184,9 @@ public enum TableRow {
 		if ((property.equals("containedIn") || property.equals("hasPart")
 				|| property.equals("isPartOf") || property.equals("multiVolumeWork")
 				|| property.equals("series")) && value.contains("lobid.org")) {
-			return new String[] {
-					value.replace("lobid.org/resource/", "lobid.org/nwbib/"),
-					Lobid.resourceLabel(value) };
+			return new String[] { value.replace(
+					Lobid.DATA_2 ? "lobid.org/resources/" : "lobid.org/resource/",
+					"lobid.org/nwbib/"), Lobid.resourceLabel(value) };
 		}
 		String label =
 				labels.isPresent() && labels.get().size() > 0 ? labels.get().get(0)

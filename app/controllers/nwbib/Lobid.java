@@ -42,6 +42,26 @@ import views.TableRow;
  */
 public class Lobid {
 
+	/** Feature toggle for using the new Lobid 2.0 data. */
+	public static final boolean DATA_2 =
+			Application.CONFIG.getBoolean("feature.lobid2.enabled");
+
+	/**
+	 * @param id The resource ID
+	 * @return The resource JSON content
+	 */
+	public static JsonNode getResource(String id) {
+		if (DATA_2) {
+			String url = String.format(
+					Application.CONFIG.getString("feature.lobid2.indexUrlFormat"), id);
+			Promise<JsonNode> jsonResponse =
+					WS.url(url).get().map(response -> response.asJson());
+			return jsonResponse.get(10000);
+		}
+		throw new IllegalStateException(
+				"Only implemented for Lobid.DATA_2 feature");
+	}
+
 	static Long getTotalResults(JsonNode json) {
 		return json.findValue("http://sindice.com/vocab/search#totalResults")
 				.asLong();
@@ -212,9 +232,11 @@ public class Lobid {
 			x.printStackTrace();
 			return uri;
 		}
-		WSRequestHolder requestHolder =
-				WS.url(uri).setHeader("Accept", "application/json")
-						.setQueryParameter("format", format);
+		WSRequestHolder requestHolder = WS
+				.url(Lobid.DATA_2
+						? uri.replace("lobid.org/resources", "lobid.org/resource") : uri)
+				.setHeader("Accept", "application/json")
+				.setQueryParameter("format", format);
 		return requestHolder.get().map((WSResponse response) -> {
 			Iterator<JsonNode> elements = response.asJson().elements();
 			String label = "";

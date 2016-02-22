@@ -28,9 +28,17 @@
 	    "preferredNameForThePlaceOrGeographicName"))
 }
 
+@nestedIds(property: String) = @{
+	(doc\\property).last.as[Seq[JsValue]].map((v: JsValue) => (v \ "@id").as[String])
+}
+
+@singleOrMultiString(property: String) = @{
+	(doc\\property).last.asOpt[Seq[String]].getOrElse(Seq((doc\\property).last.asOpt[String].getOrElse("--")))
+}
+
 @with_icon(label: String, property: String, fullField: String) = {
   @if(!(doc\\property).isEmpty) {
-    @defining((doc\\property).last.asOpt[Seq[String]].getOrElse(Seq((doc\\property).last.asOpt[String].get))){ v =>
+    @defining(if(Lobid.DATA_2) { nestedIds(property) } else { singleOrMultiString(property) }){ v =>
       <tr><td>@label</td><td><span class="@Lobid.facetIcon(v,fullField)"></span> @Lobid.facetLabel(v,fullField,"")</td></tr>
     }
   }
@@ -41,6 +49,14 @@
     @defining(if(hits==1){values._1} else {values._2}){ value =>
     <tr><td>@label</td><td><a title="@value" href="@nwbib.routes.Application.search(raw=Lobid.escapeUri(field)+":"+Lobid.escapeUri(id),set="*")">@hits @value</a></td></tr>
   }}}
+}
+
+@lobidUrl(node: JsValue) = @{
+  "http://lobid.org/resource/" + (if(Lobid.DATA_2) {
+    node.asOpt[Seq[String]].getOrElse(Seq("--"))(0)
+  } else {
+    node.asOpt[String].getOrElse("--")
+  })
 }
 
 @table(){
@@ -78,7 +94,7 @@
   @result_field("Übersetzung", "translator", doc, TableRow.VALUES, valueLabel = gndEntities, param="person")
 
   @with_icon("Medientyp", "medium", controllers.nwbib.Application.MEDIUM_FIELD)
-  @with_icon("Publikationstyp", "@type", controllers.nwbib.Application.TYPE_FIELD)
+  @with_icon("Publikationstyp", if(Lobid.DATA_2) { "type" } else { "@type" }, controllers.nwbib.Application.TYPE_FIELD)
   @result_field("", "thesisInformation", doc, TableRow.VALUES)
 
   @result_field("Erschienen", "issued", doc, TableRow.VALUES)
@@ -93,7 +109,7 @@
   @result_field("Erscheinungsweise", "frequency", doc, TableRow.VALUES)
   @result_field("Erschienen als", "volumeIn", doc, TableRow.VALUES_MULTI, valueLabel = Option(Seq("multiVolumeWork", "numbering")))
   @result_field("Erschienen als", "inSeries", doc, TableRow.VALUES_MULTI, valueLabel = Option(Seq("series", "numbering")))
-  @defining("http://lobid.org/resource/" + (doc \\ "hbzId")(0).as[String]){ id =>
+  @defining(lobidUrl((doc \\ "hbzId")(0))){ id =>
    @subordinated("@graph.http://purl.org/lobid/lv#multiVolumeWork.@id", id, "Bände", ("zugehöriger Band", "zugehörige Bände"))
    @subordinated("@graph.http://purl.org/lobid/lv#series.@id", id, "Serienbände", ("zugehöriger Serienband", "zugehörige Serienbände"))
    @subordinated("@graph.http://purl.org/lobid/lv#containedIn.@id", id, "Enthält", ("Beitrag", "Beiträge"))
