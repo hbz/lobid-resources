@@ -29,6 +29,7 @@ public class DownloadTestSet {
 	private static final String IDS = "src/test/resources/testIds.txt";
 	private static final String API = "http://test.lobid.org/hbz01/%s";
 	private static final String OUT = "src/test/resources/xml";
+	private static final String XML = "text/xml";
 
 	/**
 	 * @param args 1. Path to IDs file, 2. API call format, 3. output directory.
@@ -62,8 +63,9 @@ public class DownloadTestSet {
 			AsyncHttpClient client, String api) {
 		return hbzId -> {
 			try {
-				return Pair.of(hbzId, client
-						.prepareGet(String.format(api, hbzId.trim())).execute().get());
+				Response response = client.prepareGet(String.format(api, hbzId.trim()))
+						.setHeader("Accept", XML).execute().get();
+				return Pair.of(hbzId, response);
 			} catch (ExecutionException | InterruptedException e) {
 				e.printStackTrace();
 				return null;
@@ -74,7 +76,7 @@ public class DownloadTestSet {
 	private static Predicate<Pair<String, Response>> successAndXml() {
 		return idAndResponse -> idAndResponse != null
 				&& idAndResponse.second.getStatusCode() == 200
-				&& idAndResponse.second.getHeader("Content-Type").contains("text/xml");
+				&& idAndResponse.second.getHeader("Content-Type").contains(XML);
 	}
 
 	private static Consumer<Pair<String, Response>> writeToFileIn(String out) {
