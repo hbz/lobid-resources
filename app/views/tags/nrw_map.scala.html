@@ -40,7 +40,7 @@ var map = new Datamap({
         nrw : 'rgba(0, 0, 0, 0)',
         defaultFill: function(value) {
             for(var i = 0; i < westfalen.length; i++) {
-                if(value.id.startsWith(westfalen[i])){
+                if(value.id.indexOf(westfalen[i]) === 0){
                   data[value.id] = {"fillKey" : "westfalen"};
                   return 'rgba(238, 25, 33, 0.0625)';
                 }
