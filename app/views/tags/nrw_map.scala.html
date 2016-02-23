@@ -63,7 +63,7 @@ var map = new Datamap({
           if(geography.properties.name) {
             var label = encodeURIComponent(geography.properties.name);
             var polygon = transform(geography.geometry.coordinates[0]);
-            window.location = "/nwbib/search?" + "location=" + label + "|" + polygon;
+            window.location = "/search?" + "location=" + label + "|" + polygon;
           }
         });
     }
