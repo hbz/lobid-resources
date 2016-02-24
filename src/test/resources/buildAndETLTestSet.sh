@@ -2,11 +2,11 @@
 set -euo pipefail # See http://redsymbol.net/articles/unofficial-bash-strict-mode/
 IFS=$'\n\t'
 
-# Get all resources listed in the file "testIds.txt" in their raw format 
-# (that is: AlephMabXml). Add them to the resources serving as junit test. 
-# Then ETL the data using the MabXml2lobidJsonEs class. See at the bottom of 
-# this script for the hardcoded server and cluster name etc. To re-download,
-# delete the $DATA_DIR directory.
+# If $DATA_DIR does not exist, get all resources listed in the file "testIds.txt"
+# in their raw format (that is: AlephMabXml). If $DATA_DIR exists, use the local
+# data. To re-download, delete or rename the $DATA_DIR directory. Add them to the
+# resources serving as junit test. Then ETL the data using the MabXml2lobidJsonEs
+# class. See bottom of this script for the hardcoded server and cluster name etc.
 
 # Run install-dependencies.sh in the project root if dependencies are not set up.
 
