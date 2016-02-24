@@ -1,7 +1,7 @@
 @* Copyright 2014-2015 Fabian Steeg, hbz. Licensed under the GPLv2 *@
 
 @(doc: play.api.libs.json.JsValue)
-@import play.api.libs.json.JsValue
+@import play.api.libs.json._
 @import views.TableRow
 @import controllers.nwbib.Lobid
 @import controllers.nwbib.Application.CONFIG
@@ -59,6 +59,17 @@
   })
 }
 
+@lobid2_part_of(field: String, subField: String) = {
+  @if(!(doc \ field).isInstanceOf[JsUndefined]){
+      @Html(TableRow.VALUES_MULTI.process(new com.fasterxml.jackson.databind.ObjectMapper().readTree(doc.toString()),
+      field,
+      "q",
+      "Erschienen als",
+      Seq((((doc \ field)(0) \ subField)(0) \ "@id").as[String]),
+      Optional.of(Seq(subField, "numbering"))))
+  }
+}
+
 @table(){
   @result_field("Titel", "title", doc, TableRow.VALUES)
   @result_field("Titelzusatz", "otherTitleInformation", doc, TableRow.VALUES)
@@ -107,8 +118,13 @@
   @result_field("Quelle", "bibliographicCitation", doc, TableRow.VALUES)
   @result_field("In", "containedIn", doc, TableRow.LINKS)
   @result_field("Erscheinungsweise", "frequency", doc, TableRow.VALUES)
-  @result_field("Erschienen als", "volumeIn", doc, TableRow.VALUES_MULTI, valueLabel = Option(Seq("multiVolumeWork", "numbering")))
-  @result_field("Erschienen als", "inSeries", doc, TableRow.VALUES_MULTI, valueLabel = Option(Seq("series", "numbering")))
+  @if(Lobid.DATA_2) {
+    @lobid2_part_of("inSeries", "series")
+    @lobid2_part_of("volumeIn", "multiVolumeWork")
+  } else {
+    @result_field("Erschienen als", "volumeIn", doc, TableRow.VALUES_MULTI, valueLabel = Option(Seq("multiVolumeWork", "numbering")))
+    @result_field("Erschienen als", "inSeries", doc, TableRow.VALUES_MULTI, valueLabel = Option(Seq("series", "numbering")))
+  }
   @defining(lobidUrl((doc \\ "hbzId")(0))){ id =>
    @subordinated("@graph.http://purl.org/lobid/lv#multiVolumeWork.@id", id, "Bände", ("zugehöriger Band", "zugehörige Bände"))
    @subordinated("@graph.http://purl.org/lobid/lv#series.@id", id, "Serienbände", ("zugehöriger Serienband", "zugehörige Serienbände"))

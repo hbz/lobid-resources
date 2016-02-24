@@ -79,10 +79,11 @@ public enum TableRow {
 			if (!keys.isPresent()) {
 				throw new IllegalArgumentException("VALUES_MULTI needs valueLabels");
 			}
+			JsonNode node = Lobid.DATA_2 ? doc.get(property).iterator().next() : doc;
 			return values.stream()
 					.filter(value -> !value.contains("http://dewey.info"))
 					.map(val -> String.format("<tr><td>%s</td><td>%s</td></tr>", label,
-							label(doc, val, keys.get())))
+							label(node, val, keys.get())))
 					.collect(Collectors.joining("\n"));
 		}
 
@@ -95,7 +96,7 @@ public enum TableRow {
 						refAndLabel(properties.get(i), currentValue, Optional.empty());
 				String result = properties.get(i).equals("numbering") ? currentValue
 						: String.format(
-								"<a title=\"Nach weiteren Titeln suchen\" href=\"%s\">%s</a>",
+								"<a title=\"Titeldetails anzeigen\" href=\"%s\">%s</a>",
 								refAndLabel[0], refAndLabel[1]);
 				results.add(result);
 			}
@@ -106,10 +107,16 @@ public enum TableRow {
 				List<String> keys) {
 			List<String> result = new ArrayList<>();
 			if (doc != null) {
-				for (JsonNode node : doc.findValues("@graph").get(0)) {
-					for (String key : keys) {
-						if (node.get("@id").textValue().equals(value) && node.has(key)) {
-							result.add(node.get(key).textValue());
+				if (Lobid.DATA_2) {
+					result.add(
+							doc.get(keys.get(0)).iterator().next().get("@id").textValue());
+					result.add(doc.get(keys.get(1)).textValue());
+				} else {
+					for (JsonNode node : doc.findValues("@graph").get(0)) {
+						for (String key : keys) {
+							if (node.get("@id").textValue().equals(value) && node.has(key)) {
+								result.add(node.get(key).textValue());
+							}
 						}
 					}
 				}
