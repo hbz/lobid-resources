@@ -2,6 +2,7 @@ package org.lobid.resources.run;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -82,12 +83,14 @@ public class DownloadTestSet {
 	private static Consumer<Pair<String, Response>> writeToFileIn(String out) {
 		return idAndResponse -> {
 			try {
-				String responseBody = idAndResponse.second.getResponseBody();
+				String responseBody =
+						new String(idAndResponse.second.getResponseBodyAsBytes(),
+								StandardCharsets.UTF_8);
 				File outputFolder = new File(out);
 				outputFolder.mkdir();
 				Path path = Paths.get(
 						new File(outputFolder, idAndResponse.first + ".xml").getPath());
-				Files.write(path, Arrays.asList(responseBody));
+				Files.write(path, Arrays.asList(responseBody), StandardCharsets.UTF_8);
 				System.out.println("Wrote to " + path);
 			} catch (IOException e) {
 				e.printStackTrace();
