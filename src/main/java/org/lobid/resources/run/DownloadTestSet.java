@@ -40,11 +40,7 @@ public class DownloadTestSet {
 		String ids = args.length > 0 ? args[0] : IDS;
 		String api = args.length > 1 ? args[1] : API;
 		String out = args.length > 2 ? args[2] : OUT;
-		if (new File(out).exists()) {
-			System.err.printf("Output directory exists, quitting. "
-					+ "Delete or rename '%s' to download new data.\n", out);
-			System.exit(-1);
-		}
+		new File(out).mkdir();
 		download(ids, api, out);
 	}
 
@@ -52,12 +48,17 @@ public class DownloadTestSet {
 		try (AsyncHttpClient client = new AsyncHttpClient()) {
 			Stream<String> hbzIds = Files.readAllLines(Paths.get(ids)).stream();
 			hbzIds//
+					.filter(id -> !outputFile(out, id).exists())//
 					.map(toApiResponse(client, api))//
 					.filter(successAndXml())//
 					.forEach(writeToFileIn(out));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+	private static File outputFile(String out, String id) {
+		return new File(out, String.format("%s.xml", id));
 	}
 
 	private static Function<String, Pair<String, Response>> toApiResponse(
@@ -86,10 +87,7 @@ public class DownloadTestSet {
 				String responseBody =
 						new String(idAndResponse.second.getResponseBodyAsBytes(),
 								StandardCharsets.UTF_8);
-				File outputFolder = new File(out);
-				outputFolder.mkdir();
-				Path path = Paths.get(
-						new File(outputFolder, idAndResponse.first + ".xml").getPath());
+				Path path = Paths.get(outputFile(out, idAndResponse.first).getPath());
 				Files.write(path, Arrays.asList(responseBody), StandardCharsets.UTF_8);
 				System.out.println("Wrote to " + path);
 			} catch (IOException e) {
