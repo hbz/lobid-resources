@@ -3,26 +3,26 @@
 # ~~~~
 
 # Handle trailing slashes
-GET    /*path/                      controllers.nwbib.Application.redirect(path: String)
+GET    /*path/                controllers.nwbib.Application.redirect(path: String)
 
 # Home page
-GET    /nwbib                       controllers.nwbib.Application.index(map?="gemeinden")
-GET    /nwbib/help                  controllers.nwbib.Application.help()
-GET    /nwbib/advanced              controllers.nwbib.Application.advanced()
-GET    /nwbib/topics                controllers.nwbib.Application.topics(q?="")
-GET    /nwbib/search                controllers.nwbib.Application.search(q?="", person?="", name?="", subject?="", id?="", publisher?="", issued?="", medium ?= "", nwbibspatial ?= "", nwbibsubject ?= "", from:Int?=0, size:Int?=25, owner?="", t?="", sort ?= "newest", details:Boolean?=false, set?="", location ?= "", word?="", corporation?="", raw?="")
-GET    /nwbib/subject               controllers.nwbib.Application.subject(q?="", callback?="", t?="")
-GET    /nwbib/register              controllers.nwbib.Application.register(t?="")
-GET    /nwbib/classification        controllers.nwbib.Application.classification(t?="")
-GET    /nwbib/facets                controllers.nwbib.Application.facets(q,person?="", name?="", subject?="", id?="", publisher?="", issued?="", medium ?= "", nwbibspatial ?= "", nwbibsubject ?= "", from:Int,size:Int,owner,t,field,sort,set?="", location?="", word?="", corporation?="", raw?="")
+GET    /                      controllers.nwbib.Application.index(map?="gemeinden")
+GET    /help                  controllers.nwbib.Application.help()
+GET    /advanced              controllers.nwbib.Application.advanced()
+GET    /topics                controllers.nwbib.Application.topics(q?="")
+GET    /search                controllers.nwbib.Application.search(q?="", person?="", name?="", subject?="", id?="", publisher?="", issued?="", medium ?= "", nwbibspatial ?= "", nwbibsubject ?= "", from:Int?=0, size:Int?=25, owner?="", t?="", sort ?= "newest", details:Boolean?=false, set?="", location ?= "", word?="", corporation?="", raw?="")
+GET    /subject               controllers.nwbib.Application.subject(q?="", callback?="", t?="")
+GET    /register              controllers.nwbib.Application.register(t?="")
+GET    /classification        controllers.nwbib.Application.classification(t?="")
+GET    /facets                controllers.nwbib.Application.facets(q,person?="", name?="", subject?="", id?="", publisher?="", issued?="", medium ?= "", nwbibspatial ?= "", nwbibsubject ?= "", from:Int,size:Int,owner,t,field,sort,set?="", location?="", word?="", corporation?="", raw?="")
 
-GET    /nwbib/stars                 controllers.nwbib.Application.showStars(format?="", ids?="")
-GET    /nwbib/stars/clear           controllers.nwbib.Application.clearStars()
-GET    /nwbib/stars/all             controllers.nwbib.Application.starAll(ids)
-POST   /nwbib/stars/:id             controllers.nwbib.Application.star(id)
-DELETE /nwbib/stars/:id             controllers.nwbib.Application.unstar(id)
+GET    /stars                 controllers.nwbib.Application.showStars(format?="", ids?="")
+GET    /stars/clear           controllers.nwbib.Application.clearStars()
+GET    /stars/all             controllers.nwbib.Application.starAll(ids)
+POST   /stars/:id             controllers.nwbib.Application.star(id)
+DELETE /stars/:id             controllers.nwbib.Application.unstar(id)
 
-GET    /nwbib/:id                   controllers.nwbib.Application.show(id)
+GET    /:id                   controllers.nwbib.Application.show(id)
 
 # Map static resources from the /public folder to the /assets URL path
-GET    /nwbib/assets/*file          controllers.Assets.at(path="/public", file)
+GET    /assets/*file          controllers.Assets.at(path="/public", file)

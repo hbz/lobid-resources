@@ -53,10 +53,7 @@ public enum TableRow {
 			} catch (UnsupportedEncodingException e) {
 				e.printStackTrace();
 			}
-			String indexUrl =
-					controllers.nwbib.routes.Application.index("").toString();
-			String search = String.format("%s/search?%s=%s",
-					indexUrl.substring(0, indexUrl.indexOf('?')), param, term);
+			String search = String.format("/search?%s=%s", param, term);
 			JsonNode node = Lobid.DATA_2 ? doc.get(property) : doc;
 			String label = labelForId(value, node, labels);
 			String result = labels.get().contains("numbering") ? label

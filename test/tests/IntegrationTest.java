@@ -52,7 +52,7 @@ public class IntegrationTest {
 		running(testServer(3333, fakeApplication(inMemoryDatabase())), HTMLUNIT,
 				(TestBrowser browser) -> {
 					browser.goTo(
-							"http://localhost:3333/nwbib/classification?t=Raumsystematik");
+							"http://localhost:3333/classification?t=Raumsystematik");
 					assertThat(browser.pageSource()).contains("Nordrhein-Westfalen")
 							.contains("Rheinland").contains("Grafschaft, Herzogtum Jülich");
 				});
@@ -63,7 +63,7 @@ public class IntegrationTest {
 		running(testServer(3333, fakeApplication(inMemoryDatabase())), HTMLUNIT,
 				(TestBrowser browser) -> {
 					browser.goTo(
-							"http://localhost:3333/nwbib/classification?t=Sachsystematik");
+							"http://localhost:3333/classification?t=Sachsystematik");
 					assertThat(browser.pageSource()).contains("Allgemeine Landeskunde")
 							.contains("Landesbeschreibungen").contains("Reiseberichte");
 				});
