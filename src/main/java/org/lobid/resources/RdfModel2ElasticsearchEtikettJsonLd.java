@@ -166,7 +166,7 @@ public final class RdfModel2ElasticsearchEtikettJsonLd
 			try {
 				JsonNode node = new ObjectMapper().readValue(json, JsonNode.class);
 				final JsonNode parent = node.path(PROPERTY_TO_PARENT);
-				String p = parent != null ? parent.findValue("@id").asText()
+				String p = parent != null ? parent.findValue("id").asText()
 						.replaceAll("/about", "").replaceAll(LOBID_DOMAIN + ".*/", "")
 						: null;
 				internal_parent = ",\"_parent\":\"" + p + "\"";
