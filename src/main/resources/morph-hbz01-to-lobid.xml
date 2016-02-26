@@ -66,7 +66,7 @@
 		<!-- ####### Get subject uri of each record -->
 		<!-- ####################### -->
 		<data source="001-[-1].a" name="@id"/>
-		<!-- get also the ZDB id to mint it -->
+		<!-- ZDB id -->
 		<data source="025z[-1].a" name="@idzdb"/>
 		<!-- ####################### -->
 		<!-- ####### hbz ID sameAs ZDB ID -->
@@ -75,12 +75,6 @@
 			<data source="@idzdb" name="idzdb"/>
 		</combine>
 		<data source="@idzdb" name="$[ns-lobid-vocab]zdbID"/>
-		<combine name="http://www.w3.org/2002/07/owl#sameAs" value="${idzdb}">
-			<data source="@id"/>
-			<data source="@idzdb" name="idzdb">
-				<regexp match="(.*)" format="$[ns-lobid-resource]ZDB${1}"/>
-			</data>
-		</combine>
 		<!-- ####################### -->
 		<!-- ####### Secondary form, link to primary form and vice verso -->
 		<!-- ####################### -->
@@ -131,25 +125,7 @@
 			<data source="@id" name="id"> <regexp match="(.*)" format="${1}"/> </data> </combine> <combine 
 			name="http://xmlns.com/foaf/0.1/primaryTopic" value="$[ns-lobid-resource]${id}"> <data source="@idzdb"/> 
 			<data source="@id" name="id"> <regexp match="(.*)" format="${1}"/> </data> </combine> -->
-		<!-- ####################### -->
-		<!-- ####### Set main subject uri -->
-		<!-- ####################### -->
-		<data source="@idzdb" name="~rdf:subject">
-			<regexp match="(.*)" format="$[ns-lobid-resource]ZDB${1}"/>
-		</data>
-		<combine name="http://www.w3.org/2002/07/owl#sameAs" value="$[ns-lobid-resource]${id}">
-			<data source="@idzdb"/>
-			<data source="@id" name="id"/>
-		</combine>
-		<!-- set zdbId also for ZDB subjects -->
-		<combine value="$[ns-lobid-resource]ZDB${a}/about" name="http://www.w3.org/2007/05/powder-s#describedby">
-			<data source="@idzdb" name="a"/>
-			<data source="@id"/>
-		</combine>
-		<combine name="~rdf:subject" value="$[ns-lobid-resource]${id}">
-			<data source="@idzdb"/>
-			<data source="@id" name="id"/>
-		</combine>
+
 		<!-- ####################### -->
 		<!-- ####### Set owl:sameAs -->
 		<!-- ####################### -->
@@ -165,33 +141,14 @@
 		<!-- ####### General attributes for each record -->
 		<!-- ####################### -->
 		<combine name="http://xmlns.com/foaf/0.1/isPrimaryTopicOf" value="${primaryTopic}">
-			<if>
-				<none>
-					<data source="@idzdb"/>
-				</none>
-			</if>
-			<data source="@id" name="primaryTopic">
-				<regexp match="(.*)" format="http://193.30.112.134/F/?func=find-c&amp;ccl_term=IDN%3D${1}"/>
-			</data>
-		</combine>
-		<combine name="http://xmlns.com/foaf/0.1/isPrimaryTopicOf" value="${primaryTopic}">
-			<data source="@idzdb"/>
 			<data source="@id" name="primaryTopic">
 				<regexp match="(.*)" format="http://193.30.112.134/F/?func=find-c&amp;ccl_term=IDN%3D${1}"/>
 			</data>
 		</combine>
 		<data source="@id" name="$[ns-lobid-vocab]hbzID"/>
-		<data source="@idzdb" name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type">
+		<data source="@id" name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type">
 			<regexp match=".*" format="http://purl.org/dc/terms/BibliographicResource"/>
 		</data>
-		<combine name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" value="http://purl.org/dc/terms/BibliographicResource">
-			<if>
-				<none>
-					<data source="@idzdb"/>
-				</none>
-			</if>
-			<data source="@id"/>
-		</combine>
 		<data source="@id" name="http://www.w3.org/2007/05/powder-s#describedby">
 			<regexp match="(.*)" format="$[ns-lobid-resource]${1}/about"/>
 		</data>
@@ -203,14 +160,6 @@
 			<regexp match="(.*)" format="http://worldcat.org/oclc/${1}"/>
 		</data>
 		<data source="@oclcnum" name="$[ns-bibo]oclcnum"/>
-		<combine name="$[ns-bibo]oclcnum" value="${num}">
-			<if>
-				<none>
-					<data source="@idzdb"/>
-				</none>
-			</if>
-			<data source="@oclcnum" name="num"/>
-		</combine>
 		<!-- ####################### -->
 		<!-- ################ language -->
 		<!-- ####################### -->
@@ -1392,9 +1341,9 @@
 			<data source="@subjectTopic"/>
 			<data source="@subjectMain"/>
 		</choose>
-		<!-- Schlagwortketten (aka "subject chains", with permutation number) - It's 
-			necessary to repeat the combines to fire correctly when dealing with multiple e.g. "902".
-			Use macros to avoid duplication. Use gnd subjects literals, use even if link present/> -->
+		<!-- Schlagwortketten (aka "subject chains", with permutation number) - It's necessary to 
+			repeat the combines to fire correctly when dealing with multiple e.g. "902". Use macros to 
+			avoid duplication. Use gnd subjects literals, use even if link present/> -->
 		<call-macro name="subject-chain-name" field_1="902" field_2="903"/>
 		<call-macro name="subject-chain-perm" field="902"/>
 		<call-macro name="subject-chain-name" field_1="907" field_2="908"/>
@@ -1420,7 +1369,7 @@
 			<replace pattern=" \| \(" with=" \("/>
 			<replace pattern="&gt;&gt;" with=""/>
 			<replace pattern="&lt;&lt;" with=""/>
-			 <replace pattern=", :" with=":"/>	
+			<replace pattern=", :" with=":"/>
 		</data>
 		<!-- ############ "schlagwortketten" (aka subject chains) as ordered lists -->
 		<!-- prefer gnd subjects IDs to literals, make rdf-lists -->
