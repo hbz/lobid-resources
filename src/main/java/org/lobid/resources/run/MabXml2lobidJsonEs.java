@@ -58,9 +58,11 @@ public final class MabXml2lobidJsonEs {
 					+ String.format(usage, " ", " ", " ", " ", " ", " "));
 			System.exit(-1);
 		}
+		String jsonLdContext = System.getProperty("jsonLdContext",
+				"http://lobid.org/download/contextTmp.json");
+		System.out.println("using jsonLdContext: " + jsonLdContext);
 		DefaultObjectPipe<Model, ObjectReceiver<HashMap<String, String>>> jsonConverter =
-				new RdfModel2ElasticsearchEtikettJsonLd(
-						"http://lobid.org/download/contextTmp.json");
+				new RdfModel2ElasticsearchEtikettJsonLd(jsonLdContext);
 		// hbz catalog transformation
 		final FileOpener opener = new FileOpener();
 		if (inputPath.toLowerCase().endsWith("bz2")) {
