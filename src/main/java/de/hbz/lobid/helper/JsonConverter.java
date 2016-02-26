@@ -50,6 +50,8 @@ public class JsonConverter {
 	String first = "http://www.w3.org/1999/02/22-rdf-syntax-ns#first";
 	String rest = "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest";
 	String nil = "http://www.w3.org/1999/02/22-rdf-syntax-ns#nil";
+	private static final String RDF_TYPE =
+			"http://www.w3.org/1999/02/22-rdf-syntax-ns#type";
 
 	private static ObjectMapper objectMapper = new ObjectMapper();
 	Set<Statement> all = new HashSet<>();
@@ -84,7 +86,7 @@ public class JsonConverter {
 	private Map<String, Object> createMap(Graph g) {
 		Map<String, Object> jsonResult = new TreeMap<>();
 		Iterator<Statement> i = g.iterator();
-		jsonResult.put("@id", mainSubjectOfTheResource);
+		jsonResult.put("id", mainSubjectOfTheResource);
 		while (i.hasNext()) {
 			Statement s = i.next();
 			if (mainSubjectOfTheResource.equals(s.getSubject().stringValue())) {
@@ -98,7 +100,8 @@ public class JsonConverter {
 	private void createObject(Map<String, Object> jsonResult, Statement s,
 			Etikett e) {
 		String key = e.name;
-		if (s.getObject() instanceof org.openrdf.model.Literal) {
+		if (s.getObject() instanceof org.openrdf.model.Literal
+				|| s.getPredicate().stringValue().equals(RDF_TYPE)) {
 			addLiteralToJsonResult(jsonResult, key, s.getObject().stringValue());
 		} else {
 			if (s.getObject() instanceof org.openrdf.model.BNode) {
@@ -186,7 +189,7 @@ public class JsonConverter {
 	private Map<String, Object> createObjectWithId(String uri) {
 		Map<String, Object> newObject = new TreeMap<>();
 		if (uri != null) {
-			newObject.put("@id", uri);
+			newObject.put("id", uri);
 			createObject(uri, newObject);
 		}
 		return newObject;
