@@ -16,7 +16,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -445,7 +444,7 @@ public class Lobid {
 						.get(type));
 		if (details == null || details.size() < 1)
 			return type;
-		String selected = StringEscapeUtils.escapeHtml4(details.get(0));
+		String selected = details.get(0);
 		return selected.isEmpty() ? uris.get(0) : selected;
 	}
 
