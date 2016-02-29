@@ -444,7 +444,7 @@ public class Lobid {
 						.get(type));
 		if (details == null || details.size() < 1)
 			return type;
-		String selected = details.get(0);
+		String selected = details.get(0).replace("<", "&lt;").replace(">", "&gt;");
 		return selected.isEmpty() ? uris.get(0) : selected;
 	}
 
