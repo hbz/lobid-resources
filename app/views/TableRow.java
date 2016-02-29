@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.html.HtmlEscapers;
 
+import controllers.nwbib.Application;
 import controllers.nwbib.Classification;
 import controllers.nwbib.Lobid;
 
@@ -46,8 +47,12 @@ public enum TableRow {
 			if (!labels.isPresent()) {
 				return refAndLabel(property, value, labels)[0];
 			}
-			String term = param.equals("q") ? "\"" + value + "\"" : value;
-
+			String term = value;
+			if (param.equals("q")) {
+				term = "\"" + value + "\"";
+			} else if (param.equals("raw")) {
+				term = Application.rawQueryParam("", value);
+			}
 			try {
 				term = URLEncoder.encode(term, "UTF-8");
 			} catch (UnsupportedEncodingException e) {
