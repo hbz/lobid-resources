@@ -188,9 +188,9 @@ public enum TableRow {
 		if ((property.equals("containedIn") || property.equals("hasPart")
 				|| property.equals("isPartOf") || property.equals("multiVolumeWork")
 				|| property.equals("series")) && value.contains("lobid.org")) {
-			return new String[] { value.replace(
-					Lobid.DATA_2 ? "lobid.org/resources/" : "lobid.org/resource/",
-					"lobid.org/nwbib/"), Lobid.resourceLabel(value) };
+			return new String[] {
+					value.replaceAll("lobid.org/resources?/", "lobid.org/nwbib/"),
+					Lobid.resourceLabel(value) };
 		}
 		String label =
 				labels.isPresent() && labels.get().size() > 0 ? labels.get().get(0)
