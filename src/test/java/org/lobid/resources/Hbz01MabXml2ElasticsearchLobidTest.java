@@ -198,7 +198,7 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 				jsonLdWithoutContext = new ObjectMapper().defaultPrettyPrintingWriter()
 						.writeValueAsString(map);
 				String filename =
-						((String) map.get("@id")).replaceAll("/about", "").replaceAll(
+						((String) map.get("id")).replaceAll("/about", "").replaceAll(
 								RdfModel2ElasticsearchEtikettJsonLd.LOBID_DOMAIN + ".*/", "");
 				filename = "jsonld/" + filename;
 				writeFile(filename, jsonLdWithoutContext);
