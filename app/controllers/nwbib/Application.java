@@ -576,8 +576,9 @@ public class Application extends Controller {
 						stream = preprocess(stream);
 					}
 					String labelKey = String.format(
-							"facets-labels.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s",
-							field, q, person, name, id, publisher, set, word, corporation,
+							"facets-labels.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s",
+							field, raw, q, person, name, id, publisher, set, word,
+							corporation,
 							/*
 							 * facet values, include in key only if not the current facet,
 							 * except literal subjects, which can be combined with facet:
@@ -640,7 +641,12 @@ public class Application extends Controller {
 			return currentParam + "," + term;
 	}
 
-	private static String rawQueryParam(String currentParam, String term) {
+	/**
+	 * @param currentParam The current value of the query param
+	 * @param term The term to create a query for
+	 * @return The escaped Elasticsearch query string for the `raw` query param
+	 */
+	public static String rawQueryParam(String currentParam, String term) {
 		String rawPrefix =
 				Lobid.escapeUri(COVERAGE_FIELD.replace(".raw", "")) + ":";
 		if (currentParam.isEmpty()) {
