@@ -29,7 +29,7 @@
 }
 
 @nestedIds(property: String) = @{
-	(doc\\property).last.as[Seq[JsValue]].map((v: JsValue) => (v \ "@id").as[String])
+	(doc\\property).last.as[Seq[JsValue]].map((v: JsValue) => (v \ "id").asOpt[String].getOrElse("No id in " + v))
 }
 
 @singleOrMultiString(property: String) = @{
@@ -38,7 +38,7 @@
 
 @with_icon(label: String, property: String, fullField: String) = {
   @if(!(doc\\property).isEmpty) {
-    @defining(if(Lobid.DATA_2) { nestedIds(property) } else { singleOrMultiString(property) }){ v =>
+    @defining(if(Lobid.DATA_2 && property != "type") { nestedIds(property) } else { singleOrMultiString(property) }){ v =>
       <tr><td>@label</td><td><span class="@Lobid.facetIcon(v,fullField)"></span> @Lobid.facetLabel(v,fullField,"")</td></tr>
     }
   }
@@ -65,7 +65,7 @@
       field,
       "q",
       "Erschienen als",
-      Seq((((doc \ field)(0) \ subField)(0) \ "@id").as[String]),
+      Seq((((doc \ field)(0) \ subField)(0) \ "id").as[String]),
       Optional.of(Seq(subField, "numbering"))))
   }
 }
