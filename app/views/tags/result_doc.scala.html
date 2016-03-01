@@ -112,7 +112,7 @@
   @result_field("Auflage", "edition", doc, TableRow.VALUES)
   @result_field("Erscheinungsort", "placeOfPublication", doc, TableRow.VALUES)
   @result_field("Verlag", "publisher", doc, TableRow.VALUES)
-  @result_field("ISBN", "isbn10", doc, TableRow.VALUES)
+  @result_field("ISBN", if(Lobid.DATA_2) { "isbn" } else { "isbn10" }, doc, TableRow.VALUES)
   @result_field("URN", "urn", doc, TableRow.VALUES)
   @result_field("Umfang", "extent", doc, TableRow.VALUES)
   @result_field("Quelle", "bibliographicCitation", doc, TableRow.VALUES)
