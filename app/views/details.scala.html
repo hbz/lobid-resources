@@ -50,7 +50,7 @@
           @defining(Lobid.items(doc.toString)) { items =>
               @defining(!(doc\\"isPartOf").isEmpty && doc.toString.contains("http://purl.org/ontology/bibo/Article")){superordination =>
               <div class="col-md-@if(items.isEmpty && !doc.toString.contains("fulltextOnline") && !superordination){12} else {8}">
-                <dl>@defining((doc \ "@id").as[String].split("/")(4)){ id =>
+                <dl>@defining((doc\\"hbzId")(0).as[String]){ id =>
                     <dt>@tags.star_button(id) Titeldetails:
                     <a href="@Application.CONFIG.getString("hbz01.api")/@id">&nbsp;</a>
                     </dt>
