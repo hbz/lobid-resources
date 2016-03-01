@@ -30,8 +30,9 @@
 }
 
 @types(types: JsValue) = @{
+	val id = if(Lobid.DATA_2) { "id" } else { "@id" }
 	types match {
-		case a: JsArray if Lobid.DATA_2 && a.asOpt[Seq[JsValue]].isDefined => a.as[Seq[JsValue]].map((v: JsValue) => (v \ "@id").as[String])
+		case a: JsArray if Lobid.DATA_2 && a.asOpt[Seq[JsValue]].isDefined => a.as[Seq[JsValue]].map((v: JsValue) => (v \ id).asOpt[String].getOrElse("No id in " + v))
 		case a: JsArray => a.as[Seq[String]]
 		case _ => Seq(types.as[String])
 	}

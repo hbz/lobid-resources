@@ -106,7 +106,7 @@ public enum TableRow {
 			if (doc != null) {
 				if (Lobid.DATA_2) {
 					result.add(
-							doc.get(keys.get(0)).iterator().next().get("@id").textValue());
+							doc.get(keys.get(0)).iterator().next().get("id").textValue());
 					result.add(doc.get(keys.get(1)).textValue());
 				} else {
 					for (JsonNode node : doc.findValues("@graph").get(0)) {
@@ -170,8 +170,9 @@ public enum TableRow {
 		List<JsonNode> graphs = doc.findValues("@graph");
 		for (JsonNode node : graphs.isEmpty() ? doc : graphs.get(0)) {
 			for (String key : labelKeys.get()) {
-				if (node.has(key) && node.has("@id")
-						&& node.get("@id").textValue().equals(id)) {
+				String idField = Lobid.DATA_2 ? "id" : "@id";
+				if (node.has(key) && node.has(idField)
+						&& node.get(idField).textValue().equals(id)) {
 					JsonNode label = node.get(key);
 					if (label != null && label.isTextual()
 							&& !label.textValue().trim().isEmpty()) {
