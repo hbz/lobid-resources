@@ -44,25 +44,24 @@ h1. Example of getting the data
 
 In the online test the data is indexed to a living elasticsearch instance.
 This instance is only reachable within our internally network, thus this test
-must be executed manually. Then elasticsearch can be lookuped like this:
+must be executed manually. Then elasticsearch can be looked up like this:
 
 http://lobid.org/resources/HT002619538
 
-For querying it (only possible residing in the internal hbz net) you can use the
-elasticsearch query DSl, like:
+For querying it you can use the elasticsearch query DSl, like:
 
-http://gaia.hbz-nrw.de:9200/resources/_search?q=HT002619538
+http://lobid.org/resources?q=title:Mobydick
 
 The result shows the data which also "Hbz01MabXml2ElasticsearchLobidTest.java":https://github.com/hbz/lobid-resources/blob/master/src/test/java/org/lobid/resources/Hbz01MabXml2ElasticsearchLobidTest.java produces.
 
 h1. Internal hbz Instructions
 
-This is for hbz commiter only. It's assumed that you reside in the internal hbz net.
+This is for hbz committers only. It's assumed that you reside in the internal hbz net.
 
 h2. Dependency to lobid-rdf-to-json
 
 The dependency is configured using the pom.xml. As version you use a commit hash of
-the "lobid-rdf-to-json repo":https://github.com/hbz/lobid-rdf-to-json. Via "jitpack":https://jitpack.io/ a maven artefact is build on demand and installed to the local maven repo.
+the "lobid-rdf-to-json repo":https://github.com/hbz/lobid-rdf-to-json. Via "jitpack":https://jitpack.io/ a maven artefact is built on demand and installed to the local maven repo.
 
 Also, if you changed the JSON-LD context, don't forget to upload that onto the webserver:
 
@@ -79,28 +78,28 @@ This is your starting point for tracing what scripts are triggered on what serve
 at which time. All is logged, see the crontab entries resp. the scripts.
 
 Like with the old (and still productive) lobid index, a weekly fulldump
-index is build on saturday. This is the base for the daily incremental updates.
+index is build on Saturdays. This is the base for the daily incremental updates.
 Have a look at "both source data, base and daily updates":http://lobid.org/download/dumps/DE-605/mabxml/.
 Building the full index takes around 12 hours. The finished index is aliased
-to _resources-staging_. This is manually to be tested. If it's approved ok the
-index is switched by simply renaming this alias to _resources_ . Both alias' are
+to _resources-staging_. This is manually to be tested. If it's ok, the
+index is switched by simply renaming this alias to _resources_ . Both aliases are
 reflected in the lookup-URI (e.g. http://lobid.org/resources/HT015082724 vs
 http://lobid.org/resources-staging/HT015082724 resp. internal ES URI
 @http://gaia.hbz-nrw.de:9200/resources/_all/HT015082724@ and
 @http://gaia.hbz-nrw.de:9200/resources-staging/_all/HT015082724@ ).
 
-The three latest indices will be save, also every index with no _-staging_
-suffix on the alias. Other indices which start with the same string will be
-removed by the index programm after the indexing is finished - the harddisk
+The three latest indices will be retained, also every index with no _-staging_
+suffix on the alias. Other indices which start with the same string (e.g. @resources@) will be
+removed by the index program after the indexing is finished - the hard disk
 is not of endless size ;) .
 
-Note: in production, make always sure that the JSON-LD context is the proper one.
+Note: in production, always make sure that the JSON-LD context is the proper one.
 
 h3. Small test
 
 This will download ~5k aleph xml clobs (if not already residing in your filesystem)
-and index them into elasticsearch aliased _test-resources_(not interfering with the
-productive index', thus not removing any productive index).
+and index them into elasticsearch, aliased _test-resources_ (not interfering with the
+productive indexes, thus not removing any productive index).
 
 @cd src/test/resources; bash buildAndETLTestSet.sh@
 
