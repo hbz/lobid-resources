@@ -84,11 +84,11 @@
 		<data source="021[-b]1.a" name="http://purl.org/dc/terms/isFormatOf">
 			<regexp match="(.*)" format="$[ns-lobid-resource]${1}"/>
 		</data>
-		<!-- temporarily set new subject id outcommented as a workaround, s. https://github.com/hbz/lobid/issues/155 
-			<data name="~rdf:subject" source="021[-b]1.a"> <regexp match="(.*)" format="$[ns-lobid-resource]${1}"/> 
-			</data> <combine name="http://purl.org/dc/terms/hasFormat" value="$[ns-lobid-resource]${subjectid}"> 
-			<data source="021[-b]1.a" name=""/> <data source="@id" name="subjectid"/> </combine> set subject 
-			uri of resource anew <combine name="~rdf:subject" value="$[ns-lobid-resource]${subject}"> <data 
+		<!-- temporarily set new subject id outcommented as a workaround, s. https://github.com/hbz/lobid/issues/155
+			<data name="~rdf:subject" source="021[-b]1.a"> <regexp match="(.*)" format="$[ns-lobid-resource]${1}"/>
+			</data> <combine name="http://purl.org/dc/terms/hasFormat" value="$[ns-lobid-resource]${subjectid}">
+			<data source="021[-b]1.a" name=""/> <data source="@id" name="subjectid"/> </combine> set subject
+			uri of resource anew <combine name="~rdf:subject" value="$[ns-lobid-resource]${subject}"> <data
 			source="@id" name="subject"/> <data source="021[-b]1.a"/> </combine> -->
 		<!-- ####################### -->
 		<!-- ####### Child, link to parent and vice versa, e.g. HT000009600 -->
@@ -98,32 +98,32 @@
 		<data source="010-1.a|@idTitleSeries" name="@isPartOfHbzId">
 			<regexp match="(.*)" format="$[ns-lobid-resource]${1}"/>
 		</data>
-		<!-- temporarily set new subject uri outcommented as a workaround, s. https://github.com/hbz/lobid/issues/155 
-			<data name="~rdf:subject" source="010-1.a|529z1.9|@idTitleSeries"> <regexp match="(.*)" format="$[ns-lobid-resource]${1}"/> 
-			</data> <combine name="http://purl.org/dc/terms/hasPart" value="$[ns-lobid-resource]${subjectid}"> 
-			<data source="010-1.a|@idTitleSeries"/> <data source="@id" name="subjectid"/> </combine> is 
-			supplement to <combine name="http://rdaregistry.info/Elements/u/P60259" value="$[ns-lobid-resource]${subjectid}"> 
-			<data source="529z1.9"/> <data source="@id" name="subjectid"/> </combine> set subject uri of 
-			resource anew <combine name="~rdf:subject" value="$[ns-lobid-resource]${subject}"> <data source="@id" 
+		<!-- temporarily set new subject uri outcommented as a workaround, s. https://github.com/hbz/lobid/issues/155
+			<data name="~rdf:subject" source="010-1.a|529z1.9|@idTitleSeries"> <regexp match="(.*)" format="$[ns-lobid-resource]${1}"/>
+			</data> <combine name="http://purl.org/dc/terms/hasPart" value="$[ns-lobid-resource]${subjectid}">
+			<data source="010-1.a|@idTitleSeries"/> <data source="@id" name="subjectid"/> </combine> is
+			supplement to <combine name="http://rdaregistry.info/Elements/u/P60259" value="$[ns-lobid-resource]${subjectid}">
+			<data source="529z1.9"/> <data source="@id" name="subjectid"/> </combine> set subject uri of
+			resource anew <combine name="~rdf:subject" value="$[ns-lobid-resource]${subject}"> <data source="@id"
 			name="subject"/> <data source="010-1.a|529z1.9|@idTitleSeries"/> </combine> -->
 		<!-- ####################### -->
 		<!-- ####### provenance not used for now, see https://github.com/lobid/lodmill/issues/541 -->
 		<!-- ####################### -->
-		<!-- <data source="@idzdb" name="@idzdbProvenance"> <regexp match="(.*)" format="$[ns-lobid-resource]${1}/about"/> 
-			</data> <data source="@idzdbProvenance" name="~rdf:subject"/> <data source="@idzdb" name="http://xmlns.com/foaf/0.1/primaryTopic"> 
-			<regexp match="(.*)" format="$[ns-lobid-resource]${1}"/> </data> <combine name=" :subject" 
-			value="$[ns-lobid-resource]${id}/about"> <if> <none> <data source="@idzdbProvenance"/> </none> 
-			</if> <data source="@id" name="id"> <regexp match="(.*)" format="${1}"/> </data> </combine> 
-			<combine name="~rdf:subject" value="$[ns-lobid-resource]${id}/about"> <data source="@idzdb"/> 
-			<data source="@id" name="id"> <regexp match="(.*)" format="${1}"/> </data> </combine> <data 
-			source="@idzdbProvenance" name="http://vocab.deri.ie/void#inDataset"> <regexp match=".*" format="http://lobid.org/dataset/resource"/> 
-			</data> <combine name="http://vocab.deri.ie/void#inDataset" value="http://lobid.org/dataset/resource"> 
-			<if> <none> <data source="@idzdbProvenance"/> </none> </if> <data source="@id"/> </combine> 
-			<combine name="http://vocab.deri.ie/void#inDataset" value="http://lobid.org/dataset/resource"> 
-			<data source="@idzdb"/> <data source="@id"/> </combine> <combine name="http://xmlns.com/foaf/0.1/primaryTopic" 
-			value="$[ns-lobid-resource]${id}"> <if> <none> <data source="@idzdbProvenance"/> </none> </if> 
-			<data source="@id" name="id"> <regexp match="(.*)" format="${1}"/> </data> </combine> <combine 
-			name="http://xmlns.com/foaf/0.1/primaryTopic" value="$[ns-lobid-resource]${id}"> <data source="@idzdb"/> 
+		<!-- <data source="@idzdb" name="@idzdbProvenance"> <regexp match="(.*)" format="$[ns-lobid-resource]${1}/about"/>
+			</data> <data source="@idzdbProvenance" name="~rdf:subject"/> <data source="@idzdb" name="http://xmlns.com/foaf/0.1/primaryTopic">
+			<regexp match="(.*)" format="$[ns-lobid-resource]${1}"/> </data> <combine name=" :subject"
+			value="$[ns-lobid-resource]${id}/about"> <if> <none> <data source="@idzdbProvenance"/> </none>
+			</if> <data source="@id" name="id"> <regexp match="(.*)" format="${1}"/> </data> </combine>
+			<combine name="~rdf:subject" value="$[ns-lobid-resource]${id}/about"> <data source="@idzdb"/>
+			<data source="@id" name="id"> <regexp match="(.*)" format="${1}"/> </data> </combine> <data
+			source="@idzdbProvenance" name="http://vocab.deri.ie/void#inDataset"> <regexp match=".*" format="http://lobid.org/dataset/resource"/>
+			</data> <combine name="http://vocab.deri.ie/void#inDataset" value="http://lobid.org/dataset/resource">
+			<if> <none> <data source="@idzdbProvenance"/> </none> </if> <data source="@id"/> </combine>
+			<combine name="http://vocab.deri.ie/void#inDataset" value="http://lobid.org/dataset/resource">
+			<data source="@idzdb"/> <data source="@id"/> </combine> <combine name="http://xmlns.com/foaf/0.1/primaryTopic"
+			value="$[ns-lobid-resource]${id}"> <if> <none> <data source="@idzdbProvenance"/> </none> </if>
+			<data source="@id" name="id"> <regexp match="(.*)" format="${1}"/> </data> </combine> <combine
+			name="http://xmlns.com/foaf/0.1/primaryTopic" value="$[ns-lobid-resource]${id}"> <data source="@idzdb"/>
 			<data source="@id" name="id"> <regexp match="(.*)" format="${1}"/> </data> </combine> -->
 
 		<!-- ####################### -->
@@ -173,7 +173,7 @@
 		<!-- ####################### -->
 		<!-- ########## carrier and type -->
 		<!-- ####################### -->
-		<!-- type is book (and also manifestation) if 050 begins with 'a' and 051 or 052 is missing 
+		<!-- type is book (and also manifestation) if 050 begins with 'a' and 051 or 052 is missing
 			or 051 and 052 does not fulfill a certain pattern -->
 		<combine name="@rdftype" value="$[ns-bibo]Book">
 			<if>
@@ -753,10 +753,10 @@
 			<data source="088 ?.c" name="signature"/>
 		</combine>
 		<!-- provenance -->
-		<!-- <combine name="~rdf:subject" value="${itemId}/about"> <data source="@itemId" name="itemId"> 
-			<regexp match="(.*)" format="${1}"/> </data> </combine> <data source="@itemId" name="http://vocab.deri.ie/void#inDataset"> 
-			<regexp match=".*" format="http://lobid.org/dataset/resource"/> </data> <combine name="http://xmlns.com/foaf/0.1/primaryTopic" 
-			value="${itemId}"> <data source="@itemId" name="itemId"> <regexp match="(.*)" format="${1}"/> 
+		<!-- <combine name="~rdf:subject" value="${itemId}/about"> <data source="@itemId" name="itemId">
+			<regexp match="(.*)" format="${1}"/> </data> </combine> <data source="@itemId" name="http://vocab.deri.ie/void#inDataset">
+			<regexp match=".*" format="http://lobid.org/dataset/resource"/> </data> <combine name="http://xmlns.com/foaf/0.1/primaryTopic"
+			value="${itemId}"> <data source="@itemId" name="itemId"> <regexp match="(.*)" format="${1}"/>
 			</data> </combine> -->
 		<!-- set subject uri of resource anew -->
 		<!-- set subject uri of resource anew -->
@@ -923,7 +923,7 @@
 			<data source="[29]??[-abcfep][12].d" name="d"/>
 			<data source="[29]??[-abcfep][12].c" name="c"/>
 		</combine>
-		<!-- lv:nameOfContributingCorporateBody is only a temporarily workaround. It also subsumes 
+		<!-- lv:nameOfContributingCorporateBody is only a temporarily workaround. It also subsumes
 			creators! -->
 		<data source="8[012][02468][-mn]-.k" name="$[ns-lobid-vocab]nameOfContributingCorporateBody"/>
 		<!-- all names, also variants ("Verweisungsformen") -->
@@ -1341,8 +1341,8 @@
 			<data source="@subjectTopic"/>
 			<data source="@subjectMain"/>
 		</choose>
-		<!-- Schlagwortketten (aka "subject chains", with permutation number) - It's necessary to 
-			repeat the combines to fire correctly when dealing with multiple e.g. "902". Use macros to 
+		<!-- Schlagwortketten (aka "subject chains", with permutation number) - It's necessary to
+			repeat the combines to fire correctly when dealing with multiple e.g. "902". Use macros to
 			avoid duplication. Use gnd subjects literals, use even if link present/> -->
 		<call-macro name="subject-chain-name" field_1="902" field_2="903"/>
 		<call-macro name="subject-chain-perm" field="902"/>
@@ -1510,7 +1510,7 @@
 				<regexp match="^([a-zA-Z].*)" format="${1}"/>
 			</data>
 		</combine>
-		<!--first three chars of "Resolving System" or "Volltext" or "EZB" or "Archivierte Online 
+		<!--first three chars of "Resolving System" or "Volltext" or "EZB" or "Archivierte Online
 			Ressource " or "Online-Ausgabe" <=> @fulltextOnlineUri -->
 		<combine name="@fulltextOnlineUri" value="${uri}" sameEntity="true">
 			<data source="655[-eu][ -1].[x3]">
@@ -1666,7 +1666,7 @@
 		<!-- ignore '99' in e.g. '700n|a 99|b Bonn', but take 'b' to lookup ID's ,see HT018131501 -->
 		<combine name="@nwbib700_99" value="${a}" sameEntity="true">
 			<data source="700n[-1].a">
-				<regexp match="^99\b|^97\b|^96\b"/>
+				<regexp match="^99\b|^97\b|^96\b|^74\b|^72\b|^54\b|^52\b|^37\b|^36\b|^35\b|^28\b|^24\b|^14\b|^12\b|^10\b"/>
 			</data>
 			<data source="700n[-1].b" name="a"/>
 		</combine>
