@@ -34,6 +34,18 @@ public enum TableRow {
 			List<String> vs = values;
 			if (doc.has("coverage")) { // see https://github.com/hbz/nwbib/issues/276
 				List<String> remove = Arrays.asList(//
+						"http://purl.org/lobid/nwbib-spatial#n10",
+						"http://purl.org/lobid/nwbib-spatial#n12",
+						"http://purl.org/lobid/nwbib-spatial#n14",
+						"http://purl.org/lobid/nwbib-spatial#n24",
+						"http://purl.org/lobid/nwbib-spatial#n28",
+						"http://purl.org/lobid/nwbib-spatial#n35",
+						"http://purl.org/lobid/nwbib-spatial#n36",
+						"http://purl.org/lobid/nwbib-spatial#n37",
+						"http://purl.org/lobid/nwbib-spatial#n52",
+						"http://purl.org/lobid/nwbib-spatial#n54",
+						"http://purl.org/lobid/nwbib-spatial#n72",
+						"http://purl.org/lobid/nwbib-spatial#n74",
 						"http://purl.org/lobid/nwbib-spatial#n96",
 						"http://purl.org/lobid/nwbib-spatial#n97");
 				vs = vs.stream().filter(v -> !remove.contains(v))
