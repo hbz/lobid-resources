@@ -54,11 +54,45 @@ http://lobid.org/resources?q=title:Mobydick
 
 The result shows the data which also "Hbz01MabXml2ElasticsearchLobidTest.java":https://github.com/hbz/lobid-resources/blob/master/src/test/java/org/lobid/resources/Hbz01MabXml2ElasticsearchLobidTest.java produces.
 
-h1. Internal hbz Instructions
+h1. Developer instructions
+
+This section explains how to make a successful build after changing the transformations,
+how to include the JSON-LD dependency and updating its context, and how to index the data.
+
+h2. Changing transformations
+
+After changing the "morph":https://github.com/hbz/lobid-resources/blob/master/src/main/resources/morph-hbz01-to-lobid.xml the build must be executed:
+
+@mvn clean install@
+
+This may end in a *BUILD SUCCESS* message, meaning that the tested resources don't reflect the changes.
+In this case you should add an Aleph-MabXml resource to "hbz01XmlClobs.tar.bz2":https://github.com/hbz/lobid-resources/blob/master/src/test/resources/hbz01XmlClobs.tar.bz2 that _would_ reflect your changes.
+If the build ends with *BUILD FAILURE* the newly generated data isn't equal to the test resources.
+This is a good thing because you wanted the change. Now you must approve the new outcome. Make a diff on the data:
+
+@diff hbz01.es.nt src/test/resources/hbz01.es.nt@
+
+and, if everything is ok, copy the new data as the new standard to the test resources:
+
+@cp hbz01.es.nt src/test/resources/hbz01.es.nt@
+
+Now you have satisfied the NTriples test, which now builds successfully.
+As these NTriples are the base for the JSON-LD test this JSON test must fail.
+As with the NTriples we have to diff the data. As there are many single files instead of one big file execute this helper script:
+
+@bash jsonDiffAndCopy.sh@
+
+After you followed the instructions of the script, build again:
+
+@mvn clean install@
+
+Now this should result in *BUILD SUCCESS*. Add, commit and push your changes. You're done :)
+
+h2. Internal hbz Instructions
 
 This is for hbz committers only. It's assumed that you reside in the internal hbz net.
 
-h2. Dependency to lobid-rdf-to-json
+h3. Dependency to lobid-rdf-to-json
 
 The dependency is configured using the pom.xml. As version you use a commit hash of
 the "lobid-rdf-to-json repo":https://github.com/hbz/lobid-rdf-to-json. Via "jitpack":https://jitpack.io/ a maven artefact is built on demand and installed to the local maven repo.
@@ -67,11 +101,11 @@ Also, if you changed the JSON-LD context, don't forget to upload that onto the w
 
 * @scp ./src/main/resources/context.json lobid@@@emphytos:/usr/local/lobid/src/lobid.org/download/contextTmp.json@
 
-h2. Elasticsearch index
+h3. Elasticsearch index
 
 This is about the building of the production index as well as the small test index.
 
-h3. Production
+h4. Production
 
 All automation is configured at one central crontab entry: _hduser@weywot1_ .
 This is your starting point for tracing what scripts are triggered on what server
@@ -95,7 +129,7 @@ is not of endless size ;) .
 
 Note: in production, always make sure that the JSON-LD context is the proper one.
 
-h3. Small test
+h4. Small test
 
 This will download ~5k aleph xml clobs (if not already residing in your filesystem)
 and index them into elasticsearch, aliased _test-resources_ (not interfering with the
