@@ -328,7 +328,9 @@ public class Lobid {
 						.setQueryParameter("id", id)//
 						.setQueryParameter("field", field)//
 						.setQueryParameter("from", "0")
-						.setQueryParameter("size", Application.MAX_FACETS + "")
+						.setQueryParameter("size",
+								field.equals(Application.ITEM_FIELD) ? "9999"
+										: Application.MAX_FACETS + "")
 						.setQueryParameter("corporation", corporation);
 		if (!q.isEmpty())
 			request = request.setQueryParameter("word", preprocess(q));
