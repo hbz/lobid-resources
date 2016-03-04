@@ -73,7 +73,11 @@ public abstract class AbstractIngestTests {
 			}
 			final SortedSet<String> missingSet = new TreeSet<>(expectedSet);
 			missingSet.removeAll(actualSet);
-			LOG.error("Missing expected result set entries: " + missingSet);
+			LOG.error(
+					"Missing expected result set entries (showing first 2048 bytes): "
+							+ (missingSet.toString().length() > 2048
+									? missingSet.toString().substring(0, 2048)
+									: missingSet.toString()));
 		}
 		Assert.assertEquals(expectedSet.size(), actualSet.size());
 	}
