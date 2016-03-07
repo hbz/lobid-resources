@@ -39,17 +39,17 @@
                 "<li class='more-link' id='" + linkId + "'><a style='cursor:pointer;'><span class='glyphicon glyphicon-plus' aria-hidden='true'></span> Zeige mehr " + facet + "</a></li>");
             $("#" + linkId).click(function() {
               $("#" + sectionId).show();
-              $("#" + lessId).show();
+              $(".less-link").hide();
               $("#" + linkId).hide();
+              $("#" + sectionId).parent().append(
+                  "<li class='less-link' id='" + lessId + "'><a style='cursor:pointer;'><span class='glyphicon glyphicon-minus' aria-hidden='true'></span> Zeige weniger " + facet + "</a></li>");
+              $("#" + lessId).click(function() {
+                $("#" + sectionId).hide();
+                $("#" + linkId).show();
+                $("#" + lessId).remove();
+                $(".less-link").last().show();
+              });
             });
-            $("#" + divId).append(
-                "<li class='less-link' id='" + lessId + "'><a style='cursor:pointer;'><span class='glyphicon glyphicon-minus' aria-hidden='true'></span> Zeige weniger " + facet + "</a></li>");
-            $("#" + lessId).click(function() {
-              $("#" + sectionId).hide();
-              $("#" + linkId).show();
-              $("#" + lessId).hide();
-            });
-            $("#" + lessId).hide();
           }
           $.ajax({
             url: '/facets?q=@urlEncode(q)&person=@urlEncode(person)&name=@urlEncode(name)&subject=@urlEncode(subject)&publisher=@urlEncode(publisher)&issued=@urlEncode(issued)&medium=@urlEncode(medium)&nwbibspatial=@urlEncode(nwbibspatial)&nwbibsubject=@urlEncode(nwbibsubject)&from=0&size=@size&owner=@urlEncode(owner)&t=@urlEncode(t)&field=@urlEncode(field)&sort=@urlEncode(sortParam)&set=@urlEncode(set)&location=@urlEncode(location)&word=@urlEncode(word)&corporation=@urlEncode(corporation)&raw=@urlEncode(raw)',
