@@ -73,11 +73,11 @@ public class JsonConverter {
 			final String rootNodePrefix, Object context) {
 		Graph g = RdfUtils.readRdfToGraph(in, format, "");
 		collect(g);
-		mainSubjectOfTheResource =
-				g.parallelStream()
-						.filter(
-								s -> s.getSubject().stringValue().startsWith(rootNodePrefix))
-						.findFirst().get().getSubject().toString();
+		mainSubjectOfTheResource = g.parallelStream()
+				.filter(triple -> triple.getPredicate().stringValue()
+						.equals("http://www.w3.org/2007/05/powder-s#describedby"))
+				.filter(triple -> triple.getSubject().stringValue().startsWith(rootNodePrefix))
+				.findFirst().get().getSubject().toString();
 		Map<String, Object> result = createMap(g);
 		result.put("@context", context);
 		return result;
