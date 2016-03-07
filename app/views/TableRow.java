@@ -194,7 +194,7 @@ public enum TableRow {
 		List<JsonNode> graphs = doc.findValues("@graph");
 		for (JsonNode node : graphs.isEmpty() ? doc : graphs.get(0)) {
 			for (String key : labelKeys.get()) {
-				String idField = Lobid.DATA_2 ? "id" : "@id";
+				String idField = node.has("id") ? "id" : "@id";
 				if (node.has(key) && node.has(idField)
 						&& node.get(idField).textValue().equals(id)) {
 					JsonNode label = node.get(key);
