@@ -256,10 +256,11 @@ public class Lobid {
 		if (cachedResult != null) {
 			return cachedResult;
 		}
-		WSRequestHolder requestHolder = WS.url("http://lobid.org/resource")
-				.setHeader("Accept", "application/json")
-				.setQueryParameter("subject", uri).setQueryParameter("format", "full")
-				.setQueryParameter("size", "1");
+		WSRequestHolder requestHolder =
+				WS.url(Application.CONFIG.getString("nwbib.api"))
+						.setHeader("Accept", "application/json")
+						.setQueryParameter("subject", uri)
+						.setQueryParameter("format", "full").setQueryParameter("size", "1");
 		return requestHolder.get().map((WSResponse response) -> {
 			JsonNode value = response.asJson().get(1);
 			String label = TableRow.labelForId(uri, value,
