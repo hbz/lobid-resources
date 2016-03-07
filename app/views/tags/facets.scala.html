@@ -36,18 +36,18 @@
           <script>
           function appendSection(divId, linkId, lessId, sectionId, facet){
             $("#" + divId).append(
-                "<li class='more-link' id='" + linkId + "'><a style='cursor:pointer;'><span class='glyphicon glyphicon-plus' aria-hidden='true'></span> Zeige mehr " + facet + "</a></li>");
+                "<li class='more-link-" + facet +"' id='" + linkId + "'><a style='cursor:pointer;'><span class='glyphicon glyphicon-plus' aria-hidden='true'></span> Zeige mehr " + facet + "</a></li>");
             $("#" + linkId).click(function() {
               $("#" + sectionId).show();
-              $(".less-link").hide();
+              $(".less-link-" + facet).hide();
               $("#" + linkId).hide();
               $("#" + sectionId).parent().append(
-                  "<li class='less-link' id='" + lessId + "'><a style='cursor:pointer;'><span class='glyphicon glyphicon-minus' aria-hidden='true'></span> Zeige weniger " + facet + "</a></li>");
+                  "<li class='less-link-" + facet +"' id='" + lessId + "'><a style='cursor:pointer;'><span class='glyphicon glyphicon-minus' aria-hidden='true'></span> Zeige weniger " + facet + "</a></li>");
               $("#" + lessId).click(function() {
                 $("#" + sectionId).hide();
                 $("#" + linkId).show();
                 $("#" + lessId).remove();
-                $(".less-link").last().show();
+                $(".less-link-" + facet).last().show();
               });
             });
           }
