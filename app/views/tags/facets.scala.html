@@ -34,6 +34,23 @@
       </h5>
       <ul class="facet" id="facets-ul-@field.hashCode.abs">
           <script>
+          function appendSection(divId, linkId, lessId, sectionId, facet){
+            $("#" + divId).append(
+                "<li class='more-link-" + facet +"' id='" + linkId + "'><a style='cursor:pointer;'><span class='glyphicon glyphicon-plus' aria-hidden='true'></span> Zeige mehr " + facet + "</a></li>");
+            $("#" + linkId).click(function() {
+              $("#" + sectionId).show();
+              $(".less-link-" + facet).hide();
+              $("#" + linkId).hide();
+              $("#" + sectionId).parent().append(
+                  "<li class='less-link-" + facet +"' id='" + lessId + "'><a style='cursor:pointer;'><span class='glyphicon glyphicon-minus' aria-hidden='true'></span> Zeige weniger " + facet + "</a></li>");
+              $("#" + lessId).click(function() {
+                $("#" + sectionId).hide();
+                $("#" + linkId).show();
+                $("#" + lessId).remove();
+                $(".less-link-" + facet).last().show();
+              });
+            });
+          }
           $.ajax({
             url: '/facets?q=@urlEncode(q)&person=@urlEncode(person)&name=@urlEncode(name)&subject=@urlEncode(subject)&publisher=@urlEncode(publisher)&issued=@urlEncode(issued)&medium=@urlEncode(medium)&nwbibspatial=@urlEncode(nwbibspatial)&nwbibsubject=@urlEncode(nwbibsubject)&from=0&size=@size&owner=@urlEncode(owner)&t=@urlEncode(t)&field=@urlEncode(field)&sort=@urlEncode(sortParam)&set=@urlEncode(set)&location=@urlEncode(location)&word=@urlEncode(word)&corporation=@urlEncode(corporation)&raw=@urlEncode(raw)',
             success: function(data, textStatus, jqXHR) {
@@ -56,10 +73,10 @@
                      $("#" + divId).append(lis[j] + "</li>");
                    }
                    if(j < lis.length) {
-                     var linkId = c + "more-link-@field.hashCode.abs"
-                     var expand = "$(\"" + "#" + (c + 1) + "more-@field.hashCode.abs" + "\").show();$(\"#" + linkId + "\").hide();";
-                     $("#" + divId).append(
-                         "<li class='more-link' id='" + linkId + "'><a style='cursor:pointer;' onclick='" + expand + "'><span class='glyphicon glyphicon-plus' aria-hidden='true'></span> Zeige mehr @facet.split(" ").last</a></li>");
+                     var linkId = c + "more-link-@field.hashCode.abs";
+                     var lessId = c + "less-link-@field.hashCode.abs";
+                     var sectionId = (c+1) + "more-@field.hashCode.abs";
+                     appendSection(divId, linkId, lessId, sectionId, "@facet.split(" ").last");
                    }
                    i=j-1;
                    c++;
