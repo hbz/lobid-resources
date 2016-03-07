@@ -197,9 +197,10 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 				map.put("@context", AbstractIngestTests.LOBID_JSONLD_CONTEXT);
 				jsonLdWithoutContext = new ObjectMapper().defaultPrettyPrintingWriter()
 						.writeValueAsString(map);
-				String filename =
-						((String) map.get("id")).replaceAll("/about", "").replaceAll(
-								RdfModel2ElasticsearchEtikettJsonLd.LOBID_DOMAIN + ".*/", "");
+				String filename = ((String) map.get("id"))
+						.replaceAll(
+								RdfModel2ElasticsearchEtikettJsonLd.LOBID_DOMAIN + ".*/", "")
+						.replaceAll("#!$", "");
 				filename = "jsonld/" + filename;
 				writeFile(filename, jsonLdWithoutContext);
 				testFiles(filename);

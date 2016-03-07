@@ -56,7 +56,7 @@ public final class RdfModel2ElasticsearchEtikettJsonLd
 	private static final String TYPE_RESOURCE = "resource";
 	private static Object JSONLD_CONTEXT;
 	private final Pattern INTERNAL_ID_PATTERN =
-			Pattern.compile("^" + LOBID_DOMAIN + "(?!.*(ZDB|about)).+");
+			Pattern.compile("^" + LOBID_DOMAIN + ".*");
 
 	/**
 	 * Provides default constructor. Every json ld document gets the whole json ld
@@ -64,7 +64,6 @@ public final class RdfModel2ElasticsearchEtikettJsonLd
 	 */
 	public RdfModel2ElasticsearchEtikettJsonLd() {
 		this(Globals.etikette.getContext().get("@context"));
-
 	}
 
 	/**
@@ -101,11 +100,13 @@ public final class RdfModel2ElasticsearchEtikettJsonLd
 				if (!subjectResource.getURI().startsWith(KEEP_NODE_PREFIX)
 						&& !subjectResource.getURI().startsWith(KEEP_NODE_MAIN_PREFIX)) {
 					if (shouldSubmodelBeExtracted(submodel, subjectResource)) {
-						toJson(submodel, subjectResource.getURI().toString());
+						toJson(submodel,
+								subjectResource.getURI().toString().replaceAll("#!$", ""));
 					}
 				} else if (mainNodeId == null && INTERNAL_ID_PATTERN
 						.matcher(subjectResource.getURI().toString()).matches())
-					mainNodeId = subjectResource.getURI().toString();
+					mainNodeId =
+							subjectResource.getURI().toString().replaceAll("#!$", "");
 			}
 			if (!submodel.isEmpty()) {
 				// remove the newly created sub model from the main node
@@ -166,8 +167,9 @@ public final class RdfModel2ElasticsearchEtikettJsonLd
 			try {
 				JsonNode node = new ObjectMapper().readValue(json, JsonNode.class);
 				final JsonNode parent = node.path(PROPERTY_TO_PARENT);
-				String p = parent != null ? parent.findValue("id").asText()
-						.replaceAll("/about", "").replaceAll(LOBID_DOMAIN + ".*/", "")
+				String p = parent != null
+						? parent.findValue("id").asText()
+								.replaceAll(LOBID_DOMAIN + ".*/", "").replaceFirst("#!$", "")
 						: null;
 				internal_parent = ",\"_parent\":\"" + p + "\"";
 				if (p == null) {
