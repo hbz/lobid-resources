@@ -115,6 +115,10 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 	@SuppressWarnings("static-method")
 	@Test
 	public void testNtriples() {
+		getElasticsearchDocsAsNtriplesAndTestAndWrite();
+	}
+
+	public static void getElasticsearchDocsAsNtriplesAndTestAndWrite() {
 		SortedSet<String> set =
 				getSortedSet(ElasticsearchDocuments.getAsNtriples());
 		try {
@@ -174,14 +178,14 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 		node.close();
 	}
 
-	private static class ElasticsearchDocuments {
+	static class ElasticsearchDocuments {
 		static private SearchResponse getElasticsearchDocuments() {
 			return client.prepareSearch(LOBID_RESOURCES)
 					.setQuery(new MatchAllQueryBuilder()).setFrom(0).setSize(10000)
 					.execute().actionGet();
 		}
 
-		private static String getAsNtriples() {
+		static String getAsNtriples() {
 			return Arrays.asList(getElasticsearchDocuments().getHits().getHits())
 					.parallelStream()
 					.flatMap(hit -> Stream.of(toRdf(hit.getSourceAsString())))

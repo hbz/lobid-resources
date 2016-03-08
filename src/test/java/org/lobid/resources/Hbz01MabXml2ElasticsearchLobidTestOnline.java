@@ -6,7 +6,6 @@ import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.ImmutableSettings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.junit.Test;
-import org.lobid.resources.Hbz01MabXml2ElasticsearchLobidTest.ElasticsearchDocuments;
 
 /**
  * Makes use of {@link Hbz01MabXml2ElasticsearchLobidTest} to extract, transform
@@ -29,10 +28,7 @@ public final class Hbz01MabXml2ElasticsearchLobidTestOnline {
 						new InetSocketTransportAddress("gaia.hbz-nrw.de", 9300)),
 				new RdfModel2ElasticsearchEtikettJsonLd(
 						AbstractIngestTests.LOBID_JSONLD_CONTEXT));
-		Hbz01MabXml2ElasticsearchLobidTest.writeSortedFile(
-				Hbz01MabXml2ElasticsearchLobidTest.TEST_FILENAME_NTRIPLES,
-				ElasticsearchDocuments.getAsNtriples());
 		Hbz01MabXml2ElasticsearchLobidTest
-				.testFiles(Hbz01MabXml2ElasticsearchLobidTest.TEST_FILENAME_NTRIPLES);
+				.getElasticsearchDocsAsNtriplesAndTestAndWrite();
 	}
 }
