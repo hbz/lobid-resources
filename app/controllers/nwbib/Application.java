@@ -807,7 +807,10 @@ public class Application extends Controller {
 		return movedPermanently("/" + path);
 	}
 
-	private static String currentlyStarred() {
+	/**
+	 * @return The space-delimited IDs of the currently starred resouces
+	 */
+	public static String currentlyStarred() {
 		String starred = session(STARRED);
 		return starred == null ? "" : starred.trim();
 	}
