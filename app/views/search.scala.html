@@ -90,7 +90,11 @@
                        zeige @(from+1) bis @(Math.min(from+hits.size,from+size)):
                     </div>
                     <div class="col-md-1" style="text-align: right; padding-right: 4px;">
-                      <a href='@nwbib.routes.Application.starAll((Json.parse(result)\\"hbzId").map(_.as[String]).mkString(","))' title="Alle Titel dieser Seite zur Merkliste hinzufügen"><span class="glyphicon glyphicon-star-empty"></span></a>
+                      @defining((Json.parse(result)\\"hbzId").map(_.as[String]).mkString(",")) { ids =>
+                      <a href='@nwbib.routes.Application.clearStars(ids)' title="Alle Titel dieser Seite von Merkliste entfernen"><span class="glyphicon glyphicon-minus-sign"></span></a>
+                      <a href='@nwbib.routes.Application.starAll(ids)' title="Alle Titel dieser Seite zur Merkliste hinzufügen"><span class="glyphicon glyphicon-plus-sign"></span></a> 
+                      <span class="glyphicon glyphicon-arrow-down" style="color: gray"></span>
+                      }
                     </div>
                  </div>
                  </div>

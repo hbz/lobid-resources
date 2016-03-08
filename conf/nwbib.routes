@@ -17,7 +17,7 @@ GET    /classification        controllers.nwbib.Application.classification(t?=""
 GET    /facets                controllers.nwbib.Application.facets(q,person?="", name?="", subject?="", id?="", publisher?="", issued?="", medium ?= "", nwbibspatial ?= "", nwbibsubject ?= "", from:Int,size:Int,owner,t,field,sort,set?="", location?="", word?="", corporation?="", raw?="")
 
 GET    /stars                 controllers.nwbib.Application.showStars(format?="", ids?="")
-GET    /stars/clear           controllers.nwbib.Application.clearStars()
+GET    /stars/clear           controllers.nwbib.Application.clearStars(ids ?= "")
 GET    /stars/all             controllers.nwbib.Application.starAll(ids)
 POST   /stars/:id             controllers.nwbib.Application.star(id)
 DELETE /stars/:id             controllers.nwbib.Application.unstar(id)
