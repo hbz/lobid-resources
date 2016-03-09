@@ -200,12 +200,22 @@ public enum TableRow {
 					JsonNode label = node.get(key);
 					if (label != null && label.isTextual()
 							&& !label.textValue().trim().isEmpty()) {
-						return label.textValue();
+						return label.textValue() + lifeDates(node);
 					}
 				}
 			}
 		}
 		return id;
+	}
+
+	private static String lifeDates(JsonNode node) {
+		JsonNode birth = node.get("dateOfBirth");
+		JsonNode death = node.get("dateOfDeath");
+		if (birth != null) {
+			return String.format(" (%s-%s)", birth.textValue(),
+					death != null ? death.textValue() : "");
+		}
+		return "";
 	}
 
 	String[] refAndLabel(String property, String value,
