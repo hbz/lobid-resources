@@ -66,27 +66,30 @@ After changing the "morph":https://github.com/hbz/lobid-resources/blob/master/sr
 @mvn clean install@
 
 This may end in a *BUILD SUCCESS* message, meaning that the tested resources don't reflect the changes.
-In this case you should add an Aleph-MabXml resource to "hbz01XmlClobs.tar.bz2":https://github.com/hbz/lobid-resources/blob/master/src/test/resources/hbz01XmlClobs.tar.bz2 that _would_ reflect your changes.
+In this case you should add an Aleph-MabXml resource to "hbz01XmlClobs.tar.bz2":https://github.com/hbz/lobid-resources/blob/master/src/test/resources/hbz01XmlClobs.tar.bz2 that _would_ reflect your changes. Do like this:
+
+@cd src/test/resources; rm -rf hbz01XmlClobs; tar xfj hbz01XmlClobs; xmllint --format http://beta.lobid.org/hbz01/HT018895767 > hbhbz01XmlClobs/HT018895767; tar cfj hbz01XmlClobs.tar.bz2 hbz01XmlClobs; cd -@
+
 If the build ends with *BUILD FAILURE* the newly generated data isn't equal to the test resources.
-This is a good thing because you wanted the change. Now you must approve the new outcome. Make a diff on the data:
+This is a good thing because you wanted the change. Now you must approve the new outcome.
+Let's see what has changed:
 
-@diff hbz01.es.nt src/test/resources/hbz01.es.nt@
+@git status@
 
-and, if everything is ok, copy the new data as the new standard to the test resources:
+Let's make a diff on the changes, e.g. all JSON-LD documents:
 
-@cp hbz01.es.nt src/test/resources/hbz01.es.nt@
+@git diff src/test/resources/jsonld/@
 
-Now you have satisfied the NTriples test, which now builds successfully.
-As these NTriples are the base for the JSON-LD test this JSON test must fail.
-As with the NTriples we have to diff the data. As there are many single files instead of one big file execute this helper script:
+If you are satisfied with the changes, go ahead and add and commit them:
 
-@bash jsonDiffAndCopy.sh@
+@git add src/test/resources/jsonld/; git commit@
 
-After you followed the instructions of the script, build again:
+Do this respectivly for all other test files (Ntriples).
+If you've added and commited everything, check again if all is ok:
 
 @mvn clean install@
 
-Now this should result in *BUILD SUCCESS*. Add, commit and push your changes. You're done :)
+This should result in *BUILD SUCCESS*. Push your changes. You're done :)
 
 h2. Internal hbz Instructions
 

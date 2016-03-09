@@ -2,12 +2,18 @@
 
 package org.lobid.resources;
 
+import java.io.BufferedReader;
 import java.io.File;
-import java.io.IOException;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.Iterator;
-import java.util.Scanner;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.culturegraph.mf.morph.Metamorph;
 import org.culturegraph.mf.morph.MorphErrorHandler;
@@ -31,33 +37,60 @@ public abstract class AbstractIngestTests {
 
 	protected Metamorph metamorph;
 
-	private static SortedSet<String> linesInFileToSetDefaultingBNodesAndCommata(
-			final File file) {
-		SortedSet<String> set = null;
-		try (Scanner scanner = new Scanner(file)) {
-			set = asDefaultSet(scanner);
-		} catch (IOException e) {
-			LOG.error(e.getMessage(), e);
+	@SuppressWarnings("resource")
+	private static Stream<String> fileToStream(final File file) {
+		Stream<String> stream = null;
+		InputStream is;
+		try {
+			is = new FileInputStream(file);
+			stream =
+					new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8))
+							.lines();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
 		}
-		return set;
+		return stream;
 	}
 
 	/**
-	 * Tests if two files are of equal content. As BNodes are not fix they are not
-	 * comparable and thus they are defaulted to "_:bnodeDummy" to make the
-	 * ntriple files comparable anyhow. For the same reason the comma at the end
-	 * of a line is removed to be able to compare json files.
+	 * Calls @see{compareStreamsDefaultingBNodesAndCommata}.
 	 * 
-	 * @param generatedFile the actually generated file
-	 * @param testFile the file which defines how the generatedFile should look
-	 *          like
+	 * @param generatedSet the generated data as set
+	 * @param testFile expected data as file
+	 */
+	public static void compareSetAndFileDefaultingBNodesAndCommata(
+			final SortedSet<String> generatedSet, final File testFile) {
+		compareStreamsDefaultingBNodesAndCommata(generatedSet.stream(),
+				fileToStream(testFile));
+	}
+
+	/**
+	 * Calls @see{compareStreamsDefaultingBNodesAndCommata}.
+	 * 
+	 * @param generatedFile the generated data as file
+	 * @param testFile expected data as file
 	 */
 	public static void compareFilesDefaultingBNodesAndCommata(
 			final File generatedFile, final File testFile) {
-		assertSetSize(linesInFileToSetDefaultingBNodesAndCommata(testFile),
-				linesInFileToSetDefaultingBNodesAndCommata(generatedFile));
-		assertSetElements(linesInFileToSetDefaultingBNodesAndCommata(testFile),
-				linesInFileToSetDefaultingBNodesAndCommata(generatedFile));
+		compareStreamsDefaultingBNodesAndCommata(fileToStream(generatedFile),
+				fileToStream(testFile));
+	}
+
+	/**
+	 * Tests if two Streams are of equal content. As BNodes are not fix they are
+	 * not comparable and thus they are defaulted to "_:bnodeDummy" to make the
+	 * ntriple files comparable anyhow. For the same reason the comma at the end
+	 * of a line is removed to be able to compare json files.
+	 * 
+	 * @param generated the generated data
+	 * @param expected the expected data
+	 */
+	public static void compareStreamsDefaultingBNodesAndCommata(
+			final Stream<String> generated, final Stream<String> expected) {
+		SortedSet<String> expectedSet = asNormalizedSet(expected);
+		SortedSet<String> generatedSet = asNormalizedSet(generated);
+		assertSetSize(expectedSet, generatedSet);
+		assertSetElements(expectedSet, generatedSet);
 	}
 
 	private static void assertSetSize(final SortedSet<String> expectedSet,
@@ -82,18 +115,12 @@ public abstract class AbstractIngestTests {
 		Assert.assertEquals(expectedSet.size(), actualSet.size());
 	}
 
-	private static SortedSet<String> asDefaultSet(final Scanner scanner) {
-		final SortedSet<String> set = new TreeSet<>();
-		while (scanner.hasNextLine()) {
-			String actual = scanner.nextLine();
-			if (!actual.isEmpty()) {
-				actual =
-						actual.replaceFirst("(^_:\\w* )|( _:\\w* ?.$)", "_:bnodeDummy ");
-				actual = actual.replaceFirst(",$", "");
-				set.add(actual);
-			}
-		}
-		return set;
+	private static SortedSet<String> asNormalizedSet(
+			Stream<String> unnormalizedStream) {
+		return new TreeSet<>(unnormalizedStream.flatMap(s -> Stream
+				.of(s.replaceFirst("(^_:\\w* )|( _:\\w* ?.$)", "_:bnodeDummy ")
+						.replaceFirst(",$", "")))
+				.collect(Collectors.toList()));
 	}
 
 	private static void assertSetElements(final SortedSet<String> expectedSet,

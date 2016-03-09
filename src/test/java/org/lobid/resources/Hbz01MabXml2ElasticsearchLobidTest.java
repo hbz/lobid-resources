@@ -60,7 +60,13 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 			"test-resources-" + LocalDateTime.now().toLocalDate() + "-"
 					+ LocalDateTime.now().toLocalTime();
 	private static final String N_TRIPLE = "N-TRIPLE";
-	static final String TEST_FILENAME_NTRIPLES = "hbz01.es.nt";
+	static final String PATH_TO_TEST = "src/test/resources/";
+	static final String TEST_FILENAME_ALEPHXMLCLOBS =
+			PATH_TO_TEST + "hbz01XmlClobs.tar.bz2";
+	static final String TEST_FILENAME_NTRIPLES = PATH_TO_TEST + "hbz01.es.nt";
+	static final String DIRECTORY_TO_TEST_JSON_FILES = PATH_TO_TEST + "jsonld/";
+
+	static boolean testFailed = false;
 
 	@BeforeClass
 	public static void setup() {
@@ -94,8 +100,7 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 				.setReceiver(new PipeEncodeTriples()).setReceiver(triple2model)
 				.setReceiver(etikettJsonLdConverter)
 				.setReceiver(getElasticsearchIndexer(cl));
-		opener.process(
-				new File("src/test/resources/hbz01XmlClobs.tar.bz2").getAbsolutePath());
+		opener.process(new File(TEST_FILENAME_ALEPHXMLCLOBS).getAbsolutePath());
 		opener.closeStream();
 	}
 
@@ -103,19 +108,28 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 	@Test
 	public void testJson() {
 		ElasticsearchDocuments.getAsJson();
+		if (testFailed)
+			throw new AssertionError();
 	}
 
 	@SuppressWarnings("static-method")
 	@Test
 	public void testNtriples() {
-		writeSortedFile(TEST_FILENAME_NTRIPLES,
-				ElasticsearchDocuments.getAsNtriples());
-		testFiles(TEST_FILENAME_NTRIPLES);
+		getElasticsearchDocsAsNtriplesAndTestAndWrite();
 	}
 
-	static void writeSortedFile(final String TEST_FILENAME,
-			final String DOCUMENT) {
-		File testFile = new File(TEST_FILENAME);
+	public static void getElasticsearchDocsAsNtriplesAndTestAndWrite() {
+		SortedSet<String> set =
+				getSortedSet(ElasticsearchDocuments.getAsNtriples());
+		try {
+			AbstractIngestTests.compareSetAndFileDefaultingBNodesAndCommata(set,
+					new File(TEST_FILENAME_NTRIPLES));
+		} finally {
+			writeSetToFile(TEST_FILENAME_NTRIPLES, set);
+		}
+	}
+
+	private static SortedSet<String> getSortedSet(final String DOCUMENT) {
 		SortedSet<String> set = new TreeSet<>();
 		try (Scanner scanner = new Scanner(DOCUMENT)) {
 			while (scanner.hasNextLine()) {
@@ -124,6 +138,12 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 					set.add(line);
 			}
 		}
+		return set;
+	}
+
+	private static void writeSetToFile(final String TEST_FILENAME,
+			SortedSet<String> set) {
+		File testFile = new File(TEST_FILENAME);
 		try {
 			FileUtils.writeStringToFile(testFile,
 					set.parallelStream().collect(Collectors.joining("\n")), false);
@@ -132,20 +152,14 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 		}
 	}
 
-	static void writeFile(final String TEST_FILENAME, final String DOCUMENT) {
+	private static void writeFile(final String TEST_FILENAME,
+			final String DOCUMENT) {
 		File testFile = new File(TEST_FILENAME);
 		try {
 			FileUtils.writeStringToFile(testFile, DOCUMENT, false);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-	}
-
-	static void testFiles(final String TEST_FILENAME) {
-		File testFile = new File(TEST_FILENAME);
-		AbstractIngestTests.compareFilesDefaultingBNodesAndCommata(testFile,
-				new File("src/test/resources/" + TEST_FILENAME));
-		testFile.deleteOnExit();
 	}
 
 	private static ElasticsearchIndexer getElasticsearchIndexer(final Client cl) {
@@ -178,10 +192,9 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 					.collect(Collectors.joining());
 		}
 
-		static void getAsJson() {
+		private static void getAsJson() {
 			for (SearchHit hit : getElasticsearchDocuments().getHits().getHits()) {
 				stripContextAndSaveAsFile(hit.getSourceAsString());
-
 			}
 		}
 
@@ -191,21 +204,27 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 		 */
 		private static void stripContextAndSaveAsFile(final String jsonLd) {
 			String jsonLdWithoutContext = null;
+			Map<String, Object> map;
+			String filename = null;
 			try {
-				Map<String, Object> map =
-						new ObjectMapper().readValue(jsonLd, Map.class);
+				map = new ObjectMapper().readValue(jsonLd, Map.class);
 				map.put("@context", AbstractIngestTests.LOBID_JSONLD_CONTEXT);
 				jsonLdWithoutContext = new ObjectMapper().defaultPrettyPrintingWriter()
 						.writeValueAsString(map);
-				String filename = ((String) map.get("id"))
+				filename = ((String) map.get("id"))
 						.replaceAll(
 								RdfModel2ElasticsearchEtikettJsonLd.LOBID_DOMAIN + ".*/", "")
 						.replaceAll("#!$", "");
-				filename = "jsonld/" + filename;
-				writeFile(filename, jsonLdWithoutContext);
-				testFiles(filename);
+				filename = DIRECTORY_TO_TEST_JSON_FILES + filename;
+				AbstractIngestTests.compareSetAndFileDefaultingBNodesAndCommata(
+						getSortedSet(jsonLdWithoutContext), new File(filename));
 			} catch (IOException e) {
 				e.printStackTrace();
+			} catch (AssertionError a) {
+				a.getMessage();
+				testFailed = true;
+			} finally {
+				writeFile(filename, jsonLdWithoutContext);
 			}
 		}
 
