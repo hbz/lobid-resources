@@ -47,7 +47,7 @@
 			"_default_": {
 				 "_all": { "analyzer": "german_analyzer" }
 			},
-				 "json-ld-lobid" : {
+				 "resource" : {
 						"properties" : {
 							 "subjectOrder" : {
 									"index" : "not_analyzed",
@@ -738,11 +738,10 @@
 						},
 						"date_detection" : false
 				},
-
-				 "json-ld-lobid-item" : {
+				 "item" : {
 						"date_detection" : false,
 						"_parent" : {
-							 "type" : "json-ld-lobid"
+							 "type" : "resource"
 						},
 						"_routing" : {
 							 "required" : true
