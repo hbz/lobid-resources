@@ -784,13 +784,19 @@ public class Application extends Controller {
 	}
 
 	/**
-	 * @return An OK result to confirm deletion of starred resources
+	 * @param ids The ids of the resources to unstar, or empty string to clear all
+	 * @return If ids is empty: an OK result to confirm deletion of all starred
+	 *         resources; if ids are given: A 303 SEE_OTHER result to the referrer
 	 */
-	public static Result clearStars() {
-		uncache(starredIds());
-		uncacheLastSearchUrl();
-		session(STARRED, "");
-		return ok(stars.render(starredIds(), Collections.emptyList(), ""));
+	public static Result clearStars(String ids) {
+		if (ids.isEmpty()) {
+			uncache(starredIds());
+			uncacheLastSearchUrl();
+			session(STARRED, "");
+			return ok(stars.render(starredIds(), Collections.emptyList(), ""));
+		}
+		Arrays.asList(ids.split(",")).forEach(id -> unstar(id));
+		return seeOther(request().getHeader(REFERER));
 	}
 
 	/**
@@ -801,7 +807,10 @@ public class Application extends Controller {
 		return movedPermanently("/" + path);
 	}
 
-	private static String currentlyStarred() {
+	/**
+	 * @return The space-delimited IDs of the currently starred resouces
+	 */
+	public static String currentlyStarred() {
 		String starred = session(STARRED);
 		return starred == null ? "" : starred.trim();
 	}
