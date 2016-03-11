@@ -49,6 +49,11 @@
 			},
 				 "resource" : {
 						"properties" : {
+							 "type" : {
+									"index_analyzer" : "id_analyzer",
+									"search_analyzer" : "id_analyzer",
+									"type" : "string"
+							 },
 							 "subjectOrder" : {
 									"index" : "not_analyzed",
 									"type" : "string"
@@ -133,13 +138,9 @@
 							 "volumeIn" : {
 									"properties" : {
 										 "type" : {
-												"properties" : {
-													 "id" : {
 															"index_analyzer" : "id_analyzer",
 															"search_analyzer" : "id_analyzer",
 															"type" : "string"
-													 }
-												}
 										 },
 										 "numbering" : {
 												"type" : "string"
@@ -285,15 +286,6 @@
 										 }
 									}
 							 },
-							 "type" : {
-									"properties" : {
-										 "id" : {
-												"index_analyzer" : "id_analyzer",
-												"search_analyzer" : "id_analyzer",
-												"type" : "string"
-										 }
-									}
-							 },
 							 "issn" : {
 									"index_analyzer" : "id_analyzer",
 									"search_analyzer" : "id_analyzer",
@@ -323,15 +315,11 @@
 												}
 										 },
 										 "type" : {
-												"properties" : {
-													 "id" : {
-															"index_analyzer" : "id_analyzer",
+											"index_analyzer" : "id_analyzer",
 															"search_analyzer" : "id_analyzer",
 															"type" : "string"
-													 }
 												}
 										 }
-									}
 							 },
 							 "describedby" : {
 									"properties" : {
@@ -751,6 +739,11 @@
 							 "required" : true
 						},
 						"properties" : {
+							"type" : {
+								"index_analyzer" : "id_analyzer",
+								"search_analyzer" : "id_analyzer",
+								"type" : "string"
+							 },
 							 "exemplarOf" : {
 									"properties" : {
 										 "id" : { 
@@ -762,14 +755,6 @@
 							 "callNumber" : {
 									"index" : "not_analyzed",
 									"type" : "string"
-							 },
-							 "type" : {
-									"properties" : {
-										 "id" : { 
-												"index" : "not_analyzed",
-												"type" : "string"
-										 }
-									}
 							 },
 							 "describedby" : {
 									"properties" : {
@@ -791,7 +776,7 @@
 												"type" : "string"
 										 }
 									}
-							 }
+							}
 						}
 				 }
 			}
