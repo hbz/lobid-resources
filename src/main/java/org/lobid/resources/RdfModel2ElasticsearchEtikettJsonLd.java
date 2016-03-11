@@ -175,7 +175,7 @@ public final class RdfModel2ElasticsearchEtikettJsonLd
 						? parent.findValue("id").asText()
 								.replaceAll(LOBID_DOMAIN + ".*/", "").replaceFirst("#!$", "")
 						: null;
-				internal_parent = ",\"_parent\":\"" + p + "\"";
+				internal_parent = p;
 				if (p == null) {
 					LOG.warn("Item " + idWithoutDomain + " has no parent declared!");
 					jsonMap.put(ElasticsearchIndexer.Properties.PARENT.getName(),
@@ -190,6 +190,8 @@ public final class RdfModel2ElasticsearchEtikettJsonLd
 		jsonMap.put(ElasticsearchIndexer.Properties.GRAPH.getName(), jsonDocument);
 		jsonMap.put(ElasticsearchIndexer.Properties.TYPE.getName(), type);
 		jsonMap.put(ElasticsearchIndexer.Properties.ID.getName(), idWithoutDomain);
+		jsonMap.put(ElasticsearchIndexer.Properties.PARENT.getName(),
+				internal_parent);
 		return jsonMap;
 	}
 
