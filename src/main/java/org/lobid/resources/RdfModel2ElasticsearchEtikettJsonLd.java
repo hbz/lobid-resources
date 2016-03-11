@@ -47,7 +47,7 @@ public final class RdfModel2ElasticsearchEtikettJsonLd
 	// the items will have their own index type and ES parents
 	private static final String PROPERTY_TO_PARENT = "exemplarOf";
 	static String LOBID_DOMAIN = "http://lobid.org/";
-	private static String LOBID_ITEM_URI_PREFIX = LOBID_DOMAIN + "item/";
+	private static String LOBID_ITEM_URI_PREFIX = LOBID_DOMAIN + "items/";
 	// the sub node we want to cling to the main node
 	private static final String KEEP_NODE_PREFIX = "http://d-nb.info/gnd";
 	private static final String KEEP_NODE_MAIN_PREFIX =
