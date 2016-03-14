@@ -53,9 +53,7 @@ public class Lobid {
 		if (DATA_2) {
 			String url = String.format(
 					Application.CONFIG.getString("feature.lobid2.indexUrlFormat"), id);
-			Promise<JsonNode> jsonResponse =
-					WS.url(url).get().map(response -> response.asJson());
-			return jsonResponse.get(10000);
+			return cachedJsonCall(url);
 		}
 		throw new IllegalStateException(
 				"Only implemented for Lobid.DATA_2 feature");
@@ -67,16 +65,16 @@ public class Lobid {
 	 */
 	public static JsonNode cachedJsonCall(String url) {
 		String cacheKey = String.format("json.%s", url);
-		JsonNode org = (JsonNode) Cache.get(cacheKey);
-		if (org != null) {
-			return org;
+		JsonNode json = (JsonNode) Cache.get(cacheKey);
+		if (json != null) {
+			return json;
 		}
 		Logger.debug("Not cached, GET: {}", url);
 		Promise<JsonNode> promise =
 				WS.url(url).get().map(response -> response.getStatus() == Http.Status.OK
 						? response.asJson() : Json.newObject());
-		promise.onRedeem(json -> {
-			Cache.set(cacheKey, json, Application.ONE_DAY);
+		promise.onRedeem(jsonResponse -> {
+			Cache.set(cacheKey, jsonResponse, Application.ONE_DAY);
 		});
 		return promise.get(10000);
 	}
