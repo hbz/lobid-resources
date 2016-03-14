@@ -29,6 +29,6 @@ public final class Hbz01MabXml2ElasticsearchLobidTestOnline {
 				new RdfModel2ElasticsearchEtikettJsonLd(
 						AbstractIngestTests.LOBID_JSONLD_CONTEXT));
 		Hbz01MabXml2ElasticsearchLobidTest
-				.getElasticsearchDocsAsNtriplesAndTestAndWrite();
+				.getElasticsearchDocsAsNtriplesAndTest(false);
 	}
 }
