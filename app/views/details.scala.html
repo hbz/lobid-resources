@@ -1,6 +1,6 @@
 @* Copyright 2014 Fabian Steeg, hbz. Licensed under the GPLv2 *@
 
-@(config: com.typesafe.config.Config, result: String, q:String)
+@(config: com.typesafe.config.Config, docJson: String, q:String)
 
 @import helper._
 @import tags._
@@ -24,9 +24,19 @@
   }
 }
 
+@if(docJson.isEmpty){
 @main("NWBib - Vollanzeige") {
-    @defining(Json.parse(result).asOpt[Seq[JsValue]].getOrElse(Seq()).zipWithIndex.tail) { hits =>
-        @for((doc,i) <- hits) { @if(Cache.get(session("uuid") + "-" + (doc\\"hbzId")(0).as[String]) != null) {
+ 		@if(flash.get("error")!=null){
+            <div class="alert alert-danger">@flash.get("error")</div>
+        } else {
+            <div class="alert alert-info text-center">
+                Ein Titel mit der ID @q konnte nicht gefunden werden.
+            </div>
+        }
+}} else {
+@defining(Json.parse(docJson)) { doc =>
+@main("NWBib - " + {if( (doc\\"title").isEmpty) "Vollanzeige" else (doc\\"title")(0).as[String] }) {
+        @if(Cache.get(session("uuid") + "-" + (doc\\"hbzId")(0).as[String]) != null) {
         @defining(Cache.get(session("uuid") + "-lastSearch")) { lastSearch => @if(lastSearch != null) {
           @defining(Json.parse(lastSearch.asInstanceOf[String]).as[JsArray].as[Seq[String]]) { last =>
            <nav id="pager">
@@ -89,25 +99,15 @@
                     @defining(items.size){num =>
                       <dt>Bestand in @num Bibliothek@if(num>1){en}:</dt>
                     }
-                    <dd>@tags.items_map(i, items)</dd>
+                    <dd>@tags.items_map(items)</dd>
                     }
                     </dl>
                   </div>
               }}
           }
         </div>
-        }
-        @if(flash.get("error")!=null){
-            <div class="alert alert-danger">@flash.get("error")</div>
-        } else {
-            @if(hits.isEmpty){
-                <div class="alert alert-info text-center">
-                    Ein Titel mit der ID @q konnte nicht gefunden werden.
-                </div>
-            }
-        }
-        @if(!hits.isEmpty && !q.trim.isEmpty){
+        @if(!q.trim.isEmpty){
           @map_credits()
         }
-    }
-}
+        }
+}}

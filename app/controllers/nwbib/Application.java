@@ -427,10 +427,15 @@ public class Application extends Controller {
 						response.getStatusText(), requestHolder.getUrl(),
 						requestHolder.getQueryParameters());
 			}
-			return ok(showDetails ? details.render(CONFIG, s, id)
-					: search.render(s, q, person, name, subject, id, publisher, issued,
-							medium, nwbibspatial, nwbibsubject, from, size, hits, owner, t,
-							sort, set, location, word, corporation, raw));
+			if (showDetails) {
+				JsonNode nodes = Json.parse(s);
+				String json =
+						nodes.isArray() && nodes.size() > 1 ? nodes.get(1).toString() : "";
+				return ok(details.render(CONFIG, json, id));
+			}
+			return ok(search.render(s, q, person, name, subject, id, publisher,
+					issued, medium, nwbibspatial, nwbibsubject, from, size, hits, owner,
+					t, sort, set, location, word, corporation, raw));
 		});
 	}
 
