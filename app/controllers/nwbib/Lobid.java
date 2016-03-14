@@ -62,20 +62,19 @@ public class Lobid {
 	}
 
 	/**
-	 * @param id The organisation ID
-	 * @return The organisation JSON content
+	 * @param url The URL to call
+	 * @return A JSON response from the URL, or an empty JSON object
 	 */
-	public static JsonNode getOrganisation(String id) {
-		String cacheKey = String.format("organisation.json.%s", id);
-		JsonNode cachedOrganisation = (JsonNode) Cache.get(cacheKey);
-		if (cachedOrganisation != null) {
-			return cachedOrganisation;
+	public static JsonNode cachedJsonCall(String url) {
+		String cacheKey = String.format("json.%s", url);
+		JsonNode org = (JsonNode) Cache.get(cacheKey);
+		if (org != null) {
+			return org;
 		}
-		Logger.debug("Item owner not cached, GET: {}", id);
+		Logger.debug("Not cached, GET: {}", url);
 		Promise<JsonNode> promise =
-				WS.url(Application.CONFIG.getString("orgs.api") + "/" + id).get()
-						.map(response -> response.getStatus() == Http.Status.OK
-								? response.asJson() : Json.newObject());
+				WS.url(url).get().map(response -> response.getStatus() == Http.Status.OK
+						? response.asJson() : Json.newObject());
 		promise.onRedeem(json -> {
 			Cache.set(cacheKey, json, Application.ONE_DAY);
 		});

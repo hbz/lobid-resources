@@ -10,7 +10,7 @@
 @import ExecutionContext.Implicits.global
 @import scala.concurrent.duration._
 @import play.api.Play.current
-@import controllers.nwbib.Application
+@import controllers.nwbib._
 @import play.api.cache.Cache
 
 @string(value: JsValue) = { @value.asOpt[String].getOrElse("--") }
@@ -60,15 +60,15 @@
     </script>
 
 @markers(items: Map[String,List[String]]) = {
-    @for((key,i) <- items.keySet.toList.sortWith((k1:String,k2:String)=>controllers.nwbib.Lobid.compareIsil(k1,k2)).zipWithIndex;
+    @for((key,i) <- items.keySet.toList.sortWith((k1:String,k2:String)=>Lobid.compareIsil(k1,k2)).zipWithIndex;
         owner = Application.CONFIG.getString("orgs.api")+"/"+key;
-        json = Json.parse(controllers.nwbib.Lobid.getOrganisation(key).toString);
+        json = Json.parse(Lobid.cachedJsonCall(owner).toString);
         ownerUrl = if((json\\"url").isEmpty) owner else (json\\"url")(0).as[String];
         ownerName = if((json\\"name").isEmpty) "" else (json\\"name")(0).as[String]) {
 
           var details = '<tr><td><i>Bibliothek:</i></td><td>'+
             '<i>@if(!ownerName.isEmpty){<a href="@ownerUrl">@ownerName</a>}else{&lt;Keine Angabe&gt;}</i></td></tr>'
-            @defining(controllers.nwbib.Lobid.opacUrl(items(key).head)){ opacLink =>
+            @defining(Lobid.opacUrl(items(key).head)){ opacLink =>
               @if(opacLink!=null){+'<tr><td>Verfügbarkeit:</td>'+'<td><a href="@opacLink">Lokalen Katalog abfragen</a></td></tr>'};
             }
           tableDetails@(hitId) = details;
@@ -77,9 +77,7 @@
           else
             allTableDetails@(hitId) += '<tr><th style="width: 30%"/><th style="width: 70%"/></tr>' + tableDetails@(hitId);
         @for((item,i) <- items(key).zipWithIndex;
-            requestUri = item+"?format=full";
-            jsonFuture = WS.url(requestUri).get().map(x=>x.json);
-            itemJson = Await.result(jsonFuture, 5.second);
+            itemJson = Json.parse(Lobid.cachedJsonCall(item+"?format=full").toString);
             owners = (itemJson\\"owner");
             if(!owners.isEmpty);
             signatures = (itemJson\\"callNumber");
