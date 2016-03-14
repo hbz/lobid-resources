@@ -62,13 +62,7 @@
 @markers(items: Map[String,List[String]]) = {
     @for((key,i) <- items.keySet.toList.sortWith((k1:String,k2:String)=>controllers.nwbib.Lobid.compareIsil(k1,k2)).zipWithIndex;
         owner = Application.CONFIG.getString("orgs.api")+"/"+key;
-        response = Cache.getOrElse[play.api.libs.ws.WSResponse](owner) {
-          play.Logger.debug("Item owner not cached, GET: {}", owner)
-          val r = Await.result(WS.url(owner).get(), 5.seconds)
-          if(r.status == play.mvc.Http.Status.OK) Cache.set(owner, r, 7.days)
-          r
-        };
-        json = if(response.status == play.mvc.Http.Status.OK) response.json else Json.obj();
+        json = Json.parse(controllers.nwbib.Lobid.getOrganisation(key).toString);
         ownerUrl = if((json\\"url").isEmpty) owner else (json\\"url")(0).as[String];
         ownerName = if((json\\"name").isEmpty) "" else (json\\"name")(0).as[String]) {
 

@@ -61,6 +61,27 @@ public class Lobid {
 				"Only implemented for Lobid.DATA_2 feature");
 	}
 
+	/**
+	 * @param id The organisation ID
+	 * @return The organisation JSON content
+	 */
+	public static JsonNode getOrganisation(String id) {
+		String cacheKey = String.format("organisation.json.%s", id);
+		JsonNode cachedOrganisation = (JsonNode) Cache.get(cacheKey);
+		if (cachedOrganisation != null) {
+			return cachedOrganisation;
+		}
+		Logger.debug("Item owner not cached, GET: {}", id);
+		Promise<JsonNode> promise =
+				WS.url(Application.CONFIG.getString("orgs.api") + "/" + id).get()
+						.map(response -> response.getStatus() == Http.Status.OK
+								? response.asJson() : Json.newObject());
+		promise.onRedeem(json -> {
+			Cache.set(cacheKey, json, Application.ONE_DAY);
+		});
+		return promise.get(10000);
+	}
+
 	static Long getTotalResults(JsonNode json) {
 		return json.findValue("http://sindice.com/vocab/search#totalResults")
 				.asLong();
