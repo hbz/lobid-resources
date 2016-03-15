@@ -17,8 +17,6 @@ import org.culturegraph.mf.framework.annotations.Out;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.ResIterator;
@@ -158,36 +156,19 @@ public final class RdfModel2ElasticsearchEtikettJsonLd
 
 	private static HashMap<String, String> addInternalProperties(
 			HashMap<String, String> jsonMap, String id, String json) {
-		String internal_parent = "";
 		String type = TYPE_RESOURCE;
-		String idWithoutDomain = id.replaceAll(LOBID_DOMAIN + ".*/", "");
 
 		if (id.startsWith(LOBID_ITEM_URI_PREFIX)) {
+			id = id.replaceAll(LOBID_DOMAIN + ".*/", "");
 			type = TYPE_ITEM;
-			try {
-				JsonNode node = new ObjectMapper().readValue(json, JsonNode.class);
-				final JsonNode parent = node.path(PROPERTY_TO_PARENT);
-				String p = parent != null
-						? parent.findValue("id").asText()
-								.replaceAll(LOBID_DOMAIN + ".*/", "").replaceFirst("#!$", "")
-						: null;
-				internal_parent = p;
-				if (p == null) {
-					LOG.warn("Item " + idWithoutDomain + " has no parent declared!");
-					jsonMap.put(ElasticsearchIndexer.Properties.PARENT.getName(),
-							"no_parent");
-				} else
-					jsonMap.put(ElasticsearchIndexer.Properties.PARENT.getName(), p);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-		String jsonDocument = json + internal_parent;
-		jsonMap.put(ElasticsearchIndexer.Properties.GRAPH.getName(), jsonDocument);
+			id = id.replace("%20", " ");
+			id = id.replace("%2F", "/");
+			System.out.println(id);
+		} else
+			id = id.replaceAll(LOBID_DOMAIN + ".*/", "");
+		jsonMap.put(ElasticsearchIndexer.Properties.GRAPH.getName(), json);
 		jsonMap.put(ElasticsearchIndexer.Properties.TYPE.getName(), type);
-		jsonMap.put(ElasticsearchIndexer.Properties.ID.getName(), idWithoutDomain);
-		jsonMap.put(ElasticsearchIndexer.Properties.PARENT.getName(),
-				internal_parent);
+		jsonMap.put(ElasticsearchIndexer.Properties.ID.getName(), id);
 		return jsonMap;
 	}
 

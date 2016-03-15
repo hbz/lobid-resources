@@ -108,25 +108,25 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 	public void testNtriplesWithContextAsUrl() {
 		etl(client, new RdfModel2ElasticsearchEtikettJsonLd(
 				AbstractIngestTests.LOBID_JSONLD_CONTEXT));
-		getElasticsearchDocsAsNtriplesAndTest(false);
-	}
-
-	@SuppressWarnings("static-method")
-	@Test
-	public void testJson() {
-		etl(client, new RdfModel2ElasticsearchEtikettJsonLd());
-		ElasticsearchDocuments.getAsJson();
-		if (testFailed)
-			throw new AssertionError();
-	}
-
-	@SuppressWarnings("static-method")
-	@Test
-	public void testNtriples() {
-		etl(client, new RdfModel2ElasticsearchEtikettJsonLd());
 		getElasticsearchDocsAsNtriplesAndTest(true);
-
 	}
+
+	// @SuppressWarnings("static-method")
+	// @Test
+	// public void testJson() {
+	// etl(client, new RdfModel2ElasticsearchEtikettJsonLd());
+	// ElasticsearchDocuments.getAsJson();
+	// if (testFailed)
+	// throw new AssertionError();
+	// }
+	//
+	// @SuppressWarnings("static-method")
+	// @Test
+	// public void testNtriples() {
+	// etl(client, new RdfModel2ElasticsearchEtikettJsonLd());
+	// getElasticsearchDocsAsNtriplesAndTest(true);
+	//
+	// }
 
 	/**
 	 * 
