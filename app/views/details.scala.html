@@ -25,89 +25,92 @@
 }
 
 @if(docJson.isEmpty){
-@main("NWBib - Vollanzeige") {
- 		@if(flash.get("error")!=null){
-            <div class="alert alert-danger">@flash.get("error")</div>
-        } else {
-            <div class="alert alert-info text-center">
-                Ein Titel mit der ID @q konnte nicht gefunden werden.
-            </div>
+  @main("NWBib - Vollanzeige") {
+    @if(flash.get("error")!=null){
+    <div class="alert alert-danger">@flash.get("error")</div>
+    } else {
+    <div class="alert alert-info text-center">Ein Titel mit der ID @q konnte nicht gefunden werden.</div>
+    }
+  }
+} else {
+  @defining(Json.parse(docJson)) { doc =>
+    @main("NWBib - " + {if( (doc\\"title").isEmpty) "Vollanzeige" else (doc\\"title")(0).as[String] }) {
+      @if(Cache.get(session("uuid") + "-" + (doc\\"hbzId")(0).as[String]) != null) {
+        @defining(Cache.get(session("uuid") + "-lastSearch")) { lastSearch =>
+          @if(lastSearch != null) {
+            @defining(Json.parse(lastSearch.asInstanceOf[String]).as[JsArray].as[Seq[String]]) { last =>
+            <nav id="pager">
+              <ul class="pager">
+                @pageLink(last, "prev", "&larr;", "Voriger Treffer")
+                @defining(session("lastSearchUrl")){ lastSearchUrl =>
+                  <li><a href="@lastSearchUrl">Treffer @(last.indexOf((doc\\"hbzId")(0).as[String])+1) von @last.size in der 
+                  @if(lastSearchUrl==nwbib.routes.Application.showStars().toString()) {Merkliste} else {letzten Trefferliste}</a></li>
+                }
+                @pageLink(last, "next", "&rarr;", "Nächster Treffer")
+              </ul>
+            </nav>
+            <script>
+              if(document.referrer.indexOf('@nwbib.routes.Application.index()') < 0){
+                $("#pager").hide();
+              }
+            </script>
+            }
+          }
         }
-}} else {
-@defining(Json.parse(docJson)) { doc =>
-@main("NWBib - " + {if( (doc\\"title").isEmpty) "Vollanzeige" else (doc\\"title")(0).as[String] }) {
-        @if(Cache.get(session("uuid") + "-" + (doc\\"hbzId")(0).as[String]) != null) {
-        @defining(Cache.get(session("uuid") + "-lastSearch")) { lastSearch => @if(lastSearch != null) {
-          @defining(Json.parse(lastSearch.asInstanceOf[String]).as[JsArray].as[Seq[String]]) { last =>
-           <nav id="pager">
-             <ul class="pager">
-               @pageLink(last, "prev", "&larr;", "Voriger Treffer")
-               @defining(session("lastSearchUrl")){ lastSearchUrl =>
-                 <li><a href="@lastSearchUrl">Treffer @(last.indexOf((doc\\"hbzId")(0).as[String])+1) von @last.size in der 
-                 @if(lastSearchUrl==nwbib.routes.Application.showStars().toString()) {Merkliste} else {letzten Trefferliste}</a></li>
-               }
-               @pageLink(last, "next", "&rarr;", "Nächster Treffer")
-             </ul>
-           </nav>
-           <script>
-             if(document.referrer.indexOf('@nwbib.routes.Application.index()') < 0){
-               $("#pager").hide();
+      }
+      <div class="row">
+      @defining(Lobid.items(doc.toString)) { items =>
+        @defining(!(doc\\"isPartOf").isEmpty && doc.toString.contains("http://purl.org/ontology/bibo/Article")){superordination =>
+          <div class="col-md-@if(items.isEmpty && !doc.toString.contains("fulltextOnline") && !superordination){12} else {8}">
+            <dl>
+            @defining((doc\\"hbzId")(0).as[String]){ id =>
+              <dt>@tags.star_button(id) Titeldetails:
+              <a href="@Application.CONFIG.getString("hbz01.api")/@id">&nbsp;</a>
+              </dt>
+              <dd>@tags.result_doc(if(Lobid.DATA_2) { Json.parse(Lobid.getResource(id).toString) } else { doc })</dd>
+            }
+            </dl>
+          </div>
+          @if(!items.isEmpty || doc.toString.contains("fulltextOnline") || superordination){
+          <div class="col-md-4" id="holdings">
+            <dl>
+            @if(doc.toString.contains("fulltextOnline")){
+            <dt>Online-Ressource:</dt>
+            <dd>
+            <table class="table table-striped table-condensed">
+              <tr>
+                <th style="width: 15%"></th>
+                <th style="width: 85%"></th>
+              </tr>
+              @result_field("Link", "fulltextOnline", doc, TableRow.LINKS)
+            </table>
+            </dd>
+            }
+            @if(superordination){
+            <dt>Bestandsangaben:</dt>
+            <dd>
+            <table class="table table-striped table-condensed">
+              <tr>
+                <th style="width: 30%"></th>
+                <th style="width: 70%"></th>
+              </tr>
+              @result_field("Zum Bestand siehe:", "isPartOf", doc, TableRow.LINKS)
+            </table>
+            </dd>
+            }
+            @if(!superordination && !items.isEmpty && !doc.toString.contains("fulltextOnline")){
+             @defining(items.size){num =>
+             <dt>Bestand in @num Bibliothek@if(num>1){en}:</dt>
              }
-           </script>
+             <dd>@tags.items_map(items)</dd>
+            }
+            </dl>
+          </div>
           }
-        }}}
-        <div class="row">
-          @defining(Lobid.items(doc.toString)) { items =>
-              @defining(!(doc\\"isPartOf").isEmpty && doc.toString.contains("http://purl.org/ontology/bibo/Article")){superordination =>
-              <div class="col-md-@if(items.isEmpty && !doc.toString.contains("fulltextOnline") && !superordination){12} else {8}">
-                <dl>@defining((doc\\"hbzId")(0).as[String]){ id =>
-                    <dt>@tags.star_button(id) Titeldetails:
-                    <a href="@Application.CONFIG.getString("hbz01.api")/@id">&nbsp;</a>
-                    </dt>
-                    <dd>@tags.result_doc(if(Lobid.DATA_2) { Json.parse(Lobid.getResource(id).toString) } else { doc })</dd>
-                    }
-                </dl>
-              </div>
-              @if(!items.isEmpty || doc.toString.contains("fulltextOnline") || superordination){
-                  <div class="col-md-4" id="holdings">
-                    <dl>
-                    @if(doc.toString.contains("fulltextOnline")){
-                    <dt>Online-Ressource:</dt>
-                    <dd>
-                    <table class="table table-striped table-condensed">
-                      <tr>
-                            <th style="width: 15%"></th>
-                            <th style="width: 85%"></th>
-                      </tr>
-                      @result_field("Link", "fulltextOnline", doc, TableRow.LINKS)
-                    </table>
-                    </dd>
-                    }
-                    @if(superordination){
-                    <dt>Bestandsangaben:</dt>
-                    <dd>
-                    <table class="table table-striped table-condensed">
-                      <tr>
-                            <th style="width: 30%"></th>
-                            <th style="width: 70%"></th>
-                      </tr>
-                      @result_field("Zum Bestand siehe:", "isPartOf", doc, TableRow.LINKS)
-                    </table>
-                    </dd>
-                    }
-                    @if(!superordination && !items.isEmpty && !doc.toString.contains("fulltextOnline")){
-                    @defining(items.size){num =>
-                      <dt>Bestand in @num Bibliothek@if(num>1){en}:</dt>
-                    }
-                    <dd>@tags.items_map(items)</dd>
-                    }
-                    </dl>
-                  </div>
-              }}
-          }
-        </div>
-        @if(!q.trim.isEmpty){
-          @map_credits()
         }
-        }
-}}
+      }
+      </div>
+      @if(!q.trim.isEmpty) {@map_credits()}
+    }
+  }
+}
