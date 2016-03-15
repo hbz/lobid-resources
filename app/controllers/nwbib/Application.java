@@ -428,9 +428,13 @@ public class Application extends Controller {
 						requestHolder.getQueryParameters());
 			}
 			if (showDetails) {
+				String json = "";
 				JsonNode nodes = Json.parse(s);
-				String json =
-						nodes.isArray() && nodes.size() > 1 ? nodes.get(1).toString() : "";
+				if (nodes.isArray() && nodes.size() == 2) { // first: metadata
+					json = nodes.get(1).toString();
+				} else {
+					Logger.warn("No suitable data to show details for: {}", nodes);
+				}
 				return ok(details.render(CONFIG, json, id));
 			}
 			return ok(search.render(s, q, person, name, subject, id, publisher,

@@ -130,5 +130,5 @@
         @if(allHits > 0) {@facets(q,person,name,subject,id,publisher,issued,medium,nwbibspatial,nwbibsubject,owner,t,sortParam,set,location,word,corporation,raw,from,size)}
       </div>
     }
-    <p>@map_credits()</p>
+    @if(allHits > 0) {<p>@map_credits()</p>}
 }
