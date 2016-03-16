@@ -427,10 +427,19 @@ public class Application extends Controller {
 						response.getStatusText(), requestHolder.getUrl(),
 						requestHolder.getQueryParameters());
 			}
-			return ok(showDetails ? details.render(CONFIG, s, id)
-					: search.render(s, q, person, name, subject, id, publisher, issued,
-							medium, nwbibspatial, nwbibsubject, from, size, hits, owner, t,
-							sort, set, location, word, corporation, raw));
+			if (showDetails) {
+				String json = "";
+				JsonNode nodes = Json.parse(s);
+				if (nodes.isArray() && nodes.size() == 2) { // first: metadata
+					json = nodes.get(1).toString();
+				} else {
+					Logger.warn("No suitable data to show details for: {}", nodes);
+				}
+				return ok(details.render(CONFIG, json, id));
+			}
+			return ok(search.render(s, q, person, name, subject, id, publisher,
+					issued, medium, nwbibspatial, nwbibsubject, from, size, hits, owner,
+					t, sort, set, location, word, corporation, raw));
 		});
 	}
 
