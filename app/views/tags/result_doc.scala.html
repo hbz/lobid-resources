@@ -45,7 +45,7 @@
 }
 
 @subordinated(field:String, id:String, label:String, values:(String,String)) = {
-  @defining(Lobid.getTotalHits(field, id, "*").get(10000)){ hits => @if(hits > 0) {
+  @defining(Lobid.getTotalHits(field, id, "*").get(Lobid.API_TIMEOUT)){ hits => @if(hits > 0) {
     @defining(if(hits==1){values._1} else {values._2}){ value =>
     <tr><td>@label</td><td><a title="@value" href="@nwbib.routes.Application.search(raw=Lobid.escapeUri(field)+":"+Lobid.escapeUri(id),set="*")">@hits @value</a></td></tr>
   }}}

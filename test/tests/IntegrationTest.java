@@ -51,8 +51,7 @@ public class IntegrationTest {
 	public void testSpatialClassification() {
 		running(testServer(3333, fakeApplication(inMemoryDatabase())), HTMLUNIT,
 				(TestBrowser browser) -> {
-					browser.goTo(
-							"http://localhost:3333/classification?t=Raumsystematik");
+					browser.goTo("http://localhost:3333/classification?t=Raumsystematik");
 					assertThat(browser.pageSource()).contains("Nordrhein-Westfalen")
 							.contains("Rheinland").contains("Grafschaft, Herzogtum Jülich");
 				});
@@ -62,8 +61,7 @@ public class IntegrationTest {
 	public void testClassification() {
 		running(testServer(3333, fakeApplication(inMemoryDatabase())), HTMLUNIT,
 				(TestBrowser browser) -> {
-					browser.goTo(
-							"http://localhost:3333/classification?t=Sachsystematik");
+					browser.goTo("http://localhost:3333/classification?t=Sachsystematik");
 					assertThat(browser.pageSource()).contains("Allgemeine Landeskunde")
 							.contains("Landesbeschreibungen").contains("Reiseberichte");
 				});
@@ -76,7 +74,7 @@ public class IntegrationTest {
 					String field = Application.TYPE_FIELD;
 					Promise<JsonNode> jsonPromise = Lobid.getFacets("köln", "", "", "",
 							"", "", "", "", "", "", "", field, "", "", "", "", "", "");
-					JsonNode facets = jsonPromise.get(10000);
+					JsonNode facets = jsonPromise.get(Lobid.API_TIMEOUT);
 					assertThat(facets.findValues("term").stream().map(e -> e.asText())
 							.collect(Collectors.toList())).contains(
 									"http://purl.org/dc/terms/BibliographicResource",
@@ -127,14 +125,17 @@ public class IntegrationTest {
 			Long hits = Lobid
 					.getTotalHits("@graph.http://purl.org/lobid/lv#multiVolumeWork.@id",
 							"http://lobid.org/resource/HT018486420", "")
-					.get(10000);
+					.get(Lobid.API_TIMEOUT);
 			assertThat(hits).isGreaterThan(0);
-			hits = Lobid.getTotalHits("@graph.http://purl.org/lobid/lv#series.@id",
-					"http://lobid.org/resource/HT002091108", "").get(10000);
+			hits = Lobid
+					.getTotalHits("@graph.http://purl.org/lobid/lv#series.@id",
+							"http://lobid.org/resource/HT002091108", "")
+					.get(Lobid.API_TIMEOUT);
 			assertThat(hits).isGreaterThan(0);
-			hits =
-					Lobid.getTotalHits("@graph.http://purl.org/lobid/lv#containedIn.@id",
-							"http://lobid.org/resource/HT001387709", "").get(10000);
+			hits = Lobid
+					.getTotalHits("@graph.http://purl.org/lobid/lv#containedIn.@id",
+							"http://lobid.org/resource/HT001387709", "")
+					.get(Lobid.API_TIMEOUT);
 			assertThat(hits).isGreaterThan(0);
 		});
 	}

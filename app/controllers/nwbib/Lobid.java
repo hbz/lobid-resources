@@ -41,6 +41,9 @@ import views.TableRow;
  */
 public class Lobid {
 
+	/** Timeout for API calls in milliseconds. */
+	public static final int API_TIMEOUT = 50000;
+
 	/** Feature toggle for using the new Lobid 2.0 data. */
 	public static final boolean DATA_2 =
 			Application.CONFIG.getBoolean("feature.lobid2.enabled");
@@ -76,7 +79,7 @@ public class Lobid {
 		promise.onRedeem(jsonResponse -> {
 			Cache.set(cacheKey, jsonResponse, Application.ONE_DAY);
 		});
-		return promise.get(10000);
+		return promise.get(Lobid.API_TIMEOUT);
 	}
 
 	static Long getTotalResults(JsonNode json) {
@@ -265,7 +268,7 @@ public class Lobid {
 			label = HtmlEscapers.htmlEscaper().escape(label);
 			Cache.set(cacheKey, label);
 			return label;
-		}).get(10000);
+		}).get(Lobid.API_TIMEOUT);
 	}
 
 	private static String gndLabel(String uri) {
@@ -293,7 +296,7 @@ public class Lobid {
 					    "preferredNameForThePlaceOrGeographicName"))); // @formatter:on
 			Cache.set(cacheKey, label);
 			return label;
-		}).get(50000);
+		}).get(Lobid.API_TIMEOUT);
 	}
 
 	private static String nwBibLabel(String uri) {
