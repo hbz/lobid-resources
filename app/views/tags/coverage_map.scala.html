@@ -58,6 +58,7 @@ if (pointsParam.length > 0) {
     }
     var currentPolygon = new L.Polygon(hull, options);
     map.addLayer(currentPolygon);
+    map.fitBounds(hull, {reset: true});
 }
 
 var markers = new L.MarkerClusterGroup({
