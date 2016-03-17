@@ -1,6 +1,7 @@
 /* Copyright 2015 Fabian Steeg, hbz. Licensed under the GPLv2 */
 package views;
 
+import controllers.nwbib.Lobid;
 import play.Logger;
 import play.cache.Cache;
 import play.libs.F.Promise;
@@ -26,7 +27,7 @@ public class ReverseGeoLookup {
 		return new ReverseGeoLookup(
 				"https://wdq.wmflabs.org/api?q=around[625,%s,0.1]",
 				"https://www.wikidata.org/w/api.php?action=wbgetentities&props=labels&ids=Q%s&languages=de&format=json",
-				10000).lookup(location);
+				Lobid.API_TIMEOUT).lookup(location);
 	}
 
 	private ReverseGeoLookup(String idLookupUrl, String labelLookupURl,
