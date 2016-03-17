@@ -16,7 +16,7 @@
     }
     @if(!q.isEmpty){
     <p>
-      <b>@if(topics.isEmpty) {Keine Themen gefunden für Anfrage: <code>@q</code>} else {@topics.size Themen gefunden:}</b>
+      <b>@if(topics.isEmpty) {Keine Themen gefunden für Anfrage: <code>@q</code>} else { @topics.size @if(topics.size==1) {Thema} else {Themen} gefunden:}</b>
     </p>
     }
     <ul id="root" style="display:block;">
