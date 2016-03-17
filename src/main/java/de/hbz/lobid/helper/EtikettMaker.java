@@ -38,12 +38,12 @@ public class EtikettMaker {
 	final static Logger logger = LoggerFactory.getLogger(EtikettMaker.class);
 
 	/**
-	 * A map with URIs as key and labels,icons, shortnames as values
+	 * A map with URIs as key
 	 */
 	Map<String, Etikett> pMap = new HashMap<>();
 
 	/**
-	 * A map with Shortnames as key and labels,icons, uris as values
+	 * A map with Shortnames as key
 	 */
 	Map<String, Etikett> nMap = new HashMap<>();
 
@@ -83,16 +83,16 @@ public class EtikettMaker {
 	 * @return an etikett object contains uri, icon, label, jsonname,
 	 *         referenceType
 	 */
-	public Etikett getEtikett(String key) {
-		Etikett e = pMap.get(key);
+	public Etikett getEtikett(String uri) {
+		Etikett e = pMap.get(uri);
 		if (e == null) {
-			e = new Etikett(key);
-			e.name = getJsonName(key);
+			e = new Etikett(uri);
+			e.name = getJsonName(uri);
 		}
 		if (e.label == null) {
 			e.label = e.uri;
 		}
-		logger.debug("Find name for " + key + " : " + e.name);
+		logger.debug("Find etikett for " + uri + " : " + e.name);
 		return e;
 	}
 
@@ -173,5 +173,12 @@ public class EtikettMaker {
 					+ ": no json name available. Please provide a labels.json file with proper 'name' entry.");
 		}
 		return e.name;
+	}
+
+	/**
+	 * @return a map with all etikett accessible over their json names
+	 */
+	public Map<String, Etikett> getNameMap() {
+		return nMap;
 	}
 }
