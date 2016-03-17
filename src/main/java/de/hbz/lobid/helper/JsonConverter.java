@@ -58,6 +58,15 @@ public class JsonConverter {
 
 	private String mainSubjectOfTheResource;
 
+	private EtikettMaker etikette;
+
+	/**
+	 * @param e An EtikettMaker provides access to labels
+	 */
+	public JsonConverter(EtikettMaker e) {
+		etikette = e;
+	}
+
 	/**
 	 * You can easily convert the map to json using the object mapper provided by
 	 * {@link #getObjectMapper}.
@@ -76,7 +85,8 @@ public class JsonConverter {
 		mainSubjectOfTheResource = g.parallelStream()
 				.filter(triple -> triple.getPredicate().stringValue()
 						.equals("http://www.w3.org/2007/05/powder-s#describedby"))
-				.filter(triple -> triple.getSubject().stringValue().startsWith(rootNodePrefix))
+				.filter(triple -> triple.getSubject().stringValue()
+						.startsWith(rootNodePrefix))
 				.findFirst().get().getSubject().toString();
 		Map<String, Object> result = createMap(g);
 		result.put("@context", context);
@@ -90,7 +100,7 @@ public class JsonConverter {
 		while (i.hasNext()) {
 			Statement s = i.next();
 			if (mainSubjectOfTheResource.equals(s.getSubject().stringValue())) {
-				Etikett e = Globals.etikette.getEtikett(s.getPredicate().stringValue());
+				Etikett e = etikette.getEtikett(s.getPredicate().stringValue());
 				createObject(jsonResult, s, e);
 			}
 		}
@@ -205,7 +215,7 @@ public class JsonConverter {
 
 	private void createObject(String uri, Map<String, Object> newObject) {
 		for (Statement s : find(uri)) {
-			Etikett e = Globals.etikette.getEtikett(s.getPredicate().stringValue());
+			Etikett e = etikette.getEtikett(s.getPredicate().stringValue());
 			if (s.getObject() instanceof org.openrdf.model.Literal) {
 				newObject.put(e.name, s.getObject().stringValue());
 			} else {
