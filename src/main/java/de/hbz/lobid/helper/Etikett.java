@@ -62,6 +62,10 @@ public class Etikett {
 	 */
 	public String container = null;
 
+	public String comment = null;
+
+	public String weight = null;
+
 	/**
 	 * The jaxb needs this
 	 */
