@@ -33,7 +33,7 @@ import com.fasterxml.jackson.databind.type.TypeBase;
  * @author Jan Schnasse
  *
  */
-public class EtikettMaker {
+public class EtikettMaker implements EtikettMakerInterface {
 
 	final static Logger logger = LoggerFactory.getLogger(EtikettMaker.class);
 
@@ -71,18 +71,22 @@ public class EtikettMaker {
 		initContext();
 	}
 
-	/**
-	 * @return a map with a json-ld context
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see de.hbz.lobid.helper.EtikettMakerInterface#getContext()
 	 */
+	@Override
 	public Map<String, Object> getContext() {
 		return context;
 	}
 
-	/**
-	 * @param key the uri
-	 * @return an etikett object contains uri, icon, label, jsonname,
-	 *         referenceType
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see de.hbz.lobid.helper.EtikettMakerInterface#getEtikett(java.lang.String)
 	 */
+	@Override
 	public Etikett getEtikett(String uri) {
 		Etikett e = pMap.get(uri);
 		if (e == null) {
@@ -175,10 +179,9 @@ public class EtikettMaker {
 		return e.name;
 	}
 
-	/**
-	 * @return a map with all etikett accessible over their json names
-	 */
-	public Map<String, Etikett> getNameMap() {
-		return nMap;
+	@Override
+	public Etikett getEtikettByName(String name) {
+		return nMap.get(name);
 	}
+
 }

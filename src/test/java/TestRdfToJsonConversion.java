@@ -37,6 +37,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import de.hbz.lobid.helper.CompareJsonMaps;
 import de.hbz.lobid.helper.EtikettMaker;
+import de.hbz.lobid.helper.EtikettMakerInterface;
 import de.hbz.lobid.helper.JsonConverter;
 
 /**
@@ -54,7 +55,7 @@ import de.hbz.lobid.helper.JsonConverter;
  */
 public class TestRdfToJsonConversion {
 
-	private static EtikettMaker etikettMaker =
+	private static EtikettMakerInterface etikettMaker =
 			new EtikettMaker(Thread.currentThread().getContextClassLoader()
 					.getResourceAsStream("labels.json"));
 	final static Logger logger =

@@ -58,12 +58,12 @@ public class JsonConverter {
 
 	private String mainSubjectOfTheResource;
 
-	private EtikettMaker etikette;
+	private EtikettMakerInterface etikette;
 
 	/**
 	 * @param e An EtikettMaker provides access to labels
 	 */
-	public JsonConverter(EtikettMaker e) {
+	public JsonConverter(EtikettMakerInterface e) {
 		etikette = e;
 	}
 
