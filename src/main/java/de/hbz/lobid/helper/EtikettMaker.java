@@ -19,6 +19,7 @@ package de.hbz.lobid.helper;
 
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -182,6 +183,11 @@ public class EtikettMaker implements EtikettMakerInterface {
 	@Override
 	public Etikett getEtikettByName(String name) {
 		return nMap.get(name);
+	}
+
+	@Override
+	public Collection<Etikett> getValues() {
+		return pMap.values();
 	}
 
 }

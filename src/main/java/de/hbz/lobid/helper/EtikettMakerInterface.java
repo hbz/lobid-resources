@@ -17,6 +17,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package de.hbz.lobid.helper;
 
+import java.util.Collection;
 import java.util.Map;
 
 /**
@@ -43,5 +44,10 @@ public interface EtikettMakerInterface {
 	 *         referenceType
 	 */
 	Etikett getEtikettByName(String name);
+
+	/**
+	 * @return a list of all Etiketts
+	 */
+	Collection<Etikett> getValues();
 
 }
