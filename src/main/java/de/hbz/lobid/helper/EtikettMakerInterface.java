@@ -50,4 +50,11 @@ public interface EtikettMakerInterface {
 	 */
 	Collection<Etikett> getValues();
 
+	/**
+	 * @return true if the implementor provides etiketts for all kind of values
+	 *         (uris on object position). false if the implementor provides
+	 *         etiketts for fields (uris in predicate position) only.
+	 */
+	boolean supportsLabelsForValues();
+
 }

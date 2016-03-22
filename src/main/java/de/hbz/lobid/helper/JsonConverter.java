@@ -200,9 +200,24 @@ public class JsonConverter {
 		Map<String, Object> newObject = new TreeMap<>();
 		if (uri != null) {
 			newObject.put("id", uri);
+			if (etikette.supportsLabelsForValues()) {
+				getLabelFromEtikettMaker(uri, newObject);
+			}
 			createObject(uri, newObject);
 		}
 		return newObject;
+	}
+
+	private void getLabelFromEtikettMaker(String uri,
+			Map<String, Object> newObject) {
+		try {
+			String label = etikette.getEtikett(uri).label;
+			if (label != null && !label.isEmpty()) {
+				newObject.put("label", label);
+			}
+		} catch (Exception e) {
+			logger.debug(e.getMessage());
+		}
 	}
 
 	private Map<String, Object> createObjectWithoutId(String uri) {

@@ -94,7 +94,7 @@ public class EtikettMaker implements EtikettMakerInterface {
 			e = new Etikett(uri);
 			e.name = getJsonName(uri);
 		}
-		if (e.label == null) {
+		if (e.label == null || e.label.isEmpty()) {
 			e.label = e.uri;
 		}
 		logger.debug("Find etikett for " + uri + " : " + e.name);
@@ -188,6 +188,11 @@ public class EtikettMaker implements EtikettMakerInterface {
 	@Override
 	public Collection<Etikett> getValues() {
 		return pMap.values();
+	}
+
+	@Override
+	public boolean supportsLabelsForValues() {
+		return false;
 	}
 
 }
