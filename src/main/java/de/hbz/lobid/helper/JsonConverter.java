@@ -78,16 +78,38 @@ public class JsonConverter {
 	 *          containing a json-ld context or a url to a json-ldContext
 	 * @return a map
 	 */
-	public Map<String, Object> convert(InputStream in, RDFFormat format,
+	public Map<String, Object> convertLobidData(InputStream in, RDFFormat format,
 			final String rootNodePrefix, Object context) {
 		Graph g = RdfUtils.readRdfToGraph(in, format, "");
-		collect(g);
-		mainSubjectOfTheResource = g.parallelStream()
+		String subject = g.parallelStream()
 				.filter(triple -> triple.getPredicate().stringValue()
 						.equals("http://www.w3.org/2007/05/powder-s#describedby"))
 				.filter(triple -> triple.getSubject().stringValue()
 						.startsWith(rootNodePrefix))
 				.findFirst().get().getSubject().toString();
+		return convert(subject, context, g);
+	}
+
+	/**
+	 * You can easily convert the map to json using the object mapper provided by
+	 * {@link #getObjectMapper}.
+	 * 
+	 * @param in an input stream containing rdf data
+	 * @param format the rdf format
+	 * @param subject the root subject node of the resource
+	 * @param context to create valid json-ld you have to provide either a a map
+	 *          containing a json-ld context or a url to a json-ldContext
+	 * @return a map
+	 */
+	public Map<String, Object> convert(String subject, InputStream in,
+			RDFFormat format, Object context) {
+		Graph g = RdfUtils.readRdfToGraph(in, format, "");
+		return convert(subject, context, g);
+	}
+
+	private Map<String, Object> convert(String subject, Object context, Graph g) {
+		mainSubjectOfTheResource = subject;
+		collect(g);
 		Map<String, Object> result = createMap(g);
 		result.put("@context", context);
 		return result;
