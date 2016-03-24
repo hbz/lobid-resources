@@ -32,14 +32,14 @@ public interface EtikettMakerInterface {
 	Map<String, Object> getContext();
 
 	/**
-	 * @param key the uri
+	 * @param uri the uri
 	 * @return an etikett object contains uri, icon, label, jsonname,
 	 *         referenceType
 	 */
 	Etikett getEtikett(String uri);
 
 	/**
-	 * @param key the uri
+	 * @param name the json name
 	 * @return an etikett object contains uri, icon, label, jsonname,
 	 *         referenceType
 	 */
@@ -56,5 +56,20 @@ public interface EtikettMakerInterface {
 	 *         etiketts for fields (uris in predicate position) only.
 	 */
 	boolean supportsLabelsForValues();
+
+	/**
+	 * @return the idAlias is used to substitute all occurrences of "\@id"
+	 */
+	public String getIdAlias();
+
+	/**
+	 * @return the typeAlias is used to substitute all occurrences of "\@type"
+	 */
+	public String getTypeAlias();
+
+	/**
+	 * @return returns a json key that is used to store label info
+	 */
+	public String getLabelKey();
 
 }

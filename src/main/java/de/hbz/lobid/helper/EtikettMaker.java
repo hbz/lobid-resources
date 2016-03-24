@@ -36,6 +36,10 @@ import com.fasterxml.jackson.databind.type.TypeBase;
  */
 public class EtikettMaker implements EtikettMakerInterface {
 
+	private static final String TYPE = "type";
+
+	private static final String ID = "id";
+
 	final static Logger logger = LoggerFactory.getLogger(EtikettMaker.class);
 
 	/**
@@ -136,12 +140,12 @@ public class EtikettMaker implements EtikettMakerInterface {
 
 	Map<String, Object> createContext() {
 		Map<String, Object> pmap;
-		Map<String, Object> cmap = new HashMap<String, Object>();
+		Map<String, Object> cmap = new HashMap<>();
 		for (Etikett l : labels) {
 			if ("class".equals(l.referenceType) || l.referenceType == null
 					|| l.name == null)
 				continue;
-			pmap = new HashMap<String, Object>();
+			pmap = new HashMap<>();
 			pmap.put("@id", l.uri);
 			if (!"String".equals(l.referenceType)) {
 				pmap.put("@type", l.referenceType);
@@ -151,9 +155,9 @@ public class EtikettMaker implements EtikettMakerInterface {
 			}
 			cmap.put(l.name, pmap);
 		}
-		cmap.put("id", "@id");
-		cmap.put("type", "@type");
-		Map<String, Object> contextObject = new HashMap<String, Object>();
+		cmap.put(ID, "@id");
+		cmap.put(TYPE, "@type");
+		Map<String, Object> contextObject = new HashMap<>();
 		contextObject.put("@context", cmap);
 		return contextObject;
 	}
@@ -193,6 +197,21 @@ public class EtikettMaker implements EtikettMakerInterface {
 	@Override
 	public boolean supportsLabelsForValues() {
 		return false;
+	}
+
+	@Override
+	public String getIdAlias() {
+		return ID;
+	}
+
+	@Override
+	public String getTypeAlias() {
+		return TYPE;
+	}
+
+	@Override
+	public String getLabelKey() {
+		return null;
 	}
 
 }

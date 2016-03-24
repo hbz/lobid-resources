@@ -60,11 +60,11 @@ public class Etikett {
 	 * Describes if the given is expected to occur as a \@set or a \@list. Can be
 	 * null;
 	 */
-	public String container = null;
+	String container = null;
 
-	public String comment = null;
+	String comment = null;
 
-	public String weight = null;
+	String weight = null;
 
 	/**
 	 * The jaxb needs this
@@ -149,6 +149,48 @@ public class Etikett {
 	 */
 	public void setReferenceType(String referenceType) {
 		this.referenceType = referenceType;
+	}
+
+	/**
+	 * @return json-ld container
+	 */
+	public String getContainer() {
+		return container;
+	}
+
+	/**
+	 * @param container json-ld container
+	 */
+	public void setContainer(String container) {
+		this.container = container;
+	}
+
+	/**
+	 * @return a comment that describes the usage of the etikett
+	 */
+	public String getComment() {
+		return comment;
+	}
+
+	/**
+	 * @param comment a comment that describes the usage of the etikett
+	 */
+	public void setComment(String comment) {
+		this.comment = comment;
+	}
+
+	/**
+	 * @return a weight to order a list of etiketts
+	 */
+	public String getWeight() {
+		return weight;
+	}
+
+	/**
+	 * @param weight can be used to order a list of etiketts
+	 */
+	public void setWeight(String weight) {
+		this.weight = weight;
 	}
 
 	@Override

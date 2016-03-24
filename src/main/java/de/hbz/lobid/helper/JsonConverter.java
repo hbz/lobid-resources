@@ -45,6 +45,9 @@ import org.slf4j.LoggerFactory;
  */
 public class JsonConverter {
 
+	private String labelKey = "label";
+	private String idAlias = "id";
+
 	final static Logger logger = LoggerFactory.getLogger(JsonConverter.class);
 
 	String first = "http://www.w3.org/1999/02/22-rdf-syntax-ns#first";
@@ -65,6 +68,8 @@ public class JsonConverter {
 	 */
 	public JsonConverter(EtikettMakerInterface e) {
 		etikette = e;
+		labelKey = etikette.getLabelKey();
+		idAlias = etikette.getIdAlias();
 	}
 
 	/**
@@ -118,7 +123,7 @@ public class JsonConverter {
 	private Map<String, Object> createMap(Graph g) {
 		Map<String, Object> jsonResult = new TreeMap<>();
 		Iterator<Statement> i = g.iterator();
-		jsonResult.put("id", mainSubjectOfTheResource);
+		jsonResult.put(idAlias, mainSubjectOfTheResource);
 		while (i.hasNext()) {
 			Statement s = i.next();
 			if (mainSubjectOfTheResource.equals(s.getSubject().stringValue())) {
@@ -221,7 +226,7 @@ public class JsonConverter {
 	private Map<String, Object> createObjectWithId(String uri) {
 		Map<String, Object> newObject = new TreeMap<>();
 		if (uri != null) {
-			newObject.put("id", uri);
+			newObject.put(idAlias, uri);
 			if (etikette.supportsLabelsForValues()) {
 				getLabelFromEtikettMaker(uri, newObject);
 			}
@@ -235,7 +240,7 @@ public class JsonConverter {
 		try {
 			String label = etikette.getEtikett(uri).label;
 			if (label != null && !label.isEmpty()) {
-				newObject.put("label", label);
+				newObject.put(labelKey, label);
 			}
 		} catch (Exception e) {
 			logger.debug(e.getMessage());
