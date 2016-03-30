@@ -19,6 +19,7 @@ package de.hbz.lobid.helper;
 
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -62,6 +63,7 @@ public class JsonConverter {
 	private String mainSubjectOfTheResource;
 
 	private EtikettMakerInterface etikette;
+	private Map<Statement, Statement> visited = new HashMap<>();
 
 	/**
 	 * @param e An EtikettMaker provides access to labels
@@ -261,13 +263,27 @@ public class JsonConverter {
 			if (s.getObject() instanceof org.openrdf.model.Literal) {
 				newObject.put(e.name, s.getObject().stringValue());
 			} else {
+				if (statementVisited(s)) {
+					continue;
+				}
 				if (!mainSubjectOfTheResource.equals(s.getObject().stringValue())) {
 					createObject(newObject, s, e);
 				} else {
 					newObject.put(e.name, s.getObject().stringValue());
 				}
 			}
+
 		}
+
+	}
+
+	private boolean statementVisited(Statement s) {
+		boolean result = visited.containsKey(s);
+		if (result) {
+			logger.debug("Already visited " + s);
+		}
+		visited.put(s, s);
+		return result;
 	}
 
 	private Set<Statement> find(String uri) {

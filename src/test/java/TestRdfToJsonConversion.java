@@ -109,7 +109,8 @@ public class TestRdfToJsonConversion {
 			String uri) {
 		Map<String, Object> expected = null;
 		Map<String, Object> actual = null;
-		TestRdfToJsonConversion.logger.info("New test, begin converting files");
+		TestRdfToJsonConversion.logger
+				.info("Convert " + fnameNtriples + " to " + fnameJson);
 		try (InputStream in = new FileInputStream(new File(fnameNtriples));
 				InputStream out = new File(fnameJson).exists()
 						? new FileInputStream(new File(fnameJson)) : makeFile(fnameJson)) {
