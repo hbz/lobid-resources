@@ -45,7 +45,7 @@ public class Lobid {
 	public static final int API_TIMEOUT = 50000;
 
 	/** Feature toggle for using the new Lobid 2.0 data. */
-	public static final boolean DATA_2 =
+	public static boolean DATA_2 =
 			Application.CONFIG.getBoolean("feature.lobid2.enabled");
 
 	/**
@@ -53,10 +53,19 @@ public class Lobid {
 	 * @return The resource JSON content
 	 */
 	public static JsonNode getResource(String id) {
+		DATA_2 = Application.CONFIG.getBoolean("feature.lobid2.enabled");
 		if (DATA_2) {
 			String url = String.format(
 					Application.CONFIG.getString("feature.lobid2.indexUrlFormat"), id);
-			return cachedJsonCall(url);
+			JsonNode response = cachedJsonCall(url);
+			if (response.size() == 0) {
+				// Fall back to data 1.x if nothing found:
+				String fallbackUrl = String.format("%s/%s?format=full",
+						Application.CONFIG.getString("nwbib.api"), id);
+				DATA_2 = false; // required for processing individual fields
+				return cachedJsonCall(fallbackUrl);
+			}
+			return response;
 		}
 		throw new IllegalStateException(
 				"Only implemented for Lobid.DATA_2 feature");
