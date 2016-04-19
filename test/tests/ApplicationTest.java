@@ -31,6 +31,13 @@ public class ApplicationTest {
 	}
 
 	@Test
+	public void classificationLabelNotAvailable() {
+		assertThat(new Classification("no-cluster", "no-server")
+				.label("http://purl.org/lobid/nwbib-spatial#n58", "no-type"))
+						.as("empty label").isEqualTo("");
+	}
+
+	@Test
 	public void typeSelectionMultiVolumeBook() {
 		String selected = Lobid.selectType(
 				Arrays.asList("http://purl.org/dc/terms/BibliographicResource",
