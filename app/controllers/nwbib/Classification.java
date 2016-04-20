@@ -27,6 +27,7 @@ import org.elasticsearch.search.SearchHit;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.collect.ImmutableMap;
 
+import play.Logger;
 import play.libs.Json;
 
 /**
@@ -146,14 +147,19 @@ public class Classification {
 	 * @return The label for the given URI
 	 */
 	public String label(String uri, String type) {
-		String sourceAsString = client.prepareGet(INDEX, type, uri).execute()
-				.actionGet().getSourceAsString();
-		if (sourceAsString != null) {
-			String textValue = Json.parse(sourceAsString)
-					.findValue("http://www.w3.org/2004/02/skos/core#prefLabel")
-					.findValue("@value").textValue();
-			return textValue != null ? textValue : "";
+		if (client instanceof TransportClient
+				&& !((TransportClient) client).connectedNodes().isEmpty()) {
+			String sourceAsString = client.prepareGet(INDEX, type, uri).execute()
+					.actionGet().getSourceAsString();
+			if (sourceAsString != null) {
+				String textValue = Json.parse(sourceAsString)
+						.findValue("http://www.w3.org/2004/02/skos/core#prefLabel")
+						.findValue("@value").textValue();
+				return textValue != null ? textValue : "";
+			}
 		}
+		Logger.warn("Could not get classification data using: {} "
+				+ "(no connected nodes, or not a TransportClient)", client);
 		return "";
 	}
 
