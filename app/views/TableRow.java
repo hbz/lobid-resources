@@ -119,7 +119,7 @@ public enum TableRow {
 						: String.format(
 								"<a title=\"Titeldetails anzeigen\" href=\"%s\">%s</a>",
 								refAndLabel[0], refAndLabel[1]);
-				results.add(result);
+				results.add(result.replace("Band", "").trim());
 			}
 			return results.stream().collect(Collectors.joining(", Band "));
 		}
