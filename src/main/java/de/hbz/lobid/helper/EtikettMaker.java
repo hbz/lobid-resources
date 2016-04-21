@@ -19,6 +19,7 @@ package de.hbz.lobid.helper;
 
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,17 +34,21 @@ import com.fasterxml.jackson.databind.type.TypeBase;
  * @author Jan Schnasse
  *
  */
-public class EtikettMaker {
+public class EtikettMaker implements EtikettMakerInterface {
+
+	private static final String TYPE = "type";
+
+	private static final String ID = "id";
 
 	final static Logger logger = LoggerFactory.getLogger(EtikettMaker.class);
 
 	/**
-	 * A map with URIs as key and labels,icons, shortnames as values
+	 * A map with URIs as key
 	 */
 	Map<String, Etikett> pMap = new HashMap<>();
 
 	/**
-	 * A map with Shortnames as key and labels,icons, uris as values
+	 * A map with Shortnames as key
 	 */
 	Map<String, Etikett> nMap = new HashMap<>();
 
@@ -63,44 +68,50 @@ public class EtikettMaker {
 
 	/**
 	 * The profile provides a json context an labels
+	 * 
+	 * @param labelIn input stream to a labels file
 	 */
-	public EtikettMaker() {
+	public EtikettMaker(InputStream labelIn) {
+		initMaps(labelIn);
 		initContext();
-		initMaps();
 	}
 
-	/**
-	 * @return a map with a json-ld context
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see de.hbz.lobid.helper.EtikettMakerInterface#getContext()
 	 */
+	@Override
 	public Map<String, Object> getContext() {
 		return context;
 	}
 
-	/**
-	 * @param key the uri
-	 * @return an etikett object contains uri, icon, label, jsonname,
-	 *         referenceType
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see de.hbz.lobid.helper.EtikettMakerInterface#getEtikett(java.lang.String)
 	 */
-	public Etikett getEtikett(String key) {
-		Etikett e = pMap.get(key);
+	@Override
+	public Etikett getEtikett(String uri) {
+		Etikett e = pMap.get(uri);
 		if (e == null) {
-			e = new Etikett(key);
-			e.name = getJsonName(key);
+			e = new Etikett(uri);
+			e.name = getJsonName(uri);
 		}
-		if (e.label == null) {
+		if (e.label == null || e.label.isEmpty()) {
 			e.label = e.uri;
 		}
-		logger.debug("Find name for " + key + " : " + e.name);
+		logger.debug("Find etikett for " + uri + " : " + e.name);
 		return e;
 	}
 
 	private void initContext() {
-		context = createContext("context.json");
+		context = createContext();
 	}
 
-	private void initMaps() {
+	private void initMaps(InputStream labelIn) {
 		try {
-			labels = createLabels("labels.json");
+			labels = createLabels(labelIn);
 
 			for (Etikett etikett : labels) {
 				pMap.put(etikett.uri, etikett);
@@ -112,11 +123,11 @@ public class EtikettMaker {
 
 	}
 
-	private static List<Etikett> createLabels(String fileName) {
+	private static List<Etikett> createLabels(InputStream labelIn) {
 		logger.info("Create labels....");
 		List<Etikett> result = new ArrayList<>();
 
-		result = loadFile(fileName, new ObjectMapper().getTypeFactory()
+		result = loadFile(labelIn, new ObjectMapper().getTypeFactory()
 				.constructCollectionType(List.class, Etikett.class));
 
 		if (result == null) {
@@ -127,28 +138,32 @@ public class EtikettMaker {
 		return result;
 	}
 
-	/**
-	 * @return a Map representing additional information about the shortnames used
-	 *         in getLd
-	 */
-	Map<String, Object> createContext(String fileName) {
-		logger.info("Create context....");
-		Map<String, Object> result = new HashMap<>();
-
-		result = loadFile(fileName, new ObjectMapper().getTypeFactory()
-				.constructMapLikeType(HashMap.class, String.class, Object.class));
-
-		if (result == null) {
-			logger.info("...not succeeded!");
-		} else {
-			logger.info("...succeed!");
+	Map<String, Object> createContext() {
+		Map<String, Object> pmap;
+		Map<String, Object> cmap = new HashMap<>();
+		for (Etikett l : labels) {
+			if ("class".equals(l.referenceType) || l.referenceType == null
+					|| l.name == null)
+				continue;
+			pmap = new HashMap<>();
+			pmap.put("@id", l.uri);
+			if (!"String".equals(l.referenceType)) {
+				pmap.put("@type", l.referenceType);
+			}
+			if (l.container != null) {
+				pmap.put("@container", l.container);
+			}
+			cmap.put(l.name, pmap);
 		}
-		return result;
+		cmap.put(ID, "@id");
+		cmap.put(TYPE, "@type");
+		Map<String, Object> contextObject = new HashMap<>();
+		contextObject.put("@context", cmap);
+		return contextObject;
 	}
 
-	private static <T> T loadFile(String fileName, TypeBase type) {
-		try (InputStream in = Thread.currentThread().getContextClassLoader()
-				.getResourceAsStream(fileName)) {
+	private static <T> T loadFile(InputStream labelIn, TypeBase type) {
+		try (InputStream in = labelIn) {
 			return new ObjectMapper().readValue(in, type);
 		} catch (Exception e) {
 			throw new RuntimeException("Error during initialization!", e);
@@ -168,4 +183,35 @@ public class EtikettMaker {
 		}
 		return e.name;
 	}
+
+	@Override
+	public Etikett getEtikettByName(String name) {
+		return nMap.get(name);
+	}
+
+	@Override
+	public Collection<Etikett> getValues() {
+		return pMap.values();
+	}
+
+	@Override
+	public boolean supportsLabelsForValues() {
+		return false;
+	}
+
+	@Override
+	public String getIdAlias() {
+		return ID;
+	}
+
+	@Override
+	public String getTypeAlias() {
+		return TYPE;
+	}
+
+	@Override
+	public String getLabelKey() {
+		return null;
+	}
+
 }

@@ -19,6 +19,7 @@ package de.hbz.lobid.helper;
 
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -45,6 +46,9 @@ import org.slf4j.LoggerFactory;
  */
 public class JsonConverter {
 
+	private String labelKey = "label";
+	private String idAlias = "id";
+
 	final static Logger logger = LoggerFactory.getLogger(JsonConverter.class);
 
 	String first = "http://www.w3.org/1999/02/22-rdf-syntax-ns#first";
@@ -58,6 +62,18 @@ public class JsonConverter {
 
 	private String mainSubjectOfTheResource;
 
+	private EtikettMakerInterface etikette;
+	private Map<Statement, Statement> visited = new HashMap<>();
+
+	/**
+	 * @param e An EtikettMaker provides access to labels
+	 */
+	public JsonConverter(EtikettMakerInterface e) {
+		etikette = e;
+		labelKey = etikette.getLabelKey();
+		idAlias = etikette.getIdAlias();
+	}
+
 	/**
 	 * You can easily convert the map to json using the object mapper provided by
 	 * {@link #getObjectMapper}.
@@ -69,15 +85,38 @@ public class JsonConverter {
 	 *          containing a json-ld context or a url to a json-ldContext
 	 * @return a map
 	 */
-	public Map<String, Object> convert(InputStream in, RDFFormat format,
+	public Map<String, Object> convertLobidData(InputStream in, RDFFormat format,
 			final String rootNodePrefix, Object context) {
 		Graph g = RdfUtils.readRdfToGraph(in, format, "");
-		collect(g);
-		mainSubjectOfTheResource = g.parallelStream()
+		String subject = g.parallelStream()
 				.filter(triple -> triple.getPredicate().stringValue()
 						.equals("http://www.w3.org/2007/05/powder-s#describedby"))
-				.filter(triple -> triple.getSubject().stringValue().startsWith(rootNodePrefix))
+				.filter(triple -> triple.getSubject().stringValue()
+						.startsWith(rootNodePrefix))
 				.findFirst().get().getSubject().toString();
+		return convert(subject, context, g);
+	}
+
+	/**
+	 * You can easily convert the map to json using the object mapper provided by
+	 * {@link #getObjectMapper}.
+	 * 
+	 * @param in an input stream containing rdf data
+	 * @param format the rdf format
+	 * @param subject the root subject node of the resource
+	 * @param context to create valid json-ld you have to provide either a a map
+	 *          containing a json-ld context or a url to a json-ldContext
+	 * @return a map
+	 */
+	public Map<String, Object> convert(String subject, InputStream in,
+			RDFFormat format, Object context) {
+		Graph g = RdfUtils.readRdfToGraph(in, format, "");
+		return convert(subject, context, g);
+	}
+
+	private Map<String, Object> convert(String subject, Object context, Graph g) {
+		mainSubjectOfTheResource = subject;
+		collect(g);
 		Map<String, Object> result = createMap(g);
 		result.put("@context", context);
 		return result;
@@ -86,11 +125,11 @@ public class JsonConverter {
 	private Map<String, Object> createMap(Graph g) {
 		Map<String, Object> jsonResult = new TreeMap<>();
 		Iterator<Statement> i = g.iterator();
-		jsonResult.put("id", mainSubjectOfTheResource);
+		jsonResult.put(idAlias, mainSubjectOfTheResource);
 		while (i.hasNext()) {
 			Statement s = i.next();
 			if (mainSubjectOfTheResource.equals(s.getSubject().stringValue())) {
-				Etikett e = Globals.etikette.getEtikett(s.getPredicate().stringValue());
+				Etikett e = etikette.getEtikett(s.getPredicate().stringValue());
 				createObject(jsonResult, s, e);
 			}
 		}
@@ -189,10 +228,25 @@ public class JsonConverter {
 	private Map<String, Object> createObjectWithId(String uri) {
 		Map<String, Object> newObject = new TreeMap<>();
 		if (uri != null) {
-			newObject.put("id", uri);
+			newObject.put(idAlias, uri);
+			if (etikette.supportsLabelsForValues()) {
+				getLabelFromEtikettMaker(uri, newObject);
+			}
 			createObject(uri, newObject);
 		}
 		return newObject;
+	}
+
+	private void getLabelFromEtikettMaker(String uri,
+			Map<String, Object> newObject) {
+		try {
+			String label = etikette.getEtikett(uri).label;
+			if (label != null && !label.isEmpty()) {
+				newObject.put(labelKey, label);
+			}
+		} catch (Exception e) {
+			logger.debug(e.getMessage());
+		}
 	}
 
 	private Map<String, Object> createObjectWithoutId(String uri) {
@@ -205,17 +259,31 @@ public class JsonConverter {
 
 	private void createObject(String uri, Map<String, Object> newObject) {
 		for (Statement s : find(uri)) {
-			Etikett e = Globals.etikette.getEtikett(s.getPredicate().stringValue());
+			Etikett e = etikette.getEtikett(s.getPredicate().stringValue());
 			if (s.getObject() instanceof org.openrdf.model.Literal) {
 				newObject.put(e.name, s.getObject().stringValue());
 			} else {
+				if (statementVisited(s)) {
+					continue;
+				}
 				if (!mainSubjectOfTheResource.equals(s.getObject().stringValue())) {
 					createObject(newObject, s, e);
 				} else {
 					newObject.put(e.name, s.getObject().stringValue());
 				}
 			}
+
 		}
+
+	}
+
+	private boolean statementVisited(Statement s) {
+		boolean result = visited.containsKey(s);
+		if (result) {
+			logger.debug("Already visited " + s);
+		}
+		visited.put(s, s);
+		return result;
 	}
 
 	private Set<Statement> find(String uri) {

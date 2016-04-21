@@ -36,7 +36,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import de.hbz.lobid.helper.CompareJsonMaps;
-import de.hbz.lobid.helper.Globals;
+import de.hbz.lobid.helper.EtikettMaker;
+import de.hbz.lobid.helper.EtikettMakerInterface;
 import de.hbz.lobid.helper.JsonConverter;
 
 /**
@@ -54,12 +55,15 @@ import de.hbz.lobid.helper.JsonConverter;
  */
 public class TestRdfToJsonConversion {
 
+	private static EtikettMakerInterface etikettMaker =
+			new EtikettMaker(Thread.currentThread().getContextClassLoader()
+					.getResourceAsStream("labels.json"));
 	final static Logger logger =
 			LoggerFactory.getLogger(TestRdfToJsonConversion.class);
 	final static String LOBID_RESOURCES_URI_PREFIX = "http://lobid.org/resource/";
 	@SuppressWarnings("unchecked")
 	final static Map<String, Object> fullContext =
-			(Map<String, Object>) Globals.etikette.getContext().get("@context");
+			(Map<String, Object>) etikettMaker.getContext().get("@context");
 	final static String contextUrl =
 			"http://lobid.org/context/lobid-resources.json";
 
@@ -105,12 +109,13 @@ public class TestRdfToJsonConversion {
 			String uri) {
 		Map<String, Object> expected = null;
 		Map<String, Object> actual = null;
-		TestRdfToJsonConversion.logger.info("New test, begin converting files");
+		TestRdfToJsonConversion.logger
+				.info("Convert " + fnameNtriples + " to " + fnameJson);
 		try (InputStream in = new FileInputStream(new File(fnameNtriples));
 				InputStream out = new File(fnameJson).exists()
 						? new FileInputStream(new File(fnameJson)) : makeFile(fnameJson)) {
-			actual =
-					new JsonConverter().convert(in, RDFFormat.NTRIPLES, uri, contextUrl);
+			actual = new JsonConverter(etikettMaker).convertLobidData(in,
+					RDFFormat.NTRIPLES, uri, contextUrl);
 			TestRdfToJsonConversion.logger.debug("Creates: ");
 			TestRdfToJsonConversion.logger
 					.debug(new ObjectMapper().writeValueAsString(actual));

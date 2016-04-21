@@ -22,7 +22,8 @@ import org.openrdf.rio.RDFFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.hbz.lobid.helper.Globals;
+import de.hbz.lobid.helper.EtikettMaker;
+import de.hbz.lobid.helper.EtikettMakerInterface;
 import de.hbz.lobid.helper.JsonConverter;
 import de.hbz.lobid.helper.RdfUtils;
 
@@ -39,6 +40,10 @@ public class TestJsonToRdfConversion {
 	 * if true, the generated n-triples will be printed to BASE+REVERSE_OUT
 	 */
 	private static final boolean PRINT = false;
+
+	private static EtikettMakerInterface etikettMaker =
+			new EtikettMaker(Thread.currentThread().getContextClassLoader()
+					.getResourceAsStream("labels.json"));
 	/**
 	 * if true all comparisons will be executed. No assertion will fail.
 	 */
@@ -212,7 +217,7 @@ public class TestJsonToRdfConversion {
 			Map<String, Object> jsonMap = JsonConverter.getObjectMapper()
 					.readValue(Thread.currentThread().getContextClassLoader()
 							.getResourceAsStream(jsonFilename), Map.class);
-			jsonMap.put("@context", Globals.etikette.getContext().get("@context"));
+			jsonMap.put("@context", etikettMaker.getContext().get("@context"));
 			String jsonString =
 					JsonConverter.getObjectMapper().writeValueAsString(jsonMap);
 			return jsonString;
