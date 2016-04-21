@@ -504,7 +504,7 @@
 		<data source="34[01234567][-ab][-1].[ab]" name="http://purl.org/dc/terms/alternative"/>
 		<data source="376[-adb][-1].[ad]" name="$[ns-bibo]shortTitle"/>
 		<data source="504-1.a" name="http://purl.org/dc/terms/alternative"/>
-		<data source="@otherTitle" name="http://rdvocab.info/Elements/otherTitleInformation">
+		<data source="@otherTitle" name="http://rdaregistry.info/Elements/u/P60493">
 			<replace pattern="&gt;" with=""/>
 			<replace pattern="&lt;" with=""/>
 		</data>
@@ -638,18 +638,18 @@
 		<!-- ####################### -->
 		<!-- ########## geo coordinates -->
 		<!-- ####################### -->
-		<data source="407-[123].a" name="http://rdvocab.info/Elements/longitudeAndLatitude">
+		<data source="407-[123].a" name="http://rdaregistry.info/Elements/u/P60345">
 			<regexp match="\((.*)\)" format="${1}"/>
 		</data>
 		<!-- ####################### -->
 		<!-- ########## publisher -->
 		<!-- ####################### -->
 		<data source="41[05][-abcu][-12].a|419-[12].a|594[-abc][-12].a" name="@placeOfPublication"/>
-		<data source="@placeOfPublication" name="http://rdvocab.info/Elements/placeOfPublication"/>
+		<data source="@placeOfPublication" name="http://rdaregistry.info/Elements/u/P60163"/>
 		<data source="41[27][-abcu][-12].[ag]|419-[12].b" name="@publisher"/>
 		<data source="@publisher" name="http://purl.org/dc/elements/1.1/publisher"/>
 		<!-- TODO if multiple publisher these are melted to one. See HT015082724 -->
-		<combine name="http://rdvocab.info/Elements/publicationStatement" value="${publicationConcat}"
+		<combine name="http://rdaregistry.info/Elements/u/P60333" value="${publicationConcat}"
 			sameEntity="true">
 			<concat delimiter="; " name="publicationConcat">
 				<data source="@placeOfPublication"/>
@@ -801,7 +801,7 @@
 			<regexp match="\(DE-588\)(.*)" format="http://d-nb.info/gnd/${1}"/>
 		</data>
 		<!-- literals of creator -->
-		<data source="359[-ab][-12].a" name="http://rdvocab.info/Elements/statementOfResponsibility"/>
+		<data source="359[-ab][-12].a" name="http://rdaregistry.info/Elements/u/P60339"/>
 		<combine name="@creatorLabel" value="${a}">
 			<data
 				source="1[02468][048][-aemn][12].[pa]|1[1468][26][-aemn][12].[pa]|@nameOfCreatingCorporateBody"
@@ -1579,14 +1579,14 @@
 			<replace pattern="&lt;&lt;" with=""/>
 		</data>
 		<!-- if 523-1p and 523-1a -->
-		<combine name="http://rdvocab.info/Elements/frequency" value="${p}${a}">
+		<combine name="http://rdaregistry.info/Elements/u/P60538" value="${p}${a}">
 			<data source="523[-a][-1].p" name="p">
 				<regexp match="(.*)" format="${1}: "/>
 			</data>
 			<data source="523[-a][-1].a" name="a"/>
 		</combine>
 		<!-- if only 523-1a -->
-		<combine name="http://rdvocab.info/Elements/frequency" value="${a}">
+		<combine name="http://rdaregistry.info/Elements/u/P60538" value="${a}">
 			<if>
 				<none>
 					<data source="523[-a][-1].p"/>
