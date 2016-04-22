@@ -15,7 +15,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.html.HtmlEscapers;
 
 import controllers.nwbib.Application;
-import controllers.nwbib.Classification;
 import controllers.nwbib.Lobid;
 
 /**
@@ -85,10 +84,18 @@ public enum TableRow {
 							"<a title=\"Nach weiteren Titeln suchen\" href=\"%s\">%s</a>",
 							search, label);
 			if (value.startsWith("http")) {
-				result += String.format(
-						" <a title=\"Linked-Data-Quelle abrufen\" "
-								+ "href=\"%s\"><span class=\"glyphicon glyphicon-link\"></span></a>",
-						value);
+				if (param.equals("person")) {
+					result += String.format(
+							" <a title=\"Linked-Data-Quelle abrufen\" "
+									+ "href=\"%s\"><span class=\"glyphicon glyphicon-link\"></span></a>",
+							value);
+				} else {
+					String topicSearch = String.format("/topics?q=%s", label);
+					result += String.format(
+							" <a title=\"Nach Themen mit '%s' suchen\" "
+									+ "href=\"%s\"><span class=\"octicon octicon-ellipsis\"></span></a>",
+							label, topicSearch);
+				}
 			}
 			return result;
 		}
@@ -176,9 +183,7 @@ public enum TableRow {
 			Optional<List<String>> labelKeys) {
 		String label = "";
 		if (id.startsWith("http://purl.org/lobid/nwbib")) {
-			label = String.format("%s (%s)", //
-					Lobid.facetLabel(Arrays.asList(id), null, null),
-					Classification.shortId(id));
+			label = Lobid.facetLabel(Arrays.asList(id), null, null);
 		} else {
 			label = graphObjectLabelForId(id, doc, labelKeys);
 		}
