@@ -85,10 +85,18 @@ public enum TableRow {
 							"<a title=\"Nach weiteren Titeln suchen\" href=\"%s\">%s</a>",
 							search, label);
 			if (value.startsWith("http")) {
-				result += String.format(
-						" <a title=\"Linked-Data-Quelle abrufen\" "
-								+ "href=\"%s\"><span class=\"glyphicon glyphicon-link\"></span></a>",
-						value);
+				if (param.equals("person")) {
+					result += String.format(
+							" <a title=\"Linked-Data-Quelle abrufen\" "
+									+ "href=\"%s\"><span class=\"glyphicon glyphicon-link\"></span></a>",
+							value);
+				} else if (param.equals("subject")) {
+					String topicSearch = String.format("/topics?q=%s", label);
+					result += String.format(
+							" <a title=\"Nach Themen mit '%s' suchen\" "
+									+ "href=\"%s\"><span class=\"octicon octicon-ellipsis\"></span></a>",
+							label, topicSearch);
+				}
 			}
 			return result;
 		}
