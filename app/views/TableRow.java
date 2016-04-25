@@ -15,6 +15,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.html.HtmlEscapers;
 
 import controllers.nwbib.Application;
+import controllers.nwbib.Classification;
 import controllers.nwbib.Lobid;
 
 /**
@@ -89,7 +90,7 @@ public enum TableRow {
 							" <a title=\"Linked-Data-Quelle abrufen\" "
 									+ "href=\"%s\"><span class=\"glyphicon glyphicon-link\"></span></a>",
 							value);
-				} else {
+				} else if (param.equals("subject")) {
 					String topicSearch = String.format("/topics?q=%s", label);
 					result += String.format(
 							" <a title=\"Nach Themen mit '%s' suchen\" "
@@ -183,7 +184,9 @@ public enum TableRow {
 			Optional<List<String>> labelKeys) {
 		String label = "";
 		if (id.startsWith("http://purl.org/lobid/nwbib")) {
-			label = Lobid.facetLabel(Arrays.asList(id), null, null);
+			label = String.format("%s (%s)", //
+					Lobid.facetLabel(Arrays.asList(id), null, null),
+					Classification.shortId(id));
 		} else {
 			label = graphObjectLabelForId(id, doc, labelKeys);
 		}
