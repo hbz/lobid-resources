@@ -176,24 +176,19 @@ public class Application extends Controller {
 		Promise<Result> result = request.get().map((WSResponse response) -> {
 			if (response.getStatus() == Http.Status.OK) {
 				List<JsonNode> terms = response.asJson().findValues("term");
-				return ok(views.html.topics.render(q, filterSortUnique(q, terms)));
+				return ok(views.html.topics.render(q, cleanSortUnique(terms)));
 			}
 			Logger.error(new String(response.asByteArray()));
 			return ok(views.html.topics.render(q,
-					filterSortUnique(q, Collections.emptyList())));
+					cleanSortUnique(Collections.emptyList())));
 		});
 		cacheOnRedeem(cacheId, result, ONE_HOUR);
 		return result;
 	}
 
-	private static List<String> filterSortUnique(String q,
-			List<JsonNode> topics) {
-		String umlaut = "[äüöß]|ae|ue|oe|ss";
+	private static List<String> cleanSortUnique(List<JsonNode> topics) {
 		List<String> filtered = topics.stream()
 				.map(topic -> topic.textValue().replaceAll("\\([\\d,]+\\)$", ""))
-				.filter(topic -> Arrays.asList(q.split("[\\s\\-]")).stream()
-						.allMatch(queryTerm -> topic.toLowerCase().replaceAll(umlaut, "")
-								.contains(queryTerm.toLowerCase().replaceAll(umlaut, ""))))
 				.map(v -> v.trim()).collect(Collectors.toList());
 		SortedSet<String> sortedUnique = new TreeSet<>(
 				(s1, s2) -> Collator.getInstance(Locale.GERMAN).compare(s1, s2));
