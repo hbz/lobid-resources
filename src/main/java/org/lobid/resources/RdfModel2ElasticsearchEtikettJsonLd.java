@@ -26,7 +26,8 @@ import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.Statement;
 import com.hp.hpl.jena.rdf.model.StmtIterator;
 
-import de.hbz.lobid.helper.Globals;
+import de.hbz.lobid.helper.EtikettMaker;
+import de.hbz.lobid.helper.EtikettMakerInterface;
 import de.hbz.lobid.helper.JsonConverter;
 
 /**
@@ -57,13 +58,16 @@ public final class RdfModel2ElasticsearchEtikettJsonLd
 	private static Object JSONLD_CONTEXT;
 	private final Pattern INTERNAL_ID_PATTERN =
 			Pattern.compile("^" + LOBID_DOMAIN + ".*");
+	private static EtikettMakerInterface etikettMaker =
+			new EtikettMaker(Thread.currentThread().getContextClassLoader()
+					.getResourceAsStream("labels.json"));
 
 	/**
 	 * Provides default constructor. Every json ld document gets the whole json ld
 	 * context defined in @see{EtikettMaker};
 	 */
 	public RdfModel2ElasticsearchEtikettJsonLd() {
-		this(Globals.etikette.getContext().get("@context"));
+		this(etikettMaker.getContext().get("@context"));
 	}
 
 	/**
@@ -143,10 +147,10 @@ public final class RdfModel2ElasticsearchEtikettJsonLd
 		if (model.isEmpty())
 			return;
 		try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
-			JsonConverter jc = new JsonConverter();
+			JsonConverter jc = new JsonConverter(etikettMaker);
 			RDFDataMgr.write(out, model, org.apache.jena.riot.RDFFormat.NTRIPLES);
 			Map<String, Object> jsonMap =
-					jc.convert(new ByteArrayInputStream(out.toByteArray()),
+					jc.convertLobidData(new ByteArrayInputStream(out.toByteArray()),
 							org.openrdf.rio.RDFFormat.NTRIPLES, "http://lobid.org",
 							RdfModel2ElasticsearchEtikettJsonLd.JSONLD_CONTEXT);
 			getReceiver().process(addInternalProperties(new HashMap<String, String>(),
