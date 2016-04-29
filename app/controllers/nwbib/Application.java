@@ -189,7 +189,8 @@ public class Application extends Controller {
 	private static List<String> cleanSortUnique(List<JsonNode> topics) {
 		List<String> filtered = topics.stream()
 				.map(topic -> topic.textValue().replaceAll("\\([\\d,]+\\)$", ""))
-				.map(v -> v.trim()).collect(Collectors.toList());
+				.filter(topic -> !topic.trim().startsWith(":")).map(v -> v.trim())
+				.collect(Collectors.toList());
 		SortedSet<String> sortedUnique = new TreeSet<>(
 				(s1, s2) -> Collator.getInstance(Locale.GERMAN).compare(s1, s2));
 		sortedUnique.addAll(filtered);
