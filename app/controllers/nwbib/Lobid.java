@@ -317,7 +317,7 @@ public class Lobid {
 		String type =
 				uri.contains("spatial") ? Classification.Type.SPATIAL.elasticsearchType
 						: Classification.Type.NWBIB.elasticsearchType;
-		String label = Application.CLASSIFICATION.label(uri, type);
+		String label = Classification.label(uri, type);
 		label = HtmlEscapers.htmlEscaper().escape(label);
 		label = label.trim().isEmpty() ? uri : label;
 		Cache.set(cacheKey, label);

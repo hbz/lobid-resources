@@ -29,7 +29,6 @@ import play.mvc.Result;
 import play.test.FakeRequest;
 import play.test.Helpers;
 
-/* Uses actual data, not available in CI. Run locally with `play test`. */
 /**
  * Test nasty input strings using data from
  * https://github.com/minimaxir/big-list-of-naughty-strings
