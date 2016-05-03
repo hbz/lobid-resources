@@ -684,7 +684,8 @@ public class Application extends Controller {
 				.distinct().collect(Collectors.toList());
 		return count(itemUrisWithoutSignatures).entrySet().stream()
 				.map(entry -> Json.toJson(ImmutableMap.of(//
-						"term", "http://lobid.org/organisation/" + entry.getKey(), //
+						"term",
+						Application.CONFIG.getString("orgs.api") + "/" + entry.getKey(), //
 						"count", entry.getValue())));
 	}
 

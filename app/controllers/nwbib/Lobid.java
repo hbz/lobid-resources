@@ -257,27 +257,28 @@ public class Lobid {
 		}
 		try {
 			URI.create(uri);
+			String api = Application.CONFIG.getString("nwbib.api");
+			WSRequestHolder requestHolder = WS
+					.url(Lobid.DATA_2
+							? uri.replaceAll("https?://lobid\\.org/resources?", api) : uri)
+					.setHeader("Accept", "application/json")
+					.setQueryParameter("format", format);
+			return requestHolder.get().map((WSResponse response) -> {
+				Iterator<JsonNode> elements = response.asJson().elements();
+				String label = "";
+				if (elements.hasNext()) {
+					label = elements.next().asText();
+				} else {
+					label = uri.substring(uri.lastIndexOf('/') + 1);
+				}
+				label = HtmlEscapers.htmlEscaper().escape(label);
+				Cache.set(cacheKey, label);
+				return label;
+			}).get(Lobid.API_TIMEOUT);
 		} catch (Exception x) {
 			x.printStackTrace();
 			return uri;
 		}
-		WSRequestHolder requestHolder = WS
-				.url(Lobid.DATA_2
-						? uri.replace("lobid.org/resources", "lobid.org/resource") : uri)
-				.setHeader("Accept", "application/json")
-				.setQueryParameter("format", format);
-		return requestHolder.get().map((WSResponse response) -> {
-			Iterator<JsonNode> elements = response.asJson().elements();
-			String label = "";
-			if (elements.hasNext()) {
-				label = elements.next().asText();
-			} else {
-				label = uri.substring(uri.lastIndexOf('/') + 1);
-			}
-			label = HtmlEscapers.htmlEscaper().escape(label);
-			Cache.set(cacheKey, label);
-			return label;
-		}).get(Lobid.API_TIMEOUT);
 	}
 
 	private static String gndLabel(String uri) {

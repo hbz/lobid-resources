@@ -77,7 +77,7 @@ map.addLayer(layer);
           else
             allTableDetails += '<tr><th style="width: 30%"/><th style="width: 70%"/></tr>' + tableDetails;
         @for((item,i) <- items(key).zipWithIndex;
-            itemJson = Json.parse(Lobid.cachedJsonCall(item+"?format=full").toString);
+            itemJson = Json.parse(Lobid.cachedJsonCall(item.replaceAll("https?://lobid\\.org/item", Application.CONFIG.getString("item.api"))+"?format=full").toString);
             owners = (itemJson\\"owner");
             if(!owners.isEmpty);
             signatures = (itemJson\\"callNumber");
