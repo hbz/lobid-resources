@@ -2,9 +2,14 @@
 
 package tests;
 
+import static controllers.nwbib.Application.CONFIG;
 import static org.fest.assertions.Assertions.assertThat;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Arrays;
+import java.util.List;
 
 import org.junit.Test;
 
@@ -32,9 +37,8 @@ public class ApplicationTest {
 
 	@Test
 	public void classificationLabelNotAvailable() {
-		assertThat(new Classification("no-cluster", "no-server")
-				.label("http://purl.org/lobid/nwbib-spatial#n58", "no-type"))
-						.as("empty label").isEqualTo("");
+		assertThat(Classification.label("http://purl.org/lobid/nwbib-spatial#n58",
+				"no-type")).as("empty label").isEqualTo("");
 	}
 
 	@Test
@@ -67,6 +71,28 @@ public class ApplicationTest {
 								"http://purl.org/dc/terms/BibliographicResource"),
 				"type.labels");
 		assertThat(selected).isEqualTo("http://purl.org/lobid/lv#EditedVolume");
+	}
+
+	@Test
+	public void classificationNwbibsubject()
+			throws MalformedURLException, IOException {
+		List<String> nwbibsubjects = Classification
+				.toJsonLd(new URL(CONFIG.getString("index.data.nwbibsubject")));
+		nwbibsubjects.forEach(System.out::println);
+		assertThat(nwbibsubjects.size()).isEqualTo(998);
+		assertThat(nwbibsubjects.toString()).contains("Allgemeine Landeskunde")
+				.contains("Landesbeschreibungen").contains("Reiseberichte");
+	}
+
+	@Test
+	public void classificationNwbibspatial()
+			throws MalformedURLException, IOException {
+		List<String> nwbibspatials = Classification
+				.toJsonLd(new URL(CONFIG.getString("index.data.nwbibspatial")));
+		nwbibspatials.forEach(System.out::println);
+		assertThat(nwbibspatials.size()).isEqualTo(45);
+		assertThat(nwbibspatials.toString()).contains("Nordrhein-Westfalen")
+				.contains("Rheinland").contains("Grafschaft, Herzogtum Jülich");
 	}
 
 }

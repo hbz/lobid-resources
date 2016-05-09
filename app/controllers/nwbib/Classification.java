@@ -2,6 +2,12 @@
 
 package controllers.nwbib;
 
+import static controllers.nwbib.Application.CONFIG;
+
+import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -11,21 +17,31 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.elasticsearch.action.bulk.BulkRequestBuilder;
+import org.elasticsearch.action.bulk.BulkResponse;
+import org.elasticsearch.action.index.IndexRequestBuilder;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.client.Client;
-import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.ImmutableSettings;
 import org.elasticsearch.common.settings.Settings;
-import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.index.query.MatchAllQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.node.Node;
+import org.elasticsearch.node.NodeBuilder;
 import org.elasticsearch.search.SearchHit;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.github.jsonldjava.core.JsonLdError;
+import com.github.jsonldjava.core.JsonLdOptions;
+import com.github.jsonldjava.core.JsonLdProcessor;
+import com.github.jsonldjava.jena.JenaRDFParser;
+import com.github.jsonldjava.utils.JSONUtils;
 import com.google.common.collect.ImmutableMap;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
 
 import play.Logger;
 import play.libs.Json;
@@ -72,30 +88,37 @@ public class Classification {
 		WITH_NOTATION, PLAIN
 	}
 
-	Client client;
-	private String server;
-	private String cluster;
+	private static Client client;
+	private static Node node;
 
 	static Comparator<JsonNode> comparator =
 			(JsonNode o1, JsonNode o2) -> Collator.getInstance(Locale.GERMAN)
 					.compare(labelText(o1), labelText(o2));
 
-	/**
-	 * @param cluster The ES cluster name
-	 * @param server The ES server name
-	 */
-	@SuppressWarnings("resource")
-	public Classification(String cluster, String server) {
-		this.cluster = cluster;
-		this.server = server;
-		Settings settings = ImmutableSettings.settingsBuilder()
-				.put("cluster.name", this.cluster).build();
-		InetSocketTransportAddress address =
-				new InetSocketTransportAddress(this.server, 9300);
-		client = new TransportClient(settings).addTransportAddress(address);
+	private Classification() {
+		/* Use via static functions, no instantiation. */
 	}
 
-	SearchResponse dataFor(final String tQueryParameter) {
+	/**
+	 * @param turtleUrl The URL of the RDF in TURTLE format
+	 * @return The input, converted to JSON-LD, or null
+	 */
+	public static List<String> toJsonLd(final URL turtleUrl) {
+		final Model model = ModelFactory.createDefaultModel();
+		try {
+			model.read(turtleUrl.openStream(), null, "TURTLE");
+			final JenaRDFParser parser = new JenaRDFParser();
+			Object json = JsonLdProcessor.fromRDF(model, new JsonLdOptions(), parser);
+			List<Object> list = JsonLdProcessor.expand(json);
+			return list.subList(1, list.size()).stream().map(JSONUtils::toString)
+					.collect(Collectors.toList());
+		} catch (JsonLdError | IOException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	static SearchResponse dataFor(final String tQueryParameter) {
 		try {
 			for (Type indexType : Type.values())
 				if (indexType.queryParameter.equalsIgnoreCase(tQueryParameter))
@@ -106,7 +129,7 @@ public class Classification {
 		return null;
 	}
 
-	private SearchResponse classificationData(String type) {
+	private static SearchResponse classificationData(String type) {
 		MatchAllQueryBuilder queryBuilder = QueryBuilders.matchAllQuery();
 		SearchRequestBuilder requestBuilder = client.prepareSearch(INDEX)
 				.setSearchType(SearchType.DFS_QUERY_THEN_FETCH).setQuery(queryBuilder)
@@ -119,7 +142,7 @@ public class Classification {
 	 * @param t The classification type ("Raumsystematik" or "Sachsystematik")
 	 * @return A JSON representation of the classification data for q and t
 	 */
-	public JsonNode ids(String q, String t) {
+	public static JsonNode ids(String q, String t) {
 		QueryBuilder queryBuilder = QueryBuilders.boolQuery()
 				.should(QueryBuilders.matchQuery(//
 						"@graph." + Property.LABEL.value + ".@value", q))
@@ -146,24 +169,26 @@ public class Classification {
 	 * @param type The ES classification type (see {@link Classification.Type})
 	 * @return The label for the given URI
 	 */
-	public String label(String uri, String type) {
-		if (client instanceof TransportClient
-				&& !((TransportClient) client).connectedNodes().isEmpty()) {
-			String sourceAsString = client.prepareGet(INDEX, type, uri).execute()
-					.actionGet().getSourceAsString();
-			if (sourceAsString != null) {
-				String textValue = Json.parse(sourceAsString)
+	public static String label(String uri, String type) {
+		try {
+			String response =
+					client.prepareGet(INDEX, type, uri).get().getSourceAsString();
+			if (response != null) {
+				String textValue = Json.parse(response)
 						.findValue("http://www.w3.org/2004/02/skos/core#prefLabel")
 						.findValue("@value").textValue();
 				return textValue != null ? textValue : "";
 			}
+		} catch (Throwable t) {
+			Logger.error(
+					"Could not get classification data, index: {} type: {}, id: {} ({}: {})",
+					INDEX, type, uri, t, t.getMessage());
+			t.printStackTrace();
 		}
-		Logger.warn("Could not get classification data using: {} "
-				+ "(no connected nodes, or not a TransportClient)", client);
 		return "";
 	}
 
-	List<JsonNode> ids(SearchResponse response) {
+	static List<JsonNode> ids(SearchResponse response) {
 		List<JsonNode> result = new ArrayList<>();
 		for (SearchHit hit : response.getHits()) {
 			JsonNode json = Json.toJson(hit.getSource());
@@ -172,17 +197,17 @@ public class Classification {
 		return result;
 	}
 
-	JsonNode sorted(SearchResponse response) {
+	static JsonNode sorted(SearchResponse response) {
 		final List<JsonNode> result =
 				ids(response).stream().sorted(comparator).collect(Collectors.toList());
 		return Json.toJson(result);
 	}
 
-	private static String labelText(JsonNode node) {
-		return node.get("label").asText();
+	private static String labelText(JsonNode json) {
+		return json.get("label").asText();
 	}
 
-	void buildHierarchy(SearchResponse response, List<JsonNode> topClasses,
+	static void buildHierarchy(SearchResponse response, List<JsonNode> topClasses,
 			Map<String, List<JsonNode>> subClasses) {
 		for (SearchHit hit : response.getHits()) {
 			JsonNode json = Json.toJson(hit.getSource());
@@ -229,6 +254,51 @@ public class Classification {
 	 */
 	public static String shortId(String uri) {
 		return uri.split("#")[1].substring(1);
+	}
+
+	/** Start up the embedded Elasticsearch classification index. */
+	public static void indexStartup() {
+		Settings clientSettings = ImmutableSettings.settingsBuilder()
+				.put("path.home", new File(".").getAbsolutePath())
+				.put("http.port", CONFIG.getString("index.es.port.http"))
+				.put("transport.tcp.port", CONFIG.getString("index.es.port.tcp"))
+				.build();
+		node =
+				NodeBuilder.nodeBuilder().settings(clientSettings).local(true).node();
+		client = node.client();
+		client.admin().cluster().prepareHealth().setWaitForYellowStatus().execute()
+				.actionGet();
+		if (!client.admin().indices().prepareExists(INDEX).execute().actionGet()
+				.isExists()) {
+			indexData(CONFIG.getString("index.data.nwbibsubject"), Type.NWBIB);
+			indexData(CONFIG.getString("index.data.nwbibspatial"), Type.SPATIAL);
+		}
+	}
+
+	private static void indexData(String dataUrl, Type type) {
+		Logger.debug("Indexing from dataUrl: {}, type: {}, index: {}, client {}",
+				dataUrl, type.elasticsearchType, INDEX, client);
+		final BulkRequestBuilder bulkRequest = client.prepareBulk();
+		try {
+			List<String> jsonLd = toJsonLd(new URL(dataUrl));
+			for (String concept : jsonLd) {
+				String id = Json.parse(concept).findValue("@id").textValue();
+				IndexRequestBuilder indexRequest = client
+						.prepareIndex(INDEX, type.elasticsearchType, id).setSource(concept);
+				bulkRequest.add(indexRequest);
+			}
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		}
+		BulkResponse response = bulkRequest.execute().actionGet();
+		if (response.hasFailures()) {
+			Logger.info("Indexing response: {}", response.buildFailureMessage());
+		}
+	}
+
+	/** Shut down the embedded Elasticsearch classification index. */
+	public static void indexShutdown() {
+		node.close();
 	}
 
 }

@@ -105,10 +105,6 @@ public class Application extends Controller {
 
 	static Form<String> queryForm = Form.form(String.class);
 
-	/** Access to the NWBib classification data stored in ES. */
-	public final static Classification CLASSIFICATION = new Classification(
-			CONFIG.getString("nwbib.cluster"), CONFIG.getString("nwbib.server"));
-
 	static final int ONE_HOUR = 60 * 60;
 	/** The number of seconds in one day. */
 	public static final int ONE_DAY = 24 * ONE_HOUR;
@@ -290,7 +286,7 @@ public class Application extends Controller {
 			return cachedResult;
 		Logger.debug("Not cached: {}, will cache for one day", cacheId);
 		Promise<JsonNode> jsonPromise =
-				Promise.promise(() -> CLASSIFICATION.ids(q, t));
+				Promise.promise(() -> Classification.ids(q, t));
 		Promise<Result> result;
 		if (!callback.isEmpty())
 			result = jsonPromise.map((JsonNode json) -> ok(
@@ -313,13 +309,13 @@ public class Application extends Controller {
 		if (t.isEmpty()) {
 			result = ok(register.render());
 		} else {
-			SearchResponse response = CLASSIFICATION.dataFor(t);
+			SearchResponse response = Classification.dataFor(t);
 			if (response == null) {
 				Logger.error("Failed to get data for register type: " + t);
 				flashError();
 				return internalServerError(browse_register.render(null, t));
 			}
-			JsonNode sorted = CLASSIFICATION.sorted(response);
+			JsonNode sorted = Classification.sorted(response);
 			result = ok(browse_register.render(sorted.toString(), t));
 		}
 		Cache.set("result." + t, result, ONE_DAY);
@@ -338,7 +334,7 @@ public class Application extends Controller {
 		if (t.isEmpty()) {
 			result = ok(classification.render());
 		} else {
-			SearchResponse response = CLASSIFICATION.dataFor(t);
+			SearchResponse response = Classification.dataFor(t);
 			if (response == null) {
 				Logger.error("Failed to get data for classification type: " + t);
 				flashError();
@@ -354,7 +350,7 @@ public class Application extends Controller {
 			String t) {
 		List<JsonNode> topClasses = new ArrayList<>();
 		Map<String, List<JsonNode>> subClasses = new HashMap<>();
-		CLASSIFICATION.buildHierarchy(response, topClasses, subClasses);
+		Classification.buildHierarchy(response, topClasses, subClasses);
 		String topClassesJson = Json.toJson(topClasses).toString();
 		return ok(browse_classification.render(topClassesJson, subClasses, t));
 	}

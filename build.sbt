@@ -8,8 +8,11 @@ libraryDependencies ++= Seq(
   cache,
   javaWs,
   "com.typesafe.play" % "play-test_2.11" % "2.3.10",
-  "org.elasticsearch" % "elasticsearch" % "1.3.2" withSources(),
-  "org.mockito" % "mockito-core" % "1.9.5"
+  "org.elasticsearch" % "elasticsearch" % "1.7.5" withSources(),
+  "org.mockito" % "mockito-core" % "1.9.5",
+  "com.github.jsonld-java" % "jsonld-java" % "0.3",
+  "com.github.jsonld-java" % "jsonld-java-jena" % "0.3",
+  "org.apache.jena" % "jena-arq" % "2.9.3"
 )
 
 lazy val root = (project in file(".")).enablePlugins(PlayJava)
