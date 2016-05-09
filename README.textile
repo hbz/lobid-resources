@@ -143,6 +143,44 @@ productive indexes, thus not removing any productive index).
 
 @cd src/test/resources; bash buildAndETLTestSet.sh@
 
+h3. Data updates
+
+How to manually invoke data updates for both API 1.x data and API 2.0 data.
+
+Data source for updates and baselines: http://index.hbz-nrw.de/alephxml/export/
+
+For all commands below, add this to redirect output to file and follow that file:
+
+@> log/201605090945-master.startHbz01ToLobidResources.sh.log 2>&1 & tail -f log/201605090945-master.startHbz01ToLobidResources.sh.log@
+
+h4. Data 1.x, at hduser@weywot1:/home/hduser/git/lodmill/lodmill-rd/doc/scripts/hbz01$
+
+Single update:
+
+@bash -x startHbz01ToLobidResources.sh master /files/open_data/open/DE-605/mabxml/DE-605-aleph-update-marcxchange-20160411-20160412.tar.gz lobid-resources-staging NOALIAS quaoar2.hbz-nrw.de quaoar exact@
+
+Updates listed in file:
+
+@bash -x startHbz01ToLobidResources.sh master dummy_ignore lobid-resources-staging NOALIAS quaoar2.hbz-nrw.de quaoar exact doc/scripts/hbz01/toBeUpdateFilesXmlClobs_afterBasedump.txt@
+
+New baseline index:
+
+@bash -x startHbz01ToLobidResources.sh master /files/open_data/closed/hbzvk/index.hbz-nrw.de/alephxml/clobs/baseline/aliasNewestFulldump.tar.gz lobid-resources-201605090945 "-staging" quaoar2.hbz-nrw.de quaoar create doc/scripts/hbz01/toBeUpdateFilesXmlClobs_afterBasedump.txt@
+
+h4. Data 2.0, at hduser@gaia:/opt/hadoop/git/lobid-resources$
+
+Single update:
+
+@bash -x startHbz01ToLobidResources.sh master /files/open_data/open/DE-605/mabxml/DE-605-aleph-update-marcxchange-20160411-20160412.tar.gz resources-staging NOALIAS gaia.hbz-nrw.de lobid-gaia exact@
+
+Updates listed in file:
+
+@bash -x startHbz01ToLobidResources.sh master dummy_ignore resources-staging NOALIAS gaia.hbz-nrw.de lobid-gaia exact toBeUpdateFilesXmlClobs_afterBasedump.txt@
+
+New baseline index:
+
+@bash -x startHbz01ToLobidResources.sh master /files/open_data/closed/hbzvk/index.hbz-nrw.de/alephxml/clobs/baseline/aliasNewestFulldump.tar.gz resources-201605090945 NOALIAS gaia.hbz-nrw.de lobid-gaia create@
+
 h1. License
 
 Eclipse Public License: "http://www.eclipse.org/legal/epl-v10.html":http://www.eclipse.org/legal/epl-v10.html
