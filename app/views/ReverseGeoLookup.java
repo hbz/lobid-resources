@@ -1,6 +1,7 @@
 /* Copyright 2015 Fabian Steeg, hbz. Licensed under the GPLv2 */
 package views;
 
+import controllers.nwbib.Application;
 import controllers.nwbib.Lobid;
 import play.Logger;
 import play.cache.Cache;
@@ -55,7 +56,7 @@ public class ReverseGeoLookup {
 					return Promise.pure(String.format("Unbekannter Ort (%s)", location));
 				});
 		//@formatter:on
-		promise.onRedeem(label -> Cache.set(location, label));
+		promise.onRedeem(label -> Cache.set(location, label, Application.ONE_DAY));
 		return promise.get(timeout);
 	}
 }

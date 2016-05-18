@@ -779,7 +779,8 @@ public class Application extends Controller {
 							routes.Application.showStars(format, ids).toString());
 					Cache.set(session("uuid") + "-lastSearch",
 							starredIds.stream().map(s -> "\"" + s + "\"")
-									.collect(Collectors.toList()).toString());
+									.collect(Collectors.toList()).toString(),
+							Application.ONE_DAY);
 					Cache.set(cacheKey, vals, ONE_DAY);
 					return ok(stars.render(starredIds, vals, format));
 				});

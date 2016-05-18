@@ -272,7 +272,7 @@ public class Lobid {
 					label = uri.substring(uri.lastIndexOf('/') + 1);
 				}
 				label = HtmlEscapers.htmlEscaper().escape(label);
-				Cache.set(cacheKey, label);
+				Cache.set(cacheKey, label, Application.ONE_DAY);
 				return label;
 			}).get(Lobid.API_TIMEOUT);
 		} catch (Exception x) {
@@ -304,7 +304,7 @@ public class Lobid {
 					    "preferredNameForTheSubjectHeading",
 					    "preferredNameForTheConferenceOrEvent",
 					    "preferredNameForThePlaceOrGeographicName"))); // @formatter:on
-			Cache.set(cacheKey, label);
+			Cache.set(cacheKey, label, Application.ONE_DAY);
 			return label;
 		}).get(Lobid.API_TIMEOUT);
 	}
@@ -321,7 +321,7 @@ public class Lobid {
 		String label = Classification.label(uri, type);
 		label = HtmlEscapers.htmlEscaper().escape(label);
 		label = label.trim().isEmpty() ? uri : label;
-		Cache.set(cacheKey, label);
+		Cache.set(cacheKey, label, Application.ONE_DAY);
 		return label;
 	}
 
