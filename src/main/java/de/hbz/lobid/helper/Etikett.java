@@ -29,48 +29,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @XmlRootElement
 public class Etikett {
 
-	@SuppressWarnings("unused")
-	private static final long serialVersionUID = 6716611400533458082L;
-
-	/**
-	 * the full id as uri
-	 */
-	String uri = null;
-
-	/**
-	 * a label
-	 */
-	String label = null;
-	/**
-	 * a icon
-	 */
-	String icon = null;
-
-	/**
-	 * The name is a short-form for the uri used in JSON-LD
-	 */
-	String name = null;
-
-	/**
-	 * The expected type of the resource
-	 */
-	String referenceType = "class";
-
-	/**
-	 * Describes if the given is expected to occur as a \@set or a \@list. Can be
-	 * null;
-	 */
-	String container = null;
-
-	String comment = null;
-
-	String weight = null;
-
-	/**
-	 * The jaxb needs this
-	 */
-	public Etikett() {
-		// for jaxb
+	public enum EtikettType {
+		CACHE, CONTEXT, STORE
 	}
 
 	/**
@@ -81,119 +41,53 @@ public class Etikett {
 	}
 
 	/**
-	 * @return the uri
+	 * 
 	 */
-	public String getUri() {
-		return uri;
-	}
+	private static final long serialVersionUID = 6716611400533458082L;
 
 	/**
-	 * @param uri the uri this etikett is about
+	 * the full id as uri
 	 */
-	public void setUri(String uri) {
-		this.uri = uri;
-	}
+	public String uri = null;
+
+	public String comment = null;
 
 	/**
-	 * @return a human readable label
+	 * a label
 	 */
-	public String getLabel() {
-		return label;
-	}
+	public String label = null;
+	/**
+	 * a icon
+	 */
+	public String icon = null;
 
 	/**
-	 * @param label a human readable label
+	 * The name is a short-form for the uri used in JSON-LD
 	 */
-	public void setLabel(String label) {
-		this.label = label;
-	}
+	public String name = null;
 
 	/**
-	 * @return icon etikett icon
+	 * The expected type of the resource
 	 */
-	public String getIcon() {
-		return icon;
-	}
+	public String referenceType = null;
 
 	/**
-	 * @param icon etikett icon
+	 * Describes if the given is expected to occur as a \@set or a \@list. Can be
+	 * null;
 	 */
-	public void setIcon(String icon) {
-		this.icon = icon;
-	}
+	public String container = null;
 
 	/**
-	 * @return jsonName
+	 * A weigth for ordering
 	 */
-	public String getName() {
-		return name;
+	public String weight = null;
+
+	public EtikettType type;
+
+	public Etikett() {
+		// needed for jaxb (@see https://github.com/hbz/lobid-rdf-to-json
 	}
 
-	/**
-	 * @param name The name is a short-form for the uri used in JSON-LD
-	 */
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	/**
-	 * @return default is class. If you are describing a predicate you should use
-	 *         one of the types string,@id, date
-	 */
-	public String getReferenceType() {
-		return referenceType;
-	}
-
-	/**
-	 * @param referenceType The expected type of the resource
-	 */
-	public void setReferenceType(String referenceType) {
-		this.referenceType = referenceType;
-	}
-
-	/**
-	 * @return json-ld container
-	 */
-	public String getContainer() {
-		return container;
-	}
-
-	/**
-	 * @param container json-ld container
-	 */
-	public void setContainer(String container) {
-		this.container = container;
-	}
-
-	/**
-	 * @return a comment that describes the usage of the etikett
-	 */
-	public String getComment() {
-		return comment;
-	}
-
-	/**
-	 * @param comment a comment that describes the usage of the etikett
-	 */
-	public void setComment(String comment) {
-		this.comment = comment;
-	}
-
-	/**
-	 * @return a weight to order a list of etiketts
-	 */
-	public String getWeight() {
-		return weight;
-	}
-
-	/**
-	 * @param weight can be used to order a list of etiketts
-	 */
-	public void setWeight(String weight) {
-		this.weight = weight;
-	}
-
-	@Override
 	public String toString() {
 		try {
 			return new ObjectMapper().writeValueAsString(this);
@@ -202,4 +96,89 @@ public class Etikett {
 		}
 	}
 
+	/**
+	 * @param e attributes from e will be copied to this etikett
+	 */
+	public void copy(Etikett e) {
+		icon = e.icon;
+		label = e.label;
+		name = e.name;
+		referenceType = e.referenceType;
+		container = e.container;
+		comment = e.comment;
+		weight = e.weight;
+		type = e.type;
+	}
+
+	public String getUri() {
+		return uri;
+	}
+
+	public void setUri(String uri) {
+		this.uri = uri;
+	}
+
+	public String getComment() {
+		return comment;
+	}
+
+	public void setComment(String comment) {
+		this.comment = comment;
+	}
+
+	public String getLabel() {
+		return label;
+	}
+
+	public void setLabel(String label) {
+		this.label = label;
+	}
+
+	public String getIcon() {
+		return icon;
+	}
+
+	public void setIcon(String icon) {
+		this.icon = icon;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getReferenceType() {
+		return referenceType;
+	}
+
+	public void setReferenceType(String referenceType) {
+		this.referenceType = referenceType;
+	}
+
+	public String getContainer() {
+		return container;
+	}
+
+	public void setContainer(String container) {
+		this.container = container;
+	}
+
+	public String getWeight() {
+		return weight;
+	}
+
+	public void setWeight(String weight) {
+		this.weight = weight;
+	}
+
+	public EtikettType getType() {
+		return type;
+	}
+
+	public void setType(EtikettType type) {
+		this.type = type;
+	}
 }
