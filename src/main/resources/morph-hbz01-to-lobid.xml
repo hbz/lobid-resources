@@ -1702,7 +1702,12 @@
 		<!-- ####################### -->
 		<!-- ########## note -->
 		<!-- ####################### -->
-		<data source="501-1.a" name="http://www.w3.org/2004/02/skos/core#note"/>
+		<choose name="http://www.w3.org/2004/02/skos/core#note">
+			<data source="501-1.a">
+				<regexp match="^(http.*)" format="Siehe: ${1}"/>
+			</data>
+			<data source="501-1.a"/>
+		</choose>
 		<!-- ####################### -->
 		<!-- ############### statistics -->
 		<!-- ####################### -->
