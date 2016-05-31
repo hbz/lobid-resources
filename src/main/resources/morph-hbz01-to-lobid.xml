@@ -93,25 +93,6 @@
 			<regexp match="(.*)" format="$[ns-lobid-resource]${1}#!"/>
 		</data>
 		<!-- ####################### -->
-		<!-- ####### provenance not used for now, see https://github.com/lobid/lodmill/issues/541 -->
-		<!-- ####################### -->
-		<!-- <data source="@idzdb" name="@idzdbProvenance"> <regexp match="(.*)" format="$[ns-lobid-resource]${1}/about"/> 
-			</data> <data source="@idzdbProvenance" name="~rdf:subject"/> <data source="@idzdb" name="http://xmlns.com/foaf/0.1/primaryTopic"> 
-			<regexp match="(.*)" format="$[ns-lobid-resource]${1}"/> </data> <combine name=" :subject" 
-			value="$[ns-lobid-resource]${id}"> <if> <none> <data source="@idzdbProvenance"/> </none> 
-			</if> <data source="@id" name="id"> <regexp match="(.*)" format="${1}"/> </data> </combine> 
-			<combine name="~rdf:subject" value="$[ns-lobid-resource]${id}"> <data source="@idzdb"/> 
-			<data source="@id" name="id"> <regexp match="(.*)" format="${1}"/> </data> </combine> <data 
-			source="@idzdbProvenance" name="http://vocab.deri.ie/void#inDataset"> <regexp match=".*" format="http://lobid.org/dataset/resource"/> 
-			</data> <combine name="http://vocab.deri.ie/void#inDataset" value="http://lobid.org/dataset/resource"> 
-			<if> <none> <data source="@idzdbProvenance"/> </none> </if> <data source="@id"/> </combine> 
-			<combine name="http://vocab.deri.ie/void#inDataset" value="http://lobid.org/dataset/resource"> 
-			<data source="@idzdb"/> <data source="@id"/> </combine> <combine name="http://xmlns.com/foaf/0.1/primaryTopic" 
-			value="$[ns-lobid-resource]${id}#!"> <if> <none> <data source="@idzdbProvenance"/> </none> </if> 
-			<data source="@id" name="id"> <regexp match="(.*)" format="${1}"/> </data> </combine> <combine 
-			name="http://xmlns.com/foaf/0.1/primaryTopic" value="$[ns-lobid-resource]${id}#!"> <data source="@idzdb"/> 
-			<data source="@id" name="id"> <regexp match="(.*)" format="${1}"/> </data> </combine> -->
-		<!-- ####################### -->
 		<!-- ####### Set owl:sameAs -->
 		<!-- ####################### -->
 		<combine name="http://www.w3.org/2002/07/owl#sameAs" value="http://hub.culturegraph.org/resource/HBZ-${id}">
@@ -1689,7 +1670,7 @@
 		</data>
 		<!--rheinland pfalz -->
 		<data source="700l[-1].a" name="http://purl.org/lobid/lv#rpbSubject">
-		  <regexp match="^(\d{3})$" format="https://w3id.org/lobid/rpb2#n${1}"/>
+			<regexp match="^(\d{3})$" format="https://w3id.org/lobid/rpb2#n${1}"/>
 		</data>
 		<data source="700l[-1].a" name="http://purl.org/lobid/lv#rpbSubject">
 			<regexp match="^rpb(.*)" format="http://purl.org/lobid/rpb#n${1}"/>
@@ -1721,7 +1702,12 @@
 		<!-- ####################### -->
 		<!-- ########## note -->
 		<!-- ####################### -->
-		<data source="501-1.a" name="http://www.w3.org/2004/02/skos/core#note"/>
+		<choose name="http://www.w3.org/2004/02/skos/core#note">
+			<data source="501-1.a">
+				<regexp match="^(http.*)" format="Siehe: ${1}"/>
+			</data>
+			<data source="501-1.a"/>
+		</choose>
 		<!-- ####################### -->
 		<!-- ############### statistics -->
 		<!-- ####################### -->
