@@ -677,7 +677,9 @@
 			<regexp match="(.*)" format="http://nbn-resolving.de/${1}"/>
 		</data>
 		<!-- fulltext online , if 655 AND 334 exists with "[eE][lL]"ektro.. -->
-		<data source="655[-e][ -1].u" name="@linkUri"/>
+		<data source="655[-e][ -1].u" name="@linkUri">
+			<replace pattern=" .*" with=""/>
+		</data>
 		<!-- ####################### -->
 		<!-- ################ items -->
 		<!-- ####################### -->
