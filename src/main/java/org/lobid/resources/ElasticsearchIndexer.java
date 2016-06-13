@@ -19,6 +19,7 @@ import org.culturegraph.mf.framework.annotations.Out;
 import org.elasticsearch.action.admin.cluster.state.ClusterStateRequest;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
 import org.elasticsearch.action.bulk.BulkRequestBuilder;
+import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.update.UpdateRequest;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.IndicesAdminClient;
@@ -54,8 +55,8 @@ public class ElasticsearchIndexer
 	private BulkRequestBuilder bulkRequest;
 	private Builder CLIENT_SETTINGS;
 	private InetSocketTransportAddress NODE;
-	private TransportClient tc;
 	private UpdateRequest updateRequest;
+	private TransportClient tc;
 	private Client client;
 	private int retries = 40;
 	// collect so many documents before bulk indexing them all
@@ -64,6 +65,7 @@ public class ElasticsearchIndexer
 	private String indexName;
 	private boolean updateIndex;
 	private String aliasSuffix;
+	private IndexRequest indexRequest;
 
 	/**
 	 * Keys to get index properties and the json document ("graph")
@@ -118,14 +120,15 @@ public class ElasticsearchIndexer
 		LOG.debug("Try to index " + json.get(Properties.ID.getName())
 				+ " in ES type " + json.get(Properties.TYPE.getName()) + " Source:"
 				+ json.get(Properties.GRAPH.getName()));
-		updateRequest = new UpdateRequest(indexName,
+		indexRequest = new IndexRequest(indexName,
 				json.get(Properties.TYPE.getName()), json.get(Properties.ID.getName()));
-		updateRequest.doc(json.get(Properties.GRAPH.getName()));
-		updateRequest.docAsUpsert(true);
-		if (json.containsKey(Properties.PARENT.getName())) {
-			updateRequest.parent(json.get(Properties.PARENT.getName()));
-		}
-		bulkRequest.add(updateRequest);
+		// updateRequest.upsert(json.get(Properties.GRAPH.getName()));
+		// updateRequest.doc(json.get(Properties.GRAPH.getName()));
+		indexRequest.source(json.get(Properties.GRAPH.getName()));
+
+		// updateRequest.docAsUpsert(true);
+
+		bulkRequest.add(indexRequest);
 		docs++;
 		while (docs > bulkSize && retries > 0) {
 			try {
@@ -143,6 +146,9 @@ public class ElasticsearchIndexer
 				}
 				LOG.warn("Retry indexing record" + json.get(Properties.ID.getName())
 						+ ":" + e.getMessage() + " (" + retries + " more retries)");
+			} catch (Exception e) {
+				e.printStackTrace();
+				System.out.println(e.getLocalizedMessage());
 			}
 		}
 	}

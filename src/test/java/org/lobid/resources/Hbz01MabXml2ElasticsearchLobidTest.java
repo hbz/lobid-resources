@@ -56,9 +56,7 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 	static Client client;
 	private static final Logger LOG =
 			LoggerFactory.getLogger(Hbz01MabXml2ElasticsearchLobidTest.class);
-	private static final String LOBID_RESOURCES =
-			"test-resources-" + LocalDateTime.now().toLocalDate() + "-"
-					+ LocalDateTime.now().toLocalTime();
+	private static String index_name;
 	private static final String N_TRIPLE = "N-TRIPLE";
 	static final String PATH_TO_TEST = "src/test/resources/";
 	static final String TEST_FILENAME_ALEPHXMLCLOBS =
@@ -76,10 +74,8 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 						.put("index.number_of_shards", "1").build())
 				.node();
 		client = node.client();
-		client.admin().indices().prepareDelete("_all").execute().actionGet();
 		client.admin().cluster().prepareHealth().setWaitForYellowStatus().execute()
 				.actionGet();
-		etl(client, new RdfModel2ElasticsearchEtikettJsonLd());
 	}
 
 	/*
@@ -89,6 +85,9 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 	 */
 	public static void etl(final Client cl,
 			RdfModel2ElasticsearchEtikettJsonLd etikettJsonLdConverter) {
+		// ensure every test has its own index
+		index_name = "test-resources-" + LocalDateTime.now().toLocalDate() + "-"
+				+ LocalDateTime.now().toLocalTime();
 		client = cl;
 		final FileOpener opener = new FileOpener();
 		final Triples2RdfModel triple2model = new Triples2RdfModel();
@@ -106,26 +105,42 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 
 	@SuppressWarnings("static-method")
 	@Test
-	public void testJson() {
-		ElasticsearchDocuments.getAsJson();
-		if (testFailed)
-			throw new AssertionError();
+	public void testNtriplesWithContextAsUrl() {
+		etl(client, new RdfModel2ElasticsearchEtikettJsonLd(
+				AbstractIngestTests.LOBID_JSONLD_CONTEXT));
+		getElasticsearchDocsAsNtriplesAndTest(true);
 	}
 
-	@SuppressWarnings("static-method")
-	@Test
-	public void testNtriples() {
-		getElasticsearchDocsAsNtriplesAndTestAndWrite();
-	}
+	// @SuppressWarnings("static-method")
+	// @Test
+	// public void testJson() {
+	// etl(client, new RdfModel2ElasticsearchEtikettJsonLd());
+	// ElasticsearchDocuments.getAsJson();
+	// if (testFailed)
+	// throw new AssertionError();
+	// }
+	//
+	// @SuppressWarnings("static-method")
+	// @Test
+	// public void testNtriples() {
+	// etl(client, new RdfModel2ElasticsearchEtikettJsonLd());
+	// getElasticsearchDocsAsNtriplesAndTest(true);
+	//
+	// }
 
-	public static void getElasticsearchDocsAsNtriplesAndTestAndWrite() {
+	/**
+	 * 
+	 * @param WRITE boolean if to write the generated test data into file system
+	 */
+	static void getElasticsearchDocsAsNtriplesAndTest(final boolean WRITE) {
 		SortedSet<String> set =
 				getSortedSet(ElasticsearchDocuments.getAsNtriples());
 		try {
 			AbstractIngestTests.compareSetAndFileDefaultingBNodesAndCommata(set,
 					new File(TEST_FILENAME_NTRIPLES));
 		} finally {
-			writeSetToFile(TEST_FILENAME_NTRIPLES, set);
+			if (WRITE)
+				writeSetToFile(TEST_FILENAME_NTRIPLES, set);
 		}
 	}
 
@@ -165,7 +180,7 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 	private static ElasticsearchIndexer getElasticsearchIndexer(final Client cl) {
 		ElasticsearchIndexer esIndexer = new ElasticsearchIndexer();
 		esIndexer.setElasticsearchClient(cl);
-		esIndexer.setIndexName(LOBID_RESOURCES);
+		esIndexer.setIndexName(index_name);
 		esIndexer.setIndexAliasSuffix("");
 		esIndexer.setUpdateNewestIndex(false);
 		esIndexer.onSetReceiver();
@@ -180,7 +195,7 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 
 	static class ElasticsearchDocuments {
 		static private SearchResponse getElasticsearchDocuments() {
-			return client.prepareSearch(LOBID_RESOURCES)
+			return client.prepareSearch(index_name)
 					.setQuery(new MatchAllQueryBuilder()).setFrom(0).setSize(10000)
 					.execute().actionGet();
 		}
