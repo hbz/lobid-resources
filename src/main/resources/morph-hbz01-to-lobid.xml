@@ -677,9 +677,12 @@
 			<regexp match="(.*)" format="http://nbn-resolving.de/${1}"/>
 		</data>
 		<!-- fulltext online , if 655 AND 334 exists with "[eE][lL]"ektro.. -->
-		<data source="655[-e][ -1].u" name="@linkUri">
-			<replace pattern=" .*" with=""/>
+		<data source="655[-e][ -1].u" name="@linkContent">
+			<enforceUri></enforceUri>
 		</data>
+		<combine value="${a}" name="@linkUri" flushWith="655[-e][ -1]">
+			<data source="@linkContent" name="a"/>
+		</combine>
 		<!-- ####################### -->
 		<!-- ################ items -->
 		<!-- ####################### -->
@@ -1502,7 +1505,7 @@
 			<data source="@linkUri" name="a"/>
 		</combine>
 		<!-- emit URI only if there are no description subfields ... -->
-		<choose name="@urlLonely" flushWith="655??">
+		<choose name="@urlLonely" flushWith="655[-eu][ -1]">
 			<data source="655[-eu][ -1].[xy3]"/>
 			<data source="@linkUri"/>
 		</choose>
