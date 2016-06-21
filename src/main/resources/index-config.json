@@ -13,6 +13,10 @@
                 "_routing": {
                     "required": true
                 },
+                "_id" : {
+                    "type" : "string",
+                    "index" : "not_analyzed"
+                },
                 "date_detection": false,
                 "properties": {
                     "callNumber": {
@@ -59,6 +63,10 @@
                 }
             },
             "resource": {
+                "_id" : {
+                    "type" : "string",
+                    "index" : "not_analyzed"
+                },
                 "abstract": {
                     "analyzer": "german_analyzer",
                     "type": "string"
