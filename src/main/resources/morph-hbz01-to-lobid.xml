@@ -409,9 +409,14 @@
 			<data source="@id"/>
 		</combine>
 		<data source="@article" name="@rdftype"/>
-		<combine name="$[ns-lobid-vocab]containedIn" value="${a}">
+		<combine name="@containedIn" value="${a}">
 			<data source="@dctIsPartOfHbzIdArticle|@dctIsPartOfArticle" name="a"/>
 			<data source="@article"/>
+		</combine>
+		<combine name="$[ns-lobid-vocab]containedIn" value="${a}">
+			<data source="@containedIn" name="a">
+				<sanitizeUrl></sanitizeUrl>
+			</data>
 		</combine>
 		<!-- set default type -->
 		<combine name="@rdftype" value="$[ns-lobid-vocab]Miscellaneous" flushWith="record">
@@ -662,7 +667,7 @@
 		<!-- ####################### -->
 		<!-- doi -->
 		<data source="552a[-1].a" name="@doi">
-		<regexp match=".*(10.(\d)+/(\S)+).*" format="${1}"/>
+			<regexp match=".*(10.(\d)+/(\S)+).*" format="${1}"/>
 		</data>
 		<data source="@doi" name="http://umbel.org/umbel#isLike">
 			<regexp match="(.*)" format="http://dx.doi.org/${1}"/>
@@ -1623,7 +1628,11 @@
 			<regexp match=".*;(.*)" format="${1}"/>
 			<trim></trim>
 		</data>
-		<data source="@dctIsPartOf" name="http://purl.org/dc/terms/isPartOf"/>
+		<combine name="http://purl.org/dc/terms/isPartOf" value="${a}">
+			<data source="@dctIsPartOf" name="a">
+				<sanitizeUrl></sanitizeUrl>
+			</data>
+		</combine>
 		<!-- ####################### -->
 		<!-- ########## classification -->
 		<!-- ####################### -->
