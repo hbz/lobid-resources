@@ -667,12 +667,15 @@
 		<!-- ####################### -->
 		<!-- doi -->
 		<data source="552a[-1].a" name="@doi">
+			<replace pattern=" " with=""/>
 			<regexp match=".*(10.(\d)+/(\S)+).*" format="${1}"/>
 		</data>
 		<data source="@doi" name="http://umbel.org/umbel#isLike">
 			<regexp match="(.*)" format="http://dx.doi.org/${1}"/>
+			<sanitizeUrl></sanitizeUrl>
 		</data>
-		<data source="@doi" name="$[ns-bibo]doi"/>
+		<data source="@doi" name="$[ns-bibo]doi">
+		</data>
 		<!-- urn -->
 		<data source="552b[-1].a" name="@urn">
 			<regexp match="(^.*:.*\d+)$" format="${1}"/>
