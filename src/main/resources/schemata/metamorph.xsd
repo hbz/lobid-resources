@@ -599,7 +599,7 @@ collector.
       <element ref="tns:setreplace"/>
       <element ref="tns:java"/>
       <element ref="tns:urlescape"/>
-      <element ref="tns:enforceUri"/>
+      <element ref="tns:sanitizeUrl"/>
     </choice>
   </group>
   <!-- <element name="if-not-received"> -->
@@ -925,9 +925,9 @@ litereals)
     </annotation>
     <complexType/>
   </element>
-  <element name="enforceUri">
+  <element name="sanitizeUrl">
     <annotation>
-      <documentation>Checks if value is a valid URI. If not, try to repair it. If that's not possible, enforce a URI anyhow.
+      <documentation>Checks if value is a valid URL. If not, try to repair it. If that's not possible, emit an empty string.
       </documentation>
     </annotation>
     <complexType/>
