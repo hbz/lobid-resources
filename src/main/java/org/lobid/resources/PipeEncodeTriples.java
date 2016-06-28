@@ -126,10 +126,13 @@ public class PipeEncodeTriples extends AbstractGraphPipeEncoder {
 					else
 						addRdfList(uri, name, value, prop);
 				} else { // ... or add literal
-					if (!isRdfList)
-						resources.peek().addProperty(prop, value);
-					else
-						addRdfList(false, name, value, prop);
+					if (!value.isEmpty()) {
+						if (!isRdfList)
+							resources.peek().addProperty(prop, value);
+						else
+							addRdfList(false, name, value, prop);
+					} else
+						LOG.info("Value empty => ignoring triple");
 				}
 			} catch (Exception e) {
 				LOG.warn("Problem with name=" + name + " value=" + value, e);
