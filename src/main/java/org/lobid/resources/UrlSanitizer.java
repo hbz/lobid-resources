@@ -28,7 +28,8 @@ import org.slf4j.LoggerFactory;
  */
 public final class UrlSanitizer extends AbstractSimpleStatelessFunction {
 	private static final Logger LOG = LoggerFactory.getLogger(UrlSanitizer.class);
-	static UrlValidator urlValidator = new UrlValidator();
+	static UrlValidator urlValidator =
+			new UrlValidator(UrlValidator.ALLOW_2_SLASHES);
 
 	@Override
 	public String process(final String value) {
@@ -48,7 +49,7 @@ public final class UrlSanitizer extends AbstractSimpleStatelessFunction {
 				url = "http://" + url;
 				if (!urlValidator.isValid(url)) {
 					url = "";
-					LOG.info("No absolute URI could be generated from '" + value);
+					LOG.info("No absolute URI could be generated from '" + value + "'");
 				}
 			}
 		}
