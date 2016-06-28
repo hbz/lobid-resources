@@ -45,11 +45,18 @@ public final class UrlSanitizer extends AbstractSimpleStatelessFunction {
 					if (urlValidator.isValid(urlSplitter))
 						return urlSplitter;
 				}
-				// assuming scheme is missing
-				url = "http://" + url;
 				if (!urlValidator.isValid(url)) {
-					url = "";
-					LOG.info("No absolute URI could be generated from '" + value + "'");
+					if (url.matches(".*:/[^/].*")) // only one slash following the scheme
+						url = url.replace(":/", "://");
+					// assuming scheme is missing
+					if (!urlValidator.isValid(url)) {
+						url = "http://" + url;
+						if (!urlValidator.isValid(url)) {
+							url = "";
+							LOG.info(
+									"No absolute URI could be generated from '" + value + "'");
+						}
+					}
 				}
 			}
 		}
