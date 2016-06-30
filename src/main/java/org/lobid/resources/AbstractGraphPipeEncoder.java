@@ -3,9 +3,6 @@
 
 package org.lobid.resources;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-
 import org.culturegraph.mf.framework.DefaultStreamPipe;
 import org.culturegraph.mf.framework.ObjectReceiver;
 import org.culturegraph.mf.framework.StreamReceiver;
@@ -26,26 +23,4 @@ public abstract class AbstractGraphPipeEncoder
 	static final String LIST_NAME = "~rdf:list";
 	String subject;
 
-	/**
-	 * @param value The string which is checked.
-	 * @return True if string is a URI with a scheme.
-	 */
-	protected static boolean isUriWithScheme(final String value) {
-		if (value == null) {
-			return false;
-		}
-		try {
-			final URI uri = new URI(value);
-			/*
-			 * collection:example.org" is a valid URI, though no URL, and " 1483-1733"
-			 * is also a valid (java-)URI, but not for us - a "scheme" is mandatory.
-			 */
-			if (uri.getScheme() == null) {
-				return false;
-			}
-		} catch (URISyntaxException e) {
-			return false;
-		}
-		return true;
-	}
 }

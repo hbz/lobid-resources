@@ -117,9 +117,9 @@ public class PipeEncodeTriples extends AbstractGraphPipeEncoder {
 		} else if (name.matches(HTTP)) {
 			try {
 				final Property prop = model.createProperty(name);
-				if (isUriWithScheme(value) & !name.contains(PROPERTY_AS_LITERALS)
-						&& ((value.startsWith(URN) && storeUrnAsUri) || value.matches(HTTP)
-								|| value.matches(FTP) || value.startsWith("mailto"))) {
+				if (!name.contains(PROPERTY_AS_LITERALS) && (value.matches(HTTP)
+						|| value.matches(FTP) || (value.startsWith(URN) && storeUrnAsUri)
+						|| value.startsWith("mailto"))) {
 					boolean uri = true;
 					// either add uri ...
 					if (!isRdfList)
