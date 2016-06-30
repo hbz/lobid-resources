@@ -43,8 +43,8 @@ public final class UrlSanitizer extends AbstractSimpleStatelessFunction {
 		if (url.matches(".*#.*#.*")) {// allow only one fragment
 			url = url.substring(0, (url.indexOf("#", url.indexOf("#") + 1)));
 		}
+		url = url.replace(" ", "%20");// space in URI
 		if (!urlValidator.isValid(url)) {
-			url = url.replace(" ", "%20");// space in URI
 			if (!urlValidator.isValid(url)) {
 				for (String urlSplitter : url.split("%20")) {
 					if (urlValidator.isValid(urlSplitter))
