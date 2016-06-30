@@ -43,7 +43,9 @@ public class PipeEncodeTriples extends AbstractGraphPipeEncoder {
 	private final AtomicInteger ATOMIC_INT = new AtomicInteger();
 	// dummy subject to store data even if the subject is unknown at first
 	final static String DUMMY_SUBJECT = "dummy_subject";
-	final static String HTTP = "http";
+	final static String HTTP = "^[hH][tT][Tt][Pp].*";
+	final static String FTP = "^[Ff][Tt][Pp].*";
+
 	final static String URN = "urn";
 	final static String PROPERTY_AS_LITERALS = "Order";
 	private boolean fixSubject = false;
@@ -112,12 +114,12 @@ public class PipeEncodeTriples extends AbstractGraphPipeEncoder {
 			} catch (Exception e) {
 				LOG.warn("Problem with name=" + name + " value=" + value, e);
 			}
-		} else if (name.startsWith(HTTP)) {
+		} else if (name.matches(HTTP)) {
 			try {
 				final Property prop = model.createProperty(name);
 				if (isUriWithScheme(value) & !name.contains(PROPERTY_AS_LITERALS)
-						&& ((value.startsWith(URN) && storeUrnAsUri)
-								|| value.startsWith(HTTP) || value.startsWith("mailto"))) {
+						&& ((value.startsWith(URN) && storeUrnAsUri) || value.matches(HTTP)
+								|| value.matches(FTP) || value.startsWith("mailto"))) {
 					boolean uri = true;
 					// either add uri ...
 					if (!isRdfList)
