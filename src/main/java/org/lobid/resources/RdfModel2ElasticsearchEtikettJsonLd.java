@@ -162,7 +162,6 @@ public final class RdfModel2ElasticsearchEtikettJsonLd
 
 	private static HashMap<String, String> addInternalProperties(
 			HashMap<String, String> jsonMap, String id, String json) {
-		String internal_parent = "";
 		String type = TYPE_RESOURCE;
 		String idWithoutDomain = id.replaceAll(LOBID_DOMAIN + ".*/", "");
 
@@ -175,7 +174,6 @@ public final class RdfModel2ElasticsearchEtikettJsonLd
 						? parent.findValue("id").asText()
 								.replaceAll(LOBID_DOMAIN + ".*/", "").replaceFirst("#!$", "")
 						: null;
-				internal_parent = p;
 				if (p == null) {
 					LOG.warn("Item " + idWithoutDomain + " has no parent declared!");
 					jsonMap.put(ElasticsearchIndexer.Properties.PARENT.getName(),
@@ -186,12 +184,9 @@ public final class RdfModel2ElasticsearchEtikettJsonLd
 				e.printStackTrace();
 			}
 		}
-		String jsonDocument = json + internal_parent;
-		jsonMap.put(ElasticsearchIndexer.Properties.GRAPH.getName(), jsonDocument);
+		jsonMap.put(ElasticsearchIndexer.Properties.GRAPH.getName(), json);
 		jsonMap.put(ElasticsearchIndexer.Properties.TYPE.getName(), type);
 		jsonMap.put(ElasticsearchIndexer.Properties.ID.getName(), idWithoutDomain);
-		jsonMap.put(ElasticsearchIndexer.Properties.PARENT.getName(),
-				internal_parent);
 		return jsonMap;
 	}
 
