@@ -45,23 +45,18 @@ public final class UrlSanitizer extends AbstractSimpleStatelessFunction {
 		}
 		url = url.replace(" ", "%20");// space in URI
 		if (!urlValidator.isValid(url)) {
+			for (String urlSplitter : url.split("%20")) {
+				if (urlValidator.isValid(urlSplitter))
+					return urlSplitter;
+			}
+			if (url.matches(".*:/[^/].*")) // only one slash following the scheme
+				url = url.replace(":/", "://");
+			// assuming scheme is missing
 			if (!urlValidator.isValid(url)) {
-				for (String urlSplitter : url.split("%20")) {
-					if (urlValidator.isValid(urlSplitter))
-						return urlSplitter;
-				}
+				url = "http://" + url;
 				if (!urlValidator.isValid(url)) {
-					if (url.matches(".*:/[^/].*")) // only one slash following the scheme
-						url = url.replace(":/", "://");
-					// assuming scheme is missing
-					if (!urlValidator.isValid(url)) {
-						url = "http://" + url;
-						if (!urlValidator.isValid(url)) {
-							url = "";
-							LOG.info(
-									"No absolute URI could be generated from '" + value + "'");
-						}
-					}
+					url = "";
+					LOG.info("No absolute URI could be generated from '" + value + "'");
 				}
 			}
 		}
