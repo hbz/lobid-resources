@@ -80,9 +80,11 @@
 		<!-- ####################### -->
 		<data source="021[-b]1.a" name="http://purl.org/dc/terms/source">
 			<regexp match="(.*)" format="$[ns-lobid-resource]${1}#!"/>
+			<sanitizeUrl></sanitizeUrl>
 		</data>
 		<data source="021[-b]1.a" name="http://purl.org/dc/terms/isFormatOf">
 			<regexp match="(.*)" format="$[ns-lobid-resource]${1}#!"/>
+			<sanitizeUrl></sanitizeUrl>
 		</data>
 		<!-- ####################### -->
 		<!-- ####### Child, link to parent and vice versa, e.g. HT000009600 -->
@@ -91,6 +93,7 @@
 		<data source="529z1.9" name="@hasSupplement"/>
 		<data source="010-1.a|@idTitleSeries" name="@isPartOfHbzId">
 			<regexp match="(.*)" format="$[ns-lobid-resource]${1}#!"/>
+			<sanitizeUrl></sanitizeUrl>
 		</data>
 		<!-- ####################### -->
 		<!-- ####### Set owl:sameAs -->
@@ -124,6 +127,7 @@
 		<data source="025o[-12].a" name="@oclcnum"/>
 		<data source="@oclcnum" name="http://www.w3.org/2002/07/owl#sameAs">
 			<regexp match="(.*)" format="http://worldcat.org/oclc/${1}"/>
+			<sanitizeUrl></sanitizeUrl>
 		</data>
 		<data source="@oclcnum" name="$[ns-bibo]oclcnum"/>
 		<!-- ####################### -->
@@ -409,9 +413,14 @@
 			<data source="@id"/>
 		</combine>
 		<data source="@article" name="@rdftype"/>
-		<combine name="$[ns-lobid-vocab]containedIn" value="${a}">
+		<combine name="@containedIn" value="${a}">
 			<data source="@dctIsPartOfHbzIdArticle|@dctIsPartOfArticle" name="a"/>
 			<data source="@article"/>
+		</combine>
+		<combine name="$[ns-lobid-vocab]containedIn" value="${a}">
+			<data source="@containedIn" name="a">
+				<sanitizeUrl></sanitizeUrl>
+			</data>
 		</combine>
 		<!-- set default type -->
 		<combine name="@rdftype" value="$[ns-lobid-vocab]Miscellaneous" flushWith="record">
@@ -661,10 +670,16 @@
 		<!-- ########## links to the fulltext, online doi, toc etc. -->
 		<!-- ####################### -->
 		<!-- doi -->
-		<data source="552a[-1].a" name="http://umbel.org/umbel#isLike">
-			<regexp match="(.*)" format="http://dx.doi.org/${1}"/>
+		<data source="552a[-1].a" name="@doi">
+			<replace pattern=" " with=""/>
+			<regexp match=".*(10.(\d)+/(\S)+).*" format="${1}"/>
 		</data>
-		<data source="552a[-1].a" name="$[ns-bibo]doi"/>
+		<data source="@doi" name="http://umbel.org/umbel#isLike">
+			<regexp match="(.*)" format="http://dx.doi.org/${1}"/>
+			<sanitizeUrl></sanitizeUrl>
+		</data>
+		<data source="@doi" name="$[ns-bibo]doi">
+		</data>
 		<!-- urn -->
 		<data source="552b[-1].a" name="@urn">
 			<regexp match="(^.*:.*\d+)$" format="${1}"/>
@@ -675,11 +690,15 @@
 		<data source="@urn" name="$[ns-lobid-vocab]urn"/>
 		<data source="@urn" name="http://umbel.org/umbel#isLike">
 			<regexp match="(.*)" format="http://nbn-resolving.de/${1}"/>
+			<sanitizeUrl></sanitizeUrl>
 		</data>
 		<!-- fulltext online , if 655 AND 334 exists with "[eE][lL]"ektro.. -->
-		<data source="655[-e][ -1].u" name="@linkUri">
-			<replace pattern=" .*" with=""/>
+		<data source="655[-e][ -1].u" name="@linkContent">
+			<sanitizeUrl></sanitizeUrl>
 		</data>
+		<combine value="${a}" name="@linkUri" flushWith="655[-e][ -1]">
+			<data source="@linkContent" name="a"/>
+		</combine>
 		<!-- ####################### -->
 		<!-- ################ items -->
 		<!-- ####################### -->
@@ -782,6 +801,7 @@
 		<!-- person links -->
 		<data source="1??[-aemn][12].9" name="@creatorPersonId">
 			<regexp match="\(DE-588\)(.*)" format="http://d-nb.info/gnd/${1}"/>
+			<sanitizeUrl></sanitizeUrl>
 		</data>
 		<!-- literals of creator -->
 		<data source="359[-ab][-12].a" name="http://rdaregistry.info/Elements/u/P60339"/>
@@ -814,6 +834,7 @@
 		<!-- ####################### -->
 		<data source="2?[02468][-a][12].9" name="@creatorCorporateBodyId">
 			<regexp match="\(DE-588\)(.*)" format="http://d-nb.info/gnd/${1}"/>
+			<sanitizeUrl></sanitizeUrl>
 		</data>
 		<data source="2?[02468][-a][12].k" name="@nameOfCreatingCorporateBodyK">
 			<replace pattern="&gt;&gt;" with=""/>
@@ -916,11 +937,13 @@
 		<!-- id of contributor (which is not a creator) -->
 		<data source="1??[bcfp][1234].9" name="@contributorPersonId">
 			<regexp match="\(DE-588\)(.*)" format="http://d-nb.info/gnd/${1}"/>
+			<sanitizeUrl></sanitizeUrl>
 		</data>
 		<combine name="@contributorPersonId" value="${a}" sameEntity="true">
 			<data source="8[012]?[-mn][-12].b"/>
 			<data source="8[012]?[-mn][-12].9" name="a">
 				<regexp match="\(DE-588\)(.*)" format="http://d-nb.info/gnd/${1}"/>
+				<sanitizeUrl></sanitizeUrl>
 			</data>
 		</combine>
 		<combine name="@contributorLabel" value="${a}">
@@ -1135,10 +1158,12 @@
 		<!-- ddc links -->
 		<data source="70[05][-b][-12345].a" name="http://purl.org/dc/terms/subject">
 			<regexp match="([0-9]{3})" format="http://dewey.info/class/${1}/"/>
+			<sanitizeUrl></sanitizeUrl>
 		</data>
 		<!-- gnd links -->
 		<data source="9[01234][27]-[-12].9" name="@subjectLinks">
 			<regexp match="\(DE-588\)(.*)" format="http://d-nb.info/gnd/${1}"/>
+			<sanitizeUrl></sanitizeUrl>
 		</data>
 		<combine name="@subjectNotAPerson" value="${a}" sameEntity="true">
 			<data source="9[01234][27]-[-12].[efghkstz]" name="a"/>
@@ -1278,7 +1303,9 @@
 				source="@subjectLinks|@creatorPersonId|@creatorCorporateBodyId|@contributorPersonId|@contributorCorporateBodyId|@subjectTopic|@subjectMain"/>
 			<data source="@id" name="subject"/>
 		</combine>
-		<data source="@subjectLinks" name="http://purl.org/dc/terms/subject"/>
+		<data source="@subjectLinks" name="http://purl.org/dc/terms/subject">
+			<sanitizeUrl></sanitizeUrl>
+		</data>
 		<!-- other subjects -->
 		<data source="71[01][-abcdfz][123].a" name="http://purl.org/lobid/lv#subjectLabel">
 			<split delimiter=" / "/>
@@ -1502,7 +1529,7 @@
 			<data source="@linkUri" name="a"/>
 		</combine>
 		<!-- emit URI only if there are no description subfields ... -->
-		<choose name="@urlLonely" flushWith="655??">
+		<choose name="@urlLonely" flushWith="655[-eu][ -1]">
 			<data source="655[-eu][ -1].[xy3]"/>
 			<data source="@linkUri"/>
 		</choose>
@@ -1513,8 +1540,12 @@
 			</data>
 			<data source="@archived"/>
 		</combine>
-		<data source="@fulltextOnlineUri" name="$[ns-lobid-vocab]fulltextOnline"/>
-		<data source="@fulltextOnlineUri" name="http://purl.org/dc/terms/hasVersion"/>
+		<data source="@fulltextOnlineUri" name="$[ns-lobid-vocab]fulltextOnline">
+			<sanitizeUrl></sanitizeUrl>
+		</data>
+		<data source="@fulltextOnlineUri" name="http://purl.org/dc/terms/hasVersion">
+			<sanitizeUrl></sanitizeUrl>
+		</data>
 		<!-- rdf:seeAlso if 655 AND first three letter "Zusätzliche Angaben" -->
 		<combine name="http://www.w3.org/2000/01/rdf-schema#seeAlso" value="${seeAlsoUri}">
 			<data source="655[-eu][ -1].[x3]">
@@ -1540,7 +1571,9 @@
 			</data>
 			<data source="@linkUri" name="uri"/>
 		</combine>
-		<data source="@toc" name="http://purl.org/dc/terms/tableOfContents"/>
+		<data source="@toc" name="http://purl.org/dc/terms/tableOfContents">
+			<sanitizeUrl></sanitizeUrl>
+		</data>
 		<!-- link to description -->
 		<combine name="@desc" value="${uri}" sameEntity="true">
 			<data source="655[-eu][ -1].[x3]">
@@ -1617,7 +1650,11 @@
 			<regexp match=".*;(.*)" format="${1}"/>
 			<trim></trim>
 		</data>
-		<data source="@dctIsPartOf" name="http://purl.org/dc/terms/isPartOf"/>
+		<combine name="http://purl.org/dc/terms/isPartOf" value="${a}">
+			<data source="@dctIsPartOf" name="a">
+				<sanitizeUrl></sanitizeUrl>
+			</data>
+		</combine>
 		<!-- ####################### -->
 		<!-- ########## classification -->
 		<!-- ####################### -->

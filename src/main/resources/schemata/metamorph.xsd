@@ -599,6 +599,7 @@ collector.
       <element ref="tns:setreplace"/>
       <element ref="tns:java"/>
       <element ref="tns:urlescape"/>
+      <element ref="tns:sanitizeUrl"/>
     </choice>
   </group>
   <!-- <element name="if-not-received"> -->
@@ -920,7 +921,14 @@ litereals)
   <element name="urlescape">
     <annotation>
       <documentation>URL escaping using the gdata library to savely escape URIs as defined in RFC 3986 .
-</documentation>
+      </documentation>
+    </annotation>
+    <complexType/>
+  </element>
+  <element name="sanitizeUrl">
+    <annotation>
+      <documentation>Checks if value is a valid URL. If not, try to repair it. If that's not possible, emit an empty string.
+      </documentation>
     </annotation>
     <complexType/>
   </element>
