@@ -129,10 +129,6 @@ public class ElasticsearchIndexer
 		if (json.containsKey(Properties.PARENT.getName())) {
 			updateRequest.parent(json.get(Properties.PARENT.getName()));
 		}
-
-		if (json.get(Properties.ID.getName()).startsWith("HT018786244")) {
-			System.out.println();
-		}
 		bulkRequest.add(updateRequest);
 		docs++;
 		while (docs > bulkSize && retries > 0) {
