@@ -25,7 +25,7 @@ import org.culturegraph.mf.stream.source.FileOpener;
 import org.culturegraph.mf.stream.source.TarReader;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.Client;
-import org.elasticsearch.common.settings.ImmutableSettings;
+import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.index.query.MatchAllQueryBuilder;
 import org.elasticsearch.node.Node;
 import org.elasticsearch.search.SearchHit;
@@ -71,9 +71,9 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 	@BeforeClass
 	public static void setup() {
 		node = nodeBuilder().local(true)
-				.settings(ImmutableSettings.settingsBuilder()
-						.put("index.number_of_replicas", "0")
-						.put("index.number_of_shards", "1").build())
+				.settings(Settings.builder().put("index.number_of_replicas", "0")
+						.put("index.number_of_shards", "1").put("path.home", "tmp/")
+						.build())
 				.node();
 		client = node.client();
 		client.admin().indices().prepareDelete("_all").execute().actionGet();

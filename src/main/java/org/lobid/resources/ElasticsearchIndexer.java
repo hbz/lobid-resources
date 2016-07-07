@@ -5,6 +5,8 @@ package org.lobid.resources;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -25,13 +27,11 @@ import org.elasticsearch.client.IndicesAdminClient;
 import org.elasticsearch.client.Requests;
 import org.elasticsearch.client.transport.NoNodeAvailableException;
 import org.elasticsearch.client.transport.TransportClient;
-import org.elasticsearch.common.settings.ImmutableSettings;
-import org.elasticsearch.common.settings.ImmutableSettings.Builder;
+import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.collect.Sets;
 import com.google.common.collect.SortedSetMultimap;
 import com.google.common.collect.TreeMultimap;
 import com.google.common.io.CharStreams;
@@ -52,7 +52,6 @@ public class ElasticsearchIndexer
 	private String hostname;
 	private String clustername;
 	private BulkRequestBuilder bulkRequest;
-	private Builder CLIENT_SETTINGS;
 	private InetSocketTransportAddress NODE;
 	private TransportClient tc;
 	private UpdateRequest updateRequest;
@@ -97,12 +96,17 @@ public class ElasticsearchIndexer
 	@Override
 	public void onSetReceiver() {
 		if (client == null) {
-			this.CLIENT_SETTINGS = ImmutableSettings.settingsBuilder()
-					.put("cluster.name", this.clustername);
-			this.NODE = new InetSocketTransportAddress(this.hostname, 9300);
-			this.tc = new TransportClient(this.CLIENT_SETTINGS
+			Settings settings = Settings.settingsBuilder()
+					.put("cluster.name", this.clustername)
 					.put("client.transport.sniff", false)
-					.put("client.transport.ping_timeout", 120, TimeUnit.SECONDS).build());
+					.put("client.transport.ping_timeout", 120, TimeUnit.SECONDS).build();
+			try {
+				this.NODE = new InetSocketTransportAddress(
+						InetAddress.getByName(this.hostname), 9300);
+			} catch (UnknownHostException e) {
+				e.printStackTrace();
+			}
+			this.tc = TransportClient.builder().settings(settings).build();
 			this.client = this.tc.addTransportAddress(this.NODE);
 		}
 		bulkRequest = client.prepareBulk();
@@ -306,8 +310,8 @@ public class ElasticsearchIndexer
 	private Set<String> aliases(final String name) {
 		final ClusterStateRequest clusterStateRequest =
 				Requests.clusterStateRequest().nodes(true).indices(name);
-		return Sets.newHashSet(client.admin().cluster().state(clusterStateRequest)
-				.actionGet().getState().getMetaData().aliases().keysIt());
+		return client.admin().cluster().state(clusterStateRequest).actionGet()
+				.getState().getMetaData().getAliasAndIndexLookup().keySet();
 	}
 
 }

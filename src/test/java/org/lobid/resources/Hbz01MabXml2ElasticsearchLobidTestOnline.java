@@ -2,8 +2,11 @@
  * Licensed under the Eclipse Public License 1.0 */
 package org.lobid.resources;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+
 import org.elasticsearch.client.transport.TransportClient;
-import org.elasticsearch.common.settings.ImmutableSettings;
+import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.junit.Test;
 
@@ -16,18 +19,24 @@ import org.junit.Test;
  */
 @SuppressWarnings("javadoc")
 public final class Hbz01MabXml2ElasticsearchLobidTestOnline {
+	private TransportClient tc;
+	private final String CLUSTER_NAME = "quaoar1";
+	private final String HOSTNAME = "quaoar1.hbz-nrw.de";
 
-	private static final TransportClient TRANSPORT_CLIENT = new TransportClient(
-			ImmutableSettings.settingsBuilder().put("cluster.name", "lobid-gaia"));
-
-	@SuppressWarnings("static-method")
 	@Test
 	public void testOnline() {
-		Hbz01MabXml2ElasticsearchLobidTest.etl(
-				TRANSPORT_CLIENT.addTransportAddress(
-						new InetSocketTransportAddress("gaia.hbz-nrw.de", 9300)),
-				new RdfModel2ElasticsearchEtikettJsonLd(
-						AbstractIngestTests.LOBID_JSONLD_CONTEXT));
+		Settings settings =
+				Settings.settingsBuilder().put("cluster.name", CLUSTER_NAME).build();
+		tc = TransportClient.builder().settings(settings).build();
+		try {
+			Hbz01MabXml2ElasticsearchLobidTest.etl(
+					tc.addTransportAddress(new InetSocketTransportAddress(
+							InetAddress.getByName(HOSTNAME), 9300)),
+					new RdfModel2ElasticsearchEtikettJsonLd(
+							AbstractIngestTests.LOBID_JSONLD_CONTEXT));
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		}
 		Hbz01MabXml2ElasticsearchLobidTest
 				.getElasticsearchDocsAsNtriplesAndTestAndWrite();
 	}

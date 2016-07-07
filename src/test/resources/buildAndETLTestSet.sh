@@ -19,7 +19,7 @@ cd $PROJECT_ROOT
 mvn clean assembly:assembly -DdescriptorId=jar-with-dependencies -DskipTests
 mvn exec:java -Dexec.mainClass="org.lobid.resources.run.DownloadTestSet"
 cd $WORKING_DIR/$DATA_DIR
-tar xfj $WORKING_DIR/hbz01XmlClobs.tar.bz2 --strip-components 7
+tar xfj $WORKING_DIR/hbz01XmlClobs.tar.bz2
 cd $WORKING_DIR
 rm $TEST_FILE || true
 tar cfj $TEST_FILE $DATA_DIR
