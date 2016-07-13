@@ -379,7 +379,7 @@ public class Application extends Controller {
 				"Es ist ein Fehler aufgetreten. "
 						+ "Bitte versuchen Sie es erneut oder kontaktieren Sie das "
 						+ "Entwicklerteam, falls das Problem fortbesteht "
-						+ "(siehe Link 'Kontakt' oben rechts).");
+						+ "(siehe Link 'Feedback' oben rechts).");
 	}
 
 	private static void cacheOnRedeem(final String cacheId,
