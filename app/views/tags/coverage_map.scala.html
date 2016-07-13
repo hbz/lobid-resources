@@ -116,6 +116,7 @@ function areaSearch(hull) {
     }
 }
 
+var latLngObjects = [];
 $.ajax({
   url: '/facets?field='+ facetFieldName + queryParams + '&from=@from&size=@size&location=@urlEncode(location)',
   success: function(data, textStatus, jqXHR) {
@@ -132,6 +133,9 @@ $.ajax({
           addMarker(link, latLon,
             parseInt(pos >=0 ? input.substring(pos+1,input.length-1) : "", 10));
         }
+      }
+      if (pointsParam.length == 0) {
+        map.fitBounds(latLngObjects, {reset: true});
       }
     }
   },
@@ -150,6 +154,7 @@ function addMarker(link, latLon, freq){
    location.href = link;
   });
   markers.addLayer(marker);
+  latLngObjects.push(marker.getLatLng());
 }
 map.addLayer(markers);
 map.addLayer(layer);
