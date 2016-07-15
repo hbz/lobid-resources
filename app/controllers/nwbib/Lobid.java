@@ -276,7 +276,7 @@ public class Lobid {
 				return label;
 			}).get(Lobid.API_TIMEOUT);
 		} catch (Exception x) {
-			x.printStackTrace();
+			Logger.error("Could not get Lobid label", x);
 			return uri;
 		}
 	}
@@ -614,7 +614,7 @@ public class Lobid {
 			if (urlTemplate != null)
 				return urlTemplate.asText().replace("{hbzid}", hbzId);
 		} catch (IOException e) {
-			e.printStackTrace();
+			Logger.error("Could not create OPAC URL", e);
 		}
 		return null;
 	}

@@ -17,6 +17,7 @@ import com.google.common.html.HtmlEscapers;
 import controllers.nwbib.Application;
 import controllers.nwbib.Classification;
 import controllers.nwbib.Lobid;
+import play.Logger;
 
 /**
  * Different ways of serializing a table row
@@ -75,7 +76,7 @@ public enum TableRow {
 			try {
 				term = URLEncoder.encode(term, "UTF-8");
 			} catch (UnsupportedEncodingException e) {
-				e.printStackTrace();
+				Logger.error("Could not call encode '{}'", term, e);
 			}
 			String search = String.format("/search?%s=%s", param, term);
 			JsonNode node = Lobid.DATA_2 ? doc.get(property) : doc;

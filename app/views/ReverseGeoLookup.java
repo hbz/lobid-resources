@@ -52,7 +52,7 @@ public class ReverseGeoLookup {
 						.get().map(labelResponse -> 
 								labelResponse.asJson().findValue("value").asText()))
 				.recoverWith(throwable -> {
-					throwable.printStackTrace();
+					Logger.error("Could not look up location", throwable);
 					return Promise.pure(String.format("Unbekannter Ort (%s)", location));
 				});
 		//@formatter:on
