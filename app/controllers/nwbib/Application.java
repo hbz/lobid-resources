@@ -143,7 +143,7 @@ public class Application extends Controller {
 		try {
 			return URLEncoder.encode(request().host() + request().uri(), "UTF-8");
 		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
+			Logger.error("Could not get current URI", e);
 		}
 		return null;
 	}
@@ -366,7 +366,7 @@ public class Application extends Controller {
 				issued, medium, nwbibspatial, nwbibsubject, from, size, owner, t, sort,
 				details, set, location, word, corporation, raw);
 		return result.recover((Throwable throwable) -> {
-			throwable.printStackTrace();
+			Logger.error("Could not call Lobid", throwable);
 			flashError();
 			return internalServerError(search.render("[]", q, person, name, subject,
 					id, publisher, issued, medium, nwbibspatial, nwbibsubject, from, size,

@@ -113,7 +113,7 @@ public class Classification {
 			return list.subList(1, list.size()).stream().map(JSONUtils::toString)
 					.collect(Collectors.toList());
 		} catch (JsonLdError | IOException e) {
-			e.printStackTrace();
+			Logger.error("Could not convert to JSON-LD", e);
 		}
 		return null;
 	}
@@ -182,8 +182,7 @@ public class Classification {
 		} catch (Throwable t) {
 			Logger.error(
 					"Could not get classification data, index: {} type: {}, id: {} ({}: {})",
-					INDEX, type, uri, t, t.getMessage());
-			t.printStackTrace();
+					INDEX, type, uri, t, t);
 		}
 		return "";
 	}
@@ -288,7 +287,7 @@ public class Classification {
 				bulkRequest.add(indexRequest);
 			}
 		} catch (MalformedURLException e) {
-			e.printStackTrace();
+			Logger.error("Could not index data", e);
 		}
 		BulkResponse response = bulkRequest.execute().actionGet();
 		if (response.hasFailures()) {
