@@ -137,7 +137,7 @@
   @result_field("Schlagwörter", "subject", doc, TableRow.VALUES, valueLabel = gndEntities, param="subject")
   @result_field("Schlagwortfolge", "subjectChain", doc, TableRow.VALUES, valueLabel = Option(Seq()))
 
-  @result_field("Inhaltsangabe", "description", doc, TableRow.LINKS)
+  @if(Lobid.DATA_2) { @result_field("Inhaltsangabe", "description", doc, TableRow.LINKS) }
   @result_field("Inhaltsverzeichnis", "tableOfContents", doc, TableRow.LINKS)
   @result_field("Weitere Informationen", "isPrimaryTopicOf", doc, TableRow.LINKS, valueLabel = Option(Seq("hbz-Verbundkatalog")))
 }
