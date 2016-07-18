@@ -62,6 +62,9 @@ public class Lobid {
 				// Fall back to data 1.x if nothing found:
 				String fallbackUrl = String.format("%s/%s?format=full",
 						Application.CONFIG.getString("nwbib.api"), id);
+				Logger.warn(
+						"No response from Lobid API 2.0 URL '{}', falling back to API 1.x URL '{}'",
+						url, fallbackUrl);
 				DATA_2 = false; // required for processing individual fields
 				return cachedJsonCall(fallbackUrl);
 			}

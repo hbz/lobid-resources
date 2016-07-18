@@ -27,5 +27,5 @@
 	property,
 	param,
 	label,
-	multiSingleOrEmptySeq(jsonVal(property)).map(_.as[String]).sorted(Ordering[String].reverse),
+	multiSingleOrEmptySeq(jsonVal(property)).map(_.asOpt[String].getOrElse("--")).sorted(Ordering[String].reverse),
 	if(valueLabel.isEmpty){ Optional.empty() } else { Optional.of(valueLabel.get) }))
