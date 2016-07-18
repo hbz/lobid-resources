@@ -118,8 +118,9 @@ This is your starting point for tracing what scripts are triggered on what serve
 at which time. All is logged, see the crontab entries resp. the scripts.
 
 Like with the old (and still productive) lobid index, a weekly fulldump
-index is build on Saturdays. This is the base for the daily incremental updates.
+index is build on Saturday/Sunday. This is the base which will then be complemented by the daily incremental updates.
 Have a look at "both source data, base and daily updates":http://lobid.org/download/dumps/DE-605/mabxml/.
+The base-file must be referenced by a symbolic link residing in the nfs: "/files/open_data/closed/hbzvk/index.hbz-nrw.de/alephxml/clobs/baseline/aliasNewestFulldump.tar.gz". It is this symbolic link which is used by indexing processes.
 Building the full index takes around 12 hours. The finished index is aliased
 to _resources-staging_. This is manually to be tested. If it's ok, the
 index is switched by simply renaming this alias to _resources_ . Both aliases are
