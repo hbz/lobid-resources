@@ -30,7 +30,7 @@
       </script>
       <h5 id="@field.hashCode.abs-header">
         @facetToggle("facets-ul-" + field.hashCode.abs.toString){@facet}
-        @facetLabel(current, current.split("[,+]").size + " ausgewählt")
+        @facetLabel(current, "ausgewählt", field.hashCode.abs + "-count", current.split("[,+]").size.toString)
       </h5>
       <ul class="facet" id="facets-ul-@field.hashCode.abs">
           <script>
@@ -83,6 +83,8 @@
                    ul.append("</div>");
                  }
                }
+               var active = $("#facets-ul-@field.hashCode.abs li.active");
+               $("#@field.hashCode.abs-count").text(active.length);
               $("#facets-loading-@field.hashCode.abs").remove();
               @if(field==Application.ISSUED_FIELD){ @issued_facet(issued) }
             },
@@ -96,9 +98,9 @@
   </div>
 }
 
-@facetLabel(current: String, label: String) = {
+@facetLabel(current: String, label: String, activeCountId: String = "", currentCount: String = "") = {
   @if(!current.isEmpty){
-    <span class="badge" id="facet-filter">@label</span> 
+     <span class="badge" id="facet-filter"><span id="@activeCountId">@currentCount</span> @label</span>
      <a href="@nwbib.routes.Application.search(q,person,name,if (subject==current) "" else subject,id,publisher,if(issued==current) "" else issued,if (medium==current) "" else medium,if(nwbibspatial==current) "" else nwbibspatial,if(nwbibsubject==current) "" else nwbibsubject,from,size,if (owner==current) "" else owner,if (t==current) "" else t,sortParam,set=set,location=(if (location==current) "" else location),word=word,corporation=corporation,raw=(if (raw.split(":").last==current) "" else raw)).toString" title="Filter entfernen"><span class="octicon octicon-x"></span></a> 
    }
 }

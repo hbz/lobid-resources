@@ -366,7 +366,14 @@ public class Lobid {
 						.setQueryParameter("size",
 								field.equals(Application.ITEM_FIELD) ? "9999"
 										: Application.MAX_FACETS + "")
-						.setQueryParameter("corporation", corporation);
+						.setQueryParameter("corporation", corporation)//
+						.setQueryParameter("medium", medium)//
+						.setQueryParameter("t", t)//
+						.setQueryParameter("owner", owner)//
+						.setQueryParameter("nwbibspatial", nwbibspatial)//
+						.setQueryParameter("nwbibsubject", nwbibsubject)//
+						.setQueryParameter("location", locationPolygon(location))//
+						.setQueryParameter("issued", issued);
 		if (!q.isEmpty())
 			request = request.setQueryParameter("word", preprocess(q));
 		else if (!word.isEmpty())
@@ -376,26 +383,11 @@ public class Lobid {
 		else
 			request = request.setQueryParameter("set",
 					Application.CONFIG.getString("nwbib.set"));
-		if (!field.equals(Application.MEDIUM_FIELD))
-			request = request.setQueryParameter("medium", medium);
-		if (!field.equals(Application.TYPE_FIELD))
-			request = request.setQueryParameter("t", t);
-		if (!field.equals(Application.ITEM_FIELD))
-			request = request.setQueryParameter("owner", owner);
-		if (!field.equals(Application.NWBIB_SPATIAL_FIELD))
-			request = request.setQueryParameter("nwbibspatial", nwbibspatial);
-		if (!field.equals(Application.COVERAGE_FIELD) || (!raw.isEmpty()
-				&& !raw.contains(Lobid.escapeUri(Application.COVERAGE_FIELD))))
+		if (!raw.isEmpty()
+				&& !raw.contains(Lobid.escapeUri(Application.COVERAGE_FIELD)))
 			request = request.setQueryParameter("q", raw);
-		if (!field.equals(Application.NWBIB_SUBJECT_FIELD))
-			request = request.setQueryParameter("nwbibsubject", nwbibsubject);
-		if (!field.equals(Application.SUBJECT_FIELD) || !field.startsWith("http"))
+		if (!field.startsWith("http"))
 			request = request.setQueryParameter("subject", subject);
-		if (!field.equals(Application.SUBJECT_LOCATION_FIELD))
-			request =
-					request.setQueryParameter("location", locationPolygon(location));
-		if (!field.equals(Application.ISSUED_FIELD))
-			request = request.setQueryParameter("issued", issued);
 		String url = request.getUrl();
 		Map<String, Collection<String>> parameters = request.getQueryParameters();
 		Logger.info("Facets request URL {}, query params {} ", url, parameters);

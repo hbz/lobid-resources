@@ -579,21 +579,8 @@ public class Application extends Controller {
 					String labelKey = String.format(
 							"facets-labels.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s",
 							field, raw, q, person, name, id, publisher, set, word,
-							corporation,
-							/*
-							 * facet values, include in key only if not the current facet,
-							 * except literal subjects, which can be combined with facet:
-							 */
-							field.equals(SUBJECT_FIELD) && subject.startsWith("http") ? ""
-									: subject,
-							field.equals(ISSUED_FIELD) ? "" : issued,
-							field.equals(MEDIUM_FIELD) ? "" : medium,
-							field.equals(NWBIB_SPATIAL_FIELD) ? "" : nwbibspatial,
-							field.equals(NWBIB_SUBJECT_FIELD) ? "" : nwbibsubject,
-							field.equals(COVERAGE_FIELD) ? "" : raw,
-							field.equals(ISSUED_FIELD) ? "" : owner,
-							field.equals(TYPE_FIELD) ? "" : t,
-							field.equals(SUBJECT_LOCATION_FIELD) ? "" : location);
+							corporation, subject.startsWith("http") ? "" : subject, issued,
+							medium, nwbibspatial, nwbibsubject, raw, owner, t, location);
 
 					@SuppressWarnings("unchecked")
 					List<Pair<JsonNode, String>> labelledFacets =
