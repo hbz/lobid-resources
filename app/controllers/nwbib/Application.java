@@ -579,8 +579,8 @@ public class Application extends Controller {
 					String labelKey = String.format(
 							"facets-labels.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s",
 							field, raw, q, person, name, id, publisher, set, word,
-							corporation, subject.startsWith("http") ? "" : subject, issued,
-							medium, nwbibspatial, nwbibsubject, raw, owner, t, location);
+							corporation, subject, issued, medium, nwbibspatial, nwbibsubject,
+							raw, owner, t, location);
 
 					@SuppressWarnings("unchecked")
 					List<Pair<JsonNode, String>> labelledFacets =
