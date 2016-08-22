@@ -262,8 +262,8 @@ public class Lobid {
 			URI.create(uri);
 			String api = Application.CONFIG.getString("nwbib.api");
 			WSRequestHolder requestHolder = WS
-					.url(Lobid.DATA_2
-							? uri.replaceAll("https?://lobid\\.org/resources?", api) : uri)
+					.url(toApi1xOrg(Lobid.DATA_2
+							? uri.replaceAll("https?://lobid\\.org/resources?", api) : uri))
 					.setHeader("Accept", "application/json")
 					.setQueryParameter("format", format);
 			return requestHolder.get().map((WSResponse response) -> {
@@ -550,8 +550,14 @@ public class Lobid {
 								: selected.get(0).getLeft();
 	}
 
+	static String toApi1xOrg(String url) {
+		String betaOrgsPrefix = "http://beta.lobid.org/organisations";
+		return url.startsWith(betaOrgsPrefix)
+				? url.replace(betaOrgsPrefix, "http://lobid.org/organisation") : url;
+	}
+
 	static boolean isOrg(String term) {
-		return term.startsWith("http://lobid.org/organisation");
+		return term.contains("lobid.org/organisation");
 	}
 
 	static boolean isNwBibClass(String term) {

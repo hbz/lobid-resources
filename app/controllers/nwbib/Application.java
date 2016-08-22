@@ -681,7 +681,8 @@ public class Application extends Controller {
 		return count(itemUrisWithoutSignatures).entrySet().stream()
 				.map(entry -> Json.toJson(ImmutableMap.of(//
 						"term",
-						Application.CONFIG.getString("orgs.api") + "/" + entry.getKey(), //
+						Lobid.toApi1xOrg(Application.CONFIG.getString("orgs.api")) + "/"
+								+ entry.getKey(), //
 						"count", entry.getValue())));
 	}
 
