@@ -639,14 +639,15 @@ public class Application extends Controller {
 		String rawPrefix =
 				Lobid.escapeUri(COVERAGE_FIELD.replace(".raw", "")) + ":";
 		if (currentParam.isEmpty()) {
-			return rawPrefix + quotedEscaped(term);
+			return rawPrefix + "(+" + quotedEscaped(term) + ")";
 		} else if (rawContains(currentParam, quotedEscaped(term))) {
-			String removedTerm =
-					currentParam.replace(rawPrefix, "").replace(quotedEscaped(term), "")
-							.replaceAll("\\A\\+|\\+\\z", "").replaceAll("\\++", "+");
-			return removedTerm.trim().isEmpty() ? "" : rawPrefix + removedTerm;
+			String removedTerm = currentParam.replace(rawPrefix, "")
+					.replace("+" + quotedEscaped(term), "")
+					.replaceAll("\\A\\+|\\+\\z", "").replaceAll("\\++", "+");
+			return removedTerm.trim().equals("()") ? "" : rawPrefix + removedTerm;
 		} else
-			return currentParam + "+" + quotedEscaped(term);
+			return currentParam.substring(0, currentParam.length() - 1) + "+"
+					+ quotedEscaped(term) + ")";
 	}
 
 	private static String quotedEscaped(String term) {
@@ -656,6 +657,8 @@ public class Application extends Controller {
 	private static boolean rawContains(String raw, String term) {
 		String[] split = raw.split(":");
 		String terms = split[split.length - 1];
+		terms =
+				terms.length() >= 2 ? terms.substring(1, terms.length() - 1) : terms;
 		return Arrays.asList(terms.split("\\+")).contains(term);
 	}
 
