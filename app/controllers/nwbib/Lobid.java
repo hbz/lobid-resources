@@ -368,8 +368,6 @@ public class Lobid {
 										: Application.MAX_FACETS + "")
 						.setQueryParameter("corporation", corporation)//
 						.setQueryParameter("medium", medium)//
-						.setQueryParameter("t", t)//
-						.setQueryParameter("owner", owner)//
 						.setQueryParameter("nwbibspatial", nwbibspatial)//
 						.setQueryParameter("nwbibsubject", nwbibsubject)//
 						.setQueryParameter("location", locationPolygon(location))//
@@ -383,6 +381,10 @@ public class Lobid {
 		else
 			request = request.setQueryParameter("set",
 					Application.CONFIG.getString("nwbib.set"));
+		if (!field.equals(Application.TYPE_FIELD))
+			request = request.setQueryParameter("t", t);
+		if (!field.equals(Application.ITEM_FIELD))
+			request = request.setQueryParameter("owner", owner);
 		if (!raw.isEmpty()
 				&& !raw.contains(Lobid.escapeUri(Application.COVERAGE_FIELD)))
 			request = request.setQueryParameter("q", raw);

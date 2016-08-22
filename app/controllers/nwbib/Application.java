@@ -580,7 +580,8 @@ public class Application extends Controller {
 							"facets-labels.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s",
 							field, raw, q, person, name, id, publisher, set, word,
 							corporation, subject, issued, medium, nwbibspatial, nwbibsubject,
-							raw, owner, t, location);
+							raw, field.equals(ITEM_FIELD) ? "" : owner,
+							field.equals(TYPE_FIELD) ? "" : t, location);
 
 					@SuppressWarnings("unchecked")
 					List<Pair<JsonNode, String>> labelledFacets =
