@@ -216,10 +216,7 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 								RdfModel2ElasticsearchEtikettJsonLd.LOBID_DOMAIN + ".*/", "")
 						.replaceAll("#!$", "");
 				filename = DIRECTORY_TO_TEST_JSON_FILES + filename;
-				File testFile = new File(filename);
-				if (!testFile.exists()) { // new test resource
-					writeFile(filename, jsonLdWithoutContext);
-				}
+				writeFile(filename, jsonLdWithoutContext);
 				AbstractIngestTests.compareSetAndFileDefaultingBNodesAndCommata(
 						getSortedSet(jsonLdWithoutContext), new File(filename));
 			} catch (IOException e) {
