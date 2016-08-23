@@ -173,6 +173,7 @@
 					</data>
 					<data source="@matVideo"/>
 					<data source="@mediumAudio"/>
+					<data source="@archived"/>
 				</none>
 			</if>
 			<data source="050.">
@@ -277,6 +278,7 @@
 				<none>
 					<data source="@matVideo"/>
 					<data source="@mediumAudio"/>
+					<data source="@archived"/>
 					<data source="050.">
 						<regexp match="^.........a"/>
 					</data>
@@ -1507,9 +1509,10 @@
 		<!-- ####################### -->
 		<!-- ##########fulltext, toc, seeAlso -->
 		<!-- ####################### -->
-		<data source="652a[-1].a" name="@archived">
-			<regexp match="^[Aa][r]"/>
+		<data source="051." name="@archived">
+			<regexp match="^.w" format="$[ns-lobid-vocab]ArchivedWebPage"/>
 		</data>
+		<data source="@archived" name="@rdftype"/>
 		<combine name="@fulltextOnline" value="${link}">
 			<data source="334-[12].a">
 				<regexp match="^[eEcC][lLoO]"/>
@@ -1540,7 +1543,8 @@
 			<data source="655[-eu][ -1].[xy3]"/>
 			<data source="@linkUri"/>
 		</choose>
-		<!-- ... check if URI and if 652=Archive to determine if it's the archived web source -->
+		<!-- ... check if URI and if it's of type "webPageArchived" to determine if it's the archived 
+			web source -->
 		<combine name="$[ns-lobid-vocab]webPageArchived" value="${uri}">
 			<data source="@urlLonely" name="uri">
 				<regexp match="^http.*"/>
