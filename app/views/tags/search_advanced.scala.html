@@ -3,6 +3,7 @@
 @(label:String, q:String = "", person: String = "", name: String = "", subject: String = "", nwbibspatial: String = "", nwbibsubject: String = "", id: String = "", publisher: String = "", issued: String = "", sortParam: String = "", word: String = "", corporation: String = "")
 
 @import scala.collection.immutable.TreeMap
+@import controllers.nwbib.Lobid
 
 <script>
 function addSearchWidget(c){
@@ -75,7 +76,7 @@ function suggests(term){
 
 @helper.form(action = controllers.nwbib.routes.Application.search(), 
     'id -> "nwbib-form", 'role -> "form", 'class -> "form-inline") {
-  @defining(TreeMap("name"->name,"person"->person,"corporation"->corporation,"subject"->subject, "id"->id,"publisher"->publisher,"word"->word).filter({case (k,v) => !v.isEmpty && (k != "subject" || (k == "subject" && !v.startsWith("http")))})) { fields =>
+  @defining(TreeMap("name"->name,"person"->person,"corporation"->corporation,"subject"->Lobid.labelledQueryValues(subject), "id"->id,"publisher"->publisher,"word"->word).filter({case (k,v) => !v.isEmpty && (k != "subject" || (k == "subject" && !v.startsWith("http")))})) { fields =>
   @for(((k,v),i)<- (if(fields.isEmpty) TreeMap("q" -> "") else fields).zipWithIndex){
   <div class="search-field row" id="search-field-@i">
       <div class="form-group col col-md-2">

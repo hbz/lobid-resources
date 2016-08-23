@@ -446,6 +446,18 @@ public class Lobid {
 	}
 
 	/**
+	 * @param queryValues The value string of the query, e.g. <br/>
+	 *          `"Eisenbahnlinie,http://d-nb.info/gnd/4129465-8"`
+	 * @return A fully labelled version of the given query values, e.g. <br/>
+	 *         `"Eisenbahnlinie,Bahnhof"`
+	 */
+	public static String labelledQueryValues(String queryValues) {
+		return Arrays.asList(queryValues.split(",")).stream().map(
+				s -> s.startsWith("http://") ? facetLabel(Arrays.asList(s), "", "") : s)
+				.collect(Collectors.joining(","));
+	}
+
+	/**
 	 * @param uris Some URIs
 	 * @param field The ES field to facet over
 	 * @param label A label for the facet
