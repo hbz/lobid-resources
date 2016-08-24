@@ -448,13 +448,11 @@ public class Lobid {
 	/**
 	 * @param queryValues The value string of the query, e.g. <br/>
 	 *          `"Eisenbahnlinie,http://d-nb.info/gnd/4129465-8"`
-	 * @return A fully labelled version of the given query values, e.g. <br/>
-	 *         `"Eisenbahnlinie,Bahnhof"`
+	 * @return The given string, without URIs, e.g.`"Eisenbahnlinie"`
 	 */
-	public static String labelledQueryValues(String queryValues) {
-		return Arrays.asList(queryValues.split(",")).stream().map(
-				s -> s.startsWith("http://") ? facetLabel(Arrays.asList(s), "", "") : s)
-				.collect(Collectors.joining(","));
+	public static String withoutUris(String queryValues) {
+		return Arrays.asList(queryValues.split(",")).stream()
+				.filter(s -> !s.startsWith("http://")).collect(Collectors.joining(","));
 	}
 
 	/**
