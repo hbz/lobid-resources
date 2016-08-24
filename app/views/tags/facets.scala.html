@@ -30,7 +30,9 @@
       </script>
       <h5 id="@field.hashCode.abs-header">
         @facetToggle("facets-ul-" + field.hashCode.abs.toString){@facet}
-        @facetLabel(current, "ausgewählt", field.hashCode.abs + "-count", current.split("[,+]").size.toString)
+        <span id="@field.hashCode.abs-label">
+          @facetLabel(current, "ausgewählt", field.hashCode.abs + "-count", current.split("[,+]").size.toString)
+        </span>
       </h5>
       <ul class="facet" id="facets-ul-@field.hashCode.abs">
           <script>
@@ -84,7 +86,11 @@
                  }
                }
                var active = $("#facets-ul-@field.hashCode.abs li.active");
-               $("#@field.hashCode.abs-count").text(active.length);
+               if(active.length == 0) {
+                 $("#@field.hashCode.abs-label").hide();
+               } else {
+                 $("#@field.hashCode.abs-count").text(active.length);
+               }
               $("#facets-loading-@field.hashCode.abs").remove();
               @if(field==Application.ISSUED_FIELD){ @issued_facet(issued) }
             },
