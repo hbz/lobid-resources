@@ -531,9 +531,9 @@ public class Application extends Controller {
 			String mediumQuery = !field.equals(MEDIUM_FIELD) //
 					? medium : queryParam(medium, term);
 			String typeQuery = !field.equals(TYPE_FIELD) //
-					? t : queryParam(t, term);
+					? t : withoutAndOperator(queryParam(t, term));
 			String ownerQuery = !field.equals(ITEM_FIELD) //
-					? owner : queryParam(owner, term);
+					? owner : withoutAndOperator(queryParam(owner, term));
 			String nwbibsubjectQuery = !field.equals(NWBIB_SUBJECT_FIELD) //
 					? nwbibsubject : queryParam(nwbibsubject, term);
 			String nwbibspatialQuery = !field.equals(NWBIB_SPATIAL_FIELD) //
@@ -623,11 +623,16 @@ public class Application extends Controller {
 	private static String queryParam(String currentParam, String term) {
 		if (currentParam.isEmpty())
 			return term;
-		else if (contains(currentParam, term))
-			return currentParam.replace(term, "").replaceAll("\\A,|,\\z", "")
-					.replaceAll(",+", ",");
-		else
-			return currentParam + "," + term;
+		else if (contains(currentParam, term)) {
+			String termRemoved = currentParam.replace(term, "")
+					.replaceAll("\\A,|,?\\z", "").replaceAll(",+", ",");
+			return termRemoved.equals("AND") ? "" : termRemoved;
+		} else
+			return withoutAndOperator(currentParam) + "," + term + ",AND";
+	}
+
+	private static String withoutAndOperator(String currentParam) {
+		return currentParam.replace(",AND", "");
 	}
 
 	/**
