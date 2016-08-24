@@ -128,7 +128,7 @@
   <div class="row facet"><div class="col-md-12">@facets("Regionen", Application.NWBIB_SPATIAL_FIELD, nwbibspatial)</div></div>
   <div class="row facet"><div class="col-md-12">@facets("Orte", Application.COVERAGE_FIELD, raw.split(":").last)</div></div>
   <div class="row facet"><div class="col-md-12">@facets("Sachgebiete", Application.NWBIB_SUBJECT_FIELD, nwbibsubject)</div></div>
-  <div class="row facet"><div class="col-md-12">@facets("Schlagwörter", Application.SUBJECT_FIELD, if(subject.startsWith("http")) subject else "", "dropup")</div></div>
+  <div class="row facet"><div class="col-md-12">@defining(subject.split(",").filter(_.startsWith("http")).mkString(",")){ subjectUris => @facets("Schlagwörter", Application.SUBJECT_FIELD, if(!subjectUris.isEmpty) subjectUris else "", "dropup")}</div></div>
   <div class="row facet"><div class="col-md-12">@facets("Medientypen", Application.MEDIUM_FIELD, medium, "dropup")</div></div>
   <div class="row facet"><div class="col-md-12">@facets("Publikationstypen", Application.TYPE_FIELD, t, "dropup")</div></div>
   <div class="row facet"><div class="col-md-12">@facets("Bestand in Bibliotheken", Application.ITEM_FIELD, owner, "dropup")</div></div>
