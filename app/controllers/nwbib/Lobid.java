@@ -452,7 +452,8 @@ public class Lobid {
 	 */
 	public static String withoutUris(String queryValues) {
 		return Arrays.asList(queryValues.split(",")).stream()
-				.filter(s -> !s.startsWith("http://")).collect(Collectors.joining(","));
+				.filter(s -> !s.startsWith("http://") && !s.matches("AND|OR"))
+				.collect(Collectors.joining(","));
 	}
 
 	/**
