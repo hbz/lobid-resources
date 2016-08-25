@@ -14,6 +14,7 @@ GET    /search                controllers.nwbib.Application.search(q?="", person
 GET    /subject               controllers.nwbib.Application.subject(q?="", callback?="", t?="")
 GET    /register              controllers.nwbib.Application.register(t?="")
 GET    /classification        controllers.nwbib.Application.classification(t?="")
+GET    /journals              controllers.nwbib.Application.journals()
 GET    /facets                controllers.nwbib.Application.facets(q,person?="", name?="", subject?="", id?="", publisher?="", issued?="", medium ?= "", nwbibspatial ?= "", nwbibsubject ?= "", from:Int,size:Int,owner,t,field,sort,set?="", location?="", word?="", corporation?="", raw?="")
 
 GET    /stars                 controllers.nwbib.Application.showStars(format?="", ids?="")

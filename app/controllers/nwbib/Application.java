@@ -3,6 +3,8 @@
 package controllers.nwbib;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.text.Collator;
@@ -26,7 +28,9 @@ import java.util.stream.StreamSupport;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.common.base.Charsets;
 import org.elasticsearch.common.geo.GeoPoint;
+import org.elasticsearch.common.io.Streams;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.collect.ImmutableMap;
@@ -34,6 +38,7 @@ import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 
 import play.Logger;
+import play.Play;
 import play.cache.Cache;
 import play.cache.Cached;
 import play.data.Form;
@@ -313,13 +318,38 @@ public class Application extends Controller {
 			if (response == null) {
 				Logger.error("Failed to get data for register type: " + t);
 				flashError();
-				return internalServerError(browse_register.render(null, t));
+				return internalServerError(browse_register.render(null, t, ""));
 			}
 			JsonNode sorted = Classification.sorted(response);
-			result = ok(browse_register.render(sorted.toString(), t));
+			String placeholder = "Register zur " + t + " filtern";
+			result = ok(browse_register.render(sorted.toString(), t, placeholder));
 		}
 		Cache.set("result." + t, result, ONE_DAY);
 		return result;
+	}
+
+	/**
+	 * @return A list of nwbib journals
+	 * @throws IOException If reading the journals list data fails
+	 */
+	@Cached(key = "journals", duration = ONE_DAY)
+	public static Result journals() throws IOException {
+		try (InputStream stream = Play.application().classloader()
+				.getResourceAsStream("nwbib-journals.csv")) {
+			String csv = new String(Streams.copyToByteArray(stream), Charsets.UTF_8);
+			List<String> lines = Arrays.asList(csv.split("\n"));
+			List<HashMap<String, String>> maps = lines.stream()
+					.filter(line -> line.split(",").length == 2).map(line -> {
+						HashMap<String, String> map = new HashMap<>();
+						String[] strings = line.replace("\"", "").split(",");
+						map.put("label", strings[0]);
+						map.put("value", strings[1]);
+						return map;
+					}).collect(Collectors.toList());
+			String journals = Json.toJson(maps).toString();
+			return ok(browse_register.render(journals, "Zeitschriften",
+					"Zeitschriftenliste filtern"));
+		}
 	}
 
 	/**
@@ -338,21 +368,24 @@ public class Application extends Controller {
 			if (response == null) {
 				Logger.error("Failed to get data for classification type: " + t);
 				flashError();
-				return internalServerError(browse_classification.render(null, null, t));
+				return internalServerError(
+						browse_classification.render(null, null, t, ""));
 			}
-			result = classificationResult(response, t);
+			String placeholder = t + " filtern";
+			result = classificationResult(response, t, placeholder);
 		}
 		Cache.set("classification." + t, result, ONE_DAY);
 		return result;
 	}
 
-	private static Result classificationResult(SearchResponse response,
-			String t) {
+	private static Result classificationResult(SearchResponse response, String t,
+			String placeholder) {
 		List<JsonNode> topClasses = new ArrayList<>();
 		Map<String, List<JsonNode>> subClasses = new HashMap<>();
 		Classification.buildHierarchy(response, topClasses, subClasses);
 		String topClassesJson = Json.toJson(topClasses).toString();
-		return ok(browse_classification.render(topClassesJson, subClasses, t));
+		return ok(browse_classification.render(topClassesJson, subClasses, t,
+				placeholder));
 	}
 
 	private static Promise<Result> okPromise(final String q, final String person,
