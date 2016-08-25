@@ -371,7 +371,8 @@ public class Lobid {
 						.setQueryParameter("nwbibspatial", nwbibspatial)//
 						.setQueryParameter("nwbibsubject", nwbibsubject)//
 						.setQueryParameter("location", locationPolygon(location))//
-						.setQueryParameter("issued", issued);
+						.setQueryParameter("issued", issued)//
+						.setQueryParameter("t", t);
 		if (!q.isEmpty())
 			request = request.setQueryParameter("word", preprocess(q));
 		else if (!word.isEmpty())
@@ -381,8 +382,6 @@ public class Lobid {
 		else
 			request = request.setQueryParameter("set",
 					Application.CONFIG.getString("nwbib.set"));
-		if (!field.equals(Application.TYPE_FIELD))
-			request = request.setQueryParameter("t", t);
 		if (!field.equals(Application.ITEM_FIELD))
 			request = request.setQueryParameter("owner", owner);
 		if (!raw.isEmpty()

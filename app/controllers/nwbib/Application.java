@@ -531,7 +531,7 @@ public class Application extends Controller {
 			String mediumQuery = !field.equals(MEDIUM_FIELD) //
 					? medium : queryParam(medium, term);
 			String typeQuery = !field.equals(TYPE_FIELD) //
-					? t : withoutAndOperator(queryParam(t, term));
+					? t : queryParam(t, term);
 			String ownerQuery = !field.equals(ITEM_FIELD) //
 					? owner : withoutAndOperator(queryParam(owner, term));
 			String nwbibsubjectQuery = !field.equals(NWBIB_SUBJECT_FIELD) //
@@ -580,8 +580,7 @@ public class Application extends Controller {
 							"facets-labels.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s",
 							field, raw, q, person, name, id, publisher, set, word,
 							corporation, subject, issued, medium, nwbibspatial, nwbibsubject,
-							raw, field.equals(ITEM_FIELD) ? "" : owner,
-							field.equals(TYPE_FIELD) ? "" : t, location);
+							raw, field.equals(ITEM_FIELD) ? "" : owner, t, location);
 
 					@SuppressWarnings("unchecked")
 					List<Pair<JsonNode, String>> labelledFacets =
