@@ -13,7 +13,7 @@
         @for(json <- classes.getOrElse(Seq())){
             @defining((json\"value").as[String]) { value =>
             <li>
-                <a href="@if(t=="Zeitschriften"){@value}else{if(t=="Raumsystematik"){@nwbib.routes.Application.search(nwbibspatial=value)}else{@nwbib.routes.Application.search(nwbibsubject=value)}}">
+                <a href="@if(t=="Zeitschriften"){@value}else{@if(t=="Raumsystematik"){@nwbib.routes.Application.search(nwbibspatial=value)}else{@nwbib.routes.Application.search(nwbibsubject=value)}}">
                     @((json\"label").as[String])
                 </a>
                 @if(subs != null && subs.get(value) != null){
