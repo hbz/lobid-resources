@@ -3,7 +3,6 @@
 package tests;
 
 import static org.fest.assertions.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static play.test.Helpers.running;
 import static play.test.Helpers.testServer;
@@ -23,13 +22,12 @@ import play.libs.F.Promise;
 import play.mvc.Http;
 import play.test.Helpers;
 import play.twirl.api.Content;
-import views.ReverseGeoLookup;
 
 /**
  * See http://www.playframework.com/documentation/2.3.x/JavaFunctionalTest
  */
 @SuppressWarnings("javadoc")
-public class IntegrationTest {
+public class InternalIntegrationTest {
 
 	@Before
 	public void setUp() throws Exception {
@@ -109,14 +107,6 @@ public class IntegrationTest {
 							"http://lobid.org/resource/HT001387709", "")
 					.get(Lobid.API_TIMEOUT);
 			assertThat(hits).isGreaterThan(0);
-		});
-	}
-
-	@Test
-	public void reverseGeoLookup() {
-		running(testServer(3333), () -> {
-			assertEquals("Menden (Sauerland)",
-					ReverseGeoLookup.of("51.433333391323686,7.800000105053186"));
 		});
 	}
 
