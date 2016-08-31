@@ -533,7 +533,7 @@ public class Application extends Controller {
 			String typeQuery = !field.equals(TYPE_FIELD) //
 					? t : queryParam(t, term);
 			String ownerQuery = !field.equals(ITEM_FIELD) //
-					? owner : queryParam(owner, term);
+					? owner : withoutAndOperator(queryParam(owner, term));
 			String nwbibsubjectQuery = !field.equals(NWBIB_SUBJECT_FIELD) //
 					? nwbibsubject : queryParam(nwbibsubject, term);
 			String nwbibspatialQuery = !field.equals(NWBIB_SPATIAL_FIELD) //
@@ -579,21 +579,8 @@ public class Application extends Controller {
 					String labelKey = String.format(
 							"facets-labels.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s",
 							field, raw, q, person, name, id, publisher, set, word,
-							corporation,
-							/*
-							 * facet values, include in key only if not the current facet,
-							 * except literal subjects, which can be combined with facet:
-							 */
-							field.equals(SUBJECT_FIELD) && subject.startsWith("http") ? ""
-									: subject,
-							field.equals(ISSUED_FIELD) ? "" : issued,
-							field.equals(MEDIUM_FIELD) ? "" : medium,
-							field.equals(NWBIB_SPATIAL_FIELD) ? "" : nwbibspatial,
-							field.equals(NWBIB_SUBJECT_FIELD) ? "" : nwbibsubject,
-							field.equals(COVERAGE_FIELD) ? "" : raw,
-							field.equals(ISSUED_FIELD) ? "" : owner,
-							field.equals(TYPE_FIELD) ? "" : t,
-							field.equals(SUBJECT_LOCATION_FIELD) ? "" : location);
+							corporation, subject, issued, medium, nwbibspatial, nwbibsubject,
+							raw, field.equals(ITEM_FIELD) ? "" : owner, t, location);
 
 					@SuppressWarnings("unchecked")
 					List<Pair<JsonNode, String>> labelledFacets =
@@ -635,11 +622,16 @@ public class Application extends Controller {
 	private static String queryParam(String currentParam, String term) {
 		if (currentParam.isEmpty())
 			return term;
-		else if (contains(currentParam, term))
-			return currentParam.replace(term, "").replaceAll("\\A,|,\\z", "")
-					.replaceAll(",+", ",");
-		else
-			return currentParam + "," + term;
+		else if (contains(currentParam, term)) {
+			String termRemoved = currentParam.replace(term, "")
+					.replaceAll("\\A,|,?\\z", "").replaceAll(",+", ",");
+			return termRemoved.equals("AND") ? "" : termRemoved;
+		} else
+			return withoutAndOperator(currentParam) + "," + term + ",AND";
+	}
+
+	private static String withoutAndOperator(String currentParam) {
+		return currentParam.replace(",AND", "");
 	}
 
 	/**
@@ -651,14 +643,15 @@ public class Application extends Controller {
 		String rawPrefix =
 				Lobid.escapeUri(COVERAGE_FIELD.replace(".raw", "")) + ":";
 		if (currentParam.isEmpty()) {
-			return rawPrefix + quotedEscaped(term);
+			return rawPrefix + "(+" + quotedEscaped(term) + ")";
 		} else if (rawContains(currentParam, quotedEscaped(term))) {
-			String removedTerm =
-					currentParam.replace(rawPrefix, "").replace(quotedEscaped(term), "")
-							.replaceAll("\\A\\+|\\+\\z", "").replaceAll("\\++", "+");
-			return removedTerm.trim().isEmpty() ? "" : rawPrefix + removedTerm;
+			String removedTerm = currentParam.replace(rawPrefix, "")
+					.replace("+" + quotedEscaped(term), "")
+					.replaceAll("\\A\\+|\\+\\z", "").replaceAll("\\++", "+");
+			return removedTerm.trim().equals("()") ? "" : rawPrefix + removedTerm;
 		} else
-			return currentParam + "+" + quotedEscaped(term);
+			return currentParam.substring(0, currentParam.length() - 1) + "+"
+					+ quotedEscaped(term) + ")";
 	}
 
 	private static String quotedEscaped(String term) {
@@ -668,6 +661,8 @@ public class Application extends Controller {
 	private static boolean rawContains(String raw, String term) {
 		String[] split = raw.split(":");
 		String terms = split[split.length - 1];
+		terms =
+				terms.length() >= 2 ? terms.substring(1, terms.length() - 1) : terms;
 		return Arrays.asList(terms.split("\\+")).contains(term);
 	}
 

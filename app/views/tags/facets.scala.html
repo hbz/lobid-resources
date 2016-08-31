@@ -30,7 +30,9 @@
       </script>
       <h5 id="@field.hashCode.abs-header">
         @facetToggle("facets-ul-" + field.hashCode.abs.toString){@facet}
-        @facetLabel(current, current.split("[,+]").size + " ausgewählt")
+        <span id="@field.hashCode.abs-label">
+          @facetLabel(current, "ausgewählt", field.hashCode.abs + "-count", current.split("[,+]").size.toString)
+        </span>
       </h5>
       <ul class="facet" id="facets-ul-@field.hashCode.abs">
           <script>
@@ -83,6 +85,12 @@
                    ul.append("</div>");
                  }
                }
+               var active = $("#facets-ul-@field.hashCode.abs li.active");
+               if(active.length == 0) {
+                 $("#@field.hashCode.abs-label").hide();
+               } else {
+                 $("#@field.hashCode.abs-count").text(active.length);
+               }
               $("#facets-loading-@field.hashCode.abs").remove();
               @if(field==Application.ISSUED_FIELD){ @issued_facet(issued) }
             },
@@ -96,16 +104,20 @@
   </div>
 }
 
-@facetLabel(current: String, label: String) = {
+@facetLabel(current: String, label: String, activeCountId: String = "", currentCount: String = "") = {
   @if(!current.isEmpty){
-    <span class="badge" id="facet-filter">@label</span> 
-     <a href="@nwbib.routes.Application.search(q,person,name,if (subject==current) "" else subject,id,publisher,if(issued==current) "" else issued,if (medium==current) "" else medium,if(nwbibspatial==current) "" else nwbibspatial,if(nwbibsubject==current) "" else nwbibsubject,from,size,if (owner==current) "" else owner,if (t==current) "" else t,sortParam,set=set,location=(if (location==current) "" else location),word=word,corporation=corporation,raw=(if (raw.split(":").last==current) "" else raw)).toString" title="Filter entfernen"><span class="octicon octicon-x"></span></a> 
+     <span class="badge" id="facet-filter"><span id="@activeCountId">@currentCount</span> @label</span>
+     <a href="@nwbib.routes.Application.search(q,person,name,if (urisOnly(subject)==current) "" else subject,id,publisher,if(issued==current) "" else issued,if (medium==current) "" else medium,if(nwbibspatial==current) "" else nwbibspatial,if(nwbibsubject==current) "" else nwbibsubject,from,size,if (owner==current) "" else owner,if (t==current) "" else t,sortParam,set=set,location=(if (location==current) "" else location),word=word,corporation=corporation,raw=(if (raw.split(":").last==current) "" else raw)).toString" title="Filter entfernen"><span class="octicon octicon-x"></span></a> 
    }
 }
 
 @locationLabel(loc:String)=@{
   val isLatLon = loc.contains(",")
   if(isLatLon) {views.ReverseGeoLookup.of(loc)} else {loc}
+}
+
+@urisOnly(s: String)=@{
+	s.split(",").filter(_.startsWith("http")).mkString(",")
 }
 
 <div class="col-md-3 hide-in-print" style="font-size: small">
@@ -126,7 +138,7 @@
   <div class="row facet"><div class="col-md-12">@facets("Regionen", Application.NWBIB_SPATIAL_FIELD, nwbibspatial)</div></div>
   <div class="row facet"><div class="col-md-12">@facets("Orte", Application.COVERAGE_FIELD, raw.split(":").last)</div></div>
   <div class="row facet"><div class="col-md-12">@facets("Sachgebiete", Application.NWBIB_SUBJECT_FIELD, nwbibsubject)</div></div>
-  <div class="row facet"><div class="col-md-12">@facets("Schlagwörter", Application.SUBJECT_FIELD, if(subject.startsWith("http")) subject else "", "dropup")</div></div>
+  <div class="row facet"><div class="col-md-12">@facets("Schlagwörter", Application.SUBJECT_FIELD, if(!urisOnly(subject).isEmpty) urisOnly(subject) else "", "dropup")</div></div>
   <div class="row facet"><div class="col-md-12">@facets("Medientypen", Application.MEDIUM_FIELD, medium, "dropup")</div></div>
   <div class="row facet"><div class="col-md-12">@facets("Publikationstypen", Application.TYPE_FIELD, t, "dropup")</div></div>
   <div class="row facet"><div class="col-md-12">@facets("Bestand in Bibliotheken", Application.ITEM_FIELD, owner, "dropup")</div></div>
