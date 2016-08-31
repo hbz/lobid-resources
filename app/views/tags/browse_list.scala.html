@@ -1,6 +1,6 @@
 @* Copyright 2014 Fabian Steeg, hbz. Licensed under the GPLv2 *@
 
-@(tops: String, subs: Map[String,List[com.fasterxml.jackson.databind.JsonNode]], t: String)
+@(tops: String, subs: Map[String,List[com.fasterxml.jackson.databind.JsonNode]], t: String, placeholder: String)
 
 @import play.api.libs.json.Json
 @import play.api.libs.json.JsValue
@@ -13,7 +13,7 @@
         @for(json <- classes.getOrElse(Seq())){
             @defining((json\"value").as[String]) { value =>
             <li>
-                <a href="@if(t=="Raumsystematik"){@nwbib.routes.Application.search(nwbibspatial=value)}else{@nwbib.routes.Application.search(nwbibsubject=value)}">
+                <a href="@if(t=="Zeitschriften"){@value}else{@if(t=="Raumsystematik"){@nwbib.routes.Application.search(nwbibspatial=value)}else{@nwbib.routes.Application.search(nwbibsubject=value)}}">
                     @((json\"label").as[String])
                 </a>
                 @if(subs != null && subs.get(value) != null){
@@ -27,9 +27,12 @@
 }
 
 <dl>
-    <dt></dt><dd><input type="text" id="nwbibQuery" class="form-control" onchange="if(this.value!=''){$('#expandAll').click()}else{$('#collapseAll').click()};"/></dd>
+    <dt></dt><dd><input placeholder="@placeholder" type="text" id="nwbibQuery" class="form-control" onchange="if(this.value!=''){$('#expandAll').click()}else{$('#collapseAll').click()};"/></dd>
     @if(subs!=null && !subs.values.isEmpty){
     <dt></dt><dd><a href="#" id="collapseAll">alle einklappen</a> | <a href="#" id="expandAll">alle ausklappen</a></dd>
+    }
+    @if(t=="Zeitschriften"){
+    <p style="margin-top:10px">In der Nordrhein-Westfälischen Bibliographie laufend ausgewertete Zeitschriften:</p>
     }
 </dl>
 @if(flash.get("error")!=null){
