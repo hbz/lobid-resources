@@ -874,6 +874,14 @@
 			<data source="@contributorLabel"/>
 			<data source="@nameOfContributingCorporateBody"/>
 		</choose>
+		<entity name="http://purl.org/dc/terms/contributor" sameEntity="true">
+			<data source="@contributorNameOrId" name="http://d-nb.info/standards/elementset/gnd#preferredName">
+				<regexp match="^[^http].*"/>
+			</data>
+			<data source="@contributorNameOrId" name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type">
+				<regexp match="^[^http].*" format="http://d-nb.info/standards/elementset/gnd#Person"/>
+			</data>
+		</entity>
 		<!-- ####################### -->
 		<!-- ################ koerperschaften -->
 		<!-- ####################### -->
