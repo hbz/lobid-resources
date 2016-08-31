@@ -60,8 +60,44 @@
 				</concat>
 			</combine>
 		</macro>
+		<macro name="subjectOrder">
+			<combine name="@subjectOrder" value="${a}">
+				<concat delimiter=", " name="a">
+					<choose name="a" flushWith="$[field]-[-12].9|record">
+						<data source="$[field]-[-12].9">
+							<regexp match="\(DE-588\)(.*)" format="http://d-nb.info/gnd/${1}"/>
+						</data>
+						<concat delimiter=", " name="ignored" flushWith="$[field]-[-12].9|record">
+							<data source="$[field]-[-12].[acfghkpstkz-]"/>
+						</concat>
+					</choose>
+				</concat>
+			</combine>
+		</macro>
+		<macro name="dctSubject">
+			<combine name="@subjectIdOrElseLiteral" value="${a}">
+				<choose name="a" flushWith="$[field]-[-12].9|record">
+					<data source="$[field]-[-12].9">
+						<regexp match="\(DE-588\)(.*)" format="http://d-nb.info/gnd/${1}"/>
+					</data>
+					<data source="$[field]-[-12].[acfghkpstkz-]">
+						<regexp match="(.*)" format="${1}"/>
+					</data>
+				</choose>
+			</combine>
+		</macro>
 	</macros>
 	<rules>
+		<data source="@subjectIdOrElseLiteral" name="@subjectId">
+			<regexp match="http.*"/>
+			<sanitizeUrl></sanitizeUrl>
+		</data>
+		<data source="@subjectId" name="http://purl.org/dc/terms/subject"/>
+		<entity name="http://purl.org/dc/terms/subject">
+			<data source="@subjectIdOrElseLiteral" name="http://d-nb.info/standards/elementset/gnd#preferredName">
+				<regexp match="^[^http].*"/>
+			</data>
+		</entity>
 		<!-- ####################### -->
 		<!-- ####### Get subject uri of each record -->
 		<!-- ####################### -->
@@ -1312,9 +1348,6 @@
 				source="@subjectLinks|@creatorPersonId|@creatorCorporateBodyId|@contributorPersonId|@contributorCorporateBodyId|@subjectTopic|@subjectMain"/>
 			<data source="@id" name="subject"/>
 		</combine>
-		<data source="@subjectLinks" name="http://purl.org/dc/terms/subject">
-			<sanitizeUrl></sanitizeUrl>
-		</data>
 		<!-- other subjects -->
 		<data source="71[01][-abcdfz][123].a" name="http://purl.org/lobid/lv#subjectLabel">
 			<split delimiter=" / "/>
@@ -1386,126 +1419,27 @@
 		<entity name="~rdf:list">
 			<data name="$[ns-lobid-vocab]subjectOrder" source="@subjectOrder"/>
 		</entity>
-		<combine name="@subjectOrder" value="${a}">
-			<concat delimiter=", " name="a">
-				<choose name="a" flushWith="902-[-12].9|record">
-					<data source="902-[-12].9">
-						<regexp match="\(DE-588\)(.*)" format="http://d-nb.info/gnd/${1}"/>
-					</data>
-					<concat delimiter=", " name="ignored" flushWith="902-[-12].9|record">
-						<data source="902-[-12].[acfghkpstkz-]"/>
-					</concat>
-				</choose>
-			</concat>
-		</combine>
-		<combine name="@subjectOrder" value="${a}">
-			<concat delimiter=", " name="a">
-				<choose name="a" flushWith="907-[-12].9|record">
-					<data source="907-[-12].9">
-						<regexp match="\(DE-588\)(.*)" format="http://d-nb.info/gnd/${1}"/>
-					</data>
-					<concat delimiter=", " name="ignored" flushWith="907-[-12].9|record">
-						<data source="907-[-12].[acfghkpstkz-]"/>
-					</concat>
-				</choose>
-			</concat>
-		</combine>
-		<combine name="@subjectOrder" value="${a}">
-			<concat delimiter=", " name="a">
-				<choose name="a" flushWith="912-[-12]|record">
-					<data source="912-[-12].9">
-						<regexp match="\(DE-588\)(.*)" format="http://d-nb.info/gnd/${1}"/>
-					</data>
-					<concat delimiter=", " name="ignored" flushWith="912-[-12].9|record">
-						<data source="912-[-12].[acfghkpstkz-]"/>
-					</concat>
-				</choose>
-			</concat>
-		</combine>
-		<combine name="@subjectOrder" value="${a}">
-			<concat delimiter=", " name="a">
-				<choose name="a" flushWith="917-[-12]|record">
-					<data source="917-[-12].9">
-						<regexp match="\(DE-588\)(.*)" format="http://d-nb.info/gnd/${1}"/>
-					</data>
-					<concat delimiter=", " name="ignored" flushWith="917-[-12].9|record">
-						<data source="917-[-12].[acfghkpstkz-]"/>
-					</concat>
-				</choose>
-			</concat>
-		</combine>
-		<combine name="@subjectOrder" value="${a}">
-			<concat delimiter=", " name="a">
-				<choose name="a" flushWith="922-[-12]|923??|record">
-					<data source="922-[-12].9">
-						<regexp match="\(DE-588\)(.*)" format="http://d-nb.info/gnd/${1}"/>
-					</data>
-					<concat delimiter=", " name="ignored" flushWith="922-[-12].9|record">
-						<data source="922-[-12].[acfghkpstkz-]"/>
-					</concat>
-				</choose>
-			</concat>
-		</combine>
-		<combine name="@subjectOrder" value="${a}">
-			<concat delimiter=", " name="a">
-				<choose name="a" flushWith="927-[-12]|record">
-					<data source="927-[-12].9">
-						<regexp match="\(DE-588\)(.*)" format="http://d-nb.info/gnd/${1}"/>
-					</data>
-					<concat delimiter=", " name="ignored" flushWith="927-[-12].9|record">
-						<data source="927-[-12].[acfghkpstkz-]"/>
-					</concat>
-				</choose>
-			</concat>
-		</combine>
-		<combine name="@subjectOrder" value="${a}">
-			<concat delimiter=", " name="a">
-				<choose name="a" flushWith="932-[-12]|record">
-					<data source="932-[-12].9">
-						<regexp match="\(DE-588\)(.*)" format="http://d-nb.info/gnd/${1}"/>
-					</data>
-					<concat delimiter=", " name="ignored" flushWith="932-[-12].9|record">
-						<data source="932-[-12].[acfghkpstkz-]"/>
-					</concat>
-				</choose>
-			</concat>
-		</combine>
-		<combine name="@subjectOrder" value="${a}">
-			<concat delimiter=", " name="a">
-				<choose name="a" flushWith="937-[-12]|record">
-					<data source="937-[-12].9">
-						<regexp match="\(DE-588\)(.*)" format="http://d-nb.info/gnd/${1}"/>
-					</data>
-					<concat delimiter=", " name="ignored" flushWith="937-[-12].9|record">
-						<data source="937-[-12].[acfghkpstkz-]"/>
-					</concat>
-				</choose>
-			</concat>
-		</combine>
-		<combine name="@subjectOrder" value="${a}">
-			<concat delimiter=", " name="a">
-				<choose name="a" flushWith="942-[-12]|record">
-					<data source="942-[-12].9">
-						<regexp match="\(DE-588\)(.*)" format="http://d-nb.info/gnd/${1}"/>
-					</data>
-					<concat delimiter=", " name="ignored" flushWith="942-[-12].9|record">
-						<data source="942-[-12].[acfghkpstkz-]"/>
-					</concat>
-				</choose>
-			</concat>
-		</combine>
-		<combine name="@subjectOrder" value="${a}">
-			<concat delimiter=", " name="a">
-				<choose name="a" flushWith="947-[-12]|record">
-					<data source="947-[-12].9">
-						<regexp match="\(DE-588\)(.*)" format="http://d-nb.info/gnd/${1}"/>
-					</data>
-					<concat delimiter=", " name="ignored" flushWith="947-[-12].9|record">
-						<data source="947-[-12].[acfghkpstkz-]"/>
-					</concat>
-				</choose>
-			</concat>
-		</combine>
+		<call-macro name="subjectOrder" field="902"/>
+		<call-macro name="subjectOrder" field="907"/>
+		<call-macro name="subjectOrder" field="912"/>
+		<call-macro name="subjectOrder" field="917"/>
+		<call-macro name="subjectOrder" field="922"/>
+		<call-macro name="subjectOrder" field="927"/>
+		<call-macro name="subjectOrder" field="932"/>
+		<call-macro name="subjectOrder" field="937"/>
+		<call-macro name="subjectOrder" field="942"/>
+		<call-macro name="subjectOrder" field="947"/>
+		<!-- subjects as an json object -->
+		<call-macro name="dctSubject" field="902"/>
+		<call-macro name="dctSubject" field="907"/>
+		<call-macro name="dctSubject" field="912"/>
+		<call-macro name="dctSubject" field="917"/>
+		<call-macro name="dctSubject" field="922"/>
+		<call-macro name="dctSubject" field="927"/>
+		<call-macro name="dctSubject" field="932"/>
+		<call-macro name="dctSubject" field="937"/>
+		<call-macro name="dctSubject" field="942"/>
+		<call-macro name="dctSubject" field="947"/>
 		<!-- ####################### -->
 		<!-- ##########fulltext, toc, seeAlso -->
 		<!-- ####################### -->
