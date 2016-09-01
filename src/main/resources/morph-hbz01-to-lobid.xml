@@ -97,6 +97,21 @@
 			<data source="@subjectIdOrElseLiteral" name="http://d-nb.info/standards/elementset/gnd#preferredName">
 				<regexp match="^[^http].*"/>
 			</data>
+			
+			   <combine name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" value="${a}"
+     >
+     <choose name="a" flushWith="$[field]-[-12].9|record">
+      <data source="@subjectPerson">
+        <regexp match=".*"/>
+      </data>
+      </choose>
+    </combine>
+			
+			
+			   <combine name="@preferredNameForTheSubjectHeading" value="${a}" sameEntity="true">
+      <data source="9[01234][27]-[-12].[szf]"/>
+      <data source="@preferredName" name="a"/>
+    </combine>
 		</entity>
 		<!-- ####################### -->
 		<!-- ####### Get subject uri of each record -->
@@ -926,6 +941,7 @@
 				<data source="@nameOfCreatingCorporateBodyK"/>
 			</choose>
 		</combine>
+		<data source="2?[02468][-a][12].g" name="@nameOfCreatingCorporateBodyG"/>
 		<!-- only contributor, not creator -->
 		<data source="2?[02468][bcfep][12].k" name="@nameOfContributingCorporateBodyK">
 			<replace pattern="&gt;&gt;" with=""/>
@@ -1273,13 +1289,22 @@
 			</concat>
 		</combine>
 		<!-- START contributor/creator -->
-		<combine name="$[ns-gnd]preferredNameForThePerson" value="${a}" sameEntity="true"
-			reset="true">
+		<combine name="@preferredNameForThePerson" value="${a}" sameEntity="true" reset="true">
 			<data source="@preferredName" name="a">
 				<replace pattern="&gt;&gt;" with=""/>
 				<replace pattern="&lt;&lt;" with=""/>
 			</data>
 			<data source="@creatorPersonId|@contributorPersonId"/>
+		</combine>
+		<data source="@preferredNameForThePerson" name="$[ns-gnd]preferredNameForThePerson"/>
+		<combine name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" value="http://d-nb.info/standards/elementset/gnd#Person">
+			<data source="@preferredNameForThePerson"/>
+		</combine>
+		<combine name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" value="http://d-nb.info/standards/elementset/gnd#Person"
+			flushWith="@preferredNameP">
+			<data source="@subjectPerson">
+				<regexp match=".*"/>
+			</data>
 		</combine>
 		<combine name="$[ns-gnd]preferredNameForTheCorporateBody" value="${a}"
 			flushWith="@creatorCorporateBodyId">
@@ -1317,10 +1342,14 @@
 		<combine name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" value="http://d-nb.info/standards/elementset/gnd#Work">
 			<data source="@preferredNameForTheWork"/>
 		</combine>
-		<combine name="$[ns-gnd]preferredNameForTheSubjectHeading" value="${a}"
-			sameEntity="true">
-			<data source="9[01234][27]-[-12].s"/>
+		<!-- default, generic type -->
+		<combine name="@preferredNameForTheSubjectHeading" value="${a}" sameEntity="true">
+			<data source="9[01234][27]-[-12].[szf]"/>
 			<data source="@preferredName" name="a"/>
+		</combine>
+		<data source="@preferredNameForTheSubjectHeading" name="$[ns-gnd]preferredNameForTheSubjectHeading"/>
+		<combine name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" value="http://d-nb.info/standards/elementset/gnd#SubjectHeading">
+			<data source="@preferredNameForTheSubjectHeading"/>
 		</combine>
 		<combine name="@preferredNameForThePlaceOrGeographicName" value="${a}"
 			sameEntity="true">
@@ -1328,10 +1357,14 @@
 			<data source="9[01234][27]-[-12].g"/>
 			<data source="@preferredNameConcatSubject" name="a"/>
 		</combine>
-		<data source="@preferredNameForThePlaceOrGeographicName" name="$[ns-gnd]preferredNameForThePlaceOrGeographicName"/>
-		<combine name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type"
-			value="http://d-nb.info/standards/elementset/gnd#TerritorialCorporateBodyOrAdministrativeUnit">
+		<data source="@preferredNameForThePlaceOrGeographicName|@nameOfCreatingCorporateBodyG"
+			name="$[ns-gnd]preferredNameForThePlaceOrGeographicName"/>
+		<combine name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" value="http://d-nb.info/standards/elementset/gnd#PlaceOrGeographicName">
 			<data source="@preferredNameForThePlaceOrGeographicName"/>
+		</combine>
+		<combine name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" value="http://d-nb.info/standards/elementset/gnd#PlaceOrGeographicName"
+			flushWith="@creatorCorporateBodyId|@contributorCorporateBodyId" sameEntity="true">
+			<data source="@nameOfCreatingCorporateBodyG"/>
 		</combine>
 		<combine name="$[ns-gnd]dateOfBirth" value="${a}" sameEntity="true">
 			<data source="@subjectLinks"/>
