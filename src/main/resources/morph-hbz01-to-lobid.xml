@@ -88,6 +88,9 @@
 					<data source="$[field]-[-12].g" name="a">
 						<constant value="http://d-nb.info/standards/elementset/gnd#PlaceOrGeographicName"/>
 					</data>
+					<data source="$[field]-[-12].k" name="a">
+						<constant value="http://d-nb.info/standards/elementset/gnd#CorporateBody"/>
+					</data>
 					<data source="$[field]-[-12].p" name="a">
 						<constant value="http://d-nb.info/standards/elementset/gnd#Person"/>
 					</data>
@@ -1305,13 +1308,12 @@
 			<data source="@creatorPersonId|@contributorPersonId"/>
 		</combine>
 		<data source="@preferredNameForThePerson" name="$[ns-gnd]preferredNameForThePerson"/>
-		<combine name="@rdfTypeFamily" value="http://d-nb.info/standards/elementset/gnd#Family"
+		<combine name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" value="http://d-nb.info/standards/elementset/gnd#Family"
 			flushWith="@subjectLinks">
 			<data source="9[01234][27]-[-12].c">
 				<regexp match="Familie"/>
 			</data>
 		</combine>
-		<data source="@rdfTypeFamily" name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type"/>
 		<combine name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" value="http://d-nb.info/standards/elementset/gnd#Person">
 			<data source="@preferredNameForThePerson"/>
 		</combine>
@@ -1374,13 +1376,6 @@
 		</combine>
 		<data source="@preferredNameForThePlaceOrGeographicName|@nameOfCreatingCorporateBodyG"
 			name="$[ns-gnd]preferredNameForThePlaceOrGeographicName"/>
-		<combine name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" value="http://d-nb.info/standards/elementset/gnd#PlaceOrGeographicName">
-			<data source="@preferredNameForThePlaceOrGeographicName"/>
-		</combine>
-		<combine name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" value="http://d-nb.info/standards/elementset/gnd#PlaceOrGeographicName"
-			flushWith="@creatorCorporateBodyId|@contributorCorporateBodyId" sameEntity="true">
-			<data source="@nameOfCreatingCorporateBodyG"/>
-		</combine>
 		<combine name="$[ns-gnd]dateOfBirth" value="${a}" sameEntity="true">
 			<data source="@subjectLinks"/>
 			<data source="@preferredNameP"/>
@@ -1395,10 +1390,19 @@
 				<regexp match="[0-9]+-([0-9]+)" format="${1}"/>
 			</data>
 		</combine>
-		<combine name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" value="http://d-nb.info/standards/elementset/gnd#ConferenceOrEvent"
-			flushWith="@subjectLinks|@creatorCorporateBodyId|@contributorCorporateBodyId"
-			sameEntity="true">
-			<data source="@preferredNameConcatEventEDC"/>
+		<combine name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" value="${a}"
+			flushWith="@subjectLinks|@creatorCorporateBodyId|@contributorCorporateBodyId" sameEntity="true" >
+			<choose name="a" flushWith="@subjectLinks|@creatorCorporateBodyId|@contributorCorporateBodyId" sameEntity="true" >
+				<data source="@preferredNameConcatEventEDC" >
+					<constant value="$[ns-gnd]ConferenceOrEvent"/>
+				</data>
+				<data source="@preferredNameForThePlaceOrGeographicName|@nameOfCreatingCorporateBodyG">
+					<constant value="$[ns-gnd]PlaceOrGeographicName"/>
+				</data>
+				<data source="9[01234][27]-[-12].k|@creatorCorporateBodyId|@contributorCorporateBodyId" >
+					<constant value="$[ns-gnd]CorporateBody"/>
+				</data>
+			</choose>
 		</combine>
 		<!-- /subjects -->
 		<choose name="@preferredName"
@@ -1415,10 +1419,6 @@
 			<replace pattern="&gt;&gt;" with=""/>
 			<replace pattern="&lt;&lt;" with=""/>
 		</data>
-		<combine name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" value="http://d-nb.info/standards/elementset/gnd#CorporateBody"
-			flushWith="@creatorCorporateBodyId|@contributorCorporateBodyId" sameEntity="true">
-			<data source="@nameOfCreatingCorporateBody|@nameOfContributingCorporateBody"/>
-		</combine>
 		<!-- END contributor/creator -->
 		<!-- ########### -->
 		<!-- # set subject uri of resource anew -->
