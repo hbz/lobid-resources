@@ -108,7 +108,7 @@
 		<entity name="http://purl.org/dc/terms/subject" flushWith="@rdfTypeSubject"
 			reset="true" sameEntity="true">
 			<data source="@rdfTypeSubject" name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type"/>
-			<combine name="http://d-nb.info/standards/elementset/gnd#preferredName" value="${a}"
+			<combine name="$[ns-gnd]preferredName" value="${a}"
 				reset="true" sameEntity="true">
 				<data source="@rdfTypeSubject">
 					<regexp match="^http"/>
@@ -899,7 +899,7 @@
 			<data source="@nameOfContributingCorporateBody"/>
 		</choose>
 		<entity name="http://purl.org/dc/terms/contributor" sameEntity="true">
-			<data source="@contributorNameOrId" name="http://d-nb.info/standards/elementset/gnd#preferredName">
+			<data source="@contributorNameOrId" name="$[ns-gnd]preferredName">
 				<regexp match="^[^http].*"/>
 			</data>
 			<data source="@contributorNameOrId" name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type">
@@ -907,7 +907,7 @@
 			</data>
 		</entity>
 		<entity name="http://purl.org/dc/terms/contributor" sameEntity="true">
-			<data source="2?[02468]-1.a" name="http://d-nb.info/standards/elementset/gnd#preferredName"/>
+			<data source="2?[02468]-1.a" name="$[ns-gnd]preferredName"/>
 			<data source="2?[02468]-1.a" name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type">
 				<regexp match=".*" format="http://d-nb.info/standards/elementset/gnd#CorporateBody"/>
 			</data>
