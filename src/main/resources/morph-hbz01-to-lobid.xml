@@ -107,9 +107,10 @@
 	<rules>
 		<entity name="http://purl.org/dc/terms/subject" flushWith="@rdfTypeSubject"
 			reset="true" sameEntity="true">
-			<data source="@rdfTypeSubject" name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type"/>
-			<combine name="$[ns-gnd]preferredName" value="${a}"
-				reset="true" sameEntity="true">
+			<data source="@rdfTypeSubject" name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type">
+				<regexp match="^(http.*)"/>
+			</data>
+			<combine name="$[ns-gnd]preferredName" value="${a}" reset="true" sameEntity="true">
 				<data source="@rdfTypeSubject">
 					<regexp match="^http"/>
 				</data>
@@ -121,7 +122,6 @@
 		<data source="9[01234][27]-[-12].9" name="http://purl.org/dc/terms/subject">
 			<regexp match="\(DE-588\)(.*)" format="http://d-nb.info/gnd/${1}"/>
 		</data>
-
 		<!-- ####################### -->
 		<!-- ####### Get subject uri of each record -->
 		<!-- ####################### -->
@@ -1390,15 +1390,17 @@
 			</data>
 		</combine>
 		<combine name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" value="${a}"
-			flushWith="@subjectLinks|@creatorCorporateBodyId|@contributorCorporateBodyId" sameEntity="true" >
-			<choose name="a" flushWith="@subjectLinks|@creatorCorporateBodyId|@contributorCorporateBodyId" sameEntity="true" >
-				<data source="@preferredNameConcatEventEDC" >
+			flushWith="@subjectLinks|@creatorCorporateBodyId|@contributorCorporateBodyId"
+			sameEntity="true">
+			<choose name="a" flushWith="@subjectLinks|@creatorCorporateBodyId|@contributorCorporateBodyId"
+				sameEntity="true">
+				<data source="@preferredNameConcatEventEDC">
 					<constant value="$[ns-gnd]ConferenceOrEvent"/>
 				</data>
 				<data source="@preferredNameForThePlaceOrGeographicName|@nameOfCreatingCorporateBodyG">
 					<constant value="$[ns-gnd]PlaceOrGeographicName"/>
 				</data>
-				<data source="9[01234][27]-[-12].k|@creatorCorporateBodyId|@contributorCorporateBodyId" >
+				<data source="9[01234][27]-[-12].k|@creatorCorporateBodyId|@contributorCorporateBodyId">
 					<constant value="$[ns-gnd]CorporateBody"/>
 				</data>
 			</choose>
@@ -1508,7 +1510,6 @@
 		<call-macro name="subjectOrder" field="937"/>
 		<call-macro name="subjectOrder" field="942"/>
 		<call-macro name="subjectOrder" field="947"/>
-
 		<call-macro name="dctSubject" field="902"/>
 		<call-macro name="dctSubject" field="907"/>
 		<call-macro name="dctSubject" field="912"/>
