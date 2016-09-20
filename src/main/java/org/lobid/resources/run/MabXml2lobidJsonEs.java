@@ -12,7 +12,7 @@ import org.culturegraph.mf.framework.ObjectReceiver;
 import org.culturegraph.mf.morph.Metamorph;
 import org.culturegraph.mf.stream.converter.xml.AlephMabXmlHandler;
 import org.culturegraph.mf.stream.converter.xml.XmlDecoder;
-import org.culturegraph.mf.stream.pipe.BatchLogger;
+import org.culturegraph.mf.stream.pipe.StreamBatchLogger;
 import org.culturegraph.mf.stream.pipe.ObjectBatchLogger;
 import org.culturegraph.mf.stream.pipe.StreamTee;
 import org.culturegraph.mf.stream.source.FileOpener;
@@ -78,7 +78,7 @@ public final class MabXml2lobidJsonEs {
 		esIndexer.setIndexAliasSuffix(indexAliasSuffix);
 		esIndexer.setUpdateNewestIndex(update);
 		esIndexer.onSetReceiver();
-		BatchLogger batchLogger = new BatchLogger();
+		StreamBatchLogger batchLogger = new StreamBatchLogger();
 		batchLogger.setBatchSize(100000);
 		ObjectBatchLogger<HashMap<String, String>> objectBatchLogger =
 				new ObjectBatchLogger<>();

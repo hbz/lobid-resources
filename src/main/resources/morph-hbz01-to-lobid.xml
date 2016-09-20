@@ -60,16 +60,15 @@
 				</concat>
 			</combine>
 		</macro>
+		<!-- prefer gnd subjects IDs to literals -->
 		<macro name="subjectOrder">
 			<combine name="@subjectOrder" value="${a}">
 				<concat delimiter=", " name="a">
-					<choose name="a" flushWith="$[field]-[-12].9|record">
+					<choose name="a" flushWith="$[field]-[-12]" sameEntity="true">
 						<data source="$[field]-[-12].9">
 							<regexp match="\(DE-588\)(.*)" format="http://d-nb.info/gnd/${1}"/>
 						</data>
-						<concat delimiter=", " name="ignored" flushWith="$[field]-[-12].9|record">
-							<data source="$[field]-[-12].[acfghkpstkz-]"/>
-						</concat>
+						<data source="$[field]-[-12].[acfghkpstkz-]"/>
 					</choose>
 				</concat>
 			</combine>
@@ -78,7 +77,7 @@
 		<macro name="dctSubject">
 			<combine name="@rdfTypeSubject" value="${a}" flushWith="$[field]-[-12]|record"
 				reset="true" sameEntity="true">
-				<choose name="a" flushWith="$[field]-[-12]|record">
+				<choose name="a" flushWith="$[field]-[-12]|record" sameEntity="true">
 					<data source="$[field]-[-12].9">
 						<regexp match="\(DE-588\)(.*)" format=""/> <!-- will be ignored -->
 					</data>
@@ -882,7 +881,8 @@
 				<replace pattern="&lt;&lt;" with=""/>
 			</data>
 		</combine>
-		<choose name="@creatorNameOrId" flushWith="[12]????">
+		<!-- flushWith="@creatorPersonId|@creatorCorporateBodyId|@creatorLabel|@nameOfCreatingCorporateBody" -->
+		<choose name="@creatorNameOrId" flushWith="[12]????" sameEntity="true" reset="false">
 			<data source="@creatorPersonId"/>
 			<data source="@creatorCorporateBodyId"/>
 			<data source="@creatorLabel"/>
@@ -892,7 +892,7 @@
 		<data source="@contributorNameOrId" name="http://purl.org/dc/elements/1.1/contributor">
 			<regexp match="^[^http].*"/>
 		</data>
-		<choose name="@contributorNameOrId" flushWith="[12]????">
+		<choose name="@contributorNameOrId" flushWith="[12]????" sameEntity="true" reset="false">
 			<data source="@contributorPersonId"/>
 			<data source="@contributorCorporateBodyId"/>
 			<data source="@contributorLabel"/>
@@ -1496,8 +1496,7 @@
 			<replace pattern=", :" with=":"/>
 		</data>
 		<!-- ############ "schlagwortketten" (aka subject chains) as ordered lists -->
-		<!-- prefer gnd subjects IDs to literals, make rdf-lists -->
-		<entity name="~rdf:list">
+		<entity name="~rdf:list" reset="true">
 			<data name="$[ns-lobid-vocab]subjectOrder" source="@subjectOrder"/>
 		</entity>
 		<call-macro name="subjectOrder" field="902"/>
@@ -1510,6 +1509,7 @@
 		<call-macro name="subjectOrder" field="937"/>
 		<call-macro name="subjectOrder" field="942"/>
 		<call-macro name="subjectOrder" field="947"/>
+	<!-- subjects without ID -->
 		<call-macro name="dctSubject" field="902"/>
 		<call-macro name="dctSubject" field="907"/>
 		<call-macro name="dctSubject" field="912"/>
