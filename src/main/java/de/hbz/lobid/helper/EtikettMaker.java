@@ -166,6 +166,7 @@ public class EtikettMaker implements EtikettMakerInterface {
 		try (InputStream in = labelIn) {
 			return new ObjectMapper().readValue(in, type);
 		} catch (Exception e) {
+			e.printStackTrace();
 			throw new RuntimeException("Error during initialization!", e);
 		}
 	}
