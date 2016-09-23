@@ -118,7 +118,7 @@ public class EtikettMaker implements EtikettMakerInterface {
 				nMap.put(etikett.name, etikett);
 			}
 		} catch (Exception e) {
-			logger.debug("", e);
+			logger.error("", e);
 		}
 
 	}
@@ -166,7 +166,6 @@ public class EtikettMaker implements EtikettMakerInterface {
 		try (InputStream in = labelIn) {
 			return new ObjectMapper().readValue(in, type);
 		} catch (Exception e) {
-			e.printStackTrace();
 			throw new RuntimeException("Error during initialization!", e);
 		}
 	}
