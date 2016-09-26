@@ -118,7 +118,7 @@ public class EtikettMaker implements EtikettMakerInterface {
 				nMap.put(etikett.name, etikett);
 			}
 		} catch (Exception e) {
-			logger.debug("", e);
+			logger.error("", e);
 		}
 
 	}
