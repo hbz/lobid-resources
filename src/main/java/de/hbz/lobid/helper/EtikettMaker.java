@@ -17,6 +17,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package de.hbz.lobid.helper;
 
+import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -67,13 +68,14 @@ public class EtikettMaker implements EtikettMakerInterface {
 	List<Etikett> labels = new ArrayList<>();
 
 	/**
-	 * The profile provides a json context an labels
+	 * The profile provides a json context and labels
 	 * 
 	 * @param labelIn input stream to a labels file
 	 */
 	public EtikettMaker(InputStream labelIn) {
 		initMaps(labelIn);
 		initContext();
+		writeContext();
 	}
 
 	/*
@@ -107,6 +109,17 @@ public class EtikettMaker implements EtikettMakerInterface {
 
 	private void initContext() {
 		context = createContext();
+	}
+
+	private void writeContext() {
+		logger.info("Writing context file ...");
+		try {
+			JsonConverter.getObjectMapper().defaultPrettyPrintingWriter()
+					.writeValue(new File("src/main/resources/context.json"), context);
+			logger.info("... done writing context file.");
+		} catch (Exception e) {
+			logger.error("Error during writing context file! ", e);
+		}
 	}
 
 	private void initMaps(InputStream labelIn) {
