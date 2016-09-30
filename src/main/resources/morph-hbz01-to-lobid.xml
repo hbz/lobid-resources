@@ -1379,14 +1379,14 @@
 			<data source="@subjectLinks"/>
 			<data source="@preferredNameP"/>
 			<data source="9[01234][27]-[-12].d" name="a">
-				<regexp match="([0-9]+)-?.*" format="${1}"/>
+				<regexp match="^([0-9]{1,4})-.*" format="${1}"/>
 			</data>
 		</combine>
 		<combine name="$[ns-gnd]dateOfDeath" value="${a}" sameEntity="true">
 			<data source="@subjectLinks"/>
 			<data source="@preferredNameP"/>
 			<data source="9[01234][27]-[-12].d" name="a">
-				<regexp match="[0-9]+-([0-9]+)" format="${1}"/>
+				<regexp match="^[0-9]{1,4}-([0-9]{1,4})" format="${1}"/>
 			</data>
 		</combine>
 		<combine name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" value="${a}"
