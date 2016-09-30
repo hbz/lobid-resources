@@ -139,8 +139,7 @@ public class JsonConverter {
 	private void createObject(Map<String, Object> jsonResult, Statement s,
 			Etikett e) {
 		String key = e.name;
-		if (s.getObject() instanceof org.openrdf.model.Literal
-				|| s.getPredicate().stringValue().equals(RDF_TYPE)) {
+		if (s.getObject() instanceof org.openrdf.model.Literal) {
 			addLiteralToJsonResult(jsonResult, key, s.getObject().stringValue());
 		} else {
 			if (s.getObject() instanceof org.openrdf.model.BNode) {
@@ -151,7 +150,16 @@ public class JsonConverter {
 							((BNode) s.getObject()).getID());
 				}
 			} else {
-				addObjectToJsonResult(jsonResult, key, s.getObject().stringValue());
+				if (s.getPredicate().stringValue().equals(RDF_TYPE)) {
+					try {
+						addLiteralToJsonResult(jsonResult, key,
+								etikette.getEtikett(s.getObject().stringValue()).name);
+					} catch (Exception ex) {
+						logger.info("", ex);
+					}
+				} else {
+					addObjectToJsonResult(jsonResult, key, s.getObject().stringValue());
+				}
 			}
 		}
 	}
