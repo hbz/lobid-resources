@@ -104,13 +104,10 @@ public class PipeEncodeTriples extends AbstractGraphPipeEncoder {
 			subject = value;
 			try {
 				// insert subject now if it was not at the beginning of the record
-				if (resources.peek().hasURI((DUMMY_SUBJECT))) {
+				if (resources.peek().hasURI((DUMMY_SUBJECT)))
 					ResourceUtils.renameResource(model.getResource(DUMMY_SUBJECT),
 							subject);
-					resources.push(model.createResource(subject));
-				} else {
-					resources.push(model.createResource(subject));
-				}
+				resources.push(model.createResource(subject));
 			} catch (Exception e) {
 				LOG.warn("Problem with name=" + name + " value=" + value, e);
 			}
