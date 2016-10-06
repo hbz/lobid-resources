@@ -269,7 +269,20 @@ public class JsonConverter {
 		for (Statement s : find(uri)) {
 			Etikett e = etikette.getEtikett(s.getPredicate().stringValue());
 			if (s.getObject() instanceof org.openrdf.model.Literal) {
-				newObject.put(e.name, s.getObject().stringValue());
+				if (newObject.containsKey(e.name)) {
+					Object existingValue = newObject.get(e.name);
+					if (existingValue instanceof String) {
+						Set<String> icanmany = new HashSet<String>();
+						icanmany.add((String) existingValue);
+						icanmany.add(s.getObject().stringValue());
+						newObject.put(e.name, icanmany);
+					} else {
+						((Set<String>) existingValue).add(s.getObject().stringValue());
+					}
+
+				} else {
+					newObject.put(e.name, s.getObject().stringValue());
+				}
 			} else {
 				if (statementVisited(s)) {
 					continue;
