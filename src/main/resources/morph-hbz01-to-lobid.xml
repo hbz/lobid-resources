@@ -102,6 +102,25 @@
 				</choose>
 			</combine>
 		</macro>
+		<!-- altLabel -->
+		<macro name="altLabel">
+			<combine name="@altLabel$[type]" value="${a}" flushWith="$[field]??">
+				<choose name="a" flushWith="$[field]??">
+					<data source="@preferredNameConcatEventEDC|@preferredNameConcatEventENDC" name="a"/>
+
+					<concat delimiter=", " name="a" sameEntity="true" flushWith="$[field][-abcefmn][12].c">
+						<data source="$[field][-abcefmn][12].p"/>
+						<data source="$[field][-abcefmn][12].c"/>
+					</concat>
+
+					<data source="$[field][-abcefmn][12].[apk]" name="a">
+						<replace pattern="&gt;&gt;" with=""/>
+						<replace pattern="&lt;&lt;" with=""/>
+					</data>
+				</choose>
+			</combine>
+		</macro>
+		<!-- /altLabel -->
 	</macros>
 	<rules>
 		<entity name="http://purl.org/dc/terms/subject" flushWith="@rdfTypeSubject"
@@ -905,10 +924,6 @@
 			<data source="@creatorLabel"/>
 			<data source="@nameOfCreatingCorporateBody"/>
 		</choose>
-		<!-- Add literal only if link in the same entity does not exist -->
-		<data source="@contributorNameOrId" name="http://purl.org/dc/elements/1.1/contributor">
-			<regexp match="^[^http].*"/>
-		</data>
 		<choose name="@contributorNameOrId" flushWith="[12]????" sameEntity="true" reset="false">
 			<data source="@contributorPersonId"/>
 			<data source="@contributorCorporateBodyId"/>
@@ -1017,13 +1032,6 @@
 			<data source="[29]??[-abcfep][12].d" name="d"/>
 			<data source="[29]??[-abcfep][12].c" name="c"/>
 		</combine>
-		<!-- lv:nameOfContributingCorporateBody is a temporarily workaround, subsuming also creators! -->
-		<data source="8[012][02468][-mn]-.k" name="$[ns-lobid-vocab]nameOfContributingCorporateBody"/>
-		<!-- all names, also variants ("Verweisungsformen") -->
-		<data source="2??[-abcefp][12].k" name="$[ns-lobid-vocab]nameOfContributingCorporateBody">
-			<replace pattern="&gt;&gt;" with=""/>
-			<replace pattern="&lt;&lt;" with=""/>
-		</data>
 		<!-- ####################### -->
 		<!-- ################ koerperschaften and persons -->
 		<!-- ####################### -->
@@ -1239,19 +1247,6 @@
 				<data source="200-1.a"/> <!-- non-GND corporate bodies, see https://github.com/hbz/lobid/issues/302 -->
 			</concat>
 		</combine>
-		<!-- use lv:contributorLabel for creator and ontributor even if there is an id -->
-		<data source="1??[-abcefmn][12].[pa]" name="http://purl.org/lobid/lv#contributorLabel">
-			<replace pattern="&gt;&gt;" with=""/>
-			<replace pattern="&lt;&lt;" with=""/>
-		</data>
-		<combine name="http://purl.org/lobid/lv#contributorLabel" value="${a}"
-			sameEntity="true">
-			<data source="8[012][02468][-mn]1.b"/>
-			<data source="8[012][02468][-mn]1.[pa]" name="a">
-				<replace pattern="&gt;&gt;" with=""/>
-				<replace pattern="&lt;&lt;" with=""/>
-			</data>
-		</combine>
 		<!-- ####################### -->
 		<!-- #######subjects -->
 		<!-- ####################### -->
@@ -1292,6 +1287,24 @@
 				<regexp match="^[^Familie].*"/>
 			</data>
 		</combine>
+		<!-- <call-macro name="altLabel" field="101"/> <call-macro name="altLabelSetRdfSubject" field="101"/> 
+			<call-macro name="altLabelSet" field="101"/> -->
+		<call-macro name="altLabel" type="Person" field="1?[13579]"/>
+		<combine name="~rdf:subject" value="${a}" flushWith="@altLabelPerson">
+			<data source="1????.9" name="a">
+				<regexp match="\(DE-588\)(.*)" format="http://d-nb.info/gnd/${1}"/>
+				<sanitizeUrl></sanitizeUrl>
+			</data>
+		</combine>
+		<call-macro name="altLabel" type="CorporateBody" field="2?[13579]"/>
+		<combine name="~rdf:subject" value="${a}" flushWith="@altLabelCorporateBody">
+			<data source="2????.9" name="a">
+				<regexp match="\(DE-588\)(.*)" format="http://d-nb.info/gnd/${1}"/>
+				<sanitizeUrl></sanitizeUrl>
+			</data>
+		</combine>
+		<data source="@altLabelPerson|@altLabelCorporateBody" name="http://www.w3.org/2004/02/skos/core#altLabel"/>
+		<!-- <data source="@altLabelPerson" name="http://www.w3.org/2004/02/skos/core#altLabel"/> -->
 		<!-- ########### -->
 		<!-- # Create subgraph: temporarily set new subjects or contributor id -->
 		<!-- ########### -->
@@ -1443,7 +1456,7 @@
 		<!-- ########### -->
 		<combine name="~rdf:subject" value="$[ns-lobid-resource]${subject}#!">
 			<data
-				source="@subjectLinks|@creatorPersonId|@creatorCorporateBodyId|@contributorPersonId|@contributorCorporateBodyId|@subjectTopic|@subjectMain"/>
+				source="@altLabelPerson|@altLabelCorporateBody|@subjectLinks|@creatorPersonId|@creatorCorporateBodyId|@contributorPersonId|@contributorCorporateBodyId|@subjectTopic|@subjectMain"/>
 			<data source="@id" name="subject"/>
 		</combine>
 		<!-- other subjects -->
