@@ -164,6 +164,28 @@ public class JsonConverter {
 		}
 	}
 
+	private void createLeafObject(Map<String, Object> jsonResult, Statement s,
+			Etikett e) {
+		String key = e.name;
+		if (s.getObject() instanceof org.openrdf.model.Literal) {
+			addLiteralToJsonResult(jsonResult, key, s.getObject().stringValue());
+		} else {
+
+			if (s.getPredicate().stringValue().equals(RDF_TYPE)) {
+				try {
+					addLiteralToJsonResult(jsonResult, key,
+							etikette.getEtikett(s.getObject().stringValue()).name);
+				} catch (Exception ex) {
+					logger.info("", ex);
+				}
+			} else {
+				logger.trace("Will not follow path to " + s.getObject().toString()
+						+ " ! I have already visited this object!");
+			}
+		}
+
+	}
+
 	private boolean isList(Statement statement) {
 		for (Statement s : find(statement.getObject().stringValue())) {
 			if (first.equals(s.getPredicate().stringValue())) {
@@ -284,13 +306,16 @@ public class JsonConverter {
 					newObject.put(e.name, s.getObject().stringValue());
 				}
 			} else {
-				if (statementVisited(s)) {
-					continue;
-				}
 				if (!mainSubjectOfTheResource.equals(s.getObject().stringValue())) {
-					createObject(newObject, s, e);
+					if (!statementVisited(s)) {
+						createObject(newObject, s, e);
+					} else {
+						createLeafObject(newObject, s, e);
+					}
 				} else {
-					newObject.put(e.name, s.getObject().stringValue());
+					if (!statementVisited(s)) {
+						newObject.put(e.name, s.getObject().stringValue());
+					}
 				}
 			}
 
