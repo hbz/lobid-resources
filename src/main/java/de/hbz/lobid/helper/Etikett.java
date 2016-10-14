@@ -17,17 +17,29 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package de.hbz.lobid.helper;
 
+import java.io.ByteArrayInputStream;
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
+ * This class is used in ApplicationProfile
  * 
  * @author Jan Schnasse
  *
  */
 @XmlRootElement
 public class Etikett {
+	final static Logger logger = LoggerFactory.getLogger(Etikett.class);
 
 	public enum EtikettType {
 		CACHE, CONTEXT, STORE
@@ -84,17 +96,9 @@ public class Etikett {
 
 	public EtikettType type;
 
-	public Etikett() {
-		// needed for jaxb (@see https://github.com/hbz/lobid-rdf-to-json
-	}
-
-	public String toString() {
-		try {
-			return new ObjectMapper().writeValueAsString(this);
-		} catch (Exception e) {
-			return "To String failed " + e.getMessage();
-		}
-	}
+	public Map<String, String> multilangLabel = new HashMap<>();
+	@JsonIgnore
+	public String multiLangSerialized;
 
 	/**
 	 * @param e attributes from e will be copied to this etikett
@@ -108,6 +112,19 @@ public class Etikett {
 		comment = e.comment;
 		weight = e.weight;
 		type = e.type;
+		multiLangSerialized = e.multiLangSerialized;
+	}
+
+	public Etikett() {
+		// needed for jaxb (@see https://github.com/hbz/lobid-rdf-to-json
+	}
+
+	public String toString() {
+		try {
+			return new ObjectMapper().writeValueAsString(this);
+		} catch (Exception e) {
+			return "To String failed " + e.getMessage();
+		}
 	}
 
 	public String getUri() {
@@ -181,4 +198,41 @@ public class Etikett {
 	public void setType(EtikettType type) {
 		this.type = type;
 	}
+
+	@JsonIgnore
+	public String getMultiLangSerialized() {
+		return multiLangSerialized;
+	}
+
+	public void setMultiLangSerialized(String multiLangSerialized) {
+		this.multiLangSerialized = multiLangSerialized;
+		try {
+			multilangLabel = new ObjectMapper().readValue(
+					new ByteArrayInputStream(multiLangSerialized.getBytes()),
+					new TypeReference<HashMap<String, String>>() {
+					});
+		} catch (Exception e) {
+			logger.warn("", e);
+		}
+	}
+
+	public void addMultilangLabel(String lang, String label) {
+		multilangLabel.put(lang, label);
+		setMultilangLabel(multilangLabel);
+	}
+
+	public void setMultilangLabel(Map<String, String> multilangLabel) {
+		this.multilangLabel = multilangLabel;
+		try {
+			multiLangSerialized =
+					new ObjectMapper().writeValueAsString(multilangLabel);
+		} catch (JsonProcessingException e) {
+			logger.warn("", e);
+		}
+	}
+
+	public Map<String, String> getMultilangLabel() {
+		return multilangLabel;
+	}
+
 }
