@@ -50,6 +50,14 @@
 	if(raw.contains("multiVolumeWork")) {select(("Band","Bände"))} else if (raw.contains("series")) {select(("Serienband","Serienbände"))} else if (raw.contains("containedIn")) {select(("Beitrag","Beiträge"))} else {""}
 }
 
+@nwbibLabel() = @{
+	if(!nwbibsubject.isEmpty && !nwbibsubject.contains(",") && Seq(nwbibspatial, person, name, subject, id, publisher, issued, medium, owner, t, set, location, word, corporation, raw).forall(_.isEmpty)){
+		s" in Sachsystematik zu '${Lobid.facetLabel(Seq(nwbibsubject),"","")}'"
+	} else if(!nwbibspatial.isEmpty && !nwbibspatial.contains(",") && Seq(nwbibsubject, person, name, subject, id, publisher, issued, medium, owner, t, set, location, word, corporation, raw).forall(_.isEmpty)){
+		s" in Raumsystematik zu '${Lobid.facetLabel(Seq(nwbibspatial),"","")}'"
+	}
+}
+
 @main("NWBib - Ergebnisliste") {
     @if(Seq(person, name, subject, id, publisher, issued, word, corporation).exists(!_.isEmpty)){
       @tags.search_advanced("Suche aktualisieren", q, person, name, subject, nwbibspatial, nwbibsubject, id, publisher, issued, sortParam, word=word, corporation=corporation)
@@ -86,7 +94,7 @@
                     <div class="col-md-10">
                      @allHits @if(!raw.isEmpty && !raw.contains(Lobid.escapeUri(Application.COVERAGE_FIELD.replace(".raw","")))){
                       @defining(Application.CONFIG.getString("nwbib.api") + "/" + raw.substring(raw.lastIndexOf("/")+1)) { lobidUrl =>
-                       @labelRaw in: <a href="@lobidUrl.replace("/resource/","/nwbib/")">@Html(Lobid.resourceLabel(lobidUrl))</a>}}else{Treffer}, 
+                       @labelRaw in: <a href="@lobidUrl.replace("/resource/","/nwbib/")">@Html(Lobid.resourceLabel(lobidUrl))</a>}}else{Treffer}@nwbibLabel(), 
                        zeige @(from+1) bis @(Math.min(from+hits.size,from+size)):
                     </div>
                     <div class="col-md-1" style="text-align: right; padding-right: 4px;">
