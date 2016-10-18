@@ -59,7 +59,7 @@ public final class MabXml2lobidJsonEs {
 			System.exit(-1);
 		}
 		String jsonLdContext = System.getProperty("jsonLdContext",
-				"http://lobid.org/download/contextTmp.json");
+				"http://lobid.org/download/context.json");
 		System.out.println("using jsonLdContext: " + jsonLdContext);
 		DefaultObjectPipe<Model, ObjectReceiver<HashMap<String, String>>> jsonConverter =
 				new RdfModel2ElasticsearchEtikettJsonLd(jsonLdContext);

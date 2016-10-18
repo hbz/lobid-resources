@@ -31,7 +31,7 @@ import org.slf4j.LoggerFactory;
 public abstract class AbstractIngestTests {
 
 	static final String LOBID_JSONLD_CONTEXT =
-			"http://lobid.org/download/contextTmp-staging.json";
+			"http://lobid.org/download/context-staging.json";
 	private static final Logger LOG =
 			LoggerFactory.getLogger(AbstractIngestTests.class);
 
