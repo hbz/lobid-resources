@@ -29,17 +29,13 @@ import de.hbz.lobid.helper.RdfUtils;
 
 /**
  * @author Jan Schnasse
+ * 
  *
  */
 public class TestJsonToRdfConversion {
 
 	final static Logger logger =
 			LoggerFactory.getLogger(TestJsonToRdfConversion.class);
-
-	/**
-	 * if true, the generated n-triples will be printed to BASE+REVERSE_OUT
-	 */
-	private static final boolean PRINT = false;
 
 	private static EtikettMakerInterface etikettMaker =
 			new EtikettMaker(Thread.currentThread().getContextClassLoader()
@@ -63,11 +59,6 @@ public class TestJsonToRdfConversion {
 	 * loader.
 	 */
 	private static final String REVERSE_OUT = "reverseTest/output/nt/";
-	/**
-	 * A location relative to BASE. To be used to access resources via class
-	 * loader.
-	 */
-	private static final String TEST_IN = "input/nt/";
 
 	boolean stringsAreEqual = true;
 
@@ -105,14 +96,13 @@ public class TestJsonToRdfConversion {
 		return new File(relpath).toURI().relativize(path.toUri()).getPath();
 	}
 
-	void compare(String jsonFilename, String rdfFilename) {
+	void compare(String jsonFilename, String rdfFilename)
+			throws FileNotFoundException, URISyntaxException, IOException {
+		String actualRdfString = null;
 		try {
 			logger.info("Compare: " + jsonFilename + " " + rdfFilename);
-			String actualRdfString = getActual(jsonFilename);
+			actualRdfString = getActual(jsonFilename);
 			String expectedRdfString = getExpected(rdfFilename);
-			if (PRINT) {
-				writeToFileIfNotExists(actualRdfString, REVERSE_OUT + rdfFilename);
-			}
 			boolean areEq = rdfCompare(actualRdfString, expectedRdfString);
 			if (!areEq)
 				this.stringsAreEqual = false;
@@ -120,6 +110,7 @@ public class TestJsonToRdfConversion {
 				org.junit.Assert.assertTrue(areEq);
 			}
 		} catch (Exception e) {
+			writeToFileIfNotExists(actualRdfString, rdfFilename);
 			throw new RuntimeException(e);
 		}
 	}
@@ -134,9 +125,9 @@ public class TestJsonToRdfConversion {
 	}
 
 	private static String getExpected(String rdfFilename) {
-		logger.debug("Read rdf " + TEST_IN + rdfFilename);
+		logger.debug("Read rdf " + REVERSE_OUT + rdfFilename);
 		try (InputStream in = Thread.currentThread().getContextClassLoader()
-				.getResourceAsStream(TEST_IN + rdfFilename)) {
+				.getResourceAsStream(REVERSE_OUT + rdfFilename)) {
 			String rdfString = RdfUtils.readRdfToString(in, RDFFormat.NTRIPLES,
 					RDFFormat.NTRIPLES, "");
 			return rdfString;

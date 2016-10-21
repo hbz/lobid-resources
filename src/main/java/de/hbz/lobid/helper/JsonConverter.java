@@ -46,8 +46,8 @@ import org.slf4j.LoggerFactory;
  */
 public class JsonConverter {
 
-	private String labelKey = "label";
-	private String idAlias = "id";
+	private String labelKey;
+	private String idAlias;
 
 	final static Logger logger = LoggerFactory.getLogger(JsonConverter.class);
 
@@ -287,6 +287,7 @@ public class JsonConverter {
 		return newObject;
 	}
 
+	@SuppressWarnings("unchecked")
 	private void createObject(String uri, Map<String, Object> newObject) {
 		for (Statement s : find(uri)) {
 			Etikett e = etikette.getEtikett(s.getPredicate().stringValue());
@@ -294,7 +295,7 @@ public class JsonConverter {
 				if (newObject.containsKey(e.name)) {
 					Object existingValue = newObject.get(e.name);
 					if (existingValue instanceof String) {
-						Set<String> icanmany = new HashSet<String>();
+						Set<String> icanmany = new HashSet<>();
 						icanmany.add((String) existingValue);
 						icanmany.add(s.getObject().stringValue());
 						newObject.put(e.name, icanmany);
