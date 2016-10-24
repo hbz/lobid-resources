@@ -75,7 +75,6 @@ public class EtikettMaker implements EtikettMakerInterface {
 	public EtikettMaker(InputStream labelIn) {
 		initMaps(labelIn);
 		initContext();
-		writeContext();
 	}
 
 	/*
@@ -111,7 +110,7 @@ public class EtikettMaker implements EtikettMakerInterface {
 		context = createContext();
 	}
 
-	private void writeContext() {
+	public void writeContext() {
 		logger.info("Writing context file ...");
 		try {
 			JsonConverter.getObjectMapper().defaultPrettyPrintingWriter()
