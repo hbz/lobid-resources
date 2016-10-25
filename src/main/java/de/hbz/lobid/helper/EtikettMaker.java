@@ -100,8 +100,8 @@ public class EtikettMaker implements EtikettMakerInterface {
 			e = new Etikett(uri);
 			e.name = getJsonName(uri);
 		}
-		if (e.label == null || e.label.isEmpty()) {
-			e.label = e.uri;
+		if (e.label == null || e.label.isEmpty()) { // fallback
+			e.label = e.name;
 		}
 		logger.debug("Find etikett for " + uri + " : " + e.name);
 		return e;
@@ -209,7 +209,7 @@ public class EtikettMaker implements EtikettMakerInterface {
 
 	@Override
 	public boolean supportsLabelsForValues() {
-		return false;
+		return true;
 	}
 
 	@Override
@@ -224,7 +224,7 @@ public class EtikettMaker implements EtikettMakerInterface {
 
 	@Override
 	public String getLabelKey() {
-		return null;
+		return "label";
 	}
 
 }
