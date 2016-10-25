@@ -151,8 +151,8 @@ public class TestJsonToRdfConversion {
 			logger.error("Expected size of " + expectedSorted.length
 					+ " is different to actual size " + actualSorted.length);
 		} else {
-			logger.info("Expected size of " + expectedSorted.length
-					+ " is different to actual size " + actualSorted.length);
+			logger.debug("Expected size of " + expectedSorted.length
+					+ " is equal to actual size " + actualSorted.length);
 		}
 		for (int i = 0; i < actualSorted.length; i++) {
 			if (actualSorted[i].equals(expectedSorted[i])) {
