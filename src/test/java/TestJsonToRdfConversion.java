@@ -1,12 +1,12 @@
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
-import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -29,7 +29,7 @@ import de.hbz.lobid.helper.RdfUtils;
 
 /**
  * @author Jan Schnasse
- * 
+ * @author Pascal Christoph (dr0i)
  *
  */
 public class TestJsonToRdfConversion {
@@ -41,9 +41,12 @@ public class TestJsonToRdfConversion {
 			new EtikettMaker(Thread.currentThread().getContextClassLoader()
 					.getResourceAsStream("labels.json"));
 	/**
-	 * if true all comparisons will be executed. No assertion will fail.
+	 * If "true" all comparisons will be executed and a failed assertion may be
+	 * given only once at the end. If "false" the test is cancelled even after the
+	 * first fail.
 	 */
-	private boolean DEBUG_RUN = false;
+	private boolean DEBUG_RUN = true;
+
 	/**
 	 * The relative location of test resources. Needed to access test resources
 	 * via normal Filesystem operations
@@ -78,8 +81,8 @@ public class TestJsonToRdfConversion {
 
 	private void test(Path path) {
 		try {
-			String jsonFilename = getRelativePath(BASE + REVERSE_IN, path);
-			String rdfFilename = getRdfFileName(path);
+			String jsonFilename = path.toString();
+			String rdfFilename = BASE + REVERSE_OUT + getRdfFileName(path);
 			compare(jsonFilename, rdfFilename);
 		} catch (Exception e) {
 			logger.error("", e);
@@ -97,27 +100,26 @@ public class TestJsonToRdfConversion {
 	}
 
 	void compare(String jsonFilename, String rdfFilename)
-			throws FileNotFoundException, URISyntaxException, IOException {
+			throws FileNotFoundException, IOException {
 		String actualRdfString = null;
-		try {
-			logger.info("Compare: " + jsonFilename + " " + rdfFilename);
-			actualRdfString = getActual(jsonFilename);
-			String expectedRdfString = getExpected(rdfFilename);
-			boolean areEq = rdfCompare(actualRdfString, expectedRdfString);
-			if (!areEq)
-				this.stringsAreEqual = false;
-			if (!DEBUG_RUN) {
-				org.junit.Assert.assertTrue(areEq);
-			}
-		} catch (Exception e) {
-			writeToFileIfNotExists(actualRdfString, rdfFilename);
-			throw new RuntimeException(e);
+		logger.info("Compare: " + jsonFilename + " " + rdfFilename);
+		actualRdfString = getActual(jsonFilename);
+		if (!new File(rdfFilename).exists())
+			makeFile(actualRdfString, rdfFilename);
+		String expectedRdfString = getExpected(rdfFilename);
+		boolean areEq = rdfCompare(actualRdfString, expectedRdfString);
+		if (!areEq) {
+			this.stringsAreEqual = false;
+			makeFile(actualRdfString, rdfFilename);
+		}
+		if (!DEBUG_RUN) {
+			org.junit.Assert.assertTrue(this.stringsAreEqual);
 		}
 	}
 
 	private static String getActual(String jsonFilename)
 			throws UnsupportedEncodingException {
-		String jsonString = createJsonString(REVERSE_IN + jsonFilename);
+		String jsonString = createJsonString(jsonFilename);
 		String actualRdfString = RdfUtils.readRdfToString(
 				new ByteArrayInputStream(jsonString.getBytes("utf-8")),
 				RDFFormat.JSONLD, RDFFormat.NTRIPLES, "");
@@ -125,9 +127,8 @@ public class TestJsonToRdfConversion {
 	}
 
 	private static String getExpected(String rdfFilename) {
-		logger.debug("Read rdf " + REVERSE_OUT + rdfFilename);
-		try (InputStream in = Thread.currentThread().getContextClassLoader()
-				.getResourceAsStream(REVERSE_OUT + rdfFilename)) {
+		logger.debug("Read rdf " + rdfFilename);
+		try (InputStream in = new FileInputStream(rdfFilename)) {
 			String rdfString = RdfUtils.readRdfToString(in, RDFFormat.NTRIPLES,
 					RDFFormat.NTRIPLES, "");
 			return rdfString;
@@ -150,24 +151,25 @@ public class TestJsonToRdfConversion {
 		if (actualSorted.length != expectedSorted.length) {
 			logger.error("Expected size of " + expectedSorted.length
 					+ " is different to actual size " + actualSorted.length);
+			result = false;
 		} else {
 			logger.debug("Expected size of " + expectedSorted.length
 					+ " is equal to actual size " + actualSorted.length);
-		}
-		for (int i = 0; i < actualSorted.length; i++) {
-			if (actualSorted[i].equals(expectedSorted[i])) {
-				logger.debug("Actual , Expected");
-				logger.debug(actualSorted[i]);
-				logger.debug(expectedSorted[i]);
-				logger.debug("");
-			} else {
-				logger.error("Error line " + i);
-				logger.error("Actual , Expected");
-				logger.error(actualSorted[i]);
-				logger.error(expectedSorted[i]);
-				logger.error("");
-				result = false;
-				break;
+			for (int i = 0; i < actualSorted.length; i++) {
+				if (actualSorted[i].equals(expectedSorted[i])) {
+					logger.debug("Actual , Expected");
+					logger.debug(actualSorted[i]);
+					logger.debug(expectedSorted[i]);
+					logger.debug("");
+				} else {
+					logger.error("Error line " + i);
+					logger.error("Actual , Expected");
+					logger.error(actualSorted[i]);
+					logger.error(expectedSorted[i]);
+					logger.error("");
+					result = false;
+					break;
+				}
 			}
 		}
 		return result;
@@ -203,11 +205,10 @@ public class TestJsonToRdfConversion {
 	}
 
 	private static String createJsonString(String jsonFilename) {
-		try {
-			logger.debug("Read json " + jsonFilename);
-			Map<String, Object> jsonMap = JsonConverter.getObjectMapper()
-					.readValue(Thread.currentThread().getContextClassLoader()
-							.getResourceAsStream(jsonFilename), Map.class);
+		logger.debug("Read json " + jsonFilename);
+		try (FileInputStream fis = new FileInputStream(jsonFilename)) {
+			Map<String, Object> jsonMap =
+					JsonConverter.getObjectMapper().readValue(fis, Map.class);
 			jsonMap.put("@context", etikettMaker.getContext().get("@context"));
 			String jsonString =
 					JsonConverter.getObjectMapper().writeValueAsString(jsonMap);
@@ -217,19 +218,9 @@ public class TestJsonToRdfConversion {
 		}
 	}
 
-	private static void writeToFileIfNotExists(String rdf, String fileName)
-			throws URISyntaxException, FileNotFoundException, IOException {
-		try {
-			Paths.get(Thread.currentThread().getContextClassLoader()
-					.getResource(fileName).toURI()).toFile();
-		} catch (NullPointerException e) {
-			makeFile(rdf, fileName);
-		}
-	}
-
 	private static void makeFile(String rdf, String fileName) throws IOException {
-		logger.info("Try to create: " + BASE + fileName);
-		File f = new File(BASE + fileName);
+		logger.info("Try to create: " + fileName);
+		File f = new File(fileName);
 		f.getParentFile().mkdirs();
 		f.createNewFile();
 		logger.info("Created: " + f.getAbsolutePath());
