@@ -24,6 +24,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Map;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openrdf.rio.RDFFormat;
 import org.slf4j.Logger;
@@ -46,15 +47,13 @@ import de.hbz.lobid.helper.JsonConverter;
  * For testing, diffs are done against these files. The order of values (lists
  * vs sets) are taken into account.
  *
- * If the generated data differs from the expected test they are updated with
- * the generated data.
  * 
  * @author Jan Schnasse
  * @author Pascal Christoph (dr0i)
  *
  */
 public class TestRdfToJsonConversion {
-
+	private static boolean generateTestData = false;
 	private static EtikettMakerInterface etikettMaker =
 			new EtikettMaker(Thread.currentThread().getContextClassLoader()
 					.getResourceAsStream("labels.json"));
@@ -69,6 +68,20 @@ public class TestRdfToJsonConversion {
 
 	static boolean allTestsSuccessful = true;
 
+	/**
+	 * If the environment variable is set to "true" the test data shall be updated
+	 * and written into filesystem.
+	 */
+	@BeforeClass
+	public static void setup() {
+		if (System.getProperty("generateTestData", "false").equals("true"))
+			generateTestData = true;
+		else
+			generateTestData = false;
+		TestRdfToJsonConversion.logger.info(generateTestData
+				? "Test data will be updated" : "Test data won't be updated");
+	}
+
 	@SuppressWarnings({ "javadoc" })
 	@Test
 	public void testEquality_caseDirectory() {
@@ -79,10 +92,10 @@ public class TestRdfToJsonConversion {
 							e.toString(), e.toString().replaceFirst("input/nt", "output/json")
 									.replaceFirst("nt$", "json"),
 							LOBID_RESOURCES_URI_PREFIX, true));
-			org.junit.Assert.assertTrue(allTestsSuccessful);
+			org.junit.Assert.assertTrue(generateTestData || allTestsSuccessful);
 		} catch (Exception e) {
 			e.printStackTrace();
-			org.junit.Assert.assertFalse(true);
+			org.junit.Assert.assertFalse(!generateTestData || true);
 		}
 	}
 
@@ -93,18 +106,20 @@ public class TestRdfToJsonConversion {
 				"src/test/resources/hbz01.es.json", LOBID_RESOURCES_URI_PREFIX, true);
 		TestRdfToJsonConversion.logger
 				.info("\n Adrian Input Test - must succeed! \n");
-		org.junit.Assert.assertTrue(allTestsSuccessful);
+		org.junit.Assert.assertTrue(generateTestData || allTestsSuccessful);
 	}
 
 	@SuppressWarnings({ "javadoc" })
 	@Test
 	public void testWrongContributorOrder() {
-		testFiles("src/test/resources/adrianInput.nt",
+		boolean testSuccess = testFiles("src/test/resources/adrianInput.nt",
 				"src/test/resources/hbz01.es.wrongContributorOrder.json",
 				LOBID_RESOURCES_URI_PREFIX, false);
 		TestRdfToJsonConversion.logger
-				.info("\n WrongContributorOrder Test - must fail! \n");
-		org.junit.Assert.assertTrue(allTestsSuccessful);
+				.info("\n WrongContributorOrder (Test - must fail!). " + (testSuccess
+						? "Douh, test didn't failed :(" : "Success because test failed :)")
+						+ "\n");
+		org.junit.Assert.assertTrue(generateTestData || allTestsSuccessful);
 	}
 
 	private static boolean testFiles(String fnameNtriples, String fnameJson,
@@ -132,10 +147,12 @@ public class TestRdfToJsonConversion {
 			e.printStackTrace();
 		}
 		if (testResult != testExpectedToBeEqual) {
-			TestRdfToJsonConversion.logger
-					.info("Going to update the test file " + fnameJson);
-			makeTestFiles(fnameJson, actual);
 			allTestsSuccessful = false;
+			if (generateTestData) {
+				TestRdfToJsonConversion.logger
+						.info("Going to update the test file " + fnameJson);
+				makeTestFiles(fnameJson, actual);
+			}
 		}
 		return testResult;
 	}

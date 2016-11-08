@@ -1,3 +1,21 @@
+
+/*Copyright (c) 2015 "hbz"
+
+This file is part of lobid-rdf-to-json.
+
+etikett is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -16,6 +34,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openrdf.rio.RDFFormat;
 import org.slf4j.Logger;
@@ -44,7 +63,7 @@ public class TestJsonToRdfConversion {
 	 * given only once at the end. If "false" the test is cancelled even after the
 	 * first fail.
 	 */
-	private boolean DEBUG_RUN = true;
+	private static boolean debugRun = false;
 
 	/**
 	 * The relative location of test resources. Needed to access test resources
@@ -64,6 +83,20 @@ public class TestJsonToRdfConversion {
 
 	boolean stringsAreEqual = true;
 
+	/**
+	 * If the environment variable is set to "true" the test data shall be updated
+	 * and written into filesystem.
+	 */
+	@BeforeClass
+	public static void setup() {
+		if (System.getProperty("generateTestData", "false").equals("true"))
+			debugRun = true;
+		else
+			debugRun = false;
+		logger.info(
+				debugRun ? "Test data will be updated" : "Test data won't be updated");
+	}
+
 	@SuppressWarnings({ "javadoc" })
 	@Test
 	public void test_all() {
@@ -72,7 +105,7 @@ public class TestJsonToRdfConversion {
 					.forEach(path -> {
 						test(path);
 					});
-			org.junit.Assert.assertTrue(stringsAreEqual);
+			org.junit.Assert.assertTrue(debugRun || stringsAreEqual);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -103,16 +136,16 @@ public class TestJsonToRdfConversion {
 		String actualRdfString = null;
 		logger.info("Compare: " + jsonFilename + " " + rdfFilename);
 		actualRdfString = getActual(jsonFilename);
-		if (!new File(rdfFilename).exists())
+		if (debugRun && !new File(rdfFilename).exists())
 			makeFile(actualRdfString, rdfFilename);
 		String expectedRdfString = getExpected(rdfFilename);
 		boolean areEq = rdfCompare(actualRdfString, expectedRdfString);
 		if (!areEq) {
-			this.stringsAreEqual = false;
-			makeFile(actualRdfString, rdfFilename);
-		}
-		if (!DEBUG_RUN) {
-			org.junit.Assert.assertTrue(this.stringsAreEqual);
+			if (!debugRun) {
+				this.stringsAreEqual = false;
+				org.junit.Assert.assertTrue(this.stringsAreEqual);
+			} else
+				makeFile(actualRdfString, rdfFilename);
 		}
 	}
 

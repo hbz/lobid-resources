@@ -31,10 +31,11 @@ After your changes you build the project like:
 
 A *BUILD FAILURE* results when newly generated data isn't equal to the test resources. This is a good thing because you wanted the change!
 
-The newly generated data is automatically written to the filesystem. These new data will now act as the template for sucessful tests. So, if you would rebuild now, the build will pass successfully.
+Doing @mvn test -DgenerateTestData=true@ the test data is generated and also updated in the filesystem.
+These new data will now act as the template for sucessful tests. So, if you would rebuild now, the build will pass successfully.
 You just must approve the new outcome by committing it.
 
-Let's see what has changed:
+So, let's see what has changed:
 
 @git status@
 
