@@ -10,7 +10,6 @@ import java.io.UnsupportedEncodingException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -128,13 +127,14 @@ public class TestJsonToRdfConversion {
 
 	private static String getExpected(String rdfFilename) {
 		logger.debug("Read rdf " + rdfFilename);
+		String rdfString = "";
 		try (InputStream in = new FileInputStream(rdfFilename)) {
-			String rdfString = RdfUtils.readRdfToString(in, RDFFormat.NTRIPLES,
+			rdfString = RdfUtils.readRdfToString(in, RDFFormat.NTRIPLES,
 					RDFFormat.NTRIPLES, "");
-			return rdfString;
 		} catch (Exception e) {
-			throw new RuntimeException(e);
+			logger.error("", e);
 		}
+		return rdfString;
 	}
 
 	private static boolean rdfCompare(String actual, String expected) {
@@ -220,10 +220,8 @@ public class TestJsonToRdfConversion {
 
 	private static void makeFile(String rdf, String fileName) throws IOException {
 		logger.info("Try to create: " + fileName);
-		File f = new File(fileName);
-		f.getParentFile().mkdirs();
-		f.createNewFile();
-		logger.info("Created: " + f.getAbsolutePath());
-		Files.write(f.toPath(), rdf.getBytes(), StandardOpenOption.CREATE);
+		Path path = new File(fileName).toPath();
+		logger.info("Created: " + path);
+		Files.write(path, rdf.getBytes());
 	}
 }
