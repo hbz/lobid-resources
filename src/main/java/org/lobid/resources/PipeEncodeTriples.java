@@ -44,6 +44,7 @@ public class PipeEncodeTriples extends AbstractGraphPipeEncoder {
 	// dummy subject to store data even if the subject is unknown at first
 	final static String DUMMY_SUBJECT = "dummy_subject";
 	final static String HTTP = "^[hH][tT][Tt][Pp].*";
+	final static String BNODE = "^_:.*";
 	final static String FTP = "^[Ff][Tt][Pp].*";
 
 	final static String URN = "urn";
@@ -115,7 +116,8 @@ public class PipeEncodeTriples extends AbstractGraphPipeEncoder {
 			try {
 				final Property prop = model.createProperty(name);
 				if (!name.contains(PROPERTY_AS_LITERALS) && (value.matches(HTTP)
-						|| value.matches(FTP) || (value.startsWith(URN) && storeUrnAsUri)
+						|| value.matches(BNODE) || value.matches(FTP)
+						|| (value.startsWith(URN) && storeUrnAsUri)
 						|| value.startsWith("mailto"))) {
 					boolean uri = true;
 					// either add uri ...

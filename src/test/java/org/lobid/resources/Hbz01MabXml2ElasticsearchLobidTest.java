@@ -67,9 +67,13 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 	static final String DIRECTORY_TO_TEST_JSON_FILES = PATH_TO_TEST + "jsonld/";
 
 	static boolean testFailed = false;
+	static final String NTRIPLES_DEBUG_FILES = "src/test/resources/nt";
 
 	@BeforeClass
 	public static void setup() {
+		if (LOG.isDebugEnabled()) {
+			etlDebug();
+		}
 		node = nodeBuilder().local(true)
 				.settings(Settings.builder().put("index.number_of_replicas", "0")
 						.put("index.number_of_shards", "1").put("path.home", "tmp/")
@@ -92,6 +96,11 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 		client = cl;
 		final FileOpener opener = new FileOpener();
 		final Triples2RdfModel triple2model = new Triples2RdfModel();
+		RdfModelFileWriter rdfModelFileWriter = new RdfModelFileWriter();
+		rdfModelFileWriter.setProperty("http://purl.org/lobid/lv#hbzID");
+		rdfModelFileWriter.setStartIndex(2);
+		rdfModelFileWriter.setEndIndex(7);
+		rdfModelFileWriter.setTarget("src/test/resources/nt");
 		triple2model.setInput(N_TRIPLE);
 		opener.setReceiver(new TarReader()).setReceiver(new XmlDecoder())
 				.setReceiver(new AlephMabXmlHandler())
@@ -102,6 +111,29 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 				.setReceiver(getElasticsearchIndexer(cl));
 		opener.process(new File(TEST_FILENAME_ALEPHXMLCLOBS).getAbsolutePath());
 		opener.closeStream();
+	}
+
+	/**
+	 * Writes ntriples to the filesystem. Helper for debugging purposes.
+	 */
+	public static String etlDebug() {
+		final FileOpener opener = new FileOpener();
+		final Triples2RdfModel triple2model = new Triples2RdfModel();
+		RdfModelFileWriter rdfModelFileWriter = new RdfModelFileWriter();
+		rdfModelFileWriter.setProperty("http://purl.org/lobid/lv#hbzID");
+		rdfModelFileWriter.setStartIndex(2);
+		rdfModelFileWriter.setEndIndex(7);
+		rdfModelFileWriter.setTarget(NTRIPLES_DEBUG_FILES);
+		triple2model.setInput(N_TRIPLE);
+		opener.setReceiver(new TarReader()).setReceiver(new XmlDecoder())
+				.setReceiver(new AlephMabXmlHandler())
+				.setReceiver(
+						new Metamorph("src/main/resources/morph-hbz01-to-lobid.xml"))
+				.setReceiver(new PipeEncodeTriples()).setReceiver(triple2model)
+				.setReceiver(rdfModelFileWriter);
+		opener.process(new File(TEST_FILENAME_ALEPHXMLCLOBS).getAbsolutePath());
+		opener.closeStream();
+		return "Created files, see " + NTRIPLES_DEBUG_FILES;
 	}
 
 	@SuppressWarnings("static-method")
