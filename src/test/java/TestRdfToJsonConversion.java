@@ -59,7 +59,8 @@ public class TestRdfToJsonConversion {
 					.getResourceAsStream("labels.json"));
 	final static Logger logger =
 			LoggerFactory.getLogger(TestRdfToJsonConversion.class);
-	final static String LOBID_RESOURCES_URI_PREFIX = "http://lobid.org/resource/";
+	final static String LOBID_RESOURCES_URI_PREFIX =
+			"http://lobid.org/resources/";
 	@SuppressWarnings("unchecked")
 	final static Map<String, Object> fullContext =
 			(Map<String, Object>) etikettMaker.getContext().get("@context");

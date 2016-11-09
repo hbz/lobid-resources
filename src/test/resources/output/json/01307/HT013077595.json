@@ -1,31 +1,31 @@
 {
   "@context" : "http://lobid.org/context/lobid-resources.json",
   "collectedBy" : [ {
-    "id" : "http://lobid.org/resource/NWBib"
+    "id" : "http://lobid.org/resources/NWBib"
   } ],
-  "contributingCorporateBodyLabel" : [ "Kreisheimatverein" ],
   "contributor" : [ {
-    "id" : "http://d-nb.info/gnd/11079267X",
-    "label" : "Balke, Kirsten"
-  }, {
     "id" : "http://d-nb.info/gnd/128755-2",
-    "label" : "Kreisheimatverein <Coesfeld>"
+    "label" : "Kreisheimatverein (Coesfeld)",
+    "type" : [ "CorporateBody" ]
+  }, {
+    "id" : "http://d-nb.info/gnd/11079267X",
+    "label" : "Balke, Kirsten",
+    "type" : [ "Person" ]
   } ],
-  "contributorLabel" : [ "Boer, Hans-Peter", "Boer, Hans Peter", "Balke, Kirsten" ],
   "contributorOrder" : [ "http://d-nb.info/gnd/11079267X | http://d-nb.info/gnd/109490312 | http://d-nb.info/gnd/128755-2" ],
   "coverage" : [ "Coesfeld <Kreis>", "Coesfeld" ],
   "describedby" : [ {
     "dateCreated" : "20010705",
     "dateModified" : "20011113",
-    "id" : "http://lobid.org/resource/HT013077595/about"
+    "id" : "http://lobid.org/resources/HT013077595"
   } ],
   "exemplar" : [ {
-    "callNumber" : "AA 12514",
+    "callNumber" : "2J 1468",
     "describedby" : [ {
-      "id" : "http://lobid.org/item/HT013077595:DE-6:AA%2012514/about"
+      "id" : "http://lobid.org/items/HT013077595:DE-6:2J%201468"
     } ],
-    "exemplarOf" : "http://lobid.org/resource/HT013077595",
-    "id" : "http://lobid.org/item/HT013077595:DE-6:AA%2012514",
+    "exemplarOf" : "http://lobid.org/resources/HT013077595#!",
+    "id" : "http://lobid.org/items/HT013077595:DE-6:2J%201468#!",
     "owner" : [ {
       "id" : "http://lobid.org/organisation/DE-6"
     } ],
@@ -33,21 +33,21 @@
   }, {
     "callNumber" : "Y 401 - 36",
     "describedby" : [ {
-      "id" : "http://lobid.org/item/HT013077595:DE-6-290:Y%20401%20-%2036/about"
+      "id" : "http://lobid.org/items/HT013077595:DE-6-290:Y%20401%20-%2036"
     } ],
-    "exemplarOf" : "http://lobid.org/resource/HT013077595",
-    "id" : "http://lobid.org/item/HT013077595:DE-6-290:Y%20401%20-%2036",
+    "exemplarOf" : "http://lobid.org/resources/HT013077595#!",
+    "id" : "http://lobid.org/items/HT013077595:DE-6-290:Y%20401%20-%2036#!",
     "owner" : [ {
       "id" : "http://lobid.org/organisation/DE-6-290"
     } ],
     "type" : [ "Item" ]
   }, {
-    "callNumber" : "2J 1468",
+    "callNumber" : "AA 12514",
     "describedby" : [ {
-      "id" : "http://lobid.org/item/HT013077595:DE-6:2J%201468/about"
+      "id" : "http://lobid.org/items/HT013077595:DE-6:AA%2012514"
     } ],
-    "exemplarOf" : "http://lobid.org/resource/HT013077595",
-    "id" : "http://lobid.org/item/HT013077595:DE-6:2J%201468",
+    "exemplarOf" : "http://lobid.org/resources/HT013077595#!",
+    "id" : "http://lobid.org/items/HT013077595:DE-6:AA%2012514#!",
     "owner" : [ {
       "id" : "http://lobid.org/organisation/DE-6"
     } ],
@@ -55,7 +55,7 @@
   } ],
   "extent" : [ "VII, 119 S. : Ill., graph. Darst., Kt." ],
   "hbzId" : [ "HT013077595" ],
-  "id" : "http://lobid.org/resource/HT013077595",
+  "id" : "http://lobid.org/resources/HT013077595#!",
   "isPrimaryTopicOf" : [ {
     "id" : "http://193.30.112.134/F/?func=find-c&ccl_term=IDN%3DHT013077595"
   } ],
@@ -82,21 +82,36 @@
   "placeOfPublication" : [ "Coesfeld" ],
   "publicationStatement" : [ "Coesfeld; 2000" ],
   "redaktor" : [ {
+    "altLabel" : "Boer, Hans Peter",
     "id" : "http://d-nb.info/gnd/109490312",
-    "label" : "Boer, Hans-Peter"
+    "label" : "Boer, Hans-Peter",
+    "type" : [ "Person" ]
   } ],
   "sameAs" : [ {
     "id" : "http://hub.culturegraph.org/resource/HBZ-HT013077595"
   } ],
   "subject" : [ {
-    "id" : "http://d-nb.info/gnd/4010356-0",
-    "label" : "Kreis Coesfeld"
-  }, {
     "id" : "http://d-nb.info/gnd/4010355-9",
-    "label" : "Coesfeld"
+    "label" : "Coesfeld",
+    "type" : [ "PlaceOrGeographicName" ]
   }, {
     "id" : "http://d-nb.info/gnd/4024116-6",
-    "label" : "Heimatkundeunterricht"
+    "label" : "Heimatkundeunterricht",
+    "type" : [ "SubjectHeading" ]
+  }, {
+    "label" : "Lehrmittel",
+    "type" : [ "SubjectHeading" ]
+  }, {
+    "id" : "http://d-nb.info/gnd/4010356-0",
+    "label" : "Kreis Coesfeld",
+    "type" : [ "PlaceOrGeographicName" ]
+  }, {
+    "id" : "http://d-nb.info/gnd/4024116-6",
+    "label" : "Heimatkundeunterricht",
+    "type" : [ "SubjectHeading" ]
+  }, {
+    "label" : "Lehrmittel",
+    "type" : [ "SubjectHeading" ]
   } ],
   "subjectChain" : [ "Coesfeld | Heimatkundeunterricht | Lehrmittel (213)", "Kreis Coesfeld | Heimatkundeunterricht | Lehrmittel (213)" ],
   "subjectLabel" : [ "Heimatkunde (Unterricht)", "Heimatkundedidaktik", "Kreistag (Kreis Coesfeld)", "Stadt Coesfeld", "Hauptamt (Kreis Coesfeld)", "Kreis Coesfeld. Kreistag", "Coesfeld. Hauptamt", "Coesfeld (Kreis)", "Kosfel'd", "Kreis Coesfeld. Hauptamt", "Coesfeld. Stadtdirektor", "Stadtdirektor (Coesfeld)", "Kreis Coesfeld. Kreisverwaltung", "Heimatkunde / Didaktik", "Coesfeld. Pressestelle", "Oberkreisdirektor (Kreis Coesfeld)", "Landrat (Kreis Coesfeld)", "Hauptamt (Coesfeld)", "Kreis Coesfeld. Oberkreisdirektor", "Landkreis Coesfeld", "Kreis Coesfeld. Landrat", "Kreisverwaltung (Kreis Coesfeld)", "Pressestelle (Coesfeld)" ],

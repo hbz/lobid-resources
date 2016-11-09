@@ -31,6 +31,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.openrdf.model.BNode;
 import org.openrdf.model.Graph;
 import org.openrdf.model.Statement;
+import org.openrdf.model.impl.URIImpl;
 import org.openrdf.rio.RDFFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -211,13 +212,18 @@ public class JsonConverter {
 	 * @param orderedList
 	 * @return the ordered list
 	 */
-	private List<String> traverseList(String uri, String property,
-			List<String> orderedList) {
+	private List<Object> traverseList(String uri, String property,
+			List<Object> orderedList) {
 		for (Statement s : find(uri)) {
 			if (uri.equals(s.getSubject().stringValue())
 					&& property.equals(s.getPredicate().stringValue())) {
 				if (property.equals(first)) {
-					orderedList.add(s.getObject().stringValue());
+					if (s.getObject() instanceof URIImpl) {
+						orderedList.add(createObjectWithId(s.getObject().stringValue()));
+					} else if (s.getObject() instanceof BNode) {
+						orderedList.add(createObjectWithoutId(s.getObject().stringValue()));
+					} else
+						orderedList.add(s.getObject().stringValue());
 					traverseList(s.getSubject().stringValue(), rest, orderedList);
 				} else if (property.equals(rest)) {
 					traverseList(s.getObject().stringValue(), first, orderedList);
@@ -230,10 +236,17 @@ public class JsonConverter {
 	private void addObjectToJsonResult(Map<String, Object> jsonResult, String key,
 			String uri) {
 		if (jsonResult.containsKey(key)) {
-			@SuppressWarnings("unchecked")
-			Set<Map<String, Object>> literals =
-					(Set<Map<String, Object>>) jsonResult.get(key);
-			literals.add(createObjectWithId(uri));
+			if (jsonResult.get(key) instanceof ArrayList<?>) {
+				@SuppressWarnings("unchecked")
+				ArrayList<Map<String, Object>> literals =
+						(ArrayList<Map<String, Object>>) jsonResult.get(key);
+				literals.add(createObjectWithId(uri));
+			} else {
+				@SuppressWarnings("unchecked")
+				Set<Map<String, Object>> literals =
+						(Set<Map<String, Object>>) jsonResult.get(key);
+				literals.add(createObjectWithId(uri));
+			}
 		} else {
 			Set<Map<String, Object>> literals = new HashSet<>();
 			literals.add(createObjectWithId(uri));
@@ -302,7 +315,6 @@ public class JsonConverter {
 					} else {
 						((Set<String>) existingValue).add(s.getObject().stringValue());
 					}
-
 				} else {
 					newObject.put(e.name, s.getObject().stringValue());
 				}
@@ -319,9 +331,7 @@ public class JsonConverter {
 					}
 				}
 			}
-
 		}
-
 	}
 
 	private boolean statementVisited(Statement s) {
