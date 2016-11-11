@@ -16,22 +16,20 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-import java.io.EOFException;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Map;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openrdf.rio.RDFFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -49,12 +47,13 @@ import de.hbz.lobid.helper.JsonConverter;
  * For testing, diffs are done against these files. The order of values (lists
  * vs sets) are taken into account.
  *
+ * 
  * @author Jan Schnasse
  * @author Pascal Christoph (dr0i)
  *
  */
 public class TestRdfToJsonConversion {
-
+	private static boolean generateTestData = false;
 	private static EtikettMakerInterface etikettMaker =
 			new EtikettMaker(Thread.currentThread().getContextClassLoader()
 					.getResourceAsStream("labels.json"));
@@ -67,50 +66,69 @@ public class TestRdfToJsonConversion {
 	final static String contextUrl =
 			"http://lobid.org/context/lobid-resources.json";
 
+	static boolean allTestsSuccessful = true;
+
+	/**
+	 * If the environment variable is set to "true" the test data shall be updated
+	 * and written into filesystem.
+	 */
+	@BeforeClass
+	public static void setup() {
+		if (System.getProperty("generateTestData", "false").equals("true"))
+			generateTestData = true;
+		else
+			generateTestData = false;
+		TestRdfToJsonConversion.logger.info(generateTestData
+				? "Test data will be updated" : "Test data won't be updated");
+	}
+
 	@SuppressWarnings({ "javadoc" })
 	@Test
 	public void testEquality_caseDirectory() {
 		String path = "src/test/resources/input/nt/";
 		try {
 			Files.walk(Paths.get(path)).filter(Files::isRegularFile)
-					.forEach(
-							e -> org.junit.Assert.assertTrue(testFiles(e.toString(),
-									e.toString().replaceFirst("input/nt", "output/json")
-											.replaceFirst("nt$", "json"),
-									LOBID_RESOURCES_URI_PREFIX)));
+					.forEach(e -> testFiles(
+							e.toString(), e.toString().replaceFirst("input/nt", "output/json")
+									.replaceFirst("nt$", "json"),
+							LOBID_RESOURCES_URI_PREFIX, true));
+			org.junit.Assert.assertTrue(generateTestData || allTestsSuccessful);
 		} catch (Exception e) {
 			e.printStackTrace();
-			org.junit.Assert.assertFalse(true);
+			org.junit.Assert.assertFalse(!generateTestData || true);
 		}
 	}
 
 	@SuppressWarnings({ "javadoc" })
 	@Test
 	public void testEquality_case1() {
-		boolean result = testFiles("src/test/resources/adrianInput.nt",
-				"src/test/resources/hbz01.es.json", LOBID_RESOURCES_URI_PREFIX);
+		testFiles("src/test/resources/adrianInput.nt",
+				"src/test/resources/hbz01.es.json", LOBID_RESOURCES_URI_PREFIX, true);
 		TestRdfToJsonConversion.logger
 				.info("\n Adrian Input Test - must succeed! \n");
-		org.junit.Assert.assertTrue(result);
+		org.junit.Assert.assertTrue(generateTestData || allTestsSuccessful);
 	}
 
 	@SuppressWarnings({ "javadoc" })
 	@Test
 	public void testWrongContributorOrder() {
-		boolean result = testFiles("src/test/resources/adrianInput.nt",
+		boolean testSuccess = testFiles("src/test/resources/adrianInput.nt",
 				"src/test/resources/hbz01.es.wrongContributorOrder.json",
-				LOBID_RESOURCES_URI_PREFIX);
+				LOBID_RESOURCES_URI_PREFIX, false);
 		TestRdfToJsonConversion.logger
-				.info("\n WrongContributorOrder Test - must fail! \n");
-		org.junit.Assert.assertFalse(result);
+				.info("\n WrongContributorOrder (Test - must fail!). " + (testSuccess
+						? "Douh, test didn't failed :(" : "Success because test failed :)")
+						+ "\n");
+		org.junit.Assert.assertTrue(generateTestData || allTestsSuccessful);
 	}
 
 	private static boolean testFiles(String fnameNtriples, String fnameJson,
-			String uri) {
+			String uri, boolean testExpectedToBeEqual) {
 		Map<String, Object> expected = null;
 		Map<String, Object> actual = null;
 		TestRdfToJsonConversion.logger
 				.info("Convert " + fnameNtriples + " to " + fnameJson);
+		boolean testResult = false;
 		try (InputStream in = new FileInputStream(new File(fnameNtriples));
 				InputStream out = new File(fnameJson).exists()
 						? new FileInputStream(new File(fnameJson)) : makeFile(fnameJson)) {
@@ -121,30 +139,37 @@ public class TestRdfToJsonConversion {
 					.debug(new ObjectMapper().writeValueAsString(actual));
 			TestRdfToJsonConversion.logger.info(
 					"Begin comparing files: " + fnameNtriples + " against " + fnameJson);
-			try {
-				expected = new ObjectMapper().readValue(out, Map.class);
-			} // if file to test against not yet exists
-			catch (FileNotFoundException | EOFException | JsonMappingException ef) {
-				TestRdfToJsonConversion.logger.info("Json file " + fnameJson
-						+ " to test against does not yet exist. Will create it now.");
-				try {
-					TestRdfToJsonConversion.logger.info(
-							"Creating: \n" + new ObjectMapper().writeValueAsString(actual));
-					JsonConverter.getObjectMapper().defaultPrettyPrintingWriter()
-							.writeValue(new File(fnameJson), actual);
-					expected =
-							new ObjectMapper().readValue(new File(fnameJson), Map.class);
-				} catch (IOException e) {
-					org.junit.Assert
-							.assertFalse("Problems creating file " + e.getMessage(), true);
-				}
-			}
+			expected = new ObjectMapper().readValue(out, Map.class);
+			testResult = new CompareJsonMaps().writeFileAndTestJson(
+					new ObjectMapper().convertValue(actual, JsonNode.class),
+					new ObjectMapper().convertValue(expected, JsonNode.class));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		return new CompareJsonMaps().writeFileAndTestJson(
-				new ObjectMapper().convertValue(actual, JsonNode.class),
-				new ObjectMapper().convertValue(expected, JsonNode.class));
+		if (testResult != testExpectedToBeEqual) {
+			allTestsSuccessful = false;
+			if (generateTestData) {
+				TestRdfToJsonConversion.logger
+						.info("Going to update the test file " + fnameJson);
+				makeTestFiles(fnameJson, actual);
+			}
+		}
+		return testResult;
+	}
+
+	private static void makeTestFiles(String fnameJson,
+			Map<String, Object> actual) {
+		TestRdfToJsonConversion.logger.info("Json file " + fnameJson
+				+ " to test against does not yet exist. Will create it now.");
+		try {
+			TestRdfToJsonConversion.logger
+					.info("Creating: \n" + new ObjectMapper().writeValueAsString(actual));
+			JsonConverter.getObjectMapper().defaultPrettyPrintingWriter()
+					.writeValue(new File(fnameJson), actual);
+		} catch (IOException e) {
+			org.junit.Assert.assertFalse("Problems creating file " + e.getMessage(),
+					true);
+		}
 	}
 
 	private static FileInputStream makeFile(String fnameJson) throws IOException {

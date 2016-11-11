@@ -1,22 +1,40 @@
+
+/*Copyright (c) 2015 "hbz"
+
+This file is part of lobid-rdf-to-json.
+
+etikett is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
-import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openrdf.rio.RDFFormat;
 import org.slf4j.Logger;
@@ -29,7 +47,7 @@ import de.hbz.lobid.helper.RdfUtils;
 
 /**
  * @author Jan Schnasse
- * 
+ * @author Pascal Christoph (dr0i)
  *
  */
 public class TestJsonToRdfConversion {
@@ -41,9 +59,12 @@ public class TestJsonToRdfConversion {
 			new EtikettMaker(Thread.currentThread().getContextClassLoader()
 					.getResourceAsStream("labels.json"));
 	/**
-	 * if true all comparisons will be executed. No assertion will fail.
+	 * If "true" all comparisons will be executed and a failed assertion may be
+	 * given only once at the end. If "false" the test is cancelled even after the
+	 * first fail.
 	 */
-	private boolean DEBUG_RUN = false;
+	private static boolean debugRun = false;
+
 	/**
 	 * The relative location of test resources. Needed to access test resources
 	 * via normal Filesystem operations
@@ -62,6 +83,20 @@ public class TestJsonToRdfConversion {
 
 	boolean stringsAreEqual = true;
 
+	/**
+	 * If the environment variable is set to "true" the test data shall be updated
+	 * and written into filesystem.
+	 */
+	@BeforeClass
+	public static void setup() {
+		if (System.getProperty("generateTestData", "false").equals("true"))
+			debugRun = true;
+		else
+			debugRun = false;
+		logger.info(
+				debugRun ? "Test data will be updated" : "Test data won't be updated");
+	}
+
 	@SuppressWarnings({ "javadoc" })
 	@Test
 	public void test_all() {
@@ -70,7 +105,7 @@ public class TestJsonToRdfConversion {
 					.forEach(path -> {
 						test(path);
 					});
-			org.junit.Assert.assertTrue(stringsAreEqual);
+			org.junit.Assert.assertTrue(debugRun || stringsAreEqual);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -78,8 +113,8 @@ public class TestJsonToRdfConversion {
 
 	private void test(Path path) {
 		try {
-			String jsonFilename = getRelativePath(BASE + REVERSE_IN, path);
-			String rdfFilename = getRdfFileName(path);
+			String jsonFilename = path.toString();
+			String rdfFilename = BASE + REVERSE_OUT + getRdfFileName(path);
 			compare(jsonFilename, rdfFilename);
 		} catch (Exception e) {
 			logger.error("", e);
@@ -97,27 +132,26 @@ public class TestJsonToRdfConversion {
 	}
 
 	void compare(String jsonFilename, String rdfFilename)
-			throws FileNotFoundException, URISyntaxException, IOException {
+			throws FileNotFoundException, IOException {
 		String actualRdfString = null;
-		try {
-			logger.info("Compare: " + jsonFilename + " " + rdfFilename);
-			actualRdfString = getActual(jsonFilename);
-			String expectedRdfString = getExpected(rdfFilename);
-			boolean areEq = rdfCompare(actualRdfString, expectedRdfString);
-			if (!areEq)
+		logger.info("Compare: " + jsonFilename + " " + rdfFilename);
+		actualRdfString = getActual(jsonFilename);
+		if (debugRun && !new File(rdfFilename).exists())
+			makeFile(actualRdfString, rdfFilename);
+		String expectedRdfString = getExpected(rdfFilename);
+		boolean areEq = rdfCompare(actualRdfString, expectedRdfString);
+		if (!areEq) {
+			if (!debugRun) {
 				this.stringsAreEqual = false;
-			if (!DEBUG_RUN) {
-				org.junit.Assert.assertTrue(areEq);
-			}
-		} catch (Exception e) {
-			writeToFileIfNotExists(actualRdfString, rdfFilename);
-			throw new RuntimeException(e);
+				org.junit.Assert.assertTrue(this.stringsAreEqual);
+			} else
+				makeFile(actualRdfString, rdfFilename);
 		}
 	}
 
 	private static String getActual(String jsonFilename)
 			throws UnsupportedEncodingException {
-		String jsonString = createJsonString(REVERSE_IN + jsonFilename);
+		String jsonString = createJsonString(jsonFilename);
 		String actualRdfString = RdfUtils.readRdfToString(
 				new ByteArrayInputStream(jsonString.getBytes("utf-8")),
 				RDFFormat.JSONLD, RDFFormat.NTRIPLES, "");
@@ -125,15 +159,15 @@ public class TestJsonToRdfConversion {
 	}
 
 	private static String getExpected(String rdfFilename) {
-		logger.debug("Read rdf " + REVERSE_OUT + rdfFilename);
-		try (InputStream in = Thread.currentThread().getContextClassLoader()
-				.getResourceAsStream(REVERSE_OUT + rdfFilename)) {
-			String rdfString = RdfUtils.readRdfToString(in, RDFFormat.NTRIPLES,
+		logger.debug("Read rdf " + rdfFilename);
+		String rdfString = "";
+		try (InputStream in = new FileInputStream(rdfFilename)) {
+			rdfString = RdfUtils.readRdfToString(in, RDFFormat.NTRIPLES,
 					RDFFormat.NTRIPLES, "");
-			return rdfString;
 		} catch (Exception e) {
-			throw new RuntimeException(e);
+			logger.error("", e);
 		}
+		return rdfString;
 	}
 
 	private static boolean rdfCompare(String actual, String expected) {
@@ -150,24 +184,25 @@ public class TestJsonToRdfConversion {
 		if (actualSorted.length != expectedSorted.length) {
 			logger.error("Expected size of " + expectedSorted.length
 					+ " is different to actual size " + actualSorted.length);
+			result = false;
 		} else {
 			logger.debug("Expected size of " + expectedSorted.length
 					+ " is equal to actual size " + actualSorted.length);
-		}
-		for (int i = 0; i < actualSorted.length; i++) {
-			if (actualSorted[i].equals(expectedSorted[i])) {
-				logger.debug("Actual , Expected");
-				logger.debug(actualSorted[i]);
-				logger.debug(expectedSorted[i]);
-				logger.debug("");
-			} else {
-				logger.error("Error line " + i);
-				logger.error("Actual , Expected");
-				logger.error(actualSorted[i]);
-				logger.error(expectedSorted[i]);
-				logger.error("");
-				result = false;
-				break;
+			for (int i = 0; i < actualSorted.length; i++) {
+				if (actualSorted[i].equals(expectedSorted[i])) {
+					logger.debug("Actual , Expected");
+					logger.debug(actualSorted[i]);
+					logger.debug(expectedSorted[i]);
+					logger.debug("");
+				} else {
+					logger.error("Error line " + i);
+					logger.error("Actual , Expected");
+					logger.error(actualSorted[i]);
+					logger.error(expectedSorted[i]);
+					logger.error("");
+					result = false;
+					break;
+				}
 			}
 		}
 		return result;
@@ -203,11 +238,10 @@ public class TestJsonToRdfConversion {
 	}
 
 	private static String createJsonString(String jsonFilename) {
-		try {
-			logger.debug("Read json " + jsonFilename);
-			Map<String, Object> jsonMap = JsonConverter.getObjectMapper()
-					.readValue(Thread.currentThread().getContextClassLoader()
-							.getResourceAsStream(jsonFilename), Map.class);
+		logger.debug("Read json " + jsonFilename);
+		try (FileInputStream fis = new FileInputStream(jsonFilename)) {
+			Map<String, Object> jsonMap =
+					JsonConverter.getObjectMapper().readValue(fis, Map.class);
 			jsonMap.put("@context", etikettMaker.getContext().get("@context"));
 			String jsonString =
 					JsonConverter.getObjectMapper().writeValueAsString(jsonMap);
@@ -217,22 +251,10 @@ public class TestJsonToRdfConversion {
 		}
 	}
 
-	private static void writeToFileIfNotExists(String rdf, String fileName)
-			throws URISyntaxException, FileNotFoundException, IOException {
-		try {
-			Paths.get(Thread.currentThread().getContextClassLoader()
-					.getResource(fileName).toURI()).toFile();
-		} catch (NullPointerException e) {
-			makeFile(rdf, fileName);
-		}
-	}
-
 	private static void makeFile(String rdf, String fileName) throws IOException {
-		logger.info("Try to create: " + BASE + fileName);
-		File f = new File(BASE + fileName);
-		f.getParentFile().mkdirs();
-		f.createNewFile();
-		logger.info("Created: " + f.getAbsolutePath());
-		Files.write(f.toPath(), rdf.getBytes(), StandardOpenOption.CREATE);
+		logger.info("Try to create: " + fileName);
+		Path path = new File(fileName).toPath();
+		logger.info("Created: " + path);
+		Files.write(path, rdf.getBytes());
 	}
 }

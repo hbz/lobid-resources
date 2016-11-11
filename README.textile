@@ -19,6 +19,41 @@ Create and change into a folder where you want to store the projects:
 
 See the @.travis.yml@ file for details on the CI config used by Travis.
 
+h1. Developer instructions
+
+This section explains what to do if the generated data changes, e.g. when updating *labels.json*.
+The procedure is similar to the one in the "lobid-resources repo":https://github.com/hbz/lobid-resources.
+
+h2. Errors in tests
+
+After your changes you build the project like:
+@mvn clean install@
+
+A *BUILD FAILURE* results when newly generated data isn't equal to the test resources. This is a good thing because you wanted the change!
+
+Doing @mvn test -DgenerateTestData=true@ the test data is generated and also updated in the filesystem.
+These new data will now act as the template for sucessful tests. So, if you would rebuild now, the build will pass successfully.
+You just must approve the new outcome by committing it.
+
+So, let's see what has changed:
+
+@git status@
+
+Let's make a diff on the changes, e.g. all JSON-LD documents:
+
+@git diff  src/test/resources/output/json/@
+
+If you are satisfied with the changes, go ahead - add and commit them:
+
+@git add src/test/resources/jsonld/; git commit@
+
+Do this respectivly for all other test files (Ntriples).
+If you've added and commited everything, check again if all is ok:
+
+@mvn clean install@
+
+This should result in *BUILD SUCCESS*. Push your changes. You're done :)
+
 h1. License
 
 GNU AFFERO GENERAL PUBLIC LICENSE
