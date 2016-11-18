@@ -1,19 +1,19 @@
 {
   "@context" : "http://lobid.org/context/lobid-resources.json",
   "collectedBy" : [ {
-    "id" : "http://lobid.org/resource/NWBib"
+    "id" : "http://lobid.org/resources/NWBib"
   } ],
   "describedby" : [ {
     "dateCreated" : "19940829",
     "dateModified" : "20101004",
-    "id" : "http://lobid.org/resource/BT000003404/about"
+    "id" : "http://lobid.org/resources/BT000003404"
   } ],
   "edition" : [ "10.[Aufl., Ausg.] 1993/94" ],
   "extent" : [ "Kt." ],
   "hbzId" : [ "BT000003404" ],
-  "id" : "http://lobid.org/resource/BT000003404",
+  "id" : "http://lobid.org/resources/BT000003404#!",
   "isPartOf" : [ {
-    "id" : "http://lobid.org/resource/BT000100437"
+    "id" : "http://lobid.org/resources/BT000100437#!"
   } ],
   "isPrimaryTopicOf" : [ {
     "id" : "http://193.30.112.134/F/?func=find-c&ccl_term=IDN%3DBT000003404"
@@ -45,21 +45,29 @@
     "id" : "http://hub.culturegraph.org/resource/HBZ-BT000003404"
   } ],
   "subject" : [ {
-    "id" : "http://d-nb.info/gnd/4115393-5",
-    "label" : "Niedersachsen, Süd"
-  }, {
     "id" : "http://d-nb.info/gnd/4042570-8",
-    "label" : "Nordrhein-Westfalen"
+    "label" : "Nordrhein-Westfalen",
+    "type" : [ "PlaceOrGeographicName" ]
+  }, {
+    "label" : "Karte",
+    "type" : [ "SubjectHeading" ]
+  }, {
+    "id" : "http://d-nb.info/gnd/4115393-5",
+    "label" : "Niedersachsen, Süd",
+    "type" : [ "PlaceOrGeographicName", "SubjectHeading" ]
+  }, {
+    "label" : "Karte",
+    "type" : [ "SubjectHeading" ]
   } ],
-  "subjectChain" : [ "Niedersachsen | Süd | Karte", "Nordrhein-Westfalen | Karte" ],
+  "subjectChain" : [ "Niedersachsen, Süd | Karte", "Nordrhein-Westfalen | Karte" ],
   "subjectLabel" : [ "NRW", "Nord-Westphalie", "Noordrijn-Westfalen", "NW", "Südliches Niedersachsen", "Südniedersachsen", "Norte-Westfalia", "North Rhine-Westphalia" ],
   "subjectOrder" : [ "http://d-nb.info/gnd/4042570-8, Karte", "http://d-nb.info/gnd/4115393-5, Karte" ],
-  "title" : [ "Deutschland 1:300000", "Deutschland, 2: Nordrhein-Westfalen, Niedersachsen-Süd" ],
+  "title" : [ "Deutschland, 2: Nordrhein-Westfalen, Niedersachsen-Süd" ],
   "type" : [ "BibliographicResource", "Article" ],
   "volume" : [ "2" ],
   "volumeIn" : [ {
     "multiVolumeWork" : [ {
-      "id" : "http://lobid.org/resource/BT000100437"
+      "id" : "http://lobid.org/resources/BT000100437#!"
     } ],
     "numbering" : "2",
     "type" : [ "MultiVolumeWorkRelation" ]
