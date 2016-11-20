@@ -12,7 +12,7 @@ import org.junit.runners.Suite;
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({ TestRdfToJsonConversion.class,
-		TestJsonToRdfConversion.class })
+		TestJsonToRdfConversion.class, TestGenerateContext.class })
 public final class UnitTests {
 	/* Suite class, groups tests via annotation above */
 }
