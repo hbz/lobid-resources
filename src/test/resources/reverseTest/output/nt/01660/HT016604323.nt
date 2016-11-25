@@ -1,15 +1,25 @@
-_:b0 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://d-nb.info/standards/elementset/gnd#SubjectHeading> .
-_:b0 <http://www.w3.org/2000/01/rdf-schema#label> "Bericht"^^<http://www.w3.org/2001/XMLSchema#string> .
-_:b1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <http://d-nb.info/gnd/16090142-X> .
-_:b1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:b2 .
-_:b2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> _:b0 .
-_:b2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:b3 .
-_:b3 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <http://dewey.info/class/360/> .
+_:b0 <http://bibframe.org/vocab/agent> <http://d-nb.info/gnd/16090142-X> .
+_:b0 <http://bibframe.org/vocab/relator> <http://id.loc.gov/vocabulary/relators/cre> .
+_:b0 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://bibframe.org/vocab/Contribution> .
+_:b1 <http://bibframe.org/vocab/agent> <http://d-nb.info/gnd/4065786-3> .
+_:b1 <http://bibframe.org/vocab/relator> <http://id.loc.gov/vocabulary/relators/ctb> .
+_:b1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://bibframe.org/vocab/Contribution> .
+_:b2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://d-nb.info/standards/elementset/gnd#SubjectHeading> .
+_:b2 <http://www.w3.org/2000/01/rdf-schema#label> "Bericht"^^<http://www.w3.org/2001/XMLSchema#string> .
+_:b3 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> _:b0 .
 _:b3 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:b4 .
-_:b4 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <http://dewey.info/class/610/> .
+_:b4 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> _:b1 .
 _:b4 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
-_:b5 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> "http://d-nb.info/gnd/16090142-X, Bericht"^^<http://www.w3.org/2001/XMLSchema#string> .
-_:b5 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
+_:b5 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <http://d-nb.info/gnd/16090142-X> .
+_:b5 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:b6 .
+_:b6 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> _:b2 .
+_:b6 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:b7 .
+_:b7 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <http://dewey.info/class/360/> .
+_:b7 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:b8 .
+_:b8 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <http://dewey.info/class/610/> .
+_:b8 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
+_:b9 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> "http://d-nb.info/gnd/16090142-X, Bericht"^^<http://www.w3.org/2001/XMLSchema#string> .
+_:b9 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
 <http://d-nb.info/gnd/16090142-X> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://d-nb.info/standards/elementset/gnd#CorporateBody> .
 <http://d-nb.info/gnd/16090142-X> <http://www.w3.org/2000/01/rdf-schema#label> "PsychiatrieVerbund Westfalen, Beschwerdekommission"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://d-nb.info/gnd/16090142-X> <http://www.w3.org/2000/01/rdf-schema#label> "PsychiatrieVerbund Westfalen. Beschwerdekommission"^^<http://www.w3.org/2001/XMLSchema#string> .
@@ -24,6 +34,8 @@ _:b5 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/0
 <http://d-nb.info/gnd/4065786-3> <http://www.w3.org/2004/02/skos/core#altLabel> "Westf\u00E4lische Landesversammlung"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://dewey.info/class/360/> <http://www.w3.org/2000/01/rdf-schema#label> "Soziale Probleme und Sozialdienste; Verb\u00E4nde"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://dewey.info/class/610/> <http://www.w3.org/2000/01/rdf-schema#label> "Medizin und Gesundheit"^^<http://www.w3.org/2001/XMLSchema#string> .
+<http://id.loc.gov/vocabulary/relators/cre> <http://www.w3.org/2000/01/rdf-schema#label> "Creator"^^<http://www.w3.org/2001/XMLSchema#string> .
+<http://id.loc.gov/vocabulary/relators/ctb> <http://www.w3.org/2000/01/rdf-schema#label> "Mitwirkende"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/items/HT016604323:DE-6:XB%203534#!> <http://purl.org/ontology/daia/label> "XB 3534"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/items/HT016604323:DE-6:XB%203534#!> <http://purl.org/vocab/frbr/core#exemplarOf> <http://lobid.org/resources/HT016604323#!> .
 <http://lobid.org/items/HT016604323:DE-6:XB%203534#!> <http://purl.org/vocab/frbr/core#owner> <http://lobid.org/organisation/DE-6> .
@@ -31,20 +43,19 @@ _:b5 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/0
 <http://lobid.org/items/HT016604323:DE-6:XB%203534#!> <http://www.w3.org/2007/05/powder-s#describedby> <http://lobid.org/items/HT016604323:DE-6:XB%203534> .
 <http://lobid.org/resources/HT016604323> <http://purl.org/dc/terms/created> "20101116"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/resources/HT016604323> <http://purl.org/dc/terms/modified> "20141121"^^<http://www.w3.org/2001/XMLSchema#string> .
+<http://lobid.org/resources/HT016604323#!> <http://bibframe.org/vocab/contribution> _:b3 .
 <http://lobid.org/resources/HT016604323#!> <http://purl.org/dc/elements/1.1/publisher> "Landschaftsverb. Westfalen-Lippe"^^<http://www.w3.org/2001/XMLSchema#string> .
-<http://lobid.org/resources/HT016604323#!> <http://purl.org/dc/terms/contributor> <http://d-nb.info/gnd/4065786-3> .
-<http://lobid.org/resources/HT016604323#!> <http://purl.org/dc/terms/creator> <http://d-nb.info/gnd/16090142-X> .
 <http://lobid.org/resources/HT016604323#!> <http://purl.org/dc/terms/issued> "2005 - "^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/resources/HT016604323#!> <http://purl.org/dc/terms/language> <http://id.loc.gov/vocabulary/iso639-2/deu> .
 <http://lobid.org/resources/HT016604323#!> <http://purl.org/dc/terms/medium> <http://rdvocab.info/termList/RDAproductionMethod/1010> .
-<http://lobid.org/resources/HT016604323#!> <http://purl.org/dc/terms/subject> _:b1 .
+<http://lobid.org/resources/HT016604323#!> <http://purl.org/dc/terms/subject> _:b5 .
 <http://lobid.org/resources/HT016604323#!> <http://purl.org/dc/terms/title> "Bericht der Beschwerdekommission"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/resources/HT016604323#!> <http://purl.org/lobid/lv#contributorOrder> "http://d-nb.info/gnd/16090142-X | http://d-nb.info/gnd/4065786-3"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/resources/HT016604323#!> <http://purl.org/lobid/lv#hbzID> "HT016604323"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/resources/HT016604323#!> <http://purl.org/lobid/lv#nwbibspatial> <http://purl.org/lobid/nwbib-spatial#n05> .
 <http://lobid.org/resources/HT016604323#!> <http://purl.org/lobid/lv#nwbibsubject> <http://purl.org/lobid/nwbib#s534000> .
 <http://lobid.org/resources/HT016604323#!> <http://purl.org/lobid/lv#subjectChain> "PsychiatrieVerbund Westfalen, Beschwerdekommission | Bericht"^^<http://www.w3.org/2001/XMLSchema#string> .
-<http://lobid.org/resources/HT016604323#!> <http://purl.org/lobid/lv#subjectOrder> _:b5 .
+<http://lobid.org/resources/HT016604323#!> <http://purl.org/lobid/lv#subjectOrder> _:b9 .
 <http://lobid.org/resources/HT016604323#!> <http://purl.org/lobid/lv#zdbID> "2581964-1"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/resources/HT016604323#!> <http://purl.org/ontology/holding#collectedBy> <http://lobid.org/resources/NWBib> .
 <http://lobid.org/resources/HT016604323#!> <http://purl.org/vocab/frbr/core#exemplar> <http://lobid.org/items/HT016604323:DE-6:XB%203534#!> .

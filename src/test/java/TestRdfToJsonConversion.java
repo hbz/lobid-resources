@@ -66,6 +66,8 @@ public class TestRdfToJsonConversion {
 			(Map<String, Object>) etikettMaker.getContext().get("@context");
 	final static String contextUrl =
 			"http://lobid.org/context/lobid-resources.json";
+	final private static String TEST_FILE_CONTRIBUTOR_ORDER =
+			"src/test/resources/input/nt/01845/HT018454638.nt";
 
 	static boolean allTestsSuccessful = true;
 
@@ -103,8 +105,8 @@ public class TestRdfToJsonConversion {
 	@SuppressWarnings({ "javadoc" })
 	@Test
 	public void testEquality_case1() {
-		testFiles("src/test/resources/adrianInput.nt",
-				"src/test/resources/hbz01.es.json", LOBID_RESOURCES_URI_PREFIX, true);
+		testFiles(TEST_FILE_CONTRIBUTOR_ORDER, "src/test/resources/hbz01.es.json",
+				LOBID_RESOURCES_URI_PREFIX, true);
 		TestRdfToJsonConversion.logger
 				.info("\n Adrian Input Test - must succeed! \n");
 		org.junit.Assert.assertTrue(generateTestData || allTestsSuccessful);
@@ -113,7 +115,7 @@ public class TestRdfToJsonConversion {
 	@SuppressWarnings({ "javadoc" })
 	@Test
 	public void testWrongContributorOrder() {
-		boolean testSuccess = testFiles("src/test/resources/adrianInput.nt",
+		boolean testSuccess = testFiles(TEST_FILE_CONTRIBUTOR_ORDER,
 				"src/test/resources/hbz01.es.wrongContributorOrder.json",
 				LOBID_RESOURCES_URI_PREFIX, false);
 		TestRdfToJsonConversion.logger
