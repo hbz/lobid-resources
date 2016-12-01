@@ -43,9 +43,9 @@ public class PipeEncodeTriples extends AbstractGraphPipeEncoder {
 	private final AtomicInteger ATOMIC_INT = new AtomicInteger();
 	// dummy subject to store data even if the subject is unknown at first
 	final static String DUMMY_SUBJECT = "dummy_subject";
-	final static String HTTP = "^[hH][tT][Tt][Pp].*";
+	final static String HTTP = "^[hH][tT][Tt][Pp][sS]?://.*";
 	final static String BNODE = "^_:.*";
-	final static String FTP = "^[Ff][Tt][Pp].*";
+	final static String FTP = "^[Ff][Tt][Pp][sS]?://.*";
 
 	final static String URN = "urn";
 	final static String PROPERTY_AS_LITERALS = "Order";
