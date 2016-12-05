@@ -53,18 +53,14 @@
 
 @nwbibBreadcrumb() = {
 	@if(!nwbibsubject.isEmpty && !nwbibsubject.contains(",") && Seq(nwbibspatial, person, name, subject, id, publisher, issued, medium, owner, t, set, location, word, corporation, raw).forall(_.isEmpty)){
-		<ol class="breadcrumb">
-			<li><a href="@nwbib.routes.Application.register("Sachsystematik")">Sachgebiete</a></li>
-			<li><a href="@nwbib.routes.Application.classification("Sachsystematik")">Sachsystematik</a></li>
-			<li class="active">@Classification.shortId(nwbibsubject) @Lobid.facetLabel(Seq(nwbibsubject),"","")</li>
-		</ol>
+			in <i><a href="@nwbib.routes.Application.register("Sachsystematik")">Sachgebiete</a> / 
+			<a href="@nwbib.routes.Application.classification("Sachsystematik")">Sachsystematik</a> / 
+			@Classification.shortId(nwbibsubject) @Lobid.facetLabel(Seq(nwbibsubject),"","")</i>, 
 	} else {
 		@if(!nwbibspatial.isEmpty && !nwbibspatial.contains(",") && Seq(nwbibsubject, person, name, subject, id, publisher, issued, medium, owner, t, set, location, word, corporation, raw).forall(_.isEmpty)){
-		<ol class="breadcrumb">
-			<li><a href="@nwbib.routes.Application.register("Raumsystematik")">Regionen</a></li>
-			<li><a href="@nwbib.routes.Application.classification("Raumsystematik")">Raumsystematik</a></li>
-			<li class="active">@Classification.shortId(nwbibspatial) @Lobid.facetLabel(Seq(nwbibspatial),"","")</li>
-		</ol>
+			in <i><a href="@nwbib.routes.Application.register("Raumsystematik")">Regionen</a> / 
+			<a href="@nwbib.routes.Application.classification("Raumsystematik")">Raumsystematik</a> / 
+			@Classification.shortId(nwbibspatial) @Lobid.facetLabel(Seq(nwbibspatial),"","")</i>, 
 		}
 	}
 }
@@ -79,7 +75,6 @@
      <div class="row">
          <div class="col-md-@if(allHits > 0){9}else{12}">
          @if(hits.size>0){
-             @nwbibBreadcrumb()
              <div class="row hide-in-print" >
                  <div class="col-md-6" style="text-align:left">
                    <ul class="nav nav-pills" role="tablist">
@@ -106,7 +101,7 @@
                     <div class="col-md-10">
                      @allHits @if(!raw.isEmpty && !raw.contains(Lobid.escapeUri(Application.COVERAGE_FIELD.replace(".raw","")))){
                       @defining(Application.CONFIG.getString("nwbib.api") + "/" + raw.substring(raw.lastIndexOf("/")+1)) { lobidUrl =>
-                       @labelRaw in: <a href="@lobidUrl.replace("/resource/","/nwbib/")">@Html(Lobid.resourceLabel(lobidUrl))</a>}}else{Treffer}, 
+                       @labelRaw in: <a href="@lobidUrl.replace("/resource/","/nwbib/")">@Html(Lobid.resourceLabel(lobidUrl))</a>}}else{Treffer}@nwbibBreadcrumb()
                        zeige @(from+1) bis @(Math.min(from+hits.size,from+size)):
                     </div>
                     <div class="col-md-1" style="text-align: right; padding-right: 4px;">
