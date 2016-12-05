@@ -6,6 +6,7 @@
 @import tags._
 @import controllers.nwbib.Lobid
 @import controllers.nwbib.Application
+@import controllers.nwbib.Classification
 @import play.api.libs.json.Json
 @import play.api.libs.json.JsValue
 @import play.api.libs.json.JsArray
@@ -50,11 +51,21 @@
 	if(raw.contains("multiVolumeWork")) {select(("Band","Bände"))} else if (raw.contains("series")) {select(("Serienband","Serienbände"))} else if (raw.contains("containedIn")) {select(("Beitrag","Beiträge"))} else {""}
 }
 
-@nwbibLabel() = @{
-	if(!nwbibsubject.isEmpty && !nwbibsubject.contains(",") && Seq(nwbibspatial, person, name, subject, id, publisher, issued, medium, owner, t, set, location, word, corporation, raw).forall(_.isEmpty)){
-		s" in Sachsystematik zu '${Lobid.facetLabel(Seq(nwbibsubject),"","")}'"
-	} else if(!nwbibspatial.isEmpty && !nwbibspatial.contains(",") && Seq(nwbibsubject, person, name, subject, id, publisher, issued, medium, owner, t, set, location, word, corporation, raw).forall(_.isEmpty)){
-		s" in Raumsystematik zu '${Lobid.facetLabel(Seq(nwbibspatial),"","")}'"
+@nwbibBreadcrumb() = {
+	@if(!nwbibsubject.isEmpty && !nwbibsubject.contains(",") && Seq(nwbibspatial, person, name, subject, id, publisher, issued, medium, owner, t, set, location, word, corporation, raw).forall(_.isEmpty)){
+		<ol class="breadcrumb">
+			<li><a href="@nwbib.routes.Application.register("Sachsystematik")">Sachgebiete</a></li>
+			<li><a href="@nwbib.routes.Application.classification("Sachsystematik")">Sachsystematik</a></li>
+			<li class="active">@Classification.shortId(nwbibsubject) @Lobid.facetLabel(Seq(nwbibsubject),"","")</li>
+		</ol>
+	} else {
+		@if(!nwbibspatial.isEmpty && !nwbibspatial.contains(",") && Seq(nwbibsubject, person, name, subject, id, publisher, issued, medium, owner, t, set, location, word, corporation, raw).forall(_.isEmpty)){
+		<ol class="breadcrumb">
+			<li><a href="@nwbib.routes.Application.register("Raumsystematik")">Regionen</a></li>
+			<li><a href="@nwbib.routes.Application.classification("Raumsystematik")">Raumsystematik</a></li>
+			<li class="active">@Classification.shortId(nwbibspatial) @Lobid.facetLabel(Seq(nwbibspatial),"","")</li>
+		</ol>
+		}
 	}
 }
 
@@ -68,6 +79,7 @@
      <div class="row">
          <div class="col-md-@if(allHits > 0){9}else{12}">
          @if(hits.size>0){
+             @nwbibBreadcrumb()
              <div class="row hide-in-print" >
                  <div class="col-md-6" style="text-align:left">
                    <ul class="nav nav-pills" role="tablist">
@@ -94,7 +106,7 @@
                     <div class="col-md-10">
                      @allHits @if(!raw.isEmpty && !raw.contains(Lobid.escapeUri(Application.COVERAGE_FIELD.replace(".raw","")))){
                       @defining(Application.CONFIG.getString("nwbib.api") + "/" + raw.substring(raw.lastIndexOf("/")+1)) { lobidUrl =>
-                       @labelRaw in: <a href="@lobidUrl.replace("/resource/","/nwbib/")">@Html(Lobid.resourceLabel(lobidUrl))</a>}}else{Treffer}@nwbibLabel(), 
+                       @labelRaw in: <a href="@lobidUrl.replace("/resource/","/nwbib/")">@Html(Lobid.resourceLabel(lobidUrl))</a>}}else{Treffer}, 
                        zeige @(from+1) bis @(Math.min(from+hits.size,from+size)):
                     </div>
                     <div class="col-md-1" style="text-align: right; padding-right: 4px;">
