@@ -107,7 +107,7 @@
   @result_field("Übersetzung", "translator", doc, TableRow.VALUES, valueLabel = gndEntities, param="person")
 
   @with_icon("Medientyp", "medium", controllers.nwbib.Application.MEDIUM_FIELD)
-  @with_icon("Publikationstyp", if(Lobid.DATA_2) { "type" } else { "@type" }, controllers.nwbib.Application.TYPE_FIELD)
+  @with_icon("Publikationstyp", if(Lobid.DATA_2) { "type" } else { "@type" }, if(Lobid.DATA_2) { controllers.nwbib.Application.TYPE_FIELD_LOBID2 } else { controllers.nwbib.Application.TYPE_FIELD })
   @result_field("", "thesisInformation", doc, TableRow.VALUES)
 
   @result_field("Erschienen", "issued", doc, TableRow.VALUES)

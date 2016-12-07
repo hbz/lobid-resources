@@ -73,6 +73,8 @@ public class Application extends Controller {
 
 	/** The internal ES field for the type facet. */
 	public static final String TYPE_FIELD = "@graph.@type";
+	/** The type field in Lobid data 2.0. */
+	public static final String TYPE_FIELD_LOBID2 = "type";
 	/** The internal ES field for the medium facet. */
 	public static final String MEDIUM_FIELD =
 			"@graph.http://purl.org/dc/terms/medium.@id";
