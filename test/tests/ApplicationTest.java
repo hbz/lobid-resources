@@ -44,33 +44,24 @@ public class ApplicationTest {
 	@Test
 	public void typeSelectionMultiVolumeBook() {
 		String selected = Lobid.selectType(
-				Arrays.asList("http://purl.org/dc/terms/BibliographicResource",
-						"http://purl.org/ontology/bibo/MultiVolumeBook",
-						"http://purl.org/ontology/bibo/Book"),
-				"type.labels");
-		assertThat(selected)
-				.isEqualTo("http://purl.org/ontology/bibo/MultiVolumeBook");
+				Arrays.asList("BibliographicResource", "MultiVolumeBook", "Book"),
+				"type.labels.lobid2");
+		assertThat(selected).isEqualTo("MultiVolumeBook");
 	}
 
 	@Test
 	public void typeSelectionPublishedScore() {
-		String selected = Lobid
-				.selectType(Arrays.asList("http://purl.org/ontology/mo/PublishedScore",
-						"http://purl.org/ontology/bibo/MultiVolumeBook",
-						"http://purl.org/ontology/bibo/Book"), "type.labels");
-		assertThat(selected)
-				.isEqualTo("http://purl.org/ontology/mo/PublishedScore");
+		String selected = Lobid.selectType(
+				Arrays.asList("MultiVolumeBook", "PublishedScore", "Book"),
+				"type.labels.lobid2");
+		assertThat(selected).isEqualTo("PublishedScore");
 	}
 
 	@Test
 	public void typeSelectionEditedVolume() {
-		String selected =
-				Lobid.selectType(
-						Arrays.asList("http://purl.org/lobid/lv#EditedVolume",
-								"http://purl.org/ontology/bibo/MultiVolumeBook",
-								"http://purl.org/dc/terms/BibliographicResource"),
-				"type.labels");
-		assertThat(selected).isEqualTo("http://purl.org/lobid/lv#EditedVolume");
+		String selected = Lobid.selectType(Arrays.asList("MultiVolumeBook",
+				"BibliographicResource", "EditedVolume"), "type.labels.lobid2");
+		assertThat(selected).isEqualTo("EditedVolume");
 	}
 
 	@Test
