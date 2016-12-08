@@ -1,7 +1,12 @@
-_:b0 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <http://dewey.info/class/050/> .
-_:b0 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:b1 .
-_:b1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <http://dewey.info/class/310/> .
+_:b0 <http://bibframe.org/vocab/agent> <http://d-nb.info/gnd/2023669-4> .
+_:b0 <http://bibframe.org/vocab/relator> <http://id.loc.gov/vocabulary/relators/ctb> .
+_:b0 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://bibframe.org/vocab/Contribution> .
+_:b1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> _:b0 .
 _:b1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
+_:b2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <http://dewey.info/class/050/> .
+_:b2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:b3 .
+_:b3 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <http://dewey.info/class/310/> .
+_:b3 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
 <http://d-nb.info/gnd/2023669-4> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://d-nb.info/standards/elementset/gnd#CorporateBody> .
 <http://d-nb.info/gnd/2023669-4> <http://www.w3.org/2000/01/rdf-schema#label> "Vereinte Nationen. Economic Commission for Europe"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://d-nb.info/gnd/2023669-4> <http://www.w3.org/2004/02/skos/core#altLabel> "CEE"^^<http://www.w3.org/2001/XMLSchema#string> .
@@ -19,6 +24,7 @@ _:b1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/0
 <http://d-nb.info/gnd/2023669-4> <http://www.w3.org/2004/02/skos/core#altLabel> "\u0116konomi\u010Deskaja Komissija dlja Evropy"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://dewey.info/class/050/> <http://www.w3.org/2000/01/rdf-schema#label> "Zeitschriften, allgemeine fortlaufende Sammelwerke"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://dewey.info/class/310/> <http://www.w3.org/2000/01/rdf-schema#label> "Sammlungen allgemeiner Statistiken"^^<http://www.w3.org/2001/XMLSchema#string> .
+<http://id.loc.gov/vocabulary/relators/ctb> <http://www.w3.org/2000/01/rdf-schema#label> "Mitwirkende"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/items/HT002619538:DE-294:ZRC%20828#!> <http://purl.org/ontology/daia/label> "ZRC 828"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/items/HT002619538:DE-294:ZRC%20828#!> <http://purl.org/vocab/frbr/core#exemplarOf> <http://lobid.org/resources/HT002619538#!> .
 <http://lobid.org/items/HT002619538:DE-294:ZRC%20828#!> <http://purl.org/vocab/frbr/core#owner> <http://lobid.org/organisation/DE-294> .
@@ -45,16 +51,16 @@ _:b1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/0
 <http://lobid.org/items/HT002619538:DE-6-260:V%20-%20B%20151#!> <http://www.w3.org/2007/05/powder-s#describedby> <http://lobid.org/items/HT002619538:DE-6-260:V%20-%20B%20151> .
 <http://lobid.org/resources/HT002619538> <http://purl.org/dc/terms/created> "19991118"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/resources/HT002619538> <http://purl.org/dc/terms/modified> "20131031"^^<http://www.w3.org/2001/XMLSchema#string> .
+<http://lobid.org/resources/HT002619538#!> <http://bibframe.org/vocab/contribution> _:b1 .
 <http://lobid.org/resources/HT002619538#!> <http://purl.org/dc/elements/1.1/publisher> "UN"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/resources/HT002619538#!> <http://purl.org/dc/terms/alternative> "Bulletin annuel de statistiques des transports pour l'Europe et l'Am\u00E9rique du Nord"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/resources/HT002619538#!> <http://purl.org/dc/terms/alternative> "E\u017Eegodnyj bjulleten' statistiki transporta dlja Evropy i Severnoj Ameriki"^^<http://www.w3.org/2001/XMLSchema#string> .
-<http://lobid.org/resources/HT002619538#!> <http://purl.org/dc/terms/contributor> <http://d-nb.info/gnd/2023669-4> .
 <http://lobid.org/resources/HT002619538#!> <http://purl.org/dc/terms/issued> "1955 - 2004"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/resources/HT002619538#!> <http://purl.org/dc/terms/language> <http://id.loc.gov/vocabulary/iso639-2/eng> .
 <http://lobid.org/resources/HT002619538#!> <http://purl.org/dc/terms/language> <http://id.loc.gov/vocabulary/iso639-2/fra> .
 <http://lobid.org/resources/HT002619538#!> <http://purl.org/dc/terms/language> <http://id.loc.gov/vocabulary/iso639-2/rus> .
 <http://lobid.org/resources/HT002619538#!> <http://purl.org/dc/terms/medium> <http://rdvocab.info/termList/RDAproductionMethod/1010> .
-<http://lobid.org/resources/HT002619538#!> <http://purl.org/dc/terms/subject> _:b0 .
+<http://lobid.org/resources/HT002619538#!> <http://purl.org/dc/terms/subject> _:b2 .
 <http://lobid.org/resources/HT002619538#!> <http://purl.org/dc/terms/title> "Annual bulletin of transport statistics for Europe and North America"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/resources/HT002619538#!> <http://purl.org/lobid/lv#contributorOrder> "http://d-nb.info/gnd/2023669-4"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/resources/HT002619538#!> <http://purl.org/lobid/lv#hbzID> "HT002619538"^^<http://www.w3.org/2001/XMLSchema#string> .

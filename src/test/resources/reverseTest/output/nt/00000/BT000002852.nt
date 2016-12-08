@@ -1,21 +1,27 @@
-_:b0 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <http://d-nb.info/gnd/4018466-3> .
-_:b0 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:b1 .
-_:b1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <http://d-nb.info/gnd/4020517-4> .
+_:b0 <http://bibframe.org/vocab/agent> <http://d-nb.info/gnd/4018466-3> .
+_:b0 <http://bibframe.org/vocab/relator> <http://id.loc.gov/vocabulary/relators/cre> .
+_:b0 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://bibframe.org/vocab/Contribution> .
+_:b1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> _:b0 .
 _:b1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
-_:b2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> "http://d-nb.info/gnd/4018466-3, http://d-nb.info/gnd/4020517-4"^^<http://www.w3.org/2001/XMLSchema#string> .
-_:b2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
+_:b2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <http://d-nb.info/gnd/4018466-3> .
+_:b2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:b3 .
+_:b3 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <http://d-nb.info/gnd/4020517-4> .
+_:b3 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
+_:b4 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> "http://d-nb.info/gnd/4018466-3, http://d-nb.info/gnd/4020517-4"^^<http://www.w3.org/2001/XMLSchema#string> .
+_:b4 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
 <http://d-nb.info/gnd/4018466-3> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://d-nb.info/standards/elementset/gnd#PlaceOrGeographicName> .
 <http://d-nb.info/gnd/4018466-3> <http://www.w3.org/2000/01/rdf-schema#label> "Freudenberg, Kreis Siegen-Wittgenstein"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://d-nb.info/gnd/4020517-4> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://d-nb.info/standards/elementset/gnd#SubjectHeading> .
 <http://d-nb.info/gnd/4020517-4> <http://www.w3.org/2000/01/rdf-schema#label> "Geschichte"^^<http://www.w3.org/2001/XMLSchema#string> .
+<http://id.loc.gov/vocabulary/relators/cre> <http://www.w3.org/2000/01/rdf-schema#label> "Creator"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/resources/BT000002852> <http://purl.org/dc/terms/created> "19960513"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/resources/BT000002852> <http://purl.org/dc/terms/modified> "19960513"^^<http://www.w3.org/2001/XMLSchema#string> .
+<http://lobid.org/resources/BT000002852#!> <http://bibframe.org/vocab/contribution> _:b1 .
 <http://lobid.org/resources/BT000002852#!> <http://iflastandards.info/ns/isbd/elements/P1053> "46 S. : Ill., Kt."^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/resources/BT000002852#!> <http://purl.org/dc/elements/1.1/coverage> "Freudenberg <Siegen-Wittgenstein>"^^<http://www.w3.org/2001/XMLSchema#string> .
-<http://lobid.org/resources/BT000002852#!> <http://purl.org/dc/terms/creator> <http://d-nb.info/gnd/4018466-3> .
 <http://lobid.org/resources/BT000002852#!> <http://purl.org/dc/terms/issued> "1989"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/resources/BT000002852#!> <http://purl.org/dc/terms/medium> <http://rdvocab.info/termList/RDAproductionMethod/1010> .
-<http://lobid.org/resources/BT000002852#!> <http://purl.org/dc/terms/subject> _:b0 .
+<http://lobid.org/resources/BT000002852#!> <http://purl.org/dc/terms/subject> _:b2 .
 <http://lobid.org/resources/BT000002852#!> <http://purl.org/dc/terms/title> "Stadt Freudenberg"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/resources/BT000002852#!> <http://purl.org/lobid/lv#contributorOrder> "http://d-nb.info/gnd/4018466-3"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/resources/BT000002852#!> <http://purl.org/lobid/lv#hbzID> "BT000002852"^^<http://www.w3.org/2001/XMLSchema#string> .
@@ -29,7 +35,7 @@ _:b2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/0
 <http://lobid.org/resources/BT000002852#!> <http://purl.org/lobid/lv#subjectLabel> "Stadt Freudenberg"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/resources/BT000002852#!> <http://purl.org/lobid/lv#subjectLabel> "Stadt Freudenberg S\u00FCdwestfalen"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/resources/BT000002852#!> <http://purl.org/lobid/lv#subjectLabel> "Zeitgeschichte"^^<http://www.w3.org/2001/XMLSchema#string> .
-<http://lobid.org/resources/BT000002852#!> <http://purl.org/lobid/lv#subjectOrder> _:b2 .
+<http://lobid.org/resources/BT000002852#!> <http://purl.org/lobid/lv#subjectOrder> _:b4 .
 <http://lobid.org/resources/BT000002852#!> <http://purl.org/ontology/holding#collectedBy> <http://lobid.org/resources/NWBib> .
 <http://lobid.org/resources/BT000002852#!> <http://rdaregistry.info/Elements/u/P60163> "Freudenberg"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/resources/BT000002852#!> <http://rdaregistry.info/Elements/u/P60333> "Freudenberg; 1989"^^<http://www.w3.org/2001/XMLSchema#string> .

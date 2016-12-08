@@ -1,30 +1,41 @@
-_:b0 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://d-nb.info/standards/elementset/gnd#SubjectHeading> .
-_:b0 <http://www.w3.org/2000/01/rdf-schema#label> "Bildband"^^<http://www.w3.org/2001/XMLSchema#string> .
-_:b1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <http://d-nb.info/gnd/1074109953> .
-_:b1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:b2 .
-_:b2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> _:b0 .
-_:b2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:b3 .
-_:b3 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <http://dewey.info/class/796/> .
-_:b3 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
-_:b4 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> "http://d-nb.info/gnd/1074109953, Bildband"^^<http://www.w3.org/2001/XMLSchema#string> .
+_:b0 <http://bibframe.org/vocab/agent> <http://d-nb.info/gnd/1074109953> .
+_:b0 <http://bibframe.org/vocab/relator> <http://id.loc.gov/vocabulary/relators/cre> .
+_:b0 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://bibframe.org/vocab/Contribution> .
+_:b1 <http://bibframe.org/vocab/agent> <http://d-nb.info/gnd/102654520X> .
+_:b1 <http://bibframe.org/vocab/relator> <http://id.loc.gov/vocabulary/relators/ctb> .
+_:b1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://bibframe.org/vocab/Contribution> .
+_:b2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://d-nb.info/standards/elementset/gnd#SubjectHeading> .
+_:b2 <http://www.w3.org/2000/01/rdf-schema#label> "Bildband"^^<http://www.w3.org/2001/XMLSchema#string> .
+_:b3 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> _:b0 .
+_:b3 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:b4 .
+_:b4 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> _:b1 .
 _:b4 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
+_:b5 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <http://d-nb.info/gnd/1074109953> .
+_:b5 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:b6 .
+_:b6 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> _:b2 .
+_:b6 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:b7 .
+_:b7 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <http://dewey.info/class/796/> .
+_:b7 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
+_:b8 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> "http://d-nb.info/gnd/1074109953, Bildband"^^<http://www.w3.org/2001/XMLSchema#string> .
+_:b8 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
 <http://d-nb.info/gnd/102654520X> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://d-nb.info/standards/elementset/gnd#Person> .
 <http://d-nb.info/gnd/102654520X> <http://www.w3.org/2000/01/rdf-schema#label> "R\u00F6sgen, Anya"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://d-nb.info/gnd/1074109953> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://d-nb.info/standards/elementset/gnd#ConferenceOrEvent> .
 <http://d-nb.info/gnd/1074109953> <http://www.w3.org/2000/01/rdf-schema#label> "7. Schloss Bensberg Classics, 2015, Bergisch Gladbach"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://d-nb.info/gnd/1074109953> <http://www.w3.org/2004/02/skos/core#altLabel> "7. Schloss Bensberg Classics, 2015, Bergisch Gladbach"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://dewey.info/class/796/> <http://www.w3.org/2000/01/rdf-schema#label> "Sportarten, Sportspiele"^^<http://www.w3.org/2001/XMLSchema#string> .
+<http://id.loc.gov/vocabulary/relators/cre> <http://www.w3.org/2000/01/rdf-schema#label> "Creator"^^<http://www.w3.org/2001/XMLSchema#string> .
+<http://id.loc.gov/vocabulary/relators/ctb> <http://www.w3.org/2000/01/rdf-schema#label> "Mitwirkende"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/resources/HT018771475> <http://purl.org/dc/terms/created> "20151005"^^<http://www.w3.org/2001/XMLSchema#string> .
+<http://lobid.org/resources/HT018771475#!> <http://bibframe.org/vocab/contribution> _:b3 .
 <http://lobid.org/resources/HT018771475#!> <http://iflastandards.info/ns/isbd/elements/P1053> "42 S."^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/resources/HT018771475#!> <http://purl.org/dc/elements/1.1/coverage> "Bergisch Gladbach- Bensberg"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/resources/HT018771475#!> <http://purl.org/dc/elements/1.1/isPartOf> "Classic cars"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/resources/HT018771475#!> <http://purl.org/dc/elements/1.1/publisher> "Bauer"^^<http://www.w3.org/2001/XMLSchema#string> .
-<http://lobid.org/resources/HT018771475#!> <http://purl.org/dc/terms/contributor> <http://d-nb.info/gnd/102654520X> .
-<http://lobid.org/resources/HT018771475#!> <http://purl.org/dc/terms/creator> <http://d-nb.info/gnd/1074109953> .
 <http://lobid.org/resources/HT018771475#!> <http://purl.org/dc/terms/issued> "2015"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/resources/HT018771475#!> <http://purl.org/dc/terms/language> <http://id.loc.gov/vocabulary/iso639-2/deu> .
 <http://lobid.org/resources/HT018771475#!> <http://purl.org/dc/terms/medium> <http://rdvocab.info/termList/RDAproductionMethod/1010> .
-<http://lobid.org/resources/HT018771475#!> <http://purl.org/dc/terms/subject> _:b1 .
+<http://lobid.org/resources/HT018771475#!> <http://purl.org/dc/terms/subject> _:b5 .
 <http://lobid.org/resources/HT018771475#!> <http://purl.org/dc/terms/tableOfContents> <http://d-nb.info/1074113608/04> .
 <http://lobid.org/resources/HT018771475#!> <http://purl.org/dc/terms/title> "7. Schloss Bensberg Classics"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/resources/HT018771475#!> <http://purl.org/lobid/lv#contributorOrder> "http://d-nb.info/gnd/102654520X | http://d-nb.info/gnd/1074109953"^^<http://www.w3.org/2001/XMLSchema#string> .
@@ -32,7 +43,7 @@ _:b4 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/0
 <http://lobid.org/resources/HT018771475#!> <http://purl.org/lobid/lv#nwbibsubject> <http://purl.org/lobid/nwbib#s733030> .
 <http://lobid.org/resources/HT018771475#!> <http://purl.org/lobid/lv#subjectChain> "7. Schloss Bensberg Classics (2015), Bergisch Gladbach | Bildband"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/resources/HT018771475#!> <http://purl.org/lobid/lv#subjectLabel> "7. Schloss Bensberg Classics"^^<http://www.w3.org/2001/XMLSchema#string> .
-<http://lobid.org/resources/HT018771475#!> <http://purl.org/lobid/lv#subjectOrder> _:b4 .
+<http://lobid.org/resources/HT018771475#!> <http://purl.org/lobid/lv#subjectOrder> _:b8 .
 <http://lobid.org/resources/HT018771475#!> <http://purl.org/ontology/bibo/volume> "[2015,8, Beil.]"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/resources/HT018771475#!> <http://purl.org/ontology/holding#collectedBy> <http://lobid.org/resources/NWBib> .
 <http://lobid.org/resources/HT018771475#!> <http://rdaregistry.info/Elements/u/P60163> "Hamburg"^^<http://www.w3.org/2001/XMLSchema#string> .

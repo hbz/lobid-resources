@@ -1,3 +1,23 @@
+_:b0 <http://bibframe.org/vocab/agent> <http://d-nb.info/gnd/118524186> .
+_:b0 <http://bibframe.org/vocab/relator> <http://id.loc.gov/vocabulary/relators/cre> .
+_:b0 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://bibframe.org/vocab/Contribution> .
+_:b1 <http://bibframe.org/vocab/agent> <http://d-nb.info/gnd/130290637> .
+_:b1 <http://bibframe.org/vocab/relator> <http://id.loc.gov/vocabulary/relators/cre> .
+_:b1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://bibframe.org/vocab/Contribution> .
+_:b2 <http://bibframe.org/vocab/agent> <http://d-nb.info/gnd/124362869> .
+_:b2 <http://bibframe.org/vocab/relator> <http://id.loc.gov/vocabulary/relators/cre> .
+_:b2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://bibframe.org/vocab/Contribution> .
+_:b3 <http://bibframe.org/vocab/agent> <http://d-nb.info/gnd/119080389> .
+_:b3 <http://bibframe.org/vocab/relator> <http://id.loc.gov/vocabulary/relators/ctb> .
+_:b3 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://bibframe.org/vocab/Contribution> .
+_:b4 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> _:b0 .
+_:b4 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:b5 .
+_:b5 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> _:b1 .
+_:b5 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:b6 .
+_:b6 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> _:b2 .
+_:b6 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:b7 .
+_:b7 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> _:b3 .
+_:b7 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
 <http://d-nb.info/gnd/118524186> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://d-nb.info/standards/elementset/gnd#Person> .
 <http://d-nb.info/gnd/118524186> <http://www.w3.org/2000/01/rdf-schema#label> "Debussy, Claude"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://d-nb.info/gnd/118524186> <http://www.w3.org/2004/02/skos/core#altLabel> "Debjussi, Klod"^^<http://www.w3.org/2001/XMLSchema#string> .
@@ -22,16 +42,15 @@
 <http://d-nb.info/gnd/124362869> <http://www.w3.org/2000/01/rdf-schema#label> "Baldwin, Dalton"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://d-nb.info/gnd/130290637> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://d-nb.info/standards/elementset/gnd#Person> .
 <http://d-nb.info/gnd/130290637> <http://www.w3.org/2000/01/rdf-schema#label> "Mespl\u00E9, Mady"^^<http://www.w3.org/2001/XMLSchema#string> .
+<http://id.loc.gov/vocabulary/relators/cre> <http://www.w3.org/2000/01/rdf-schema#label> "Creator"^^<http://www.w3.org/2001/XMLSchema#string> .
+<http://id.loc.gov/vocabulary/relators/ctb> <http://www.w3.org/2000/01/rdf-schema#label> "Mitwirkende"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/items/HT016608165:DE-575:#!> <http://purl.org/vocab/frbr/core#exemplarOf> <http://lobid.org/resources/HT016608165#!> .
 <http://lobid.org/items/HT016608165:DE-575:#!> <http://purl.org/vocab/frbr/core#owner> <http://lobid.org/organisation/DE-575> .
 <http://lobid.org/items/HT016608165:DE-575:#!> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://purl.org/vocab/frbr/core#Item> .
 <http://lobid.org/items/HT016608165:DE-575:#!> <http://www.w3.org/2007/05/powder-s#describedby> <http://lobid.org/items/HT016608165:DE-575:> .
 <http://lobid.org/resources/HT016608165> <http://purl.org/dc/terms/created> "20101130"^^<http://www.w3.org/2001/XMLSchema#string> .
+<http://lobid.org/resources/HT016608165#!> <http://bibframe.org/vocab/contribution> _:b4 .
 <http://lobid.org/resources/HT016608165#!> <http://purl.org/dc/terms/bibliographicCitation> "M\u00E9lodies; Claude Debussy; 1980"^^<http://www.w3.org/2001/XMLSchema#string> .
-<http://lobid.org/resources/HT016608165#!> <http://purl.org/dc/terms/contributor> <http://d-nb.info/gnd/119080389> .
-<http://lobid.org/resources/HT016608165#!> <http://purl.org/dc/terms/creator> <http://d-nb.info/gnd/118524186> .
-<http://lobid.org/resources/HT016608165#!> <http://purl.org/dc/terms/creator> <http://d-nb.info/gnd/124362869> .
-<http://lobid.org/resources/HT016608165#!> <http://purl.org/dc/terms/creator> <http://d-nb.info/gnd/130290637> .
 <http://lobid.org/resources/HT016608165#!> <http://purl.org/dc/terms/isPartOf> <http://lobid.org/resources/HT016607985#!> .
 <http://lobid.org/resources/HT016608165#!> <http://purl.org/dc/terms/issued> "1980"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/resources/HT016608165#!> <http://purl.org/dc/terms/language> <http://id.loc.gov/vocabulary/iso639-2/fra> .
