@@ -1110,7 +1110,9 @@
 		</combine>
 		<combine name="$[ns-lobid-vocab]contributorOrder" value="${a}">
 			<concat delimiter=" | " name="a">
-				<data source="@contributorNameOrId|@creatorNameOrId"/>
+				<data source="@contributorNameOrId|@creatorNameOrId">
+				<replace pattern="_:" with=""/>
+				</data>
 				<data source="200-1.a"/> <!-- non-GND corporate bodies, see https://github.com/hbz/lobid/issues/302 -->
 			</concat>
 		</combine>
