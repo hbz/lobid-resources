@@ -297,7 +297,9 @@ public class JsonConverter {
 	private void createObject(String uri, Map<String, Object> newObject) {
 		for (Statement s : find(uri)) {
 			Etikett e = etikette.getEtikett(s.getPredicate().stringValue());
-			if (s.getObject() instanceof org.openrdf.model.Literal) {
+			if (labelKey.equals(e.name)) {
+				newObject.put(e.name, s.getObject().stringValue());
+			} else if (s.getObject() instanceof org.openrdf.model.Literal) {
 				if (newObject.containsKey(e.name)) {
 					Object existingValue = newObject.get(e.name);
 					if (existingValue instanceof String) {
