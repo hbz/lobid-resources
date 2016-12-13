@@ -921,54 +921,59 @@
 		<!-- ####### persons -->
 		<!-- ####################### -->
 		<!-- person links -->
-		<data source="1??[-aemn][12].9" name="@creatorPersonId">
+		<data source="1[02468][048][-aemn][12].9|1[13579][26][-aemn][12].9" name="@creatorPersonId">
 			<regexp match="\(DE-588\)(.*)" format="http://d-nb.info/gnd/${1}"/>
 			<sanitizeUrl></sanitizeUrl>
 		</data>
 		<!-- literals of creator (seems there are no corporateBodyCreators without gndID) -->
 		<data source="359[-ab][-12].a" name="http://rdaregistry.info/Elements/u/P60339"/>
-		<combine name="@creatorLabel" value="${a}">
-			<data source="1[02468][048][-aemn][12].[pa]|1[1468][26][-aemn][12].[pa]" name="a">
+		<combine name="@creatorPersonLabel" value="${a}">
+			<data source="1[02468][048][-aemn][12].[pa]|1[13579][26][-aemn][12].[pa]" name="a">
 				<replace pattern="&gt;&gt;" with=""/>
 				<replace pattern="&lt;&lt;" with=""/>
 			</data>
 		</combine>
 		<!-- bnode for creator when no ID -->
-		<combine name="@bnodeCreatorLabel" value="_:${a}">
+		<combine name="@bnodeCreatorPersonLabel" value="_:${a}">
 			<if>
 				<none>
 					<data source="@creatorPersonId"/>
 				</none>
 			</if>
-			<data source="@creatorLabel" name="a"/>
+			<data source="@creatorPersonLabel" name="a"/>
 		</combine>
-		<combine name="@contributorLabel" value="${a}">
+		<choose name="@creatorPersonOrCoorporateBodyBnodeOrId" flushWith="@creatorPersonId|@bnodeCreatorPersonLabel|@creatorCorporateBodyId">
+			<data source="@creatorPersonId"/>
+			<data source="@bnodeCreatorPersonLabel"/>
+			<data source="@creatorCorporateBodyId"/>
+		</choose>
+		<!-- bnode for contributor when no ID -->
+		<combine name="@contributorPersonLabel" value="${a}">
 			<data source="1[02468][048][bcf]1.[pa]|1[13579][26][bcf]1.[pa]|8[012][02468][-mn]-12.[pa]"
 				name="a">
 				<replace pattern="&gt;&gt;" with=""/>
 				<replace pattern="&lt;&lt;" with=""/>
 			</data>
 		</combine>
-		<choose name="@creatorNameOrId" flushWith="[12]????|@bnodeCreatorLabel"
-			sameEntity="true" reset="false">
-			<data source="@creatorPersonId"/>
-			<data source="@creatorCorporateBodyId"/>
-			<data source="@bnodeCreatorLabel"/>
-		</choose>
-		<!-- bnode for other contributor when no ID -->
-		<combine name="@bnodeContributorLabel" value="_:${a}">
-			<if>
-				<none>
-					<data source="@contributorCorporateBodyId|@contributorPersonId"/>
-				</none>
-			</if>
-			<data source="@contributorLabel" name="a"/>
+		<combine name="@bnodeContributorPersonLabel" value="_:${a}">
+			<data source="@contributorPersonLabel" name="a"/>
 		</combine>
-		<choose name="@contributorNameOrId" flushWith="[12]????|@bnodeContributorLabel"
-			sameEntity="true" reset="false">
+		<combine name="@contributorCoorporateBodyLabel" value="${a}">
+			<data source="2[02468][048][bcf]1.[pa]|2[13579][26][bcf]1.[pa]" name="a">
+				<replace pattern="&gt;&gt;" with=""/>
+				<replace pattern="&lt;&lt;" with=""/>
+			</data>
+		</combine>
+		<choose name="@contributorPersonBnodeOrId" flushWith="1????">
 			<data source="@contributorPersonId"/>
+			<data source="@bnodeContributorPersonLabel"/>
+		</choose>
+		<combine name="@bnodeContributorBodyLabel" value="_:${a}">
+			<data source="@contributorCoorporateBodyLabel" name="a"/>
+		</combine>
+		<choose name="@contributorCorporateBodyBnodeOrId" flushWith="2????">
 			<data source="@contributorCorporateBodyId"/>
-			<data source="@bnodeContributorLabel"/>
+			<data source="@bnodeContributorBodyLabel"/>
 		</choose>
 		<!-- ####################### -->
 		<!-- ################ koerperschaften -->
@@ -1058,7 +1063,9 @@
 			<data source="[29]??[-abcfep][12].d" name="d"/>
 			<data source="[29]??[-abcfep][12].c" name="c"/>
 		</combine>
-		<data source="@contributorNameOrId|@creatorNameOrId|@bnodeCreatorLabel" name="@agentId"/>
+		<data
+			source="@contributorPersonBnodeOrId|@contributorCorporateBodyBnodeOrId|@creatorPersonOrCoorporateBodyBnodeOrId|@bnodeCreatorPersonLabel"
+			name="@agentId"/>
 		<combine value="_:${a}${b}" name="@contributionBnode" sameEntity="true">
 			<data source="@agentId" name="a"/>
 			<data source="@relator" name="b"/>
@@ -1086,6 +1093,7 @@
 		<combine name="~rdf:subject" value="$[ns-lobid-resource]${subject}#!">
 			<data source="@id" name="subject"/>
 			<data source="@relatorNode"/>
+			<data source="@contributionBnode" name="a"/>
 		</combine>
 		<combine name="http://bibframe.org/vocab/contribution" value="${a}" sameEntity="true">
 			<data source="@contributionBnode" name="a"/>
@@ -1110,8 +1118,9 @@
 		</combine>
 		<combine name="$[ns-lobid-vocab]contributorOrder" value="${a}">
 			<concat delimiter=" | " name="a">
-				<data source="@contributorNameOrId|@creatorNameOrId">
-				<replace pattern="_:" with=""/>
+				<data
+					source="@creatorPersonOrCoorporateBodyBnodeOrId|@contributorPersonBnodeOrId|@contributorCorporateBodyBnodeOrId">
+					<replace pattern="_:" with=""/>
 				</data>
 				<data source="200-1.a"/> <!-- non-GND corporate bodies, see https://github.com/hbz/lobid/issues/302 -->
 			</concat>
@@ -1170,7 +1179,7 @@
 		<!-- # Create subgraph: temporarily set new subjects or contributor id -->
 		<!-- ########### -->
 		<data name="~rdf:subject"
-			source="@bnodeCreatorLabel|@bnodeContributorLabel|@subjectLinks|@creatorPersonId|@creatorCorporateBodyId|@contributorPersonId|@contributorCorporateBodyId"/>
+			source="@bnodeCreatorPersonLabel|@contributorPersonBnodeOrId|@contributorCorporateBodyBnodeOrId|@subjectLinks|@creatorPersonId|@creatorCorporateBodyId|@contributorPersonId|@contributorCorporateBodyId"/>
 		<!-- subjects which are persons (and thus the date is to be ignored, see hbz/lobid#244 ) -->
 		<combine name="@preferredNamePersonConcatSubject" value="${a}" sameEntity="true"
 			flushWith="@creatorPersonId|@contributorPersonId|@preferredNameP">
@@ -1191,12 +1200,13 @@
 		</combine>
 		<!-- START contributor/creator -->
 		<combine name="@preferredNameForThePerson" value="${a}" sameEntity="true" reset="true"
-			flushWith="@creatorPersonId|@contributorPersonId|@bnodeCreatorLabel|@bnodeContributorLabel">
-			<data source="@preferredName|@creatorLabel|@contributorLabel" name="a">
+			flushWith="@creatorPersonId|@contributorPersonId|@bnodeCreatorPersonLabel|@contributorPersonBnodeOrId">
+			<data source="@preferredName|@creatorPersonLabel|@contributorPersonLabel" name="a">
 				<replace pattern="&gt;&gt;" with=""/>
 				<replace pattern="&lt;&lt;" with=""/>
 			</data>
-			<data source="@creatorPersonId|@contributorPersonId|@bnodeCreatorLabel|@bnodeContributorLabel"/>
+			<data
+				source="@creatorPersonId|@contributorPersonId|@bnodeCreatorPersonLabel|@bnodeContributorPersonLabel"/>
 		</combine>
 		<combine name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" value="http://d-nb.info/standards/elementset/gnd#Family"
 			flushWith="@subjectLinks">
@@ -1263,9 +1273,10 @@
 			</data>
 		</combine>
 		<combine name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" value="${a}"
-			flushWith="@subjectLinks|@creatorCorporateBodyId|@contributorCorporateBodyId"
+			flushWith="@subjectLinks|@creatorCorporateBodyId|@contributorCorporateBodyBnodeOrId"
 			sameEntity="true">
-			<choose name="a" flushWith="@subjectLinks|@creatorCorporateBodyId|@contributorCorporateBodyId"
+			<choose name="a"
+				flushWith="@subjectLinks|@creatorCorporateBodyId|@contributorCorporateBodyBnodeOrId"
 				sameEntity="true">
 				<data source="@preferredNameConcatEventEDC">
 					<constant value="$[ns-gnd]ConferenceOrEvent"/>
@@ -1273,7 +1284,8 @@
 				<data source="@preferredNameForThePlaceOrGeographicName|@nameOfCreatingCorporateBodyG">
 					<constant value="$[ns-gnd]PlaceOrGeographicName"/>
 				</data>
-				<data source="9[01234][27]-[-12].k|@creatorCorporateBodyId|@contributorCorporateBodyId">
+				<data
+					source="9[01234][27]-[-12].k|@creatorCorporateBodyId|@contributorCorporateBodyBnodeOrId">
 					<constant value="$[ns-gnd]CorporateBody"/>
 				</data>
 			</choose>
@@ -1288,21 +1300,24 @@
 			<data source="@preferredNamePersonConcatSubject"/>
 			<data source="@preferredNameConcatSubject"/>
 		</choose>
-		<combine name="@preferredName" value="${a}" flushWith="@bnodeContributorLabel"
-			reset="true">
-			<data source="@contributorLabel" name="a"/>
-		</combine>
-		<choose name="@preferredName" reset="true" flushWith="@bnodeCreatorLabel">
-			<data source="@creatorLabel"/>
+		<choose name="@preferredName" flushWith="@contributorPersonBnodeOrId|@contributorCorporateBodyBnodeOrId"
+			sameEntity="true">
+			<data source="@preferredNamePersonConcatSubject"/>
+			<data source="@contributorPersonLabel|@contributorCoorporateBodyLabel"/>
+		</choose>
+		<choose name="@preferredName" flushWith="@bnodeCreatorPersonLabel">
+			<data source="preferredNamePersonConcatSubject"/>
+			<data source="@creatorPersonLabel"/>
 		</choose>
 		<data source="@preferredName" name="http://www.w3.org/2000/01/rdf-schema#label">
 			<replace pattern="&gt;&gt;" with=""/>
 			<replace pattern="&lt;&lt;" with=""/>
 		</data>
 		<combine name="@relator" value="${a}">
-			<choose name="a" flushWith="@contributorNameOrId|@creatorNameOrId">
+			<choose name="a"
+				flushWith="@contributorPersonBnodeOrId|@contributorCorporateBodyBnodeOrId|@creatorPersonOrCoorporateBodyBnodeOrId">
 				<!-- always creator -->
-				<data source="@creatorNameOrId" name="a">
+				<data source="@creatorPersonOrCoorporateBodyBnodeOrId" name="a">
 					<regexp match=".*" format="http://id.loc.gov/vocabulary/relators/cre"/>
 				</data>
 				<!-- map literals to marc relator property -->
@@ -1391,7 +1406,8 @@
 					<regexp match=".*" format="http://id.loc.gov/vocabulary/relators/hnr"/>
 				</data>
 				<!-- default -->
-				<data source="@contributorNameOrId" name="a">
+				<data source="@contributorPersonBnodeOrId|@contributorCorporateBodyBnodeOrId"
+					name="a">
 					<regexp match=".*" format="http://id.loc.gov/vocabulary/relators/ctb"/>
 				</data>
 			</choose>
@@ -1402,7 +1418,7 @@
 		<!-- ########### -->
 		<combine name="~rdf:subject" value="$[ns-lobid-resource]${subject}#!">
 			<data
-				source="@bnodeCreatorLabel|@bnodeContributorLabel|@agentId|@altLabelPerson|@altLabelCorporateBody|@subjectLinks|@creatorPersonId|@creatorCorporateBodyId|@contributorPersonId|@contributorCorporateBodyId|@subjectTopic|@subjectMain"/>
+				source="@bnodeCreatorPersonLabel|@contributorPersonBnodeOrId|@contributorCorporateBodyBnodeOrId|@agentId|@altLabelPerson|@altLabelCorporateBody|@subjectLinks|@creatorPersonId|@creatorCorporateBodyId|@contributorPersonId|@contributorCorporateBodyId|@subjectTopic|@subjectMain"/>
 			<data source="@id" name="subject"/>
 		</combine>
 		<!-- other subjects -->
