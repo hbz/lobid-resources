@@ -1050,9 +1050,10 @@
 		<data source="2?[02468][bcefp][12].9" name="@contributorCorporateBodyId">
 			<regexp match="\(DE-588\)(.*)" format="http://d-nb.info/gnd/${1}"/>
 		</data>
+		<data source="[29]??[-abcfep][12].e" name="@preferredNameConcatEventE"/>
 		<combine name="@preferredNameConcatEventEDC" value="${e}, ${d}, ${c}"
 			sameEntity="true">
-			<data source="[29]??[-abcfep][12].e" name="e"/>
+			<data source="@preferredNameConcatEventE" name="e"/>
 			<data source="[29]??[-abcfep][12].d" name="d"/>
 			<data source="[29]??[-abcfep][12].c" name="c"/>
 		</combine>
@@ -1278,7 +1279,7 @@
 			<choose name="a"
 				flushWith="@subjectLinks|@creatorCorporateBodyId|@contributorCorporateBodyBnodeOrId"
 				sameEntity="true">
-				<data source="@preferredNameConcatEventEDC">
+				<data source="@preferredNameConcatEventE">
 					<constant value="$[ns-gnd]ConferenceOrEvent"/>
 				</data>
 				<data source="@preferredNameForThePlaceOrGeographicName|@nameOfCreatingCorporateBodyG">
@@ -1290,13 +1291,14 @@
 				</data>
 			</choose>
 		</combine>
-		<choose name="@preferredName"
+		<choose name="@preferredName" sameEntity="true"
 			flushWith="@subjectLinks|@preferredNameP|@creatorPersonId|@creatorCorporateBodyId|@contributorPersonId|@contributorCorporateBodyId">
+			<data source="@preferredNameConcatEventENDC"/>
+			<data source="@preferredNameConcatEventEDC"/>
+			<data source="@preferredNameConcatEventE"/>
 			<data source="@nameOfCreatingCorporateBody"/>
 			<data source="@nameOfContributingCorporateBody"/>
 			<data source="@preferredNameSemicolon"/>
-			<data source="@preferredNameConcatEventENDC"/>
-			<data source="@preferredNameConcatEventEDC"/>
 			<data source="@preferredNamePersonConcatSubject"/>
 			<data source="@preferredNameConcatSubject"/>
 		</choose>
