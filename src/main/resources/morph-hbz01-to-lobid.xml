@@ -982,31 +982,42 @@
 			<regexp match="\(DE-588\)(.*)" format="http://d-nb.info/gnd/${1}"/>
 			<sanitizeUrl></sanitizeUrl>
 		</data>
-		<data source="2?[02468][-a][12].k" name="@nameOfCreatingCorporateBodyK">
+		<data source="[29]?[02468][-a][12].k" name="@nameOfCreatingCorporateBodyK">
 			<replace pattern="&gt;&gt;" with=""/>
 			<replace pattern="&lt;&lt;" with=""/>
 		</data>
-		<data source="2?[02468][-a][12].h" name="@nameOfCreatingCorporateBodyH"/>
-		<combine name="@nameOfCreatingCorporateBodyKH" value="${k} (${h})">
+		<data source="[29]?[02468][-a][12].h" name="@nameOfCreatingCorporateBodyH"/>
+		<combine name="@nameOfCreatingCorporateBodyKH" value="${k} (${h})" sameEntity="true">
 			<data source="@nameOfCreatingCorporateBodyK" name="k"/>
 			<data source="@nameOfCreatingCorporateBodyH" name="h"/>
 		</combine>
-		<combine name="@nameOfCreatingCorporateBodyB" value="${a}">
-			<concat delimiter=", " name="a" flushWith="@creatorCorporateBodyId">
-				<data source="2?[02468][-a][12].b"/>
+		<combine name="@nameOfCreatingCorporateBodyB" value="${a}" sameEntity="true">
+			<concat delimiter=", " name="a" flushWith="@creatorCorporateBodyId|@subjectLinks">
+				<data source="[29]?[02468][-a][12].b"/>
 			</concat>
 		</combine>
-		<combine name="@nameOfCreatingCorporateBodyKB" value="${k}. ${b}">
+		<combine name="@nameOfCreatingCorporateBodyKB" value="${k}. ${b}" sameEntity="true">
 			<data source="@nameOfCreatingCorporateBodyB" name="b"/>
 			<data source="@nameOfCreatingCorporateBodyK" name="k"/>
 		</combine>
-		<combine name="@nameOfCreatingCorporateBodyKHB" value="${k} (${h}). ${b}">
+		<combine name="@nameOfCreatingCorporateBodyKHB" value="${k} (${h}). ${b}"
+			sameEntity="true">
 			<data source="@nameOfCreatingCorporateBodyB" name="b"/>
 			<data source="@nameOfCreatingCorporateBodyH" name="h"/>
 			<data source="@nameOfCreatingCorporateBodyK" name="k"/>
 		</combine>
-		<combine name="@nameOfCreatingCorporateBody" value="${a}" flushWith="@creatorCorporateBodyId"> <!-- no Verweisungsformen (aka alternate labels) -->
+		<combine name="@nameOfCreatingCorporateBody" value="${a}" sameEntity="true"
+			flushWith="@creatorCorporateBodyId"> <!-- no Verweisungsformen (aka alternate labels) -->
 			<choose name="a" flushWith="@creatorCorporateBodyId">
+				<data source="@nameOfCreatingCorporateBodyKHB"/>
+				<data source="@nameOfCreatingCorporateBodyKB"/>
+				<data source="@nameOfCreatingCorporateBodyKH"/>
+				<data source="@nameOfCreatingCorporateBodyK"/>
+			</choose>
+		</combine>
+		<combine name="@nameOfSubjectCorporateBody" value="${a}" sameEntity="true"
+			flushWith="@subjectLinks">
+			<choose name="a" flushWith="@subjectLinks">
 				<data source="@nameOfCreatingCorporateBodyKHB"/>
 				<data source="@nameOfCreatingCorporateBodyKB"/>
 				<data source="@nameOfCreatingCorporateBodyKH"/>
@@ -1300,6 +1311,7 @@
 			<data source="@nameOfContributingCorporateBody"/>
 			<data source="@preferredNameSemicolon"/>
 			<data source="@preferredNamePersonConcatSubject"/>
+			<data source="@nameOfSubjectCorporateBody"/>
 			<data source="@preferredNameConcatSubject"/>
 		</choose>
 		<choose name="@preferredName" flushWith="@contributorPersonBnodeOrId|@contributorCorporateBodyBnodeOrId"
