@@ -959,7 +959,7 @@
 			<data source="@contributorPersonLabel" name="a"/>
 		</combine>
 		<combine name="@contributorCoorporateBodyLabel" value="${a}">
-			<data source="2[02468][048][bcf]1.[pa]|2[13579][26][bcf]1.[pa]" name="a">
+			<data source="2[02468][048][bcf]1.[pa]|2[13579][26][bcf]1.[pa]|200-1.a" name="a">
 				<replace pattern="&gt;&gt;" with=""/>
 				<replace pattern="&lt;&lt;" with=""/>
 			</data>
@@ -1130,15 +1130,6 @@
 				<regexp match="\(DE-588\)(.*)" format="http://d-nb.info/gnd/${1}"/>
 				<sanitizeUrl></sanitizeUrl>
 			</data>
-		</combine>
-		<combine name="$[ns-lobid-vocab]contributorOrder" value="${a}">
-			<concat delimiter=" | " name="a">
-				<data
-					source="@creatorPersonOrCoorporateBodyBnodeOrId|@contributorPersonBnodeOrId|@contributorCorporateBodyBnodeOrId">
-					<replace pattern="_:" with=""/>
-				</data>
-				<data source="200-1.a"/> <!-- non-GND corporate bodies, see https://github.com/hbz/lobid/issues/302 -->
-			</concat>
 		</combine>
 		<!-- ####################### -->
 		<!-- #######subjects -->
