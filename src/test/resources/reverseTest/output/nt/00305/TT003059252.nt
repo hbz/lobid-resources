@@ -1,8 +1,13 @@
 _:b0 <http://bibframe.org/vocab/agent> <http://d-nb.info/gnd/2005535-3> .
 _:b0 <http://bibframe.org/vocab/relator> <http://id.loc.gov/vocabulary/relators/ctb> .
 _:b0 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://bibframe.org/vocab/Contribution> .
-_:b1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> _:b0 .
-_:b1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
+_:b1 <http://bibframe.org/vocab/agent> <http://d-nb.info/gnd/2005535-3> .
+_:b1 <http://bibframe.org/vocab/relator> <http://id.loc.gov/vocabulary/relators/ctb> .
+_:b1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://bibframe.org/vocab/Contribution> .
+_:b2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> _:b0 .
+_:b2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:b3 .
+_:b3 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> _:b1 .
+_:b3 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
 <http://d-nb.info/gnd/2005535-3> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://d-nb.info/standards/elementset/gnd#CorporateBody> .
 <http://d-nb.info/gnd/2005535-3> <http://www.w3.org/2000/01/rdf-schema#label> "The Beatles"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://d-nb.info/gnd/2005535-3> <http://www.w3.org/2004/02/skos/core#altLabel> "The Beatles"^^<http://www.w3.org/2001/XMLSchema#string> .
@@ -13,7 +18,7 @@ _:b1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/0
 <http://lobid.org/items/TT003059252:DE-5-58:9%2F041#!> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://purl.org/vocab/frbr/core#Item> .
 <http://lobid.org/items/TT003059252:DE-5-58:9%2F041#!> <http://www.w3.org/2007/05/powder-s#describedby> <http://lobid.org/items/TT003059252:DE-5-58:9%2F041> .
 <http://lobid.org/resources/TT003059252> <http://purl.org/dc/terms/created> "20110411"^^<http://www.w3.org/2001/XMLSchema#string> .
-<http://lobid.org/resources/TT003059252#!> <http://bibframe.org/vocab/contribution> _:b1 .
+<http://lobid.org/resources/TT003059252#!> <http://bibframe.org/vocab/contribution> _:b2 .
 <http://lobid.org/resources/TT003059252#!> <http://iflastandards.info/ns/isbd/elements/P1053> "1 Video (VHS, 55 min.) : farb.; stereo"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/resources/TT003059252#!> <http://purl.org/dc/elements/1.1/publisher> "Apple Films"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/resources/TT003059252#!> <http://purl.org/dc/terms/issued> "1967"^^<http://www.w3.org/2001/XMLSchema#string> .

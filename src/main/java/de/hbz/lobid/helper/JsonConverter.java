@@ -60,7 +60,6 @@ public class JsonConverter {
 
 	private static ObjectMapper objectMapper = new ObjectMapper();
 	Set<Statement> all = new HashSet<>();
-
 	private String mainSubjectOfTheResource;
 
 	private EtikettMakerInterface etikette;
@@ -163,28 +162,6 @@ public class JsonConverter {
 				}
 			}
 		}
-	}
-
-	private void createLeafObject(Map<String, Object> jsonResult, Statement s,
-			Etikett e) {
-		String key = e.name;
-		if (s.getObject() instanceof org.openrdf.model.Literal) {
-			addLiteralToJsonResult(jsonResult, key, s.getObject().stringValue());
-		} else {
-
-			if (s.getPredicate().stringValue().equals(RDF_TYPE)) {
-				try {
-					addLiteralToJsonResult(jsonResult, key,
-							etikette.getEtikett(s.getObject().stringValue()).name);
-				} catch (Exception ex) {
-					logger.info("", ex);
-				}
-			} else {
-				logger.trace("Will not follow path to " + s.getObject().toString()
-						+ " ! I have already visited this object!");
-			}
-		}
-
 	}
 
 	private boolean isList(Statement statement) {
@@ -320,11 +297,7 @@ public class JsonConverter {
 				}
 			} else {
 				if (!mainSubjectOfTheResource.equals(s.getObject().stringValue())) {
-					if (!statementVisited(s)) {
-						createObject(newObject, s, e);
-					} else {
-						createLeafObject(newObject, s, e);
-					}
+					createObject(newObject, s, e);
 				} else {
 					if (!statementVisited(s)) {
 						newObject.put(e.name, s.getObject().stringValue());
