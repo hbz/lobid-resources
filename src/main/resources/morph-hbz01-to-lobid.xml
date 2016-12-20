@@ -151,7 +151,12 @@
 				<regexp match="\(DE-588\)(.*)" format="http://d-nb.info/gnd/${1}"/>
 			</data>
 		</combine>
-		<entity name="~rdf:list" reset="true">
+			<combine name="~rdf:subject" value="$[ns-lobid-resource]${subject}#!" flushWith="@rdfTypeSubject">
+			<data
+				source="@subjectLabelBnode"/>
+			<data source="@id" name="subject"/>
+		</combine> 
+		<entity name="~rdf:list" reset="true" flushWith="@rdfTypeSubject">
 			<data name="http://purl.org/dc/terms/subject" source="@subjectId|@subjectLabelBnode"/>
 		</entity>
 		<!-- ####################### -->
@@ -918,7 +923,7 @@
 			</choose>
 		</entity>
 		<!-- ####################### -->
-		<!-- ####### persons -->
+		<!-- ####### contributors-->
 		<!-- ####################### -->
 		<!-- person links -->
 		<data source="1[02468][048][-aemn][12].9|1[13579][26][-aemn][12].9" name="@creatorPersonId">
@@ -958,16 +963,16 @@
 		<combine name="@bnodeContributorPersonLabel" value="_:${a}">
 			<data source="@contributorPersonLabel" name="a"/>
 		</combine>
+		<choose name="@contributorPersonBnodeOrId" flushWith="1????">
+			<data source="@contributorPersonId"/>
+			<data source="@bnodeContributorPersonLabel"/>
+		</choose>
 		<combine name="@contributorCoorporateBodyLabel" value="${a}">
 			<data source="2[02468][048][bcf]1.[pa]|2[13579][26][bcf]1.[pa]|200-1.a" name="a">
 				<replace pattern="&gt;&gt;" with=""/>
 				<replace pattern="&lt;&lt;" with=""/>
 			</data>
 		</combine>
-		<choose name="@contributorPersonBnodeOrId" flushWith="1????">
-			<data source="@contributorPersonId"/>
-			<data source="@bnodeContributorPersonLabel"/>
-		</choose>
 		<combine name="@bnodeContributorBodyLabel" value="_:${a}">
 			<data source="@contributorCoorporateBodyLabel" name="a"/>
 		</combine>
@@ -1105,7 +1110,7 @@
 		<combine name="~rdf:subject" value="$[ns-lobid-resource]${subject}#!">
 			<data source="@id" name="subject"/>
 			<data source="@relatorNode"/>
-			<data source="@contributionBnode" name="a"/>
+			<data source="@agentId"/>
 		</combine>
 		<entity name="~rdf:list" reset="true">
 			<combine name="http://bibframe.org/vocab/contribution" value="${a}" sameEntity="true"
