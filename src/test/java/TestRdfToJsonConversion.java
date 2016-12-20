@@ -54,16 +54,18 @@ import de.hbz.lobid.helper.JsonConverter;
  */
 public class TestRdfToJsonConversion {
 	private static boolean generateTestData = false;
-	private static EtikettMakerInterface etikettMaker =
+	private EtikettMakerInterface etikettMaker =
 			new EtikettMaker(Thread.currentThread().getContextClassLoader()
 					.getResourceAsStream("labels.json"));
+	private EtikettMakerInterface etikettMakerApi_1 =
+			new EtikettMaker(Thread.currentThread().getContextClassLoader()
+					.getResourceAsStream("labelsApi_1.json"));
 	final static Logger logger =
 			LoggerFactory.getLogger(TestRdfToJsonConversion.class);
 	final static String LOBID_RESOURCES_URI_PREFIX =
 			"http://lobid.org/resources/";
-	@SuppressWarnings("unchecked")
-	final static Map<String, Object> fullContext =
-			(Map<String, Object>) etikettMaker.getContext().get("@context");
+	final static String LOBID_RESOURCES_API_1_0_URI_PREFIX =
+			"http://lobid.org/resource/";
 	final static String contextUrl =
 			"http://lobid.org/context/lobid-resources.json";
 	final private static String TEST_FILE_CONTRIBUTOR_ORDER =
@@ -88,13 +90,29 @@ public class TestRdfToJsonConversion {
 	@SuppressWarnings({ "javadoc" })
 	@Test
 	public void testEquality_caseDirectory() {
-		String path = "src/test/resources/input/nt/";
+		String path = "src/test/resources/input/nt";
 		try {
 			Files.walk(Paths.get(path)).filter(Files::isRegularFile)
-					.forEach(e -> testFiles(
-							e.toString(), e.toString().replaceFirst("input/nt", "output/json")
+					.forEach(e -> testFiles(e.toString(),
+							e.toString().replaceFirst("input/nt", "output/json")
 									.replaceFirst("nt$", "json"),
-							LOBID_RESOURCES_URI_PREFIX, true));
+							LOBID_RESOURCES_URI_PREFIX, true, etikettMaker));
+			org.junit.Assert.assertTrue(generateTestData || allTestsSuccessful);
+		} catch (Exception e) {
+			e.printStackTrace();
+			org.junit.Assert.assertFalse(!generateTestData || true);
+		}
+	}
+
+	@SuppressWarnings({ "javadoc" })
+	@Test
+	public void testEqualityApi10Data() {
+		String path = "src/test/resources/input_api10/nt/01722/HT017225272";
+		try {
+			testFiles(path,
+					path.replaceFirst("input_api10/nt", "output_api10/json")
+							.replaceFirst("nt$", "json"),
+					LOBID_RESOURCES_API_1_0_URI_PREFIX, true, etikettMakerApi_1);
 			org.junit.Assert.assertTrue(generateTestData || allTestsSuccessful);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -106,7 +124,7 @@ public class TestRdfToJsonConversion {
 	@Test
 	public void testEquality_case1() {
 		testFiles(TEST_FILE_CONTRIBUTOR_ORDER, "src/test/resources/hbz01.es.json",
-				LOBID_RESOURCES_URI_PREFIX, true);
+				LOBID_RESOURCES_URI_PREFIX, true, etikettMaker);
 		TestRdfToJsonConversion.logger
 				.info("\n Adrian Input Test - must succeed! \n");
 		org.junit.Assert.assertTrue(generateTestData || allTestsSuccessful);
@@ -117,7 +135,7 @@ public class TestRdfToJsonConversion {
 	public void testWrongContributorOrder() {
 		boolean testSuccess = testFiles(TEST_FILE_CONTRIBUTOR_ORDER,
 				"src/test/resources/hbz01.es.wrongContributorOrder.json",
-				LOBID_RESOURCES_URI_PREFIX, false);
+				LOBID_RESOURCES_URI_PREFIX, false, etikettMaker);
 		TestRdfToJsonConversion.logger
 				.info("\n WrongContributorOrder (Test - must fail!). " + (testSuccess
 						? "Douh, test didn't failed :(" : "Success because test failed :)")
@@ -126,7 +144,8 @@ public class TestRdfToJsonConversion {
 	}
 
 	private static boolean testFiles(String fnameNtriples, String fnameJson,
-			String uri, boolean testExpectedToBeEqual) {
+			String uri, boolean testExpectedToBeEqual,
+			EtikettMakerInterface etikettMaker) {
 		Map<String, Object> expected = null;
 		Map<String, Object> actual = null;
 		TestRdfToJsonConversion.logger
