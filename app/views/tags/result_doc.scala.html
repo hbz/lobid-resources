@@ -72,40 +72,56 @@
   }
 }
 
+@contributions(contributions: Seq[JsValue]) = {
+  @for((role, cs) <- (contributions.groupBy((c: JsValue) => ((c \ "role")(0) \ "label").as[String]))) {
+    <tr>
+      <td>@role</td>
+      <td>@for(c <- cs; agent = (c \ "agent")(0); label = (agent \ "label").as[String]; id = (agent \ "id").as[String]) {
+        <a title="Nach weiteren Titeln von '@label' suchen" href='@nwbib.routes.Application.search(person=id)'/>@label</a>
+        <a title="Linked-Data-Quelle zu '@label' abrufen" href='@id'><span class='glyphicon glyphicon-link'></span></a>
+        @if(c!=cs.last){ | }
+      }</td>
+    </tr>
+  }
+}
+
 @table(){
   @result_field("Titel", "title", doc, TableRow.VALUES)
   @result_field("Titelzusatz", "otherTitleInformation", doc, TableRow.VALUES)
   @result_field("Verantwortlich", "statementOfResponsibility", doc, TableRow.VALUES)
-  @result_field("Autor/in", "creator", doc, TableRow.VALUES, valueLabel = gndEntities, param="person")
-  @result_field("Autor/in", "creatorName", doc, TableRow.VALUES)
-  @result_field("Redaktion", "redaktor", doc, TableRow.VALUES, valueLabel = gndEntities, param="person")
-  @result_field("Herausgeber/in", "editor", doc, TableRow.VALUES, valueLabel = gndEntities, param="person")
-  @result_field("Mitwirkung", "contributor", doc, TableRow.VALUES, valueLabel = gndEntities, param="person")
-  @result_field("Mitwirkung", "contributorName", doc, TableRow.VALUES)
-  @result_field("Schauspieler/in", "actor", doc, TableRow.VALUES, valueLabel = gndEntities, param="person")
-  @result_field("Nachwort", "afterwordBy", doc, TableRow.VALUES, valueLabel = gndEntities, param="person")
-  @result_field("Einleitung", "introductionBy", doc, TableRow.VALUES, valueLabel = gndEntities, param="person")
-  @result_field("Drehbuch", "screenwriter", doc, TableRow.VALUES, valueLabel = gndEntities, param="person")
-  @result_field("Mitarbeit", "collaborator", doc, TableRow.VALUES, valueLabel = gndEntities, param="person")
-  @result_field("Komponist/in", "composer", doc, TableRow.VALUES, valueLabel = gndEntities, param="person")
-  @result_field("Dirigent/in", "conductor", doc, TableRow.VALUES, valueLabel = gndEntities, param="person")
-  @result_field("Kamera", "cinematographer", doc, TableRow.VALUES, valueLabel = gndEntities, param="person")
-  @result_field("Sammler/in", "collector", doc, TableRow.VALUES, valueLabel = gndEntities, param="person")
-  @result_field("Kartographie", "cartographer", doc, TableRow.VALUES, valueLabel = gndEntities, param="person")
-  @result_field("Regie", "director", doc, TableRow.VALUES, valueLabel = gndEntities, param="person")
-  @result_field("Widmungsträger/in", "dedicatee", doc, TableRow.VALUES, valueLabel = gndEntities, param="person")
-  @result_field("Stecher/in", "engraver", doc, TableRow.VALUES, valueLabel = gndEntities, param="person")
-  @result_field("Illustration", "illustrator", doc, TableRow.VALUES, valueLabel = gndEntities, param="person")
-  @result_field("Interviewte/r", "interviewee", doc, TableRow.VALUES, valueLabel = gndEntities, param="person")
-  @result_field("Interviewer/in", "interviewer", doc, TableRow.VALUES, valueLabel = gndEntities, param="person")
-  @result_field("Musik", "musician", doc, TableRow.VALUES, valueLabel = gndEntities, param="person")
-  @result_field("Fotografie", "photographer", doc, TableRow.VALUES, valueLabel = gndEntities, param="person")
-  @result_field("Interpret/in", "performer", doc, TableRow.VALUES, valueLabel = gndEntities, param="person")
-  @result_field("Produktion", "producer", doc, TableRow.VALUES, valueLabel = gndEntities, param="person")
-  @result_field("Gesang", "singer", doc, TableRow.VALUES, valueLabel = gndEntities, param="person")
-  @result_field("Gefeierte Person", "honoree", doc, TableRow.VALUES, valueLabel = gndEntities, param="person")
-  @result_field("Übersetzung", "translator", doc, TableRow.VALUES, valueLabel = gndEntities, param="person")
-
+  @if(Lobid.DATA_2) {
+    @contributions((doc \ "contribution").as[Seq[JsValue]])
+  } else {
+    @result_field("Autor/in", "creator", doc, TableRow.VALUES, valueLabel = gndEntities, param="person")
+    @result_field("Autor/in", "creatorName", doc, TableRow.VALUES)
+    @result_field("Redaktion", "redaktor", doc, TableRow.VALUES, valueLabel = gndEntities, param="person")
+    @result_field("Herausgeber/in", "editor", doc, TableRow.VALUES, valueLabel = gndEntities, param="person")
+    @result_field("Mitwirkung", "contributor", doc, TableRow.VALUES, valueLabel = gndEntities, param="person")
+    @result_field("Mitwirkung", "contributorName", doc, TableRow.VALUES)
+    @result_field("Schauspieler/in", "actor", doc, TableRow.VALUES, valueLabel = gndEntities, param="person")
+    @result_field("Nachwort", "afterwordBy", doc, TableRow.VALUES, valueLabel = gndEntities, param="person")
+    @result_field("Einleitung", "introductionBy", doc, TableRow.VALUES, valueLabel = gndEntities, param="person")
+    @result_field("Drehbuch", "screenwriter", doc, TableRow.VALUES, valueLabel = gndEntities, param="person")
+    @result_field("Mitarbeit", "collaborator", doc, TableRow.VALUES, valueLabel = gndEntities, param="person")
+    @result_field("Komponist/in", "composer", doc, TableRow.VALUES, valueLabel = gndEntities, param="person")
+    @result_field("Dirigent/in", "conductor", doc, TableRow.VALUES, valueLabel = gndEntities, param="person")
+    @result_field("Kamera", "cinematographer", doc, TableRow.VALUES, valueLabel = gndEntities, param="person")
+    @result_field("Sammler/in", "collector", doc, TableRow.VALUES, valueLabel = gndEntities, param="person")
+    @result_field("Kartographie", "cartographer", doc, TableRow.VALUES, valueLabel = gndEntities, param="person")
+    @result_field("Regie", "director", doc, TableRow.VALUES, valueLabel = gndEntities, param="person")
+    @result_field("Widmungsträger/in", "dedicatee", doc, TableRow.VALUES, valueLabel = gndEntities, param="person")
+    @result_field("Stecher/in", "engraver", doc, TableRow.VALUES, valueLabel = gndEntities, param="person")
+    @result_field("Illustration", "illustrator", doc, TableRow.VALUES, valueLabel = gndEntities, param="person")
+    @result_field("Interviewte/r", "interviewee", doc, TableRow.VALUES, valueLabel = gndEntities, param="person")
+    @result_field("Interviewer/in", "interviewer", doc, TableRow.VALUES, valueLabel = gndEntities, param="person")
+    @result_field("Musik", "musician", doc, TableRow.VALUES, valueLabel = gndEntities, param="person")
+    @result_field("Fotografie", "photographer", doc, TableRow.VALUES, valueLabel = gndEntities, param="person")
+    @result_field("Interpret/in", "performer", doc, TableRow.VALUES, valueLabel = gndEntities, param="person")
+    @result_field("Produktion", "producer", doc, TableRow.VALUES, valueLabel = gndEntities, param="person")
+    @result_field("Gesang", "singer", doc, TableRow.VALUES, valueLabel = gndEntities, param="person")
+    @result_field("Gefeierte Person", "honoree", doc, TableRow.VALUES, valueLabel = gndEntities, param="person")
+    @result_field("Übersetzung", "translator", doc, TableRow.VALUES, valueLabel = gndEntities, param="person")
+  }
   @with_icon("Medientyp", "medium", controllers.nwbib.Application.MEDIUM_FIELD)
   @with_icon("Publikationstyp", if(Lobid.DATA_2) { "type" } else { "@type" }, if(Lobid.DATA_2) { controllers.nwbib.Application.TYPE_FIELD_LOBID2 } else { controllers.nwbib.Application.TYPE_FIELD })
   @result_field("", "thesisInformation", doc, TableRow.VALUES)
