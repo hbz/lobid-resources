@@ -921,47 +921,60 @@
 		<!-- ####### persons -->
 		<!-- ####################### -->
 		<!-- person links -->
-		<data source="1??[-aemn][12].9" name="@creatorPersonId">
+		<data source="1[02468][048][-aemn][12].9|1[13579][26][-aemn][12].9" name="@creatorPersonId">
 			<regexp match="\(DE-588\)(.*)" format="http://d-nb.info/gnd/${1}"/>
 			<sanitizeUrl></sanitizeUrl>
 		</data>
-		<!-- literals of creator -->
+		<!-- literals of creator (seems there are no corporateBodyCreators without gndID) -->
 		<data source="359[-ab][-12].a" name="http://rdaregistry.info/Elements/u/P60339"/>
-		<combine name="@creatorLabel" value="${a}">
-			<data
-				source="1[02468][048][-aemn][12].[pa]|1[1468][26][-aemn][12].[pa]|@nameOfCreatingCorporateBody"
+		<combine name="@creatorPersonLabel" value="${a}">
+			<data source="1[02468][048][-aemn][12].[pa]|1[13579][26][-aemn][12].[pa]" name="a">
+				<replace pattern="&gt;&gt;" with=""/>
+				<replace pattern="&lt;&lt;" with=""/>
+			</data>
+		</combine>
+		<!-- bnode for creator when no ID -->
+		<combine name="@bnodeCreatorPersonLabel" value="_:${a}">
+			<if>
+				<none>
+					<data source="@creatorPersonId"/>
+				</none>
+			</if>
+			<data source="@creatorPersonLabel" name="a"/>
+		</combine>
+		<choose name="@creatorPersonOrCoorporateBodyBnodeOrId" flushWith="@creatorPersonId|@bnodeCreatorPersonLabel|@creatorCorporateBodyId">
+			<data source="@creatorPersonId"/>
+			<data source="@bnodeCreatorPersonLabel"/>
+			<data source="@creatorCorporateBodyId"/>
+		</choose>
+		<!-- bnode for contributor when no ID -->
+		<combine name="@contributorPersonLabel" value="${a}">
+			<data source="1[02468][048][bcf]1.[pa]|1[13579][26][bcf]1.[pa]|8[012][02468][-mn]-12.[pa]"
 				name="a">
 				<replace pattern="&gt;&gt;" with=""/>
 				<replace pattern="&lt;&lt;" with=""/>
 			</data>
 		</combine>
-		<!-- flushWith="@creatorPersonId|@creatorCorporateBodyId|@creatorLabel|@nameOfCreatingCorporateBody" -->
-		<choose name="@creatorNameOrId" flushWith="[12]????" sameEntity="true" reset="false">
-			<data source="@creatorPersonId"/>
-			<data source="@creatorCorporateBodyId"/>
-			<data source="@creatorLabel"/>
-			<data source="@nameOfCreatingCorporateBody"/>
-		</choose>
-		<choose name="@contributorNameOrId" flushWith="[12]????" sameEntity="true" reset="false">
+		<combine name="@bnodeContributorPersonLabel" value="_:${a}">
+			<data source="@contributorPersonLabel" name="a"/>
+		</combine>
+		<combine name="@contributorCoorporateBodyLabel" value="${a}">
+			<data source="2[02468][048][bcf]1.[pa]|2[13579][26][bcf]1.[pa]" name="a">
+				<replace pattern="&gt;&gt;" with=""/>
+				<replace pattern="&lt;&lt;" with=""/>
+			</data>
+		</combine>
+		<choose name="@contributorPersonBnodeOrId" flushWith="1????">
 			<data source="@contributorPersonId"/>
-			<data source="@contributorCorporateBodyId"/>
-			<data source="@contributorLabel"/>
-			<data source="@nameOfContributingCorporateBody"/>
+			<data source="@bnodeContributorPersonLabel"/>
 		</choose>
-		<entity name="http://purl.org/dc/terms/contributor" sameEntity="true">
-			<data source="@contributorNameOrId" name="http://www.w3.org/2000/01/rdf-schema#label">
-				<regexp match="^[^http].*"/>
-			</data>
-			<data source="@contributorNameOrId" name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type">
-				<regexp match="^[^http].*" format="http://d-nb.info/standards/elementset/gnd#Person"/>
-			</data>
-		</entity>
-		<entity name="http://purl.org/dc/terms/contributor" sameEntity="true">
-			<data source="2?[02468]-1.a" name="http://www.w3.org/2000/01/rdf-schema#label"/>
-			<data source="2?[02468]-1.a" name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type">
-				<regexp match=".*" format="http://d-nb.info/standards/elementset/gnd#CorporateBody"/>
-			</data>
-		</entity>
+		<combine name="@bnodeContributorBodyLabel" value="_:${a}">
+			<data source="@contributorCoorporateBodyLabel" name="a"/>
+		</combine>
+		<choose name="@contributorCorporateBodyBnodeOrId" flushWith="2????">
+			<data source="@contributorCorporateBodyId"/>
+			<data source="@bnodeContributorBodyLabel"/>
+		</choose>
 		<!-- ####################### -->
 		<!-- ################ koerperschaften -->
 		<!-- ####################### -->
@@ -969,31 +982,42 @@
 			<regexp match="\(DE-588\)(.*)" format="http://d-nb.info/gnd/${1}"/>
 			<sanitizeUrl></sanitizeUrl>
 		</data>
-		<data source="2?[02468][-a][12].k" name="@nameOfCreatingCorporateBodyK">
+		<data source="[29]?[02468][-a][12].k" name="@nameOfCreatingCorporateBodyK">
 			<replace pattern="&gt;&gt;" with=""/>
 			<replace pattern="&lt;&lt;" with=""/>
 		</data>
-		<data source="2?[02468][-a][12].h" name="@nameOfCreatingCorporateBodyH"/>
-		<combine name="@nameOfCreatingCorporateBodyKH" value="${k} (${h})">
+		<data source="[29]?[02468][-a][12].h" name="@nameOfCreatingCorporateBodyH"/>
+		<combine name="@nameOfCreatingCorporateBodyKH" value="${k} (${h})" sameEntity="true">
 			<data source="@nameOfCreatingCorporateBodyK" name="k"/>
 			<data source="@nameOfCreatingCorporateBodyH" name="h"/>
 		</combine>
-		<combine name="@nameOfCreatingCorporateBodyB" value="${a}">
-			<concat delimiter=", " name="a" flushWith="@creatorCorporateBodyId">
-				<data source="2?[02468][-a][12].b"/>
+		<combine name="@nameOfCreatingCorporateBodyB" value="${a}" sameEntity="true">
+			<concat delimiter=", " name="a" flushWith="@creatorCorporateBodyId|@subjectLinks">
+				<data source="[29]?[02468][-a][12].b"/>
 			</concat>
 		</combine>
-		<combine name="@nameOfCreatingCorporateBodyKB" value="${k}. ${b}">
+		<combine name="@nameOfCreatingCorporateBodyKB" value="${k}. ${b}" sameEntity="true">
 			<data source="@nameOfCreatingCorporateBodyB" name="b"/>
 			<data source="@nameOfCreatingCorporateBodyK" name="k"/>
 		</combine>
-		<combine name="@nameOfCreatingCorporateBodyKHB" value="${k} (${h}). ${b}">
+		<combine name="@nameOfCreatingCorporateBodyKHB" value="${k} (${h}). ${b}"
+			sameEntity="true">
 			<data source="@nameOfCreatingCorporateBodyB" name="b"/>
 			<data source="@nameOfCreatingCorporateBodyH" name="h"/>
 			<data source="@nameOfCreatingCorporateBodyK" name="k"/>
 		</combine>
-		<combine name="@nameOfCreatingCorporateBody" value="${a}" flushWith="@creatorCorporateBodyId"> <!-- no Verweisungsformen (aka alternate labels) -->
+		<combine name="@nameOfCreatingCorporateBody" value="${a}" sameEntity="true"
+			flushWith="@creatorCorporateBodyId"> <!-- no Verweisungsformen (aka alternate labels) -->
 			<choose name="a" flushWith="@creatorCorporateBodyId">
+				<data source="@nameOfCreatingCorporateBodyKHB"/>
+				<data source="@nameOfCreatingCorporateBodyKB"/>
+				<data source="@nameOfCreatingCorporateBodyKH"/>
+				<data source="@nameOfCreatingCorporateBodyK"/>
+			</choose>
+		</combine>
+		<combine name="@nameOfSubjectCorporateBody" value="${a}" sameEntity="true"
+			flushWith="@subjectLinks">
+			<choose name="a" flushWith="@subjectLinks">
 				<data source="@nameOfCreatingCorporateBodyKHB"/>
 				<data source="@nameOfCreatingCorporateBodyKB"/>
 				<data source="@nameOfCreatingCorporateBodyKH"/>
@@ -1037,9 +1061,10 @@
 		<data source="2?[02468][bcefp][12].9" name="@contributorCorporateBodyId">
 			<regexp match="\(DE-588\)(.*)" format="http://d-nb.info/gnd/${1}"/>
 		</data>
+		<data source="[29]??[-abcfep][12].e" name="@preferredNameConcatEventE"/>
 		<combine name="@preferredNameConcatEventEDC" value="${e}, ${d}, ${c}"
 			sameEntity="true">
-			<data source="[29]??[-abcfep][12].e" name="e"/>
+			<data source="@preferredNameConcatEventE" name="e"/>
 			<data source="[29]??[-abcfep][12].d" name="d"/>
 			<data source="[29]??[-abcfep][12].c" name="c"/>
 		</combine>
@@ -1050,14 +1075,45 @@
 			<data source="[29]??[-abcfep][12].d" name="d"/>
 			<data source="[29]??[-abcfep][12].c" name="c"/>
 		</combine>
+		<data
+			source="@contributorPersonBnodeOrId|@contributorCorporateBodyBnodeOrId|@creatorPersonOrCoorporateBodyBnodeOrId|@bnodeCreatorPersonLabel"
+			name="@agentId"/>
+		<combine value="_:${a}${b}" name="@contributionBnode" sameEntity="true">
+			<data source="@agentId" name="a"/>
+			<data source="@relator" name="b"/>
+		</combine>
+		<combine name="@relatorNode" value="${a}">
+			<data source="@relator" name="a"/>
+			<data source="@agentId"/>
+		</combine>
+		<combine name="~rdf:subject" value="${a}" flushWith="@relatorNode">
+			<data source="@contributionBnode" name="a"/>
+		</combine>
+		<combine name="http://bibframe.org/vocab/relator" value="${a}" sameEntity="true"
+			flushWith="@relatorNode">
+			<data source="@relatorNode" name="a"/>
+			<data source="@contributionBnode"/>
+		</combine>
+		<combine name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" value="http://bibframe.org/vocab/Contribution"
+			flushWith="@relatorNode">
+			<data source="@contributionBnode"/>
+		</combine>
+		<combine name="http://bibframe.org/vocab/agent" value="${a}" flushWith="@relatorNode">
+			<data source="@agentId" name="a"/>
+		</combine>
+		<!-- set subject uri of resource anew -->
+		<combine name="~rdf:subject" value="$[ns-lobid-resource]${subject}#!">
+			<data source="@id" name="subject"/>
+			<data source="@relatorNode"/>
+			<data source="@contributionBnode" name="a"/>
+		</combine>
+		<combine name="http://bibframe.org/vocab/contribution" value="${a}" sameEntity="true">
+			<data source="@contributionBnode" name="a"/>
+			<data source="@relatorNode"/>
+		</combine>
 		<!-- ####################### -->
 		<!-- ################ koerperschaften and persons -->
 		<!-- ####################### -->
-		<!-- Add literal only if link in the same entity does not exist -->
-		<data source="@creatorNameOrId" name="http://purl.org/dc/elements/1.1/creator">
-			<regexp match="^[^http].*"/>
-		</data>
-		<data source="@creatorPersonId|@creatorCorporateBodyId" name="http://purl.org/dc/terms/creator"/>
 		<!-- contributors with roles @TODO many roles needs tests -->
 		<data source="1??b[1234].b|8[012]?[-mn][-12].b" name="@marcrelName"/>
 		<!-- id of contributor (which is not a creator) -->
@@ -1072,196 +1128,12 @@
 				<sanitizeUrl></sanitizeUrl>
 			</data>
 		</combine>
-		<combine name="@contributorLabel" value="${a}">
-			<data
-				source="1[02468][048][bcf]1.[pa]|1[13579][26][bcf]1.[pa]|@nameOfContributingCorporateBody|8[012][02468][-mn]-12.[pa]"
-				name="a">
-				<replace pattern="&gt;&gt;" with=""/>
-				<replace pattern="&lt;&lt;" with=""/>
-			</data>
-		</combine>
-		<!-- map literals to marc relator property -->
-		<combine name="${marcrel}" value="${contributorId}" sameEntity="true">
-			<data source="@marcrelName" name="marcrel">
-				<regexp match="[dD]ars" format="http://id.loc.gov/vocabulary/relators/act"/>
-			</data>
-			<data source="@contributorPersonId" name="contributorId"/>
-		</combine>
-		<combine name="${marcrel}" value="${contributorId}" sameEntity="true">
-			<data source="@marcrelName" name="marcrel">
-				<regexp match="[hH]rsg" format="$[ns-bibo]editor"/>
-			</data>
-			<data source="@contributorPersonId" name="contributorId"/>
-		</combine>
-		<combine name="${marcrel}" value="${contributorId}" sameEntity="true">
-			<data source="@marcrelName" name="marcrel">
-				<regexp match="[rR]egi" format="http://id.loc.gov/vocabulary/relators/drt"/>
-			</data>
-			<data source="@contributorPersonId" name="contributorId"/>
-		</combine>
-		<combine name="${marcrel}" value="${contributorId}" sameEntity="true">
-			<data source="@marcrelName" name="marcrel">
-				<regexp match="bers" format="$[ns-bibo]translator"/>
-			</data>
-			<data source="@contributorPersonId" name="contributorId"/>
-		</combine>
-		<combine name="${marcrel}" value="${contributorId}" sameEntity="true">
-			<data source="@marcrelName" name="marcrel">
-				<regexp match="[iI]ll" format="http://id.loc.gov/vocabulary/relators/ill"/>
-			</data>
-			<data source="@contributorPersonId" name="contributorId"/>
-		</combine>
-		<combine name="${marcrel}" value="${contributorId}" sameEntity="true">
-			<data source="@marcrelName" name="marcrel">
-				<regexp match="[zZ]eichn" format="http://id.loc.gov/vocabulary/relators/ill"/>
-			</data>
-			<data source="@contributorPersonId" name="contributorId"/>
-		</combine>
-		<combine name="${marcrel}" value="${contributorId}" sameEntity="true">
-			<data source="@marcrelName" name="marcrel">
-				<regexp match="^[mM]itarb" format="http://id.loc.gov/vocabulary/relators/clb"/>
-			</data>
-			<data source="@contributorPersonId" name="contributorId"/>
-		</combine>
-		<combine name="${marcrel}" value="${contributorId}" sameEntity="true">
-			<data source="@marcrelName" name="marcrel">
-				<regexp match=".*[oO]togr.*" format="http://id.loc.gov/vocabulary/relators/pht"/>
-			</data>
-			<data source="@contributorPersonId" name="contributorId"/>
-		</combine>
-		<combine name="${marcrel}" value="${contributorId}" sameEntity="true">
-			<data source="@marcrelName" name="marcrel">
-				<regexp match=".*[dD]ir" format="http://id.loc.gov/vocabulary/relators/cnd"/>
-			</data>
-			<data source="@contributorPersonId" name="contributorId"/>
-		</combine>
-		<combine name="${marcrel}" value="${contributorId}" sameEntity="true">
-			<data source="@marcrelName" name="marcrel">
-				<regexp match="[kK]om" format="http://id.loc.gov/vocabulary/relators/cmp"/>
-			</data>
-			<data source="@contributorPersonId" name="contributorId"/>
-		</combine>
-		<combine name="${marcrel}" value="${contributorId}" sameEntity="true">
-			<data source="@marcrelName" name="marcrel">
-				<regexp match="[vV]or" format="http://id.loc.gov/vocabulary/relators/aui"/>
-			</data>
-			<data source="@contributorPersonId" name="contributorId"/>
-		</combine>
-		<combine name="${marcrel}" value="${contributorId}" sameEntity="true">
-			<data source="@marcrelName" name="marcrel">
-				<regexp match="[dD]rehb" format="http://id.loc.gov/vocabulary/relators/aus"/>
-			</data>
-			<data source="@contributorPersonId" name="contributorId"/>
-		</combine>
-		<combine name="${marcrel}" value="${contributorId}" sameEntity="true">
-			<data source="@marcrelName" name="marcrel">
-				<regexp match="[sS]ammler" format="http://id.loc.gov/vocabulary/relators/col"/>
-			</data>
-			<data source="@contributorPersonId" name="contributorId"/>
-		</combine>
-		<combine name="${marcrel}" value="${contributorId}" sameEntity="true">
-			<data source="@marcrelName" name="marcrel">
-				<regexp match="[bB]eitr" format="http://id.loc.gov/vocabulary/relators/ctb"/>
-			</data>
-			<data source="@contributorPersonId" name="contributorId"/>
-		</combine>
-		<combine name="${marcrel}" value="${contributorId}" sameEntity="true">
-			<data source="@marcrelName" name="marcrel">
-				<regexp match="[iI]nterpr" format="http://id.loc.gov/vocabulary/relators/prf"/>
-			</data>
-			<data source="@contributorPersonId" name="contributorId"/>
-		</combine>
-		<combine name="${marcrel}" value="${contributorId}" sameEntity="true">
-			<data source="@marcrelName" name="marcrel">
-				<regexp match="[kK]amera" format="http://id.loc.gov/vocabulary/relators/cng"/>
-			</data>
-			<data source="@contributorPersonId" name="contributorId"/>
-		</combine>
-		<combine name="${marcrel}" value="${contributorId}" sameEntity="true">
-			<data source="@marcrelName" name="marcrel">
-				<regexp match="[vV]orl" format="http://id.loc.gov/vocabulary/relators/ant"/>
-			</data>
-			<data source="@contributorPersonId" name="contributorId"/>
-		</combine>
-		<combine name="${marcrel}" value="${contributorId}" sameEntity="true">
-			<data source="@marcrelName" name="marcrel">
-				<regexp match="[gG]esang" format="http://id.loc.gov/vocabulary/relators/sng"/>
-			</data>
-			<data source="@contributorPersonId" name="contributorId"/>
-		</combine>
-		<combine name="${marcrel}" value="${contributorId}" sameEntity="true">
-			<data source="@marcrelName" name="marcrel">
-				<regexp match="[iI]nterviewer" format="http://id.loc.gov/vocabulary/relators/ivr"/>
-			</data>
-			<data source="@contributorPersonId" name="contributorId"/>
-		</combine>
-		<combine name="${marcrel}" value="${contributorId}" sameEntity="true">
-			<data source="@marcrelName" name="marcrel">
-				<regexp match="[iI]nterviewter" format="http://id.loc.gov/vocabulary/relators/ive"/>
-			</data>
-			<data source="@contributorPersonId" name="contributorId"/>
-		</combine>
-		<combine name="${marcrel}" value="${contributorId}" sameEntity="true">
-			<data source="@marcrelName" name="marcrel">
-				<regexp match="[kK]artogra" format="http://id.loc.gov/vocabulary/relators/ctg"/>
-			</data>
-			<data source="@contributorPersonId" name="contributorId"/>
-		</combine>
-		<combine name="${marcrel}" value="${contributorId}" sameEntity="true">
-			<data source="@marcrelName" name="marcrel">
-				<regexp match="[mM]usi" format="http://id.loc.gov/vocabulary/relators/mus"/>
-			</data>
-			<data source="@contributorPersonId" name="contributorId"/>
-		</combine>
-		<combine name="${marcrel}" value="${contributorId}" sameEntity="true">
-			<data source="@marcrelName" name="marcrel">
-				<regexp match="[nN]ach" format="http://id.loc.gov/vocabulary/relators/aft"/>
-			</data>
-			<data source="@contributorPersonId" name="contributorId"/>
-		</combine>
-		<combine name="${marcrel}" value="${contributorId}" sameEntity="true">
-			<data source="@marcrelName" name="marcrel">
-				<regexp match="[pP]rod" format="http://id.loc.gov/vocabulary/relators/pro"/>
-			</data>
-			<data source="@contributorPersonId" name="contributorId"/>
-		</combine>
-		<combine name="${marcrel}" value="${contributorId}" sameEntity="true">
-			<data source="@marcrelName" name="marcrel">
-				<regexp match="[sS]techer" format="http://id.loc.gov/vocabulary/relators/egr"/>
-			</data>
-			<data source="@contributorPersonId" name="contributorId"/>
-		</combine>
-		<combine name="${marcrel}" value="${contributorId}" sameEntity="true">
-			<data source="@marcrelName" name="marcrel">
-				<regexp match="[wW]idmun" format="http://id.loc.gov/vocabulary/relators/dte"/>
-			</data>
-			<data source="@contributorPersonId" name="contributorId"/>
-		</combine>
-		<combine name="${marcrel}" value="${contributorId}" sameEntity="true">
-			<data source="@marcrelName" name="marcrel">
-				<regexp match="[rR]ed" format="http://id.loc.gov/vocabulary/relators/red"/>
-			</data>
-			<data source="@contributorPersonId" name="contributorId"/>
-		</combine>
-		<data source="104f1.9" name="http://id.loc.gov/vocabulary/relators/hnr">
-			<regexp match="\(DE-588\)(.*)" format="http://d-nb.info/gnd/${1}"/>
-		</data>
-		<!-- use dct:contributor only if no marc:rel could be build -->
-		<choose name="@contributorWithoutMarcRel" flushWith="@contributorPersonId">
-			<data source="@marcrelName">
-				<regexp
-					match="[dD]ars|[hH]rsg|[rR]egi|bers|[iI]ll|[zZ]eichn|[mM]itarb|[oO]togr|[dD]ir|[kK]om|[vV]or|[dD]rehb|[sS]ammler|[bB]eitr|[iI]nterpr|[kK]amera|[vV]orl|[gG]esang|[iI]nterviewer|[iI]nterviewter|[kK]artogra|[mM]usi|[nN]ach|[pP]rod|[rR]ed|[sS]techer|[wW]idmun"/>
-			</data>
-			<data source="@contributorPersonId"/>
-		</choose>
-		<!-- the regex makes sure that @marcelName is ignored, when chosen -->
-		<data source="@contributorWithoutMarcRel|@contributorCorporateBodyId" name="@contributorId">
-			<regexp match="^http.*"/>
-		</data>
-		<data source="@contributorId" name="http://purl.org/dc/terms/contributor"/>
 		<combine name="$[ns-lobid-vocab]contributorOrder" value="${a}">
 			<concat delimiter=" | " name="a">
-				<data source="@contributorNameOrId|@creatorNameOrId"/>
+				<data
+					source="@creatorPersonOrCoorporateBodyBnodeOrId|@contributorPersonBnodeOrId|@contributorCorporateBodyBnodeOrId">
+					<replace pattern="_:" with=""/>
+				</data>
 				<data source="200-1.a"/> <!-- non-GND corporate bodies, see https://github.com/hbz/lobid/issues/302 -->
 			</concat>
 		</combine>
@@ -1315,12 +1187,11 @@
 			</data>
 		</combine>
 		<data source="@altLabelPerson|@altLabelCorporateBody" name="http://www.w3.org/2004/02/skos/core#altLabel"/>
-		<!-- <data source="@altLabelPerson" name="http://www.w3.org/2004/02/skos/core#altLabel"/> -->
 		<!-- ########### -->
 		<!-- # Create subgraph: temporarily set new subjects or contributor id -->
 		<!-- ########### -->
 		<data name="~rdf:subject"
-			source="@subjectLinks|@creatorPersonId|@creatorCorporateBodyId|@contributorPersonId|@contributorCorporateBodyId"/>
+			source="@bnodeCreatorPersonLabel|@contributorPersonBnodeOrId|@contributorCorporateBodyBnodeOrId|@subjectLinks|@creatorPersonId|@creatorCorporateBodyId|@contributorPersonId|@contributorCorporateBodyId"/>
 		<!-- subjects which are persons (and thus the date is to be ignored, see hbz/lobid#244 ) -->
 		<combine name="@preferredNamePersonConcatSubject" value="${a}" sameEntity="true"
 			flushWith="@creatorPersonId|@contributorPersonId|@preferredNameP">
@@ -1340,12 +1211,14 @@
 			</concat>
 		</combine>
 		<!-- START contributor/creator -->
-		<combine name="@preferredNameForThePerson" value="${a}" sameEntity="true" reset="true">
-			<data source="@preferredName" name="a">
+		<combine name="@preferredNameForThePerson" value="${a}" sameEntity="true" reset="true"
+			flushWith="@creatorPersonId|@contributorPersonId|@bnodeCreatorPersonLabel|@contributorPersonBnodeOrId">
+			<data source="@preferredName|@creatorPersonLabel|@contributorPersonLabel" name="a">
 				<replace pattern="&gt;&gt;" with=""/>
 				<replace pattern="&lt;&lt;" with=""/>
 			</data>
-			<data source="@creatorPersonId|@contributorPersonId"/>
+			<data
+				source="@creatorPersonId|@contributorPersonId|@bnodeCreatorPersonLabel|@bnodeContributorPersonLabel"/>
 		</combine>
 		<combine name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" value="http://d-nb.info/standards/elementset/gnd#Family"
 			flushWith="@subjectLinks">
@@ -1412,43 +1285,154 @@
 			</data>
 		</combine>
 		<combine name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" value="${a}"
-			flushWith="@subjectLinks|@creatorCorporateBodyId|@contributorCorporateBodyId"
+			flushWith="@subjectLinks|@creatorCorporateBodyId|@contributorCorporateBodyBnodeOrId"
 			sameEntity="true">
-			<choose name="a" flushWith="@subjectLinks|@creatorCorporateBodyId|@contributorCorporateBodyId"
+			<choose name="a"
+				flushWith="@subjectLinks|@creatorCorporateBodyId|@contributorCorporateBodyBnodeOrId"
 				sameEntity="true">
-				<data source="@preferredNameConcatEventEDC">
+				<data source="@preferredNameConcatEventE">
 					<constant value="$[ns-gnd]ConferenceOrEvent"/>
 				</data>
 				<data source="@preferredNameForThePlaceOrGeographicName|@nameOfCreatingCorporateBodyG">
 					<constant value="$[ns-gnd]PlaceOrGeographicName"/>
 				</data>
-				<data source="9[01234][27]-[-12].k|@creatorCorporateBodyId|@contributorCorporateBodyId">
+				<data
+					source="9[01234][27]-[-12].k|@creatorCorporateBodyId|@contributorCorporateBodyBnodeOrId">
 					<constant value="$[ns-gnd]CorporateBody"/>
 				</data>
 			</choose>
 		</combine>
-		<!-- /subjects -->
-		<choose name="@preferredName"
+		<choose name="@preferredName" sameEntity="true"
 			flushWith="@subjectLinks|@preferredNameP|@creatorPersonId|@creatorCorporateBodyId|@contributorPersonId|@contributorCorporateBodyId">
+			<data source="@preferredNameConcatEventENDC"/>
+			<data source="@preferredNameConcatEventEDC"/>
+			<data source="@preferredNameConcatEventE"/>
 			<data source="@nameOfCreatingCorporateBody"/>
 			<data source="@nameOfContributingCorporateBody"/>
 			<data source="@preferredNameSemicolon"/>
-			<data source="@preferredNameConcatEventENDC"/>
-			<data source="@preferredNameConcatEventEDC"/>
 			<data source="@preferredNamePersonConcatSubject"/>
+			<data source="@nameOfSubjectCorporateBody"/>
 			<data source="@preferredNameConcatSubject"/>
+		</choose>
+		<choose name="@preferredName" flushWith="@contributorPersonBnodeOrId|@contributorCorporateBodyBnodeOrId"
+			sameEntity="true">
+			<data source="@preferredNamePersonConcatSubject"/>
+			<data source="@contributorPersonLabel|@contributorCoorporateBodyLabel"/>
+		</choose>
+		<choose name="@preferredName" flushWith="@bnodeCreatorPersonLabel">
+			<data source="preferredNamePersonConcatSubject"/>
+			<data source="@creatorPersonLabel"/>
 		</choose>
 		<data source="@preferredName" name="http://www.w3.org/2000/01/rdf-schema#label">
 			<replace pattern="&gt;&gt;" with=""/>
 			<replace pattern="&lt;&lt;" with=""/>
 		</data>
+		<combine name="@relator" value="${a}">
+			<choose name="a"
+				flushWith="@contributorPersonBnodeOrId|@contributorCorporateBodyBnodeOrId|@creatorPersonOrCoorporateBodyBnodeOrId">
+				<!-- always creator -->
+				<data source="@creatorPersonOrCoorporateBodyBnodeOrId" name="a">
+					<regexp match=".*" format="http://id.loc.gov/vocabulary/relators/cre"/>
+				</data>
+				<!-- map literals to marc relator property -->
+				<data source="@marcrelName" name="a">
+					<regexp match="[dD]ars" format="http://id.loc.gov/vocabulary/relators/act"/>
+				</data>
+				<data source="@marcrelName" name="a">
+					<regexp match="[hH]rsg" format="http://id.loc.gov/vocabulary/relators/edt"/>
+				</data>
+				<data source="@marcrelName" name="a">
+					<regexp match="[rR]egi" format="http://id.loc.gov/vocabulary/relators/drt"/>
+				</data>
+				<data source="@marcrelName" name="a">
+					<regexp match="bers" format="http://id.loc.gov/vocabulary/relators/trl"/>
+				</data>
+				<data source="@marcrelName" name="a">
+					<regexp match="[iI]ll" format="http://id.loc.gov/vocabulary/relators/ill"/>
+				</data>
+				<data source="@marcrelName" name="a">
+					<regexp match="[zZ]eichn" format="http://id.loc.gov/vocabulary/relators/ill"/>
+				</data>
+				<data source="@marcrelName" name="a">
+					<regexp match="^[mM]itarb" format="http://id.loc.gov/vocabulary/relators/clb"/>
+				</data>
+				<data source="@marcrelName" name="a">
+					<regexp match=".*[oO]togr.*" format="http://id.loc.gov/vocabulary/relators/pht"/>
+				</data>
+				<data source="@marcrelName" name="a">
+					<regexp match=".*[dD]ir" format="http://id.loc.gov/vocabulary/relators/cnd"/>
+				</data>
+				<data source="@marcrelName" name="a">
+					<regexp match="[kK]om" format="http://id.loc.gov/vocabulary/relators/cmp"/>
+				</data>
+				<data source="@marcrelName" name="a">
+					<regexp match="[vV]or" format="http://id.loc.gov/vocabulary/relators/aui"/>
+				</data>
+				<data source="@marcrelName" name="a">
+					<regexp match="[dD]rehb" format="http://id.loc.gov/vocabulary/relators/aus"/>
+				</data>
+				<data source="@marcrelName" name="a">
+					<regexp match="[sS]ammler" format="http://id.loc.gov/vocabulary/relators/col"/>
+				</data>
+				<data source="@marcrelName" name="a">
+					<regexp match="[bB]eitr" format="http://id.loc.gov/vocabulary/relators/ctb"/>
+				</data>
+				<data source="@marcrelName" name="a">
+					<regexp match="[iI]nterpr" format="http://id.loc.gov/vocabulary/relators/prf"/>
+				</data>
+				<data source="@marcrelName" name="a">
+					<regexp match="[kK]amera" format="http://id.loc.gov/vocabulary/relators/cng"/>
+				</data>
+				<data source="@marcrelName" name="a">
+					<regexp match="[vV]orl" format="http://id.loc.gov/vocabulary/relators/ant"/>
+				</data>
+				<data source="@marcrelName" name="a">
+					<regexp match="[gG]esang" format="http://id.loc.gov/vocabulary/relators/sng"/>
+				</data>
+				<data source="@marcrelName" name="a">
+					<regexp match="[iI]nterviewer" format="http://id.loc.gov/vocabulary/relators/ivr"/>
+				</data>
+				<data source="@marcrelName" name="a">
+					<regexp match="[iI]nterviewter" format="http://id.loc.gov/vocabulary/relators/ive"/>
+				</data>
+				<data source="@marcrelName" name="a">
+					<regexp match="[kK]artogra" format="http://id.loc.gov/vocabulary/relators/ctg"/>
+				</data>
+				<data source="@marcrelName" name="a">
+					<regexp match="[mM]usi" format="http://id.loc.gov/vocabulary/relators/mus"/>
+				</data>
+				<data source="@marcrelName" name="a">
+					<regexp match="[nN]ach" format="http://id.loc.gov/vocabulary/relators/aft"/>
+				</data>
+				<data source="@marcrelName" name="a">
+					<regexp match="[pP]rod" format="http://id.loc.gov/vocabulary/relators/pro"/>
+				</data>
+				<data source="@marcrelName" name="a">
+					<regexp match="[sS]techer" format="http://id.loc.gov/vocabulary/relators/egr"/>
+				</data>
+				<data source="@marcrelName" name="a">
+					<regexp match="[wW]idmun" format="http://id.loc.gov/vocabulary/relators/dte"/>
+				</data>
+				<data source="@marcrelName" name="a">
+					<regexp match="[rR]ed" format="http://id.loc.gov/vocabulary/relators/red"/>
+				</data>
+				<data source="104f1.p" name="a">
+					<regexp match=".*" format="http://id.loc.gov/vocabulary/relators/hnr"/>
+				</data>
+				<!-- default -->
+				<data source="@contributorPersonBnodeOrId|@contributorCorporateBodyBnodeOrId"
+					name="a">
+					<regexp match=".*" format="http://id.loc.gov/vocabulary/relators/ctb"/>
+				</data>
+			</choose>
+		</combine>
 		<!-- END contributor/creator -->
 		<!-- ########### -->
 		<!-- # set subject uri of resource anew -->
 		<!-- ########### -->
 		<combine name="~rdf:subject" value="$[ns-lobid-resource]${subject}#!">
 			<data
-				source="@altLabelPerson|@altLabelCorporateBody|@subjectLinks|@creatorPersonId|@creatorCorporateBodyId|@contributorPersonId|@contributorCorporateBodyId|@subjectTopic|@subjectMain"/>
+				source="@bnodeCreatorPersonLabel|@contributorPersonBnodeOrId|@contributorCorporateBodyBnodeOrId|@agentId|@altLabelPerson|@altLabelCorporateBody|@subjectLinks|@creatorPersonId|@creatorCorporateBodyId|@contributorPersonId|@contributorCorporateBodyId|@subjectTopic|@subjectMain"/>
 			<data source="@id" name="subject"/>
 		</combine>
 		<!-- other subjects -->

@@ -96,11 +96,6 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 		client = cl;
 		final FileOpener opener = new FileOpener();
 		final Triples2RdfModel triple2model = new Triples2RdfModel();
-		RdfModelFileWriter rdfModelFileWriter = new RdfModelFileWriter();
-		rdfModelFileWriter.setProperty("http://purl.org/lobid/lv#hbzID");
-		rdfModelFileWriter.setStartIndex(2);
-		rdfModelFileWriter.setEndIndex(7);
-		rdfModelFileWriter.setTarget("src/test/resources/nt");
 		triple2model.setInput(N_TRIPLE);
 		opener.setReceiver(new TarReader()).setReceiver(new XmlDecoder())
 				.setReceiver(new AlephMabXmlHandler())
@@ -261,7 +256,7 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 
 		private static String toRdf(final String jsonLd) {
 			try {
-				LOG.debug("toRdf: " + jsonLd);
+				LOG.trace("toRdf: " + jsonLd);
 				final Object jsonObject = JSONUtils.fromString(jsonLd);
 				final JenaTripleCallback callback = new JenaTripleCallback();
 				final Model model = (Model) JsonLdProcessor.toRDF(jsonObject, callback);
