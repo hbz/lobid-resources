@@ -33,24 +33,12 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand" href="@nwbib.routes.Application.index()"><span class="glyphicon glyphicon-home"></span> NWBib</a>
+                    <a class="navbar-brand" href="@nwbib.routes.Application.index()"><span class="glyphicon glyphicon-home"></span> NWCat</a>
                   </div>
                   <div class="navbar-collapse collapse" id="nwbib-nav">
                     <ul class="nav navbar-nav">
                       <li @if(title=="NWBib - Erweiterte Suche"){class="active"}>
                         <a href="@nwbib.routes.Application.advanced()">Erweiterte Suche</a>
-                      </li>
-                      <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Ergänzende Suche<b class="caret"></b></a>
-                        <ul class="dropdown-menu">
-                          <li class="dropdown-header">Vorläufer der NWBib (Titel vor 1983)</li>
-                          <li><a href="http://digital.ub.uni-duesseldorf.de/nav/classification/5975540">Rheinland-Bibliographien</a></li>
-                          <li><a href="http://www.ulb.uni-muenster.de/landesbibliothek/recherche/westfaelische-bibliographien/">Westfalen-Bibliographien</a></li>
-                          <li class="divider"></li>
-                          <li class="dropdown-header">Sonstige</li>
-                          <li><a href="http://www.landesbibliothek-nrw.de/">Die NRW-Landesbibliotheken</a></li>
-                          <li><a href="http://www.ubka.uni-karlsruhe.de/landesbibliographie/">Virtuelle Deutsche Landesbibliographie (VDL)</a></li>
-                        </ul>
                       </li>
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
@@ -60,13 +48,7 @@
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" title="Info"><span class="glyphicon glyphicon-info-sign"></span><b class="caret"></b></a>
                         <ul class="dropdown-menu">
                           <!--li><a href="@nwbib.routes.Application.help()">Hilfe</a></li-->
-                          <li><a href="http://www.landesbibliothek-nrw.de/aufgaben/nrw_bibliographie/">Über die NWBib</a></li>
                           <li><a href="mailto:semweb@@hbz-nrw.de?subject=Feedback%20zur%20NWBib,%20aktuelle%20URL%20@controllers.nwbib.Application.currentUri()">Feedback</a></li>
-                          <li class="divider"></li>
-                          <li class="dropdown-header">Fachliche Kontakte</li>
-                          <li><a href="https://www.ulb.uni-bonn.de/die-ulb/organisation-ansprechpartner/ansprechpartner-von-a-z/albrink">ULB Bonn</a></li>
-                          <li><a href="http://www.ulb.uni-muenster.de/landesbibliothek/profil/ansprechpartner/index.html">ULB Münster</a></li>
-                          <li><a href="http://www.ulb.hhu.de/ueberblick-gewinnen/ansprechpartnerinnen-und-ansprechpartner.html#nwbib">ULB Düsseldorf</a></li>
                           <li class="divider"></li>
                           <li class="dropdown-header">Technischer Kontakt</li>
                           <li><a href="https://www.hbz-nrw.de/produkte/linked-open-data">hbz NRW</a></li>
@@ -80,17 +62,18 @@
                 </div><!--/.container-fluid -->
             </div>
             <div class="page-header">
-                <img class="media-object nrw-logo pull-right" src="@controllers.routes.Assets.at("images/wappen.png")" alt="NRW">
-                <h1>Die Nordrhein-Westfälische Bibliographie<br/><small>Mehr als 350.000 Publikationen über NRW seit 1983</small></h1>
+                <img class="media-object nrw-logo pull-right" src="@controllers.routes.Assets.at("images/hbz.png")" alt="hbz">
+                <h1>Der hbz-Verbundkatalog<br/><small>Titel- und Bestandsdaten in Nordrhein-Westfalen und Rheinland-Pfalz</small></h1>
             </div>
             @content
             <div class="panel panel-default nwbib-footer">
               <div class="panel-body">
                 @defining(controllers.nwbib.Lobid.getTotalHits("").get(Lobid.API_TIMEOUT)){ hits =>
-                <img class="media-object pull-left nrw-wappen" src="@controllers.routes.Assets.at("images/wappen.png")" alt="NRW-Wappen"> 
-                <img class="media-object pull-right hbz-logo" src="@controllers.routes.Assets.at("images/hbz.png")" alt="hbz-Logo">
-                Die NWBib bietet @if(hits>0){aktuell @hits}else{mehr als 350.000 (Stand: Dezember 2014)} Literaturnachweise. Sie wird von der <a href="http://www.ulb.hhu.de/">Universitäts- und Landesbibliothek (ULB) Düsseldorf</a> und der <a href="http://www.ulb.uni-muenster.de/">ULB Münster</a> 
-	       in Zusammenarbeit mit der <a href="http://www.ulb.uni-bonn.de/">ULB Bonn</a> und dem <a href="http://www.hbz-nrw.de/">Hochschulbibliothekszentrum des Landes Nordrhein-Westfalen (hbz)</a> herausgegeben.
+                <img class="media-object pull-right nrw-wappen" src="@controllers.routes.Assets.at("images/wappen.png")" alt="NRW-Wappen"> 
+                <img class="media-object pull-left hbz-logo" src="@controllers.routes.Assets.at("images/hbz.png")" alt="hbz-Logo">
+                Der hbz-Verbundkatalog bietet @if(hits>0){aktuell @hits}else{fast 20 Millionen} Literaturnachweise. 
+                Er stellt die Grundlage für viele weitere Produkte und Dienstleistungen dar, ist eingebunden in diverse 
+                Endnutzerportale sowie in die Online-Fernleihe und liefert die Datenbasis für den Bereich "Linked Open Data".
                 }
               </div>
             </div>
