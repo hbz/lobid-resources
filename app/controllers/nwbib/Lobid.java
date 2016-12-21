@@ -103,9 +103,8 @@ public class Lobid {
 			final String name, final String subject, final String id,
 			final String publisher, final String issued, final String medium,
 			final String nwbibspatial, final String nwbibsubject, final int from,
-			final int size, String owner, String t, String sort, boolean allData,
-			String set, String location, String word, String corporation,
-			String raw) {
+			final int size, String owner, String t, String sort, String set,
+			String location, String word, String corporation, String raw) {
 		WSRequestHolder requestHolder = WS
 				.url(Application.CONFIG.getString("nwbib.api"))
 				.setHeader("Accept", "application/json")
@@ -113,10 +112,7 @@ public class Lobid {
 				.setQueryParameter("from", from + "")
 				.setQueryParameter("size", size + "").setQueryParameter("sort", sort)
 				.setQueryParameter("location", locationPolygon(location));
-		if (!allData && set.isEmpty())
-			requestHolder = requestHolder.setQueryParameter("set",
-					Application.CONFIG.getString("nwbib.set"));
-		else if (!set.isEmpty() && !set.equals("*"))
+		if (!set.isEmpty() && !set.equals("*"))
 			requestHolder = requestHolder.setQueryParameter("set", set);
 		else {
 			requestHolder = requestHolder.setQueryParameter("set", "");
@@ -166,9 +162,7 @@ public class Lobid {
 						.setQueryParameter("format", "short.subjectChain")
 						.setQueryParameter("from", "" + from)
 						.setQueryParameter("size", "" + size)
-						.setQueryParameter("subject", q)
-						.setQueryParameter("set",
-							Application.CONFIG.getString("nwbib.set"));
+						.setQueryParameter("subject", q);
 		//@formatter:on
 		Logger.info("Request URL {}, query params {} ", requestHolder.getUrl(),
 				requestHolder.getQueryParameters());
@@ -188,7 +182,7 @@ public class Lobid {
 			});
 		}
 		WSRequestHolder requestHolder = request("", "", "", "", "", "", "", "", "",
-				"", 0, 0, "", "", "", false, set, "", "", "", "");
+				"", 0, 0, "", "", "", set, "", "", "", "");
 		return requestHolder.get().map((WSResponse response) -> {
 			Long total = getTotalResults(response.asJson());
 			Cache.set(cacheKey, total, Application.ONE_HOUR);
@@ -215,10 +209,8 @@ public class Lobid {
 		}
 		return WS.url(Application.CONFIG.getString("nwbib.api"))
 				.setQueryParameter("q", f + ":" + v)
-				.setQueryParameter("set",
-						set.isEmpty() ? Application.CONFIG.getString("nwbib.set")
-								: set.equals("*") ? "" : set)
-				.get().map((WSResponse response) -> {
+				.setQueryParameter("set", set.equals("*") ? "" : set).get()
+				.map((WSResponse response) -> {
 					Long total = getTotalResults(response.asJson());
 					Cache.set(cacheKey, total, Application.ONE_HOUR);
 					return total;
@@ -372,16 +364,12 @@ public class Lobid {
 						.setQueryParameter("nwbibsubject", nwbibsubject)//
 						.setQueryParameter("location", locationPolygon(location))//
 						.setQueryParameter("issued", issued)//
-						.setQueryParameter("t", t);
+						.setQueryParameter("t", t)//
+						.setQueryParameter("set", set);
 		if (!q.isEmpty())
 			request = request.setQueryParameter("word", preprocess(q));
 		else if (!word.isEmpty())
 			request = request.setQueryParameter("word", preprocess(word));
-		if (!set.isEmpty())
-			request = request.setQueryParameter("set", set);
-		else
-			request = request.setQueryParameter("set",
-					Application.CONFIG.getString("nwbib.set"));
 		if (!field.equals(Application.ITEM_FIELD))
 			request = request.setQueryParameter("owner", owner);
 		if (!raw.isEmpty()

@@ -173,7 +173,6 @@ public class Application extends Controller {
 						.setHeader("Accept", "application/json")
 						.setQueryParameter("subject", q)
 						.setQueryParameter("field", "@graph.http://purl.org/lobid/lv#subjectChain.@value.raw")
-						.setQueryParameter("set", Application.CONFIG.getString("nwbib.set"))
 						.setQueryParameter("from", "0")
 						.setQueryParameter("size", "9999"); // @formatter:on
 		Promise<Result> result = request.get().map((WSResponse response) -> {
@@ -432,10 +431,9 @@ public class Application extends Controller {
 			final int size, String owner, String t, String sort, boolean showDetails,
 			String set, String location, String word, String corporation,
 			String raw) {
-		final WSRequestHolder requestHolder =
-				Lobid.request(q, person, name, subject, id, publisher, issued, medium,
-						nwbibspatial, nwbibsubject, from, size, owner, t, sort, showDetails,
-						set, location, word, corporation, raw);
+		final WSRequestHolder requestHolder = Lobid.request(q, person, name,
+				subject, id, publisher, issued, medium, nwbibspatial, nwbibsubject,
+				from, size, owner, t, sort, set, location, word, corporation, raw);
 		return requestHolder.get().map((WSResponse response) -> {
 			Long hits = 0L;
 			String s = "{}";
