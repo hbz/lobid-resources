@@ -14,9 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.SortedSet;
 import java.util.Spliterators;
-import java.util.TreeSet;
 import java.util.UUID;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -137,50 +135,6 @@ public class Application extends Controller {
 			Logger.error("Could not get current URI", e);
 		}
 		return null;
-	}
-
-	/**
-	 * @param q The topics query.
-	 * @return The NWBib topics search page.
-	 */
-	public static Promise<Result> topics(String q) {
-		if (q.isEmpty())
-			return Promise.promise(
-					() -> ok(views.html.topics.render(q, Collections.emptyList())));
-		String cacheId = "topics." + q;
-		@SuppressWarnings("unchecked")
-		Promise<Result> cachedResult = (Promise<Result>) Cache.get(cacheId);
-		if (cachedResult != null)
-			return cachedResult;
-		WSRequestHolder request = // @formatter:off
-				WS.url(Application.CONFIG.getString("nwbib.api") + "/facets")
-						.setHeader("Accept", "application/json")
-						.setQueryParameter("subject", q)
-						.setQueryParameter("field", "@graph.http://purl.org/lobid/lv#subjectChain.@value.raw")
-						.setQueryParameter("from", "0")
-						.setQueryParameter("size", "9999"); // @formatter:on
-		Promise<Result> result = request.get().map((WSResponse response) -> {
-			if (response.getStatus() == Http.Status.OK) {
-				List<JsonNode> terms = response.asJson().findValues("term");
-				return ok(views.html.topics.render(q, cleanSortUnique(terms)));
-			}
-			Logger.error(new String(response.asByteArray()));
-			return ok(views.html.topics.render(q,
-					cleanSortUnique(Collections.emptyList())));
-		});
-		cacheOnRedeem(cacheId, result, ONE_HOUR);
-		return result;
-	}
-
-	private static List<String> cleanSortUnique(List<JsonNode> topics) {
-		List<String> filtered = topics.stream()
-				.map(topic -> topic.textValue().replaceAll("\\([\\d,]+\\)$", ""))
-				.filter(topic -> !topic.trim().startsWith(":")).map(v -> v.trim())
-				.collect(Collectors.toList());
-		SortedSet<String> sortedUnique = new TreeSet<>(
-				(s1, s2) -> Collator.getInstance(Locale.GERMAN).compare(s1, s2));
-		sortedUnique.addAll(filtered);
-		return new ArrayList<>(sortedUnique);
 	}
 
 	/**
