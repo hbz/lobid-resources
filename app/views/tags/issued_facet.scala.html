@@ -13,28 +13,27 @@ var freqs = [];
 var yearsObject = {};
 var thisYear = new Date().getFullYear();
 
-for(i = 1983; i <= thisYear; i++) {
-	years.push(i);
-}
+var min = thisYear;
+var max = 0;
 
 $(".@(Application.ISSUED_FIELD.hashCode.abs)-facet-link").each(function(index) {
 	var yearAndFreq = $(this).text().split(" ")
-	var year = yearAndFreq[0].trim();
+	var year = parseInt(yearAndFreq[0].trim());
 	var freq = parseInt(yearAndFreq[1].replace(/[()]/,""));
-	if(parseInt(year) >= 1983 && parseInt(year) <= thisYear){
+	if(year > 0 && year <= thisYear){
 		yearsObject[year]=freq;
+		max = Math.max(max, year);
+		min = Math.min(min, year);
 	}
 });
 
-if(years.length==0){
-	years.push(1983);
-	years.push(thisYear);
-	yearsObject[1983]=0;
-	yearsObject[thisYear]=0;
+for(i = min; i <= max; i++) {
+	years.push(i);
 }
 
-var min = parseInt(years[0]);
-var max = parseInt(years[years.length-1]);
+if(years.length==0){
+	yearsObject[thisYear]=0;
+}
 
 var chartYears = [];
 for(i = min; i<=max; i++){
