@@ -1,4 +1,4 @@
-@* Copyright 2014 Fabian Steeg, hbz. Licensed under the GPLv2 *@
+@* Copyright 2014-2016 Fabian Steeg, hbz. Licensed under the GPLv2 *@
 
 @(map: String)
 
@@ -7,42 +7,41 @@
 @import play.api.libs.json.JsValue
 @import controllers.nwbib.Lobid
 
-@main("NWBib") {
+@main("NWCat") {
     @tags.search_form("")
     <div class="row">
-	    <div class="col-md-7 intro">
+	    <div class="col-md-12 intro">
 	        @defining(controllers.nwbib.Lobid.getTotalHits("").get(Lobid.API_TIMEOUT)){ hits =>
 	       <p class="lead">
-           Die Nordrhein-Westfälische Bibliographie (NWBib) verzeichnet die Literatur über das Land Nordrhein-Westfalen, seine Regionen, 
-           Orte und Persönlichkeiten, Literatur aus allen Lebens- und Wissensbereichen in Geschichte und Gegenwart.
+           Die hbz-Verbunddatenbank enthält die kooperativ erstellten Nachweise von Titel- und 
+           Bestandsdaten der Verbundbibliotheken in Nordrhein-Westfalen und Rheinland-Pfalz.
            </p>
            <p>
-           Die NWBib ist eine der umfangreichsten Regionalbibliographien Deutschlands. Sie erschließt nicht nur Bücher und Zeitschriften, 
-           sondern auch Aufsätze und andere Medien wie etwa Karten, DVDs, Hörbücher und elektronische Publikationen. Zum raschen Einstieg 
-           nutzen Sie die Eingabezeile oder die Karte mit 
-           @if(map == "kreise") {Kreisen (oder <a href='@nwbib.routes.Application.index(map="gemeinden")'>Gemeinden</a>)} else {Gemeinden (oder <a href='@nwbib.routes.Application.index(map="kreise")'>Kreisen</a>)}.
+           Daneben sind die Nordrhein-Westfälische Bibliographie und alle Zeitschriften der 
+           Zeitschriftendatenbank (ZDB) in die hbz-Verbunddatenbank integriert. Die von den 
+           Verbundbibliotheken und ihren zugeordneten Einrichtungen aktiv eingebrachten Bestände 
+           sind Grundlage für die Online-Fernleihe. Die hbz-Verbunddatenbank wird ergänzt um die 
+           Bestandsnachweise einer Vielzahl öffentlicher und anderer Bibliotheken, die ihre Bestände 
+           maschinell an das hbz liefern.
 	       </p>
 	       <p>
-	       Für die präzise Recherche steht Ihnen die 
-	       Erweiterte Suche zur Verfügung sowie die Themensuche mit Hilfe inhaltserschließender Schlagwortfolgen. Mit den beiden Sucheinstiegen 
-	       zu Regionen/Orten und Sachgebieten können Sie sich einen systematischen Überblick über den Inhalt der NWBib verschaffen und sich zu 
-	       Titeln Ihres Interesses führen lassen. Bei allen Recherchen haben Sie die Möglichkeit, die Treffer nach räumlichen und sachlichen 
-	       Gesichtspunkten, nach Dokumentengruppen und Bibliotheksbestand einzugrenzen.
+	       Im März 2010 starteten das hbz, einige Kölner Bibliotheken und das Landesbibliothekszentrum 
+	       Rheinland-Pfalz eine Open-Data-Initiative mit der ersten Freigabe von Katalogdaten in Deutschland. 
+	       Mittlerweile wird der gesamte hbz-Verbundkatalog als Linked Open Data bereitgestellt. 
+	       Neben Vollabzügen und dieser Oberfläche exponiert das hbz die Daten über den 
+	       Linked-Open-Data-Dienst lobid.
 	       </p>
 	       }
-	    </div>
-	    <div class="col-md-5">
-	       @tags.nrw_map(map)
 	    </div>
     </div>
     <script type="application/ld+json">
     {
       "@@context": "http://schema.org",
       "@@type": "WebSite",
-      "url": "https://lobid.org/nwbib",
+      "url": "http://lobid.org/resources",
       "potentialAction": {
         "@@type": "SearchAction",
-        "target": "https://lobid.org/nwbib/search?q={search_term_string}",
+        "target": "http://lobid.org/resources/search?q={search_term_string}",
         "query-input": "required name=search_term_string"
       }
     }
