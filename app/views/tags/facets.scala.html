@@ -1,4 +1,4 @@
-@(q:String, person:String, name:String, subject:String, id:String, publisher:String, issued:String, medium: String, nwbibspatial: String, nwbibsubject: String, owner: String, t: String, sortParam: String, set: String, location: String, word: String, corporation: String, raw: String, from: Int, size: Int)
+@(q:String, person:String, name:String, subject:String, id:String, publisher:String, issued:String, medium: String, owner: String, t: String, sortParam: String, set: String, location: String, word: String, corporation: String, raw: String, from: Int, size: Int)
 
 @import controllers.nwbib.Application
 @import helper._
@@ -54,7 +54,7 @@
             });
           }
           $.ajax({
-            url: '/facets?q=@urlEncode(q)&person=@urlEncode(person)&name=@urlEncode(name)&subject=@urlEncode(subject)&publisher=@urlEncode(publisher)&issued=@urlEncode(issued)&medium=@urlEncode(medium)&nwbibspatial=@urlEncode(nwbibspatial)&nwbibsubject=@urlEncode(nwbibsubject)&from=0&size=@size&owner=@urlEncode(owner)&t=@urlEncode(t)&field=@urlEncode(field)&sort=@urlEncode(sortParam)&set=@urlEncode(set)&location=@urlEncode(location)&word=@urlEncode(word)&corporation=@urlEncode(corporation)&raw=@urlEncode(raw)',
+            url: '/facets?q=@urlEncode(q)&person=@urlEncode(person)&name=@urlEncode(name)&subject=@urlEncode(subject)&publisher=@urlEncode(publisher)&issued=@urlEncode(issued)&medium=@urlEncode(medium)&from=0&size=@size&owner=@urlEncode(owner)&t=@urlEncode(t)&field=@urlEncode(field)&sort=@urlEncode(sortParam)&set=@urlEncode(set)&location=@urlEncode(location)&word=@urlEncode(word)&corporation=@urlEncode(corporation)&raw=@urlEncode(raw)',
             success: function(data, textStatus, jqXHR) {
               var lis = data.split("</li>");
               lis = lis.slice(0, lis.length-1);
@@ -107,7 +107,7 @@
 @facetLabel(current: String, label: String, activeCountId: String = "", currentCount: String = "") = {
   @if(!current.isEmpty){
      <span class="badge" id="facet-filter"><span id="@activeCountId">@currentCount</span> @label</span>
-     <a href="@nwbib.routes.Application.search(q,person,name,if (urisOnly(subject)==current) "" else subject,id,publisher,if(issued==current) "" else issued,if (medium==current) "" else medium,if(nwbibspatial==current) "" else nwbibspatial,if(nwbibsubject==current) "" else nwbibsubject,from,size,if (owner==current) "" else owner,if (t==current) "" else t,sortParam,set=set,location=(if (location==current) "" else location),word=word,corporation=corporation,raw=(if (raw.split(":").last==current) "" else raw)).toString" title="Filter entfernen"><span class="octicon octicon-x"></span></a> 
+     <a href="@nwbib.routes.Application.search(q,person,name,if (urisOnly(subject)==current) "" else subject,id,publisher,if(issued==current) "" else issued,if (medium==current) "" else medium,from,size,if (owner==current) "" else owner,if (t==current) "" else t,sortParam,set=set,location=(if (location==current) "" else location),word=word,corporation=corporation,raw=(if (raw.split(":").last==current) "" else raw)).toString" title="Filter entfernen"><span class="octicon octicon-x"></span></a> 
    }
 }
 
@@ -129,7 +129,7 @@
   <div class="row facet"><div class="col-md-12"><canvas id="issued-chart"></canvas></div></div>
   <div id="slider-range"></div>
   <input type="text" id="issued-range" readonly value="Lade Erscheinungsjahre...">
-  <div id="issued-div"> <a id="issued-link" style="display:none" href="@nwbib.routes.Application.search(q,person,name,subject,id,publisher,issued,medium,nwbibspatial,nwbibsubject,from,size,owner,t,sortParam,set=set,location=location,word=word,corporation=corporation,raw=raw)">Anwenden</a> </div>
+  <div id="issued-div"> <a id="issued-link" style="display:none" href="@nwbib.routes.Application.search(q,person,name,subject,id,publisher,issued,medium,from,size,owner,t,sortParam,set=set,location=location,word=word,corporation=corporation,raw=raw)">Anwenden</a> </div>
   </div>
   <p/>
   <div class="row facet"><div class="col-md-12">@facets("Schlagwörter", Application.SUBJECT_FIELD, if(!urisOnly(subject).isEmpty) urisOnly(subject) else "", "dropup")</div></div>

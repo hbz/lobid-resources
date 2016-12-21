@@ -15,7 +15,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.html.HtmlEscapers;
 
 import controllers.nwbib.Application;
-import controllers.nwbib.Classification;
 import controllers.nwbib.Lobid;
 import play.Logger;
 
@@ -183,14 +182,7 @@ public enum TableRow {
 	 */
 	public static String labelForId(String id, JsonNode doc,
 			Optional<List<String>> labelKeys) {
-		String label = "";
-		if (id.startsWith("http://purl.org/lobid/nwbib")) {
-			label = String.format("%s (%s)", //
-					Lobid.facetLabel(Arrays.asList(id), null, null),
-					Classification.shortId(id));
-		} else {
-			label = graphObjectLabelForId(id, doc, labelKeys);
-		}
+		String label = graphObjectLabelForId(id, doc, labelKeys);
 		return HtmlEscapers.htmlEscaper().escape(label);
 	}
 

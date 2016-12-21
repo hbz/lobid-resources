@@ -3,8 +3,6 @@
 package controllers.nwbib;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.text.Collator;
@@ -27,10 +25,7 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import org.apache.commons.lang3.tuple.Pair;
-import org.elasticsearch.action.search.SearchResponse;
-import org.elasticsearch.common.base.Charsets;
 import org.elasticsearch.common.geo.GeoPoint;
-import org.elasticsearch.common.io.Streams;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.collect.ImmutableMap;
@@ -38,7 +33,6 @@ import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 
 import play.Logger;
-import play.Play;
 import play.cache.Cache;
 import play.cache.Cached;
 import play.data.Form;
@@ -50,13 +44,9 @@ import play.libs.ws.WSResponse;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
-import views.html.browse_classification;
-import views.html.browse_register;
-import views.html.classification;
 import views.html.details;
 import views.html.help;
 import views.html.index;
-import views.html.register;
 import views.html.search;
 import views.html.stars;
 
@@ -82,12 +72,6 @@ public class Application extends Controller {
 	public static final String ITEM_FIELD =
 			"@graph.http://purl.org/vocab/frbr/core#exemplar.@id";
 
-	/** The internal ES field for the NWBib subject facet. */
-	public static final String NWBIB_SUBJECT_FIELD =
-			"@graph.http://purl.org/lobid/lv#nwbibsubject.@id";
-	/** The internal ES field for the NWBib spatial facet. */
-	public static final String NWBIB_SPATIAL_FIELD =
-			"@graph.http://purl.org/lobid/lv#nwbibspatial.@id";
 	/** The internal ES field for the coverage facet. */
 	public static final String COVERAGE_FIELD =
 			"@graph.http://purl.org/dc/elements/1.1/coverage.@value.raw";
@@ -208,8 +192,6 @@ public class Application extends Controller {
 	 * @param publisher Query for the resource publisher
 	 * @param issued Query for the resource issued year
 	 * @param medium Query for the resource medium
-	 * @param nwbibspatial Query for the resource nwbibspatial classification
-	 * @param nwbibsubject Query for the resource nwbibsubject classification
 	 * @param from The page start (offset of page of resource to return)
 	 * @param size The page size (size of page of resource to return)
 	 * @param owner Owner filter for resource queries
@@ -226,8 +208,7 @@ public class Application extends Controller {
 	public static Promise<Result> search(final String q, final String person,
 			final String name, final String subject, final String id,
 			final String publisher, final String issued, final String medium,
-			final String nwbibspatial, final String nwbibsubject, final int from,
-			final int size, final String owner, String t, String sort,
+			final int from, final int size, final String owner, String t, String sort,
 			boolean details, String set, String location, String word,
 			String corporation, String raw) {
 		String uuid = session("uuid");
@@ -248,15 +229,13 @@ public class Application extends Controller {
 		Logger.debug("Not cached: {}, will cache for one hour", cacheId);
 		final Form<String> form = queryForm.bindFromRequest();
 		if (form.hasErrors())
-			return Promise.promise(
-					() -> badRequest(search.render(null, q, person, name, subject, id,
-							publisher, issued, medium, nwbibspatial, nwbibsubject, from, size,
-							0L, owner, t, sort, set, location, word, corporation, raw)));
+			return Promise.promise(() -> badRequest(search.render(null, q, person,
+					name, subject, id, publisher, issued, medium, from, size, 0L, owner,
+					t, sort, set, location, word, corporation, raw)));
 		String query = form.data().get("q");
-		Promise<Result> result =
-				okPromise(query != null ? query : q, person, name, subject, id,
-						publisher, issued, medium, nwbibspatial, nwbibsubject, from, size,
-						owner, t, sort, details, set, location, word, corporation, raw);
+		Promise<Result> result = okPromise(query != null ? query : q, person, name,
+				subject, id, publisher, issued, medium, from, size, owner, t, sort,
+				details, set, location, word, corporation, raw);
 		cacheOnRedeem(cacheId, result, ONE_HOUR);
 		return result;
 	}
@@ -273,138 +252,25 @@ public class Application extends Controller {
 		} else {
 			Logger.warn("No pagination session data for {}", id);
 		}
-		return search("", "", "", "", id, "", "", "", "", "", 0, 1, "", "", "",
-				true, "", "", "", "", "");
-	}
-
-	/**
-	 * @param q The query
-	 * @param callback The JSONP callback
-	 * @param t The type filter ("Raumsystematik" or "Sachsystematik")
-	 * @return Subject data for the given query
-	 */
-	public static Promise<Result> subject(final String q, final String callback,
-			final String t) {
-		String cacheId = String.format("%s.%s.%s.%s", "subject", q, callback, t);
-		@SuppressWarnings("unchecked")
-		Promise<Result> cachedResult = (Promise<Result>) Cache.get(cacheId);
-		if (cachedResult != null)
-			return cachedResult;
-		Logger.debug("Not cached: {}, will cache for one day", cacheId);
-		Promise<JsonNode> jsonPromise =
-				Promise.promise(() -> Classification.ids(q, t));
-		Promise<Result> result;
-		if (!callback.isEmpty())
-			result = jsonPromise.map((JsonNode json) -> ok(
-					String.format("%s(%s)", callback, Json.stringify(json))));
-		else
-			result = jsonPromise.map((JsonNode json) -> ok(json));
-		cacheOnRedeem(cacheId, result, ONE_DAY);
-		return result;
-	}
-
-	/**
-	 * @param t The register type ("Raumsystematik" or "Sachsystematik")
-	 * @return The alphabetical register for the given classification type
-	 */
-	public static Result register(final String t) {
-		Result cachedResult = (Result) Cache.get("register." + t);
-		if (cachedResult != null)
-			return cachedResult;
-		Result result = null;
-		if (t.isEmpty()) {
-			result = ok(register.render());
-		} else {
-			SearchResponse response = Classification.dataFor(t);
-			if (response == null) {
-				Logger.error("Failed to get data for register type: " + t);
-				flashError();
-				return internalServerError(browse_register.render(null, t, ""));
-			}
-			JsonNode sorted = Classification.sorted(response);
-			String placeholder = "Register zur " + t + " filtern";
-			result = ok(browse_register.render(sorted.toString(), t, placeholder));
-		}
-		Cache.set("result." + t, result, ONE_DAY);
-		return result;
-	}
-
-	/**
-	 * @return A list of nwbib journals
-	 * @throws IOException If reading the journals list data fails
-	 */
-	@Cached(key = "journals", duration = ONE_DAY)
-	public static Result journals() throws IOException {
-		try (InputStream stream = Play.application().classloader()
-				.getResourceAsStream("nwbib-journals.csv")) {
-			String csv = new String(Streams.copyToByteArray(stream), Charsets.UTF_8);
-			List<String> lines = Arrays.asList(csv.split("\n"));
-			List<HashMap<String, String>> maps = lines.stream()
-					.filter(line -> line.split(",").length == 2).map(line -> {
-						HashMap<String, String> map = new HashMap<>();
-						String[] strings = line.replace("\"", "").split(",");
-						map.put("label", strings[0]);
-						map.put("value", strings[1]);
-						return map;
-					}).collect(Collectors.toList());
-			String journals = Json.toJson(maps).toString();
-			return ok(browse_register.render(journals, "Zeitschriften",
-					"Zeitschriftenliste filtern"));
-		}
-	}
-
-	/**
-	 * @param t The register type ("Raumsystematik" or "Sachsystematik")
-	 * @return Classification data for the given type
-	 */
-	public static Result classification(final String t) {
-		Result cachedResult = (Result) Cache.get("classification." + t);
-		if (cachedResult != null)
-			return cachedResult;
-		Result result = null;
-		if (t.isEmpty()) {
-			result = ok(classification.render());
-		} else {
-			SearchResponse response = Classification.dataFor(t);
-			if (response == null) {
-				Logger.error("Failed to get data for classification type: " + t);
-				flashError();
-				return internalServerError(
-						browse_classification.render(null, null, t, ""));
-			}
-			String placeholder = t + " filtern";
-			result = classificationResult(response, t, placeholder);
-		}
-		Cache.set("classification." + t, result, ONE_DAY);
-		return result;
-	}
-
-	private static Result classificationResult(SearchResponse response, String t,
-			String placeholder) {
-		List<JsonNode> topClasses = new ArrayList<>();
-		Map<String, List<JsonNode>> subClasses = new HashMap<>();
-		Classification.buildHierarchy(response, topClasses, subClasses);
-		String topClassesJson = Json.toJson(topClasses).toString();
-		return ok(browse_classification.render(topClassesJson, subClasses, t,
-				placeholder));
+		return search("", "", "", "", id, "", "", "", 0, 1, "", "", "", true, "",
+				"", "", "", "");
 	}
 
 	private static Promise<Result> okPromise(final String q, final String person,
 			final String name, final String subject, final String id,
 			final String publisher, final String issued, final String medium,
-			final String nwbibspatial, final String nwbibsubject, final int from,
-			final int size, final String owner, String t, String sort,
+			final int from, final int size, final String owner, String t, String sort,
 			boolean details, String set, String location, String word,
 			String corporation, String raw) {
 		final Promise<Result> result = call(q, person, name, subject, id, publisher,
-				issued, medium, nwbibspatial, nwbibsubject, from, size, owner, t, sort,
-				details, set, location, word, corporation, raw);
+				issued, medium, from, size, owner, t, sort, details, set, location,
+				word, corporation, raw);
 		return result.recover((Throwable throwable) -> {
 			Logger.error("Could not call Lobid", throwable);
 			flashError();
 			return internalServerError(search.render("[]", q, person, name, subject,
-					id, publisher, issued, medium, nwbibspatial, nwbibsubject, from, size,
-					0L, owner, t, sort, set, location, word, corporation, raw));
+					id, publisher, issued, medium, from, size, 0L, owner, t, sort, set,
+					location, word, corporation, raw));
 		});
 	}
 
@@ -427,13 +293,12 @@ public class Application extends Controller {
 	static Promise<Result> call(final String q, final String person,
 			final String name, final String subject, final String id,
 			final String publisher, final String issued, final String medium,
-			final String nwbibspatial, final String nwbibsubject, final int from,
-			final int size, String owner, String t, String sort, boolean showDetails,
-			String set, String location, String word, String corporation,
-			String raw) {
-		final WSRequestHolder requestHolder = Lobid.request(q, person, name,
-				subject, id, publisher, issued, medium, nwbibspatial, nwbibsubject,
-				from, size, owner, t, sort, set, location, word, corporation, raw);
+			final int from, final int size, String owner, String t, String sort,
+			boolean showDetails, String set, String location, String word,
+			String corporation, String raw) {
+		final WSRequestHolder requestHolder =
+				Lobid.request(q, person, name, subject, id, publisher, issued, medium,
+						from, size, owner, t, sort, set, location, word, corporation, raw);
 		return requestHolder.get().map((WSResponse response) -> {
 			Long hits = 0L;
 			String s = "{}";
@@ -463,8 +328,8 @@ public class Application extends Controller {
 				return ok(details.render(CONFIG, json, id));
 			}
 			return ok(search.render(s, q, person, name, subject, id, publisher,
-					issued, medium, nwbibspatial, nwbibsubject, from, size, hits, owner,
-					t, sort, set, location, word, corporation, raw));
+					issued, medium, from, size, hits, owner, t, sort, set, location, word,
+					corporation, raw));
 		});
 	}
 
@@ -483,8 +348,6 @@ public class Application extends Controller {
 	 * @param publisher Query for the resource publisher
 	 * @param issued Query for the resource issued year
 	 * @param medium Query for the resource medium
-	 * @param nwbibspatial Query for the resource nwbibspatial classification
-	 * @param nwbibsubject Query for the resource nwbibsubject classification
 	 * @param from The page start (offset of page of resource to return)
 	 * @param size The page size (size of page of resource to return)
 	 * @param owner Owner filter for resource queries
@@ -500,14 +363,14 @@ public class Application extends Controller {
 	 */
 	public static Promise<Result> facets(String q, String person, String name,
 			String subject, String id, String publisher, String issued, String medium,
-			String nwbibspatial, String nwbibsubject, int from, int size,
-			String owner, String t, String field, String sort, String set,
-			String location, String word, String corporation, String raw) {
+			int from, int size, String owner, String t, String field, String sort,
+			String set, String location, String word, String corporation,
+			String raw) {
 
-		String key = String.format(
-				"facets.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s", field,
-				q, person, name, id, publisher, set, location, word, corporation, raw,
-				subject, issued, medium, nwbibspatial, nwbibsubject, owner, t);
+		String key =
+				String.format("facets.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s",
+						field, q, person, name, id, publisher, set, location, word,
+						corporation, raw, subject, issued, medium, owner, t);
 		Result cachedResult = (Result) Cache.get(key);
 		if (cachedResult != null) {
 			return Promise.promise(() -> cachedResult);
@@ -536,10 +399,8 @@ public class Application extends Controller {
 		Comparator<Pair<JsonNode, String>> sorter = (p1, p2) -> {
 			String t1 = p1.getLeft().get("term").asText();
 			String t2 = p2.getLeft().get("term").asText();
-			boolean t1Current = current(subject, medium, nwbibspatial, nwbibsubject,
-					owner, t, field, t1, raw);
-			boolean t2Current = current(subject, medium, nwbibspatial, nwbibsubject,
-					owner, t, field, t2, raw);
+			boolean t1Current = current(subject, medium, owner, t, field, t1, raw);
+			boolean t2Current = current(subject, medium, owner, t, field, t2, raw);
 			if (t1Current == t2Current) {
 				if (!field.equals(ISSUED_FIELD)) {
 					Integer c1 = p1.getLeft().get("count").asInt();
@@ -567,10 +428,6 @@ public class Application extends Controller {
 					? t : queryParam(t, term);
 			String ownerQuery = !field.equals(ITEM_FIELD) //
 					? owner : withoutAndOperator(queryParam(owner, term));
-			String nwbibsubjectQuery = !field.equals(NWBIB_SUBJECT_FIELD) //
-					? nwbibsubject : queryParam(nwbibsubject, term);
-			String nwbibspatialQuery = !field.equals(NWBIB_SPATIAL_FIELD) //
-					? nwbibspatial : queryParam(nwbibspatial, term);
 			String rawQuery = !field.equals(COVERAGE_FIELD) //
 					? raw : rawQueryParam(raw, term);
 			String locationQuery = !field.equals(SUBJECT_LOCATION_FIELD) //
@@ -580,14 +437,12 @@ public class Application extends Controller {
 			String issuedQuery = !field.equals(ISSUED_FIELD) //
 					? issued : queryParam(issued, term);
 
-			boolean current = current(subject, medium, nwbibspatial, nwbibsubject,
-					owner, t, field, term, raw);
+			boolean current = current(subject, medium, owner, t, field, term, raw);
 
 			String routeUrl = routes.Application.search(q, person, name, subjectQuery,
-					id, publisher, issuedQuery, mediumQuery, nwbibspatialQuery,
-					nwbibsubjectQuery, from, size, ownerQuery, typeQuery,
-					sort(sort, nwbibspatialQuery, nwbibsubjectQuery, subjectQuery), false,
-					set, locationQuery, word, corporation, rawQuery).url();
+					id, publisher, issuedQuery, mediumQuery, from, size, ownerQuery,
+					typeQuery, sort(sort, subjectQuery), false, set, locationQuery, word,
+					corporation, rawQuery).url();
 
 			String result = String.format(
 					"<li " + (current ? "class=\"active\"" : "")
@@ -600,9 +455,10 @@ public class Application extends Controller {
 			return result;
 		};
 
-		Promise<Result> promise = Lobid.getFacets(q, person, name, subject, id,
-				publisher, issued, medium, nwbibspatial, nwbibsubject, owner, field, t,
-				set, location, word, corporation, raw).map(json -> {
+		Promise<Result> promise = Lobid
+				.getFacets(q, person, name, subject, id, publisher, issued, medium,
+						owner, field, t, set, location, word, corporation, raw)
+				.map(json -> {
 					Stream<JsonNode> stream =
 							StreamSupport.stream(Spliterators.spliteratorUnknownSize(
 									json.findValue("entries").elements(), 0), false);
@@ -610,10 +466,10 @@ public class Application extends Controller {
 						stream = preprocess(stream);
 					}
 					String labelKey = String.format(
-							"facets-labels.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s",
+							"facets-labels.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s",
 							field, raw, q, person, name, id, publisher, set, word,
-							corporation, subject, issued, medium, nwbibspatial, nwbibsubject,
-							raw, field.equals(ITEM_FIELD) ? "" : owner, t, location);
+							corporation, subject, issued, medium, raw,
+							field.equals(ITEM_FIELD) ? "" : owner, t, location);
 
 					@SuppressWarnings("unchecked")
 					List<Pair<JsonNode, String>> labelledFacets =
@@ -630,21 +486,16 @@ public class Application extends Controller {
 		return promise;
 	}
 
-	private static String sort(String sort, String nwbibspatialQuery,
-			String nwbibsubjectQuery, String subjectQuery) {
-		return (nwbibspatialQuery + nwbibsubjectQuery + subjectQuery).contains(",")
-				? "" /* relevance */ : sort;
+	private static String sort(String sort, String subjectQuery) {
+		return subjectQuery.contains(",") ? "" /* relevance */ : sort;
 	}
 
-	private static boolean current(String subject, String medium,
-			String nwbibspatial, String nwbibsubject, String owner, String t,
-			String field, String term, String raw) {
+	private static boolean current(String subject, String medium, String owner,
+			String t, String field, String term, String raw) {
 		return field.equals(MEDIUM_FIELD) && contains(medium, term)
 				|| field.equals(TYPE_FIELD) && contains(t, term)
 				|| field.equals(ITEM_FIELD) && contains(owner, term)
-				|| field.equals(NWBIB_SPATIAL_FIELD) && contains(nwbibspatial, term)
 				|| field.equals(COVERAGE_FIELD) && rawContains(raw, quotedEscaped(term))
-				|| field.equals(NWBIB_SUBJECT_FIELD) && contains(nwbibsubject, term)
 				|| field.equals(SUBJECT_FIELD) && contains(subject, term);
 	}
 

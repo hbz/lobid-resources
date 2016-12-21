@@ -1,9 +1,0 @@
-@* Copyright 2014 Fabian Steeg, hbz. Licensed under the GPLv2 *@
-
-@(classification: String, t: String, placeholder: String)
-@import play.api.libs.json.Json
-@import play.api.libs.json.JsValue
-
-@main("NWBib - " + placeholder.replace("filtern","").trim) {
-    @tags.browse_list(classification, null, t, placeholder)
-}
