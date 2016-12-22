@@ -931,12 +931,7 @@
 		</data>
 		<!-- literals of creator (seems there are no corporateBodyCreators without gndID) -->
 		<data source="359[-ab][-12].a" name="http://rdaregistry.info/Elements/u/P60339"/>
-		<combine name="@creatorPersonLabel" value="${a}">
-			<data source="1[02468][048][-aemn][12].[pa]|1[13579][26][-aemn][12].[pa]" name="a">
-				<replace pattern="&gt;&gt;" with=""/>
-				<replace pattern="&lt;&lt;" with=""/>
-			</data>
-		</combine>
+		<data source="1[02468][048][-aemn][12].[pa]|1[13579][26][-aemn][12].[pa]" name="@creatorPersonLabel"/>
 		<!-- bnode for creator when no ID -->
 		<combine name="@bnodeCreatorPersonLabel" value="_:${a}">
 			<if>
@@ -944,7 +939,10 @@
 					<data source="@creatorPersonId"/>
 				</none>
 			</if>
-			<data source="@creatorPersonLabel" name="a"/>
+			<data source="@creatorPersonLabel" name="a">
+				<replace pattern="&gt;" with=""/>
+				<replace pattern="&lt;" with=""/>
+			</data>
 		</combine>
 		<choose name="@creatorPersonOrCoorporateBodyBnodeOrId" flushWith="@creatorPersonId|@bnodeCreatorPersonLabel|@creatorCorporateBodyId">
 			<data source="@creatorPersonId"/>
@@ -952,28 +950,24 @@
 			<data source="@bnodeCreatorPersonLabel"/>
 		</choose>
 		<!-- bnode for contributor when no ID -->
-		<combine name="@contributorPersonLabel" value="${a}">
-			<data source="1[02468][048][bcf]1.[pa]|1[13579][26][bcf]1.[pa]|8[012][02468][-mn]-12.[pa]"
-				name="a">
-				<replace pattern="&gt;&gt;" with=""/>
-				<replace pattern="&lt;&lt;" with=""/>
-			</data>
-		</combine>
+		<data source="1[02468][048][bcf]1.[pa]|1[13579][26][bcf]1.[pa]|8[012][02468][-mn]-12.[pa]"
+			name="@contributorPersonLabel"/>
 		<combine name="@bnodeContributorPersonLabel" value="_:${a}">
-			<data source="@contributorPersonLabel" name="a"/>
+			<data source="@contributorPersonLabel" name="a">
+				<replace pattern="&gt;" with=""/>
+				<replace pattern="&lt;" with=""/>
+			</data>
 		</combine>
 		<choose name="@contributorPersonBnodeOrId" flushWith="1????">
 			<data source="@contributorPersonId"/>
 			<data source="@bnodeContributorPersonLabel"/>
 		</choose>
-		<combine name="@contributorCoorporateBodyLabel" value="${a}">
-			<data source="2[02468][048][bcf]1.[pa]|2[13579][26][bcf]1.[pa]|200-1.a" name="a">
-				<replace pattern="&gt;&gt;" with=""/>
-				<replace pattern="&lt;&lt;" with=""/>
-			</data>
-		</combine>
+		<data source="2[02468][048][bcf]1.[pa]|2[13579][26][bcf]1.[pa]|200-1.a" name="@contributorCoorporateBodyLabel"/>
 		<combine name="@bnodeContributorBodyLabel" value="_:${a}">
-			<data source="@contributorCoorporateBodyLabel" name="a"/>
+			<data source="@contributorCoorporateBodyLabel" name="a">
+				<replace pattern="&gt;" with=""/>
+				<replace pattern="&lt;" with=""/>
+			</data>
 		</combine>
 		<choose name="@contributorCorporateBodyBnodeOrId" flushWith="2????">
 			<data source="@contributorCorporateBodyId"/>
