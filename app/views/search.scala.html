@@ -50,7 +50,7 @@
 	if(raw.contains("multiVolumeWork")) {select(("Band","Bände"))} else if (raw.contains("series")) {select(("Serienband","Serienbände"))} else if (raw.contains("containedIn")) {select(("Beitrag","Beiträge"))} else {""}
 }
 
-@main("NWBib - Ergebnisliste") {
+@main("lobid-resources - Ergebnisliste") {
     @if(Seq(person, name, subject, id, publisher, issued, word, corporation).exists(!_.isEmpty)){
       @tags.search_advanced("Suche aktualisieren", q, person, name, subject, id, publisher, issued, sortParam, word=word, corporation=corporation)
     } else {
