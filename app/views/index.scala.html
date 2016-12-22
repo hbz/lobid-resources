@@ -7,29 +7,29 @@
 @import play.api.libs.json.JsValue
 @import controllers.nwbib.Lobid
 
-@main("NWCat") {
+@main("lobid-resources") {
     @tags.search_form("")
     <div class="row">
 	    <div class="col-md-12 intro">
 	        @defining(controllers.nwbib.Lobid.getTotalHits("").get(Lobid.API_TIMEOUT)){ hits =>
 	       <p class="lead">
-           Die hbz-Verbunddatenbank enthält die kooperativ erstellten Nachweise von Titel- und 
-           Bestandsdaten der Verbundbibliotheken in Nordrhein-Westfalen und Rheinland-Pfalz.
+           Der Verbundkatalog des Hochschulbibliothekszentrums NRW (hbz) enthält die kooperativ 
+           erstellten Nachweise von Titel- und  Bestandsdaten der Verbundbibliotheken in 
+           Nordrhein-Westfalen und Rheinland-Pfalz.
            </p>
            <p>
            Daneben sind die Nordrhein-Westfälische Bibliographie und alle Zeitschriften der 
-           Zeitschriftendatenbank (ZDB) in die hbz-Verbunddatenbank integriert. Die von den 
+           Zeitschriftendatenbank (ZDB) in den hbz-Verbundkatalog integriert. Die von den 
            Verbundbibliotheken und ihren zugeordneten Einrichtungen aktiv eingebrachten Bestände 
-           sind Grundlage für die Online-Fernleihe. Die hbz-Verbunddatenbank wird ergänzt um die 
+           sind Grundlage für die Online-Fernleihe. Der hbz-Verbundkatalog wird ergänzt um die 
            Bestandsnachweise einer Vielzahl öffentlicher und anderer Bibliotheken, die ihre Bestände 
            maschinell an das hbz liefern.
 	       </p>
 	       <p>
-	       Im März 2010 starteten das hbz, einige Kölner Bibliotheken und das Landesbibliothekszentrum 
-	       Rheinland-Pfalz eine Open-Data-Initiative mit der ersten Freigabe von Katalogdaten in Deutschland. 
-	       Mittlerweile wird der gesamte hbz-Verbundkatalog als Linked Open Data bereitgestellt. 
-	       Neben Vollabzügen und dieser Oberfläche exponiert das hbz die Daten über den 
-	       Linked-Open-Data-Dienst lobid.
+	       Das hbz, einige Kölner Bibliotheken und das Landesbibliothekszentrum 
+	       Rheinland-Pfalz starteten 2010 eine Open-Data-Initiative mit der ersten Freigabe von Katalogdaten in Deutschland. 
+	       Mittlerweile wird der gesamte hbz-Verbundkatalog in dieser Oberfläche, als Programmierschnittstelle 
+	       und in Form von Vollabzügen unter <a href="http://creativecommons.org/publicdomain/zero/1.0/">CC0</a> bereitgestellt.
 	       </p>
 	       }
 	    </div>
