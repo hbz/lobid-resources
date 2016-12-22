@@ -43,7 +43,6 @@ import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
 import views.html.details;
-import views.html.help;
 import views.html.index;
 import views.html.search;
 import views.html.stars;
@@ -107,14 +106,6 @@ public class Application extends Controller {
 		if (form.hasErrors())
 			return badRequest(index.render(map));
 		return ok(index.render(map));
-	}
-
-	/**
-	 * @return The NWBib help page.
-	 */
-	@Cached(key = "nwbib.help", duration = ONE_HOUR)
-	public static Result help() {
-		return ok(help.render());
 	}
 
 	/**
