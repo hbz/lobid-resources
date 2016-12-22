@@ -151,11 +151,10 @@
 				<regexp match="\(DE-588\)(.*)" format="http://d-nb.info/gnd/${1}"/>
 			</data>
 		</combine>
-			<combine name="~rdf:subject" value="$[ns-lobid-resource]${subject}#!" flushWith="@rdfTypeSubject">
-			<data
-				source="@subjectLabelBnode"/>
+		<combine name="~rdf:subject" value="$[ns-lobid-resource]${subject}#!" flushWith="@rdfTypeSubject">
+			<data source="@subjectLabelBnode"/>
 			<data source="@id" name="subject"/>
-		</combine> 
+		</combine>
 		<entity name="~rdf:list" reset="true" flushWith="@rdfTypeSubject">
 			<data name="http://purl.org/dc/terms/subject" source="@subjectId|@subjectLabelBnode"/>
 		</entity>
@@ -923,7 +922,7 @@
 			</choose>
 		</entity>
 		<!-- ####################### -->
-		<!-- ####### contributors-->
+		<!-- ####### contributors -->
 		<!-- ####################### -->
 		<!-- person links -->
 		<data source="1[02468][048][-aemn][12].9|1[13579][26][-aemn][12].9" name="@creatorPersonId">
@@ -1135,6 +1134,14 @@
 				<regexp match="\(DE-588\)(.*)" format="http://d-nb.info/gnd/${1}"/>
 				<sanitizeUrl></sanitizeUrl>
 			</data>
+		</combine>
+		<combine name="$[ns-lobid-vocab]contributorOrder" value="${a}">
+			<concat delimiter=" | " name="a">
+				<data
+					source="@creatorPersonOrCoorporateBodyBnodeOrId|@contributorPersonBnodeOrId|@contributorCorporateBodyBnodeOrId">
+					<replace pattern="_:" with=""/>
+				</data>
+			</concat>
 		</combine>
 		<!-- ####################### -->
 		<!-- #######subjects -->
