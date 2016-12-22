@@ -159,13 +159,6 @@ public class Application extends Controller {
 		String uuid = session("uuid");
 		if (uuid == null)
 			session("uuid", UUID.randomUUID().toString());
-		if (id.isEmpty()) {
-			session("lastSearchUrl", request().uri());
-			response().setHeader("Cache-Control",
-					"no-cache, no-store, must-revalidate");
-			response().setHeader("Pragma", "no-cache");
-			response().setHeader("Expires", "0");
-		}
 		String cacheId = String.format("%s-%s", uuid, request().uri());
 		@SuppressWarnings("unchecked")
 		Promise<Result> cachedResult = (Promise<Result>) Cache.get(cacheId);
@@ -251,12 +244,6 @@ public class Application extends Controller {
 				JsonNode json = response.asJson();
 				hits = Lobid.getTotalResults(json);
 				s = json.toString();
-				if (id.isEmpty()) {
-					List<JsonNode> ids = json.findValues("hbzId");
-					uncache(
-							ids.stream().map(j -> j.asText()).collect(Collectors.toList()));
-					Cache.set(session("uuid") + "-lastSearch", ids.toString(), ONE_DAY);
-				}
 			} else {
 				Logger.warn("{}: {} ({}, {})", response.getStatus(),
 						response.getStatusText(), requestHolder.getUrl(),
@@ -539,7 +526,6 @@ public class Application extends Controller {
 		if (!starred.contains(id)) {
 			session(STARRED, starred + " " + id);
 			uncache(Arrays.asList(id));
-			uncacheLastSearchUrl();
 		}
 		return ok("Starred: " + id);
 	}
@@ -562,14 +548,7 @@ public class Application extends Controller {
 		starred.remove(id);
 		session(STARRED, String.join(" ", starred));
 		uncache(Arrays.asList(id));
-		uncacheLastSearchUrl();
 		return ok("Unstarred: " + id);
-	}
-
-	private static void uncacheLastSearchUrl() {
-		String lastSearchUrl = session("lastSearchUrl");
-		if (lastSearchUrl != null)
-			Cache.remove(session("uuid") + "-" + lastSearchUrl);
 	}
 
 	/**
@@ -578,7 +557,6 @@ public class Application extends Controller {
 	 * @return A page with all resources starred by the user
 	 */
 	public static Promise<Result> showStars(String format, String ids) {
-		uncacheLastSearchUrl();
 		final List<String> starred = starredIds();
 		if (ids.isEmpty() && !starred.isEmpty()) {
 			return Promise.pure(redirect(routes.Application.showStars(format,
@@ -600,12 +578,6 @@ public class Application extends Controller {
 		return Promise.sequence(promises.collect(Collectors.toList()))
 				.map((List<JsonNode> vals) -> {
 					uncache(starredIds);
-					session("lastSearchUrl",
-							routes.Application.showStars(format, ids).toString());
-					Cache.set(session("uuid") + "-lastSearch",
-							starredIds.stream().map(s -> "\"" + s + "\"")
-									.collect(Collectors.toList()).toString(),
-							Application.ONE_DAY);
 					Cache.set(cacheKey, vals, ONE_DAY);
 					return ok(stars.render(starredIds, vals, format));
 				});
@@ -619,7 +591,6 @@ public class Application extends Controller {
 	public static Result clearStars(String ids) {
 		if (ids.isEmpty()) {
 			uncache(starredIds());
-			uncacheLastSearchUrl();
 			session(STARRED, "");
 			return ok(stars.render(starredIds(), Collections.emptyList(), ""));
 		}

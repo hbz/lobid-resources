@@ -13,17 +13,6 @@
 @import play.mvc.Controller.session
 @import play.cache.Cache
 
-@pageLink(last: Seq[String], key: String, label: String, tip: String) = {
-  @defining((last.indexOf(session(key))-1,last.indexOf(session(key))+1)) { case (prev,next) =>
-  <li class="@if(session(key).isEmpty){disabled}">
-    <a title="@tip" href=@if(session(key).isEmpty) {"#"} else {"@nwbib.routes.Application.show(session(key))"}>
-      @session(session(key), (if(prev >=0) last(prev) else "") + "," + (if(next < last.size()) last(next) else ""))
-      @Html(label)
-    </a>
-    </li>
-  }
-}
-
 @if(docJson.isEmpty){
   @main("lobid-resources - Detailansicht") {
     @if(flash.get("error")!=null){
@@ -39,16 +28,6 @@
         @defining(Cache.get(session("uuid") + "-lastSearch")) { lastSearch =>
           @if(lastSearch != null) {
             @defining(Json.parse(lastSearch.asInstanceOf[String]).as[JsArray].as[Seq[String]]) { last =>
-            <nav id="pager">
-              <ul class="pager">
-                @pageLink(last, "prev", "&larr;", "Voriger Treffer")
-                @defining(session("lastSearchUrl")){ lastSearchUrl =>
-                  <li><a href="@lastSearchUrl">Treffer @(last.indexOf((doc\\"hbzId")(0).as[String])+1) von @last.size in der 
-                  @if(lastSearchUrl==nwbib.routes.Application.showStars().toString()) {Merkliste} else {letzten Trefferliste}</a></li>
-                }
-                @pageLink(last, "next", "&rarr;", "Nächster Treffer")
-              </ul>
-            </nav>
             <script>
               if(document.referrer.indexOf('@nwbib.routes.Application.index()') < 0){
                 $("#pager").hide();
