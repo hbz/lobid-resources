@@ -86,7 +86,7 @@ public class Lobid {
 			String set, String location, String word, String corporation,
 			String raw) {
 		WSRequestHolder requestHolder = WS
-				.url(Application.CONFIG.getString("nwbib.api"))
+				.url(Application.CONFIG.getString("resources.api"))
 				.setHeader("Accept", "application/json")
 				.setQueryParameter("format", "full")
 				.setQueryParameter("from", from + "")
@@ -131,7 +131,7 @@ public class Lobid {
 
 	static WSRequestHolder topicRequest(final String q, int from, int size) {
 		WSRequestHolder requestHolder = // @formatter:off
-				WS.url(Application.CONFIG.getString("nwbib.api"))
+				WS.url(Application.CONFIG.getString("resources.api"))
 						.setHeader("Accept", "application/json")
 						.setQueryParameter("format", "short.subjectChain")
 						.setQueryParameter("from", "" + from)
@@ -181,7 +181,7 @@ public class Lobid {
 				return cachedResult;
 			});
 		}
-		return WS.url(Application.CONFIG.getString("nwbib.api"))
+		return WS.url(Application.CONFIG.getString("resources.api"))
 				.setQueryParameter("q", f + ":" + v)
 				.setQueryParameter("set", set.equals("*") ? "" : set).get()
 				.map((WSResponse response) -> {
@@ -226,7 +226,7 @@ public class Lobid {
 		}
 		try {
 			URI.create(uri);
-			String api = Application.CONFIG.getString("nwbib.api");
+			String api = Application.CONFIG.getString("resources.api");
 			WSRequestHolder requestHolder = WS
 					.url(toApi1xOrg(
 							uri.replaceAll("https?://lobid\\.org/resources?", api)))
@@ -257,7 +257,7 @@ public class Lobid {
 			return cachedResult;
 		}
 		WSRequestHolder requestHolder =
-				WS.url(Application.CONFIG.getString("nwbib.api"))
+				WS.url(Application.CONFIG.getString("resources.api"))
 						.setHeader("Accept", "application/json")
 						.setQueryParameter("subject", uri)
 						.setQueryParameter("format", "full").setQueryParameter("size", "1");
@@ -290,7 +290,7 @@ public class Lobid {
 	 * @param owner Owner filter for resource queries
 	 * @param t Type filter for resource queries
 	 * @param field The facet field (the field to facet over)
-	 * @param set The set, overrides the default NWBib set if not empty
+	 * @param set The set
 	 * @param location A polygon describing the subject area of the resources
 	 * @param word A word, a concept from the hbz union catalog
 	 * @param corporation A corporation associated with the resource
@@ -302,7 +302,7 @@ public class Lobid {
 			String medium, String owner, String field, String t, String set,
 			String location, String word, String corporation, String raw) {
 		WSRequestHolder request =
-				WS.url(Application.CONFIG.getString("nwbib.api") + "/facets")
+				WS.url(Application.CONFIG.getString("resources.api") + "/facets")
 						.setHeader("Accept", "application/json")
 						.setQueryParameter("author", person)//
 						.setQueryParameter("name", name)

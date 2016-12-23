@@ -21,13 +21,13 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE10">
     </head>
-    <body onload="var q = document.getElementById('nwbibQuery'); if(q!=null){ q.focus(); };">
+    <body onload="var q = document.getElementById('resourcesQuery'); if(q!=null){ q.focus(); };">
         <div class="container">
             <p/>
             <div class="navbar navbar-default" role="navigation">
                 <div class="container-fluid">
                   <div class="navbar-header">
-                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#nwbib-nav">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#resources-nav">
                         <span class="sr-only">Navigation ein/ausblenden</span>
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
@@ -35,19 +35,19 @@
                     </button>
                     <a class="navbar-brand" href="@resources.routes.Application.index()"><span class="glyphicon glyphicon-link"></span> lobid-resources</a>
                   </div>
-                  <div class="navbar-collapse collapse" id="nwbib-nav">
+                  <div class="navbar-collapse collapse" id="resources-nav">
                     <ul class="nav navbar-nav">
-                      <li @if(title=="NWBib - Erweiterte Suche"){class="active"}>
+                      <li @if(title=="lobid-resources - Erweiterte Suche"){class="active"}>
                         <a href="@resources.routes.Application.advanced()">Erweiterte Suche</a>
                       </li>
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
-                      <li @if(title=="NWBib - Merkliste"){class="active"}><a href="@resources.routes.Application.showStars()"><span class="glyphicon glyphicon-star-empty"></span> Merkliste</a></li>
+                      <li @if(title=="lobid-resources - Merkliste"){class="active"}><a href="@resources.routes.Application.showStars()"><span class="glyphicon glyphicon-star-empty"></span> Merkliste</a></li>
                       <li class="divider"></li>
-                      <li @if(title=="NWBib: Kontakt"){class="active"} class="dropdown">
+                      <li @if(title=="lobid-resources: Kontakt"){class="active"} class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" title="Info"><span class="glyphicon glyphicon-info-sign"></span><b class="caret"></b></a>
                         <ul class="dropdown-menu">
-                          <li><a href="mailto:semweb@@hbz-nrw.de?subject=Feedback%20zur%20NWBib,%20aktuelle%20URL%20@controllers.resources.Application.currentUri()">Feedback</a></li>
+                          <li><a href="mailto:semweb@@hbz-nrw.de?subject=Feedback%20zu%20lobid-resources,%20aktuelle%20URL%20@controllers.resources.Application.currentUri()">Feedback</a></li>
                           <li class="divider"></li>
                           <li class="dropdown-header">Technischer Kontakt</li>
                           <li><a href="https://www.hbz-nrw.de/produkte/linked-open-data">hbz NRW</a></li>
@@ -65,7 +65,7 @@
                 <h1>lobid-resources <small>&mdash; der hbz-Verbundkatalog als Linked Open Data im Web</small></h1>
             </div>
             @content
-            <div class="panel panel-default nwbib-footer">
+            <div class="panel panel-default resources-footer">
               <div class="panel-body">
                 @defining(controllers.resources.Lobid.getTotalHits("").get(Lobid.API_TIMEOUT)){ hits =>
                 <img class="media-object pull-left nrw-wappen" src="@controllers.routes.Assets.at("images/wappen.png")" alt="NRW-Wappen">

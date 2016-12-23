@@ -84,8 +84,7 @@ public class ExternalIntegrationTest {
 					"", "", from, size, 0L, "", "", "", "", "", "", "", "");
 			assertThat(Helpers.contentType(html)).isEqualTo("text/html");
 			String text = Helpers.contentAsString(html);
-			assertThat(text).contains("NWBib").contains("buch")
-					.contains("Sachsystematik").contains("Raumsystematik");
+			assertThat(text).contains("lobid-resources").contains("buch");
 		});
 	}
 

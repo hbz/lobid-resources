@@ -85,8 +85,8 @@
                     <div class="col-md-1"></div>
                     <div class="col-md-10">
                      @allHits @if(!raw.isEmpty && !raw.contains(Lobid.escapeUri(Application.COVERAGE_FIELD.replace(".raw","")))){
-                      @defining(Application.CONFIG.getString("nwbib.api") + "/" + raw.substring(raw.lastIndexOf("/")+1)) { lobidUrl =>
-                       @labelRaw in: <a href="@lobidUrl.replace("/resource/","/nwbib/")">@Html(Lobid.resourceLabel(lobidUrl))</a>}}else{Treffer}, 
+                      @defining(Application.CONFIG.getString("resources.api") + "/" + raw.substring(raw.lastIndexOf("/")+1)) { lobidUrl =>
+                       @labelRaw in: <a href="@lobidUrl.replace("/resource/","/resources/")">@Html(Lobid.resourceLabel(lobidUrl))</a>}}else{Treffer}, 
                        zeige @(from+1) bis @(Math.min(from+hits.size,from+size)):
                     </div>
                     <div class="col-md-1" style="text-align: right; padding-right: 4px;">

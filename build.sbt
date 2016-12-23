@@ -1,4 +1,4 @@
-name := "nwcat"
+name := "lobid-resources-web"
 
 version := "0.1.0-SNAPSHOT"
 

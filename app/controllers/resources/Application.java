@@ -95,7 +95,7 @@ public class Application extends Controller {
 	public static final int ONE_DAY = 24 * ONE_HOUR;
 
 	/**
-	 * @return The NWBib index page.
+	 * @return The index page.
 	 */
 	public static Result index() {
 		final Form<String> form = queryForm.bindFromRequest();
@@ -105,9 +105,9 @@ public class Application extends Controller {
 	}
 
 	/**
-	 * @return The NWBib advanced search page.
+	 * @return The advanced search page.
 	 */
-	@Cached(key = "nwbib.advanced", duration = ONE_HOUR)
+	@Cached(key = "search.advanced", duration = ONE_HOUR)
 	public static Result advanced() {
 		return ok(views.html.advanced.render());
 	}
@@ -139,7 +139,7 @@ public class Application extends Controller {
 	 * @param t Type filter for resource queries
 	 * @param sort Sorting order for results ("newest", "oldest", "" -> relevance)
 	 * @param details If true, render details
-	 * @param set The set, overrides the default NWBib set if not empty
+	 * @param set The set
 	 * @param location A polygon describing the subject area of the resources
 	 * @param word A word, a concept from the hbz union catalog
 	 * @param corporation A corporation associated with the resource
@@ -263,7 +263,7 @@ public class Application extends Controller {
 
 	private static void uncache(List<String> ids) {
 		for (String id : ids) {
-			Cache.remove(String.format("%s-/nwbib/%s", session("uuid"), id));
+			Cache.remove(String.format("%s-/resources/%s", session("uuid"), id));
 		}
 	}
 
@@ -282,7 +282,7 @@ public class Application extends Controller {
 	 * @param t Type filter for resource queries
 	 * @param field The facet field (the field to facet over)
 	 * @param sort Sorting order for results ("newest", "oldest", "" -> relevance)
-	 * @param set The set, overrides the default NWBib set if not empty
+	 * @param set The set
 	 * @param location A polygon describing the subject area of the resources
 	 * @param word A word, a concept from the hbz union catalog
 	 * @param corporation A corporation associated with the resource
