@@ -8,7 +8,7 @@ import java.util.Arrays;
 
 import org.junit.Test;
 
-import controllers.nwbib.Lobid;
+import controllers.resources.Lobid;
 
 /**
  * See http://www.playframework.com/documentation/2.3.x/JavaTest

@@ -5,8 +5,8 @@
 @import helper._
 @import tags._
 @import views.TableRow
-@import controllers.nwbib.Lobid
-@import controllers.nwbib.Application
+@import controllers.resources.Lobid
+@import controllers.resources.Application
 @import play.api.libs.json.Json
 @import play.api.libs.json.JsValue
 @import play.api.libs.json.JsArray
@@ -29,7 +29,7 @@
           @if(lastSearch != null) {
             @defining(Json.parse(lastSearch.asInstanceOf[String]).as[JsArray].as[Seq[String]]) { last =>
             <script>
-              if(document.referrer.indexOf('@nwbib.routes.Application.index()') < 0){
+              if(document.referrer.indexOf('@resources.routes.Application.index()') < 0){
                 $("#pager").hide();
               }
             </script>

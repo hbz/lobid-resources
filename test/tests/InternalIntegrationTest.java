@@ -16,8 +16,8 @@ import org.junit.Test;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
-import controllers.nwbib.Application;
-import controllers.nwbib.Lobid;
+import controllers.resources.Application;
+import controllers.resources.Lobid;
 import play.libs.F.Promise;
 import play.mvc.Http;
 import play.test.Helpers;

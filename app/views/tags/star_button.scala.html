@@ -7,7 +7,7 @@
 <script>
 function addStar_@(jsId)(){
     $.ajax({
-      url: '@nwbib.routes.Application.star(id)',
+      url: '@resources.routes.Application.star(id)',
       type: 'POST',
       success: function(data, textStatus, jqXHR) {
         $("#star-icon-@(jsId)").attr("class","glyphicon glyphicon-star");
@@ -21,7 +21,7 @@ function addStar_@(jsId)(){
 };
 function remStar_@(jsId)(){
     $.ajax({
-      url: '@nwbib.routes.Application.unstar(id)',
+      url: '@resources.routes.Application.unstar(id)',
       type: 'DELETE',
       success: function(data, textStatus, jqXHR) {
         $("#star-icon-@(jsId)").attr("class","glyphicon glyphicon-star-empty");
@@ -34,7 +34,7 @@ function remStar_@(jsId)(){
     });
 };
 </script>
-@if(controllers.nwbib.Application.isStarred(id)){
+@if(controllers.resources.Application.isStarred(id)){
 <a id="star-link-@(jsId)" style="cursor:pointer" onclick="remStar_@(jsId)()" title="Titel von Merkliste entfernen"><span id="star-icon-@(jsId)" class="glyphicon glyphicon-star"></span></a> 
 } else {
 <a id="star-link-@(jsId)" style="cursor:pointer" onclick="addStar_@(jsId)()" title="Titel zur Merkliste hinzufügen"><span id="star-icon-@(jsId)" class="glyphicon glyphicon-star-empty"></span></a> 

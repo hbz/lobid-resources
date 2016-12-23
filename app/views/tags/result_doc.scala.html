@@ -3,8 +3,8 @@
 @(doc: play.api.libs.json.JsValue)
 @import play.api.libs.json._
 @import views.TableRow
-@import controllers.nwbib.Lobid
-@import controllers.nwbib.Application.CONFIG
+@import controllers.resources.Lobid
+@import controllers.resources.Application.CONFIG
 
 @table()(body: Html) = {
    <table class="table table-striped table-condensed">
@@ -49,7 +49,7 @@
 @subordinated(field:String, id:String, label:String, values:(String,String)) = {
   @defining(Lobid.getTotalHits(field, id, "*").get(Lobid.API_TIMEOUT)){ hits => @if(hits > 0) {
     @defining(if(hits==1){values._1} else {values._2}){ value =>
-    <tr><td>@label</td><td><a title="@value" href="@nwbib.routes.Application.search(raw=Lobid.escapeUri(field)+":"+Lobid.escapeUri(id),set="*")">@hits @value</a></td></tr>
+    <tr><td>@label</td><td><a title="@value" href="@resources.routes.Application.search(raw=Lobid.escapeUri(field)+":"+Lobid.escapeUri(id),set="*")">@hits @value</a></td></tr>
   }}}
 }
 
@@ -73,7 +73,7 @@
     <tr>
       <td>@role</td>
       <td>@for(c <- cs; agent = (c \ "agent")(0); label = (agent \ "label").as[String]; id = (agent \ "id").as[String]) {
-        <a title="Nach weiteren Titeln von '@label' suchen" href='@nwbib.routes.Application.search(person=id)'/>@label</a>
+        <a title="Nach weiteren Titeln von '@label' suchen" href='@resources.routes.Application.search(person=id)'/>@label</a>
         <a title="Linked-Data-Quelle zu '@label' abrufen" href='@id'><span class='glyphicon glyphicon-link'></span></a>
         @if(c!=cs.last){ | }
       }</td>
@@ -86,8 +86,8 @@
   @result_field("Titelzusatz", "otherTitleInformation", doc, TableRow.VALUES)
   @result_field("Verantwortlich", "statementOfResponsibility", doc, TableRow.VALUES)
   @contributions((doc \ "contribution").as[Seq[JsValue]])
-  @with_icon("Medientyp", "medium", controllers.nwbib.Application.MEDIUM_FIELD)
-  @with_icon("Publikationstyp", "type", controllers.nwbib.Application.TYPE_FIELD_LOBID2)
+  @with_icon("Medientyp", "medium", controllers.resources.Application.MEDIUM_FIELD)
+  @with_icon("Publikationstyp", "type", controllers.resources.Application.TYPE_FIELD_LOBID2)
   @result_field("", "thesisInformation", doc, TableRow.VALUES)
 
   @result_field("Erschienen", "issued", doc, TableRow.VALUES)

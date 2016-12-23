@@ -1,8 +1,8 @@
 /* Copyright 2015 Fabian Steeg, hbz. Licensed under the GPLv2 */
 package views;
 
-import controllers.nwbib.Application;
-import controllers.nwbib.Lobid;
+import controllers.resources.Application;
+import controllers.resources.Lobid;
 import play.Logger;
 import play.cache.Cache;
 import play.libs.F.Promise;

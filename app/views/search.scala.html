@@ -4,8 +4,8 @@
 
 @import helper._
 @import tags._
-@import controllers.nwbib.Lobid
-@import controllers.nwbib.Application
+@import controllers.resources.Lobid
+@import controllers.resources.Application
 @import play.api.libs.json.Json
 @import play.api.libs.json.JsValue
 @import play.api.libs.json.JsArray
@@ -14,17 +14,17 @@
   <nav>
     <ul class="pagination">
       <li class="previous @if(from==0){disabled}">
-        <a href="@if(from==0){#} else {@nwbib.routes.Application.search(q,person,name,subject,id,publisher,issued,medium,from-size,size,owner,t,sortParam,set=set,location=location,word=word,corporation=corporation,raw=raw)}">&larr;</a>
+        <a href="@if(from==0){#} else {@resources.routes.Application.search(q,person,name,subject,id,publisher,issued,medium,from-size,size,owner,t,sortParam,set=set,location=location,word=word,corporation=corporation,raw=raw)}">&larr;</a>
       </li>
       @defining((((from+1)/size)+1,(if(allHits%size==0) allHits/size else allHits/size+1).toInt)) { case (currentPage,lastPage) =>
           @defining(Math.min(Math.max(1,currentPage-4)+9,lastPage)) { toPage =>
               @for(i <- Math.max(1,toPage-9) to toPage){
-                  <li @if(currentPage==i){class="active"}><a href="@nwbib.routes.Application.search(q,person,name,subject,id,publisher,issued,medium,(i*size)-size,size,owner,t,sortParam,set=set,location=location,word=word,corporation=corporation,raw=raw)">@i</a></li>
+                  <li @if(currentPage==i){class="active"}><a href="@resources.routes.Application.search(q,person,name,subject,id,publisher,issued,medium,(i*size)-size,size,owner,t,sortParam,set=set,location=location,word=word,corporation=corporation,raw=raw)">@i</a></li>
               }
           }
       }
       <li class="next @if(from+size >= allHits){disabled}">
-        <a href="@if(from+size >= allHits){#} else {@nwbib.routes.Application.search(q,person,name,subject,id,publisher,issued,medium,from+size,size,owner,t,sortParam,set=set,location=location,word=word,corporation=corporation,raw=raw)}">&rarr;</a>
+        <a href="@if(from+size >= allHits){#} else {@resources.routes.Application.search(q,person,name,subject,id,publisher,issued,medium,from+size,size,owner,t,sortParam,set=set,location=location,word=word,corporation=corporation,raw=raw)}">&rarr;</a>
       </li>
     </ul>
   </nav>
@@ -32,13 +32,13 @@
 
 @sort(param: String, label: String)={
 <li @if(sortParam==param){class="active"}>
-  <a href="@nwbib.routes.Application.search(q,person,name,subject,id,publisher,issued,medium,from,size,owner,t,param,set=set,location=location,word=word,corporation=corporation,raw=raw)">@label</a>
+  <a href="@resources.routes.Application.search(q,person,name,subject,id,publisher,issued,medium,from,size,owner,t,param,set=set,location=location,word=word,corporation=corporation,raw=raw)">@label</a>
 </li>
 }
 
 @pageLink(num: Int)={
 <li @if(size==num){class="active"}>
-  <a href="@nwbib.routes.Application.search(q,person,name,subject,id,publisher,issued,medium,from,num,owner,t,sortParam,set=set,location=location,word=word,corporation=corporation,raw=raw)">@num</a>
+  <a href="@resources.routes.Application.search(q,person,name,subject,id,publisher,issued,medium,from,num,owner,t,sortParam,set=set,location=location,word=word,corporation=corporation,raw=raw)">@num</a>
 </li>
 }
 
@@ -92,9 +92,9 @@
                     <div class="col-md-1" style="text-align: right; padding-right: 4px;">
                       @defining((Json.parse(result)\\"hbzId").map(_.as[String]).mkString(",")) { ids =>
                       @if(ids.split(",").forall(Application.currentlyStarred().split(" ").contains)) {
-                        <a href='@nwbib.routes.Application.clearStars(ids)' title="Alle Titel dieser Seite von Merkliste entfernen"><span class="glyphicon glyphicon-star"></span></a>
+                        <a href='@resources.routes.Application.clearStars(ids)' title="Alle Titel dieser Seite von Merkliste entfernen"><span class="glyphicon glyphicon-star"></span></a>
                       } else {
-                        <a href='@nwbib.routes.Application.starAll(ids)' title="Alle Titel dieser Seite zur Merkliste hinzufügen"><span class="glyphicon glyphicon-star-empty"></span></a> 
+                        <a href='@resources.routes.Application.starAll(ids)' title="Alle Titel dieser Seite zur Merkliste hinzufügen"><span class="glyphicon glyphicon-star-empty"></span></a> 
                       }
                       }
                     </div>

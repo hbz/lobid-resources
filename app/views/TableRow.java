@@ -14,8 +14,8 @@ import java.util.stream.Collectors;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.html.HtmlEscapers;
 
-import controllers.nwbib.Application;
-import controllers.nwbib.Lobid;
+import controllers.resources.Application;
+import controllers.resources.Lobid;
 import play.Logger;
 
 /**

@@ -10,7 +10,7 @@
 @import scala.concurrent.duration._
 @import play.api.Play.current
 @import play.api.libs.json.Json
-@import controllers.nwbib.Lobid
+@import controllers.resources.Lobid
 
 @entries() = {
     @for((id,i) <- ids.zipWithIndex; doc = Json.parse(vals(i).toString())) {
@@ -28,14 +28,14 @@
             <span class="glyphicon glyphicon-star-empty"></span> 
             <b>Merkliste: @ids.size Einträge</b>
             <span class="hide-in-print"> | 
-                <a href='@nwbib.routes.Application.showStars(if(f=="details"){""} else {"details"}, ids.mkString(","))'>
+                <a href='@resources.routes.Application.showStars(if(f=="details"){""} else {"details"}, ids.mkString(","))'>
                   <span class="glyphicon glyphicon-info-sign"></span> @if(f=="details"){Kurzansicht} else {Detailansicht}
                 </a> |
                 <a href="javascript:if(window.print)window.print()">
                     <span class="glyphicon glyphicon-print"></span> 
                     Drucken</a> |
                 <span id="clear-list"><a style="cursor:pointer;"
-                    onclick="$('#clear-list').html('Bestätigung: <a href=\'@nwbib.routes.Application.clearStars()\'>Merkliste dauerhaft löschen</a> | <a style=\'cursor:pointer\'; onclick=\'window.location.reload()\'>Abbrechen</a>')">
+                    onclick="$('#clear-list').html('Bestätigung: <a href=\'@resources.routes.Application.clearStars()\'>Merkliste dauerhaft löschen</a> | <a style=\'cursor:pointer\'; onclick=\'window.location.reload()\'>Abbrechen</a>')">
                     <span class="glyphicon glyphicon-remove"></span> Merkliste löschen
                 </a></span>
             </span>

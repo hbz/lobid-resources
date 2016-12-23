@@ -5,13 +5,13 @@
 @import helper._
 @import play.api.libs.json.Json
 @import play.api.libs.json.JsValue
-@import controllers.nwbib.Lobid
+@import controllers.resources.Lobid
 
 @main("lobid-resources") {
     @tags.search_form("")
     <div class="row">
 	    <div class="col-md-12 intro">
-	        @defining(controllers.nwbib.Lobid.getTotalHits("").get(Lobid.API_TIMEOUT)){ hits =>
+	        @defining(controllers.resources.Lobid.getTotalHits("").get(Lobid.API_TIMEOUT)){ hits =>
 	       <p class="lead">
            Der Verbundkatalog des Hochschulbibliothekszentrums NRW (hbz) enthält die kooperativ 
            erstellten Nachweise von Titel- und  Bestandsdaten der Verbundbibliotheken in 

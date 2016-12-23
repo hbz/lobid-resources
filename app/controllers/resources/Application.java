@@ -1,6 +1,6 @@
 /* Copyright 2014 Fabian Steeg, hbz. Licensed under the GPLv2 */
 
-package controllers.nwbib;
+package controllers.resources;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;

@@ -4,11 +4,11 @@
 
 @import play.api.libs.json._
 @import views.TableRow
-@import controllers.nwbib.Lobid
+@import controllers.resources.Lobid
 @import scala.collection.immutable.Map
 @import play.mvc.Controller.session
 @import play.cache.Cache
-@import controllers.nwbib.Application
+@import controllers.resources.Application
 
 @optional(doc: JsValue, key: String, sep: String, alt: String)=@{
     val other = (doc \\ key)
@@ -61,8 +61,8 @@
 }
 
 <tr>
-  <td> @icon_span("@type", Application.TYPE_FIELD)<br/>@icon_span("medium", controllers.nwbib.Application.MEDIUM_FIELD) </td>
-  <td> <a href="@nwbib.routes.Application.show(id)">
+  <td> @icon_span("@type", Application.TYPE_FIELD)<br/>@icon_span("medium", controllers.resources.Application.MEDIUM_FIELD) </td>
+  <td> <a href="@resources.routes.Application.show(id)">
     @Cache.set(session("uuid")+"-"+id, (if(i>0 && hits.size>i-1) hits(i-1) else "") + "," + (if(i+1<hits.size) hits(i+1) else ""), Application.ONE_DAY)
     @optional(doc, "title", "", "<Kein Titel>")
     @optional(doc, "otherTitleInformation", " | ", "")
