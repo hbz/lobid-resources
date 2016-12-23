@@ -4,6 +4,12 @@ package tests;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
+import static play.test.Helpers.GET;
+import static play.test.Helpers.contentType;
+import static play.test.Helpers.fakeApplication;
+import static play.test.Helpers.fakeRequest;
+import static play.test.Helpers.header;
+import static play.test.Helpers.route;
 import static play.test.Helpers.running;
 import static play.test.Helpers.testServer;
 
@@ -20,6 +26,7 @@ import controllers.resources.Application;
 import controllers.resources.Lobid;
 import play.libs.F.Promise;
 import play.mvc.Http;
+import play.mvc.Result;
 import play.test.Helpers;
 import play.twirl.api.Content;
 
@@ -106,6 +113,16 @@ public class InternalIntegrationTest {
 							"http://lobid.org/resource/HT001387709", "")
 					.get(Lobid.API_TIMEOUT);
 			assertThat(hits).isGreaterThan(0);
+		});
+	}
+
+	@Test
+	public void contextContentTypeAndCorsHeader() {
+		running(fakeApplication(), () -> {
+			Result result = route(fakeRequest(GET, "/resources/context.jsonld"));
+			assertThat(result).isNotNull();
+			assertThat(contentType(result)).isEqualTo("application/ld+json");
+			assertThat(header("Access-Control-Allow-Origin", result)).isEqualTo("*");
 		});
 	}
 
