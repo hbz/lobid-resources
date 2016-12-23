@@ -648,67 +648,6 @@
 				</data>
 			</choose>
 		</combine>
-		<!-- ########## date issued -->
-		<!-- ####################### -->
-		<!-- issue precedence -->
-		<data source="425a[-1].a|419-1c" name="@dateFix"/>
-		<combine name="@dateFix" value="${a}">
-			<if>
-				<none>
-					<data source="@dateFix"/>
-				</none>
-			</if>
-			<data source="425b[-1].a" name="a"/>
-		</combine>
-		<combine name="@dateFix" value="${a}">
-			<if>
-				<none>
-					<data source="@dateFix"/>
-				</none>
-			</if>
-			<data source="425c[-1].a" name="a">
-			</data>
-		</combine>
-		<combine name="@dateFix" value="${a}">
-			<if>
-				<none>
-					<data source="@dateFix"/>
-				</none>
-			</if>
-			<data source="425-[-1].a" name="a"/>
-		</combine>
-		<combine name="@dateFix" value="${a}">
-			<if>
-				<none>
-					<data source="@dateFix"/>
-				</none>
-			</if>
-			<data source="425p[-1].a" name="a">
-			</data>
-		</combine>
-		<combine name="@dateFix" value="${a}">
-			<if>
-				<none>
-					<data source="@dateFix"/>
-				</none>
-			</if>
-			<data source="595-[-12].a" name="a">
-			</data>
-		</combine>
-		<combine name="@dateFix" value="${a}">
-			<if>
-				<none>
-					<data source="@dateFix"/>
-				</none>
-			</if>
-			<data source="089-[-1].a" name="a">
-			</data>
-		</combine>
-		<combine name="@dateSecondary" value="${dateSecondary}">
-			<data source="619[ab][-1].a" name="dateSecondary">
-				<regexp match="(\d{4})" format="${1}"/>
-			</data>
-		</combine>
 		<!-- ####################### -->
 		<!-- ########## geo coordinates -->
 		<!-- ####################### -->
@@ -724,7 +663,16 @@
 		<entity name="http://schema.org/publication" flushWith="record">
 			<data source="@placeOfPublication" name="http://schema.org/location"/>
 			<data source="@publisher" name="http://schema.org/publishedBy"/>
-			<data source="@dateFix" name="http://schema.org/startDate"/>
+			<choose name="http://schema.org/startDate">
+				<!-- issue precedence -->
+				<data source="425[abc-p][-1].a|419-1c"/>
+				<data source="425b[-1].a"/>
+				<data source="425c[-1].a"/>
+				<data source="425-[-1].a"/>
+				<data source="425p[-1].a"/>
+				<data source="595-[-12].a"/>
+				<data source="089-[-1].a"/>
+			</choose>
 			<!-- range of date. Only if 021 not exists but 425c. Take 4 digits. -->
 			<choose name="http://schema.org/endDate">
 				<if>
@@ -748,7 +696,9 @@
 			<data source="@placeOfSecondaryPublication" name="http://schema.org/location"/>
 			<data source="@secondaryPublisher" name="http://schema.org/publishedBy"/>
 			<data source="@descriptionOfSecondaryPublication" name="http://purl.org/dc/terms/description"/>
-			<data source="@dateSecondary" name="http://schema.org/startDate"/>
+			<data source="619[ab][-1].a" name="http://schema.org/startDate">
+				<regexp match="(\d{4})" format="${1}"/>
+			</data>
 			<data source="@secondaryPublisher" name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type">
 				<constant value="http://schema.org/Publication"/>
 			</data>
