@@ -215,7 +215,7 @@ public enum TableRow {
 				|| property.equals("isPartOf") || property.equals("multiVolumeWork")
 				|| property.equals("series")) && value.contains("lobid.org")) {
 			return new String[] {
-					value.replaceAll("lobid.org/resources?/", "lobid.org/nwbib/"),
+					value.replaceAll("lobid.org/resource/", "lobid.org/resources/"),
 					Lobid.resourceLabel(value) };
 		}
 		String label =

@@ -8,7 +8,7 @@ GET    /*path/                controllers.nwbib.Application.redirect(path: Strin
 # Home page
 GET    /                      controllers.nwbib.Application.index(map?="kreise")
 GET    /advanced              controllers.nwbib.Application.advanced()
-GET    /search                controllers.nwbib.Application.search(q?="", person?="", name?="", subject?="", id?="", publisher?="", issued?="", medium ?= "", from:Int?=0, size:Int?=25, owner?="", t?="", sort ?= "newest", details:Boolean?=false, set?="", location ?= "", word?="", corporation?="", raw?="")
+GET    /search                controllers.nwbib.Application.search(q?="", person?="", name?="", subject?="", id?="", publisher?="", issued?="", medium ?= "", from:Int?=0, size:Int?=15, owner?="", t?="", sort ?= "newest", details:Boolean?=false, set?="", location ?= "", word?="", corporation?="", raw?="")
 GET    /facets                controllers.nwbib.Application.facets(q,person?="", name?="", subject?="", id?="", publisher?="", issued?="", medium ?= "", from:Int,size:Int,owner,t,field,sort,set?="", location?="", word?="", corporation?="", raw?="")
 
 GET    /stars                 controllers.nwbib.Application.showStars(format?="", ids?="")
