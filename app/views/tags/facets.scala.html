@@ -54,7 +54,7 @@
             });
           }
           $.ajax({
-            url: '/facets?q=@urlEncode(q)&person=@urlEncode(person)&name=@urlEncode(name)&subject=@urlEncode(subject)&publisher=@urlEncode(publisher)&issued=@urlEncode(issued)&medium=@urlEncode(medium)&from=0&size=@size&owner=@urlEncode(owner)&t=@urlEncode(t)&field=@urlEncode(field)&sort=@urlEncode(sortParam)&set=@urlEncode(set)&location=@urlEncode(location)&word=@urlEncode(word)&corporation=@urlEncode(corporation)&raw=@urlEncode(raw)',
+            url: '/resources/facets?q=@urlEncode(q)&person=@urlEncode(person)&name=@urlEncode(name)&subject=@urlEncode(subject)&publisher=@urlEncode(publisher)&issued=@urlEncode(issued)&medium=@urlEncode(medium)&from=0&size=@size&owner=@urlEncode(owner)&t=@urlEncode(t)&field=@urlEncode(field)&sort=@urlEncode(sortParam)&set=@urlEncode(set)&location=@urlEncode(location)&word=@urlEncode(word)&corporation=@urlEncode(corporation)&raw=@urlEncode(raw)',
             success: function(data, textStatus, jqXHR) {
               var lis = data.split("</li>");
               lis = lis.slice(0, lis.length-1);
