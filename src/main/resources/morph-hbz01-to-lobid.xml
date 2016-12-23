@@ -709,13 +709,6 @@
 				<regexp match="(\d{4})" format="${1}"/>
 			</data>
 		</combine>
-		<data source="@dateSecondary" name="http://purl.org/dc/terms/issued"/>
-		<!-- date precedence and validation. Field must begin with 4 digits -->
-		<choose name="http://purl.org/dc/terms/issued">
-			<data source="@dateFix">
-				<regexp match="^\d{4}.*"/>
-			</data>
-		</choose>
 		<!-- ####################### -->
 		<!-- ########## geo coordinates -->
 		<!-- ####################### -->
@@ -727,18 +720,7 @@
 		<!-- ####################### -->
 		<!-- primary publication -->
 		<data source="41[05][-abcu][-12].a|419-[12].a|594[-abc][-12].a" name="@placeOfPublication"/>
-		<data source="@placeOfPublication" name="http://rdaregistry.info/Elements/u/P60163"/>
 		<data source="41[27][-abcu][-12].[ag]|419-[12].b" name="@publisher"/>
-		<data source="@publisher" name="http://purl.org/dc/elements/1.1/publisher"/>
-		<!-- TODO if multiple publisher these are melted to one. See HT015082724 -->
-		<combine name="http://rdaregistry.info/Elements/u/P60333" value="${publicationConcat}"
-			sameEntity="true">
-			<concat delimiter="; " name="publicationConcat">
-				<data source="@placeOfPublication"/>
-				<data source="@publisher"/>
-				<data source="@dateFix"/>
-			</concat>
-		</combine>
 		<entity name="http://schema.org/publication" flushWith="record">
 			<data source="@placeOfPublication" name="http://schema.org/location"/>
 			<data source="@publisher" name="http://schema.org/publishedBy"/>
