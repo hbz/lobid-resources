@@ -650,20 +650,6 @@
 		</combine>
 		<!-- ########## date issued -->
 		<!-- ####################### -->
-		<!-- range of date. Only if 021 not exists but one of 425[bc]. Take 4 digits. -->
-		<combine name="@dateRange" value="${dateStart} - ${dateEnd}" flushWith="record">
-			<if>
-				<none>
-					<data source="021[-b]1.a"/>
-				</none>
-			</if>
-			<data source="425b[-1].a" name="dateStart">
-				<regexp match="(\d{4})" format="${1}"/>
-			</data>
-			<data source="425c[-1].a" name="dateEnd">
-				<regexp match="(\d{4})" format="${1}"/>
-			</data>
-		</combine>
 		<!-- issue precedence -->
 		<data source="425a[-1].a|419-1c" name="@dateFix"/>
 		<combine name="@dateFix" value="${a}">
@@ -728,9 +714,6 @@
 		<data source="@dateSecondary" name="http://purl.org/dc/terms/issued"/>
 		<!-- date precedence and validation. Field must begin with 4 digits -->
 		<choose name="http://purl.org/dc/terms/issued">
-			<data source="@dateRange">
-				<regexp match="^\d{4}.*"/>
-			</data>
 			<data source="@dateFix">
 				<regexp match="^\d{4}.*"/>
 			</data>
@@ -744,6 +727,7 @@
 		<!-- ####################### -->
 		<!-- ########## publisher -->
 		<!-- ####################### -->
+		<!-- primary publication -->
 		<data source="41[05][-abcu][-12].a|419-[12].a|594[-abc][-12].a" name="@placeOfPublication"/>
 		<data source="@placeOfPublication" name="http://rdaregistry.info/Elements/u/P60163"/>
 		<data source="41[27][-abcu][-12].[ag]|419-[12].b" name="@publisher"/>
@@ -757,6 +741,39 @@
 				<data source="@dateFix"/>
 			</concat>
 		</combine>
+		<entity name="http://schema.org/publication" flushWith="record">
+			<data source="@placeOfPublication" name="http://schema.org/location"/>
+			<data source="@publisher" name="http://schema.org/publishedBy"/>
+			<data source="@dateFix" name="http://schema.org/startDate"/>
+			<data source="@dateEnd" name="http://schema.org/endDate"/>
+			<!-- range of date. Only if 021 not exists but 425c. Take 4 digits. -->
+			<choose name="http://schema.org/endDate">
+				<if>
+					<none>
+						<data source="021[-b]1.a"/>
+					</none>
+				</if>
+				<data source="425c[-1].a">
+					<regexp match="^\d{4}.*"/>
+				</data>
+			</choose>
+			<data source="@publisher" name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type">
+				<constant value="http://schema.org/Publication"/>
+			</data>
+		</entity>
+		<!-- secondary publication -->
+		<data source="610-1.a" name="@descriptionOfSecondaryPublication"/>
+		<data source="611-1.a" name="@placeOfSecondaryPublication"/>
+		<data source="613-1.a" name="@secondaryPublisher"/>
+		<entity name="http://purl.org/lobid/lv#secondaryPublication">
+			<data source="@placeOfSecondaryPublication" name="http://schema.org/location"/>
+			<data source="@secondaryPublisher" name="http://schema.org/publishedBy"/>
+			<data source="@descriptionOfSecondaryPublication" name="http://purl.org/dc/terms/description"/>
+			<data source="@dateSecondary" name="http://schema.org/startDate"/>
+			<data source="@secondaryPublisher" name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type">
+				<constant value="http://schema.org/Publication"/>
+			</data>
+		</entity>
 		<!-- |674[-abc][-12].a <= YearOfPublication of the primary form. TODO find property -->
 		<!-- ####################### -->
 		<!-- ########## description extent -->
