@@ -84,12 +84,9 @@ public class Application extends Controller {
 	public static final String ISSUED_FIELD =
 			"@graph.http://purl.org/dc/terms/issued.@value";
 
-	private static final File FILE = new File("conf/nwbib.conf");
-	/** Access to the nwbib.conf config file. */
-	public final static Config CONFIG = ConfigFactory
-			.parseFile(
-					FILE.exists() ? FILE : new File("modules/nwbib/conf/nwbib.conf"))
-			.resolve();
+	/** Access to the resources.conf config file. */
+	public final static Config CONFIG =
+			ConfigFactory.parseFile(new File("conf/resources.conf")).resolve();
 
 	static Form<String> queryForm = Form.form(String.class);
 
