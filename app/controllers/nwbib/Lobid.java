@@ -44,34 +44,14 @@ public class Lobid {
 	/** Timeout for API calls in milliseconds. */
 	public static final int API_TIMEOUT = 50000;
 
-	/** Feature toggle for using the new Lobid 2.0 data. */
-	public static boolean DATA_2 =
-			Application.CONFIG.getBoolean("feature.lobid2.enabled");
-
 	/**
 	 * @param id The resource ID
 	 * @return The resource JSON content
 	 */
 	public static JsonNode getResource(String id) {
-		DATA_2 = Application.CONFIG.getBoolean("feature.lobid2.enabled");
-		if (DATA_2) {
-			String url = String.format(
-					Application.CONFIG.getString("feature.lobid2.indexUrlFormat"), id);
-			JsonNode response = cachedJsonCall(url);
-			if (response.size() == 0) {
-				// Fall back to data 1.x if nothing found:
-				String fallbackUrl = String.format("%s/%s?format=full",
-						Application.CONFIG.getString("nwbib.api"), id);
-				Logger.warn(
-						"No response from Lobid API 2.0 URL '{}', falling back to API 1.x URL '{}'",
-						url, fallbackUrl);
-				DATA_2 = false; // required for processing individual fields
-				return cachedJsonCall(fallbackUrl);
-			}
-			return response;
-		}
-		throw new IllegalStateException(
-				"Only implemented for Lobid.DATA_2 feature");
+		String url = String
+				.format(Application.CONFIG.getString("lobid2.indexUrlFormat"), id);
+		return cachedJsonCall(url);
 	}
 
 	/**
@@ -248,8 +228,8 @@ public class Lobid {
 			URI.create(uri);
 			String api = Application.CONFIG.getString("nwbib.api");
 			WSRequestHolder requestHolder = WS
-					.url(toApi1xOrg(Lobid.DATA_2
-							? uri.replaceAll("https?://lobid\\.org/resources?", api) : uri))
+					.url(toApi1xOrg(
+							uri.replaceAll("https?://lobid\\.org/resources?", api)))
 					.setHeader("Accept", "application/json")
 					.setQueryParameter("format", format);
 			return requestHolder.get().map((WSResponse response) -> {

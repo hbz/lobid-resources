@@ -30,9 +30,9 @@
 }
 
 @types(types: JsValue) = @{
-	val id = if(Lobid.DATA_2) { "id" } else { "@id" }
+	val id = "id"
 	types match {
-		case a: JsArray if Lobid.DATA_2 && a.asOpt[Seq[JsValue]].isDefined => a.as[Seq[JsValue]].map((v: JsValue) => (v \ id).asOpt[String].getOrElse("No id in " + v))
+		case a: JsArray if a.asOpt[Seq[JsValue]].isDefined => a.as[Seq[JsValue]].map((v: JsValue) => (v \ id).asOpt[String].getOrElse("No id in " + v))
 		case a: JsArray => a.as[Seq[String]]
 		case _ => Seq(types.as[String])
 	}
@@ -41,7 +41,7 @@
 <script type="application/ld+json">
 {
 	"@@context": "http://schema.org",
-	"@@type": "@schemaType(Lobid.selectType(types((doc\\(if(Lobid.DATA_2) {"type"} else {"@type"}))(0)), "type.labels"))",
+	"@@type": "@schemaType(Lobid.selectType(types((doc\\"type")(0)), "type.labels"))",
 	@Html(properties(Seq(
 		"title" -> "name",
 		"creator" -> "creator",

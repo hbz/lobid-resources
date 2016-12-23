@@ -40,7 +40,7 @@
 
 @with_icon(label: String, property: String, fullField: String) = {
   @if(!(doc\\property).isEmpty) {
-    @defining(if(Lobid.DATA_2 && property != "type") { nestedIds(property) } else { singleOrMultiString(property) }){ v =>
+    @defining(if(property != "type") { nestedIds(property) } else { singleOrMultiString(property) }){ v =>
       <tr><td>@label</td><td><span class="@Lobid.facetIcon(v,fullField)"></span> @Lobid.facetLabel(v,fullField,"")</td></tr>
     }
   }
@@ -54,11 +54,7 @@
 }
 
 @lobidUrl(node: JsValue) = @{
-  "http://lobid.org/resource/" + (if(Lobid.DATA_2) {
-    node.asOpt[Seq[String]].getOrElse(Seq("--"))(0)
-  } else {
-    node.asOpt[String].getOrElse("--")
-  })
+  "http://lobid.org/resource/" + node.asOpt[Seq[String]].getOrElse(Seq("--"))(0)
 }
 
 @lobid2_part_of(field: String, subField: String) = {
@@ -89,60 +85,23 @@
   @result_field("Titel", "title", doc, TableRow.VALUES)
   @result_field("Titelzusatz", "otherTitleInformation", doc, TableRow.VALUES)
   @result_field("Verantwortlich", "statementOfResponsibility", doc, TableRow.VALUES)
-  @if(Lobid.DATA_2) {
-    @contributions((doc \ "contribution").as[Seq[JsValue]])
-  } else {
-    @result_field("Autor/in", "creator", doc, TableRow.VALUES, valueLabel = gndEntities, param="person")
-    @result_field("Autor/in", "creatorName", doc, TableRow.VALUES)
-    @result_field("Redaktion", "redaktor", doc, TableRow.VALUES, valueLabel = gndEntities, param="person")
-    @result_field("Herausgeber/in", "editor", doc, TableRow.VALUES, valueLabel = gndEntities, param="person")
-    @result_field("Mitwirkung", "contributor", doc, TableRow.VALUES, valueLabel = gndEntities, param="person")
-    @result_field("Mitwirkung", "contributorName", doc, TableRow.VALUES)
-    @result_field("Schauspieler/in", "actor", doc, TableRow.VALUES, valueLabel = gndEntities, param="person")
-    @result_field("Nachwort", "afterwordBy", doc, TableRow.VALUES, valueLabel = gndEntities, param="person")
-    @result_field("Einleitung", "introductionBy", doc, TableRow.VALUES, valueLabel = gndEntities, param="person")
-    @result_field("Drehbuch", "screenwriter", doc, TableRow.VALUES, valueLabel = gndEntities, param="person")
-    @result_field("Mitarbeit", "collaborator", doc, TableRow.VALUES, valueLabel = gndEntities, param="person")
-    @result_field("Komponist/in", "composer", doc, TableRow.VALUES, valueLabel = gndEntities, param="person")
-    @result_field("Dirigent/in", "conductor", doc, TableRow.VALUES, valueLabel = gndEntities, param="person")
-    @result_field("Kamera", "cinematographer", doc, TableRow.VALUES, valueLabel = gndEntities, param="person")
-    @result_field("Sammler/in", "collector", doc, TableRow.VALUES, valueLabel = gndEntities, param="person")
-    @result_field("Kartographie", "cartographer", doc, TableRow.VALUES, valueLabel = gndEntities, param="person")
-    @result_field("Regie", "director", doc, TableRow.VALUES, valueLabel = gndEntities, param="person")
-    @result_field("Widmungsträger/in", "dedicatee", doc, TableRow.VALUES, valueLabel = gndEntities, param="person")
-    @result_field("Stecher/in", "engraver", doc, TableRow.VALUES, valueLabel = gndEntities, param="person")
-    @result_field("Illustration", "illustrator", doc, TableRow.VALUES, valueLabel = gndEntities, param="person")
-    @result_field("Interviewte/r", "interviewee", doc, TableRow.VALUES, valueLabel = gndEntities, param="person")
-    @result_field("Interviewer/in", "interviewer", doc, TableRow.VALUES, valueLabel = gndEntities, param="person")
-    @result_field("Musik", "musician", doc, TableRow.VALUES, valueLabel = gndEntities, param="person")
-    @result_field("Fotografie", "photographer", doc, TableRow.VALUES, valueLabel = gndEntities, param="person")
-    @result_field("Interpret/in", "performer", doc, TableRow.VALUES, valueLabel = gndEntities, param="person")
-    @result_field("Produktion", "producer", doc, TableRow.VALUES, valueLabel = gndEntities, param="person")
-    @result_field("Gesang", "singer", doc, TableRow.VALUES, valueLabel = gndEntities, param="person")
-    @result_field("Gefeierte Person", "honoree", doc, TableRow.VALUES, valueLabel = gndEntities, param="person")
-    @result_field("Übersetzung", "translator", doc, TableRow.VALUES, valueLabel = gndEntities, param="person")
-  }
+  @contributions((doc \ "contribution").as[Seq[JsValue]])
   @with_icon("Medientyp", "medium", controllers.nwbib.Application.MEDIUM_FIELD)
-  @with_icon("Publikationstyp", if(Lobid.DATA_2) { "type" } else { "@type" }, if(Lobid.DATA_2) { controllers.nwbib.Application.TYPE_FIELD_LOBID2 } else { controllers.nwbib.Application.TYPE_FIELD })
+  @with_icon("Publikationstyp", "type", controllers.nwbib.Application.TYPE_FIELD_LOBID2)
   @result_field("", "thesisInformation", doc, TableRow.VALUES)
 
   @result_field("Erschienen", "issued", doc, TableRow.VALUES)
   @result_field("Auflage", "edition", doc, TableRow.VALUES)
   @result_field("Erscheinungsort", "placeOfPublication", doc, TableRow.VALUES)
   @result_field("Verlag", "publisher", doc, TableRow.VALUES)
-  @result_field("ISBN", if(Lobid.DATA_2) { "isbn" } else { "isbn10" }, doc, TableRow.VALUES)
+  @result_field("ISBN", "isbn", doc, TableRow.VALUES)
   @result_field("URN", "urn", doc, TableRow.VALUES)
   @result_field("Umfang", "extent", doc, TableRow.VALUES)
   @result_field("Quelle", "bibliographicCitation", doc, TableRow.VALUES)
   @result_field("In", "containedIn", doc, TableRow.LINKS)
   @result_field("Erscheinungsweise", "frequency", doc, TableRow.VALUES)
-  @if(Lobid.DATA_2) {
-    @lobid2_part_of("inSeries", "series")
-    @lobid2_part_of("volumeIn", "multiVolumeWork")
-  } else {
-    @result_field("Erschienen als", "volumeIn", doc, TableRow.VALUES_MULTI, valueLabel = Option(Seq("multiVolumeWork", "numbering")))
-    @result_field("Erschienen als", "inSeries", doc, TableRow.VALUES_MULTI, valueLabel = Option(Seq("series", "numbering")))
-  }
+  @lobid2_part_of("inSeries", "series")
+  @lobid2_part_of("volumeIn", "multiVolumeWork")
   @defining(lobidUrl((doc \\ "hbzId")(0))){ id =>
    @subordinated("@graph.http://purl.org/lobid/lv#multiVolumeWork.@id", id, "Bände", ("zugehöriger Band", "zugehörige Bände"))
    @subordinated("@graph.http://purl.org/lobid/lv#series.@id", id, "Serienbände", ("zugehöriger Serienband", "zugehörige Serienbände"))
@@ -155,7 +114,7 @@
   @result_field("Schlagwörter", "subject", doc, TableRow.VALUES, valueLabel = gndEntities, param="subject")
   @result_field("Schlagwortfolge", "subjectChain", doc, TableRow.VALUES, valueLabel = Option(Seq()))
 
-  @if(Lobid.DATA_2) { @result_field("Inhaltsangabe", "description", doc, TableRow.LINKS) }
+  @result_field("Inhaltsangabe", "description", doc, TableRow.LINKS)
   @result_field("Inhaltsverzeichnis", "tableOfContents", doc, TableRow.LINKS)
   @result_field("Weitere Informationen", "isPrimaryTopicOf", doc, TableRow.LINKS, valueLabel = Option(Seq("hbz-Verbundkatalog")))
 }

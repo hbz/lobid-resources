@@ -14,7 +14,7 @@
 
 @entries() = {
     @for((id,i) <- ids.zipWithIndex; doc = Json.parse(vals(i).toString())) {
-        @if(f=="details"){@tags.result_doc(if(Lobid.DATA_2) { Json.parse(Lobid.getResource(id).toString) } else { doc })} else {@tags.result_short(id,doc,i,ids)}
+        @if(f=="details"){@tags.result_doc(Json.parse(Lobid.getResource(id).toString))} else {@tags.result_short(id,doc,i,ids)}
     }
 }
 

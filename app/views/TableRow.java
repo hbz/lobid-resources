@@ -78,7 +78,7 @@ public enum TableRow {
 				Logger.error("Could not call encode '{}'", term, e);
 			}
 			String search = String.format("/search?%s=%s", param, term);
-			JsonNode node = Lobid.DATA_2 ? doc.get(property) : doc;
+			JsonNode node = doc.get(property);
 			String label = labelForId(value, node, labels);
 			String result = labels.get().contains("numbering") ? label
 					: String.format(
@@ -108,7 +108,7 @@ public enum TableRow {
 			if (!keys.isPresent()) {
 				throw new IllegalArgumentException("VALUES_MULTI needs valueLabels");
 			}
-			JsonNode node = Lobid.DATA_2 ? doc.get(property).iterator().next() : doc;
+			JsonNode node = doc.get(property).iterator().next();
 			return values.stream()
 					.filter(value -> !value.contains("http://dewey.info"))
 					.map(val -> String.format("<tr><td>%s</td><td>%s</td></tr>", label,
@@ -136,19 +136,9 @@ public enum TableRow {
 				List<String> keys) {
 			List<String> result = new ArrayList<>();
 			if (doc != null) {
-				if (Lobid.DATA_2) {
-					result.add(
-							doc.get(keys.get(0)).iterator().next().get("id").textValue());
-					result.add(doc.get(keys.get(1)).textValue());
-				} else {
-					for (JsonNode node : doc.findValues("@graph").get(0)) {
-						for (String key : keys) {
-							if (node.get("@id").textValue().equals(value) && node.has(key)) {
-								result.add(node.get(key).textValue());
-							}
-						}
-					}
-				}
+				result
+						.add(doc.get(keys.get(0)).iterator().next().get("id").textValue());
+				result.add(doc.get(keys.get(1)).textValue());
 			}
 			return result.isEmpty() ? Arrays.asList(value) : result;
 		}

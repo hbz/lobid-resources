@@ -14,7 +14,7 @@
 
 @multiSingleOrEmptySeq(value: JsValue) = @{
 	val jsVal = jsonVal(property)
-	val id = if(Lobid.DATA_2) { "id" } else { "@id" }
+	val id = "id"
 	value match {
 		case o:JsObject => Seq(o \ "id")
 		case a:JsArray => a.as[Seq[JsValue]].map(_ match {case o:JsObject => o \ id; case o@_ => o})
