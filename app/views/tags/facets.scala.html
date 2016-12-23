@@ -111,11 +111,6 @@
    }
 }
 
-@locationLabel(loc:String)=@{
-  val isLatLon = loc.contains(",")
-  if(isLatLon) {views.ReverseGeoLookup.of(loc)} else {loc}
-}
-
 @urisOnly(s: String)=@{
 	s.split(",").filter(_.startsWith("http")).mkString(",")
 }
