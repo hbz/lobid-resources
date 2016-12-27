@@ -658,7 +658,16 @@
 		<!-- ########## publisher -->
 		<!-- ####################### -->
 		<!-- primary publication -->
-		<data source="41[05][-abcu][-12].a|419-[12].a|594[-abc][-12].a" name="@placeOfPublication"/>
+		<!-- <replace pattern="^\[" with=""/> <replace pattern="\]$" with=""/> -->
+		<data source="41[05][-abcu][-12].a|419-[12].a|594[-abc][-12].a" name="@placeOfPublication_"/>
+		<choose name="@placeOfPublication" flushWith="@placeOfPublication_">
+			<data source="@placeOfPublication_">
+				<regexp match="^\[.*\]"/>
+				<replace pattern="^\[" with=""/>
+				<replace pattern="\]$" with=""/>
+			</data>
+			<data source="@placeOfPublication_"/>
+		</choose>
 		<data source="41[27][-abcu][-12].[ag]|419-[12].b" name="@publisher"/>
 		<entity name="http://schema.org/publication" flushWith="record">
 			<data source="@placeOfPublication" name="http://schema.org/location"/>
