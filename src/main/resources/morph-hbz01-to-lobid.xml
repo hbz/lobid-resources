@@ -1071,7 +1071,7 @@
 		<!-- ################ koerperschaften and persons -->
 		<!-- ####################### -->
 		<!-- contributors with roles @TODO many roles needs tests -->
-		<data source="1??b[1234].b|8[012]?[-mn][-12].b" name="@marcrelName"/>
+		<data source="1???[1234].b|8[012]?[-mn][-12].b" name="@marcrelName"/>
 		<!-- id of contributor (which is not a creator) -->
 		<data source="1??[bcfp][1234].9" name="@contributorPersonId">
 			<regexp match="\(DE-588\)(.*)" format="http://d-nb.info/gnd/${1}"/>
@@ -1282,13 +1282,13 @@
 			<replace pattern="&gt;&gt;" with=""/>
 			<replace pattern="&lt;&lt;" with=""/>
 		</data>
+		<combine name="@relator" value="http://id.loc.gov/vocabulary/relators/cre"
+			flushWith="@creatorPersonOrCoorporateBodyBnodeOrId">
+			<data source="@creatorPersonOrCoorporateBodyBnodeOrId" name="a"/>
+		</combine>
 		<combine name="@relator" value="${a}">
 			<choose name="a"
 				flushWith="@contributorPersonBnodeOrId|@contributorCorporateBodyBnodeOrId|@creatorPersonOrCoorporateBodyBnodeOrId">
-				<!-- always creator -->
-				<data source="@creatorPersonOrCoorporateBodyBnodeOrId" name="a">
-					<regexp match=".*" format="http://id.loc.gov/vocabulary/relators/cre"/>
-				</data>
 				<!-- map literals to marc relator property -->
 				<data source="@marcrelName" name="a">
 					<regexp match="[dD]ars" format="http://id.loc.gov/vocabulary/relators/act"/>
