@@ -31,6 +31,7 @@ import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 
 import play.Logger;
+import play.Play;
 import play.cache.Cache;
 import play.cache.Cached;
 import play.data.Form;
@@ -613,5 +614,14 @@ public class Application extends Controller {
 	private static List<String> starredIds() {
 		return new ArrayList<>(Arrays.asList(currentlyStarred().split(" ")).stream()
 				.filter(s -> !s.trim().isEmpty()).collect(Collectors.toList()));
+	}
+
+	/**
+	 * @return JSON-LD context
+	 */
+	public static Result context() {
+		response().setContentType("application/ld+json");
+		response().setHeader("Access-Control-Allow-Origin", "*");
+		return ok(Play.application().resourceAsStream("context.jsonld"));
 	}
 }
