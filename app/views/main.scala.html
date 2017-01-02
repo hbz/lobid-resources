@@ -62,18 +62,20 @@
             </div>
             <div class="page-header">
                 <img class="media-object nrw-logo pull-right" src="@controllers.routes.Assets.at("images/hbz.png")" alt="hbz">
-                <h1>lobid-resources <small>&mdash; der hbz-Verbundkatalog als Linked Open Data im Web</small></h1>
+                <h1>lobid-resources <small>&mdash; der hbz-Verbundkatalog als Open Data im Web</small></h1>
             </div>
             @content
             <div class="panel panel-default resources-footer">
               <div class="panel-body">
+                <small>
                 @defining(controllers.resources.Lobid.getTotalHits("").get(Lobid.API_TIMEOUT)){ hits =>
                 <img class="media-object pull-left nrw-wappen" src="@controllers.routes.Assets.at("images/wappen.png")" alt="NRW-Wappen">
                 <img class="media-object pull-right butterfly" src="@controllers.routes.Assets.at("images/butterfly.png")" alt="Lobid-Butterfly"> 
                 Der hbz-Verbundkatalog bietet @if(hits>0){aktuell @hits}else{fast 20 Millionen} Literaturnachweise. 
-                Er stellt die Grundlage für viele weitere Produkte und Dienstleistungen dar <br/>und ist eingebunden in diverse 
+                Er stellt die Grundlage für viele weitere Produkte und Dienstleistungen dar und ist eingebunden in diverse 
                 Endnutzerportale sowie in die Online-Fernleihe. Seine Daten stehen gemeinfrei unter <a href="http://creativecommons.org/publicdomain/zero/1.0/">CC0</a> zur Verfügung.
                 }
+                </small>
               </div>
             </div>
         </div>
