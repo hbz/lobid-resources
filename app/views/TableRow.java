@@ -53,8 +53,7 @@ public enum TableRow {
 			}
 			return vs.isEmpty() ? ""
 					: String.format("<tr><td>%s</td><td>%s</td></tr>", label,
-							vs.stream().filter(value -> !value.contains("http://dewey.info"))
-									.map(val -> label(doc, property, param, val, keys))
+							vs.stream().map(val -> label(doc, property, param, val, keys))
 									.collect(Collectors.joining(
 											property.equals("subjectChain") ? " <br/> " : " | ")));
 		}
@@ -77,7 +76,7 @@ public enum TableRow {
 			} catch (UnsupportedEncodingException e) {
 				Logger.error("Could not call encode '{}'", term, e);
 			}
-			String search = String.format("/search?%s=%s", param, term);
+			String search = String.format("/resources/search?%s=%s", param, term);
 			JsonNode node = doc.get(property);
 			String label = labelForId(value, node, labels);
 			String result = labels.get().contains("numbering") ? label
@@ -85,7 +84,8 @@ public enum TableRow {
 							"<a title=\"Nach weiteren Titeln suchen\" href=\"%s\">%s</a>",
 							search, label);
 			if (value.startsWith("http")) {
-				if (param.equals("person") || param.equals("subject")) {
+				if (param.equals("person") || param.equals("subject")
+						&& !value.contains("http://dewey.info")) {
 					result += String.format(
 							" <a title=\"Linked-Data-Quelle abrufen\" "
 									+ "href=\"%s\"><span class=\"glyphicon glyphicon-link\"></span></a>",
@@ -103,10 +103,9 @@ public enum TableRow {
 				throw new IllegalArgumentException("VALUES_MULTI needs valueLabels");
 			}
 			JsonNode node = doc.get(property).iterator().next();
-			return values.stream()
-					.filter(value -> !value.contains("http://dewey.info"))
-					.map(val -> String.format("<tr><td>%s</td><td>%s</td></tr>", label,
-							label(node, val, keys.get())))
+			return values
+					.stream().map(val -> String.format("<tr><td>%s</td><td>%s</td></tr>",
+							label, label(node, val, keys.get())))
 					.collect(Collectors.joining("\n"));
 		}
 
