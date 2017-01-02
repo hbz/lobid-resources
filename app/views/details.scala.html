@@ -23,26 +23,13 @@
   }
 } else {
   @defining(Json.parse(docJson)) { doc =>
-    @main(if( (doc\\"title").isEmpty) "lobid-resources - Vollanzeige" else (doc\\"title")(0).as[String]) {
-      @if(Cache.get(session("uuid") + "-" + (doc\\"hbzId")(0).as[String]) != null) {
-        @defining(Cache.get(session("uuid") + "-lastSearch")) { lastSearch =>
-          @if(lastSearch != null) {
-            @defining(Json.parse(lastSearch.asInstanceOf[String]).as[JsArray].as[Seq[String]]) { last =>
-            <script>
-              if(document.referrer.indexOf('@resources.routes.Application.index()') < 0){
-                $("#pager").hide();
-              }
-            </script>
-            }
-          }
-        }
-      }
+    @main(if( (doc\\"title").isEmpty) "lobid-resources - Vollanzeige" else (doc\\"title")(0).asOpt[String].getOrElse("--")) {
       <div class="row">
       @defining(Lobid.items(doc.toString)) { items =>
         @defining(!(doc\\"isPartOf").isEmpty && doc.toString.contains("http://purl.org/ontology/bibo/Article")){superordination =>
           <div class="col-md-@if(items.isEmpty && !doc.toString.contains("fulltextOnline") && !superordination){12} else {8}">
             <dl>
-            @defining((doc\\"hbzId")(0).as[String]){ id =>
+            @defining((doc\\"hbzId")(0).asOpt[String].getOrElse("--")){ id =>
               <dt>@tags.star_button(id) Titeldetails:
               <a href="@Application.CONFIG.getString("hbz01.api")/@id">&nbsp;</a>
               </dt>

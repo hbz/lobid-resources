@@ -31,7 +31,7 @@
 }
 
 @nestedIds(property: String) = @{
-	(doc\\property).last.as[Seq[JsValue]].map((v: JsValue) => (v \ "id").asOpt[String].getOrElse("No id in " + v))
+	(doc\\property).last.asOpt[Seq[JsValue]].getOrElse(Seq()).map((v: JsValue) => (v \ "id").asOpt[String].getOrElse("No id in " + v))
 }
 
 @singleOrMultiString(property: String) = @{
@@ -63,16 +63,16 @@
       field,
       "q",
       "Erschienen als",
-      Seq((((doc \ field)(0) \ subField)(0) \ "id").as[String]),
+      Seq((((doc \ field)(0) \ subField)(0) \ "id").asOpt[String].getOrElse("--")),
       Optional.of(Seq(subField, "numbering"))))
   }
 }
 
 @contributions(contributions: Seq[JsValue]) = {
-  @for((role, cs) <- (contributions.groupBy((c: JsValue) => ((c \ "role")(0) \ "label").as[String]))) {
+  @for((role, cs) <- (contributions.groupBy((c: JsValue) => ((c \ "role")(0) \ "label").asOpt[String].getOrElse("--")))) {
     <tr>
       <td>@role</td>
-      <td>@for(c <- cs; agent = (c \ "agent")(0); label = (agent \ "label").as[String]; id = (agent \ "id").as[String]) {
+      <td>@for(c <- cs; agent = (c \ "agent")(0); label = (agent \ "label").asOpt[String].getOrElse("--"); id = (agent \ "id").asOpt[String].getOrElse("--")) {
         <a title="Nach weiteren Titeln von '@label' suchen" href='@resources.routes.Application.search(person=id)'/>@label</a>
         <a title="Linked-Data-Quelle zu '@label' abrufen" href='@id'><span class='glyphicon glyphicon-link'></span></a>
         @if(c!=cs.last){ | }
@@ -85,7 +85,7 @@
   @result_field("Titel", "title", doc, TableRow.VALUES)
   @result_field("Titelzusatz", "otherTitleInformation", doc, TableRow.VALUES)
   @result_field("Verantwortlich", "statementOfResponsibility", doc, TableRow.VALUES)
-  @contributions((doc \ "contribution").as[Seq[JsValue]])
+  @contributions((doc \ "contribution").asOpt[Seq[JsValue]].getOrElse(Seq()))
   @with_icon("Medientyp", "medium", controllers.resources.Application.MEDIUM_FIELD)
   @with_icon("Publikationstyp", "type", controllers.resources.Application.TYPE_FIELD_LOBID2)
   @result_field("", "thesisInformation", doc, TableRow.VALUES)
