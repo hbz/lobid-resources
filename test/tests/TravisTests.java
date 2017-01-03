@@ -13,7 +13,8 @@ import org.junit.runners.Suite.SuiteClasses;
  *
  */
 @RunWith(Suite.class)
-@SuiteClasses({ ApplicationTest.class, InternalIntegrationTest.class })
+@SuiteClasses({ ApplicationTest.class, InternalIntegrationTest.class,
+		AcceptUnitTest.class })
 public class TravisTests {
 	//
 }

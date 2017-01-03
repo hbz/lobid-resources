@@ -1,4 +1,4 @@
-/* Copyright 2014 Fabian Steeg, hbz. Licensed under the GPLv2 */
+/* Copyright 2014-2017 Fabian Steeg, hbz. Licensed under the GPLv2 */
 
 package controllers.resources;
 
@@ -26,6 +26,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.elasticsearch.common.geo.GeoPoint;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableMap;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
@@ -145,6 +146,7 @@ public class Application extends Controller {
 	 * @param word A word, a concept from the hbz union catalog
 	 * @param corporation A corporation associated with the resource
 	 * @param raw A query string that's directly (unprocessed) passed to ES
+	 * @param format The response format ('html' or 'json')
 	 * @return The search results
 	 */
 	public static Promise<Result> search(final String q, final String person,
@@ -152,11 +154,13 @@ public class Application extends Controller {
 			final String publisher, final String issued, final String medium,
 			final int from, final int size, final String owner, String t, String sort,
 			boolean details, String set, String location, String word,
-			String corporation, String raw) {
+			String corporation, String raw, String format) {
+		addCorsHeader();
 		String uuid = session("uuid");
 		if (uuid == null)
 			session("uuid", UUID.randomUUID().toString());
-		String cacheId = String.format("%s-%s", uuid, request().uri());
+		String cacheId = String.format("%s-%s-%s", uuid, request().uri(),
+				Accept.formatFor(format, request().acceptedTypes()));
 		@SuppressWarnings("unchecked")
 		Promise<Result> cachedResult = (Promise<Result>) Cache.get(cacheId);
 		if (cachedResult != null)
@@ -170,25 +174,19 @@ public class Application extends Controller {
 		String query = form.data().get("q");
 		Promise<Result> result = okPromise(query != null ? query : q, person, name,
 				subject, id, publisher, issued, medium, from, size, owner, t, sort,
-				details, set, location, word, corporation, raw);
+				details, set, location, word, corporation, raw, format);
 		cacheOnRedeem(cacheId, result, ONE_HOUR);
 		return result;
 	}
 
 	/**
 	 * @param id The resource ID.
+	 * @param format The response format ('html' or 'json')
 	 * @return The details page for the resource with the given ID.
 	 */
-	public static Promise<Result> show(final String id) {
-		String prevNext = (String) Cache.get(session("uuid") + "-" + id);
-		if (prevNext != null) {
-			session("prev", prevNext.startsWith(",") ? "" : prevNext.split(",")[0]);
-			session("next", prevNext.endsWith(",") ? "" : prevNext.split(",")[1]);
-		} else {
-			Logger.warn("No pagination session data for {}", id);
-		}
+	public static Promise<Result> show(final String id, String format) {
 		return search("", "", "", "", id, "", "", "", 0, 1, "", "", "", true, "",
-				"", "", "", "");
+				"", "", "", "", format);
 	}
 
 	private static Promise<Result> okPromise(final String q, final String person,
@@ -196,10 +194,10 @@ public class Application extends Controller {
 			final String publisher, final String issued, final String medium,
 			final int from, final int size, final String owner, String t, String sort,
 			boolean details, String set, String location, String word,
-			String corporation, String raw) {
+			String corporation, String raw, String format) {
 		final Promise<Result> result = call(q, person, name, subject, id, publisher,
 				issued, medium, from, size, owner, t, sort, details, set, location,
-				word, corporation, raw);
+				word, corporation, raw, format);
 		return result.recover((Throwable throwable) -> {
 			Logger.error("Could not call Lobid", throwable);
 			flashError();
@@ -230,7 +228,7 @@ public class Application extends Controller {
 			final String publisher, final String issued, final String medium,
 			final int from, final int size, String owner, String t, String sort,
 			boolean showDetails, String set, String location, String word,
-			String corporation, String raw) {
+			String corporation, String raw, String format) {
 		final WSRequestHolder requestHolder =
 				Lobid.request(q, person, name, subject, id, publisher, issued, medium,
 						from, size, owner, t, sort, set, location, word, corporation, raw);
@@ -246,20 +244,32 @@ public class Application extends Controller {
 						response.getStatusText(), requestHolder.getUrl(),
 						requestHolder.getQueryParameters());
 			}
-			if (showDetails) {
-				String json = "";
-				JsonNode nodes = Json.parse(s);
-				if (nodes.isArray() && nodes.size() == 2) { // first: metadata
-					json = nodes.get(1).toString();
-				} else {
+			String responseFormat =
+					Accept.formatFor(format, request().acceptedTypes());
+			boolean htmlRequested =
+					responseFormat.equals(Accept.Format.HTML.queryParamString);
+			if (htmlRequested) {
+				if (showDetails) {
+					JsonNode nodes = Json.parse(s);
+					if (nodes.isArray() && nodes.size() == 2) { // first: metadata
+						return ok(details.render(CONFIG, nodes.get(1).toString(), id));
+					}
 					Logger.warn("No suitable data to show details for: {}", nodes);
 				}
-				return ok(details.render(CONFIG, json, id));
+				return ok(search.render(s, q, person, name, subject, id, publisher,
+						issued, medium, from, size, hits, owner, t, sort, set, location,
+						word, corporation, raw));
 			}
-			return ok(search.render(s, q, person, name, subject, id, publisher,
-					issued, medium, from, size, hits, owner, t, sort, set, location, word,
-					corporation, raw));
+			JsonNode responseJson =
+					showDetails ? Lobid.getResource(id) : Json.parse(s);
+			String prettyJson = new ObjectMapper().writerWithDefaultPrettyPrinter()
+					.writeValueAsString(responseJson);
+			return ok(prettyJson).as("application/json; charset=utf-8");
 		});
+	}
+
+	private static void addCorsHeader() {
+		response().setHeader("Access-Control-Allow-Origin", "*");
 	}
 
 	private static void uncache(List<String> ids) {
@@ -371,7 +381,7 @@ public class Application extends Controller {
 			String routeUrl = routes.Application.search(q, person, name, subjectQuery,
 					id, publisher, issuedQuery, mediumQuery, from, size, ownerQuery,
 					typeQuery, sort(sort, subjectQuery), false, set, locationQuery, word,
-					corporation, rawQuery).url();
+					corporation, rawQuery, null).url();
 
 			String result = String.format(
 					"<li " + (current ? "class=\"active\"" : "")
@@ -621,7 +631,7 @@ public class Application extends Controller {
 	 */
 	public static Result context() {
 		response().setContentType("application/ld+json");
-		response().setHeader("Access-Control-Allow-Origin", "*");
+		addCorsHeader();
 		return ok(Play.application().resourceAsStream("context.jsonld"));
 	}
 }
