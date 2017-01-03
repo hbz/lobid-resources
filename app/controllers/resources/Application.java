@@ -26,6 +26,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.elasticsearch.common.geo.GeoPoint;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableMap;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
@@ -259,7 +260,11 @@ public class Application extends Controller {
 						issued, medium, from, size, hits, owner, t, sort, set, location,
 						word, corporation, raw));
 			}
-			return ok(showDetails ? Lobid.getResource(id) : Json.parse(s));
+			JsonNode responseJson =
+					showDetails ? Lobid.getResource(id) : Json.parse(s);
+			String prettyJson = new ObjectMapper().writerWithDefaultPrettyPrinter()
+					.writeValueAsString(responseJson);
+			return ok(prettyJson).as("application/json; charset=utf-8");
 		});
 	}
 
