@@ -31,7 +31,10 @@
             <dl>
             @defining((doc\\"hbzId")(0).asOpt[String].getOrElse("--")){ id =>
               <dt>@tags.star_button(id) Titeldetails:
-              <a href="@Application.CONFIG.getString("hbz01.api")/@id">&nbsp;</a>
+              <small style='float:right'>
+              <a title="MAB-XML-Quelldaten anzeigen" href="@Application.CONFIG.getString("hbz01.api")/@id"><span class="glyphicon glyphicon-log-out"></span></a>
+              <a title="JSON-LD-Indexdaten anzeigen" href='@resources.routes.Application.show(id, "json")'><span class="glyphicon glyphicon-cog"></span></a>
+              </small>
               </dt>
               <dd>@tags.result_doc(Json.parse(Lobid.getResource(id).toString))</dd>
             }
