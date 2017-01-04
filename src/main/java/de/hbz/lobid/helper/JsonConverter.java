@@ -140,7 +140,8 @@ public class JsonConverter {
 			Etikett e) {
 		String key = e.name;
 		if (s.getObject() instanceof org.openrdf.model.Literal) {
-			addLiteralToJsonResult(jsonResult, key, s.getObject().stringValue());
+			addLiteralToJsonResult(jsonResult, key, s.getObject().stringValue(),
+					etikette.getEtikett(s.getPredicate().stringValue()));
 		} else {
 			if (s.getObject() instanceof org.openrdf.model.BNode) {
 				if (isList(s)) {
@@ -153,12 +154,14 @@ public class JsonConverter {
 				if (s.getPredicate().stringValue().equals(RDF_TYPE)) {
 					try {
 						addLiteralToJsonResult(jsonResult, key,
-								etikette.getEtikett(s.getObject().stringValue()).name);
+								etikette.getEtikett(s.getObject().stringValue()).name,
+								etikette.getEtikett(s.getPredicate().stringValue()));
 					} catch (Exception ex) {
 						logger.info("", ex);
 					}
 				} else {
-					addObjectToJsonResult(jsonResult, key, s.getObject().stringValue());
+					addObjectToJsonResult(jsonResult, key, s.getObject().stringValue(),
+							e);
 				}
 			}
 		}
@@ -211,9 +214,10 @@ public class JsonConverter {
 	}
 
 	private void addObjectToJsonResult(Map<String, Object> jsonResult, String key,
-			String uri) {
+			String uri, Etikett e) {
 		if (jsonResult.containsKey(key)) {
-			if (jsonResult.get(key) instanceof ArrayList<?>) {
+			if (e.container != null
+					&& e.container.equals(Etikett.Container.LIST.getName())) {
 				@SuppressWarnings("unchecked")
 				ArrayList<Map<String, Object>> literals =
 						(ArrayList<Map<String, Object>>) jsonResult.get(key);
@@ -225,10 +229,22 @@ public class JsonConverter {
 				literals.add(createObjectWithId(uri));
 			}
 		} else {
-			Set<Map<String, Object>> literals = new HashSet<>();
-			literals.add(createObjectWithId(uri));
-			jsonResult.put(key, literals);
+			if (e.container != null
+					&& e.container.equals(Etikett.Container.SET.getName())) {
+				Set<Map<String, Object>> literals = new HashSet<>();
+				literals.add(createObjectWithId(uri));
+				jsonResult.put(key, literals);
+			} else {
+				if (e.container != null
+						&& e.container.equals(Etikett.Container.LIST.getName())) {
+					ArrayList<Map<String, Object>> literals = new ArrayList<>();
+					literals.add(createObjectWithId(uri));
+					jsonResult.put(key, literals);
+				} else
+					jsonResult.put(key, createObjectWithId(uri));
+			}
 		}
+
 	}
 
 	private void addBlankNodeToJsonResult(Map<String, Object> jsonResult,
@@ -281,7 +297,9 @@ public class JsonConverter {
 	private void createObject(String uri, Map<String, Object> newObject) {
 		for (Statement s : find(uri)) {
 			Etikett e = etikette.getEtikett(s.getPredicate().stringValue());
-			if (s.getObject() instanceof org.openrdf.model.Literal) {
+			if (labelKey.equals(e.name)) {
+				newObject.put(e.name, s.getObject().stringValue());
+			} else if (s.getObject() instanceof org.openrdf.model.Literal) {
 				if (newObject.containsKey(e.name)) {
 					Object existingValue = newObject.get(e.name);
 					if (existingValue instanceof String) {
@@ -327,16 +345,20 @@ public class JsonConverter {
 
 	private static void addLiteralToJsonResult(
 			final Map<String, Object> jsonResult, final String key,
-			final String value) {
-		if (jsonResult.containsKey(key)) {
-			@SuppressWarnings("unchecked")
-			Set<String> literals = (Set<String>) jsonResult.get(key);
-			literals.add(value);
-		} else {
-			Set<String> literals = new HashSet<>();
-			literals.add(value);
-			jsonResult.put(key, literals);
-		}
+			final String value, Etikett e) {
+		if (e.container != null
+				&& e.container.equals(Etikett.Container.SET.getName())) {
+			if (jsonResult.containsKey(key)) {
+				@SuppressWarnings("unchecked")
+				Set<String> literals = (Set<String>) jsonResult.get(key);
+				literals.add(value);
+			} else {
+				Set<String> literals = new HashSet<>();
+				literals.add(value);
+				jsonResult.put(key, literals);
+			}
+		} else
+			jsonResult.put(key, value);
 	}
 
 	private void collect(Graph g) {
