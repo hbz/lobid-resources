@@ -54,6 +54,13 @@ If you've added and commited everything, check again if all is ok:
 
 This should result in *BUILD SUCCESS*. Push your changes. You're done :)
 
+If you get errors from building the project, change the log4j.xml file to get more detailed error messages after @mvn test@:
+@<priority value="info"/>@ to @<priority value="debug"/>@.
+
+For updating the old test files in lobid-rdf-to-json use:
+
+@bash src/test/resources/copyNtriplesToLobid-Rdf-To-Json.sh@.
+
 h1. License
 
 GNU AFFERO GENERAL PUBLIC LICENSE
