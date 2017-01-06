@@ -45,6 +45,7 @@ import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
 import views.html.details;
+import views.html.details_item;
 import views.html.index;
 import views.html.search;
 import views.html.stars;
@@ -195,7 +196,12 @@ public class Application extends Controller {
 	 * @return The details for the item with the given ID.
 	 */
 	public static Promise<Result> item(final String id, String format) {
-		return Promise.promise(() -> ok(Index.getItem(id)));
+		String responseFormat = Accept.formatFor(format, request().acceptedTypes());
+		return Promise.promise(() -> {
+			JsonNode itemJson = Index.getItem(id);
+			return responseFormat.equals("html")
+					? ok(details_item.render(id, itemJson.toString())) : ok(itemJson);
+		});
 	}
 
 	private static Promise<Result> okPromise(final String q, final String person,

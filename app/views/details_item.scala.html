@@ -1,0 +1,45 @@
+@* Copyright 2017 Fabian Steeg, hbz. Licensed under the GPLv2 *@
+
+@(id: String, docJson: String)
+
+@import helper._
+@import tags._
+@import controllers.resources.Lobid
+@import controllers.resources.Application
+@import play.api.libs.json.Json
+
+@if(docJson.isEmpty){
+  @main("lobid-resources - Bestandsdetails") {
+    @if(flash.get("error")!=null){
+    <div class="alert alert-danger">@flash.get("error")</div>
+    } else {
+    <div class="alert alert-info text-center">Bestand mit der ID @id konnte nicht gefunden werden.</div>
+    }
+  }
+} else {
+  @defining(Json.parse(docJson)) { doc =>
+    @main("lobid-resources - Bestandsdetails") {
+      <div class="row">
+      @defining(Lobid.items("{\"exemplar\":[{\"id\":\"" + ((doc \ "id").as[String]) + "\"}]}")) { items =>
+        <div class="col-md-8">
+          <dl>
+            <dt>Bestandsdetails:
+            <small style='float:right'>
+            <a title="JSON-LD-Indexdaten anzeigen" href='@resources.routes.Application.item(id, "json")'><span class="glyphicon glyphicon-cog"></span></a>
+            </small>
+            </dt>
+            <dd><code>@docJson</code></dd> @*TODO: equivalent of @tags.result_doc(Json.parse(docJson))*@
+          </dl>
+        </div>
+        <div class="col-md-4" id="holdings">
+          <dl>
+           <dt>Bestand in:</dt>
+           <dd>@tags.items_map(items)</dd>
+          </dl>
+        </div>
+      }
+      </div>
+      @if(!id.trim.isEmpty) {@map_credits()}
+    }
+  }
+}
