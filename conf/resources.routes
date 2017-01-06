@@ -19,6 +19,7 @@ DELETE /resources/stars/:id             controllers.resources.Application.unstar
 
 GET    /resources/context.jsonld        controllers.resources.Application.context()
 GET    /resources/:id                   controllers.resources.Application.show(id, format ?= null)
+GET    /items/:id                       controllers.resources.Application.item(id, format ?= null)
 
 # Map static resources from the /public folder to the /assets URL path
 GET    /resources/assets/*file          controllers.Assets.at(path="/public", file)

@@ -189,6 +189,15 @@ public class Application extends Controller {
 				"", "", "", "", format);
 	}
 
+	/**
+	 * @param id The item ID.
+	 * @param format The response format ('html' or 'json')
+	 * @return The details for the item with the given ID.
+	 */
+	public static Promise<Result> item(final String id, String format) {
+		return Promise.promise(() -> ok(Index.getItem(id)));
+	}
+
 	private static Promise<Result> okPromise(final String q, final String person,
 			final String name, final String subject, final String id,
 			final String publisher, final String issued, final String medium,
