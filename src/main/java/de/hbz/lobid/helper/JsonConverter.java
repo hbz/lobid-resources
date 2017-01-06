@@ -148,7 +148,7 @@ public class JsonConverter {
 					addListToJsonResult(jsonResult, key, ((BNode) s.getObject()).getID());
 				} else {
 					addBlankNodeToJsonResult(jsonResult, key,
-							((BNode) s.getObject()).getID());
+							((BNode) s.getObject()).getID(), e);
 				}
 			} else {
 				if (s.getPredicate().stringValue().equals(RDF_TYPE)) {
@@ -248,16 +248,23 @@ public class JsonConverter {
 	}
 
 	private void addBlankNodeToJsonResult(Map<String, Object> jsonResult,
-			String key, String uri) {
+			String key, String uri, Etikett e) {
 		if (jsonResult.containsKey(key)) {
 			@SuppressWarnings("unchecked")
 			Set<Map<String, Object>> literals =
 					(Set<Map<String, Object>>) jsonResult.get(key);
 			literals.add(createObjectWithoutId(uri));
 		} else {
-			Set<Map<String, Object>> literals = new HashSet<>();
-			literals.add(createObjectWithoutId(uri));
-			jsonResult.put(key, literals);
+			if (e.container != null
+					&& e.container.equals(Etikett.Container.SET.getName())) {
+				Set<Map<String, Object>> literals = new HashSet<>();
+				literals.add(createObjectWithoutId(uri));
+				jsonResult.put(key, literals);
+			} else {
+				Map<String, Object> literals = new TreeMap<>();
+				literals = createObjectWithoutId(uri);
+				jsonResult.put(key, literals);
+			}
 		}
 	}
 
