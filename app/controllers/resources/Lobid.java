@@ -523,7 +523,7 @@ public class Lobid {
 		Iterator<JsonNode> elements =
 				items.isArray() ? items.elements() : Arrays.asList(items).iterator();
 		while (elements.hasNext()) {
-			String itemUri = elements.next().asText();
+			String itemUri = elements.next().get("id").asText();
 			try {
 				String isil = itemUri.split(":")[2];
 				List<String> uris = result.getOrDefault(isil, new ArrayList<>());
@@ -544,7 +544,7 @@ public class Lobid {
 				Play.application().resourceAsStream("isil2opac_hbzid.json")) {
 			JsonNode json = Json.parse(stream);
 			String[] hbzId_isil_sig =
-					itemUri.substring(itemUri.indexOf("item/") + 5).split(":");
+					itemUri.substring(itemUri.indexOf("items/") + 6).split(":");
 			String hbzId = hbzId_isil_sig[0];
 			String isil = hbzId_isil_sig[1];
 			Logger.debug("From item URI {}, got ISIL {} and HBZ-ID {}", itemUri, isil,

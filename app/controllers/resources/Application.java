@@ -261,7 +261,8 @@ public class Application extends Controller {
 				if (showDetails) {
 					JsonNode nodes = Json.parse(s);
 					if (nodes.isArray() && nodes.size() == 2) { // first: metadata
-						return ok(details.render(CONFIG, nodes.get(1).toString(), id));
+						return ok(
+								details.render(CONFIG, Lobid.getResource(id).toString(), id));
 					}
 					Logger.warn("No suitable data to show details for: {}", nodes);
 				}
