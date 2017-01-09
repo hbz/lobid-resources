@@ -1,7 +1,10 @@
 {
   "@context" : {
     "extent" : {
-      "@id" : "http://iflastandards.info/ns/isbd/elements/P1053",
+      "@id" : "http://iflastandards.info/ns/isbd/elements/P1053"
+    },
+    "endDate" : {
+      "@id" : "http://schema.org/endDate",
       "@container" : "@set"
     },
     "altLabel" : {
@@ -49,8 +52,7 @@
     },
     "exemplarOf" : {
       "@type" : "@id",
-      "@id" : "http://purl.org/vocab/frbr/core#exemplarOf",
-      "@container" : "@set"
+      "@id" : "http://purl.org/vocab/frbr/core#exemplarOf"
     },
     "Book" : {
       "@type" : "@id",
@@ -69,8 +71,7 @@
     },
     "id" : "@id",
     "issued" : {
-      "@id" : "http://purl.org/dc/terms/issued",
-      "@container" : "@set"
+      "@id" : "http://purl.org/dc/terms/issued"
     },
     "spatial" : {
       "@type" : "@id",
@@ -78,8 +79,7 @@
       "@container" : "@set"
     },
     "hbzId" : {
-      "@id" : "http://purl.org/lobid/lv#hbzID",
-      "@container" : "@set"
+      "@id" : "http://purl.org/lobid/lv#hbzID"
     },
     "similar" : {
       "@type" : "@id",
@@ -90,6 +90,10 @@
       "@type" : "@id",
       "@id" : "http://purl.org/dc/terms/hasPart",
       "@container" : "@set"
+    },
+    "Publication" : {
+      "@type" : "@id",
+      "@id" : "http://schema.org/Publication"
     },
     "eissn" : {
       "@id" : "http://purl.org/ontology/bibo/eissn",
@@ -124,17 +128,16 @@
       "@id" : "http://purl.org/ontology/bibo/issn",
       "@container" : "@set"
     },
-    "isPartOfName" : {
-      "@id" : "http://purl.org/dc/elements/1.1/isPartOf",
-      "@container" : "@set"
-    },
     "bibliographicCitation" : {
-      "@id" : "http://purl.org/dc/terms/bibliographicCitation",
-      "@container" : "@set"
+      "@id" : "http://purl.org/dc/terms/bibliographicCitation"
     },
     "Person" : {
       "@type" : "@id",
       "@id" : "http://d-nb.info/standards/elementset/gnd#Person",
+      "@container" : "@set"
+    },
+    "startDate" : {
+      "@id" : "http://schema.org/startDate",
       "@container" : "@set"
     },
     "doi" : {
@@ -197,8 +200,7 @@
       "@container" : "@set"
     },
     "zdbId" : {
-      "@id" : "http://purl.org/lobid/lv#zdbID",
-      "@container" : "@set"
+      "@id" : "http://purl.org/lobid/lv#zdbID"
     },
     "hasSupplement" : {
       "@type" : "@id",
@@ -265,8 +267,7 @@
       "@container" : "@set"
     },
     "callNumber" : {
-      "@id" : "http://purl.org/ontology/daia/label",
-      "@container" : "@set"
+      "@id" : "http://purl.org/ontology/daia/label"
     },
     "placeOfPublication" : {
       "@id" : "http://rdaregistry.info/Elements/u/P60163",
@@ -283,8 +284,7 @@
     },
     "describedby" : {
       "@type" : "@id",
-      "@id" : "http://www.w3.org/2007/05/powder-s#describedby",
-      "@container" : "@set"
+      "@id" : "http://www.w3.org/2007/05/powder-s#describedby"
     },
     "Family" : {
       "@type" : "@id",
@@ -300,19 +300,17 @@
       "@id" : "http://purl.org/lobid/lv#Bibliography",
       "@container" : "@set"
     },
-    "standard" : {
-      "@id" : "http://purl.org/ontology/bibo/Standard",
+    "publishedBy" : {
+      "@id" : "http://schema.org/publishedBy",
       "@container" : "@set"
     },
     "isFormatOf" : {
       "@type" : "@id",
-      "@id" : "http://purl.org/dc/terms/isFormatOf",
-      "@container" : "@set"
+      "@id" : "http://purl.org/dc/terms/isFormatOf"
     },
     "agent" : {
       "@type" : "@id",
-      "@id" : "http://bibframe.org/vocab/agent",
-      "@container" : "@set"
+      "@id" : "http://bibframe.org/vocab/agent"
     },
     "inDataset" : {
       "@type" : "@id",
@@ -349,7 +347,7 @@
       "@container" : "@set"
     },
     "Creator" : {
-      "@type" : "id",
+      "@type" : "@id",
       "@id" : "http://id.loc.gov/vocabulary/relators/cre",
       "@container" : "@set"
     },
@@ -378,6 +376,10 @@
       "@id" : "http://purl.org/lobid/lv#nameOfContributingCorporateBody",
       "@container" : "@set"
     },
+    "publication" : {
+      "@id" : "http://schema.org/publication",
+      "@container" : "@set"
+    },
     "containedIn" : {
       "@type" : "@id",
       "@id" : "http://purl.org/lobid/lv#containedIn",
@@ -390,8 +392,7 @@
     },
     "isPrimaryTopicOf" : {
       "@type" : "@id",
-      "@id" : "http://xmlns.com/foaf/0.1/isPrimaryTopicOf",
-      "@container" : "@set"
+      "@id" : "http://xmlns.com/foaf/0.1/isPrimaryTopicOf"
     },
     "contributorLabel" : {
       "@id" : "http://purl.org/lobid/lv#contributorLabel",
@@ -420,8 +421,7 @@
       "@container" : "@set"
     },
     "statementOfResponsibility" : {
-      "@id" : "http://rdaregistry.info/Elements/u/P60339",
-      "@container" : "@set"
+      "@id" : "http://rdaregistry.info/Elements/u/P60339"
     },
     "Thesis" : {
       "@type" : "@id",
@@ -485,13 +485,16 @@
       "@container" : "@set"
     },
     "isSupplementTo" : {
-      "@id" : "http://rdaregistry.info/Elements/u/P60259",
-      "@container" : "@set"
+      "@id" : "http://rdaregistry.info/Elements/u/P60259"
     },
     "hasVersion" : {
       "@type" : "@id",
       "@id" : "http://purl.org/dc/terms/hasVersion",
       "@container" : "@set"
+    },
+    "secondaryPublication" : {
+      "@type" : "@id",
+      "@id" : "http://purl.org/lobid/lv#secondaryPublication"
     },
     "isbn" : {
       "@id" : "http://purl.org/ontology/bibo/isbn",
@@ -509,14 +512,17 @@
       "@id" : "http://purl.org/ontology/bibo/edition",
       "@container" : "@set"
     },
+    "Standard" : {
+      "@id" : "http://purl.org/ontology/bibo/Standard",
+      "@container" : "@set"
+    },
     "medium" : {
       "@type" : "@id",
       "@id" : "http://purl.org/dc/terms/medium",
       "@container" : "@set"
     },
     "title" : {
-      "@id" : "http://purl.org/dc/terms/title",
-      "@container" : "@set"
+      "@id" : "http://purl.org/dc/terms/title"
     },
     "seeAlso" : {
       "@type" : "@id",
@@ -546,8 +552,7 @@
     },
     "owner" : {
       "@type" : "@id",
-      "@id" : "http://purl.org/vocab/frbr/core#owner",
-      "@container" : "@set"
+      "@id" : "http://purl.org/vocab/frbr/core#owner"
     },
     "OfficialPublication" : {
       "@type" : "@id",
@@ -596,13 +601,12 @@
       "@id" : "http://purl.org/ontology/bibo/Series",
       "@container" : "@set"
     },
-    "isDescribedBy" : {
-      "@type" : "@id",
-      "@id" : "http://www.openarchives.org/ore/terms/isDescribedBy",
+    "location" : {
+      "@id" : "http://schema.org/location",
       "@container" : "@set"
     },
     "Contribution" : {
-      "@type" : "id",
+      "@type" : "@id",
       "@id" : "http://bibframe.org/vocab/Contribution",
       "@container" : "@set"
     },
