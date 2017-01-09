@@ -83,8 +83,8 @@ map.addLayer(layer);
             owners = (itemJson\\"owner");
             if(!owners.isEmpty);
             signatures = (itemJson\\"callNumber");
-            signature = if(signatures.isEmpty) "" else signatures(0).as[String]) {
-
+            if(!signatures.isEmpty);
+            signature = if(signatures(0).asOpt[String].isDefined){signatures(0).as[String]}else{signatures(0).as[Seq[JsValue]].head.as[String]}){
               var sig = '<tr><td>Signatur:</td>'+
                 '<td>@if(!signature.isEmpty){<a href="@item">@signature</a>}else{&lt;Keine Angabe&gt;}</td></tr>';
               tableDetails += sig;
