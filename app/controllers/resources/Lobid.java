@@ -129,20 +129,6 @@ public class Lobid {
 		return requestHolder;
 	}
 
-	static WSRequestHolder topicRequest(final String q, int from, int size) {
-		WSRequestHolder requestHolder = // @formatter:off
-				WS.url(Application.CONFIG.getString("resources.api"))
-						.setHeader("Accept", "application/json")
-						.setQueryParameter("format", "short.subjectChain")
-						.setQueryParameter("from", "" + from)
-						.setQueryParameter("size", "" + size)
-						.setQueryParameter("subject", q);
-		//@formatter:on
-		Logger.info("Request URL {}, query params {} ", requestHolder.getUrl(),
-				requestHolder.getQueryParameters());
-		return requestHolder;
-	}
-
 	/**
 	 * @param set The data set, uses the config file set if empty
 	 * @return The full number of hits, ie. the size of the given data set
