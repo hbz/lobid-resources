@@ -25,6 +25,7 @@ import java.util.stream.StreamSupport;
 import org.apache.commons.lang3.tuple.Pair;
 import org.elasticsearch.common.geo.GeoPoint;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableMap;
@@ -200,7 +201,8 @@ public class Application extends Controller {
 		return Promise.promise(() -> {
 			JsonNode itemJson = Index.getItem(id);
 			return responseFormat.equals("html")
-					? ok(details_item.render(id, itemJson.toString())) : ok(itemJson);
+					? ok(details_item.render(id, itemJson.toString()))
+					: prettyJsonOk(itemJson);
 		});
 	}
 
@@ -278,10 +280,15 @@ public class Application extends Controller {
 			}
 			JsonNode responseJson =
 					showDetails ? Lobid.getResource(id) : Json.parse(s);
-			String prettyJson = new ObjectMapper().writerWithDefaultPrettyPrinter()
-					.writeValueAsString(responseJson);
-			return ok(prettyJson).as("application/json; charset=utf-8");
+			return prettyJsonOk(responseJson);
 		});
+	}
+
+	private static Status prettyJsonOk(JsonNode responseJson)
+			throws JsonProcessingException {
+		return ok(new ObjectMapper().writerWithDefaultPrettyPrinter()
+				.writeValueAsString(responseJson))
+						.as("application/json; charset=utf-8");
 	}
 
 	private static void addCorsHeader() {
