@@ -89,6 +89,19 @@ public class Etikett {
 	 */
 	public String container = null;
 
+	public static enum Container {
+		LIST("@list"), SET("@set"), STRING("@string");
+		private final String name;
+
+		Container(final String name) {
+			this.name = name;
+		}
+
+		public String getName() {
+			return name;
+		}
+	}
+
 	/**
 	 * A weigth for ordering
 	 */

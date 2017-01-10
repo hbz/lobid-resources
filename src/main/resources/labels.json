@@ -11,6 +11,52 @@
         "multilangLabel": { }
     },
     {
+        "uri": "http://schema.org/publication",
+        "label": "Veröffentlichung",
+        "name": "publication",
+        "referenceType": "String",
+        "container": "@set",
+        "multilangLabel": { }
+    },
+    {
+        "uri": "http://schema.org/location",
+        "label": "Ort",
+        "name": "location",
+        "referenceType": "String",
+        "container": "@set",
+        "multilangLabel": { }
+    },
+    {
+        "uri": "http://schema.org/publishedBy",
+        "label": "Veröffentlicht von",
+        "name": "publishedBy",
+        "referenceType": "String",
+        "container": "@set",
+        "multilangLabel": { }
+    },
+    {
+        "uri": "http://schema.org/startDate",
+        "label": "Beginn",
+        "name": "startDate",
+        "referenceType": "String",
+        "container": "@set",
+        "multilangLabel": { }
+    },
+    {
+        "uri": "http://schema.org/endDate",
+        "label": "Ende",
+        "name": "endDate",
+        "referenceType": "String",
+        "container": "@set",
+        "multilangLabel": { }
+    },
+    {
+        "uri": "http://schema.org/Publication",
+        "name": "Publication",
+        "referenceType": "@id",
+        "multilangLabel": { }
+    },
+    {
         "uri": "http://www.w3.org/2000/01/rdf-schema#label",
         "label": "Bezeichnung",
         "name": "label",
@@ -96,7 +142,6 @@
         "label": "Beilage zu",
         "name": "isSupplementTo",
         "referenceType": "String",
-        "container": "@set",
         "multilangLabel": { }
     },
     {
@@ -5678,7 +5723,6 @@
         "label": "Agent",
         "name": "agent",
         "referenceType": "@id",
-        "container": "@set",
         "multilangLabel": { }
     },
     {
@@ -5819,7 +5863,6 @@
         "label": "Umfang",
         "name": "extent",
         "referenceType": "String",
-        "container": "@set",
         "multilangLabel": { }
     },
     {
@@ -5834,7 +5877,7 @@
         "uri": "http://id.loc.gov/vocabulary/relators/cre",
         "label": "Autor/in",
         "name": "Creator",
-        "referenceType": "id",
+        "referenceType": "@id",
         "container": "@set",
         "multilangLabel": { }
     },
@@ -5842,14 +5885,6 @@
         "uri": "http://purl.org/dc/elements/1.1/creator",
         "label": "Autorenname",
         "name": "creatorName",
-        "referenceType": "String",
-        "container": "@set",
-        "multilangLabel": { }
-    },
-    {
-        "uri": "http://purl.org/dc/elements/1.1/isPartOf",
-        "label": "Bestandteil von",
-        "name": "isPartOfName",
         "referenceType": "String",
         "container": "@set",
         "multilangLabel": { }
@@ -5891,7 +5926,6 @@
         "label": "Veröffentlichungs Details",
         "name": "bibliographicCitation",
         "referenceType": "String",
-        "container": "@set",
         "multilangLabel": { }
     },
     {
@@ -5947,7 +5981,6 @@
         "label": "Format von",
         "name": "isFormatOf",
         "referenceType": "@id",
-        "container": "@set",
         "multilangLabel": { }
     },
     {
@@ -5963,7 +5996,6 @@
         "label": "Erschienen",
         "name": "issued",
         "referenceType": "String",
-        "container": "@set",
         "multilangLabel": { }
     },
     {
@@ -6029,7 +6061,12 @@
         "label": "Titel",
         "name": "title",
         "referenceType": "String",
-        "container": "@set",
+        "multilangLabel": { }
+    },
+    {
+        "uri": "http://purl.org/lobid/lv#secondaryPublication",
+        "name": "secondaryPublication",
+        "referenceType": "@id",
         "multilangLabel": { }
     },
     {
@@ -6059,10 +6096,9 @@
     {
         "uri": "http://purl.org/lobid/lv#hbzID",
         "label": "Katalog Id",
-        "icon": "fa fa-bars",
         "name": "hbzId",
+        "icon": "fa fa-bars",
         "referenceType": "String",
-        "container": "@set",
         "multilangLabel": { }
     },
     {
@@ -6199,7 +6235,6 @@
         "label": "ZdbID",
         "name": "zdbId",
         "referenceType": "String",
-        "container": "@set",
         "multilangLabel": { }
     },
     {
@@ -11718,7 +11753,7 @@
         "uri": "http://bibframe.org/vocab/Contribution",
         "label": "Mitwirkung",
         "name": "Contribution",
-        "referenceType": "id",
+        "referenceType": "@id",
         "container": "@set",
         "multilangLabel": { }
     },
@@ -11803,7 +11838,6 @@
         "label": "Signatur",
         "name": "callNumber",
         "referenceType": "String",
-        "container": "@set",
         "multilangLabel": { }
     },
     {
@@ -11843,7 +11877,6 @@
         "label": "Exemplar",
         "name": "exemplarOf",
         "referenceType": "@id",
-        "container": "@set",
         "multilangLabel": { }
     },
     {
@@ -11851,7 +11884,6 @@
         "label": "Besitz",
         "name": "owner",
         "referenceType": "@id",
-        "container": "@set",
         "multilangLabel": { }
     },
     {
@@ -11908,7 +11940,6 @@
         "label": "Verantwortlich",
         "name": "statementOfResponsibility",
         "referenceType": "String",
-        "container": "@set",
         "multilangLabel": { }
     },
     {
@@ -11988,7 +12019,6 @@
         "label": "Beschrieben durch",
         "name": "describedby",
         "referenceType": "@id",
-        "container": "@set",
         "multilangLabel": { }
     },
     {
@@ -11996,7 +12026,6 @@
         "label": "Weitere Informationen",
         "name": "isPrimaryTopicOf",
         "referenceType": "@id",
-        "container": "@set",
         "multilangLabel": { }
     },
     {
@@ -12263,7 +12292,7 @@
         "multilangLabel": { }
     },
     {
-        "uri": "http://rdvocab.info/termList/RDAproductionMethod/1010",
+        "uri": "http://rdvocab.info/termList/RDAproductionMethod/#1010",
         "name": "Print",
         "label": "Print",
         "referenceType": "@id",
@@ -18738,14 +18767,21 @@
          "de":"Nahrung"
       }
    },
-   {  
+   {
       "uri":"http://purl.org/lobid/nwbib",
       "referenceType":"http://www.w3.org/2004/02/skos/core#ConceptScheme",
-      "multilangLabel":{  
+      "multilangLabel":{
 
       }
    },
-   {  
+   {
+      "uri":"http://lobid.org/resources/NWBib",
+      "label":"Nordrhein-Westfälische Bibliographie",
+      "referenceType":"@id",
+      "multilangLabel":{
+      }
+   },
+   {
       "uri":"http://purl.org/lobid/nwbib#s406040",
       "label":"Öffentliche Meinung",
       "multilangLabel":{  
@@ -20088,5 +20124,81 @@
       "multilangLabel":{  
          "de":"Parlamentsgeschichte"
       }
+   },
+   {
+      "uri":"http://id.loc.gov/vocabulary/iso639-2/deu",
+      "label":"Deutsch"
+   },
+   {
+      "uri":"http://id.loc.gov/vocabulary/iso639-2/eng",
+      "label":"Englisch"
+   },
+   {
+      "uri":"http://id.loc.gov/vocabulary/iso639-2/fra",
+      "label":"Französisch"
+   },
+   {
+      "uri":"http://id.loc.gov/vocabulary/iso639-2/rus",
+      "label":"Russisch"
+   },
+   {
+      "uri":"http://id.loc.gov/vocabulary/iso639-2/nld",
+      "label":"Niederländisch"
+   },
+   {
+      "uri":"http://id.loc.gov/vocabulary/iso639-2/lat",
+      "label":"Latein"
+   },
+   {
+      "uri":"http://id.loc.gov/vocabulary/iso639-2/pol",
+      "label":"Polnisch"
+   },
+   {
+      "uri":"http://id.loc.gov/vocabulary/iso639-2/ita",
+      "label":"Italienisch"
+   },
+   {
+      "uri":"http://193.30.112.134/F",
+      "label":"hbz Verbundkatalog"
+   },
+   {
+      "uri":"http://hub.culturegraph.org/resource",
+      "label":"Culturegraph Ressource"
+   },
+   {
+      "uri":"http://lobid.org/resources",
+      "label":"lobid Ressource"
+   },
+   {
+      "uri":"http://purl.org/ontology/bibo/Map",
+      "label":"Karte"
+   },
+   {
+      "uri":"http://lobid.org/items",
+      "label":"lobid Bestandsressource"
+   },
+   {
+      "uri":"http://lobid.org/organisation",
+      "label":"lobid Organisation"
+   },
+   {
+      "uri":"http://rdvocab.info/termList/RDACarrierType/1010",
+      "label":"Datenträger"
+   },
+   {
+      "uri":"http://rdvocab.info/termList/RDACarrierType/1018",
+      "label":"Online-Ressource"
+   },
+   {
+      "uri":"http://purl.org/ontology/bibo/AudioDocument",
+      "label":"Audio-Dokument"
+   },
+   {
+      "uri":"http://purl.org/ontology/mo/Vinyl",
+      "label":"Schallplatte"
+   },
+   {
+      "uri":"http://digitool.hbz-nrw.de:1801/webclient",
+      "label":"Digitool"
    }
 ]

@@ -1,4 +1,4 @@
-/*Copyright (c) 2015 "hbz"
+/*Copyright (c) 2015,2016 "hbz"
 
 This file is part of lobid-rdf-to-json.
 
@@ -33,6 +33,7 @@ import com.fasterxml.jackson.databind.type.TypeBase;
 
 /**
  * @author Jan Schnasse
+ * @author Pascal Christoph (dr0i)
  *
  */
 public class EtikettMaker implements EtikettMakerInterface {
@@ -88,7 +89,13 @@ public class EtikettMaker implements EtikettMakerInterface {
 	}
 
 	/*
-	 * (non-Javadoc)
+	 * Trying to get a label as sidecar for URIs. First fallback: If an etikett is
+	 * configured but "label" is missing the "name" will be taken. Second
+	 * fallback: the domainname (and a possible path) will be extracted from the
+	 * URI. This domainname is lookuped in the labels. Last fallback: If there is
+	 * nothing found, the domainname itself will be the label.
+	 * 
+	 * In the end there will be a label for every URI.
 	 * 
 	 * @see de.hbz.lobid.helper.EtikettMakerInterface#getEtikett(java.lang.String)
 	 */
@@ -97,12 +104,31 @@ public class EtikettMaker implements EtikettMakerInterface {
 		Etikett e = pMap.get(uri);
 		if (e == null) {
 			e = new Etikett(uri);
-			e.name = getJsonName(uri);
+			try {
+				e.name = getJsonName(uri);
+			} catch (Exception ex) { // fallback domainname
+				logger.debug(
+						"no json name available. Please provide a labels.json file with proper 'name' entry. Using domainname as fallback.");
+				String[] uriparts = uri.split("/");
+				String domainname =
+						uriparts[0] + "/" + uriparts[1] + "/" + uriparts[2] + "/";
+				e = pMap
+						.get(uriparts.length > 3 ? domainname + uriparts[3] : domainname);
+				if (e == null) { // domainname may have a label
+					e = new Etikett(uri);
+					try {
+						e.name = getJsonName(uri);
+					} catch (Exception exc) {
+						e.label =
+								uriparts.length > 3 ? domainname + uriparts[3] : domainname;
+					}
+				}
+			}
 		}
-		if (e.label == null || e.label.isEmpty()) { // fallback
+		if (e.label == null || e.label.isEmpty()) { // fallback name
 			e.label = e.name;
 		}
-		logger.debug("Find etikett for " + uri + " : " + e.name);
+		logger.debug("Etikett for " + uri + " : " + e.label);
 		return e;
 	}
 
@@ -188,12 +214,7 @@ public class EtikettMaker implements EtikettMakerInterface {
 	 *         '#' or last index of '/'
 	 */
 	String getJsonName(String predicate) {
-		Etikett e = pMap.get(predicate);
-		if (e == null) {
-			throw new RuntimeException(predicate
-					+ ": no json name available. Please provide a labels.json file with proper 'name' entry.");
-		}
-		return e.name;
+		return pMap.get(predicate).name;
 	}
 
 	@Override
