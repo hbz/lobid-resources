@@ -6,7 +6,7 @@
 @import tags._
 @import controllers.resources.Lobid
 @import controllers.resources.Application
-@import play.api.libs.json.Json
+@import play.api.libs.json._
 
 @if(docJson.isEmpty){
   @main("lobid-resources - Bestandsdetails") {
@@ -20,20 +20,20 @@
   @defining(Json.parse(docJson)) { doc =>
     @main("lobid-resources - Bestandsdetails") {
       <div class="row">
-      @defining(Lobid.items("{\"exemplar\":[{\"id\":\"" + ((doc \ "id").as[String]) + "\"}]}")) { items =>
-        <div class="col-md-8">
+      @for(
+          exemplarOf <- (doc \ "exemplarOf").asOpt[JsValue];
+          exemplarOfs = exemplarOf.asOpt[Seq[JsValue]].getOrElse(Seq(exemplarOf));
+          resourceId <- (exemplarOfs(0) \ "id").asOpt[String];
+          itemId <- (doc \ "id").asOpt[String];
+          items = Lobid.items("{\"exemplar\":[{\"id\":\"" + itemId + "\"}]}")) {
+        <div class="col-md-12" id="holdings">
           <dl>
-            <dt>Bestandsdetails:
-            <small style='float:right'>
+           <dt>
+           Bestand zu <i><a href="@resourceId">@Lobid.resourceLabel(resourceId)</a></i> in:
+           <small style='float:right'>
             <a title="JSON-LD-Indexdaten anzeigen" href='@resources.routes.Application.item(id, "json")'><span class="glyphicon glyphicon-cog"></span></a>
             </small>
             </dt>
-            <dd><code>@docJson</code></dd> @*TODO: equivalent of @tags.result_doc(Json.parse(docJson))*@
-          </dl>
-        </div>
-        <div class="col-md-4" id="holdings">
-          <dl>
-           <dt>Bestand in:</dt>
            <dd>@tags.items_map(items)</dd>
           </dl>
         </div>
