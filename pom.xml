@@ -23,12 +23,22 @@
 			<artifactId>jena-arq</artifactId>
 			<version>2.10.1</version>
 		</dependency>
-		<dependency>
-			<groupId>com.github.jsonld-java</groupId>
-			<artifactId>jsonld-java-jena</artifactId>
-			<version>0.3</version>
-		</dependency>
-		<dependency>
+ <dependency>
+      <groupId>com.github.jsonld-java</groupId>
+      <artifactId>jsonld-java</artifactId>
+      <version>0.3</version>
+    </dependency>
+ <dependency>
+      <groupId>com.github.jsonld-java</groupId>
+      <artifactId>jsonld-java-sesame</artifactId>
+      <version>0.3</version>
+    </dependency>
+   <dependency>
+     <groupId>com.github.jsonld-java</groupId>
+     <artifactId>jsonld-java-jena</artifactId>
+     <version>0.3</version>
+   </dependency>
+ <dependency>
 			<groupId>com.google.gdata</groupId>
 			<artifactId>core</artifactId>
 			<version>1.47.1</version>
@@ -125,6 +135,10 @@
 					<version>2.12</version>
 					<configuration>
 						<test>*Test</test>
+						<environmentVariables>
+						<generateTestData>${generateTestData}</generateTestData>
+						</environmentVariables>
+						<test>UnitTests</test>
 					</configuration>
 				</plugin>
 			</plugins>
