@@ -209,9 +209,13 @@ public class Application extends Controller {
 			JsonNode itemJson = Index.getItem(
 					new PercentEscaper(PercentEscaper.SAFEPATHCHARS_URLENCODER, false)
 							.escape(id));
-			return responseFormat.equals("html")
-					? ok(details_item.render(id, itemJson.toString()))
+			if (responseFormat.equals("html")) {
+				return itemJson == null ? notFound(details_item.render(id, ""))
+						: ok(details_item.render(id, itemJson.toString()));
+			}
+			return itemJson == null ? notFound("Not found: " + id)
 					: prettyJsonOk(itemJson);
+
 		});
 	}
 

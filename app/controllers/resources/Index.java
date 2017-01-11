@@ -1,7 +1,6 @@
 package controllers.resources;
 
 import java.net.InetAddress;
-import java.net.UnknownHostException;
 
 import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.client.Client;
@@ -46,9 +45,9 @@ public class Index {
 			GetResponse response = client.prepareGet(INDEX_NAME, TYPE_ITEM, id)
 					.setParent(id.split(":")[0]).execute().actionGet();
 			return Json.parse(response.getSourceAsString());
-		} catch (UnknownHostException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
-			return Json.newObject();
+			return null;
 		}
 	}
 
