@@ -29,6 +29,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableMap;
+import com.google.gdata.util.common.base.PercentEscaper;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 
@@ -199,7 +200,15 @@ public class Application extends Controller {
 	public static Promise<Result> item(final String id, String format) {
 		String responseFormat = Accept.formatFor(format, request().acceptedTypes());
 		return Promise.promise(() -> {
-			JsonNode itemJson = Index.getItem(id);
+			/* @formatter:off
+			 * Escape item IDs for index lookup the same way as during transformation, see:
+			 * https://github.com/hbz/lobid-resources/blob/master/src/main/resources/morph-hbz01-to-lobid.xml#L781
+			 * https://github.com/hbz/lobid-resources/blob/master/src/main/java/org/lobid/resources/UrlEscaper.java#L31
+			 * @formatter:on
+			 */
+			JsonNode itemJson = Index.getItem(
+					new PercentEscaper(PercentEscaper.SAFEPATHCHARS_URLENCODER, false)
+							.escape(id));
 			return responseFormat.equals("html")
 					? ok(details_item.render(id, itemJson.toString()))
 					: prettyJsonOk(itemJson);

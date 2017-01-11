@@ -14,7 +14,8 @@ libraryDependencies ++= Seq(
   "org.mockito" % "mockito-core" % "1.9.5",
   "com.github.jsonld-java" % "jsonld-java" % "0.3",
   "com.github.jsonld-java" % "jsonld-java-jena" % "0.3",
-  "org.apache.jena" % "jena-arq" % "2.9.3"
+  "org.apache.jena" % "jena-arq" % "2.9.3",
+  "com.google.gdata" % "core" % "1.47.1" exclude ("com.google.guava", "guava")
 )
 
 lazy val root = (project in file(".")).enablePlugins(PlayJava)
