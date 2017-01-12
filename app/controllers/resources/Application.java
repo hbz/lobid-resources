@@ -25,9 +25,11 @@ import java.util.stream.StreamSupport;
 import org.apache.commons.lang3.tuple.Pair;
 import org.elasticsearch.common.geo.GeoPoint;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableMap;
+import com.google.gdata.util.common.base.PercentEscaper;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 
@@ -45,6 +47,7 @@ import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
 import views.html.details;
+import views.html.details_item;
 import views.html.index;
 import views.html.search;
 import views.html.stars;
@@ -189,6 +192,33 @@ public class Application extends Controller {
 				"", "", "", "", format);
 	}
 
+	/**
+	 * @param id The item ID.
+	 * @param format The response format ('html' or 'json')
+	 * @return The details for the item with the given ID.
+	 */
+	public static Promise<Result> item(final String id, String format) {
+		String responseFormat = Accept.formatFor(format, request().acceptedTypes());
+		return Promise.promise(() -> {
+			/* @formatter:off
+			 * Escape item IDs for index lookup the same way as during transformation, see:
+			 * https://github.com/hbz/lobid-resources/blob/master/src/main/resources/morph-hbz01-to-lobid.xml#L781
+			 * https://github.com/hbz/lobid-resources/blob/master/src/main/java/org/lobid/resources/UrlEscaper.java#L31
+			 * @formatter:on
+			 */
+			JsonNode itemJson = Index.getItem(
+					new PercentEscaper(PercentEscaper.SAFEPATHCHARS_URLENCODER, false)
+							.escape(id));
+			if (responseFormat.equals("html")) {
+				return itemJson == null ? notFound(details_item.render(id, ""))
+						: ok(details_item.render(id, itemJson.toString()));
+			}
+			return itemJson == null ? notFound("Not found: " + id)
+					: prettyJsonOk(itemJson);
+
+		});
+	}
+
 	private static Promise<Result> okPromise(final String q, final String person,
 			final String name, final String subject, final String id,
 			final String publisher, final String issued, final String medium,
@@ -252,7 +282,8 @@ public class Application extends Controller {
 				if (showDetails) {
 					JsonNode nodes = Json.parse(s);
 					if (nodes.isArray() && nodes.size() == 2) { // first: metadata
-						return ok(details.render(CONFIG, nodes.get(1).toString(), id));
+						return ok(
+								details.render(CONFIG, Lobid.getResource(id).toString(), id));
 					}
 					Logger.warn("No suitable data to show details for: {}", nodes);
 				}
@@ -262,10 +293,15 @@ public class Application extends Controller {
 			}
 			JsonNode responseJson =
 					showDetails ? Lobid.getResource(id) : Json.parse(s);
-			String prettyJson = new ObjectMapper().writerWithDefaultPrettyPrinter()
-					.writeValueAsString(responseJson);
-			return ok(prettyJson).as("application/json; charset=utf-8");
+			return prettyJsonOk(responseJson);
 		});
+	}
+
+	private static Status prettyJsonOk(JsonNode responseJson)
+			throws JsonProcessingException {
+		return ok(new ObjectMapper().writerWithDefaultPrettyPrinter()
+				.writeValueAsString(responseJson))
+						.as("application/json; charset=utf-8");
 	}
 
 	private static void addCorsHeader() {

@@ -79,12 +79,12 @@ map.addLayer(layer);
           else
             allTableDetails += '<tr><th style="width: 30%"/><th style="width: 70%"/></tr>' + tableDetails;
         @for((item,i) <- items(key).zipWithIndex;
-            itemJson = Json.parse(Lobid.cachedJsonCall(item.replaceAll("https?://lobid\\.org/item", Application.CONFIG.getString("item.api"))+"?format=full").toString);
+            itemJson = Json.parse(controllers.resources.Index.getItem(item.replaceAll("https?://lobid\\.org/items/|#!", "")).toString);
             owners = (itemJson\\"owner");
             if(!owners.isEmpty);
             signatures = (itemJson\\"callNumber");
-            signature = if(signatures.isEmpty) "" else signatures(0).as[String]) {
-
+            if(!signatures.isEmpty);
+            signature = if(signatures(0).asOpt[String].isDefined){signatures(0).as[String]}else{signatures(0).as[Seq[JsValue]].head.as[String]}){
               var sig = '<tr><td>Signatur:</td>'+
                 '<td>@if(!signature.isEmpty){<a href="@item">@signature</a>}else{&lt;Keine Angabe&gt;}</td></tr>';
               tableDetails += sig;
