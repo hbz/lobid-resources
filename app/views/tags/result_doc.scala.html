@@ -72,7 +72,12 @@
   @for((role, cs) <- (contributions.groupBy((c: JsValue) => ((if((c \ "role").asOpt[Seq[JsValue]].isDefined){(c \ "role")(0)}else{(c \ "role")}) \ "label").asOpt[String].getOrElse("--")))) {
     <tr>
       <td>@role</td>
-      <td>@for(c <- cs; agent = (c \ "agent"); label = ((if(agent.asOpt[Seq[JsValue]].isDefined){agent(0)}else{agent}) \ "label").asOpt[String].getOrElse("--"); id = (agent \ "id").asOpt[String].getOrElse("--")) {
+      <td>@for(
+              c <- cs;
+              agent = (c \ "agent");
+              agents = agent.asOpt[Seq[JsValue]].getOrElse(Seq(agent));
+              label = (agents(0) \ "label").asOpt[String].getOrElse("--");
+              id = (agents(0) \ "id").asOpt[String].getOrElse("--")) {
         <a title="Nach weiteren Titeln von '@label' suchen" href='@resources.routes.Application.search(person=id)'/>@label</a>
         <a title="Linked-Data-Quelle zu '@label' abrufen" href='@id'><span class='glyphicon glyphicon-link'></span></a>
         @if(c!=cs.last){ | }
