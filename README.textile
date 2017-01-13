@@ -25,13 +25,6 @@ Build the hbz metafacture-core fork:
 * @mvn clean install -DskipTests@
 * @cd ..@
 
-Build lobid-rdf-to-json:
-
-* @git clone https://github.com/hbz/lobid-rdf-to-json.git@
-* @cd lobid-resources@
-* @mvn clean install -DskipTests@
-* @cd ..@
-
 Build lobid-resources:
 
 * @git clone https://github.com/hbz/lobid-resources.git@
@@ -57,7 +50,7 @@ The result shows the data which also "Hbz01MabXml2ElasticsearchLobidTest.java":h
 h1. Developer instructions
 
 This section explains how to make a successful build after changing the transformations,
-how to include the JSON-LD dependency and updating its context, and how to index the data.
+how to update the JSON-LD and its context, and how to index the data.
 
 h2. Changing transformations
 
@@ -74,6 +67,10 @@ In this case you should add an Aleph-MabXml resource to "hbz01XmlClobs.tar.bz2":
 * *BUILD FAILURE*: the newly generated data isn't equal to the test resources.
 This is a good thing because you wanted the change.
 
+Doing mvn test @-DgenerateTestData=true@ the test data is generated and also updated in the filesystem.
+These new data will now act as the template for sucessful tests. So, if you would rebuild now, the build will pass successfully.
+You just must approve the new outcome by committing it.
+
 Now you must approve the new outcome.
 Let's see what has changed:
 
@@ -87,25 +84,17 @@ If you are satisfied with the changes, go ahead and add and commit them:
 
 @git add src/test/resources/jsonld/; git commit@
 
-Do this respectivly for all other test files (Ntriples).
+Do this respectivly for all other test files (Ntriples ...).
 If you've added and commited everything, check again if all is ok:
 
 @mvn clean install@
 
 This should result in *BUILD SUCCESS*. Push your changes. You're done :)
 
-h2. Internal hbz Instructions
+h2. Propagate the context.json to lobod-resources-web 
 
-This is for hbz committers only. It's assumed that you reside in the internal hbz net.
-
-h3. Dependency to lobid-rdf-to-json
-
-The dependency is configured using the pom.xml. As version you use a commit hash of
-the "lobid-rdf-to-json repo":https://github.com/hbz/lobid-rdf-to-json. Via "jitpack":https://jitpack.io/ a maven artefact is built on demand and installed to the local maven repo.
-
-Also, if you changed the JSON-LD context, don't forget to upload that onto the webserver:
-
-* @scp ./src/main/resources/context.json lobid@@@emphytos:/usr/local/lobid/src/lobid.org/download/contextTmp.json@
+Don't forget to copy the @context.json@ to the repository with the web-application.
+Add, commit and push it there.
 
 h3. Elasticsearch index
 
