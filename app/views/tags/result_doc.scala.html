@@ -16,20 +16,6 @@
   </table>
 }
 
-@gndEntities = @{ 
-	Option(Seq(
-	    "label",
-	    "altLabel",
-	    "preferredName",
-	    "preferredNameForTheWork",
-	    "preferredNameForTheFamily",
-	    "preferredNameForThePerson",
-	    "preferredNameForTheCorporateBody",
-	    "preferredNameForTheSubjectHeading",
-	    "preferredNameForTheConferenceOrEvent",
-	    "preferredNameForThePlaceOrGeographicName"))
-}
-
 @nestedIds(property: String) = @{
 	(doc\\property).last.asOpt[Seq[JsValue]].getOrElse(Seq()).map((v: JsValue) => (v \ "id").asOpt[String].getOrElse("No id in " + v))
 }
@@ -86,6 +72,20 @@
   }
 }
 
+@subjects(subjects: Seq[JsValue]) = {
+  <tr>
+    <td>Schlagwörter</td>
+    <td>
+    @for(subject <- subjects;
+         label <- (subject \ "label").asOpt[String];
+         id = (subject \ "id").asOpt[String]) {
+      <a title="Nach weiteren Titeln zu '@label' suchen" href='@resources.routes.Application.search(subject=id.getOrElse(label))'/>@label</a>
+      @if(id.isDefined && !id.get.contains("dewey.info")){<a title="Linked-Data-Quelle zu '@label' abrufen" href='@id'><span class='glyphicon glyphicon-link'></span></a>}
+      @if(subject!=subjects.last){ | }
+    }</td>
+  </tr>
+}
+
 @table(){
   @result_field("Titel", "title", doc, TableRow.VALUES)
   @result_field("Titelzusatz", "otherTitleInformation", doc, TableRow.VALUES)
@@ -113,7 +113,7 @@
    @subordinated("@graph.http://purl.org/lobid/lv#containedIn.@id", id, "Enthält", ("Beitrag", "Beiträge"))
   }
 
-  @result_field("Schlagwörter", "subject", doc, TableRow.VALUES, valueLabel = gndEntities, param="subject")
+  @subjects((doc \ "subject").asOpt[Seq[JsValue]].getOrElse(Seq()))
 
   @result_field("Inhaltsangabe", "description", doc, TableRow.LINKS)
   @result_field("Inhaltsverzeichnis", "tableOfContents", doc, TableRow.LINKS)
