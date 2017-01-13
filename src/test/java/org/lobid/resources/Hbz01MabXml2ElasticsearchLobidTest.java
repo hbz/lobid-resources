@@ -1,4 +1,4 @@
-/* Copyright 2015  hbz, Pascal Christoph.
+/* Copyright 2015,2016,2017  hbz, Pascal Christoph.
  * Licensed under the Eclipse Public License 1.0 */
 package org.lobid.resources;
 
@@ -59,21 +59,15 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 	private static final String LOBID_RESOURCES =
 			"test-resources-" + LocalDateTime.now().toLocalDate() + "-"
 					+ LocalDateTime.now().toLocalTime();
-	private static final String N_TRIPLE = "N-TRIPLE";
-	static final String PATH_TO_TEST = "src/test/resources/";
-	static final String TEST_FILENAME_ALEPHXMLCLOBS =
-			PATH_TO_TEST + "hbz01XmlClobs.tar.bz2";
-	static final String TEST_FILENAME_NTRIPLES = PATH_TO_TEST + "hbz01.es.nt";
-	static final String DIRECTORY_TO_TEST_JSON_FILES = PATH_TO_TEST + "jsonld/";
+	static final String TEST_FILENAME_NTRIPLES =
+			Hbz01MabXmlEtlNtriples2Filesystem.PATH_TO_TEST + "hbz01.es.nt";
+	static final String DIRECTORY_TO_TEST_JSON_FILES =
+			Hbz01MabXmlEtlNtriples2Filesystem.PATH_TO_TEST + "jsonld/";
 
 	static boolean testFailed = false;
-	static final String NTRIPLES_DEBUG_FILES = "src/test/resources/nt";
 
 	@BeforeClass
 	public static void setup() {
-		if (LOG.isDebugEnabled()) {
-			etlDebug();
-		}
 		node = nodeBuilder().local(true)
 				.settings(Settings.builder().put("index.number_of_replicas", "0")
 						.put("index.number_of_shards", "1").put("path.home", "tmp/")
@@ -96,7 +90,7 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 		client = cl;
 		final FileOpener opener = new FileOpener();
 		final Triples2RdfModel triple2model = new Triples2RdfModel();
-		triple2model.setInput(N_TRIPLE);
+		triple2model.setInput(Hbz01MabXmlEtlNtriples2Filesystem.N_TRIPLE);
 		opener.setReceiver(new TarReader()).setReceiver(new XmlDecoder())
 				.setReceiver(new AlephMabXmlHandler())
 				.setReceiver(
@@ -104,31 +98,10 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 				.setReceiver(new PipeEncodeTriples()).setReceiver(triple2model)
 				.setReceiver(etikettJsonLdConverter)
 				.setReceiver(getElasticsearchIndexer(cl));
-		opener.process(new File(TEST_FILENAME_ALEPHXMLCLOBS).getAbsolutePath());
+		opener.process(
+				new File(Hbz01MabXmlEtlNtriples2Filesystem.TEST_FILENAME_ALEPHXMLCLOBS)
+						.getAbsolutePath());
 		opener.closeStream();
-	}
-
-	/**
-	 * Writes ntriples to the filesystem. Helper for debugging purposes.
-	 */
-	public static String etlDebug() {
-		final FileOpener opener = new FileOpener();
-		final Triples2RdfModel triple2model = new Triples2RdfModel();
-		RdfModelFileWriter rdfModelFileWriter = new RdfModelFileWriter();
-		rdfModelFileWriter.setProperty("http://purl.org/lobid/lv#hbzID");
-		rdfModelFileWriter.setStartIndex(2);
-		rdfModelFileWriter.setEndIndex(7);
-		rdfModelFileWriter.setTarget(NTRIPLES_DEBUG_FILES);
-		triple2model.setInput(N_TRIPLE);
-		opener.setReceiver(new TarReader()).setReceiver(new XmlDecoder())
-				.setReceiver(new AlephMabXmlHandler())
-				.setReceiver(
-						new Metamorph("src/main/resources/morph-hbz01-to-lobid.xml"))
-				.setReceiver(new PipeEncodeTriples()).setReceiver(triple2model)
-				.setReceiver(rdfModelFileWriter);
-		opener.process(new File(TEST_FILENAME_ALEPHXMLCLOBS).getAbsolutePath());
-		opener.closeStream();
-		return "Created files, see " + NTRIPLES_DEBUG_FILES;
 	}
 
 	@SuppressWarnings("static-method")
@@ -261,7 +234,7 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 				final JenaTripleCallback callback = new JenaTripleCallback();
 				final Model model = (Model) JsonLdProcessor.toRDF(jsonObject, callback);
 				final StringWriter writer = new StringWriter();
-				model.write(writer, N_TRIPLE);
+				model.write(writer, Hbz01MabXmlEtlNtriples2Filesystem.N_TRIPLE);
 				return writer.toString();
 			} catch (IOException | JsonLdError e) {
 				e.printStackTrace();

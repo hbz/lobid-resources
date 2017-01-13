@@ -9,25 +9,10 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<target.jdk>1.8</target.jdk>
 		<junit.version>4.8.2</junit.version>
+		<logback.version>0.9.30</logback.version>
+		<slf4j.version>1.6.2</slf4j.version>
 	</properties>
-	<repositories>
-		<repository>
-			<id>jitpack.io</id>
-			<url>https://jitpack.io</url>
-		</repository>
-	</repositories>
 	<dependencies>
-		<dependency>
-			<groupId>com.github.hbz</groupId>
-				<artifactId>lobid-rdf-to-json</artifactId>
-				<version>69e05f5a3f3c1733c0d2c9983da99d74c938ca46</version>
-				<exclusions>
-					<exclusion>
-						<groupId>ch.qos.logback</groupId>
-						<artifactId>logback-classic</artifactId>
-					</exclusion>
-				</exclusions>
-		</dependency>
 		<dependency>
 			<groupId>org.culturegraph</groupId>
 			<artifactId>metafacture-core</artifactId>
@@ -38,12 +23,22 @@
 			<artifactId>jena-arq</artifactId>
 			<version>2.10.1</version>
 		</dependency>
-		<dependency>
-			<groupId>com.github.jsonld-java</groupId>
-			<artifactId>jsonld-java-jena</artifactId>
-			<version>0.3</version>
-		</dependency>
-		<dependency>
+ <dependency>
+      <groupId>com.github.jsonld-java</groupId>
+      <artifactId>jsonld-java</artifactId>
+      <version>0.3</version>
+    </dependency>
+ <dependency>
+      <groupId>com.github.jsonld-java</groupId>
+      <artifactId>jsonld-java-sesame</artifactId>
+      <version>0.3</version>
+    </dependency>
+   <dependency>
+     <groupId>com.github.jsonld-java</groupId>
+     <artifactId>jsonld-java-jena</artifactId>
+     <version>0.3</version>
+   </dependency>
+ <dependency>
 			<groupId>com.google.gdata</groupId>
 			<artifactId>core</artifactId>
 			<version>1.47.1</version>
@@ -69,15 +64,56 @@
 			<artifactId>commons-validator</artifactId>
 			<version>1.5.1</version>
 		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.12</version>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-core</artifactId>
+			<version>2.6.3</version>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml</groupId>
+			<artifactId>jackson-module-json-org</artifactId>
+			<version>0.9.1</version>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>2.6.3</version>
+		</dependency>
+		<dependency>
+			<groupId>org.openrdf.sesame</groupId>
+			<artifactId>sesame-runtime</artifactId>
+			<version>2.7.9</version>
+			<type>pom</type>
+		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-core</artifactId>
+			<version>${logback.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<version>${logback.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>${slf4j.version}</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<pluginManagement>
 			<plugins>
 				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-compiler-plugin</artifactId>
-					<version>2.3.2</version>
-					<configuration>
+         <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-compiler-plugin</artifactId>
+              <version>3.3</version>
+              <configuration>
 						<source>${target.jdk}</source>
 						<target>${target.jdk}</target>
 						<showWarnings>true</showWarnings>
@@ -98,6 +134,10 @@
 					<version>2.12</version>
 					<configuration>
 						<test>*Test</test>
+						<environmentVariables>
+						<generateTestData>${generateTestData}</generateTestData>
+						</environmentVariables>
+						<test>UnitTests</test>
 					</configuration>
 				</plugin>
 			</plugins>
