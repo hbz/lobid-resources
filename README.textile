@@ -67,7 +67,7 @@ In this case you should add an Aleph-MabXml resource to "hbz01XmlClobs.tar.bz2":
 * *BUILD FAILURE*: the newly generated data isn't equal to the test resources.
 This is a good thing because you wanted the change.
 
-Doing mvn test @-DgenerateTestData=true@ the test data is generated and also updated in the filesystem.
+Doing @mvn test -DgenerateTestData=true@ the test data is generated and also updated in the filesystem.
 These new data will now act as the template for sucessful tests. So, if you would rebuild now, the build will pass successfully.
 You just must approve the new outcome by committing it.
 
@@ -91,9 +91,12 @@ If you've added and commited everything, check again if all is ok:
 
 This should result in *BUILD SUCCESS*. Push your changes. You're done :)
 
-h2. Propagate the context.json to lobod-resources-web 
+h2. Propagate the context.json to lobid-resources-web
 
-Don't forget to copy the @context.json@ to the repository with the web-application.
+Deploy (i.e. "copy") the @context.json@ to staging server:
+_scp ./src/main/resources/context.json   lobid@emphytos:/usr/local/lobid/src/lobid.org/download/context-staging.json_
+
+To deploy to production, copy the @context.json@ to the repository with the web-application.
 Add, commit and push it there.
 
 h3. Elasticsearch index
