@@ -15,7 +15,7 @@ import org.junit.runners.Suite.SuiteClasses;
 @RunWith(Suite.class)
 @SuiteClasses({ ApplicationTest.class, InternalIntegrationTest.class,
 		ExternalIntegrationTest.class, InputStringsTest.class, AcceptUnitTest.class,
-		AcceptIntegrationTest.class })
+		AcceptIntegrationTest.class, IndexIntegrationTest.class })
 public class AllTests {
 	//
 }

@@ -206,9 +206,10 @@ public class Application extends Controller {
 			 * https://github.com/hbz/lobid-resources/blob/master/src/main/java/org/lobid/resources/UrlEscaper.java#L31
 			 * @formatter:on
 			 */
-			JsonNode itemJson = Index.getItem(
+			JsonNode itemJson = new Index().getItem(
 					new PercentEscaper(PercentEscaper.SAFEPATHCHARS_URLENCODER, false)
-							.escape(id));
+							.escape(id))
+					.getResult();
 			if (responseFormat.equals("html")) {
 				return itemJson == null ? notFound(details_item.render(id, ""))
 						: ok(details_item.render(id, itemJson.toString()));
