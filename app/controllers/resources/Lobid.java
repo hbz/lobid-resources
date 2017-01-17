@@ -45,16 +45,6 @@ public class Lobid {
 	public static final int API_TIMEOUT = 50000;
 
 	/**
-	 * @param id The resource ID
-	 * @return The resource JSON content
-	 */
-	public static JsonNode getResource(String id) {
-		String url = String
-				.format(Application.CONFIG.getString("lobid2.indexUrlFormat"), id);
-		return cachedJsonCall(url);
-	}
-
-	/**
 	 * @param url The URL to call
 	 * @return A JSON response from the URL, or an empty JSON object
 	 */

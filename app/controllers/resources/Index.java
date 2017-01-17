@@ -70,6 +70,20 @@ public class Index {
 	}
 
 	/**
+	 * @param id The resource ID to use for an Elasticsearch GET request
+	 * @return This index, get results via {@link #getResult()} and
+	 *         {@link #getTotal()}
+	 */
+	public Index getResource(String id) {
+		return withClient((Client client) -> {
+			String sourceAsString = client.prepareGet(INDEX_NAME, TYPE_RESOURCE, id)
+					.execute().actionGet().getSourceAsString();
+			result = Json.parse(sourceAsString);
+			total = 1;
+		});
+	}
+
+	/**
 	 * @return The index result for the query (the hits) or GET (single result)
 	 */
 	public JsonNode getResult() {

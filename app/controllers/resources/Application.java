@@ -283,8 +283,8 @@ public class Application extends Controller {
 				if (showDetails) {
 					JsonNode nodes = Json.parse(s);
 					if (nodes.isArray() && nodes.size() == 2) { // first: metadata
-						return ok(
-								details.render(CONFIG, Lobid.getResource(id).toString(), id));
+						return ok(details.render(CONFIG,
+								new Index().getResource(id).getResult().toString(), id));
 					}
 					Logger.warn("No suitable data to show details for: {}", nodes);
 				}
@@ -293,7 +293,7 @@ public class Application extends Controller {
 						word, corporation, raw));
 			}
 			JsonNode responseJson =
-					showDetails ? Lobid.getResource(id) : Json.parse(s);
+					showDetails ? new Index().getResource(id).getResult() : Json.parse(s);
 			return prettyJsonOk(responseJson);
 		});
 	}
