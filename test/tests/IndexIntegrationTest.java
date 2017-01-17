@@ -31,7 +31,25 @@ public class IndexIntegrationTest {
 		// @formatter:off
 		return Arrays.asList(new Object[][] {
 			{ "title:der", /*->*/ 2760192 },
-			{ "title:Typee", /*->*/ 41 }
+			{ "title:Typee", /*->*/ 41 },
+			{ "contribution.agent.label:Melville", /*->*/ 1858 },
+			{ "contribution.agent.id:\"http\\://d-nb.info/gnd/118580604\"", /*->*/ 651 },
+			{ "contribution.agent.id:118580604", /*->*/ 651 },
+			{ "title:Typee AND contribution.agent.label:Melville", /*->*/ 37 },
+			{ "title:Typee OR title:Moby", /*->*/ 372 },
+			{ "(title:Typee OR title:Moby) AND contribution.agent.id:\"http\\://d-nb.info/gnd/118580604\"", /*->*/ 234 },
+			{ "(title:Typee OR title:Moby) AND NOT contribution.agent.id:\"http\\://d-nb.info/gnd/118580604\"", /*->*/ 372 - 234 },
+			{ "subject.label:Bahnhof", /*->*/ 633 },
+			{ "subject.id:\"http\\://d-nb.info/gnd/1113670827\"", /*->*/ 1 },
+			{ "subject.id:1113670827", /*->*/ 0 },
+			{ "subject.type:PlaceOrGeographicName", /*->*/ 1893785 },
+			{ "publication.location:Tokyo", /*->*/ 35580 },
+			{ "publication.startDate:1992", /*->*/ 274537 },
+			{ "publication.location:Tokyo AND publication.startDate:1992", /*->*/ 659 },
+			{ "publication.location:Tokyo AND publication.startDate:1992-1997", /*->*/ 1164 },
+			{ "collectedBy.id:\"http\\://lobid.org/resources/NWBib\"", /*->*/ 385575 },
+			{ "collectedBy.id:NWBib", /*->*/ 0 },
+			{ "publication.publishedBy:Springer", /*->*/ 287339 }
 		});
 	} // @formatter:on
 
