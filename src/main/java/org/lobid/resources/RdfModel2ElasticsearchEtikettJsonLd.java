@@ -4,6 +4,7 @@ package org.lobid.resources;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -59,8 +60,8 @@ public final class RdfModel2ElasticsearchEtikettJsonLd
 	private final Pattern INTERNAL_ID_PATTERN =
 			Pattern.compile("^" + LOBID_DOMAIN + ".*");
 	private static EtikettMakerInterface etikettMaker =
-			new EtikettMaker(Thread.currentThread().getContextClassLoader()
-					.getResourceAsStream("labels.json"));
+			new EtikettMaker(new File(Thread.currentThread().getContextClassLoader()
+					.getResource("labels").getFile()));
 
 	/**
 	 * Provides default constructor. Every json ld document gets the whole json ld

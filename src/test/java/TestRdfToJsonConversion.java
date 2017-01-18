@@ -55,8 +55,8 @@ import de.hbz.lobid.helper.JsonConverter;
 public class TestRdfToJsonConversion {
 	private static boolean generateTestData = false;
 	private EtikettMakerInterface etikettMaker =
-			new EtikettMaker(Thread.currentThread().getContextClassLoader()
-					.getResourceAsStream("labels.json"));
+			new EtikettMaker(new File(Thread.currentThread().getContextClassLoader()
+					.getResource("labels").getFile()));
 	private EtikettMakerInterface etikettMakerApi_1 =
 			new EtikettMaker(Thread.currentThread().getContextClassLoader()
 					.getResourceAsStream("labelsApi_1.json"));
