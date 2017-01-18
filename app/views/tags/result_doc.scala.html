@@ -17,15 +17,15 @@
 }
 
 @nestedIds(property: String) = @{
-	(doc\\property).last.asOpt[Seq[JsValue]].getOrElse(Seq()).map((v: JsValue) => (v \ "id").asOpt[String].getOrElse("No id in " + v))
+	(doc\property).asOpt[Seq[JsValue]].getOrElse(Seq()).map((v: JsValue) => (v \ "id").asOpt[String].getOrElse("No id in " + v))
 }
 
 @singleOrMultiString(property: String) = @{
-	(doc\\property).last.asOpt[Seq[String]].getOrElse(Seq((doc\\property).last.asOpt[String].getOrElse("--")))
+	(doc\property).asOpt[Seq[String]].getOrElse(Seq((doc\property).asOpt[String].getOrElse("--")))
 }
 
 @with_icon(label: String, property: String, fullField: String) = {
-  @if(!(doc\\property).isEmpty) {
+  @if((doc\property).asOpt[JsValue].isDefined) {
     @defining(if(property != "type") { nestedIds(property) } else { singleOrMultiString(property) }){ v =>
       <tr><td>@label</td><td><span class="@Lobid.facetIcon(v,fullField)"></span> @Lobid.facetLabel(v,fullField,"")</td></tr>
     }
