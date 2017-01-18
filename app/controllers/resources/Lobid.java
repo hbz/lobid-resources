@@ -73,15 +73,13 @@ public class Lobid {
 			final String name, final String subject, final String id,
 			final String publisher, final String issued, final String medium,
 			final int from, final int size, String owner, String t, String sort,
-			String set, String location, String word, String corporation,
-			String raw) {
+			String set, String word, String corporation, String raw) {
 		WSRequestHolder requestHolder = WS
 				.url(Application.CONFIG.getString("resources.api"))
 				.setHeader("Accept", "application/json")
 				.setQueryParameter("format", "full")
 				.setQueryParameter("from", from + "")
-				.setQueryParameter("size", size + "").setQueryParameter("sort", sort)
-				.setQueryParameter("location", locationPolygon(location));
+				.setQueryParameter("size", size + "").setQueryParameter("sort", sort);
 		if (!set.isEmpty() && !set.equals("*"))
 			requestHolder = requestHolder.setQueryParameter("set", set);
 		else {
@@ -132,7 +130,7 @@ public class Lobid {
 			});
 		}
 		WSRequestHolder requestHolder = request("", "", "", "", "", "", "", "", 0,
-				0, "", "", "", set, "", "", "", "");
+				0, "", "", "", set, "", "", "");
 		return requestHolder.get().map((WSResponse response) -> {
 			Long total = getTotalResults(response.asJson());
 			Cache.set(cacheKey, total, Application.ONE_HOUR);
@@ -267,7 +265,6 @@ public class Lobid {
 	 * @param t Type filter for resource queries
 	 * @param field The facet field (the field to facet over)
 	 * @param set The set
-	 * @param location A polygon describing the subject area of the resources
 	 * @param word A word, a concept from the hbz union catalog
 	 * @param corporation A corporation associated with the resource
 	 * @param raw A query string that's directly (unprocessed) passed to ES
@@ -276,7 +273,7 @@ public class Lobid {
 	public static Promise<JsonNode> getFacets(String q, String person,
 			String name, String subject, String id, String publisher, String issued,
 			String medium, String owner, String field, String t, String set,
-			String location, String word, String corporation, String raw) {
+			String word, String corporation, String raw) {
 		WSRequestHolder request =
 				WS.url(Application.CONFIG.getString("resources.api") + "/facets")
 						.setHeader("Accept", "application/json")
@@ -291,7 +288,6 @@ public class Lobid {
 										: Application.MAX_FACETS + "")
 						.setQueryParameter("corporation", corporation)//
 						.setQueryParameter("medium", medium)//
-						.setQueryParameter("location", locationPolygon(location))//
 						.setQueryParameter("issued", issued)//
 						.setQueryParameter("t", t)//
 						.setQueryParameter("set", set);
@@ -476,10 +472,6 @@ public class Lobid {
 
 	private static boolean isGnd(String term) {
 		return term.startsWith("http://d-nb.info/gnd");
-	}
-
-	private static String locationPolygon(String location) {
-		return location.contains("|") ? location.split("\\|")[1] : location;
 	}
 
 	/**

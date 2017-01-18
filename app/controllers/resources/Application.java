@@ -23,7 +23,6 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import org.apache.commons.lang3.tuple.Pair;
-import org.elasticsearch.common.geo.GeoPoint;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -77,9 +76,6 @@ public class Application extends Controller {
 	/** The internal ES field for the coverage facet. */
 	public static final String COVERAGE_FIELD =
 			"@graph.http://purl.org/dc/elements/1.1/coverage.@value.raw";
-	/** The internal ES field for subject locations. */
-	public static final String SUBJECT_LOCATION_FIELD =
-			"@graph.http://purl.org/lobid/lv#subjectLocation.@value";
 
 	/** The internal ES field for subjects. */
 	public static final String SUBJECT_FIELD =
@@ -145,7 +141,6 @@ public class Application extends Controller {
 	 * @param sort Sorting order for results ("newest", "oldest", "" -> relevance)
 	 * @param details If true, render details
 	 * @param set The set
-	 * @param location A polygon describing the subject area of the resources
 	 * @param word A word, a concept from the hbz union catalog
 	 * @param corporation A corporation associated with the resource
 	 * @param raw A query string that's directly (unprocessed) passed to ES
@@ -156,8 +151,8 @@ public class Application extends Controller {
 			final String name, final String subject, final String id,
 			final String publisher, final String issued, final String medium,
 			final int from, final int size, final String owner, String t, String sort,
-			boolean details, String set, String location, String word,
-			String corporation, String raw, String format) {
+			boolean details, String set, String word, String corporation, String raw,
+			String format) {
 		addCorsHeader();
 		String uuid = session("uuid");
 		if (uuid == null)
@@ -173,11 +168,11 @@ public class Application extends Controller {
 		if (form.hasErrors())
 			return Promise.promise(() -> badRequest(search.render(null, q, person,
 					name, subject, id, publisher, issued, medium, from, size, 0L, owner,
-					t, sort, set, location, word, corporation, raw)));
+					t, sort, set, word, corporation, raw)));
 		String query = form.data().get("q");
 		Promise<Result> result = okPromise(query != null ? query : q, person, name,
 				subject, id, publisher, issued, medium, from, size, owner, t, sort,
-				details, set, location, word, corporation, raw, format);
+				details, set, word, corporation, raw, format);
 		cacheOnRedeem(cacheId, result, ONE_HOUR);
 		return result;
 	}
@@ -189,7 +184,7 @@ public class Application extends Controller {
 	 */
 	public static Promise<Result> show(final String id, String format) {
 		return search("", "", "", "", id, "", "", "", 0, 1, "", "", "", true, "",
-				"", "", "", "", format);
+				"", "", "", format);
 	}
 
 	/**
@@ -224,17 +219,17 @@ public class Application extends Controller {
 			final String name, final String subject, final String id,
 			final String publisher, final String issued, final String medium,
 			final int from, final int size, final String owner, String t, String sort,
-			boolean details, String set, String location, String word,
-			String corporation, String raw, String format) {
-		final Promise<Result> result = call(q, person, name, subject, id, publisher,
-				issued, medium, from, size, owner, t, sort, details, set, location,
-				word, corporation, raw, format);
+			boolean details, String set, String word, String corporation, String raw,
+			String format) {
+		final Promise<Result> result =
+				call(q, person, name, subject, id, publisher, issued, medium, from,
+						size, owner, t, sort, details, set, word, corporation, raw, format);
 		return result.recover((Throwable throwable) -> {
 			Logger.error("Could not call Lobid", throwable);
 			flashError();
 			return internalServerError(search.render("[]", q, person, name, subject,
 					id, publisher, issued, medium, from, size, 0L, owner, t, sort, set,
-					location, word, corporation, raw));
+					word, corporation, raw));
 		});
 	}
 
@@ -258,11 +253,11 @@ public class Application extends Controller {
 			final String name, final String subject, final String id,
 			final String publisher, final String issued, final String medium,
 			final int from, final int size, String owner, String t, String sort,
-			boolean showDetails, String set, String location, String word,
-			String corporation, String raw, String format) {
+			boolean showDetails, String set, String word, String corporation,
+			String raw, String format) {
 		final WSRequestHolder requestHolder =
 				Lobid.request(q, person, name, subject, id, publisher, issued, medium,
-						from, size, owner, t, sort, set, location, word, corporation, raw);
+						from, size, owner, t, sort, set, word, corporation, raw);
 		return requestHolder.get().map((WSResponse response) -> {
 			Long hits = 0L;
 			String s = "{}";
@@ -289,8 +284,8 @@ public class Application extends Controller {
 					Logger.warn("No suitable data to show details for: {}", nodes);
 				}
 				return ok(search.render(s, q, person, name, subject, id, publisher,
-						issued, medium, from, size, hits, owner, t, sort, set, location,
-						word, corporation, raw));
+						issued, medium, from, size, hits, owner, t, sort, set, word,
+						corporation, raw));
 			}
 			JsonNode responseJson =
 					showDetails ? new Index().getResource(id).getResult() : Json.parse(s);
@@ -331,7 +326,6 @@ public class Application extends Controller {
 	 * @param field The facet field (the field to facet over)
 	 * @param sort Sorting order for results ("newest", "oldest", "" -> relevance)
 	 * @param set The set
-	 * @param location A polygon describing the subject area of the resources
 	 * @param word A word, a concept from the hbz union catalog
 	 * @param corporation A corporation associated with the resource
 	 * @param raw A query string that's directly (unprocessed) passed to ES
@@ -340,13 +334,12 @@ public class Application extends Controller {
 	public static Promise<Result> facets(String q, String person, String name,
 			String subject, String id, String publisher, String issued, String medium,
 			int from, int size, String owner, String t, String field, String sort,
-			String set, String location, String word, String corporation,
-			String raw) {
+			String set, String word, String corporation, String raw) {
 
 		String key =
-				String.format("facets.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s",
-						field, q, person, name, id, publisher, set, location, word,
-						corporation, raw, subject, issued, medium, owner, t);
+				String.format("facets.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s",
+						field, q, person, name, id, publisher, set, word, corporation, raw,
+						subject, issued, medium, owner, t);
 		Result cachedResult = (Result) Cache.get(key);
 		if (cachedResult != null) {
 			return Promise.promise(() -> cachedResult);
@@ -394,10 +387,6 @@ public class Application extends Controller {
 			JsonNode json = pair.getLeft();
 			String fullLabel = pair.getRight();
 			String term = json.get("term").asText();
-			if (field.equals(SUBJECT_LOCATION_FIELD)) {
-				GeoPoint point = new GeoPoint(term);
-				term = String.format("%s,%s", point.getLat(), point.getLon());
-			}
 			String mediumQuery = !field.equals(MEDIUM_FIELD) //
 					? medium : queryParam(medium, term);
 			String typeQuery = !field.equals(TYPE_FIELD) //
@@ -406,8 +395,6 @@ public class Application extends Controller {
 					? owner : withoutAndOperator(queryParam(owner, term));
 			String rawQuery = !field.equals(COVERAGE_FIELD) //
 					? raw : rawQueryParam(raw, term);
-			String locationQuery = !field.equals(SUBJECT_LOCATION_FIELD) //
-					? location : term;
 			String subjectQuery = !field.equals(SUBJECT_FIELD) //
 					? subject : queryParam(subject, term);
 			String issuedQuery = !field.equals(ISSUED_FIELD) //
@@ -417,8 +404,8 @@ public class Application extends Controller {
 
 			String routeUrl = routes.Application.search(q, person, name, subjectQuery,
 					id, publisher, issuedQuery, mediumQuery, from, size, ownerQuery,
-					typeQuery, sort(sort, subjectQuery), false, set, locationQuery, word,
-					corporation, rawQuery, null).url();
+					typeQuery, sort(sort, subjectQuery), false, set, word, corporation,
+					rawQuery, null).url();
 
 			String result = String.format(
 					"<li " + (current ? "class=\"active\"" : "")
@@ -431,33 +418,32 @@ public class Application extends Controller {
 			return result;
 		};
 
-		Promise<Result> promise = Lobid
-				.getFacets(q, person, name, subject, id, publisher, issued, medium,
-						owner, field, t, set, location, word, corporation, raw)
-				.map(json -> {
-					Stream<JsonNode> stream =
-							StreamSupport.stream(Spliterators.spliteratorUnknownSize(
-									json.findValue("entries").elements(), 0), false);
-					if (field.equals(ITEM_FIELD)) {
-						stream = preprocess(stream);
-					}
-					String labelKey = String.format(
-							"facets-labels.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s",
-							field, raw, q, person, name, id, publisher, set, word,
-							corporation, subject, issued, medium, raw,
-							field.equals(ITEM_FIELD) ? "" : owner, t, location);
+		Promise<Result> promise =
+				Lobid.getFacets(q, person, name, subject, id, publisher, issued, medium,
+						owner, field, t, set, word, corporation, raw).map(json -> {
+							Stream<JsonNode> stream =
+									StreamSupport.stream(Spliterators.spliteratorUnknownSize(
+											json.findValue("entries").elements(), 0), false);
+							if (field.equals(ITEM_FIELD)) {
+								stream = preprocess(stream);
+							}
+							String labelKey = String.format(
+									"facets-labels.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s",
+									field, raw, q, person, name, id, publisher, set, word,
+									corporation, subject, issued, medium, raw,
+									field.equals(ITEM_FIELD) ? "" : owner, t);
 
-					@SuppressWarnings("unchecked")
-					List<Pair<JsonNode, String>> labelledFacets =
-							(List<Pair<JsonNode, String>>) Cache.get(labelKey);
-					if (labelledFacets == null) {
-						labelledFacets = stream.map(toLabel).filter(labelled)
-								.collect(Collectors.toList());
-						Cache.set(labelKey, labelledFacets, ONE_DAY);
-					}
-					return labelledFacets.stream().sorted(sorter).map(toHtml)
-							.collect(Collectors.toList());
-				}).map(lis -> ok(String.join("\n", lis)));
+							@SuppressWarnings("unchecked")
+							List<Pair<JsonNode, String>> labelledFacets =
+									(List<Pair<JsonNode, String>>) Cache.get(labelKey);
+							if (labelledFacets == null) {
+								labelledFacets = stream.map(toLabel).filter(labelled)
+										.collect(Collectors.toList());
+								Cache.set(labelKey, labelledFacets, ONE_DAY);
+							}
+							return labelledFacets.stream().sorted(sorter).map(toHtml)
+									.collect(Collectors.toList());
+						}).map(lis -> ok(String.join("\n", lis)));
 		promise.onRedeem(r -> Cache.set(key, r, ONE_DAY));
 		return promise;
 	}
