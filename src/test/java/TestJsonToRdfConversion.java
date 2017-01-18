@@ -136,7 +136,6 @@ public class TestJsonToRdfConversion {
 		String actualRdfString = null;
 		logger.info("Compare: " + jsonFilename + " " + rdfFilename);
 		actualRdfString = getActual(jsonFilename);
-		debugRun = true;
 		if (debugRun && !new File(rdfFilename).exists())
 			makeFile(actualRdfString, rdfFilename);
 		String expectedRdfString = getExpected(rdfFilename);
@@ -255,7 +254,9 @@ public class TestJsonToRdfConversion {
 	private static void makeFile(String rdf, String fileName) throws IOException {
 		logger.info("Try to create: " + fileName);
 		Path path = new File(fileName).toPath();
-		Files.createDirectory(path.getParent());
+		if (Files.notExists(path.getParent())) {
+			Files.createDirectory(path.getParent());
+		}
 		Files.write(path, rdf.getBytes());
 		logger.info("Created: " + path);
 	}
