@@ -627,7 +627,6 @@
 				<regexp match="(.*)" format=": ${1}"/>
 			</data>
 		</combine>
-		<!-- ####################### "$[ns-bibo]volume -->
 		<combine name="http://purl.org/dc/terms/title" value="${a}">
 			<choose name="a">
 				<data source="@titleRemainder331Superordination2title">
@@ -855,14 +854,8 @@
 		</combine>
 		<data source="@itemId" name="http://purl.org/vocab/frbr/core#exemplar"/>
 		<!-- ####################### -->
-		<!-- ########## volume -->
+		<!-- ########## multi-volume information -->
 		<!-- ####################### -->
-		<!-- 32-[-12].a is not bibo:volume - but what is it? -->
-		<data source="089-[-1].a" name="$[ns-bibo]volume"/>
-		<data source="432-[-12].a" name="$[ns-bibo]volume"/>
-		<data source="090-[-1].a" name="@volume"/>
-		<data source="@volume" name="$[ns-bibo]volume"/>
-		<data source="432-[-12].a" name="$[ns-bibo]volume"/>
 		<data source="001-2.a" name="@idVolume"/>
 		<entity name="http://purl.org/lobid/lv#volumeIn">
 			<data source="@idVolume" name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type">
@@ -1634,10 +1627,6 @@
 				<trim></trim>
 			</data>
 		</entity>
-		<data source="4[56789]1[-ab]1.a" name="$[ns-bibo]volume">
-			<regexp match=".*;(.*)" format="${1}"/>
-			<trim></trim>
-		</data>
 		<combine name="http://purl.org/dc/terms/isPartOf" value="${a}">
 			<data source="@dctIsPartOf" name="a">
 				<sanitizeUrl></sanitizeUrl>
