@@ -49,7 +49,9 @@ public class IndexIntegrationTest {
 			{ "publication.location:Tokyo AND publication.startDate:1992-1997", /*->*/ 1164 },
 			{ "collectedBy.id:\"http\\://lobid.org/resources/NWBib\"", /*->*/ 385632 },
 			{ "collectedBy.id:NWBib", /*->*/ 0 },
-			{ "publication.publishedBy:Springer", /*->*/ 287329 }
+			{ "publication.publishedBy:Springer", /*->*/ 287329 },
+			{ "exemplar.id:\"http\\://lobid.org/items/HT019073978\\:DE-5-225\\:SoP%202410%202016%2F2#\\!\"", /*->*/ 1 },
+			{ "exemplar.id:DE-5-225", /*->*/ 0 }
 		});
 	} // @formatter:on
 

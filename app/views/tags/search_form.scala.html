@@ -2,7 +2,7 @@
 
 @(q: String)
 
-@helper.form(action = controllers.resources.routes.Application.search(q), 'id -> "resources-form") {
+@helper.form(action = controllers.resources.routes.Application.query(q), 'id -> "resources-form") {
     <div class="input-group">
       <input type="text" name="q" id="resourcesQuery" value="@q" class="form-control" autocomplete="off" 
           title='Boolesche Operatoren: AND, OR, AND NOT; Phrasensuche mit ""; Trunkierung mit *'/>

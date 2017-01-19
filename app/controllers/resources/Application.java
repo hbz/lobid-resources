@@ -48,6 +48,7 @@ import play.mvc.Result;
 import views.html.details;
 import views.html.details_item;
 import views.html.index;
+import views.html.query;
 import views.html.search;
 import views.html.stars;
 
@@ -69,6 +70,8 @@ public class Application extends Controller {
 	/** The internal ES field for the medium facet. */
 	public static final String MEDIUM_FIELD =
 			"@graph.http://purl.org/dc/terms/medium.@id";
+	/** The medium field in Lobid data 2.0. */
+	public static final String MEDIUM_FIELD_LOBID2 = "medium";
 	/** The internal ES field for the item/exemplar facet. */
 	public static final String ITEM_FIELD =
 			"@graph.http://purl.org/vocab/frbr/core#exemplar.@id";
@@ -123,6 +126,24 @@ public class Application extends Controller {
 			Logger.error("Could not get current URI", e);
 		}
 		return null;
+	}
+
+	@SuppressWarnings({ "javadoc", "unused" }) // WIP
+	public static Promise<Result> query(final String q, final String person,
+			final String name, final String subject, final String id,
+			final String publisher, final String issued, final String medium,
+			final int from, final int size, final String owner, String t, String sort,
+			boolean details, String set, String word, String corporation, String raw,
+			String format) {
+		return Promise.promise(() -> {
+			Index queryResources = new Index().queryResources(q, from, size, sort);
+			JsonNode result = queryResources.getResult();
+			String f = Accept.formatFor(format, request().acceptedTypes());
+			return f.equals("json") ? ok(result)
+					: ok(query.render(result.toString(), q, "", "", "", "", "", "", "",
+							from, size, queryResources.getTotal(), owner, "", sort, "", "",
+							"", ""));
+		});
 	}
 
 	/**

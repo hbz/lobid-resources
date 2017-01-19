@@ -1,6 +1,9 @@
 package controllers.resources;
 
 import java.net.InetAddress;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.function.Consumer;
 
 import org.elasticsearch.action.search.SearchRequestBuilder;
@@ -10,6 +13,8 @@ import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.search.sort.SortBuilders;
+import org.elasticsearch.search.sort.SortOrder;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -45,11 +50,34 @@ public class Index {
 	 *         {@link #getTotal()}
 	 */
 	public Index queryResources(String q) {
+		return queryResources(q, 0, 10, "");
+	}
+
+	/**
+	 * @param q The string to use for an Elasticsearch queryStringQuery
+	 * @param from The from index for the page
+	 * @param size The page size, starting at from
+	 * @param sort "newest", "oldest", or "" for relevance
+	 * @return This index, get results via {@link #getResult()} and
+	 *         {@link #getTotal()}
+	 */
+	public Index queryResources(String q, int from, int size, String sort) {
 		return withClient((Client client) -> {
 			SearchRequestBuilder requestBuilder = client.prepareSearch(INDEX_NAME)
-					.setTypes(TYPE_RESOURCE).setQuery(QueryBuilders.queryStringQuery(q));
+					.setTypes(TYPE_RESOURCE).setQuery(QueryBuilders.queryStringQuery(q))
+					.setFrom(from).setSize(size);
+			if (!sort.isEmpty()) {
+				requestBuilder.addSort(SortBuilders.fieldSort("publication.startDate")
+						.order(sort.equals("newest") ? SortOrder.DESC : SortOrder.ASC));
+			}
 			SearchResponse response = requestBuilder.execute().actionGet();
-			result = Json.parse(response.toString()).get("hits").get("hits");
+			Iterator<JsonNode> hits =
+					Json.parse(response.toString()).get("hits").get("hits").elements();
+			List<JsonNode> nodes = new ArrayList<>();
+			for (; hits.hasNext();) {
+				nodes.add(hits.next().get("_source"));
+			}
+			result = Json.toJson(nodes);
 			total = response.getHits().getTotalHits();
 		});
 	}
@@ -110,4 +138,5 @@ public class Index {
 			return null;
 		}
 	}
+
 }

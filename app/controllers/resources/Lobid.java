@@ -340,7 +340,8 @@ public class Lobid {
 	private static final Map<String, String> keys =
 			ImmutableMap.of(Application.TYPE_FIELD, "type.labels.lobid1", //
 					Application.TYPE_FIELD_LOBID2, "type.labels.lobid2", //
-					Application.MEDIUM_FIELD, "medium.labels");
+					Application.MEDIUM_FIELD, "medium.labels", //
+					Application.MEDIUM_FIELD_LOBID2, "medium.labels");
 
 	/**
 	 * @param types Some type URIs
