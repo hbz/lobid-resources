@@ -1,3 +1,5 @@
+import java.io.File;
+
 import org.junit.Test;
 
 import de.hbz.lobid.helper.EtikettMaker;
@@ -13,7 +15,7 @@ public class TestGenerateContext {
 
 	@Test
 	public void writeContext() {
-		new EtikettMaker(Thread.currentThread().getContextClassLoader()
-				.getResourceAsStream("labels.json")).writeContext();
+		new EtikettMaker(new File(Thread.currentThread().getContextClassLoader()
+				.getResource("labels").getFile())).writeContext();
 	}
 }

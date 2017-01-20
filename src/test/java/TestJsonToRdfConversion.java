@@ -56,8 +56,8 @@ public class TestJsonToRdfConversion {
 			LoggerFactory.getLogger(TestJsonToRdfConversion.class);
 
 	private static EtikettMakerInterface etikettMaker =
-			new EtikettMaker(Thread.currentThread().getContextClassLoader()
-					.getResourceAsStream("labels.json"));
+			new EtikettMaker(new File(Thread.currentThread().getContextClassLoader()
+					.getResource("labels").getFile()));
 	/**
 	 * If "true" all comparisons will be executed and a failed assertion may be
 	 * given only once at the end. If "false" the test is cancelled even after the

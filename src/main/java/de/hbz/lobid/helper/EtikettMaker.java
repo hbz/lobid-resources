@@ -18,6 +18,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 package de.hbz.lobid.helper;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -74,8 +76,48 @@ public class EtikettMaker implements EtikettMakerInterface {
 	 * @param labelIn input stream to a labels file
 	 */
 	public EtikettMaker(InputStream labelIn) {
-		initMaps(labelIn);
+		this(new InputStream[] { labelIn });
+	}
+
+	/**
+	 * The profile provides a json context and labels
+	 * 
+	 * @param labelInArr input stream array to label(s) file(s)
+	 */
+	public EtikettMaker(InputStream[] labelInArr) {
+		initMaps(labelInArr);
 		initContext();
+	}
+
+	/**
+	 * The file provides a json context and labels. If it's one file this is the
+	 * labels. If fil is a drirectory every file in it will be merged to one
+	 * labels.
+	 * 
+	 * @param labelFile a file to the label(s)
+	 */
+	public EtikettMaker(File labelFile) {
+		this(getInputStreamArray(labelFile));
+	}
+
+	private static InputStream[] getInputStreamArray(File labelFile) {
+		InputStream[] is = null;
+		try {
+			if (labelFile.isDirectory()) {
+				File farr[] = labelFile.listFiles();
+				is = new InputStream[farr.length];
+				for (int i = 0; i < farr.length; i++) {
+					is[i] = new FileInputStream(farr[i]);
+				}
+			} else {
+				try (FileInputStream fis = new FileInputStream(labelFile)) {
+					is = new FileInputStream[] { fis };
+				}
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return is;
 	}
 
 	/*
@@ -136,6 +178,10 @@ public class EtikettMaker implements EtikettMakerInterface {
 		context = createContext();
 	}
 
+	/**
+	 * Generates context.json based on labels.json. Stores into filesystem.
+	 * 
+	 */
 	public void writeContext() {
 		logger.info("Writing context file ...");
 		try {
@@ -147,10 +193,9 @@ public class EtikettMaker implements EtikettMakerInterface {
 		}
 	}
 
-	private void initMaps(InputStream labelIn) {
+	private void initMaps(InputStream[] labelInArr) {
 		try {
-			labels = createLabels(labelIn);
-
+			labels = createLabels(labelInArr);
 			for (Etikett etikett : labels) {
 				pMap.put(etikett.uri, etikett);
 				nMap.put(etikett.name, etikett);
@@ -158,21 +203,21 @@ public class EtikettMaker implements EtikettMakerInterface {
 		} catch (Exception e) {
 			logger.error("", e);
 		}
-
 	}
 
-	private static List<Etikett> createLabels(InputStream labelIn) {
+	private static List<Etikett> createLabels(InputStream[] labelInArr) {
 		logger.info("Create labels....");
+		String msg = "...succeed!";
 		List<Etikett> result = new ArrayList<>();
-
-		result = loadFile(labelIn, new ObjectMapper().getTypeFactory()
-				.constructCollectionType(List.class, Etikett.class));
-
-		if (result == null) {
-			logger.info("...not succeeded!");
-		} else {
-			logger.info("...succeed!");
+		try {
+			for (InputStream is : labelInArr) {
+				result.addAll(loadFile(is, new ObjectMapper().getTypeFactory()
+						.constructCollectionType(List.class, Etikett.class)));
+			}
+		} catch (Exception e) {
+			msg = "...not succeeded!";
 		}
+		logger.info(msg);
 		return result;
 	}
 
