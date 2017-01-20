@@ -1047,11 +1047,11 @@
 			<data source="@relatorNode" name="a"/>
 			<data source="@contributionBnode"/>
 		</combine>
-		<combine name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" value="http://bibframe.org/vocab/Contribution"
+		<combine name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" value="http://id.loc.gov/ontologies/bibframe/Contribution"
 			flushWith="@relatorNode" sameEntity="true">
 			<data source="@contributionBnode"/>
 		</combine>
-		<combine name="http://bibframe.org/vocab/agent" value="${a}" flushWith="@relatorNode">
+		<combine name="http://id.loc.gov/ontologies/bibframe/agent" value="${a}" flushWith="@relatorNode">
 			<data source="@agentId" name="a"/>
 		</combine>
 		<!-- set subject uri of resource anew -->
@@ -1061,7 +1061,7 @@
 			<data source="@agentId"/>
 		</combine>
 		<entity name="~rdf:list" reset="true">
-			<combine name="http://bibframe.org/vocab/contribution" value="${a}" sameEntity="true"
+			<combine name="http://id.loc.gov/ontologies/bibframe/contribution" value="${a}" sameEntity="true"
 				reset="true">
 				<data source="@contributionBnode" name="a"/>
 				<data source="@relatorNode"/>
