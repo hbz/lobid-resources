@@ -799,6 +799,11 @@
 			<data source="@itemId"/>
 			<data source="@sigel2isilMap" name="isil"/>
 		</combine>
+		<combine name="http://id.loc.gov/ontologies/bibframe/note" value="${a}"
+			sameEntity="true">
+			<data source="@itemId"/>
+			<data source="088 ?.b" name="a"/>
+		</combine>
 		<combine name="http://purl.org/ontology/daia/label" value="${signature}"
 			sameEntity="true">
 			<data source="@itemId"/>
@@ -1042,8 +1047,8 @@
 		<combine name="~rdf:subject" value="${a}" flushWith="@relatorNode">
 			<data source="@contributionBnode" name="a"/>
 		</combine>
-		<combine name="http://id.loc.gov/ontologies/bibframe/role" value="${a}" sameEntity="true"
-			flushWith="@relatorNode">
+		<combine name="http://id.loc.gov/ontologies/bibframe/role" value="${a}"
+			sameEntity="true" flushWith="@relatorNode">
 			<data source="@relatorNode" name="a"/>
 			<data source="@contributionBnode"/>
 		</combine>
