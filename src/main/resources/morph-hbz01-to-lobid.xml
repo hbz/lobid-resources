@@ -794,6 +794,11 @@
 			<data source="@itemId"/>
 			<data source="@sigel2isilMap" name="isil"/>
 		</combine>
+		<combine name="http://id.loc.gov/ontologies/bibframe/note" value="${a}"
+			sameEntity="true">
+			<data source="@itemId"/>
+			<data source="088 ?.b" name="a"/>
+		</combine>
 		<combine name="http://purl.org/ontology/daia/label" value="${signature}"
 			sameEntity="true">
 			<data source="@itemId"/>
@@ -1714,7 +1719,7 @@
 		<!-- ####################### -->
 		<!-- ########## note -->
 		<!-- ####################### -->
-		<choose name="http://www.w3.org/2004/02/skos/core#note">
+		<choose name="http://id.loc.gov/ontologies/bibframe/note">
 			<data source="501-1.a">
 				<regexp match="^(http.*)" format="Siehe: ${1}"/>
 			</data>
