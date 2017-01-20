@@ -674,13 +674,9 @@
 			<data source="@publisher" name="http://schema.org/publishedBy"/>
 			<choose name="http://schema.org/startDate">
 				<!-- issue precedence -->
-				<data source="425[abc-p][-1].a|419-1c"/>
-				<data source="425b[-1].a"/>
-				<data source="425c[-1].a"/>
-				<data source="425-[-1].a"/>
-				<data source="425p[-1].a"/>
-				<data source="595-[-12].a"/>
-				<data source="089-[-1].a"/>
+				<data source="425[abc-p][-1].a|419-1c|595-[-12].a|089-[-1].a">
+					<regexp match="(\d{4})" format="${1}"/>
+				</data>
 			</choose>
 			<!-- range of date. Only if 021 not exists but 425c. Take 4 digits. -->
 			<choose name="http://schema.org/endDate">
@@ -1042,8 +1038,8 @@
 		<combine name="~rdf:subject" value="${a}" flushWith="@relatorNode">
 			<data source="@contributionBnode" name="a"/>
 		</combine>
-		<combine name="http://id.loc.gov/ontologies/bibframe/role" value="${a}" sameEntity="true"
-			flushWith="@relatorNode">
+		<combine name="http://id.loc.gov/ontologies/bibframe/role" value="${a}"
+			sameEntity="true" flushWith="@relatorNode">
 			<data source="@relatorNode" name="a"/>
 			<data source="@contributionBnode"/>
 		</combine>
