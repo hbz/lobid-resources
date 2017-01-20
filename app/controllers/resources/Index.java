@@ -2,6 +2,7 @@ package controllers.resources;
 
 import java.net.InetAddress;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.function.Consumer;
@@ -13,6 +14,7 @@ import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.search.aggregations.AggregationBuilders;
 import org.elasticsearch.search.sort.SortBuilders;
 import org.elasticsearch.search.sort.SortOrder;
 
@@ -43,6 +45,7 @@ public class Index {
 
 	private JsonNode result;
 	private long total = 0;
+	private JsonNode aggregations;
 
 	/**
 	 * @param q The string to use for an Elasticsearch queryStringQuery
@@ -70,10 +73,13 @@ public class Index {
 				requestBuilder.addSort(SortBuilders.fieldSort("publication.startDate")
 						.order(sort.equals("newest") ? SortOrder.DESC : SortOrder.ASC));
 			}
+			requestBuilder = withAggregations(requestBuilder, "publication.startDate",
+					"subject.id", "type", "medium.id", "exemplar.id");
 			SearchResponse response = requestBuilder.execute().actionGet();
-			Iterator<JsonNode> hits =
-					Json.parse(response.toString()).get("hits").get("hits").elements();
+			JsonNode jsonNode = Json.parse(response.toString());
+			Iterator<JsonNode> hits = jsonNode.get("hits").get("hits").elements();
 			List<JsonNode> nodes = new ArrayList<>();
+			aggregations = jsonNode.get("aggregations");
 			for (; hits.hasNext();) {
 				nodes.add(hits.next().get("_source"));
 			}
@@ -119,10 +125,26 @@ public class Index {
 	}
 
 	/**
+	 * @return The aggregations for the query
+	 */
+	public JsonNode getAggregations() {
+		return aggregations;
+	}
+
+	/**
 	 * @return The total hits count for the last query or GET
 	 */
 	public long getTotal() {
 		return total;
+	}
+
+	private static SearchRequestBuilder withAggregations(
+			final SearchRequestBuilder searchRequest, String... fields) {
+		Arrays.asList(fields).forEach(field -> {
+			searchRequest.addAggregation(AggregationBuilders.terms(field).field(field)
+					.size(Integer.MAX_VALUE));
+		});
+		return searchRequest;
 	}
 
 	private Index withClient(Consumer<Client> method) {

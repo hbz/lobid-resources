@@ -45,6 +45,7 @@ import play.libs.ws.WSResponse;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
+import play.test.Helpers;
 import views.html.details;
 import views.html.details_item;
 import views.html.index;
@@ -64,30 +65,18 @@ public class Application extends Controller {
 	private static final String STARRED = "starred";
 
 	/** The internal ES field for the type facet. */
-	public static final String TYPE_FIELD = "@graph.@type";
-	/** The type field in Lobid data 2.0. */
-	public static final String TYPE_FIELD_LOBID2 = "type";
+	public static final String TYPE_FIELD = "type";
 	/** The internal ES field for the medium facet. */
-	public static final String MEDIUM_FIELD =
-			"@graph.http://purl.org/dc/terms/medium.@id";
-	/** The medium field in Lobid data 2.0. */
-	public static final String MEDIUM_FIELD_LOBID2 = "medium";
+	public static final String MEDIUM_FIELD = "medium.id";
 	/** The internal ES field for the item/exemplar facet. */
-	public static final String ITEM_FIELD =
-			"@graph.http://purl.org/vocab/frbr/core#exemplar.@id";
-
+	public static final String ITEM_FIELD = "exemplar.id";
 	/** The internal ES field for the coverage facet. */
 	public static final String COVERAGE_FIELD =
 			"@graph.http://purl.org/dc/elements/1.1/coverage.@value.raw";
-
 	/** The internal ES field for subjects. */
-	public static final String SUBJECT_FIELD =
-			"@graph.http://purl.org/dc/terms/subject.@id";
-
+	public static final String SUBJECT_FIELD = "subject.id";
 	/** The internal ES field for issued years. */
-	public static final String ISSUED_FIELD =
-			"@graph.http://purl.org/dc/terms/issued.@value";
-
+	public static final String ISSUED_FIELD = "publication.startDate";
 	/** Access to the resources.conf config file. */
 	public final static Config CONFIG =
 			ConfigFactory.parseFile(new File("conf/resources.conf")).resolve();
@@ -137,12 +126,25 @@ public class Application extends Controller {
 			String format) {
 		return Promise.promise(() -> {
 			Index queryResources = new Index().queryResources(q, from, size, sort);
-			JsonNode result = queryResources.getResult();
 			String f = Accept.formatFor(format, request().acceptedTypes());
+			JsonNode result = queryResources.getResult();
 			return f.equals("json") ? ok(result)
 					: ok(query.render(result.toString(), q, "", "", "", "", "", "", "",
 							from, size, queryResources.getTotal(), owner, "", sort, "", "",
 							"", ""));
+		});
+	}
+
+	@SuppressWarnings({ "javadoc", "unused" }) // WIP
+	public static Promise<Result> aggregations(final String q,
+			final String person, final String name, final String subject,
+			final String id, final String publisher, final String issued,
+			final String medium, final int from, final int size, final String owner,
+			String t, String sort, boolean details, String set, String word,
+			String corporation, String raw, String format) {
+		return Promise.promise(() -> {
+			Index queryResources = new Index().queryResources(q, from, size, sort);
+			return ok(queryResources.getAggregations());
 		});
 	}
 
@@ -369,8 +371,8 @@ public class Application extends Controller {
 		String labelTemplate = "<span class='%s'/>&nbsp;%s (%s)";
 
 		Function<JsonNode, Pair<JsonNode, String>> toLabel = json -> {
-			String term = json.get("term").asText();
-			int count = json.get("count").asInt();
+			String term = json.get("key").asText();
+			int count = json.get("doc_count").asInt();
 			String icon = Lobid.facetIcon(Arrays.asList(term), field);
 			String label = Lobid.facetLabel(Arrays.asList(term), field, "");
 			String fullLabel = String.format(labelTemplate, icon, label, count);
@@ -380,21 +382,21 @@ public class Application extends Controller {
 		Predicate<Pair<JsonNode, String>> labelled = pair -> {
 			JsonNode json = pair.getLeft();
 			String label = pair.getRight();
-			int count = json.get("count").asInt();
-			return (!label.contains("http") || label.contains("nwbib")) && label
+			int count = json.get("doc_count").asInt();
+			return /* (!label.contains("http") || label.contains("nwbib")) && */ label
 					.length() > String.format(labelTemplate, "", "", count).length();
 		};
 
 		Collator collator = Collator.getInstance(Locale.GERMAN);
 		Comparator<Pair<JsonNode, String>> sorter = (p1, p2) -> {
-			String t1 = p1.getLeft().get("term").asText();
-			String t2 = p2.getLeft().get("term").asText();
+			String t1 = p1.getLeft().get("key").asText();
+			String t2 = p2.getLeft().get("key").asText();
 			boolean t1Current = current(subject, medium, owner, t, field, t1, raw);
 			boolean t2Current = current(subject, medium, owner, t, field, t2, raw);
 			if (t1Current == t2Current) {
 				if (!field.equals(ISSUED_FIELD)) {
-					Integer c1 = p1.getLeft().get("count").asInt();
-					Integer c2 = p2.getLeft().get("count").asInt();
+					Integer c1 = p1.getLeft().get("doc_count").asInt();
+					Integer c2 = p2.getLeft().get("doc_count").asInt();
 					return c2.compareTo(c1);
 				}
 				String l1 = p1.getRight().substring(p1.getRight().lastIndexOf('>') + 1);
@@ -407,7 +409,7 @@ public class Application extends Controller {
 		Function<Pair<JsonNode, String>, String> toHtml = pair -> {
 			JsonNode json = pair.getLeft();
 			String fullLabel = pair.getRight();
-			String term = json.get("term").asText();
+			String term = json.get("key").asText();
 			String mediumQuery = !field.equals(MEDIUM_FIELD) //
 					? medium : queryParam(medium, term);
 			String typeQuery = !field.equals(TYPE_FIELD) //
@@ -439,32 +441,33 @@ public class Application extends Controller {
 			return result;
 		};
 
-		Promise<Result> promise =
-				Lobid.getFacets(q, person, name, subject, id, publisher, issued, medium,
-						owner, field, t, set, word, corporation, raw).map(json -> {
-							Stream<JsonNode> stream =
-									StreamSupport.stream(Spliterators.spliteratorUnknownSize(
-											json.findValue("entries").elements(), 0), false);
-							if (field.equals(ITEM_FIELD)) {
-								stream = preprocess(stream);
-							}
-							String labelKey = String.format(
-									"facets-labels.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s",
-									field, raw, q, person, name, id, publisher, set, word,
-									corporation, subject, issued, medium, raw,
-									field.equals(ITEM_FIELD) ? "" : owner, t);
+		Promise<Result> promise = aggregations(q, person, name, subject, id,
+				publisher, issued, medium, from, size, owner, t, sort, false, set, word,
+				corporation, raw, "json").map(result -> {
+					JsonNode json = Json.parse(Helpers.contentAsString(result));
+					Stream<JsonNode> stream =
+							StreamSupport.stream(Spliterators.spliteratorUnknownSize(
+									json.get(field).get("buckets").elements(), 0), false);
+					if (field.equals(ITEM_FIELD)) {
+						stream = preprocess(stream);
+					}
+					String labelKey = String.format(
+							"facets-labels.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s",
+							field, raw, q, person, name, id, publisher, set, word,
+							corporation, subject, issued, medium, raw,
+							field.equals(ITEM_FIELD) ? "" : owner, t);
 
-							@SuppressWarnings("unchecked")
-							List<Pair<JsonNode, String>> labelledFacets =
-									(List<Pair<JsonNode, String>>) Cache.get(labelKey);
-							if (labelledFacets == null) {
-								labelledFacets = stream.map(toLabel).filter(labelled)
-										.collect(Collectors.toList());
-								Cache.set(labelKey, labelledFacets, ONE_DAY);
-							}
-							return labelledFacets.stream().sorted(sorter).map(toHtml)
-									.collect(Collectors.toList());
-						}).map(lis -> ok(String.join("\n", lis)));
+					@SuppressWarnings("unchecked")
+					List<Pair<JsonNode, String>> labelledFacets =
+							(List<Pair<JsonNode, String>>) Cache.get(labelKey);
+					if (labelledFacets == null) {
+						labelledFacets = stream.map(toLabel).filter(labelled)
+								.collect(Collectors.toList());
+						Cache.set(labelKey, labelledFacets, ONE_DAY);
+					}
+					return labelledFacets.stream().sorted(sorter).map(toHtml)
+							.collect(Collectors.toList());
+				}).map(lis -> ok(String.join("\n", lis)));
 		promise.onRedeem(r -> Cache.set(key, r, ONE_DAY));
 		return promise;
 	}
@@ -535,22 +538,22 @@ public class Application extends Controller {
 
 	private static Stream<JsonNode> preprocess(Stream<JsonNode> stream) {
 		String captureItemUriWithoutSignature =
-				"(http://lobid\\.org/item/[^:]*?:[^:]*?:)[^\"]*";
+				"(http://lobid\\.org/items/[^:]*?:[^:]*?:)[^\"]*";
 		List<String> itemUrisWithoutSignatures = stream
-				.map(json -> json.get("term").asText()
+				.map(json -> json.get("key").asText()
 						.replaceAll(captureItemUriWithoutSignature, "$1"))
 				.distinct().collect(Collectors.toList());
 		return count(itemUrisWithoutSignatures).entrySet().stream()
 				.map(entry -> Json.toJson(ImmutableMap.of(//
-						"term",
+						"key",
 						Lobid.toApi1xOrg(Application.CONFIG.getString("orgs.api")) + "/"
-								+ entry.getKey(), //
-						"count", entry.getValue())));
+								+ entry.getKey().toUpperCase(), //
+						"doc_count", entry.getValue())));
 	}
 
 	private static Map<String, Integer> count(List<String> itemUris) {
 		String captureIsilOrgIdentifier =
-				"http://lobid\\.org/item/[^:]*?:([^:]*?):[^\"]*";
+				"http://lobid\\.org/items/[^:]*?:([^:]*?):[^\"]*";
 		Map<String, Integer> map = new HashMap<>();
 		for (String term : itemUris) {
 			String isil = term.replaceAll(captureIsilOrgIdentifier, "$1");

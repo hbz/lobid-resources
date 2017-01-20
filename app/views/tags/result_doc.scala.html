@@ -92,7 +92,7 @@
   @result_field("Verantwortlich", "statementOfResponsibility", doc, TableRow.VALUES)
   @contributions((doc \ "contribution").asOpt[Seq[JsValue]].getOrElse(Seq()))
   @with_icon("Medientyp", "medium", controllers.resources.Application.MEDIUM_FIELD)
-  @with_icon("Publikationstyp", "type", controllers.resources.Application.TYPE_FIELD_LOBID2)
+  @with_icon("Publikationstyp", "type", controllers.resources.Application.TYPE_FIELD)
   @result_field("", "thesisInformation", doc, TableRow.VALUES)
 
   @result_field("Erschienen", "issued", doc, TableRow.VALUES)

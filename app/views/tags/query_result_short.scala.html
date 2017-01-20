@@ -24,8 +24,7 @@
   }<br/>
   @if((doc\"medium").asOpt[Seq[Map[String,String]]].isDefined) {
     @defining((doc\"medium").as[Seq[Map[String,String]]].map(_.get("id").get)){ v =>
-    @play.Logger.info(v.toString)
-      <span title="@Html(Lobid.facetLabel(v,"medium",""))" class="@Lobid.facetIcon(v,"medium")"></span>
+      <span title="@Html(Lobid.facetLabel(v,"medium.id",""))" class="@Lobid.facetIcon(v,"medium.id")"></span>
     }
   }
   </td>
