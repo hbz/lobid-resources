@@ -107,7 +107,7 @@
 @facetLabel(current: String, label: String, activeCountId: String = "", currentCount: String = "") = {
   @if(!current.isEmpty){
      <span class="badge" id="facet-filter"><span id="@activeCountId">@currentCount</span> @label</span>
-     <a href="@resources.routes.Application.search(q,person,name,if (urisOnly(subject)==current) "" else subject,id,publisher,if(issued==current) "" else issued,if (medium==current) "" else medium,from,size,if (owner==current) "" else owner,if (t==current) "" else t,sortParam,set=set,word=word,corporation=corporation,raw=(if (raw.split(":").last==current) "" else raw)).toString" title="Filter entfernen"><span class="octicon octicon-x"></span></a> 
+     <a href="@resources.routes.Application.query(q,person,name,if (urisOnly(subject)==current) "" else subject,id,publisher,if(issued==current) "" else issued,if (medium==current) "" else medium,from,size,if (owner==current) "" else owner,if (t==current) "" else t,sortParam,set=set,word=word,corporation=corporation,raw=(if (raw.split(":").last==current) "" else raw)).toString" title="Filter entfernen"><span class="octicon octicon-x"></span></a> 
    }
 }
 
@@ -124,7 +124,7 @@
   <div class="row facet"><div class="col-md-12"><canvas id="issued-chart"></canvas></div></div>
   <div id="slider-range"></div>
   <input type="text" id="issued-range" readonly value="Lade Erscheinungsjahre...">
-  <div id="issued-div"> <a id="issued-link" style="display:none" href="@resources.routes.Application.search(q,person,name,subject,id,publisher,issued,medium,from,size,owner,t,sortParam,set=set,word=word,corporation=corporation,raw=raw)">Anwenden</a> </div>
+  <div id="issued-div"> <a id="issued-link" style="display:none" href="@resources.routes.Application.query(q,person,name,subject,id,publisher,issued,medium,from,size,owner,t,sortParam,set=set,word=word,corporation=corporation,raw=raw)">Anwenden</a> </div>
   </div>
   <p/>
   <div class="row facet"><div class="col-md-12">@facets("Schlagwörter", Application.SUBJECT_FIELD, if(!urisOnly(subject).isEmpty) urisOnly(subject) else "", "dropup")</div></div>

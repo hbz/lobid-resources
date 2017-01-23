@@ -87,6 +87,11 @@ public class Application extends Controller {
 	/** The number of seconds in one day. */
 	public static final int ONE_DAY = 24 * ONE_HOUR;
 
+	private static final String[] FIELDS =
+			new String[] { "contribution.agent.label", "title", "subject.id", "isbn",
+					"publication.publishedBy", "publication.startDate", "medium.id",
+					"type", "collectedBy.id", "_all", "contribution.agent.label" };
+
 	/**
 	 * @return The index page.
 	 */
@@ -125,13 +130,16 @@ public class Application extends Controller {
 			boolean details, String set, String word, String corporation, String raw,
 			String format) {
 		return Promise.promise(() -> {
-			Index queryResources = new Index().queryResources(q, from, size, sort);
+			String queryString = buildQueryString(q, person, name, subject, id,
+					publisher, issued, medium, t, set, word, corporation);
+			Index queryResources =
+					new Index().queryResources(queryString, from, size, sort);
 			String f = Accept.formatFor(format, request().acceptedTypes());
 			JsonNode result = queryResources.getResult();
 			return f.equals("json") ? ok(result)
-					: ok(query.render(result.toString(), q, "", "", "", "", "", "", "",
-							from, size, queryResources.getTotal(), owner, "", sort, "", "",
-							"", ""));
+					: ok(query.render(result.toString(), q, person, name, subject, id,
+							publisher, issued, medium, from, size, queryResources.getTotal(),
+							owner, t, sort, set, word, corporation, raw));
 		});
 	}
 
@@ -143,9 +151,29 @@ public class Application extends Controller {
 			String t, String sort, boolean details, String set, String word,
 			String corporation, String raw, String format) {
 		return Promise.promise(() -> {
-			Index queryResources = new Index().queryResources(q, from, size, sort);
+			String queryString = buildQueryString(q, person, name, subject, id,
+					publisher, issued, medium, t, set, word, corporation);
+			Index queryResources =
+					new Index().queryResources(queryString, from, size, sort);
 			return ok(queryResources.getAggregations());
 		});
+	}
+
+	private static String buildQueryString(String q, String... vs) {
+		String newQ = q.isEmpty() ? "*" : q;
+		for (int i = 0; i < vs.length; i++) {
+			String fieldValue = vs[i];
+			String fieldName = FIELDS[i];
+			if (!fieldValue.isEmpty()) {
+				String complexQ = " AND (";
+				for (String v : fieldValue.replace(",AND", "").split(",")) {
+					complexQ += " +" + fieldName + ":"
+							+ (fieldName.endsWith(".id") ? quotedEscaped(v) : v);
+				}
+				newQ += complexQ + ")";
+			}
+		}
+		return newQ;
 	}
 
 	/**
@@ -383,7 +411,7 @@ public class Application extends Controller {
 			JsonNode json = pair.getLeft();
 			String label = pair.getRight();
 			int count = json.get("doc_count").asInt();
-			return /* (!label.contains("http") || label.contains("nwbib")) && */ label
+			return (!label.contains("http") || label.contains("nwbib")) && label
 					.length() > String.format(labelTemplate, "", "", count).length();
 		};
 
@@ -425,7 +453,7 @@ public class Application extends Controller {
 
 			boolean current = current(subject, medium, owner, t, field, term, raw);
 
-			String routeUrl = routes.Application.search(q, person, name, subjectQuery,
+			String routeUrl = routes.Application.query(q, person, name, subjectQuery,
 					id, publisher, issuedQuery, mediumQuery, from, size, ownerQuery,
 					typeQuery, sort(sort, subjectQuery), false, set, word, corporation,
 					rawQuery, null).url();

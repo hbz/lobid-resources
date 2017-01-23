@@ -3,17 +3,19 @@ package controllers.resources;
 import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 import java.util.function.Consumer;
 
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.search.SearchHit;
+import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
 import org.elasticsearch.search.sort.SortBuilders;
 import org.elasticsearch.search.sort.SortOrder;
@@ -67,6 +69,7 @@ public class Index {
 	public Index queryResources(String q, int from, int size, String sort) {
 		return withClient((Client client) -> {
 			SearchRequestBuilder requestBuilder = client.prepareSearch(INDEX_NAME)
+					.setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
 					.setTypes(TYPE_RESOURCE).setQuery(QueryBuilders.queryStringQuery(q))
 					.setFrom(from).setSize(size);
 			if (!sort.isEmpty()) {
@@ -76,16 +79,17 @@ public class Index {
 			requestBuilder = withAggregations(requestBuilder, "publication.startDate",
 					"subject.id", "type", "medium.id", "exemplar.id");
 			SearchResponse response = requestBuilder.execute().actionGet();
-			JsonNode jsonNode = Json.parse(response.toString());
-			Iterator<JsonNode> hits = jsonNode.get("hits").get("hits").elements();
-			List<JsonNode> nodes = new ArrayList<>();
-			aggregations = jsonNode.get("aggregations");
-			for (; hits.hasNext();) {
-				nodes.add(hits.next().get("_source"));
+			SearchHits hits = response.getHits();
+			List<JsonNode> results = new ArrayList<>();
+			// TODO use Aggregation objects directly, don't parse into JSON
+			aggregations = Json.parse(response.toString()).get("aggregations");
+			for (SearchHit sh : hits.getHits()) {
+				results.add(Json.toJson(sh.getSource()));
 			}
-			result = Json.toJson(nodes);
-			total = response.getHits().getTotalHits();
+			result = Json.toJson(results);
+			total = hits.getTotalHits();
 		});
+
 	}
 
 	/**
@@ -141,8 +145,10 @@ public class Index {
 	private static SearchRequestBuilder withAggregations(
 			final SearchRequestBuilder searchRequest, String... fields) {
 		Arrays.asList(fields).forEach(field -> {
-			searchRequest.addAggregation(AggregationBuilders.terms(field).field(field)
-					.size(Integer.MAX_VALUE));
+			searchRequest.addAggregation(
+					AggregationBuilders.terms(field).field(field).size(100)
+			// TODO: very high count is required for owners only?
+			/* .size(Integer.MAX_VALUE) */);
 		});
 		return searchRequest;
 	}
