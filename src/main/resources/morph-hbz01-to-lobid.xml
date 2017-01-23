@@ -279,10 +279,10 @@
 		</combine>
 		<!-- print -->
 		<data source="050." name="@medium">
-			<regexp match="^[abcd]" format="http://rdvocab.info/termList/RDAproductionMethod/#1010"/>
+			<regexp match="^[abcd]" format="http://rdaregistry.info/termList/RDAproductionMethod/1010"/>
 		</data>
 		<data source="050." name="@medium">
-			<regexp match="^.......a" format="http://rdvocab.info/termList/RDAproductionMethod/#1010"/>
+			<regexp match="^.......a" format="http://rdaregistry.info/termList/RDAproductionMethod/1010"/>
 		</data>
 		<!-- multimedia -->
 		<data source="050." name="@medium">
@@ -304,7 +304,7 @@
 			<regexp match=".*" format="$[ns-bibo]AudioVisualDocument"/>
 		</data>
 		<data source="@matVideo" name="@medium">
-			<regexp match=".*" format="http://rdvocab.info/termList/RDACarrierType/1050"/>
+			<regexp match=".*" format="http://rdaregistry.info/termList/RDACarrierType/1050"/>
 		</data>
 		<data source="334-[12].a" name="@medium">
 			<regexp match="^Bildton" format="$[ns-bibo]AudioVisualDocument"/>
@@ -318,13 +318,13 @@
 		</data>
 		<!-- microform -->
 		<data source="050." name="@medium">
-			<regexp match="^...[abc]" format="http://rdvocab.info/termList/RDACarrierType/1020"/>
+			<regexp match="^...[abc]" format="http://rdaregistry.info/termList/RDACarrierType/1020"/>
 		</data>
 		<data source="334-[12].a" name="@medium">
-			<regexp match="^Mikrofor" format="http://rdvocab.info/termList/RDACarrierType/1020"/>
+			<regexp match="^Mikrofor" format="http://rdaregistry.info/termList/RDACarrierType/1020"/>
 		</data>
 		<data source="057." name="@medium">
-			<regexp match=".*" format="http://rdvocab.info/termList/RDACarrierType/1020"/>
+			<regexp match=".*" format="http://rdaregistry.info/termList/RDACarrierType/1020"/>
 		</data>
 		<!-- Dini Kim , TODO dcterms:medium "rdacarrier:1044" (unmediated) -->
 		<!-- map -->
@@ -347,7 +347,7 @@
 			<regexp match="^....a" format="http://purl.org/library/BrailleBook"/>
 		</data>
 		<data source="050." name="@medium">
-			<regexp match="^....a" format="http://rdvocab.info/termList/RDAproductionMethod/1010"/>
+			<regexp match="^....a" format="http://rdaregistry.info/termList/RDAproductionMethod/1010"/>
 		</data>
 		<!-- game -->
 		<data source="050." name="@rdftype">
@@ -355,11 +355,11 @@
 		</data>
 		<!-- manuscript -->
 		<data source="050." name="@medium">
-			<regexp match="^.a" format="http://rdvocab.info/termList/prodManuscript/1002"/>
+			<regexp match="^.a" format="http://rdaregistry.info/termList/prodManuscript/1002"/>
 		</data>
 		<!-- Computer carriers -->
 		<data source="050." name="@medium">
-			<regexp match="^........[abcdefgz]" format="http://rdvocab.info/termList/RDACarrierType/1010"/>
+			<regexp match="^........[abcdefgz]" format="http://rdaregistry.info/termList/RDACarrierType/1010"/>
 		</data>
 		<combine name="~rdf:subject" value="${a}" flushWith="@typeOnly">
 			<data source="@typeOnly"/>
@@ -475,7 +475,7 @@
 			<regexp match="^[af]|^.au|^...au|^.....au" format="$[ns-bibo]Article"/>
 		</data>
 		<data source="052." name="@collection">
-			<regexp match="^[jp].*|^.il.*|^...il.*|^.....il.*" format="$[ns-bibo]Journal"/>
+			<regexp match="^[jp].*|^.il.*|^...il.*|^.....il.*" format="$[ns-bibo]Periodical"/>
 		</data>
 		<data source="052." name="@collection">
 			<regexp match="^r|^.se|^...se|^.....se" format="$[ns-bibo]Series"/>
@@ -490,25 +490,25 @@
 		</data>
 		<!-- online -->
 		<data source="050." name="@1018">
-			<regexp match="^........g" format="http://rdvocab.info/termList/RDACarrierType/1018"/>
+			<regexp match="^........g" format="http://rdaregistry.info/termList/RDACarrierType/1018"/>
 		</data>
 		<data source="058." name="@1018">
-			<regexp match="^.r" format="http://rdvocab.info/termList/RDACarrierType/1018"/>
+			<regexp match="^.r" format="http://rdaregistry.info/termList/RDACarrierType/1018"/>
 		</data>
 		<data source="652a[-1].a" name="@1018">
-			<regexp match="^[AaOo][rn]" format="http://rdvocab.info/termList/RDACarrierType/1018"/>
+			<regexp match="^[AaOo][rn]" format="http://rdaregistry.info/termList/RDACarrierType/1018"/>
 		</data>
 		<data source="@1018" name="@medium"/>
 		<!-- computer carrier (disks etc) -->
 		<data source="058." name="@medium">
-			<regexp match="^.[^r]" format="http://rdvocab.info/termList/RDACarrierType/1010"/>
+			<regexp match="^.[^r]" format="http://rdaregistry.info/termList/RDACarrierType/1010"/>
 		</data>
 		<!-- electronic -->
 		<data source="@fulltextOnline" name="@medium">
-			<regexp match=".*" format="http://rdvocab.info/termList/RDACarrierType/1010"/>
+			<regexp match=".*" format="http://rdaregistry.info/termList/RDACarrierType/1010"/>
 		</data>
 		<data source="652a[-1].a" name="@medium">
-			<regexp match=".*" format="http://rdvocab.info/termList/RDACarrierType/1010"/>
+			<regexp match=".*" format="http://rdaregistry.info/termList/RDACarrierType/1010"/>
 		</data>
 		<data source="@medium" name="http://purl.org/dc/terms/medium"/>
 		<!-- set default medium -->
@@ -627,7 +627,6 @@
 				<regexp match="(.*)" format=": ${1}"/>
 			</data>
 		</combine>
-		<!-- ####################### "$[ns-bibo]volume -->
 		<combine name="http://purl.org/dc/terms/title" value="${a}">
 			<choose name="a">
 				<data source="@titleRemainder331Superordination2title">
@@ -674,13 +673,9 @@
 			<data source="@publisher" name="http://schema.org/publishedBy"/>
 			<choose name="http://schema.org/startDate">
 				<!-- issue precedence -->
-				<data source="425[abc-p][-1].a|419-1c"/>
-				<data source="425b[-1].a"/>
-				<data source="425c[-1].a"/>
-				<data source="425-[-1].a"/>
-				<data source="425p[-1].a"/>
-				<data source="595-[-12].a"/>
-				<data source="089-[-1].a"/>
+				<data source="425[abc-p][-1].a|419-1c|595-[-12].a|089-[-1].a">
+					<regexp match="(\d{4})" format="${1}"/>
+				</data>
 			</choose>
 			<!-- range of date. Only if 021 not exists but 425c. Take 4 digits. -->
 			<choose name="http://schema.org/endDate">
@@ -799,6 +794,11 @@
 			<data source="@itemId"/>
 			<data source="@sigel2isilMap" name="isil"/>
 		</combine>
+		<combine name="http://id.loc.gov/ontologies/bibframe/note" value="${a}"
+			sameEntity="true">
+			<data source="@itemId"/>
+			<data source="088 ?.b" name="a"/>
+		</combine>
 		<combine name="http://purl.org/ontology/daia/label" value="${signature}"
 			sameEntity="true">
 			<data source="@itemId"/>
@@ -855,14 +855,8 @@
 		</combine>
 		<data source="@itemId" name="http://purl.org/vocab/frbr/core#exemplar"/>
 		<!-- ####################### -->
-		<!-- ########## volume -->
+		<!-- ########## multi-volume information -->
 		<!-- ####################### -->
-		<!-- 32-[-12].a is not bibo:volume - but what is it? -->
-		<data source="089-[-1].a" name="$[ns-bibo]volume"/>
-		<data source="432-[-12].a" name="$[ns-bibo]volume"/>
-		<data source="090-[-1].a" name="@volume"/>
-		<data source="@volume" name="$[ns-bibo]volume"/>
-		<data source="432-[-12].a" name="$[ns-bibo]volume"/>
 		<data source="001-2.a" name="@idVolume"/>
 		<entity name="http://purl.org/lobid/lv#volumeIn">
 			<data source="@idVolume" name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type">
@@ -1042,16 +1036,16 @@
 		<combine name="~rdf:subject" value="${a}" flushWith="@relatorNode">
 			<data source="@contributionBnode" name="a"/>
 		</combine>
-		<combine name="http://id.loc.gov/ontologies/bibframe/role" value="${a}" sameEntity="true"
-			flushWith="@relatorNode">
+		<combine name="http://id.loc.gov/ontologies/bibframe/role" value="${a}"
+			sameEntity="true" flushWith="@relatorNode">
 			<data source="@relatorNode" name="a"/>
 			<data source="@contributionBnode"/>
 		</combine>
-		<combine name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" value="http://bibframe.org/vocab/Contribution"
+		<combine name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" value="http://id.loc.gov/ontologies/bibframe/Contribution"
 			flushWith="@relatorNode" sameEntity="true">
 			<data source="@contributionBnode"/>
 		</combine>
-		<combine name="http://bibframe.org/vocab/agent" value="${a}" flushWith="@relatorNode">
+		<combine name="http://id.loc.gov/ontologies/bibframe/agent" value="${a}" flushWith="@relatorNode">
 			<data source="@agentId" name="a"/>
 		</combine>
 		<!-- set subject uri of resource anew -->
@@ -1061,7 +1055,7 @@
 			<data source="@agentId"/>
 		</combine>
 		<entity name="~rdf:list" reset="true">
-			<combine name="http://bibframe.org/vocab/contribution" value="${a}" sameEntity="true"
+			<combine name="http://id.loc.gov/ontologies/bibframe/contribution" value="${a}" sameEntity="true"
 				reset="true">
 				<data source="@contributionBnode" name="a"/>
 				<data source="@relatorNode"/>
@@ -1622,7 +1616,7 @@
 				</data>
 			</combine>
 		</entity>
-		<entity name="http://purl.org/lobid/lv#inSeries" flushWith="4[56789]3[-ab]1.a">
+		<entity name="http://purl.org/lobid/lv#inSeries" flushWith="4[56789]3[-ab]1.a" reset="true">
 			<data source="@idTitleSeries" name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type">
 				<regexp match=".*" format="$[ns-lobid-vocab]SeriesRelation"/>
 			</data>
@@ -1634,10 +1628,6 @@
 				<trim></trim>
 			</data>
 		</entity>
-		<data source="4[56789]1[-ab]1.a" name="$[ns-bibo]volume">
-			<regexp match=".*;(.*)" format="${1}"/>
-			<trim></trim>
-		</data>
 		<combine name="http://purl.org/dc/terms/isPartOf" value="${a}">
 			<data source="@dctIsPartOf" name="a">
 				<sanitizeUrl></sanitizeUrl>
@@ -1729,7 +1719,7 @@
 		<!-- ####################### -->
 		<!-- ########## note -->
 		<!-- ####################### -->
-		<choose name="http://www.w3.org/2004/02/skos/core#note">
+		<choose name="http://id.loc.gov/ontologies/bibframe/note">
 			<data source="501-1.a">
 				<regexp match="^(http.*)" format="Siehe: ${1}"/>
 			</data>
