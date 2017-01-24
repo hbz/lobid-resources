@@ -199,23 +199,6 @@ public class Application extends Controller {
 		});
 	}
 
-	private static String buildQueryString(String q, String... vs) {
-		String newQ = q.isEmpty() ? "*" : q;
-		for (int i = 0; i < vs.length; i++) {
-			String fieldValue = vs[i];
-			String fieldName = FIELDS[i];
-			if (!fieldValue.isEmpty()) {
-				String complexQ = " AND (";
-				for (String v : fieldValue.replace(",AND", "").split(",")) {
-					complexQ += " +" + fieldName + ":"
-							+ (fieldName.endsWith(".id") ? quotedEscaped(v) : v);
-				}
-				newQ += complexQ + ")";
-			}
-		}
-		return newQ;
-	}
-
 	/**
 	 * @param id The resource ID.
 	 * @param format The response format ('html' or 'json')
@@ -484,6 +467,28 @@ public class Application extends Controller {
 		} else
 			return currentParam.substring(0, currentParam.length() - 1) + "+"
 					+ quotedEscaped(term) + ")";
+	}
+
+	/**
+	 * @param q The current query string
+	 * @param values The values corresponding to {@link #Application.FIELDS}
+	 * @return A query string created from q, expanded for values
+	 */
+	public static String buildQueryString(String q, String... values) {
+		String newQ = q.isEmpty() ? "*" : q;
+		for (int i = 0; i < values.length; i++) {
+			String fieldValue = values[i];
+			String fieldName = FIELDS[i];
+			if (!fieldValue.isEmpty()) {
+				String complexQ = " AND (";
+				for (String v : fieldValue.replace(",AND", "").split(",")) {
+					complexQ += " +" + fieldName + ":"
+							+ (fieldName.endsWith(".id") ? quotedEscaped(v) : v);
+				}
+				newQ += complexQ + ")";
+			}
+		}
+		return newQ;
 	}
 
 	private static String quotedEscaped(String term) {

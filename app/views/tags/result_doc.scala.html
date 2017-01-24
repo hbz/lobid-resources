@@ -4,6 +4,7 @@
 @import play.api.libs.json._
 @import views.TableRow
 @import controllers.resources.Lobid
+@import controllers.resources.Index
 @import controllers.resources.Application.CONFIG
 
 @table()(body: Html) = {
@@ -33,7 +34,7 @@
 }
 
 @subordinated(field:String, id:String, label:String, values:(String,String)) = {
-  @defining(Lobid.getTotalHits(field, id, "*").get(Lobid.API_TIMEOUT)){ hits => @if(hits > 0) {
+  @defining(new Index().queryResources(field+"\""+Lobid.escapeUri(id)+"\"",0,0,"").getTotal){ hits => @if(hits > 0) {
     @defining(if(hits==1){values._1} else {values._2}){ value =>
     <tr><td>@label</td><td><a title="@value" href="@resources.routes.Application.query(raw=Lobid.escapeUri(field)+":"+Lobid.escapeUri(id),set="*")">@hits @value</a></td></tr>
   }}}

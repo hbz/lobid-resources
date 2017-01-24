@@ -7,7 +7,6 @@ import java.io.InputStream;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -34,7 +33,7 @@ import play.mvc.Http;
 import views.TableRow;
 
 /**
- * Access Lobid title data.
+ * Access Lobid API for labels and related things.
  *
  * @author Fabian Steeg (fsteeg)
  *
@@ -67,102 +66,6 @@ public class Lobid {
 	static Long getTotalResults(JsonNode json) {
 		return json.findValue("http://sindice.com/vocab/search#totalResults")
 				.asLong();
-	}
-
-	static WSRequestHolder request(final String q, final String person,
-			final String name, final String subject, final String id,
-			final String publisher, final String issued, final String medium,
-			final int from, final int size, String owner, String t, String sort,
-			String set, String word, String corporation, String raw) {
-		WSRequestHolder requestHolder = WS
-				.url(Application.CONFIG.getString("resources.api"))
-				.setHeader("Accept", "application/json")
-				.setQueryParameter("format", "full")
-				.setQueryParameter("from", from + "")
-				.setQueryParameter("size", size + "").setQueryParameter("sort", sort);
-		if (!set.isEmpty() && !set.equals("*"))
-			requestHolder = requestHolder.setQueryParameter("set", set);
-		else {
-			requestHolder = requestHolder.setQueryParameter("set", "");
-		}
-		if (!raw.trim().isEmpty())
-			requestHolder = requestHolder.setQueryParameter("q", raw);
-		if (!q.trim().isEmpty())
-			requestHolder = requestHolder.setQueryParameter("word", preprocess(q));
-		else if (!word.isEmpty())
-			requestHolder = requestHolder.setQueryParameter("word", preprocess(word));
-		if (!person.trim().isEmpty())
-			requestHolder = requestHolder.setQueryParameter("author", person);
-		if (!name.trim().isEmpty())
-			requestHolder = requestHolder.setQueryParameter("name", name);
-		if (!subject.trim().isEmpty())
-			requestHolder = requestHolder.setQueryParameter("subject", subject);
-		if (!id.trim().isEmpty())
-			requestHolder = requestHolder.setQueryParameter("id", id);
-		if (!publisher.trim().isEmpty())
-			requestHolder = requestHolder.setQueryParameter("publisher", publisher);
-		if (!issued.trim().isEmpty())
-			requestHolder = requestHolder.setQueryParameter("issued", issued);
-		if (!medium.trim().isEmpty())
-			requestHolder = requestHolder.setQueryParameter("medium", medium);
-		if (!owner.isEmpty())
-			requestHolder = requestHolder.setQueryParameter("owner", owner);
-		if (!t.isEmpty())
-			requestHolder = requestHolder.setQueryParameter("t", t);
-		if (!corporation.isEmpty())
-			requestHolder =
-					requestHolder.setQueryParameter("corporation", corporation);
-		Logger.info("Request URL {}, query params {} ", requestHolder.getUrl(),
-				requestHolder.getQueryParameters());
-		return requestHolder;
-	}
-
-	/**
-	 * @param set The data set, uses the config file set if empty
-	 * @return The full number of hits, ie. the size of the given data set
-	 */
-	public static Promise<Long> getTotalHits(String set) {
-		String cacheKey = String.format("totalHits.%s", set);
-		final Long cachedResult = (Long) Cache.get(cacheKey);
-		if (cachedResult != null) {
-			return Promise.promise(() -> {
-				return cachedResult;
-			});
-		}
-		WSRequestHolder requestHolder = request("", "", "", "", "", "", "", "", 0,
-				0, "", "", "", set, "", "", "");
-		return requestHolder.get().map((WSResponse response) -> {
-			Long total = getTotalResults(response.asJson());
-			Cache.set(cacheKey, total, Application.ONE_HOUR);
-			return total;
-		});
-	}
-
-	/**
-	 * @param field The Elasticsearch index field
-	 * @param value The value of the given field
-	 * @param set The data set, uses the config file set if empty
-	 * @return The number of hits for the given value in the given field
-	 */
-	public static Promise<Long> getTotalHits(String field, String value,
-			String set) {
-		String f = escapeUri(field);
-		String v = escapeUri(value);
-		String cacheKey = String.format("totalHits.%s.%s.%s", f, v, set);
-		final Long cachedResult = (Long) Cache.get(cacheKey);
-		if (cachedResult != null) {
-			return Promise.promise(() -> {
-				return cachedResult;
-			});
-		}
-		return WS.url(Application.CONFIG.getString("resources.api"))
-				.setQueryParameter("q", f + ":" + v)
-				.setQueryParameter("set", set.equals("*") ? "" : set).get()
-				.map((WSResponse response) -> {
-					Long total = getTotalResults(response.asJson());
-					Cache.set(cacheKey, total, Application.ONE_HOUR);
-					return total;
-				});
 	}
 
 	/**
@@ -250,91 +153,6 @@ public class Lobid {
 			Cache.set(cacheKey, label, Application.ONE_DAY);
 			return label;
 		}).get(Lobid.API_TIMEOUT);
-	}
-
-	/**
-	 * @param q Query to search in all fields
-	 * @param person Query for a person associated with the resource
-	 * @param name Query for the resource name (title)
-	 * @param subject Query for the resource subject
-	 * @param id Query for the resource id
-	 * @param publisher Query for the resource publisher
-	 * @param issued Query for the resource issued year
-	 * @param medium Query for the resource medium
-	 * @param owner Owner filter for resource queries
-	 * @param t Type filter for resource queries
-	 * @param field The facet field (the field to facet over)
-	 * @param set The set
-	 * @param word A word, a concept from the hbz union catalog
-	 * @param corporation A corporation associated with the resource
-	 * @param raw A query string that's directly (unprocessed) passed to ES
-	 * @return A JSON representation of the requested facets
-	 */
-	public static Promise<JsonNode> getFacets(String q, String person,
-			String name, String subject, String id, String publisher, String issued,
-			String medium, String owner, String field, String t, String set,
-			String word, String corporation, String raw) {
-		WSRequestHolder request =
-				WS.url(Application.CONFIG.getString("resources.api") + "/facets")
-						.setHeader("Accept", "application/json")
-						.setQueryParameter("author", person)//
-						.setQueryParameter("name", name)
-						.setQueryParameter("publisher", publisher)//
-						.setQueryParameter("id", id)//
-						.setQueryParameter("field", field)//
-						.setQueryParameter("from", "0")
-						.setQueryParameter("size",
-								field.equals(Application.ITEM_FIELD) ? "9999"
-										: Application.MAX_FACETS + "")
-						.setQueryParameter("corporation", corporation)//
-						.setQueryParameter("medium", medium)//
-						.setQueryParameter("issued", issued)//
-						.setQueryParameter("t", t)//
-						.setQueryParameter("set", set);
-		if (!q.isEmpty())
-			request = request.setQueryParameter("word", preprocess(q));
-		else if (!word.isEmpty())
-			request = request.setQueryParameter("word", preprocess(word));
-		if (!field.equals(Application.ITEM_FIELD))
-			request = request.setQueryParameter("owner", owner);
-		if (!raw.isEmpty()
-				&& !raw.contains(Lobid.escapeUri(Application.COVERAGE_FIELD)))
-			request = request.setQueryParameter("q", raw);
-		if (!field.startsWith("http"))
-			request = request.setQueryParameter("subject", subject);
-		String url = request.getUrl();
-		Map<String, Collection<String>> parameters = request.getQueryParameters();
-		Logger.info("Facets request URL {}, query params {} ", url, parameters);
-		return request.get().map((WSResponse response) -> {
-			if (response.getStatus() == Http.Status.OK) {
-				return response.asJson();
-			}
-			Logger.warn("{}: {} ({}, {})", response.getStatus(),
-					response.getStatusText(), url, parameters);
-			return Json.toJson(ImmutableMap.of("entries", Arrays.asList(), "field",
-					field, "count", 0));
-		});
-	}
-
-	private static String preprocess(final String q) {
-		String result;
-		if (q.trim().isEmpty() || q.matches(".*?([+~]|AND|OR|\\s-|\\*).*?")) {
-			// if supported query string syntax is used, leave it alone:
-			result = q;
-		} else {
-			// else prepend '+' to all terms for AND search:
-			result = Arrays.asList(q.split("[\\s-]")).stream().map(x -> "+" + x)
-					.collect(Collectors.joining(" "));
-		}
-		return result// but escape unsupported query string syntax:
-				.replace("\\", "\\\\").replace(":", "\\:").replace("^", "\\^")
-				.replace("&&", "\\&&").replace("||", "\\||").replace("!", "\\!")
-				.replace("(", "\\(").replace(")", "\\)").replace("{", "\\{")
-				.replace("}", "\\}").replace("[", "\\[").replace("]", "\\]")
-				// `embedded` phrases, like foo"something"bar -> foo\"something\"bar
-				.replaceAll("([^\\s])\"([^\"]+)\"([^\\s])", "$1\\\\\"$2\\\\\"$3")
-				// remove inescapable range query symbols, possibly prepended with `+`:
-				.replaceAll("^\\+?<", "").replace("^\\+?>", "");
 	}
 
 	private static final Map<String, String> keys =
