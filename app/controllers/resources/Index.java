@@ -22,6 +22,7 @@ import org.elasticsearch.search.sort.SortOrder;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+import play.Logger;
 import play.libs.Json;
 
 /**
@@ -67,6 +68,8 @@ public class Index {
 	 *         {@link #getTotal()}
 	 */
 	public Index queryResources(String q, int from, int size, String sort) {
+		Logger.trace("queryResources: q={}, from={}, size={}, sort={}", q, from,
+				size, sort);
 		return withClient((Client client) -> {
 			SearchRequestBuilder requestBuilder = client.prepareSearch(INDEX_NAME)
 					.setSearchType(SearchType.DFS_QUERY_THEN_FETCH)

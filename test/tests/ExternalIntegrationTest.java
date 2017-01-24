@@ -16,7 +16,6 @@ import org.junit.Test;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
-import controllers.resources.Application;
 import controllers.resources.Lobid;
 import play.libs.F.Promise;
 import play.mvc.Http;
@@ -43,9 +42,8 @@ public class ExternalIntegrationTest {
 	@Test
 	public void testFacets() {
 		running(testServer(3333), () -> {
-			String field = Application.TYPE_FIELD;
 			Promise<JsonNode> jsonPromise = Lobid.getFacets("köln", "", "", "", "",
-					"", "", "", "", field, "", "", "", "", "");
+					"", "", "", "", "@graph.@type", "", "", "", "", "");
 			JsonNode facets = jsonPromise.get(Lobid.API_TIMEOUT);
 			assertThat(facets.findValues("term").stream().map(e -> e.asText())
 					.collect(Collectors.toList())).contains(
@@ -80,7 +78,7 @@ public class ExternalIntegrationTest {
 		int from = 0;
 		int size = 10;
 		running(testServer(3333), () -> {
-			Content html = views.html.search.render("[{}]", query, "", "", "", "", "",
+			Content html = views.html.query.render("[]", query, "", "", "", "", "",
 					"", "", from, size, 0L, "", "", "", "", "", "", "");
 			assertThat(Helpers.contentType(html)).isEqualTo("text/html");
 			String text = Helpers.contentAsString(html);

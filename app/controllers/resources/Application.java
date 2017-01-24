@@ -40,8 +40,6 @@ import play.data.Form;
 import play.libs.F.Promise;
 import play.libs.Json;
 import play.libs.ws.WS;
-import play.libs.ws.WSRequestHolder;
-import play.libs.ws.WSResponse;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
@@ -50,7 +48,6 @@ import views.html.details;
 import views.html.details_item;
 import views.html.index;
 import views.html.query;
-import views.html.search;
 import views.html.stars;
 
 /**
@@ -122,24 +119,67 @@ public class Application extends Controller {
 		return null;
 	}
 
-	@SuppressWarnings({ "javadoc", "unused" }) // WIP
+	/**
+	 * @param q Query to search in all fields
+	 * @param person Query for a person associated with the resource
+	 * @param name Query for the resource name (title)
+	 * @param subject Query for the resource subject
+	 * @param id Query for the resource id
+	 * @param publisher Query for the resource publisher
+	 * @param issued Query for the resource issued year
+	 * @param medium Query for the resource medium
+	 * @param from The page start (offset of page of resource to return)
+	 * @param size The page size (size of page of resource to return)
+	 * @param owner Owner filter for resource queries
+	 * @param t Type filter for resource queries
+	 * @param sort Sorting order for results ("newest", "oldest", "" -> relevance)
+	 * @param showDetails If true, render details
+	 * @param set The set
+	 * @param word A word, a concept from the hbz union catalog
+	 * @param corporation A corporation associated with the resource
+	 * @param raw A query string that's directly (unprocessed) passed to ES
+	 * @param format The response format ('html' or 'json')
+	 * @return The search results
+	 */
 	public static Promise<Result> query(final String q, final String person,
 			final String name, final String subject, final String id,
 			final String publisher, final String issued, final String medium,
 			final int from, final int size, final String owner, String t, String sort,
-			boolean details, String set, String word, String corporation, String raw,
-			String format) {
-		return Promise.promise(() -> {
+			boolean showDetails, String set, String word, String corporation,
+			String raw, String format) {
+		addCorsHeader();
+		String uuid = session("uuid");
+		if (uuid == null)
+			session("uuid", UUID.randomUUID().toString());
+		String cacheId = String.format("%s-%s-%s", uuid, request().uri(),
+				Accept.formatFor(format, request().acceptedTypes()));
+		@SuppressWarnings("unchecked")
+		Promise<Result> cachedResult = (Promise<Result>) Cache.get(cacheId);
+		if (cachedResult != null)
+			return cachedResult;
+		Logger.debug("Not cached: {}, will cache for one hour", cacheId);
+		Promise<Result> result = Promise.promise(() -> {
 			String queryString = buildQueryString(q, person, name, subject, id,
 					publisher, issued, medium, t, set, word, corporation);
 			Index queryResources =
 					new Index().queryResources(queryString, from, size, sort);
-			String f = Accept.formatFor(format, request().acceptedTypes());
-			JsonNode result = queryResources.getResult();
-			return f.equals("json") ? ok(result)
-					: ok(query.render(result.toString(), q, person, name, subject, id,
-							publisher, issued, medium, from, size, queryResources.getTotal(),
-							owner, t, sort, set, word, corporation, raw));
+			JsonNode json = queryResources.getResult();
+			String s = json.toString();
+			String responseFormat =
+					Accept.formatFor(format, request().acceptedTypes());
+			boolean htmlRequested =
+					responseFormat.equals(Accept.Format.HTML.queryParamString);
+			return htmlRequested ? ok(query.render(s, q, person, name, subject, id,
+					publisher, issued, medium, from, size, queryResources.getTotal(),
+					owner, t, sort, set, word, corporation, raw)) : prettyJsonOk(json);
+		});
+		cacheOnRedeem(cacheId, result, ONE_HOUR);
+		return result.recover((Throwable throwable) -> {
+			Logger.error("Could not query index", throwable);
+			flashError();
+			return internalServerError(query.render("[]", q, person, name, subject,
+					id, publisher, issued, medium, from, size, 0L, owner, t, sort, set,
+					word, corporation, raw));
 		});
 	}
 
@@ -177,65 +217,21 @@ public class Application extends Controller {
 	}
 
 	/**
-	 * @param q Query to search in all fields
-	 * @param person Query for a person associated with the resource
-	 * @param name Query for the resource name (title)
-	 * @param subject Query for the resource subject
-	 * @param id Query for the resource id
-	 * @param publisher Query for the resource publisher
-	 * @param issued Query for the resource issued year
-	 * @param medium Query for the resource medium
-	 * @param from The page start (offset of page of resource to return)
-	 * @param size The page size (size of page of resource to return)
-	 * @param owner Owner filter for resource queries
-	 * @param t Type filter for resource queries
-	 * @param sort Sorting order for results ("newest", "oldest", "" -> relevance)
-	 * @param details If true, render details
-	 * @param set The set
-	 * @param word A word, a concept from the hbz union catalog
-	 * @param corporation A corporation associated with the resource
-	 * @param raw A query string that's directly (unprocessed) passed to ES
-	 * @param format The response format ('html' or 'json')
-	 * @return The search results
-	 */
-	public static Promise<Result> search(final String q, final String person,
-			final String name, final String subject, final String id,
-			final String publisher, final String issued, final String medium,
-			final int from, final int size, final String owner, String t, String sort,
-			boolean details, String set, String word, String corporation, String raw,
-			String format) {
-		addCorsHeader();
-		String uuid = session("uuid");
-		if (uuid == null)
-			session("uuid", UUID.randomUUID().toString());
-		String cacheId = String.format("%s-%s-%s", uuid, request().uri(),
-				Accept.formatFor(format, request().acceptedTypes()));
-		@SuppressWarnings("unchecked")
-		Promise<Result> cachedResult = (Promise<Result>) Cache.get(cacheId);
-		if (cachedResult != null)
-			return cachedResult;
-		Logger.debug("Not cached: {}, will cache for one hour", cacheId);
-		final Form<String> form = queryForm.bindFromRequest();
-		if (form.hasErrors())
-			return Promise.promise(() -> badRequest(search.render(null, q, person,
-					name, subject, id, publisher, issued, medium, from, size, 0L, owner,
-					t, sort, set, word, corporation, raw)));
-		String query = form.data().get("q");
-		Promise<Result> result = okPromise(query != null ? query : q, person, name,
-				subject, id, publisher, issued, medium, from, size, owner, t, sort,
-				details, set, word, corporation, raw, format);
-		cacheOnRedeem(cacheId, result, ONE_HOUR);
-		return result;
-	}
-
-	/**
 	 * @param id The resource ID.
 	 * @param format The response format ('html' or 'json')
 	 * @return The details page for the resource with the given ID.
 	 */
 	public static Promise<Result> show(final String id, String format) {
-		return search("", "", "", "", id, "", "", "", 0, 1, "", "", "", true, "",
-				"", "", "", format);
+		addCorsHeader();
+		return Promise.promise(() -> {
+			JsonNode result = new Index().getResource(id).getResult();
+			String responseFormat =
+					Accept.formatFor(format, request().acceptedTypes());
+			boolean htmlRequested =
+					responseFormat.equals(Accept.Format.HTML.queryParamString);
+			return htmlRequested ? ok(details.render(CONFIG, result.toString(), id))
+					: prettyJsonOk(result);
+		});
 	}
 
 	/**
@@ -266,24 +262,6 @@ public class Application extends Controller {
 		});
 	}
 
-	private static Promise<Result> okPromise(final String q, final String person,
-			final String name, final String subject, final String id,
-			final String publisher, final String issued, final String medium,
-			final int from, final int size, final String owner, String t, String sort,
-			boolean details, String set, String word, String corporation, String raw,
-			String format) {
-		final Promise<Result> result =
-				call(q, person, name, subject, id, publisher, issued, medium, from,
-						size, owner, t, sort, details, set, word, corporation, raw, format);
-		return result.recover((Throwable throwable) -> {
-			Logger.error("Could not call Lobid", throwable);
-			flashError();
-			return internalServerError(search.render("[]", q, person, name, subject,
-					id, publisher, issued, medium, from, size, 0L, owner, t, sort, set,
-					word, corporation, raw));
-		});
-	}
-
 	private static void flashError() {
 		flash("error",
 				"Es ist ein Fehler aufgetreten. "
@@ -297,50 +275,6 @@ public class Application extends Controller {
 		resultPromise.onRedeem((Result result) -> {
 			if (play.test.Helpers.status(result) == Http.Status.OK)
 				Cache.set(cacheId, resultPromise, duration);
-		});
-	}
-
-	static Promise<Result> call(final String q, final String person,
-			final String name, final String subject, final String id,
-			final String publisher, final String issued, final String medium,
-			final int from, final int size, String owner, String t, String sort,
-			boolean showDetails, String set, String word, String corporation,
-			String raw, String format) {
-		final WSRequestHolder requestHolder =
-				Lobid.request(q, person, name, subject, id, publisher, issued, medium,
-						from, size, owner, t, sort, set, word, corporation, raw);
-		return requestHolder.get().map((WSResponse response) -> {
-			Long hits = 0L;
-			String s = "{}";
-			if (response.getStatus() == Http.Status.OK) {
-				JsonNode json = response.asJson();
-				hits = Lobid.getTotalResults(json);
-				s = json.toString();
-			} else {
-				Logger.warn("{}: {} ({}, {})", response.getStatus(),
-						response.getStatusText(), requestHolder.getUrl(),
-						requestHolder.getQueryParameters());
-			}
-			String responseFormat =
-					Accept.formatFor(format, request().acceptedTypes());
-			boolean htmlRequested =
-					responseFormat.equals(Accept.Format.HTML.queryParamString);
-			if (htmlRequested) {
-				if (showDetails) {
-					JsonNode nodes = Json.parse(s);
-					if (nodes.isArray() && nodes.size() == 2) { // first: metadata
-						return ok(details.render(CONFIG,
-								new Index().getResource(id).getResult().toString(), id));
-					}
-					Logger.warn("No suitable data to show details for: {}", nodes);
-				}
-				return ok(search.render(s, q, person, name, subject, id, publisher,
-						issued, medium, from, size, hits, owner, t, sort, set, word,
-						corporation, raw));
-			}
-			JsonNode responseJson =
-					showDetails ? new Index().getResource(id).getResult() : Json.parse(s);
-			return prettyJsonOk(responseJson);
 		});
 	}
 
