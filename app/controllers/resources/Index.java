@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
@@ -41,8 +42,9 @@ public class Index {
 			Application.CONFIG.getString("index.type.resource");
 	private static final int CLUSTER_PORT =
 			Application.CONFIG.getInt("index.cluster.port");
-	private static final String CLUSTER_HOST =
-			Application.CONFIG.getString("index.cluster.host");
+	private static final List<String> CLUSTER_HOSTS =
+			Application.CONFIG.getList("index.cluster.hosts").stream()
+					.map(v -> v.unwrapped().toString()).collect(Collectors.toList());
 	private static final String CLUSTER_NAME =
 			Application.CONFIG.getString("index.cluster.name");
 
@@ -159,14 +161,26 @@ public class Index {
 	private Index withClient(Consumer<Client> method) {
 		Settings settings =
 				Settings.settingsBuilder().put("cluster.name", CLUSTER_NAME).build();
-		try (Client client = TransportClient.builder().settings(settings).build()
-				.addTransportAddress(new InetSocketTransportAddress(
-						InetAddress.getByName(CLUSTER_HOST), CLUSTER_PORT))) {
+		try (TransportClient client =
+				TransportClient.builder().settings(settings).build()) {
+			addHosts(client);
 			method.accept(client);
 			return this;
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
+		}
+	}
+
+	private static void addHosts(TransportClient client) {
+		for (String host : CLUSTER_HOSTS) {
+			try {
+				client.addTransportAddress(new InetSocketTransportAddress(
+						InetAddress.getByName(host), CLUSTER_PORT));
+			} catch (Exception e) {
+				Logger.warn("Could not add host {} to Elasticsearch client: {}", host,
+						e.getMessage());
+			}
 		}
 	}
 
