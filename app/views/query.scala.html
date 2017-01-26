@@ -47,7 +47,7 @@
 }
 
 @labelRaw = @{
-	if(raw.contains("multiVolumeWork")) {select(("Band","Bände"))} else if (raw.contains("series")) {select(("Serienband","Serienbände"))} else if (raw.contains("containedIn")) {select(("Beitrag","Beiträge"))} else {""}
+	if(q.contains("multiVolumeWork")) {select(("Band","Bände"))} else if (q.contains("series")) {select(("Serienband","Serienbände"))} else if (q.contains("containedIn")) {select(("Beitrag","Beiträge"))} else {""}
 }
 
 @main("lobid-resources - Ergebnisliste") {
@@ -84,9 +84,9 @@
                  <div class="row">
                     <div class="col-md-1"></div>
                     <div class="col-md-10">
-                     @allHits @if(!raw.isEmpty && !raw.contains(Lobid.escapeUri(Application.COVERAGE_FIELD.replace(".raw","")))){
-                      @defining(Application.CONFIG.getString("resources.api") + "/" + raw.substring(raw.lastIndexOf("/")+1)) { lobidUrl =>
-                       @labelRaw in: <a href="@lobidUrl.replace("/resource/","/resources/")">@Html(Lobid.resourceLabel(lobidUrl))</a>}}else{Treffer}, 
+                     @allHits @if(!q.isEmpty && !q.contains(Lobid.escapeUri(Application.COVERAGE_FIELD.replace(".raw","")))){
+                      @defining("http://lobid.org/resources/" + q.substring(q.lastIndexOf("/")+1, q.length()-1)) { lobidUrl =>
+                       @labelRaw in: <a href="@lobidUrl">@Html(Lobid.resourceLabel(lobidUrl))</a>}}else{Treffer}, 
                        zeige @(from+1) bis @(Math.min(from+hits.size,from+size)):
                     </div>
                     <div class="col-md-1" style="text-align: right; padding-right: 4px;">
