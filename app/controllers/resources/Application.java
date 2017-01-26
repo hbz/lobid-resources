@@ -169,17 +169,17 @@ public class Application extends Controller {
 		return result.recover((Throwable throwable) -> {
 			Logger.error("Could not query index", throwable);
 			flashError();
-			return internalServerError(query.render("[]", q, agent, name, subject,
-					id, publisher, issued, medium, from, size, 0L, owner, t, sort, set));
+			return internalServerError(query.render("[]", q, agent, name, subject, id,
+					publisher, issued, medium, from, size, 0L, owner, t, sort, set));
 		});
 	}
 
 	@SuppressWarnings({ "javadoc", "unused" }) // WIP
-	public static Promise<Result> aggregations(final String q,
-			final String agent, final String name, final String subject,
-			final String id, final String publisher, final String issued,
-			final String medium, final int from, final int size, final String owner,
-			String t, String sort, String set, String format) {
+	public static Promise<Result> aggregations(final String q, final String agent,
+			final String name, final String subject, final String id,
+			final String publisher, final String issued, final String medium,
+			final int from, final int size, final String owner, String t, String sort,
+			String set, String format) {
 		return Promise.promise(() -> {
 			String queryString = buildQueryString(q, agent, name, subject, id,
 					publisher, issued, medium, t, set);
@@ -291,9 +291,9 @@ public class Application extends Controller {
 			int from, int size, String owner, String t, String field, String sort,
 			String set) {
 
-		String key = String.format("facets.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s",
-				field, q, agent, name, id, publisher, set, subject, issued, medium,
-				owner, t);
+		String key =
+				String.format("facets.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s", field, q,
+						agent, name, id, publisher, set, subject, issued, medium, owner, t);
 		Result cachedResult = (Result) Cache.get(key);
 		if (cachedResult != null) {
 			return Promise.promise(() -> cachedResult);
@@ -439,7 +439,8 @@ public class Application extends Controller {
 		String newQ = q.isEmpty() ? "*" : q;
 		for (int i = 0; i < values.length; i++) {
 			String fieldValue = values[i];
-			String fieldName = FIELDS[i];
+			String fieldName = fieldValue.contains("http")
+					? FIELDS[i].replace(".label", ".id") : FIELDS[i];
 			if (!fieldValue.isEmpty()) {
 				String complexQ = " AND (";
 				for (String v : fieldValue.replace(",AND", "").split(",")) {
