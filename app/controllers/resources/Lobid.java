@@ -1,4 +1,4 @@
-/* Copyright 2014 Fabian Steeg, hbz. Licensed under the GPLv2 */
+/* Copyright 2014-2017 Fabian Steeg, hbz. Licensed under the GPLv2 */
 
 package controllers.resources;
 
@@ -226,8 +226,6 @@ public class Lobid {
 		if ((uris.size() == 1 && isOrg(uris.get(0)))
 				|| field.equals(Application.ITEM_FIELD))
 			return "octicon octicon-home";
-		else if ((uris.size() == 1 && field.equals(Application.COVERAGE_FIELD)))
-			return "octicon octicon-milestone";
 		else if ((uris.size() == 1 && isGnd(uris.get(0)))
 				|| field.equals(Application.SUBJECT_FIELD))
 			return "octicon octicon-tag";

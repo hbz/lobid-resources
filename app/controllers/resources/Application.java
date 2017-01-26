@@ -67,9 +67,6 @@ public class Application extends Controller {
 	public static final String MEDIUM_FIELD = "medium.id";
 	/** The internal ES field for the item/exemplar facet. */
 	public static final String ITEM_FIELD = "exemplar.id";
-	/** The internal ES field for the coverage facet. */
-	public static final String COVERAGE_FIELD =
-			"@graph.http://purl.org/dc/elements/1.1/coverage.@value.raw";
 	/** The internal ES field for subjects. */
 	public static final String SUBJECT_FIELD = "subject.id";
 	/** The internal ES field for issued years. */
@@ -87,7 +84,7 @@ public class Application extends Controller {
 	private static final String[] FIELDS =
 			new String[] { "contribution.agent.label", "title", "subject.id", "isbn",
 					"publication.publishedBy", "publication.startDate", "medium.id",
-					"type", "collectedBy.id", "_all", "contribution.agent.label" };
+					"type", "collectedBy.id" };
 
 	/**
 	 * @return The index page.
@@ -133,11 +130,7 @@ public class Application extends Controller {
 	 * @param owner Owner filter for resource queries
 	 * @param t Type filter for resource queries
 	 * @param sort Sorting order for results ("newest", "oldest", "" -> relevance)
-	 * @param showDetails If true, render details
 	 * @param set The set
-	 * @param word A word, a concept from the hbz union catalog
-	 * @param corporation A corporation associated with the resource
-	 * @param raw A query string that's directly (unprocessed) passed to ES
 	 * @param format The response format ('html' or 'json')
 	 * @return The search results
 	 */
@@ -145,8 +138,7 @@ public class Application extends Controller {
 			final String name, final String subject, final String id,
 			final String publisher, final String issued, final String medium,
 			final int from, final int size, final String owner, String t, String sort,
-			boolean showDetails, String set, String word, String corporation,
-			String raw, String format) {
+			String set, String format) {
 		addCorsHeader();
 		String uuid = session("uuid");
 		if (uuid == null)
@@ -160,7 +152,7 @@ public class Application extends Controller {
 		Logger.debug("Not cached: {}, will cache for one hour", cacheId);
 		Promise<Result> result = Promise.promise(() -> {
 			String queryString = buildQueryString(q, person, name, subject, id,
-					publisher, issued, medium, t, set, word, corporation);
+					publisher, issued, medium, t, set);
 			Index queryResources =
 					new Index().queryResources(queryString, from, size, sort);
 			JsonNode json = queryResources.getResult();
@@ -171,15 +163,14 @@ public class Application extends Controller {
 					responseFormat.equals(Accept.Format.HTML.queryParamString);
 			return htmlRequested ? ok(query.render(s, q, person, name, subject, id,
 					publisher, issued, medium, from, size, queryResources.getTotal(),
-					owner, t, sort, set, word, corporation, raw)) : prettyJsonOk(json);
+					owner, t, sort, set)) : prettyJsonOk(json);
 		});
 		cacheOnRedeem(cacheId, result, ONE_HOUR);
 		return result.recover((Throwable throwable) -> {
 			Logger.error("Could not query index", throwable);
 			flashError();
 			return internalServerError(query.render("[]", q, person, name, subject,
-					id, publisher, issued, medium, from, size, 0L, owner, t, sort, set,
-					word, corporation, raw));
+					id, publisher, issued, medium, from, size, 0L, owner, t, sort, set));
 		});
 	}
 
@@ -188,11 +179,10 @@ public class Application extends Controller {
 			final String person, final String name, final String subject,
 			final String id, final String publisher, final String issued,
 			final String medium, final int from, final int size, final String owner,
-			String t, String sort, boolean details, String set, String word,
-			String corporation, String raw, String format) {
+			String t, String sort, String set, String format) {
 		return Promise.promise(() -> {
 			String queryString = buildQueryString(q, person, name, subject, id,
-					publisher, issued, medium, t, set, word, corporation);
+					publisher, issued, medium, t, set);
 			Index queryResources =
 					new Index().queryResources(queryString, from, size, sort);
 			return ok(queryResources.getAggregations());
@@ -294,20 +284,16 @@ public class Application extends Controller {
 	 * @param field The facet field (the field to facet over)
 	 * @param sort Sorting order for results ("newest", "oldest", "" -> relevance)
 	 * @param set The set
-	 * @param word A word, a concept from the hbz union catalog
-	 * @param corporation A corporation associated with the resource
-	 * @param raw A query string that's directly (unprocessed) passed to ES
 	 * @return The search results
 	 */
 	public static Promise<Result> facets(String q, String person, String name,
 			String subject, String id, String publisher, String issued, String medium,
 			int from, int size, String owner, String t, String field, String sort,
-			String set, String word, String corporation, String raw) {
+			String set) {
 
-		String key =
-				String.format("facets.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s",
-						field, q, person, name, id, publisher, set, word, corporation, raw,
-						subject, issued, medium, owner, t);
+		String key = String.format("facets.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s",
+				field, q, person, name, id, publisher, set, subject, issued, medium,
+				owner, t);
 		Result cachedResult = (Result) Cache.get(key);
 		if (cachedResult != null) {
 			return Promise.promise(() -> cachedResult);
@@ -336,8 +322,8 @@ public class Application extends Controller {
 		Comparator<Pair<JsonNode, String>> sorter = (p1, p2) -> {
 			String t1 = p1.getLeft().get("key").asText();
 			String t2 = p2.getLeft().get("key").asText();
-			boolean t1Current = current(subject, medium, owner, t, field, t1, raw);
-			boolean t2Current = current(subject, medium, owner, t, field, t2, raw);
+			boolean t1Current = current(subject, medium, owner, t, field, t1);
+			boolean t2Current = current(subject, medium, owner, t, field, t2);
 			if (t1Current == t2Current) {
 				if (!field.equals(ISSUED_FIELD)) {
 					Integer c1 = p1.getLeft().get("doc_count").asInt();
@@ -361,19 +347,16 @@ public class Application extends Controller {
 					? t : queryParam(t, term);
 			String ownerQuery = !field.equals(ITEM_FIELD) //
 					? owner : withoutAndOperator(queryParam(owner, term));
-			String rawQuery = !field.equals(COVERAGE_FIELD) //
-					? raw : rawQueryParam(raw, term);
 			String subjectQuery = !field.equals(SUBJECT_FIELD) //
 					? subject : queryParam(subject, term);
 			String issuedQuery = !field.equals(ISSUED_FIELD) //
 					? issued : queryParam(issued, term);
 
-			boolean current = current(subject, medium, owner, t, field, term, raw);
+			boolean current = current(subject, medium, owner, t, field, term);
 
 			String routeUrl = routes.Application.query(q, person, name, subjectQuery,
 					id, publisher, issuedQuery, mediumQuery, from, size, ownerQuery,
-					typeQuery, sort(sort, subjectQuery), false, set, word, corporation,
-					rawQuery, null).url();
+					typeQuery, sort(sort, subjectQuery), set, null).url();
 
 			String result = String.format(
 					"<li " + (current ? "class=\"active\"" : "")
@@ -386,33 +369,32 @@ public class Application extends Controller {
 			return result;
 		};
 
-		Promise<Result> promise = aggregations(q, person, name, subject, id,
-				publisher, issued, medium, from, size, owner, t, sort, false, set, word,
-				corporation, raw, "json").map(result -> {
-					JsonNode json = Json.parse(Helpers.contentAsString(result));
-					Stream<JsonNode> stream =
-							StreamSupport.stream(Spliterators.spliteratorUnknownSize(
-									json.get(field).get("buckets").elements(), 0), false);
-					if (field.equals(ITEM_FIELD)) {
-						stream = preprocess(stream);
-					}
-					String labelKey = String.format(
-							"facets-labels.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s",
-							field, raw, q, person, name, id, publisher, set, word,
-							corporation, subject, issued, medium, raw,
-							field.equals(ITEM_FIELD) ? "" : owner, t);
+		Promise<Result> promise =
+				aggregations(q, person, name, subject, id, publisher, issued, medium,
+						from, size, owner, t, sort, set, "json").map(result -> {
+							JsonNode json = Json.parse(Helpers.contentAsString(result));
+							Stream<JsonNode> stream =
+									StreamSupport.stream(Spliterators.spliteratorUnknownSize(
+											json.get(field).get("buckets").elements(), 0), false);
+							if (field.equals(ITEM_FIELD)) {
+								stream = preprocess(stream);
+							}
+							String labelKey = String.format(
+									"facets-labels.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s", field, q,
+									person, name, id, publisher, set, subject, issued, medium,
+									field.equals(ITEM_FIELD) ? "" : owner, t);
 
-					@SuppressWarnings("unchecked")
-					List<Pair<JsonNode, String>> labelledFacets =
-							(List<Pair<JsonNode, String>>) Cache.get(labelKey);
-					if (labelledFacets == null) {
-						labelledFacets = stream.map(toLabel).filter(labelled)
-								.collect(Collectors.toList());
-						Cache.set(labelKey, labelledFacets, ONE_DAY);
-					}
-					return labelledFacets.stream().sorted(sorter).map(toHtml)
-							.collect(Collectors.toList());
-				}).map(lis -> ok(String.join("\n", lis)));
+							@SuppressWarnings("unchecked")
+							List<Pair<JsonNode, String>> labelledFacets =
+									(List<Pair<JsonNode, String>>) Cache.get(labelKey);
+							if (labelledFacets == null) {
+								labelledFacets = stream.map(toLabel).filter(labelled)
+										.collect(Collectors.toList());
+								Cache.set(labelKey, labelledFacets, ONE_DAY);
+							}
+							return labelledFacets.stream().sorted(sorter).map(toHtml)
+									.collect(Collectors.toList());
+						}).map(lis -> ok(String.join("\n", lis)));
 		promise.onRedeem(r -> Cache.set(key, r, ONE_DAY));
 		return promise;
 	}
@@ -422,11 +404,10 @@ public class Application extends Controller {
 	}
 
 	private static boolean current(String subject, String medium, String owner,
-			String t, String field, String term, String raw) {
+			String t, String field, String term) {
 		return field.equals(MEDIUM_FIELD) && contains(medium, term)
 				|| field.equals(TYPE_FIELD) && contains(t, term)
 				|| field.equals(ITEM_FIELD) && contains(owner, term)
-				|| field.equals(COVERAGE_FIELD) && rawContains(raw, quotedEscaped(term))
 				|| field.equals(SUBJECT_FIELD) && contains(subject, term);
 	}
 
@@ -450,26 +431,6 @@ public class Application extends Controller {
 	}
 
 	/**
-	 * @param currentParam The current value of the query param
-	 * @param term The term to create a query for
-	 * @return The escaped Elasticsearch query string for the `raw` query param
-	 */
-	public static String rawQueryParam(String currentParam, String term) {
-		String rawPrefix =
-				Lobid.escapeUri(COVERAGE_FIELD.replace(".raw", "")) + ":";
-		if (currentParam.isEmpty()) {
-			return rawPrefix + "(+" + quotedEscaped(term) + ")";
-		} else if (rawContains(currentParam, quotedEscaped(term))) {
-			String removedTerm = currentParam.replace(rawPrefix, "")
-					.replace("+" + quotedEscaped(term), "")
-					.replaceAll("\\A\\+|\\+\\z", "").replaceAll("\\++", "+");
-			return removedTerm.trim().equals("()") ? "" : rawPrefix + removedTerm;
-		} else
-			return currentParam.substring(0, currentParam.length() - 1) + "+"
-					+ quotedEscaped(term) + ")";
-	}
-
-	/**
 	 * @param q The current query string
 	 * @param values The values corresponding to {@link #Application.FIELDS}
 	 * @return A query string created from q, expanded for values
@@ -482,25 +443,13 @@ public class Application extends Controller {
 			if (!fieldValue.isEmpty()) {
 				String complexQ = " AND (";
 				for (String v : fieldValue.replace(",AND", "").split(",")) {
-					complexQ += " +" + fieldName + ":"
-							+ (fieldName.endsWith(".id") ? quotedEscaped(v) : v);
+					complexQ += " +" + fieldName + ":" + (fieldName.endsWith(".id")
+							? "\"" + Lobid.escapeUri(v) + "\"" : v);
 				}
 				newQ += complexQ + ")";
 			}
 		}
 		return newQ;
-	}
-
-	private static String quotedEscaped(String term) {
-		return "\"" + Lobid.escapeUri(term) + "\"";
-	}
-
-	private static boolean rawContains(String raw, String term) {
-		String[] split = raw.split(":");
-		String terms = split[split.length - 1];
-		terms =
-				terms.length() >= 2 ? terms.substring(1, terms.length() - 1) : terms;
-		return Arrays.asList(terms.split("\\+")).contains(term);
 	}
 
 	private static Stream<JsonNode> preprocess(Stream<JsonNode> stream) {

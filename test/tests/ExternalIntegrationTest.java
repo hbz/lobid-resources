@@ -42,8 +42,8 @@ public class ExternalIntegrationTest {
 	@Test
 	public void testFacets() {
 		running(testServer(3333), () -> {
-			String queryString = Application.buildQueryString("köln", "", "", "", "",
-					"", "", "", "", "", "", "");
+			String queryString =
+					Application.buildQueryString("köln", "", "", "", "", "", "", "", "");
 			Index queryResources = new Index().queryResources(queryString, 0, 0, "");
 			JsonNode facets = queryResources.getAggregations();
 			assertThat(facets.get("type").findValues("key").stream()
@@ -66,7 +66,7 @@ public class ExternalIntegrationTest {
 		int size = 10;
 		running(testServer(3333), () -> {
 			Content html = views.html.query.render("[]", query, "", "", "", "", "",
-					"", "", from, size, 0L, "", "", "", "", "", "", "");
+					"", "", from, size, 0L, "", "", "", "");
 			assertThat(Helpers.contentType(html)).isEqualTo("text/html");
 			String text = Helpers.contentAsString(html);
 			assertThat(text).contains("lobid-resources").contains("buch");

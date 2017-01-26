@@ -1,4 +1,4 @@
-/* Copyright 2014-2015 Fabian Steeg, hbz. Licensed under the GPLv2 */
+/* Copyright 2014-2017 Fabian Steeg, hbz. Licensed under the GPLv2 */
 
 package views;
 
@@ -14,7 +14,6 @@ import java.util.stream.Collectors;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.html.HtmlEscapers;
 
-import controllers.resources.Application;
 import controllers.resources.Lobid;
 import play.Logger;
 
@@ -68,8 +67,6 @@ public enum TableRow {
 			String term = value;
 			if (param.equals("q")) {
 				term = "\"" + value + "\"";
-			} else if (param.equals("raw")) {
-				term = Application.rawQueryParam("", value);
 			}
 			try {
 				term = URLEncoder.encode(term, "UTF-8");

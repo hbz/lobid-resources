@@ -8,9 +8,9 @@ GET    /*path/                controllers.resources.Application.redirect(path: S
 # Home page
 GET    /resources                       controllers.resources.Application.index()
 GET    /resources/advanced              controllers.resources.Application.advanced()
-GET    /resources/search                controllers.resources.Application.query(q?="", person?="", name?="", subject?="", id?="", publisher?="", issued?="", medium ?= "", from:Int?=0, size:Int?=15, owner?="", t?="", sort ?= "", details:Boolean?=false, set?="", word?="", corporation?="", raw?="", format ?= null)
-GET    /resources/aggregations          controllers.resources.Application.aggregations(q?="", person?="", name?="", subject?="", id?="", publisher?="", issued?="", medium ?= "", from:Int?=0, size:Int?=15, owner?="", t?="", sort ?= "", details:Boolean?=false, set?="", word?="", corporation?="", raw?="", format ?= null)
-GET    /resources/facets                controllers.resources.Application.facets(q,person?="", name?="", subject?="", id?="", publisher?="", issued?="", medium ?= "", from:Int,size:Int,owner,t,field,sort,set?="", word?="", corporation?="", raw?="")
+GET    /resources/search                controllers.resources.Application.query(q?="", person?="", name?="", subject?="", id?="", publisher?="", issued?="", medium ?= "", from:Int?=0, size:Int?=15, owner?="", t?="", sort ?= "", set?="", format ?= null)
+GET    /resources/aggregations          controllers.resources.Application.aggregations(q?="", person?="", name?="", subject?="", id?="", publisher?="", issued?="", medium ?= "", from:Int?=0, size:Int?=15, owner?="", t?="", sort ?= "", set?="", format ?= null)
+GET    /resources/facets                controllers.resources.Application.facets(q,person?="", name?="", subject?="", id?="", publisher?="", issued?="", medium ?= "", from:Int,size:Int,owner,t,field,sort,set?="")
 
 GET    /resources/stars                 controllers.resources.Application.showStars(format?="", ids?="")
 GET    /resources/stars/clear           controllers.resources.Application.clearStars(ids ?= "")
