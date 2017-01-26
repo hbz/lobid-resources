@@ -441,6 +441,11 @@ public class Application extends Controller {
 			String fieldValue = values[i];
 			String fieldName = fieldValue.contains("http")
 					? FIELDS[i].replace(".label", ".id") : FIELDS[i];
+			if (fieldName.toLowerCase().endsWith("date")
+					&& fieldValue.matches("\\d{1,4}-\\d{1,4}")) {
+				String[] fromTo = fieldValue.split("-");
+				fieldValue = String.format("[%s TO %s]", fromTo[0], fromTo[1]);
+			}
 			if (!fieldValue.isEmpty()) {
 				String complexQ = " AND (";
 				for (String v : fieldValue.replace(",AND", "").split(",")) {
