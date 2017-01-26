@@ -118,7 +118,7 @@ public class Application extends Controller {
 
 	/**
 	 * @param q Query to search in all fields
-	 * @param person Query for a person associated with the resource
+	 * @param agent Query for a agent associated with the resource
 	 * @param name Query for the resource name (title)
 	 * @param subject Query for the resource subject
 	 * @param id Query for the resource id
@@ -134,7 +134,7 @@ public class Application extends Controller {
 	 * @param format The response format ('html' or 'json')
 	 * @return The search results
 	 */
-	public static Promise<Result> query(final String q, final String person,
+	public static Promise<Result> query(final String q, final String agent,
 			final String name, final String subject, final String id,
 			final String publisher, final String issued, final String medium,
 			final int from, final int size, final String owner, String t, String sort,
@@ -151,7 +151,7 @@ public class Application extends Controller {
 			return cachedResult;
 		Logger.debug("Not cached: {}, will cache for one hour", cacheId);
 		Promise<Result> result = Promise.promise(() -> {
-			String queryString = buildQueryString(q, person, name, subject, id,
+			String queryString = buildQueryString(q, agent, name, subject, id,
 					publisher, issued, medium, t, set);
 			Index queryResources =
 					new Index().queryResources(queryString, from, size, sort);
@@ -161,7 +161,7 @@ public class Application extends Controller {
 					Accept.formatFor(format, request().acceptedTypes());
 			boolean htmlRequested =
 					responseFormat.equals(Accept.Format.HTML.queryParamString);
-			return htmlRequested ? ok(query.render(s, q, person, name, subject, id,
+			return htmlRequested ? ok(query.render(s, q, agent, name, subject, id,
 					publisher, issued, medium, from, size, queryResources.getTotal(),
 					owner, t, sort, set)) : prettyJsonOk(json);
 		});
@@ -169,19 +169,19 @@ public class Application extends Controller {
 		return result.recover((Throwable throwable) -> {
 			Logger.error("Could not query index", throwable);
 			flashError();
-			return internalServerError(query.render("[]", q, person, name, subject,
+			return internalServerError(query.render("[]", q, agent, name, subject,
 					id, publisher, issued, medium, from, size, 0L, owner, t, sort, set));
 		});
 	}
 
 	@SuppressWarnings({ "javadoc", "unused" }) // WIP
 	public static Promise<Result> aggregations(final String q,
-			final String person, final String name, final String subject,
+			final String agent, final String name, final String subject,
 			final String id, final String publisher, final String issued,
 			final String medium, final int from, final int size, final String owner,
 			String t, String sort, String set, String format) {
 		return Promise.promise(() -> {
-			String queryString = buildQueryString(q, person, name, subject, id,
+			String queryString = buildQueryString(q, agent, name, subject, id,
 					publisher, issued, medium, t, set);
 			Index queryResources =
 					new Index().queryResources(queryString, from, size, sort);
@@ -270,7 +270,7 @@ public class Application extends Controller {
 
 	/**
 	 * @param q Query to search in all fields
-	 * @param person Query for a person associated with the resource
+	 * @param agent Query for a agent associated with the resource
 	 * @param name Query for the resource name (title)
 	 * @param subject Query for the resource subject
 	 * @param id Query for the resource id
@@ -286,13 +286,13 @@ public class Application extends Controller {
 	 * @param set The set
 	 * @return The search results
 	 */
-	public static Promise<Result> facets(String q, String person, String name,
+	public static Promise<Result> facets(String q, String agent, String name,
 			String subject, String id, String publisher, String issued, String medium,
 			int from, int size, String owner, String t, String field, String sort,
 			String set) {
 
 		String key = String.format("facets.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s",
-				field, q, person, name, id, publisher, set, subject, issued, medium,
+				field, q, agent, name, id, publisher, set, subject, issued, medium,
 				owner, t);
 		Result cachedResult = (Result) Cache.get(key);
 		if (cachedResult != null) {
@@ -354,7 +354,7 @@ public class Application extends Controller {
 
 			boolean current = current(subject, medium, owner, t, field, term);
 
-			String routeUrl = routes.Application.query(q, person, name, subjectQuery,
+			String routeUrl = routes.Application.query(q, agent, name, subjectQuery,
 					id, publisher, issuedQuery, mediumQuery, from, size, ownerQuery,
 					typeQuery, sort(sort, subjectQuery), set, null).url();
 
@@ -370,7 +370,7 @@ public class Application extends Controller {
 		};
 
 		Promise<Result> promise =
-				aggregations(q, person, name, subject, id, publisher, issued, medium,
+				aggregations(q, agent, name, subject, id, publisher, issued, medium,
 						from, size, owner, t, sort, set, "json").map(result -> {
 							JsonNode json = Json.parse(Helpers.contentAsString(result));
 							Stream<JsonNode> stream =
@@ -381,7 +381,7 @@ public class Application extends Controller {
 							}
 							String labelKey = String.format(
 									"facets-labels.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s", field, q,
-									person, name, id, publisher, set, subject, issued, medium,
+									agent, name, id, publisher, set, subject, issued, medium,
 									field.equals(ITEM_FIELD) ? "" : owner, t);
 
 							@SuppressWarnings("unchecked")

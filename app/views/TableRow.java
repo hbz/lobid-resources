@@ -81,7 +81,7 @@ public enum TableRow {
 							"<a title=\"Nach weiteren Titeln suchen\" href=\"%s\">%s</a>",
 							search, label);
 			if (value.startsWith("http")) {
-				if (param.equals("person") || param.equals("subject")
+				if (param.equals("agent") || param.equals("subject")
 						&& !value.contains("http://dewey.info")) {
 					result += String.format(
 							" <a title=\"Linked-Data-Quelle abrufen\" "
