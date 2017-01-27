@@ -1045,7 +1045,8 @@
 			flushWith="@relatorNode" sameEntity="true">
 			<data source="@contributionBnode"/>
 		</combine>
-		<combine name="http://id.loc.gov/ontologies/bibframe/agent" value="${a}" flushWith="@relatorNode">
+		<combine name="http://id.loc.gov/ontologies/bibframe/agent" value="${a}"
+			flushWith="@relatorNode">
 			<data source="@agentId" name="a"/>
 		</combine>
 		<!-- set subject uri of resource anew -->
@@ -1055,8 +1056,8 @@
 			<data source="@agentId"/>
 		</combine>
 		<entity name="~rdf:list" reset="true">
-			<combine name="http://id.loc.gov/ontologies/bibframe/contribution" value="${a}" sameEntity="true"
-				reset="true">
+			<combine name="http://id.loc.gov/ontologies/bibframe/contribution" value="${a}"
+				sameEntity="true" reset="true">
 				<data source="@contributionBnode" name="a"/>
 				<data source="@relatorNode"/>
 			</combine>
@@ -1616,7 +1617,8 @@
 				</data>
 			</combine>
 		</entity>
-		<entity name="http://purl.org/lobid/lv#inSeries" flushWith="4[56789]3[-ab]1.a" reset="true">
+		<entity name="http://purl.org/lobid/lv#inSeries" flushWith="4[56789]3[-ab]1.a"
+			reset="true">
 			<data source="@idTitleSeries" name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type">
 				<regexp match=".*" format="$[ns-lobid-vocab]SeriesRelation"/>
 			</data>
