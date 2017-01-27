@@ -878,7 +878,7 @@
 		<!-- ####### contributors -->
 		<!-- ####################### -->
 		<!-- person links -->
-		<data source="1[02468][048][-aemn][12].9|1[13579][26][-aemn][12].9" name="@creatorPersonId">
+		<data source="1[02468][048][-amn][12].9|1[13579][26][-amn][12].9" name="@creatorPersonId">
 			<regexp match="\(DE-588\)(.*)" format="http://d-nb.info/gnd/${1}"/>
 			<sanitizeUrl></sanitizeUrl>
 		</data>
@@ -1072,7 +1072,7 @@
 		<!-- contributors with roles @TODO many roles needs tests -->
 		<data source="1??b[1234].b|8[012]?[-mn][-12].b" name="@marcrelName"/>
 		<!-- id of contributor (which is not a creator) -->
-		<data source="1??[bcfp][1234].9" name="@contributorPersonId">
+		<data source="1??[bcefp][1234].9" name="@contributorPersonId">
 			<regexp match="\(DE-588\)(.*)" format="http://d-nb.info/gnd/${1}"/>
 			<sanitizeUrl></sanitizeUrl>
 		</data>
@@ -1328,11 +1328,14 @@
 				<data source="@marcrelName" name="a">
 					<regexp match="[sS]ammler" format="http://id.loc.gov/vocabulary/relators/col"/>
 				</data>
-				<data source="@marcrelName" name="a">
-					<regexp match="[bB]eitr" format="http://id.loc.gov/vocabulary/relators/ctb"/>
+				<data source="1??e[1234].p" name="a">  <!-- see #150 -->
+					<regexp match=".*" format="http://id.loc.gov/vocabulary/relators/prf"/>
 				</data>
 				<data source="@marcrelName" name="a">
 					<regexp match="[iI]nterpr" format="http://id.loc.gov/vocabulary/relators/prf"/>
+				</data>
+				<data source="@marcrelName" name="a">
+					<regexp match="[bB]eitr" format="http://id.loc.gov/vocabulary/relators/ctb"/>
 				</data>
 				<data source="@marcrelName" name="a">
 					<regexp match="[kK]amera" format="http://id.loc.gov/vocabulary/relators/cng"/>
