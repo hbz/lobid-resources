@@ -668,15 +668,16 @@
 			<data source="@placeOfPublication_"/>
 		</choose>
 		<data source="41[27][-abcu][-12].[ag]|419-[12].b" name="@publisher"/>
+		<choose name="@startDateFirstPublication">
+			<!-- issue precedence -->
+			<data source="425[abc-p][-1].a|419-1c|595-[-12].a|089-[-1].a">
+				<regexp match="(\d{4})" format="${1}"/>
+			</data>
+		</choose>
 		<entity name="http://schema.org/publication" flushWith="record">
 			<data source="@placeOfPublication" name="http://schema.org/location"/>
 			<data source="@publisher" name="http://schema.org/publishedBy"/>
-			<choose name="http://schema.org/startDate">
-				<!-- issue precedence -->
-				<data source="425[abc-p][-1].a|419-1c|595-[-12].a|089-[-1].a">
-					<regexp match="(\d{4})" format="${1}"/>
-				</data>
-			</choose>
+			<data source="@startDateFirstPublication" name="http://schema.org/startDate"/>
 			<!-- range of date. Only if 021 not exists but 425c. Take 4 digits. -->
 			<choose name="http://schema.org/endDate">
 				<if>
@@ -688,23 +689,26 @@
 					<regexp match="^\d{4}.*"/>
 				</data>
 			</choose>
-			<data source="@publisher" name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type">
-				<constant value="http://schema.org/Publication"/>
+			<data source="@publisher|@startDateFirstPublication|@placeOfPublication" name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type">
+				<constant value="http://schema.org/PublicationEvent"/>
 			</data>
 		</entity>
 		<!-- secondary publication -->
 		<data source="610[-a]1.a" name="@descriptionOfSecondaryPublication"/>
 		<data source="611[-a]1.a" name="@placeOfSecondaryPublication"/>
 		<data source="613[-a]1.a" name="@secondaryPublisher"/>
+		<data source="619[ab][-1].a" name="@startDateSecondaryPublication">
+			<regexp match="(\d{4})" format="${1}"/>
+		</data>
 		<entity name="http://purl.org/lobid/lv#secondaryPublication" flushWith="record">
 			<data source="@placeOfSecondaryPublication" name="http://schema.org/location"/>
 			<data source="@secondaryPublisher" name="http://schema.org/publishedBy"/>
 			<data source="@descriptionOfSecondaryPublication" name="http://purl.org/dc/terms/description"/>
-			<data source="619[ab][-1].a" name="http://schema.org/startDate">
-				<regexp match="(\d{4})" format="${1}"/>
-			</data>
-			<data source="@secondaryPublisher" name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type">
-				<constant value="http://schema.org/Publication"/>
+			<data source="@startDateSecondaryPublication" name="http://schema.org/startDate"/>
+			<data
+				source="@secondaryPublisher|@startDateSecondaryPublication|@placeOfSecondaryPublication|@descriptionOfSecondaryPublication"
+				name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type">
+				<constant value="http://schema.org/PublicationEvent"/>
 			</data>
 		</entity>
 		<!-- |674[-abc][-12].a <= YearOfPublication of the primary form. TODO find property -->
@@ -1045,7 +1049,8 @@
 			flushWith="@relatorNode" sameEntity="true">
 			<data source="@contributionBnode"/>
 		</combine>
-		<combine name="http://id.loc.gov/ontologies/bibframe/agent" value="${a}" flushWith="@relatorNode">
+		<combine name="http://id.loc.gov/ontologies/bibframe/agent" value="${a}"
+			flushWith="@relatorNode">
 			<data source="@agentId" name="a"/>
 		</combine>
 		<!-- set subject uri of resource anew -->
@@ -1055,8 +1060,8 @@
 			<data source="@agentId"/>
 		</combine>
 		<entity name="~rdf:list" reset="true">
-			<combine name="http://id.loc.gov/ontologies/bibframe/contribution" value="${a}" sameEntity="true"
-				reset="true">
+			<combine name="http://id.loc.gov/ontologies/bibframe/contribution" value="${a}"
+				sameEntity="true" reset="true">
 				<data source="@contributionBnode" name="a"/>
 				<data source="@relatorNode"/>
 			</combine>
@@ -1616,7 +1621,8 @@
 				</data>
 			</combine>
 		</entity>
-		<entity name="http://purl.org/lobid/lv#inSeries" flushWith="4[56789]3[-ab]1.a" reset="true">
+		<entity name="http://purl.org/lobid/lv#inSeries" flushWith="4[56789]3[-ab]1.a"
+			reset="true">
 			<data source="@idTitleSeries" name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type">
 				<regexp match=".*" format="$[ns-lobid-vocab]SeriesRelation"/>
 			</data>
