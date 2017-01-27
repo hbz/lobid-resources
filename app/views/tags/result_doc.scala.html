@@ -34,7 +34,7 @@
 }
 
 @subordinated(field:String, id:String, label:String, values:(String,String)) = {
-  @defining(new Index().queryResources(field+":\""+Lobid.escapeUri(id)+"\"",0,0,"").getTotal){ hits => @if(hits > 0) {
+  @defining(new Index().queryResources(field+":\""+Lobid.escapeUri(id)+"\"").getTotal){ hits => @if(hits > 0) {
     @defining(if(hits==1){values._1} else {values._2}){ value =>
     <tr><td>@label</td><td><a title="@value" href="@resources.routes.Application.query(q=field+":\""+Lobid.escapeUri(id)+"\"")">@hits @value</a></td></tr>
   }}}

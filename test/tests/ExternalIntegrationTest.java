@@ -44,7 +44,7 @@ public class ExternalIntegrationTest {
 		running(testServer(3333), () -> {
 			String queryString =
 					Application.buildQueryString("köln", "", "", "", "", "", "", "", "");
-			Index queryResources = new Index().queryResources(queryString, 0, 0, "");
+			Index queryResources = new Index().queryResources(queryString);
 			JsonNode facets = queryResources.getAggregations();
 			assertThat(facets.get("type").findValues("key").stream()
 					.map(e -> e.asText()).collect(Collectors.toList())).contains(
@@ -77,12 +77,11 @@ public class ExternalIntegrationTest {
 	public void sizeRequest() {
 		running(testServer(3333), () -> {
 			Index index = new Index();
-			Long hits =
-					index.queryResources("hbzId:HT018486420", 0, 10, "").getTotal();
+			Long hits = index.queryResources("hbzId:HT018486420").getTotal();
 			assertThat(hits).isGreaterThan(0);
-			hits = index.queryResources("hbzId:HT002091108", 0, 10, "").getTotal();
+			hits = index.queryResources("hbzId:HT002091108").getTotal();
 			assertThat(hits).isGreaterThan(0);
-			hits = index.queryResources("hbzId:HT001387709", 0, 10, "").getTotal();
+			hits = index.queryResources("hbzId:HT001387709").getTotal();
 			assertThat(hits).isGreaterThan(0);
 		});
 	}

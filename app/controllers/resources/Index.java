@@ -1,5 +1,8 @@
 package controllers.resources;
 
+import static org.elasticsearch.index.query.QueryBuilders.hasChildQuery;
+import static org.elasticsearch.index.query.QueryBuilders.matchQuery;
+
 import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -14,6 +17,8 @@ import org.elasticsearch.client.Client;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
+import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
@@ -58,7 +63,7 @@ public class Index {
 	 *         {@link #getTotal()}
 	 */
 	public Index queryResources(String q) {
-		return queryResources(q, 0, 10, "");
+		return queryResources(q, 0, 10, "", "");
 	}
 
 	/**
@@ -66,17 +71,20 @@ public class Index {
 	 * @param from The from index for the page
 	 * @param size The page size, starting at from
 	 * @param sort "newest", "oldest", or "" for relevance
+	 * @param owner Owner institution
 	 * @return This index, get results via {@link #getResult()} and
 	 *         {@link #getTotal()}
 	 */
-	public Index queryResources(String q, int from, int size, String sort) {
-		Logger.trace("queryResources: q={}, from={}, size={}, sort={}", q, from,
-				size, sort);
+	public Index queryResources(String q, int from, int size, String sort,
+			String owner) {
 		return withClient((Client client) -> {
+			QueryBuilder query = owner.isEmpty() ? QueryBuilders.queryStringQuery(q)
+					: ownerQuery(q, owner);
+			Logger.trace("queryResources: q={}, from={}, size={}, sort={}, query={}",
+					q, from, size, sort, query);
 			SearchRequestBuilder requestBuilder = client.prepareSearch(INDEX_NAME)
 					.setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
-					.setTypes(TYPE_RESOURCE).setQuery(QueryBuilders.queryStringQuery(q))
-					.setFrom(from).setSize(size);
+					.setTypes(TYPE_RESOURCE).setQuery(query).setFrom(from).setSize(size);
 			if (!sort.isEmpty()) {
 				requestBuilder.addSort(SortBuilders.fieldSort("publication.startDate")
 						.order(sort.equals("newest") ? SortOrder.DESC : SortOrder.ASC));
@@ -95,6 +103,19 @@ public class Index {
 			total = hits.getTotalHits();
 		});
 
+	}
+
+	private static QueryBuilder ownerQuery(String q, String owner) {
+		final String prefix = "http://lobid.org/organisation/";
+		BoolQueryBuilder ownersQuery = QueryBuilders.boolQuery();
+		final String[] owners = owner.split(",");
+		for (String o : owners) {
+			final String ownerId = prefix + o.replace(prefix, "");
+			ownersQuery = ownersQuery
+					.should(hasChildQuery("item", matchQuery("owner.id", ownerId)));
+		}
+		return QueryBuilders.boolQuery().must(QueryBuilders.queryStringQuery(q))
+				.must(ownersQuery);
 	}
 
 	/**

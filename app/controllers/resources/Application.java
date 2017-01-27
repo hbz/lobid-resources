@@ -154,7 +154,7 @@ public class Application extends Controller {
 			String queryString = buildQueryString(q, agent, name, subject, id,
 					publisher, issued, medium, t, set);
 			Index queryResources =
-					new Index().queryResources(queryString, from, size, sort);
+					new Index().queryResources(queryString, from, size, sort, owner);
 			JsonNode json = queryResources.getResult();
 			String s = json.toString();
 			String responseFormat =
@@ -184,7 +184,7 @@ public class Application extends Controller {
 			String queryString = buildQueryString(q, agent, name, subject, id,
 					publisher, issued, medium, t, set);
 			Index queryResources =
-					new Index().queryResources(queryString, from, size, sort);
+					new Index().queryResources(queryString, from, size, sort, owner);
 			return ok(queryResources.getAggregations());
 		});
 	}
