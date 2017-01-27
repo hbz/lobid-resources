@@ -180,10 +180,10 @@ public class Index {
 	private static SearchRequestBuilder withAggregations(
 			final SearchRequestBuilder searchRequest, String... fields) {
 		Arrays.asList(fields).forEach(field -> {
-			searchRequest.addAggregation(
-					AggregationBuilders.terms(field).field(field).size(100)
-			// TODO: very high count is required for owners only?
-			/* .size(Integer.MAX_VALUE) */);
+			boolean many =
+					field.equals("publication.startDate") || field.equals("exemplar.id");
+			searchRequest.addAggregation(AggregationBuilders.terms(field).field(field)
+					.size(many ? 1000 : 100));
 		});
 		return searchRequest;
 	}
