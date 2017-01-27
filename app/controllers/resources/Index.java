@@ -29,6 +29,7 @@ import org.elasticsearch.search.sort.SortOrder;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import play.Logger;
+import play.cache.Cache;
 import play.libs.Json;
 
 /**
@@ -77,7 +78,14 @@ public class Index {
 	 */
 	public Index queryResources(String q, int from, int size, String sort,
 			String owner) {
-		return withClient((Client client) -> {
+		String cacheId =
+				String.format("index-%s.%s.%s.%s.%s", q, from, size, sort, owner);
+		Index index = (Index) Cache.get(cacheId);
+		if (index != null) {
+			return index;
+		}
+		Logger.debug("Not cached: " + cacheId);
+		Index resultIndex = withClient((Client client) -> {
 			QueryBuilder query = owner.isEmpty() ? QueryBuilders.queryStringQuery(q)
 					: ownerQuery(q, owner);
 			Logger.trace("queryResources: q={}, from={}, size={}, sort={}, query={}",
@@ -102,7 +110,8 @@ public class Index {
 			result = Json.toJson(results);
 			total = hits.getTotalHits();
 		});
-
+		Cache.set(cacheId, resultIndex, Application.ONE_HOUR);
+		return resultIndex;
 	}
 
 	private static QueryBuilder ownerQuery(String q, String owner) {
