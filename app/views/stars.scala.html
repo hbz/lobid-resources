@@ -10,11 +10,11 @@
 @import scala.concurrent.duration._
 @import play.api.Play.current
 @import play.api.libs.json.Json
-@import controllers.resources.Lobid
+@import controllers.resources.Index
 
 @entries() = {
     @for((id,i) <- ids.zipWithIndex; doc = Json.parse(vals(i).toString())) {
-        @if(f=="details"){@tags.result_doc(Json.parse(Lobid.getResource(id).toString))} else {@tags.result_short(id,doc,i,ids)}
+        @if(f=="details"){@tags.result_doc(Json.parse(new Index().getResource(id).getResult().toString))} else {@tags.query_result_short(id,doc,i,ids)}
     }
 }
 

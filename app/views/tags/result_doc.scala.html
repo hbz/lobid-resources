@@ -4,6 +4,7 @@
 @import play.api.libs.json._
 @import views.TableRow
 @import controllers.resources.Lobid
+@import controllers.resources.Index
 @import controllers.resources.Application.CONFIG
 
 @table()(body: Html) = {
@@ -17,15 +18,15 @@
 }
 
 @nestedIds(property: String) = @{
-	(doc\\property).last.asOpt[Seq[JsValue]].getOrElse(Seq()).map((v: JsValue) => (v \ "id").asOpt[String].getOrElse("No id in " + v))
+	(doc\property).asOpt[Seq[JsValue]].getOrElse(Seq()).map((v: JsValue) => (v \ "id").asOpt[String].getOrElse("No id in " + v))
 }
 
 @singleOrMultiString(property: String) = @{
-	(doc\\property).last.asOpt[Seq[String]].getOrElse(Seq((doc\\property).last.asOpt[String].getOrElse("--")))
+	(doc\property).asOpt[Seq[String]].getOrElse(Seq((doc\property).asOpt[String].getOrElse("--")))
 }
 
 @with_icon(label: String, property: String, fullField: String) = {
-  @if(!(doc\\property).isEmpty) {
+  @if((doc\property).asOpt[JsValue].isDefined) {
     @defining(if(property != "type") { nestedIds(property) } else { singleOrMultiString(property) }){ v =>
       <tr><td>@label</td><td><span class="@Lobid.facetIcon(v,fullField)"></span> @Lobid.facetLabel(v,fullField,"")</td></tr>
     }
@@ -33,14 +34,14 @@
 }
 
 @subordinated(field:String, id:String, label:String, values:(String,String)) = {
-  @defining(Lobid.getTotalHits(field, id, "*").get(Lobid.API_TIMEOUT)){ hits => @if(hits > 0) {
+  @defining(new Index().queryResources(field+":\""+Lobid.escapeUri(id)+"\"").getTotal){ hits => @if(hits > 0) {
     @defining(if(hits==1){values._1} else {values._2}){ value =>
-    <tr><td>@label</td><td><a title="@value" href="@resources.routes.Application.search(raw=Lobid.escapeUri(field)+":"+Lobid.escapeUri(id),set="*")">@hits @value</a></td></tr>
+    <tr><td>@label</td><td><a title="@value" href="@resources.routes.Application.query(q=field+":\""+Lobid.escapeUri(id)+"\"")">@hits @value</a></td></tr>
   }}}
 }
 
-@lobidUrl(node: JsValue) = @{
-  "http://lobid.org/resource/" + node.asOpt[Seq[String]].getOrElse(Seq("--"))(0)
+@lobidUrl(hbzId: String) = @{
+  "http://lobid.org/resources/" + hbzId + "#!"
 }
 
 @lobid2_part_of(field: String, subField: String) = {
@@ -64,7 +65,7 @@
               agents = agent.asOpt[Seq[JsValue]].getOrElse(Seq(agent));
               label = (agents(0) \ "label").asOpt[String].getOrElse("--");
               id = (agents(0) \ "id").asOpt[String].getOrElse("--")) {
-        <a title="Nach weiteren Titeln von '@label' suchen" href='@resources.routes.Application.search(person=id)'/>@label</a>
+        <a title="Nach weiteren Titeln von '@label' suchen" href='@resources.routes.Application.query(agent=id)'/>@label</a>
         <a title="Linked-Data-Quelle zu '@label' abrufen" href='@id'><span class='glyphicon glyphicon-link'></span></a>
         @if(c!=cs.last){ | }
       }</td>
@@ -79,7 +80,7 @@
     @for(subject <- subjects;
          label <- (subject \ "label").asOpt[String];
          id = (subject \ "id").asOpt[String]) {
-      <a title="Nach weiteren Titeln zu '@label' suchen" href='@resources.routes.Application.search(subject=id.getOrElse(label))'/>@label</a>
+      <a title="Nach weiteren Titeln zu '@label' suchen" href='@resources.routes.Application.query(subject=id.getOrElse(label))'/>@label</a>
       @if(id.isDefined && !id.get.contains("dewey.info")){<a title="Linked-Data-Quelle zu '@label' abrufen" href='@id'><span class='glyphicon glyphicon-link'></span></a>}
       @if(subject!=subjects.last){ | }
     }</td>
@@ -92,7 +93,7 @@
   @result_field("Verantwortlich", "statementOfResponsibility", doc, TableRow.VALUES)
   @contributions((doc \ "contribution").asOpt[Seq[JsValue]].getOrElse(Seq()))
   @with_icon("Medientyp", "medium", controllers.resources.Application.MEDIUM_FIELD)
-  @with_icon("Publikationstyp", "type", controllers.resources.Application.TYPE_FIELD_LOBID2)
+  @with_icon("Publikationstyp", "type", controllers.resources.Application.TYPE_FIELD)
   @result_field("", "thesisInformation", doc, TableRow.VALUES)
 
   @result_field("Erschienen", "issued", doc, TableRow.VALUES)
@@ -107,10 +108,10 @@
   @result_field("Erscheinungsweise", "frequency", doc, TableRow.VALUES)
   @lobid2_part_of("inSeries", "series")
   @lobid2_part_of("volumeIn", "multiVolumeWork")
-  @defining(lobidUrl((doc \\ "hbzId")(0))){ id =>
-   @subordinated("@graph.http://purl.org/lobid/lv#multiVolumeWork.@id", id, "Bände", ("zugehöriger Band", "zugehörige Bände"))
-   @subordinated("@graph.http://purl.org/lobid/lv#series.@id", id, "Serienbände", ("zugehöriger Serienband", "zugehörige Serienbände"))
-   @subordinated("@graph.http://purl.org/lobid/lv#containedIn.@id", id, "Enthält", ("Beitrag", "Beiträge"))
+  @defining(lobidUrl((doc \ "hbzId").asOpt[String].getOrElse(""))){ id =>
+   @subordinated("volumeIn.multiVolumeWork.id", id, "Bände", ("zugehöriger Band", "zugehörige Bände"))
+   @subordinated("inSeries.series.id", id, "Serienbände", ("zugehöriger Serienband", "zugehörige Serienbände"))
+   @subordinated("containedIn.id", id, "Enthält", ("Beitrag", "Beiträge"))
   }
 
   @subjects((doc \ "subject").asOpt[Seq[JsValue]].getOrElse(Seq()))

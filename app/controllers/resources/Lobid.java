@@ -1,4 +1,4 @@
-/* Copyright 2014 Fabian Steeg, hbz. Licensed under the GPLv2 */
+/* Copyright 2014-2017 Fabian Steeg, hbz. Licensed under the GPLv2 */
 
 package controllers.resources;
 
@@ -7,7 +7,6 @@ import java.io.InputStream;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -34,7 +33,7 @@ import play.mvc.Http;
 import views.TableRow;
 
 /**
- * Access Lobid title data.
+ * Access Lobid API for labels and related things.
  *
  * @author Fabian Steeg (fsteeg)
  *
@@ -43,16 +42,6 @@ public class Lobid {
 
 	/** Timeout for API calls in milliseconds. */
 	public static final int API_TIMEOUT = 50000;
-
-	/**
-	 * @param id The resource ID
-	 * @return The resource JSON content
-	 */
-	public static JsonNode getResource(String id) {
-		String url = String
-				.format(Application.CONFIG.getString("lobid2.indexUrlFormat"), id);
-		return cachedJsonCall(url);
-	}
 
 	/**
 	 * @param url The URL to call
@@ -77,104 +66,6 @@ public class Lobid {
 	static Long getTotalResults(JsonNode json) {
 		return json.findValue("http://sindice.com/vocab/search#totalResults")
 				.asLong();
-	}
-
-	static WSRequestHolder request(final String q, final String person,
-			final String name, final String subject, final String id,
-			final String publisher, final String issued, final String medium,
-			final int from, final int size, String owner, String t, String sort,
-			String set, String location, String word, String corporation,
-			String raw) {
-		WSRequestHolder requestHolder = WS
-				.url(Application.CONFIG.getString("resources.api"))
-				.setHeader("Accept", "application/json")
-				.setQueryParameter("format", "full")
-				.setQueryParameter("from", from + "")
-				.setQueryParameter("size", size + "").setQueryParameter("sort", sort)
-				.setQueryParameter("location", locationPolygon(location));
-		if (!set.isEmpty() && !set.equals("*"))
-			requestHolder = requestHolder.setQueryParameter("set", set);
-		else {
-			requestHolder = requestHolder.setQueryParameter("set", "");
-		}
-		if (!raw.trim().isEmpty())
-			requestHolder = requestHolder.setQueryParameter("q", raw);
-		if (!q.trim().isEmpty())
-			requestHolder = requestHolder.setQueryParameter("word", preprocess(q));
-		else if (!word.isEmpty())
-			requestHolder = requestHolder.setQueryParameter("word", preprocess(word));
-		if (!person.trim().isEmpty())
-			requestHolder = requestHolder.setQueryParameter("author", person);
-		if (!name.trim().isEmpty())
-			requestHolder = requestHolder.setQueryParameter("name", name);
-		if (!subject.trim().isEmpty())
-			requestHolder = requestHolder.setQueryParameter("subject", subject);
-		if (!id.trim().isEmpty())
-			requestHolder = requestHolder.setQueryParameter("id", id);
-		if (!publisher.trim().isEmpty())
-			requestHolder = requestHolder.setQueryParameter("publisher", publisher);
-		if (!issued.trim().isEmpty())
-			requestHolder = requestHolder.setQueryParameter("issued", issued);
-		if (!medium.trim().isEmpty())
-			requestHolder = requestHolder.setQueryParameter("medium", medium);
-		if (!owner.isEmpty())
-			requestHolder = requestHolder.setQueryParameter("owner", owner);
-		if (!t.isEmpty())
-			requestHolder = requestHolder.setQueryParameter("t", t);
-		if (!corporation.isEmpty())
-			requestHolder =
-					requestHolder.setQueryParameter("corporation", corporation);
-		Logger.info("Request URL {}, query params {} ", requestHolder.getUrl(),
-				requestHolder.getQueryParameters());
-		return requestHolder;
-	}
-
-	/**
-	 * @param set The data set, uses the config file set if empty
-	 * @return The full number of hits, ie. the size of the given data set
-	 */
-	public static Promise<Long> getTotalHits(String set) {
-		String cacheKey = String.format("totalHits.%s", set);
-		final Long cachedResult = (Long) Cache.get(cacheKey);
-		if (cachedResult != null) {
-			return Promise.promise(() -> {
-				return cachedResult;
-			});
-		}
-		WSRequestHolder requestHolder = request("", "", "", "", "", "", "", "", 0,
-				0, "", "", "", set, "", "", "", "");
-		return requestHolder.get().map((WSResponse response) -> {
-			Long total = getTotalResults(response.asJson());
-			Cache.set(cacheKey, total, Application.ONE_HOUR);
-			return total;
-		});
-	}
-
-	/**
-	 * @param field The Elasticsearch index field
-	 * @param value The value of the given field
-	 * @param set The data set, uses the config file set if empty
-	 * @return The number of hits for the given value in the given field
-	 */
-	public static Promise<Long> getTotalHits(String field, String value,
-			String set) {
-		String f = escapeUri(field);
-		String v = escapeUri(value);
-		String cacheKey = String.format("totalHits.%s.%s.%s", f, v, set);
-		final Long cachedResult = (Long) Cache.get(cacheKey);
-		if (cachedResult != null) {
-			return Promise.promise(() -> {
-				return cachedResult;
-			});
-		}
-		return WS.url(Application.CONFIG.getString("resources.api"))
-				.setQueryParameter("q", f + ":" + v)
-				.setQueryParameter("set", set.equals("*") ? "" : set).get()
-				.map((WSResponse response) -> {
-					Long total = getTotalResults(response.asJson());
-					Cache.set(cacheKey, total, Application.ONE_HOUR);
-					return total;
-				});
 	}
 
 	/**
@@ -264,96 +155,8 @@ public class Lobid {
 		}).get(Lobid.API_TIMEOUT);
 	}
 
-	/**
-	 * @param q Query to search in all fields
-	 * @param person Query for a person associated with the resource
-	 * @param name Query for the resource name (title)
-	 * @param subject Query for the resource subject
-	 * @param id Query for the resource id
-	 * @param publisher Query for the resource publisher
-	 * @param issued Query for the resource issued year
-	 * @param medium Query for the resource medium
-	 * @param owner Owner filter for resource queries
-	 * @param t Type filter for resource queries
-	 * @param field The facet field (the field to facet over)
-	 * @param set The set
-	 * @param location A polygon describing the subject area of the resources
-	 * @param word A word, a concept from the hbz union catalog
-	 * @param corporation A corporation associated with the resource
-	 * @param raw A query string that's directly (unprocessed) passed to ES
-	 * @return A JSON representation of the requested facets
-	 */
-	public static Promise<JsonNode> getFacets(String q, String person,
-			String name, String subject, String id, String publisher, String issued,
-			String medium, String owner, String field, String t, String set,
-			String location, String word, String corporation, String raw) {
-		WSRequestHolder request =
-				WS.url(Application.CONFIG.getString("resources.api") + "/facets")
-						.setHeader("Accept", "application/json")
-						.setQueryParameter("author", person)//
-						.setQueryParameter("name", name)
-						.setQueryParameter("publisher", publisher)//
-						.setQueryParameter("id", id)//
-						.setQueryParameter("field", field)//
-						.setQueryParameter("from", "0")
-						.setQueryParameter("size",
-								field.equals(Application.ITEM_FIELD) ? "9999"
-										: Application.MAX_FACETS + "")
-						.setQueryParameter("corporation", corporation)//
-						.setQueryParameter("medium", medium)//
-						.setQueryParameter("location", locationPolygon(location))//
-						.setQueryParameter("issued", issued)//
-						.setQueryParameter("t", t)//
-						.setQueryParameter("set", set);
-		if (!q.isEmpty())
-			request = request.setQueryParameter("word", preprocess(q));
-		else if (!word.isEmpty())
-			request = request.setQueryParameter("word", preprocess(word));
-		if (!field.equals(Application.ITEM_FIELD))
-			request = request.setQueryParameter("owner", owner);
-		if (!raw.isEmpty()
-				&& !raw.contains(Lobid.escapeUri(Application.COVERAGE_FIELD)))
-			request = request.setQueryParameter("q", raw);
-		if (!field.startsWith("http"))
-			request = request.setQueryParameter("subject", subject);
-		String url = request.getUrl();
-		Map<String, Collection<String>> parameters = request.getQueryParameters();
-		Logger.info("Facets request URL {}, query params {} ", url, parameters);
-		return request.get().map((WSResponse response) -> {
-			if (response.getStatus() == Http.Status.OK) {
-				return response.asJson();
-			}
-			Logger.warn("{}: {} ({}, {})", response.getStatus(),
-					response.getStatusText(), url, parameters);
-			return Json.toJson(ImmutableMap.of("entries", Arrays.asList(), "field",
-					field, "count", 0));
-		});
-	}
-
-	private static String preprocess(final String q) {
-		String result;
-		if (q.trim().isEmpty() || q.matches(".*?([+~]|AND|OR|\\s-|\\*).*?")) {
-			// if supported query string syntax is used, leave it alone:
-			result = q;
-		} else {
-			// else prepend '+' to all terms for AND search:
-			result = Arrays.asList(q.split("[\\s-]")).stream().map(x -> "+" + x)
-					.collect(Collectors.joining(" "));
-		}
-		return result// but escape unsupported query string syntax:
-				.replace("\\", "\\\\").replace(":", "\\:").replace("^", "\\^")
-				.replace("&&", "\\&&").replace("||", "\\||").replace("!", "\\!")
-				.replace("(", "\\(").replace(")", "\\)").replace("{", "\\{")
-				.replace("}", "\\}").replace("[", "\\[").replace("]", "\\]")
-				// `embedded` phrases, like foo"something"bar -> foo\"something\"bar
-				.replaceAll("([^\\s])\"([^\"]+)\"([^\\s])", "$1\\\\\"$2\\\\\"$3")
-				// remove inescapable range query symbols, possibly prepended with `+`:
-				.replaceAll("^\\+?<", "").replace("^\\+?>", "");
-	}
-
 	private static final Map<String, String> keys =
-			ImmutableMap.of(Application.TYPE_FIELD, "type.labels.lobid1", //
-					Application.TYPE_FIELD_LOBID2, "type.labels.lobid2", //
+			ImmutableMap.of(Application.TYPE_FIELD, "type.labels", //
 					Application.MEDIUM_FIELD, "medium.labels");
 
 	/**
@@ -401,7 +204,7 @@ public class Lobid {
 		else if (uris.size() == 1 && isGnd(uris.get(0)))
 			return Lobid.gndLabel(uris.get(0));
 		String configKey = keys.getOrDefault(field, "");
-		String type = selectType(uris, configKey);
+		String type = selectType(uris, configKey).toLowerCase();
 		if (type.isEmpty())
 			return "";
 		@SuppressWarnings("unchecked")
@@ -423,8 +226,6 @@ public class Lobid {
 		if ((uris.size() == 1 && isOrg(uris.get(0)))
 				|| field.equals(Application.ITEM_FIELD))
 			return "octicon octicon-home";
-		else if ((uris.size() == 1 && field.equals(Application.COVERAGE_FIELD)))
-			return "octicon octicon-milestone";
 		else if ((uris.size() == 1 && isGnd(uris.get(0)))
 				|| field.equals(Application.SUBJECT_FIELD))
 			return "octicon octicon-tag";
@@ -454,22 +255,23 @@ public class Lobid {
 			return types.get(0);
 		Logger.trace("Types: " + types);
 		@SuppressWarnings("unchecked")
-		List<Pair<String, Integer>> selected = types.stream().map(t -> {
-			List<Object> vals = ((List<Object>) Application.CONFIG
-					.getObject(configKey).unwrapped().get(t));
-			if (vals == null)
-				return Pair.of(t, 0);
-			Integer specificity = (Integer) vals.get(2);
-			return ((String) vals.get(0)).isEmpty()
-					|| ((String) vals.get(1)).isEmpty() //
-							? Pair.of("", specificity) : Pair.of(t, specificity);
-		}).filter(t -> {
-			return !t.getLeft().isEmpty();
-		}).collect(Collectors.toList());
+		List<Pair<String, Integer>> selected =
+				types.stream().map(String::toLowerCase).map(t -> {
+					List<Object> vals = ((List<Object>) Application.CONFIG
+							.getObject(configKey).unwrapped().get(t));
+					if (vals == null)
+						return Pair.of(t, 0);
+					Integer specificity = (Integer) vals.get(2);
+					return ((String) vals.get(0)).isEmpty()
+							|| ((String) vals.get(1)).isEmpty() //
+									? Pair.of("", specificity) : Pair.of(t, specificity);
+				}).filter(t -> {
+					return !t.getLeft().isEmpty();
+				}).collect(Collectors.toList());
 		Collections.sort(selected, (a, b) -> b.getRight().compareTo(a.getRight()));
 		Logger.trace("Selected: " + selected);
 		return selected.isEmpty() ? ""
-				: selected.get(0).getLeft().contains("Miscellaneous")
+				: selected.get(0).getLeft().contains("miscellaneous")
 						&& selected.size() > 1 ? selected.get(1).getLeft()
 								: selected.get(0).getLeft();
 	}
@@ -486,10 +288,6 @@ public class Lobid {
 
 	private static boolean isGnd(String term) {
 		return term.startsWith("http://d-nb.info/gnd");
-	}
-
-	private static String locationPolygon(String location) {
-		return location.contains("|") ? location.split("\\|")[1] : location;
 	}
 
 	/**

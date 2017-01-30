@@ -79,7 +79,7 @@ map.addLayer(layer);
           else
             allTableDetails += '<tr><th style="width: 30%"/><th style="width: 70%"/></tr>' + tableDetails;
         @for((item,i) <- items(key).zipWithIndex;
-            itemJson = Json.parse(controllers.resources.Index.getItem(item.replaceAll("https?://lobid\\.org/items/|#!", "")).toString);
+            itemJson = Json.parse(new controllers.resources.Index().getItem(item.replaceAll("https?://lobid\\.org/items/|#!", "")).getResult().toString);
             owners = (itemJson\\"owner");
             if(!owners.isEmpty);
             signatures = (itemJson\\"callNumber");

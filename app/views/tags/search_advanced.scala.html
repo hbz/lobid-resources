@@ -1,6 +1,6 @@
 @* Copyright 2014 Fabian Steeg, hbz. Licensed under the GPLv2 *@
 
-@(label:String, q:String = "", person: String = "", name: String = "", subject: String = "", id: String = "", publisher: String = "", issued: String = "", sortParam: String = "", word: String = "", corporation: String = "")
+@(label:String, q:String = "", agent: String = "", name: String = "", subject: String = "", id: String = "", publisher: String = "", issued: String = "", sortParam: String = "", word: String = "", corporation: String = "")
 
 @import scala.collection.immutable.TreeMap
 @import controllers.resources.Lobid
@@ -74,18 +74,17 @@ function suggests(term){
 }
 </script>
 
-@helper.form(action = controllers.resources.routes.Application.search(), 
+@helper.form(action = controllers.resources.routes.Application.query(), 
     'id -> "resources-form", 'role -> "form", 'class -> "form-inline") {
-  @defining(TreeMap("name"->name,"person"->person,"corporation"->corporation,"subject"->Lobid.withoutUris(subject), "id"->id,"publisher"->publisher,"word"->word).filter({case (k,v) => !v.isEmpty && (k != "subject" || (k == "subject" && !v.startsWith("http")))})) { fields =>
+  @defining(TreeMap("name"->name,"agent"->agent,"corporation"->corporation,"subject"->Lobid.withoutUris(subject), "id"->id,"publisher"->publisher,"word"->word).filter({case (k,v) => !v.isEmpty && (k != "subject" || (k == "subject" && !v.startsWith("http")))})) { fields =>
   @for(((k,v),i)<- (if(fields.isEmpty) TreeMap("q" -> "") else fields).zipWithIndex){
   <div class="search-field row" id="search-field-@i">
       <div class="form-group col col-md-2">
             <select id="query-select" class="form-control" onChange="setAutosuggest()">
-              <option value="word" @if(k=="word"){selected="selected"})>Alle Wörter</option>
+              <option value="word" @if(k=="word"){selected="selected"})>Alles</option>
               <option value="id" @if(k=="id"){selected="selected"}>ISBN/ISSN</option>
               <option value="name" @if(k=="name"){selected="selected"}>Titel</option>
-              <option value="person" @if(k=="person"){selected="selected"}>Person</option>
-              <option value="corporation" @if(k=="corporation"){selected="selected"}>Körperschaft</option>
+              <option value="agent" @if(k=="agent"){selected="selected"}>Mitwirkende</option>
               <option value="subject" @if(k=="subject"){selected="selected"}>Schlagwort</option>
               <option value="publisher" @if(k=="publisher"){selected="selected"}>Verlag</option>
               <option value="issued" @if(k=="issued"){selected="selected"}>Erscheinungsjahr</option>

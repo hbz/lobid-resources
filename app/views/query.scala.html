@@ -1,6 +1,6 @@
-@* Copyright 2014 Fabian Steeg, hbz. Licensed under the GPLv2 *@
+@* Copyright 2014-2017 Fabian Steeg, hbz. Licensed under the GPLv2 *@
 
-@(result: String, q:String, person:String, name:String, subject:String, id:String, publisher:String, issued:String, medium: String, from: Int, size: Int, allHits: Long, owner: String, t: String, sortParam: String, set: String, location: String, word: String, corporation: String, raw: String)
+@(result: String, q:String, agent:String, name:String, subject:String, id:String, publisher:String, issued:String, medium: String, from: Int, size: Int, allHits: Long, owner: String, t: String, sortParam: String, set: String)
 
 @import helper._
 @import tags._
@@ -14,17 +14,17 @@
   <nav>
     <ul class="pagination">
       <li class="previous @if(from==0){disabled}">
-        <a href="@if(from==0){#} else {@resources.routes.Application.search(q,person,name,subject,id,publisher,issued,medium,from-size,size,owner,t,sortParam,set=set,location=location,word=word,corporation=corporation,raw=raw)}">&larr;</a>
+        <a href="@if(from==0){#} else {@resources.routes.Application.query(q,agent,name,subject,id,publisher,issued,medium,from-size,size,owner,t,sortParam,set=set)}">&larr;</a>
       </li>
       @defining((((from+1)/size)+1,(if(allHits%size==0) allHits/size else allHits/size+1).toInt)) { case (currentPage,lastPage) =>
           @defining(Math.min(Math.max(1,currentPage-4)+9,lastPage)) { toPage =>
               @for(i <- Math.max(1,toPage-9) to toPage){
-                  <li @if(currentPage==i){class="active"}><a href="@resources.routes.Application.search(q,person,name,subject,id,publisher,issued,medium,(i*size)-size,size,owner,t,sortParam,set=set,location=location,word=word,corporation=corporation,raw=raw)">@i</a></li>
+                  <li @if(currentPage==i){class="active"}><a href="@resources.routes.Application.query(q,agent,name,subject,id,publisher,issued,medium,(i*size)-size,size,owner,t,sortParam,set=set)">@i</a></li>
               }
           }
       }
       <li class="next @if(from+size >= allHits){disabled}">
-        <a href="@if(from+size >= allHits){#} else {@resources.routes.Application.search(q,person,name,subject,id,publisher,issued,medium,from+size,size,owner,t,sortParam,set=set,location=location,word=word,corporation=corporation,raw=raw)}">&rarr;</a>
+        <a href="@if(from+size >= allHits){#} else {@resources.routes.Application.query(q,agent,name,subject,id,publisher,issued,medium,from+size,size,owner,t,sortParam,set=set)}">&rarr;</a>
       </li>
     </ul>
   </nav>
@@ -32,13 +32,13 @@
 
 @sort(param: String, label: String)={
 <li @if(sortParam==param){class="active"}>
-  <a href="@resources.routes.Application.search(q,person,name,subject,id,publisher,issued,medium,from,size,owner,t,param,set=set,location=location,word=word,corporation=corporation,raw=raw)">@label</a>
+  <a href="@resources.routes.Application.query(q,agent,name,subject,id,publisher,issued,medium,from,size,owner,t,param,set=set)">@label</a>
 </li>
 }
 
 @pageLink(num: Int)={
 <li @if(size==num){class="active"}>
-  <a href="@resources.routes.Application.search(q,person,name,subject,id,publisher,issued,medium,from,num,owner,t,sortParam,set=set,location=location,word=word,corporation=corporation,raw=raw)">@num</a>
+  <a href="@resources.routes.Application.query(q,agent,name,subject,id,publisher,issued,medium,from,num,owner,t,sortParam,set=set)">@num</a>
 </li>
 }
 
@@ -47,16 +47,16 @@
 }
 
 @labelRaw = @{
-	if(raw.contains("multiVolumeWork")) {select(("Band","Bände"))} else if (raw.contains("series")) {select(("Serienband","Serienbände"))} else if (raw.contains("containedIn")) {select(("Beitrag","Beiträge"))} else {""}
+	if(q.contains("multiVolumeWork")) {select(("Band","Bände"))} else if (q.contains("series")) {select(("Serienband","Serienbände"))} else if (q.contains("containedIn")) {select(("Beitrag","Beiträge"))} else {""}
 }
 
 @main("lobid-resources - Ergebnisliste") {
-    @if(Seq(person, name, subject, id, publisher, issued, word, corporation).exists(!_.isEmpty)){
-      @tags.search_advanced("Suche aktualisieren", q, person, name, subject, id, publisher, issued, sortParam, word=word, corporation=corporation)
+    @if(Seq(agent, name, subject, id, publisher, issued).exists(!_.isEmpty)){
+      @tags.search_advanced("Suche aktualisieren", q, agent, name, subject, id, publisher, issued, sortParam)
     } else {
-      @tags.search_form(q, location)
+      @tags.search_form(q)
     }
-    @defining(Json.parse(result).asOpt[Seq[JsValue]].getOrElse(Seq()).zipWithIndex.drop(1)) { hits =>
+    @defining(Json.parse(result).asOpt[Seq[JsValue]].getOrElse(Seq()).zipWithIndex) { hits =>
      <div class="row">
          <div class="col-md-@if(allHits > 0){9}else{12}">
          @if(hits.size>0){
@@ -84,9 +84,9 @@
                  <div class="row">
                     <div class="col-md-1"></div>
                     <div class="col-md-10">
-                     @allHits @if(!raw.isEmpty && !raw.contains(Lobid.escapeUri(Application.COVERAGE_FIELD.replace(".raw","")))){
-                      @defining(Application.CONFIG.getString("resources.api") + "/" + raw.substring(raw.lastIndexOf("/")+1)) { lobidUrl =>
-                       @labelRaw in: <a href="@lobidUrl.replace("/resource/","/resources/")">@Html(Lobid.resourceLabel(lobidUrl))</a>}}else{Treffer}, 
+                     @allHits @if(!q.isEmpty && !labelRaw.isEmpty) {
+                      @defining("http://lobid.org/resources/" + q.substring(q.lastIndexOf("/")+1, q.length()-1)) { lobidUrl =>
+                       @labelRaw in: <a href="@lobidUrl">@Html(Lobid.resourceLabel(lobidUrl))</a>}}else{Treffer}, 
                        zeige @(from+1) bis @(Math.min(from+hits.size,from+size)):
                     </div>
                     <div class="col-md-1" style="text-align: right; padding-right: 4px;">
@@ -109,7 +109,7 @@
                   <th style="width: 5%; text-align: right"></th>
                  </tr>
                  @for((doc,i) <- hits; id = (doc\\"hbzId")(0).as[String]) {
-                    @tags.result_short(id,doc,i-1,(Json.parse(result)\\"hbzId").map(_.as[String]))
+                    @tags.query_result_short(id,doc,i-1,(Json.parse(result)\\"hbzId").map(_.as[String]))
                  }
                  </table>
                  <div class="panel-body hide-in-print" style="text-align:center">
@@ -127,7 +127,7 @@
             }
          }
         </div>
-        @if(allHits > 0) {@facets(q,person,name,subject,id,publisher,issued,medium,owner,t,sortParam,set,location,word,corporation,raw,from,size)}
+        @if(allHits > 0) {@facets(q,agent,name,subject,id,publisher,issued,medium,owner,t,sortParam,set,from,size)}
       </div>
     }
     @if(allHits > 0) {<p>@map_credits()</p>}

@@ -20,23 +20,23 @@ public class ApplicationTest {
 	public void typeSelectionMultiVolumeBook() {
 		String selected = Lobid.selectType(
 				Arrays.asList("BibliographicResource", "MultiVolumeBook", "Book"),
-				"type.labels.lobid2");
-		assertThat(selected).isEqualTo("MultiVolumeBook");
+				"type.labels");
+		assertThat(selected).isEqualTo("multivolumebook");
 	}
 
 	@Test
 	public void typeSelectionPublishedScore() {
 		String selected = Lobid.selectType(
 				Arrays.asList("MultiVolumeBook", "PublishedScore", "Book"),
-				"type.labels.lobid2");
-		assertThat(selected).isEqualTo("PublishedScore");
+				"type.labels");
+		assertThat(selected).isEqualTo("publishedscore");
 	}
 
 	@Test
 	public void typeSelectionEditedVolume() {
 		String selected = Lobid.selectType(Arrays.asList("MultiVolumeBook",
-				"BibliographicResource", "EditedVolume"), "type.labels.lobid2");
-		assertThat(selected).isEqualTo("EditedVolume");
+				"BibliographicResource", "EditedVolume"), "type.labels");
+		assertThat(selected).isEqualTo("editedvolume");
 	}
 
 }

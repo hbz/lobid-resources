@@ -1,4 +1,4 @@
-/* Copyright 2015 Fabian Steeg, hbz. Licensed under the GPLv2 */
+/* Copyright 2015-2017 Fabian Steeg, hbz. Licensed under the GPLv2 */
 
 package tests;
 
@@ -82,9 +82,8 @@ public class InputStringsTest {
 	public void test() {
 		running(testServer(3333), () -> {
 			Result result = Helpers.callAction(
-					controllers.resources.routes.ref.Application.search(input, "", "", "",
-							"", "", "", "", 0, 10, "", "", "", false, "", "", "", "", "",
-							null),
+					controllers.resources.routes.ref.Application.query(input, "", "", "",
+							"", "", "", "", 0, 10, "", "", "", "", ""),
 					new FakeRequest(Helpers.GET, "/")
 							.withFormUrlEncodedBody(ImmutableMap.of()));
 			// we don't expect any server errors (see
