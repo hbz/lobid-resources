@@ -44,6 +44,7 @@ import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
 import play.test.Helpers;
+import views.html.api;
 import views.html.details;
 import views.html.details_item;
 import views.html.index;
@@ -94,6 +95,14 @@ public class Application extends Controller {
 		if (form.hasErrors())
 			return badRequest(index.render());
 		return ok(index.render());
+	}
+
+	/**
+	 * @return The API documentation page
+	 */
+	@Cached(duration = ONE_HOUR, key = "api")
+	public static Result api() {
+		return ok(api.render());
 	}
 
 	/**
