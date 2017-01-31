@@ -1,0 +1,27 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# ~~~~
+
+# Handle trailing slashes
+GET    /*path/                controllers.resources.Application.redirect(path: String)
+
+# Home page
+GET    /resources                       controllers.resources.Application.index()
+GET    /resources/api                   controllers.resources.Application.api()
+GET    /resources/advanced              controllers.resources.Application.advanced()
+GET    /resources/search                controllers.resources.Application.query(q?="", agent?="", name?="", subject?="", id?="", publisher?="", issued?="", medium ?= "", from:Int?=0, size:Int?=15, owner?="", t?="", sort ?= "", set?="", format ?= null)
+GET    /resources/aggregations          controllers.resources.Application.aggregations(q?="", agent?="", name?="", subject?="", id?="", publisher?="", issued?="", medium ?= "", from:Int?=0, size:Int?=15, owner?="", t?="", sort ?= "", set?="", format ?= null)
+GET    /resources/facets                controllers.resources.Application.facets(q,agent?="", name?="", subject?="", id?="", publisher?="", issued?="", medium ?= "", from:Int,size:Int,owner,t,field,sort,set?="")
+
+GET    /resources/stars                 controllers.resources.Application.showStars(format?="", ids?="")
+GET    /resources/stars/clear           controllers.resources.Application.clearStars(ids ?= "")
+GET    /resources/stars/all             controllers.resources.Application.starAll(ids)
+POST   /resources/stars/:id             controllers.resources.Application.star(id)
+DELETE /resources/stars/:id             controllers.resources.Application.unstar(id)
+
+GET    /resources/context.jsonld        controllers.resources.Application.context()
+GET    /resources/:id                   controllers.resources.Application.show(id, format ?= null)
+GET    /items/:id                       controllers.resources.Application.item(id, format ?= null)
+
+# Map static resources from the /public folder to the /assets URL path
+GET    /resources/assets/*file          controllers.Assets.at(path="/public", file)

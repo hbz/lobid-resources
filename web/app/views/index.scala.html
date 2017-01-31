@@ -1,0 +1,47 @@
+@* Copyright 2014-2016 Fabian Steeg, hbz. Licensed under the GPLv2 *@
+
+@()
+
+@import helper._
+@import play.api.libs.json.Json
+@import play.api.libs.json.JsValue
+@import controllers.resources.Lobid
+
+@main("lobid-resources") {
+    @tags.search_form("")
+    <div class="row">
+	    <div class="col-md-12 intro">
+	       <p class="lead">
+           Der Verbundkatalog des Hochschulbibliothekszentrums NRW (hbz) enthält die kooperativ 
+           erstellten Nachweise von Titel- und  Bestandsdaten der Verbundbibliotheken in 
+           Nordrhein-Westfalen und Rheinland-Pfalz.
+           </p>
+           <p>
+           Daneben sind die Nordrhein-Westfälische Bibliographie und alle Zeitschriften der 
+           Zeitschriftendatenbank (ZDB) in den hbz-Verbundkatalog integriert. Die von den 
+           Verbundbibliotheken und ihren zugeordneten Einrichtungen aktiv eingebrachten Bestände 
+           sind Grundlage für die Online-Fernleihe. Der hbz-Verbundkatalog wird ergänzt um die 
+           Bestandsnachweise einer Vielzahl öffentlicher und anderer Bibliotheken, die ihre Bestände 
+           maschinell an das hbz liefern.
+	       </p>
+	       <p>
+	       Das hbz, einige Kölner Bibliotheken und das Landesbibliothekszentrum 
+	       Rheinland-Pfalz starteten 2010 eine Open-Data-Initiative mit der ersten Freigabe von Katalogdaten in Deutschland. 
+	       Mittlerweile wird der gesamte hbz-Verbundkatalog in dieser Oberfläche, als Programmierschnittstelle 
+	       und in Form von Vollabzügen als Linked Open Data unter <a href="http://creativecommons.org/publicdomain/zero/1.0/">CC0</a> bereitgestellt.
+	       </p>
+	    </div>
+    </div>
+    <script type="application/ld+json">
+    {
+      "@@context": "http://schema.org",
+      "@@type": "WebSite",
+      "url": "http://lobid.org/resources",
+      "potentialAction": {
+        "@@type": "SearchAction",
+        "target": "http://lobid.org/resources/search?q={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
+    }
+    </script>
+}

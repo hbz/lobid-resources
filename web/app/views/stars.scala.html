@@ -1,0 +1,61 @@
+@* Copyright 2014 Fabian Steeg, hbz. Licensed under the GPLv2 *@
+
+@(ids: List[String], vals: List[com.fasterxml.jackson.databind.JsonNode], f: String)
+
+@import helper._
+@import play.api.libs.ws._
+@import scala.concurrent.Future
+@import scala.concurrent.ExecutionContext.Implicits.global
+@import scala.concurrent._
+@import scala.concurrent.duration._
+@import play.api.Play.current
+@import play.api.libs.json.Json
+@import controllers.resources.Index
+
+@entries() = {
+    @for((id,i) <- ids.zipWithIndex; doc = Json.parse(vals(i).toString())) {
+        @if(f=="details"){@tags.result_doc(Json.parse(new Index().getResource(id).getResult().toString))} else {@tags.query_result_short(id,doc,i,ids)}
+    }
+}
+
+@main("lobid-resources - Merkliste") {
+    @if(ids.isEmpty){
+        <div class="alert alert-info text-center">
+            Keine gemerkten Titel. Sie können Titel in der Trefferliste oder der Einzeltrefferanzeige durch Klicken des Sterns hinzufügen.
+        </div>
+    } else {
+        <p>
+            <span class="glyphicon glyphicon-star-empty"></span> 
+            <b>Merkliste: @ids.size Einträge</b>
+            <span class="hide-in-print"> | 
+                <a href='@resources.routes.Application.showStars(if(f=="details"){""} else {"details"}, ids.mkString(","))'>
+                  <span class="glyphicon glyphicon-info-sign"></span> @if(f=="details"){Kurzansicht} else {Detailansicht}
+                </a> |
+                <a href="javascript:if(window.print)window.print()">
+                    <span class="glyphicon glyphicon-print"></span> 
+                    Drucken</a> |
+                <span id="clear-list"><a style="cursor:pointer;"
+                    onclick="$('#clear-list').html('Bestätigung: <a href=\'@resources.routes.Application.clearStars()\'>Merkliste dauerhaft löschen</a> | <a style=\'cursor:pointer\'; onclick=\'window.location.reload()\'>Abbrechen</a>')">
+                    <span class="glyphicon glyphicon-remove"></span> Merkliste löschen
+                </a></span>
+            </span>
+        </p>
+        @if(f=="details"){
+          @entries
+        } else {
+          <table class="table table-striped table-condensed">
+            <tr>
+              <th style="width: 5%"></th>
+              <th style="width: 60%"></th>
+              <th style="width: 25%; text-align: right"></th>
+              <th style="width: 5%; text-align: right"></th>
+              <th style="width: 5%; text-align: right"></th>
+            </tr>
+            @entries
+          </table>
+        }
+    }
+    @if(flash.get("error")!=null){
+        <div class="alert alert-danger">@flash.get("error")</div>
+    }
+}

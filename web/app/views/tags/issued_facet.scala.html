@@ -1,0 +1,137 @@
+@* Copyright 2015 Fabian Steeg, hbz. Licensed under the GPLv2 *@
+
+@import controllers.resources.Application
+
+@(issued: String)
+
+@*<script>*@
+
+$("#issued-facet-all").show();
+
+var years = [];
+var freqs = [];
+var yearsObject = {};
+var thisYear = new Date().getFullYear();
+
+var min = thisYear;
+var max = 0;
+
+$(".@(Application.ISSUED_FIELD.hashCode.abs)-facet-link").each(function(index) {
+	var yearAndFreq = $(this).text().split(" ")
+	var year = parseInt(yearAndFreq[0].trim());
+	var freq = parseInt(yearAndFreq[1].replace(/[()]/,""));
+	if(year > 0 && year <= thisYear){
+		yearsObject[year]=freq;
+		max = Math.max(max, year);
+		min = Math.min(min, year);
+	}
+});
+
+for(i = min; i <= max; i++) {
+	years.push(i);
+}
+
+if(years.length==0){
+	yearsObject[thisYear]=0;
+}
+
+var chartYears = [];
+for(i = min; i<=max; i++){
+	chartYears.push(i);
+	var y = yearsObject[i]
+	freqs.push(y ? y : 0);
+}
+
+var data = {
+	labels: chartYears,
+	datasets: [{
+		fillColor: "rgba(0, 70, 120, 0.2)",
+		strokeColor: "rgba(0, 70, 120, 0.5)",
+		highlightFill: "rgba(0, 70, 120, 0.45)",
+		highlightStroke: "rgba(0, 70, 120, 0.7)",
+		data: freqs
+	}]
+};
+
+var options = {
+	animation: false,
+	scaleShowGridLines : false,
+	barValueSpacing : 1,
+	showScale: false,
+	showTooltips: true,
+	customTooltips: function(tooltip) {
+		$( "#issued-range" ).val(tooltip.text);
+		return;
+	},
+	tooltipTemplate: "<%if (label){%><%=label%>: <%}%><%= value %> Treffer"
+}
+
+var canvas = document.getElementById("issued-chart");
+var ctx = canvas.getContext("2d");
+var barChart = new Chart(ctx).Bar(data, options);
+
+canvas.onclick = function(evt){
+	var activeBars = barChart.getBarsAtEvent(evt);
+	if(activeBars){
+		location.href = issuedLink(activeBars[0].label);
+	}
+};
+
+var lastLabel = ""; // set in setLabel below
+
+canvas.onmouseout = function(evt){
+	$( "#issued-range" ).val(lastLabel);
+};
+
+var from = "@issued.split("-")(0)";
+var to = "@(if(issued.contains("-")) issued.split("-")(1) else issued)";
+
+$(function() {
+	$( "#slider-range" ).slider({
+		range: true,
+		min: min,
+		max: max,
+		values: [from.length==0 ? min : from, to.length==0 ? max : to],
+		slide: function( event, ui ) {
+			var curFrom = ui.values[0];
+			var curTo = ui.values[1];
+			var hits = sumHits(curFrom, curTo);
+			var fromTo = curFrom + "-" + curTo;
+			setLabel(fromTo, hits);
+			$("#issued-link").attr("href", issuedLink(fromTo));
+			$("#issued-link").show();
+		}
+	});
+	var left = $( "#slider-range" ).slider( "values", 0 );
+	var right = $( "#slider-range" ).slider( "values", 1 );
+	@if(issued.isEmpty()) {
+		setLabel(left==right ? left : left + "-" + right, "");
+	} else { // no redundant label, already in facet label
+		setLabel("", "");
+	}
+});
+
+function issuedLink(newVal) {
+	var oldHref = $("#issued-link").attr("href");
+	var newIssued = "issued="+newVal;
+	var newHref = oldHref.indexOf("issued=") >= 0 ?
+		oldHref.replace(/issued=[\d\-]+/, newIssued) :
+		oldHref + (oldHref.indexOf("?") >= 0 ? "&" : "?") + newIssued;
+	return newHref;
+}
+
+function setLabel(range, hits) {
+	var label = range + (hits ? (": " + hits + " Treffer") : "");
+	$("#issued-range").val(label);
+	lastLabel = label;
+}
+
+function sumHits(a, b) {
+	var res = 0;
+	for(i = a; i <= b; i++){
+		res += yearsObject[i] ? yearsObject[i] : 0;
+	}
+	return res;
+}
+
+@*</script>*@

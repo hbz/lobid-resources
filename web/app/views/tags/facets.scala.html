@@ -1,0 +1,134 @@
+@(q:String, agent:String, name:String, subject:String, id:String, publisher:String, issued:String, medium: String, owner: String, t: String, sortParam: String, set: String, from: Int, size: Int)
+
+@import controllers.resources.Application
+@import helper._
+
+<script>
+  function toggleFacet(selector) {
+      var elem = $(selector);
+      if(elem.is(':visible')){
+        elem.hide();
+        $(selector+'-icon').attr('class', 'glyphicon glyphicon-menu-right');
+      } else {
+        elem.show();
+        $(selector+'-icon').attr('class', 'glyphicon glyphicon-menu-down');
+      }
+  }
+</script>
+
+@facetToggle(id: String)(content: Html)={
+	<a href="javascript:void(0)" onclick="toggleFacet('#' + '@id');">
+    <span id="@id-icon" class="glyphicon glyphicon-menu-down"></span>
+    @content
+  </a>
+}
+
+@facets(facet: String, field: String, current: String, addClass:String = "", allLabel:String = "Alle")={
+  <div class="@addClass" id="@field.hashCode.abs-facet">
+      <script>
+        $("#@(Application.ISSUED_FIELD.hashCode.abs)-facet").hide();
+      </script>
+      <h5 id="@field.hashCode.abs-header">
+        @facetToggle("facets-ul-" + field.hashCode.abs.toString){@facet}
+        <span id="@field.hashCode.abs-label">
+          @facetLabel(current, "ausgewählt", field.hashCode.abs + "-count", current.split("[,+]").size.toString)
+        </span>
+      </h5>
+      <ul class="facet" id="facets-ul-@field.hashCode.abs">
+          <script>
+          function appendSection(divId, linkId, lessId, sectionId, facet){
+            $("#" + divId).append(
+                "<li class='more-link-" + facet +"' id='" + linkId + "'><a style='cursor:pointer;'><span class='glyphicon glyphicon-plus' aria-hidden='true'></span> Zeige mehr " + facet + "</a></li>");
+            $("#" + linkId).click(function() {
+              $("#" + sectionId).show();
+              $(".less-link-" + facet).hide();
+              $("#" + linkId).hide();
+              $("#" + sectionId).parent().append(
+                  "<li class='less-link-" + facet +"' id='" + lessId + "'><a style='cursor:pointer;'><span class='glyphicon glyphicon-minus' aria-hidden='true'></span> Zeige weniger " + facet + "</a></li>");
+              $("#" + lessId).click(function() {
+                $("#" + sectionId).hide();
+                $("#" + linkId).show();
+                $("#" + lessId).remove();
+                $(".less-link-" + facet).last().show();
+              });
+            });
+          }
+          $.ajax({
+            url: '/resources/facets?q=@urlEncode(q)&agent=@urlEncode(agent)&name=@urlEncode(name)&subject=@urlEncode(subject)&publisher=@urlEncode(publisher)&issued=@urlEncode(issued)&medium=@urlEncode(medium)&from=0&size=@size&owner=@urlEncode(owner)&t=@urlEncode(t)&field=@urlEncode(field)&sort=@urlEncode(sortParam)&set=@urlEncode(set)',
+            success: function(data, textStatus, jqXHR) {
+              var lis = data.split("</li>");
+              lis = lis.slice(0, lis.length-1);
+              if(lis.length == 0){
+                $('#@field.hashCode.abs-header').hide();
+              }
+              var ul = $("#facets-ul-@field.hashCode.abs");
+              var c = 0;
+              var step = 5;
+               for(i = 0; i < lis.length; i++){
+                 if(i % step == 0 || lis.length-i < step){
+                   var divId = c + "more-@field.hashCode.abs";
+                   ul.append("<div id='" + divId + "' " + (i == 0 ? "" : "style='display:none;'") + ">");
+                   if(c > 0){
+                     step = 15;
+                   }
+                   for(j = i; j < Math.min(i + step, lis.length); j++){
+                     $("#" + divId).append(lis[j] + "</li>");
+                   }
+                   if(j < lis.length) {
+                     var linkId = c + "more-link-@field.hashCode.abs";
+                     var lessId = c + "less-link-@field.hashCode.abs";
+                     var sectionId = (c+1) + "more-@field.hashCode.abs";
+                     appendSection(divId, linkId, lessId, sectionId, "@facet.split(" ").last");
+                   }
+                   i=j-1;
+                   c++;
+                   ul.append("</div>");
+                 }
+               }
+               var active = $("#facets-ul-@field.hashCode.abs li.active");
+               if(active.length == 0) {
+                 $("#@field.hashCode.abs-label").hide();
+               } else {
+                 $("#@field.hashCode.abs-count").text(active.length);
+               }
+              $("#facets-loading-@field.hashCode.abs").remove();
+              @if(field==Application.ISSUED_FIELD){ @issued_facet(issued) }
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+              console.log(textStatus + ": " + errorThrown);
+            }
+          });
+          </script>
+          <li id="facets-loading-@field.hashCode.abs"><a href="#">Lade @facet...</a></li>
+      </ul>
+  </div>
+}
+
+@facetLabel(current: String, label: String, activeCountId: String = "", currentCount: String = "") = {
+  @if(!current.isEmpty){
+     <span class="badge" id="facet-filter"><span id="@activeCountId">@currentCount</span> @label</span>
+     <a href="@resources.routes.Application.query(q,agent,name,if (urisOnly(subject)==current) "" else subject,id,publisher,if(issued==current) "" else issued,if (medium==current) "" else medium,from,size,if (owner==current) "" else owner,if (t==current) "" else t,sortParam,set=set).toString" title="Filter entfernen"><span class="octicon octicon-x"></span></a> 
+   }
+}
+
+@urisOnly(s: String)=@{
+	s.split(",").filter(_.startsWith("http")).mkString(",")
+}
+
+<div class="col-md-3 hide-in-print" style="font-size: small">
+  <p class="lead"> Ergebnisse eingrenzen: </p>
+  <h5>@facetToggle("issued-facet-all"){Erscheinungsjahr} @facetLabel(issued, issued)</h5>
+  <div id="issued-facet-all" style="display:none">
+  <p>
+  <div class="row facet"><div class="col-md-12">@facets("Erscheinungsjahre", Application.ISSUED_FIELD, issued, "dropup")</div></div>
+  <div class="row facet"><div class="col-md-12"><canvas id="issued-chart"></canvas></div></div>
+  <div id="slider-range"></div>
+  <input type="text" id="issued-range" readonly value="Lade Erscheinungsjahre...">
+  <div id="issued-div"> <a id="issued-link" style="display:none" href="@resources.routes.Application.query(q,agent,name,subject,id,publisher,issued,medium,from,size,owner,t,sortParam,set=set)">Anwenden</a> </div>
+  </div>
+  <p/>
+  <div class="row facet"><div class="col-md-12">@facets("Schlagwörter", Application.SUBJECT_FIELD, if(!urisOnly(subject).isEmpty) urisOnly(subject) else "", "dropup")</div></div>
+  <div class="row facet"><div class="col-md-12">@facets("Medientypen", Application.MEDIUM_FIELD, medium, "dropup")</div></div>
+  <div class="row facet"><div class="col-md-12">@facets("Publikationstypen", Application.TYPE_FIELD, t, "dropup")</div></div>
+  <div class="row facet"><div class="col-md-12">@facets("Bestand in Bibliotheken", Application.ITEM_FIELD, owner, "dropup")</div></div>
+</div>

@@ -1,0 +1,45 @@
+@* Copyright 2017 Fabian Steeg, hbz. Licensed under the GPLv2 *@
+
+@(id: String, docJson: String)
+
+@import helper._
+@import tags._
+@import controllers.resources.Lobid
+@import controllers.resources.Application
+@import play.api.libs.json._
+
+@if(docJson.isEmpty){
+  @main("lobid-resources - Bestandsdetails") {
+    @if(flash.get("error")!=null){
+    <div class="alert alert-danger">@flash.get("error")</div>
+    } else {
+    <div class="alert alert-info text-center">Bestand mit der ID @id konnte nicht gefunden werden.</div>
+    }
+  }
+} else {
+  @defining(Json.parse(docJson)) { doc =>
+    @main("lobid-resources - Bestandsdetails") {
+      <div class="row">
+      @for(
+          exemplarOf <- (doc \ "exemplarOf").asOpt[JsValue];
+          exemplarOfs = exemplarOf.asOpt[Seq[JsValue]].getOrElse(Seq(exemplarOf));
+          resourceId <- (exemplarOfs(0) \ "id").asOpt[String];
+          itemId <- (doc \ "id").asOpt[String];
+          items = Lobid.items("{\"exemplar\":[{\"id\":\"" + itemId + "\"}]}")) {
+        <div class="col-md-12" id="holdings">
+          <dl>
+           <dt>
+           Exemplar von <i><a href="@resourceId">@Lobid.resourceLabel(resourceId)</a></i> in:
+           <small style='float:right'>
+            <a title="JSON-LD-Indexdaten anzeigen" href='@resources.routes.Application.item(id, "json")'><span class="glyphicon glyphicon-cog"></span></a>
+            </small>
+            </dt>
+           <dd>@tags.items_map(items)</dd>
+          </dl>
+        </div>
+      }
+      </div>
+      @if(!id.trim.isEmpty) {@map_credits()}
+    }
+  }
+}
