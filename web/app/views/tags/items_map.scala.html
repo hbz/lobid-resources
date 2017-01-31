@@ -1,0 +1,135 @@
+@* Copyright 2014 Fabian Steeg, hbz. Licensed under the GPLv2 *@
+
+@(items: Map[String,List[String]])
+
+@import play.api.libs.ws.WS
+@import play.api.libs.json.JsArray
+@import play.api.libs.json.Json
+@import play.api.libs.json.JsValue
+@import scala.concurrent._
+@import ExecutionContext.Implicits.global
+@import scala.concurrent.duration._
+@import play.api.Play.current
+@import controllers.resources._
+@import play.api.cache.Cache
+
+@string(value: JsValue) = { @value.asOpt[String].getOrElse("--") }
+
+<link rel="stylesheet" href="@controllers.routes.Assets.at("stylesheets/leaflet.css")" />
+<script src="@controllers.routes.Assets.at("javascripts/leaflet.js")"></script>
+<script src="@controllers.routes.Assets.at("javascripts/Leaflet.MakiMarkers.js")"></script>
+@*<script type="text/javascript" src="http://maps.stamen.com/js/tile.stamen.js?v1.2.4"></script>*@
+<table class="table table-striped table-condensed">
+    <tr>
+        <th style="width: 30%"/>
+        <th style="width: 70%"/>
+    </tr>
+</table>
+<p>
+<div class="items-map" id="items-map"></div>
+</p>
+<table style="display:none;" id="table" class="table table-striped table-condensed">
+</table>
+@if(items.size > 1){<a href="#" onclick="$('#table').show(); $(this).hide()">Details zum Bestand als Liste anzeigen</a>}
+<script>
+// Some alternative tiles:
+var layer = L.tileLayer('https://maps.wikimedia.org/osm-intl/{z}/{x}/{y}.png');
+//var layer = L.tileLayer('http://toolserver.org/tiles/hikebike/{z}/{x}/{y}.png');
+//var layer = L.tileLayer('http://{s}.www.toolserver.org/tiles/germany/{z}/{x}/{y}.png');
+//var layer0 = new L.StamenTileLayer("watercolor"); // include script above, add both layers
+//var layer1 = L.tileLayer('http://a.www.toolserver.org/tiles/osm-labels-de/{z}/{x}/{y}.png');
+/*
+var layer = L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    subdomains: 'abc'
+});
+*/
+var nrw = new L.LatLng(51.50, 7.8)
+var map = new L.Map("items-map", {
+    center: nrw,
+    zoom: 7,
+    scrollWheelZoom: true,
+    attributionControl: false,
+    zoomControl: false
+});
+new L.Control.Zoom({ position: 'bottomleft' }).addTo(map);
+var markerCount = 0;
+var tableDetails = '';
+var allTableDetails = '';
+var markers = {};
+@markers(items)
+$('#table').append(allTableDetails);
+map.addLayer(layer);
+</script>
+
+@markers(items: Map[String,List[String]]) = {
+    @for((key,i) <- items.keySet.toList.sortWith((k1:String,k2:String)=>Lobid.compareIsil(k1,k2)).zipWithIndex;
+        owner = Application.CONFIG.getString("orgs.api")+"/"+key;
+        json = Json.parse(Lobid.cachedJsonCall(owner).toString);
+        ownerUrl = if((json\\"url").isEmpty) owner else (json\\"url")(0).as[String];
+        ownerName = if((json\\"name").isEmpty) "" else (json\\"name")(0).as[String]) {
+
+          var details = '<tr><td><i>Bibliothek:</i></td><td>'+
+            '<i>@if(!ownerName.isEmpty){<a href="@ownerUrl">@ownerName</a>}else{&lt;Keine Angabe&gt;}</i></td></tr>'
+            @defining(Lobid.opacUrl(items(key).head)){ opacLink =>
+              @if(opacLink!=null){+'<tr><td>Verfügbarkeit:</td>'+'<td><a href="@opacLink">Lokalen Katalog abfragen</a></td></tr>'};
+            }
+          tableDetails = details;
+          if(allTableDetails=='')
+            allTableDetails += tableDetails;
+          else
+            allTableDetails += '<tr><th style="width: 30%"/><th style="width: 70%"/></tr>' + tableDetails;
+        @for((item,i) <- items(key).zipWithIndex;
+            itemJson = Json.parse(new controllers.resources.Index().getItem(item.replaceAll("https?://lobid\\.org/items/|#!", "")).getResult().toString);
+            owners = (itemJson\\"owner");
+            if(!owners.isEmpty);
+            signatures = (itemJson\\"callNumber");
+            if(!signatures.isEmpty);
+            signature = if(signatures(0).asOpt[String].isDefined){signatures(0).as[String]}else{signatures(0).as[Seq[JsValue]].head.as[String]}){
+              var sig = '<tr><td>Signatur:</td>'+
+                '<td>@if(!signature.isEmpty){<a href="@item">@signature</a>}else{&lt;Keine Angabe&gt;}</td></tr>';
+              tableDetails += sig;
+              allTableDetails += sig;
+        }
+        @if(
+        !(json \\ "lon").isEmpty && (json \\ "lon").head.asOpt[String].isDefined &&
+        !(json \\ "lat").isEmpty && (json \\ "lat").head.asOpt[String].isDefined) {
+            @defining(i) { id =>
+                var lat = @string((json \\ "lat").head)
+                var lon = @string((json \\ "lon").head)
+                var latlng@(id) = L.latLng(lat, lon);
+                var icon@(id) = L.MakiMarkers.icon({icon: "library", color: "#FA820A", size: "m"});
+                var marker@(id) = L.marker([lat, lon],{
+                    title: "@ownerName (@key)",
+                    icon: icon@(id)
+                });
+                markers[latlng@(id).toString()] = marker@(id);
+                bindPopup@(id)(tableDetails);
+                marker@(id).on('click', function(e) {
+                    zoomDetails@(id)();
+                });
+                marker@(id).on('popupclose', function(e) {
+                    map.setView(nrw, 7);
+                });
+                marker@(id).addTo(map);
+                markerCount++;
+                if(@items.size == 1){
+                    bindPopup@(id)(allTableDetails);
+                    zoomDetails@(id)();
+                }
+                function zoomDetails@(id)() {
+                    map.setView(latlng@(id), 16);
+                    marker@(id).openPopup();
+                }
+                function bindPopup@(id)(content) {
+                    marker@(id).bindPopup(
+                    '<table class="table-striped table-condensed">'+
+                        content+
+                    '</table>',
+                    {
+                        keepInView: true
+                    });
+                }
+            }
+        }
+    }
+}

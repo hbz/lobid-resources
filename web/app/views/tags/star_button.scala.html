@@ -1,0 +1,41 @@
+@* Copyright 2014 Fabian Steeg, hbz. Licensed under the GPLv2 *@
+
+@(id: String)
+
+@jsId() = @{ id.replace("-","_")}
+
+<script>
+function addStar_@(jsId)(){
+    $.ajax({
+      url: '@resources.routes.Application.star(id)',
+      type: 'POST',
+      success: function(data, textStatus, jqXHR) {
+        $("#star-icon-@(jsId)").attr("class","glyphicon glyphicon-star");
+        $("#star-link-@(jsId)").attr("onclick","remStar_@(jsId)()");
+        $("#star-link-@(jsId)").attr("title","Titel von Merkliste entfernen");
+      },
+      error: function(jqXHR, textStatus, errorThrown) {
+        console.log(textStatus);
+      }
+    });
+};
+function remStar_@(jsId)(){
+    $.ajax({
+      url: '@resources.routes.Application.unstar(id)',
+      type: 'DELETE',
+      success: function(data, textStatus, jqXHR) {
+        $("#star-icon-@(jsId)").attr("class","glyphicon glyphicon-star-empty");
+        $("#star-link-@(jsId)").attr("onclick","addStar_@(jsId)()");
+        $("#star-link-@(jsId)").attr("title","Titel zur Merkliste hinzufügen");
+      },
+      error: function(jqXHR, textStatus, errorThrown) {
+        console.log(textStatus);
+      }
+    });
+};
+</script>
+@if(controllers.resources.Application.isStarred(id)){
+<a id="star-link-@(jsId)" style="cursor:pointer" onclick="remStar_@(jsId)()" title="Titel von Merkliste entfernen"><span id="star-icon-@(jsId)" class="glyphicon glyphicon-star"></span></a> 
+} else {
+<a id="star-link-@(jsId)" style="cursor:pointer" onclick="addStar_@(jsId)()" title="Titel zur Merkliste hinzufügen"><span id="star-icon-@(jsId)" class="glyphicon glyphicon-star-empty"></span></a> 
+}

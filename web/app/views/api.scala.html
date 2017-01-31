@@ -1,0 +1,47 @@
+@* Copyright 2017 Fabian Steeg, hbz. Licensed under the Eclipse Public License 1.0 *@
+
+@()
+
+@import play.i18n._
+@import play.api.libs.json._
+
+@desc(label: String, link: play.api.mvc.Call) = {
+ <dt>@label</dt> <dd><a href='@link'>@link.toString.replace("%3A",":").replace("%2C",",").replaceAll("[&?]format=json", "")</a></dd>
+}
+
+@sample_doc(hbzId: String, label: String) = {
+	<h5 id='@(label.toLowerCase)'><a href='@resources.routes.Application.show(hbzId, format="html")'>@label</a> <small><a href='#@(label.toLowerCase)'><span class='glyphicon glyphicon-link'></span></a></small></h5>
+	<pre><code>@(Json.prettyPrint(Json.parse(new controllers.resources.Index().getResource(hbzId).getResult().toString)))</code></pre>
+}
+
+@main("lobid-resources - API") {
+	<h2 id='basics'>@Messages.get("api.basics.header") <small><a href='#basics'><span class='glyphicon glyphicon-link'></span></a></small></h2>
+	<dl>
+	@desc("HTTP GET", resources.routes.Application.show("HT018472857", format="json"))
+	@desc(Messages.get("api.basics.search"), resources.routes.Application.query("kunst", format="json"))
+	@desc(Messages.get("api.basics.field.simple", "title"), resources.routes.Application.query("title:ehrenfeld", format="json"))
+	@desc(Messages.get("api.basics.field.nested", "contribution.agent.label"), resources.routes.Application.query("contribution.agent.label:Melville", format="json"))
+	@desc(Messages.get("api.basics.pagination"), resources.routes.Application.query("contribution.agent.label:Melville", from = 2, size = 2, format="json"))
+	<h2 id='content_types'>@Messages.get("api.content_types.header") <small><a href='#content_types'><span class='glyphicon glyphicon-link'></span></a></small></h2>
+	<p>@Messages.get("api.content_types.default")</p>
+	<p><code>curl http://lobid.org@resources.routes.Application.show("HT018472857")</code></p>
+	<p>@Messages.get("api.content_types.negotiate")</p>
+	<p><code>curl --header "Accept: application/json" http://lobid.org@resources.routes.Application.query("kunst")</code></p>
+	<p>@Messages.get("api.content_types.override") <a href='@resources.routes.Application.show("HT018472857", format="json")'>@resources.routes.Application.show("HT018472857", format="json")</a></p>
+	<h2 id='jsonld'>@Messages.get("api.jsonld.header") <small><a href='#jsonld'><span class='glyphicon glyphicon-link'></span></a></small></h2>
+	<p>@Html(Messages.get("api.jsonld.info", "http://json-ld.org/playground/"))</p>
+	@desc("JSON-LD Context", resources.routes.Application.context)
+	<dt>@Messages.get("api.jsonld.rdf.header")</dt><dd>@Html(Messages.get("api.jsonld.rdf.text", "https://github.com/digitalbazaar/jsonld-cli"))</dd>
+	<p><code>jsonld format --nquads http://lobid.org@resources.routes.Application.show("HT018472857")</code></p>
+	<dt>@Messages.get("api.jsonld.example.header")</dt><dd>@Html(Messages.get("api.jsonld.example.text", "https://hypothes.is/"))</dd>
+	<dd>
+		<p>Springe zu: <a href="#buch">Buch</a>, <a href="#artikel">Artikel</a>, <a href="#periodikum">Periodikum</a>, <a href="#serienband">Serienband</a>
+
+		@sample_doc("HT013480902", "Buch")
+		@sample_doc("HT013577568", "Artikel")
+		@sample_doc("HT013304490", "Periodikum")
+		@sample_doc("HT002888677", "Serienband")
+	</dd>
+	</dl>
+}
+<script src='https://hypothes.is/embed.js' async></script>

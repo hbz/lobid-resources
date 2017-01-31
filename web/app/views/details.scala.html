@@ -1,0 +1,85 @@
+@* Copyright 2014 Fabian Steeg, hbz. Licensed under the GPLv2 *@
+
+@(config: com.typesafe.config.Config, docJson: String, q:String)
+
+@import helper._
+@import tags._
+@import views.TableRow
+@import controllers.resources.Lobid
+@import controllers.resources.Application
+@import play.api.libs.json.Json
+@import play.api.libs.json.JsValue
+@import play.api.libs.json.JsArray
+@import play.mvc.Controller.session
+@import play.cache.Cache
+
+@if(docJson.isEmpty){
+  @main("lobid-resources - Detailansicht") {
+    @if(flash.get("error")!=null){
+    <div class="alert alert-danger">@flash.get("error")</div>
+    } else {
+    <div class="alert alert-info text-center">Ein Titel mit der ID @q konnte nicht gefunden werden.</div>
+    }
+  }
+} else {
+  @defining(Json.parse(docJson)) { doc =>
+    @main(if( (doc\\"title").isEmpty) "lobid-resources - Vollanzeige" else (doc\\"title")(0).asOpt[String].getOrElse(q)) {
+      <div class="row">
+      @defining(Lobid.items(doc.toString)) { items =>
+        @defining(!(doc\\"isPartOf").isEmpty && doc.toString.contains("http://purl.org/ontology/bibo/Article")){superordination =>
+          <div class="col-md-@if(items.isEmpty && !doc.toString.contains("fulltextOnline") && !superordination){12} else {8}">
+            <dl>
+            @defining((doc\\"hbzId")(0).asOpt[String].getOrElse(q)){ id =>
+              <dt>@tags.star_button(id) Titeldetails:
+              <small style='float:right'>
+              <a title="MAB-XML-Quelldaten anzeigen" href="@Application.CONFIG.getString("hbz01.api")/@id"><span class="glyphicon glyphicon-log-out"></span></a>
+              <a title="JSON-LD-Indexdaten anzeigen" href='@resources.routes.Application.show(id, "json")'><span class="glyphicon glyphicon-cog"></span></a>
+              </small>
+              </dt>
+              <dd>@tags.result_doc(Json.parse(docJson))</dd>
+            }
+            </dl>
+          </div>
+          @if(!items.isEmpty || doc.toString.contains("fulltextOnline") || superordination){
+          <div class="col-md-4" id="holdings">
+            <dl>
+            @if(doc.toString.contains("fulltextOnline")){
+            <dt>Online-Ressource:</dt>
+            <dd>
+            <table class="table table-striped table-condensed">
+              <tr>
+                <th style="width: 15%"></th>
+                <th style="width: 85%"></th>
+              </tr>
+              @result_field("Link", "fulltextOnline", doc, TableRow.LINKS)
+            </table>
+            </dd>
+            }
+            @if(superordination){
+            <dt>Bestandsangaben:</dt>
+            <dd>
+            <table class="table table-striped table-condensed">
+              <tr>
+                <th style="width: 30%"></th>
+                <th style="width: 70%"></th>
+              </tr>
+              @result_field("Zum Bestand siehe:", "isPartOf", doc, TableRow.LINKS)
+            </table>
+            </dd>
+            }
+            @if(!superordination && !items.isEmpty && !doc.toString.contains("fulltextOnline")){
+             @defining(items.size){num =>
+             <dt>Bestand in @num Bibliothek@if(num>1){en}:</dt>
+             }
+             <dd>@tags.items_map(items)</dd>
+            }
+            </dl>
+          </div>
+          }
+        }
+      }
+      </div>
+      @if(!q.trim.isEmpty) {@map_credits()}
+    }
+  }
+}

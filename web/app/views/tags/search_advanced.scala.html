@@ -1,0 +1,126 @@
+@* Copyright 2014 Fabian Steeg, hbz. Licensed under the GPLv2 *@
+
+@(label:String, q:String = "", agent: String = "", name: String = "", subject: String = "", id: String = "", publisher: String = "", issued: String = "", sortParam: String = "", word: String = "", corporation: String = "")
+
+@import scala.collection.immutable.TreeMap
+@import controllers.resources.Lobid
+
+<script>
+function addSearchWidget(c){
+    var form = $("#resources-form");
+    var last = $(".search-field").last();
+    last.find(".rem").removeClass("disabled");
+    var add = last.clone().attr("id","search-field-" + c);
+    add.find(".rem").attr("onclick", "remSearchWidget("+(c)+")");
+    add.find("#resources-query-advanced").val("");
+    last.find("#and-search-field-"+(c-1)).show();
+    add.find("#and-search-field-"+(c-1)).attr("id", "and-search-field-"+c).hide();
+    add.find("#add-search-field-"+(c-1)).attr("id", "add-search-field-"+c)
+    last.find("#add-search-field-"+(c-1)).hide();
+    form.append(add);
+    $("#add-search-field-"+c).attr("onclick", "addSearchWidget("+(c+1)+")");
+    form.append($("#resources-form > #search-button"));
+    setAutosuggest();
+}
+
+function remSearchWidget(c) {
+    $("#search-field-"+c).remove();
+    $("#search-button").show();
+    var rows = $(".search-field");
+    var last = rows.last();
+    last.find(".and").hide();
+    last.find(".add").show();
+    if(rows.size() == 1){
+      last.find(".rem").addClass("disabled");
+    }
+}
+
+function addParameters(){
+    var ps = {};
+    $(".search-field").each(function( index ) {
+         var param = $(this).find("#query-select").val();
+         var value = $(this).find("#resources-query-advanced").val();
+         ps[param] = (ps[param] ? ps[param] + " " : "") + value;
+    });
+    for (var key in ps) {
+        $("#resources-form").append("<input type='hidden' name='"+key+"' value='"+ps[key]+"'/>");
+    }
+}
+
+function setAutosuggest() {
+    $('.search-field').each(function() {
+        var field = $(this);
+        var source = function(request, response) {
+            var general = {
+                dataType : "jsonp",
+                success : function(data) { response(data); }
+            };
+            var details = suggests(request.term)[field.find("#query-select").val()];
+            for (var key in details) { general[key] = details[key]; }
+            $.ajax(general)
+        }
+        field.find("input").autocomplete({source : source});
+    });
+    $("#search-button").show();
+}
+
+function suggests(term){
+    return {
+        'name' : {
+            url : "http://api.lobid.org/resource",
+            data : { name : term, format : "short.title" }
+        }
+    }
+}
+</script>
+
+@helper.form(action = controllers.resources.routes.Application.query(), 
+    'id -> "resources-form", 'role -> "form", 'class -> "form-inline") {
+  @defining(TreeMap("name"->name,"agent"->agent,"corporation"->corporation,"subject"->Lobid.withoutUris(subject), "id"->id,"publisher"->publisher,"word"->word).filter({case (k,v) => !v.isEmpty && (k != "subject" || (k == "subject" && !v.startsWith("http")))})) { fields =>
+  @for(((k,v),i)<- (if(fields.isEmpty) TreeMap("q" -> "") else fields).zipWithIndex){
+  <div class="search-field row" id="search-field-@i">
+      <div class="form-group col col-md-2">
+            <select id="query-select" class="form-control" onChange="setAutosuggest()">
+              <option value="word" @if(k=="word"){selected="selected"})>Alles</option>
+              <option value="id" @if(k=="id"){selected="selected"}>ISBN/ISSN</option>
+              <option value="name" @if(k=="name"){selected="selected"}>Titel</option>
+              <option value="agent" @if(k=="agent"){selected="selected"}>Mitwirkende</option>
+              <option value="subject" @if(k=="subject"){selected="selected"}>Schlagwort</option>
+              <option value="publisher" @if(k=="publisher"){selected="selected"}>Verlag</option>
+              <option value="issued" @if(k=="issued"){selected="selected"}>Erscheinungsjahr</option>
+            </select>
+      </div>
+      <div class="form-group col col-md-9">
+        <div class="input-group">
+            <input type="text" id="resources-query-advanced" class="form-control" placeholder='@if(v.startsWith("_")){@v.drop(1)}else{Suchanfrage}' value="@if(v.startsWith("_")){}else{@v}" onFocus="$('#search-button').show();"/>
+            <span class="input-group-btn">
+                <a href="#" title="Kriterium entfernen" class="btn btn-default rem @if(fields.isEmpty||fields.size==1){disabled}" onclick="remSearchWidget(@i)">
+                <span class="octicon octicon-x"></span>
+            </a>
+            </span>
+        </div>
+      </div>
+      <div class="form-group col col-md-1">
+          <a href="#" id="and-search-field-@i" class="btn btn-default add-and-button and disabled" title="UND">UND</a>
+          <a href="#" id="add-search-field-@i" class="btn btn-default add-and-button add" onclick="addSearchWidget(@(i+1))" title="Kriterium hinzufügen">
+                  <span class="glyphicon glyphicon-plus-sign"></span></a> 
+      </div>
+      <script>
+	  $("#add-search-field-@(i-1)").hide();
+	  </script>
+  </div>
+  }
+  <div class="row" id="search-button">
+      <div class="form-group col-md-2 col-md-offset-5">
+          <button type=submit class="btn btn-link" onclick="addParameters()">
+                  <span class="glyphicon glyphicon-search"></span> @label</button>
+      </div>
+  </div>
+  <script>
+  $("#and-search-field-@(if(fields.isEmpty) 0 else fields.size-1)").hide();
+  setAutosuggest();
+  $("#search-button").hide();
+  </script>
+  @if(!sortParam.isEmpty()){<input type="hidden" name="sort" value="@sortParam"/>}
+  }
+}

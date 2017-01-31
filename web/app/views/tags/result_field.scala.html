@@ -1,0 +1,31 @@
+@* Copyright 2014-2015 Fabian Steeg, hbz. Licensed under the GPLv2 *@
+
+@(label: String, property: String, doc: play.api.libs.json.JsValue, row: views.TableRow, node: Option[play.api.libs.json.JsValue] = None, valueLabel: Option[Seq[String]] = None, param: String = "q")
+
+@import play.api.libs.json._
+@import java.util.Optional
+@import controllers.resources.Lobid
+
+@jsonVal(p: String) = @{ node match {
+  case Some(node) => node
+  case None => if ((doc \\ p).isEmpty) (doc \ p) else (doc \\ p).head
+	}
+}
+
+@multiSingleOrEmptySeq(value: JsValue) = @{
+	val jsVal = jsonVal(property)
+	val id = "id"
+	value match {
+		case o:JsObject => Seq(o \ "id")
+		case a:JsArray => a.as[Seq[JsValue]].map(_ match {case o:JsObject => o \ id; case o@_ => o})
+		case _ => if(value.asOpt[String].isDefined) Seq(jsonVal(property)) else Seq()
+	}
+}
+
+@Html(row.process(
+	new com.fasterxml.jackson.databind.ObjectMapper().readTree(doc.toString()),
+	property,
+	param,
+	label,
+	multiSingleOrEmptySeq(jsonVal(property)).map(_.asOpt[String].getOrElse("--")).sorted(Ordering[String].reverse),
+	if(valueLabel.isEmpty){ Optional.empty() } else { Optional.of(valueLabel.get) }))
