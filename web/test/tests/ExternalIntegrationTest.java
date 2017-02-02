@@ -16,7 +16,6 @@ import org.junit.Test;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
-import controllers.resources.Application;
 import controllers.resources.Index;
 import play.mvc.Http;
 import play.test.Helpers;
@@ -42,9 +41,10 @@ public class ExternalIntegrationTest {
 	@Test
 	public void testFacets() {
 		running(testServer(3333), () -> {
+			Index index = new Index();
 			String queryString =
-					Application.buildQueryString("köln", "", "", "", "", "", "", "", "");
-			Index queryResources = new Index().queryResources(queryString);
+					index.buildQueryString("köln", "", "", "", "", "", "", "", "");
+			Index queryResources = index.queryResources(queryString);
 			JsonNode facets = queryResources.getAggregations();
 			assertThat(facets.get("type").findValues("key").stream()
 					.map(e -> e.asText()).collect(Collectors.toList())).contains(

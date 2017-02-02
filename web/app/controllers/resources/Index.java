@@ -59,6 +59,43 @@ public class Index {
 	private JsonNode aggregations;
 
 	/**
+	 * Fields used when building query strings vis
+	 * {@link #buildQueryString(String, String...)}
+	 */
+	public static final String[] FIELDS =
+			new String[] { "contribution.agent.label", "title", "subject.id", "isbn",
+					"publication.publishedBy", "publication.startDate", "medium.id",
+					"type", "collectedBy.id" };
+
+	/**
+	 * @param q The current query string
+	 * @param values The values corresponding to {@link #FIELDS}
+	 * @return A query string created from q, expanded for values
+	 */
+	public String buildQueryString(String q, String... values) {
+		String newQ = q.isEmpty() ? "*" : q;
+		for (int i = 0; i < values.length; i++) {
+			String fieldValue = values[i];
+			String fieldName = fieldValue.contains("http")
+					? FIELDS[i].replace(".label", ".id") : FIELDS[i];
+			if (fieldName.toLowerCase().endsWith("date")
+					&& fieldValue.matches("(\\d{1,4}|\\*)-(\\d{1,4}|\\*)")) {
+				String[] fromTo = fieldValue.split("-");
+				fieldValue = String.format("[%s TO %s]", fromTo[0], fromTo[1]);
+			}
+			if (!fieldValue.isEmpty()) {
+				String complexQ = " AND (";
+				for (String v : fieldValue.replace(",AND", "").split(",")) {
+					complexQ += " +" + fieldName + ":" + (fieldName.endsWith(".id")
+							? "\"" + Lobid.escapeUri(v) + "\"" : v);
+				}
+				newQ += complexQ + ")";
+			}
+		}
+		return newQ;
+	}
+
+	/**
 	 * @param q The string to use for an Elasticsearch queryStringQuery
 	 * @return This index, get results via {@link #getResult()} and
 	 *         {@link #getTotal()}

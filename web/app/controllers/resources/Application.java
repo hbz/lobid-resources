@@ -82,11 +82,6 @@ public class Application extends Controller {
 	/** The number of seconds in one day. */
 	public static final int ONE_DAY = 24 * ONE_HOUR;
 
-	private static final String[] FIELDS =
-			new String[] { "contribution.agent.label", "title", "subject.id", "isbn",
-					"publication.publishedBy", "publication.startDate", "medium.id",
-					"type", "collectedBy.id" };
-
 	/**
 	 * @return The index page.
 	 */
@@ -160,10 +155,11 @@ public class Application extends Controller {
 			return cachedResult;
 		Logger.debug("Not cached: {}, will cache for one hour", cacheId);
 		Promise<Result> result = Promise.promise(() -> {
-			String queryString = buildQueryString(q, agent, name, subject, id,
+			Index index = new Index();
+			String queryString = index.buildQueryString(q, agent, name, subject, id,
 					publisher, issued, medium, t, set);
 			Index queryResources =
-					new Index().queryResources(queryString, from, size, sort, owner);
+					index.queryResources(queryString, from, size, sort, owner);
 			JsonNode json = queryResources.getResult();
 			String s = json.toString();
 			String responseFormat =
@@ -190,10 +186,11 @@ public class Application extends Controller {
 			final int from, final int size, final String owner, String t, String sort,
 			String set, String format) {
 		return Promise.promise(() -> {
-			String queryString = buildQueryString(q, agent, name, subject, id,
+			Index index = new Index();
+			String queryString = index.buildQueryString(q, agent, name, subject, id,
 					publisher, issued, medium, t, set);
 			Index queryResources =
-					new Index().queryResources(queryString, from, size, sort, owner);
+					index.queryResources(queryString, from, size, sort, owner);
 			return ok(queryResources.getAggregations());
 		});
 	}
@@ -437,34 +434,6 @@ public class Application extends Controller {
 
 	private static String withoutAndOperator(String currentParam) {
 		return currentParam.replace(",AND", "");
-	}
-
-	/**
-	 * @param q The current query string
-	 * @param values The values corresponding to {@link #Application.FIELDS}
-	 * @return A query string created from q, expanded for values
-	 */
-	public static String buildQueryString(String q, String... values) {
-		String newQ = q.isEmpty() ? "*" : q;
-		for (int i = 0; i < values.length; i++) {
-			String fieldValue = values[i];
-			String fieldName = fieldValue.contains("http")
-					? FIELDS[i].replace(".label", ".id") : FIELDS[i];
-			if (fieldName.toLowerCase().endsWith("date")
-					&& fieldValue.matches("\\d{1,4}-\\d{1,4}")) {
-				String[] fromTo = fieldValue.split("-");
-				fieldValue = String.format("[%s TO %s]", fromTo[0], fromTo[1]);
-			}
-			if (!fieldValue.isEmpty()) {
-				String complexQ = " AND (";
-				for (String v : fieldValue.replace(",AND", "").split(",")) {
-					complexQ += " +" + fieldName + ":" + (fieldName.endsWith(".id")
-							? "\"" + Lobid.escapeUri(v) + "\"" : v);
-				}
-				newQ += complexQ + ")";
-			}
-		}
-		return newQ;
 	}
 
 	private static Stream<JsonNode> preprocess(Stream<JsonNode> stream) {

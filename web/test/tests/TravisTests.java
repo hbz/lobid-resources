@@ -14,7 +14,7 @@ import org.junit.runners.Suite.SuiteClasses;
  */
 @RunWith(Suite.class)
 @SuiteClasses({ ApplicationTest.class, InternalIntegrationTest.class,
-		AcceptUnitTest.class })
+		AcceptUnitTest.class, IndexUnitTest.class })
 public class TravisTests {
 	//
 }
