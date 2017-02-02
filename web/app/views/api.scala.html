@@ -29,7 +29,7 @@
 	<p><code>curl --header "Accept: application/json" http://lobid.org@resources.routes.Application.query("kunst")</code></p>
 	<p>@Messages.get("api.content_types.override") <a href='@resources.routes.Application.show("HT018472857", format="json")'>@resources.routes.Application.show("HT018472857", format="json")</a></p>
 	<h2 id='jsonld'>@Messages.get("api.jsonld.header") <small><a href='#jsonld'><span class='glyphicon glyphicon-link'></span></a></small></h2>
-	<p>@Html(Messages.get("api.jsonld.info", "http://json-ld.org/playground/"))</p>
+	<p>@Html(Messages.get("api.jsonld.info", "http://json-ld.org/", "http://json-ld.org/playground/"))</p>
 	@desc("JSON-LD Context", resources.routes.Application.context)
 	<dt>@Messages.get("api.jsonld.rdf.header")</dt><dd>@Html(Messages.get("api.jsonld.rdf.text", "https://github.com/digitalbazaar/jsonld-cli"))</dd>
 	<p><code>jsonld format --nquads http://lobid.org@resources.routes.Application.show("HT018472857")</code></p>
