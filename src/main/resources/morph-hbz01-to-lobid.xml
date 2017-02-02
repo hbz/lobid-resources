@@ -126,9 +126,7 @@
 			<data source="@rdfTypeSubject">
 				<regexp match="^http"/>
 			</data>
-			<data source="9[01234][27]-[-12].[aefghpstz-]" name="a">
-				<regexp match="(.*)" format="${1}"/>
-			</data>
+			<data source="9[01234][27]-[-12].[aefghpstz-]" name="a"/>
 		</combine>
 		<combine value="_:${a}" name="@subjectLabelBnode">
 			<data source="@subjectLabel" name="a">
@@ -171,12 +169,12 @@
 		<!-- ####################### -->
 		<!-- ####### hbz ID sameAs ZDB ID -->
 		<!-- ####################### -->
-		<combine name="http://www.w3.org/2002/07/owl#sameAs" value="$[ns-zdb-services]${idzdb}">
-			<data source="@idzdb" name="idzdb"/>
-		</combine>
+    <data source="@idzdb" name="http://www.w3.org/2002/07/owl#sameAs">
+      <regexp match="(.*)" format="$[ns-zdb-services]${1}" />
+    </data>
 		<data source="@idzdb" name="$[ns-lobid-vocab]zdbID"/>
 		<!-- ####################### -->
-		<!-- ####### Secondary form, link to primary form and vice verso -->
+		<!-- ####### Secondary form, link to primary form and vice versa -->
 		<!-- ####################### -->
 		<data source="021[-b]1.a" name="http://purl.org/dc/terms/source">
 			<regexp match="(.*)" format="$[ns-lobid-resource]${1}#!"/>
@@ -198,14 +196,9 @@
 		<!-- ####################### -->
 		<!-- ####### Set owl:sameAs -->
 		<!-- ####################### -->
-		<combine name="http://www.w3.org/2002/07/owl#sameAs" value="http://hub.culturegraph.org/resource/HBZ-${id}">
-			<if>
-				<none>
-					<data source="@idzdb"/>
-				</none>
-			</if>
-			<data source="@id" name="id"/>
-		</combine>
+		<data source="@id" name="http://www.w3.org/2002/07/owl#sameAs" >
+		  <regexp match="(.*)" format="http://hub.culturegraph.org/resource/HBZ-${1}"/>
+		</data>
 		<!-- ####################### -->
 		<!-- ####### General attributes for each record -->
 		<!-- ####################### -->
