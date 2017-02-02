@@ -74,6 +74,7 @@
 }
 
 @subjects(subjects: Seq[JsValue]) = {
+  @if(!subjects.isEmpty){
   <tr>
     <td>Schlagwörter</td>
     <td>
@@ -85,6 +86,7 @@
       @if(subject!=subjects.last){ | }
     }</td>
   </tr>
+  }
 }
 
 @table(){
