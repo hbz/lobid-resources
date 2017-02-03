@@ -91,7 +91,7 @@ $(function() {
 		range: true,
 		min: min,
 		max: max,
-		values: [from.length==0 ? min : from, to.length==0 ? max : to],
+		values: [from.length<=1 ? min : from, to.length<=1 ? max : to],
 		slide: function( event, ui ) {
 			var curFrom = ui.values[0];
 			var curTo = ui.values[1];
@@ -115,7 +115,7 @@ function issuedLink(newVal) {
 	var oldHref = $("#issued-link").attr("href");
 	var newIssued = "issued="+newVal;
 	var newHref = oldHref.indexOf("issued=") >= 0 ?
-		oldHref.replace(/issued=[\d\-]+/, newIssued) :
+		oldHref.replace(/issued=[\d\-\*]+/, newIssued) :
 		oldHref + (oldHref.indexOf("?") >= 0 ? "&" : "?") + newIssued;
 	return newHref;
 }
