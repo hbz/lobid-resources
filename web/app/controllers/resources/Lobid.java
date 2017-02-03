@@ -40,6 +40,8 @@ import views.TableRow;
  */
 public class Lobid {
 
+	/** The lobid-organisations 2.0 beta root URL. */
+	static final String ORGS_BETA_ROOT = "http://lobid.org/organisations/";
 	/** Timeout for API calls in milliseconds. */
 	public static final int API_TIMEOUT = 50000;
 
@@ -277,9 +279,8 @@ public class Lobid {
 	}
 
 	static String toApi1xOrg(String url) {
-		String betaOrgsPrefix = "http://beta.lobid.org/organisations";
-		return url.startsWith(betaOrgsPrefix)
-				? url.replace(betaOrgsPrefix, "http://lobid.org/organisation") : url;
+		return url.startsWith(ORGS_BETA_ROOT)
+				? url.replace(ORGS_BETA_ROOT, "http://lobid.org/organisation/") : url;
 	}
 
 	static boolean isOrg(String term) {

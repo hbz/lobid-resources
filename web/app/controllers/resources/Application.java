@@ -445,9 +445,7 @@ public class Application extends Controller {
 				.distinct().collect(Collectors.toList());
 		return count(itemUrisWithoutSignatures).entrySet().stream()
 				.map(entry -> Json.toJson(ImmutableMap.of(//
-						"key",
-						Lobid.toApi1xOrg(Application.CONFIG.getString("orgs.api")) + "/"
-								+ entry.getKey().toUpperCase(), //
+						"key", Lobid.ORGS_BETA_ROOT + entry.getKey(), //
 						"doc_count", entry.getValue())));
 	}
 

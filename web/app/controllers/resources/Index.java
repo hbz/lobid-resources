@@ -152,7 +152,7 @@ public class Index {
 	}
 
 	private static QueryBuilder ownerQuery(String q, String owner) {
-		final String prefix = "http://lobid.org/organisation/";
+		final String prefix = Lobid.ORGS_BETA_ROOT;
 		BoolQueryBuilder ownersQuery = QueryBuilders.boolQuery();
 		final String[] owners = owner.split(",");
 		for (String o : owners) {
