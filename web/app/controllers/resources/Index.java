@@ -63,9 +63,9 @@ public class Index {
 	 * {@link #buildQueryString(String, String...)}
 	 */
 	public static final String[] FIELDS =
-			new String[] { "contribution.agent.label", "title", "subject.id", "isbn",
-					"publication.publishedBy", "publication.startDate", "medium.id",
-					"type", "collectedBy.id" };
+			new String[] { "contribution.agent.label", "title", "subject.id",
+					"isbn|issn", "publication.publishedBy", "publication.startDate",
+					"medium.id", "type", "collectedBy.id" };
 
 	/**
 	 * @param q The current query string
@@ -73,7 +73,7 @@ public class Index {
 	 * @return A query string created from q, expanded for values
 	 */
 	public String buildQueryString(String q, String... values) {
-		String newQ = q.isEmpty() ? "*" : q;
+		String fullQuery = q.isEmpty() ? "*" : q;
 		for (int i = 0; i < values.length; i++) {
 			String fieldValue = values[i];
 			String fieldName = fieldValue.contains("http")
@@ -84,15 +84,31 @@ public class Index {
 				fieldValue = String.format("[%s TO %s]", fromTo[0], fromTo[1]);
 			}
 			if (!fieldValue.isEmpty()) {
-				String complexQ = " AND (";
-				for (String v : fieldValue.replace(",AND", "").split(",")) {
-					complexQ += " +" + fieldName + ":" + (fieldName.endsWith(".id")
-							? "\"" + Lobid.escapeUri(v) + "\"" : v);
-				}
-				newQ += complexQ + ")";
+				fullQuery += " AND (" + buildFieldQuery(fieldValue, fieldName) + ")";
 			}
 		}
-		return newQ;
+		return fullQuery;
+	}
+
+	private static String buildFieldQuery(String fieldValue, String fieldName) {
+		String q = "";
+		String[] fields = fieldName.split("\\|");
+		for (int i = 0; i < fields.length; i++) {
+			String f = fields[i];
+			if (i > 0)
+				q += " OR (";
+			String[] vals = fieldValue.replace(",AND", "").split(",");
+			for (int j = 0; j < vals.length; j++) {
+				String v = vals[j];
+				q += f + ":"
+						+ (f.endsWith(".id") ? "\"" + Lobid.escapeUri(v) + "\"" : v);
+				if (j < vals.length - 1)
+					q += " AND ";
+			}
+			if (i > 0)
+				q += ")";
+		}
+		return q;
 	}
 
 	/**
