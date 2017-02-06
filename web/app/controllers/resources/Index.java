@@ -23,6 +23,7 @@ import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
+import org.elasticsearch.search.aggregations.Aggregations;
 import org.elasticsearch.search.sort.SortBuilders;
 import org.elasticsearch.search.sort.SortOrder;
 
@@ -56,7 +57,7 @@ public class Index {
 
 	private JsonNode result;
 	private long total = 0;
-	private JsonNode aggregations;
+	private Aggregations aggregations;
 
 	/**
 	 * Fields used when building query strings vis
@@ -155,8 +156,7 @@ public class Index {
 			SearchResponse response = requestBuilder.execute().actionGet();
 			SearchHits hits = response.getHits();
 			List<JsonNode> results = new ArrayList<>();
-			// TODO use Aggregation objects directly, don't parse into JSON
-			aggregations = Json.parse(response.toString()).get("aggregations");
+			aggregations = response.getAggregations();
 			for (SearchHit sh : hits.getHits()) {
 				results.add(Json.toJson(sh.getSource()));
 			}
@@ -219,7 +219,7 @@ public class Index {
 	/**
 	 * @return The aggregations for the query
 	 */
-	public JsonNode getAggregations() {
+	public Aggregations getAggregations() {
 		return aggregations;
 	}
 

@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Spliterators;
 import java.util.UUID;
 import java.util.function.Function;
@@ -23,6 +24,9 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import org.apache.commons.lang3.tuple.Pair;
+import org.elasticsearch.search.aggregations.Aggregation;
+import org.elasticsearch.search.aggregations.bucket.terms.Terms;
+import org.elasticsearch.search.aggregations.bucket.terms.Terms.Bucket;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -191,7 +195,17 @@ public class Application extends Controller {
 					publisher, issued, medium, t, set);
 			Index queryResources =
 					index.queryResources(queryString, from, size, sort, owner);
-			return ok(queryResources.getAggregations());
+			Map<String, List<Map<String, Object>>> aggregations = new HashMap<>();
+			for (Entry<String, Aggregation> aggregation : queryResources
+					.getAggregations().asMap().entrySet()) {
+				Terms terms = (Terms) aggregation.getValue();
+				Stream<Map<String, Object>> buckets =
+						terms.getBuckets().stream().map((Bucket b) -> ImmutableMap.of(//
+								"key", b.getKeyAsString(), "doc_count", b.getDocCount()));
+				aggregations.put(aggregation.getKey(),
+						buckets.collect(Collectors.toList()));
+			}
+			return ok(Json.toJson(aggregations));
 		});
 	}
 
@@ -381,7 +395,7 @@ public class Application extends Controller {
 							JsonNode json = Json.parse(Helpers.contentAsString(result));
 							Stream<JsonNode> stream =
 									StreamSupport.stream(Spliterators.spliteratorUnknownSize(
-											json.get(field).get("buckets").elements(), 0), false);
+											json.get(field).elements(), 0), false);
 							if (field.equals(ITEM_FIELD)) {
 								stream = preprocess(stream);
 							}
