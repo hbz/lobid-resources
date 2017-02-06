@@ -17,6 +17,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Spliterators;
 import java.util.UUID;
+import java.util.concurrent.Callable;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -189,14 +190,16 @@ public class Application extends Controller {
 			final String publisher, final String issued, final String medium,
 			final int from, final int size, final String owner, String t, String sort,
 			String set, String format) {
-		return Promise.promise(() -> {
-			Index index = new Index();
-			String queryString = index.buildQueryString(q, agent, name, subject, id,
-					publisher, issued, medium, t, set);
+		Index index = new Index();
+		String queryString = index.buildQueryString(q, agent, name, subject, id,
+				publisher, issued, medium, t, set);
+		Callable<Map<String, List<Map<String, Object>>>> getAggregations = () -> {
+			Logger.debug("Not cached: aggregations {}, will cache for one hour",
+					queryString);
 			Index queryResources =
 					index.queryResources(queryString, from, size, sort, owner);
 			Map<String, List<Map<String, Object>>> aggregations = new HashMap<>();
-			for (Entry<String, Aggregation> aggregation : queryResources
+			for (final Entry<String, Aggregation> aggregation : queryResources
 					.getAggregations().asMap().entrySet()) {
 				Terms terms = (Terms) aggregation.getValue();
 				Stream<Map<String, Object>> buckets =
@@ -205,8 +208,11 @@ public class Application extends Controller {
 				aggregations.put(aggregation.getKey(),
 						buckets.collect(Collectors.toList()));
 			}
-			return ok(Json.toJson(aggregations));
-		});
+			Cache.set(queryString, aggregations);
+			return aggregations;
+		};
+		return Promise.promise(() -> ok(
+				Json.toJson(Cache.getOrElse(queryString, getAggregations, ONE_HOUR))));
 	}
 
 	/**
