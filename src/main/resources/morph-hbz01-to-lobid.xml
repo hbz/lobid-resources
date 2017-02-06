@@ -240,43 +240,6 @@
 		<!-- ####################### -->
 		<!-- ########## carrier and type -->
 		<!-- ####################### -->
-		<!-- type is book (and also manifestation) if 050 begins with 'a' and 051 or 052 is missing 
-			or 051 and 052 does not fulfill a certain pattern -->
-		<combine name="@rdftype" value="$[ns-bibo]Book">
-			<if>
-				<none>
-					<data source="@typeOnly"/>
-					<data source="@idzdb"/>
-					<data source="051.">
-						<regexp match="^a"/>
-					</data>
-					<data source="051.">
-						<regexp match="^.[mt]"/>
-					</data>
-					<data source="051.">
-						<regexp match="^..[tm]"/>
-					</data>
-					<data source="051.">
-						<regexp match="^...t"/>
-					</data>
-					<data source="051.">
-						<regexp match="^....t"/>
-					</data>
-					<data source="051.">
-						<regexp match="^.....t"/>
-					</data>
-					<data source="052.">
-						<regexp match="^[{alpha}|]"/>
-					</data>
-					<data source="@matVideo"/>
-					<data source="@mediumAudio"/>
-					<data source="@archived"/>
-				</none>
-			</if>
-			<data source="050.">
-				<regexp match="^a"/>
-			</data>
-		</combine>
 		<!-- print -->
 		<data source="050." name="@medium">
 			<regexp match="^[abcd]" format="http://rdaregistry.info/termList/RDAproductionMethod/1010"/>
@@ -374,20 +337,49 @@
 		<data source="051." name="@rdftype">
 			<regexp match="^[nt]" format="$[ns-bibo]MultiVolumeBook"/>
 		</data>
+		<!-- type is book (and also manifestation) if 050 begins with 'a' and 051 or 052 is missing 
+			or 051 and 052 does not fulfill a certain pattern -->
 		<combine name="@rdftype" value="$[ns-bibo]Book">
 			<if>
 				<none>
-					<data source="@matVideo"/>
-					<data source="@mediumAudio"/>
-					<data source="@archived"/>
+					<data source="@idzdb"/>
 					<data source="050.">
 						<regexp match="^.........a"/>
 					</data>
+					<data source="051.">
+						<regexp match="^a"/>
+					</data>
+					<data source="051.">
+						<regexp match="^.[mt]"/>
+					</data>
+					<data source="051.">
+						<regexp match="^..[tm]"/>
+					</data>
+					<data source="051.">
+						<regexp match="^...t"/>
+					</data>
+					<data source="051.">
+						<regexp match="^....t"/>
+					</data>
+					<data source="051.">
+						<regexp match="^.....t"/>
+					</data>
+					<data source="052.">
+						<regexp match="^[a-zA-Z]"/>
+					</data>
+					<data source="@matVideo"/>
+					<data source="@mediumAudio"/>
+					<data source="@archived"/>
 				</none>
 			</if>
-			<data source="051.">
-				<regexp match="^m|^.x|^..x|^...x|^....[fkls]"/>
-			</data>
+			<choose>
+				<data source="050.">
+					<regexp match="^a"/>
+				</data>
+				<data source="051.">
+					<regexp match="^m|^.x|^..x|^...x|^....[fkls]"/>
+				</data>
+			</choose>
 		</combine>
 		<!-- music -->
 		<data source="051." name="@rdftype">
