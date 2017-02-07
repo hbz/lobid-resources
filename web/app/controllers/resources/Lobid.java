@@ -13,6 +13,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.tuple.Pair;
@@ -30,6 +31,8 @@ import play.libs.ws.WS;
 import play.libs.ws.WSRequestHolder;
 import play.libs.ws.WSResponse;
 import play.mvc.Http;
+import play.mvc.Result;
+import play.test.Helpers;
 import views.TableRow;
 
 /**
@@ -89,13 +92,27 @@ public class Lobid {
 	}
 
 	/**
-	 * @param uri A Lobid-Resources URI
-	 * @return A human readable label for the given URI
+	 * @param id A Lobid-Resources URI or hbz title ID
+	 * @return A human readable label for the given id
 	 */
-	public static String resourceLabel(String uri) {
-		String cacheKey = "res.label." + uri;
-		String format = "short.title";
-		return lobidLabel(uri, cacheKey, format);
+	public static String resourceLabel(String id) {
+		Callable<String> getLabel = () -> {
+			// e.g. take TT000086525 from http://lobid.org/resources/TT000086525#!
+			String simpleId =
+					id.replaceAll("https?://lobid.org/resources?/(.+?)(#!)?$", "$1");
+			Result result = Application.show(simpleId, "json").get(API_TIMEOUT);
+			JsonNode json =
+					Json.parse(Helpers.contentAsString(result)).findValue("title");
+			String label = HtmlEscapers.htmlEscaper().escape(json.asText());
+			Logger.debug("Get res label, {} -> {} -> {}", id, simpleId, label);
+			return label.isEmpty() ? simpleId : label;
+		};
+		try {
+			return Cache.getOrElse("res.label." + id, getLabel, Application.ONE_DAY);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return "";
 	}
 
 	private static String lobidLabel(String uri, String cacheKey, String format) {
@@ -370,4 +387,5 @@ public class Lobid {
 		// replace non-digits with 9, e.g. for DE-5 before DE-Walb1
 		return Integer.parseInt(s.replaceAll("\\D", "9"));
 	}
+
 }
