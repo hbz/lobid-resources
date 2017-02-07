@@ -152,8 +152,9 @@ public class Application extends Controller {
 		String uuid = session("uuid");
 		if (uuid == null)
 			session("uuid", UUID.randomUUID().toString());
-		String cacheId = String.format("%s-%s-%s", uuid, request().uri(),
-				Accept.formatFor(format, request().acceptedTypes()));
+		String cacheId = String.format("%s-%s-%s-%s", uuid, request().uri(),
+				Accept.formatFor(format, request().acceptedTypes()),
+				toString(request().queryString()));
 		@SuppressWarnings("unchecked")
 		Promise<Result> cachedResult = (Promise<Result>) Cache.get(cacheId);
 		if (cachedResult != null)
@@ -182,6 +183,14 @@ public class Application extends Controller {
 			return internalServerError(query.render("[]", q, agent, name, subject, id,
 					publisher, issued, medium, from, size, 0L, owner, t, sort, set));
 		});
+	}
+
+	private static String toString(Map<String, String[]> queryString) {
+		Map<String, List<String>> result = new HashMap<>();
+		for (Entry<String, String[]> e : queryString.entrySet()) {
+			result.put(e.getKey(), Arrays.asList(e.getValue()));
+		}
+		return result.toString();
 	}
 
 	@SuppressWarnings({ "javadoc", "unused" }) // WIP
