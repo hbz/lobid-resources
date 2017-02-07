@@ -11,7 +11,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
 
@@ -27,12 +26,9 @@ import play.cache.Cache;
 import play.libs.F.Promise;
 import play.libs.Json;
 import play.libs.ws.WS;
-import play.libs.ws.WSRequestHolder;
-import play.libs.ws.WSResponse;
 import play.mvc.Http;
 import play.mvc.Result;
 import play.test.Helpers;
-import views.TableRow;
 
 /**
  * Access Lobid API for labels and related things.
@@ -127,26 +123,20 @@ public class Lobid {
 		if (cachedResult != null) {
 			return cachedResult;
 		}
-		WSRequestHolder requestHolder =
-				WS.url(Application.CONFIG.getString("resources.api"))
-						.setHeader("Accept", "application/json")
-						.setQueryParameter("subject", uri)
-						.setQueryParameter("format", "full").setQueryParameter("size", "1");
-		return requestHolder.get().map((WSResponse response) -> {
-			JsonNode value = response.asJson().get(1);
-			String label = TableRow.labelForId(uri, value,
-					Optional.of(Arrays.asList( // @formatter:off
-							"preferredName",
-					    "preferredNameForTheWork",
-					    "preferredNameForTheFamily",
-					    "preferredNameForThePerson",
-					    "preferredNameForTheCorporateBody",
-					    "preferredNameForTheSubjectHeading",
-					    "preferredNameForTheConferenceOrEvent",
-					    "preferredNameForThePlaceOrGeographicName"))); // @formatter:on
-			Cache.set(cacheKey, label, Application.ONE_DAY);
-			return label;
-		}).get(Lobid.API_TIMEOUT);
+		JsonNode json = new Index()
+				.queryResources("* AND subject.id:\"" + uri + "\"", 0, 1, "", "")
+				.getResult().get(0);
+		for (Iterator<JsonNode> elements =
+				json.findValue("subject").elements(); elements.hasNext();) {
+			JsonNode subject = elements.next();
+			JsonNode id = subject.findValue("id");
+			if (id != null && id.asText().equals(uri)) {
+				String label = subject.findValue("label").asText();
+				Cache.set(cacheKey, label, Application.ONE_DAY);
+				return label.isEmpty() ? uri : label;
+			}
+		}
+		return uri;
 	}
 
 	private static final Map<String, String> keys =
