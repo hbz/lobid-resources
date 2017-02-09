@@ -169,9 +169,9 @@
 		<!-- ####################### -->
 		<!-- ####### hbz ID sameAs ZDB ID -->
 		<!-- ####################### -->
-    <data source="@idzdb" name="http://www.w3.org/2002/07/owl#sameAs">
-      <regexp match="(.*)" format="$[ns-zdb-services]${1}" />
-    </data>
+		<data source="@idzdb" name="http://www.w3.org/2002/07/owl#sameAs">
+			<regexp match="(.*)" format="$[ns-zdb-services]${1}"/>
+		</data>
 		<data source="@idzdb" name="$[ns-lobid-vocab]zdbID"/>
 		<!-- ####################### -->
 		<!-- ####### Secondary form, link to primary form and vice versa -->
@@ -196,8 +196,8 @@
 		<!-- ####################### -->
 		<!-- ####### Set owl:sameAs -->
 		<!-- ####################### -->
-		<data source="@id" name="http://www.w3.org/2002/07/owl#sameAs" >
-		  <regexp match="(.*)" format="http://hub.culturegraph.org/resource/HBZ-${1}"/>
+		<data source="@id" name="http://www.w3.org/2002/07/owl#sameAs">
+			<regexp match="(.*)" format="http://hub.culturegraph.org/resource/HBZ-${1}"/>
 		</data>
 		<!-- ####################### -->
 		<!-- ####### General attributes for each record -->
@@ -527,6 +527,19 @@
 			</if>
 			<data source="@id"/>
 		</combine>
+		<!-- ####################### -->
+		<!-- ########## frequency -->
+		<!-- ####################### -->
+		<!-- proceedings -->
+		<data source="052." name="http://id.loc.gov/ontologies/bibframe/frequency">
+			<regexp
+				match="^.......([dcwesmbqfaghz])|^........([dcwesmbqfaghz])|^.........([dcwesmbqfaghz])"
+				format="http://marc21rdf.info/terms/continuingfre#${1}"/>
+		</data>
+		<data source="052." name="http://id.loc.gov/ontologies/bibframe/frequency">
+			<regexp match="^.......t|^........t|^.........t" format="http://marc21rdf.info/terms/continuingfre#i"/>
+		</data>
+		<!-- <combine value="${a}" name=""> <data source="@frequency" name="a"/> </combine> -->
 		<!-- ####################### -->
 		<!-- ########## title -->
 		<!-- ####################### -->
