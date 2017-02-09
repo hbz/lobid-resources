@@ -173,7 +173,7 @@ public final class CompareJsonMaps {
 			final String actual, final String expected) {
 		CompareJsonMaps.logger
 				.trace("\nActual   value: " + actual + "\nExpected value: " + expected);
-		return valuesToList(actual).containsAll(valuesToList(expected));
+		return valuesToList(actual).equals(valuesToList(expected));
 	}
 
 	private static List<String> valuesToList(final String values) {
