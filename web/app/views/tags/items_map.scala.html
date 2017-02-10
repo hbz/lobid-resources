@@ -63,7 +63,7 @@ map.addLayer(layer);
 
 @markers(items: Map[String,List[String]]) = {
     @for((key,i) <- items.keySet.toList.sortWith((k1:String,k2:String)=>Lobid.compareIsil(k1,k2)).zipWithIndex;
-        owner = Application.CONFIG.getString("orgs.api")+"/"+key;
+        owner = Application.CONFIG.getString("orgs.api")+key;
         json = Json.parse(Lobid.cachedJsonCall(owner).toString);
         ownerUrl = if((json\\"url").isEmpty) owner else (json\\"url")(0).as[String];
         ownerName = if((json\\"name").isEmpty) "" else (json\\"name")(0).as[String]) {

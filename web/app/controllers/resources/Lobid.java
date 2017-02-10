@@ -44,7 +44,7 @@ import play.test.Helpers;
 public class Lobid {
 
 	/** The lobid-organisations 2.0 beta root URL. */
-	static final String ORGS_BETA_ROOT = "http://lobid.org/organisations/";
+	static final String ORGS_BETA_ROOT = Application.CONFIG.getString("orgs.api");
 	/** Timeout for API calls in milliseconds. */
 	public static final int API_TIMEOUT = 50000;
 
@@ -274,11 +274,6 @@ public class Lobid {
 				: selected.get(0).getLeft().contains("miscellaneous")
 						&& selected.size() > 1 ? selected.get(1).getLeft()
 								: selected.get(0).getLeft();
-	}
-
-	static String toApi1xOrg(String url) {
-		return url.startsWith(ORGS_BETA_ROOT)
-				? url.replace(ORGS_BETA_ROOT, "http://lobid.org/organisation/") : url;
 	}
 
 	static boolean isOrg(String term) {
