@@ -7,7 +7,7 @@ import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.elasticsearch.action.search.SearchRequestBuilder;
@@ -41,11 +41,10 @@ import play.libs.Json;
  */
 public class Index {
 
-	private static final String INDEX_NAME =
-			Application.CONFIG.getString("index.name");
+	static final String INDEX_NAME = Application.CONFIG.getString("index.name");
 	private static final String TYPE_ITEM =
 			Application.CONFIG.getString("index.type.item");
-	private static final String TYPE_RESOURCE =
+	static final String TYPE_RESOURCE =
 			Application.CONFIG.getString("index.type.resource");
 	private static final int CLUSTER_PORT =
 			Application.CONFIG.getInt("index.cluster.port");
@@ -162,6 +161,7 @@ public class Index {
 			}
 			result = Json.toJson(results);
 			total = hits.getTotalHits();
+			return this;
 		});
 		Cache.set(cacheId, resultIndex, Application.ONE_HOUR);
 		return resultIndex;
@@ -192,6 +192,7 @@ public class Index {
 					.getSourceAsString();
 			result = Json.parse(sourceAsString);
 			total = 1;
+			return this;
 		});
 	}
 
@@ -206,6 +207,7 @@ public class Index {
 					.execute().actionGet().getSourceAsString();
 			result = Json.parse(sourceAsString);
 			total = 1;
+			return this;
 		});
 	}
 
@@ -241,18 +243,17 @@ public class Index {
 		return searchRequest;
 	}
 
-	private Index withClient(Consumer<Client> method) {
+	<T> T withClient(Function<Client, T> function) {
 		Settings settings =
 				Settings.settingsBuilder().put("cluster.name", CLUSTER_NAME).build();
 		try (TransportClient client =
 				TransportClient.builder().settings(settings).build()) {
 			addHosts(client);
-			method.accept(client);
-			return this;
+			return function.apply(client);
 		} catch (Exception e) {
 			e.printStackTrace();
-			return null;
 		}
+		return null;
 	}
 
 	private static void addHosts(TransportClient client) {

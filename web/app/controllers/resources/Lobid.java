@@ -15,6 +15,11 @@ import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.tuple.Pair;
+import org.elasticsearch.action.search.SearchRequestBuilder;
+import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.client.Client;
+import org.elasticsearch.index.query.QueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.collect.ImmutableMap;
@@ -118,23 +123,34 @@ public class Lobid {
 	}
 
 	private static String gndLabel(String uri) {
-		String cacheKey = "gnd.label." + uri;
-		final String cachedResult = (String) Cache.get(cacheKey);
-		if (cachedResult != null) {
-			return cachedResult;
+		Callable<String> getLabel = () -> {
+			return new Index().withClient((Client client) -> {
+				QueryBuilder query =
+						QueryBuilders.queryStringQuery("* AND subject.id:\"" + uri + "\"");
+				SearchRequestBuilder requestBuilder =
+						client.prepareSearch(Index.INDEX_NAME).setTypes(Index.TYPE_RESOURCE)
+								.setQuery(query).setFrom(0).setSize(1).setExplain(false);
+				SearchResponse response = requestBuilder.execute().actionGet();
+				return findLabelForUriInResponse(uri, response);
+			});
+		};
+		try {
+			return Cache.getOrElse("gnd.label." + uri, getLabel, Application.ONE_DAY);
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-		JsonNode json = new Index()
-				.queryResources("* AND subject.id:\"" + uri + "\"", 0, 1, "", "")
-				.getResult().get(0);
-		for (Iterator<JsonNode> elements =
-				json.findValue("subject").elements(); elements.hasNext();) {
-			JsonNode subject = elements.next();
-			JsonNode id = subject.findValue("id");
-			if (id != null && id.asText().equals(uri)) {
-				String label = subject.findValue("label").asText();
-				Cache.set(cacheKey, label, Application.ONE_DAY);
-				return label.isEmpty() ? uri : label;
-			}
+		return uri;
+	}
+
+	private static String findLabelForUriInResponse(String uri,
+			SearchResponse response) {
+		if (response.getHits().getTotalHits() > 0) {
+			Object subjects = response.getHits().getAt(0).getSource().get("subject");
+			@SuppressWarnings("unchecked") // subjects: always array of JSON objects
+			String label = ((List<HashMap<String, Object>>) subjects).stream()
+					.filter((s) -> s.containsKey("id") && s.get("id").equals(uri))
+					.findFirst().map((s) -> s.get("label").toString()).orElse(uri);
+			return label;
 		}
 		return uri;
 	}
