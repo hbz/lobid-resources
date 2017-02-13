@@ -126,9 +126,7 @@
 			<data source="@rdfTypeSubject">
 				<regexp match="^http"/>
 			</data>
-			<data source="9[01234][27]-[-12].[aefghpstz-]" name="a">
-				<regexp match="(.*)" format="${1}"/>
-			</data>
+			<data source="9[01234][27]-[-12].[aefghpstz-]" name="a"/>
 		</combine>
 		<combine value="_:${a}" name="@subjectLabelBnode">
 			<data source="@subjectLabel" name="a">
@@ -171,12 +169,12 @@
 		<!-- ####################### -->
 		<!-- ####### hbz ID sameAs ZDB ID -->
 		<!-- ####################### -->
-		<combine name="http://www.w3.org/2002/07/owl#sameAs" value="$[ns-zdb-services]${idzdb}">
-			<data source="@idzdb" name="idzdb"/>
-		</combine>
+		<data source="@idzdb" name="http://www.w3.org/2002/07/owl#sameAs">
+			<regexp match="(.*)" format="$[ns-zdb-services]${1}"/>
+		</data>
 		<data source="@idzdb" name="$[ns-lobid-vocab]zdbID"/>
 		<!-- ####################### -->
-		<!-- ####### Secondary form, link to primary form and vice verso -->
+		<!-- ####### Secondary form, link to primary form and vice versa -->
 		<!-- ####################### -->
 		<data source="021[-b]1.a" name="http://purl.org/dc/terms/source">
 			<regexp match="(.*)" format="$[ns-lobid-resource]${1}#!"/>
@@ -198,14 +196,9 @@
 		<!-- ####################### -->
 		<!-- ####### Set owl:sameAs -->
 		<!-- ####################### -->
-		<combine name="http://www.w3.org/2002/07/owl#sameAs" value="http://hub.culturegraph.org/resource/HBZ-${id}">
-			<if>
-				<none>
-					<data source="@idzdb"/>
-				</none>
-			</if>
-			<data source="@id" name="id"/>
-		</combine>
+		<data source="@id" name="http://www.w3.org/2002/07/owl#sameAs">
+			<regexp match="(.*)" format="http://hub.culturegraph.org/resource/HBZ-${1}"/>
+		</data>
 		<!-- ####################### -->
 		<!-- ####### General attributes for each record -->
 		<!-- ####################### -->
@@ -240,43 +233,6 @@
 		<!-- ####################### -->
 		<!-- ########## carrier and type -->
 		<!-- ####################### -->
-		<!-- type is book (and also manifestation) if 050 begins with 'a' and 051 or 052 is missing 
-			or 051 and 052 does not fulfill a certain pattern -->
-		<combine name="@rdftype" value="$[ns-bibo]Book">
-			<if>
-				<none>
-					<data source="@typeOnly"/>
-					<data source="@idzdb"/>
-					<data source="051.">
-						<regexp match="^a"/>
-					</data>
-					<data source="051.">
-						<regexp match="^.[mt]"/>
-					</data>
-					<data source="051.">
-						<regexp match="^..[tm]"/>
-					</data>
-					<data source="051.">
-						<regexp match="^...t"/>
-					</data>
-					<data source="051.">
-						<regexp match="^....t"/>
-					</data>
-					<data source="051.">
-						<regexp match="^.....t"/>
-					</data>
-					<data source="052.">
-						<regexp match="^[{alpha}|]"/>
-					</data>
-					<data source="@matVideo"/>
-					<data source="@mediumAudio"/>
-					<data source="@archived"/>
-				</none>
-			</if>
-			<data source="050.">
-				<regexp match="^a"/>
-			</data>
-		</combine>
 		<!-- print -->
 		<data source="050." name="@medium">
 			<regexp match="^[abcd]" format="http://rdaregistry.info/termList/RDAproductionMethod/1010"/>
@@ -359,7 +315,7 @@
 		</data>
 		<!-- Computer carriers -->
 		<data source="050." name="@medium">
-			<regexp match="^........[abcdefgz]" format="http://rdaregistry.info/termList/RDACarrierType/1010"/>
+			<regexp match="^........[abcdefz]" format="http://rdaregistry.info/termList/RDACarrierType/1010"/>
 		</data>
 		<combine name="~rdf:subject" value="${a}" flushWith="@typeOnly">
 			<data source="@typeOnly"/>
@@ -374,20 +330,49 @@
 		<data source="051." name="@rdftype">
 			<regexp match="^[nt]" format="$[ns-bibo]MultiVolumeBook"/>
 		</data>
+		<!-- type is book (and also manifestation) if 050 begins with 'a' and 051 or 052 is missing 
+			or 051 and 052 does not fulfill a certain pattern -->
 		<combine name="@rdftype" value="$[ns-bibo]Book">
 			<if>
 				<none>
-					<data source="@matVideo"/>
-					<data source="@mediumAudio"/>
-					<data source="@archived"/>
+					<data source="@idzdb"/>
 					<data source="050.">
 						<regexp match="^.........a"/>
 					</data>
+					<data source="051.">
+						<regexp match="^a"/>
+					</data>
+					<data source="051.">
+						<regexp match="^.[mt]"/>
+					</data>
+					<data source="051.">
+						<regexp match="^..[tm]"/>
+					</data>
+					<data source="051.">
+						<regexp match="^...t"/>
+					</data>
+					<data source="051.">
+						<regexp match="^....t"/>
+					</data>
+					<data source="051.">
+						<regexp match="^.....t"/>
+					</data>
+					<data source="052.">
+						<regexp match="^[a-zA-Z]"/>
+					</data>
+					<data source="@matVideo"/>
+					<data source="@mediumAudio"/>
+					<data source="@archived"/>
 				</none>
 			</if>
-			<data source="051.">
-				<regexp match="^m|^.x|^..x|^...x|^....[fkls]"/>
-			</data>
+			<choose>
+				<data source="050.">
+					<regexp match="^a"/>
+				</data>
+				<data source="051.">
+					<regexp match="^m|^.x|^..x|^...x|^....[fkls]"/>
+				</data>
+			</choose>
 		</combine>
 		<!-- music -->
 		<data source="051." name="@rdftype">
@@ -542,6 +527,19 @@
 			</if>
 			<data source="@id"/>
 		</combine>
+		<!-- ####################### -->
+		<!-- ########## frequency -->
+		<!-- ####################### -->
+		<!-- proceedings -->
+		<data source="052." name="http://id.loc.gov/ontologies/bibframe/frequency">
+			<regexp
+				match="^.......([dcwesmbqfaghz])|^........([dcwesmbqfaghz])|^.........([dcwesmbqfaghz])"
+				format="http://marc21rdf.info/terms/continuingfre#${1}"/>
+		</data>
+		<data source="052." name="http://id.loc.gov/ontologies/bibframe/frequency">
+			<regexp match="^.......t|^........t|^.........t" format="http://marc21rdf.info/terms/continuingfre#i"/>
+		</data>
+		<!-- <combine value="${a}" name=""> <data source="@frequency" name="a"/> </combine> -->
 		<!-- ####################### -->
 		<!-- ########## title -->
 		<!-- ####################### -->
