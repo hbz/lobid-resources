@@ -19,7 +19,7 @@ public class Accept {
 	}
 
 	enum Format {
-		JSON_LD("json", "application/json", "application/ld+json"), //
+		JSON_LD("json(.+)?", "application/json", "application/ld+json"), //
 		HTML("html", "text/html");
 
 		String[] types;
@@ -39,7 +39,7 @@ public class Accept {
 	public static String formatFor(String formatParam,
 			Collection<MediaRange> acceptedTypes) {
 		for (Format format : Format.values())
-			if (formatParam != null && format.queryParamString.equals(formatParam))
+			if (formatParam != null && formatParam.matches(format.queryParamString))
 				return formatParam;
 		for (MediaRange mediaRange : acceptedTypes)
 			for (Format format : Format.values())

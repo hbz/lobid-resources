@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.Spliterators;
 import java.util.UUID;
 import java.util.concurrent.Callable;
@@ -167,10 +168,12 @@ public class Application extends Controller {
 					publisher, issued, medium, t, set);
 			Index queryResources =
 					index.queryResources(queryString, from, size, sort, owner);
-			JsonNode json = queryResources.getResult();
-			String s = json.toString();
 			String responseFormat =
 					Accept.formatFor(format, request().acceptedTypes());
+			JsonNode json = responseFormat.contains("json.")
+					? toSuggestions(queryResources.getResult(), format.split("\\.")[1])
+					: queryResources.getResult();
+			String s = json.toString();
 			boolean htmlRequested =
 					responseFormat.equals(Accept.Format.HTML.queryParamString);
 			return htmlRequested ? ok(query.render(s, q, agent, name, subject, id,
@@ -184,6 +187,27 @@ public class Application extends Controller {
 			return internalServerError(query.render("[]", q, agent, name, subject, id,
 					publisher, issued, medium, from, size, 0L, owner, t, sort, set));
 		});
+	}
+
+	private static JsonNode toSuggestions(JsonNode json, String field) {
+		Stream<JsonNode> stream = json.findValues(field).stream();
+		Stream<JsonNode> suggestions = stream.map((JsonNode subject) -> {
+			Optional<JsonNode> label = findValueOptional(subject, "label");
+			Optional<JsonNode> id = findValueOptional(subject, "id");
+			Optional<JsonNode> type = findValueOptional(subject, "type");
+			return Json.toJson(ImmutableMap.of(//
+					"label", label.orElseGet(() -> Json.toJson("")), //
+					"id", id.orElseGet(() -> label.orElseGet(() -> Json.toJson(""))), //
+					"category", type.orElseGet(() -> Json.toJson(new String[] { "" }))
+							.elements().next()));
+		});
+		// TODO top-level field, no objects, find label, id, type in json
+		return Json.toJson(suggestions.collect(Collectors.toSet()));
+	}
+
+	private static Optional<JsonNode> findValueOptional(JsonNode json,
+			String field) {
+		return Optional.ofNullable(json.findValue(field));
 	}
 
 	private static String toString(Map<String, String[]> queryString) {
