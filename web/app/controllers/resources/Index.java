@@ -24,6 +24,7 @@ import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
 import org.elasticsearch.search.aggregations.Aggregations;
+import org.elasticsearch.search.aggregations.bucket.children.ChildrenBuilder;
 import org.elasticsearch.search.sort.SortBuilders;
 import org.elasticsearch.search.sort.SortOrder;
 
@@ -151,7 +152,7 @@ public class Index {
 						.order(sort.equals("newest") ? SortOrder.DESC : SortOrder.ASC));
 			}
 			requestBuilder = withAggregations(requestBuilder, "publication.startDate",
-					"subject.id", "type", "medium.id", "exemplar.id");
+					"subject.id", "type", "medium.id");
 			SearchResponse response = requestBuilder.execute().actionGet();
 			SearchHits hits = response.getHits();
 			List<JsonNode> results = new ArrayList<>();
@@ -234,12 +235,17 @@ public class Index {
 
 	private static SearchRequestBuilder withAggregations(
 			final SearchRequestBuilder searchRequest, String... fields) {
+		int defaultSize = 100;
 		Arrays.asList(fields).forEach(field -> {
-			boolean many =
-					field.equals("publication.startDate") || field.equals("exemplar.id");
+			boolean many = field.equals("publication.startDate");
 			searchRequest.addAggregation(AggregationBuilders.terms(field).field(field)
-					.size(many ? 1000 : 100));
+					.size(many ? 1000 : defaultSize));
 		});
+		String field = Application.OWNER_AGGREGATION;
+		ChildrenBuilder ownerAggregation = AggregationBuilders.children(field)
+				.childType(TYPE_ITEM).subAggregation(AggregationBuilders.terms(field)
+						.field("owner.id").size(defaultSize));
+		searchRequest.addAggregation(ownerAggregation);
 		return searchRequest;
 	}
 
