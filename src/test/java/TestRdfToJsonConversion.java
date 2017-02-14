@@ -24,6 +24,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Map;
 
+import org.apache.commons.io.FileUtils;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openrdf.rio.RDFFormat;
@@ -186,9 +187,11 @@ public class TestRdfToJsonConversion {
 		TestRdfToJsonConversion.logger.info("Json file " + fnameJson
 				+ " to test against does not yet exist. Will create it now.");
 		try {
-			TestRdfToJsonConversion.logger
-					.info("Creating: \n" + new ObjectMapper().writeValueAsString(actual));
-			JsonConverter.getObjectMapper().writeValue(new File(fnameJson), actual);
+			String json =
+					new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT)
+							.writeValueAsString(actual);
+			TestRdfToJsonConversion.logger.info("Creating: \n" + json);
+			FileUtils.writeStringToFile(new File(fnameJson), json);
 		} catch (IOException e) {
 			org.junit.Assert.assertFalse("Problems creating file " + e.getMessage(),
 					true);
