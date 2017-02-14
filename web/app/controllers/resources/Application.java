@@ -202,11 +202,14 @@ public class Application extends Controller {
 						: findValueOptional(node, "id");
 				Optional<JsonNode> type = isTextual ? getOptional(document, "type")
 						: findValueOptional(node, "type");
+				JsonNode types =
+						type.orElseGet(() -> Json.toJson(new String[] { "" }));
+				String typeText = types.elements().next().textValue();
 				return Json.toJson(ImmutableMap.of(//
 						"label", label.orElseGet(() -> Json.toJson("")), //
 						"id", id.orElseGet(() -> label.orElseGet(() -> Json.toJson(""))), //
-						"category", type.orElseGet(() -> Json.toJson(new String[] { "" }))
-								.elements().next()));
+						"category", typeText.equals("BibliographicResource")
+								? Lobid.typeLabel(Json.fromJson(types, List.class)) : typeText));
 			});
 		});
 		return Json.toJson(suggestions.collect(Collectors.toSet()));
