@@ -190,24 +190,44 @@ public class Application extends Controller {
 	}
 
 	private static JsonNode toSuggestions(JsonNode json, String field) {
-		Stream<JsonNode> stream = json.findValues(field).stream();
-		Stream<JsonNode> suggestions = stream.map((JsonNode subject) -> {
-			Optional<JsonNode> label = findValueOptional(subject, "label");
-			Optional<JsonNode> id = findValueOptional(subject, "id");
-			Optional<JsonNode> type = findValueOptional(subject, "type");
-			return Json.toJson(ImmutableMap.of(//
-					"label", label.orElseGet(() -> Json.toJson("")), //
-					"id", id.orElseGet(() -> label.orElseGet(() -> Json.toJson(""))), //
-					"category", type.orElseGet(() -> Json.toJson(new String[] { "" }))
-							.elements().next()));
+		Stream<JsonNode> documents = StreamSupport
+				.stream(Spliterators.spliteratorUnknownSize(json.elements(), 0), false);
+		Stream<JsonNode> suggestions = documents.flatMap((JsonNode document) -> {
+			Stream<JsonNode> nodes = fieldValues(field, document);
+			return nodes.map((JsonNode node) -> {
+				boolean isTextual = node.isTextual();
+				Optional<JsonNode> label = isTextual ? Optional.ofNullable(node)
+						: findValueOptional(node, "label");
+				Optional<JsonNode> id = isTextual ? getOptional(document, "id")
+						: findValueOptional(node, "id");
+				Optional<JsonNode> type = isTextual ? getOptional(document, "type")
+						: findValueOptional(node, "type");
+				return Json.toJson(ImmutableMap.of(//
+						"label", label.orElseGet(() -> Json.toJson("")), //
+						"id", id.orElseGet(() -> label.orElseGet(() -> Json.toJson(""))), //
+						"category", type.orElseGet(() -> Json.toJson(new String[] { "" }))
+								.elements().next()));
+			});
 		});
-		// TODO top-level field, no objects, find label, id, type in json
 		return Json.toJson(suggestions.collect(Collectors.toSet()));
+	}
+
+	private static Stream<JsonNode> fieldValues(String field, JsonNode document) {
+		return document.findValues(field).stream().flatMap((node) -> {
+			return node.isArray()
+					? StreamSupport.stream(
+							Spliterators.spliteratorUnknownSize(node.elements(), 0), false)
+					: Arrays.asList(node).stream();
+		});
 	}
 
 	private static Optional<JsonNode> findValueOptional(JsonNode json,
 			String field) {
 		return Optional.ofNullable(json.findValue(field));
+	}
+
+	private static Optional<JsonNode> getOptional(JsonNode json, String field) {
+		return Optional.ofNullable(json.get(field));
 	}
 
 	private static String toString(Map<String, String[]> queryString) {
