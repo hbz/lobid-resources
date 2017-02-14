@@ -7,7 +7,7 @@ import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.elasticsearch.action.search.SearchRequestBuilder;
@@ -23,6 +23,7 @@ import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
+import org.elasticsearch.search.aggregations.Aggregations;
 import org.elasticsearch.search.sort.SortBuilders;
 import org.elasticsearch.search.sort.SortOrder;
 
@@ -40,11 +41,10 @@ import play.libs.Json;
  */
 public class Index {
 
-	private static final String INDEX_NAME =
-			Application.CONFIG.getString("index.name");
+	static final String INDEX_NAME = Application.CONFIG.getString("index.name");
 	private static final String TYPE_ITEM =
 			Application.CONFIG.getString("index.type.item");
-	private static final String TYPE_RESOURCE =
+	static final String TYPE_RESOURCE =
 			Application.CONFIG.getString("index.type.resource");
 	private static final int CLUSTER_PORT =
 			Application.CONFIG.getInt("index.cluster.port");
@@ -56,7 +56,7 @@ public class Index {
 
 	private JsonNode result;
 	private long total = 0;
-	private JsonNode aggregations;
+	private Aggregations aggregations;
 
 	/**
 	 * Fields used when building query strings vis
@@ -155,13 +155,13 @@ public class Index {
 			SearchResponse response = requestBuilder.execute().actionGet();
 			SearchHits hits = response.getHits();
 			List<JsonNode> results = new ArrayList<>();
-			// TODO use Aggregation objects directly, don't parse into JSON
-			aggregations = Json.parse(response.toString()).get("aggregations");
+			aggregations = response.getAggregations();
 			for (SearchHit sh : hits.getHits()) {
 				results.add(Json.toJson(sh.getSource()));
 			}
 			result = Json.toJson(results);
 			total = hits.getTotalHits();
+			return this;
 		});
 		Cache.set(cacheId, resultIndex, Application.ONE_HOUR);
 		return resultIndex;
@@ -192,6 +192,7 @@ public class Index {
 					.getSourceAsString();
 			result = Json.parse(sourceAsString);
 			total = 1;
+			return this;
 		});
 	}
 
@@ -206,6 +207,7 @@ public class Index {
 					.execute().actionGet().getSourceAsString();
 			result = Json.parse(sourceAsString);
 			total = 1;
+			return this;
 		});
 	}
 
@@ -219,7 +221,7 @@ public class Index {
 	/**
 	 * @return The aggregations for the query
 	 */
-	public JsonNode getAggregations() {
+	public Aggregations getAggregations() {
 		return aggregations;
 	}
 
@@ -241,18 +243,17 @@ public class Index {
 		return searchRequest;
 	}
 
-	private Index withClient(Consumer<Client> method) {
+	<T> T withClient(Function<Client, T> function) {
 		Settings settings =
 				Settings.settingsBuilder().put("cluster.name", CLUSTER_NAME).build();
 		try (TransportClient client =
 				TransportClient.builder().settings(settings).build()) {
 			addHosts(client);
-			method.accept(client);
-			return this;
+			return function.apply(client);
 		} catch (Exception e) {
 			e.printStackTrace();
-			return null;
 		}
+		return null;
 	}
 
 	private static void addHosts(TransportClient client) {

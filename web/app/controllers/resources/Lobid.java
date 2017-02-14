@@ -4,7 +4,6 @@ package controllers.resources;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -12,10 +11,15 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
+import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.tuple.Pair;
+import org.elasticsearch.action.search.SearchRequestBuilder;
+import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.client.Client;
+import org.elasticsearch.index.query.QueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.collect.ImmutableMap;
@@ -27,10 +31,9 @@ import play.cache.Cache;
 import play.libs.F.Promise;
 import play.libs.Json;
 import play.libs.ws.WS;
-import play.libs.ws.WSRequestHolder;
-import play.libs.ws.WSResponse;
 import play.mvc.Http;
-import views.TableRow;
+import play.mvc.Result;
+import play.test.Helpers;
 
 /**
  * Access Lobid API for labels and related things.
@@ -41,7 +44,7 @@ import views.TableRow;
 public class Lobid {
 
 	/** The lobid-organisations 2.0 beta root URL. */
-	static final String ORGS_BETA_ROOT = "http://lobid.org/organisations/";
+	static final String ORGS_BETA_ROOT = Application.CONFIG.getString("orgs.api");
 	/** Timeout for API calls in milliseconds. */
 	public static final int API_TIMEOUT = 50000;
 
@@ -55,7 +58,7 @@ public class Lobid {
 		if (json != null) {
 			return json;
 		}
-		Logger.debug("Not cached, GET: {}", url);
+		Logger.trace("Not cached, GET: {}", url);
 		Promise<JsonNode> promise =
 				WS.url(url).get().map(response -> response.getStatus() == Http.Status.OK
 						? response.asJson() : Json.newObject());
@@ -79,82 +82,77 @@ public class Lobid {
 	}
 
 	/**
-	 * @param uri A Lobid-Organisation URI
-	 * @return A human readable label for the given URI
+	 * @param id A Lobid-Organisations URI or ISIL
+	 * @return A human readable label for the given id
 	 */
-	public static String organisationLabel(String uri) {
-		String cacheKey = "org.label." + uri;
-		String format = "short.altLabel";
-		return lobidLabel(uri, cacheKey, format);
+	public static String organisationLabel(String id) {
+		// e.g. take DE-6 from http://lobid.org/organisations/DE-6#!
+		String simpleId =
+				id.replaceAll("https?://lobid.org/organisations?/(.+?)(#!)?$", "$1");
+		JsonNode json =
+				cachedJsonCall(id.startsWith("http") ? id : ORGS_BETA_ROOT + id)
+						.findValue("alternateName");
+		String label = HtmlEscapers.htmlEscaper()
+				.escape(json == null ? "" : json.elements().next().asText());
+		Logger.trace("Get org label, {} -> {} -> {}", id, simpleId, label);
+		return label.isEmpty() ? simpleId : label;
 	}
 
 	/**
-	 * @param uri A Lobid-Resources URI
-	 * @return A human readable label for the given URI
+	 * @param id A Lobid-Resources URI or hbz title ID
+	 * @return A human readable label for the given id
 	 */
-	public static String resourceLabel(String uri) {
-		String cacheKey = "res.label." + uri;
-		String format = "short.title";
-		return lobidLabel(uri, cacheKey, format);
-	}
-
-	private static String lobidLabel(String uri, String cacheKey, String format) {
-		final String cachedResult = (String) Cache.get(cacheKey);
-		if (cachedResult != null) {
-			return cachedResult;
-		}
+	public static String resourceLabel(String id) {
+		Callable<String> getLabel = () -> {
+			// e.g. take TT000086525 from http://lobid.org/resources/TT000086525#!
+			String simpleId =
+					id.replaceAll("https?://lobid.org/resources?/(.+?)(#!)?$", "$1");
+			Result result = Application.show(simpleId, "json").get(API_TIMEOUT);
+			JsonNode json =
+					Json.parse(Helpers.contentAsString(result)).findValue("title");
+			String label = HtmlEscapers.htmlEscaper().escape(json.asText());
+			Logger.debug("Get res label, {} -> {} -> {}", id, simpleId, label);
+			return label.isEmpty() ? simpleId : label;
+		};
 		try {
-			URI.create(uri);
-			String api = Application.CONFIG.getString("resources.api");
-			WSRequestHolder requestHolder = WS
-					.url(toApi1xOrg(
-							uri.replaceAll("https?://lobid\\.org/resources?", api)))
-					.setHeader("Accept", "application/json")
-					.setQueryParameter("format", format);
-			return requestHolder.get().map((WSResponse response) -> {
-				Iterator<JsonNode> elements = response.asJson().elements();
-				String label = "";
-				if (elements.hasNext()) {
-					label = elements.next().asText();
-				} else {
-					label = uri.substring(uri.lastIndexOf('/') + 1);
-				}
-				label = HtmlEscapers.htmlEscaper().escape(label);
-				Cache.set(cacheKey, label, Application.ONE_DAY);
-				return label;
-			}).get(Lobid.API_TIMEOUT);
-		} catch (Exception x) {
-			Logger.error("Could not get Lobid label", x);
-			return uri;
+			return Cache.getOrElse("res.label." + id, getLabel, Application.ONE_DAY);
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
+		return "";
 	}
 
 	private static String gndLabel(String uri) {
-		String cacheKey = "gnd.label." + uri;
-		final String cachedResult = (String) Cache.get(cacheKey);
-		if (cachedResult != null) {
-			return cachedResult;
+		Callable<String> getLabel = () -> {
+			return new Index().withClient((Client client) -> {
+				QueryBuilder query =
+						QueryBuilders.queryStringQuery("* AND subject.id:\"" + uri + "\"");
+				SearchRequestBuilder requestBuilder =
+						client.prepareSearch(Index.INDEX_NAME).setTypes(Index.TYPE_RESOURCE)
+								.setQuery(query).setFrom(0).setSize(1).setExplain(false);
+				SearchResponse response = requestBuilder.execute().actionGet();
+				return findLabelForUriInResponse(uri, response);
+			});
+		};
+		try {
+			return Cache.getOrElse("gnd.label." + uri, getLabel, Application.ONE_DAY);
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-		WSRequestHolder requestHolder =
-				WS.url(Application.CONFIG.getString("resources.api"))
-						.setHeader("Accept", "application/json")
-						.setQueryParameter("subject", uri)
-						.setQueryParameter("format", "full").setQueryParameter("size", "1");
-		return requestHolder.get().map((WSResponse response) -> {
-			JsonNode value = response.asJson().get(1);
-			String label = TableRow.labelForId(uri, value,
-					Optional.of(Arrays.asList( // @formatter:off
-							"preferredName",
-					    "preferredNameForTheWork",
-					    "preferredNameForTheFamily",
-					    "preferredNameForThePerson",
-					    "preferredNameForTheCorporateBody",
-					    "preferredNameForTheSubjectHeading",
-					    "preferredNameForTheConferenceOrEvent",
-					    "preferredNameForThePlaceOrGeographicName"))); // @formatter:on
-			Cache.set(cacheKey, label, Application.ONE_DAY);
+		return uri;
+	}
+
+	private static String findLabelForUriInResponse(String uri,
+			SearchResponse response) {
+		if (response.getHits().getTotalHits() > 0) {
+			Object subjects = response.getHits().getAt(0).getSource().get("subject");
+			@SuppressWarnings("unchecked") // subjects: always array of JSON objects
+			String label = ((List<HashMap<String, Object>>) subjects).stream()
+					.filter((s) -> s.containsKey("id") && s.get("id").equals(uri))
+					.findFirst().map((s) -> s.get("label").toString()).orElse(uri);
 			return label;
-		}).get(Lobid.API_TIMEOUT);
+		}
+		return uri;
 	}
 
 	private static final Map<String, String> keys =
@@ -278,11 +276,6 @@ public class Lobid {
 								: selected.get(0).getLeft();
 	}
 
-	static String toApi1xOrg(String url) {
-		return url.startsWith(ORGS_BETA_ROOT)
-				? url.replace(ORGS_BETA_ROOT, "http://lobid.org/organisation/") : url;
-	}
-
 	static boolean isOrg(String term) {
 		return term.contains("lobid.org/organisation");
 	}
@@ -370,4 +363,5 @@ public class Lobid {
 		// replace non-digits with 9, e.g. for DE-5 before DE-Walb1
 		return Integer.parseInt(s.replaceAll("\\D", "9"));
 	}
+
 }

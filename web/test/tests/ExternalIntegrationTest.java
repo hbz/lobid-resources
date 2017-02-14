@@ -10,11 +10,13 @@ import static play.test.Helpers.testServer;
 import java.util.Collections;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
+import org.elasticsearch.search.aggregations.Aggregations;
+import org.elasticsearch.search.aggregations.bucket.terms.Terms;
+import org.elasticsearch.search.aggregations.bucket.terms.Terms.Bucket;
 import org.junit.Before;
 import org.junit.Test;
-
-import com.fasterxml.jackson.databind.JsonNode;
 
 import controllers.resources.Index;
 import play.mvc.Http;
@@ -45,17 +47,19 @@ public class ExternalIntegrationTest {
 			String queryString =
 					index.buildQueryString("köln", "", "", "", "", "", "", "", "");
 			Index queryResources = index.queryResources(queryString);
-			JsonNode facets = queryResources.getAggregations();
-			assertThat(facets.get("type").findValues("key").stream()
-					.map(e -> e.asText()).collect(Collectors.toList())).contains(
-							"bibliographicresource", "article", "book", "periodical",
-							"multivolumebook", "thesis", "miscellaneous", "proceedings",
-							"editedvolume", "biography", "festschrift", "newspaper",
-							"bibliography", "series", "officialpublication",
-							"referencesource", "publishedscore", "legislation", "image",
-							"game");
-			assertThat(facets.findValues("doc_count").stream().map(e -> e.intValue())
-					.collect(Collectors.toList())).excludes(0);
+			Aggregations facets = queryResources.getAggregations();
+			Terms terms = facets.get("type");
+			Stream<String> values =
+					terms.getBuckets().stream().map(Bucket::getKeyAsString);
+			Stream<Long> counts =
+					terms.getBuckets().stream().map(Bucket::getDocCount);
+			assertThat(values.collect(Collectors.toList())).contains(
+					"bibliographicresource", "article", "book", "periodical",
+					"multivolumebook", "thesis", "miscellaneous", "proceedings",
+					"editedvolume", "biography", "festschrift", "newspaper",
+					"bibliography", "series", "officialpublication", "referencesource",
+					"publishedscore", "legislation", "image", "game");
+			assertThat(counts.collect(Collectors.toList())).excludes(0);
 		});
 	}
 
