@@ -31,6 +31,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.type.TypeBase;
 
 /**
@@ -185,7 +186,7 @@ public class EtikettMaker implements EtikettMakerInterface {
 	public void writeContext() {
 		logger.info("Writing context file ...");
 		try {
-			JsonConverter.getObjectMapper().defaultPrettyPrintingWriter()
+			JsonConverter.getObjectMapper().enable(SerializationFeature.INDENT_OUTPUT)
 					.writeValue(new File("src/main/resources/context.json"), context);
 			logger.info("... done writing context file.");
 		} catch (Exception e) {

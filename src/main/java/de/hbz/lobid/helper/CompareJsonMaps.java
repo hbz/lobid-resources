@@ -4,13 +4,14 @@ package de.hbz.lobid.helper;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.Stack;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -173,11 +174,11 @@ public final class CompareJsonMaps {
 			final String actual, final String expected) {
 		CompareJsonMaps.logger
 				.trace("\nActual   value: " + actual + "\nExpected value: " + expected);
-		return valuesToList(actual).containsAll(valuesToList(expected));
+		return valuesToSet(actual).equals(valuesToSet(expected));
 	}
 
-	private static List<String> valuesToList(final String values) {
-		return Arrays
-				.asList(values.substring(1, values.length() - 1).split("\",\""));
+	private static Set<String> valuesToSet(final String values) {
+		return Stream.of(values.substring(1, values.length() - 1).split("\",\""))
+				.collect(Collectors.toSet());
 	}
 }

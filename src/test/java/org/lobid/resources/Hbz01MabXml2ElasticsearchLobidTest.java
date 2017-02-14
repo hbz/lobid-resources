@@ -5,6 +5,7 @@ package org.lobid.resources;
 import static org.elasticsearch.node.NodeBuilder.nodeBuilder;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.time.LocalDateTime;
@@ -17,7 +18,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.apache.commons.io.FileUtils;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.culturegraph.mf.morph.Metamorph;
 import org.culturegraph.mf.stream.converter.xml.AlephMabXmlHandler;
 import org.culturegraph.mf.stream.converter.xml.XmlDecoder;
@@ -35,11 +35,16 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.github.jsonldjava.core.JsonLdError;
 import com.github.jsonldjava.core.JsonLdProcessor;
 import com.github.jsonldjava.jena.JenaTripleCallback;
 import com.github.jsonldjava.utils.JSONUtils;
 import com.hp.hpl.jena.rdf.model.Model;
+
+import de.hbz.lobid.helper.CompareJsonMaps;
 
 /**
  * Transform hbz01 Aleph Mab XML catalog data into lobid elasticsearch JSON-LD.
@@ -206,24 +211,31 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 			String jsonLdWithoutContext = null;
 			Map<String, Object> map;
 			String filename = null;
+			ObjectMapper mapper = new ObjectMapper();
+			mapper.enable(SerializationFeature.INDENT_OUTPUT);
 			try {
-				map = new ObjectMapper().readValue(jsonLd, Map.class);
+				map = mapper.readValue(jsonLd, Map.class);
 				map.put("@context", AbstractIngestTests.LOBID_JSONLD_CONTEXT);
-				jsonLdWithoutContext = new ObjectMapper().defaultPrettyPrintingWriter()
-						.writeValueAsString(map);
+				jsonLdWithoutContext = mapper.writeValueAsString(map);
 				filename = ((String) map.get("id"))
 						.replaceAll(
 								RdfModel2ElasticsearchEtikettJsonLd.LOBID_DOMAIN + ".*/", "")
 						.replaceAll("#!$", "");
 				filename = DIRECTORY_TO_TEST_JSON_FILES + filename;
-				writeFile(filename, jsonLdWithoutContext);
-				AbstractIngestTests.compareSetAndFileDefaultingBNodesAndCommata(
-						getSortedSet(jsonLdWithoutContext), new File(filename));
+				if (!new File(filename).exists())
+					writeFile(filename, jsonLdWithoutContext);
+				else {
+					try (FileInputStream fis = new FileInputStream(filename)) {
+						Map<String, Object> jsonMap =
+								new ObjectMapper().readValue(fis, Map.class);
+						org.junit.Assert
+								.assertTrue(new CompareJsonMaps().writeFileAndTestJson(
+										new ObjectMapper().convertValue(jsonMap, JsonNode.class),
+										new ObjectMapper().convertValue(map, JsonNode.class)));
+					}
+				}
 			} catch (IOException e) {
 				e.printStackTrace();
-			} catch (AssertionError a) {
-				a.getMessage();
-				testFailed = true;
 			}
 		}
 

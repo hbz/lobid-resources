@@ -32,6 +32,7 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 
 import de.hbz.lobid.helper.CompareJsonMaps;
 import de.hbz.lobid.helper.EtikettMaker;
@@ -158,7 +159,8 @@ public class TestRdfToJsonConversion {
 					RDFFormat.NTRIPLES, uri, contextUrl);
 			TestRdfToJsonConversion.logger.debug("Creates: ");
 			TestRdfToJsonConversion.logger
-					.debug(new ObjectMapper().writeValueAsString(actual));
+					.debug(new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT)
+							.writeValueAsString(actual));
 			TestRdfToJsonConversion.logger.info(
 					"Begin comparing files: " + fnameNtriples + " against " + fnameJson);
 			expected = new ObjectMapper().readValue(out, Map.class);
@@ -186,8 +188,7 @@ public class TestRdfToJsonConversion {
 		try {
 			TestRdfToJsonConversion.logger
 					.info("Creating: \n" + new ObjectMapper().writeValueAsString(actual));
-			JsonConverter.getObjectMapper().defaultPrettyPrintingWriter()
-					.writeValue(new File(fnameJson), actual);
+			JsonConverter.getObjectMapper().writeValue(new File(fnameJson), actual);
 		} catch (IOException e) {
 			org.junit.Assert.assertFalse("Problems creating file " + e.getMessage(),
 					true);

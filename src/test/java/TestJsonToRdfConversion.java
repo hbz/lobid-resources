@@ -107,7 +107,8 @@ public class TestJsonToRdfConversion {
 					});
 			org.junit.Assert.assertTrue(debugRun || stringsAreEqual);
 		} catch (Exception e) {
-			throw new RuntimeException(e);
+			logger.error(e.getLocalizedMessage());
+			org.junit.Assert.assertFalse(e.getMessage(), true);
 		}
 	}
 
@@ -117,7 +118,7 @@ public class TestJsonToRdfConversion {
 			String rdfFilename = BASE + REVERSE_OUT + getRdfFileName(path);
 			compare(jsonFilename, rdfFilename);
 		} catch (Exception e) {
-			logger.error("", e);
+			throw new RuntimeException(e);
 		}
 	}
 
