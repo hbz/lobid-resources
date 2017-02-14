@@ -170,9 +170,9 @@ public class Application extends Controller {
 					index.queryResources(queryString, from, size, sort, owner);
 			String responseFormat =
 					Accept.formatFor(format, request().acceptedTypes());
-			boolean returnSuggestions = responseFormat.contains("json.");
+			boolean returnSuggestions = responseFormat.startsWith("json:");
 			JsonNode json = returnSuggestions
-					? toSuggestions(queryResources.getResult(), format.split("\\.")[1])
+					? toSuggestions(queryResources.getResult(), format.split(":")[1])
 					: queryResources.getResult();
 			String s = json.toString();
 			boolean htmlRequested =
