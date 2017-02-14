@@ -64,9 +64,9 @@ public class Index {
 	 * {@link #buildQueryString(String, String...)}
 	 */
 	public static final String[] FIELDS =
-			new String[] { "contribution.agent.label", "title", "subject.id",
-					"isbn|issn", "publication.publishedBy", "publication.startDate",
-					"medium.id", "type", "collectedBy.id" };
+			new String[] { "contribution.agent.label", "title",
+					"subject.id|subject.label", "isbn|issn", "publication.publishedBy",
+					"publication.startDate", "medium.id", "type", "collectedBy.id" };
 
 	/**
 	 * @param q The current query string
