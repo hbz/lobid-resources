@@ -26,6 +26,7 @@ import java.util.stream.StreamSupport;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.elasticsearch.search.aggregations.Aggregation;
+import org.elasticsearch.search.aggregations.bucket.children.InternalChildren;
 import org.elasticsearch.search.aggregations.bucket.terms.Terms;
 import org.elasticsearch.search.aggregations.bucket.terms.Terms.Bucket;
 
@@ -71,8 +72,8 @@ public class Application extends Controller {
 	public static final String TYPE_FIELD = "type";
 	/** The internal ES field for the medium facet. */
 	public static final String MEDIUM_FIELD = "medium.id";
-	/** The internal ES field for the item/exemplar facet. */
-	public static final String ITEM_FIELD = "exemplar.id";
+	/** The internal ES aggregation name for the owner facet. */
+	public static final String OWNER_AGGREGATION = "owner";
 	/** The internal ES field for subjects. */
 	public static final String SUBJECT_FIELD = "subject.id";
 	/** The internal ES field for issued years. */
@@ -208,9 +209,14 @@ public class Application extends Controller {
 			Index queryResources =
 					index.queryResources(queryString, from, size, sort, owner);
 			Map<String, List<Map<String, Object>>> aggregations = new HashMap<>();
+			Terms terms;
 			for (final Entry<String, Aggregation> aggregation : queryResources
 					.getAggregations().asMap().entrySet()) {
-				Terms terms = (Terms) aggregation.getValue();
+				Aggregation value = aggregation.getValue();
+				terms = (Terms) (value instanceof InternalChildren
+						? ((InternalChildren) value).getAggregations()
+								.get(OWNER_AGGREGATION)
+						: value);
 				Stream<Map<String, Object>> buckets =
 						terms.getBuckets().stream().map((Bucket b) -> ImmutableMap.of(//
 								"key", b.getKeyAsString(), "doc_count", b.getDocCount()));
@@ -380,7 +386,7 @@ public class Application extends Controller {
 					? medium : queryParam(medium, term);
 			String typeQuery = !field.equals(TYPE_FIELD) //
 					? t : queryParam(t, term);
-			String ownerQuery = !field.equals(ITEM_FIELD) //
+			String ownerQuery = !field.equals(OWNER_AGGREGATION) //
 					? owner : withoutAndOperator(queryParam(owner, term));
 			String subjectQuery = !field.equals(SUBJECT_FIELD) //
 					? subject : queryParam(subject, term);
@@ -411,13 +417,10 @@ public class Application extends Controller {
 							Stream<JsonNode> stream =
 									StreamSupport.stream(Spliterators.spliteratorUnknownSize(
 											json.get(field).elements(), 0), false);
-							if (field.equals(ITEM_FIELD)) {
-								stream = preprocess(stream);
-							}
 							String labelKey = String.format(
 									"facets-labels.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s", field, q,
 									agent, name, id, publisher, set, subject, issued, medium,
-									field.equals(ITEM_FIELD) ? "" : owner, t);
+									field.equals(OWNER_AGGREGATION) ? "" : owner, t);
 
 							@SuppressWarnings("unchecked")
 							List<Pair<JsonNode, String>> labelledFacets =
@@ -442,7 +445,7 @@ public class Application extends Controller {
 			String t, String field, String term) {
 		return field.equals(MEDIUM_FIELD) && contains(medium, term)
 				|| field.equals(TYPE_FIELD) && contains(t, term)
-				|| field.equals(ITEM_FIELD) && contains(owner, term)
+				|| field.equals(OWNER_AGGREGATION) && contains(owner, term)
 				|| field.equals(SUBJECT_FIELD) && contains(subject, term);
 	}
 
@@ -463,31 +466,6 @@ public class Application extends Controller {
 
 	private static String withoutAndOperator(String currentParam) {
 		return currentParam.replace(",AND", "");
-	}
-
-	private static Stream<JsonNode> preprocess(Stream<JsonNode> stream) {
-		String captureItemUriWithoutSignature =
-				"(http://lobid\\.org/items/[^:]*?:[^:]*?:)[^\"]*";
-		List<String> itemUrisWithoutSignatures = stream
-				.map(json -> json.get("key").asText()
-						.replaceAll(captureItemUriWithoutSignature, "$1"))
-				.distinct().collect(Collectors.toList());
-		return count(itemUrisWithoutSignatures).entrySet().stream()
-				.map(entry -> Json.toJson(ImmutableMap.of(//
-						"key", Lobid.ORGS_BETA_ROOT + entry.getKey(), //
-						"doc_count", entry.getValue())));
-	}
-
-	private static Map<String, Integer> count(List<String> itemUris) {
-		String captureIsilOrgIdentifier =
-				"http://lobid\\.org/items/[^:]*?:([^:]*?):[^\"]*";
-		Map<String, Integer> map = new HashMap<>();
-		for (String term : itemUris) {
-			String isil = term.replaceAll(captureIsilOrgIdentifier, "$1");
-			if (!isil.trim().isEmpty())
-				map.put(isil, map.get(isil) == null ? 1 : map.get(isil) + 1);
-		}
-		return map;
 	}
 
 	/**

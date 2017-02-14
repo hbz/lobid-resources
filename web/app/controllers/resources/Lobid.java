@@ -224,7 +224,7 @@ public class Lobid {
 	 */
 	public static String facetIcon(List<String> uris, String field) {
 		if ((uris.size() == 1 && isOrg(uris.get(0)))
-				|| field.equals(Application.ITEM_FIELD))
+				|| field.equals(Application.OWNER_AGGREGATION))
 			return "octicon octicon-home";
 		else if ((uris.size() == 1 && isGnd(uris.get(0)))
 				|| field.equals(Application.SUBJECT_FIELD))
