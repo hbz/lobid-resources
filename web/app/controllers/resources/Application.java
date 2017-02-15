@@ -34,6 +34,7 @@ import org.elasticsearch.search.aggregations.bucket.terms.Terms.Bucket;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.ImmutableMap;
 import com.google.gdata.util.common.base.PercentEscaper;
 import com.typesafe.config.Config;
@@ -154,9 +155,8 @@ public class Application extends Controller {
 		String uuid = session("uuid");
 		if (uuid == null)
 			session("uuid", UUID.randomUUID().toString());
-		String cacheId = String.format("%s-%s-%s-%s", uuid, request().uri(),
-				Accept.formatFor(format, request().acceptedTypes()),
-				toString(request().queryString()));
+		String cacheId = String.format("%s-%s-%s", uuid, request().uri(),
+				Accept.formatFor(format, request().acceptedTypes()));
 		@SuppressWarnings("unchecked")
 		Promise<Result> cachedResult = (Promise<Result>) Cache.get(cacheId);
 		if (cachedResult != null)
@@ -175,6 +175,7 @@ public class Application extends Controller {
 					? toSuggestions(queryResources.getResult(), format.split(":")[1])
 					: queryResources.getResult();
 			String s = json.toString();
+			json = withQueryMetadata(json, index.getTotal());
 			boolean htmlRequested =
 					responseFormat.equals(Accept.Format.HTML.queryParamString);
 			return htmlRequested
@@ -190,6 +191,16 @@ public class Application extends Controller {
 			return internalServerError(query.render("[]", q, agent, name, subject, id,
 					publisher, issued, medium, from, size, 0L, owner, t, sort, set));
 		});
+	}
+
+	private static JsonNode withQueryMetadata(JsonNode json, long total) {
+		ObjectNode result = Json.newObject();
+		String host = "http://" + request().host();
+		result.put("@context", host + routes.Application.context());
+		result.put("id", host + request().uri());
+		result.put("totalItems", total);
+		result.put("member", json);
+		return result;
 	}
 
 	private static Status withCallback(final JsonNode json) {
@@ -244,14 +255,6 @@ public class Application extends Controller {
 
 	private static Optional<JsonNode> getOptional(JsonNode json, String field) {
 		return Optional.ofNullable(json.get(field));
-	}
-
-	private static String toString(Map<String, String[]> queryString) {
-		Map<String, List<String>> result = new HashMap<>();
-		for (Entry<String, String[]> e : queryString.entrySet()) {
-			result.put(e.getKey(), Arrays.asList(e.getValue()));
-		}
-		return result.toString();
 	}
 
 	@SuppressWarnings({ "javadoc", "unused" }) // WIP
