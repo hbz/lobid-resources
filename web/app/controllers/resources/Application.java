@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -18,7 +17,6 @@ import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Spliterators;
 import java.util.UUID;
-import java.util.concurrent.Callable;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -175,7 +173,7 @@ public class Application extends Controller {
 					? toSuggestions(queryResources.getResult(), format.split(":")[1])
 					: queryResources.getResult();
 			String s = json.toString();
-			json = withQueryMetadata(json, index.getTotal());
+			json = withQueryMetadata(json, index);
 			boolean htmlRequested =
 					responseFormat.equals(Accept.Format.HTML.queryParamString);
 			return htmlRequested
@@ -193,13 +191,14 @@ public class Application extends Controller {
 		});
 	}
 
-	private static JsonNode withQueryMetadata(JsonNode json, long total) {
+	private static JsonNode withQueryMetadata(JsonNode json, Index index) {
 		ObjectNode result = Json.newObject();
 		String host = "http://" + request().host();
 		result.put("@context", host + routes.Application.context());
 		result.put("id", host + request().uri());
-		result.put("totalItems", total);
+		result.put("totalItems", index.getTotal());
 		result.put("member", json);
+		result.put("aggregation", aggregationsAsJson(index));
 		return result;
 	}
 
@@ -257,40 +256,21 @@ public class Application extends Controller {
 		return Optional.ofNullable(json.get(field));
 	}
 
-	@SuppressWarnings({ "javadoc", "unused" }) // WIP
-	public static Promise<Result> aggregations(final String q, final String agent,
-			final String name, final String subject, final String id,
-			final String publisher, final String issued, final String medium,
-			final int from, final int size, final String owner, String t, String sort,
-			String set, String format) {
-		Index index = new Index();
-		String queryString = index.buildQueryString(q, agent, name, subject, id,
-				publisher, issued, medium, t, set);
-		Callable<Map<String, List<Map<String, Object>>>> getAggregations = () -> {
-			Logger.debug("Not cached: aggregations {}, will cache for one hour",
-					queryString);
-			Index queryResources =
-					index.queryResources(queryString, from, size, sort, owner);
-			Map<String, List<Map<String, Object>>> aggregations = new HashMap<>();
-			Terms terms;
-			for (final Entry<String, Aggregation> aggregation : queryResources
-					.getAggregations().asMap().entrySet()) {
-				Aggregation value = aggregation.getValue();
-				terms = (Terms) (value instanceof InternalChildren
-						? ((InternalChildren) value).getAggregations()
-								.get(OWNER_AGGREGATION)
-						: value);
-				Stream<Map<String, Object>> buckets =
-						terms.getBuckets().stream().map((Bucket b) -> ImmutableMap.of(//
-								"key", b.getKeyAsString(), "doc_count", b.getDocCount()));
-				aggregations.put(aggregation.getKey(),
-						buckets.collect(Collectors.toList()));
-			}
-			Cache.set(queryString, aggregations);
-			return aggregations;
-		};
-		return Promise.promise(() -> ok(
-				Json.toJson(Cache.getOrElse(queryString, getAggregations, ONE_HOUR))));
+	private static JsonNode aggregationsAsJson(Index index) {
+		ObjectNode aggregations = Json.newObject();
+		for (final Entry<String, Aggregation> aggregation : index.getAggregations()
+				.asMap().entrySet()) {
+			Aggregation value = aggregation.getValue();
+			Terms terms = (Terms) (value instanceof InternalChildren
+					? ((InternalChildren) value).getAggregations().get(OWNER_AGGREGATION)
+					: value);
+			Stream<Map<String, Object>> buckets =
+					terms.getBuckets().stream().map((Bucket b) -> ImmutableMap.of(//
+							"key", b.getKeyAsString(), "doc_count", b.getDocCount()));
+			aggregations.put(aggregation.getKey(),
+					Json.toJson(buckets.collect(Collectors.toList())));
+		}
+		return aggregations;
 	}
 
 	/**
@@ -473,29 +453,28 @@ public class Application extends Controller {
 			return result;
 		};
 
-		Promise<Result> promise =
-				aggregations(q, agent, name, subject, id, publisher, issued, medium,
-						from, size, owner, t, sort, set, "json").map(result -> {
-							JsonNode json = Json.parse(Helpers.contentAsString(result));
-							Stream<JsonNode> stream =
-									StreamSupport.stream(Spliterators.spliteratorUnknownSize(
-											json.get(field).elements(), 0), false);
-							String labelKey = String.format(
-									"facets-labels.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s", field, q,
-									agent, name, id, publisher, set, subject, issued, medium,
-									field.equals(OWNER_AGGREGATION) ? "" : owner, t);
+		Promise<Result> promise = query(q, agent, name, subject, id, publisher,
+				issued, medium, from, size, owner, t, sort, set, "json").map(result -> {
+					JsonNode json =
+							Json.parse(Helpers.contentAsString(result)).get("aggregation");
+					Stream<JsonNode> stream = StreamSupport.stream(Spliterators
+							.spliteratorUnknownSize(json.get(field).elements(), 0), false);
+					String labelKey =
+							String.format("facets-labels.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s",
+									field, q, agent, name, id, publisher, set, subject, issued,
+									medium, field.equals(OWNER_AGGREGATION) ? "" : owner, t);
 
-							@SuppressWarnings("unchecked")
-							List<Pair<JsonNode, String>> labelledFacets =
-									(List<Pair<JsonNode, String>>) Cache.get(labelKey);
-							if (labelledFacets == null) {
-								labelledFacets = stream.map(toLabel).filter(labelled)
-										.collect(Collectors.toList());
-								Cache.set(labelKey, labelledFacets, ONE_DAY);
-							}
-							return labelledFacets.stream().sorted(sorter).map(toHtml)
-									.collect(Collectors.toList());
-						}).map(lis -> ok(String.join("\n", lis)));
+					@SuppressWarnings("unchecked")
+					List<Pair<JsonNode, String>> labelledFacets =
+							(List<Pair<JsonNode, String>>) Cache.get(labelKey);
+					if (labelledFacets == null) {
+						labelledFacets = stream.map(toLabel).filter(labelled)
+								.collect(Collectors.toList());
+						Cache.set(labelKey, labelledFacets, ONE_DAY);
+					}
+					return labelledFacets.stream().sorted(sorter).map(toHtml)
+							.collect(Collectors.toList());
+				}).map(lis -> ok(String.join("\n", lis)));
 		promise.onRedeem(r -> Cache.set(key, r, ONE_DAY));
 		return promise;
 	}
