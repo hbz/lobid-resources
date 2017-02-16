@@ -42,8 +42,8 @@ import com.fasterxml.jackson.databind.type.TypeBase;
 public class EtikettMaker implements EtikettMakerInterface {
 
 	private static final String TYPE = "type";
-
 	private static final String ID = "id";
+	private static final String CONTEXT_LOCATION = "web/conf/context.jsonld";
 
 	final static Logger logger = LoggerFactory.getLogger(EtikettMaker.class);
 
@@ -187,7 +187,7 @@ public class EtikettMaker implements EtikettMakerInterface {
 		logger.info("Writing context file ...");
 		try {
 			JsonConverter.getObjectMapper().enable(SerializationFeature.INDENT_OUTPUT)
-					.writeValue(new File("src/main/resources/context.json"), context);
+					.writeValue(new File(CONTEXT_LOCATION), context);
 			logger.info("... done writing context file.");
 		} catch (Exception e) {
 			logger.error("Error during writing context file! ", e);
