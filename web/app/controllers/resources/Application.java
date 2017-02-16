@@ -142,13 +142,20 @@ public class Application extends Controller {
 	 * @param sort Sorting order for results ("newest", "oldest", "" -> relevance)
 	 * @param set The set
 	 * @param format The response format ('html' or 'json')
+	 * @param aggregations The comma separated aggregation fields
 	 * @return The search results
 	 */
 	public static Promise<Result> query(final String q, final String agent,
 			final String name, final String subject, final String id,
 			final String publisher, final String issued, final String medium,
 			final int from, final int size, final String owner, String t, String sort,
-			String set, String format) {
+			String set, String format, String aggregations) {
+		if (!aggregations.isEmpty() && !Index.SUPPORTED_AGGREGATIONS
+				.containsAll(Arrays.asList(aggregations.split(",")))) {
+			return Promise.promise(() -> badRequest(
+					String.format("Unsupported aggregations: %s (supported: %s)",
+							aggregations, Index.SUPPORTED_AGGREGATIONS)));
+		}
 		addCorsHeader();
 		String uuid = session("uuid");
 		if (uuid == null)
@@ -164,8 +171,8 @@ public class Application extends Controller {
 			Index index = new Index();
 			String queryString = index.buildQueryString(q, agent, name, subject, id,
 					publisher, issued, medium, t, set);
-			Index queryResources =
-					index.queryResources(queryString, from, size, sort, owner);
+			Index queryResources = index.queryResources(queryString, from, size, sort,
+					owner, aggregations);
 			String responseFormat =
 					Accept.formatFor(format, request().acceptedTypes());
 			boolean returnSuggestions = responseFormat.startsWith("json:");
@@ -198,7 +205,9 @@ public class Application extends Controller {
 		result.put("id", host + request().uri());
 		result.put("totalItems", index.getTotal());
 		result.put("member", json);
-		result.put("aggregation", aggregationsAsJson(index));
+		if (index.getAggregations() != null) {
+			result.put("aggregation", aggregationsAsJson(index));
+		}
 		return result;
 	}
 
@@ -440,7 +449,7 @@ public class Application extends Controller {
 
 			String routeUrl = routes.Application.query(q, agent, name, subjectQuery,
 					id, publisher, issuedQuery, mediumQuery, from, size, ownerQuery,
-					typeQuery, sort(sort, subjectQuery), set, null).url();
+					typeQuery, sort(sort, subjectQuery), set, null, field).url();
 
 			String result = String.format(
 					"<li " + (current ? "class=\"active\"" : "")
@@ -453,28 +462,30 @@ public class Application extends Controller {
 			return result;
 		};
 
-		Promise<Result> promise = query(q, agent, name, subject, id, publisher,
-				issued, medium, from, size, owner, t, sort, set, "json").map(result -> {
-					JsonNode json =
-							Json.parse(Helpers.contentAsString(result)).get("aggregation");
-					Stream<JsonNode> stream = StreamSupport.stream(Spliterators
-							.spliteratorUnknownSize(json.get(field).elements(), 0), false);
-					String labelKey =
-							String.format("facets-labels.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s",
-									field, q, agent, name, id, publisher, set, subject, issued,
-									medium, field.equals(OWNER_AGGREGATION) ? "" : owner, t);
+		Promise<Result> promise =
+				query(q, agent, name, subject, id, publisher, issued, medium, from,
+						size, owner, t, sort, set, "json", field).map(result -> {
+							JsonNode json = Json.parse(Helpers.contentAsString(result))
+									.get("aggregation");
+							Stream<JsonNode> stream =
+									StreamSupport.stream(Spliterators.spliteratorUnknownSize(
+											json.get(field).elements(), 0), false);
+							String labelKey = String.format(
+									"facets-labels.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s", field, q,
+									agent, name, id, publisher, set, subject, issued, medium,
+									field.equals(OWNER_AGGREGATION) ? "" : owner, t);
 
-					@SuppressWarnings("unchecked")
-					List<Pair<JsonNode, String>> labelledFacets =
-							(List<Pair<JsonNode, String>>) Cache.get(labelKey);
-					if (labelledFacets == null) {
-						labelledFacets = stream.map(toLabel).filter(labelled)
-								.collect(Collectors.toList());
-						Cache.set(labelKey, labelledFacets, ONE_DAY);
-					}
-					return labelledFacets.stream().sorted(sorter).map(toHtml)
-							.collect(Collectors.toList());
-				}).map(lis -> ok(String.join("\n", lis)));
+							@SuppressWarnings("unchecked")
+							List<Pair<JsonNode, String>> labelledFacets =
+									(List<Pair<JsonNode, String>>) Cache.get(labelKey);
+							if (labelledFacets == null) {
+								labelledFacets = stream.map(toLabel).filter(labelled)
+										.collect(Collectors.toList());
+								Cache.set(labelKey, labelledFacets, ONE_DAY);
+							}
+							return labelledFacets.stream().sorted(sorter).map(toHtml)
+									.collect(Collectors.toList());
+						}).map(lis -> ok(String.join("\n", lis)));
 		promise.onRedeem(r -> Cache.set(key, r, ONE_DAY));
 		return promise;
 	}
