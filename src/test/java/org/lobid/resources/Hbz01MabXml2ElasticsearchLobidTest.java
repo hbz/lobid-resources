@@ -228,13 +228,10 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 					try (FileInputStream fis = new FileInputStream(filename)) {
 						Map<String, Object> jsonMap =
 								new ObjectMapper().readValue(fis, Map.class);
-						boolean same = new CompareJsonMaps().writeFileAndTestJson(
-								new ObjectMapper().convertValue(jsonMap, JsonNode.class),
-								new ObjectMapper().convertValue(map, JsonNode.class));
-						if (!same) {
-							writeFile(filename, jsonLdWithoutContext);
-							testFailed = true;
-						}
+						org.junit.Assert
+								.assertTrue(new CompareJsonMaps().writeFileAndTestJson(
+										new ObjectMapper().convertValue(jsonMap, JsonNode.class),
+										new ObjectMapper().convertValue(map, JsonNode.class)));
 					}
 				}
 			} catch (IOException e) {
