@@ -173,14 +173,14 @@ public class Application extends Controller {
 					? toSuggestions(queryResources.getResult(), format.split(":")[1])
 					: queryResources.getResult();
 			String s = json.toString();
-			json = withQueryMetadata(json, index);
 			boolean htmlRequested =
 					responseFormat.equals(Accept.Format.HTML.queryParamString);
 			return htmlRequested
 					? ok(query.render(s, q, agent, name, subject, id, publisher, issued,
 							medium, from, size, queryResources.getTotal(), owner, t, sort,
 							set))
-					: (returnSuggestions ? withCallback(json) : prettyJsonOk(json));
+					: (returnSuggestions ? withCallback(json)
+							: prettyJsonOk(withQueryMetadata(json, index)));
 		});
 		cacheOnRedeem(cacheId, result, ONE_HOUR);
 		return result.recover((Throwable throwable) -> {
