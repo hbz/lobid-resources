@@ -93,11 +93,12 @@ This should result in *BUILD SUCCESS*. Push your changes. You're done :)
 
 h2. Propagate the context.json to lobid-resources-web
 
-Deploy (i.e. "copy") the @context.json@ to staging server:
-_scp ./src/main/resources/context.json   lobid@emphytos:/usr/local/lobid/src/lobid.org/download/context-staging.json_
+The generated _context.jsonld_ is automatically written to the proper directory
+so that it is automatically deployed when the web application is deployed.
 
-To deploy to production, copy the @context.json@ to the repository with the web-application.
-Add, commit and push it there.
+When the small test set is indexed by using _buildAndETLTestSet.sh_ deploy your branch in
+the staging directory of the web application. The _context_ for the resources is adapted
+to use the "staging.lobid.org"-domain and thus the staging-_context.jsonld_ will resolve using the one in that directory.
 
 h3. Elasticsearch index
 
