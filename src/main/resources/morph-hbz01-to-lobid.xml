@@ -782,16 +782,16 @@
 		<!-- new coined subject uri of the Item -->
 		<data source="@itemId" name="~rdf:subject"/>
 		<data source="@itemId" name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type">
-			<regexp match=".*" format="http://purl.org/vocab/frbr/core#Item"/>
+			<regexp match=".*" format="http://id.loc.gov/ontologies/bibframe/Item"/>
 		</data>
 		<data source="@itemId" name="http://www.w3.org/2007/05/powder-s#describedby">
 			<regexp match="(.*)#!" format="${1}"/>
 		</data>
-		<combine name="http://purl.org/vocab/frbr/core#exemplarOf" value="$[ns-lobid-resource]${id}#!">
+		<combine name="http://id.loc.gov/ontologies/bibframe/itemOf" value="$[ns-lobid-resource]${id}#!">
 			<data source="@id" name="id"/>
 			<data source="@itemId"/>
 		</combine>
-		<combine name="http://purl.org/vocab/frbr/core#owner" value="$[ns-lobid-organisation]${isil}"
+		<combine name="http://id.loc.gov/ontologies/bibframe/heldBy" value="$[ns-lobid-organisation]${isil}"
 			sameEntity="true">
 			<data source="@itemId"/>
 			<data source="@sigel2isilMap" name="isil"/>
@@ -855,7 +855,7 @@
 			<data source="@id" name="id"/>
 			<data source="@itemId"/>
 		</combine>
-		<data source="@itemId" name="http://purl.org/vocab/frbr/core#exemplar"/>
+		<data source="@itemId" name="http://id.loc.gov/ontologies/bibframe/hasItem"/>
 		<!-- ####################### -->
 		<!-- ########## multi-volume information -->
 		<!-- ####################### -->
