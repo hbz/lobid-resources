@@ -32,6 +32,7 @@ import org.elasticsearch.search.SearchHit;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.lobid.resources.run.MabXml2lobidJsonEs;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -215,7 +216,7 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 			mapper.enable(SerializationFeature.INDENT_OUTPUT);
 			try {
 				map = mapper.readValue(jsonLd, Map.class);
-				map.put("@context", AbstractIngestTests.LOBID_JSONLD_CONTEXT);
+				map.put("@context", MabXml2lobidJsonEs.LOBID_RESOURCES_JSONLD_CONTEXT);
 				jsonLdWithoutContext = mapper.writeValueAsString(map);
 				filename = ((String) map.get("id"))
 						.replaceAll(
