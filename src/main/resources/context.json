@@ -32,7 +32,7 @@
     },
     "Item" : {
       "@type" : "@id",
-      "@id" : "http://id.loc.gov/ontologies/bibframe/Item",
+      "@id" : "http://purl.org/vocab/frbr/core#Item",
       "@container" : "@set"
     },
     "Print" : {
@@ -50,9 +50,18 @@
       "@id" : "http://purl.org/lobid/lv#rpbSubject",
       "@container" : "@set"
     },
+    "exemplarOf" : {
+      "@type" : "@id",
+      "@id" : "http://purl.org/vocab/frbr/core#exemplarOf"
+    },
     "Book" : {
       "@type" : "@id",
       "@id" : "http://purl.org/ontology/bibo/Book",
+      "@container" : "@set"
+    },
+    "exemplar" : {
+      "@type" : "@id",
+      "@id" : "http://purl.org/vocab/frbr/core#exemplar",
       "@container" : "@set"
     },
     "Work" : {
@@ -156,11 +165,6 @@
       "@id" : "http://purl.org/dc/elements/1.1/creator",
       "@container" : "@set"
     },
-    "hasItem" : {
-      "@type" : "@id",
-      "@id" : "http://id.loc.gov/ontologies/bibframe/hasItem",
-      "@container" : "@set"
-    },
     "alternativeTitle" : {
       "@id" : "http://purl.org/dc/terms/alternative",
       "@container" : "@set"
@@ -192,10 +196,6 @@
     },
     "zdbId" : {
       "@id" : "http://purl.org/lobid/lv#zdbID"
-    },
-    "heldBy" : {
-      "@type" : "@id",
-      "@id" : "http://id.loc.gov/ontologies/bibframe/heldBy"
     },
     "hasSupplement" : {
       "@type" : "@id",
@@ -546,6 +546,10 @@
       "@id" : "http://purl.org/dc/elements/1.1/coverage",
       "@container" : "@set"
     },
+    "owner" : {
+      "@type" : "@id",
+      "@id" : "http://purl.org/vocab/frbr/core#owner"
+    },
     "OfficialPublication" : {
       "@type" : "@id",
       "@id" : "http://purl.org/lobid/lv#OfficialPublication",
@@ -587,10 +591,6 @@
       "@type" : "@id",
       "@id" : "http://purl.org/ontology/bibo/Series",
       "@container" : "@set"
-    },
-    "itemOf" : {
-      "@type" : "@id",
-      "@id" : "http://id.loc.gov/ontologies/bibframe/itemOf"
     },
     "PublicationEvent" : {
       "@type" : "@id",
