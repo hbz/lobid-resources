@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.Spliterators;
 import java.util.UUID;
 import java.util.concurrent.Callable;
@@ -167,15 +168,20 @@ public class Application extends Controller {
 					publisher, issued, medium, t, set);
 			Index queryResources =
 					index.queryResources(queryString, from, size, sort, owner);
-			JsonNode json = queryResources.getResult();
-			String s = json.toString();
 			String responseFormat =
 					Accept.formatFor(format, request().acceptedTypes());
+			boolean returnSuggestions = responseFormat.startsWith("json:");
+			JsonNode json = returnSuggestions
+					? toSuggestions(queryResources.getResult(), format.split(":")[1])
+					: queryResources.getResult();
+			String s = json.toString();
 			boolean htmlRequested =
 					responseFormat.equals(Accept.Format.HTML.queryParamString);
-			return htmlRequested ? ok(query.render(s, q, agent, name, subject, id,
-					publisher, issued, medium, from, size, queryResources.getTotal(),
-					owner, t, sort, set)) : prettyJsonOk(json);
+			return htmlRequested
+					? ok(query.render(s, q, agent, name, subject, id, publisher, issued,
+							medium, from, size, queryResources.getTotal(), owner, t, sort,
+							set))
+					: (returnSuggestions ? withCallback(json) : prettyJsonOk(json));
 		});
 		cacheOnRedeem(cacheId, result, ONE_HOUR);
 		return result.recover((Throwable throwable) -> {
@@ -184,6 +190,60 @@ public class Application extends Controller {
 			return internalServerError(query.render("[]", q, agent, name, subject, id,
 					publisher, issued, medium, from, size, 0L, owner, t, sort, set));
 		});
+	}
+
+	private static Status withCallback(final JsonNode json) {
+		/* JSONP callback support for remote server calls with JavaScript: */
+		final String[] callback =
+				request() == null || request().queryString() == null ? null
+						: request().queryString().get("callback");
+		return callback != null ? ok(String.format("/**/%s(%s)", callback[0], json))
+				: ok(json);
+	}
+
+	private static JsonNode toSuggestions(JsonNode json, String field) {
+		Stream<JsonNode> documents = StreamSupport
+				.stream(Spliterators.spliteratorUnknownSize(json.elements(), 0), false);
+		Stream<JsonNode> suggestions = documents.flatMap((JsonNode document) -> {
+			Stream<JsonNode> nodes = fieldValues(field, document);
+			return nodes.map((JsonNode node) -> {
+				boolean isTextual = node.isTextual();
+				Optional<JsonNode> label = isTextual ? Optional.ofNullable(node)
+						: findValueOptional(node, "label");
+				Optional<JsonNode> id = isTextual ? getOptional(document, "id")
+						: findValueOptional(node, "id");
+				Optional<JsonNode> type = isTextual ? getOptional(document, "type")
+						: findValueOptional(node, "type");
+				JsonNode types = type.orElseGet(() -> Json.toJson(new String[] { "" }));
+				String typeText = types.elements().next().textValue();
+				return Json.toJson(ImmutableMap.of(//
+						"label", label.orElseGet(() -> Json.toJson("")), //
+						"id", id.orElseGet(() -> label.orElseGet(() -> Json.toJson(""))), //
+						"category",
+						typeText.equals("BibliographicResource")
+								? Lobid.typeLabel(Json.fromJson(types, List.class))
+								: typeText));
+			});
+		});
+		return Json.toJson(suggestions.collect(Collectors.toSet()));
+	}
+
+	private static Stream<JsonNode> fieldValues(String field, JsonNode document) {
+		return document.findValues(field).stream().flatMap((node) -> {
+			return node.isArray()
+					? StreamSupport.stream(
+							Spliterators.spliteratorUnknownSize(node.elements(), 0), false)
+					: Arrays.asList(node).stream();
+		});
+	}
+
+	private static Optional<JsonNode> findValueOptional(JsonNode json,
+			String field) {
+		return Optional.ofNullable(json.findValue(field));
+	}
+
+	private static Optional<JsonNode> getOptional(JsonNode json, String field) {
+		return Optional.ofNullable(json.get(field));
 	}
 
 	private static String toString(Map<String, String[]> queryString) {

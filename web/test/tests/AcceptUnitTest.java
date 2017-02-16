@@ -74,7 +74,7 @@ public class AcceptUnitTest {
 				String.format("resulting format for passedFormat=%s, acceptedTypes=%s",
 						passedFormat, acceptedTypes);
 		String result = Accept.formatFor(passedFormat, acceptedTypes);
-		assertThat(result).as(description).isEqualTo(expectedFormat);
+		assertThat(result).as(description).startsWith(expectedFormat);
 	}
 
 }

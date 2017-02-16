@@ -67,8 +67,14 @@ function setAutosuggest() {
 function suggests(term){
     return {
         'name' : {
-            url : "http://api.lobid.org/resource",
-            data : { name : term, format : "short.title" }
+            url : "@resources.routes.Application.query()",
+            data : { name : term, format : "json:title", size : 100 }
+        },'agent' : {
+            url : "@resources.routes.Application.query()",
+            data : { agent : term, format : "json:agent", size : 100 }
+        },'subject' : {
+            url : "@resources.routes.Application.query()",
+            data : { subject : term, format : "json:subject", size : 100 }
         }
     }
 }
