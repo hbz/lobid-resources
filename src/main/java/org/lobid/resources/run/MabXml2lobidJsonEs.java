@@ -12,8 +12,8 @@ import org.culturegraph.mf.framework.ObjectReceiver;
 import org.culturegraph.mf.morph.Metamorph;
 import org.culturegraph.mf.stream.converter.xml.AlephMabXmlHandler;
 import org.culturegraph.mf.stream.converter.xml.XmlDecoder;
-import org.culturegraph.mf.stream.pipe.StreamBatchLogger;
 import org.culturegraph.mf.stream.pipe.ObjectBatchLogger;
+import org.culturegraph.mf.stream.pipe.StreamBatchLogger;
 import org.culturegraph.mf.stream.pipe.StreamTee;
 import org.culturegraph.mf.stream.source.FileOpener;
 import org.culturegraph.mf.stream.source.TarReader;
@@ -34,6 +34,8 @@ import com.hp.hpl.jena.rdf.model.Model;
  */
 @SuppressWarnings("javadoc")
 public final class MabXml2lobidJsonEs {
+	public final static String LOBID_RESOURCES_JSONLD_CONTEXT =
+			"http://lobid.org/resources/context.jsonld";
 
 	public static void main(String... args) {
 		String usage =
@@ -58,8 +60,8 @@ public final class MabXml2lobidJsonEs {
 					+ String.format(usage, " ", " ", " ", " ", " ", " "));
 			System.exit(-1);
 		}
-		String jsonLdContext = System.getProperty("jsonLdContext",
-				"http://lobid.org/download/context.json");
+		String jsonLdContext =
+				System.getProperty("jsonLdContext", LOBID_RESOURCES_JSONLD_CONTEXT);
 		System.out.println("using jsonLdContext: " + jsonLdContext);
 		DefaultObjectPipe<Model, ObjectReceiver<HashMap<String, String>>> jsonConverter =
 				new RdfModel2ElasticsearchEtikettJsonLd(jsonLdContext);
