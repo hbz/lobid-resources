@@ -667,7 +667,10 @@
 			</data>
 			<data source="@placeOfPublication_"/>
 		</choose>
-		<data source="41[27][-abcu][-12].[ag]|419-[12].b" name="@publisher"/>
+		<data source="41[27][-abcu][-12].[ag]|419-[12].b" name="@publisher">
+			<replace pattern="&gt;" with=""/>
+			<replace pattern="&lt;" with=""/>
+		</data>
 		<choose name="@startDateFirstPublication">
 			<!-- issue precedence -->
 			<data source="425[abc-p][-1].a|419-1c|595-[-12].a|089-[-1].a">
