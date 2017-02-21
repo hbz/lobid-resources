@@ -149,13 +149,15 @@
 				<regexp match="\(DE-588\)(.*)" format="http://d-nb.info/gnd/${1}"/>
 			</data>
 		</combine>
+
 		<combine name="~rdf:subject" value="$[ns-lobid-resource]${subject}#!" flushWith="@rdfTypeSubject">
 			<data source="@subjectLabelBnode"/>
 			<data source="@id" name="subject"/>
 		</combine>
-		<entity name="~rdf:list" reset="true" flushWith="@rdfTypeSubject">
-			<data name="http://purl.org/dc/terms/subject" source="@subjectId|@subjectLabelBnode"/>
-		</entity>
+		<combine name="http://purl.org/dc/terms/subject" value="${a}" flushWith="@rdfTypeSubject|@deweyId"
+			reset="true">
+			<data source="@subjectId|@subjectLabelBnode|@deweyId" name="a"/>
+		</combine>
 		<!-- ####################### -->
 		<!-- ####### Get subject uri of each record -->
 		<!-- ####################### -->
@@ -1093,7 +1095,7 @@
 		<!-- #######subjects -->
 		<!-- ####################### -->
 		<!-- ddc links -->
-		<data source="70[05][-b][-12345].a" name="http://purl.org/dc/terms/subject">
+		<data source="70[05][-b][-12345].a" name="@deweyId">
 			<regexp match="([0-9]{3})" format="http://dewey.info/class/${1}/"/>
 			<sanitizeUrl></sanitizeUrl>
 		</data>
