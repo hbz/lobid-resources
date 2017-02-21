@@ -28,7 +28,7 @@ import com.ning.http.client.Response;
 public class DownloadTestSet {
 
 	private static final String IDS = "src/test/resources/testIds.txt";
-	private static final String API = "http://test.lobid.org/hbz01/%s";
+	private static final String API = "http://lobid.org/hbz01/%s";
 	private static final String OUT = "src/test/resources/xml";
 	private static final String XML = "text/xml";
 
