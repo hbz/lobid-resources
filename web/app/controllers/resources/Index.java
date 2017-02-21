@@ -29,6 +29,7 @@ import org.elasticsearch.search.sort.SortBuilders;
 import org.elasticsearch.search.sort.SortOrder;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.google.common.base.Joiner;
 
 import play.Logger;
 import play.libs.Json;
@@ -41,6 +42,8 @@ import play.libs.Json;
  */
 public class Index {
 
+	static final List<String> SUPPORTED_AGGREGATIONS = Arrays.asList(
+			"publication.startDate", "subject.id", "type", "medium.id", "owner");
 	static final String INDEX_NAME = Application.CONFIG.getString("index.name");
 	private static final String TYPE_ITEM =
 			Application.CONFIG.getString("index.type.item");
@@ -117,7 +120,8 @@ public class Index {
 	 *         {@link #getTotal()}
 	 */
 	public Index queryResources(String q) {
-		return queryResources(q, 0, 10, "", "");
+		return queryResources(q, 0, 10, "", "",
+				Joiner.on(",").join(SUPPORTED_AGGREGATIONS));
 	}
 
 	/**
@@ -126,11 +130,12 @@ public class Index {
 	 * @param size The page size, starting at from
 	 * @param sort "newest", "oldest", or "" for relevance
 	 * @param owner Owner institution
+	 * @param aggregations The comma separated aggregation fields
 	 * @return This index, get results via {@link #getResult()} and
 	 *         {@link #getTotal()}
 	 */
 	public Index queryResources(String q, int from, int size, String sort,
-			String owner) {
+			String owner, @SuppressWarnings("hiding") String aggregations) {
 		Index resultIndex = withClient((Client client) -> {
 			QueryBuilder query = owner.isEmpty() ? QueryBuilders.queryStringQuery(q)
 					: ownerQuery(q, owner);
@@ -143,12 +148,14 @@ public class Index {
 				requestBuilder.addSort(SortBuilders.fieldSort("publication.startDate")
 						.order(sort.equals("newest") ? SortOrder.DESC : SortOrder.ASC));
 			}
-			requestBuilder = withAggregations(requestBuilder, "publication.startDate",
-					"subject.id", "type", "medium.id");
+			if (!aggregations.isEmpty()) {
+				requestBuilder =
+						withAggregations(requestBuilder, aggregations.split(","));
+			}
 			SearchResponse response = requestBuilder.execute().actionGet();
 			SearchHits hits = response.getHits();
 			List<JsonNode> results = new ArrayList<>();
-			aggregations = response.getAggregations();
+			this.aggregations = response.getAggregations();
 			for (SearchHit sh : hits.getHits()) {
 				results.add(Json.toJson(sh.getSource()));
 			}
@@ -228,15 +235,18 @@ public class Index {
 			final SearchRequestBuilder searchRequest, String... fields) {
 		int defaultSize = 100;
 		Arrays.asList(fields).forEach(field -> {
-			boolean many = field.equals("publication.startDate");
-			searchRequest.addAggregation(AggregationBuilders.terms(field).field(field)
-					.size(many ? 1000 : defaultSize));
+			if (field.equals("owner")) {
+				ChildrenBuilder ownerAggregation =
+						AggregationBuilders.children(Application.OWNER_AGGREGATION)
+								.childType(TYPE_ITEM).subAggregation(AggregationBuilders
+										.terms(field).field("owner.id").size(defaultSize));
+				searchRequest.addAggregation(ownerAggregation);
+			} else {
+				boolean many = field.equals("publication.startDate");
+				searchRequest.addAggregation(AggregationBuilders.terms(field)
+						.field(field).size(many ? 1000 : defaultSize));
+			}
 		});
-		String field = Application.OWNER_AGGREGATION;
-		ChildrenBuilder ownerAggregation = AggregationBuilders.children(field)
-				.childType(TYPE_ITEM).subAggregation(AggregationBuilders.terms(field)
-						.field("owner.id").size(defaultSize));
-		searchRequest.addAggregation(ownerAggregation);
 		return searchRequest;
 	}
 

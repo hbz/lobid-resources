@@ -83,7 +83,7 @@ public class InputStringsTest {
 		running(testServer(3333), () -> {
 			Result result = Helpers.callAction(
 					controllers.resources.routes.ref.Application.query(input, "", "", "",
-							"", "", "", "", 0, 10, "", "", "", "", ""),
+							"", "", "", "", 0, 10, "", "", "", "", "", ""),
 					new FakeRequest(Helpers.GET, "/")
 							.withFormUrlEncodedBody(ImmutableMap.of()));
 			// we don't expect any server errors (see
