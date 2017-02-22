@@ -36,7 +36,7 @@ import scala.Option;
  */
 @SuppressWarnings("javadoc")
 @RunWith(Parameterized.class)
-public class AggregationsTest {
+public class AggregationsTest extends LocalIndexSetup {
 
 	// test data parameters, formatted as "input /*->*/ expected output"
 	@Parameters(name = "{0} -> {1}")

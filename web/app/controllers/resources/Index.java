@@ -62,6 +62,11 @@ public class Index {
 	private Aggregations aggregations;
 
 	/**
+	 * The client to use. If null, create default client from settings.
+	 */
+	public static Client elasticsearchClient = null;
+
+	/**
 	 * Fields used when building query strings vis
 	 * {@link #buildQueryString(String, String...)}
 	 */
@@ -251,6 +256,9 @@ public class Index {
 	}
 
 	<T> T withClient(Function<Client, T> function) {
+		if (elasticsearchClient != null) {
+			return function.apply(elasticsearchClient);
+		}
 		Settings settings =
 				Settings.settingsBuilder().put("cluster.name", CLUSTER_NAME).build();
 		try (TransportClient client =
