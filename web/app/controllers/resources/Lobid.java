@@ -110,7 +110,8 @@ public class Lobid {
 			Result result = Application.show(simpleId, "json").get(API_TIMEOUT);
 			JsonNode json =
 					Json.parse(Helpers.contentAsString(result)).findValue("title");
-			String label = HtmlEscapers.htmlEscaper().escape(json.asText());
+			String label =
+					json == null ? "" : HtmlEscapers.htmlEscaper().escape(json.asText());
 			Logger.debug("Get res label, {} -> {} -> {}", id, simpleId, label);
 			return label.isEmpty() ? simpleId : label;
 		};

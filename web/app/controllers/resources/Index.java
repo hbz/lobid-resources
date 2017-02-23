@@ -11,6 +11,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.elasticsearch.action.admin.indices.validate.query.ValidateQueryResponse;
+import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
@@ -203,11 +204,13 @@ public class Index {
 	 */
 	public Index getItem(String id) {
 		return withClient((Client client) -> {
-			String sourceAsString = client.prepareGet(INDEX_NAME, TYPE_ITEM, id)
-					.setParent(id.split(":")[0]).execute().actionGet()
-					.getSourceAsString();
-			result = Json.parse(sourceAsString);
-			total = 1;
+			GetResponse response = client.prepareGet(INDEX_NAME, TYPE_ITEM, id)
+					.setParent(id.split(":")[0]).execute().actionGet();
+			if (response.isExists()) {
+				String sourceAsString = response.getSourceAsString();
+				result = Json.parse(sourceAsString);
+				total = 1;
+			}
 			return this;
 		});
 	}
@@ -219,10 +222,13 @@ public class Index {
 	 */
 	public Index getResource(String id) {
 		return withClient((Client client) -> {
-			String sourceAsString = client.prepareGet(INDEX_NAME, TYPE_RESOURCE, id)
-					.execute().actionGet().getSourceAsString();
-			result = Json.parse(sourceAsString);
-			total = 1;
+			GetResponse response = client.prepareGet(INDEX_NAME, TYPE_RESOURCE, id)
+					.execute().actionGet();
+			if (response.isExists()) {
+				String sourceAsString = response.getSourceAsString();
+				result = Json.parse(sourceAsString);
+				total = 1;
+			}
 			return this;
 		});
 	}

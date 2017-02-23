@@ -159,8 +159,10 @@ public class Application extends Controller {
 		}
 		addCorsHeader();
 		String uuid = session("uuid");
-		if (uuid == null)
-			session("uuid", UUID.randomUUID().toString());
+		if (uuid == null) {
+			uuid = UUID.randomUUID().toString();
+			session("uuid", uuid);
+		}
 		String cacheId = String.format("%s-%s-%s", uuid, request().uri(),
 				Accept.formatFor(format, request().acceptedTypes()));
 		@SuppressWarnings("unchecked")
@@ -298,8 +300,13 @@ public class Application extends Controller {
 					Accept.formatFor(format, request().acceptedTypes());
 			boolean htmlRequested =
 					responseFormat.equals(Accept.Format.HTML.queryParamString);
-			return htmlRequested ? ok(details.render(CONFIG, result.toString(), id))
-					: prettyJsonOk(result);
+			if (htmlRequested) {
+				return result != null
+						? ok(details.render(CONFIG, result.toString(), id))
+						: notFound(details.render(CONFIG, "", id));
+			}
+			return result != null ? prettyJsonOk(result)
+					: notFound("\"Not found: " + id + "\"");
 		});
 	}
 
@@ -321,11 +328,13 @@ public class Application extends Controller {
 					new PercentEscaper(PercentEscaper.SAFEPATHCHARS_URLENCODER, false)
 							.escape(id))
 					.getResult();
-			if (responseFormat.equals("html")) {
+			boolean htmlRequested =
+					responseFormat.equals(Accept.Format.HTML.queryParamString);
+			if (htmlRequested) {
 				return itemJson == null ? notFound(details_item.render(id, ""))
 						: ok(details_item.render(id, itemJson.toString()));
 			}
-			return itemJson == null ? notFound("Not found: " + id)
+			return itemJson == null ? notFound("\"Not found: " + id + "\"")
 					: prettyJsonOk(itemJson);
 
 		});
