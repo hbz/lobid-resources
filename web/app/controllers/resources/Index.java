@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import org.elasticsearch.action.admin.indices.validate.query.ValidateQueryResponse;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
@@ -144,6 +145,7 @@ public class Index {
 		Index resultIndex = withClient((Client client) -> {
 			QueryBuilder query = owner.isEmpty() ? QueryBuilders.queryStringQuery(q)
 					: ownerQuery(q, owner);
+			validate(client, query);
 			Logger.trace("queryResources: q={}, from={}, size={}, sort={}, query={}",
 					q, from, size, sort, query);
 			SearchRequestBuilder requestBuilder = client.prepareSearch(INDEX_NAME)
@@ -157,7 +159,8 @@ public class Index {
 				requestBuilder =
 						withAggregations(requestBuilder, aggregations.split(","));
 			}
-			SearchResponse response = requestBuilder.execute().actionGet();
+			SearchResponse response;
+			response = requestBuilder.execute().actionGet();
 			SearchHits hits = response.getHits();
 			List<JsonNode> results = new ArrayList<>();
 			this.aggregations = response.getAggregations();
@@ -169,6 +172,15 @@ public class Index {
 			return this;
 		});
 		return resultIndex;
+	}
+
+	private static void validate(Client client, QueryBuilder query) {
+		ValidateQueryResponse validate =
+				client.admin().indices().prepareValidateQuery(INDEX_NAME)
+						.setTypes(TYPE_RESOURCE).setQuery(query).get();
+		if (!validate.isValid()) {
+			throw new IllegalArgumentException("Invalid query: " + query);
+		}
 	}
 
 	private static QueryBuilder ownerQuery(String q, String owner) {
@@ -265,10 +277,7 @@ public class Index {
 				TransportClient.builder().settings(settings).build()) {
 			addHosts(client);
 			return function.apply(client);
-		} catch (Exception e) {
-			e.printStackTrace();
 		}
-		return null;
 	}
 
 	private static void addHosts(TransportClient client) {

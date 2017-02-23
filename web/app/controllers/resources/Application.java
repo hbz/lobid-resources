@@ -50,6 +50,7 @@ import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
 import play.test.Helpers;
+import play.twirl.api.Html;
 import views.html.api;
 import views.html.details;
 import views.html.details_item;
@@ -191,10 +192,12 @@ public class Application extends Controller {
 		});
 		cacheOnRedeem(cacheId, result, ONE_HOUR);
 		return result.recover((Throwable throwable) -> {
-			Logger.error("Could not query index", throwable);
-			flashError();
-			return internalServerError(query.render("[]", q, agent, name, subject, id,
-					publisher, issued, medium, from, size, 0L, owner, t, sort, set));
+			Logger.error("Could not query index: " + throwable.getMessage());
+			boolean badRequest = throwable instanceof IllegalArgumentException;
+			flashError(badRequest);
+			Html html = query.render("[]", q, agent, name, subject, id, publisher,
+					issued, medium, from, size, 0L, owner, t, sort, set);
+			return badRequest ? badRequest(html) : internalServerError(html);
 		});
 	}
 
@@ -328,12 +331,21 @@ public class Application extends Controller {
 		});
 	}
 
-	private static void flashError() {
-		flash("error",
-				"Es ist ein Fehler aufgetreten. "
-						+ "Bitte versuchen Sie es erneut oder kontaktieren Sie das "
-						+ "Entwicklerteam, falls das Problem fortbesteht "
-						+ "(siehe Link 'Feedback' oben rechts).");
+	private static void flashError(boolean badRequest) {
+		if (badRequest) {
+			flash("warning",
+					"Ungültige Suchanfrage. Maskieren Sie Sonderzeichen mit "
+							+ "<code>\\</code>. Siehe auch <a href=\""
+							+ "https://www.elastic.co/guide/en/elasticsearch/reference/2.4/"
+							+ "query-dsl-query-string-query.html#query-string-syntax\">"
+							+ "Dokumentation der unterstützten Suchsyntax</a>.");
+		} else {
+			flash("error",
+					"Es ist ein Fehler aufgetreten. "
+							+ "Bitte versuchen Sie es erneut oder kontaktieren Sie das "
+							+ "Entwicklerteam, falls das Problem fortbesteht "
+							+ "(siehe Link 'Feedback' oben rechts).");
+		}
 	}
 
 	private static void cacheOnRedeem(final String cacheId,

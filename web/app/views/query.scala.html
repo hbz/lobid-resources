@@ -118,13 +118,17 @@
              </div>
          }
          @if(flash.get("error")!=null && hits.isEmpty){
-            <div class="alert alert-danger text-center">@flash.get("error")</div>
+            <div class="alert alert-danger text-center">@Html(flash.get("error"))</div>
          } else {
-            @if(hits.isEmpty){
-                <div class="alert alert-info text-center">
-                    Keine Ergebnisse. Suchoptionen: Begriffe <code>+</code>einschließen, <code>-</code>ausschließen, unscharf<code>~</code>, <code>"</code>exakt suchen<code>"</code>.
-                </div>
-            }
+           @if(flash.get("warning")!=null && hits.isEmpty){
+             <div class="alert alert-warning text-center">@Html(flash.get("warning"))</div>
+           } else {
+             @if(hits.isEmpty){
+               <div class="alert alert-info text-center">
+                 Keine Ergebnisse. Suchoptionen: Begriffe <code>+</code>einschließen, <code>-</code>ausschließen, unscharf<code>~</code>, <code>"</code>exakt suchen<code>"</code>.
+               </div>
+             }
+           }
          }
         </div>
         @if(allHits > 0) {@facets(q,agent,name,subject,id,publisher,issued,medium,owner,t,sortParam,set,from,size)}
