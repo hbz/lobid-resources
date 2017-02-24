@@ -24,6 +24,8 @@ import org.elasticsearch.search.aggregations.bucket.terms.Terms.Bucket;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.google.common.base.Joiner;
+
 import controllers.resources.Index;
 import play.mvc.Http;
 import play.mvc.Result;
@@ -53,7 +55,8 @@ public class IntegrationTests extends LocalIndexSetup {
 			Index index = new Index();
 			String queryString =
 					index.buildQueryString("köln", "", "", "", "", "", "", "", "");
-			Index queryResources = index.queryResources(queryString);
+			Index queryResources = index.queryResources(queryString, 0, 0, "", "",
+					Joiner.on(",").join(Index.SUPPORTED_AGGREGATIONS));
 			Aggregations facets = queryResources.getAggregations();
 			Terms terms = facets.get("type");
 			Stream<String> values =
@@ -85,7 +88,7 @@ public class IntegrationTests extends LocalIndexSetup {
 	public void sizeRequest() {
 		running(testServer(3333), () -> {
 			Index index = new Index();
-			Long hits = index.queryResources("hbzId:TT050409948").getTotal();
+			Long hits = index.totalHits("hbzId:TT050409948");
 			assertThat(hits).isGreaterThan(0);
 		});
 	}

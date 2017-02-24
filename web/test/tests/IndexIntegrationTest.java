@@ -69,8 +69,7 @@ public class IndexIntegrationTest extends LocalIndexSetup {
 	@Test
 	public void testResultCount() {
 		running(fakeApplication(), () -> {
-			long actualResultCount = index.queryResources(queryString).getTotal();
-			assertThat(actualResultCount).isEqualTo(expectedResultCount);
+			assertThat(index.totalHits(queryString)).isEqualTo(expectedResultCount);
 		});
 	}
 

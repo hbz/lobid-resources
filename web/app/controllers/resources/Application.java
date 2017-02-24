@@ -194,12 +194,17 @@ public class Application extends Controller {
 		});
 		cacheOnRedeem(cacheId, result, ONE_HOUR);
 		return result.recover((Throwable throwable) -> {
-			Logger.error("Could not query index: " + throwable.getMessage());
-			boolean badRequest = throwable instanceof IllegalArgumentException;
-			flashError(badRequest);
 			Html html = query.render("[]", q, agent, name, subject, id, publisher,
 					issued, medium, from, size, 0L, owner, t, sort, set);
-			return badRequest ? badRequest(html) : internalServerError(html);
+			String message = "Could not query index: " + throwable.getMessage();
+			boolean badRequest = throwable instanceof IllegalArgumentException;
+			flashError(badRequest);
+			if (badRequest) {
+				Logger.warn(message);
+				return badRequest(html);
+			}
+			Logger.error(message);
+			return internalServerError(html);
 		});
 	}
 
