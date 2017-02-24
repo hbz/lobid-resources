@@ -71,7 +71,7 @@
             <div class="panel panel-default resources-footer">
               <div class="panel-body">
                 <small>
-                @defining(new controllers.resources.Index().queryResources("*").getTotal()){ hits =>
+                @defining(new controllers.resources.Index().totalHits("*")){ hits =>
                 <img class="media-object pull-left nrw-wappen" src="@controllers.routes.Assets.at("images/wappen.png")" alt="NRW-Wappen">
                 <img class="media-object pull-right butterfly" src="@controllers.routes.Assets.at("images/butterfly.png")" alt="Lobid-Butterfly"> 
                 Der hbz-Verbundkatalog bietet @if(hits>0){aktuell @hits}else{fast 20 Millionen} Literaturnachweise. 

@@ -92,27 +92,30 @@ public class Application extends Controller {
 	/**
 	 * @return The index page.
 	 */
-	public static Result index() {
-		final Form<String> form = queryForm.bindFromRequest();
-		if (form.hasErrors())
-			return badRequest(index.render());
-		return ok(index.render());
+	@Cached(key = "index", duration = ONE_DAY)
+	public static Promise<Result> index() {
+		return Promise.promise(() -> {
+			final Form<String> form = queryForm.bindFromRequest();
+			if (form.hasErrors())
+				return badRequest(index.render());
+			return ok(index.render());
+		});
 	}
 
 	/**
 	 * @return The API documentation page
 	 */
-	@Cached(duration = ONE_HOUR, key = "api")
-	public static Result api() {
-		return ok(api.render());
+	@Cached(key = "api", duration = ONE_DAY)
+	public static Promise<Result> api() {
+		return Promise.promise(() -> ok(api.render()));
 	}
 
 	/**
 	 * @return The advanced search page.
 	 */
 	@Cached(key = "search.advanced", duration = ONE_HOUR)
-	public static Result advanced() {
-		return ok(views.html.advanced.render());
+	public static Promise<Result> advanced() {
+		return Promise.promise(() -> ok(views.html.advanced.render()));
 	}
 
 	/**
@@ -194,12 +197,17 @@ public class Application extends Controller {
 		});
 		cacheOnRedeem(cacheId, result, ONE_HOUR);
 		return result.recover((Throwable throwable) -> {
-			Logger.error("Could not query index: " + throwable.getMessage());
-			boolean badRequest = throwable instanceof IllegalArgumentException;
-			flashError(badRequest);
 			Html html = query.render("[]", q, agent, name, subject, id, publisher,
 					issued, medium, from, size, 0L, owner, t, sort, set);
-			return badRequest ? badRequest(html) : internalServerError(html);
+			String message = "Could not query index: " + throwable.getMessage();
+			boolean badRequest = throwable instanceof IllegalArgumentException;
+			flashError(badRequest);
+			if (badRequest) {
+				Logger.warn(message);
+				return badRequest(html);
+			}
+			Logger.error(message);
+			return internalServerError(html);
 		});
 	}
 
@@ -294,10 +302,14 @@ public class Application extends Controller {
 	 */
 	public static Promise<Result> show(final String id, String format) {
 		addCorsHeader();
-		return Promise.promise(() -> {
+		String responseFormat = Accept.formatFor(format, request().acceptedTypes());
+		String cacheId = String.format("show(%s,%s)", id, responseFormat);
+		@SuppressWarnings("unchecked")
+		Promise<Result> cachedResult = (Promise<Result>) Cache.get(cacheId);
+		if (cachedResult != null)
+			return cachedResult;
+		Promise<Result> promise = Promise.promise(() -> {
 			JsonNode result = new Index().getResource(id).getResult();
-			String responseFormat =
-					Accept.formatFor(format, request().acceptedTypes());
 			boolean htmlRequested =
 					responseFormat.equals(Accept.Format.HTML.queryParamString);
 			if (htmlRequested) {
@@ -308,6 +320,8 @@ public class Application extends Controller {
 			return result != null ? prettyJsonOk(result)
 					: notFound("\"Not found: " + id + "\"");
 		});
+		cacheOnRedeem(cacheId, promise, ONE_DAY);
+		return promise;
 	}
 
 	/**
@@ -317,7 +331,12 @@ public class Application extends Controller {
 	 */
 	public static Promise<Result> item(final String id, String format) {
 		String responseFormat = Accept.formatFor(format, request().acceptedTypes());
-		return Promise.promise(() -> {
+		String cacheId = String.format("item(%s,%s)", id, responseFormat);
+		@SuppressWarnings("unchecked")
+		Promise<Result> cachedResult = (Promise<Result>) Cache.get(cacheId);
+		if (cachedResult != null)
+			return cachedResult;
+		Promise<Result> promise = Promise.promise(() -> {
 			/* @formatter:off
 			 * Escape item IDs for index lookup the same way as during transformation, see:
 			 * https://github.com/hbz/lobid-resources/blob/master/src/main/resources/morph-hbz01-to-lobid.xml#L781
@@ -336,8 +355,9 @@ public class Application extends Controller {
 			}
 			return itemJson == null ? notFound("\"Not found: " + id + "\"")
 					: prettyJsonOk(itemJson);
-
 		});
+		cacheOnRedeem(cacheId, promise, ONE_DAY);
+		return promise;
 	}
 
 	private static void flashError(boolean badRequest) {
@@ -554,34 +574,38 @@ public class Application extends Controller {
 	 * @param id The resource ID to star
 	 * @return An OK result
 	 */
-	public static Result star(String id) {
-		String starred = currentlyStarred();
-		if (!starred.contains(id)) {
-			session(STARRED, starred + " " + id);
-			uncache(Arrays.asList(id));
-		}
-		return ok("Starred: " + id);
+	public static Promise<Result> star(String id) {
+		return Promise.promise(() -> {
+			String starred = currentlyStarred();
+			if (!starred.contains(id)) {
+				session(STARRED, starred + " " + id);
+				uncache(Arrays.asList(id));
+			}
+			return ok("Starred: " + id);
+		});
 	}
 
 	/**
 	 * @param ids The resource IDs to star
 	 * @return A 303 SEE_OTHER result to the referrer
 	 */
-	public static Result starAll(String ids) {
+	public static Promise<Result> starAll(String ids) {
 		Arrays.asList(ids.split(",")).forEach(id -> star(id));
-		return seeOther(request().getHeader(REFERER));
+		return Promise.promise(() -> seeOther(request().getHeader(REFERER)));
 	}
 
 	/**
 	 * @param id The resource ID to unstar
 	 * @return An OK result
 	 */
-	public static Result unstar(String id) {
-		List<String> starred = starredIds();
-		starred.remove(id);
-		session(STARRED, String.join(" ", starred));
-		uncache(Arrays.asList(id));
-		return ok("Unstarred: " + id);
+	public static Promise<Result> unstar(String id) {
+		return Promise.promise(() -> {
+			List<String> starred = starredIds();
+			starred.remove(id);
+			session(STARRED, String.join(" ", starred));
+			uncache(Arrays.asList(id));
+			return ok("Unstarred: " + id);
+		});
 	}
 
 	/**
@@ -621,22 +645,23 @@ public class Application extends Controller {
 	 * @return If ids is empty: an OK result to confirm deletion of all starred
 	 *         resources; if ids are given: A 303 SEE_OTHER result to the referrer
 	 */
-	public static Result clearStars(String ids) {
+	public static Promise<Result> clearStars(String ids) {
 		if (ids.isEmpty()) {
 			uncache(starredIds());
 			session(STARRED, "");
-			return ok(stars.render(starredIds(), Collections.emptyList(), ""));
+			return Promise.promise(
+					() -> ok(stars.render(starredIds(), Collections.emptyList(), "")));
 		}
 		Arrays.asList(ids.split(",")).forEach(id -> unstar(id));
-		return seeOther(request().getHeader(REFERER));
+		return Promise.promise(() -> seeOther(request().getHeader(REFERER)));
 	}
 
 	/**
 	 * @param path The path to redirect to
 	 * @return A 301 MOVED_PERMANENTLY redirect to the path
 	 */
-	public static Result redirect(String path) {
-		return movedPermanently("/" + path);
+	public static Promise<Result> redirectTo(String path) {
+		return Promise.promise(() -> movedPermanently("/" + path));
 	}
 
 	/**
@@ -655,6 +680,7 @@ public class Application extends Controller {
 	/**
 	 * @return JSON-LD context
 	 */
+	@Cached(key = "context")
 	public static Result context() {
 		response().setContentType("application/ld+json");
 		addCorsHeader();
