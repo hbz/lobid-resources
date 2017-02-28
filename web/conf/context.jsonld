@@ -32,17 +32,17 @@
     },
     "Item" : {
       "@type" : "@id",
-      "@id" : "http://purl.org/vocab/frbr/core#Item",
+      "@id" : "http://id.loc.gov/ontologies/bibframe/Item",
       "@container" : "@set"
     },
     "Print" : {
       "@type" : "@id",
-      "@id" : "http://rdvocab.info/termList/RDAproductionMethod/#1010",
+      "@id" : "http://rdaregistry.info/termList/RDAproductionMethod/1010",
       "@container" : "@set"
     },
     "contribution" : {
       "@type" : "@id",
-      "@id" : "http://bibframe.org/vocab/contribution",
+      "@id" : "http://id.loc.gov/ontologies/bibframe/contribution",
       "@container" : "@list"
     },
     "rpbSubject" : {
@@ -50,18 +50,9 @@
       "@id" : "http://purl.org/lobid/lv#rpbSubject",
       "@container" : "@set"
     },
-    "exemplarOf" : {
-      "@type" : "@id",
-      "@id" : "http://purl.org/vocab/frbr/core#exemplarOf"
-    },
     "Book" : {
       "@type" : "@id",
       "@id" : "http://purl.org/ontology/bibo/Book",
-      "@container" : "@set"
-    },
-    "exemplar" : {
-      "@type" : "@id",
-      "@id" : "http://purl.org/vocab/frbr/core#exemplar",
       "@container" : "@set"
     },
     "Work" : {
@@ -91,10 +82,6 @@
       "@id" : "http://purl.org/dc/terms/hasPart",
       "@container" : "@set"
     },
-    "Publication" : {
-      "@type" : "@id",
-      "@id" : "http://schema.org/Publication"
-    },
     "eissn" : {
       "@id" : "http://purl.org/ontology/bibo/eissn",
       "@container" : "@set"
@@ -102,11 +89,6 @@
     "isPartOf" : {
       "@type" : "@id",
       "@id" : "http://purl.org/dc/terms/isPartOf",
-      "@container" : "@set"
-    },
-    "nwbibspatial" : {
-      "@type" : "@id",
-      "@id" : "http://purl.org/lobid/lv#nwbibspatial",
       "@container" : "@set"
     },
     "MultiVolumeBook" : {
@@ -128,6 +110,11 @@
       "@id" : "http://purl.org/ontology/bibo/issn",
       "@container" : "@set"
     },
+    "supplement" : {
+      "@type" : "@id",
+      "@id" : "http://id.loc.gov/ontologies/bibframe/supplement",
+      "@container" : "@set"
+    },
     "bibliographicCitation" : {
       "@id" : "http://purl.org/dc/terms/bibliographicCitation"
     },
@@ -146,8 +133,7 @@
     },
     "role" : {
       "@type" : "@id",
-      "@id" : "http://bibframe.org/vocab/role",
-      "@container" : "@set"
+      "@id" : "http://id.loc.gov/ontologies/bibframe/role"
     },
     "contributorOrder" : {
       "@id" : "http://purl.org/lobid/lv#contributorOrder",
@@ -161,6 +147,11 @@
       "@id" : "http://d-nb.info/standards/elementset/gnd#dateOfDeath",
       "@container" : "@set"
     },
+    "nwbibSpatial" : {
+      "@type" : "@id",
+      "@id" : "http://purl.org/lobid/lv#nwbibspatial",
+      "@container" : "@set"
+    },
     "Article" : {
       "@type" : "@id",
       "@id" : "http://purl.org/ontology/bibo/Article",
@@ -168,6 +159,11 @@
     },
     "creatorName" : {
       "@id" : "http://purl.org/dc/elements/1.1/creator",
+      "@container" : "@set"
+    },
+    "hasItem" : {
+      "@type" : "@id",
+      "@id" : "http://id.loc.gov/ontologies/bibframe/hasItem",
       "@container" : "@set"
     },
     "alternativeTitle" : {
@@ -202,10 +198,9 @@
     "zdbId" : {
       "@id" : "http://purl.org/lobid/lv#zdbID"
     },
-    "hasSupplement" : {
+    "heldBy" : {
       "@type" : "@id",
-      "@id" : "http://rdaregistry.info/Elements/u/P60281",
-      "@container" : "@set"
+      "@id" : "http://id.loc.gov/ontologies/bibframe/heldBy"
     },
     "wikipedia" : {
       "@type" : "@id",
@@ -217,9 +212,8 @@
       "@id" : "http://purl.org/ontology/mo/PublishedScore",
       "@container" : "@set"
     },
-    "workManifested" : {
-      "@type" : "@id",
-      "@id" : "http://rdvocab.info/RDARelationshipsWEMI/workManifested",
+    "oclcNumber" : {
+      "@id" : "http://purl.org/ontology/bibo/oclcnum",
       "@container" : "@set"
     },
     "hasFormat" : {
@@ -310,7 +304,7 @@
     },
     "agent" : {
       "@type" : "@id",
-      "@id" : "http://bibframe.org/vocab/agent"
+      "@id" : "http://id.loc.gov/ontologies/bibframe/agent"
     },
     "inDataset" : {
       "@type" : "@id",
@@ -330,7 +324,7 @@
     "subject" : {
       "@type" : "@id",
       "@id" : "http://purl.org/dc/terms/subject",
-      "@container" : "@list"
+      "@container" : "@set"
     },
     "titleKeyword" : {
       "@id" : "http://purl.org/lobid/lv#titleKeyword",
@@ -343,7 +337,7 @@
     },
     "Journal" : {
       "@type" : "@id",
-      "@id" : "http://purl.org/ontology/bibo/Journal",
+      "@id" : "http://purl.org/ontology/bibo/Periodical",
       "@container" : "@set"
     },
     "Creator" : {
@@ -365,6 +359,10 @@
     },
     "frequency" : {
       "@id" : "http://rdaregistry.info/Elements/u/P60538",
+      "@container" : "@set"
+    },
+    "publicationFrequency" : {
+      "@id" : "http://id.loc.gov/ontologies/bibframe/frequency",
       "@container" : "@set"
     },
     "Proceedings" : {
@@ -453,7 +451,7 @@
     },
     "Collection" : {
       "@type" : "@id",
-      "@id" : "http://purl.org/ontology/bibo/Collection",
+      "@id" : "http://id.loc.gov/ontologies/bibframe/Collection",
       "@container" : "@set"
     },
     "SeriesRelation" : {
@@ -466,22 +464,18 @@
       "@id" : "http://purl.org/dc/terms/tableOfContents",
       "@container" : "@set"
     },
-    "oclcnum" : {
-      "@id" : "http://purl.org/ontology/bibo/oclcnum",
-      "@container" : "@set"
-    },
     "SubjectHeading" : {
       "@type" : "@id",
       "@id" : "http://d-nb.info/standards/elementset/gnd#SubjectHeading",
       "@container" : "@set"
     },
+    "note" : {
+      "@id" : "http://id.loc.gov/ontologies/bibframe/note",
+      "@container" : "@set"
+    },
     "multiVolumeWork" : {
       "@type" : "@id",
       "@id" : "http://purl.org/lobid/lv#multiVolumeWork",
-      "@container" : "@set"
-    },
-    "note" : {
-      "@id" : "http://www.w3.org/2004/02/skos/core#note",
       "@container" : "@set"
     },
     "hasVersion" : {
@@ -530,6 +524,11 @@
       "@id" : "http://purl.org/dc/terms/created",
       "@container" : "@set"
     },
+    "nwbibSubject" : {
+      "@type" : "@id",
+      "@id" : "http://purl.org/lobid/lv#nwbibsubject",
+      "@container" : "@set"
+    },
     "Biography" : {
       "@type" : "@id",
       "@id" : "http://purl.org/lobid/lv#Biography",
@@ -546,10 +545,6 @@
     "coverage" : {
       "@id" : "http://purl.org/dc/elements/1.1/coverage",
       "@container" : "@set"
-    },
-    "owner" : {
-      "@type" : "@id",
-      "@id" : "http://purl.org/vocab/frbr/core#owner"
     },
     "OfficialPublication" : {
       "@type" : "@id",
@@ -579,11 +574,6 @@
       "@id" : "http://purl.org/dc/terms/modified",
       "@container" : "@set"
     },
-    "nwbibsubject" : {
-      "@type" : "@id",
-      "@id" : "http://purl.org/lobid/lv#nwbibsubject",
-      "@container" : "@set"
-    },
     "label" : {
       "@id" : "http://www.w3.org/2000/01/rdf-schema#label",
       "@container" : "@set"
@@ -598,13 +588,21 @@
       "@id" : "http://purl.org/ontology/bibo/Series",
       "@container" : "@set"
     },
+    "itemOf" : {
+      "@type" : "@id",
+      "@id" : "http://id.loc.gov/ontologies/bibframe/itemOf"
+    },
+    "PublicationEvent" : {
+      "@type" : "@id",
+      "@id" : "http://schema.org/PublicationEvent"
+    },
     "location" : {
       "@id" : "http://schema.org/location",
       "@container" : "@set"
     },
     "Contribution" : {
       "@type" : "@id",
-      "@id" : "http://bibframe.org/vocab/Contribution",
+      "@id" : "http://id.loc.gov/ontologies/bibframe/Contribution",
       "@container" : "@set"
     },
     "collectedBy" : {

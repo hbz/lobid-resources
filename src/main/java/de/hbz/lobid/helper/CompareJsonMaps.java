@@ -80,7 +80,8 @@ public final class CompareJsonMaps {
 			CompareJsonMaps.logger.debug("Trying to remove " + e.getKey() + "...");
 			if (!actualMap.containsKey(e.getKey())) {
 				CompareJsonMaps.logger
-						.warn("At least this element is missing in actual: " + e.getKey());
+						.warn("At least this element is missing in actual: " + e.getKey()
+								+ "=" + e.getValue());
 				return false;
 			}
 			if (e.getKey().endsWith("Order]")) {
