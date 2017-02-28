@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import org.elasticsearch.action.admin.indices.validate.query.ValidateQueryResponse;
+import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
@@ -60,6 +62,11 @@ public class Index {
 	private JsonNode result;
 	private long total = 0;
 	private Aggregations aggregations;
+
+	/**
+	 * The client to use. If null, create default client from settings.
+	 */
+	public static Client elasticsearchClient = null;
 
 	/**
 	 * Fields used when building query strings vis
@@ -139,6 +146,7 @@ public class Index {
 		Index resultIndex = withClient((Client client) -> {
 			QueryBuilder query = owner.isEmpty() ? QueryBuilders.queryStringQuery(q)
 					: ownerQuery(q, owner);
+			validate(client, query);
 			Logger.trace("queryResources: q={}, from={}, size={}, sort={}, query={}",
 					q, from, size, sort, query);
 			SearchRequestBuilder requestBuilder = client.prepareSearch(INDEX_NAME)
@@ -152,7 +160,8 @@ public class Index {
 				requestBuilder =
 						withAggregations(requestBuilder, aggregations.split(","));
 			}
-			SearchResponse response = requestBuilder.execute().actionGet();
+			SearchResponse response;
+			response = requestBuilder.execute().actionGet();
 			SearchHits hits = response.getHits();
 			List<JsonNode> results = new ArrayList<>();
 			this.aggregations = response.getAggregations();
@@ -164,6 +173,15 @@ public class Index {
 			return this;
 		});
 		return resultIndex;
+	}
+
+	private static void validate(Client client, QueryBuilder query) {
+		ValidateQueryResponse validate =
+				client.admin().indices().prepareValidateQuery(INDEX_NAME)
+						.setTypes(TYPE_RESOURCE).setQuery(query).get();
+		if (!validate.isValid()) {
+			throw new IllegalArgumentException("Invalid query: " + query);
+		}
 	}
 
 	private static QueryBuilder ownerQuery(String q, String owner) {
@@ -186,11 +204,13 @@ public class Index {
 	 */
 	public Index getItem(String id) {
 		return withClient((Client client) -> {
-			String sourceAsString = client.prepareGet(INDEX_NAME, TYPE_ITEM, id)
-					.setParent(id.split(":")[0]).execute().actionGet()
-					.getSourceAsString();
-			result = Json.parse(sourceAsString);
-			total = 1;
+			GetResponse response = client.prepareGet(INDEX_NAME, TYPE_ITEM, id)
+					.setParent(id.split(":")[0]).execute().actionGet();
+			if (response.isExists()) {
+				String sourceAsString = response.getSourceAsString();
+				result = Json.parse(sourceAsString);
+				total = 1;
+			}
 			return this;
 		});
 	}
@@ -202,10 +222,13 @@ public class Index {
 	 */
 	public Index getResource(String id) {
 		return withClient((Client client) -> {
-			String sourceAsString = client.prepareGet(INDEX_NAME, TYPE_RESOURCE, id)
-					.execute().actionGet().getSourceAsString();
-			result = Json.parse(sourceAsString);
-			total = 1;
+			GetResponse response = client.prepareGet(INDEX_NAME, TYPE_RESOURCE, id)
+					.execute().actionGet();
+			if (response.isExists()) {
+				String sourceAsString = response.getSourceAsString();
+				result = Json.parse(sourceAsString);
+				total = 1;
+			}
 			return this;
 		});
 	}
@@ -251,16 +274,16 @@ public class Index {
 	}
 
 	<T> T withClient(Function<Client, T> function) {
+		if (elasticsearchClient != null) {
+			return function.apply(elasticsearchClient);
+		}
 		Settings settings =
 				Settings.settingsBuilder().put("cluster.name", CLUSTER_NAME).build();
 		try (TransportClient client =
 				TransportClient.builder().settings(settings).build()) {
 			addHosts(client);
 			return function.apply(client);
-		} catch (Exception e) {
-			e.printStackTrace();
 		}
-		return null;
 	}
 
 	private static void addHosts(TransportClient client) {

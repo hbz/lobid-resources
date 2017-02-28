@@ -50,6 +50,7 @@ import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
 import play.test.Helpers;
+import play.twirl.api.Html;
 import views.html.api;
 import views.html.details;
 import views.html.details_item;
@@ -158,8 +159,10 @@ public class Application extends Controller {
 		}
 		addCorsHeader();
 		String uuid = session("uuid");
-		if (uuid == null)
-			session("uuid", UUID.randomUUID().toString());
+		if (uuid == null) {
+			uuid = UUID.randomUUID().toString();
+			session("uuid", uuid);
+		}
 		String cacheId = String.format("%s-%s-%s", uuid, request().uri(),
 				Accept.formatFor(format, request().acceptedTypes()));
 		@SuppressWarnings("unchecked")
@@ -191,10 +194,12 @@ public class Application extends Controller {
 		});
 		cacheOnRedeem(cacheId, result, ONE_HOUR);
 		return result.recover((Throwable throwable) -> {
-			Logger.error("Could not query index", throwable);
-			flashError();
-			return internalServerError(query.render("[]", q, agent, name, subject, id,
-					publisher, issued, medium, from, size, 0L, owner, t, sort, set));
+			Logger.error("Could not query index: " + throwable.getMessage());
+			boolean badRequest = throwable instanceof IllegalArgumentException;
+			flashError(badRequest);
+			Html html = query.render("[]", q, agent, name, subject, id, publisher,
+					issued, medium, from, size, 0L, owner, t, sort, set);
+			return badRequest ? badRequest(html) : internalServerError(html);
 		});
 	}
 
@@ -295,8 +300,13 @@ public class Application extends Controller {
 					Accept.formatFor(format, request().acceptedTypes());
 			boolean htmlRequested =
 					responseFormat.equals(Accept.Format.HTML.queryParamString);
-			return htmlRequested ? ok(details.render(CONFIG, result.toString(), id))
-					: prettyJsonOk(result);
+			if (htmlRequested) {
+				return result != null
+						? ok(details.render(CONFIG, result.toString(), id))
+						: notFound(details.render(CONFIG, "", id));
+			}
+			return result != null ? prettyJsonOk(result)
+					: notFound("\"Not found: " + id + "\"");
 		});
 	}
 
@@ -318,22 +328,33 @@ public class Application extends Controller {
 					new PercentEscaper(PercentEscaper.SAFEPATHCHARS_URLENCODER, false)
 							.escape(id))
 					.getResult();
-			if (responseFormat.equals("html")) {
+			boolean htmlRequested =
+					responseFormat.equals(Accept.Format.HTML.queryParamString);
+			if (htmlRequested) {
 				return itemJson == null ? notFound(details_item.render(id, ""))
 						: ok(details_item.render(id, itemJson.toString()));
 			}
-			return itemJson == null ? notFound("Not found: " + id)
+			return itemJson == null ? notFound("\"Not found: " + id + "\"")
 					: prettyJsonOk(itemJson);
 
 		});
 	}
 
-	private static void flashError() {
-		flash("error",
-				"Es ist ein Fehler aufgetreten. "
-						+ "Bitte versuchen Sie es erneut oder kontaktieren Sie das "
-						+ "Entwicklerteam, falls das Problem fortbesteht "
-						+ "(siehe Link 'Feedback' oben rechts).");
+	private static void flashError(boolean badRequest) {
+		if (badRequest) {
+			flash("warning",
+					"Ungültige Suchanfrage. Maskieren Sie Sonderzeichen mit "
+							+ "<code>\\</code>. Siehe auch <a href=\""
+							+ "https://www.elastic.co/guide/en/elasticsearch/reference/2.4/"
+							+ "query-dsl-query-string-query.html#query-string-syntax\">"
+							+ "Dokumentation der unterstützten Suchsyntax</a>.");
+		} else {
+			flash("error",
+					"Es ist ein Fehler aufgetreten. "
+							+ "Bitte versuchen Sie es erneut oder kontaktieren Sie das "
+							+ "Entwicklerteam, falls das Problem fortbesteht "
+							+ "(siehe Link 'Feedback' oben rechts).");
+		}
 	}
 
 	private static void cacheOnRedeem(final String cacheId,
