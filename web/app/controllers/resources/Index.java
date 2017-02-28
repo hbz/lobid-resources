@@ -56,6 +56,7 @@ public class Index {
 					.map(v -> v.unwrapped().toString()).collect(Collectors.toList());
 	private static final String CLUSTER_NAME =
 			Application.CONFIG.getString("index.cluster.name");
+	private static final String OWNER_ID_FIELD = "heldBy.id";
 
 	private JsonNode result;
 	private long total = 0;
@@ -200,7 +201,7 @@ public class Index {
 		for (String o : owners) {
 			final String ownerId = prefix + o.replace(prefix, "");
 			ownersQuery = ownersQuery
-					.should(hasChildQuery("item", matchQuery("owner.id", ownerId)));
+					.should(hasChildQuery("item", matchQuery(OWNER_ID_FIELD, ownerId)));
 		}
 		return QueryBuilders.boolQuery().must(QueryBuilders.queryStringQuery(q))
 				.must(ownersQuery);
@@ -271,7 +272,7 @@ public class Index {
 				ChildrenBuilder ownerAggregation =
 						AggregationBuilders.children(Application.OWNER_AGGREGATION)
 								.childType(TYPE_ITEM).subAggregation(AggregationBuilders
-										.terms(field).field("owner.id").size(defaultSize));
+										.terms(field).field(OWNER_ID_FIELD).size(defaultSize));
 				searchRequest.addAggregation(ownerAggregation);
 			} else {
 				boolean many = field.equals("publication.startDate");
