@@ -31,9 +31,9 @@ import org.elasticsearch.search.sort.SortBuilders;
 import org.elasticsearch.search.sort.SortOrder;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.google.common.base.Joiner;
 
 import play.Logger;
+import play.cache.Cache;
 import play.libs.Json;
 
 /**
@@ -44,8 +44,6 @@ import play.libs.Json;
  */
 public class Index {
 
-	static final List<String> SUPPORTED_AGGREGATIONS = Arrays.asList(
-			"publication.startDate", "subject.id", "type", "medium.id", "owner");
 	static final String INDEX_NAME = Application.CONFIG.getString("index.name");
 	private static final String TYPE_ITEM =
 			Application.CONFIG.getString("index.type.item");
@@ -76,6 +74,12 @@ public class Index {
 			new String[] { "contribution.agent.label", "title",
 					"subject.id|subject.label", "isbn|issn", "publication.publishedBy",
 					"publication.startDate", "medium.id", "type", "collectedBy.id" };
+
+	/**
+	 * The values supported for the `aggregations` query parameter.
+	 */
+	public static final List<String> SUPPORTED_AGGREGATIONS = Arrays.asList(
+			"publication.startDate", "subject.id", "type", "medium.id", "owner");
 
 	/**
 	 * @param q The current query string
@@ -123,12 +127,17 @@ public class Index {
 
 	/**
 	 * @param q The string to use for an Elasticsearch queryStringQuery
-	 * @return This index, get results via {@link #getResult()} and
-	 *         {@link #getTotal()}
+	 * @return The number of result for the given query string
 	 */
-	public Index queryResources(String q) {
-		return queryResources(q, 0, 10, "", "",
-				Joiner.on(",").join(SUPPORTED_AGGREGATIONS));
+	public long totalHits(String q) {
+		try {
+			return Cache.getOrElse("total-" + q,
+					() -> queryResources(q, 0, 0, "", "", "").getTotal(),
+					Application.ONE_DAY);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return -1;
 	}
 
 	/**
