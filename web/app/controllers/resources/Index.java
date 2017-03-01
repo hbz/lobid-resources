@@ -88,7 +88,7 @@ public class Index {
 	 * @return A query string created from q, expanded for values
 	 */
 	public String buildQueryString(String q, String... values) {
-		String fullQuery = q.isEmpty() ? "*" : q;
+		String fullQuery = q.isEmpty() ? "*" : "(" + q + ")";
 		for (int i = 0; i < values.length; i++) {
 			String fieldValue = values[i];
 			String fieldName = fieldValue.contains("http")
@@ -102,6 +102,7 @@ public class Index {
 				fullQuery += " AND (" + buildFieldQuery(fieldValue, fieldName) + ")";
 			}
 		}
+		Logger.debug("q={}, values={} -> query string={}", q, values, fullQuery);
 		return fullQuery;
 	}
 
@@ -170,8 +171,7 @@ public class Index {
 				requestBuilder =
 						withAggregations(requestBuilder, aggregations.split(","));
 			}
-			SearchResponse response;
-			response = requestBuilder.execute().actionGet();
+			SearchResponse response = requestBuilder.execute().actionGet();
 			SearchHits hits = response.getHits();
 			List<JsonNode> results = new ArrayList<>();
 			this.aggregations = response.getAggregations();
