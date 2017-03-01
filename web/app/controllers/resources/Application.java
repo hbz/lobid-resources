@@ -166,8 +166,8 @@ public class Application extends Controller {
 			uuid = UUID.randomUUID().toString();
 			session("uuid", uuid);
 		}
-		String cacheId = String.format("%s-%s-%s", uuid, request().uri(),
-				Accept.formatFor(format, request().acceptedTypes()));
+		String cacheId = String.format("%s-%s-%s-%s", uuid, request().uri(),
+				Accept.formatFor(format, request().acceptedTypes()), starredIds());
 		@SuppressWarnings("unchecked")
 		Promise<Result> cachedResult = (Promise<Result>) Cache.get(cacheId);
 		if (cachedResult != null)
