@@ -45,7 +45,6 @@ import play.cache.Cached;
 import play.data.Form;
 import play.libs.F.Promise;
 import play.libs.Json;
-import play.libs.ws.WS;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
@@ -628,16 +627,12 @@ public class Application extends Controller {
 			List<JsonNode> json = (List<JsonNode>) cachedJson;
 			return Promise.pure(ok(stars.render(starredIds, json, format)));
 		}
-		Stream<Promise<JsonNode>> promises = starredIds.stream()
-				.map(id -> WS
-						.url(String.format("http://lobid.org/resource/%s?format=full", id))
-						.get().map(response -> response.asJson()));
-		return Promise.sequence(promises.collect(Collectors.toList()))
-				.map((List<JsonNode> vals) -> {
-					uncache(starredIds);
-					Cache.set(cacheKey, vals, ONE_DAY);
-					return ok(stars.render(starredIds, vals, format));
-				});
+		List<JsonNode> vals =
+				starredIds.stream().map(id -> new Index().getResource(id).getResult())
+						.collect(Collectors.toList());
+		uncache(starredIds);
+		Cache.set(cacheKey, vals, ONE_DAY);
+		return Promise.pure(ok(stars.render(starredIds, vals, format)));
 	}
 
 	/**
