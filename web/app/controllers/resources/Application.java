@@ -17,6 +17,7 @@ import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Spliterators;
 import java.util.UUID;
+import java.util.concurrent.Callable;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -24,6 +25,7 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import org.apache.commons.lang3.tuple.Pair;
+import org.elasticsearch.common.io.Streams;
 import org.elasticsearch.search.aggregations.Aggregation;
 import org.elasticsearch.search.aggregations.bucket.children.InternalChildren;
 import org.elasticsearch.search.aggregations.bucket.terms.Terms;
@@ -675,10 +677,17 @@ public class Application extends Controller {
 	/**
 	 * @return JSON-LD context
 	 */
-	@Cached(key = "context")
 	public static Result context() {
 		response().setContentType("application/ld+json");
 		addCorsHeader();
-		return ok(Play.application().resourceAsStream("context.jsonld"));
+		try {
+			Callable<Status> readContext = () -> ok(Streams
+					.readAllLines(Play.application().resourceAsStream("context.jsonld"))
+					.stream().collect(Collectors.joining("\n")));
+			return Cache.getOrElse("context", readContext, ONE_DAY);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return internalServerError(e.getMessage());
+		}
 	}
 }
