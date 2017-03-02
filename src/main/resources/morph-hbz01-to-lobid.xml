@@ -679,14 +679,32 @@
 			<!-- ########## frequency -->
 			<!-- ####################### -->
 			<!-- proceedings -->
-			<data source="052." name="http://id.loc.gov/ontologies/bibframe/frequency">
-				<regexp
-					match="^.......([dcwesmbqfaghz])|^........([dcwesmbqfaghz])|^.........([dcwesmbqfaghz])"
-					format="http://marc21rdf.info/terms/continuingfre#${1}"/>
-			</data>
-			<data source="052." name="http://id.loc.gov/ontologies/bibframe/frequency">
-				<regexp match="^.......t|^........t|^.........t" format="http://marc21rdf.info/terms/continuingfre#i"/>
-			</data>
+			<choose name="http://id.loc.gov/ontologies/bibframe/frequency">
+				<data source="052.">
+					<regexp
+						match="^.......([dcwesmbqfaghz])|^........([dcwesmbqfaghz])|^.........([dcwesmbqfaghz])"
+						format="http://marc21rdf.info/terms/continuingfre#${1}"/>
+				</data>
+				<data source="052.">
+					<regexp match="^.......t|^........t|^.........t" format="http://marc21rdf.info/terms/continuingfre#i"/>
+				</data>
+			</choose>
+			<!-- if 523-1p and 523-1a -->
+			<combine name="http://id.loc.gov/ontologies/bibframe/note" value="${p}${a}">
+				<data source="523[-a][-1].p" name="p">
+					<regexp match="(.*)" format="${1}: "/>
+				</data>
+				<data source="523[-a][-1].a" name="a"/>
+			</combine>
+			<!-- if only 523-1a -->
+			<combine name="http://id.loc.gov/ontologies/bibframe/note" value="${a}">
+				<if>
+					<none>
+						<data source="523[-a][-1].p"/>
+					</none>
+				</if>
+				<data source="523[-a][-1].a" name="a"/>
+			</combine>
 			<data source="@publisher|@startDateFirstPublication|@placeOfPublication" name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type">
 				<constant value="http://schema.org/PublicationEvent"/>
 			</data>
@@ -1581,22 +1599,6 @@
 			<replace pattern="&gt;&gt;" with=""/>
 			<replace pattern="&lt;&lt;" with=""/>
 		</data>
-		<!-- if 523-1p and 523-1a -->
-		<combine name="http://rdaregistry.info/Elements/u/P60538" value="${p}${a}">
-			<data source="523[-a][-1].p" name="p">
-				<regexp match="(.*)" format="${1}: "/>
-			</data>
-			<data source="523[-a][-1].a" name="a"/>
-		</combine>
-		<!-- if only 523-1a -->
-		<combine name="http://rdaregistry.info/Elements/u/P60538" value="${a}">
-			<if>
-				<none>
-					<data source="523[-a][-1].p"/>
-				</none>
-			</if>
-			<data source="523[-a][-1].a" name="a"/>
-		</combine>
 		<data source="@supplement" name="http://id.loc.gov/ontologies/bibframe/supplement">
 			<regexp match="(.*)" format="$[ns-lobid-resource]${1}#!"/>
 		</data>
