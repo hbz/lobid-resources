@@ -110,7 +110,8 @@ public class Lobid {
 			Result result = Application.show(simpleId, "json").get(API_TIMEOUT);
 			JsonNode json =
 					Json.parse(Helpers.contentAsString(result)).findValue("title");
-			String label = HtmlEscapers.htmlEscaper().escape(json.asText());
+			String label =
+					json == null ? "" : HtmlEscapers.htmlEscaper().escape(json.asText());
 			Logger.debug("Get res label, {} -> {} -> {}", id, simpleId, label);
 			return label.isEmpty() ? simpleId : label;
 		};
@@ -289,7 +290,7 @@ public class Lobid {
 	 * @return A mapping of ISILs to item URIs
 	 */
 	public static Map<String, List<String>> items(String doc) {
-		JsonNode items = Json.parse(doc).findValue("exemplar");
+		JsonNode items = Json.parse(doc).findValue("hasItem");
 		Map<String, List<String>> result = new HashMap<>();
 		if (items != null && (items.isArray() || items.isTextual()))
 			mapIsilsToUris(items, result);

@@ -1,735 +1,8 @@
 {
-   "mappings" : {
-      "_default_" : {
-         "_all" : {
-            "analyzer" : "german_analyzer"
-         }
-      },
-      "item" : {
-         "_parent" : {
-            "type" : "resource"
-         },
-         "date_detection" : false,
-         "properties" : {
-            "extent" : {
-               "type" : "string"
-            },
-            "type" : {
-               "type" : "string",
-               "search_analyzer" : "id_analyzer",
-               "analyzer" : "id_analyzer"
-            },
-            "callNumber" : {
-               "type" : "string",
-               "index" : "not_analyzed"
-            },
-            "owner" : {
-               "properties" : {
-                  "id" : {
-                     "type" : "string",
-                     "index" : "not_analyzed"
-                  }
-               }
-            },
-            "exemplarOf" : {
-               "properties" : {
-                  "id" : {
-                     "index" : "not_analyzed",
-                     "type" : "string"
-                  }
-               }
-            },
-            "describedby" : {
-               "properties" : {
-                  "id" : {
-                     "search_analyzer" : "id_analyzer",
-                     "analyzer" : "id_analyzer",
-                     "type" : "string"
-                  }
-               }
-            },
-            "id" : {
-               "type" : "string",
-               "search_analyzer" : "id_analyzer",
-               "analyzer" : "id_analyzer"
-            }
-         },
-         "_routing" : {
-            "required" : true
-         }
-      },
-      "resource" : {
-         "properties" : {
-            "hasVersion" : {
-               "properties" : {
-                  "id" : {
-                     "analyzer" : "id_analyzer",
-                     "search_analyzer" : "id_analyzer",
-                     "type" : "string"
-                  }
-               }
-            },
-            "honoree" : {
-               "properties" : {
-                  "id" : {
-                     "type" : "string",
-                     "analyzer" : "id_analyzer",
-                     "search_analyzer" : "id_analyzer"
-                  },
-                  "preferredName" : {
-                     "analyzer" : "ngram_analyzer",
-                     "search_analyzer" : "german_analyzer",
-                     "type" : "string"
-                  },
-                  "preferredNameForThePerson" : {
-                     "type" : "string",
-                     "analyzer" : "ngram_analyzer",
-                     "search_analyzer" : "german_analyzer"
-                  }
-               }
-            },
-            "description" : {
-               "properties" : {
-                  "id" : {
-                     "search_analyzer" : "id_analyzer",
-                     "analyzer" : "id_analyzer",
-                     "type" : "string"
-                  }
-               }
-            },
-            "volumeIn" : {
-               "properties" : {
-                  "multiVolumeWork" : {
-                     "properties" : {
-                        "id" : {
-                           "analyzer" : "id_analyzer",
-                           "search_analyzer" : "id_analyzer",
-                           "type" : "string"
-                        }
-                     }
-                  },
-                  "numbering" : {
-                     "type" : "string"
-                  },
-                  "type" : {
-                     "type" : "string",
-                     "analyzer" : "id_analyzer",
-                     "search_analyzer" : "id_analyzer"
-                  }
-               }
-            },
-            "frequency" : {
-               "type" : "string"
-            },
-            "alternativeTitle" : {
-               "analyzer" : "german_analyzer",
-               "type" : "string"
-            },
-            "shortTitle" : {
-               "analyzer" : "german_analyzer",
-               "type" : "string"
-            },
-            "issn" : {
-               "type" : "string",
-               "search_analyzer" : "id_analyzer",
-               "analyzer" : "id_analyzer"
-            },
-            "inSeries" : {
-               "properties" : {
-                  "numbering" : {
-                     "type" : "string"
-                  },
-                  "type" : {
-                     "analyzer" : "id_analyzer",
-                     "search_analyzer" : "id_analyzer",
-                     "type" : "string"
-                  },
-                  "series" : {
-                     "properties" : {
-                        "id" : {
-                           "type" : "string",
-                           "analyzer" : "id_analyzer",
-                           "search_analyzer" : "id_analyzer"
-                        }
-                     }
-                  }
-               }
-            },
-            "medium" : {
-               "properties" : {
-                  "id" : {
-                     "search_analyzer" : "id_analyzer",
-                     "analyzer" : "id_analyzer",
-                     "type" : "string"
-                  }
-               }
-            },
-            "contributorName" : {
-               "type" : "string",
-               "search_analyzer" : "id_analyzer",
-               "analyzer" : "id_analyzer"
-            },
-            "bibliographicCitation" : {
-               "type" : "string"
-            },
-            "subjectLabel" : {
-               "analyzer" : "id_analyzer",
-               "search_analyzer" : "id_analyzer",
-               "type" : "string"
-            },
-            "otherTitleInformation" : {
-               "analyzer" : "german_analyzer",
-               "type" : "string"
-            },
-            "note" : {
-               "type" : "string"
-            },
-            "language" : {
-               "properties" : {
-                  "id" : {
-                     "type" : "string",
-                     "analyzer" : "id_analyzer",
-                     "search_analyzer" : "id_analyzer"
-                  }
-               }
-            },
-            "placeOfPublication" : {
-               "type" : "string",
-               "analyzer" : "german_analyzer"
-            },
-            "nwbibspatial" : {
-               "properties" : {
-                  "id" : {
-                     "analyzer" : "id_analyzer",
-                     "search_analyzer" : "id_analyzer",
-                     "type" : "string"
-                  }
-               }
-            },
-            "tableOfContents" : {
-               "properties" : {
-                  "id" : {
-                     "analyzer" : "id_analyzer",
-                     "search_analyzer" : "id_analyzer",
-                     "type" : "string"
-                  }
-               }
-            },
-            "composer" : {
-               "properties" : {
-                  "id" : {
-                     "search_analyzer" : "id_analyzer",
-                     "analyzer" : "id_analyzer",
-                     "type" : "string"
-                  },
-                  "preferredName" : {
-                     "type" : "string",
-                     "analyzer" : "ngram_analyzer",
-                     "search_analyzer" : "german_analyzer"
-                  },
-                  "preferredNameForThePerson" : {
-                     "type" : "string",
-                     "analyzer" : "ngram_analyzer",
-                     "search_analyzer" : "german_analyzer"
-                  }
-               }
-            },
-            "isbn" : {
-               "type" : "string",
-               "search_analyzer" : "id_analyzer",
-               "analyzer" : "id_analyzer"
-            },
-            "singer" : {
-               "properties" : {
-                  "id" : {
-                     "type" : "string",
-                     "search_analyzer" : "id_analyzer",
-                     "analyzer" : "id_analyzer"
-                  },
-                  "preferredName" : {
-                     "type" : "string",
-                     "analyzer" : "ngram_analyzer",
-                     "search_analyzer" : "german_analyzer"
-                  },
-                  "preferredNameForThePerson" : {
-                     "search_analyzer" : "german_analyzer",
-                     "analyzer" : "ngram_analyzer",
-                     "type" : "string"
-                  }
-               }
-            },
-            "exemplar" : {
-               "properties" : {
-                  "id" : {
-                     "type" : "string",
-                     "index" : "not_analyzed"
-                  }
-               }
-            },
-            "type" : {
-               "type" : "string",
-               "analyzer" : "id_analyzer",
-               "search_analyzer" : "id_analyzer"
-            },
-            "doi" : {
-               "type" : "string",
-               "search_analyzer" : "id_analyzer",
-               "analyzer" : "id_analyzer"
-            },
-            "longitudeAndLatitude" : {
-               "search_analyzer" : "id_analyzer",
-               "analyzer" : "id_analyzer",
-               "type" : "string"
-            },
-            "urn" : {
-               "search_analyzer" : "id_analyzer",
-               "analyzer" : "id_analyzer",
-               "type" : "string"
-            },
-            "publicationStatement" : {
-               "type" : "string"
-            },
-            "oclcnum" : {
-               "type" : "string"
-            },
-            "creator" : {
-               "properties" : {
-                  "preferredNameForThePlaceOrGeographicName" : {
-                     "type" : "string",
-                     "analyzer" : "ngram_analyzer",
-                     "search_analyzer" : "german_analyzer"
-                  },
-                  "id" : {
-                     "analyzer" : "id_analyzer",
-                     "search_analyzer" : "id_analyzer",
-                     "type" : "string"
-                  },
-                  "preferredNameForTheCorporateBody" : {
-                     "type" : "string",
-                     "analyzer" : "ngram_analyzer",
-                     "search_analyzer" : "german_analyzer"
-                  },
-                  "preferredName" : {
-                     "search_analyzer" : "german_analyzer",
-                     "analyzer" : "ngram_analyzer",
-                     "type" : "string"
-                  },
-                  "preferredNameForThePerson" : {
-                     "type" : "string",
-                     "analyzer" : "ngram_analyzer",
-                     "search_analyzer" : "german_analyzer"
-                  }
-               }
-            },
-            "titleKeyword" : {
-               "analyzer" : "german_analyzer",
-               "type" : "string"
-            },
-            "isPartOf" : {
-               "properties" : {
-                  "id" : {
-                     "search_analyzer" : "id_analyzer",
-                     "analyzer" : "id_analyzer",
-                     "type" : "string"
-                  }
-               }
-            },
-            "zdbId" : {
-               "analyzer" : "id_analyzer",
-               "search_analyzer" : "id_analyzer",
-               "type" : "string"
-            },
-            "contributorLabel" : {
-               "analyzer" : "id_analyzer",
-               "search_analyzer" : "id_analyzer",
-               "type" : "string"
-            },
-            "abstract" : {
-               "analyzer" : "german_analyzer",
-               "type" : "string"
-            },
-            "source" : {
-               "properties" : {
-                  "id" : {
-                     "type" : "string",
-                     "analyzer" : "id_analyzer",
-                     "search_analyzer" : "id_analyzer"
-                  }
-               }
-            },
-            "sameAs" : {
-               "properties" : {
-                  "sameAs" : {
-                     "type" : "string"
-                  },
-                  "describedby" : {
-                     "properties" : {
-                        "id" : {
-                           "type" : "string",
-                           "search_analyzer" : "id_analyzer",
-                           "analyzer" : "id_analyzer"
-                        }
-                     }
-                  },
-                  "id" : {
-                     "analyzer" : "id_analyzer",
-                     "search_analyzer" : "id_analyzer",
-                     "type" : "string"
-                  }
-               }
-            },
-            "isPrimaryTopicOf" : {
-               "properties" : {
-                  "id" : {
-                     "search_analyzer" : "id_analyzer",
-                     "analyzer" : "id_analyzer",
-                     "type" : "string"
-                  }
-               }
-            },
-            "similar" : {
-               "properties" : {
-                  "id" : {
-                     "type" : "string",
-                     "search_analyzer" : "id_analyzer",
-                     "analyzer" : "id_analyzer"
-                  }
-               }
-            },
-            "issued" : {
-               "type" : "string"
-            },
-            "thesisInformation" : {
-               "type" : "string"
-            },
-            "director" : {
-               "properties" : {
-                  "id" : {
-                     "search_analyzer" : "id_analyzer",
-                     "analyzer" : "id_analyzer",
-                     "type" : "string"
-                  },
-                  "preferredNameForThePerson" : {
-                     "search_analyzer" : "german_analyzer",
-                     "analyzer" : "ngram_analyzer",
-                     "type" : "string"
-                  },
-                  "preferredName" : {
-                     "search_analyzer" : "german_analyzer",
-                     "analyzer" : "ngram_analyzer",
-                     "type" : "string"
-                  }
-               }
-            },
-            "statementOfResponsibility" : {
-               "type" : "string",
-               "analyzer" : "german_analyzer"
-            },
-            "volume" : {
-               "type" : "string"
-            },
-            "editor" : {
-               "properties" : {
-                  "preferredName" : {
-                     "search_analyzer" : "german_analyzer",
-                     "analyzer" : "ngram_analyzer",
-                     "type" : "string"
-                  },
-                  "preferredNameForThePerson" : {
-                     "type" : "string",
-                     "search_analyzer" : "german_analyzer",
-                     "analyzer" : "ngram_analyzer"
-                  },
-                  "id" : {
-                     "type" : "string",
-                     "analyzer" : "id_analyzer",
-                     "search_analyzer" : "id_analyzer"
-                  }
-               }
-            },
-            "photographer" : {
-               "properties" : {
-                  "id" : {
-                     "type" : "string",
-                     "analyzer" : "id_analyzer",
-                     "search_analyzer" : "id_analyzer"
-                  },
-                  "preferredNameForThePerson" : {
-                     "search_analyzer" : "german_analyzer",
-                     "analyzer" : "ngram_analyzer",
-                     "type" : "string"
-                  },
-                  "preferredName" : {
-                     "type" : "string",
-                     "search_analyzer" : "german_analyzer",
-                     "analyzer" : "ngram_analyzer"
-                  }
-               }
-            },
-            "contributingCorporateBodyLabel" : {
-               "analyzer" : "ngram_analyzer",
-               "search_analyzer" : "german_analyzer",
-               "type" : "string"
-            },
-            "contributor" : {
-               "properties" : {
-                  "id" : {
-                     "type" : "string",
-                     "search_analyzer" : "id_analyzer",
-                     "analyzer" : "id_analyzer"
-                  },
-                  "preferredNameForTheCorporateBody" : {
-                     "search_analyzer" : "german_analyzer",
-                     "analyzer" : "ngram_analyzer",
-                     "type" : "string"
-                  },
-                  "preferredNameForThePerson" : {
-                     "search_analyzer" : "german_analyzer",
-                     "analyzer" : "ngram_analyzer",
-                     "type" : "string"
-                  },
-                  "preferredName" : {
-                     "analyzer" : "ngram_analyzer",
-                     "search_analyzer" : "german_analyzer",
-                     "type" : "string"
-                  }
-               }
-            },
-            "collectedBy" : {
-               "properties" : {
-                  "id" : {
-                     "analyzer" : "id_analyzer",
-                     "search_analyzer" : "id_analyzer",
-                     "type" : "string"
-                  }
-               }
-            },
-            "title" : {
-               "analyzer" : "german_analyzer",
-               "type" : "string"
-            },
-            "actor" : {
-               "properties" : {
-                  "preferredNameForThePerson" : {
-                     "type" : "string",
-                     "analyzer" : "ngram_analyzer",
-                     "search_analyzer" : "german_analyzer"
-                  },
-                  "preferredName" : {
-                     "analyzer" : "ngram_analyzer",
-                     "search_analyzer" : "german_analyzer",
-                     "type" : "string"
-                  },
-                  "id" : {
-                     "type" : "string",
-                     "analyzer" : "id_analyzer",
-                     "search_analyzer" : "id_analyzer"
-                  }
-               }
-            },
-            "edition" : {
-               "type" : "string"
-            },
-            "creatorName" : {
-               "analyzer" : "ngram_analyzer",
-               "search_analyzer" : "german_analyzer",
-               "type" : "string"
-            },
-            "subjectChain" : {
-               "type" : "string"
-            },
-            "subject" : {
-               "properties" : {
-                  "preferredNameForTheCorporateBody" : {
-                     "type" : "string",
-                     "search_analyzer" : "german_analyzer",
-                     "analyzer" : "ngram_analyzer"
-                  },
-                  "preferredName" : {
-                     "type" : "string",
-                     "search_analyzer" : "german_analyzer",
-                     "analyzer" : "ngram_analyzer"
-                  },
-                  "preferredNameForTheWork" : {
-                     "search_analyzer" : "german_analyzer",
-                     "analyzer" : "ngram_analyzer",
-                     "type" : "string"
-                  },
-                  "preferredNameForTheSubjectHeading" : {
-                     "search_analyzer" : "german_analyzer",
-                     "analyzer" : "ngram_analyzer",
-                     "type" : "string"
-                  },
-                  "preferredNameForThePerson" : {
-                     "analyzer" : "ngram_analyzer",
-                     "search_analyzer" : "german_analyzer",
-                     "type" : "string"
-                  },
-                  "preferredNameForThePlaceOrGeographicName" : {
-                     "analyzer" : "ngram_analyzer",
-                     "search_analyzer" : "german_analyzer",
-                     "type" : "string"
-                  },
-                  "id" : {
-                     "type" : "string",
-                     "analyzer" : "id_analyzer",
-                     "search_analyzer" : "id_analyzer"
-                  }
-               }
-            },
-            "redaktor" : {
-               "properties" : {
-                  "preferredNameForThePerson" : {
-                     "type" : "string",
-                     "search_analyzer" : "german_analyzer",
-                     "analyzer" : "ngram_analyzer"
-                  },
-                  "preferredName" : {
-                     "analyzer" : "ngram_analyzer",
-                     "search_analyzer" : "german_analyzer",
-                     "type" : "string"
-                  },
-                  "id" : {
-                     "type" : "string",
-                     "search_analyzer" : "id_analyzer",
-                     "analyzer" : "id_analyzer"
-                  }
-               }
-            },
-            "id" : {
-               "analyzer" : "id_analyzer",
-               "search_analyzer" : "id_analyzer",
-               "type" : "string"
-            },
-            "publisher" : {
-               "search_analyzer" : "german_analyzer",
-               "analyzer" : "ngram_analyzer",
-               "type" : "string"
-            },
-            "isFormatOf" : {
-               "properties" : {
-                  "id" : {
-                     "type" : "string",
-                     "analyzer" : "id_analyzer",
-                     "search_analyzer" : "id_analyzer"
-                  }
-               }
-            },
-            "nwbibsubject" : {
-               "properties" : {
-                  "id" : {
-                     "search_analyzer" : "id_analyzer",
-                     "analyzer" : "id_analyzer",
-                     "type" : "string"
-                  }
-               }
-            },
-            "contributorOrder" : {
-               "type" : "string",
-               "analyzer" : "id_analyzer",
-               "search_analyzer" : "id_analyzer"
-            },
-            "coverage" : {
-               "type" : "string",
-               "search_analyzer" : "german_analyzer",
-               "analyzer" : "ngram_analyzer"
-            },
-            "describedby" : {
-               "properties" : {
-                  "dateCreated" : {
-                     "type" : "string"
-                  },
-                  "id" : {
-                     "type" : "string",
-                     "search_analyzer" : "id_analyzer",
-                     "analyzer" : "id_analyzer"
-                  },
-                  "dateModified" : {
-                     "type" : "string"
-                  }
-               }
-            },
-            "rpbSubject" : {
-               "properties" : {
-                  "id" : {
-                     "type" : "string",
-                     "search_analyzer" : "id_analyzer",
-                     "analyzer" : "id_analyzer"
-                  }
-               }
-            },
-            "hasSupplement" : {
-               "properties" : {
-                  "id" : {
-                     "search_analyzer" : "id_analyzer",
-                     "analyzer" : "id_analyzer",
-                     "type" : "string"
-                  }
-               }
-            },
-            "hbzId" : {
-               "search_analyzer" : "id_analyzer",
-               "analyzer" : "id_analyzer",
-               "type" : "string"
-            },
-            "webPageArchived" : {
-               "properties" : {
-                  "id" : {
-                     "search_analyzer" : "id_analyzer",
-                     "analyzer" : "id_analyzer",
-                     "type" : "string"
-                  }
-               }
-            },
-            "containedIn" : {
-               "properties" : {
-                  "id" : {
-                     "analyzer" : "id_analyzer",
-                     "search_analyzer" : "id_analyzer",
-                     "type" : "string"
-                  }
-               }
-            },
-            "fulltextOnline" : {
-               "properties" : {
-                  "id" : {
-                     "type" : "string",
-                     "analyzer" : "id_analyzer",
-                     "search_analyzer" : "id_analyzer"
-                  }
-               }
-            },
-            "subjectOrder" : {
-               "type" : "string",
-               "index" : "not_analyzed"
-            },
-            "seeAlso" : {
-               "properties" : {
-                  "id" : {
-                     "type" : "string",
-                     "analyzer" : "id_analyzer",
-                     "search_analyzer" : "id_analyzer"
-                  }
-               }
-            }
-         },
-         "date_detection" : false
-      }
-   },
    "settings" : {
       "index" : {
          "analysis" : {
             "analyzer" : {
-               "ngram_analyzer" : {
-                  "filter" : [
-                     "lowercase",
-                     "stop",
-                     "ngram",
-                     "snowball"
-                  ],
-                  "tokenizer" : "letter",
-                  "type" : "custom"
-               },
                "german_analyzer" : {
                   "filter" : [
                      "lowercase",
@@ -740,23 +13,939 @@
                   "type" : "custom"
                },
                "id_analyzer" : {
+                  "tokenizer" : "keyword",
                   "filter" : [
                      "lowercase"
+                  ]
+               },
+               "ngram_analyzer" : {
+                  "filter" : [
+                     "lowercase",
+                     "stop",
+                     "ngram",
+                     "snowball"
                   ],
-                  "tokenizer" : "keyword"
+                  "tokenizer" : "letter",
+                  "type" : "custom"
                }
             },
             "filter" : {
-               "snowball" : {
-                  "language" : "German2",
-                  "type" : "snowball"
-               },
                "ngram" : {
                   "min_gram" : 1,
                   "type" : "edgeNGram",
                   "max_gram" : 40
+               },
+               "snowball" : {
+                  "type" : "snowball",
+                  "language" : "German2"
                }
             }
+         }
+      }
+   },
+   "mappings" : {
+      "item" : {
+         "properties" : {
+            "describedby" : {
+               "properties" : {
+                  "id" : {
+                     "type" : "string",
+                     "index" : "not_analyzed"
+                  },
+                  "label" : {
+                     "type" : "string"
+                  }
+               }
+            },
+            "extent" : {
+               "type" : "string"
+            },
+            "type" : {
+               "analyzer" : "id_analyzer",
+               "type" : "string"
+            },
+            "itemOf" : {
+               "properties" : {
+                  "label" : {
+                     "type" : "string"
+                  },
+                  "id" : {
+                     "type" : "string",
+                     "index" : "not_analyzed"
+                  }
+               }
+            },
+            "hasItem" : {
+               "properties" : {
+                  "id" : {
+                     "type" : "string",
+                     "index" : "not_analyzed"
+                  }
+               }
+            },
+            "id" : {
+               "type" : "string",
+               "index" : "not_analyzed"
+            },
+            "heldBy" : {
+               "properties" : {
+                  "label" : {
+                     "type" : "string"
+                  },
+                  "id" : {
+                     "index" : "not_analyzed",
+                     "type" : "string"
+                  }
+               }
+            },
+            "note" : {
+               "type" : "string"
+            },
+            "owner" : {
+               "properties" : {
+                  "id" : {
+                     "type" : "string",
+                     "index" : "not_analyzed"
+                  }
+               }
+            },
+            "callNumber" : {
+               "index" : "not_analyzed",
+               "type" : "string"
+            }
+         },
+         "_parent" : {
+            "type" : "resource"
+         },
+         "_routing" : {
+            "required" : true
+         },
+         "_all" : {
+            "analyzer" : "german_analyzer"
+         },
+         "date_detection" : false
+      },
+      "resource" : {
+         "properties" : {
+            "rpbSubject" : {
+               "properties" : {
+                  "label" : {
+                     "type" : "string"
+                  },
+                  "id" : {
+                     "index" : "not_analyzed",
+                     "type" : "string"
+                  }
+               }
+            },
+            "actor" : {
+               "properties" : {
+                  "preferredName" : {
+                     "type" : "string",
+                     "analyzer" : "ngram_analyzer",
+                     "search_analyzer" : "german_analyzer"
+                  },
+                  "id" : {
+                     "index" : "not_analyzed",
+                     "type" : "string"
+                  },
+                  "preferredNameForThePerson" : {
+                     "search_analyzer" : "german_analyzer",
+                     "analyzer" : "ngram_analyzer",
+                     "type" : "string"
+                  }
+               }
+            },
+            "dateOfBirth" : {
+               "type" : "string"
+            },
+            "containedIn" : {
+               "properties" : {
+                  "id" : {
+                     "index" : "not_analyzed",
+                     "type" : "string"
+                  },
+                  "label" : {
+                     "type" : "string"
+                  }
+               }
+            },
+            "contributor" : {
+               "properties" : {
+                  "preferredName" : {
+                     "search_analyzer" : "german_analyzer",
+                     "analyzer" : "ngram_analyzer",
+                     "type" : "string"
+                  },
+                  "preferredNameForTheCorporateBody" : {
+                     "type" : "string",
+                     "analyzer" : "ngram_analyzer",
+                     "search_analyzer" : "german_analyzer"
+                  },
+                  "preferredNameForThePerson" : {
+                     "search_analyzer" : "german_analyzer",
+                     "analyzer" : "ngram_analyzer",
+                     "type" : "string"
+                  },
+                  "id" : {
+                     "type" : "string",
+                     "index" : "not_analyzed"
+                  }
+               }
+            },
+            "alternativeTitle" : {
+               "analyzer" : "german_analyzer",
+               "type" : "string"
+            },
+            "issued" : {
+               "type" : "string"
+            },
+            "honoree" : {
+               "properties" : {
+                  "preferredName" : {
+                     "type" : "string",
+                     "analyzer" : "ngram_analyzer",
+                     "search_analyzer" : "german_analyzer"
+                  },
+                  "preferredNameForThePerson" : {
+                     "search_analyzer" : "german_analyzer",
+                     "analyzer" : "ngram_analyzer",
+                     "type" : "string"
+                  },
+                  "id" : {
+                     "type" : "string",
+                     "index" : "not_analyzed"
+                  }
+               }
+            },
+            "source" : {
+               "properties" : {
+                  "label" : {
+                     "type" : "string"
+                  },
+                  "id" : {
+                     "type" : "string",
+                     "index" : "not_analyzed"
+                  }
+               }
+            },
+            "contributorName" : {
+               "analyzer" : "id_analyzer",
+               "type" : "string"
+            },
+            "publication" : {
+               "properties" : {
+                  "location" : {
+                     "type" : "string"
+                  },
+                  "endDate" : {
+                     "type" : "string"
+                  },
+                  "publishedBy" : {
+                     "type" : "string"
+                  },
+                  "type" : {
+                     "type" : "string"
+                  },
+                  "startDate" : {
+                     "type" : "string"
+                  }
+               }
+            },
+            "language" : {
+               "properties" : {
+                  "label" : {
+                     "type" : "string"
+                  },
+                  "id" : {
+                     "index" : "not_analyzed",
+                     "type" : "string"
+                  }
+               }
+            },
+            "contributorLabel" : {
+               "type" : "string",
+               "analyzer" : "id_analyzer"
+            },
+            "placeOfPublication" : {
+               "type" : "string",
+               "analyzer" : "german_analyzer"
+            },
+            "nwbibSubject" : {
+               "properties" : {
+                  "id" : {
+                     "index" : "not_analyzed",
+                     "type" : "string"
+                  },
+                  "label" : {
+                     "type" : "string"
+                  }
+               }
+            },
+            "hbzId" : {
+               "analyzer" : "id_analyzer",
+               "type" : "string"
+            },
+            "sameAs" : {
+               "properties" : {
+                  "label" : {
+                     "type" : "string"
+                  },
+                  "id" : {
+                     "type" : "string",
+                     "index" : "not_analyzed"
+                  }
+               }
+            },
+            "tableOfContents" : {
+               "properties" : {
+                  "id" : {
+                     "index" : "not_analyzed",
+                     "type" : "string"
+                  },
+                  "label" : {
+                     "type" : "string"
+                  }
+               }
+            },
+            "publicationFrequency" : {
+               "properties" : {
+                  "label" : {
+                     "type" : "string"
+                  },
+                  "id" : {
+                     "type" : "string",
+                     "index" : "not_analyzed"
+                  }
+               }
+            },
+            "collectedBy" : {
+               "properties" : {
+                  "id" : {
+                     "type" : "string",
+                     "index" : "not_analyzed"
+                  },
+                  "label" : {
+                     "type" : "string"
+                  }
+               }
+            },
+            "frequency" : {
+               "type" : "string"
+            },
+            "isFormatOf" : {
+               "properties" : {
+                  "id" : {
+                     "type" : "string",
+                     "index" : "not_analyzed"
+                  }
+               }
+            },
+            "shortTitle" : {
+               "analyzer" : "german_analyzer",
+               "type" : "string"
+            },
+            "hasItem" : {
+               "properties" : {
+                  "id" : {
+                     "index" : "not_analyzed",
+                     "type" : "string"
+                  },
+                  "label" : {
+                     "type" : "string"
+                  }
+               }
+            },
+            "oclcnum" : {
+               "type" : "string"
+            },
+            "titleKeyword" : {
+               "type" : "string",
+               "analyzer" : "german_analyzer"
+            },
+            "description" : {
+               "properties" : {
+                  "label" : {
+                     "type" : "string"
+                  },
+                  "id" : {
+                     "index" : "not_analyzed",
+                     "type" : "string"
+                  }
+               }
+            },
+            "secondaryPublication" : {
+               "properties" : {
+                  "location" : {
+                     "type" : "string"
+                  },
+                  "startDate" : {
+                     "type" : "string"
+                  },
+                  "type" : {
+                     "type" : "string"
+                  },
+                  "description" : {
+                     "type" : "string"
+                  },
+                  "publishedBy" : {
+                     "type" : "string"
+                  }
+               }
+            },
+            "label" : {
+               "type" : "string"
+            },
+            "contribution" : {
+               "properties" : {
+                  "agent" : {
+                     "properties" : {
+                        "type" : {
+                           "type" : "string"
+                        },
+                        "label" : {
+                           "type" : "string"
+                        },
+                        "dateOfDeath" : {
+                           "type" : "string"
+                        },
+                        "altLabel" : {
+                           "type" : "string"
+                        },
+                        "dateOfBirth" : {
+                           "type" : "string"
+                        },
+                        "id" : {
+                           "index" : "not_analyzed",
+                           "type" : "string"
+                        }
+                     }
+                  },
+                  "role" : {
+                     "properties" : {
+                        "id" : {
+                           "type" : "string",
+                           "index" : "not_analyzed"
+                        },
+                        "label" : {
+                           "type" : "string"
+                        }
+                     }
+                  },
+                  "type" : {
+                     "type" : "string"
+                  }
+               }
+            },
+            "title" : {
+               "type" : "string",
+               "analyzer" : "german_analyzer"
+            },
+            "medium" : {
+               "properties" : {
+                  "id" : {
+                     "index" : "not_analyzed",
+                     "type" : "string"
+                  },
+                  "label" : {
+                     "type" : "string"
+                  }
+               }
+            },
+            "nwbibspatial" : {
+               "properties" : {
+                  "id" : {
+                     "index" : "not_analyzed",
+                     "type" : "string"
+                  }
+               }
+            },
+            "creator" : {
+               "properties" : {
+                  "preferredNameForTheCorporateBody" : {
+                     "search_analyzer" : "german_analyzer",
+                     "analyzer" : "ngram_analyzer",
+                     "type" : "string"
+                  },
+                  "preferredName" : {
+                     "type" : "string",
+                     "search_analyzer" : "german_analyzer",
+                     "analyzer" : "ngram_analyzer"
+                  },
+                  "preferredNameForThePerson" : {
+                     "type" : "string",
+                     "search_analyzer" : "german_analyzer",
+                     "analyzer" : "ngram_analyzer"
+                  },
+                  "preferredNameForThePlaceOrGeographicName" : {
+                     "analyzer" : "ngram_analyzer",
+                     "search_analyzer" : "german_analyzer",
+                     "type" : "string"
+                  },
+                  "id" : {
+                     "index" : "not_analyzed",
+                     "type" : "string"
+                  }
+               }
+            },
+            "subject" : {
+               "properties" : {
+                  "preferredNameForThePerson" : {
+                     "type" : "string",
+                     "analyzer" : "ngram_analyzer",
+                     "search_analyzer" : "german_analyzer"
+                  },
+                  "preferredNameForTheWork" : {
+                     "type" : "string",
+                     "analyzer" : "ngram_analyzer",
+                     "search_analyzer" : "german_analyzer"
+                  },
+                  "preferredNameForThePlaceOrGeographicName" : {
+                     "type" : "string",
+                     "search_analyzer" : "german_analyzer",
+                     "analyzer" : "ngram_analyzer"
+                  },
+                  "preferredNameForTheCorporateBody" : {
+                     "analyzer" : "ngram_analyzer",
+                     "search_analyzer" : "german_analyzer",
+                     "type" : "string"
+                  },
+                  "preferredNameForTheSubjectHeading" : {
+                     "search_analyzer" : "german_analyzer",
+                     "analyzer" : "ngram_analyzer",
+                     "type" : "string"
+                  },
+                  "preferredName" : {
+                     "analyzer" : "ngram_analyzer",
+                     "search_analyzer" : "german_analyzer",
+                     "type" : "string"
+                  },
+                  "altLabel" : {
+                     "type" : "string"
+                  },
+                  "type" : {
+                     "type" : "string"
+                  },
+                  "id" : {
+                     "type" : "string",
+                     "index" : "not_analyzed"
+                  },
+                  "dateOfBirth" : {
+                     "type" : "string"
+                  },
+                  "label" : {
+                     "type" : "string"
+                  },
+                  "dateOfDeath" : {
+                     "type" : "string"
+                  }
+               }
+            },
+            "corporateBodyForTitle" : {
+               "type" : "string"
+            },
+            "abstract" : {
+               "type" : "string",
+               "analyzer" : "german_analyzer"
+            },
+            "id" : {
+               "index" : "not_analyzed",
+               "type" : "string"
+            },
+            "volume" : {
+               "type" : "string"
+            },
+            "inSeries" : {
+               "properties" : {
+                  "numbering" : {
+                     "type" : "string"
+                  },
+                  "type" : {
+                     "analyzer" : "id_analyzer",
+                     "type" : "string"
+                  },
+                  "series" : {
+                     "properties" : {
+                        "label" : {
+                           "type" : "string"
+                        },
+                        "id" : {
+                           "type" : "string",
+                           "index" : "not_analyzed"
+                        }
+                     }
+                  }
+               }
+            },
+            "urn" : {
+               "analyzer" : "id_analyzer",
+               "type" : "string"
+            },
+            "contributingCorporateBodyLabel" : {
+               "search_analyzer" : "german_analyzer",
+               "analyzer" : "ngram_analyzer",
+               "type" : "string"
+            },
+            "hasSupplement" : {
+               "properties" : {
+                  "label" : {
+                     "type" : "string"
+                  },
+                  "id" : {
+                     "type" : "string",
+                     "index" : "not_analyzed"
+                  }
+               }
+            },
+            "altLabel" : {
+               "type" : "string"
+            },
+            "volumeIn" : {
+               "properties" : {
+                  "numbering" : {
+                     "type" : "string"
+                  },
+                  "type" : {
+                     "type" : "string",
+                     "index" : "not_analyzed"
+                  },
+                  "multiVolumeWork" : {
+                     "properties" : {
+                        "label" : {
+                           "type" : "string"
+                        },
+                        "id" : {
+                           "type" : "string",
+                           "index" : "not_analyzed"
+                        }
+                     }
+                  }
+               }
+            },
+            "similar" : {
+               "properties" : {
+                  "id" : {
+                     "type" : "string",
+                     "index" : "not_analyzed"
+                  },
+                  "label" : {
+                     "type" : "string"
+                  }
+               }
+            },
+            "edition" : {
+               "type" : "string"
+            },
+            "fulltextOnline" : {
+               "properties" : {
+                  "label" : {
+                     "type" : "string"
+                  },
+                  "id" : {
+                     "index" : "not_analyzed",
+                     "type" : "string"
+                  }
+               }
+            },
+            "coverage" : {
+               "type" : "string",
+               "analyzer" : "ngram_analyzer",
+               "search_analyzer" : "german_analyzer"
+            },
+            "redaktor" : {
+               "properties" : {
+                  "id" : {
+                     "index" : "not_analyzed",
+                     "type" : "string"
+                  },
+                  "preferredNameForThePerson" : {
+                     "analyzer" : "ngram_analyzer",
+                     "search_analyzer" : "german_analyzer",
+                     "type" : "string"
+                  },
+                  "preferredName" : {
+                     "type" : "string",
+                     "analyzer" : "ngram_analyzer",
+                     "search_analyzer" : "german_analyzer"
+                  }
+               }
+            },
+            "isPartOf" : {
+               "properties" : {
+                  "id" : {
+                     "type" : "string",
+                     "index" : "not_analyzed"
+                  }
+               }
+            },
+            "subjectLabel" : {
+               "type" : "string",
+               "analyzer" : "id_analyzer"
+            },
+            "itemOf" : {
+               "properties" : {
+                  "id" : {
+                     "type" : "string",
+                     "index" : "not_analyzed"
+                  }
+               }
+            },
+            "publisher" : {
+               "type" : "string",
+               "search_analyzer" : "german_analyzer",
+               "analyzer" : "ngram_analyzer"
+            },
+            "seeAlso" : {
+               "properties" : {
+                  "label" : {
+                     "type" : "string"
+                  },
+                  "id" : {
+                     "type" : "string",
+                     "index" : "not_analyzed"
+                  }
+               }
+            },
+            "doi" : {
+               "analyzer" : "id_analyzer",
+               "type" : "string"
+            },
+            "bibliographicCitation" : {
+               "type" : "string"
+            },
+            "webPageArchived" : {
+               "properties" : {
+                  "label" : {
+                     "type" : "string"
+                  },
+                  "id" : {
+                     "type" : "string",
+                     "index" : "not_analyzed"
+                  }
+               }
+            },
+            "editor" : {
+               "properties" : {
+                  "preferredName" : {
+                     "analyzer" : "ngram_analyzer",
+                     "search_analyzer" : "german_analyzer",
+                     "type" : "string"
+                  },
+                  "id" : {
+                     "index" : "not_analyzed",
+                     "type" : "string"
+                  },
+                  "preferredNameForThePerson" : {
+                     "analyzer" : "ngram_analyzer",
+                     "search_analyzer" : "german_analyzer",
+                     "type" : "string"
+                  }
+               }
+            },
+            "composer" : {
+               "properties" : {
+                  "preferredName" : {
+                     "type" : "string",
+                     "search_analyzer" : "german_analyzer",
+                     "analyzer" : "ngram_analyzer"
+                  },
+                  "id" : {
+                     "index" : "not_analyzed",
+                     "type" : "string"
+                  },
+                  "preferredNameForThePerson" : {
+                     "type" : "string",
+                     "search_analyzer" : "german_analyzer",
+                     "analyzer" : "ngram_analyzer"
+                  }
+               }
+            },
+            "dateOfDeath" : {
+               "type" : "string"
+            },
+            "creatorName" : {
+               "search_analyzer" : "german_analyzer",
+               "analyzer" : "ngram_analyzer",
+               "type" : "string"
+            },
+            "subjectOrder" : {
+               "type" : "string",
+               "index" : "not_analyzed"
+            },
+            "extent" : {
+               "type" : "string"
+            },
+            "hasVersion" : {
+               "properties" : {
+                  "id" : {
+                     "type" : "string",
+                     "index" : "not_analyzed"
+                  },
+                  "label" : {
+                     "type" : "string"
+                  }
+               }
+            },
+            "issn" : {
+               "analyzer" : "id_analyzer",
+               "type" : "string"
+            },
+            "otherTitleInformation" : {
+               "analyzer" : "german_analyzer",
+               "type" : "string"
+            },
+            "type" : {
+               "type" : "string",
+               "analyzer" : "id_analyzer"
+            },
+            "publicationStatement" : {
+               "type" : "string"
+            },
+            "isPrimaryTopicOf" : {
+               "properties" : {
+                  "label" : {
+                     "type" : "string"
+                  },
+                  "id" : {
+                     "index" : "not_analyzed",
+                     "type" : "string"
+                  }
+               }
+            },
+            "zdbId" : {
+               "analyzer" : "id_analyzer",
+               "type" : "string"
+            },
+            "note" : {
+               "type" : "string"
+            },
+            "singer" : {
+               "properties" : {
+                  "preferredName" : {
+                     "type" : "string",
+                     "search_analyzer" : "german_analyzer",
+                     "analyzer" : "ngram_analyzer"
+                  },
+                  "preferredNameForThePerson" : {
+                     "type" : "string",
+                     "search_analyzer" : "german_analyzer",
+                     "analyzer" : "ngram_analyzer"
+                  },
+                  "id" : {
+                     "type" : "string",
+                     "index" : "not_analyzed"
+                  }
+               }
+            },
+            "contributorOrder" : {
+               "type" : "string",
+               "analyzer" : "id_analyzer"
+            },
+            "ismn" : {
+               "type" : "string"
+            },
+            "thesisInformation" : {
+               "type" : "string"
+            },
+            "subjectChain" : {
+               "type" : "string"
+            },
+            "statementOfResponsibility" : {
+               "type" : "string",
+               "analyzer" : "german_analyzer"
+            },
+            "nwbibsubject" : {
+               "properties" : {
+                  "id" : {
+                     "index" : "not_analyzed",
+                     "type" : "string"
+                  }
+               }
+            },
+            "nwbibSpatial" : {
+               "properties" : {
+                  "label" : {
+                     "type" : "string"
+                  },
+                  "id" : {
+                     "index" : "not_analyzed",
+                     "type" : "string"
+                  }
+               }
+            },
+            "longitudeAndLatitude" : {
+               "type" : "string",
+               "analyzer" : "id_analyzer"
+            },
+            "describedby" : {
+               "properties" : {
+                  "dateCreated" : {
+                     "type" : "string"
+                  },
+                  "id" : {
+                     "index" : "not_analyzed",
+                     "type" : "string"
+                  },
+                  "dateModified" : {
+                     "type" : "string"
+                  },
+                  "label" : {
+                     "type" : "string"
+                  }
+               }
+            },
+            "isbn" : {
+               "type" : "string",
+               "analyzer" : "id_analyzer"
+            },
+            "oclcNumber" : {
+               "type" : "string"
+            },
+            "photographer" : {
+               "properties" : {
+                  "id" : {
+                     "index" : "not_analyzed",
+                     "type" : "string"
+                  },
+                  "preferredNameForThePerson" : {
+                     "analyzer" : "ngram_analyzer",
+                     "search_analyzer" : "german_analyzer",
+                     "type" : "string"
+                  },
+                  "preferredName" : {
+                     "type" : "string",
+                     "search_analyzer" : "german_analyzer",
+                     "analyzer" : "ngram_analyzer"
+                  }
+               }
+            },
+            "director" : {
+               "properties" : {
+                  "preferredName" : {
+                     "type" : "string",
+                     "analyzer" : "ngram_analyzer",
+                     "search_analyzer" : "german_analyzer"
+                  },
+                  "id" : {
+                     "type" : "string",
+                     "index" : "not_analyzed"
+                  },
+                  "preferredNameForThePerson" : {
+                     "type" : "string",
+                     "analyzer" : "ngram_analyzer",
+                     "search_analyzer" : "german_analyzer"
+                  }
+               }
+            }
+         },
+         "date_detection" : false,
+         "_all" : {
+            "analyzer" : "german_analyzer"
+         }
+      },
+      "_default_" : {
+         "_all" : {
+            "analyzer" : "german_analyzer"
          }
       }
    }

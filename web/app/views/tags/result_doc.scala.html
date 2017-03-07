@@ -34,7 +34,7 @@
 }
 
 @subordinated(field:String, id:String, label:String, values:(String,String)) = {
-  @defining(new Index().queryResources(field+":\""+Lobid.escapeUri(id)+"\"").getTotal){ hits => @if(hits > 0) {
+  @defining(new Index().totalHits(field+":\""+Lobid.escapeUri(id)+"\"")){ hits => @if(hits > 0) {
     @defining(if(hits==1){values._1} else {values._2}){ value =>
     <tr><td>@label</td><td><a title="@value" href="@resources.routes.Application.query(q=field+":\""+Lobid.escapeUri(id)+"\"")">@hits @value</a></td></tr>
   }}}
@@ -109,6 +109,7 @@
   @result_field("Quelle", "bibliographicCitation", doc, TableRow.VALUES)
   @result_field("In", "containedIn", doc, TableRow.LINKS)
   @result_field("Erscheinungsweise", "frequency", doc, TableRow.VALUES)
+
   @lobid2_part_of("inSeries", "series")
   @lobid2_part_of("volumeIn", "multiVolumeWork")
   @defining(lobidUrl((doc \ "hbzId").asOpt[String].getOrElse(""))){ id =>

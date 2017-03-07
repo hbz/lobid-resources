@@ -17,6 +17,7 @@ import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Spliterators;
 import java.util.UUID;
+import java.util.concurrent.Callable;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -24,6 +25,7 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import org.apache.commons.lang3.tuple.Pair;
+import org.elasticsearch.common.io.Streams;
 import org.elasticsearch.search.aggregations.Aggregation;
 import org.elasticsearch.search.aggregations.bucket.children.InternalChildren;
 import org.elasticsearch.search.aggregations.bucket.terms.Terms;
@@ -45,11 +47,11 @@ import play.cache.Cached;
 import play.data.Form;
 import play.libs.F.Promise;
 import play.libs.Json;
-import play.libs.ws.WS;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
 import play.test.Helpers;
+import play.twirl.api.Html;
 import views.html.api;
 import views.html.details;
 import views.html.details_item;
@@ -91,27 +93,30 @@ public class Application extends Controller {
 	/**
 	 * @return The index page.
 	 */
-	public static Result index() {
-		final Form<String> form = queryForm.bindFromRequest();
-		if (form.hasErrors())
-			return badRequest(index.render());
-		return ok(index.render());
+	@Cached(key = "index", duration = ONE_DAY)
+	public static Promise<Result> index() {
+		return Promise.promise(() -> {
+			final Form<String> form = queryForm.bindFromRequest();
+			if (form.hasErrors())
+				return badRequest(index.render());
+			return ok(index.render());
+		});
 	}
 
 	/**
 	 * @return The API documentation page
 	 */
-	@Cached(duration = ONE_HOUR, key = "api")
-	public static Result api() {
-		return ok(api.render());
+	@Cached(key = "api", duration = ONE_DAY)
+	public static Promise<Result> api() {
+		return Promise.promise(() -> ok(api.render()));
 	}
 
 	/**
 	 * @return The advanced search page.
 	 */
 	@Cached(key = "search.advanced", duration = ONE_HOUR)
-	public static Result advanced() {
-		return ok(views.html.advanced.render());
+	public static Promise<Result> advanced() {
+		return Promise.promise(() -> ok(views.html.advanced.render()));
 	}
 
 	/**
@@ -142,19 +147,28 @@ public class Application extends Controller {
 	 * @param sort Sorting order for results ("newest", "oldest", "" -> relevance)
 	 * @param set The set
 	 * @param format The response format ('html' or 'json')
+	 * @param aggregations The comma separated aggregation fields
 	 * @return The search results
 	 */
 	public static Promise<Result> query(final String q, final String agent,
 			final String name, final String subject, final String id,
 			final String publisher, final String issued, final String medium,
 			final int from, final int size, final String owner, String t, String sort,
-			String set, String format) {
+			String set, String format, String aggregations) {
+		if (!aggregations.isEmpty() && !Index.SUPPORTED_AGGREGATIONS
+				.containsAll(Arrays.asList(aggregations.split(",")))) {
+			return Promise.promise(() -> badRequest(
+					String.format("Unsupported aggregations: %s (supported: %s)",
+							aggregations, Index.SUPPORTED_AGGREGATIONS)));
+		}
 		addCorsHeader();
 		String uuid = session("uuid");
-		if (uuid == null)
-			session("uuid", UUID.randomUUID().toString());
-		String cacheId = String.format("%s-%s-%s", uuid, request().uri(),
-				Accept.formatFor(format, request().acceptedTypes()));
+		if (uuid == null) {
+			uuid = UUID.randomUUID().toString();
+			session("uuid", uuid);
+		}
+		String cacheId = String.format("%s-%s-%s-%s", uuid, request().uri(),
+				Accept.formatFor(format, request().acceptedTypes()), starredIds());
 		@SuppressWarnings("unchecked")
 		Promise<Result> cachedResult = (Promise<Result>) Cache.get(cacheId);
 		if (cachedResult != null)
@@ -164,8 +178,8 @@ public class Application extends Controller {
 			Index index = new Index();
 			String queryString = index.buildQueryString(q, agent, name, subject, id,
 					publisher, issued, medium, t, set);
-			Index queryResources =
-					index.queryResources(queryString, from, size, sort, owner);
+			Index queryResources = index.queryResources(queryString, from, size, sort,
+					owner, aggregations);
 			String responseFormat =
 					Accept.formatFor(format, request().acceptedTypes());
 			boolean returnSuggestions = responseFormat.startsWith("json:");
@@ -184,10 +198,17 @@ public class Application extends Controller {
 		});
 		cacheOnRedeem(cacheId, result, ONE_HOUR);
 		return result.recover((Throwable throwable) -> {
-			Logger.error("Could not query index", throwable);
-			flashError();
-			return internalServerError(query.render("[]", q, agent, name, subject, id,
-					publisher, issued, medium, from, size, 0L, owner, t, sort, set));
+			Html html = query.render("[]", q, agent, name, subject, id, publisher,
+					issued, medium, from, size, 0L, owner, t, sort, set);
+			String message = "Could not query index: " + throwable.getMessage();
+			boolean badRequest = throwable instanceof IllegalArgumentException;
+			flashError(badRequest);
+			if (badRequest) {
+				Logger.warn(message);
+				return badRequest(html);
+			}
+			Logger.error(message);
+			return internalServerError(html);
 		});
 	}
 
@@ -198,7 +219,9 @@ public class Application extends Controller {
 		result.put("id", host + request().uri());
 		result.put("totalItems", index.getTotal());
 		result.put("member", json);
-		result.put("aggregation", aggregationsAsJson(index));
+		if (index.getAggregations() != null) {
+			result.put("aggregation", aggregationsAsJson(index));
+		}
 		return result;
 	}
 
@@ -280,15 +303,26 @@ public class Application extends Controller {
 	 */
 	public static Promise<Result> show(final String id, String format) {
 		addCorsHeader();
-		return Promise.promise(() -> {
+		String responseFormat = Accept.formatFor(format, request().acceptedTypes());
+		String cacheId = String.format("show(%s,%s)", id, responseFormat);
+		@SuppressWarnings("unchecked")
+		Promise<Result> cachedResult = (Promise<Result>) Cache.get(cacheId);
+		if (cachedResult != null)
+			return cachedResult;
+		Promise<Result> promise = Promise.promise(() -> {
 			JsonNode result = new Index().getResource(id).getResult();
-			String responseFormat =
-					Accept.formatFor(format, request().acceptedTypes());
 			boolean htmlRequested =
 					responseFormat.equals(Accept.Format.HTML.queryParamString);
-			return htmlRequested ? ok(details.render(CONFIG, result.toString(), id))
-					: prettyJsonOk(result);
+			if (htmlRequested) {
+				return result != null
+						? ok(details.render(CONFIG, result.toString(), id))
+						: notFound(details.render(CONFIG, "", id));
+			}
+			return result != null ? prettyJsonOk(result)
+					: notFound("\"Not found: " + id + "\"");
 		});
+		cacheOnRedeem(cacheId, promise, ONE_DAY);
+		return promise;
 	}
 
 	/**
@@ -298,7 +332,12 @@ public class Application extends Controller {
 	 */
 	public static Promise<Result> item(final String id, String format) {
 		String responseFormat = Accept.formatFor(format, request().acceptedTypes());
-		return Promise.promise(() -> {
+		String cacheId = String.format("item(%s,%s)", id, responseFormat);
+		@SuppressWarnings("unchecked")
+		Promise<Result> cachedResult = (Promise<Result>) Cache.get(cacheId);
+		if (cachedResult != null)
+			return cachedResult;
+		Promise<Result> promise = Promise.promise(() -> {
 			/* @formatter:off
 			 * Escape item IDs for index lookup the same way as during transformation, see:
 			 * https://github.com/hbz/lobid-resources/blob/master/src/main/resources/morph-hbz01-to-lobid.xml#L781
@@ -309,22 +348,34 @@ public class Application extends Controller {
 					new PercentEscaper(PercentEscaper.SAFEPATHCHARS_URLENCODER, false)
 							.escape(id))
 					.getResult();
-			if (responseFormat.equals("html")) {
+			boolean htmlRequested =
+					responseFormat.equals(Accept.Format.HTML.queryParamString);
+			if (htmlRequested) {
 				return itemJson == null ? notFound(details_item.render(id, ""))
 						: ok(details_item.render(id, itemJson.toString()));
 			}
-			return itemJson == null ? notFound("Not found: " + id)
+			return itemJson == null ? notFound("\"Not found: " + id + "\"")
 					: prettyJsonOk(itemJson);
-
 		});
+		cacheOnRedeem(cacheId, promise, ONE_DAY);
+		return promise;
 	}
 
-	private static void flashError() {
-		flash("error",
-				"Es ist ein Fehler aufgetreten. "
-						+ "Bitte versuchen Sie es erneut oder kontaktieren Sie das "
-						+ "Entwicklerteam, falls das Problem fortbesteht "
-						+ "(siehe Link 'Feedback' oben rechts).");
+	private static void flashError(boolean badRequest) {
+		if (badRequest) {
+			flash("warning",
+					"Ungültige Suchanfrage. Maskieren Sie Sonderzeichen mit "
+							+ "<code>\\</code>. Siehe auch <a href=\""
+							+ "https://www.elastic.co/guide/en/elasticsearch/reference/2.4/"
+							+ "query-dsl-query-string-query.html#query-string-syntax\">"
+							+ "Dokumentation der unterstützten Suchsyntax</a>.");
+		} else {
+			flash("error",
+					"Es ist ein Fehler aufgetreten. "
+							+ "Bitte versuchen Sie es erneut oder kontaktieren Sie das "
+							+ "Entwicklerteam, falls das Problem fortbesteht "
+							+ "(siehe Link 'Feedback' oben rechts).");
+		}
 	}
 
 	private static void cacheOnRedeem(final String cacheId,
@@ -440,7 +491,7 @@ public class Application extends Controller {
 
 			String routeUrl = routes.Application.query(q, agent, name, subjectQuery,
 					id, publisher, issuedQuery, mediumQuery, from, size, ownerQuery,
-					typeQuery, sort(sort, subjectQuery), set, null).url();
+					typeQuery, sort(sort, subjectQuery), set, null, field).url();
 
 			String result = String.format(
 					"<li " + (current ? "class=\"active\"" : "")
@@ -453,28 +504,30 @@ public class Application extends Controller {
 			return result;
 		};
 
-		Promise<Result> promise = query(q, agent, name, subject, id, publisher,
-				issued, medium, from, size, owner, t, sort, set, "json").map(result -> {
-					JsonNode json =
-							Json.parse(Helpers.contentAsString(result)).get("aggregation");
-					Stream<JsonNode> stream = StreamSupport.stream(Spliterators
-							.spliteratorUnknownSize(json.get(field).elements(), 0), false);
-					String labelKey =
-							String.format("facets-labels.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s",
-									field, q, agent, name, id, publisher, set, subject, issued,
-									medium, field.equals(OWNER_AGGREGATION) ? "" : owner, t);
+		Promise<Result> promise =
+				query(q, agent, name, subject, id, publisher, issued, medium, from,
+						size, owner, t, sort, set, "json", field).map(result -> {
+							JsonNode json = Json.parse(Helpers.contentAsString(result))
+									.get("aggregation");
+							Stream<JsonNode> stream =
+									StreamSupport.stream(Spliterators.spliteratorUnknownSize(
+											json.get(field).elements(), 0), false);
+							String labelKey = String.format(
+									"facets-labels.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s", field, q,
+									agent, name, id, publisher, set, subject, issued, medium,
+									field.equals(OWNER_AGGREGATION) ? "" : owner, t);
 
-					@SuppressWarnings("unchecked")
-					List<Pair<JsonNode, String>> labelledFacets =
-							(List<Pair<JsonNode, String>>) Cache.get(labelKey);
-					if (labelledFacets == null) {
-						labelledFacets = stream.map(toLabel).filter(labelled)
-								.collect(Collectors.toList());
-						Cache.set(labelKey, labelledFacets, ONE_DAY);
-					}
-					return labelledFacets.stream().sorted(sorter).map(toHtml)
-							.collect(Collectors.toList());
-				}).map(lis -> ok(String.join("\n", lis)));
+							@SuppressWarnings("unchecked")
+							List<Pair<JsonNode, String>> labelledFacets =
+									(List<Pair<JsonNode, String>>) Cache.get(labelKey);
+							if (labelledFacets == null) {
+								labelledFacets = stream.map(toLabel).filter(labelled)
+										.collect(Collectors.toList());
+								Cache.set(labelKey, labelledFacets, ONE_DAY);
+							}
+							return labelledFacets.stream().sorted(sorter).map(toHtml)
+									.collect(Collectors.toList());
+						}).map(lis -> ok(String.join("\n", lis)));
 		promise.onRedeem(r -> Cache.set(key, r, ONE_DAY));
 		return promise;
 	}
@@ -522,34 +575,38 @@ public class Application extends Controller {
 	 * @param id The resource ID to star
 	 * @return An OK result
 	 */
-	public static Result star(String id) {
-		String starred = currentlyStarred();
-		if (!starred.contains(id)) {
-			session(STARRED, starred + " " + id);
-			uncache(Arrays.asList(id));
-		}
-		return ok("Starred: " + id);
+	public static Promise<Result> star(String id) {
+		return Promise.promise(() -> {
+			String starred = currentlyStarred();
+			if (!starred.contains(id)) {
+				session(STARRED, starred + " " + id);
+				uncache(Arrays.asList(id));
+			}
+			return ok("Starred: " + id);
+		});
 	}
 
 	/**
 	 * @param ids The resource IDs to star
 	 * @return A 303 SEE_OTHER result to the referrer
 	 */
-	public static Result starAll(String ids) {
+	public static Promise<Result> starAll(String ids) {
 		Arrays.asList(ids.split(",")).forEach(id -> star(id));
-		return seeOther(request().getHeader(REFERER));
+		return Promise.promise(() -> seeOther(request().getHeader(REFERER)));
 	}
 
 	/**
 	 * @param id The resource ID to unstar
 	 * @return An OK result
 	 */
-	public static Result unstar(String id) {
-		List<String> starred = starredIds();
-		starred.remove(id);
-		session(STARRED, String.join(" ", starred));
-		uncache(Arrays.asList(id));
-		return ok("Unstarred: " + id);
+	public static Promise<Result> unstar(String id) {
+		return Promise.promise(() -> {
+			List<String> starred = starredIds();
+			starred.remove(id);
+			session(STARRED, String.join(" ", starred));
+			uncache(Arrays.asList(id));
+			return ok("Unstarred: " + id);
+		});
 	}
 
 	/**
@@ -572,16 +629,12 @@ public class Application extends Controller {
 			List<JsonNode> json = (List<JsonNode>) cachedJson;
 			return Promise.pure(ok(stars.render(starredIds, json, format)));
 		}
-		Stream<Promise<JsonNode>> promises = starredIds.stream()
-				.map(id -> WS
-						.url(String.format("http://lobid.org/resource/%s?format=full", id))
-						.get().map(response -> response.asJson()));
-		return Promise.sequence(promises.collect(Collectors.toList()))
-				.map((List<JsonNode> vals) -> {
-					uncache(starredIds);
-					Cache.set(cacheKey, vals, ONE_DAY);
-					return ok(stars.render(starredIds, vals, format));
-				});
+		List<JsonNode> vals =
+				starredIds.stream().map(id -> new Index().getResource(id).getResult())
+						.collect(Collectors.toList());
+		uncache(starredIds);
+		Cache.set(cacheKey, vals, ONE_DAY);
+		return Promise.pure(ok(stars.render(starredIds, vals, format)));
 	}
 
 	/**
@@ -589,22 +642,23 @@ public class Application extends Controller {
 	 * @return If ids is empty: an OK result to confirm deletion of all starred
 	 *         resources; if ids are given: A 303 SEE_OTHER result to the referrer
 	 */
-	public static Result clearStars(String ids) {
+	public static Promise<Result> clearStars(String ids) {
 		if (ids.isEmpty()) {
 			uncache(starredIds());
 			session(STARRED, "");
-			return ok(stars.render(starredIds(), Collections.emptyList(), ""));
+			return Promise.promise(
+					() -> ok(stars.render(starredIds(), Collections.emptyList(), "")));
 		}
 		Arrays.asList(ids.split(",")).forEach(id -> unstar(id));
-		return seeOther(request().getHeader(REFERER));
+		return Promise.promise(() -> seeOther(request().getHeader(REFERER)));
 	}
 
 	/**
 	 * @param path The path to redirect to
 	 * @return A 301 MOVED_PERMANENTLY redirect to the path
 	 */
-	public static Result redirect(String path) {
-		return movedPermanently("/" + path);
+	public static Promise<Result> redirectTo(String path) {
+		return Promise.promise(() -> movedPermanently("/" + path));
 	}
 
 	/**
@@ -626,6 +680,14 @@ public class Application extends Controller {
 	public static Result context() {
 		response().setContentType("application/ld+json");
 		addCorsHeader();
-		return ok(Play.application().resourceAsStream("context.jsonld"));
+		try {
+			Callable<Status> readContext = () -> ok(Streams
+					.readAllLines(Play.application().resourceAsStream("context.jsonld"))
+					.stream().collect(Collectors.joining("\n")));
+			return Cache.getOrElse("context", readContext, ONE_DAY);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return internalServerError(e.getMessage());
+		}
 	}
 }

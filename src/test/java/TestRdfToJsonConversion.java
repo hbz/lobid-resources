@@ -27,6 +27,7 @@ import java.util.Map;
 import org.apache.commons.io.FileUtils;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.lobid.resources.run.MabXml2lobidJsonEs;
 import org.openrdf.rio.RDFFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -68,8 +69,6 @@ public class TestRdfToJsonConversion {
 			"http://lobid.org/resources/";
 	final static String LOBID_RESOURCES_API_1_0_URI_PREFIX =
 			"http://lobid.org/resource/";
-	final static String contextUrl =
-			"http://lobid.org/context/lobid-resources.json";
 	final private static String TEST_FILE_CONTRIBUTOR_ORDER =
 			"src/test/resources/input/nt/01845/HT018454638.nt";
 
@@ -157,7 +156,8 @@ public class TestRdfToJsonConversion {
 				InputStream out = new File(fnameJson).exists()
 						? new FileInputStream(new File(fnameJson)) : makeFile(fnameJson)) {
 			actual = new JsonConverter(etikettMaker).convertLobidData(in,
-					RDFFormat.NTRIPLES, uri, contextUrl);
+					RDFFormat.NTRIPLES, uri,
+					MabXml2lobidJsonEs.LOBID_RESOURCES_JSONLD_CONTEXT);
 			TestRdfToJsonConversion.logger.debug("Creates: ");
 			TestRdfToJsonConversion.logger
 					.debug(new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT)

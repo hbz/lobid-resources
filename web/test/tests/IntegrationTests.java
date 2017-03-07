@@ -4,6 +4,12 @@ package tests;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
+import static play.test.Helpers.GET;
+import static play.test.Helpers.contentType;
+import static play.test.Helpers.fakeApplication;
+import static play.test.Helpers.fakeRequest;
+import static play.test.Helpers.header;
+import static play.test.Helpers.route;
 import static play.test.Helpers.running;
 import static play.test.Helpers.testServer;
 
@@ -18,8 +24,11 @@ import org.elasticsearch.search.aggregations.bucket.terms.Terms.Bucket;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.google.common.base.Joiner;
+
 import controllers.resources.Index;
 import play.mvc.Http;
+import play.mvc.Result;
 import play.test.Helpers;
 import play.twirl.api.Content;
 
@@ -27,7 +36,7 @@ import play.twirl.api.Content;
  * See http://www.playframework.com/documentation/2.3.x/JavaFunctionalTest
  */
 @SuppressWarnings("javadoc")
-public class ExternalIntegrationTest {
+public class IntegrationTests extends LocalIndexSetup {
 
 	@Before
 	public void setUp() throws Exception {
@@ -46,7 +55,8 @@ public class ExternalIntegrationTest {
 			Index index = new Index();
 			String queryString =
 					index.buildQueryString("köln", "", "", "", "", "", "", "", "");
-			Index queryResources = index.queryResources(queryString);
+			Index queryResources = index.queryResources(queryString, 0, 0, "", "",
+					Joiner.on(",").join(Index.SUPPORTED_AGGREGATIONS));
 			Aggregations facets = queryResources.getAggregations();
 			Terms terms = facets.get("type");
 			Stream<String> values =
@@ -54,11 +64,8 @@ public class ExternalIntegrationTest {
 			Stream<Long> counts =
 					terms.getBuckets().stream().map(Bucket::getDocCount);
 			assertThat(values.collect(Collectors.toList())).contains(
-					"bibliographicresource", "article", "book", "periodical",
-					"multivolumebook", "thesis", "miscellaneous", "proceedings",
-					"editedvolume", "biography", "festschrift", "newspaper",
-					"bibliography", "series", "officialpublication", "referencesource",
-					"publishedscore", "legislation", "image", "game");
+					"bibliographicresource", "book", "thesis", "miscellaneous",
+					"article");
 			assertThat(counts.collect(Collectors.toList())).excludes(0);
 		});
 	}
@@ -81,12 +88,18 @@ public class ExternalIntegrationTest {
 	public void sizeRequest() {
 		running(testServer(3333), () -> {
 			Index index = new Index();
-			Long hits = index.queryResources("hbzId:HT018486420").getTotal();
+			Long hits = index.totalHits("hbzId:TT050409948");
 			assertThat(hits).isGreaterThan(0);
-			hits = index.queryResources("hbzId:HT002091108").getTotal();
-			assertThat(hits).isGreaterThan(0);
-			hits = index.queryResources("hbzId:HT001387709").getTotal();
-			assertThat(hits).isGreaterThan(0);
+		});
+	}
+
+	@Test
+	public void contextContentTypeAndCorsHeader() {
+		running(fakeApplication(), () -> {
+			Result result = route(fakeRequest(GET, "/resources/context.jsonld"));
+			assertThat(result).isNotNull();
+			assertThat(contentType(result)).isEqualTo("application/ld+json");
+			assertThat(header("Access-Control-Allow-Origin", result)).isEqualTo("*");
 		});
 	}
 
