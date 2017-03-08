@@ -670,6 +670,14 @@
 		<data source="41[27][-abcu][-12].[ag]|419-[12].b" name="@publisher"/>
 		<choose name="@startDateFirstPublication">
 			<!-- issue precedence -->
+			<!-- Multiple resource have [determined] volume numbers in this field. -->
+			<if>
+				<none>
+					<data source="425-[-1].a">
+						<regexp match="-(\d{4})|-....."/>
+					</data>
+				</none>
+			</if>
 			<data source="425[ab-p][-1].a|419-1c|595-[-12].a|089-[-1].a">
 				<regexp match="(\d{4})" format="${1}"/>
 			</data>
