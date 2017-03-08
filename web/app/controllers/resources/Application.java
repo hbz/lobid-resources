@@ -678,13 +678,26 @@ public class Application extends Controller {
 	 * @return JSON-LD context
 	 */
 	public static Result context() {
+		return staticJsonld("context");
+	}
+
+	/**
+	 * See https://www.w3.org/TR/dwbp/#metadata
+	 * 
+	 * @return JSON-LD dataset metadata
+	 */
+	public static Result dataset() {
+		return staticJsonld("dataset");
+	}
+
+	private static Result staticJsonld(String name) {
 		response().setContentType("application/ld+json");
 		addCorsHeader();
 		try {
 			Callable<Status> readContext = () -> ok(Streams
-					.readAllLines(Play.application().resourceAsStream("context.jsonld"))
+					.readAllLines(Play.application().resourceAsStream(name + ".jsonld"))
 					.stream().collect(Collectors.joining("\n")));
-			return Cache.getOrElse("context", readContext, ONE_DAY);
+			return Cache.getOrElse(name, readContext, ONE_DAY);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return internalServerError(e.getMessage());
