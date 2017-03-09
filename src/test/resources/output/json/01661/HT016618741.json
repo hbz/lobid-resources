@@ -1,5 +1,5 @@
 {
-  "@context" : "http://lobid.org/context/lobid-resources.json",
+  "@context" : "http://lobid.org/resources/context.jsonld",
   "contribution" : [ {
     "agent" : {
       "altLabel" : "Knopf, Christiane",
@@ -20,24 +20,24 @@
     "id" : "http://lobid.org/resources/HT016618741",
     "label" : "lobid Ressource"
   },
-  "exemplar" : [ {
-    "describedby" : {
-      "id" : "http://lobid.org/items/HT016618741:DE-61:",
-      "label" : "lobid Bestandsressource"
-    },
-    "exemplarOf" : "http://lobid.org/resources/HT016618741#!",
-    "id" : "http://lobid.org/items/HT016618741:DE-61:#!",
-    "label" : "lobid Bestandsressource",
-    "owner" : {
-      "id" : "http://lobid.org/organisations/DE-61",
-      "label" : "lobid Organisation"
-    },
-    "type" : [ "Item" ]
-  } ],
   "extent" : "Online-Ressource",
   "fulltextOnline" : [ {
     "id" : "http://deposit.ddb.de/cgi-bin/dokserv?idn=1^010809261",
     "label" : "http://deposit.ddb.de/cgi-bin"
+  } ],
+  "hasItem" : [ {
+    "describedby" : {
+      "id" : "http://lobid.org/items/HT016618741:DE-61:",
+      "label" : "lobid Bestandsressource"
+    },
+    "heldBy" : {
+      "id" : "http://lobid.org/organisations/DE-61",
+      "label" : "lobid Organisation"
+    },
+    "id" : "http://lobid.org/items/HT016618741:DE-61:#!",
+    "itemOf" : "http://lobid.org/resources/HT016618741#!",
+    "label" : "lobid Bestandsressource",
+    "type" : [ "Item" ]
   } ],
   "hasVersion" : [ {
     "id" : "http://deposit.ddb.de/cgi-bin/dokserv?idn=1^010809261",
@@ -45,10 +45,6 @@
   } ],
   "hbzId" : "HT016618741",
   "id" : "http://lobid.org/resources/HT016618741#!",
-  "isPrimaryTopicOf" : {
-    "id" : "http://193.30.112.134/F/?func=find-c&ccl_term=IDN%3DHT016618741",
-    "label" : "hbz Verbundkatalog"
-  },
   "language" : [ {
     "id" : "http://id.loc.gov/vocabulary/iso639-2/deu",
     "label" : "Deutsch"
@@ -64,6 +60,7 @@
     "startDate" : "2010",
     "type" : [ "PublicationEvent" ]
   } ],
+  "responsibilityStatement" : [ "Christiane Rasch" ],
   "sameAs" : [ {
     "id" : "http://hub.culturegraph.org/resource/HBZ-HT016618741",
     "label" : "Culturegraph Ressource"
@@ -72,7 +69,6 @@
     "id" : "http://nbn-resolving.de/urn:nbn:de:hbz:061-20101201-135613-9",
     "label" : "http://nbn-resolving.de/urn:nbn:de:hbz:061-20101201-135613-9"
   } ],
-  "statementOfResponsibility" : "Christiane Rasch",
   "thesisInformation" : [ "Düsseldorf, Univ., Diss., 2010" ],
   "title" : "Veränderungen in der Zellmorphologie und Zellzyklusverteilung unter dem Einfluss einer Paclitaxel (Taxol®) induzierten Wachstumsinhibition im Nierenzellkarzinom",
   "type" : [ "BibliographicResource", "Book", "Thesis" ],

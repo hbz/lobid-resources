@@ -9,6 +9,7 @@ import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.junit.Test;
+import org.lobid.resources.run.MabXml2lobidJsonEs;
 
 /**
  * Makes use of {@link Hbz01MabXml2ElasticsearchLobidTest} to extract, transform
@@ -33,7 +34,7 @@ public final class Hbz01MabXml2ElasticsearchLobidTestOnline {
 					tc.addTransportAddress(new InetSocketTransportAddress(
 							InetAddress.getByName(HOSTNAME), 9300)),
 					new RdfModel2ElasticsearchEtikettJsonLd(
-							AbstractIngestTests.LOBID_JSONLD_CONTEXT));
+							MabXml2lobidJsonEs.LOBID_RESOURCES_JSONLD_CONTEXT));
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		}

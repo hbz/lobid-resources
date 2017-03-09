@@ -30,8 +30,6 @@ import org.slf4j.LoggerFactory;
 @SuppressWarnings("javadoc")
 public abstract class AbstractIngestTests {
 
-	static final String LOBID_JSONLD_CONTEXT =
-			"http://lobid.org/download/context-staging.json";
 	private static final Logger LOG =
 			LoggerFactory.getLogger(AbstractIngestTests.class);
 

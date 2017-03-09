@@ -1,12 +1,19 @@
 {
-  "@context" : "http://lobid.org/download/context-staging.json",
+  "@context" : "http://lobid.org/resources/context.jsonld",
   "describedby" : {
     "dateCreated" : "19991122",
     "dateModified" : "20131031",
     "id" : "http://lobid.org/resources/HT010726584",
     "label" : "lobid Ressource"
   },
-  "exemplar" : [ {
+  "fulltextOnline" : [ {
+    "id" : "http://search.ebscohost.com/",
+    "label" : "http://search.ebscohost.com/"
+  }, {
+    "id" : "http://www.bibliothek.uni-regensburg.de/ezeit/?1472746",
+    "label" : "http://www.bibliothek.uni-regensburg.de/ezeit"
+  } ],
+  "hasItem" : [ {
     "id" : "http://lobid.org/items/HT010726584:DE-61:#!",
     "label" : "lobid Bestandsressource"
   }, {
@@ -106,13 +113,6 @@
     "id" : "http://lobid.org/items/HT010726584:DE-386:#!",
     "label" : "lobid Bestandsressource"
   } ],
-  "fulltextOnline" : [ {
-    "id" : "http://search.ebscohost.com/",
-    "label" : "http://search.ebscohost.com/"
-  }, {
-    "id" : "http://www.bibliothek.uni-regensburg.de/ezeit/?1472746",
-    "label" : "http://www.bibliothek.uni-regensburg.de/ezeit"
-  } ],
   "hasVersion" : [ {
     "id" : "http://search.ebscohost.com/",
     "label" : "http://search.ebscohost.com/"
@@ -122,10 +122,6 @@
   } ],
   "hbzId" : "HT010726584",
   "id" : "http://lobid.org/resources/HT010726584#!",
-  "isPrimaryTopicOf" : {
-    "id" : "http://193.30.112.134/F/?func=find-c&ccl_term=IDN%3DHT010726584",
-    "label" : "hbz Verbundkatalog"
-  },
   "issn" : [ "10897674" ],
   "language" : [ {
     "id" : "http://id.loc.gov/vocabulary/iso639-2/eng",
@@ -149,6 +145,7 @@
     "id" : "http://marc21rdf.info/terms/continuingfre#a",
     "label" : "jährlich"
   } ],
+  "responsibilityStatement" : "publ. by the American Institute of Physics",
   "sameAs" : [ {
     "id" : "http://ld.zdb-services.de/resource/1472746-8",
     "label" : "http://ld.zdb-services.de/resource"
@@ -157,18 +154,17 @@
     "label" : "Culturegraph Ressource"
   } ],
   "shortTitle" : [ "PHPAEN" ],
-  "statementOfResponsibility" : "publ. by the American Institute of Physics",
   "subject" : [ {
-    "id" : "http://d-nb.info/gnd/4046259-6",
-    "label" : "Plasmaphysik",
-    "type" : [ "SubjectHeading" ]
-  }, {
     "id" : "http://d-nb.info/gnd/4067488-5",
     "label" : "Zeitschrift",
     "type" : [ "SubjectHeading" ]
   }, {
     "id" : "http://d-nb.info/gnd/4511937-5",
     "label" : "Online-Publikation",
+    "type" : [ "SubjectHeading" ]
+  }, {
+    "id" : "http://d-nb.info/gnd/4046259-6",
+    "label" : "Plasmaphysik",
     "type" : [ "SubjectHeading" ]
   }, {
     "id" : "http://dewey.info/class/530/",

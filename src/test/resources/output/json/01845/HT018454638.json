@@ -1,5 +1,5 @@
 {
-  "@context" : "http://lobid.org/context/lobid-resources.json",
+  "@context" : "http://lobid.org/resources/context.jsonld",
   "collectedBy" : [ {
     "id" : "http://lobid.org/resources/NWBib",
     "label" : "Nordrhein-Westfälische Bibliographie"
@@ -49,44 +49,40 @@
     "id" : "http://lobid.org/resources/HT018454638",
     "label" : "lobid Ressource"
   },
-  "exemplar" : [ {
-    "callNumber" : "Fc 6601",
-    "describedby" : {
-      "id" : "http://lobid.org/items/HT018454638:DE-Kn28:Fc%206601",
-      "label" : "lobid Bestandsressource"
-    },
-    "exemplarOf" : "http://lobid.org/resources/HT018454638#!",
-    "id" : "http://lobid.org/items/HT018454638:DE-Kn28:Fc%206601#!",
-    "label" : "lobid Bestandsressource",
-    "note" : "MAG",
-    "owner" : {
-      "id" : "http://lobid.org/organisations/DE-Kn28",
-      "label" : "lobid Organisation"
-    },
-    "type" : [ "Item" ]
-  }, {
+  "extent" : "122 S. : zahlr. Ill.",
+  "hasItem" : [ {
     "callNumber" : "Gb 7470/201",
     "describedby" : {
       "id" : "http://lobid.org/items/HT018454638:DE-5-39:Gb%207470%2F201",
       "label" : "lobid Bestandsressource"
     },
-    "exemplarOf" : "http://lobid.org/resources/HT018454638#!",
-    "id" : "http://lobid.org/items/HT018454638:DE-5-39:Gb%207470%2F201#!",
-    "label" : "lobid Bestandsressource",
-    "note" : "00054000",
-    "owner" : {
+    "heldBy" : {
       "id" : "http://lobid.org/organisations/DE-5-39",
       "label" : "lobid Organisation"
     },
+    "id" : "http://lobid.org/items/HT018454638:DE-5-39:Gb%207470%2F201#!",
+    "itemOf" : "http://lobid.org/resources/HT018454638#!",
+    "label" : "lobid Bestandsressource",
+    "note" : "00054000",
+    "type" : [ "Item" ]
+  }, {
+    "callNumber" : "Fc 6601",
+    "describedby" : {
+      "id" : "http://lobid.org/items/HT018454638:DE-Kn28:Fc%206601",
+      "label" : "lobid Bestandsressource"
+    },
+    "heldBy" : {
+      "id" : "http://lobid.org/organisations/DE-Kn28",
+      "label" : "lobid Organisation"
+    },
+    "id" : "http://lobid.org/items/HT018454638:DE-Kn28:Fc%206601#!",
+    "itemOf" : "http://lobid.org/resources/HT018454638#!",
+    "label" : "lobid Bestandsressource",
+    "note" : "MAG",
     "type" : [ "Item" ]
   } ],
-  "extent" : "122 S. : zahlr. Ill.",
   "hbzId" : "HT018454638",
   "id" : "http://lobid.org/resources/HT018454638#!",
-  "isPrimaryTopicOf" : {
-    "id" : "http://193.30.112.134/F/?func=find-c&ccl_term=IDN%3DHT018454638",
-    "label" : "hbz Verbundkatalog"
-  },
   "language" : [ {
     "id" : "http://id.loc.gov/vocabulary/iso639-2/deu",
     "label" : "Deutsch"
@@ -105,20 +101,20 @@
     "startDate" : "2014",
     "type" : [ "PublicationEvent" ]
   } ],
+  "responsibilityStatement" : [ "[Hrsg.: St. Joseph und St. Antonius, Bergisch-Gladbach. Beitr.: Ursula Clemens-Schierbaum ...]" ],
   "sameAs" : [ {
     "id" : "http://hub.culturegraph.org/resource/HBZ-HT018454638",
     "label" : "Culturegraph Ressource"
   } ],
-  "statementOfResponsibility" : "[Hrsg.: St. Joseph und St. Antonius, Bergisch-Gladbach. Beitr.: Ursula Clemens-Schierbaum ...]",
   "subject" : [ {
-    "altLabel" : [ "Pfarrei Sankt Joseph und Sankt Antonius Bergisch Gladbach", "Katholische Kirchengemeinde St. Joseph und St. Antonius Bergisch Gladbach", "Katholische Kirchengemeinde Sankt Joseph und Sankt Antonius Bergisch Gladbach" ],
-    "id" : "http://d-nb.info/gnd/1060772442",
-    "label" : "Pfarrei St. Joseph und St. Antonius Bergisch Gladbach",
-    "type" : [ "CorporateBody" ]
-  }, {
     "altLabel" : [ "Pfarrgemeinderat Sankt Antonius Abbas Herkenrath", "Pfarrei Sankt Antonius Abbas Herkenrath", "Pfarrgemeinderat", "Pfarrei St. Antonius Abbas Herkenrath", "Pfarrei Sankt Antonius Abbas Bergisch Gladbach- Herkenrath" ],
     "id" : "http://d-nb.info/gnd/2175350-7",
     "label" : "Pfarrei Sankt Antonius Abbas Herkenrath",
+    "type" : [ "CorporateBody" ]
+  }, {
+    "altLabel" : [ "Pfarrei Sankt Joseph und Sankt Antonius Bergisch Gladbach", "Katholische Kirchengemeinde St. Joseph und St. Antonius Bergisch Gladbach", "Katholische Kirchengemeinde Sankt Joseph und Sankt Antonius Bergisch Gladbach" ],
+    "id" : "http://d-nb.info/gnd/1060772442",
+    "label" : "Pfarrei St. Joseph und St. Antonius Bergisch Gladbach",
     "type" : [ "CorporateBody" ]
   }, {
     "label" : "Geschichte",

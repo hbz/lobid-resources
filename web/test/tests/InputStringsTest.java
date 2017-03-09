@@ -37,7 +37,7 @@ import play.test.Helpers;
  */
 @SuppressWarnings("javadoc")
 @RunWith(value = Parameterized.class)
-public class InputStringsTest {
+public class InputStringsTest extends LocalIndexSetup {
 
 	private final String input;
 
@@ -45,7 +45,7 @@ public class InputStringsTest {
 	 * @return The data to use for this parameterized test (test is executed once
 	 *         for every element, which is passed to the constructor of this test)
 	 */
-	@Parameters
+	@Parameters(name = "{0}")
 	public static Collection<Object[]> data() {
 		List<Object[]> strings = new ArrayList<>();
 		running(testServer(3333), () -> {

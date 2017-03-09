@@ -149,13 +149,15 @@
 				<regexp match="\(DE-588\)(.*)" format="http://d-nb.info/gnd/${1}"/>
 			</data>
 		</combine>
+
 		<combine name="~rdf:subject" value="$[ns-lobid-resource]${subject}#!" flushWith="@rdfTypeSubject">
 			<data source="@subjectLabelBnode"/>
 			<data source="@id" name="subject"/>
 		</combine>
-		<entity name="~rdf:list" reset="true" flushWith="@rdfTypeSubject">
-			<data name="http://purl.org/dc/terms/subject" source="@subjectId|@subjectLabelBnode"/>
-		</entity>
+		<combine name="http://purl.org/dc/terms/subject" value="${a}" flushWith="@rdfTypeSubject|@deweyId"
+			reset="true">
+			<data source="@subjectId|@subjectLabelBnode|@deweyId" name="a"/>
+		</combine>
 		<!-- ####################### -->
 		<!-- ####### Get subject uri of each record -->
 		<!-- ####################### -->
@@ -188,7 +190,7 @@
 		<!-- ####### Child, link to parent and vice versa, e.g. HT000009600 -->
 		<!-- ####################### -->
 		<data source="4[56789]3[-abr][-12].a" name="@idTitleSeries"/>
-		<data source="529z1.9" name="@hasSupplement"/>
+		<data source="529z1.9" name="@supplement"/>
 		<data source="010-1.a|@idTitleSeries" name="@isPartOfHbzId">
 			<regexp match="(.*)" format="$[ns-lobid-resource]${1}#!"/>
 			<sanitizeUrl></sanitizeUrl>
@@ -202,11 +204,6 @@
 		<!-- ####################### -->
 		<!-- ####### General attributes for each record -->
 		<!-- ####################### -->
-		<combine name="http://xmlns.com/foaf/0.1/isPrimaryTopicOf" value="${primaryTopic}">
-			<data source="@id" name="primaryTopic">
-				<regexp match="(.*)" format="http://193.30.112.134/F/?func=find-c&amp;ccl_term=IDN%3D${1}"/>
-			</data>
-		</combine>
 		<data source="@id" name="$[ns-lobid-vocab]hbzID"/>
 		<data source="@id" name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type">
 			<regexp match=".*" format="http://purl.org/dc/terms/BibliographicResource"/>
@@ -307,7 +304,7 @@
 		</data>
 		<!-- game -->
 		<data source="050." name="@rdftype">
-			<regexp match="^.........a" format="http://purl.org/library/Game"/>
+			<regexp match="^.........a" format="http://schema.org/Game"/>
 		</data>
 		<!-- manuscript -->
 		<data source="050." name="@medium">
@@ -665,7 +662,10 @@
 			</data>
 			<data source="@placeOfPublication_"/>
 		</choose>
-		<data source="41[27][-abcu][-12].[ag]|419-[12].b" name="@publisher"/>
+		<data source="41[27][-abcu][-12].[ag]|419-[12].b" name="@publisher">
+			<replace pattern="&gt;" with=""/>
+			<replace pattern="&lt;" with=""/>
+		</data>
 		<choose name="@startDateFirstPublication">
 			<!-- issue precedence -->
 			<data source="425[abc-p][-1].a|419-1c|595-[-12].a|089-[-1].a">
@@ -782,16 +782,16 @@
 		<!-- new coined subject uri of the Item -->
 		<data source="@itemId" name="~rdf:subject"/>
 		<data source="@itemId" name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type">
-			<regexp match=".*" format="http://purl.org/vocab/frbr/core#Item"/>
+			<regexp match=".*" format="http://id.loc.gov/ontologies/bibframe/Item"/>
 		</data>
 		<data source="@itemId" name="http://www.w3.org/2007/05/powder-s#describedby">
 			<regexp match="(.*)#!" format="${1}"/>
 		</data>
-		<combine name="http://purl.org/vocab/frbr/core#exemplarOf" value="$[ns-lobid-resource]${id}#!">
+		<combine name="http://id.loc.gov/ontologies/bibframe/itemOf" value="$[ns-lobid-resource]${id}#!">
 			<data source="@id" name="id"/>
 			<data source="@itemId"/>
 		</combine>
-		<combine name="http://purl.org/vocab/frbr/core#owner" value="$[ns-lobid-organisation]${isil}"
+		<combine name="http://id.loc.gov/ontologies/bibframe/heldBy" value="$[ns-lobid-organisation]${isil}"
 			sameEntity="true">
 			<data source="@itemId"/>
 			<data source="@sigel2isilMap" name="isil"/>
@@ -855,7 +855,7 @@
 			<data source="@id" name="id"/>
 			<data source="@itemId"/>
 		</combine>
-		<data source="@itemId" name="http://purl.org/vocab/frbr/core#exemplar"/>
+		<data source="@itemId" name="http://id.loc.gov/ontologies/bibframe/hasItem"/>
 		<!-- ####################### -->
 		<!-- ########## multi-volume information -->
 		<!-- ####################### -->
@@ -881,7 +881,7 @@
 			<sanitizeUrl></sanitizeUrl>
 		</data>
 		<!-- literals of creator (seems there are no corporateBodyCreators without gndID) -->
-		<data source="359[-ab][-12].a" name="http://rdaregistry.info/Elements/u/P60339"/>
+		<data source="359[-ab][-12].a" name="http://id.loc.gov/ontologies/bibframe/responsibilityStatement"/>
 		<data source="1[02468][048][-aemn][12].[pa]|1[13579][26][-aemn][12].[pa]" name="@creatorPersonLabel"/>
 		<!-- bnode for creator when no ID -->
 		<combine name="@bnodeCreatorPersonLabel" value="_:${a}">
@@ -1093,7 +1093,7 @@
 		<!-- #######subjects -->
 		<!-- ####################### -->
 		<!-- ddc links -->
-		<data source="70[05][-b][-12345].a" name="http://purl.org/dc/terms/subject">
+		<data source="70[05][-b][-12345].a" name="@deweyId">
 			<regexp match="([0-9]{3})" format="http://dewey.info/class/${1}/"/>
 			<sanitizeUrl></sanitizeUrl>
 		</data>
@@ -1597,7 +1597,7 @@
 			</if>
 			<data source="523[-a][-1].a" name="a"/>
 		</combine>
-		<data source="@hasSupplement" name="http://rdaregistry.info/Elements/u/P60281">
+		<data source="@supplement" name="http://id.loc.gov/ontologies/bibframe/supplement">
 			<regexp match="(.*)" format="$[ns-lobid-resource]${1}#!"/>
 		</data>
 		<data source="599[-b][-1].[a]" name="@dctIsPartOfHbzIdArticle">

@@ -1,5 +1,5 @@
 {
-  "@context" : "http://lobid.org/context/lobid-resources.json",
+  "@context" : "http://lobid.org/resources/context.jsonld",
   "contribution" : [ {
     "agent" : {
       "altLabel" : [ "Hitler, Adolfo", "Xitler, Adolf", "Hitorâ, Adorufu", "Hitler, Adolphe", "Hitlar", "Hitlers, Adolphs", "Gitler, Adol'f", "Gitler, ...", "Hitler, Adolph", "Hitler, ...", "Chitler, Adolphu", "Hitlers, Ādolfs", "Hitlar, Adūlf", "Chitler, Adolf" ],
@@ -21,26 +21,22 @@
     "label" : "lobid Ressource"
   },
   "edition" : [ "Ausgabe in Blindenschrift" ],
-  "exemplar" : [ {
+  "hasItem" : [ {
     "describedby" : {
       "id" : "http://lobid.org/items/TT001210514:DE-107:",
       "label" : "lobid Bestandsressource"
     },
-    "exemplarOf" : "http://lobid.org/resources/TT001210514#!",
-    "id" : "http://lobid.org/items/TT001210514:DE-107:#!",
-    "label" : "lobid Bestandsressource",
-    "owner" : {
+    "heldBy" : {
       "id" : "http://lobid.org/organisations/DE-107",
       "label" : "lobid Organisation"
     },
+    "id" : "http://lobid.org/items/TT001210514:DE-107:#!",
+    "itemOf" : "http://lobid.org/resources/TT001210514#!",
+    "label" : "lobid Bestandsressource",
     "type" : [ "Item" ]
   } ],
   "hbzId" : "TT001210514",
   "id" : "http://lobid.org/resources/TT001210514#!",
-  "isPrimaryTopicOf" : {
-    "id" : "http://193.30.112.134/F/?func=find-c&ccl_term=IDN%3DTT001210514",
-    "label" : "hbz Verbundkatalog"
-  },
   "language" : [ {
     "id" : "http://id.loc.gov/vocabulary/iso639-2/deu",
     "label" : "Deutsch"
@@ -57,11 +53,11 @@
     "publishedBy" : "Blindenhochschulbücherei",
     "type" : [ "PublicationEvent" ]
   } ],
+  "responsibilityStatement" : [ "von Adolf Hitler" ],
   "sameAs" : [ {
     "id" : "http://hub.culturegraph.org/resource/HBZ-TT001210514",
     "label" : "Culturegraph Ressource"
   } ],
-  "statementOfResponsibility" : "von Adolf Hitler",
   "title" : "Mein Kampf",
   "type" : [ "BibliographicResource", "MultiVolumeBook", "Book" ]
 }

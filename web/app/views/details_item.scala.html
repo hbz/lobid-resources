@@ -21,11 +21,11 @@
     @main("lobid-resources - Bestandsdetails") {
       <div class="row">
       @for(
-          exemplarOf <- (doc \ "exemplarOf").asOpt[JsValue];
-          exemplarOfs = exemplarOf.asOpt[Seq[JsValue]].getOrElse(Seq(exemplarOf));
-          resourceId <- (exemplarOfs(0) \ "id").asOpt[String];
+          itemOf <- (doc \ "itemOf").asOpt[JsValue];
+          itemOfs = itemOf.asOpt[Seq[JsValue]].getOrElse(Seq(itemOf));
+          resourceId <- (itemOfs(0) \ "id").asOpt[String];
           itemId <- (doc \ "id").asOpt[String];
-          items = Lobid.items("{\"exemplar\":[{\"id\":\"" + itemId + "\"}]}")) {
+          items = Lobid.items("{\"hasItem\":[{\"id\":\"" + itemId + "\"}]}")) {
         <div class="col-md-12" id="holdings">
           <dl>
            <dt>

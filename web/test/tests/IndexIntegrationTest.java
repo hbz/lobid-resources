@@ -23,35 +23,36 @@ import controllers.resources.Index;
  */
 @SuppressWarnings("javadoc")
 @RunWith(Parameterized.class)
-public class IndexIntegrationTest {
+public class IndexIntegrationTest extends LocalIndexSetup {
 
 	// test data parameters, formatted as "input /*->*/ expected output"
 	@Parameters(name = "{0}")
 	public static Collection<Object[]> data() {
 		// @formatter:off
 		return Arrays.asList(new Object[][] {
-			{ "title:der", /*->*/ 2760562 },
-			{ "title:Typee", /*->*/ 41 },
-			{ "contribution.agent.label:Melville", /*->*/ 1858 },
-			{ "contribution.agent.id:\"http\\://d-nb.info/gnd/118580604\"", /*->*/ 651 },
-			{ "contribution.agent.id:118580604", /*->*/ 651 },
-			{ "title:Typee AND contribution.agent.label:Melville", /*->*/ 37 },
-			{ "title:Typee OR title:Moby", /*->*/ 372 },
-			{ "(title:Typee OR title:Moby) AND contribution.agent.id:\"http\\://d-nb.info/gnd/118580604\"", /*->*/ 234 },
-			{ "(title:Typee OR title:Moby) AND NOT contribution.agent.id:\"http\\://d-nb.info/gnd/118580604\"", /*->*/ 372 - 234 },
-			{ "subject.label:Bahnhof", /*->*/ 633 },
-			{ "subject.id:\"http\\://d-nb.info/gnd/1113670827\"", /*->*/ 1 },
+			{ "title:der", /*->*/ 18 },
+			{ "title:Westfalen", /*->*/ 3 },
+			{ "contribution.agent.label:Westfalen", /*->*/ 7 },
+			{ "contribution.agent.id:\"http\\://d-nb.info/gnd/5265186-1\"", /*->*/ 1 },
+			{ "contribution.agent.id:5265186-1", /*->*/ 0 },
+			{ "contribution.agent.id:\"5265186-1\"", /*->*/ 0 },
+			{ "title:Westfalen AND contribution.agent.label:Westfalen", /*->*/ 2 },
+			{ "title:Westfalen OR title:Münsterland", /*->*/ 4 },
+			{ "(title:Westfalen OR title:Münsterland) AND contribution.agent.id:\"http\\://d-nb.info/gnd/2019209-5\"", /*->*/ 1 },
+			{ "(title:Westfalen OR title:Münsterland) AND NOT contribution.agent.id:\"http\\://d-nb.info/gnd/2019209-5\"", /*->*/ 4-1 },
+			{ "subject.label:Westfalen", /*->*/ 7 },
+			{ "subject.id:\"http\\://d-nb.info/gnd/4042570-8\"", /*->*/ 2 },
 			{ "subject.id:1113670827", /*->*/ 0 },
-			{ "subject.type:PlaceOrGeographicName", /*->*/ 1893899 },
-			{ "publication.location:Tokyo", /*->*/ 35573 },
-			{ "publication.startDate:1992", /*->*/ 274518 },
-			{ "publication.location:Tokyo AND publication.startDate:1992", /*->*/ 659 },
-			{ "publication.location:Tokyo AND publication.startDate:1992-1997", /*->*/ 1164 },
-			{ "collectedBy.id:\"http\\://lobid.org/resources/NWBib\"", /*->*/ 385632 },
+			{ "subject.type:PlaceOrGeographicName", /*->*/ 25 },
+			{ "publication.location:Berlin", /*->*/ 9 },
+			{ "publication.startDate:1993", /*->*/ 2 },
+			{ "publication.location:Berlin AND publication.startDate:1993", /*->*/ 1 },
+			{ "publication.location:Berlin AND publication.startDate:[1992 TO 2017]", /*->*/ 8 },
+			{ "collectedBy.id:\"http\\://lobid.org/resources/NWBib\"", /*->*/ 38 },
 			{ "collectedBy.id:NWBib", /*->*/ 0 },
-			{ "publication.publishedBy:Springer", /*->*/ 287329 },
-			{ "exemplar.id:\"http\\://lobid.org/items/HT019073978\\:DE-5-225\\:SoP%202410%202016%2F2#\\!\"", /*->*/ 1 },
-			{ "exemplar.id:DE-5-225", /*->*/ 0 }
+			{ "publication.publishedBy:Springer", /*->*/ 2 },
+			{ "hasItem.id:\"http\\://lobid.org/items/TT003059252\\:DE-5-58\\:9%2F041#\\!\"", /*->*/ 1 },
+			{ "hasItem.id:TT003059252\\:DE-5-58\\:9%2F041", /*->*/ 0 }
 		});
 	} // @formatter:on
 
@@ -68,10 +69,7 @@ public class IndexIntegrationTest {
 	@Test
 	public void testResultCount() {
 		running(fakeApplication(), () -> {
-			long actualResultCount = index.queryResources(queryString).getTotal();
-			assertThat(Math
-					.abs(actualResultCount - expectedResultCount) > expectedResultCount
-							/ 1000);
+			assertThat(index.totalHits(queryString)).isEqualTo(expectedResultCount);
 		});
 	}
 

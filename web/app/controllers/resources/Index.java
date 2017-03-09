@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import org.elasticsearch.action.admin.indices.validate.query.ValidateQueryResponse;
+import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
@@ -29,9 +31,9 @@ import org.elasticsearch.search.sort.SortBuilders;
 import org.elasticsearch.search.sort.SortOrder;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.google.common.base.Joiner;
 
 import play.Logger;
+import play.cache.Cache;
 import play.libs.Json;
 
 /**
@@ -42,8 +44,6 @@ import play.libs.Json;
  */
 public class Index {
 
-	static final List<String> SUPPORTED_AGGREGATIONS = Arrays.asList(
-			"publication.startDate", "subject.id", "type", "medium.id", "owner");
 	static final String INDEX_NAME = Application.CONFIG.getString("index.name");
 	private static final String TYPE_ITEM =
 			Application.CONFIG.getString("index.type.item");
@@ -56,10 +56,16 @@ public class Index {
 					.map(v -> v.unwrapped().toString()).collect(Collectors.toList());
 	private static final String CLUSTER_NAME =
 			Application.CONFIG.getString("index.cluster.name");
+	private static final String OWNER_ID_FIELD = "heldBy.id";
 
 	private JsonNode result;
 	private long total = 0;
 	private Aggregations aggregations;
+
+	/**
+	 * The client to use. If null, create default client from settings.
+	 */
+	public static Client elasticsearchClient = null;
 
 	/**
 	 * Fields used when building query strings vis
@@ -71,12 +77,18 @@ public class Index {
 					"publication.startDate", "medium.id", "type", "collectedBy.id" };
 
 	/**
+	 * The values supported for the `aggregations` query parameter.
+	 */
+	public static final List<String> SUPPORTED_AGGREGATIONS = Arrays.asList(
+			"publication.startDate", "subject.id", "type", "medium.id", "owner");
+
+	/**
 	 * @param q The current query string
 	 * @param values The values corresponding to {@link #FIELDS}
 	 * @return A query string created from q, expanded for values
 	 */
 	public String buildQueryString(String q, String... values) {
-		String fullQuery = q.isEmpty() ? "*" : q;
+		String fullQuery = q.isEmpty() ? "*" : "(" + q + ")";
 		for (int i = 0; i < values.length; i++) {
 			String fieldValue = values[i];
 			String fieldName = fieldValue.contains("http")
@@ -90,6 +102,7 @@ public class Index {
 				fullQuery += " AND (" + buildFieldQuery(fieldValue, fieldName) + ")";
 			}
 		}
+		Logger.debug("q={}, values={} -> query string={}", q, values, fullQuery);
 		return fullQuery;
 	}
 
@@ -116,12 +129,17 @@ public class Index {
 
 	/**
 	 * @param q The string to use for an Elasticsearch queryStringQuery
-	 * @return This index, get results via {@link #getResult()} and
-	 *         {@link #getTotal()}
+	 * @return The number of result for the given query string
 	 */
-	public Index queryResources(String q) {
-		return queryResources(q, 0, 10, "", "",
-				Joiner.on(",").join(SUPPORTED_AGGREGATIONS));
+	public long totalHits(String q) {
+		try {
+			return Cache.getOrElse("total-" + q,
+					() -> queryResources(q, 0, 0, "", "", "").getTotal(),
+					Application.ONE_DAY);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return -1;
 	}
 
 	/**
@@ -139,6 +157,7 @@ public class Index {
 		Index resultIndex = withClient((Client client) -> {
 			QueryBuilder query = owner.isEmpty() ? QueryBuilders.queryStringQuery(q)
 					: ownerQuery(q, owner);
+			validate(client, query);
 			Logger.trace("queryResources: q={}, from={}, size={}, sort={}, query={}",
 					q, from, size, sort, query);
 			SearchRequestBuilder requestBuilder = client.prepareSearch(INDEX_NAME)
@@ -166,6 +185,15 @@ public class Index {
 		return resultIndex;
 	}
 
+	private static void validate(Client client, QueryBuilder query) {
+		ValidateQueryResponse validate =
+				client.admin().indices().prepareValidateQuery(INDEX_NAME)
+						.setTypes(TYPE_RESOURCE).setQuery(query).get();
+		if (!validate.isValid()) {
+			throw new IllegalArgumentException("Invalid query: " + query);
+		}
+	}
+
 	private static QueryBuilder ownerQuery(String q, String owner) {
 		final String prefix = Lobid.ORGS_BETA_ROOT;
 		BoolQueryBuilder ownersQuery = QueryBuilders.boolQuery();
@@ -173,7 +201,7 @@ public class Index {
 		for (String o : owners) {
 			final String ownerId = prefix + o.replace(prefix, "");
 			ownersQuery = ownersQuery
-					.should(hasChildQuery("item", matchQuery("owner.id", ownerId)));
+					.should(hasChildQuery("item", matchQuery(OWNER_ID_FIELD, ownerId)));
 		}
 		return QueryBuilders.boolQuery().must(QueryBuilders.queryStringQuery(q))
 				.must(ownersQuery);
@@ -186,11 +214,13 @@ public class Index {
 	 */
 	public Index getItem(String id) {
 		return withClient((Client client) -> {
-			String sourceAsString = client.prepareGet(INDEX_NAME, TYPE_ITEM, id)
-					.setParent(id.split(":")[0]).execute().actionGet()
-					.getSourceAsString();
-			result = Json.parse(sourceAsString);
-			total = 1;
+			GetResponse response = client.prepareGet(INDEX_NAME, TYPE_ITEM, id)
+					.setParent(id.split(":")[0]).execute().actionGet();
+			if (response.isExists()) {
+				String sourceAsString = response.getSourceAsString();
+				result = Json.parse(sourceAsString);
+				total = 1;
+			}
 			return this;
 		});
 	}
@@ -202,10 +232,13 @@ public class Index {
 	 */
 	public Index getResource(String id) {
 		return withClient((Client client) -> {
-			String sourceAsString = client.prepareGet(INDEX_NAME, TYPE_RESOURCE, id)
-					.execute().actionGet().getSourceAsString();
-			result = Json.parse(sourceAsString);
-			total = 1;
+			GetResponse response = client.prepareGet(INDEX_NAME, TYPE_RESOURCE, id)
+					.execute().actionGet();
+			if (response.isExists()) {
+				String sourceAsString = response.getSourceAsString();
+				result = Json.parse(sourceAsString);
+				total = 1;
+			}
 			return this;
 		});
 	}
@@ -239,7 +272,7 @@ public class Index {
 				ChildrenBuilder ownerAggregation =
 						AggregationBuilders.children(Application.OWNER_AGGREGATION)
 								.childType(TYPE_ITEM).subAggregation(AggregationBuilders
-										.terms(field).field("owner.id").size(defaultSize));
+										.terms(field).field(OWNER_ID_FIELD).size(defaultSize));
 				searchRequest.addAggregation(ownerAggregation);
 			} else {
 				boolean many = field.equals("publication.startDate");
@@ -251,16 +284,16 @@ public class Index {
 	}
 
 	<T> T withClient(Function<Client, T> function) {
+		if (elasticsearchClient != null) {
+			return function.apply(elasticsearchClient);
+		}
 		Settings settings =
 				Settings.settingsBuilder().put("cluster.name", CLUSTER_NAME).build();
 		try (TransportClient client =
 				TransportClient.builder().settings(settings).build()) {
 			addHosts(client);
 			return function.apply(client);
-		} catch (Exception e) {
-			e.printStackTrace();
 		}
-		return null;
 	}
 
 	private static void addHosts(TransportClient client) {

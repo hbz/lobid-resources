@@ -1,5 +1,5 @@
 {
-  "@context" : "http://lobid.org/context/lobid-resources.json",
+  "@context" : "http://lobid.org/resources/context.jsonld",
   "collectedBy" : [ {
     "id" : "http://lobid.org/resources/NWBib",
     "label" : "Nordrhein-Westfälische Bibliographie"
@@ -38,24 +38,24 @@
     "label" : "http://deposit.d-nb.de/cgi-bin"
   } ],
   "doi" : [ "10.7788/boehlau.9783412216689" ],
-  "exemplar" : [ {
-    "describedby" : {
-      "id" : "http://lobid.org/items/HT018468645:DE-466:",
-      "label" : "lobid Bestandsressource"
-    },
-    "exemplarOf" : "http://lobid.org/resources/HT018468645#!",
-    "id" : "http://lobid.org/items/HT018468645:DE-466:#!",
-    "label" : "lobid Bestandsressource",
-    "owner" : {
-      "id" : "http://lobid.org/organisations/DE-466",
-      "label" : "lobid Organisation"
-    },
-    "type" : [ "Item" ]
-  } ],
   "extent" : "394 S. : Ill., graph. Darst.",
   "fulltextOnline" : [ {
     "id" : "http://deposit.d-nb.de/cgi-bin/dokserv?id=4535439&prov=M&dok_var=1&dok_ext=htm",
     "label" : "http://deposit.d-nb.de/cgi-bin"
+  } ],
+  "hasItem" : [ {
+    "describedby" : {
+      "id" : "http://lobid.org/items/HT018468645:DE-466:",
+      "label" : "lobid Bestandsressource"
+    },
+    "heldBy" : {
+      "id" : "http://lobid.org/organisations/DE-466",
+      "label" : "lobid Organisation"
+    },
+    "id" : "http://lobid.org/items/HT018468645:DE-466:#!",
+    "itemOf" : "http://lobid.org/resources/HT018468645#!",
+    "label" : "lobid Bestandsressource",
+    "type" : [ "Item" ]
   } ],
   "hasVersion" : [ {
     "id" : "http://deposit.d-nb.de/cgi-bin/dokserv?id=4535439&prov=M&dok_var=1&dok_ext=htm",
@@ -63,10 +63,6 @@
   } ],
   "hbzId" : "HT018468645",
   "id" : "http://lobid.org/resources/HT018468645#!",
-  "isPrimaryTopicOf" : {
-    "id" : "http://193.30.112.134/F/?func=find-c&ccl_term=IDN%3DHT018468645",
-    "label" : "hbz Verbundkatalog"
-  },
   "isbn" : [ "9783412216689" ],
   "language" : [ {
     "id" : "http://id.loc.gov/vocabulary/iso639-2/deu",
@@ -85,6 +81,7 @@
     "startDate" : "2014",
     "type" : [ "PublicationEvent" ]
   } ],
+  "responsibilityStatement" : [ "Hrsg. von Fritsche, Christiane ; Paulmann, Johannes" ],
   "rpbSubject" : [ {
     "id" : "https://w3id.org/lobid/rpb2#n330",
     "label" : "Geschichte"
@@ -100,19 +97,17 @@
     "id" : "http://dx.doi.org/10.7788/boehlau.9783412216689",
     "label" : "http://dx.doi.org/10.7788"
   } ],
-  "statementOfResponsibility" : "Hrsg. von Fritsche, Christiane ; Paulmann, Johannes",
   "subject" : [ {
-    "id" : "http://d-nb.info/gnd/4011882-4",
-    "label" : "Deutschland",
-    "type" : [ "PlaceOrGeographicName" ]
-  }, {
-    "id" : "http://d-nb.info/gnd/4219952-9",
-    "label" : "Arisierung",
-    "type" : [ "SubjectHeading" ]
+    "id" : "http://dewey.info/class/943/",
+    "label" : "Geschichte Mitteleuropas; Deutschlands"
   }, {
     "id" : "http://d-nb.info/gnd/4136959-2",
     "label" : "Wiedergutmachung",
     "type" : [ "SubjectHeading" ]
+  }, {
+    "id" : "http://d-nb.info/gnd/4011882-4",
+    "label" : "Deutschland",
+    "type" : [ "PlaceOrGeographicName" ]
   }, {
     "id" : "http://d-nb.info/gnd/4020517-4",
     "label" : "Geschichte",
@@ -122,8 +117,9 @@
     "label" : "Aufsatzsammlung",
     "type" : [ "SubjectHeading" ]
   }, {
-    "id" : "http://dewey.info/class/943/",
-    "label" : "Geschichte Mitteleuropas; Deutschlands"
+    "id" : "http://d-nb.info/gnd/4219952-9",
+    "label" : "Arisierung",
+    "type" : [ "SubjectHeading" ]
   } ],
   "subjectChain" : [ "Deutschland | Arisierung | Wiedergutmachung | Geschichte | Aufsatzsammlung" ],
   "subjectLabel" : [ "Deutsche LÃ¤nder", "Heiliges RÃ¶misches Reich", "Deutschland (Gebiet unter Alliierter Besatzung)", "Norddeutscher Bund", "Allemagne (Deutschland)", "Federal Republic of Germany (Deutschland)", "Ç¦umhÅ«rÄ«yat AlmÄniyÄ al-Ittiá¸¥ÄdÄ«ya", "Landesgeschichte", "Germanija", "Germany (Deutschland)", "Rheinbund", "Drittes Reich / Arisierung", "EinzelbeitrÃ¤ge", "Regionalgeschichte", "Deutschland (Bundesrepublik, 1990-)", "RÃ©publique FÃ©dÃ©rale d'Allemagne (Deutschland)", "BeitrÃ¤ge (Formschlagwort)", "Federativnaja Respublika Germanija", "Republic of Germany (Deutschland)", "Repubblica Federale di Germania (Deutschland)", "Deyizhi-Lianbang-Gongheguo", "Niemcy", "Ortsgeschichte", "Zeitgeschichte", "Deutsches Reich", "Deutschland / Arisierung", "Sammelwerk (Formschlagwort)", "Bundesrepublik Deutschland (1990-)", "BRD (1990-)", "BRD", "Deutscher Bund", "FRG" ],

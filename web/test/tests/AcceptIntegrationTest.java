@@ -30,7 +30,7 @@ import play.test.FakeRequest;
  */
 @SuppressWarnings("javadoc")
 @RunWith(Parameterized.class)
-public class AcceptIntegrationTest {
+public class AcceptIntegrationTest extends LocalIndexSetup {
 
 	// test data parameters, formatted as "input /*->*/ expected output"
 	@Parameters
@@ -38,27 +38,27 @@ public class AcceptIntegrationTest {
 		// @formatter:off
 		return Arrays.asList(new Object[][] {
 			// search, default format: JSON
-			{ fakeRequest(GET, "/resources/search?q=*"), /*->*/ "application/json" }, 
-			{ fakeRequest(GET, "/resources/search?q=*&format="), /*->*/ "application/json" }, 
-			{ fakeRequest(GET, "/resources/search?q=*&format=json"), /*->*/ "application/json" }, 
-			{ fakeRequest(GET, "/resources/search?q=*&format=whatever"), /*->*/ "application/json" }, 
-			{ fakeRequest(GET, "/resources/search?q=*").withHeader("Accept", "text/plain"), /*->*/ "application/json" }, 
+			{ fakeRequest(GET, "/resources/search?q=*"), /*->*/ "application/json" },
+			{ fakeRequest(GET, "/resources/search?q=*&format="), /*->*/ "application/json" },
+			{ fakeRequest(GET, "/resources/search?q=*&format=json"), /*->*/ "application/json" },
+			{ fakeRequest(GET, "/resources/search?q=*&format=whatever"), /*->*/ "application/json" },
+			{ fakeRequest(GET, "/resources/search?q=*").withHeader("Accept", "text/plain"), /*->*/ "application/json" },
 			// search, others formats as query param:
-			{ fakeRequest(GET, "/resources/search?q=*&format=html"), /*->*/ "text/html" }, 
+			{ fakeRequest(GET, "/resources/search?q=*&format=html"), /*->*/ "text/html" },
 			// search, others formats via header:
 			{ fakeRequest(GET, "/resources/search?q=*").withHeader("Accept", "application/json"), /*->*/ "application/json" },
 			{ fakeRequest(GET, "/resources/search?q=*").withHeader("Accept", "text/html"), /*->*/ "text/html" },
 			// get, default format: JSON
-			{ fakeRequest(GET, "/resources/HT009507067"), /*->*/ "application/json" }, 
-			{ fakeRequest(GET, "/resources/HT009507067?format="), /*->*/ "application/json" }, 
-			{ fakeRequest(GET, "/resources/HT009507067?format=json"), /*->*/ "application/json" }, 
-			{ fakeRequest(GET, "/resources/HT009507067?format=whatever"), /*->*/ "application/json" }, 
-			{ fakeRequest(GET, "/resources/HT009507067").withHeader("Accept", "text/plain"), /*->*/ "application/json" },
+			{ fakeRequest(GET, "/resources/HT018907266"), /*->*/ "application/json" },
+			{ fakeRequest(GET, "/resources/HT018907266?format="), /*->*/ "application/json" },
+			{ fakeRequest(GET, "/resources/HT018907266?format=json"), /*->*/ "application/json" },
+			{ fakeRequest(GET, "/resources/HT018907266?format=whatever"), /*->*/ "application/json" },
+			{ fakeRequest(GET, "/resources/HT018907266").withHeader("Accept", "text/plain"), /*->*/ "application/json" },
 			// get, others formats as query param:
-			{ fakeRequest(GET, "/resources/HT009507067?format=html"), /*->*/ "text/html" }, 
+			{ fakeRequest(GET, "/resources/HT018907266?format=html"), /*->*/ "text/html" },
 			// get, others formats via header:
-			{ fakeRequest(GET, "/resources/HT009507067").withHeader("Accept", "application/json"), /*->*/ "application/json" },
-			{ fakeRequest(GET, "/resources/HT009507067").withHeader("Accept", "text/html"), /*->*/ "text/html" }});
+			{ fakeRequest(GET, "/resources/HT018907266").withHeader("Accept", "application/json"), /*->*/ "application/json" },
+			{ fakeRequest(GET, "/resources/HT018907266").withHeader("Accept", "text/html"), /*->*/ "text/html" }});
 	} // @formatter:on
 
 	private FakeRequest fakeRequest;
