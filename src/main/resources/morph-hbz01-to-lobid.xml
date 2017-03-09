@@ -1243,16 +1243,26 @@
 		<combine name="$[ns-gnd]dateOfBirth" value="${a}" sameEntity="true">
 			<data source="@subjectLinks"/>
 			<data source="@preferredNameP"/>
-			<data source="9[01234][27]-[-12].d" name="a">
-				<regexp match="^([0-9]{1,4})-.*" format="${1}"/>
-			</data>
+			<choose name="a" flushWith="9[01234][27]-[-12].d" sameEntity="true">
+				<data source="9[01234][27]-[-12].d">
+					<regexp match="^([0-9]{4})-.*" format="${1}"/>
+				</data>
+				<data source="9[01234][27]-[-12].d">
+					<regexp match="([0-9]{3})-.*" format="0${1}"/>
+				</data>
+			</choose>
 		</combine>
 		<combine name="$[ns-gnd]dateOfDeath" value="${a}" sameEntity="true">
 			<data source="@subjectLinks"/>
 			<data source="@preferredNameP"/>
-			<data source="9[01234][27]-[-12].d" name="a">
-				<regexp match="^[0-9]{1,4}-([0-9]{1,4})" format="${1}"/>
-			</data>
+			<choose name="a" flushWith="9[01234][27]-[-12].d" sameEntity="true">
+				<data source="9[01234][27]-[-12].d">
+					<regexp match="^[0-9]{1,4}-([0-9]{4})" format="${1}"/>
+				</data>
+				<data source="9[01234][27]-[-12].d">
+					<regexp match="^[0-9]{1,4}-([0-9]{3})" format="0${1}"/>
+				</data>
+			</choose>
 		</combine>
 		<combine name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" value="${a}"
 			flushWith="@subjectLinks|@creatorCorporateBodyId|@contributorCorporateBodyBnodeOrId"
