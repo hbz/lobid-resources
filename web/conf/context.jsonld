@@ -1,11 +1,15 @@
 {
   "@context" : {
     "extent" : {
-      "@id" : "http://iflastandards.info/ns/isbd/elements/P1053"
+      "@id" : "http://id.loc.gov/ontologies/bibframe/extent"
     },
     "endDate" : {
       "@id" : "http://schema.org/endDate",
       "@container" : "@set"
+    },
+    "SecondaryPublicationEvent" : {
+      "@type" : "@id",
+      "@id" : "http://purl.org/lobid/lv#SecondaryPublicationEvent"
     },
     "altLabel" : {
       "@id" : "http://www.w3.org/2004/02/skos/core#altLabel",
@@ -103,7 +107,7 @@
     },
     "Game" : {
       "@type" : "@id",
-      "@id" : "http://purl.org/library/Game",
+      "@id" : "http://schema.org/Game",
       "@container" : "@set"
     },
     "issn" : {
@@ -261,7 +265,7 @@
       "@container" : "@set"
     },
     "callNumber" : {
-      "@id" : "http://purl.org/ontology/daia/label"
+      "@id" : "http://purl.org/lobid/lv#callNumber"
     },
     "placeOfPublication" : {
       "@id" : "http://rdaregistry.info/Elements/u/P60163",
@@ -358,10 +362,6 @@
       "@container" : "@set"
     },
     "frequency" : {
-      "@id" : "http://rdaregistry.info/Elements/u/P60538",
-      "@container" : "@set"
-    },
-    "publicationFrequency" : {
       "@id" : "http://id.loc.gov/ontologies/bibframe/frequency",
       "@container" : "@set"
     },
@@ -387,10 +387,6 @@
       "@type" : "@id",
       "@id" : "http://d-nb.info/standards/elementset/gnd#DifferentiatedPerson",
       "@container" : "@set"
-    },
-    "isPrimaryTopicOf" : {
-      "@type" : "@id",
-      "@id" : "http://xmlns.com/foaf/0.1/isPrimaryTopicOf"
     },
     "contributorLabel" : {
       "@id" : "http://purl.org/lobid/lv#contributorLabel",
@@ -418,8 +414,9 @@
       "@id" : "http://purl.org/lobid/lv#Legislation",
       "@container" : "@set"
     },
-    "statementOfResponsibility" : {
-      "@id" : "http://rdaregistry.info/Elements/u/P60339"
+    "responsibilityStatement" : {
+      "@id" : "http://id.loc.gov/ontologies/bibframe/responsibilityStatement",
+      "@container" : "@set"
     },
     "Thesis" : {
       "@type" : "@id",
@@ -482,10 +479,6 @@
       "@type" : "@id",
       "@id" : "http://purl.org/dc/terms/hasVersion",
       "@container" : "@set"
-    },
-    "secondaryPublication" : {
-      "@type" : "@id",
-      "@id" : "http://purl.org/lobid/lv#secondaryPublication"
     },
     "isbn" : {
       "@id" : "http://purl.org/ontology/bibo/isbn",

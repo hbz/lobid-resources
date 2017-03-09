@@ -204,11 +204,6 @@
 		<!-- ####################### -->
 		<!-- ####### General attributes for each record -->
 		<!-- ####################### -->
-		<combine name="http://xmlns.com/foaf/0.1/isPrimaryTopicOf" value="${primaryTopic}">
-			<data source="@id" name="primaryTopic">
-				<regexp match="(.*)" format="http://193.30.112.134/F/?func=find-c&amp;ccl_term=IDN%3D${1}"/>
-			</data>
-		</combine>
 		<data source="@id" name="$[ns-lobid-vocab]hbzID"/>
 		<data source="@id" name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type">
 			<regexp match=".*" format="http://purl.org/dc/terms/BibliographicResource"/>
@@ -309,11 +304,11 @@
 		</data>
 		<!-- game -->
 		<data source="050." name="@rdftype">
-			<regexp match="^.........a" format="http://purl.org/library/Game"/>
+			<regexp match="^.........a" format="http://schema.org/Game"/>
 		</data>
 		<!-- manuscript -->
 		<data source="050." name="@medium">
-			<regexp match="^.a" format="http://rdaregistry.info/termList/prodManuscript/1002"/>
+			<regexp match="^.a" format="http://purl.org/ontology/bibo/Manuscript"/>
 		</data>
 		<!-- Computer carriers -->
 		<data source="050." name="@medium">
@@ -529,18 +524,6 @@
 			</if>
 			<data source="@id"/>
 		</combine>
-		<!-- ####################### -->
-		<!-- ########## frequency -->
-		<!-- ####################### -->
-		<!-- proceedings -->
-		<data source="052." name="http://id.loc.gov/ontologies/bibframe/frequency">
-			<regexp
-				match="^.......([dcwesmbqfaghz])|^........([dcwesmbqfaghz])|^.........([dcwesmbqfaghz])"
-				format="http://marc21rdf.info/terms/continuingfre#${1}"/>
-		</data>
-		<data source="052." name="http://id.loc.gov/ontologies/bibframe/frequency">
-			<regexp match="^.......t|^........t|^.........t" format="http://marc21rdf.info/terms/continuingfre#i"/>
-		</data>
 		<!-- <combine value="${a}" name=""> <data source="@frequency" name="a"/> </combine> -->
 		<!-- ####################### -->
 		<!-- ########## title -->
@@ -667,7 +650,10 @@
 			</data>
 			<data source="@placeOfPublication_"/>
 		</choose>
-		<data source="41[27][-abcu][-12].[ag]|419-[12].b" name="@publisher"/>
+		<data source="41[27][-abcu][-12].[ag]|419-[12].b" name="@publisher">
+			<replace pattern="&gt;" with=""/>
+			<replace pattern="&lt;" with=""/>
+		</data>
 		<choose name="@startDateFirstPublication">
 			<!-- issue precedence -->
 			<!-- Multiple resource have [determined] volume numbers in this field. -->
@@ -697,6 +683,36 @@
 					<regexp match="[12]\d{3}"/>
 				</data>
 			</choose>
+			<!-- ####################### -->
+			<!-- ########## frequency -->
+			<!-- ####################### -->
+			<!-- proceedings -->
+			<choose name="http://id.loc.gov/ontologies/bibframe/frequency">
+				<data source="052.">
+					<regexp
+						match="^.......([dcwesmbqfaghz])|^........([dcwesmbqfaghz])|^.........([dcwesmbqfaghz])"
+						format="http://marc21rdf.info/terms/continuingfre#${1}"/>
+				</data>
+				<data source="052.">
+					<regexp match="^.......t|^........t|^.........t" format="http://marc21rdf.info/terms/continuingfre#i"/>
+				</data>
+			</choose>
+			<!-- if 523-1p and 523-1a -->
+			<combine name="http://id.loc.gov/ontologies/bibframe/note" value="${p}${a}">
+				<data source="523[-a][-1].p" name="p">
+					<regexp match="(.*)" format="${1}: "/>
+				</data>
+				<data source="523[-a][-1].a" name="a"/>
+			</combine>
+			<!-- if only 523-1a -->
+			<combine name="http://id.loc.gov/ontologies/bibframe/note" value="${a}">
+				<if>
+					<none>
+						<data source="523[-a][-1].p"/>
+					</none>
+				</if>
+				<data source="523[-a][-1].a" name="a"/>
+			</combine>
 			<data source="@publisher|@startDateFirstPublication|@placeOfPublication" name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type">
 				<constant value="http://schema.org/PublicationEvent"/>
 			</data>
@@ -708,7 +724,7 @@
 		<data source="619[ab][-1].a" name="@startDateSecondaryPublication">
 			<regexp match="(\d{4})" format="${1}"/>
 		</data>
-		<entity name="http://purl.org/lobid/lv#secondaryPublication" flushWith="record">
+		<entity name="http://schema.org/publication" flushWith="record">
 			<data source="@placeOfSecondaryPublication" name="http://schema.org/location"/>
 			<data source="@secondaryPublisher" name="http://schema.org/publishedBy"/>
 			<data source="@descriptionOfSecondaryPublication" name="http://purl.org/dc/terms/description"/>
@@ -716,14 +732,14 @@
 			<data
 				source="@secondaryPublisher|@startDateSecondaryPublication|@placeOfSecondaryPublication|@descriptionOfSecondaryPublication"
 				name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type">
-				<constant value="http://schema.org/PublicationEvent"/>
+				<constant value="http://purl.org/lobid/lv#SecondaryPublicationEvent"/>
 			</data>
 		</entity>
 		<!-- |674[-abc][-12].a <= YearOfPublication of the primary form. TODO find property -->
 		<!-- ####################### -->
 		<!-- ########## description extent -->
 		<!-- ####################### -->
-		<data source="433[-abc][-1].[aq]" name="http://iflastandards.info/ns/isbd/elements/P1053"/>
+		<data source="433[-abc][-1].[aq]" name="http://id.loc.gov/ontologies/bibframe/extent"/>
 		<!-- ####################### -->
 		<!-- ################ edition -->
 		<!-- ####################### -->
@@ -811,7 +827,7 @@
 			<data source="@itemId"/>
 			<data source="088 ?.b" name="a"/>
 		</combine>
-		<combine name="http://purl.org/ontology/daia/label" value="${signature}"
+		<combine name="http://purl.org/lobid/lv#callNumber" value="${signature}"
 			sameEntity="true">
 			<data source="@itemId"/>
 			<data source="088 ?.c" name="signature"/>
@@ -891,7 +907,7 @@
 			<sanitizeUrl></sanitizeUrl>
 		</data>
 		<!-- literals of creator (seems there are no corporateBodyCreators without gndID) -->
-		<data source="359[-ab][-12].a" name="http://rdaregistry.info/Elements/u/P60339"/>
+		<data source="359[-ab][-12].a" name="http://id.loc.gov/ontologies/bibframe/responsibilityStatement"/>
 		<data source="1[02468][048][-aemn][12].[pa]|1[13579][26][-aemn][12].[pa]" name="@creatorPersonLabel"/>
 		<!-- bnode for creator when no ID -->
 		<combine name="@bnodeCreatorPersonLabel" value="_:${a}">
@@ -1591,22 +1607,6 @@
 			<replace pattern="&gt;&gt;" with=""/>
 			<replace pattern="&lt;&lt;" with=""/>
 		</data>
-		<!-- if 523-1p and 523-1a -->
-		<combine name="http://rdaregistry.info/Elements/u/P60538" value="${p}${a}">
-			<data source="523[-a][-1].p" name="p">
-				<regexp match="(.*)" format="${1}: "/>
-			</data>
-			<data source="523[-a][-1].a" name="a"/>
-		</combine>
-		<!-- if only 523-1a -->
-		<combine name="http://rdaregistry.info/Elements/u/P60538" value="${a}">
-			<if>
-				<none>
-					<data source="523[-a][-1].p"/>
-				</none>
-			</if>
-			<data source="523[-a][-1].a" name="a"/>
-		</combine>
 		<data source="@supplement" name="http://id.loc.gov/ontologies/bibframe/supplement">
 			<regexp match="(.*)" format="$[ns-lobid-resource]${1}#!"/>
 		</data>
