@@ -99,10 +99,11 @@ public class Application extends Controller {
 	@Cached(key = "index", duration = ONE_DAY)
 	public static Promise<Result> index() {
 		return Promise.promise(() -> {
+			JsonNode dataset = Json.parse(readFile("dataset"));
 			final Form<String> form = queryForm.bindFromRequest();
 			if (form.hasErrors())
-				return badRequest(index.render());
-			return ok(index.render());
+				return badRequest(index.render(dataset));
+			return ok(index.render(dataset));
 		});
 	}
 
