@@ -486,11 +486,9 @@
 			<regexp match="^.[^r]" format="http://rdaregistry.info/termList/RDAMediaType/1003"/>
 		</data>
 		<!-- electronic -->
-		<data source="@fulltextOnline" name="@medium">
-			<regexp match=".*" format="http://rdaregistry.info/termList/RDAMediaType/1003"/>
-		</data>
+		<!-- looking for Blu-ray, Cartridge, CD, Diskette, DVD, Festplatte, HD-DVD, Kassette, USB -->
 		<data source="652a[-1].a" name="@medium">
-			<regexp match=".*" format="http://rdaregistry.info/termList/RDAMediaType/1003"/>
+			<regexp match="^[BbCcDdHhFfKkUu][AaDdEeIiLlSsVv]" format="http://rdaregistry.info/termList/RDAMediaType/1003"/>
 		</data>
 		<data source="@medium" name="http://purl.org/dc/terms/medium"/>
 		<!-- set default medium -->
