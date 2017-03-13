@@ -3,6 +3,7 @@
 package controllers.resources;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.text.Collator;
@@ -40,6 +41,7 @@ import com.google.gdata.util.common.base.PercentEscaper;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 
+import controllers.resources.Accept.Format;
 import play.Logger;
 import play.Play;
 import play.cache.Cache;
@@ -53,6 +55,7 @@ import play.mvc.Result;
 import play.test.Helpers;
 import play.twirl.api.Html;
 import views.html.api;
+import views.html.dataset;
 import views.html.details;
 import views.html.details_item;
 import views.html.index;
@@ -96,10 +99,11 @@ public class Application extends Controller {
 	@Cached(key = "index", duration = ONE_DAY)
 	public static Promise<Result> index() {
 		return Promise.promise(() -> {
+			JsonNode dataset = Json.parse(readFile("dataset"));
 			final Form<String> form = queryForm.bindFromRequest();
 			if (form.hasErrors())
-				return badRequest(index.render());
-			return ok(index.render());
+				return badRequest(index.render(dataset));
+			return ok(index.render(dataset));
 		});
 	}
 
@@ -678,16 +682,43 @@ public class Application extends Controller {
 	 * @return JSON-LD context
 	 */
 	public static Result context() {
+		return staticJsonld("context");
+	}
+
+	/**
+	 * See https://www.w3.org/TR/dwbp/#metadata
+	 * 
+	 * @param format The format ("json" or "html")
+	 * 
+	 * @return JSON-LD dataset metadata
+	 */
+	public static Result dataset(String format) {
+		String responseFormat = Accept.formatFor(format, request().acceptedTypes());
+		return responseFormat.matches(Format.JSON_LD.queryParamString)
+				? staticJsonld("dataset")
+				: ok(dataset.render(Json.parse(readFile("dataset"))));
+	}
+
+	private static Result staticJsonld(String name) {
 		response().setContentType("application/ld+json");
 		addCorsHeader();
 		try {
-			Callable<Status> readContext = () -> ok(Streams
-					.readAllLines(Play.application().resourceAsStream("context.jsonld"))
-					.stream().collect(Collectors.joining("\n")));
-			return Cache.getOrElse("context", readContext, ONE_DAY);
+			Callable<Status> readContext = () -> ok(readFile(name));
+			return Cache.getOrElse(name, readContext, ONE_DAY);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return internalServerError(e.getMessage());
+		}
+	}
+
+	private static String readFile(String name) {
+		try {
+			return Streams
+					.readAllLines(Play.application().resourceAsStream(name + ".jsonld"))
+					.stream().collect(Collectors.joining("\n"));
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
 		}
 	}
 }
