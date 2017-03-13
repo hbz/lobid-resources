@@ -38,7 +38,7 @@
         "uri": "http://schema.org/startDate",
         "label": "Beginn",
         "name": "startDate",
-        "referenceType": "String",
+        "referenceType": "http://www.w3.org/2001/XMLSchema#gYear",
         "container": "@set",
         "multilangLabel": { }
     },
@@ -46,13 +46,19 @@
         "uri": "http://schema.org/endDate",
         "label": "Ende",
         "name": "endDate",
-        "referenceType": "String",
+        "referenceType": "http://www.w3.org/2001/XMLSchema#gYear",
         "container": "@set",
         "multilangLabel": { }
     },
     {
         "uri": "http://schema.org/PublicationEvent",
         "name": "PublicationEvent",
+        "referenceType": "@id",
+        "multilangLabel": { }
+    },
+    {
+        "uri": "http://purl.org/lobid/lv#SecondaryPublicationEvent",
+        "name": "SecondaryPublicationEvent",
         "referenceType": "@id",
         "multilangLabel": { }
     },
@@ -97,15 +103,6 @@
         "multilangLabel": { }
     },
     {
-        "uri": "http://rdaregistry.info/Elements/u/P60163",
-        "label": "Ort der Herausgabe",
-        "icon": "fa fa-location-arrow",
-        "name": "placeOfPublication",
-        "referenceType": "String",
-        "container": "@set",
-        "multilangLabel": { }
-    },
-    {
         "uri": "http://rdaregistry.info/Elements/u/P60489",
         "label": "Hochschulschriftenvermerk",
         "name": "thesisInformation",
@@ -114,17 +111,9 @@
         "multilangLabel": { }
     },
     {
-        "uri": "http://rdaregistry.info/Elements/u/P60538",
-        "label": "Erscheinungsweise",
-        "name": "frequency",
-        "referenceType": "String",
-        "container": "@set",
-        "multilangLabel": { }
-    },
-    {
         "uri": "http://id.loc.gov/ontologies/bibframe/frequency",
         "label": "Erscheinungsfrequenz",
-        "name": "publicationFrequency",
+        "name": "frequency",
         "referenceType": "String",
         "container": "@set",
         "multilangLabel": { }
@@ -186,14 +175,6 @@
         "label": "unregelmäßig oder sonstige Erscheinungsfrequenz"
     },
     {
-        "uri": "http://rdaregistry.info/Elements/u/P60333",
-        "label": "Erscheinungsort und -jahr",
-        "name": "publicationStatement",
-        "referenceType": "String",
-        "container": "@set",
-        "multilangLabel": { }
-    },
-    {
         "uri": "http://id.loc.gov/ontologies/bibframe/responsibilityStatement",
         "label": "Verantwortlich",
         "name": "responsibilityStatement",
@@ -205,7 +186,7 @@
         "uri": "http://d-nb.info/standards/elementset/gnd#dateOfBirth",
         "label": "Geboren am",
         "name": "dateOfBirth",
-        "referenceType": "String",
+        "referenceType": "http://www.w3.org/2001/XMLSchema#gYear",
         "container": "@set",
         "multilangLabel": { }
     },
@@ -213,7 +194,7 @@
         "uri": "http://d-nb.info/standards/elementset/gnd#dateOfDeath",
         "label": "Gestorben am",
         "name": "dateOfDeath",
-        "referenceType": "String",
+        "referenceType": "http://www.w3.org/2001/XMLSchema#gYear",
         "container": "@set",
         "multilangLabel": { }
     },
@@ -373,7 +354,7 @@
         "multilangLabel": { }
     },
     {
-        "uri": "http://iflastandards.info/ns/isbd/elements/P1053",
+        "uri": "http://id.loc.gov/ontologies/bibframe/extent",
         "label": "Umfang",
         "name": "extent",
         "referenceType": "String",
@@ -392,30 +373,6 @@
         "label": "Autor/in",
         "name": "Creator",
         "referenceType": "@id",
-        "container": "@set",
-        "multilangLabel": { }
-    },
-    {
-        "uri": "http://purl.org/dc/elements/1.1/creator",
-        "label": "Autorenname",
-        "name": "creatorName",
-        "referenceType": "String",
-        "container": "@set",
-        "multilangLabel": { }
-    },
-    {
-        "uri": "http://purl.org/dc/elements/1.1/publisher",
-        "label": "Herausgeber",
-        "name": "publisher",
-        "referenceType": "String",
-        "container": "@set",
-        "multilangLabel": { }
-    },
-    {
-        "uri": "http://purl.org/dc/elements/1.1/subject",
-        "label": "Schlagwort",
-        "name": "subjectName",
-        "referenceType": "String",
         "container": "@set",
         "multilangLabel": { }
     },
@@ -467,22 +424,6 @@
         "multilangLabel": { }
     },
     {
-        "uri": "http://purl.org/dc/terms/hasFormat",
-        "label": "Hat Format",
-        "name": "hasFormat",
-        "referenceType": "@id",
-        "container": "@set",
-        "multilangLabel": { }
-    },
-    {
-        "uri": "http://purl.org/dc/terms/hasPart",
-        "label": "Bestandteile",
-        "name": "hasPart",
-        "referenceType": "@id",
-        "container": "@set",
-        "multilangLabel": { }
-    },
-    {
         "uri": "http://purl.org/dc/terms/hasVersion",
         "label": "Vgl.",
         "name": "hasVersion",
@@ -503,13 +444,6 @@
         "name": "isPartOf",
         "referenceType": "@id",
         "container": "@set",
-        "multilangLabel": { }
-    },
-    {
-        "uri": "http://purl.org/dc/terms/issued",
-        "label": "Erschienen",
-        "name": "issued",
-        "referenceType": "String",
         "multilangLabel": { }
     },
     {
@@ -578,24 +512,10 @@
         "multilangLabel": { }
     },
     {
-        "uri": "http://purl.org/lobid/lv#secondaryPublication",
-        "name": "secondaryPublication",
-        "referenceType": "@id",
-        "multilangLabel": { }
-    },
-    {
         "uri": "http://purl.org/lobid/lv#containedIn",
         "label": "Enthalten in",
         "name": "containedIn",
         "referenceType": "@id",
-        "container": "@set",
-        "multilangLabel": { }
-    },
-    {
-        "uri": "http://purl.org/lobid/lv#contributorLabel",
-        "label": "Mitwirkende",
-        "name": "contributorLabel",
-        "referenceType": "String",
         "container": "@set",
         "multilangLabel": { }
     },
@@ -628,14 +548,6 @@
         "label": "Mehrbändiges Werk",
         "name": "multiVolumeWork",
         "referenceType": "@id",
-        "container": "@set",
-        "multilangLabel": { }
-    },
-    {
-        "uri": "http://purl.org/lobid/lv#nameOfContributingCorporateBody",
-        "label": "Körperschaftsname",
-        "name": "contributingCorporateBodyLabel",
-        "referenceType": "String",
         "container": "@set",
         "multilangLabel": { }
     },
@@ -6286,14 +6198,6 @@
         "multilangLabel": { }
     },
     {
-        "uri": "http://purl.org/ontology/bibo/eissn",
-        "label": "Eissn",
-        "name": "eissn",
-        "referenceType": "String",
-        "container": "@set",
-        "multilangLabel": { }
-    },
-    {
         "uri": "http://purl.org/ontology/bibo/isbn",
         "label": "Isbn",
         "name": "isbn",
@@ -6305,14 +6209,6 @@
         "uri": "http://purl.org/ontology/bibo/issn",
         "label": "Issn",
         "name": "issn",
-        "referenceType": "String",
-        "container": "@set",
-        "multilangLabel": { }
-    },
-    {
-        "uri": "http://purl.org/ontology/bibo/lccn",
-        "label": "Lccn",
-        "name": "lccn",
         "referenceType": "String",
         "container": "@set",
         "multilangLabel": { }
@@ -6339,16 +6235,7 @@
         "multilangLabel": { }
     },
     {
-        "uri": "http://purl.org/ontology/bibo/volume",
-        "label": "Band",
-        "icon": "",
-        "name": "volume",
-        "referenceType": "String",
-        "container": "@set",
-        "multilangLabel": { }
-    },
-    {
-        "uri": "http://purl.org/ontology/daia/label",
+        "uri": "http://purl.org/lobid/lv#callNumber",
         "label": "Signatur",
         "name": "callNumber",
         "referenceType": "String",
@@ -6367,14 +6254,6 @@
         "label": "Ismn",
         "name": "ismn",
         "referenceType": "String",
-        "container": "@set",
-        "multilangLabel": { }
-    },
-    {
-        "uri": "http://purl.org/ontology/mo/wikipedia",
-        "label": "Wikipedia",
-        "name": "wikipedia",
-        "referenceType": "@id",
         "container": "@set",
         "multilangLabel": { }
     },
@@ -6425,20 +6304,10 @@
         "multilangLabel": { }
     },
     {
-        "uri": "http://rdaregistry.info/Elements/u/P60163",
-        "label": "Ort der Herausgabe",
-        "icon": "fa fa-location-arrow",
-        "name": "placeOfPublication",
+        "uri": "http://rdaregistry.info/Elements/u/P60339",
+        "label": "Verantwortlich",
+        "name": "statementOfResponsibility",
         "referenceType": "String",
-        "container": "@set",
-        "multilangLabel": { }
-    },
-    {
-        "uri": "http://rdaregistry.info/Elements/u/P60333",
-        "label": "Erscheinungsort und -jahr",
-        "name": "publicationStatement",
-        "referenceType": "String",
-        "container": "@set",
         "multilangLabel": { }
     },
     {
@@ -6453,14 +6322,6 @@
         "uri": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
         "label": "Typ",
         "name": "type",
-        "referenceType": "@id",
-        "container": "@set",
-        "multilangLabel": { }
-    },
-    {
-        "uri": "http://www.w3.org/2000/01/rdf-schema#inDataset",
-        "label": "Gehört zu Datenset",
-        "name": "inDataset",
         "referenceType": "@id",
         "container": "@set",
         "multilangLabel": { }
@@ -6490,24 +6351,9 @@
         "multilangLabel": { }
     },
     {
-        "uri": "http://www.w3.org/2004/02/skos/core#prefLabel",
-        "label": "Etikett",
-        "name": "prefLabel",
-        "referenceType": "String",
-        "container": "@set",
-        "multilangLabel": { }
-    },
-    {
         "uri": "http://www.w3.org/2007/05/powder-s#describedby",
         "label": "Beschrieben durch",
         "name": "describedby",
-        "referenceType": "@id",
-        "multilangLabel": { }
-    },
-    {
-        "uri": "http://xmlns.com/foaf/0.1/isPrimaryTopicOf",
-        "label": "Weitere Informationen",
-        "name": "isPrimaryTopicOf",
         "referenceType": "@id",
         "multilangLabel": { }
     },
@@ -14665,7 +14511,7 @@
       "label":"lobid Organisation"
    },
    {
-      "uri":"http://rdaregistry.info/termList/RDACarrierType/1010",
+      "uri":"http://rdaregistry.info/termList/RDAMediaType/1003",
       "label":"Datenträger"
    },
    {
@@ -14675,6 +14521,10 @@
    {
       "uri":"http://purl.org/ontology/bibo/AudioDocument",
       "label":"Audio-Dokument"
+   },
+   {
+      "uri":"http://purl.org/ontology/bibo/Manuscript",
+      "label":"Manuskript"
    },
    {
       "uri":"http://purl.org/ontology/mo/Vinyl",
