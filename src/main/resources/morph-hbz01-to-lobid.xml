@@ -1085,6 +1085,7 @@
 		<!-- ####################### -->
 		<!-- contributors with roles @TODO many roles needs tests -->
 		<data source="1??b[1234].b|8[012]?[-mn][-12].b" name="@marcrelName"/>
+		<data source="1[02468][048]??.4|1[13579][26]??.4|2[02468][048]??.4|2[13579][26]??.4" name="@AgentsHeadings"/>
 		<!-- id of contributor (which is not a creator) -->
 		<data source="1??[bcefp][1234].9" name="@contributorPersonId">
 			<regexp match="\(DE-588\)(.*)" format="http://d-nb.info/gnd/${1}"/>
@@ -1313,92 +1314,95 @@
 					<regexp match=".*" format="http://id.loc.gov/vocabulary/relators/cre"/>
 				</data>
 				<!-- map literals to marc relator property -->
-				<data source="@marcrelName" name="a">
-					<regexp match="[dD]ars" format="http://id.loc.gov/vocabulary/relators/act"/>
+				<data source="@marcrelName|@AgentsHeadings" name="a">
+					<regexp match="[dD]ars|act" format="http://id.loc.gov/vocabulary/relators/act"/>
 				</data>
-				<data source="@marcrelName" name="a">
-					<regexp match="[hH]rsg" format="http://id.loc.gov/vocabulary/relators/edt"/>
+				<data source="@marcrelName|@AgentsHeadings" name="a">
+					<regexp match="[hH]rsg|edt" format="http://id.loc.gov/vocabulary/relators/edt"/>
 				</data>
-				<data source="@marcrelName" name="a">
-					<regexp match="[rR]egi" format="http://id.loc.gov/vocabulary/relators/drt"/>
+				<data source="@marcrelName|@AgentsHeadings" name="a">
+					<regexp match="isb" format="http://id.loc.gov/vocabulary/relators/isb"/>
 				</data>
-				<data source="@marcrelName" name="a">
-					<regexp match="bers" format="http://id.loc.gov/vocabulary/relators/trl"/>
+				<data source="@marcrelName|@AgentsHeadings" name="a">
+					<regexp match="[rR]egi|drt" format="http://id.loc.gov/vocabulary/relators/drt"/>
 				</data>
-				<data source="@marcrelName" name="a">
-					<regexp match="[iI]ll" format="http://id.loc.gov/vocabulary/relators/ill"/>
+				<data source="@marcrelName|@AgentsHeadings" name="a">
+					<regexp match="bers|trl" format="http://id.loc.gov/vocabulary/relators/trl"/>
 				</data>
-				<data source="@marcrelName" name="a">
-					<regexp match="[zZ]eichn" format="http://id.loc.gov/vocabulary/relators/ill"/>
+				<data source="@marcrelName|@AgentsHeadings" name="a">
+					<regexp match="[iI]ll|[zZ]eichn" format="http://id.loc.gov/vocabulary/relators/ill"/>
 				</data>
-				<data source="@marcrelName" name="a">
-					<regexp match="^[mM]itarb" format="http://id.loc.gov/vocabulary/relators/clb"/>
+				<data source="@marcrelName|@AgentsHeadings" name="a">
+					<regexp match="^[mM]itarb|clb" format="http://id.loc.gov/vocabulary/relators/clb"/>
 				</data>
-				<data source="@marcrelName" name="a">
-					<regexp match=".*[oO]togr.*" format="http://id.loc.gov/vocabulary/relators/pht"/>
+				<data source="@marcrelName|@AgentsHeadings" name="a">
+					<regexp match=".*[oO]togr.*|pht" format="http://id.loc.gov/vocabulary/relators/pht"/>
 				</data>
-				<data source="@marcrelName" name="a">
-					<regexp match=".*[dD]ir" format="http://id.loc.gov/vocabulary/relators/cnd"/>
+				<data source="@marcrelName|@AgentsHeadings" name="a">
+					<regexp match=".*[dD]ir|cnd" format="http://id.loc.gov/vocabulary/relators/cnd"/>
 				</data>
-				<data source="@marcrelName" name="a">
-					<regexp match="[kK]om" format="http://id.loc.gov/vocabulary/relators/cmp"/>
+				<data source="@marcrelName|@AgentsHeadings" name="a">
+					<regexp match="[kK]om|cmp" format="http://id.loc.gov/vocabulary/relators/cmp"/>
 				</data>
-				<data source="@marcrelName" name="a">
-					<regexp match="[vV]or" format="http://id.loc.gov/vocabulary/relators/aui"/>
+				<data source="@marcrelName|@AgentsHeadings" name="a">
+					<regexp match="[vV]or|aui" format="http://id.loc.gov/vocabulary/relators/aui"/>
 				</data>
-				<data source="@marcrelName" name="a">
-					<regexp match="[dD]rehb" format="http://id.loc.gov/vocabulary/relators/aus"/>
+				<data source="@marcrelName|@AgentsHeadings" name="a">
+					<regexp match="[dD]rehb|aus" format="http://id.loc.gov/vocabulary/relators/aus"/>
 				</data>
-				<data source="@marcrelName" name="a">
-					<regexp match="[sS]ammler" format="http://id.loc.gov/vocabulary/relators/col"/>
+				<data source="@marcrelName|@AgentsHeadings" name="a">
+					<regexp match="[sS]ammler|col" format="http://id.loc.gov/vocabulary/relators/col"/>
 				</data>
 				<data source="1??e[1234].p" name="a">  <!-- see #150 -->
 					<regexp match=".*" format="http://id.loc.gov/vocabulary/relators/prf"/>
 				</data>
-				<data source="@marcrelName" name="a">
-					<regexp match="[iI]nterpr" format="http://id.loc.gov/vocabulary/relators/prf"/>
+				<data source="@marcrelName|@AgentsHeadings" name="a">
+					<regexp match="[iI]nterpr|prf" format="http://id.loc.gov/vocabulary/relators/prf"/>
 				</data>
-				<data source="@marcrelName" name="a">
-					<regexp match="[bB]eitr" format="http://id.loc.gov/vocabulary/relators/ctb"/>
+				<data source="@marcrelName|@AgentsHeadings" name="a">
+					<regexp match="[bB]eitr|ctb" format="http://id.loc.gov/vocabulary/relators/ctb"/>
 				</data>
-				<data source="@marcrelName" name="a">
-					<regexp match="[kK]amera" format="http://id.loc.gov/vocabulary/relators/cng"/>
+				<data source="@marcrelName|@AgentsHeadings" name="a">
+					<regexp match="[kK]amera|cng" format="http://id.loc.gov/vocabulary/relators/cng"/>
 				</data>
-				<data source="@marcrelName" name="a">
-					<regexp match="[vV]orl" format="http://id.loc.gov/vocabulary/relators/ant"/>
+				<data source="@marcrelName|@AgentsHeadings" name="a">
+					<regexp match="[vV]orl|ant" format="http://id.loc.gov/vocabulary/relators/ant"/>
 				</data>
-				<data source="@marcrelName" name="a">
-					<regexp match="[gG]esang" format="http://id.loc.gov/vocabulary/relators/sng"/>
+				<data source="@marcrelName|@AgentsHeadings" name="a">
+					<regexp match="[gG]esang|sng" format="http://id.loc.gov/vocabulary/relators/sng"/>
 				</data>
-				<data source="@marcrelName" name="a">
-					<regexp match="[iI]nterviewer" format="http://id.loc.gov/vocabulary/relators/ivr"/>
+				<data source="@marcrelName|@AgentsHeadings" name="a">
+					<regexp match="[iI]nterviewer|ivr" format="http://id.loc.gov/vocabulary/relators/ivr"/>
 				</data>
-				<data source="@marcrelName" name="a">
-					<regexp match="[iI]nterviewter" format="http://id.loc.gov/vocabulary/relators/ive"/>
+				<data source="@marcrelName|@AgentsHeadings" name="a">
+					<regexp match="[iI]nterviewter|ive" format="http://id.loc.gov/vocabulary/relators/ive"/>
 				</data>
-				<data source="@marcrelName" name="a">
-					<regexp match="[kK]artogra" format="http://id.loc.gov/vocabulary/relators/ctg"/>
+				<data source="@marcrelName|@AgentsHeadings" name="a">
+					<regexp match="[kK]artogra|ctg" format="http://id.loc.gov/vocabulary/relators/ctg"/>
 				</data>
-				<data source="@marcrelName" name="a">
-					<regexp match="[mM]usi" format="http://id.loc.gov/vocabulary/relators/mus"/>
+				<data source="@marcrelName|@AgentsHeadings" name="a">
+					<regexp match="[mM]usi|mus" format="http://id.loc.gov/vocabulary/relators/mus"/>
 				</data>
-				<data source="@marcrelName" name="a">
-					<regexp match="[nN]ach" format="http://id.loc.gov/vocabulary/relators/aft"/>
+				<data source="@marcrelName|@AgentsHeadings" name="a">
+					<regexp match="[nN]ach|aft" format="http://id.loc.gov/vocabulary/relators/aft"/>
 				</data>
-				<data source="@marcrelName" name="a">
-					<regexp match="[pP]rod" format="http://id.loc.gov/vocabulary/relators/pro"/>
+				<data source="@marcrelName|@AgentsHeadings" name="a">
+					<regexp match="[pP]rod|pro" format="http://id.loc.gov/vocabulary/relators/pro"/>
 				</data>
-				<data source="@marcrelName" name="a">
-					<regexp match="[sS]techer" format="http://id.loc.gov/vocabulary/relators/egr"/>
+				<data source="@marcrelName|@AgentsHeadings" name="a">
+					<regexp match="[sS]techer|egr" format="http://id.loc.gov/vocabulary/relators/egr"/>
 				</data>
-				<data source="@marcrelName" name="a">
-					<regexp match="[wW]idmun" format="http://id.loc.gov/vocabulary/relators/dte"/>
+				<data source="@marcrelName|@AgentsHeadings" name="a">
+					<regexp match="[wW]idmun|dte" format="http://id.loc.gov/vocabulary/relators/dte"/>
 				</data>
-				<data source="@marcrelName" name="a">
+				<data source="@marcrelName|@AgentsHeadings" name="a">
 					<regexp match="[rR]ed" format="http://id.loc.gov/vocabulary/relators/red"/>
 				</data>
 				<data source="104f1.p" name="a">
 					<regexp match=".*" format="http://id.loc.gov/vocabulary/relators/hnr"/>
+				</data>
+				<data source="@AgentsHeadings" name="a">
+					<regexp match="hnr" format="http://id.loc.gov/vocabulary/relators/hnr"/>
 				</data>
 				<!-- default -->
 				<data source="@contributorPersonBnodeOrId|@contributorCorporateBodyBnodeOrId"
