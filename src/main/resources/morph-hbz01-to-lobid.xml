@@ -1607,9 +1607,16 @@
 			<replace pattern="&gt;&gt;" with=""/>
 			<replace pattern="&lt;&lt;" with=""/>
 		</data>
-		<data source="@supplement" name="http://id.loc.gov/ontologies/bibframe/supplement">
-			<regexp match="(.*)" format="$[ns-lobid-resource]${1}#!"/>
-		</data>
+		<combine name="http://id.loc.gov/ontologies/bibframe/supplement" value="${a}">
+			<choose name="a" flushWith="@supplement" sameEntity="true">
+				<data source="@supplement">
+					<regexp match="^([A-Z][A-Z].*)" format="$[ns-lobid-resource]${1}#!"/>
+				</data>
+				<data source="@supplement">
+					<regexp match="^(\d\d.*)" format="$[ns-zdb-services]${1}#!"/>
+				</data>
+			</choose>
+		</combine>
 		<data source="599[-b][-1].[a]" name="@dctIsPartOfHbzIdArticle">
 			<regexp match="(.*)" format="$[ns-lobid-resource]${1}#!"/>
 		</data>
