@@ -4,9 +4,9 @@
 package org.lobid.resources;
 
 import java.io.StringWriter;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Stack;
+import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.jena.riot.Lang;
@@ -53,8 +53,8 @@ public class PipeEncodeTriples extends AbstractGraphPipeEncoder {
 	private static final Logger LOG =
 			LoggerFactory.getLogger(PipeEncodeTriples.class);
 	private boolean storeUrnAsUri = false;
-	private ArrayList<RDFList> rdfListArray;
-	HashMap<String, ArrayList<RDFList>> rdfListArrayMap;
+	private TreeMap<Integer, RDFList> treeMapOfRDFList;
+	HashMap<String, TreeMap<Integer, RDFList>> hashMapOfTreeMapOfRDFList;
 	private int rdfListNr;
 	private boolean isRdfList;
 
@@ -89,8 +89,8 @@ public class PipeEncodeTriples extends AbstractGraphPipeEncoder {
 		model = ModelFactory.createDefaultModel();
 		resources = new Stack<>();
 		rdfListNr = -1;
-		rdfListArray = new ArrayList<>();
-		rdfListArrayMap = new HashMap<>();
+		treeMapOfRDFList = new TreeMap<>();
+		hashMapOfTreeMapOfRDFList = new HashMap<>();
 		if (!fixSubject) {
 			subject = DUMMY_SUBJECT;
 		}
@@ -146,21 +146,21 @@ public class PipeEncodeTriples extends AbstractGraphPipeEncoder {
 			final String value, final Property prop) {
 		RDFNode node =
 				isUri ? model.createProperty(value) : model.createLiteral(value);
-		if (!rdfListArrayMap.containsKey(name)) {
-			rdfListArray = new ArrayList<>();
-			rdfListArray.add(model.createList(new RDFNode[] { node }));
-			rdfListArrayMap.put(name, rdfListArray);
-			addToResources(prop);
-		} else if (rdfListArrayMap.get(name).size() == rdfListNr) {
-			rdfListArrayMap.get(name).add(model.createList(new RDFNode[] { node }));
-			addToResources(prop);
-		} else
-			rdfListArrayMap.get(name).get(rdfListNr).add(node);
+		if (!hashMapOfTreeMapOfRDFList.containsKey(name)
+				|| hashMapOfTreeMapOfRDFList.get(name).get(rdfListNr) == null) {
+			treeMapOfRDFList = new TreeMap<>();
+			treeMapOfRDFList.put(rdfListNr, model.createList(new RDFNode[] { node }));
+			hashMapOfTreeMapOfRDFList.put(name, treeMapOfRDFList);
+			addToResources(prop, name);
+		} else if (hashMapOfTreeMapOfRDFList.get(name).get(rdfListNr) != null) {
+			hashMapOfTreeMapOfRDFList.get(name).get(rdfListNr).add(node);
+			addToResources(prop, name);
+		}
 	}
 
-	private void addToResources(final Property prop) {
+	private void addToResources(final Property prop, final String name) {
 		resources.peek().addProperty(prop,
-				rdfListArray.get(rdfListArray.size() - 1));
+				hashMapOfTreeMapOfRDFList.get(name).get(rdfListNr));
 	}
 
 	Resource makeBnode(final String value) {
@@ -182,17 +182,18 @@ public class PipeEncodeTriples extends AbstractGraphPipeEncoder {
 	public void startEntity(String name) {
 		if (name.startsWith(LIST_NAME)) {
 			isRdfList = true;
-			rdfListNr = name.matches(".*[0-9]$")
-					? Integer.valueOf(name.substring(name.length() - 1)) : 0;
+			rdfListNr = name.matches(".*[0-9]{2}$")
+					? Integer.valueOf(name.substring(name.length() - 2)) : 0;
 		} else
 			enterBnode(makeBnode(name));
 	}
 
 	@Override
 	public void endEntity() {
-		if (isRdfList)
+		if (isRdfList) {
 			isRdfList = false;
-		else
+			rdfListNr = -1;
+		} else
 			this.resources.pop();
 	}
 

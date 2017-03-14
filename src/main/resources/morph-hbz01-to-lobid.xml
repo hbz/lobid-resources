@@ -61,6 +61,46 @@
 			</combine>
 		</macro>
 		<!-- prefer gnd subjects IDs to literals -->
+		<macro name="subjectRswkId">
+			<combine name="@complexSubjectRswkId$[field]" value="${a}" flushWith="$[field]-[-12]"
+				sameEntity="true" reset="true">
+				<choose name="a" flushWith="$[field]-[-12]" sameEntity="true" reset="true">
+					<data source="$[field]-[-12].9" name="a">
+						<regexp match="\(DE-588\)(.*)" format="http://d-nb.info/gnd/${1}"/>
+					</data>
+					<data source="$[field]-[-12].[acfghkpstkz-]" name="a">
+						<replace pattern="&gt;" with=""/>
+						<replace pattern="&lt;" with=""/>
+						<regexp match="(.*)" format="_:${1}"/>
+					</data>
+				</choose>
+			</combine>
+		</macro>
+		<macro name="subjectRswkIdSetDctSubject">
+			<combine name="http://purl.org/dc/terms/subject" value="_:$[field]_${subject}"
+				flushWith="@complexSubjectRswkId$[field]" reset="true">
+				<data source="@complexSubjectRswkId$[field]" name="subject"/>
+			</combine>
+		</macro>
+
+		<macro name="subjectRswkIdSetRdfSubject">
+			<combine name="~rdf:subject" value="_:$[field]_${subject}" flushWith="@complexSubjectRswkId$[field]"
+				reset="true">
+				<data source="@complexSubjectRswkId$[field]" name="subject"/>
+			</combine>
+		</macro>
+		<macro name="subjectRswkIdSetType">
+			<data name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" source="@complexSubjectRswkId$[field]">
+				<constant value="http://www.loc.gov/mads/rdf/v1#ComplexSubject"/>
+			</data>
+		</macro>
+		<macro name="complexSubjectRswkId">
+			<entity name="~rdf:list@complexSubjectRswkId$[field]" reset="true"
+				flushWith="@complexSubjectRswkId$[field]">
+				<data name="http://www.loc.gov/mads/rdf/v1#componentList" source="@complexSubjectRswkId$[field]"/>
+			</entity>
+		</macro>
+		<!-- prefer gnd subjects IDs to literals -->
 		<macro name="subjectOrder">
 			<combine name="@subjectOrder" value="${a}">
 				<concat delimiter=", " name="a">
@@ -153,9 +193,9 @@
 			<data source="@subjectLabelBnode"/>
 			<data source="@id" name="subject"/>
 		</combine>
-		<combine name="http://purl.org/dc/terms/subject" value="${a}" flushWith="@rdfTypeSubject|@deweyId"
-			reset="true">
-			<data source="@subjectId|@subjectLabelBnode|@deweyId" name="a"/>
+		<combine name="http://purl.org/dc/terms/subject" value="${a}"
+			flushWith="@deweyId" reset="true">
+			<data source="@deweyId" name="a"/>
 		</combine>
 		<!-- ####################### -->
 		<!-- ####### Get subject uri of each record -->
@@ -1181,7 +1221,7 @@
 		<!-- set subject uri of resource anew -->
 		<combine name="~rdf:subject" value="$[ns-lobid-resource]${subject}#!">
 			<data source="@id" name="subject"/>
-			<data source="@relatorNode"/>
+			<data source="@relatorNode|@contributionBnode"/>
 			<data source="@agentId"/>
 		</combine>
 		<entity name="~rdf:list" reset="true">
@@ -1617,7 +1657,72 @@
 			<replace pattern="&lt;&lt;" with=""/>
 			<replace pattern=", :" with=":"/>
 		</data>
-		<!-- ############ "schlagwortketten" (aka subject chains) as ordered lists -->
+		<!-- Schlagwortketten (aka "subject chains", "complex subjects" ..). -->
+		<call-macro name="subjectRswkId" field="902"/>
+		<call-macro name="subjectRswkIdSetDctSubject" field="902"/>
+		<call-macro name="subjectRswkIdSetRdfSubject" field="902"/>
+		<call-macro name="subjectRswkIdSetType" field="902"/>
+		<call-macro name="complexSubjectRswkId" field="902"/>
+
+		<call-macro name="subjectRswkId" field="907"/>
+		<call-macro name="subjectRswkIdSetDctSubject" field="907"/>
+		<call-macro name="subjectRswkIdSetRdfSubject" field="907"/>
+		<call-macro name="subjectRswkIdSetType" field="907"/>
+		<call-macro name="complexSubjectRswkId" field="907"/>
+
+		<call-macro name="subjectRswkId" field="912"/>
+		<call-macro name="subjectRswkIdSetDctSubject" field="912"/>
+		<call-macro name="subjectRswkIdSetRdfSubject" field="912"/>
+		<call-macro name="subjectRswkIdSetType" field="912"/>
+		<call-macro name="complexSubjectRswkId" field="912"/>
+
+		<call-macro name="subjectRswkId" field="917"/>
+		<call-macro name="subjectRswkIdSetDctSubject" field="917"/>
+		<call-macro name="subjectRswkIdSetRdfSubject" field="917"/>
+		<call-macro name="subjectRswkIdSetType" field="917"/>
+		<call-macro name="complexSubjectRswkId" field="917"/>
+
+		<call-macro name="subjectRswkId" field="922"/>
+		<call-macro name="subjectRswkIdSetDctSubject" field="922"/>
+		<call-macro name="subjectRswkIdSetRdfSubject" field="922"/>
+		<call-macro name="subjectRswkIdSetType" field="922"/>
+		<call-macro name="complexSubjectRswkId" field="922"/>
+
+		<call-macro name="subjectRswkId" field="927"/>
+		<call-macro name="subjectRswkIdSetDctSubject" field="927"/>
+		<call-macro name="subjectRswkIdSetRdfSubject" field="927"/>
+		<call-macro name="subjectRswkIdSetType" field="927"/>
+		<call-macro name="complexSubjectRswkId" field="927"/>
+
+		<call-macro name="subjectRswkId" field="932"/>
+		<call-macro name="subjectRswkIdSetDctSubject" field="932"/>
+		<call-macro name="subjectRswkIdSetRdfSubject" field="932"/>
+		<call-macro name="subjectRswkIdSetType" field="932"/>
+		<call-macro name="complexSubjectRswkId" field="932"/>
+
+		<call-macro name="subjectRswkId" field="937"/>
+		<call-macro name="subjectRswkIdSetDctSubject" field="937"/>
+		<call-macro name="subjectRswkIdSetRdfSubject" field="937"/>
+		<call-macro name="subjectRswkIdSetType" field="937"/>
+		<call-macro name="complexSubjectRswkId" field="937"/>
+
+		<call-macro name="subjectRswkId" field="942"/>
+		<call-macro name="subjectRswkIdSetDctSubject" field="942"/>
+		<call-macro name="subjectRswkIdSetRdfSubject" field="942"/>
+		<call-macro name="subjectRswkIdSetType" field="942"/>
+		<call-macro name="complexSubjectRswkId" field="942"/>
+
+		<call-macro name="subjectRswkId" field="947"/>
+		<call-macro name="subjectRswkIdSetDctSubject" field="947"/>
+		<call-macro name="subjectRswkIdSetRdfSubject" field="947"/>
+		<call-macro name="subjectRswkIdSetType" field="947"/>
+		<call-macro name="complexSubjectRswkId" field="947"/>
+		<combine name="~rdf:subject" value="$[ns-lobid-resource]${subject}#!" flushWith="@complexSubjectRswkId9[01234][27]">
+			<data source="@complexSubjectRswkId9[01234][27]"/>
+			<data source="@id" name="subject"/>
+		</combine>
+		<!-- /Schlagwortketten (aka "subject chains", "complex subjects" ...) -->
+		<!--|@subjectLabelBnode ############ "schlagwortketten" (aka subject chains) as ordered lists -->
 		<entity name="~rdf:list" reset="true">
 			<data name="$[ns-lobid-vocab]subjectOrder" source="@subjectOrder"/>
 		</entity>
