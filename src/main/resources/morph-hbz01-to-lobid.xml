@@ -654,8 +654,16 @@
 		</data>
 		<choose name="@startDateFirstPublication">
 			<!-- issue precedence -->
-			<data source="425[abc-p][-1].a|419-1c|595-[-12].a|089-[-1].a">
-				<regexp match="(\d{4})" format="${1}"/>
+			<!-- Multiple resource have [determined] volume numbers in this field. -->
+			<if>
+				<none>
+					<data source="425-[-1].a">
+						<regexp match="-(\d{4})|-....."/>
+					</data>
+				</none>
+			</if>
+			<data source="425[ab-p][-1].a|419-1c|595-[-12].a|089-[-1].a">
+				<regexp match="[12]\d{3}"/>
 			</data>
 		</choose>
 		<entity name="http://schema.org/publication" flushWith="record">
@@ -670,7 +678,7 @@
 					</none>
 				</if>
 				<data source="425c[-1].a">
-					<regexp match="^\d{4}.*"/>
+					<regexp match="[12]\d{3}"/>
 				</data>
 			</choose>
 			<!-- ####################### -->
