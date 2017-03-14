@@ -1085,7 +1085,7 @@
 		<!-- ####################### -->
 		<!-- contributors with roles @TODO many roles needs tests -->
 		<data source="1??b[1234].b|8[012]?[-mn][-12].b" name="@marcrelName"/>
-		<data source="1[02468][048]??.4|1[13579][26]??.4|2[02468][048]??.4|2[13579][26]??.4" name="@AgentsHeadings"/>
+		<data source="1[02468][048]?[12].4|1[13579][26]?[12].4|2[02468][048]?[12].4|2[13579][26]?[12].4" name="@AgentsHeadings"/>
 		<!-- id of contributor (which is not a creator) -->
 		<data source="1??[bcefp][1234].9" name="@contributorPersonId">
 			<regexp match="\(DE-588\)(.*)" format="http://d-nb.info/gnd/${1}"/>
@@ -1405,10 +1405,12 @@
 					<regexp match="hnr" format="http://id.loc.gov/vocabulary/relators/hnr"/>
 				</data>
 				<!-- default -->
-				<data source="@contributorPersonBnodeOrId|@contributorCorporateBodyBnodeOrId"
-					name="a">
+				<data source="@contributorCorporateBodyBnodeOrId" name="a">
 					<regexp match=".*" format="http://id.loc.gov/vocabulary/relators/ctb"/>
 				</data>
+				<data source="@contributorPersonBnodeOrId" name="a">
+					<regexp match=".*" format="http://id.loc.gov/vocabulary/relators/ctb"/>
+				</data> 
 			</choose>
 		</combine>
 		<!-- END contributor/creator -->
