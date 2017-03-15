@@ -1,5 +1,11 @@
 package controllers.resources;
 
+import static controllers.resources.Application.AGENT_FIELD;
+import static controllers.resources.Application.ISSUED_FIELD;
+import static controllers.resources.Application.MEDIUM_FIELD;
+import static controllers.resources.Application.OWNER_AGGREGATION;
+import static controllers.resources.Application.SUBJECT_FIELD;
+import static controllers.resources.Application.TYPE_FIELD;
 import static org.elasticsearch.index.query.QueryBuilders.hasChildQuery;
 import static org.elasticsearch.index.query.QueryBuilders.matchQuery;
 
@@ -79,8 +85,9 @@ public class Index {
 	/**
 	 * The values supported for the `aggregations` query parameter.
 	 */
-	public static final List<String> SUPPORTED_AGGREGATIONS = Arrays.asList(
-			"publication.startDate", "subject.id", "type", "medium.id", "owner");
+	public static final List<String> SUPPORTED_AGGREGATIONS =
+			Arrays.asList(ISSUED_FIELD, SUBJECT_FIELD, TYPE_FIELD, MEDIUM_FIELD,
+					OWNER_AGGREGATION, AGENT_FIELD);
 
 	/**
 	 * @param q The current query string
