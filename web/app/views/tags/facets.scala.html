@@ -127,8 +127,8 @@
   <div id="issued-div"> <a id="issued-link" style="display:none" href="@resources.routes.Application.query(q,agent,name,subject,id,publisher,issued,medium,from,size,owner,t,sortParam,set=set)">Anwenden</a> </div>
   </div>
   <p/>
-  <div class="row facet"><div class="col-md-12">@facets("Schlagwörter", Application.SUBJECT_FIELD, if(!urisOnly(subject).isEmpty) urisOnly(subject) else "", "dropup")</div></div>
   <div class="row facet"><div class="col-md-12">@facets("Mitwirkende", Application.AGENT_FIELD, agent, "dropup")</div></div>
+  <div class="row facet"><div class="col-md-12">@facets("Schlagwörter", Application.SUBJECT_FIELD, if(!urisOnly(subject).isEmpty) urisOnly(subject) else "", "dropup")</div></div>
   <div class="row facet"><div class="col-md-12">@facets("Medientypen", Application.MEDIUM_FIELD, medium, "dropup")</div></div>
   <div class="row facet"><div class="col-md-12">@facets("Publikationstypen", Application.TYPE_FIELD, t, "dropup")</div></div>
   <div class="row facet"><div class="col-md-12">@facets("Bestand in Bibliotheken", Application.OWNER_AGGREGATION, owner, "dropup")</div></div>
