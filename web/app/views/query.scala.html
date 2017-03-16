@@ -51,7 +51,7 @@
 }
 
 @main("lobid-resources - Ergebnisliste") {
-    @if(Seq(agent, name, id, publisher).exists(!_.isEmpty)){ @* advanced search, not shown in facets *@
+    @if(Seq(name, id, publisher).exists(!_.isEmpty)){ @* advanced search, not shown in facets *@
       @tags.search_advanced("Suche aktualisieren", q, agent, name, subject, id, publisher, issued, sortParam)
     } else {
       @tags.search_form(q)
