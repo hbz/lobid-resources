@@ -1,0 +1,57 @@
+@* Copyright 2014-2016 Fabian Steeg, hbz. Licensed under the GPLv2 *@
+
+@(json: com.fasterxml.jackson.databind.JsonNode)
+
+@import helper._
+@import controllers.resources.Lobid
+
+@main("Dataset: lobid-resources") { 
+	<h3>Datenbeschreibung<small><a title="Beschreibung als JSON-LD anzeigen" href='@resources.routes.Application.dataset("json")'><img class='json-ld-icon' src='@routes.Assets.at("images/json-ld.png")'></a></small></h3>
+	<table class="table table-striped">
+		<tr><th width="20%"/><th width="80%"/></tr>
+		<tr>
+			<td>Titel</td>
+			<td><a href='@json.get("id").asText()'>
+				@json.get("name").asText() &mdash; @json.get("alternateName").asText()
+			</a></td>
+		</tr>
+		<tr><td>Beschreibung</td><td>@Html(json.get("description").get("de").asText())</td></tr>
+		<tr>
+			<td>Schlagwörter</td>
+			<td>@json.get("keywords").toString().replaceAll("\",\"", ", ").replaceAll("[\"\\[\\]]", "")</td>
+		</tr>
+		@defining(json.get("spatial").elements()) { spatial => 
+			@defining((spatial.next(), spatial.next())) { case (s1, s2) =>
+		<tr><td>Raumbezug</td><td>
+			<a href='@s1.get("id").asText()'>@s1.get("label").get("de").asText()</a>,
+			<a href='@s2.get("id").asText()'>@s2.get("label").get("de").asText()</a>
+		</td></tr>
+		}}
+		@defining(json.get("publisher")) { pub =>
+		<tr>
+			<td>Veröffentlicht von</td>
+			<td><a href='@pub.get("id").asText()'>
+				@pub.get("label").get("de").asText() &mdash; @pub.get("alternateName").elements().next().asText()
+			</a></td>
+		</tr>
+		}
+		<tr><td>Veröffentlicht am</td><td>@json.get("datePublished").asText()</td></tr>
+		<tr><td>Sprache</td><td>@json.get("inLanguage").elements().next().asText()</td></tr>
+		<tr><td>Ergänzungsfrquenz</td><td>@json.get("accrualPeriodicity").get("label").get("de").asText()</td></tr>
+		<tr><td>Kontakt</td><td><a href='@json.get("contactPoint").asText()'>@json.get("contactPoint").asText()</a></td></tr>
+	</table>
+	<h3>Datendistribution</h3>
+	@defining(json.get("distribution").elements().next()) { dist =>
+	<table class="table table-striped">
+		<tr><th width="20%"/><th width="80%"/></tr>
+		<tr><td>Titel</td><td>@dist.get("label").get("de").asText()</td></tr>
+		<tr><td>Beschreibung</td><td>@Html(dist.get("description").get("de").asText())</td></tr>
+		<tr><td>URL</td><td><a href='@dist.get("accessURL").asText()'>@dist.get("accessURL").asText()</a></td></tr>
+		<tr><td>Lizenz</td><td><a href='@dist.get("license").asText()'>@dist.get("license").asText()</a></td></tr>
+		<tr><td>Medientypen</td><td>@dist.get("mediaType").toString().replaceAll("\",\"", ", ").replaceAll("[\"\\[\\]]", "")</td></tr>
+	</table>
+	}
+	<script type="application/ld+json">
+	@Html(json.toString)
+	</script>
+}

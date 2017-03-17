@@ -94,13 +94,21 @@ public class IntegrationTests extends LocalIndexSetup {
 	}
 
 	@Test
-	public void contextContentTypeAndCorsHeader() {
+	public void contextContentTypeAndCorsHeaderContext() {
+		testJsonld("/resources/context.jsonld");
+	}
+
+	@Test
+	public void contextContentTypeAndCorsHeaderDataset() {
+		testJsonld("/resources/dataset.jsonld");
+	}
+
+	private static void testJsonld(String path) {
 		running(fakeApplication(), () -> {
-			Result result = route(fakeRequest(GET, "/resources/context.jsonld"));
+			Result result = route(fakeRequest(GET, path));
 			assertThat(result).isNotNull();
 			assertThat(contentType(result)).isEqualTo("application/ld+json");
 			assertThat(header("Access-Control-Allow-Origin", result)).isEqualTo("*");
 		});
 	}
-
 }
