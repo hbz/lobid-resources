@@ -89,6 +89,10 @@
   }
 }
 
+@first(seq: Seq[JsValue]) = @{
+  seq(0).asOpt[String].getOrElse("--")
+}
+
 @table(){
   @result_field("Titel", "title", doc, TableRow.VALUES)
   @result_field("Titelzusatz", "otherTitleInformation", doc, TableRow.VALUES)
@@ -97,8 +101,11 @@
   @with_icon("Medientyp", "medium", controllers.resources.Application.MEDIUM_FIELD)
   @with_icon("Publikationstyp", "type", controllers.resources.Application.TYPE_FIELD)
   @result_field("", "thesisInformation", doc, TableRow.VALUES)
-
-  @result_field("Erschienen", "startDate", doc, TableRow.VALUES)
+  @defining(((doc\\"startDate"),(doc\\"endDate"))) { case (start,end) =>
+    @if(start.size > 0){<tr><td>Erschienen</td><td>@if(start != end && end.size > 0){
+      @first(start) &ndash; @first(end)} else {@first(start)}</td></tr>
+    }
+  }
   @result_field("Auflage", "edition", doc, TableRow.VALUES)
   @result_field("Erscheinungsort", "location", doc, TableRow.VALUES)
   @result_field("Verlag", "publishedBy", doc, TableRow.VALUES)
