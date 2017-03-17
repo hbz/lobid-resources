@@ -3,6 +3,7 @@
 package controllers.resources;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.text.Collator;
@@ -40,6 +41,7 @@ import com.google.gdata.util.common.base.PercentEscaper;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 
+import controllers.resources.Accept.Format;
 import play.Logger;
 import play.Play;
 import play.cache.Cache;
@@ -53,6 +55,7 @@ import play.mvc.Result;
 import play.test.Helpers;
 import play.twirl.api.Html;
 import views.html.api;
+import views.html.dataset;
 import views.html.details;
 import views.html.details_item;
 import views.html.index;
@@ -78,6 +81,8 @@ public class Application extends Controller {
 	public static final String OWNER_AGGREGATION = "owner";
 	/** The internal ES field for subjects. */
 	public static final String SUBJECT_FIELD = "subject.id";
+	/** The internal ES field for contributing agents. */
+	public static final String AGENT_FIELD = "contribution.agent.id";
 	/** The internal ES field for issued years. */
 	public static final String ISSUED_FIELD = "publication.startDate";
 	/** Access to the resources.conf config file. */
@@ -96,10 +101,11 @@ public class Application extends Controller {
 	@Cached(key = "index", duration = ONE_DAY)
 	public static Promise<Result> index() {
 		return Promise.promise(() -> {
+			JsonNode dataset = Json.parse(readFile("dataset"));
 			final Form<String> form = queryForm.bindFromRequest();
 			if (form.hasErrors())
-				return badRequest(index.render());
-			return ok(index.render());
+				return badRequest(index.render(dataset));
+			return ok(index.render(dataset));
 		});
 	}
 
@@ -457,8 +463,8 @@ public class Application extends Controller {
 		Comparator<Pair<JsonNode, String>> sorter = (p1, p2) -> {
 			String t1 = p1.getLeft().get("key").asText();
 			String t2 = p2.getLeft().get("key").asText();
-			boolean t1Current = current(subject, medium, owner, t, field, t1);
-			boolean t2Current = current(subject, medium, owner, t, field, t2);
+			boolean t1Current = current(subject, agent, medium, owner, t, field, t1);
+			boolean t2Current = current(subject, agent, medium, owner, t, field, t2);
 			if (t1Current == t2Current) {
 				if (!field.equals(ISSUED_FIELD)) {
 					Integer c1 = p1.getLeft().get("doc_count").asInt();
@@ -484,14 +490,17 @@ public class Application extends Controller {
 					? owner : withoutAndOperator(queryParam(owner, term));
 			String subjectQuery = !field.equals(SUBJECT_FIELD) //
 					? subject : queryParam(subject, term);
+			String agentQuery = !field.equals(AGENT_FIELD) //
+					? agent : queryParam(agent, term);
 			String issuedQuery = !field.equals(ISSUED_FIELD) //
 					? issued : queryParam(issued, term);
 
-			boolean current = current(subject, medium, owner, t, field, term);
+			boolean current = current(subject, agent, medium, owner, t, field, term);
 
-			String routeUrl = routes.Application.query(q, agent, name, subjectQuery,
-					id, publisher, issuedQuery, mediumQuery, from, size, ownerQuery,
-					typeQuery, sort(sort, subjectQuery), set, null, field).url();
+			String routeUrl =
+					routes.Application.query(q, agentQuery, name, subjectQuery, id,
+							publisher, issuedQuery, mediumQuery, from, size, ownerQuery,
+							typeQuery, sort(sort, subjectQuery), set, null, field).url();
 
 			String result = String.format(
 					"<li " + (current ? "class=\"active\"" : "")
@@ -536,12 +545,13 @@ public class Application extends Controller {
 		return subjectQuery.contains(",") ? "" /* relevance */ : sort;
 	}
 
-	private static boolean current(String subject, String medium, String owner,
-			String t, String field, String term) {
+	private static boolean current(String subject, String agent, String medium,
+			String owner, String t, String field, String term) {
 		return field.equals(MEDIUM_FIELD) && contains(medium, term)
 				|| field.equals(TYPE_FIELD) && contains(t, term)
 				|| field.equals(OWNER_AGGREGATION) && contains(owner, term)
-				|| field.equals(SUBJECT_FIELD) && contains(subject, term);
+				|| field.equals(SUBJECT_FIELD) && contains(subject, term)
+				|| field.equals(AGENT_FIELD) && contains(agent, term);
 	}
 
 	private static boolean contains(String value, String term) {
@@ -678,16 +688,43 @@ public class Application extends Controller {
 	 * @return JSON-LD context
 	 */
 	public static Result context() {
+		return staticJsonld("context");
+	}
+
+	/**
+	 * See https://www.w3.org/TR/dwbp/#metadata
+	 * 
+	 * @param format The format ("json" or "html")
+	 * 
+	 * @return JSON-LD dataset metadata
+	 */
+	public static Result dataset(String format) {
+		String responseFormat = Accept.formatFor(format, request().acceptedTypes());
+		return responseFormat.matches(Format.JSON_LD.queryParamString)
+				? staticJsonld("dataset")
+				: ok(dataset.render(Json.parse(readFile("dataset"))));
+	}
+
+	private static Result staticJsonld(String name) {
 		response().setContentType("application/ld+json");
 		addCorsHeader();
 		try {
-			Callable<Status> readContext = () -> ok(Streams
-					.readAllLines(Play.application().resourceAsStream("context.jsonld"))
-					.stream().collect(Collectors.joining("\n")));
-			return Cache.getOrElse("context", readContext, ONE_DAY);
+			Callable<Status> readContext = () -> ok(readFile(name));
+			return Cache.getOrElse(name, readContext, ONE_DAY);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return internalServerError(e.getMessage());
+		}
+	}
+
+	private static String readFile(String name) {
+		try {
+			return Streams
+					.readAllLines(Play.application().resourceAsStream(name + ".jsonld"))
+					.stream().collect(Collectors.joining("\n"));
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
 		}
 	}
 }

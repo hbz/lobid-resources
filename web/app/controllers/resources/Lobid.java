@@ -123,16 +123,21 @@ public class Lobid {
 		return "";
 	}
 
-	private static String gndLabel(String uri) {
+	private static String gndLabel(String uri, String field) {
 		Callable<String> getLabel = () -> {
 			return new Index().withClient((Client client) -> {
-				QueryBuilder query =
-						QueryBuilders.queryStringQuery("* AND subject.id:\"" + uri + "\"");
+				QueryBuilder query = QueryBuilders
+						.queryStringQuery("* AND " + field + ":\"" + uri + "\"");
 				SearchRequestBuilder requestBuilder =
 						client.prepareSearch(Index.INDEX_NAME).setTypes(Index.TYPE_RESOURCE)
 								.setQuery(query).setFrom(0).setSize(1).setExplain(false);
 				SearchResponse response = requestBuilder.execute().actionGet();
-				return findLabelForUriInResponse(uri, response);
+				if (response.getHits().getTotalHits() == 0) {
+					return uri;
+				}
+				return field.equals(Application.SUBJECT_FIELD)
+						? findSubjectLabelForUriInResponse(uri, response)
+						: findContributionLabelForUriInResponse(uri, response);
 			});
 		};
 		try {
@@ -143,17 +148,28 @@ public class Lobid {
 		return uri;
 	}
 
-	private static String findLabelForUriInResponse(String uri,
+	private static String findSubjectLabelForUriInResponse(String uri,
 			SearchResponse response) {
-		if (response.getHits().getTotalHits() > 0) {
-			Object subjects = response.getHits().getAt(0).getSource().get("subject");
-			@SuppressWarnings("unchecked") // subjects: always array of JSON objects
-			String label = ((List<HashMap<String, Object>>) subjects).stream()
-					.filter((s) -> s.containsKey("id") && s.get("id").equals(uri))
-					.findFirst().map((s) -> s.get("label").toString()).orElse(uri);
-			return label;
-		}
-		return uri;
+		Object subjects = response.getHits().getAt(0).getSource().get("subject");
+		@SuppressWarnings("unchecked") // subjects: always array of JSON objects
+		String label = ((List<HashMap<String, Object>>) subjects).stream()
+				.filter((s) -> s.containsKey("id") && s.get("id").equals(uri))
+				.findFirst().map((s) -> s.get("label").toString()).orElse(uri);
+		return label;
+	}
+
+	private static String findContributionLabelForUriInResponse(String uri,
+			SearchResponse response) {
+		Object contributions =
+				response.getHits().getAt(0).getSource().get("contribution");
+		@SuppressWarnings("unchecked") // always array of JSON objects
+		String label =
+				((List<HashMap<String, Object>>) contributions).stream().filter((c) -> {
+					Map<String, Object> agent = (Map<String, Object>) c.get("agent");
+					return agent.containsKey("id") && agent.get("id").equals(uri);
+				}).findFirst().map((s) -> ((Map<String, Object>) s.get("agent"))
+						.get("label").toString()).orElse(uri);
+		return label;
 	}
 
 	private static final Map<String, String> keys =
@@ -202,8 +218,9 @@ public class Lobid {
 		}
 		if (uris.size() == 1 && isOrg(uris.get(0)))
 			return Lobid.organisationLabel(uris.get(0));
-		else if (uris.size() == 1 && isGnd(uris.get(0)))
-			return Lobid.gndLabel(uris.get(0));
+		else if (uris.size() == 1 && isGnd(uris.get(0))) {
+			return Lobid.gndLabel(uris.get(0), field);
+		}
 		String configKey = keys.getOrDefault(field, "");
 		String type = selectType(uris, configKey).toLowerCase();
 		if (type.isEmpty())

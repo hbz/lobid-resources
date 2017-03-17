@@ -19,6 +19,8 @@ POST   /resources/stars/:id             controllers.resources.Application.star(i
 DELETE /resources/stars/:id             controllers.resources.Application.unstar(id)
 
 GET    /resources/context.jsonld        controllers.resources.Application.context()
+GET    /resources/dataset.jsonld        controllers.resources.Application.dataset(format="json")
+GET    /resources/dataset               controllers.resources.Application.dataset(format?="")
 GET    /resources/:id                   controllers.resources.Application.show(id, format ?= null)
 GET    /items/:id                       controllers.resources.Application.item(id, format ?= null)
 
