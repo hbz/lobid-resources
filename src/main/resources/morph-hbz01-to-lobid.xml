@@ -1367,12 +1367,6 @@
 				<data source="@marcrelName|@AgentsHeadings" name="a">
 					<regexp match="[sS]ammler|col" format="http://id.loc.gov/vocabulary/relators/col"/>
 				</data>
-				<data source="1??e[1234].p" name="a">  <!-- see #150 -->
-					<regexp match=".*" format="http://id.loc.gov/vocabulary/relators/prf"/>
-				</data>
-				<data source="@marcrelName|@AgentsHeadings" name="a">
-					<regexp match="[iI]nterpr|prf" format="http://id.loc.gov/vocabulary/relators/prf"/>
-				</data>
 				<data source="@marcrelName|@AgentsHeadings" name="a">
 					<regexp match="[bB]eitr|ctb" format="http://id.loc.gov/vocabulary/relators/ctb"/>
 				</data>
@@ -1386,7 +1380,7 @@
 					<regexp match="[vV]orl|ant" format="http://id.loc.gov/vocabulary/relators/ant"/>
 				</data>
 				<data source="@marcrelName|@AgentsHeadings" name="a">
-					<regexp match="[gG]esang|sng|Alt|Bariton|Bass|Sopr|Ten" format="http://id.loc.gov/vocabulary/relators/sng"/>
+					<regexp match="[gG]esang|sng|Alt|Bariton|Bass|Baß|Sopr|Ten" format="http://id.loc.gov/vocabulary/relators/sng"/>
 				</data>
 				<data source="@marcrelName|@AgentsHeadings" name="a">
 					<regexp match="[iI]nterviewer|ivr" format="http://id.loc.gov/vocabulary/relators/ivr"/>
@@ -1426,6 +1420,12 @@
 				</data>
 				<data source="@AgentsHeadings" name="a">
 					<regexp match="hnr" format="http://id.loc.gov/vocabulary/relators/hnr"/>
+				</data>
+				<data source="1??e[1234].p" name="a">  <!-- see #150 -->
+					<regexp match=".*" format="http://id.loc.gov/vocabulary/relators/prf"/>
+				</data>
+				<data source="@marcrelName|@AgentsHeadings" name="a">
+					<regexp match="[iI]nterpr|prf" format="http://id.loc.gov/vocabulary/relators/prf"/>
 				</data>
 				<!-- default -->
 				<data source="@contributorCorporateBodyBnodeOrId" name="a">
