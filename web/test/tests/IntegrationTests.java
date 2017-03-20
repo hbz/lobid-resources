@@ -24,6 +24,7 @@ import org.elasticsearch.search.aggregations.bucket.terms.Terms.Bucket;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.base.Joiner;
 
 import controllers.resources.Index;
@@ -90,6 +91,28 @@ public class IntegrationTests extends LocalIndexSetup {
 			Index index = new Index();
 			Long hits = index.totalHits("hbzId:TT050409948");
 			assertThat(hits).isGreaterThan(0);
+		});
+	}
+
+	@Test
+	public void responseJsonFilterGet() {
+		running(testServer(3333), () -> {
+			Index index = new Index();
+			JsonNode hit = index.getResource("TT050409948").getResult();
+			Index.HIDE_FIELDS.forEach(field -> assertThat(hit.get(field)).isNull());
+		});
+	}
+
+	@Test
+	public void responseJsonFilterSearch() {
+		running(testServer(3333), () -> {
+			Index index = new Index();
+			index = index.queryResources("hbzId:TT050409948", 0, 1, "", "", "");
+			assertThat(index.getTotal()).isGreaterThan(0);
+			JsonNode hit = index.getResult();
+			assertThat(hit.findValue("hbzId").asText()).isEqualTo("TT050409948");
+			Index.HIDE_FIELDS
+					.forEach(field -> assertThat(hit.findValue(field)).isNull());
 		});
 	}
 
