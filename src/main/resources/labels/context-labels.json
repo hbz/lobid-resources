@@ -1,0 +1,935 @@
+[
+   {
+      "name" : "id",
+      "uri" : "@id",
+      "multilangLabel" : {}
+   },
+   {
+      "uri" : "@type",
+      "multilangLabel" : {},
+      "name" : "type"
+   },
+   {
+    "uri": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+    "label": "Typ",
+    "name": "type",
+    "referenceType": "@id",
+    "container": "@set",
+    "multilangLabel": { }
+   },
+   {
+      "name" : "publication",
+      "container" : "@set",
+      "referenceType" : "String",
+      "uri" : "http://schema.org/publication",
+      "label" : "Veröffentlichung",
+      "multilangLabel" : {}
+   },
+   {
+      "container" : "@set",
+      "name" : "location",
+      "uri" : "http://schema.org/location",
+      "label" : "Ort",
+      "referenceType" : "String",
+      "multilangLabel" : {}
+   },
+   {
+      "multilangLabel" : {},
+      "uri" : "http://schema.org/publishedBy",
+      "label" : "Veröffentlicht von",
+      "referenceType" : "String",
+      "container" : "@set",
+      "name" : "publishedBy"
+   },
+   {
+      "referenceType" : "http://www.w3.org/2001/XMLSchema#gYear",
+      "label" : "Beginn",
+      "uri" : "http://schema.org/startDate",
+      "multilangLabel" : {},
+      "name" : "startDate",
+      "container" : "@set"
+   },
+   {
+      "container" : "@set",
+      "name" : "endDate",
+      "multilangLabel" : {},
+      "label" : "Ende",
+      "uri" : "http://schema.org/endDate",
+      "referenceType" : "http://www.w3.org/2001/XMLSchema#gYear"
+   },
+   {
+      "referenceType" : "@id",
+      "uri" : "http://schema.org/PublicationEvent",
+      "multilangLabel" : {},
+      "name" : "PublicationEvent"
+   },
+   {
+      "name" : "SecondaryPublicationEvent",
+      "multilangLabel" : {},
+      "referenceType" : "@id",
+      "uri" : "http://purl.org/lobid/lv#SecondaryPublicationEvent"
+   },
+   {
+      "referenceType" : "String",
+      "label" : "Bezeichnung",
+      "uri" : "http://www.w3.org/2000/01/rdf-schema#label",
+      "multilangLabel" : {},
+      "name" : "label",
+      "container" : "@set"
+   },
+   {
+      "multilangLabel" : {},
+      "referenceType" : "String",
+      "label" : "Alternative Bezeichnung",
+      "uri" : "http://www.w3.org/2004/02/skos/core#altLabel",
+      "name" : "altLabel",
+      "container" : "@set"
+   },
+   {
+      "name" : "longitudeAndLatitude",
+      "container" : "@set",
+      "multilangLabel" : {},
+      "referenceType" : "String",
+      "label" : "Geokoordinaten",
+      "uri" : "http://rdaregistry.info/Elements/u/P60345"
+   },
+   {
+      "container" : "@set",
+      "name" : "supplement",
+      "multilangLabel" : {},
+      "uri" : "http://id.loc.gov/ontologies/bibframe/supplement",
+      "label" : "Beilage",
+      "referenceType" : "@id"
+   },
+   {
+      "container" : "@set",
+      "name" : "otherTitleInformation",
+      "uri" : "http://rdaregistry.info/Elements/u/P60493",
+      "label" : "Titelzusatz",
+      "referenceType" : "String",
+      "multilangLabel" : {}
+   },
+   {
+      "name" : "thesisInformation",
+      "container" : "@set",
+      "multilangLabel" : {},
+      "referenceType" : "String",
+      "uri" : "http://rdaregistry.info/Elements/u/P60489",
+      "label" : "Hochschulschriftenvermerk"
+   },
+   {
+      "referenceType" : "String",
+      "label" : "Erscheinungsfrequenz",
+      "uri" : "http://id.loc.gov/ontologies/bibframe/frequency",
+      "multilangLabel" : {},
+      "name" : "frequency",
+      "container" : "@set"
+   },
+   {
+      "label" : "Verantwortlich",
+      "uri" : "http://id.loc.gov/ontologies/bibframe/responsibilityStatement",
+      "referenceType" : "String",
+      "multilangLabel" : {},
+      "container" : "@set",
+      "name" : "responsibilityStatement"
+   },
+   {
+      "multilangLabel" : {},
+      "referenceType" : "http://www.w3.org/2001/XMLSchema#gYear",
+      "label" : "Geboren am",
+      "uri" : "http://d-nb.info/standards/elementset/gnd#dateOfBirth",
+      "name" : "dateOfBirth",
+      "container" : "@set"
+   },
+   {
+      "container" : "@set",
+      "name" : "dateOfDeath",
+      "multilangLabel" : {},
+      "label" : "Gestorben am",
+      "uri" : "http://d-nb.info/standards/elementset/gnd#dateOfDeath",
+      "referenceType" : "http://www.w3.org/2001/XMLSchema#gYear"
+   },
+   {
+      "container" : "@set",
+      "name" : "note",
+      "uri" : "http://id.loc.gov/ontologies/bibframe/note",
+      "label" : "Hinweis",
+      "referenceType" : "String",
+      "multilangLabel" : {}
+   },
+   {
+      "multilangLabel" : {},
+      "referenceType" : "@id",
+      "uri" : "http://id.loc.gov/ontologies/bibframe/role",
+      "label" : "Rolle",
+      "name" : "role"
+   },
+   {
+      "name" : "agent",
+      "referenceType" : "@id",
+      "label" : "Agent",
+      "uri" : "http://id.loc.gov/ontologies/bibframe/agent",
+      "multilangLabel" : {}
+   },
+   {
+      "name" : "contribution",
+      "container" : "@list",
+      "multilangLabel" : {},
+      "referenceType" : "@id",
+      "uri" : "http://id.loc.gov/ontologies/bibframe/contribution",
+      "label" : "Mitwirkende"
+   },
+   {
+      "uri" : "http://id.loc.gov/ontologies/bibframe/extent",
+      "label" : "Umfang",
+      "referenceType" : "String",
+      "multilangLabel" : {},
+      "name" : "extent"
+   },
+   {
+      "referenceType" : "String",
+      "uri" : "http://purl.org/dc/elements/1.1/coverage",
+      "label" : "Raumsystematik",
+      "multilangLabel" : {},
+      "name" : "coverage",
+      "container" : "@set"
+   },
+   {
+      "multilangLabel" : {},
+      "label" : "Inhaltsangabe",
+      "uri" : "http://purl.org/dc/terms/abstract",
+      "referenceType" : "String",
+      "container" : "@set",
+      "name" : "abstract"
+   },
+   {
+      "container" : "@set",
+      "name" : "alternativeTitle",
+      "label" : "Titelzusatz",
+      "uri" : "http://purl.org/dc/terms/alternative",
+      "referenceType" : "String",
+      "multilangLabel" : {}
+   },
+   {
+      "name" : "bibliographicCitation",
+      "referenceType" : "String",
+      "label" : "Veröffentlichungs Details",
+      "uri" : "http://purl.org/dc/terms/bibliographicCitation",
+      "multilangLabel" : {}
+   },
+   {
+      "name" : "dateCreated",
+      "container" : "@set",
+      "referenceType" : "String",
+      "label" : "Erstellt am",
+      "uri" : "http://purl.org/dc/terms/created",
+      "multilangLabel" : {}
+   },
+   {
+      "name" : "creator",
+      "container" : "@set",
+      "referenceType" : "@id",
+      "label" : "Autor",
+      "uri" : "http://purl.org/dc/terms/creator",
+      "multilangLabel" : {}
+   },
+   {
+      "uri" : "http://purl.org/dc/terms/description",
+      "label" : "Beschreibung",
+      "referenceType" : "String",
+      "multilangLabel" : {},
+      "container" : "@set",
+      "name" : "description"
+   },
+   {
+      "label" : "Vgl.",
+      "uri" : "http://purl.org/dc/terms/hasVersion",
+      "referenceType" : "@id",
+      "multilangLabel" : {},
+      "container" : "@set",
+      "name" : "hasVersion"
+   },
+   {
+      "name" : "isFormatOf",
+      "multilangLabel" : {},
+      "referenceType" : "@id",
+      "uri" : "http://purl.org/dc/terms/isFormatOf",
+      "label" : "Format von"
+   },
+   {
+      "name" : "isPartOf",
+      "container" : "@set",
+      "multilangLabel" : {},
+      "referenceType" : "@id",
+      "uri" : "http://purl.org/dc/terms/isPartOf",
+      "label" : "Bestandteil von"
+   },
+   {
+      "referenceType" : "@id",
+      "label" : "Sprache",
+      "uri" : "http://purl.org/dc/terms/language",
+      "multilangLabel" : {},
+      "name" : "language",
+      "container" : "@set"
+   },
+   {
+      "referenceType" : "@id",
+      "uri" : "http://purl.org/dc/terms/medium",
+      "label" : "Träger",
+      "multilangLabel" : {},
+      "name" : "medium",
+      "container" : "@set"
+   },
+   {
+      "label" : "Zuletzt bearbeitet",
+      "uri" : "http://purl.org/dc/terms/modified",
+      "referenceType" : "String",
+      "multilangLabel" : {},
+      "container" : "@set",
+      "name" : "dateModified"
+   },
+   {
+      "container" : "@set",
+      "name" : "source",
+      "multilangLabel" : {},
+      "label" : "Quelle",
+      "uri" : "http://purl.org/dc/terms/source",
+      "referenceType" : "String"
+   },
+   {
+      "name" : "spatial",
+      "container" : "@set",
+      "referenceType" : "@id",
+      "uri" : "http://purl.org/dc/terms/spatial",
+      "label" : "Ortsbezug",
+      "multilangLabel" : {}
+   },
+   {
+      "multilangLabel" : {},
+      "referenceType" : "@id",
+      "uri" : "http://purl.org/dc/terms/subject",
+      "icon" : "fa fa-tag",
+      "label" : "Schlagwort",
+      "name" : "subject",
+      "container" : "@set"
+   },
+   {
+      "label" : "Inhaltsverzeichnis",
+      "icon" : "fa fa-list",
+      "uri" : "http://purl.org/dc/terms/tableOfContents",
+      "referenceType" : "@id",
+      "multilangLabel" : {},
+      "container" : "@set",
+      "name" : "tableOfContents"
+   },
+   {
+      "referenceType" : "String",
+      "uri" : "http://purl.org/dc/terms/title",
+      "label" : "Titel",
+      "multilangLabel" : {},
+      "name" : "title"
+   },
+   {
+      "uri" : "http://purl.org/lobid/lv#containedIn",
+      "label" : "Enthalten in",
+      "referenceType" : "@id",
+      "multilangLabel" : {},
+      "container" : "@set",
+      "name" : "containedIn"
+   },
+   {
+      "name" : "fulltextOnline",
+      "container" : "@set",
+      "referenceType" : "@id",
+      "label" : "Online-Volltext",
+      "uri" : "http://purl.org/lobid/lv#fulltextOnline",
+      "multilangLabel" : {}
+   },
+   {
+      "referenceType" : "String",
+      "uri" : "http://purl.org/lobid/lv#hbzID",
+      "icon" : "fa fa-bars",
+      "label" : "Katalog Id",
+      "multilangLabel" : {},
+      "name" : "hbzId"
+   },
+   {
+      "container" : "@set",
+      "name" : "inSeries",
+      "label" : "In Reihe",
+      "uri" : "http://purl.org/lobid/lv#inSeries",
+      "referenceType" : "@id",
+      "multilangLabel" : {}
+   },
+   {
+      "multilangLabel" : {},
+      "referenceType" : "@id",
+      "label" : "Mehrbändiges Werk",
+      "uri" : "http://purl.org/lobid/lv#multiVolumeWork",
+      "name" : "multiVolumeWork",
+      "container" : "@set"
+   },
+   {
+      "container" : "@set",
+      "name" : "numbering",
+      "label" : "Nummer",
+      "uri" : "http://purl.org/lobid/lv#numbering",
+      "referenceType" : "String",
+      "multilangLabel" : {}
+   },
+   {
+      "uri" : "http://purl.org/lobid/lv#nwbibspatial",
+      "label" : "Raumsystematik",
+      "referenceType" : "@id",
+      "multilangLabel" : {},
+      "container" : "@set",
+      "name" : "nwbibSpatial"
+   },
+   {
+      "multilangLabel" : {},
+      "uri" : "http://purl.org/lobid/lv#nwbibsubject",
+      "label" : "Sachsystematik",
+      "referenceType" : "@id",
+      "container" : "@set",
+      "name" : "nwbibSubject"
+   },
+   {
+      "container" : "@set",
+      "name" : "rpbSubject",
+      "label" : "Sachsystematik",
+      "uri" : "http://purl.org/lobid/lv#rpbSubject",
+      "referenceType" : "@id",
+      "multilangLabel" : {}
+   },
+   {
+      "multilangLabel" : {},
+      "referenceType" : "@id",
+      "label" : "Reihe",
+      "uri" : "http://purl.org/lobid/lv#series",
+      "name" : "series",
+      "container" : "@set"
+   },
+   {
+      "name" : "subjectChain",
+      "container" : "@set",
+      "multilangLabel" : {},
+      "referenceType" : "String",
+      "uri" : "http://purl.org/lobid/lv#subjectChain",
+      "label" : "Schlagwortkette"
+   },
+   {
+      "container" : "@set",
+      "name" : "subjectLabel",
+      "uri" : "http://purl.org/lobid/lv#subjectLabel",
+      "label" : "Schlagwort",
+      "referenceType" : "String",
+      "multilangLabel" : {}
+   },
+   {
+      "container" : "@set",
+      "name" : "subjectLocation",
+      "uri" : "http://purl.org/lobid/lv#subjectLocation",
+      "label" : "Geokoordinaten",
+      "referenceType" : "String",
+      "multilangLabel" : {}
+   },
+   {
+      "referenceType" : "String",
+      "uri" : "http://purl.org/lobid/lv#subjectOrder",
+      "label" : "subjectOrdered",
+      "multilangLabel" : {},
+      "name" : "subjectOrder",
+      "container" : "@list"
+   },
+   {
+      "referenceType" : "String",
+      "uri" : "http://purl.org/lobid/lv#titleKeyword",
+      "label" : "Titelschlagwort",
+      "multilangLabel" : {},
+      "name" : "titleKeyword",
+      "container" : "@set"
+   },
+   {
+      "uri" : "http://purl.org/lobid/lv#urn",
+      "icon" : "fa fa-exchange",
+      "label" : "Urn",
+      "referenceType" : "String",
+      "multilangLabel" : {},
+      "container" : "@set",
+      "name" : "urn"
+   },
+   {
+      "container" : "@set",
+      "name" : "volumeIn",
+      "multilangLabel" : {},
+      "uri" : "http://purl.org/lobid/lv#volumeIn",
+      "label" : "Gehört zu Band",
+      "referenceType" : "@id"
+   },
+   {
+      "name" : "webPageArchived",
+      "container" : "@set",
+      "referenceType" : "@id",
+      "uri" : "http://purl.org/lobid/lv#webPageArchived",
+      "label" : "Archivierte Webseite",
+      "multilangLabel" : {}
+   },
+   {
+      "multilangLabel" : {},
+      "uri" : "http://purl.org/lobid/lv#zdbID",
+      "label" : "ZdbID",
+      "referenceType" : "String",
+      "name" : "zdbId"
+   },
+   {
+      "referenceType" : "String",
+      "label" : "contributorOrder",
+      "uri" : "http://purl.org/lobid/lv#contributorOrder",
+      "multilangLabel" : {},
+      "name" : "contributorOrder",
+      "container" : "@set"
+   },
+   {
+      "referenceType" : "String",
+      "label" : "Doi",
+      "uri" : "http://purl.org/ontology/bibo/doi",
+      "multilangLabel" : {},
+      "name" : "doi",
+      "container" : "@set"
+   },
+   {
+      "container" : "@set",
+      "name" : "Image",
+      "multilangLabel" : {},
+      "label" : "Bild",
+      "uri" : "http://purl.org/ontology/bibo/Image",
+      "referenceType" : "String"
+   },
+   {
+      "name" : "Standard",
+      "container" : "@set",
+      "referenceType" : "String",
+      "uri" : "http://purl.org/ontology/bibo/Standard",
+      "label" : "Standard",
+      "multilangLabel" : {}
+   },
+   {
+      "name" : "Contribution",
+      "container" : "@set",
+      "referenceType" : "@id",
+      "uri" : "http://id.loc.gov/ontologies/bibframe/Contribution",
+      "label" : "Mitwirkung",
+      "multilangLabel" : {}
+   },
+   {
+      "multilangLabel" : {},
+      "referenceType" : "String",
+      "uri" : "http://purl.org/ontology/bibo/edition",
+      "label" : "Auflage",
+      "name" : "edition",
+      "container" : "@set"
+   },
+   {
+      "multilangLabel" : {},
+      "referenceType" : "String",
+      "label" : "Isbn",
+      "uri" : "http://purl.org/ontology/bibo/isbn",
+      "name" : "isbn",
+      "container" : "@set"
+   },
+   {
+      "container" : "@set",
+      "name" : "issn",
+      "multilangLabel" : {},
+      "label" : "Issn",
+      "uri" : "http://purl.org/ontology/bibo/issn",
+      "referenceType" : "String"
+   },
+   {
+      "referenceType" : "String",
+      "label" : "Oclc",
+      "uri" : "http://purl.org/ontology/bibo/oclcnum",
+      "multilangLabel" : {},
+      "name" : "oclcNumber",
+      "container" : "@set"
+   },
+   {
+      "referenceType" : "String",
+      "label" : "Kurztitel",
+      "uri" : "http://purl.org/ontology/bibo/shortTitle",
+      "multilangLabel" : {},
+      "name" : "shortTitle",
+      "container" : "@set"
+   },
+   {
+      "multilangLabel" : {},
+      "referenceType" : "String",
+      "label" : "Signatur",
+      "uri" : "http://purl.org/lobid/lv#callNumber",
+      "name" : "callNumber"
+   },
+   {
+      "referenceType" : "@id",
+      "uri" : "http://purl.org/ontology/holding#collectedBy",
+      "label" : "Gesammelt von",
+      "multilangLabel" : {},
+      "name" : "collectedBy",
+      "container" : "@set"
+   },
+   {
+      "referenceType" : "String",
+      "uri" : "http://purl.org/ontology/mo/ismn",
+      "label" : "Ismn",
+      "multilangLabel" : {},
+      "name" : "ismn",
+      "container" : "@set"
+   },
+   {
+      "container" : "@set",
+      "name" : "hasItem",
+      "multilangLabel" : {},
+      "uri" : "http://id.loc.gov/ontologies/bibframe/hasItem",
+      "label" : "Exemplar",
+      "referenceType" : "@id"
+   },
+   {
+      "label" : "Exemplar",
+      "uri" : "http://id.loc.gov/ontologies/bibframe/itemOf",
+      "referenceType" : "@id",
+      "multilangLabel" : {},
+      "name" : "itemOf"
+   },
+   {
+      "label" : "Besitz",
+      "uri" : "http://id.loc.gov/ontologies/bibframe/heldBy",
+      "referenceType" : "@id",
+      "multilangLabel" : {},
+      "name" : "heldBy"
+   },
+   {
+      "label" : "Geokoordinaten",
+      "uri" : "http://rdaregistry.info/Elements/u/P60345",
+      "referenceType" : "String",
+      "multilangLabel" : {},
+      "container" : "@set",
+      "name" : "longitudeAndLatitude"
+   },
+   {
+      "referenceType" : "String",
+      "label" : "Titelzusatz",
+      "uri" : "http://rdaregistry.info/Elements/u/P60493",
+      "multilangLabel" : {},
+      "name" : "otherTitleInformation",
+      "container" : "@set"
+   },
+   {
+      "multilangLabel" : {},
+      "referenceType" : "String",
+      "uri" : "http://rdaregistry.info/Elements/u/P60327",
+      "label" : "Körperschaft",
+      "name" : "corporateBodyForTitle",
+      "container" : "@set"
+   },
+   {
+      "multilangLabel" : {},
+      "label" : "Ähnlich zu",
+      "uri" : "http://umbel.org/umbel#isLike",
+      "referenceType" : "@id",
+      "container" : "@set",
+      "name" : "similar"
+   },
+   {
+      "referenceType" : "@id",
+      "uri" : "http://www.w3.org/2000/01/rdf-schema#seeAlso",
+      "label" : "Weitere Informationen",
+      "multilangLabel" : {},
+      "name" : "seeAlso",
+      "container" : "@set"
+   },
+   {
+      "container" : "@set",
+      "name" : "xsd",
+      "uri" : "http://www.w3.org/2001/XMLSchema#",
+      "label" : "XML Schema",
+      "referenceType" : "String",
+      "multilangLabel" : {}
+   },
+   {
+      "container" : "@set",
+      "name" : "sameAs",
+      "multilangLabel" : {},
+      "label" : "Identisch zu",
+      "uri" : "http://www.w3.org/2002/07/owl#sameAs",
+      "referenceType" : "@id"
+   },
+   {
+      "multilangLabel" : {},
+      "label" : "Beschrieben durch",
+      "uri" : "http://www.w3.org/2007/05/powder-s#describedby",
+      "referenceType" : "@id",
+      "name" : "describedby"
+   },
+   {
+      "referenceType" : "@id",
+      "label" : "Beschreibt",
+      "uri" : "http://xmlns.com/foaf/0.1/primaryTopic",
+      "multilangLabel" : {},
+      "name" : "primaryTopic",
+      "container" : "@set"
+   },
+   {
+      "multilangLabel" : {},
+      "label" : "SeriesRelation",
+      "uri" : "http://purl.org/lobid/lv#SeriesRelation",
+      "referenceType" : "@id",
+      "container" : "@set",
+      "name" : "SeriesRelation"
+   },
+   {
+      "container" : "@set",
+      "name" : "MultiVolumeWorkRelation",
+      "label" : "MultiVolumeWorkRelation",
+      "uri" : "http://purl.org/lobid/lv#MultiVolumeWorkRelation",
+      "referenceType" : "@id",
+      "multilangLabel" : {}
+   },
+   {
+      "container" : "@set",
+      "name" : "ArchivalResource",
+      "uri" : "http://data.archiveshub.ac.uk/def/ArchivalResource",
+      "label" : "ArchivalResource",
+      "referenceType" : "@id",
+      "multilangLabel" : {}
+   },
+   {
+      "name" : "Article",
+      "container" : "@set",
+      "multilangLabel" : {},
+      "referenceType" : "@id",
+      "uri" : "http://purl.org/ontology/bibo/Article"
+   },
+   {
+      "container" : "@set",
+      "name" : "BibliographicResource",
+      "uri" : "http://purl.org/dc/terms/BibliographicResource",
+      "referenceType" : "@id",
+      "multilangLabel" : {}
+   },
+   {
+      "container" : "@set",
+      "name" : "Bibliography",
+      "uri" : "http://purl.org/lobid/lv#Bibliography",
+      "referenceType" : "@id",
+      "multilangLabel" : {}
+   },
+   {
+      "name" : "Biography",
+      "container" : "@set",
+      "referenceType" : "@id",
+      "uri" : "http://purl.org/lobid/lv#Biography",
+      "multilangLabel" : {}
+   },
+   {
+      "referenceType" : "@id",
+      "uri" : "http://purl.org/ontology/bibo/Book",
+      "multilangLabel" : {},
+      "name" : "Book",
+      "container" : "@set"
+   },
+   {
+      "referenceType" : "@id",
+      "uri" : "http://id.loc.gov/ontologies/bibframe/Collection",
+      "multilangLabel" : {},
+      "name" : "Collection",
+      "container" : "@set"
+   },
+   {
+      "referenceType" : "@id",
+      "uri" : "http://d-nb.info/standards/elementset/gnd#ConferenceOrEvent",
+      "multilangLabel" : {},
+      "name" : "ConferenceOrEvent",
+      "container" : "@set"
+   },
+   {
+      "name" : "CorporateBody",
+      "container" : "@set",
+      "multilangLabel" : {},
+      "referenceType" : "@id",
+      "uri" : "http://d-nb.info/standards/elementset/gnd#CorporateBody"
+   },
+   {
+      "multilangLabel" : {},
+      "uri" : "http://d-nb.info/standards/elementset/gnd#DifferentiatedPerson",
+      "referenceType" : "@id",
+      "container" : "@set",
+      "name" : "DifferentiatedPerson"
+   },
+   {
+      "name" : "EditedVolume",
+      "container" : "@set",
+      "multilangLabel" : {},
+      "referenceType" : "@id",
+      "uri" : "http://purl.org/lobid/lv#EditedVolume"
+   },
+   {
+      "name" : "Family",
+      "container" : "@set",
+      "referenceType" : "@id",
+      "uri" : "http://d-nb.info/standards/elementset/gnd#Family",
+      "multilangLabel" : {}
+   },
+   {
+      "name" : "Festschrift",
+      "container" : "@set",
+      "multilangLabel" : {},
+      "referenceType" : "@id",
+      "uri" : "http://purl.org/lobid/lv#Festschrift"
+   },
+   {
+      "container" : "@set",
+      "name" : "Game",
+      "uri" : "http://schema.org/Game",
+      "referenceType" : "@id",
+      "multilangLabel" : {}
+   },
+   {
+      "multilangLabel" : {},
+      "referenceType" : "@id",
+      "uri" : "http://purl.org/ontology/bibo/Periodical",
+      "name" : "Journal",
+      "container" : "@set"
+   },
+   {
+      "multilangLabel" : {},
+      "referenceType" : "@id",
+      "uri" : "http://purl.org/lobid/lv#Legislation",
+      "name" : "Legislation",
+      "container" : "@set"
+   },
+   {
+      "name" : "Miscellaneous",
+      "container" : "@set",
+      "multilangLabel" : {},
+      "referenceType" : "@id",
+      "uri" : "http://purl.org/lobid/lv#Miscellaneous"
+   },
+   {
+      "container" : "@set",
+      "name" : "MultiVolumeBook",
+      "uri" : "http://purl.org/ontology/bibo/MultiVolumeBook",
+      "referenceType" : "@id",
+      "multilangLabel" : {}
+   },
+   {
+      "uri" : "http://purl.org/ontology/bibo/Newspaper",
+      "referenceType" : "@id",
+      "multilangLabel" : {},
+      "container" : "@set",
+      "name" : "Newspaper"
+   },
+   {
+      "container" : "@set",
+      "name" : "OfficialPublication",
+      "multilangLabel" : {},
+      "uri" : "http://purl.org/lobid/lv#OfficialPublication",
+      "referenceType" : "@id"
+   },
+   {
+      "uri" : "http://purl.org/ontology/bibo/Periodical",
+      "referenceType" : "@id",
+      "multilangLabel" : {},
+      "container" : "@set",
+      "name" : "Periodical"
+   },
+   {
+      "name" : "Report",
+      "container" : "@set",
+      "referenceType" : "@id",
+      "uri" : "http://purl.org/ontology/bibo/Report",
+      "multilangLabel" : {}
+   },
+   {
+      "multilangLabel" : {},
+      "uri" : "http://purl.org/lobid/lv#ArchivedWebPage",
+      "referenceType" : "@id",
+      "container" : "@set",
+      "name" : "ArchivedWebPage"
+   },
+   {
+      "name" : "Person",
+      "container" : "@set",
+      "multilangLabel" : {},
+      "referenceType" : "@id",
+      "uri" : "http://d-nb.info/standards/elementset/gnd#Person"
+   },
+   {
+      "uri" : "http://d-nb.info/standards/elementset/gnd#PlaceOrGeographicName",
+      "referenceType" : "@id",
+      "multilangLabel" : {},
+      "container" : "@set",
+      "name" : "PlaceOrGeographicName"
+   },
+   {
+      "multilangLabel" : {},
+      "uri" : "http://purl.org/ontology/bibo/Proceedings",
+      "referenceType" : "@id",
+      "container" : "@set",
+      "name" : "Proceedings"
+   },
+   {
+      "container" : "@set",
+      "name" : "PublishedScore",
+      "multilangLabel" : {},
+      "uri" : "http://purl.org/ontology/mo/PublishedScore",
+      "referenceType" : "@id"
+   },
+   {
+      "name" : "Item",
+      "container" : "@set",
+      "multilangLabel" : {},
+      "referenceType" : "@id",
+      "uri" : "http://id.loc.gov/ontologies/bibframe/Item"
+   },
+   {
+      "name" : "ReferenceSource",
+      "container" : "@set",
+      "referenceType" : "@id",
+      "uri" : "http://purl.org/ontology/bibo/ReferenceSource",
+      "multilangLabel" : {}
+   },
+   {
+      "name" : "Schoolbook",
+      "container" : "@set",
+      "multilangLabel" : {},
+      "referenceType" : "@id",
+      "uri" : "http://purl.org/lobid/lv#Schoolbook"
+   },
+   {
+      "name" : "Series",
+      "container" : "@set",
+      "multilangLabel" : {},
+      "referenceType" : "@id",
+      "uri" : "http://purl.org/ontology/bibo/Series"
+   },
+   {
+      "uri" : "http://d-nb.info/standards/elementset/gnd#SubjectHeading",
+      "referenceType" : "@id",
+      "multilangLabel" : {},
+      "container" : "@set",
+      "name" : "SubjectHeading"
+   },
+   {
+      "container" : "@set",
+      "name" : "Thesis",
+      "multilangLabel" : {},
+      "uri" : "http://purl.org/ontology/bibo/Thesis",
+      "referenceType" : "@id"
+   },
+   {
+      "name" : "Work",
+      "container" : "@set",
+      "referenceType" : "@id",
+      "uri" : "http://d-nb.info/standards/elementset/gnd#Work",
+      "multilangLabel" : {}
+   }
+]
