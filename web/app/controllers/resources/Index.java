@@ -13,6 +13,7 @@ import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -74,13 +75,20 @@ public class Index {
 	public static Client elasticsearchClient = null;
 
 	/**
-	 * Fields used when building query strings vis
+	 * Fields used when building query strings with
 	 * {@link #buildQueryString(String, String...)}
 	 */
-	public static final String[] FIELDS =
+	public static final String[] QUERY_FIELDS =
 			new String[] { "contribution.agent.label", "title",
 					"subject.id|subject.label", "isbn|issn", "publication.publishedBy",
 					"publication.startDate", "medium.id", "type", "collectedBy.id" };
+
+	/**
+	 * Fields in the index data that should not be included in the response data.
+	 * See https://github.com/hbz/lobid-resources/issues/197
+	 */
+	public static final List<String> HIDE_FIELDS =
+			Arrays.asList("contributorOrder", "subjectOrder", "subjectChain");
 
 	/**
 	 * The values supported for the `aggregations` query parameter.
@@ -91,7 +99,7 @@ public class Index {
 
 	/**
 	 * @param q The current query string
-	 * @param values The values corresponding to {@link #FIELDS}
+	 * @param values The values corresponding to {@link #QUERY_FIELDS}
 	 * @return A query string created from q, expanded for values
 	 */
 	public String buildQueryString(String q, String... values) {
@@ -99,7 +107,7 @@ public class Index {
 		for (int i = 0; i < values.length; i++) {
 			String fieldValue = values[i];
 			String fieldName = fieldValue.contains("http")
-					? FIELDS[i].replace(".label", ".id") : FIELDS[i];
+					? QUERY_FIELDS[i].replace(".label", ".id") : QUERY_FIELDS[i];
 			if (fieldName.toLowerCase().endsWith("date")
 					&& fieldValue.matches("(\\d{1,4}|\\*)-(\\d{1,4}|\\*)")) {
 				String[] fromTo = fieldValue.split("-");
@@ -254,7 +262,17 @@ public class Index {
 	 * @return The index result for the query (the hits) or GET (single result)
 	 */
 	public JsonNode getResult() {
-		return result;
+		return withoutFields(HIDE_FIELDS, result);
+	}
+
+	private static JsonNode withoutFields(List<String> hide, JsonNode json) {
+		JsonNode parent;
+		if (json == null || (parent = json.findParent(hide.get(0))) == null) {
+			return json;
+		}
+		Map<String, Object> map = Json.fromJson(parent, Map.class);
+		hide.forEach(fieldToHide -> map.remove(fieldToHide));
+		return Json.toJson(map);
 	}
 
 	/**
