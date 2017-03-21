@@ -733,13 +733,22 @@
 				<regexp match="([12]\d{3})" format="${1}"/>
 			</data>
 		</choose>
+		<choose name="@endDateSecondaryPublication">
+			<data source="619[-ab][-1].c">
+				<regexp match="([12]\d{3})" format="${1}"/>
+			</data>
+			<data source="619[-ab][-1].a">
+				<regexp match="([12]\d{3}).[-/].([12]\d{3})" format="${2}"/>
+			</data>
+		</choose>
 		<entity name="http://schema.org/publication" flushWith="record">
 			<data source="@placeOfSecondaryPublication" name="http://schema.org/location"/>
 			<data source="@secondaryPublisher" name="http://schema.org/publishedBy"/>
 			<data source="@descriptionOfSecondaryPublication" name="http://purl.org/dc/terms/description"/>
 			<data source="@startDateSecondaryPublication" name="http://schema.org/startDate"/>
+			<data source="@endDateSecondaryPublication" name="http://schema.org/endDate"/>
 			<data
-				source="@secondaryPublisher|@startDateSecondaryPublication|@placeOfSecondaryPublication|@descriptionOfSecondaryPublication"
+				source="@secondaryPublisher|@startDateSecondaryPublication|@endDateSecondaryPublication|@placeOfSecondaryPublication|@descriptionOfSecondaryPublication"
 				name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type">
 				<constant value="http://purl.org/lobid/lv#SecondaryPublicationEvent"/>
 			</data>
