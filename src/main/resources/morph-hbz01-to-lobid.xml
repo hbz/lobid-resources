@@ -719,9 +719,20 @@
 		<data source="610[-a]1.a" name="@descriptionOfSecondaryPublication"/>
 		<data source="611[-a]1.a" name="@placeOfSecondaryPublication"/>
 		<data source="613[-a]1.a" name="@secondaryPublisher"/>
-		<data source="619[ab][-1].a" name="@startDateSecondaryPublication">
-			<regexp match="(\d{4})" format="${1}"/>
-		</data>
+		<choose name="@startDateSecondaryPublication">
+			<data source="619[-ab][-1].b">
+				<regexp match="([12]\d{3})" format="${1}"/>
+			</data>
+			<data source="619[-ab][-1].a">
+				<regexp match="^([12]\d{3}).[-/].([12]\d{3})" format="${1}"/>
+			</data>
+			<data source="619[-ab][-1].a">
+				<regexp match="([12]\d{3})" format="${1}"/>
+			</data>
+			<data source="619[-ab][-1].c">
+				<regexp match="([12]\d{3})" format="${1}"/>
+			</data>
+		</choose>
 		<entity name="http://schema.org/publication" flushWith="record">
 			<data source="@placeOfSecondaryPublication" name="http://schema.org/location"/>
 			<data source="@secondaryPublisher" name="http://schema.org/publishedBy"/>
