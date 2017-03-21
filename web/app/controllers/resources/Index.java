@@ -262,16 +262,22 @@ public class Index {
 	 * @return The index result for the query (the hits) or GET (single result)
 	 */
 	public JsonNode getResult() {
-		return withoutFields(HIDE_FIELDS, result);
+		return result == null ? null : withoutHiddenFields(result);
 	}
 
-	private static JsonNode withoutFields(List<String> hide, JsonNode json) {
-		JsonNode parent;
-		if (json == null || (parent = json.findParent(hide.get(0))) == null) {
-			return json;
-		}
-		Map<String, Object> map = Json.fromJson(parent, Map.class);
-		hide.forEach(fieldToHide -> map.remove(fieldToHide));
+	private static JsonNode withoutHiddenFields(JsonNode json) {
+		return json.isObject() ? filteredObject(json) : filteredArray(json);
+	}
+
+	private static JsonNode filteredArray(JsonNode json) {
+		List<JsonNode> result = new ArrayList<>();
+		json.elements().forEachRemaining(node -> result.add(filteredObject(node)));
+		return Json.toJson(result);
+	}
+
+	private static JsonNode filteredObject(JsonNode node) {
+		Map<String, Object> map = Json.fromJson(node, Map.class);
+		HIDE_FIELDS.forEach(fieldToHide -> map.remove(fieldToHide));
 		return Json.toJson(map);
 	}
 

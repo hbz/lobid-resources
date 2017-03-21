@@ -13,7 +13,11 @@ import static play.test.Helpers.route;
 import static play.test.Helpers.running;
 import static play.test.Helpers.testServer;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -99,6 +103,8 @@ public class IntegrationTests extends LocalIndexSetup {
 		running(testServer(3333), () -> {
 			Index index = new Index();
 			JsonNode hit = index.getResource("TT050409948").getResult();
+			assertThat(hit.isObject()).as("hit is an object").isTrue();
+			assertThat(hit.findValue("hbzId").asText()).isEqualTo("TT050409948");
 			Index.HIDE_FIELDS.forEach(field -> assertThat(hit.get(field)).isNull());
 		});
 	}
@@ -107,12 +113,20 @@ public class IntegrationTests extends LocalIndexSetup {
 	public void responseJsonFilterSearch() {
 		running(testServer(3333), () -> {
 			Index index = new Index();
-			index = index.queryResources("hbzId:TT050409948", 0, 1, "", "", "");
-			assertThat(index.getTotal()).isGreaterThan(0);
-			JsonNode hit = index.getResult();
-			assertThat(hit.findValue("hbzId").asText()).isEqualTo("TT050409948");
-			Index.HIDE_FIELDS
-					.forEach(field -> assertThat(hit.findValue(field)).isNull());
+			index = index.queryResources("*", 0, 100, "", "", "");
+			assertThat(index.getTotal()).isGreaterThanOrEqualTo(100);
+			JsonNode hits = index.getResult();
+			assertThat(hits.isArray()).as("hits is an array").isTrue();
+			List<JsonNode> nodes = new ArrayList<>();
+			Iterator<JsonNode> elements = hits.elements();
+			elements.forEachRemaining(node -> {
+				Index.HIDE_FIELDS
+						.forEach(field -> assertThat(node.get(field)).as(field).isNull());
+				nodes.add(node);
+			});
+			assertThat(nodes.size()).isGreaterThanOrEqualTo(100);
+			assertThat(new HashSet<>(nodes).size()).as("unique hits")
+					.isEqualTo(nodes.size());
 		});
 	}
 
