@@ -12,6 +12,7 @@
         <link rel="stylesheet" media="all" href="@controllers.routes.Assets.at("stylesheets/bootstrap.min.css")">
         <link rel="stylesheet" media="all" href="@controllers.routes.Assets.at("stylesheets/octicons.css")">
         <link rel="stylesheet" media="all" href="@controllers.routes.Assets.at("stylesheets/jquery-ui.min.css")">
+        <link rel="stylesheet" media="all" href='@controllers.routes.Assets.at("stylesheets/font-awesome.min.css")'>
         <link rel="stylesheet" media="all" href="@controllers.routes.Assets.at("stylesheets/resources.css")">
         <link rel="shortcut icon" type="image/png" href="@controllers.routes.Assets.at("images/favicon.png")">
         <script src="@controllers.routes.Assets.at("javascripts/jquery-1.10.2.min.js")"></script>
@@ -71,17 +72,18 @@
                 <h1>lobid-resources <small>&mdash; der hbz-Verbundkatalog als Linked Open Data</small></h1>
             </div>
             @content
-            <div class="panel panel-default resources-footer">
+            <div class="panel panel-default footer">
               <div class="panel-body">
-                <small>
-                @defining(new controllers.resources.Index().totalHits("*")){ hits =>
-                <img class="media-object pull-left nrw-wappen" src="@controllers.routes.Assets.at("images/wappen.png")" alt="NRW-Wappen">
-                <img class="media-object pull-right butterfly" src="@controllers.routes.Assets.at("images/butterfly.png")" alt="Lobid-Butterfly"> 
-                Der hbz-Verbundkatalog bietet @if(hits>0){aktuell @hits}else{fast 20 Millionen} Literaturnachweise. 
-                Er stellt die Grundlage für viele weitere Produkte und Dienstleistungen dar und ist eingebunden in diverse 
-                Endnutzerportale sowie in die Online-Fernleihe. Seine Daten stehen gemeinfrei unter <a href="http://creativecommons.org/publicdomain/zero/1.0/">CC0</a> zur Verfügung.
-                }
-                </small>
+                <span class="pull-left">
+	                <img src='@controllers.routes.Assets.at("images/wappen.png")' alt="NRW-Wappen"/> &nbsp;
+	                lobid-resources | ein LOD-Dienst des <a href='https://www.hbz-nrw.de/produkte/linked-open-data'>hbz — Hochschulbibliothekszentrum des Landes NRW</a>
+                </span>
+                <span class="pull-right">
+	                <a href="http://www.hbz-nrw.de/impressum">Impressum</a> | 
+	                <a href="http://twitter.com/lobidorg"><i class="fa fa-twitter" aria-hidden="true"></i> Twitter</a>&nbsp; 
+	                <a href="http://github.com/hbz/lobid-resources"><i class="fa fa-github" aria-hidden="true"></i> GitHub</a>&nbsp; 
+	                <a href="http://blog.lobid.org"><i class="fa fa-rss" aria-hidden="true"></i> Blog</a>
+                </span>
               </div>
             </div>
         </div>
