@@ -7,8 +7,11 @@
 @import play.api.libs.json.JsValue
 @import controllers.resources.Lobid
 
-@main("lobid-resources") {
-    @tags.search_form("")
+@main("", "lobid-resources") {
+    <div class="page-header">
+        <img class="media-object nrw-logo pull-right" src="@controllers.routes.Assets.at("images/hbz.png")" alt="hbz">
+        <h1>lobid-resources <small>&mdash; der hbz-Verbundkatalog als Linked Open Data</small></h1>
+    </div>
     <div class="row">
 	    <div class="col-md-12 intro">
 	       @Html(json.get("description").get("de").asText())
