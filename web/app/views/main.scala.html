@@ -1,6 +1,6 @@
 @* Copyright 2014 Fabian Steeg, hbz. Licensed under the GPLv2 *@
 
-@(title: String)(content: Html)
+@(q: String, title: String)(content: Html)
 
 @import controllers.resources.Lobid
 
@@ -12,6 +12,7 @@
         <link rel="stylesheet" media="all" href="@controllers.routes.Assets.at("stylesheets/bootstrap.min.css")">
         <link rel="stylesheet" media="all" href="@controllers.routes.Assets.at("stylesheets/octicons.css")">
         <link rel="stylesheet" media="all" href="@controllers.routes.Assets.at("stylesheets/jquery-ui.min.css")">
+        <link rel="stylesheet" media="all" href='@controllers.routes.Assets.at("stylesheets/font-awesome.min.css")'>
         <link rel="stylesheet" media="all" href="@controllers.routes.Assets.at("stylesheets/resources.css")">
         <link rel="shortcut icon" type="image/png" href="@controllers.routes.Assets.at("images/favicon.png")">
         <script src="@controllers.routes.Assets.at("javascripts/jquery-1.10.2.min.js")"></script>
@@ -25,7 +26,7 @@
         <div class="container">
             <p/>
             <div class="navbar navbar-default" role="navigation">
-                <div class="container-fluid">
+                <div class="container-fluid" id="header">
                   <div class="navbar-header">
                     <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#resources-nav">
                         <span class="sr-only">Navigation ein/ausblenden</span>
@@ -33,10 +34,14 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand" href="@resources.routes.Application.index()"><span class="glyphicon glyphicon-link"></span> lobid-resources</a>
+                    <a class="navbar-brand" href="@resources.routes.Application.index()">
+                     <span><img id="butterfly" src='@controllers.routes.Assets.at("images/butterfly.png")' height="50px" /></span> lobid-resources</a>
                   </div>
                   <div class="navbar-collapse collapse" id="resources-nav">
                     <ul class="nav navbar-nav">
+                      <li @if(request.uri.toString() == resources.routes.Application.index().toString()){ class="active" }>
+                        <a href="@resources.routes.Application.index()">Suchen</a>
+                      </li>
                       <li @if(title=="lobid-resources - Erweiterte Suche"){class="active"}>
                         <a href="@resources.routes.Application.advanced()">Erweiterte Suche</a>
                       </li>
@@ -47,40 +52,31 @@
                     <ul class="nav navbar-nav navbar-right">
                       <li @if(title=="lobid-resources - Merkliste"){class="active"}><a href="@resources.routes.Application.showStars()">Merkliste</a></li>
                       <li class="divider"></li>
-                      <li @if(title=="lobid-resources: Kontakt"){class="active"} class="dropdown">
+                      <li @if(title.contains("Dataset")){class="active"} class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" title="Info"><span class="glyphicon glyphicon-info-sign"></span><b class="caret"></b></a>
                         <ul class="dropdown-menu">
                           <li><a href='@resources.routes.Application.dataset("")'>Datenbeschreibung</a></li>
-                          <li class="divider"></li>
-                          <li><a href="mailto:semweb@@hbz-nrw.de?subject=Feedback%20zu%20lobid-resources,%20aktuelle%20URL%20@controllers.resources.Application.currentUri()">Feedback</a></li>
-                          <li class="divider"></li>
-                          <li class="dropdown-header">Technischer Kontakt</li>
-                          <li><a href="https://www.hbz-nrw.de/produkte/linked-open-data">hbz NRW</a></li>
-                          <li class="divider"></li>
-                          <li class="dropdown-header">Rechtlicher Kontakt</li>
-                          <li><a href="http://www.hbz-nrw.de/impressum/">Impressum</a></li>
+                          <li><a href="mailto:semweb@@hbz-nrw.de?subject=Feedback%20zu%20lobid-resources,%20aktuelle%20URL%20@controllers.resources.Application.currentUri()">Feedback zur aktuellen Seite</a></li>
                         </ul>
                       </li>
                     </ul>
                   </div><!--/.nav-collapse -->
                 </div><!--/.container-fluid -->
             </div>
-            <div class="page-header">
-                <img class="media-object nrw-logo pull-right" src="@controllers.routes.Assets.at("images/hbz.png")" alt="hbz">
-                <h1>lobid-resources <small>&mdash; der hbz-Verbundkatalog als Linked Open Data</small></h1>
-            </div>
+            @if(request.uri.toString() != resources.routes.Application.advanced().toString()){@tags.search_form(q)}
             @content
-            <div class="panel panel-default resources-footer">
+            <div class="panel panel-default footer">
               <div class="panel-body">
-                <small>
-                @defining(new controllers.resources.Index().totalHits("*")){ hits =>
-                <img class="media-object pull-left nrw-wappen" src="@controllers.routes.Assets.at("images/wappen.png")" alt="NRW-Wappen">
-                <img class="media-object pull-right butterfly" src="@controllers.routes.Assets.at("images/butterfly.png")" alt="Lobid-Butterfly"> 
-                Der hbz-Verbundkatalog bietet @if(hits>0){aktuell @hits}else{fast 20 Millionen} Literaturnachweise. 
-                Er stellt die Grundlage für viele weitere Produkte und Dienstleistungen dar und ist eingebunden in diverse 
-                Endnutzerportale sowie in die Online-Fernleihe. Seine Daten stehen gemeinfrei unter <a href="http://creativecommons.org/publicdomain/zero/1.0/">CC0</a> zur Verfügung.
-                }
-                </small>
+                <span class="pull-left">
+	                <img src='@controllers.routes.Assets.at("images/wappen.png")' alt="NRW-Wappen"/> &nbsp;
+	                lobid-resources | ein LOD-Dienst des <a href='https://www.hbz-nrw.de/produkte/linked-open-data'>hbz — Hochschulbibliothekszentrum des Landes NRW</a>
+                </span>
+                <span class="pull-right">
+	                <a href="http://www.hbz-nrw.de/impressum">Impressum</a> | 
+	                <a href="http://twitter.com/lobidorg"><i class="fa fa-twitter" aria-hidden="true"></i> Twitter</a>&nbsp; 
+	                <a href="http://github.com/hbz/lobid-resources"><i class="fa fa-github" aria-hidden="true"></i> GitHub</a>&nbsp; 
+	                <a href="http://blog.lobid.org"><i class="fa fa-pencil" aria-hidden="true"></i> Blog</a>
+                </span>
               </div>
             </div>
         </div>

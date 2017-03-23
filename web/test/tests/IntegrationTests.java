@@ -35,7 +35,6 @@ import controllers.resources.Index;
 import play.mvc.Http;
 import play.mvc.Result;
 import play.test.Helpers;
-import play.twirl.api.Content;
 
 /**
  * See http://www.playframework.com/documentation/2.3.x/JavaFunctionalTest
@@ -77,14 +76,12 @@ public class IntegrationTests extends LocalIndexSetup {
 
 	@Test
 	public void renderTemplate() {
-		String query = "buch";
-		int from = 0;
-		int size = 10;
 		running(testServer(3333), () -> {
-			Content html = views.html.query.render("[]", query, "", "", "", "", "",
-					"", "", from, size, 0L, "", "", "", "");
-			assertThat(Helpers.contentType(html)).isEqualTo("text/html");
-			String text = Helpers.contentAsString(html);
+			Result result =
+					route(fakeRequest(GET, "/resources/search?q=buch&format=html"));
+			assertThat(result).isNotNull();
+			assertThat(Helpers.contentType(result)).isEqualTo("text/html");
+			String text = Helpers.contentAsString(result);
 			assertThat(text).contains("lobid-resources").contains("buch");
 		});
 	}
