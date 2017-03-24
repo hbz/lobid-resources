@@ -96,8 +96,8 @@ public abstract class LocalIndexSetup {
 				final IndexRequestBuilder requestBuilder =
 						createRequestBuilder(type, id, parent, map);
 				bulkRequest.add(requestBuilder);
-			} catch (IOException e) {
-				e.printStackTrace();
+			} catch (Exception e) {
+				Logger.error("Error reading file {}: {}", file, e.getMessage());
 			}
 		});
 	}
