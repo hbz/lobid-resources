@@ -58,7 +58,7 @@ public final class MabXml2lobidJsonEs {
 		if (args.length != 6) {
 			System.err.println("Usage: MabXml2lobidJsonEs"
 					+ String.format(usage, " ", " ", " ", " ", " ", " "));
-			System.exit(-1);
+			return;
 		}
 		String jsonLdContext =
 				System.getProperty("jsonLdContext", LOBID_RESOURCES_JSONLD_CONTEXT);

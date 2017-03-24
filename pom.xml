@@ -138,9 +138,9 @@
 						<generateTestData>${generateTestData}</generateTestData>
 						</environmentVariables>
 						<test>UnitTests</test>
-						<skipTests>false</skipTests>
-						<testFailureIgnore>true</testFailureIgnore>
-						<forkMode>once</forkMode>
+						<forkCount>3</forkCount>
+						<reuseForks>true</reuseForks>
+						<argLine>-Xmx1024m -XX:MaxPermSize=256m</argLine>
 					</configuration>
 				</plugin>
 			</plugins>
