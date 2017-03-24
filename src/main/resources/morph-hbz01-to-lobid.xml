@@ -922,7 +922,7 @@
 		<!-- ####### contributors -->
 		<!-- ####################### -->
 		<!-- person links -->
-		<data source="1[02468][048][-amn][12].9|1[13579][26][-amn][12].9" name="@creatorPersonId">
+		<data source="1[02468][048][-amn][12].9|1[13579][26][-amn][12].9" name="@GNDPersonId">
 			<regexp match="\(DE-588\)(.*)" format="http://d-nb.info/gnd/${1}"/>
 			<sanitizeUrl></sanitizeUrl>
 		</data>
@@ -933,7 +933,7 @@
 		<combine name="@bnodeCreatorPersonLabel" value="_:${a}">
 			<if>
 				<none>
-					<data source="@creatorPersonId"/>
+					<data source="@GNDPersonId"/>
 				</none>
 			</if>
 			<data source="@creatorPersonLabel" name="a">
@@ -941,8 +941,8 @@
 				<replace pattern="&lt;" with=""/>
 			</data>
 		</combine>
-		<choose name="@creatorPersonOrCoorporateBodyBnodeOrId" flushWith="@creatorPersonId|@bnodeCreatorPersonLabel|@creatorCorporateBodyId">
-			<data source="@creatorPersonId"/>
+		<choose name="@creatorPersonOrCoorporateBodyBnodeOrId" flushWith="@GNDPersonId|@bnodeCreatorPersonLabel|@creatorCorporateBodyId">
+			<data source="@GNDPersonId"/>
 			<data source="@creatorCorporateBodyId"/>
 			<data source="@bnodeCreatorPersonLabel"/>
 		</choose>
@@ -1190,12 +1190,12 @@
 		<!-- # Create subgraph: temporarily set new subjects or contributor id -->
 		<!-- ########### -->
 		<data name="~rdf:subject"
-			source="@bnodeCreatorPersonLabel|@contributorPersonBnodeOrId|@contributorCorporateBodyBnodeOrId|@subjectLinks|@creatorPersonId|@creatorCorporateBodyId|@contributorPersonId|@contributorCorporateBodyId"/>
+			source="@bnodeCreatorPersonLabel|@contributorPersonBnodeOrId|@contributorCorporateBodyBnodeOrId|@subjectLinks|@GNDPersonId|@creatorCorporateBodyId|@contributorPersonId|@contributorCorporateBodyId"/>
 		<!-- subjects which are persons (and thus the date is to be ignored, see hbz/lobid#244 ) -->
 		<combine name="@preferredNamePersonConcatSubject" value="${a}" sameEntity="true"
-			flushWith="@creatorPersonId|@contributorPersonId|@preferredNameP">
+			flushWith="@GNDPersonId|@contributorPersonId|@preferredNameP">
 			<concat delimiter=", " name="a"
-				flushWith="@creatorPersonId|@contributorPersonId|@preferredNameP" sameEntity="true">
+				flushWith="@GNDPersonId|@contributorPersonId|@preferredNameP" sameEntity="true">
 				<data source="1????.[cghknpsz]|9??[-abcdfep][12-].[chknp]|8[012]?[-mn][-12].[cghknpsz]"/>
 			</concat>
 		</combine>
@@ -1211,13 +1211,13 @@
 		</combine>
 		<!-- START contributor/creator -->
 		<combine name="@preferredNameForThePerson" value="${a}" sameEntity="true" reset="true"
-			flushWith="@creatorPersonId|@contributorPersonId|@bnodeCreatorPersonLabel|@contributorPersonBnodeOrId">
+			flushWith="@GNDPersonId|@contributorPersonId|@bnodeCreatorPersonLabel|@contributorPersonBnodeOrId">
 			<data source="@preferredName|@creatorPersonLabel|@contributorPersonLabel" name="a">
 				<replace pattern="&gt;&gt;" with=""/>
 				<replace pattern="&lt;&lt;" with=""/>
 			</data>
 			<data
-				source="@creatorPersonId|@contributorPersonId|@bnodeCreatorPersonLabel|@bnodeContributorPersonLabel"/>
+				source="@GNDPersonId|@contributorPersonId|@bnodeCreatorPersonLabel|@bnodeContributorPersonLabel"/>
 		</combine>
 		<combine name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" value="http://d-nb.info/standards/elementset/gnd#Family"
 			flushWith="@subjectLinks">
@@ -1312,7 +1312,7 @@
 			</choose>
 		</combine>
 		<choose name="@preferredName" sameEntity="true"
-			flushWith="@subjectLinks|@preferredNameP|@creatorPersonId|@creatorCorporateBodyId|@contributorPersonId|@contributorCorporateBodyId">
+			flushWith="@subjectLinks|@preferredNameP|@GNDPersonId|@creatorCorporateBodyId|@contributorPersonId|@contributorCorporateBodyId">
 			<data source="@preferredNameConcatEventENDC"/>
 			<data source="@preferredNameConcatEventEDC"/>
 			<data source="@preferredNameConcatEventE"/>
@@ -1339,10 +1339,6 @@
 		<combine name="@relator" value="${a}">
 			<choose name="a"
 				flushWith="@contributorPersonBnodeOrId|@contributorCorporateBodyBnodeOrId|@creatorPersonOrCoorporateBodyBnodeOrId">
-				<!-- always creator -->
-				<data source="@creatorPersonOrCoorporateBodyBnodeOrId" name="a">
-					<regexp match=".*" format="http://id.loc.gov/vocabulary/relators/cre"/>
-				</data>
 				<!-- map literals to marc relator property -->
 				<data source="@marcrelName" name="a">
 					<regexp match="[dD]ars|act" format="http://id.loc.gov/vocabulary/relators/act"/>
@@ -1364,6 +1360,9 @@
 				</data>
 				<data source="@marcrelName" name="a">
 					<regexp match="[iI]ll|[zZ]eichn" format="http://id.loc.gov/vocabulary/relators/ill"/>
+				</data>
+				<data source="@marcrelName" name="a">
+					<regexp match="[aA]rt" format="http://id.loc.gov/vocabulary/relators/art"/>
 				</data>
 				<data source="@marcrelName" name="a">
 					<regexp match="^[mM]itarb|clb" format="http://id.loc.gov/vocabulary/relators/clb"/>
@@ -1455,7 +1454,11 @@
 				</data>
 				<data source="@contributorPersonBnodeOrId" name="a">
 					<regexp match=".*" format="http://id.loc.gov/vocabulary/relators/ctb"/>
-				</data> 
+				</data>
+				<!-- always creator -->
+				<data source="@creatorPersonOrCoorporateBodyBnodeOrId" name="a">
+					<regexp match=".*" format="http://id.loc.gov/vocabulary/relators/cre"/>
+				</data>
 			</choose>
 		</combine>
 		<!-- END contributor/creator -->
@@ -1464,7 +1467,7 @@
 		<!-- ########### -->
 		<combine name="~rdf:subject" value="$[ns-lobid-resource]${subject}#!">
 			<data
-				source="@bnodeCreatorPersonLabel|@contributorPersonBnodeOrId|@contributorCorporateBodyBnodeOrId|@agentId|@altLabelPerson|@altLabelCorporateBody|@subjectLinks|@creatorPersonId|@creatorCorporateBodyId|@contributorPersonId|@contributorCorporateBodyId|@subjectTopic|@subjectMain"/>
+				source="@bnodeCreatorPersonLabel|@contributorPersonBnodeOrId|@contributorCorporateBodyBnodeOrId|@agentId|@altLabelPerson|@altLabelCorporateBody|@subjectLinks|@GNDPersonId|@creatorCorporateBodyId|@contributorPersonId|@contributorCorporateBodyId|@subjectTopic|@subjectMain"/>
 			<data source="@id" name="subject"/>
 		</combine>
 		<!-- other subjects -->
