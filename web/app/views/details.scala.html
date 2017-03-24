@@ -16,9 +16,9 @@
 @if(docJson.isEmpty){
   @main("", "lobid-resources - Detailansicht") {
     @if(flash.get("error")!=null){
-    <div class="alert alert-danger">@flash.get("error")</div>
+    <div id="search-results" class="alert alert-danger">@flash.get("error")</div>
     } else {
-    <div class="alert alert-info text-center">Ein Titel mit der ID @q konnte nicht gefunden werden.</div>
+    <div id="search-results" class="alert alert-info text-center">Ein Titel mit der ID @q konnte nicht gefunden werden.</div>
     }
   }
 } else {
