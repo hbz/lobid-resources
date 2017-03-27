@@ -112,7 +112,6 @@ public class Application extends Controller {
 	/**
 	 * @return The API documentation page
 	 */
-	@Cached(key = "api", duration = ONE_DAY)
 	public static Promise<Result> api() {
 		return Promise.promise(() -> ok(api.render()));
 	}
