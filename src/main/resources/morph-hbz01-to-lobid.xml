@@ -149,7 +149,6 @@
 				<regexp match="\(DE-588\)(.*)" format="http://d-nb.info/gnd/${1}"/>
 			</data>
 		</combine>
-
 		<combine name="~rdf:subject" value="$[ns-lobid-resource]${subject}#!" flushWith="@rdfTypeSubject">
 			<data source="@subjectLabelBnode"/>
 			<data source="@id" name="subject"/>
@@ -252,6 +251,9 @@
 		<!--audio visual video -->
 		<data source="050." name="@matVideo">
 			<regexp match="^.....[bc]"/>
+		</data>
+		<data source="334-[12].a" name="@matVideo">
+			<regexp match="^Bildton"/>
 		</data>
 		<data source="@matVideo" name="@medium">
 			<regexp match=".*" format="$[ns-bibo]AudioVisualDocument"/>
