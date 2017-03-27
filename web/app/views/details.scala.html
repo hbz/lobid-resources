@@ -14,17 +14,18 @@
 @import play.cache.Cache
 
 @if(docJson.isEmpty){
-  @main("lobid-resources - Detailansicht") {
+  @main("", "lobid-resources - Detailansicht") {
     @if(flash.get("error")!=null){
-    <div class="alert alert-danger">@flash.get("error")</div>
+    <div id="search-results" class="alert alert-danger">@flash.get("error")</div>
     } else {
-    <div class="alert alert-info text-center">Ein Titel mit der ID @q konnte nicht gefunden werden.</div>
+    <div id="search-results" class="alert alert-info text-center">Ein Titel mit der ID @q konnte nicht gefunden werden.</div>
     }
   }
 } else {
   @defining(Json.parse(docJson)) { doc =>
-    @main(if( (doc\\"title").isEmpty) "lobid-resources - Vollanzeige" else (doc\\"title")(0).asOpt[String].getOrElse(q)) {
-      <div class="row">
+    @main("", if( (doc\\"title").isEmpty) "lobid-resources - Vollanzeige" else (doc\\"title")(0).asOpt[String].getOrElse(q)) {
+      <h1>@((doc\\"title")(0).asOpt[String].getOrElse(q))</h1>
+      <div class="row" id="search-results">
       @defining(Lobid.items(doc.toString)) { items =>
         @defining(!(doc\\"isPartOf").isEmpty && doc.toString.contains("http://purl.org/ontology/bibo/Article")){superordination =>
           <div class="col-md-@if(items.isEmpty && !doc.toString.contains("fulltextOnline") && !superordination){12} else {8}">

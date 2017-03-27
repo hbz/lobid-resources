@@ -27,7 +27,7 @@ public final class GetRdaDocsInMabXml {
 	public static void main(String... args) {
 		if (args.length != 1) {
 			System.err.println("Usage: GetRdaDocsInMabXml <input path>");
-			System.exit(-1);
+			return;
 		}
 		String inputPath = args[0];
 		final FileOpener opener = new FileOpener();

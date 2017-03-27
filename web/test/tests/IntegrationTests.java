@@ -13,7 +13,11 @@ import static play.test.Helpers.route;
 import static play.test.Helpers.running;
 import static play.test.Helpers.testServer;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -24,13 +28,13 @@ import org.elasticsearch.search.aggregations.bucket.terms.Terms.Bucket;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.base.Joiner;
 
 import controllers.resources.Index;
 import play.mvc.Http;
 import play.mvc.Result;
 import play.test.Helpers;
-import play.twirl.api.Content;
 
 /**
  * See http://www.playframework.com/documentation/2.3.x/JavaFunctionalTest
@@ -72,14 +76,12 @@ public class IntegrationTests extends LocalIndexSetup {
 
 	@Test
 	public void renderTemplate() {
-		String query = "buch";
-		int from = 0;
-		int size = 10;
 		running(testServer(3333), () -> {
-			Content html = views.html.query.render("[]", query, "", "", "", "", "",
-					"", "", from, size, 0L, "", "", "", "");
-			assertThat(Helpers.contentType(html)).isEqualTo("text/html");
-			String text = Helpers.contentAsString(html);
+			Result result =
+					route(fakeRequest(GET, "/resources/search?q=buch&format=html"));
+			assertThat(result).isNotNull();
+			assertThat(Helpers.contentType(result)).isEqualTo("text/html");
+			String text = Helpers.contentAsString(result);
 			assertThat(text).contains("lobid-resources").contains("buch");
 		});
 	}
@@ -90,6 +92,38 @@ public class IntegrationTests extends LocalIndexSetup {
 			Index index = new Index();
 			Long hits = index.totalHits("hbzId:TT050409948");
 			assertThat(hits).isGreaterThan(0);
+		});
+	}
+
+	@Test
+	public void responseJsonFilterGet() {
+		running(testServer(3333), () -> {
+			Index index = new Index();
+			JsonNode hit = index.getResource("TT050409948").getResult();
+			assertThat(hit.isObject()).as("hit is an object").isTrue();
+			assertThat(hit.findValue("hbzId").asText()).isEqualTo("TT050409948");
+			Index.HIDE_FIELDS.forEach(field -> assertThat(hit.get(field)).isNull());
+		});
+	}
+
+	@Test
+	public void responseJsonFilterSearch() {
+		running(testServer(3333), () -> {
+			Index index = new Index();
+			index = index.queryResources("*", 0, 100, "", "", "");
+			assertThat(index.getTotal()).isGreaterThanOrEqualTo(100);
+			JsonNode hits = index.getResult();
+			assertThat(hits.isArray()).as("hits is an array").isTrue();
+			List<JsonNode> nodes = new ArrayList<>();
+			Iterator<JsonNode> elements = hits.elements();
+			elements.forEachRemaining(node -> {
+				Index.HIDE_FIELDS
+						.forEach(field -> assertThat(node.get(field)).as(field).isNull());
+				nodes.add(node);
+			});
+			assertThat(nodes.size()).isGreaterThanOrEqualTo(100);
+			assertThat(new HashSet<>(nodes).size()).as("unique hits")
+					.isEqualTo(nodes.size());
 		});
 	}
 
