@@ -14,7 +14,7 @@
 	<pre><code>@(Json.prettyPrint(Json.parse(new controllers.resources.Index().getResource(hbzId).getResult().toString)))</code></pre>
 }
 
-@main("lobid-resources - API") {
+@main("", "lobid-resources - API") {
 	<h2 id='basics'>@Messages.get("api.basics.header") <small><a href='#basics'><span class='glyphicon glyphicon-link'></span></a></small></h2>
 	<dl>
 	@desc("HTTP GET", resources.routes.Application.show("HT018472857", format="json"))
