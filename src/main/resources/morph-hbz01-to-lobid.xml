@@ -756,6 +756,19 @@
 			</data>
 		</entity>
 		<!-- |674[-abc][-12].a <= YearOfPublication of the primary form. TODO find property -->
+		<combine name="http://rdaregistry.info/Elements/u/P60584" value="${a}">
+			<choose name="a">
+				<data source="064[a][1].9" name="a">
+					<regexp match="^\(DE-588\)(\d{3}.*)" format="http://d-nb.info/gnd/${1}"/>
+				</data>
+				<data source="064[a][1].9" name="a">
+					<regexp match="(\d{3}.*)" format="http://d-nb.info/gnd/${1}"/>
+				</data>
+			</choose>
+		</combine>
+		<data source="http://rdaregistry.info/Elements/u/P60584" name="~rdf:subject"/>
+		<data source="064a1.a" name="http://www.w3.org/2000/01/rdf-schema#label"/>
+		<!-- <data source="@itemId" name="~rdf:subject"/> -->
 		<!-- ####################### -->
 		<!-- ########## description extent -->
 		<!-- ####################### -->
