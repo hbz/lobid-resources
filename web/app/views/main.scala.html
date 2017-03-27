@@ -34,13 +34,13 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand" href="@resources.routes.Application.index()">
-                     <span><img id="butterfly" src='@controllers.routes.Assets.at("images/butterfly.png")' height="50px" /></span> lobid-resources</a>
+                    <a class="navbar-brand" href="/">
+                     <span><img id="butterfly" src='@controllers.routes.Assets.at("images/butterfly.png")' height="50px" /></span> lobid</a>
                   </div>
                   <div class="navbar-collapse collapse" id="resources-nav">
                     <ul class="nav navbar-nav">
                       <li @if(request.uri.toString() == resources.routes.Application.index().toString()){ class="active" }>
-                        <a href="@resources.routes.Application.index()">Suchen</a>
+                        <a href="@resources.routes.Application.index()">resources</a>
                       </li>
                       <li @if(title=="lobid-resources - Erweiterte Suche"){class="active"}>
                         <a href="@resources.routes.Application.advanced()">Erweiterte Suche</a>
