@@ -9,7 +9,7 @@
 @import play.api.libs.json._
 
 @if(docJson.isEmpty){
-  @main("lobid-resources - Bestandsdetails") {
+  @main("", "lobid-resources - Bestandsdetails") {
     @if(flash.get("error")!=null){
     <div class="alert alert-danger">@flash.get("error")</div>
     } else {
@@ -18,18 +18,20 @@
   }
 } else {
   @defining(Json.parse(docJson)) { doc =>
-    @main("lobid-resources - Bestandsdetails") {
-      <div class="row">
+    @main("", "lobid-resources - Bestandsdetails") {
       @for(
           itemOf <- (doc \ "itemOf").asOpt[JsValue];
           itemOfs = itemOf.asOpt[Seq[JsValue]].getOrElse(Seq(itemOf));
           resourceId <- (itemOfs(0) \ "id").asOpt[String];
           itemId <- (doc \ "id").asOpt[String];
-          items = Lobid.items("{\"hasItem\":[{\"id\":\"" + itemId + "\"}]}")) {
+          items = Lobid.items("{\"hasItem\":[{\"id\":\"" + itemId + "\"}]}");
+          resourceLabel = Lobid.resourceLabel(resourceId)) {
+        <h1>@resourceLabel</h1>
+        <div class="row" id="search-results">
         <div class="col-md-12" id="holdings">
           <dl>
            <dt>
-           Exemplar von <i><a href="@resourceId">@Lobid.resourceLabel(resourceId)</a></i> in:
+           Exemplar von <i><a href="@resourceId">@resourceLabel</a></i> in:
            <small style='float:right'>
             <a title="JSON-LD-Indexdaten anzeigen" href='@resources.routes.Application.item(id, "json")'><span class="glyphicon glyphicon-cog"></span></a>
             </small>

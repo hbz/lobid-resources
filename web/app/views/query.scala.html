@@ -50,14 +50,14 @@
 	if(q.contains("multiVolumeWork")) {select(("Band","Bände"))} else if (q.contains("series")) {select(("Serienband","Serienbände"))} else if (q.contains("containedIn")) {select(("Beitrag","Beiträge"))} else {""}
 }
 
-@main("lobid-resources - Ergebnisliste") {
+@main(q, "lobid-resources - Ergebnisliste") {
     @if(Seq(name, id, publisher).exists(!_.isEmpty)){ @* advanced search, not shown in facets *@
       @tags.search_advanced("Suche aktualisieren", q, agent, name, subject, id, publisher, issued, sortParam)
+      <script>$("#search-simple").hide()</script>
     } else {
-      @tags.search_form(q)
     }
     @defining(Json.parse(result).asOpt[Seq[JsValue]].getOrElse(Seq()).zipWithIndex) { hits =>
-     <div class="row">
+     <div class="row" id="search-results">
          <div class="col-md-@if(allHits > 0){9}else{12}">
          @if(hits.size>0){
              <div class="row hide-in-print" >

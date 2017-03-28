@@ -690,12 +690,12 @@
 			<!-- proceedings -->
 			<choose name="http://id.loc.gov/ontologies/bibframe/frequency">
 				<data source="052.">
+					<regexp match="^.......t|^........t|^.........t" format="http://marc21rdf.info/terms/continuingfre#i"/>
+				</data>
+				<data source="052.">
 					<regexp
 						match="^.......([dcwesmbqfaghz])|^........([dcwesmbqfaghz])|^.........([dcwesmbqfaghz])"
 						format="http://marc21rdf.info/terms/continuingfre#${1}"/>
-				</data>
-				<data source="052.">
-					<regexp match="^.......t|^........t|^.........t" format="http://marc21rdf.info/terms/continuingfre#i"/>
 				</data>
 			</choose>
 			<!-- if 523-1p and 523-1a -->
