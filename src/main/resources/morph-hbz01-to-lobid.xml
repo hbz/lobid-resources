@@ -632,6 +632,27 @@
 		</combine>
 		<data source="360-[12].a" name="$[ns-lobid-vocab]titleOfSubSeries"/>
 		<!-- ####################### -->
+		<!-- ########## predecessor and successor -->
+		<!-- ####################### -->
+		<combine name="@predecessorHbzId" value="${a}">
+			<data source="531[-xyz]1.9" name="a">
+				<regexp match="(.*)" format="$[ns-lobid-vocab]${1}" />
+			</data>
+		</combine>
+		<combine name="@predecessorLabel" value="{a}">
+			<data source="531[-xyz]1.a" name="a"/>
+		</combine>
+		
+		<combine name="@predecessorHbzId" value="${a}">
+			<data source="533[-xyz]1.9" name="a">
+				<regexp match="(.*)" format="$[ns-lobid-vocab]${1}" />
+			</data>
+		</combine>
+		<combine name="@predecessorLabel" value="{a}">
+			<data source="533[-xyz]1.a" name="a"/>
+		</combine>
+		
+		<!-- ####################### -->
 		<!-- ########## geo coordinates -->
 		<!-- ####################### -->
 		<data source="407-[123].a" name="http://rdaregistry.info/Elements/u/P60345">
