@@ -630,7 +630,12 @@
 				</data>
 			</choose>
 		</combine>
-		<data source="360-[12].a" name="http://rdaregistry.info/Elements/u/P60517"/>
+		<data source="360-[12].a" name="@titleOfSubSeries"/>
+		<combine name="http://rdaregistry.info/Elements/u/P60517" value="${a}">
+			<concat delimiter=". " name="a">
+				<data source="@titleOfSubSeries" name="a"/>
+			</concat>
+		</combine>
 		<!-- ####################### -->
 		<!-- ########## geo coordinates -->
 		<!-- ####################### -->
