@@ -636,7 +636,7 @@
 		<!-- ####################### -->
 		<combine name="@predecessorHbzId" value="${a}">
 			<data source="531[-xyz]1.9" name="a">
-				<regexp match="(.*)" format="$[ns-lobid-vocab]${1}" />
+				<regexp match="(.*)" format="$[ns-lobid-resource]${1}" />
 			</data>
 		</combine>
 		<combine name="@predecessorLabel" value="${a}">
@@ -653,11 +653,10 @@
 		<combine name="~rdf:subject" value="$[ns-lobid-resource]${subject}#!"
 			flushWith="@predecessorHbzId">
 			<data source="@id" name="subject" />
-		</combine>
-		
-		<combine name="@successorHbzId" value="${a}">
+		</combine> 	
+	  <combine name="@successorHbzId" value="${a}">
 			<data source="533[-xyz]1.9" name="a">
-				<regexp match="(.*)" format="$[ns-lobid-vocab]${1}" />
+				<regexp match="(.*)" format="$[ns-lobid-resource]${1}" />
 			</data>
 		</combine>
 		<combine name="@successorLabel" value="${a}">
@@ -674,7 +673,7 @@
 		<combine name="~rdf:subject" value="$[ns-lobid-resource]${subject}#!"
 			flushWith="@successorHbzId">
 			<data source="@id" name="subject" />
-		</combine>
+		</combine> 
 		<!-- ####################### -->
 		<!-- ########## geo coordinates -->
 		<!-- ####################### -->
