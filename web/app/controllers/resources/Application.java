@@ -26,11 +26,19 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import org.apache.commons.lang3.tuple.Pair;
+import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.client.Client;
 import org.elasticsearch.common.io.Streams;
+import org.elasticsearch.common.unit.TimeValue;
+import org.elasticsearch.index.query.QueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.aggregations.Aggregation;
 import org.elasticsearch.search.aggregations.bucket.children.InternalChildren;
 import org.elasticsearch.search.aggregations.bucket.terms.Terms;
 import org.elasticsearch.search.aggregations.bucket.terms.Terms.Bucket;
+import org.elasticsearch.search.sort.SortOrder;
+import org.elasticsearch.search.sort.SortParseElement;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -179,28 +187,32 @@ public class Application extends Controller {
 		if (cachedResult != null)
 			return cachedResult;
 		Logger.debug("Not cached: {}, will cache for one hour", cacheId);
-		Promise<Result> result = Promise.promise(() -> {
-			Index index = new Index();
-			String queryString = index.buildQueryString(q, agent, name, subject, id,
-					publisher, issued, medium, t, set);
-			Index queryResources = index.queryResources(queryString, from, size, sort,
-					owner, aggregations);
-			String responseFormat =
-					Accept.formatFor(format, request().acceptedTypes());
-			boolean returnSuggestions = responseFormat.startsWith("json:");
-			JsonNode json = returnSuggestions
-					? toSuggestions(queryResources.getResult(), format.split(":")[1])
-					: queryResources.getResult();
-			String s = json.toString();
-			boolean htmlRequested =
-					responseFormat.equals(Accept.Format.HTML.queryParamString);
-			return htmlRequested
-					? ok(query.render(s, q, agent, name, subject, id, publisher, issued,
-							medium, from, size, queryResources.getTotal(), owner, t, sort,
-							set))
-					: (returnSuggestions ? withCallback(json)
-							: prettyJsonOk(withQueryMetadata(json, index)));
-		});
+		String responseFormat = Accept.formatFor(format, request().acceptedTypes());
+		Index index = new Index();
+		String queryString = index.buildQueryString(q, agent, name, subject, id,
+				publisher, issued, medium, t, set);
+		Promise<Result> result;
+		if (responseFormat.equals(Accept.Format.BULK.queryParamString)) {
+			result = bulkResult(q, owner, index);
+		} else {
+			result = Promise.promise(() -> {
+				Index queryResources = index.queryResources(queryString, from, size,
+						sort, owner, aggregations);
+				boolean returnSuggestions = responseFormat.startsWith("json:");
+				JsonNode json = returnSuggestions
+						? toSuggestions(queryResources.getResult(), format.split(":")[1])
+						: queryResources.getResult();
+				String s = json.toString();
+				boolean htmlRequested =
+						responseFormat.equals(Accept.Format.HTML.queryParamString);
+				return htmlRequested
+						? ok(query.render(s, q, agent, name, subject, id, publisher, issued,
+								medium, from, size, queryResources.getTotal(), owner, t, sort,
+								set))
+						: (returnSuggestions ? withCallback(json)
+								: prettyJsonOk(withQueryMetadata(json, index)));
+			});
+		}
 		cacheOnRedeem(cacheId, result, ONE_HOUR);
 		return result.recover((Throwable throwable) -> {
 			Html html = query.render("[]", q, agent, name, subject, id, publisher,
@@ -214,6 +226,46 @@ public class Application extends Controller {
 			}
 			Logger.error(message);
 			return internalServerError(html);
+		});
+	}
+
+	private static Promise<Result> bulkResult(final String q, final String owner,
+			Index index) {
+		return Promise.promise(() -> {
+			Chunks<String> chunks = StringChunks.whenReady(out -> {
+				SearchResponse lastResponse =
+						index.<SearchResponse> withClient((Client client) -> {
+							QueryBuilder query =
+									owner.isEmpty() ? QueryBuilders.queryStringQuery(q)
+											: Index.ownerQuery(q, owner);
+							Index.validate(client, query);
+							Logger.trace("bulkResources: q={}, owner={}, query={}", q, owner,
+									query);
+							TimeValue keepAlive = new TimeValue(60000);
+							SearchResponse scrollResp = client.prepareSearch(Index.INDEX_NAME)
+									.addSort(SortParseElement.DOC_FIELD_NAME, SortOrder.ASC)
+									.setScroll(keepAlive).setQuery(query)
+									.setSize(100 /* hits per shard for each scroll */).get();
+							String scrollId = scrollResp.getScrollId();
+							while (scrollResp.getHits().getHits().length > 0) {
+								for (SearchHit hit : scrollResp.getHits().getHits()) {
+									out.write(hit.getSourceAsString());
+									out.write("\n");
+								}
+								scrollResp = client.prepareSearchScroll(scrollId)
+										.setScroll(keepAlive).execute().actionGet();
+								scrollId = scrollResp.getScrollId();
+							}
+							out.close();
+							return scrollResp;
+						});
+				Logger.trace("Last search response for bulk request: " + lastResponse);
+			});
+			response().setHeader("Content-Disposition",
+					String.format(
+							"attachment; filename=\"lobid-resources-bulk-%s.jsonl\"",
+							System.currentTimeMillis()));
+			return ok(chunks).as(Accept.Format.BULK.types[0]);
 		});
 	}
 

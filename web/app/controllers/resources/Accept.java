@@ -20,7 +20,8 @@ public class Accept {
 
 	enum Format {
 		JSON_LD("json(.+)?", "application/json", "application/ld+json"), //
-		HTML("html", "text/html");
+		HTML("html", "text/html"), //
+		BULK("bulk", "application/x-jsonlines");
 
 		String[] types;
 		String queryParamString;
