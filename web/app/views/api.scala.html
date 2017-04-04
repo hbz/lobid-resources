@@ -15,25 +15,29 @@
 }
 
 @main("", "lobid-resources - API") {
-	<h2 id='basics'>@Messages.get("api.basics.header") <small><a href='#basics'><span class='glyphicon glyphicon-link'></span></a></small></h2>
+	<div class="alert alert-warning" id="search-results" role="alert">
+		<strong>Offene Beta:</strong> Details des Anfrage- und Antwortformats können sich noch ändern, wir bitten um <a href="mailto:semweb@@hbz-nrw.de?subject=Feedback: %20lobid-resources-API">Rückmeldungen und Hinweise</a> auf letzte Verbesserungen der API.
+	</div>
+	<h2 id='basics'>API-Grundlagen <small><a href='#basics'><span class='glyphicon glyphicon-link'></span></a></small></h2>
 	<dl>
 	@desc("HTTP GET", resources.routes.Application.show("HT018472857", format="json"))
-	@desc(Messages.get("api.basics.search"), resources.routes.Application.query("kunst", format="json"))
-	@desc(Messages.get("api.basics.field.simple", "title"), resources.routes.Application.query("title:ehrenfeld", format="json"))
-	@desc(Messages.get("api.basics.field.nested", "contribution.agent.label"), resources.routes.Application.query("contribution.agent.label:Melville", format="json"))
-	@desc(Messages.get("api.basics.pagination"), resources.routes.Application.query("contribution.agent.label:Melville", from = 2, size = 2, format="json"))
-	<h2 id='content_types'>@Messages.get("api.content_types.header") <small><a href='#content_types'><span class='glyphicon glyphicon-link'></span></a></small></h2>
-	<p>@Messages.get("api.content_types.default")</p>
+	@desc("Suche über alle Felder", resources.routes.Application.query("kunst", format="json"))
+	@desc("Einfache Feldsuche: \"title\"", resources.routes.Application.query("title:ehrenfeld", format="json"))
+	@desc("Geschachtelte Feldsuche: \"contribution.agent.label\"", resources.routes.Application.query("contribution.agent.label:Melville", format="json"))
+	@desc("Suche mit Paginierung", resources.routes.Application.query("contribution.agent.label:Melville", from = 2, size = 2, format="json"))
+	<h2 id='content_types'>Inhaltstypen <small><a href='#content_types'><span class='glyphicon glyphicon-link'></span></a></small></h2>
+	<p>Standardmäßig liefert dieser Dienst strukturierte API-Antworten (als JSON):</p>
 	<p><code>curl http://lobid.org@resources.routes.Application.show("HT018472857")</code></p>
-	<p>@Messages.get("api.content_types.negotiate")</p>
+	<p>Er unterstützt Content-Negotiation über den Accept-Header für JSON (application/json) oder HTML (text/html):</p>
 	<p><code>curl --header "Accept: application/json" http://lobid.org@resources.routes.Application.query("kunst")</code></p>
-	<p>@Messages.get("api.content_types.override") <a href='@resources.routes.Application.show("HT018472857", format="json")'>@resources.routes.Application.show("HT018472857", format="json")</a></p>
-	<h2 id='jsonld'>@Messages.get("api.jsonld.header") <small><a href='#jsonld'><span class='glyphicon glyphicon-link'></span></a></small></h2>
-	<p>@Html(Messages.get("api.jsonld.info", "http://json-ld.org/", "http://json-ld.org/playground/"))</p>
+	<p>Der Query-Parameter "format" kann verwendet werden, um den Accept-Header aufzuheben, z.B. zur Anzeige von JSON im Browser:</p>
+	<p><a href='@resources.routes.Application.show("HT018472857", format="json")'>@resources.routes.Application.show("HT018472857", format="json")</a></p>
+	<h2 id='jsonld'>JSON-LD <small><a href='#jsonld'><span class='glyphicon glyphicon-link'></span></a></small></h2>
+	<p>JSON-API-Anfragen liefern <a href="http://json-ld.org/">JSON-LD</a>. Um damit zu experimentieren können sie das JSON-LD oder URLs im <a href="http://json-ld.org/playground/">JSON-LD Playground</a> einfügen.</p>
 	@desc("JSON-LD Context", resources.routes.Application.context)
-	<dt>@Messages.get("api.jsonld.rdf.header")</dt><dd>@Html(Messages.get("api.jsonld.rdf.text", "https://github.com/digitalbazaar/jsonld-cli"))</dd>
+	<dt>RDF-Konvertierung</dt><dd>Mit einem JSON-LD-Prozessor können sie API-Antworten in andere RDF-Serialisierungen umwandeln, z.B. in N-Quads mit <a href="https://github.com/digitalbazaar/jsonld-cli">jsonld-cli</a>:</dd>
 	<p><code>jsonld format --nquads http://lobid.org@resources.routes.Application.show("HT018472857")</code></p>
-	<dt>@Messages.get("api.jsonld.example.header")</dt><dd>@Html(Messages.get("api.jsonld.example.text", "https://hypothes.is/"))</dd>
+	<dt>Beispieldokumente</dt><dd>Diese Beispieldokumente wurden mit <a href="https://hypothes.is/">hypothes.is</a> annotiert, um den Einstieg in die Datenlage zu erleichtern. Bei Klick auf einen gelbmarkierten JSON-Key geht ein Popup-Fenster auf mit Informationen zu Name, Beschreibung, Abdeckung sowie Anwendungsbeispielen des Feldes.</dd>
 	<dd>
 		<p>Springe zu: <a href="#buch">Buch</a>, <a href="#artikel">Artikel</a>, <a href="#periodikum">Periodikum</a>, <a href="#serienband">Serienband</a>
 		@sample_doc("HT019025795", "Buch")
