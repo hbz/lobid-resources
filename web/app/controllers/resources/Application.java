@@ -32,7 +32,6 @@ import org.elasticsearch.common.io.Streams;
 import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.aggregations.Aggregation;
 import org.elasticsearch.search.aggregations.bucket.children.InternalChildren;
 import org.elasticsearch.search.aggregations.bucket.terms.Terms;
@@ -247,11 +246,11 @@ public class Application extends Controller {
 									.setScroll(keepAlive).setQuery(query)
 									.setSize(100 /* hits per shard for each scroll */).get();
 							String scrollId = scrollResp.getScrollId();
-							while (scrollResp.getHits().getHits().length > 0) {
-								for (SearchHit hit : scrollResp.getHits().getHits()) {
+							while (scrollResp.getHits().iterator().hasNext()) {
+								scrollResp.getHits().forEach((hit) -> {
 									out.write(hit.getSourceAsString());
 									out.write("\n");
-								}
+								});
 								scrollResp = client.prepareSearchScroll(scrollId)
 										.setScroll(keepAlive).execute().actionGet();
 								scrollId = scrollResp.getScrollId();
