@@ -727,8 +727,11 @@
 					</data>
 				</none>
 			</if>
-			<data source="425[ab-p][-1].a|419-1c|595-[-12].a|089-[-1].a">
-				<regexp match="[12]\d{3}"/>
+			<data source="425[ab-p][-1].a|419-1c|595-[-12].a">
+				<regexp match="1\d{3}|20\d{2}"/>
+			</data>
+			<data source="089-[-1].a">
+				<regexp match="(.*)\. (1\d{3})|(.*)\. (20\d{2})" format="${2}"/>
 			</data>
 		</choose>
 		<entity name="http://schema.org/publication" flushWith="record">
