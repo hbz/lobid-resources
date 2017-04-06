@@ -30,7 +30,7 @@ public class IndexIntegrationTest extends LocalIndexSetup {
 	public static Collection<Object[]> data() {
 		// @formatter:off
 		return Arrays.asList(new Object[][] {
-			{ "title:der", /*->*/ 18 },
+			{ "title:der", /*->*/ 19 },
 			{ "title:Westfalen", /*->*/ 3 },
 			{ "contribution.agent.label:Westfalen", /*->*/ 7 },
 			{ "contribution.agent.id:\"http\\://d-nb.info/gnd/5265186-1\"", /*->*/ 1 },
@@ -43,11 +43,11 @@ public class IndexIntegrationTest extends LocalIndexSetup {
 			{ "subject.label:Westfalen", /*->*/ 7 },
 			{ "subject.id:\"http\\://d-nb.info/gnd/4042570-8\"", /*->*/ 2 },
 			{ "subject.id:1113670827", /*->*/ 0 },
-			{ "subject.type:PlaceOrGeographicName", /*->*/ 25 },
-			{ "publication.location:Berlin", /*->*/ 10 },
+			{ "subject.type:PlaceOrGeographicName", /*->*/ 26 },
+			{ "publication.location:Berlin", /*->*/ 11 },
 			{ "publication.startDate:1993", /*->*/ 2 },
 			{ "publication.location:Berlin AND publication.startDate:1993", /*->*/ 1 },
-			{ "publication.location:Berlin AND publication.startDate:[1992 TO 2017]", /*->*/ 9 },
+			{ "publication.location:Berlin AND publication.startDate:[1992 TO 2017]", /*->*/ 10 },
 			{ "collectedBy.id:\"http\\://lobid.org/resources/NWBib\"", /*->*/ 38 },
 			{ "collectedBy.id:NWBib", /*->*/ 0 },
 			{ "publication.publishedBy:Springer", /*->*/ 2 },
