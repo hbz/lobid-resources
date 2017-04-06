@@ -62,6 +62,7 @@ public final class RdfModel2ElasticsearchEtikettJsonLd
 	private static EtikettMakerInterface etikettMaker =
 			new EtikettMaker(new File(Thread.currentThread().getContextClassLoader()
 					.getResource("labels").getFile()));
+	private static String rootHbzIdPredicate = "http://purl.org/lobid/lv#hbzID";
 
 	/**
 	 * Provides default constructor. Every json ld document gets the whole json ld
@@ -110,8 +111,7 @@ public final class RdfModel2ElasticsearchEtikettJsonLd
 					}
 				} else if (mainNodeId == null && INTERNAL_ID_PATTERN
 						.matcher(subjectResource.getURI().toString()).matches())
-					mainNodeId =
-							subjectResource.getURI().toString().replaceAll("#!$", "");
+					setMainNodeId(subjectResource);
 			}
 			if (!submodel.isEmpty()) {
 				// remove the newly created sub model from the main node
@@ -134,6 +134,17 @@ public final class RdfModel2ElasticsearchEtikettJsonLd
 			submodel.add(stmt);
 		}
 		return true;
+	}
+
+	private static void setMainNodeId(Resource subjectResource) {
+		StmtIterator stmtIt = subjectResource.listProperties();
+		while (stmtIt.hasNext()) {
+			Statement stmt = stmtIt.nextStatement();
+			// identifying the main node
+			if (stmt.getPredicate().toString().equals(rootHbzIdPredicate))
+				mainNodeId = subjectResource.getURI().toString().replaceAll("#!$", "");
+		}
+		return;
 	}
 
 	/**
