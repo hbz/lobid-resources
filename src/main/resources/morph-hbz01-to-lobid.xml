@@ -640,16 +640,16 @@
 		<!-- ########## publisher -->
 		<!-- ####################### -->
 		<!-- primary publication -->
-		<!-- <replace pattern="^\[" with=""/> <replace pattern="\]$" with=""/> -->
-		<data source="41[05][-abcu][-12].a|419-[12].a|594[-abc][-12].a" name="@placeOfPublication_"/>
-		<choose name="@placeOfPublication" flushWith="@placeOfPublication_">
-			<data source="@placeOfPublication_">
-				<regexp match="^\[.*\]"/>
-				<replace pattern="^\[" with=""/>
-				<replace pattern="\]$" with=""/>
+		<combine name="@placeOfPublication" value="${a}" >
+			<data source="41[05][-abcu][-12].a|419-[12].a|594[-abc][-12].a" name="a">
+				<!-- match any string which starts with two unicode alphabetic
+					characters to avoid s.l. (sine loco, without a place) -->
+				<regexp match="[\p{L}]{2}.*"/>
+				<replace pattern="\[" with=""/>
+				<replace pattern="]" with=""/>
+				<replace pattern="u\.a\.$" with="[u.a.]"/>
 			</data>
-			<data source="@placeOfPublication_"/>
-		</choose>
+		</combine>
 		<data source="41[27][-abcu][-12].[ag]|419-[12].b" name="@publisher">
 			<replace pattern="&gt;" with=""/>
 			<replace pattern="&lt;" with=""/>
@@ -719,7 +719,16 @@
 		</entity>
 		<!-- secondary publication -->
 		<data source="610[-a]1.a" name="@descriptionOfSecondaryPublication"/>
-		<data source="611[-a]1.a" name="@placeOfSecondaryPublication"/>
+		<combine name="@placeOfSecondaryPublication" value="${a}">
+			<data source="611[-a]1.a" name="a">
+				<!-- match any string which starts with two unicode alphabetic
+					characters to avoid s.l. (sine loco, without a place) -->
+				<regexp match="[\p{L}]{2}.*"/>
+				<replace pattern="\[" with=""/>
+				<replace pattern="]" with=""/>
+				<replace pattern="u\.a\.$" with="[u.a.]"/>
+			</data>
+		</combine>
 		<data source="613[-a]1.a" name="@secondaryPublisher"/>
 		<choose name="@startDateSecondaryPublication">
 			<data source="619[-ab][-1].b">
