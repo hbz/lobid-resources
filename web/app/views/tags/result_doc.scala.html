@@ -64,9 +64,9 @@
               agent = (c \ "agent");
               agents = agent.asOpt[Seq[JsValue]].getOrElse(Seq(agent));
               label = (agents(0) \ "label").asOpt[String].getOrElse("--");
-              id = (agents(0) \ "id").asOpt[String].getOrElse("--")) {
-        <a title="Nach weiteren Titeln von '@label' suchen" href='@resources.routes.Application.query(agent=id)'/>@label</a>
-        <a title="Linked-Data-Quelle zu '@label' abrufen" href='@id'><span class='glyphicon glyphicon-link'></span></a>
+              id = (agents(0) \ "id").asOpt[String]) {
+        <a title="Nach weiteren Titeln von '@label' suchen" href='@resources.routes.Application.query(agent=id.getOrElse(label))'/>@label</a>
+        @if(id.isDefined){<a title="Linked-Data-Quelle zu '@label' abrufen" href='@id'><span class='glyphicon glyphicon-link'></span></a>}
         @if(c!=cs.last){ | }
       }</td>
     </tr>

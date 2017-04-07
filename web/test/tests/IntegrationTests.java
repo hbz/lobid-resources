@@ -87,6 +87,19 @@ public class IntegrationTests extends LocalIndexSetup {
 	}
 
 	@Test
+	public void bulkRequest() {
+		running(testServer(3333), () -> {
+			Result result =
+					route(fakeRequest(GET, "/resources/search?q=buch&format=bulk"));
+			assertThat(result).isNotNull();
+			assertThat(Helpers.contentType(result))
+					.isEqualTo("application/x-jsonlines");
+			String text = Helpers.contentAsString(result);
+			assertThat(text.split("\\n").length).isGreaterThanOrEqualTo(10);
+		});
+	}
+
+	@Test
 	public void sizeRequest() {
 		running(testServer(3333), () -> {
 			Index index = new Index();
