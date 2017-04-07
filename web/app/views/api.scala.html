@@ -14,30 +14,75 @@
 	<pre><code>@(Json.prettyPrint(Json.parse(new controllers.resources.Index().getResource(hbzId).getResult().toString)))</code></pre>
 }
 
+@sampleUsageCode() = {
+$('input.search-resources').autocomplete({
+	source : function(request, response) {
+		$.ajax({
+			url : "http://lobid.org/resources/search",
+			dataType : "jsonp",
+			data : {
+				q : request.term,
+				format : "json:agent"
+			},
+			success : function(data) {
+				response(data);
+			}
+		});
+	},
+	select: function(event, ui) {
+		$('#id').val('"'+ui.item.id+'"');
+	}
+});
+}
+
+
 @main("", "lobid-resources - API") {
 	<div class="alert alert-warning" id="search-results" role="alert">
 		<strong>Offene Beta:</strong> Details des Anfrage- und Antwortformats können sich noch ändern, wir bitten um <a href="mailto:semweb@@hbz-nrw.de?subject=Feedback: %20lobid-resources-API">Rückmeldungen und Hinweise</a> auf letzte Verbesserungen der API.
 	</div>
+
 	<h2 id='basics'>API-Grundlagen <small><a href='#basics'><span class='glyphicon glyphicon-link'></span></a></small></h2>
+
 	<dl>
 	@desc("HTTP GET", resources.routes.Application.show("HT018472857", format="json"))
 	@desc("Suche über alle Felder", resources.routes.Application.query("kunst", format="json"))
 	@desc("Suche mit Paginierung", resources.routes.Application.query("contribution.agent.label:Melville", from = 2, size = 2, format="json"))
+
 	<h2 id='query-syntax'>Abfragemöglichkeiten <small><a href='#query-syntax'><span class='glyphicon glyphicon-link'></span></a></small></h2>
+
 	<p>
 	@desc("Einfache Feldsuche: \"title\"", resources.routes.Application.query("title:ehrenfeld", format="json"))
 	@desc("Geschachtelte Feldsuche: \"contribution.agent.label\"", resources.routes.Application.query("contribution.agent.label:Melville", format="json"))
 	@desc("Bereichssuche: \"publication.startDate:[* TO 1500]\"", resources.routes.Application.query("publication.startDate:[* TO 1500]", format="json"))
 	</p>
 	<p>Eine detaillierte Beschreibung der Abfragemöglichkeiten finden Sie in der Dokumentation der <a href="https://lucene.apache.org/core/5_5_0/queryparser/org/apache/lucene/queryparser/classic/package-summary.html#package_description">Lucene query string syntax</a>.</p>
+
 	<h2 id='content_types'>Inhaltstypen <small><a href='#content_types'><span class='glyphicon glyphicon-link'></span></a></small></h2>
+
 	<p>Standardmäßig liefert dieser Dienst strukturierte API-Antworten (als JSON):</p>
 	<p><code>curl http://lobid.org@resources.routes.Application.show("HT018472857")</code></p>
 	<p>Er unterstützt Content-Negotiation über den Accept-Header für JSON (application/json) oder HTML (text/html):</p>
 	<p><code>curl --header "Accept: application/json" http://lobid.org@resources.routes.Application.query("kunst")</code></p>
 	<p>Der Query-Parameter "format" kann verwendet werden, um den Accept-Header aufzuheben, z.B. zur Anzeige von JSON im Browser:</p>
 	<p><a href='@resources.routes.Application.show("HT018472857", format="json")'>@resources.routes.Application.show("HT018472857", format="json")</a></p>
+
+	<h2 id="auto-complete">Autovervollständigung <small><a href='#auto-complete'><span class='glyphicon glyphicon-link'></span></a></small></h2>
+	<p>Die API unterstützt ein spezielles Antwortformat mit Vorschlägen zur Vervollständigung aus einem angegebenen Feld:</p>
+	@desc("Titel vorschlagen: \"format=json:title\"", resources.routes.Application.query("Werth", format="json:title"))
+	@desc("Mitwirkende vorschlagen: \"format=json:agent\"", resources.routes.Application.query("Hein", format="json:agent"))
+	@desc("Schlagwort vorschlagen: \"format=json:subject\"", resources.routes.Application.query("Pferd", format="json:subject"))
+	<p>Damit kann z.B. eine Autovervollständigung umgesetzt werden, bei der zur Suche an Stelle des gewählten Labels die entsprechende ID verwendet werden kann:</p>
+	<p><form method="GET" class="form-inline" action="/resources/search"> <!-- use full URL in your code, i.e. http://lobid.org/resources/search -->
+		<input type="text" class="search-resources" id="label" style="width:350px" placeholder="Suchbegriff für Vorschläge eingeben"/>
+		<input type="text" class="search-resources" name="q" id="id" style="width:350px" readonly placeholder="ID zu ausgewähltem Eintrag wird eingesetzt"/>
+		<button type="submit" class="btn">Suchen</button>
+	</form></p>
+	<p>Dieses Beispiel ist folgendermaßen mit JavaScript und jQuery UI implementiert:</p>
+	<script>@sampleUsageCode()</script>
+	<pre>@sampleUsageCode()</pre>
+
 	<h2 id='jsonld'>JSON-LD <small><a href='#jsonld'><span class='glyphicon glyphicon-link'></span></a></small></h2>
+
 	<p>JSON-API-Anfragen liefern <a href="http://json-ld.org/">JSON-LD</a>. Um damit zu experimentieren können sie das JSON-LD oder URLs im <a href="http://json-ld.org/playground/">JSON-LD Playground</a> einfügen.</p>
 	@desc("JSON-LD Context", resources.routes.Application.context)
 	<dt>RDF-Konvertierung</dt><dd>Mit einem JSON-LD-Prozessor können sie API-Antworten in andere RDF-Serialisierungen umwandeln, z.B. in N-Quads mit <a href="https://github.com/digitalbazaar/jsonld-cli">jsonld-cli</a>:</dd>
