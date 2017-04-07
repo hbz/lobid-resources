@@ -200,7 +200,7 @@ public class Index {
 		return resultIndex;
 	}
 
-	private static void validate(Client client, QueryBuilder query) {
+	static void validate(Client client, QueryBuilder query) {
 		ValidateQueryResponse validate =
 				client.admin().indices().prepareValidateQuery(INDEX_NAME)
 						.setTypes(TYPE_RESOURCE).setQuery(query).get();
@@ -209,7 +209,7 @@ public class Index {
 		}
 	}
 
-	private static QueryBuilder ownerQuery(String q, String owner) {
+	static QueryBuilder ownerQuery(String q, String owner) {
 		final String prefix = Lobid.ORGS_BETA_ROOT;
 		BoolQueryBuilder ownersQuery = QueryBuilders.boolQuery();
 		final String[] owners = owner.split(",");
