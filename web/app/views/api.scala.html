@@ -22,10 +22,14 @@
 	<dl>
 	@desc("HTTP GET", resources.routes.Application.show("HT018472857", format="json"))
 	@desc("Suche über alle Felder", resources.routes.Application.query("kunst", format="json"))
+	@desc("Suche mit Paginierung", resources.routes.Application.query("contribution.agent.label:Melville", from = 2, size = 2, format="json"))
+	<h2 id='query-syntax'>Abfragemöglichkeiten <small><a href='#query-syntax'><span class='glyphicon glyphicon-link'></span></a></small></h2>
+	<p>
 	@desc("Einfache Feldsuche: \"title\"", resources.routes.Application.query("title:ehrenfeld", format="json"))
 	@desc("Geschachtelte Feldsuche: \"contribution.agent.label\"", resources.routes.Application.query("contribution.agent.label:Melville", format="json"))
 	@desc("Bereichssuche: \"publication.startDate:[* TO 1500]\"", resources.routes.Application.query("publication.startDate:[* TO 1500]", format="json"))
-	@desc("Suche mit Paginierung", resources.routes.Application.query("contribution.agent.label:Melville", from = 2, size = 2, format="json"))
+	</p>
+	<p>Eine detaillierte Beschreibung der Abfragemöglichkeiten finden Sie in der Dokumentation der <a href="https://lucene.apache.org/core/5_5_0/queryparser/org/apache/lucene/queryparser/classic/package-summary.html#package_description">Lucene query string syntax</a>.</p>
 	<h2 id='content_types'>Inhaltstypen <small><a href='#content_types'><span class='glyphicon glyphicon-link'></span></a></small></h2>
 	<p>Standardmäßig liefert dieser Dienst strukturierte API-Antworten (als JSON):</p>
 	<p><code>curl http://lobid.org@resources.routes.Application.show("HT018472857")</code></p>
