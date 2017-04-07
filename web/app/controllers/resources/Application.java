@@ -179,6 +179,15 @@ public class Application extends Controller {
 			uuid = UUID.randomUUID().toString();
 			session("uuid", uuid);
 		}
+		String responseFormat = Accept.formatFor(format, request().acceptedTypes());
+		boolean isBulkRequest =
+				responseFormat.equals(Accept.Format.BULK.queryParamString);
+		if (isBulkRequest) {
+			response().setHeader("Content-Disposition",
+					String.format(
+							"attachment; filename=\"lobid-resources-bulk-%s.jsonl\"",
+							System.currentTimeMillis()));
+		}
 		String cacheId = String.format("%s-%s-%s-%s", uuid, request().uri(),
 				Accept.formatFor(format, request().acceptedTypes()), starredIds());
 		@SuppressWarnings("unchecked")
@@ -186,12 +195,11 @@ public class Application extends Controller {
 		if (cachedResult != null)
 			return cachedResult;
 		Logger.debug("Not cached: {}, will cache for one hour", cacheId);
-		String responseFormat = Accept.formatFor(format, request().acceptedTypes());
 		Index index = new Index();
 		String queryString = index.buildQueryString(q, agent, name, subject, id,
 				publisher, issued, medium, t, set);
 		Promise<Result> result;
-		if (responseFormat.equals(Accept.Format.BULK.queryParamString)) {
+		if (isBulkRequest) {
 			result = bulkResult(q, owner, index);
 		} else {
 			result = Promise.promise(() -> {
@@ -260,10 +268,6 @@ public class Application extends Controller {
 						});
 				Logger.trace("Last search response for bulk request: " + lastResponse);
 			});
-			response().setHeader("Content-Disposition",
-					String.format(
-							"attachment; filename=\"lobid-resources-bulk-%s.jsonl\"",
-							System.currentTimeMillis()));
 			return ok(chunks).as(Accept.Format.BULK.types[0]);
 		});
 	}
