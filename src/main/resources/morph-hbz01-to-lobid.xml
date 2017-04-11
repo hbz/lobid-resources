@@ -201,7 +201,7 @@
 		<combine name="~rdf:subject" value="$[ns-lobid-resource]${id}#!">
 			<data source="@id" name="id"/>
 		</combine>
-		<!-- ZDB id -->
+		<!-- ZDB id & collectedBy-->
 		<data source="025z[-1].a" name="@idzdb"/>
 		<!-- ####################### -->
 		<!-- ####### hbz ID sameAs ZDB ID -->
@@ -1899,7 +1899,7 @@
 		<!-- ####################### -->
 		<!--nwbib -->
 		<data source="078n[-1].a" name="http://purl.org/ontology/holding#collectedBy">
-			<regexp match=".*" format="$[ns-lobid-resource]NWBib"/>
+			<regexp match=".*" format="http://lobid.org/resources/HT014176012#!"/>
 		</data>
 		<data source="700n[-1].a" name="@nwbibSubject">
 			<regexp match="(\d\d\d\d\d\d)" format="http://purl.org/lobid/nwbib#s${1}"/>
@@ -1944,7 +1944,7 @@
 			<regexp match="edoweb"/>
 		</data>
 		<data source="@edoweb" name="http://purl.org/ontology/holding#collectedBy">
-			<regexp match=".*" format="http://lobid.org/resource/Edoweb"/>
+			<regexp match=".*" format="http://lobid.org/resources/HT016925914#!"/>
 		</data>
 		<!--rheinland pfalz -->
 		<data source="700l[-1].a" name="@rpb2Subject">
@@ -1954,7 +1954,7 @@
 			<regexp match="^rpb(.*)" format="http://purl.org/lobid/rpb#n${1}"/>
 		</data>
 		<data source="700l[-1].[ab]" name="http://purl.org/ontology/holding#collectedBy">
-			<regexp match="^rpb.*" format="$[ns-lobid-resource]RPB"/>
+			<regexp match="^rpb.*" format="http://lobid.org/resources/HT013494180#!"/>
 		</data>
 		<!-- ####################### -->
 		<!-- ########## isbn -->
