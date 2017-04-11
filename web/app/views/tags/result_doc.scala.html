@@ -79,11 +79,13 @@
     <td>Schlagwörter</td>
     <td>
     @for(subject <- subjects;
-         label <- (subject \ "label").asOpt[String];
-         id = (subject \ "id").asOpt[String]) {
-      <a title="Nach weiteren Titeln zu '@label' suchen" href='@resources.routes.Application.query(subject=id.getOrElse(label))'/>@label</a>
-      @if(id.isDefined && !id.get.contains("dewey.info")){<a title="Linked-Data-Quelle zu '@label' abrufen" href='@id'><span class='glyphicon glyphicon-link'></span></a>}
-      @if(subject!=subjects.last){ | }
+         components = (subject \ "componentList").asOpt[Seq[JsValue]].getOrElse(Seq(subject));
+         component <- components;
+         label <- (component \ "label").asOpt[String];
+         id = (component \ "id").asOpt[String]) {
+      <span style="white-space: nowrap;"><a title="Nach weiteren Titeln zu '@label' suchen" href='@resources.routes.Application.query(subject=id.getOrElse(label))'/>@label</a>
+      @if(id.isDefined && !id.get.contains("dewey.info")){<a title="Linked-Data-Quelle zu '@label' abrufen" href='@id'><span class='glyphicon glyphicon-link'></span></a>}</span>
+      @if(components.last == component) { <br/> } else { | }
     }</td>
   </tr>
   }

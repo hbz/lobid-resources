@@ -80,8 +80,9 @@ public class Index {
 	 */
 	public static final String[] QUERY_FIELDS =
 			new String[] { "contribution.agent.label", "title",
-					"subject.id|subject.label", "isbn|issn", "publication.publishedBy",
-					"publication.startDate", "medium.id", "type", "collectedBy.id" };
+					"subject.id|subject.label|subject.componentList.id|subject.componentList.label",
+					"isbn|issn", "publication.publishedBy", "publication.startDate",
+					"medium.id", "type", "collectedBy.id" };
 
 	/**
 	 * Fields in the index data that should not be included in the response data.
