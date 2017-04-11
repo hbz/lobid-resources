@@ -1,14 +1,20 @@
 _:b0 <http://id.loc.gov/ontologies/bibframe/agent> <http://d-nb.info/gnd/2037247-4> .
 _:b0 <http://id.loc.gov/ontologies/bibframe/role> <http://id.loc.gov/vocabulary/relators/cre> .
 _:b0 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://id.loc.gov/ontologies/bibframe/Contribution> .
-_:b1 <http://schema.org/location> "Bad Kreuznach"^^<http://www.w3.org/2001/XMLSchema#string> .
-_:b1 <http://schema.org/publishedBy> "FORM-Medien-Verl.-Ges."^^<http://www.w3.org/2001/XMLSchema#string> .
-_:b1 <http://schema.org/startDate> "2000"^^<http://www.w3.org/2001/XMLSchema#gYear> .
-_:b1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://schema.org/PublicationEvent> .
-_:b2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> _:b0 .
-_:b2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
-_:b3 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> "http://d-nb.info/gnd/4037117-7, http://d-nb.info/gnd/4127794-6"^^<http://www.w3.org/2001/XMLSchema#string> .
+_:b1 <http://www.loc.gov/mads/rdf/v1#componentList> _:b5 .
+_:b1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.loc.gov/mads/rdf/v1#ComplexSubject> .
+_:b2 <http://schema.org/location> "Bad Kreuznach"^^<http://www.w3.org/2001/XMLSchema#string> .
+_:b2 <http://schema.org/publishedBy> "FORM-Medien-Verl.-Ges."^^<http://www.w3.org/2001/XMLSchema#string> .
+_:b2 <http://schema.org/startDate> "2000"^^<http://www.w3.org/2001/XMLSchema#gYear> .
+_:b2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://schema.org/PublicationEvent> .
+_:b3 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> _:b0 .
 _:b3 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
+_:b4 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> "http://d-nb.info/gnd/4037117-7, http://d-nb.info/gnd/4127794-6"^^<http://www.w3.org/2001/XMLSchema#string> .
+_:b4 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
+_:b5 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <http://d-nb.info/gnd/4037117-7> .
+_:b5 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:b6 .
+_:b6 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <http://d-nb.info/gnd/4127794-6> .
+_:b6 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
 <http://d-nb.info/gnd/2037247-4> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://d-nb.info/standards/elementset/gnd#PlaceOrGeographicName> .
 <http://d-nb.info/gnd/2037247-4> <http://www.w3.org/2000/01/rdf-schema#label> "Main-Kinzig-Kreis"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://d-nb.info/gnd/4037117-7> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://d-nb.info/standards/elementset/gnd#PlaceOrGeographicName> .
@@ -30,13 +36,12 @@ _:b3 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/0
 <http://lobid.org/resources/HT012895751> <http://purl.org/dc/terms/created> "20010111"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/resources/HT012895751> <http://purl.org/dc/terms/modified> "20010312"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/resources/HT012895751> <http://www.w3.org/2000/01/rdf-schema#label> "lobid Ressource"^^<http://www.w3.org/2001/XMLSchema#string> .
-<http://lobid.org/resources/HT012895751#!> <http://id.loc.gov/ontologies/bibframe/contribution> _:b2 .
+<http://lobid.org/resources/HT012895751#!> <http://id.loc.gov/ontologies/bibframe/contribution> _:b3 .
 <http://lobid.org/resources/HT012895751#!> <http://id.loc.gov/ontologies/bibframe/extent> "76 S. : zahlr. Ill."^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/resources/HT012895751#!> <http://id.loc.gov/ontologies/bibframe/hasItem> <http://lobid.org/items/HT012895751:DE-929:C2001A%2F13#!> .
 <http://lobid.org/resources/HT012895751#!> <http://purl.org/dc/terms/language> <http://id.loc.gov/vocabulary/iso639-2/deu> .
 <http://lobid.org/resources/HT012895751#!> <http://purl.org/dc/terms/medium> <http://rdaregistry.info/termList/RDAproductionMethod/1010> .
-<http://lobid.org/resources/HT012895751#!> <http://purl.org/dc/terms/subject> <http://d-nb.info/gnd/4037117-7> .
-<http://lobid.org/resources/HT012895751#!> <http://purl.org/dc/terms/subject> <http://d-nb.info/gnd/4127794-6> .
+<http://lobid.org/resources/HT012895751#!> <http://purl.org/dc/terms/subject> _:b1 .
 <http://lobid.org/resources/HT012895751#!> <http://purl.org/dc/terms/title> "Mainz-Kinzig-Kreis"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/resources/HT012895751#!> <http://purl.org/lobid/lv#contributorOrder> "http://d-nb.info/gnd/2037247-4"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/resources/HT012895751#!> <http://purl.org/lobid/lv#hbzID> "HT012895751"^^<http://www.w3.org/2001/XMLSchema#string> .
@@ -45,9 +50,9 @@ _:b3 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/0
 <http://lobid.org/resources/HT012895751#!> <http://purl.org/lobid/lv#subjectAltLabel> "Heimatforschung"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/resources/HT012895751#!> <http://purl.org/lobid/lv#subjectAltLabel> "Heimatgeschichte"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/resources/HT012895751#!> <http://purl.org/lobid/lv#subjectChain> "Main-Kinzig-Kreis | Heimatkunde"^^<http://www.w3.org/2001/XMLSchema#string> .
-<http://lobid.org/resources/HT012895751#!> <http://purl.org/lobid/lv#subjectOrder> _:b3 .
+<http://lobid.org/resources/HT012895751#!> <http://purl.org/lobid/lv#subjectOrder> _:b4 .
 <http://lobid.org/resources/HT012895751#!> <http://rdaregistry.info/Elements/u/P60493> "Informationen f\u00FCr B\u00FCrger, Neub\u00FCrger & G\u00E4ste"^^<http://www.w3.org/2001/XMLSchema#string> .
-<http://lobid.org/resources/HT012895751#!> <http://schema.org/publication> _:b1 .
+<http://lobid.org/resources/HT012895751#!> <http://schema.org/publication> _:b2 .
 <http://lobid.org/resources/HT012895751#!> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://purl.org/dc/terms/BibliographicResource> .
 <http://lobid.org/resources/HT012895751#!> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://purl.org/ontology/bibo/Book> .
 <http://lobid.org/resources/HT012895751#!> <http://www.w3.org/2002/07/owl#sameAs> <http://hub.culturegraph.org/resource/HBZ-HT012895751> .
