@@ -9,8 +9,8 @@
  <dt>@label</dt> <dd><a href='@link'>@link.toString.replace("%3A",":").replace("%2C",",").replaceAll("[&?]format=json$", "")</a></dd>
 }
 
-@sample_doc(hbzId: String) = {
-	<h5><a href='@resources.routes.Application.show(hbzId, format="html")'>@hbzId: @controllers.resources.Lobid.resourceLabel(hbzId)</a></h5>
+@sample_doc(hbzId: String, label: String) = {
+	<h5 id='@(label.toLowerCase)'><a href='@resources.routes.Application.show(hbzId, format="html")'>@label</a> <small><a href='#@(label.toLowerCase)'><span class='glyphicon glyphicon-link'></span></a></small></h5>
 	<pre><code>@(Json.prettyPrint(Json.parse(new controllers.resources.Index().getResource(hbzId).getResult().toString)))</code></pre>
 }
 
@@ -98,18 +98,11 @@ $('input.search-resources').autocomplete({
 	<p><code>jsonld format --nquads http://lobid.org@resources.routes.Application.show("HT018472857")</code></p>
 	<dt>Beispieldokumente</dt><dd>Diese Beispieldokumente wurden mit <a href="https://hypothes.is/">hypothes.is</a> annotiert, um den Einstieg in die Datenlage zu erleichtern. Bei Klick auf einen gelbmarkierten JSON-Key geht ein Popup-Fenster auf mit Informationen zu Name, Beschreibung, Abdeckung sowie Anwendungsbeispielen des Feldes.</dd>
 	<dd>
-		<ul class="nav nav-tabs">
-			<li role="presentation" class="active"><a href="#buch" aria-controls="buch" role="tab" data-toggle="tab">Buch</a></li>
-			<li role="presentation"><a href="#artikel" aria-controls="artikel" role="tab" data-toggle="tab">Artikel</a></li>
-			<li role="presentation"><a href="#periodikum" aria-controls="periodikum" role="tab" data-toggle="tab">Periodikum</a></li>
-			<li role="presentation"><a href="#serienband" aria-controls="serienband" role="tab" data-toggle="tab">Serienband</a></li>
-		</ul>
-		<div class="tab-content">
-			<div role="tabpanel" class="tab-pane active" id="buch">@sample_doc("HT019025795")</div>
-			<div role="tabpanel" class="tab-pane" id="artikel">@sample_doc("HT013577568")</div>
-			<div role="tabpanel" class="tab-pane" id="periodikum">@sample_doc("HT013304490")</div>
-			<div role="tabpanel" class="tab-pane" id="serienband">@sample_doc("HT002888677")</div>
-		</div>
+		<p>Springe zu: <a href="#buch">Buch</a>, <a href="#artikel">Artikel</a>, <a href="#periodikum">Periodikum</a>, <a href="#serienband">Serienband</a>
+		@sample_doc("HT019025795", "Buch")
+		@sample_doc("HT013577568", "Artikel")
+		@sample_doc("HT013304490", "Periodikum")
+		@sample_doc("HT002888677", "Serienband")
 	</dd>
 	</dl>
 }
