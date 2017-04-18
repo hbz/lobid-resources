@@ -6,7 +6,7 @@
 @import play.api.libs.json._
 
 @desc(label: String, link: play.api.mvc.Call) = {
- <dt>@label</dt> <dd><a href='@link'>@link.toString.replace("%3A",":").replace("%2C",",").replaceAll("[&?]format=json", "")</a></dd>
+ <dt>@label</dt> <dd><a href='@link'>@link.toString.replace("%3A",":").replace("%2C",",").replaceAll("[&?]format=json$", "")</a></dd>
 }
 
 @sample_doc(hbzId: String) = {
@@ -22,7 +22,7 @@ $('input.search-resources').autocomplete({
 			dataType : "jsonp",
 			data : {
 				q : request.term,
-				format : "json:agent"
+				format : "json:title"
 			},
 			success : function(data) {
 				response(data);
@@ -77,9 +77,9 @@ $('input.search-resources').autocomplete({
 
 	<h2 id="auto-complete">Autovervollständigung <small><a href='#auto-complete'><span class='glyphicon glyphicon-link'></span></a></small></h2>
 	<p>Die API unterstützt ein spezielles Antwortformat mit Vorschlägen zur Vervollständigung aus einem angegebenen Feld:</p>
-	@desc("Titel vorschlagen: \"format=json:title\"", resources.routes.Application.query("Werth", format="json:title"))
-	@desc("Mitwirkende vorschlagen: \"format=json:agent\"", resources.routes.Application.query("Hein", format="json:agent"))
-	@desc("Schlagwort vorschlagen: \"format=json:subject\"", resources.routes.Application.query("Pferd", format="json:subject"))
+	@desc("Titel vorschlagen: \"format=json:title\"", resources.routes.Application.query("title:Werth", format="json:title"))
+	@desc("Mitwirkende vorschlagen: \"format=json:agent\"", resources.routes.Application.query("contribution.agent.label:Hein", format="json:agent"))
+	@desc("Schlagwort vorschlagen: \"format=json:subject\"", resources.routes.Application.query("subject.componentList.label:Pferd", format="json:subject"))
 	<p>Damit kann z.B. eine Autovervollständigung umgesetzt werden, bei der zur Suche an Stelle des gewählten Labels die entsprechende ID verwendet werden kann:</p>
 	<p><form method="GET" class="form-inline" action="/resources/search"> <!-- use full URL in your code, i.e. http://lobid.org/resources/search -->
 		<input type="text" class="search-resources" id="label" style="width:350px" placeholder="Suchbegriff für Vorschläge eingeben"/>
