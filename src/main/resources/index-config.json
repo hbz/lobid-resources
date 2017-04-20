@@ -488,56 +488,32 @@
                   }
                }
             },
-            "subject" : {
-               "properties" : {
-                  "preferredNameForThePerson" : {
-                     "type" : "string",
-                     "analyzer" : "ngram_analyzer",
-                     "search_analyzer" : "german_analyzer"
+            "subject": {
+               "properties": {
+                  "componentList": {
+                     "properties": {
+                        "id": {
+                           "index" : "not_analyzed",
+                           "type" : "string"
+                        },
+                     "label": {
+                        "type": "string"
+                        },
+                     "type": {
+                        "type": "string"
+                        }
+                     }
                   },
-                  "preferredNameForTheWork" : {
-                     "type" : "string",
-                     "analyzer" : "ngram_analyzer",
-                     "search_analyzer" : "german_analyzer"
+               "id": {
+                  "index" : "not_analyzed",
+                  "type": "string"
                   },
-                  "preferredNameForThePlaceOrGeographicName" : {
-                     "type" : "string",
-                     "search_analyzer" : "german_analyzer",
-                     "analyzer" : "ngram_analyzer"
+               "label": {
+                  "type": "string"
                   },
-                  "preferredNameForTheCorporateBody" : {
-                     "analyzer" : "ngram_analyzer",
-                     "search_analyzer" : "german_analyzer",
-                     "type" : "string"
-                  },
-                  "preferredNameForTheSubjectHeading" : {
-                     "search_analyzer" : "german_analyzer",
-                     "analyzer" : "ngram_analyzer",
-                     "type" : "string"
-                  },
-                  "preferredName" : {
-                     "analyzer" : "ngram_analyzer",
-                     "search_analyzer" : "german_analyzer",
-                     "type" : "string"
-                  },
-                  "altLabel" : {
-                     "type" : "string"
-                  },
-                  "type" : {
-                     "type" : "string"
-                  },
-                  "id" : {
-                     "type" : "string",
-                     "index" : "not_analyzed"
-                  },
-                  "dateOfBirth" : {
-                     "type" : "string"
-                  },
-                  "label" : {
-                     "type" : "string"
-                  },
-                  "dateOfDeath" : {
-                     "type" : "string"
+               "type": {
+                  "index" : "not_analyzed",
+                  "type": "string"
                   }
                }
             },
