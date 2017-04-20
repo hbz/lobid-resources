@@ -87,7 +87,7 @@ public class Application extends Controller {
 	/** The internal ES aggregation name for the owner facet. */
 	public static final String OWNER_AGGREGATION = "owner";
 	/** The internal ES field for subjects. */
-	public static final String SUBJECT_FIELD = "subject.id";
+	public static final String SUBJECT_FIELD = "subject.componentList.id";
 	/** The internal ES field for contributing agents. */
 	public static final String AGENT_FIELD = "contribution.agent.id";
 	/** The internal ES field for issued years. */

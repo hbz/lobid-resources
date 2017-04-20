@@ -47,7 +47,7 @@ public class AggregationsTest extends LocalIndexSetup {
 			{ "", /*->*/ 0, Status.OK },
 			{ "&aggregations=", /*->*/ 0, Status.OK },
 			{ "&aggregations=type", /*->*/ 1, Status.OK },
-			{ "&aggregations=type,subject.id", /*->*/ 2, Status.OK },
+			{ "&aggregations=type,subject.componentList.id", /*->*/ 2, Status.OK },
 			{ "&aggregations=invalid", /*->*/ 0, Status.BAD_REQUEST },});
 	} // @formatter:on
 
