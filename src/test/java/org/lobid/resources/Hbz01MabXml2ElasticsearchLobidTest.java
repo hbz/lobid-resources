@@ -8,8 +8,13 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.SortedSet;
@@ -69,11 +74,18 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 			Hbz01MabXmlEtlNtriples2Filesystem.PATH_TO_TEST + "hbz01.es.nt";
 	static final String DIRECTORY_TO_TEST_JSON_FILES =
 			Hbz01MabXmlEtlNtriples2Filesystem.PATH_TO_TEST + "jsonld/";
-
+	static HashSet<String> testFiles = new HashSet<>();
 	static boolean testFailed = false;
 
 	@BeforeClass
 	public static void setup() {
+		try {
+			Files.walk(Paths.get(DIRECTORY_TO_TEST_JSON_FILES))
+					.filter(Files::isRegularFile)
+					.forEach(fname -> testFiles.add(fname.getFileName().toString()));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		node = nodeBuilder().local(true)
 				.settings(Settings.builder().put("index.number_of_replicas", "0")
 						.put("index.number_of_shards", "1").put("path.home", "tmp/")
@@ -178,10 +190,41 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 		return esIndexer;
 	}
 
+	/*
+	 * Tears down the elasticsearch test instance. Also clears any test files
+	 * which are not part of the original test files archive.
+	 */
 	@AfterClass
 	public static void down() {
 		client.admin().indices().prepareDelete("_all").execute().actionGet();
 		node.close();
+		testFiles.forEach(lobidResource -> {
+			LOG.info(lobidResource + " is not part of the source archive.");
+			findTestFiles(lobidResource).forEach(fname -> deleteTestFile(fname));
+		});
+	}
+
+	private static List<Path> findTestFiles(String fname) {
+		List<Path> pathList = null;
+		try {
+			pathList = Files
+					.find(Paths.get(Hbz01MabXmlEtlNtriples2Filesystem.PATH_TO_TEST), 100,
+							(name, t) -> name.toFile().getName()
+									.matches(".*" + fname + "\\.?(json)?(nt)?"))
+					.collect(Collectors.toList());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return pathList;
+	}
+
+	private static void deleteTestFile(Path fname) {
+		try {
+			LOG.info("Removing test file " + fname);
+			Files.delete(fname);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	static class ElasticsearchDocuments {
@@ -222,6 +265,7 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 						.replaceAll(
 								RdfModel2ElasticsearchEtikettJsonLd.LOBID_DOMAIN + ".*/", "")
 						.replaceAll("#!$", "");
+				testFiles.remove(filename);
 				filename = DIRECTORY_TO_TEST_JSON_FILES + filename;
 				if (!new File(filename).exists())
 					writeFile(filename, jsonLdWithoutContext);
@@ -239,7 +283,8 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 					}
 				}
 			} catch (IOException e) {
-				e.printStackTrace();
+				LOG.error("Errored computing " + filename);
+				deleteTestFile(Paths.get(filename));
 			}
 		}
 
