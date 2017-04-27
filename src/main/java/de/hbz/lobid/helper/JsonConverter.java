@@ -89,13 +89,19 @@ public class JsonConverter {
 	public Map<String, Object> convertLobidData(InputStream in, RDFFormat format,
 			final String rootNodePrefix, Object context) {
 		Graph g = RdfUtils.readRdfToGraph(in, format, "");
-		String subject = g.parallelStream()
-				.filter(triple -> triple.getPredicate().stringValue()
-						.equals("http://www.w3.org/2007/05/powder-s#describedby"))
-				.filter(triple -> triple.getSubject().stringValue()
-						.startsWith(rootNodePrefix))
-				.findFirst().get().getSubject().toString();
-		return convert(subject, context, g);
+		String subject = null;
+		try {
+			subject = g.parallelStream()
+					.filter(triple -> triple.getPredicate().stringValue()
+							.equals("http://www.w3.org/2007/05/powder-s#describedby"))
+					.filter(triple -> triple.getSubject().stringValue()
+							.startsWith(rootNodePrefix))
+					.findFirst().get().getSubject().toString();
+		} catch (java.util.NoSuchElementException nsee) {
+			logger.warn("Ignore building resource, because no describedBy found in "
+					+ g.toString());
+		}
+		return subject == null ? null : convert(subject, context, g);
 	}
 
 	/**

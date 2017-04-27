@@ -184,18 +184,14 @@
 		</combine>
 		<data source="@subjectLabel" name="http://www.w3.org/2000/01/rdf-schema#label"/>
 		<!-- /subject as bnodes and their two properties (label & type -->
-		<combine name="@subjectId" value="${a}" reset="true">
-			<data source="9[01234][27]-[-12].9" name="a">
-				<regexp match="\(DE-588\)(.*)" format="http://d-nb.info/gnd/${1}"/>
-			</data>
-		</combine>
 		<combine name="~rdf:subject" value="$[ns-lobid-resource]${subject}#!" flushWith="@rdfTypeSubject">
 			<data source="@subjectLabelBnode"/>
 			<data source="@id" name="subject"/>
 		</combine>
 		<combine name="http://purl.org/dc/terms/subject" value="${a}"
-			flushWith="@deweyId" reset="true">
-			<data source="@deweyId" name="a"/>
+			flushWith="@deweyId|@nwbibSubject|@nwbibSpatialSubject|@rpb2Subject|@rpbSubject" reset="true">
+			<data source="@deweyId|@nwbibSubject|@nwbibSpatialSubject|@rpb2Subject|@rpbSubject"
+				name="a"/>
 		</combine>
 		<!-- ####################### -->
 		<!-- ####### Get subject uri of each record -->
@@ -677,7 +673,7 @@
 		<!-- ####################### -->
 		<combine name="@predecessorHbzId" value="${a}">
 			<data source="531[-xyz]1.9" name="a">
-				<regexp match="(.*)" format="$[ns-lobid-resource]${1}" />
+				<regexp match="(.*)" format="$[ns-lobid-resource]${1}"/>
 			</data>
 		</combine>
 		<combine name="@predecessorLabel" flushWith="531[-xyz]1.a" value="${a}">
@@ -692,19 +688,18 @@
 		</combine>
 		<data source="@predecessorHbzId" name="http://rdaregistry.info/Elements/u/P60261"/>
 		<combine name="~rdf:subject" value="${a}" flushWith="@predecessorHbzId">
-			<data source="@predecessorHbzId" name="a" />
+			<data source="@predecessorHbzId" name="a"/>
 		</combine>
-		<combine name="http://www.w3.org/2000/01/rdf-schema#label"
-			value="${a}" flushWith="@predecessorHbzId">
-			<data source="@predecessorLabel" name="a" />
-		</combine>
-		<combine name="~rdf:subject" value="$[ns-lobid-resource]${subject}#!"
+		<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="${a}"
 			flushWith="@predecessorHbzId">
-			<data source="@id" name="subject" />
-		</combine> 	
-	  <combine name="@successorHbzId" value="${a}">
+			<data source="@predecessorLabel" name="a"/>
+		</combine>
+		<combine name="~rdf:subject" value="$[ns-lobid-resource]${subject}#!" flushWith="@predecessorHbzId">
+			<data source="@id" name="subject"/>
+		</combine>
+		<combine name="@successorHbzId" value="${a}">
 			<data source="533[-xyz]1.9" name="a">
-				<regexp match="(.*)" format="$[ns-lobid-resource]${1}" />
+				<regexp match="(.*)" format="$[ns-lobid-resource]${1}"/>
 			</data>
 		</combine>
 		<combine name="@successorLabel" flushWith="533[-xyz]1.a" value="${a}">
@@ -719,16 +714,15 @@
 		</combine>
 		<data source="@successorHbzId" name="http://rdaregistry.info/Elements/u/P60278"/>
 		<combine name="~rdf:subject" value="${a}" flushWith="@successorHbzId">
-			<data source="@successorHbzId" name="a" />
+			<data source="@successorHbzId" name="a"/>
 		</combine>
-		<combine name="http://www.w3.org/2000/01/rdf-schema#label"
-			value="${a}" flushWith="@successorHbzId">
-			<data source="@successorLabel" name="a" />
-		</combine>
-		<combine name="~rdf:subject" value="$[ns-lobid-resource]${subject}#!"
+		<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="${a}"
 			flushWith="@successorHbzId">
-			<data source="@id" name="subject" />
-		</combine> 
+			<data source="@successorLabel" name="a"/>
+		</combine>
+		<combine name="~rdf:subject" value="$[ns-lobid-resource]${subject}#!" flushWith="@successorHbzId">
+			<data source="@id" name="subject"/>
+		</combine>
 		<!-- ####################### -->
 		<!-- ########## geo coordinates -->
 		<!-- ####################### -->
@@ -858,26 +852,24 @@
 				<constant value="http://purl.org/lobid/lv#SecondaryPublicationEvent"/>
 			</data>
 		</entity>
-	<!-- |674[-abc][-12].a <= YearOfPublication of the primary form. TODO find 
-		property -->
+		<!-- |674[-abc][-12].a <= YearOfPublication of the primary form. TODO find property -->
 		<combine name="@contentOfNatureGndId" value="${a}">
 			<data source="064[a][1].9" name="a">
-				<regexp match="^(\(DE-588\))?(\d{3}.*)" format="http://d-nb.info/gnd/${2}" />
+				<regexp match="^(\(DE-588\))?(\d{3}.*)" format="http://d-nb.info/gnd/${2}"/>
 			</data>
 		</combine>
-		<data source="@contentOfNatureGndId" name="http://rdaregistry.info/Elements/u/P60584" />
+		<data source="@contentOfNatureGndId" name="http://rdaregistry.info/Elements/u/P60584"/>
 		<combine name="~rdf:subject" value="${a}" flushWith="@contentOfNatureGndId">
-			<data source="@contentOfNatureGndId" name="a" />
+			<data source="@contentOfNatureGndId" name="a"/>
 		</combine>
-		<combine name="http://www.w3.org/2000/01/rdf-schema#label"
-			value="${a}" flushWith="@contentOfNatureGndId">
-			<data source="064a1.a" name="a" />
-		</combine>
-		<combine name="~rdf:subject" value="$[ns-lobid-resource]${subject}#!"
+		<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="${a}"
 			flushWith="@contentOfNatureGndId">
-			<data source="@id" name="subject" />
+			<data source="064a1.a" name="a"/>
 		</combine>
-	    <!-- ####################### -->
+		<combine name="~rdf:subject" value="$[ns-lobid-resource]${subject}#!" flushWith="@contentOfNatureGndId">
+			<data source="@id" name="subject"/>
+		</combine>
+		<!-- ####################### -->
 		<!-- ########## description extent -->
 		<!-- ####################### -->
 		<data source="433[-abc][-1].[aq]" name="http://id.loc.gov/ontologies/bibframe/extent"/>
@@ -1236,7 +1228,9 @@
 		<!-- ####################### -->
 		<!-- contributors with roles @TODO many roles needs tests -->
 		<!-- <data source="1??b[1234].b|8[012]?[-mn][-12].b" name="@marcrelName"/> -->
-		<data source="1[02468][048]?[12].[b4]|1[13579][26]?[12].[b4]|2[02468][048]?[12].4|2[13579][26]?[12].4" name="@marcrelName"/>
+		<data
+			source="1[02468][048]?[12].[b4]|1[13579][26]?[12].[b4]|2[02468][048]?[12].4|2[13579][26]?[12].4"
+			name="@marcrelName"/>
 		<!-- id of contributor (which is not a creator) -->
 		<data source="1??[bcefp][1234].9" name="@contributorPersonId">
 			<regexp match="\(DE-588\)(.*)" format="http://d-nb.info/gnd/${1}"/>
@@ -1315,11 +1309,14 @@
 		<!-- subjects which are persons (and thus the date is to be ignored, see hbz/lobid#244 ) -->
 		<combine name="@preferredNamePersonConcatSubject" value="${a}" sameEntity="true"
 			flushWith="@GNDPersonId|@contributorPersonId|@preferredNameP">
-			<concat delimiter=", " name="a"
-				flushWith="@GNDPersonId|@contributorPersonId|@preferredNameP" sameEntity="true">
+			<concat delimiter=", " name="a" flushWith="@GNDPersonId|@contributorPersonId|@preferredNameP"
+				sameEntity="true">
 				<data source="1????.[cghknpsz]|9??[-abcdfep][12-].[chknp]|8[012]?[-mn][-12].[cghknpsz]"/>
 			</concat>
 		</combine>
+		<data source="@subjectLinks" name="http://id.loc.gov/ontologies/bibframe/source">
+			<constant value="http://d-nb.info/gnd/7749153-1"/><!--gnd -->
+		</data>
 		<!-- subjects which aren't persons (and thus the date needn't be ignored) -->
 		<combine name="@preferredNameConcatSubject" value="${a}" sameEntity="true"
 			flushWith="@creatorCorporateBodyId|@contributorCorporateBodyId|@subjectNotAPerson">
@@ -1462,97 +1459,97 @@
 				flushWith="@contributorPersonBnodeOrId|@contributorCorporateBodyBnodeOrId|@creatorPersonOrCoorporateBodyBnodeOrId">
 				<!-- map literals to marc relator property -->
 				<data source="@marcrelName" name="a">
-					<regexp match="[dD]ars|act" format="http://id.loc.gov/vocabulary/relators/act"/>
+					<regexp match="[dD]ars|^\[act\]$|^(act)$" format="http://id.loc.gov/vocabulary/relators/act"/>
 				</data>
 				<data source="@marcrelName" name="a">
-					<regexp match="[hH]rsg|edt" format="http://id.loc.gov/vocabulary/relators/edt"/>
+					<regexp match="[hH]rsg|^\[edt\]$|^(edt)$" format="http://id.loc.gov/vocabulary/relators/edt"/>
 				</data>
 				<data source="@marcrelName" name="a">
 					<regexp match="[bB]egr" format="http://id.loc.gov/vocabulary/relators/org"/>
 				</data>
 				<data source="@marcrelName" name="a">
-					<regexp match="isb" format="http://id.loc.gov/vocabulary/relators/isb"/>
+					<regexp match="^\[isb\]$|^(isb)$" format="http://id.loc.gov/vocabulary/relators/isb"/>
 				</data>
 				<data source="@marcrelName" name="a">
-					<regexp match="[rR]egi|drt" format="http://id.loc.gov/vocabulary/relators/drt"/>
+					<regexp match="[rR]egi|^\[drt\]$|^(drt)$" format="http://id.loc.gov/vocabulary/relators/drt"/>
 				</data>
 				<data source="@marcrelName" name="a">
-					<regexp match="bers|trl" format="http://id.loc.gov/vocabulary/relators/trl"/>
+					<regexp match="bers|^\[trl\]$|^(trl)$" format="http://id.loc.gov/vocabulary/relators/trl"/>
 				</data>
 				<data source="@marcrelName" name="a">
 					<regexp match="[iI]ll|[zZ]eichn" format="http://id.loc.gov/vocabulary/relators/ill"/>
 				</data>
 				<data source="@marcrelName" name="a">
-					<regexp match="[aA]rt" format="http://id.loc.gov/vocabulary/relators/art"/>
+					<regexp match="[aA]rtist|^\[art\]$|^(art)$" format="http://id.loc.gov/vocabulary/relators/art"/>
 				</data>
 				<data source="@marcrelName" name="a">
-					<regexp match="^[mM]itarb|clb" format="http://id.loc.gov/vocabulary/relators/clb"/>
+					<regexp match="[mM]itarb|^\[clb\]$|^(clb)$" format="http://id.loc.gov/vocabulary/relators/clb"/>
 				</data>
 				<data source="@marcrelName" name="a">
-					<regexp match=".*[oO]togr.*|pht" format="http://id.loc.gov/vocabulary/relators/pht"/>
+					<regexp match=".*[oO]togr.*|^\[pht\]$|^(pht)$" format="http://id.loc.gov/vocabulary/relators/pht"/>
 				</data>
 				<data source="@marcrelName" name="a">
-					<regexp match=".*[dD]ir|cnd" format="http://id.loc.gov/vocabulary/relators/cnd"/>
+					<regexp match=".*[dD]ir|^\[cnd\]$|^(cnd)$" format="http://id.loc.gov/vocabulary/relators/cnd"/>
 				</data>
 				<data source="@marcrelName" name="a">
-					<regexp match="[kK]om|cmp" format="http://id.loc.gov/vocabulary/relators/cmp"/>
+					<regexp match="[kK]omp|^\[cmp\]$|^(cmp)$" format="http://id.loc.gov/vocabulary/relators/cmp"/>
 				</data>
 				<data source="@marcrelName" name="a">
-					<regexp match="[vV]or|aui" format="http://id.loc.gov/vocabulary/relators/aui"/>
+					<regexp match="[vV]orw|^\[aui\]$|^(aui)$" format="http://id.loc.gov/vocabulary/relators/aui"/>
 				</data>
 				<data source="@marcrelName" name="a">
 					<regexp match="[lL]ibr" format="http://id.loc.gov/vocabulary/relators/lbt"/>
 				</data>
 				<data source="@marcrelName" name="a">
-					<regexp match="[dD]rehb|aus" format="http://id.loc.gov/vocabulary/relators/aus"/>
+					<regexp match="[dD]rehb|^\[aus\]$|^(aus)$" format="http://id.loc.gov/vocabulary/relators/aus"/>
 				</data>
 				<data source="@marcrelName" name="a">
-					<regexp match="[sS]ammler|col" format="http://id.loc.gov/vocabulary/relators/col"/>
+					<regexp match="[sS]ammler|^\[col\]$|^(col)$" format="http://id.loc.gov/vocabulary/relators/col"/>
 				</data>
 				<data source="@marcrelName" name="a">
-					<regexp match="[bB]eitr|ctb" format="http://id.loc.gov/vocabulary/relators/ctb"/>
+					<regexp match="[bB]eitr|^\[ctb\]$|^(ctb)$" format="http://id.loc.gov/vocabulary/relators/ctb"/>
 				</data>
 				<data source="@marcrelName" name="a">
 					<regexp match="[sS]precher" format="http://id.loc.gov/vocabulary/relators/spk"/>
 				</data>
 				<data source="@marcrelName" name="a">
-					<regexp match="[kK]amera|cng" format="http://id.loc.gov/vocabulary/relators/cng"/>
+					<regexp match="[kK]amera|^\[cng\]$|^(cng)$" format="http://id.loc.gov/vocabulary/relators/cng"/>
 				</data>
 				<data source="@marcrelName" name="a">
-					<regexp match="[vV]orl|ant" format="http://id.loc.gov/vocabulary/relators/ant"/>
+					<regexp match="[vV]orl|^\[ant\]$|^(ant)$" format="http://id.loc.gov/vocabulary/relators/ant"/>
 				</data>
 				<data source="@marcrelName" name="a">
 					<regexp match="[gG]esang|sng|Alt|Bariton|Bass|Baß|Sopr|Ten" format="http://id.loc.gov/vocabulary/relators/sng"/>
 				</data>
 				<data source="@marcrelName" name="a">
-					<regexp match="[iI]nterviewer|ivr" format="http://id.loc.gov/vocabulary/relators/ivr"/>
+					<regexp match="[iI]nterviewer|^\[ivr\]$|^(ivr)$" format="http://id.loc.gov/vocabulary/relators/ivr"/>
 				</data>
 				<data source="@marcrelName" name="a">
-					<regexp match="[iI]nterviewter|ive" format="http://id.loc.gov/vocabulary/relators/ive"/>
+					<regexp match="[iI]nterviewter|^\[ive\]$|^(ive)$" format="http://id.loc.gov/vocabulary/relators/ive"/>
 				</data>
 				<data source="@marcrelName" name="a">
-					<regexp match="[kK]artogra|ctg" format="http://id.loc.gov/vocabulary/relators/ctg"/>
+					<regexp match="[kK]artogra|^\[ctg\]$|^(ctg)$" format="http://id.loc.gov/vocabulary/relators/ctg"/>
 				</data>
 				<data source="@marcrelName" name="a">
-					<regexp match="[mM]usi|mus" format="http://id.loc.gov/vocabulary/relators/mus"/>
+					<regexp match="[mM]usi|^\[mus\]$|^(mus)$" format="http://id.loc.gov/vocabulary/relators/mus"/>
 				</data>
 				<data source="@marcrelName" name="a">
 					<regexp match="[iI]nstr|Harfe|Gitarre|Klavier|Org" format="http://id.loc.gov/vocabulary/relators/itr"/>
 				</data>
 				<data source="@marcrelName" name="a">
-					<regexp match="[nN]ach|aft" format="http://id.loc.gov/vocabulary/relators/aft"/>
+					<regexp match="[nN]ach|^\[aft\]$|^(aft)$" format="http://id.loc.gov/vocabulary/relators/aft"/>
 				</data>
 				<data source="@marcrelName" name="a">
 					<regexp match="[lL]tg" format="http://id.loc.gov/vocabulary/relators/led"/>
 				</data>
 				<data source="@marcrelName" name="a">
-					<regexp match="[pP]rod|pro" format="http://id.loc.gov/vocabulary/relators/pro"/>
+					<regexp match="[pP]rod|^\[pro\]$|^(pro)$" format="http://id.loc.gov/vocabulary/relators/pro"/>
 				</data>
 				<data source="@marcrelName" name="a">
-					<regexp match="[sS]techer|egr" format="http://id.loc.gov/vocabulary/relators/egr"/>
+					<regexp match="[sS]techer|^\[egr\]$|^(egr)$" format="http://id.loc.gov/vocabulary/relators/egr"/>
 				</data>
 				<data source="@marcrelName" name="a">
-					<regexp match="[wW]idmun|dte" format="http://id.loc.gov/vocabulary/relators/dte"/>
+					<regexp match="[wW]idmun|^\[dte\]$|^(dte)$" format="http://id.loc.gov/vocabulary/relators/dte"/>
 				</data>
 				<data source="@marcrelName" name="a">
 					<regexp match="[rR]ed" format="http://id.loc.gov/vocabulary/relators/red"/>
@@ -1561,13 +1558,13 @@
 					<regexp match=".*" format="http://id.loc.gov/vocabulary/relators/hnr"/>
 				</data>
 				<data source="@marcrelName" name="a">
-					<regexp match="hnr" format="http://id.loc.gov/vocabulary/relators/hnr"/>
+					<regexp match="^\[hnr\]$|^(hnr)$" format="http://id.loc.gov/vocabulary/relators/hnr"/>
 				</data>
 				<data source="1??e[1234].p" name="a">  <!-- see #150 -->
 					<regexp match=".*" format="http://id.loc.gov/vocabulary/relators/prf"/>
 				</data>
 				<data source="@marcrelName" name="a">
-					<regexp match="[iI]nterpr|prf" format="http://id.loc.gov/vocabulary/relators/prf"/>
+					<regexp match="[iI]nterpr|^\[prf\]$|^(prf)$" format="http://id.loc.gov/vocabulary/relators/prf"/>
 				</data>
 				<!-- default -->
 				<data source="@contributorCorporateBodyBnodeOrId" name="a">
@@ -1904,7 +1901,7 @@
 		<data source="078n[-1].a" name="http://purl.org/ontology/holding#collectedBy">
 			<regexp match=".*" format="$[ns-lobid-resource]NWBib"/>
 		</data>
-		<data source="700n[-1].a" name="$[ns-lobid-vocab]nwbibsubject">
+		<data source="700n[-1].a" name="@nwbibSubject">
 			<regexp match="(\d\d\d\d\d\d)" format="http://purl.org/lobid/nwbib#s${1}"/>
 		</data>
 		<combine name="log: 700n[-1].a AND 078n[-1].a" value="${id}">
@@ -1937,7 +1934,7 @@
 			<replace pattern="," with=""/>
 			<replace pattern="/" with=""/>
 		</data>
-		<combine name="$[ns-lobid-vocab]nwbibspatial" value="${a}">
+		<combine name="@nwbibSpatialSubject" value="${a}">
 			<data source="700n[-1].a" name="a">
 				<regexp match="^([0-8][0-8]\b|91\b|96|97)\b" format="http://purl.org/lobid/nwbib-spatial#n${1}"/>
 			</data>
@@ -1950,10 +1947,10 @@
 			<regexp match=".*" format="http://lobid.org/resource/Edoweb"/>
 		</data>
 		<!--rheinland pfalz -->
-		<data source="700l[-1].a" name="http://purl.org/lobid/lv#rpbSubject">
+		<data source="700l[-1].a" name="@rpb2Subject">
 			<regexp match="^(\d{3})$" format="https://w3id.org/lobid/rpb2#n${1}"/>
 		</data>
-		<data source="700l[-1].a" name="http://purl.org/lobid/lv#rpbSubject">
+		<data source="700l[-1].a" name="@rpbSubject">
 			<regexp match="^rpb(.*)" format="http://purl.org/lobid/rpb#n${1}"/>
 		</data>
 		<data source="700l[-1].[ab]" name="http://purl.org/ontology/holding#collectedBy">
@@ -1989,6 +1986,29 @@
 			</data>
 			<data source="501-1.a"/>
 		</choose>
+		<!-- ####### sources of the subjects - for GND search 7749153-1 -->
+		<data source="@nwbibSubject|@nwbibSpatialSubject|@rpb2Subject|@rpbSubject|@deweyId"
+			name="~rdf:subject"/>
+		<data source="@nwbibSubject" name="http://id.loc.gov/ontologies/bibframe/source">
+			<constant value="http://purl.org/lobid/nwbib"/> <!--nwbib -->
+		</data>
+		<data source="@nwbibSpatialSubject" name="http://id.loc.gov/ontologies/bibframe/source">
+			<constant value="http://purl.org/lobid/nwbib-spatial"/> <!--nwbib-spatial -->
+		</data>
+		<data source="@rpb2Subject" name="http://id.loc.gov/ontologies/bibframe/source">
+			<constant value="https://w3id.org/lobid/rpb2"/> <!--rpb2 -->
+		</data>
+		<data source="@rpbSubject" name="http://id.loc.gov/ontologies/bibframe/source">
+			<constant value="https://w3id.org/lobid/rpb"/> <!--rpb -->
+		</data>
+		<data source="@deweyId" name="http://id.loc.gov/ontologies/bibframe/source">
+			<constant value="http://d-nb.info/gnd/4149423-4"/><!--dewey -->
+		</data>
+		<combine name="~rdf:subject" value="$[ns-lobid-resource]${id}#!"
+			flushWith="@nwbibSubject|@nwbibSpatialSubject|@rpb2Subject|@rpbSubject|@deweyId">
+			<data source="@id" name="id"/>
+		</combine>
+		<!-- /sources of the subjects -->
 		<!-- ####################### -->
 		<!-- ############### statistics -->
 		<!-- ####################### -->

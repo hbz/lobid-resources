@@ -44,7 +44,7 @@ public class IndexIntegrationTest extends LocalIndexSetup {
 			{ "subject.componentList.id:\"http\\://d-nb.info/gnd/4042570-8\"", /*->*/ 2 },
 			{ "subject.componentList.id:1113670827", /*->*/ 0 },
 			{ "subject.componentList.type:PlaceOrGeographicName", /*->*/ 26 },
-			{ "publication.location:Berlin", /*->*/ 11 },
+			{ "publication.location:Berlin", /*->*/ 12 },
 			{ "publication.startDate:1993", /*->*/ 2 },
 			{ "publication.location:Berlin AND publication.startDate:1993", /*->*/ 1 },
 			{ "publication.location:Berlin AND publication.startDate:[1992 TO 2017]", /*->*/ 10 },

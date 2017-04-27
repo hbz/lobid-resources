@@ -48,11 +48,8 @@ public final class RdfModel2ElasticsearchEtikettJsonLd
 	// the items will have their own index type and ES parents
 	private static final String PROPERTY_TO_PARENT = "itemOf";
 	static String LOBID_DOMAIN = "http://lobid.org/";
+	// the sub node we want to create besides the main node
 	private static String LOBID_ITEM_URI_PREFIX = LOBID_DOMAIN + "items/";
-	// the sub node we want to cling to the main node
-	private static final String KEEP_NODE_PREFIX = "http://d-nb.info/gnd";
-	private static final String KEEP_NODE_MAIN_PREFIX =
-			LOBID_DOMAIN + "resources/";
 	private static String mainNodeId = null;
 	private static final String TYPE_ITEM = "item";
 	private static final String TYPE_RESOURCE = "resource";
@@ -101,39 +98,30 @@ public final class RdfModel2ElasticsearchEtikettJsonLd
 		while (subjectsIterator.hasNext()) {
 			final Resource subjectResource = subjectsIterator.next();
 			Model submodel = ModelFactory.createDefaultModel();
-			if (!subjectResource.isAnon()) {
-				// only extract sub nodes we don't want to keep in the main model
-				if (!subjectResource.getURI().startsWith(KEEP_NODE_PREFIX)
-						&& !subjectResource.getURI().startsWith(KEEP_NODE_MAIN_PREFIX)) {
-					if (shouldSubmodelBeExtracted(submodel, subjectResource)) {
-						toJson(submodel,
-								subjectResource.getURI().toString().replaceAll("#!$", ""));
-					}
+			// only extract sub nodes we don't want to keep in the main model
+			if (subjectResource.isURIResource()) {
+				if (subjectResource.getURI().startsWith(LOBID_ITEM_URI_PREFIX)) {
+					submodel = extractSubmodel(submodel, subjectResource);
+					toJson(submodel,
+							subjectResource.getURI().toString().replaceAll("#!$", ""));
+					// remove the newly created sub model from the main node
+					copyOfOriginalModel.remove(submodel);
 				} else if (mainNodeId == null && INTERNAL_ID_PATTERN
 						.matcher(subjectResource.getURI().toString()).matches())
 					setMainNodeId(subjectResource);
-			}
-			if (!submodel.isEmpty()) {
-				// remove the newly created sub model from the main node
-				copyOfOriginalModel.remove(submodel);
 			}
 		} // the main node (with its kept sub node)
 		toJson(copyOfOriginalModel, mainNodeId);
 	}
 
-	// A sub model mustn't be extracted if the resource is to be kept as a sub
-	// node of the main node. An bnode mustn't be extracted either.
-	private static boolean shouldSubmodelBeExtracted(Model submodel,
+	private static Model extractSubmodel(Model submodel,
 			Resource subjectResource) {
 		StmtIterator stmtIt = subjectResource.listProperties();
 		while (stmtIt.hasNext()) {
 			Statement stmt = stmtIt.nextStatement();
-			// identifying the main node
-			if (stmt.getObject().toString().startsWith(KEEP_NODE_PREFIX))
-				return false;
 			submodel.add(stmt);
 		}
-		return true;
+		return submodel;
 	}
 
 	private static void setMainNodeId(Resource subjectResource) {
