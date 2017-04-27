@@ -201,7 +201,7 @@
 		<combine name="~rdf:subject" value="$[ns-lobid-resource]${id}#!">
 			<data source="@id" name="id"/>
 		</combine>
-		<!-- ZDB id -->
+		<!-- ZDB id & collectedBy-->
 		<data source="025z[-1].a" name="@idzdb"/>
 		<!-- ####################### -->
 		<!-- ####### hbz ID sameAs ZDB ID -->
@@ -210,6 +210,9 @@
 			<regexp match="(.*)" format="$[ns-zdb-services]${1}"/>
 		</data>
 		<data source="@idzdb" name="$[ns-lobid-vocab]zdbID"/>
+		<data source="@idzdb" name="http://purl.org/lobid/lv#inCollection">
+			<regexp match=".*" format="$[ns-lobid-resource]HT014846970#!"/>
+		</data>
 		<!-- ####################### -->
 		<!-- ####### Secondary form, link to primary form and vice versa -->
 		<!-- ####################### -->
@@ -1898,8 +1901,8 @@
 		<!-- ########## classification -->
 		<!-- ####################### -->
 		<!--nwbib -->
-		<data source="078n[-1].a" name="http://purl.org/ontology/holding#collectedBy">
-			<regexp match=".*" format="$[ns-lobid-resource]NWBib"/>
+		<data source="078n[-1].a" name="http://purl.org/lobid/lv#inCollection">
+			<regexp match=".*" format="$[ns-lobid-resource]HT014176012#!"/>
 		</data>
 		<data source="700n[-1].a" name="@nwbibSubject">
 			<regexp match="(\d\d\d\d\d\d)" format="http://purl.org/lobid/nwbib#s${1}"/>
@@ -1943,8 +1946,8 @@
 		<data source="078r1.a" name="@edoweb">
 			<regexp match="edoweb"/>
 		</data>
-		<data source="@edoweb" name="http://purl.org/ontology/holding#collectedBy">
-			<regexp match=".*" format="http://lobid.org/resource/Edoweb"/>
+		<data source="@edoweb" name="http://purl.org/lobid/lv#inCollection">
+			<regexp match=".*" format="$[ns-lobid-resource]HT016925914#!"/>
 		</data>
 		<!--rheinland pfalz -->
 		<data source="700l[-1].a" name="@rpb2Subject">
@@ -1953,8 +1956,8 @@
 		<data source="700l[-1].a" name="@rpbSubject">
 			<regexp match="^rpb(.*)" format="http://purl.org/lobid/rpb#n${1}"/>
 		</data>
-		<data source="700l[-1].[ab]" name="http://purl.org/ontology/holding#collectedBy">
-			<regexp match="^rpb.*" format="$[ns-lobid-resource]RPB"/>
+		<data source="700l[-1].[ab]" name="http://purl.org/lobid/lv#inCollection">
+			<regexp match="^rpb.*" format="$[ns-lobid-resource]HT013494180#!"/>
 		</data>
 		<!-- ####################### -->
 		<!-- ########## isbn -->
