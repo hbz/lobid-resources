@@ -1,10 +1,6 @@
 {
   "@context" : "http://lobid.org/resources/context.jsonld",
   "bibliographicCitation" : "Grabbe-Jahrbuch ...; 32. 2013 (2014), S. 80-95",
-  "collectedBy" : [ {
-    "id" : "http://lobid.org/resources/NWBib",
-    "label" : "Nordrhein-Westfälische Bibliographie"
-  } ],
   "containedIn" : [ {
     "id" : "http://lobid.org/resources/HT002156174#!",
     "label" : "lobid Ressource"
@@ -30,6 +26,10 @@
   },
   "hbzId" : "HT018312899",
   "id" : "http://lobid.org/resources/HT018312899#!",
+  "inCollection" : [ {
+    "id" : "http://lobid.org/resources/HT014176012#!",
+    "label" : "Nordrhein-Westfälische Bibliographie (NWBib)"
+  } ],
   "isPartOf" : [ {
     "id" : "http://lobid.org/resources/HT002156174#!",
     "label" : "lobid Ressource"
@@ -41,13 +41,6 @@
   "medium" : [ {
     "id" : "http://rdaregistry.info/termList/RDAproductionMethod/1010",
     "label" : "Print"
-  } ],
-  "nwbibSubject" : [ {
-    "id" : "http://purl.org/lobid/nwbib#s769030",
-    "label" : "Drama"
-  }, {
-    "id" : "http://purl.org/lobid/nwbib#s768030",
-    "label" : "Einzelne Autoren (Sekundärliteratur)"
   } ],
   "otherTitleInformation" : [ "der Cid als Zeit- und Gattungskritik" ],
   "publication" : [ {
@@ -61,22 +54,48 @@
     "label" : "Culturegraph Ressource"
   } ],
   "subject" : [ {
+    "id" : "http://purl.org/lobid/nwbib#s769030",
+    "label" : "Drama",
+    "source" : {
+      "id" : "http://purl.org/lobid/nwbib",
+      "label" : "Sachsystematik der Nordrhein-Westfälischen Bibliographie"
+    }
+  }, {
     "componentList" : [ {
       "dateOfBirth" : "1801",
       "dateOfDeath" : "1836",
       "id" : "http://d-nb.info/gnd/7683386-0",
       "label" : "Grabbe, Christian Dietrich: Der Cid",
+      "source" : {
+        "id" : "http://d-nb.info/gnd/7749153-1",
+        "label" : "Gemeinsame Normdatei (GND)"
+      },
       "type" : [ "Work" ]
     }, {
       "id" : "http://d-nb.info/gnd/4124796-6",
       "label" : "Dramaturgie",
+      "source" : {
+        "id" : "http://d-nb.info/gnd/7749153-1",
+        "label" : "Gemeinsame Normdatei (GND)"
+      },
       "type" : [ "SubjectHeading" ]
     }, {
       "id" : "http://d-nb.info/gnd/4049716-1",
       "label" : "Rezeption",
+      "source" : {
+        "id" : "http://d-nb.info/gnd/7749153-1",
+        "label" : "Gemeinsame Normdatei (GND)"
+      },
       "type" : [ "SubjectHeading" ]
     } ],
     "type" : [ "ComplexSubject" ]
+  }, {
+    "id" : "http://purl.org/lobid/nwbib#s768030",
+    "label" : "Einzelne Autoren (Sekundärliteratur)",
+    "source" : {
+      "id" : "http://purl.org/lobid/nwbib",
+      "label" : "Sachsystematik der Nordrhein-Westfälischen Bibliographie"
+    }
   } ],
   "subjectAltLabel" : [ "Wirkungsgeschichte", "Nachleben", "Fortwirken", "Nachwirkung (Rezeption)", "Aneignung (Rezeption)" ],
   "subjectChain" : [ "Grabbe, Christian Dietrich (1801-1836): Der Cid | Dramaturgie | Rezeption (231,321)" ],

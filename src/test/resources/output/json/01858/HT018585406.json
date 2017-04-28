@@ -1,12 +1,5 @@
 {
   "@context" : "http://lobid.org/resources/context.jsonld",
-  "collectedBy" : [ {
-    "id" : "http://lobid.org/resource/Edoweb",
-    "label" : "http://lobid.org/resource"
-  }, {
-    "id" : "http://lobid.org/resources/RPB",
-    "label" : "lobid Ressource"
-  } ],
   "contribution" : [ {
     "agent" : {
       "id" : "http://d-nb.info/gnd/121842118",
@@ -66,6 +59,13 @@
   } ],
   "hbzId" : "HT018585406",
   "id" : "http://lobid.org/resources/HT018585406#!",
+  "inCollection" : [ {
+    "id" : "http://lobid.org/resources/HT016925914#!",
+    "label" : "Edoweb Rheinland-Pfalz"
+  }, {
+    "id" : "http://lobid.org/resources/HT013494180#!",
+    "label" : "Rheinland-Pfälzische Bibliographie"
+  } ],
   "language" : [ {
     "id" : "http://id.loc.gov/vocabulary/iso639-2/deu",
     "label" : "Deutsch"
@@ -80,34 +80,57 @@
     "type" : [ "PublicationEvent" ]
   } ],
   "responsibilityStatement" : [ "Deutsch-Französisch-Schweizerische Oberrheinkonferenz, AG Raumordnung. Hrsg.: Entwicklungsagentur Rheinland-Pfalz e.V. Red.: Hans-Günther Clev ..." ],
-  "rpbSubject" : [ {
-    "id" : "https://w3id.org/lobid/rpb2#n106",
-    "label" : "Amtsdruckschriften Rheinland-Pfalz"
-  }, {
-    "id" : "http://purl.org/lobid/rpb#n572020",
-    "label" : "Landesplanung"
-  }, {
-    "id" : "https://w3id.org/lobid/rpb2#n740",
-    "label" : "Umweltschutz, Raumordn., Landschaft"
-  }, {
-    "id" : "https://w3id.org/lobid/rpb2#n131",
-    "label" : "Landeskunde Pfalz"
-  } ],
   "sameAs" : [ {
     "id" : "http://hub.culturegraph.org/resource/HBZ-HT018585406",
     "label" : "Culturegraph Ressource"
   } ],
   "subject" : [ {
+    "id" : "https://w3id.org/lobid/rpb2#n131",
+    "label" : "Landeskunde Pfalz",
+    "source" : {
+      "id" : "https://w3id.org/lobid/rpb2",
+      "label" : "RPB-Sachgruppen und Zusätze"
+    }
+  }, {
     "componentList" : [ {
       "id" : "http://d-nb.info/gnd/4075561-7",
       "label" : "Oberrheinisches Tiefland",
+      "source" : {
+        "id" : "http://d-nb.info/gnd/7749153-1",
+        "label" : "Gemeinsame Normdatei (GND)"
+      },
       "type" : [ "PlaceOrGeographicName" ]
     }, {
       "id" : "http://d-nb.info/gnd/4034268-2",
       "label" : "Landesplanung",
+      "source" : {
+        "id" : "http://d-nb.info/gnd/7749153-1",
+        "label" : "Gemeinsame Normdatei (GND)"
+      },
       "type" : [ "SubjectHeading" ]
     } ],
     "type" : [ "ComplexSubject" ]
+  }, {
+    "id" : "https://w3id.org/lobid/rpb2#n740",
+    "label" : "Umweltschutz, Raumordn., Landschaft",
+    "source" : {
+      "id" : "https://w3id.org/lobid/rpb2",
+      "label" : "RPB-Sachgruppen und Zusätze"
+    }
+  }, {
+    "id" : "https://w3id.org/lobid/rpb2#n106",
+    "label" : "Amtsdruckschriften Rheinland-Pfalz",
+    "source" : {
+      "id" : "https://w3id.org/lobid/rpb2",
+      "label" : "RPB-Sachgruppen und Zusätze"
+    }
+  }, {
+    "id" : "http://purl.org/lobid/rpb#n572020",
+    "label" : "Landesplanung",
+    "source" : {
+      "id" : "https://w3id.org/lobid/rpb",
+      "label" : "Systematik der Rheinland-Pfälzischen Bibliographie"
+    }
   } ],
   "subjectAltLabel" : [ "Gebietsplanung", "Landesentwicklungsplanung", "Oberrheinische Tiefebene", "Oberrheinlande", "Oberrhein-Gebiet", "Oberrhein (Region)", "Oberrheinebene" ],
   "subjectChain" : [ "Oberrheinisches Tiefland | Landesplanung" ],

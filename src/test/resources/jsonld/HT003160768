@@ -1,9 +1,5 @@
 {
   "@context" : "http://lobid.org/resources/context.jsonld",
-  "collectedBy" : [ {
-    "id" : "http://lobid.org/resources/NWBib",
-    "label" : "Nordrhein-Westfälische Bibliographie"
-  } ],
   "contribution" : [ {
     "agent" : {
       "id" : "http://d-nb.info/gnd/2019209-5",
@@ -46,6 +42,10 @@
   } ],
   "hbzId" : "HT003160768",
   "id" : "http://lobid.org/resources/HT003160768#!",
+  "inCollection" : [ {
+    "id" : "http://lobid.org/resources/HT014176012#!",
+    "label" : "Nordrhein-Westfälische Bibliographie (NWBib)"
+  } ],
   "language" : [ {
     "id" : "http://id.loc.gov/vocabulary/iso639-2/deu",
     "label" : "Deutsch"
@@ -53,14 +53,6 @@
   "medium" : [ {
     "id" : "http://rdaregistry.info/termList/RDAproductionMethod/1010",
     "label" : "Print"
-  } ],
-  "nwbibSpatial" : [ {
-    "id" : "http://purl.org/lobid/nwbib-spatial#n96",
-    "label" : "Regierungsbezirke"
-  } ],
-  "nwbibSubject" : [ {
-    "id" : "http://purl.org/lobid/nwbib#s572030",
-    "label" : "Regionalplanung"
   } ],
   "publication" : [ {
     "location" : "Münster",
@@ -76,13 +68,35 @@
     "componentList" : [ {
       "id" : "http://d-nb.info/gnd/4040613-1",
       "label" : "Bezirk Münster (Westf)",
+      "source" : {
+        "id" : "http://d-nb.info/gnd/7749153-1",
+        "label" : "Gemeinsame Normdatei (GND)"
+      },
       "type" : [ "PlaceOrGeographicName" ]
     }, {
       "id" : "http://d-nb.info/gnd/4034268-2",
       "label" : "Landesplanung",
+      "source" : {
+        "id" : "http://d-nb.info/gnd/7749153-1",
+        "label" : "Gemeinsame Normdatei (GND)"
+      },
       "type" : [ "SubjectHeading" ]
     } ],
     "type" : [ "ComplexSubject" ]
+  }, {
+    "id" : "http://purl.org/lobid/nwbib-spatial#n96",
+    "label" : "Regierungsbezirke",
+    "source" : {
+      "id" : "http://purl.org/lobid/nwbib-spatial",
+      "label" : "Raumsystematik der Nordrhein-Westfälischen Bibliographie"
+    }
+  }, {
+    "id" : "http://purl.org/lobid/nwbib#s572030",
+    "label" : "Regionalplanung",
+    "source" : {
+      "id" : "http://purl.org/lobid/nwbib",
+      "label" : "Sachsystematik der Nordrhein-Westfälischen Bibliographie"
+    }
   } ],
   "subjectAltLabel" : [ "Gebietsplanung", "Landesentwicklungsplanung", "Münster (Westf) (Bezirk)", "Handwerkskammerbezirk Münster (Westf)" ],
   "subjectChain" : [ "Bezirk Münster (Westf) | Landesplanung (21)" ],

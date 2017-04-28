@@ -1,10 +1,6 @@
 {
   "@context" : "http://lobid.org/resources/context.jsonld",
   "bibliographicCitation" : "Westfalen; 88. 2010 (2012), S. 175-179",
-  "collectedBy" : [ {
-    "id" : "http://lobid.org/resources/NWBib",
-    "label" : "Nordrhein-Westfälische Bibliographie"
-  } ],
   "containedIn" : [ {
     "id" : "http://lobid.org/resources/HT001374559#!",
     "label" : "lobid Ressource"
@@ -31,6 +27,10 @@
   },
   "hbzId" : "HT017150239",
   "id" : "http://lobid.org/resources/HT017150239#!",
+  "inCollection" : [ {
+    "id" : "http://lobid.org/resources/HT014176012#!",
+    "label" : "Nordrhein-Westfälische Bibliographie (NWBib)"
+  } ],
   "isPartOf" : [ {
     "id" : "http://lobid.org/resources/HT001374559#!",
     "label" : "lobid Ressource"
@@ -43,14 +43,6 @@
     "id" : "http://rdaregistry.info/termList/RDAproductionMethod/1010",
     "label" : "Print"
   } ],
-  "nwbibSpatial" : [ {
-    "id" : "http://purl.org/lobid/nwbib-spatial#n05",
-    "label" : "Westfalen"
-  } ],
-  "nwbibSubject" : [ {
-    "id" : "http://purl.org/lobid/nwbib#s844200",
-    "label" : "Denkmalpflege. Denkmalschutz"
-  } ],
   "publication" : [ {
     "location" : "Münster",
     "startDate" : "2012",
@@ -62,12 +54,30 @@
     "label" : "Culturegraph Ressource"
   } ],
   "subject" : [ {
+    "id" : "http://purl.org/lobid/nwbib-spatial#n05",
+    "label" : "Westfalen",
+    "source" : {
+      "id" : "http://purl.org/lobid/nwbib-spatial",
+      "label" : "Raumsystematik der Nordrhein-Westfälischen Bibliographie"
+    }
+  }, {
     "componentList" : [ {
       "id" : "http://d-nb.info/gnd/7856688-5",
       "label" : "Westfalen-Lippe. Amt für Denkmalpflege in Westfalen, Fachbereich Praktische Denkmalpflege und Baukultur",
+      "source" : {
+        "id" : "http://d-nb.info/gnd/7749153-1",
+        "label" : "Gemeinsame Normdatei (GND)"
+      },
       "type" : [ "CorporateBody" ]
     } ],
     "type" : [ "ComplexSubject" ]
+  }, {
+    "id" : "http://purl.org/lobid/nwbib#s844200",
+    "label" : "Denkmalpflege. Denkmalschutz",
+    "source" : {
+      "id" : "http://purl.org/lobid/nwbib",
+      "label" : "Sachsystematik der Nordrhein-Westfälischen Bibliographie"
+    }
   } ],
   "subjectAltLabel" : [ "Westfalen-Lippe. Fachbereich Praktische Denkmalpflege", "Münster (Westf) / Fachbereich Praktische Denkmalpflege und Baukultur" ],
   "subjectChain" : [ "Westfalen-Lippe, Amt für Denkmalpflege in Westfalen, Fachbereich Praktische Denkmalpflege und Baukultur" ],

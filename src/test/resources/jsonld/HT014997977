@@ -1,12 +1,5 @@
 {
   "@context" : "http://lobid.org/resources/context.jsonld",
-  "collectedBy" : [ {
-    "id" : "http://lobid.org/resource/Edoweb",
-    "label" : "http://lobid.org/resource"
-  }, {
-    "id" : "http://lobid.org/resources/RPB",
-    "label" : "lobid Ressource"
-  } ],
   "contribution" : [ {
     "agent" : {
       "id" : "http://d-nb.info/gnd/3062366-2",
@@ -61,6 +54,13 @@
   } ],
   "hbzId" : "HT014997977",
   "id" : "http://lobid.org/resources/HT014997977#!",
+  "inCollection" : [ {
+    "id" : "http://lobid.org/resources/HT016925914#!",
+    "label" : "Edoweb Rheinland-Pfalz"
+  }, {
+    "id" : "http://lobid.org/resources/HT013494180#!",
+    "label" : "Rheinland-Pfälzische Bibliographie"
+  } ],
   "language" : [ {
     "id" : "http://id.loc.gov/vocabulary/iso639-2/deu",
     "label" : "Deutsch"
@@ -76,20 +76,31 @@
     "type" : [ "PublicationEvent" ]
   } ],
   "responsibilityStatement" : [ "Arbeitskreis Straßenbauabfälle Rheinland-Pfalz; Landesamt für Umweltschutz und Gewerbeaufsicht; Landesbetrieb Straßen und Verkehr Rheinland-Pfalz" ],
-  "rpbSubject" : [ {
-    "id" : "http://purl.org/lobid/rpb#n574040",
-    "label" : "Straßenbau"
-  }, {
-    "id" : "https://w3id.org/lobid/rpb2#n940",
-    "label" : "Nachrichten- und Verkehrswesen"
-  } ],
   "sameAs" : [ {
     "id" : "http://hub.culturegraph.org/resource/HBZ-HT014997977",
     "label" : "Culturegraph Ressource"
   } ],
   "subject" : [ {
+    "id" : "https://w3id.org/lobid/rpb2#n940",
+    "label" : "Nachrichten- und Verkehrswesen",
+    "source" : {
+      "id" : "https://w3id.org/lobid/rpb2",
+      "label" : "RPB-Sachgruppen und Zusätze"
+    }
+  }, {
     "id" : "http://dewey.info/class/380/",
-    "label" : "Handel, Kommunikation, Verkehr"
+    "label" : "Handel, Kommunikation, Verkehr",
+    "source" : {
+      "id" : "http://d-nb.info/gnd/4149423-4",
+      "label" : "Dewey-Dezimalklassifikation"
+    }
+  }, {
+    "id" : "http://purl.org/lobid/rpb#n574040",
+    "label" : "Straßenbau",
+    "source" : {
+      "id" : "https://w3id.org/lobid/rpb",
+      "label" : "Systematik der Rheinland-Pfälzischen Bibliographie"
+    }
   } ],
   "title" : "Leitfaden für die Behandlung von Ausbauasphalt und Straßenaufbruch mit teer-/pechtypischen Bestandteilen",
   "type" : [ "BibliographicResource", "Book", "Thesis" ]

@@ -1,9 +1,5 @@
 {
   "@context" : "http://lobid.org/resources/context.jsonld",
-  "collectedBy" : [ {
-    "id" : "http://lobid.org/resources/NWBib",
-    "label" : "Nordrhein-Westfälische Bibliographie"
-  } ],
   "contribution" : [ {
     "agent" : {
       "id" : "http://d-nb.info/gnd/11079267X",
@@ -96,6 +92,10 @@
   } ],
   "hbzId" : "HT013077595",
   "id" : "http://lobid.org/resources/HT013077595#!",
+  "inCollection" : [ {
+    "id" : "http://lobid.org/resources/HT014176012#!",
+    "label" : "Nordrhein-Westfälische Bibliographie (NWBib)"
+  } ],
   "language" : [ {
     "id" : "http://id.loc.gov/vocabulary/iso639-2/deu",
     "label" : "Deutsch"
@@ -103,17 +103,6 @@
   "medium" : [ {
     "id" : "http://rdaregistry.info/termList/RDAproductionMethod/1010",
     "label" : "Print"
-  } ],
-  "nwbibSpatial" : [ {
-    "id" : "http://purl.org/lobid/nwbib-spatial#n97",
-    "label" : "Kreise"
-  } ],
-  "nwbibSubject" : [ {
-    "id" : "http://purl.org/lobid/nwbib#s784080",
-    "label" : "Unterricht"
-  }, {
-    "id" : "http://purl.org/lobid/nwbib#s240000",
-    "label" : "Geschichte"
   } ],
   "otherTitleInformation" : [ "Kirsten Balke. [Hrsg.: Kreisheimatverein Coesfeld e.V. Red.: Hans-Peter Boer ...]" ],
   "publication" : [ {
@@ -126,13 +115,28 @@
     "label" : "Culturegraph Ressource"
   } ],
   "subject" : [ {
+    "id" : "http://purl.org/lobid/nwbib-spatial#n97",
+    "label" : "Kreise",
+    "source" : {
+      "id" : "http://purl.org/lobid/nwbib-spatial",
+      "label" : "Raumsystematik der Nordrhein-Westfälischen Bibliographie"
+    }
+  }, {
     "componentList" : [ {
       "id" : "http://d-nb.info/gnd/4010355-9",
       "label" : "Coesfeld",
+      "source" : {
+        "id" : "http://d-nb.info/gnd/7749153-1",
+        "label" : "Gemeinsame Normdatei (GND)"
+      },
       "type" : [ "PlaceOrGeographicName" ]
     }, {
       "id" : "http://d-nb.info/gnd/4024116-6",
       "label" : "Heimatkundeunterricht",
+      "source" : {
+        "id" : "http://d-nb.info/gnd/7749153-1",
+        "label" : "Gemeinsame Normdatei (GND)"
+      },
       "type" : [ "SubjectHeading" ]
     }, {
       "label" : "Lehrmittel",
@@ -140,19 +144,41 @@
     } ],
     "type" : [ "ComplexSubject" ]
   }, {
+    "id" : "http://purl.org/lobid/nwbib#s784080",
+    "label" : "Unterricht",
+    "source" : {
+      "id" : "http://purl.org/lobid/nwbib",
+      "label" : "Sachsystematik der Nordrhein-Westfälischen Bibliographie"
+    }
+  }, {
     "componentList" : [ {
       "id" : "http://d-nb.info/gnd/4010356-0",
       "label" : "Kreis Coesfeld",
+      "source" : {
+        "id" : "http://d-nb.info/gnd/7749153-1",
+        "label" : "Gemeinsame Normdatei (GND)"
+      },
       "type" : [ "PlaceOrGeographicName" ]
     }, {
       "id" : "http://d-nb.info/gnd/4024116-6",
       "label" : "Heimatkundeunterricht",
+      "source" : {
+        "id" : "http://d-nb.info/gnd/7749153-1",
+        "label" : "Gemeinsame Normdatei (GND)"
+      },
       "type" : [ "SubjectHeading" ]
     }, {
       "label" : "Lehrmittel",
       "type" : [ "SubjectHeading" ]
     } ],
     "type" : [ "ComplexSubject" ]
+  }, {
+    "id" : "http://purl.org/lobid/nwbib#s240000",
+    "label" : "Geschichte",
+    "source" : {
+      "id" : "http://purl.org/lobid/nwbib",
+      "label" : "Sachsystematik der Nordrhein-Westfälischen Bibliographie"
+    }
   } ],
   "subjectAltLabel" : [ "Heimatkunde (Unterricht)", "Heimatkundedidaktik", "Kreistag (Kreis Coesfeld)", "Stadt Coesfeld", "Hauptamt (Kreis Coesfeld)", "Kreis Coesfeld. Kreistag", "Coesfeld. Hauptamt", "Coesfeld (Kreis)", "Kosfel'd", "Kreis Coesfeld. Hauptamt", "Coesfeld. Stadtdirektor", "Stadtdirektor (Coesfeld)", "Kreis Coesfeld. Kreisverwaltung", "Heimatkunde / Didaktik", "Coesfeld. Pressestelle", "Oberkreisdirektor (Kreis Coesfeld)", "Landrat (Kreis Coesfeld)", "Hauptamt (Coesfeld)", "Kreis Coesfeld. Oberkreisdirektor", "Landkreis Coesfeld", "Kreis Coesfeld. Landrat", "Kreisverwaltung (Kreis Coesfeld)", "Pressestelle (Coesfeld)" ],
   "subjectChain" : [ "Coesfeld | Heimatkundeunterricht | Lehrmittel (213)", "Kreis Coesfeld | Heimatkundeunterricht | Lehrmittel (213)" ],

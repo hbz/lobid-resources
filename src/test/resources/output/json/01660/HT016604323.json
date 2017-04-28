@@ -1,13 +1,13 @@
 {
   "@context" : "http://lobid.org/resources/context.jsonld",
-  "collectedBy" : [ {
-    "id" : "http://lobid.org/resources/NWBib",
-    "label" : "Nordrhein-Westfälische Bibliographie"
-  } ],
   "contribution" : [ {
     "agent" : {
       "id" : "http://d-nb.info/gnd/16090142-X",
       "label" : "PsychiatrieVerbund Westfalen. Beschwerdekommission",
+      "source" : {
+        "id" : "http://d-nb.info/gnd/7749153-1",
+        "label" : "Gemeinsame Normdatei (GND)"
+      },
       "type" : [ "CorporateBody" ]
     },
     "role" : {
@@ -52,6 +52,13 @@
   } ],
   "hbzId" : "HT016604323",
   "id" : "http://lobid.org/resources/HT016604323#!",
+  "inCollection" : [ {
+    "id" : "http://lobid.org/resources/HT014846970#!",
+    "label" : "Zeitschriftendatenbank (ZDB)"
+  }, {
+    "id" : "http://lobid.org/resources/HT014176012#!",
+    "label" : "Nordrhein-Westfälische Bibliographie (NWBib)"
+  } ],
   "language" : [ {
     "id" : "http://id.loc.gov/vocabulary/iso639-2/deu",
     "label" : "Deutsch"
@@ -59,14 +66,6 @@
   "medium" : [ {
     "id" : "http://rdaregistry.info/termList/RDAproductionMethod/1010",
     "label" : "Print"
-  } ],
-  "nwbibSpatial" : [ {
-    "id" : "http://purl.org/lobid/nwbib-spatial#n05",
-    "label" : "Westfalen"
-  } ],
-  "nwbibSubject" : [ {
-    "id" : "http://purl.org/lobid/nwbib#s534000",
-    "label" : "Krankenversorgung"
   } ],
   "otherTitleInformation" : [ "für das Jahr ..." ],
   "publication" : [ {
@@ -89,21 +88,47 @@
     "label" : "http://ld.zdb-services.de/resource"
   } ],
   "subject" : [ {
+    "id" : "http://dewey.info/class/360/",
+    "label" : "Soziale Probleme und Sozialdienste; Verbände",
+    "source" : {
+      "id" : "http://d-nb.info/gnd/4149423-4",
+      "label" : "Dewey-Dezimalklassifikation"
+    }
+  }, {
+    "id" : "http://purl.org/lobid/nwbib#s534000",
+    "label" : "Krankenversorgung",
+    "source" : {
+      "id" : "http://purl.org/lobid/nwbib",
+      "label" : "Sachsystematik der Nordrhein-Westfälischen Bibliographie"
+    }
+  }, {
+    "id" : "http://purl.org/lobid/nwbib-spatial#n05",
+    "label" : "Westfalen",
+    "source" : {
+      "id" : "http://purl.org/lobid/nwbib-spatial",
+      "label" : "Raumsystematik der Nordrhein-Westfälischen Bibliographie"
+    }
+  }, {
+    "id" : "http://dewey.info/class/610/",
+    "label" : "Medizin und Gesundheit",
+    "source" : {
+      "id" : "http://d-nb.info/gnd/4149423-4",
+      "label" : "Dewey-Dezimalklassifikation"
+    }
+  }, {
     "componentList" : [ {
       "id" : "http://d-nb.info/gnd/16090142-X",
       "label" : "PsychiatrieVerbund Westfalen. Beschwerdekommission",
+      "source" : {
+        "id" : "http://d-nb.info/gnd/7749153-1",
+        "label" : "Gemeinsame Normdatei (GND)"
+      },
       "type" : [ "CorporateBody" ]
     }, {
       "label" : "Bericht",
       "type" : [ "SubjectHeading" ]
     } ],
     "type" : [ "ComplexSubject" ]
-  }, {
-    "id" : "http://dewey.info/class/360/",
-    "label" : "Soziale Probleme und Sozialdienste; Verbände"
-  }, {
-    "id" : "http://dewey.info/class/610/",
-    "label" : "Medizin und Gesundheit"
   } ],
   "subjectChain" : [ "PsychiatrieVerbund Westfalen, Beschwerdekommission | Bericht" ],
   "subjectOrder" : [ "http://d-nb.info/gnd/16090142-X, Bericht" ],

@@ -1,9 +1,5 @@
 {
   "@context" : "http://lobid.org/resources/context.jsonld",
-  "collectedBy" : [ {
-    "id" : "http://lobid.org/resources/NWBib",
-    "label" : "Nordrhein-Westfälische Bibliographie"
-  } ],
   "contribution" : [ {
     "agent" : {
       "id" : "http://d-nb.info/gnd/186931808",
@@ -43,6 +39,10 @@
   } ],
   "hbzId" : "HT016135351",
   "id" : "http://lobid.org/resources/HT016135351#!",
+  "inCollection" : [ {
+    "id" : "http://lobid.org/resources/HT014176012#!",
+    "label" : "Nordrhein-Westfälische Bibliographie (NWBib)"
+  } ],
   "language" : [ {
     "id" : "http://id.loc.gov/vocabulary/iso639-2/deu",
     "label" : "Deutsch"
@@ -50,10 +50,6 @@
   "medium" : [ {
     "id" : "http://rdaregistry.info/termList/RDAproductionMethod/1010",
     "label" : "Print"
-  } ],
-  "nwbibSubject" : [ {
-    "id" : "http://purl.org/lobid/nwbib#s708029",
-    "label" : "Sonstige Landwirtschaftliche Gebäude. Mühlen"
   } ],
   "otherTitleInformation" : [ "Zeitzeuge und Kleinod in Harsewinkel" ],
   "publication" : [ {
@@ -68,9 +64,20 @@
     "label" : "Culturegraph Ressource"
   } ],
   "subject" : [ {
+    "id" : "http://purl.org/lobid/nwbib#s708029",
+    "label" : "Sonstige Landwirtschaftliche Gebäude. Mühlen",
+    "source" : {
+      "id" : "http://purl.org/lobid/nwbib",
+      "label" : "Sachsystematik der Nordrhein-Westfälischen Bibliographie"
+    }
+  }, {
     "componentList" : [ {
       "id" : "http://d-nb.info/gnd/7684863-2",
       "label" : "Lutter-Wassermühle Roberg, Harsewinkel",
+      "source" : {
+        "id" : "http://d-nb.info/gnd/7749153-1",
+        "label" : "Gemeinsame Normdatei (GND)"
+      },
       "type" : [ "PlaceOrGeographicName" ]
     }, {
       "label" : "Bildband",

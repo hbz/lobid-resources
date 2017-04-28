@@ -1,9 +1,5 @@
 {
   "@context" : "http://lobid.org/resources/context.jsonld",
-  "collectedBy" : [ {
-    "id" : "http://lobid.org/resources/NWBib",
-    "label" : "Nordrhein-Westfälische Bibliographie"
-  } ],
   "contribution" : [ {
     "agent" : {
       "id" : "http://d-nb.info/gnd/1050748387",
@@ -124,6 +120,10 @@
   } ],
   "hbzId" : "HT018612706",
   "id" : "http://lobid.org/resources/HT018612706#!",
+  "inCollection" : [ {
+    "id" : "http://lobid.org/resources/HT014176012#!",
+    "label" : "Nordrhein-Westfälische Bibliographie (NWBib)"
+  } ],
   "inSeries" : [ {
     "numbering" : "25/26",
     "series" : [ {
@@ -145,16 +145,9 @@
     "id" : "http://rdaregistry.info/termList/RDAproductionMethod/1010",
     "label" : "Print"
   } ],
-  "nwbibSubject" : [ {
-    "id" : "http://purl.org/lobid/nwbib#s842000",
-    "label" : "Kunstgeschichte"
-  }, {
-    "id" : "http://purl.org/lobid/nwbib#s841060",
-    "label" : "Kunstausstellungen"
-  } ],
   "otherTitleInformation" : [ "[... anlÃ¤sslich der gleichnamigen Ausstellung auf der ART COLOGNE 16. - 19.4.2015, und im ZADIK, 4.5. - 28.8.2015]" ],
   "publication" : [ {
-    "location" : [ "Wien", "Köln" ],
+    "location" : [ "Wien", "KÃ¶ln" ],
     "publishedBy" : [ "Zentralarchiv des Internationalen Kunsthandels e.V., ZADIK", "Verl. fÃ¼r moderne Kunst" ],
     "startDate" : "2015",
     "type" : [ "PublicationEvent" ]
@@ -166,15 +159,35 @@
   } ],
   "subject" : [ {
     "id" : "http://dewey.info/class/700/",
-    "label" : "Künste; Bildende und angewandte Kunst"
+    "label" : "Künste; Bildende und angewandte Kunst",
+    "source" : {
+      "id" : "http://d-nb.info/gnd/4149423-4",
+      "label" : "Dewey-Dezimalklassifikation"
+    }
   }, {
     "componentList" : [ {
-      "id" : "http://d-nb.info/gnd/4011889-7",
-      "label" : "Deutschland, Bundesrepublik",
+      "id" : "http://d-nb.info/gnd/4013255-9",
+      "label" : "DÃ¼sseldorf",
+      "source" : {
+        "id" : "http://d-nb.info/gnd/7749153-1",
+        "label" : "Gemeinsame Normdatei (GND)"
+      },
+      "type" : [ "PlaceOrGeographicName" ]
+    }, {
+      "id" : "http://d-nb.info/gnd/4031483-2",
+      "label" : "KÃ¶ln",
+      "source" : {
+        "id" : "http://d-nb.info/gnd/7749153-1",
+        "label" : "Gemeinsame Normdatei (GND)"
+      },
       "type" : [ "PlaceOrGeographicName" ]
     }, {
       "id" : "http://d-nb.info/gnd/4076259-2",
       "label" : "Pop-Art",
+      "source" : {
+        "id" : "http://d-nb.info/gnd/7749153-1",
+        "label" : "Gemeinsame Normdatei (GND)"
+      },
       "type" : [ "SubjectHeading" ]
     }, {
       "label" : "Geschichte 1959-1972",
@@ -188,17 +201,35 @@
     } ],
     "type" : [ "ComplexSubject" ]
   }, {
+    "id" : "http://purl.org/lobid/nwbib#s842000",
+    "label" : "Kunstgeschichte",
+    "source" : {
+      "id" : "http://purl.org/lobid/nwbib",
+      "label" : "Sachsystematik der Nordrhein-Westfälischen Bibliographie"
+    }
+  }, {
+    "id" : "http://purl.org/lobid/nwbib#s841060",
+    "label" : "Kunstausstellungen",
+    "source" : {
+      "id" : "http://purl.org/lobid/nwbib",
+      "label" : "Sachsystematik der Nordrhein-Westfälischen Bibliographie"
+    }
+  }, {
     "componentList" : [ {
-      "id" : "http://d-nb.info/gnd/4013255-9",
-      "label" : "DÃ¼sseldorf",
-      "type" : [ "PlaceOrGeographicName" ]
-    }, {
-      "id" : "http://d-nb.info/gnd/4031483-2",
-      "label" : "KÃ¶ln",
+      "id" : "http://d-nb.info/gnd/4011889-7",
+      "label" : "Deutschland, Bundesrepublik",
+      "source" : {
+        "id" : "http://d-nb.info/gnd/7749153-1",
+        "label" : "Gemeinsame Normdatei (GND)"
+      },
       "type" : [ "PlaceOrGeographicName" ]
     }, {
       "id" : "http://d-nb.info/gnd/4076259-2",
       "label" : "Pop-Art",
+      "source" : {
+        "id" : "http://d-nb.info/gnd/7749153-1",
+        "label" : "Gemeinsame Normdatei (GND)"
+      },
       "type" : [ "SubjectHeading" ]
     }, {
       "label" : "Geschichte 1959-1972",

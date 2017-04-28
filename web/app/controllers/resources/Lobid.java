@@ -11,8 +11,10 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Spliterators;
 import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.elasticsearch.action.search.SearchRequestBuilder;
@@ -150,11 +152,14 @@ public class Lobid {
 
 	private static String findSubjectLabelForUriInResponse(String uri,
 			SearchResponse response) {
-		Object subjects = response.getHits().getAt(0).getSource().get("subject");
-		@SuppressWarnings("unchecked") // subjects: always array of JSON objects
-		String label = ((List<HashMap<String, Object>>) subjects).stream()
-				.filter((s) -> s.containsKey("id") && s.get("id").equals(uri))
-				.findFirst().map((s) -> s.get("label").toString()).orElse(uri);
+		List<JsonNode> complexSubjects =
+				Json.toJson(response.getHits().getAt(0).getSource())
+						.findValues("componentList");
+		String label = complexSubjects.stream()
+				.flatMap((complexSubject) -> StreamSupport.stream(
+						Spliterators.spliteratorUnknownSize(complexSubject.elements(), 0), false))
+				.filter((s) -> s.has("id") && s.get("id").textValue().equals(uri))
+				.findFirst().map((s) -> s.get("label").textValue()).orElse(uri);
 		return label;
 	}
 

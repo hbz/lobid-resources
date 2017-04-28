@@ -1,9 +1,5 @@
 {
   "@context" : "http://lobid.org/resources/context.jsonld",
-  "collectedBy" : [ {
-    "id" : "http://lobid.org/resources/NWBib",
-    "label" : "Nordrhein-Westfälische Bibliographie"
-  } ],
   "contribution" : [ {
     "agent" : {
       "altLabel" : [ "Adenauer, Konrad Hermann Joseph", "Adenauer, ..." ],
@@ -11,6 +7,10 @@
       "dateOfDeath" : "1967",
       "id" : "http://d-nb.info/gnd/11850066X",
       "label" : "Adenauer, Konrad",
+      "source" : {
+        "id" : "http://d-nb.info/gnd/7749153-1",
+        "label" : "Gemeinsame Normdatei (GND)"
+      },
       "type" : [ "Person" ]
     },
     "role" : {
@@ -74,6 +74,10 @@
   } ],
   "hbzId" : "HT015891797",
   "id" : "http://lobid.org/resources/HT015891797#!",
+  "inCollection" : [ {
+    "id" : "http://lobid.org/resources/HT014176012#!",
+    "label" : "Nordrhein-Westfälische Bibliographie (NWBib)"
+  } ],
   "isPartOf" : [ {
     "id" : "http://lobid.org/resources/HT015845132#!",
     "label" : "lobid Ressource"
@@ -96,21 +100,28 @@
     "type" : [ "PublicationEvent" ]
   } ],
   "responsibilityStatement" : [ "Adenauer. Bearb. von Hans Peter Mensing" ],
-  "rpbSubject" : [ {
-    "id" : "https://w3id.org/lobid/rpb2#n610",
-    "label" : "Politik"
-  } ],
   "sameAs" : [ {
     "id" : "http://hub.culturegraph.org/resource/HBZ-HT015891797",
     "label" : "Culturegraph Ressource"
   } ],
   "subject" : [ {
+    "id" : "https://w3id.org/lobid/rpb2#n610",
+    "label" : "Politik",
+    "source" : {
+      "id" : "https://w3id.org/lobid/rpb2",
+      "label" : "RPB-Sachgruppen und Zusätze"
+    }
+  }, {
     "componentList" : [ {
       "altLabel" : [ "Adenauer, Konrad Hermann Joseph", "Adenauer, ..." ],
       "dateOfBirth" : "1876",
       "dateOfDeath" : "1967",
       "id" : "http://d-nb.info/gnd/11850066X",
       "label" : "Adenauer, Konrad",
+      "source" : {
+        "id" : "http://d-nb.info/gnd/7749153-1",
+        "label" : "Gemeinsame Normdatei (GND)"
+      },
       "type" : [ "Person" ]
     }, {
       "label" : "Geschichte 1963-1967",

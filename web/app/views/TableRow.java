@@ -128,7 +128,9 @@ public enum TableRow {
 			if (doc != null) {
 				result
 						.add(doc.get(keys.get(0)).iterator().next().get("id").textValue());
-				result.add(doc.get(keys.get(1)).textValue());
+				JsonNode val = doc.get(keys.get(1));
+				if (val != null)
+					result.add(val.textValue());
 			}
 			return result.isEmpty() ? Arrays.asList(value) : result;
 		}
