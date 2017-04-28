@@ -223,12 +223,7 @@
 		<!-- ####################### -->
 		<!-- ####### Child, link to parent and vice versa, e.g. HT000009600 -->
 		<!-- ####################### -->
-		<data source="4[56789]3[-abr][-12].a" name="@idTitleSeries"/>
 		<data source="529z1.9" name="@supplement"/>
-		<data source="010-1.a|@idTitleSeries" name="@isPartOfHbzId">
-			<regexp match="(.*)" format="$[ns-lobid-resource]${1}#!"/>
-			<sanitizeUrl></sanitizeUrl>
-		</data>
 		<!-- ####################### -->
 		<!-- ####### Set owl:sameAs -->
 		<!-- ####################### -->
@@ -1230,10 +1225,7 @@
 		<!-- ################ koerperschaften and persons -->
 		<!-- ####################### -->
 		<!-- contributors with roles @TODO many roles needs tests -->
-		<!-- <data source="1??b[1234].b|8[012]?[-mn][-12].b" name="@marcrelName"/> -->
-		<data
-			source="1[02468][048]?[12].[b4]|1[13579][26]?[12].[b4]|2[02468][048]?[12].4|2[13579][26]?[12].4"
-			name="@marcrelName"/>
+		<data source="1[02468][048]?[12].[b4]|1[13579][26]?[12].[b4]|2[02468][048]?[12].4|2[13579][26]?[12].4" name="@marcrelName"/>
 		<!-- id of contributor (which is not a creator) -->
 		<data source="1??[bcefp][1234].9" name="@contributorPersonId">
 			<regexp match="\(DE-588\)(.*)" format="http://d-nb.info/gnd/${1}"/>
@@ -1871,7 +1863,7 @@
 			<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="${isPartOfLiteral}">
 				<if>
 					<none>
-						<data source="@isPartOfHbzId"/>
+						<data source="4[56789]3[-abr][-12].a"/>
 					</none>
 				</if>
 				<data source="4[56789]1[-ab]1.a" name="isPartOfLiteral">
@@ -1881,7 +1873,7 @@
 		</entity>
 		<entity name="http://purl.org/lobid/lv#inSeries" flushWith="4[56789]3[-ab]1.a"
 			reset="true">
-			<data source="@idTitleSeries" name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type">
+			<data source="4[56789]3[-abr][-12].a" name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type">
 				<regexp match=".*" format="$[ns-lobid-vocab]SeriesRelation"/>
 			</data>
 			<combine name="$[ns-lobid-vocab]series" value="$[ns-lobid-resource]${a}#!">
