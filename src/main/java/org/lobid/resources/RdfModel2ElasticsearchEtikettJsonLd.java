@@ -33,8 +33,8 @@ import de.hbz.lobid.helper.JsonConverter;
 
 /**
  * Converts a jena model to JSON-LD document(s) consumable by elasticsearch.
- * Every node in the graph will be a document on its own, except when this is
- * declared otherwise (-> keep node).
+ * Only item nodes in the graph will become a document on their own, redundantly
+ * kept part of the main node.
  * 
  * @author Fabian Steeg (fsteeg)
  * @author Pascal Christoph (dr0i)
@@ -87,10 +87,10 @@ public final class RdfModel2ElasticsearchEtikettJsonLd
 	@Override
 	public void process(final Model originModel) {
 		mainNodeId = null;
-		splitModel2ItemAndResourceModel(originModel);
+		extractItemFromResourceModel(originModel);
 	}
 
-	private void splitModel2ItemAndResourceModel(final Model originalModel) {
+	private void extractItemFromResourceModel(final Model originalModel) {
 		Model copyOfOriginalModel =
 				ModelFactory.createModelForGraph(originalModel.getGraph());
 		final ResIterator subjectsIterator = originalModel.listSubjects();
@@ -98,19 +98,17 @@ public final class RdfModel2ElasticsearchEtikettJsonLd
 		while (subjectsIterator.hasNext()) {
 			final Resource subjectResource = subjectsIterator.next();
 			Model submodel = ModelFactory.createDefaultModel();
-			// only extract sub nodes we don't want to keep in the main model
+			// extract sub nodes (items) => will become documents on their own
 			if (subjectResource.isURIResource()) {
 				if (subjectResource.getURI().startsWith(LOBID_ITEM_URI_PREFIX)) {
 					submodel = extractSubmodel(submodel, subjectResource);
 					toJson(submodel,
 							subjectResource.getURI().toString().replaceAll("#!$", ""));
-					// remove the newly created sub model from the main node
-					copyOfOriginalModel.remove(submodel);
 				} else if (mainNodeId == null && INTERNAL_ID_PATTERN
 						.matcher(subjectResource.getURI().toString()).matches())
 					setMainNodeId(subjectResource);
 			}
-		} // the main node (with its kept sub node)
+		} // the main node with all the sub nodes (items)
 		toJson(copyOfOriginalModel, mainNodeId);
 	}
 
@@ -151,7 +149,7 @@ public final class RdfModel2ElasticsearchEtikettJsonLd
 			RDFDataMgr.write(out, model, org.apache.jena.riot.RDFFormat.NTRIPLES);
 			Map<String, Object> jsonMap =
 					jc.convertLobidData(new ByteArrayInputStream(out.toByteArray()),
-							org.openrdf.rio.RDFFormat.NTRIPLES, "http://lobid.org",
+							org.openrdf.rio.RDFFormat.NTRIPLES, id,
 							RdfModel2ElasticsearchEtikettJsonLd.JSONLD_CONTEXT);
 			getReceiver().process(addInternalProperties(new HashMap<String, String>(),
 					id, JsonConverter.getObjectMapper().writeValueAsString(jsonMap)));
