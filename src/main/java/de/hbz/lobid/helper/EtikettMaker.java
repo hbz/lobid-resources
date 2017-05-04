@@ -226,12 +226,12 @@ public class EtikettMaker implements EtikettMakerInterface {
 		Map<String, Object> pmap;
 		Map<String, Object> cmap = new HashMap<>();
 		for (Etikett l : labels) {
-			if ("class".equals(l.referenceType) || l.referenceType == null
+			if ((l.referenceType != null && "class".equals(l.referenceType))
 					|| l.name == null)
 				continue;
 			pmap = new HashMap<>();
 			pmap.put("@id", l.uri);
-			if (!"String".equals(l.referenceType)) {
+			if (l.referenceType != null && !"String".equals(l.referenceType)) {
 				pmap.put("@type", l.referenceType);
 			}
 			if (l.container != null) {
