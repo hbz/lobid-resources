@@ -104,12 +104,27 @@ public final class RdfModel2ElasticsearchEtikettJsonLd
 					submodel = extractSubmodel(submodel, subjectResource);
 					toJson(submodel,
 							subjectResource.getURI().toString().replaceAll("#!$", ""));
+					// remove some properties from that item which clings to the main node
+					removeProperty(copyOfOriginalModel, subjectResource, "itemOf");
+					removeProperty(copyOfOriginalModel, subjectResource, "describedby");
 				} else if (mainNodeId == null && INTERNAL_ID_PATTERN
 						.matcher(subjectResource.getURI().toString()).matches())
 					setMainNodeId(subjectResource);
 			}
 		} // the main node with all the sub nodes (items)
 		toJson(copyOfOriginalModel, mainNodeId);
+	}
+
+	private static void removeProperty(Model model, Resource subjectResource,
+			String propertyName) {
+		StmtIterator stmtIt = subjectResource.listProperties();
+		while (stmtIt.hasNext()) {
+			Statement stmt = stmtIt.nextStatement();
+			if (stmt.getPredicate().getLocalName().equals(propertyName)) {
+				model.remove(stmt);
+				break;
+			}
+		}
 	}
 
 	private static Model extractSubmodel(Model submodel,
