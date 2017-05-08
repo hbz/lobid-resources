@@ -135,7 +135,7 @@ public class TestJsonToRdfConversion {
 	void compare(String jsonFilename, String rdfFilename)
 			throws FileNotFoundException, IOException {
 		String actualRdfString = null;
-		logger.info("Compare: " + jsonFilename + " " + rdfFilename);
+		logger.debug("Compare: " + jsonFilename + " " + rdfFilename);
 		actualRdfString = getActual(jsonFilename);
 		if (debugRun && !new File(rdfFilename).exists())
 			makeFile(actualRdfString, rdfFilename);
