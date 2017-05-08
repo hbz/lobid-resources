@@ -57,9 +57,6 @@
                   }
                }
             },
-            "extent" : {
-               "type" : "string"
-            },
             "type" : {
                "analyzer" : "id_analyzer",
                "type" : "string"
@@ -69,14 +66,6 @@
                   "label" : {
                      "type" : "string"
                   },
-                  "id" : {
-                     "type" : "string",
-                     "index" : "not_analyzed"
-                  }
-               }
-            },
-            "hasItem" : {
-               "properties" : {
                   "id" : {
                      "type" : "string",
                      "index" : "not_analyzed"
@@ -100,14 +89,6 @@
             },
             "note" : {
                "type" : "string"
-            },
-            "owner" : {
-               "properties" : {
-                  "id" : {
-                     "type" : "string",
-                     "index" : "not_analyzed"
-                  }
-               }
             },
             "callNumber" : {
                "index" : "not_analyzed",
@@ -325,11 +306,30 @@
             },
             "hasItem" : {
                "properties" : {
-                  "id" : {
-                     "index" : "not_analyzed",
+                  "type" : {
+                     "analyzer" : "id_analyzer",
                      "type" : "string"
                   },
-                  "label" : {
+                  "id" : {
+                     "type" : "string",
+                     "index" : "not_analyzed"
+                  },
+                  "heldBy" : {
+                     "properties" : {
+                        "label" : {
+                           "type" : "string"
+                        },
+                        "id" : {
+                           "index" : "not_analyzed",
+                           "type" : "string"
+                        }
+                     }
+                  },
+                  "note" : {
+                     "type" : "string"
+                  },
+                  "callNumber" : {
+                     "index" : "not_analyzed",
                      "type" : "string"
                   }
                }
