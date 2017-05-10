@@ -237,9 +237,6 @@
 		<data source="@id" name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type">
 			<regexp match=".*" format="http://purl.org/dc/terms/BibliographicResource"/>
 		</data>
-		<data source="025z[2].a" name="@dctIsPartOf">
-			<regexp match="(.*)" format="$[ns-zdb-services]${1}"/>
-		</data>
 		<data source="025o[-12].a" name="@oclcNumber"/>
 		<data source="@oclcNumber" name="http://www.w3.org/2002/07/owl#sameAs">
 			<regexp match="(.*)" format="http://worldcat.org/oclc/${1}"/>
@@ -545,7 +542,7 @@
 			</data>
 		</combine>
 		<!-- set default type -->
-		<combine name="@rdftype" value="$[ns-lobid-vocab]Miscellaneous" flushWith="record">
+		<combine name="@miscellaneous" value="$[ns-lobid-vocab]Miscellaneous" flushWith="record">
 			<if>
 				<none>
 					<data source="@rdftype"/>
@@ -554,7 +551,39 @@
 			</if>
 			<data source="@id"/>
 		</combine>
-		<!-- <combine value="${a}" name=""> <data source="@frequency" name="a"/> </combine> -->
+		<data source="@miscellaneous" name="@rdftype"/>
+		<combine name="@hasZDBLinkAndIsNoJournalNewspaperOrNondefinedStuff" value="abc">
+			<if>
+				<none>
+					<data source="052.">
+						<!-- <regexp match="^[jp].*|^.il.*|^...il.*|^.....il.*"/> -->
+						<regexp match="^[p].*|^.il.*|^...il.*|^.....il.*"/>
+					</data>
+					<data source="052.">
+						<regexp match="^z|^.[ae]o|^...[ae]o|^.....[ae]o"/>
+					</data>
+					<data source="052.">
+						<regexp match="^z|^.[url]p|^...[url]p|^.....[url]p"/>
+					</data>
+					<data source="@miscellaneous"/>
+				</none>
+			</if>
+			<data source="025z[2].a"/>
+		</combine>
+		<combine name="@dctIsPartOf" value="${a}">
+			<if>
+				<none>
+					<data source="540[-ab][-1].[ab]"/>
+					<data source="052.">
+						<regexp match="^........[agh]|^.........[agh]|^..........[agh]"/>
+					</data>
+					<data source="@hasZDBLinkAndIsNoJournalNewspaperOrNondefinedStuff"/>
+				</none>
+			</if>
+			<data source="025z[2].a" name="a">
+				<regexp match="(.*)" format="$[ns-zdb-services]${1}"/>
+			</data>
+		</combine>
 		<!-- ####################### -->
 		<!-- ########## title -->
 		<!-- ####################### -->
@@ -1884,6 +1913,72 @@
 				<regexp match=".*;(.*)" format="${1}"/>
 				<trim></trim>
 			</data>
+		</entity>
+		<!-- zdb resources with ISBNs are series because journals don't have them -->
+		<entity name="http://purl.org/lobid/lv#inSeries" flushWith="025z[12].a|540[-ab][-1].[ab]" reset="true">
+			<combine name="$[ns-lobid-vocab]series" value="$[ns-zdb-services]${a}">
+				<data source="540[-ab][-1].[ab]"/>
+				<data source="025z[12].a" name="a"/>
+			</combine>
+			<combine name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" 
+				value="$[ns-lobid-vocab]SeriesRelation" flushWith="540[-ab][-1].[ab]">
+				<data source="025z[12].a"/>
+			</combine>
+		</entity>
+		<entity name="http://purl.org/lobid/lv#inSeries">
+			<combine name="$[ns-lobid-vocab]series" value="$[ns-zdb-services]${a}">
+				<!-- add zdb-links for every resource which is no journal or newspaper -->
+				<if>
+					<none>
+						<data source="052.">
+							<!-- <regexp match="^[jp].*|^.il.*|^...il.*|^.....il.*"/> -->
+							<regexp match="^[p].*|^.il.*|^...il.*|^.....il.*"/>
+						</data>
+						<data source="052.">
+							<regexp match="^z|^.[ae]o|^...[ae]o|^.....[ae]o"/>
+						</data>
+						<data source="052.">
+							<regexp match="^z|^.[url]p|^...[url]p|^.....[url]p"/>
+						</data>
+						<data source="@miscellaneous"/>
+					</none>
+				</if>
+				<data source="025z[12].a" name="a"/>
+			</combine>
+			<combine name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" 
+				value="$[ns-lobid-vocab]SeriesRelation">
+				<if>
+					<none>
+						<data source="052.">
+							<!-- <regexp match="^[jp].*|^.il.*|^...il.*|^.....il.*"/> -->
+							<regexp match="^[p].*|^.il.*|^...il.*|^.....il.*"/>
+						</data>
+						<data source="052.">
+							<regexp match="^z|^.[ae]o|^...[ae]o|^.....[ae]o"/>
+						</data>
+						<data source="052.">
+							<regexp match="^z|^.[url]p|^...[url]p|^.....[url]p"/>
+						</data>
+						<data source="@miscellaneous"/>
+					</none>
+				</if>
+				<data source="025z[12].a"/>
+			</combine>
+		</entity>
+		<!-- "zeitschriftenartige Reihen" / journal-like series (German librarian term) -->
+		<entity name="http://purl.org/lobid/lv#inSeries" flushWith="025z[12].a|052.">
+			<combine name="$[ns-lobid-vocab]series" value="$[ns-zdb-services]${a}">
+				<data source="052.">
+					<regexp match="^........[agh]|^.........[agh]|^..........[agh]"/>
+				</data>
+				<data source="025z[12].a" name="a"/>
+			</combine>
+			<combine name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" 
+				value="$[ns-lobid-vocab]SeriesRelation" flushWith="052.">
+				<data source="052.">
+					<regexp match="^........[agh]|^.........[agh]|^..........[agh]"/>
+				</data>
+			</combine>
 		</entity>
 		<combine name="http://purl.org/dc/terms/isPartOf" value="${a}">
 			<data source="@dctIsPartOf" name="a">
