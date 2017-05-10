@@ -27,7 +27,7 @@
       <h1>@((doc\\"title")(0).asOpt[String].getOrElse(q))</h1>
       <div class="row" id="search-results">
       @defining(Lobid.items(doc.toString)) { items =>
-        @defining(!(doc\\"isPartOf").isEmpty && doc.toString.contains("http://purl.org/ontology/bibo/Article")){superordination =>
+        @defining(!(doc\\"isPartOf").isEmpty && (doc\"type").toString.contains("Article")){superordination =>
           <div class="col-md-@if(items.isEmpty && !doc.toString.contains("fulltextOnline") && !superordination){12} else {8}">
             <dl>
             @defining((doc\\"hbzId")(0).asOpt[String].getOrElse(q)){ id =>

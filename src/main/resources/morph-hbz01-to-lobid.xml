@@ -201,7 +201,7 @@
 		<combine name="~rdf:subject" value="$[ns-lobid-resource]${id}#!">
 			<data source="@id" name="id"/>
 		</combine>
-		<!-- ZDB id & collectedBy-->
+		<!-- ZDB id & collectedBy -->
 		<data source="025z[-1].a" name="@idzdb"/>
 		<!-- ####################### -->
 		<!-- ####### hbz ID sameAs ZDB ID -->
@@ -958,11 +958,12 @@
 			<data source="@itemId"/>
 			<data source="088 ?.b" name="a"/>
 		</combine>
-		<combine name="http://purl.org/lobid/lv#callNumber" value="${signature}"
-			sameEntity="true">
+		<combine name="@signature" value="${signature}" sameEntity="true">
 			<data source="@itemId"/>
 			<data source="088 ?.c" name="signature"/>
 		</combine>
+		<data source="@signature" name="http://purl.org/lobid/lv#callNumber"/>
+		<data source="@signature" name="http://www.w3.org/2000/01/rdf-schema#label"/>
 		<!-- provenance -->
 		<!-- <combine name="~rdf:subject" value="${itemId}/about"> <data source="@itemId" name="itemId"> 
 			<regexp match="(.*)" format="${1}"/> </data> </combine> <data source="@itemId" name="http://vocab.deri.ie/void#inDataset"> 
