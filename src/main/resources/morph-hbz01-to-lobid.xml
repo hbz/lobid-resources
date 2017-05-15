@@ -874,8 +874,13 @@
 		<!-- ####################### -->
 		<!-- ################ edition -->
 		<!-- ####################### -->
-		<data source="40[03]-1.[an]" name="$[ns-bibo]edition"/>
-		<data source="510-1.a" name="$[ns-bibo]edition"/>
+		<combine name="$[ns-bibo]edition" value="${a}">
+			<choose name="a">
+				<data source="400-1.[an]"/>
+				<data source="403-1.[an]"/>
+				<data source="510-1.a"/>
+			</choose>
+		</combine>
 		<!-- ################ Hochschulschriftenvermerk aka thesisInformation -->
 		<concat delimiter=", " name="http://rdaregistry.info/Elements/u/P60489">
 			<data source="519-1.[ap]"/>
