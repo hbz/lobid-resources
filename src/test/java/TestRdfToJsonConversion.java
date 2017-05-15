@@ -56,7 +56,7 @@ import de.hbz.lobid.helper.JsonConverter;
  *
  */
 public class TestRdfToJsonConversion {
-	private static boolean generateTestData = false;
+	private static boolean generateTestData;
 	private EtikettMakerInterface etikettMaker =
 			new EtikettMaker(new File(Thread.currentThread().getContextClassLoader()
 					.getResource("labels").getFile()));
@@ -138,7 +138,7 @@ public class TestRdfToJsonConversion {
 				"src/test/resources/hbz01.es.wrongContributorOrder.json",
 				LOBID_RESOURCES_URI_PREFIX, false, etikettMaker);
 		TestRdfToJsonConversion.logger
-				.info("\n WrongContributorOrder (Test - must fail!). " + (testSuccess
+				.debug("\n WrongContributorOrder (Test - must fail!). " + (testSuccess
 						? "Douh, test didn't failed :(" : "Success because test failed :)")
 						+ "\n");
 		org.junit.Assert.assertTrue(generateTestData || allTestsSuccessful);
@@ -150,7 +150,7 @@ public class TestRdfToJsonConversion {
 		Map<String, Object> expected = null;
 		Map<String, Object> actual = null;
 		TestRdfToJsonConversion.logger
-				.info("Convert " + fnameNtriples + " to " + fnameJson);
+				.debug("Convert " + fnameNtriples + " to " + fnameJson);
 		boolean testResult = false;
 		try (InputStream in = new FileInputStream(new File(fnameNtriples));
 				InputStream out = new File(fnameJson).exists()
@@ -162,7 +162,7 @@ public class TestRdfToJsonConversion {
 			TestRdfToJsonConversion.logger
 					.debug(new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT)
 							.writeValueAsString(actual));
-			TestRdfToJsonConversion.logger.info(
+			TestRdfToJsonConversion.logger.debug(
 					"Begin comparing files: " + fnameNtriples + " against " + fnameJson);
 			expected = new ObjectMapper().readValue(out, Map.class);
 			testResult = new CompareJsonMaps().writeFileAndTestJson(

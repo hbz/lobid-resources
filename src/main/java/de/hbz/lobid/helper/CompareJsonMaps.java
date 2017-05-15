@@ -96,7 +96,7 @@ public final class CompareJsonMaps {
 			actualMap.forEach((key, val) -> CompareJsonMaps.logger
 					.warn("KEY=" + key + " VALUE=" + val));
 		} else
-			CompareJsonMaps.logger.info("Succeeded - resources are equal");
+			CompareJsonMaps.logger.debug("Succeeded - resources are equal");
 		return actualMap.size() == 0;
 	}
 

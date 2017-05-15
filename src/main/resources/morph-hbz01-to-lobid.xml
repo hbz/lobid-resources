@@ -1226,7 +1226,9 @@
 		<!-- ################ koerperschaften and persons -->
 		<!-- ####################### -->
 		<!-- contributors with roles @TODO many roles needs tests -->
-		<data source="1[02468][048]?[12].[b4]|1[13579][26]?[12].[b4]|2[02468][048]?[12].4|2[13579][26]?[12].4" name="@marcrelName"/>
+		<data
+			source="1[02468][048]?[12].[b4]|1[13579][26]?[12].[b4]|2[02468][048]?[12].4|2[13579][26]?[12].4"
+			name="@marcrelName"/>
 		<!-- id of contributor (which is not a creator) -->
 		<data source="1??[bcefp][1234].9" name="@contributorPersonId">
 			<regexp match="\(DE-588\)(.*)" format="http://d-nb.info/gnd/${1}"/>
@@ -1436,6 +1438,7 @@
 			<data source="@preferredNamePersonConcatSubject"/>
 			<data source="@nameOfSubjectCorporateBody"/>
 			<data source="@preferredNameConcatSubject"/>
+			<data source="9[01234][27]-[-12].t"/>
 		</choose>
 		<choose name="@preferredName" flushWith="@contributorPersonBnodeOrId|@contributorCorporateBodyBnodeOrId"
 			sameEntity="true">
