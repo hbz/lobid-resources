@@ -1895,6 +1895,13 @@
 				<regexp match=".*" format="$[ns-lobid-vocab]IsPartOfRelation"/>
 			</data>
 		</entity>
+		<data source="@dctIsPartOf" name="~rdf:subject"/>
+		<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="Zeitschriftendatenbank (ZDB)">
+			<data source="@dctIsPartOf"/>
+		</combine>
+		<combine name="~rdf:subject" value="$[ns-lobid-resource]${subject}#!" flushWith="@dctIsPartOf">
+			<data source="@id" name="subject"/>
+		</combine>
 		<!-- ####################### -->
 		<!-- ########## classification -->
 		<!-- ####################### -->
