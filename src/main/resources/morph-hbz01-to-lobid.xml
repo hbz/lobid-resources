@@ -1795,13 +1795,14 @@
 			<sanitizeUrl></sanitizeUrl>
 		</data>
 		<!-- rdf:seeAlso if 655 AND first three letter "Zusätzliche Angaben" -->
-		<combine name="http://www.w3.org/2000/01/rdf-schema#seeAlso" value="${seeAlsoUri}">
+		<combine name="http://www.w3.org/2000/01/rdf-schema#seeAlso" value="${seeAlsoUri}"
+			sameEntity="true">
 			<data source="655[-eu][ -1].[x3]">
 				<regexp match="^[Z][u][s]"/>
 			</data>
 			<data source="@linkUri" name="seeAlsoUri"/>
 		</combine>
-		<!-- rdf:seeAlso if 655 AND_NOT fulltextOnline -->
+		<!-- rdf:seeAlso if 655 AND_NOT fulltextOnline, toc or desc -->
 		<combine name="http://www.w3.org/2000/01/rdf-schema#seeAlso" value="${seeAlsoUri}">
 			<if>
 				<none>
