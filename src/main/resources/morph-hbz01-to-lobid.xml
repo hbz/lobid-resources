@@ -1996,6 +1996,21 @@
 		<data source="@edoweb" name="http://purl.org/lobid/lv#inCollection">
 			<regexp match=".*" format="$[ns-lobid-resource]HT016925914#!"/>
 		</data>
+		<!-- Fachrepositorium Lebenswissenschaften -->
+		<combine name="@ellinet" value="${a}">
+			<data source="078r1.a" name="a">
+				<regexp match="ellinet"/>
+			</data>
+		</combine>
+		<combine name="http://purl.org/lobid/lv#inCollection" value="http://repository.publisso.de">
+			<data source="@ellinet"/>
+		</combine>
+		<combine name="~rdf:subject" value="http://repository.publisso.de">
+			<data source="@ellinet"/>
+		</combine>
+		<data source="078r1.a" name="http://www.w3.org/2000/01/rdf-schema#label">
+			<regexp match="ellinet" format="Fachrepositorium Lebenswissenschaften"/>
+		</data>
 		<!--rheinland pfalz -->
 		<data source="700l[-1].a" name="@rpb2Subject">
 			<regexp match="^(\d{3})$" format="https://w3id.org/lobid/rpb2#n${1}"/>
