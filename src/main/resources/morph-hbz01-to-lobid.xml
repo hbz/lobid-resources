@@ -1862,6 +1862,36 @@
 			</if>
 			<data source="@linkUri" name="seeAlsoUri"/>
 		</combine>
+		<!-- Set label for DOIs -->
+		<combine name="~rdf:subject" value="${a}">
+			<data source="@fulltextOnlineUri" name="a">
+				<regexp match="(.*)dx.doi.org(.*)"/>
+			</data>
+		</combine>
+		<combine name="http://www.w3.org/2000/01/rdf-schema#label"
+			value="Digital Object Identifier (DOI)-Link" sameEntity="true">
+			<data source="@fulltextOnlineUri">
+				<regexp match="dx.doi.org"/>
+			</data>
+		</combine>
+		<combine name="~rdf:subject" value="$[ns-lobid-resource]${subject}#!" flushWith="@fulltextOnlineUri">
+			<data source="@id" name="subject"/>
+		</combine>
+		<!-- Set label for URNs -->
+		<combine name="~rdf:subject" value="${a}">
+			<data source="@fulltextOnlineUri" name="a">
+				<regexp match="http:\/\/nbn-resolving.de\/urn:nbn:de(.*)"/>
+			</data>
+		</combine>
+		<combine name="http://www.w3.org/2000/01/rdf-schema#label"
+			value="Uniform Resource Name (URN)-Link" sameEntity="true">
+			<data source="@fulltextOnlineUri">
+				<regexp match="http:\/\/nbn-resolving.de\/urn:nbn:de(.*)"/>
+			</data>
+		</combine>
+		<combine name="~rdf:subject" value="$[ns-lobid-resource]${subject}#!" flushWith="@fulltextOnlineUri">
+			<data source="@id" name="subject"/>
+		</combine>
 		<!-- link to table of content (toc) -->
 		<combine name="@toc" value="${uri}" sameEntity="true">
 			<data source="655[-eu][ -1].[x3]">
