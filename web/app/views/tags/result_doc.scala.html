@@ -119,11 +119,9 @@
   @result_field("In", "containedIn", doc, TableRow.LINKS)
   @result_field("Erscheinungsweise", "frequency", doc, TableRow.VALUES)
 
-  @lobid2_part_of("inSeries", "series")
-  @lobid2_part_of("volumeIn", "multiVolumeWork")
+  @lobid2_part_of("isPartOf", "superordinate")
   @defining(lobidUrl((doc \ "hbzId").asOpt[String].getOrElse(""))){ id =>
-   @subordinated("volumeIn.multiVolumeWork.id", id, "Bände", ("zugehöriger Band", "zugehörige Bände"))
-   @subordinated("inSeries.series.id", id, "Serienbände", ("zugehöriger Serienband", "zugehörige Serienbände"))
+   @subordinated("isPartOf.superordinate.id", id, "Bände", ("zugehöriger Band", "zugehörige Bände"))
    @subordinated("containedIn.id", id, "Enthält", ("Beitrag", "Beiträge"))
   }
 
