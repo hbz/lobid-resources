@@ -16,6 +16,49 @@
 		<var name="ns-bibo" value="http://purl.org/ontology/bibo/"/>
 	</vars>
 	<macros>
+		<macro name="setRdfSubject">
+			<combine name="~rdf:subject" value="${a}">
+				<data source="$[field]" name="a">
+					<regexp match="(.*)" format="$[ns-lobid-resource]${1}#!"/>
+				</data>
+			</combine>
+		</macro>
+		<macro name="setLabelMAB451-491ToId">
+			<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="${a}" 
+				flushWith="$[field_1]">
+				<choose name="a" flushWith="$[field_1]">
+					<data source="$[field_2]" name="a">
+						<replace pattern="&lt;&lt;|&gt;&gt;|\[|\]" with=""/>
+						<regexp match="(.* ; [0-9].* [a-zA-Z]*$)" format="${1}"/>
+					</data>
+					<data source="$[field_2]" name="a">
+						<replace pattern="&lt;&lt;|&gt;&gt;|\[|\]" with=""/>
+						<regexp match="(.*) ; [0-9]$" format="${1}"/>
+					</data>
+					<data source="$[field_2]">
+						<replace pattern="&lt;&lt;|&gt;&gt;|\[|\]" with=""/>
+						<regexp match="(.*) ; (.*) [0-9]$" format="${1}"/>
+					</data>
+					<data source="$[field_2]">
+						<replace pattern="&lt;&lt;|&gt;&gt;|\[|\]" with=""/>
+						<regexp match="(.*) ; (.*)[0-9]$" format="${1}"/>
+					</data>
+					<data source="$[field_2]">
+						<replace pattern="&lt;&lt;|&gt;&gt;|\[|\]" with=""/>
+						<regexp match="(.*); [0-9]" format="${1}"/>
+					</data>
+					<data source="$[field_2]">
+						<replace pattern="&lt;&lt;|&gt;&gt;|\[|\]" with=""/>
+						<regexp match="(.*)[a-zA-Z]$"/>
+					</data>
+				</choose>
+			</combine>
+		</macro>
+		<macro name="setBackRdfSubject">
+			<combine name="~rdf:subject" value="$[ns-lobid-resource]${subject}#!" flushWith="$[field]">
+				<data source="@id" name="subject"/>
+			</combine>
+		</macro>
 		<macro name="subject-chain-name">
 			<combine name="@preferredNameSubjectChain$[field_1]" value="${a}${e}${d}${c}${perm}">
 				<concat delimiter="" name="a" flushWith="$[field_1]??|$[field_2]-1.a">
@@ -1895,6 +1938,10 @@
 				<sanitizeUrl></sanitizeUrl>
 			</data>
 		</combine>
+		<!-- set labels for ids from MAB 450s fields -->
+		<call-macro name="setRdfSubject" field="4[56789]3[-ab]1.a"/>
+		<call-macro name="setLabelMAB451-491ToId" field_1="4[56789]3[-ab]1.a" field_2="4[56789]1[-ab]1.a"/>
+		<call-macro name="setBackRdfSubject" field="4[56789]3[-ab]1.a"/>
 		<!-- ####################### -->
 		<!-- ########## classification -->
 		<!-- ####################### -->
