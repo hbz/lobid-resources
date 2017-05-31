@@ -1819,11 +1819,6 @@
 			</data>
 			<data source="655e[ -1].u" name="a"/>
 		</combine>
-		<combine name="@additionalRemarks" value="${a}">
-			<data source="655e[ -1].[x3]" name="a">
-				<regexp match="Zusätzliche"/>
-			</data>
-		</combine>
 		<!--first three chars of "Resolving System" or "Volltext" or "EZB" or "Archivierte Online 
 			Ressource " or "Online-Ausgabe" <=> @fulltextOnlineUri> -->
 		<combine name="@fulltextOnlineUri" value="${uri}" sameEntity="true">
@@ -1872,21 +1867,10 @@
 		<combine name="http://www.w3.org/2000/01/rdf-schema#seeAlso" value="${seeAlsoUri}"
 			sameEntity="true">
 			<data source="655[-eu][ -1].[x3]">
-				<regexp match="^[Z][u][s]"/>
+				<regexp match="^[zZ][uU][sS]"/>
 			</data>
 			<data source="@linkUri" name="seeAlsoUri"/>
-		</combine>
-		<!-- rdf:seeAlso if 655 AND_NOT fulltextOnline, toc or desc -->
-		<combine name="http://www.w3.org/2000/01/rdf-schema#seeAlso" value="${seeAlsoUri}">
-			<if>
-				<none>
-					<data source="@fulltextOnline"/>
-					<data source="@toc"/>
-					<data source="@desc"/>
-				</none>
-			</if>
-			<data source="@linkUri" name="seeAlsoUri"/>
-		</combine>
+		</combine>		
 		<!-- Set label for DOIs -->
 		<combine name="~rdf:subject" value="${a}">
 			<data source="@fulltextOnlineUri" name="a">
