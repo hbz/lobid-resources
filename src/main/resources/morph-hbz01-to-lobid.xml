@@ -1022,7 +1022,7 @@
 			<data source="@idVolume" name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type">
 				<regexp match=".*" format="$[ns-lobid-vocab]IsPartOfRelation"/>
 			</data>
-			<combine name="$[ns-lobid-vocab]superordinate" value="$[ns-lobid-resource]${a}#!">
+			<combine name="$[ns-lobid-vocab]hasSuperordinate" value="$[ns-lobid-resource]${a}#!">
 				<data source="@idVolume" name="a"/>
 			</combine>
 			<choose name="$[ns-lobid-vocab]numbering">
@@ -1877,7 +1877,7 @@
 			<data source="4[56789]3[-abr][-12].a" name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type">
 				<regexp match=".*" format="$[ns-lobid-vocab]IsPartOfRelation"/>
 			</data>
-			<combine name="$[ns-lobid-vocab]superordinate" value="$[ns-lobid-resource]${a}#!">
+			<combine name="$[ns-lobid-vocab]hasSuperordinate" value="$[ns-lobid-resource]${a}#!">
 				<data source="4[56789]3[-ab]1.a" name="a"/>
 			</combine>
 			<data source="4[56789]1[-ab]1.a" name="$[ns-lobid-vocab]numbering">
@@ -1886,7 +1886,7 @@
 			</data>
 		</entity>
 		<entity name="$[ns-lobid-vocab]isPartOf">
-			<combine name="$[ns-lobid-vocab]superordinate" value="${a}">
+			<combine name="$[ns-lobid-vocab]hasSuperordinate" value="${a}">
 				<data source="@dctIsPartOf" name="a">
 					<sanitizeUrl></sanitizeUrl>
 				</data>
