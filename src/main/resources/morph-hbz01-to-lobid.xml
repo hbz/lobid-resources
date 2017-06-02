@@ -59,50 +59,6 @@
 				<data source="@id" name="subject"/>
 			</combine>
 		</macro>
-		<macro name="subject-chain-name">
-			<combine name="@preferredNameSubjectChain$[field_1]" value="${a}${e}${d}${c}${perm}">
-				<concat delimiter="" name="a" flushWith="$[field_1]??|$[field_2]-1.a">
-					<data source="$[field_1]-[-12].[abfghkpskzx-]">
-						<replace pattern="^" with=", "/>
-					</data>
-					<data source="$[field_1]-[-12].n">
-						<replace pattern="^" with=", "/>
-					</data>
-					<concat delimiter="" name="e" flushWith="$[field_1]??">
-						<data source="$[field_1]-[-12].e">
-							<replace pattern="^" with=" "/>
-							<replace pattern="$" with=""/>
-						</data>
-						<concat delimiter="" name="d" flushWith="$[field_1]??">
-							<data source="$[field_1]-[-12].d">
-								<replace pattern="^" with=" ("/>
-								<replace pattern="$" with="), "/>
-							</data>
-						</concat>
-					</concat>
-					<concat delimiter="" name="c" flushWith="$[field_1]??">
-						<data source="$[field_1]-[-12].c">
-						</data>
-						<data source="$[field_1]-[-12].t">
-							<regexp match="(.*)" format=": ${1}"/>
-						</data>
-					</concat>
-					<data source="$[field_2]-1.a" name="perm">
-						<regexp match="(.*)" format="(${1})"/>
-					</data>
-				</concat>
-			</combine>
-		</macro>
-		<macro name="subject-chain-perm">
-			<combine name="@subjectChainPerm" value="${a}">
-				<concat delimiter=" | " name="a">
-					<data source="@preferredNameSubjectChain$[field]">
-						<replace pattern="^, " with=""/>
-						<replace pattern=", $" with=""/>
-					</data>
-				</concat>
-			</combine>
-		</macro>
 		<!-- prefer gnd subjects IDs to literals -->
 		<macro name="subjectRswkId">
 			<combine name="@complexSubjectRswkId$[field]" value="${a}" flushWith="$[field]-[-12]"
@@ -1672,36 +1628,6 @@
 			<data source="@subjectTopic"/>
 			<data source="@subjectMain"/>
 		</choose>
-		<!-- Schlagwortketten (aka "subject chains", with permutation number) - It's necessary to 
-			repeat the combines to fire correctly when dealing with multiple e.g. "902". Use macros to 
-			avoid duplication. Use gnd subjects literals, use even if link present/> -->
-		<call-macro name="subject-chain-name" field_1="902" field_2="903"/>
-		<call-macro name="subject-chain-perm" field="902"/>
-		<call-macro name="subject-chain-name" field_1="907" field_2="908"/>
-		<call-macro name="subject-chain-perm" field="907"/>
-		<call-macro name="subject-chain-name" field_1="912" field_2="913"/>
-		<call-macro name="subject-chain-perm" field="912"/>
-		<call-macro name="subject-chain-name" field_1="917" field_2="918"/>
-		<call-macro name="subject-chain-perm" field="917"/>
-		<call-macro name="subject-chain-name" field_1="922" field_2="923"/>
-		<call-macro name="subject-chain-perm" field="922"/>
-		<call-macro name="subject-chain-name" field_1="927" field_2="928"/>
-		<call-macro name="subject-chain-perm" field="927"/>
-		<call-macro name="subject-chain-name" field_1="932" field_2="933"/>
-		<call-macro name="subject-chain-perm" field="932"/>
-		<call-macro name="subject-chain-name" field_1="937" field_2="938"/>
-		<call-macro name="subject-chain-perm" field="937"/>
-		<call-macro name="subject-chain-name" field_1="942" field_2="943"/>
-		<call-macro name="subject-chain-perm" field="942"/>
-		<call-macro name="subject-chain-name" field_1="947" field_2="948"/>
-		<call-macro name="subject-chain-perm" field="947"/>
-		<data source="@subjectChainPerm" name="http://purl.org/lobid/lv#subjectChain">
-			<replace pattern="\) \| \(" with=","/>
-			<replace pattern=" \| \(" with=" \("/>
-			<replace pattern="&gt;&gt;" with=""/>
-			<replace pattern="&lt;&lt;" with=""/>
-			<replace pattern=", :" with=":"/>
-		</data>
 		<!-- Schlagwortketten (aka "subject chains", "complex subjects" ..). -->
 		<call-macro name="subjectRswkId" field="902"/>
 		<call-macro name="subjectRswkIdSetDctSubject" field="902"/>
