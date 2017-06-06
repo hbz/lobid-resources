@@ -204,7 +204,7 @@ public enum TableRow {
 	String[] refAndLabel(String property, String value,
 			Optional<List<String>> labels) {
 		if ((property.equals("containedIn") || property.equals("hasPart")
-				|| property.equals("isPartOf") || property.equals("superordinate"))
+				|| property.equals("isPartOf") || property.equals("hasSuperordinate"))
 				&& value.contains("lobid.org")) {
 			return new String[] {
 					value.replaceAll("lobid.org/resource/", "lobid.org/resources/"),

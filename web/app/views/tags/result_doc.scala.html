@@ -119,9 +119,9 @@
   @result_field("In", "containedIn", doc, TableRow.LINKS)
   @result_field("Erscheinungsweise", "frequency", doc, TableRow.VALUES)
 
-  @lobid2_part_of("isPartOf", "superordinate")
+  @lobid2_part_of("isPartOf", "hasSuperordinate")
   @defining(lobidUrl((doc \ "hbzId").asOpt[String].getOrElse(""))){ id =>
-   @subordinated("isPartOf.superordinate.id", id, "Bände", ("zugehöriger Band", "zugehörige Bände"))
+   @subordinated("isPartOf.hasSuperordinate.id", id, "Bände", ("zugehöriger Band", "zugehörige Bände"))
    @subordinated("containedIn.id", id, "Enthält", ("Beitrag", "Beiträge"))
   }
 
