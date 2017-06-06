@@ -26,10 +26,8 @@ public class RdfConverter {
 	@SuppressWarnings("javadoc")
 	public static enum RdfFormat {
 		RDF_XML("RDF/XML"), //
-		RDF_XML_ABBREV("RDF/XML-ABBREV"), //
 		N_TRIPLE("N-TRIPLE"), //
-		TURTLE("TURTLE"), //
-		N3("N3");
+		TURTLE("TURTLE");
 
 		private final String name;
 
