@@ -10,7 +10,7 @@
 }
 
 @sample_doc(hbzId: String, label: String) = {
-	<h5 id='@(label.toLowerCase)'><a href='@resources.routes.Application.show(hbzId, format="html")'>@label</a> <small><a href='#@(label.toLowerCase)'><span class='glyphicon glyphicon-link'></span></a></small></h5>
+	<h5 id='@(label.toLowerCase)'><a href='@resources.routes.Application.resource(hbzId, format="html")'>@label</a> <small><a href='#@(label.toLowerCase)'><span class='glyphicon glyphicon-link'></span></a></small></h5>
 	<pre><code>@(Json.prettyPrint(Json.parse(new controllers.resources.Index().getResource(hbzId).getResult().toString)))</code></pre>
 }
 
@@ -44,7 +44,7 @@ $('input.search-resources').autocomplete({
 	<h2 id='basics'>API-Grundlagen <small><a href='#basics'><span class='glyphicon glyphicon-link'></span></a></small></h2>
 
 	<dl>
-	@desc("HTTP GET", resources.routes.Application.show("HT018472857", format="json"))
+	@desc("HTTP GET", resources.routes.Application.resource("HT018472857", format="json"))
 	@desc("Suche über alle Felder", resources.routes.Application.query("kunst", format="json"))
 	@desc("Suche mit Paginierung", resources.routes.Application.query("kunst", from = 2, size = 2, format="json"))
 	@desc("Einschränkung auf Bestand in Bibliotheken", resources.routes.Application.query("kunst", owner = "DE-290,DE-294", format="json"))
@@ -66,14 +66,17 @@ $('input.search-resources').autocomplete({
 	<h2 id='content_types'>Inhaltstypen <small><a href='#content_types'><span class='glyphicon glyphicon-link'></span></a></small></h2>
 
 	<p>Standardmäßig liefert dieser Dienst strukturierte API-Antworten (als JSON):</p>
-	<p><code>curl http://lobid.org@resources.routes.Application.show("HT018472857")</code></p>
+	<p><code>curl http://lobid.org@resources.routes.Application.resource("HT018472857")</code></p>
 	<p>Er unterstützt Content-Negotiation über den Accept-Header für JSON (application/json), JSON lines (application/x-jsonlines) oder HTML (text/html):</p>
 	<p><code>curl --header "Accept: application/json" http://lobid.org@resources.routes.Application.query("kunst")</code></p>
 	<p><code>curl --header "Accept: application/x-jsonlines" http://lobid.org@resources.routes.Application.query("kunst") > kunst.jsonl</code></p>
 	<p>Der Query-Parameter "format" (Werte: html,json,bulk) kann verwendet werden, um den Accept-Header aufzuheben, z.B. zur Anzeige von JSON im Browser:</p>
-	<p><a href='@resources.routes.Application.show("HT018472857", format="json")'>@resources.routes.Application.show("HT018472857", format="json")</a></p>
+	<p><a href='@resources.routes.Application.resource("HT018472857", format="json")'>@resources.routes.Application.resource("HT018472857", format="json")</a></p>
+	<p>Der Wert des Format-Parameters kann für Einzeltreffer auch in URLs als Dateiendung verwendet werden:</p>
+	<p><a href='@resources.routes.Application.resourceDotFormat("HT018472857", format="json")'>@resources.routes.Application.resourceDotFormat("HT018472857", format="json")</a></p>
 	<p>Für größere Anfragen kann die Antwort als gzip komprimiert werden:</p>
 	<p><code>curl --header "Accept-Encoding: gzip" "http://lobid.org@resources.routes.Application.query("ehrenfeld", format="bulk")" > ehrenfeld.gz</code></p>
+	<p>Einzeltreffer unterstützen zudem verschiedene RDF-Serialisierungen (siehe <a href='#jsonld'>Abschnitt zu JSON-LD</a>).</p>
 
 	<h2 id="auto-complete">Autovervollständigung <small><a href='#auto-complete'><span class='glyphicon glyphicon-link'></span></a></small></h2>
 	<p>Die API unterstützt ein spezielles Antwortformat mit Vorschlägen zur Vervollständigung aus einem angegebenen Feld:</p>
@@ -95,7 +98,15 @@ $('input.search-resources').autocomplete({
 	<p>JSON-API-Anfragen liefern <a href="http://json-ld.org/">JSON-LD</a>. Um damit zu experimentieren können sie das JSON-LD oder URLs im <a href="http://json-ld.org/playground/">JSON-LD Playground</a> einfügen.</p>
 	@desc("JSON-LD Context", resources.routes.Application.context)
 	<dt>RDF-Konvertierung</dt><dd>Mit einem JSON-LD-Prozessor können sie API-Antworten in andere RDF-Serialisierungen umwandeln, z.B. in N-Quads mit <a href="https://github.com/digitalbazaar/jsonld-cli">jsonld-cli</a>:</dd>
-	<p><code>jsonld format --nquads http://lobid.org@resources.routes.Application.show("HT018472857")</code></p>
+	<p><code>jsonld format --nquads http://lobid.org@resources.routes.Application.resource("HT018472857")</code></p>
+	<p>Einzeltreffer können per <code>Accept</code> Header auch direkt als RDF/XML, Turtle oder N-Triples angefordert werden:</p>
+	<p><code>curl --header "Accept: application/rdf+xml" http://lobid.org@resources.routes.Application.resource("HT018472857")</code></p>
+	<p><code>curl --header "Accept: text/turtle" http://lobid.org@resources.routes.Application.resource("HT018472857")</code></p>
+	<p><code>curl --header "Accept: application/n-triples" http://lobid.org@resources.routes.Application.resource("HT018472857")</code></p>
+	<p>Dabei werden wie <a href='#content_types'>im Abschnitt zu Inhaltstypen beschrieben</a> neben dem Format-Parameter auch URLs mit Formatendungen unterstützt:
+	<p><a href='@resources.routes.Application.resourceDotFormat("HT018472857", format="rdf")'>@resources.routes.Application.resourceDotFormat("HT018472857", format="rdf")</a></p>
+	<p><a href='@resources.routes.Application.resourceDotFormat("HT018472857", format="ttl")'>@resources.routes.Application.resourceDotFormat("HT018472857", format="ttl")</a></p>
+	<p><a href='@resources.routes.Application.resourceDotFormat("HT018472857", format="nt")'>@resources.routes.Application.resourceDotFormat("HT018472857", format="nt")</a></p>
 	<dt>Beispieldokumente</dt><dd>Diese Beispieldokumente wurden mit <a href="https://hypothes.is/">hypothes.is</a> annotiert, um den Einstieg in die Datenlage zu erleichtern. Bei Klick auf einen gelbmarkierten JSON-Key geht ein Popup-Fenster auf mit Informationen zu Name, Beschreibung, Abdeckung sowie Anwendungsbeispielen des Feldes.</dd>
 	<dd>
 		<p>Springe zu: <a href="#buch">Buch</a>, <a href="#aufsatz">Aufsatz</a>, <a href="#periodikum">Periodikum</a>, <a href="#serienband">Serienband</a>

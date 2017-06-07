@@ -34,7 +34,7 @@
               <dt>@tags.star_button(id) Titeldetails:
               <small style='float:right'>
               <a class='mab-link' title="MAB-XML-Quelldaten anzeigen" href="@Application.CONFIG.getString("hbz01.api")/@id"><small>&#12296;M&#12297;</small></a>
-              <a title="JSON-LD-Indexdaten anzeigen" href='@resources.routes.Application.show(id, "json")'><img class='json-ld-icon' src='@routes.Assets.at("images/json-ld.png")'></a>
+              <a title="JSON-LD-Indexdaten anzeigen" href='@resources.routes.Application.resourceDotFormat(id, "json")'><img class='json-ld-icon' src='@routes.Assets.at("images/json-ld.png")'></a>
               </small>
               </dt>
               <dd>@tags.result_doc(Json.parse(docJson))</dd>

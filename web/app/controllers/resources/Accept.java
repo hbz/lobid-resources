@@ -19,12 +19,12 @@ public class Accept {
 	}
 
 	enum Format {
-		JSON_LD("json(.+)?", "application/json", "application/ld+json"), //
+		JSON_LD("json(.+)?", "application/ld+json", "application/json"), //
 		HTML("html", "text/html"), //
 		BULK("bulk", "application/x-jsonlines"), //
-		RDF_XML("xml", "application/rdf+xml", "application/xml", "text/xml"), //
+		RDF_XML("rdf", "application/rdf+xml", "application/xml", "text/xml"), //
 		N_TRIPLE("nt", "application/n-triples", "text/plain"), //
-		TURTLE("ttl", "application/x-turtle", "text/turtle");
+		TURTLE("ttl", "text/turtle", "application/x-turtle");
 
 		String[] types;
 		String queryParamString;
