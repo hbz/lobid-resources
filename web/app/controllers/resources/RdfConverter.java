@@ -8,8 +8,9 @@ import java.io.StringWriter;
 import com.github.jsonldjava.core.JsonLdError;
 import com.github.jsonldjava.core.JsonLdProcessor;
 import com.github.jsonldjava.jena.JenaTripleCallback;
-import com.github.jsonldjava.utils.JSONUtils;
+import com.github.jsonldjava.utils.JsonUtils;
 import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.shared.PrefixMapping;
 
 import play.Logger;
 
@@ -47,9 +48,10 @@ public class RdfConverter {
 	 */
 	public static String toRdf(final String jsonLd, final RdfFormat format) {
 		try {
-			final Object jsonObject = JSONUtils.fromString(jsonLd);
+			final Object jsonObject = JsonUtils.fromString(jsonLd);
 			final JenaTripleCallback callback = new JenaTripleCallback();
 			final Model model = (Model) JsonLdProcessor.toRDF(jsonObject, callback);
+			model.setNsPrefixes(PrefixMapping.Extended);
 			final StringWriter writer = new StringWriter();
 			model.write(writer, format.getName());
 			return writer.toString();
