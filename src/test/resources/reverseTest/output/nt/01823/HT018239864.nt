@@ -3,9 +3,9 @@ _:b0 <http://id.loc.gov/ontologies/bibframe/role> <http://id.loc.gov/vocabulary/
 _:b0 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://id.loc.gov/ontologies/bibframe/Contribution> .
 _:b1 <http://www.loc.gov/mads/rdf/v1#componentList> _:b6 .
 _:b1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.loc.gov/mads/rdf/v1#ComplexSubject> .
+_:b2 <http://purl.org/lobid/lv#hasSuperordinate> <http://lobid.org/resources/HT016777884#!> .
 _:b2 <http://purl.org/lobid/lv#numbering> "17"^^<http://www.w3.org/2001/XMLSchema#string> .
-_:b2 <http://purl.org/lobid/lv#series> <http://lobid.org/resources/HT016777884#!> .
-_:b2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://purl.org/lobid/lv#SeriesRelation> .
+_:b2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://purl.org/lobid/lv#IsPartOfRelation> .
 _:b3 <http://schema.org/location> "Berlin [u.a.]"^^<http://www.w3.org/2001/XMLSchema#string> .
 _:b3 <http://schema.org/publishedBy> "de Gruyter"^^<http://www.w3.org/2001/XMLSchema#string> .
 _:b3 <http://schema.org/startDate> "2014"^^<http://www.w3.org/2001/XMLSchema#gYear> .
@@ -30,7 +30,7 @@ _:b7 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/0
 <http://d-nb.info/gnd/4152975-3> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://d-nb.info/standards/elementset/gnd#SubjectHeading> .
 <http://d-nb.info/gnd/4152975-3> <http://www.w3.org/2000/01/rdf-schema#label> "Erz\u00E4hltheorie"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://d-nb.info/gnd/7749153-1> <http://www.w3.org/2000/01/rdf-schema#label> "Gemeinsame Normdatei (GND)"^^<http://www.w3.org/2001/XMLSchema#string> .
-<http://deposit.d-nb.de/cgi-bin/dokserv?id=4584991&prov=M&dok_var=1&dok_ext=htm> <http://www.w3.org/2000/01/rdf-schema#label> "http://deposit.d-nb.de/cgi-bin"^^<http://www.w3.org/2001/XMLSchema#string> .
+<http://deposit.d-nb.de/cgi-bin/dokserv?id=4584991&prov=M&dok_var=1&dok_ext=htm> <http://www.w3.org/2000/01/rdf-schema#label> "Klappentext"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://dewey.info/class/400/> <http://id.loc.gov/ontologies/bibframe/source> <http://d-nb.info/gnd/4149423-4> .
 <http://dewey.info/class/400/> <http://www.w3.org/2000/01/rdf-schema#label> "Sprache"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://digitool.hbz-nrw.de:1801/webclient/DeliveryManager?pid=5764417&custom_att_2=simple_viewer> <http://www.w3.org/2000/01/rdf-schema#label> "Digitool"^^<http://www.w3.org/2001/XMLSchema#string> .
@@ -110,7 +110,7 @@ _:b7 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/0
 <http://lobid.org/organisations/DE-5> <http://www.w3.org/2000/01/rdf-schema#label> "lobid Organisation"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/organisations/DE-61> <http://www.w3.org/2000/01/rdf-schema#label> "lobid Organisation"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/resources/HT014176012#!> <http://www.w3.org/2000/01/rdf-schema#label> "Nordrhein-Westf\u00E4lische Bibliographie (NWBib)"^^<http://www.w3.org/2001/XMLSchema#string> .
-<http://lobid.org/resources/HT016777884#!> <http://www.w3.org/2000/01/rdf-schema#label> "lobid Ressource"^^<http://www.w3.org/2001/XMLSchema#string> .
+<http://lobid.org/resources/HT016777884#!> <http://www.w3.org/2000/01/rdf-schema#label> "Deutsche Literatur - Studien und Quellen"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/resources/HT018239864> <http://purl.org/dc/terms/created> "20140423"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/resources/HT018239864> <http://purl.org/dc/terms/modified> "20141113"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/resources/HT018239864> <http://www.w3.org/2000/01/rdf-schema#label> "lobid Ressource"^^<http://www.w3.org/2001/XMLSchema#string> .
@@ -138,13 +138,12 @@ _:b7 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/0
 <http://lobid.org/resources/HT018239864#!> <http://purl.org/lobid/lv#contributorOrder> "http://d-nb.info/gnd/1056946172"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/resources/HT018239864#!> <http://purl.org/lobid/lv#hbzID> "HT018239864"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/resources/HT018239864#!> <http://purl.org/lobid/lv#inCollection> <http://lobid.org/resources/HT014176012#!> .
-<http://lobid.org/resources/HT018239864#!> <http://purl.org/lobid/lv#inSeries> _:b2 .
+<http://lobid.org/resources/HT018239864#!> <http://purl.org/lobid/lv#isPartOf> _:b2 .
 <http://lobid.org/resources/HT018239864#!> <http://purl.org/lobid/lv#subjectAltLabel> "Keina, Irmgarde (1905-1982)"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/resources/HT018239864#!> <http://purl.org/lobid/lv#subjectAltLabel> "Kojn, Irmgard (1905-1982)"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/resources/HT018239864#!> <http://purl.org/lobid/lv#subjectAltLabel> "Narratologie"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/resources/HT018239864#!> <http://purl.org/lobid/lv#subjectAltLabel> "\u05E7\u05D5\u05D9\u05DF, \u05D0\u05D9\u05E8\u05DE\u05D2\u05E8\u05D3 (1905-1982)"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/resources/HT018239864#!> <http://purl.org/lobid/lv#subjectAltLabel> "\u1E32oyn, Irmgard (1905-1982)"^^<http://www.w3.org/2001/XMLSchema#string> .
-<http://lobid.org/resources/HT018239864#!> <http://purl.org/lobid/lv#subjectChain> "Keun, Irmgard (1905-1982) | Erz\u00E4hltheorie"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/resources/HT018239864#!> <http://purl.org/lobid/lv#subjectOrder> _:b5 .
 <http://lobid.org/resources/HT018239864#!> <http://purl.org/ontology/bibo/isbn> "3050064641"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/resources/HT018239864#!> <http://purl.org/ontology/bibo/isbn> "9783050064642"^^<http://www.w3.org/2001/XMLSchema#string> .
@@ -155,7 +154,6 @@ _:b7 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/0
 <http://lobid.org/resources/HT018239864#!> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://purl.org/dc/terms/BibliographicResource> .
 <http://lobid.org/resources/HT018239864#!> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://purl.org/ontology/bibo/Book> .
 <http://lobid.org/resources/HT018239864#!> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://purl.org/ontology/bibo/Thesis> .
-<http://lobid.org/resources/HT018239864#!> <http://www.w3.org/2000/01/rdf-schema#seeAlso> <http://digitool.hbz-nrw.de:1801/webclient/DeliveryManager?pid=5764417&custom_att_2=simple_viewer> .
 <http://lobid.org/resources/HT018239864#!> <http://www.w3.org/2000/01/rdf-schema#seeAlso> <http://digitool.hbz-nrw.de:1801/webclient/DeliveryManager?pid=5764418&custom_att_2=simple_viewer> .
 <http://lobid.org/resources/HT018239864#!> <http://www.w3.org/2002/07/owl#sameAs> <http://hub.culturegraph.org/resource/HBZ-HT018239864> .
 <http://lobid.org/resources/HT018239864#!> <http://www.w3.org/2007/05/powder-s#describedby> <http://lobid.org/resources/HT018239864> .
