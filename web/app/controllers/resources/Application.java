@@ -49,6 +49,7 @@ import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 
 import controllers.resources.Accept.Format;
+import controllers.resources.RdfConverter.RdfFormat;
 import play.Logger;
 import play.Play;
 import play.cache.Cache;
@@ -158,7 +159,7 @@ public class Application extends Controller {
 	 * @param t Type filter for resource queries
 	 * @param sort Sorting order for results ("newest", "oldest", "" -> relevance)
 	 * @param set The set
-	 * @param format The response format ('html' or 'json')
+	 * @param format The response format (see {@code Accept.Format})
 	 * @param aggregations The comma separated aggregation fields
 	 * @return The search results
 	 */
@@ -217,7 +218,8 @@ public class Application extends Controller {
 								medium, from, size, queryResources.getTotal(), owner, t, sort,
 								set))
 						: (returnSuggestions ? withCallback(json)
-								: prettyJsonOk(withQueryMetadata(json, index)));
+								: responseFor(withQueryMetadata(json, index),
+										Accept.Format.JSON_LD.queryParamString));
 			});
 		}
 		cacheOnRedeem(cacheId, result, ONE_HOUR);
@@ -291,7 +293,7 @@ public class Application extends Controller {
 				request() == null || request().queryString() == null ? null
 						: request().queryString().get("callback");
 		return callback != null ? ok(String.format("/**/%s(%s)", callback[0], json))
-				: ok(json);
+				.as("application/javascript; charset=utf-8") : ok(json);
 	}
 
 	private static JsonNode toSuggestions(JsonNode json, String field) {
@@ -358,10 +360,20 @@ public class Application extends Controller {
 
 	/**
 	 * @param id The resource ID.
-	 * @param format The response format ('html' or 'json')
+	 * @param format The response format (see {@code Accept.Format})
 	 * @return The details page for the resource with the given ID.
 	 */
-	public static Promise<Result> show(final String id, String format) {
+	public static Promise<Result> resourceDotFormat(final String id,
+			String format) {
+		return resource(id, format);
+	}
+
+	/**
+	 * @param id The resource ID.
+	 * @param format The response format (see {@code Accept.Format})
+	 * @return The details page for the resource with the given ID.
+	 */
+	public static Promise<Result> resource(final String id, String format) {
 		addCorsHeader();
 		String responseFormat = Accept.formatFor(format, request().acceptedTypes());
 		String cacheId = String.format("show(%s,%s)", id, responseFormat);
@@ -378,7 +390,7 @@ public class Application extends Controller {
 						? ok(details.render(CONFIG, result.toString(), id))
 						: notFound(details.render(CONFIG, "", id));
 			}
-			return result != null ? prettyJsonOk(result)
+			return result != null ? responseFor(result, responseFormat)
 					: notFound("\"Not found: " + id + "\"");
 		});
 		cacheOnRedeem(cacheId, promise, ONE_DAY);
@@ -386,8 +398,17 @@ public class Application extends Controller {
 	}
 
 	/**
+	 * @param id The resource ID.
+	 * @param format The response format (see {@code Accept.Format})
+	 * @return The details page for the resource with the given ID.
+	 */
+	public static Promise<Result> itemDotFormat(final String id, String format) {
+		return item(id, format);
+	}
+
+	/**
 	 * @param id The item ID.
-	 * @param format The response format ('html' or 'json')
+	 * @param format The response format (see {@code Accept.Format})
 	 * @return The details for the item with the given ID.
 	 */
 	public static Promise<Result> item(final String id, String format) {
@@ -415,7 +436,7 @@ public class Application extends Controller {
 						: ok(details_item.render(id, itemJson.toString()));
 			}
 			return itemJson == null ? notFound("\"Not found: " + id + "\"")
-					: prettyJsonOk(itemJson);
+					: responseFor(itemJson, responseFormat);
 		});
 		cacheOnRedeem(cacheId, promise, ONE_DAY);
 		return promise;
@@ -446,11 +467,34 @@ public class Application extends Controller {
 		});
 	}
 
-	private static Status prettyJsonOk(JsonNode responseJson)
-			throws JsonProcessingException {
-		return ok(new ObjectMapper().writerWithDefaultPrettyPrinter()
-				.writeValueAsString(responseJson))
-						.as("application/json; charset=utf-8");
+	private static Status responseFor(JsonNode responseJson,
+			String responseFormat) throws JsonProcessingException {
+		String content = "";
+		String contentType = "";
+		switch (responseFormat) {
+		case "rdf": {
+			content = RdfConverter.toRdf(responseJson.toString(), RdfFormat.RDF_XML);
+			contentType = Accept.Format.RDF_XML.types[0];
+			break;
+		}
+		case "ttl": {
+			content = RdfConverter.toRdf(responseJson.toString(), RdfFormat.TURTLE);
+			contentType = Accept.Format.TURTLE.types[0];
+			break;
+		}
+		case "nt": {
+			content = RdfConverter.toRdf(responseJson.toString(), RdfFormat.N_TRIPLE);
+			contentType = Accept.Format.N_TRIPLE.types[0];
+			break;
+		}
+		default: {
+			content = new ObjectMapper().writerWithDefaultPrettyPrinter()
+					.writeValueAsString(responseJson);
+			contentType = Accept.Format.JSON_LD.types[0];
+		}
+		}
+		return content.isEmpty() ? internalServerError("No content")
+				: ok(content).as(contentType + "; charset=utf-8");
 	}
 
 	private static void addCorsHeader() {

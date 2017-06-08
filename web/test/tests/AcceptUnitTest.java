@@ -35,18 +35,28 @@ public class AcceptUnitTest {
 		// @formatter:off
 		return Arrays.asList(new Object[][] {
 			// neither supported header nor supported format given, return default:
-			{ fakeRequest(), null, /*->*/ "json" }, 
-			{ fakeRequest(), "", /*->*/ "json" }, 
-			{ fakeRequest(), "xml", /*->*/ "json" }, 
-			{ fakeRequest().withHeader("Accept", ""), null, /*->*/ "json" }, 
-			{ fakeRequest().withHeader("Accept", "text/plain"), null, /*->*/ "json" }, 
+			{ fakeRequest(), null, /*->*/ "json" },
+			{ fakeRequest(), "", /*->*/ "json" },
+			{ fakeRequest(), "pdf", /*->*/ "json" },
+			{ fakeRequest().withHeader("Accept", ""), null, /*->*/ "json" },
+			{ fakeRequest().withHeader("Accept", "application/pdf"), null, /*->*/ "json" },
 			// no header, just format parameter:
 			{ fakeRequest(), "html", /*->*/ "html" },
 			{ fakeRequest(), "json", /*->*/ "json" },
+			{ fakeRequest(), "rdf", /*->*/ "rdf" },
+			{ fakeRequest(), "ttl", /*->*/ "ttl" },
+			{ fakeRequest(), "nt", /*->*/ "nt" },
 			// supported content types, no format parameter given:
 			{ fakeRequest().withHeader("Accept", "text/html"), null, /*->*/ "html" },
 			{ fakeRequest().withHeader("Accept", "application/json"), null, /*->*/ "json" },
 			{ fakeRequest().withHeader("Accept", "application/ld+json"), null, /*->*/ "json" },
+			{ fakeRequest().withHeader("Accept", "text/plain"), null, /*->*/ "nt" },
+			{ fakeRequest().withHeader("Accept", "application/n-triples"), null, /*->*/ "nt" },
+			{ fakeRequest().withHeader("Accept", "text/turtle"), null, /*->*/ "ttl" },
+			{ fakeRequest().withHeader("Accept", "application/x-turtle"), null, /*->*/ "ttl" },
+			{ fakeRequest().withHeader("Accept", "application/xml"), null, /*->*/ "rdf" },
+			{ fakeRequest().withHeader("Accept", "application/rdf+xml"), null, /*->*/ "rdf" },
+			{ fakeRequest().withHeader("Accept", "text/xml"), null, /*->*/ "rdf" },
 			// we pick the preferred content type:
 			{ fakeRequest().withHeader("Accept", "text/html,application/json"), null, /*->*/"html" },
 			{ fakeRequest().withHeader("Accept", "application/json,text/html"), null, /*->*/ "json" },
