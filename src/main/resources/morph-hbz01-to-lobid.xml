@@ -1023,11 +1023,11 @@
 		<!-- ########## multi-volume information -->
 		<!-- ####################### -->
 		<data source="001-2.a" name="@idVolume"/>
-		<entity name="http://purl.org/lobid/lv#volumeIn">
+		<entity name="$[ns-lobid-vocab]isPartOf">
 			<data source="@idVolume" name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type">
-				<regexp match=".*" format="$[ns-lobid-vocab]MultiVolumeWorkRelation"/>
+				<regexp match=".*" format="$[ns-lobid-vocab]IsPartOfRelation"/>
 			</data>
-			<combine name="$[ns-lobid-vocab]multiVolumeWork" value="$[ns-lobid-resource]${a}#!">
+			<combine name="$[ns-lobid-vocab]hasSuperordinate" value="$[ns-lobid-resource]${a}#!">
 				<data source="@idVolume" name="a"/>
 			</combine>
 			<choose name="$[ns-lobid-vocab]numbering">
@@ -1866,7 +1866,7 @@
 		<data source="599s[-1].a" name="@dctIsPartOfArticle">
 			<regexp match="(.*)" format="$[ns-zdb-services]${1}"/>
 		</data>
-		<entity name="http://purl.org/dc/terms/isPartOf">
+		<entity name="$[ns-lobid-vocab]isPartOf">
 			<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="${isPartOfLiteral}">
 				<if>
 					<none>
@@ -1878,12 +1878,12 @@
 				</data>
 			</combine>
 		</entity>
-		<entity name="http://purl.org/lobid/lv#inSeries" flushWith="4[56789]3[-ab]1.a"
+		<entity name="$[ns-lobid-vocab]isPartOf" flushWith="4[56789]3[-ab]1.a"
 			reset="true">
 			<data source="4[56789]3[-abr][-12].a" name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type">
-				<regexp match=".*" format="$[ns-lobid-vocab]SeriesRelation"/>
+				<regexp match=".*" format="$[ns-lobid-vocab]IsPartOfRelation"/>
 			</data>
-			<combine name="$[ns-lobid-vocab]series" value="$[ns-lobid-resource]${a}#!">
+			<combine name="$[ns-lobid-vocab]hasSuperordinate" value="$[ns-lobid-resource]${a}#!">
 				<data source="4[56789]3[-ab]1.a" name="a"/>
 			</combine>
 			<data source="4[56789]1[-ab]1.a" name="$[ns-lobid-vocab]numbering">
@@ -1891,10 +1891,22 @@
 				<trim></trim>
 			</data>
 		</entity>
-		<combine name="http://purl.org/dc/terms/isPartOf" value="${a}">
-			<data source="@dctIsPartOf" name="a">
-				<sanitizeUrl></sanitizeUrl>
+		<entity name="$[ns-lobid-vocab]isPartOf">
+			<combine name="$[ns-lobid-vocab]hasSuperordinate" value="${a}">
+				<data source="@dctIsPartOf" name="a">
+					<sanitizeUrl></sanitizeUrl>
+				</data>
+			</combine>
+			<data source="025z[2].a" name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type">
+				<regexp match=".*" format="$[ns-lobid-vocab]IsPartOfRelation"/>
 			</data>
+		</entity>
+		<data source="@dctIsPartOf" name="~rdf:subject"/>
+		<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="Zeitschriftendatenbank (ZDB)">
+			<data source="@dctIsPartOf"/>
+		</combine>
+		<combine name="~rdf:subject" value="$[ns-lobid-resource]${subject}#!" flushWith="@dctIsPartOf">
+			<data source="@id" name="subject"/>
 		</combine>
 		<!-- set labels for ids from MAB 450s fields -->
 		<call-macro name="setRdfSubject" field="4[56789]3[-ab]1.a"/>
