@@ -38,22 +38,22 @@ public class AcceptIntegrationTest extends LocalIndexSetup {
 		// @formatter:off
 		return Arrays.asList(new Object[][] {
 			// search, default format: JSON
-			{ fakeRequest(GET, "/resources/search?q=*"), /*->*/ "application/ld+json" },
-			{ fakeRequest(GET, "/resources/search?q=*&format="), /*->*/ "application/ld+json" },
-			{ fakeRequest(GET, "/resources/search?q=*&format=json"), /*->*/ "application/ld+json" },
-			{ fakeRequest(GET, "/resources/search?q=*&format=whatever"), /*->*/ "application/ld+json" },
-			{ fakeRequest(GET, "/resources/search?q=*").withHeader("Accept", "text/plain"), /*->*/ "application/ld+json" },
+			{ fakeRequest(GET, "/resources/search?q=*"), /*->*/ "application/json" },
+			{ fakeRequest(GET, "/resources/search?q=*&format="), /*->*/ "application/json" },
+			{ fakeRequest(GET, "/resources/search?q=*&format=json"), /*->*/ "application/json" },
+			{ fakeRequest(GET, "/resources/search?q=*&format=whatever"), /*->*/ "application/json" },
+			{ fakeRequest(GET, "/resources/search?q=*").withHeader("Accept", "text/plain"), /*->*/ "application/json" },
 			// search, others formats as query param:
 			{ fakeRequest(GET, "/resources/search?q=*&format=html"), /*->*/ "text/html" },
 			// search, others formats via header:
-			{ fakeRequest(GET, "/resources/search?q=*").withHeader("Accept", "application/json"), /*->*/ "application/ld+json" },
+			{ fakeRequest(GET, "/resources/search?q=*").withHeader("Accept", "application/json"), /*->*/ "application/json" },
 			{ fakeRequest(GET, "/resources/search?q=*").withHeader("Accept", "text/html"), /*->*/ "text/html" },
 			// get, default format: JSON
-			{ fakeRequest(GET, "/resources/HT018907266"), /*->*/ "application/ld+json" },
-			{ fakeRequest(GET, "/resources/HT018907266?format="), /*->*/ "application/ld+json" },
-			{ fakeRequest(GET, "/resources/HT018907266?format=json"), /*->*/ "application/ld+json" },
-			{ fakeRequest(GET, "/resources/HT018907266?format=whatever"), /*->*/ "application/ld+json" },
-			{ fakeRequest(GET, "/resources/HT018907266").withHeader("Accept", "application/pdf"), /*->*/ "application/ld+json" },
+			{ fakeRequest(GET, "/resources/HT018907266"), /*->*/ "application/json" },
+			{ fakeRequest(GET, "/resources/HT018907266?format="), /*->*/ "application/json" },
+			{ fakeRequest(GET, "/resources/HT018907266?format=json"), /*->*/ "application/json" },
+			{ fakeRequest(GET, "/resources/HT018907266?format=whatever"), /*->*/ "application/json" },
+			{ fakeRequest(GET, "/resources/HT018907266").withHeader("Accept", "application/pdf"), /*->*/ "application/json" },
 			// get, other formats as query param:
 			{ fakeRequest(GET, "/resources/HT018907266?format=html"), /*->*/ "text/html" },
 			{ fakeRequest(GET, "/resources/HT018907266?format=rdf"), /*->*/ "application/rdf+xml" },
@@ -61,12 +61,12 @@ public class AcceptIntegrationTest extends LocalIndexSetup {
 			{ fakeRequest(GET, "/resources/HT018907266?format=nt"), /*->*/ "application/n-triples" },
 			// get, formats as URL path elem:
 			{ fakeRequest(GET, "/resources/HT018907266.html"), /*->*/ "text/html" },
-			{ fakeRequest(GET, "/resources/HT018907266.json"), /*->*/ "application/ld+json" },
+			{ fakeRequest(GET, "/resources/HT018907266.json"), /*->*/ "application/json" },
 			{ fakeRequest(GET, "/resources/HT018907266.rdf"), /*->*/ "application/rdf+xml" },
 			{ fakeRequest(GET, "/resources/HT018907266.ttl"), /*->*/ "text/turtle" },
 			{ fakeRequest(GET, "/resources/HT018907266.nt"), /*->*/ "application/n-triples" },
 			// get, others formats via header:
-			{ fakeRequest(GET, "/resources/HT018907266").withHeader("Accept", "application/json"), /*->*/ "application/ld+json" },
+			{ fakeRequest(GET, "/resources/HT018907266").withHeader("Accept", "application/json"), /*->*/ "application/json" },
 			{ fakeRequest(GET, "/resources/HT018907266").withHeader("Accept", "text/html"), /*->*/ "text/html" },
 			{ fakeRequest(GET, "/resources/HT018907266").withHeader("Accept", "text/xml"), /*->*/ "application/rdf+xml" },
 			{ fakeRequest(GET, "/resources/HT018907266").withHeader("Accept", "application/xml"), /*->*/ "application/rdf+xml" },

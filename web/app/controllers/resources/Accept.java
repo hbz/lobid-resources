@@ -19,7 +19,7 @@ public class Accept {
 	}
 
 	enum Format {
-		JSON_LD("json(.+)?", "application/ld+json", "application/json"), //
+		JSON_LD("json(.+)?", "application/json", "application/ld+json"), //
 		HTML("html", "text/html"), //
 		BULK("bulk", "application/x-jsonlines"), //
 		RDF_XML("rdf", "application/rdf+xml", "application/xml", "text/xml"), //
