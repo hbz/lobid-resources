@@ -126,8 +126,6 @@ public class TestRdfToJsonConversion {
 	public void testEquality_case1() {
 		testFiles(TEST_FILE_CONTRIBUTOR_ORDER, "src/test/resources/hbz01.es.json",
 				LOBID_RESOURCES_URI_PREFIX, true, etikettMaker);
-		TestRdfToJsonConversion.logger
-				.info("\n Adrian Input Test - must succeed! \n");
 		org.junit.Assert.assertTrue(generateTestData || allTestsSuccessful);
 	}
 
@@ -168,7 +166,7 @@ public class TestRdfToJsonConversion {
 			testResult = new CompareJsonMaps().writeFileAndTestJson(
 					new ObjectMapper().convertValue(actual, JsonNode.class),
 					new ObjectMapper().convertValue(expected, JsonNode.class));
-		} catch (IOException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		if (testResult != testExpectedToBeEqual) {
