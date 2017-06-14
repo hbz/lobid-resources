@@ -1934,6 +1934,18 @@
 				<regexp match="^([a-zA-Z].*)" format="${1}"/>
 			</data>
 		</combine>
+		<combine name="@linkForDescription" value="${a}" sameEntity="true">
+			<data source="655e[ -1].[x3]" name="a">
+				<regexp match="[Ii][Nn][Hh][aA][lL][tT][sS][tT]"/>
+			</data>
+			<data source="655e[ -1].u" name="a"/>
+		</combine>
+		<combine name="@linkForTableOfContents" value="${a}" sameEntity="true">
+			<data source="655e[ -1].[x3]" name="a">
+				<regexp match="[Ii][Nn][Hh][aA][lL][tT][sS][vV]"/>
+			</data>
+			<data source="655e[ -1].u" name="a"/>
+		</combine>
 		<!--first three chars of "Resolving System" or "Volltext" or "EZB" or "Archivierte Online 
 			Ressource " or "Online-Ausgabe" <=> @fulltextOnlineUri> -->
 		<combine name="@fulltextOnlineUri" value="${uri}" sameEntity="true">
@@ -1942,13 +1954,10 @@
 			</data>
 			<data source="@linkUri" name="uri"/>
 		</combine>
-		<combine name="@fulltextOnlineUri" value="${a}">
-			<if>
-				<none>
-					<data source="@archived"/>
-				</none>
-			</if>
-			<data source="@1018"/>
+		<combine name="@fulltextOnlineUri" value="${a}" sameEntity="true">
+			<data source="655[-eu][ -1].[x3]">
+				<regexp match="Volltext"/>
+			</data>
 			<data source="@linkUri" name="a"/>
 		</combine>
 		<!-- emit URI only if there are no description subfields ... -->
@@ -1967,28 +1976,28 @@
 		<data source="@fulltextOnlineUri" name="$[ns-lobid-vocab]fulltextOnline">
 			<sanitizeUrl></sanitizeUrl>
 		</data>
-		<data source="@fulltextOnlineUri" name="http://purl.org/dc/terms/hasVersion">
-			<sanitizeUrl></sanitizeUrl>
-		</data>
+		<combine name="http://purl.org/dc/terms/hasVersion" value="${a}">
+			<if>
+				<none>
+					<data source="655e1.[x3]">
+						<regexp match="[vV][oO][lL][lL][tT][eE][xX][tT]"/>
+					</data>
+					<data source="@linkForDescription"/>
+					<data source="@linkForTableOfContents"/>
+				</none>
+			</if>
+			<data source="@linkUri" name="a">
+				<sanitizeUrl></sanitizeUrl>
+			</data>
+		</combine>
 		<!-- rdf:seeAlso if 655 AND first three letter "Zusätzliche Angaben" -->
 		<combine name="http://www.w3.org/2000/01/rdf-schema#seeAlso" value="${seeAlsoUri}"
 			sameEntity="true">
 			<data source="655[-eu][ -1].[x3]">
-				<regexp match="^[Z][u][s]"/>
+				<regexp match="^[zZ][uU][sS]"/>
 			</data>
 			<data source="@linkUri" name="seeAlsoUri"/>
-		</combine>
-		<!-- rdf:seeAlso if 655 AND_NOT fulltextOnline, toc or desc -->
-		<combine name="http://www.w3.org/2000/01/rdf-schema#seeAlso" value="${seeAlsoUri}">
-			<if>
-				<none>
-					<data source="@fulltextOnline"/>
-					<data source="@toc"/>
-					<data source="@desc"/>
-				</none>
-			</if>
-			<data source="@linkUri" name="seeAlsoUri"/>
-		</combine>
+		</combine>		
 		<!-- Set label for DOIs -->
 		<combine name="~rdf:subject" value="${a}">
 			<data source="@fulltextOnlineUri" name="a">
