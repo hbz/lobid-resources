@@ -2091,16 +2091,25 @@
 				<trim></trim>
 			</data>
 		</entity>
-		<entity name="$[ns-lobid-vocab]isPartOf">
-			<combine name="$[ns-lobid-vocab]hasSuperordinate" value="${a}">
-				<data source="@dctIsPartOf" name="a">
-					<sanitizeUrl></sanitizeUrl>
-				</data>
-			</combine>
-			<data source="025z[2].a" name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type">
-				<regexp match=".*" format="$[ns-lobid-vocab]IsPartOfRelation"/>
+		<combine name="$[ns-lobid-vocab]isPartOf" value="${a}">
+			<if>
+				<none>
+					<data source="010-1.a"/>
+				</none>
+			</if>
+			<data source="@dctIsPartOf" name="a">
+				<sanitizeUrl></sanitizeUrl>
 			</data>
-		</entity>
+		</combine>
+		<combine name="~rdf:subject" value="${a}">
+			<data source="025z[2].a" name="a">
+				<regexp match="(.*)" format="$[ns-zdb-services]${1}"/>
+			</data>
+		</combine>
+		<data source="025z[2].a" name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type">
+			<regexp match=".*" format="$[ns-lobid-vocab]IsPartOfRelation"/>
+		</data>
+		<call-macro name="setBackRdfSubject" field="025z[2].a"/>
 		<data source="@dctIsPartOf" name="~rdf:subject"/>
 		<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="Zeitschriftendatenbank (ZDB)">
 			<data source="@dctIsPartOf"/>
