@@ -109,7 +109,7 @@ public class Lobid {
 			// e.g. take TT000086525 from http://lobid.org/resources/TT000086525#!
 			String simpleId =
 					id.replaceAll("https?://lobid.org/resources?/(.+?)(#!)?$", "$1");
-			Result result = Application.show(simpleId, "json").get(API_TIMEOUT);
+			Result result = Application.resource(simpleId, "json").get(API_TIMEOUT);
 			JsonNode json =
 					Json.parse(Helpers.contentAsString(result)).findValue("title");
 			String label =

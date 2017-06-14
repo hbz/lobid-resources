@@ -64,6 +64,7 @@ public class TestJsonToRdfConversion {
 	 * first fail.
 	 */
 	private static boolean debugRun = false;
+	static boolean allTestsSuccessful = true;
 
 	/**
 	 * The relative location of test resources. Needed to access test resources
@@ -108,17 +109,22 @@ public class TestJsonToRdfConversion {
 			org.junit.Assert.assertTrue(debugRun || stringsAreEqual);
 		} catch (Exception e) {
 			logger.error(e.getLocalizedMessage());
-			org.junit.Assert.assertFalse(e.getMessage(), true);
+			allTestsSuccessful = false;
 		}
+		org.junit.Assert.assertTrue(allTestsSuccessful);
 	}
 
 	private void test(Path path) {
+		String jsonFilename = path.toString();
+		String rdfFilename = BASE + REVERSE_OUT + getRdfFileName(path);
 		try {
-			String jsonFilename = path.toString();
-			String rdfFilename = BASE + REVERSE_OUT + getRdfFileName(path);
 			compare(jsonFilename, rdfFilename);
 		} catch (Exception e) {
-			throw new RuntimeException(e);
+			logger.error("Error comparing " + jsonFilename + " with " + rdfFilename
+					+ "\n" + e.getLocalizedMessage());
+			if (!debugRun)
+				org.junit.Assert.assertFalse(e.getMessage(), true);
+			allTestsSuccessful = false;
 		}
 	}
 

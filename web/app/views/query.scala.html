@@ -47,7 +47,7 @@
 }
 
 @labelRaw = @{
-	if(q.contains("multiVolumeWork")) {select(("Band","Bände"))} else if (q.contains("series")) {select(("Serienband","Serienbände"))} else if (q.contains("containedIn")) {select(("Beitrag","Beiträge"))} else {""}
+	if(q.contains("hasSuperordinate")) {select(("Band","Bände"))} else if (q.contains("containedIn")) {select(("Beitrag","Beiträge"))} else {""}
 }
 
 @main(q, "lobid-resources - Ergebnisliste") {

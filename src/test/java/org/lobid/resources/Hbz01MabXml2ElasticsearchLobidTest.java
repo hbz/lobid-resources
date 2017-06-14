@@ -199,7 +199,9 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 		client.admin().indices().prepareDelete("_all").execute().actionGet();
 		node.close();
 		testFiles.forEach(lobidResource -> {
-			LOG.info(lobidResource + " is not part of the source archive.");
+			LOG.warn(lobidResource
+					+ " could not be retrieved from ES. Maybe not part of the source archive at"
+					+ " all. Otherwise, increase to 'debug' level and search for ES 'Exception'.");
 			findTestFiles(lobidResource).forEach(fname -> deleteTestFile(fname));
 		});
 	}

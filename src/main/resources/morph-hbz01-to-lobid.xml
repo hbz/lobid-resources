@@ -24,7 +24,7 @@
 			</combine>
 		</macro>
 		<macro name="setLabelMAB451-491ToId">
-			<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="${a}" 
+			<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="${a}"
 				flushWith="$[field_1]">
 				<choose name="a" flushWith="$[field_1]">
 					<data source="$[field_2]" name="a">
@@ -54,53 +54,70 @@
 				</choose>
 			</combine>
 		</macro>
-		<macro name="setBackRdfSubject">
-			<combine name="~rdf:subject" value="$[ns-lobid-resource]${subject}#!" flushWith="$[field]">
+		<!-- nwbib speciality: doublette subfields => also subject chain -->
+		<macro name="nwbibComplexSubjectRswkLabel">
+			<combine name="@nwbibComplexSubjectRswkLabel$[field]" value="${a}" flushWith="$[field]-[-12]">
+				<data source="@doubledPreferredNameSubjectChain$[field]" name="a">
+					<replace pattern="&gt;&gt;" with=""/>
+					<replace pattern="&lt;&lt;" with=""/>
+					<replace pattern=" " with=""/>
+					<regexp match="^(.*)@.*" format="${1}"/>
+				</data>
+			</combine>
+		</macro>
+		<macro name="makeNwbibComplexSubjectId">
+			<data source="@nwbibComplexSubjectRswkLabel$[field]" name="@nwbibComplexSubjectRswkId$[field]">
+				<regexp match="(.*)" format="_:${1}"/>
+			</data>
+		</macro>
+		<macro name="doubledPreferredNameSubjectChain">
+			<combine name="@doubledPreferredNameSubjectChain$[field]" value="${a}"
+				flushWith="$[field]-[-12]">
+				<concat delimiter="@" name="a" flushWith="$[field]-[-12]">
+					<data source="$[field]-[-12].a"/>
+				</concat>
+			</combine>
+		</macro>
+		<macro name="setNwbibRdfSubject">
+			<combine name="~rdf:subject" value="${subject}">
+				<data source="@nwbibComplexSubjectRswkLabel$[field]"/>
+				<data source="@nwbibComplexSubjectRswkId$[field]" name="subject"/>
+			</combine>
+		</macro>
+		<macro name="nwbibSubjectRswkIdSetDctSubject">
+			<combine name="http://purl.org/dc/terms/subject" value="_:$[field]_${subject}"
+				flushWith="@nwbibComplexSubjectRswkId$[field]" reset="true">
+				<data source="@nwbibComplexSubjectRswkId$[field]" name="subject"/>
+			</combine>
+		</macro>
+		<macro name="nwbibSubjectRswkIdSetRdfSubject">
+			<combine name="~rdf:subject" value="_:$[field]_${subject}" flushWith="@nwbibComplexSubjectRswkId$[field]"
+				reset="true">
+				<data source="@nwbibComplexSubjectRswkId$[field]" name="subject"/>
+			</combine>
+		</macro>
+		<macro name="nwbibSubjectRswkIdSetType">
+			<data name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" source="@nwbibComplexSubjectRswkId$[field]">
+				<constant value="http://www.loc.gov/mads/rdf/v1#ComplexSubject"/>
+			</data>
+		</macro>
+		<macro name="nwibSetComplexSubjectRswkId">
+			<entity name="~rdf:list@complexSubjectRswkId$[field]" flushWith="@nwbibComplexSubjectRswkId$[field]">
+				<data name="http://www.loc.gov/mads/rdf/v1#componentList" source="@nwbibComplexSubjectRswkId$[field]"/>
+			</entity>
+		</macro>
+		<macro name="nwbibSetLobidSubject">
+			<combine name="~rdf:subject" value="$[ns-lobid-resource]${subject}#!">
+				<data source="@nwbibComplexSubjectRswkId$[field]"/>
+				<data source="@nwbibComplexSubjectRswkLabel$[field]"/>
 				<data source="@id" name="subject"/>
 			</combine>
 		</macro>
-		<macro name="subject-chain-name">
-			<combine name="@preferredNameSubjectChain$[field_1]" value="${a}${e}${d}${c}${perm}">
-				<concat delimiter="" name="a" flushWith="$[field_1]??|$[field_2]-1.a">
-					<data source="$[field_1]-[-12].[abfghkpskzx-]">
-						<replace pattern="^" with=", "/>
-					</data>
-					<data source="$[field_1]-[-12].n">
-						<replace pattern="^" with=", "/>
-					</data>
-					<concat delimiter="" name="e" flushWith="$[field_1]??">
-						<data source="$[field_1]-[-12].e">
-							<replace pattern="^" with=" "/>
-							<replace pattern="$" with=""/>
-						</data>
-						<concat delimiter="" name="d" flushWith="$[field_1]??">
-							<data source="$[field_1]-[-12].d">
-								<replace pattern="^" with=" ("/>
-								<replace pattern="$" with="), "/>
-							</data>
-						</concat>
-					</concat>
-					<concat delimiter="" name="c" flushWith="$[field_1]??">
-						<data source="$[field_1]-[-12].c">
-						</data>
-						<data source="$[field_1]-[-12].t">
-							<regexp match="(.*)" format=": ${1}"/>
-						</data>
-					</concat>
-					<data source="$[field_2]-1.a" name="perm">
-						<regexp match="(.*)" format="(${1})"/>
-					</data>
-				</concat>
-			</combine>
-		</macro>
-		<macro name="subject-chain-perm">
-			<combine name="@subjectChainPerm" value="${a}">
-				<concat delimiter=" | " name="a">
-					<data source="@preferredNameSubjectChain$[field]">
-						<replace pattern="^, " with=""/>
-						<replace pattern=", $" with=""/>
-					</data>
-				</concat>
+		<!-- / nwbib speciality -->
+		<macro name="setBackRdfSubject">
+			<combine name="~rdf:subject" value="$[ns-lobid-resource]${subject}#!"
+				flushWith="$[field]">
+				<data source="@id" name="subject"/>
 			</combine>
 		</macro>
 		<!-- prefer gnd subjects IDs to literals -->
@@ -125,7 +142,6 @@
 				<data source="@complexSubjectRswkId$[field]" name="subject"/>
 			</combine>
 		</macro>
-
 		<macro name="subjectRswkIdSetRdfSubject">
 			<combine name="~rdf:subject" value="_:$[field]_${subject}" flushWith="@complexSubjectRswkId$[field]"
 				reset="true">
@@ -1067,11 +1083,11 @@
 		<!-- ########## multi-volume information -->
 		<!-- ####################### -->
 		<data source="001-2.a" name="@idVolume"/>
-		<entity name="http://purl.org/lobid/lv#volumeIn">
+		<entity name="$[ns-lobid-vocab]isPartOf">
 			<data source="@idVolume" name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type">
-				<regexp match=".*" format="$[ns-lobid-vocab]MultiVolumeWorkRelation"/>
+				<regexp match=".*" format="$[ns-lobid-vocab]IsPartOfRelation"/>
 			</data>
-			<combine name="$[ns-lobid-vocab]multiVolumeWork" value="$[ns-lobid-resource]${a}#!">
+			<combine name="$[ns-lobid-vocab]hasSuperordinate" value="$[ns-lobid-resource]${a}#!">
 				<data source="@idVolume" name="a"/>
 			</combine>
 			<choose name="$[ns-lobid-vocab]numbering">
@@ -1672,98 +1688,209 @@
 			<data source="@subjectTopic"/>
 			<data source="@subjectMain"/>
 		</choose>
-		<!-- Schlagwortketten (aka "subject chains", with permutation number) - It's necessary to 
-			repeat the combines to fire correctly when dealing with multiple e.g. "902". Use macros to 
-			avoid duplication. Use gnd subjects literals, use even if link present/> -->
-		<call-macro name="subject-chain-name" field_1="902" field_2="903"/>
-		<call-macro name="subject-chain-perm" field="902"/>
-		<call-macro name="subject-chain-name" field_1="907" field_2="908"/>
-		<call-macro name="subject-chain-perm" field="907"/>
-		<call-macro name="subject-chain-name" field_1="912" field_2="913"/>
-		<call-macro name="subject-chain-perm" field="912"/>
-		<call-macro name="subject-chain-name" field_1="917" field_2="918"/>
-		<call-macro name="subject-chain-perm" field="917"/>
-		<call-macro name="subject-chain-name" field_1="922" field_2="923"/>
-		<call-macro name="subject-chain-perm" field="922"/>
-		<call-macro name="subject-chain-name" field_1="927" field_2="928"/>
-		<call-macro name="subject-chain-perm" field="927"/>
-		<call-macro name="subject-chain-name" field_1="932" field_2="933"/>
-		<call-macro name="subject-chain-perm" field="932"/>
-		<call-macro name="subject-chain-name" field_1="937" field_2="938"/>
-		<call-macro name="subject-chain-perm" field="937"/>
-		<call-macro name="subject-chain-name" field_1="942" field_2="943"/>
-		<call-macro name="subject-chain-perm" field="942"/>
-		<call-macro name="subject-chain-name" field_1="947" field_2="948"/>
-		<call-macro name="subject-chain-perm" field="947"/>
-		<data source="@subjectChainPerm" name="http://purl.org/lobid/lv#subjectChain">
-			<replace pattern="\) \| \(" with=","/>
-			<replace pattern=" \| \(" with=" \("/>
-			<replace pattern="&gt;&gt;" with=""/>
-			<replace pattern="&lt;&lt;" with=""/>
-			<replace pattern=", :" with=":"/>
+		<!-- Schlagwortketten (aka "subject chains", "complex subjects" ..), mixed with nwbib speciality -->
+		<call-macro name="doubledPreferredNameSubjectChain" field="902"/>
+		<call-macro name="nwbibComplexSubjectRswkLabel" field="902"/>
+		<call-macro name="makeNwbibComplexSubjectId" field="902"/>
+		<call-macro name="setNwbibRdfSubject" field="902"/>
+		<data source="@nwbibComplexSubjectRswkLabel902" name="http://www.w3.org/2000/01/rdf-schema#label"/>
+		<data source="@nwbibComplexSubjectRswkLabel902" name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type">
+			<constant value="http://d-nb.info/standards/elementset/gnd#SubjectHeading"/>
 		</data>
-		<!-- Schlagwortketten (aka "subject chains", "complex subjects" ..). -->
+		<call-macro name="nwbibSetLobidSubject" field="902"/>
+		<call-macro name="nwbibSubjectRswkIdSetDctSubject" field="902"/>
+		<call-macro name="nwbibSubjectRswkIdSetRdfSubject" field="902"/>
+		<call-macro name="nwbibSubjectRswkIdSetType" field="902"/>
+		<call-macro name="nwibSetComplexSubjectRswkId" field="902"/>
+		<call-macro name="nwbibSetLobidSubject" field="902"/> <!-- important to keep right order -->
 		<call-macro name="subjectRswkId" field="902"/>
 		<call-macro name="subjectRswkIdSetDctSubject" field="902"/>
 		<call-macro name="subjectRswkIdSetRdfSubject" field="902"/>
 		<call-macro name="subjectRswkIdSetType" field="902"/>
 		<call-macro name="complexSubjectRswkId" field="902"/>
 
+		<call-macro name="doubledPreferredNameSubjectChain" field="907"/>
+		<call-macro name="nwbibComplexSubjectRswkLabel" field="907"/>
+		<call-macro name="makeNwbibComplexSubjectId" field="907"/>
+		<call-macro name="setNwbibRdfSubject" field="907"/>
+		<data source="@nwbibComplexSubjectRswkLabel907" name="http://www.w3.org/2000/01/rdf-schema#label"/>
+		<data source="@nwbibComplexSubjectRswkLabel907" name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type">
+			<constant value="http://d-nb.info/standards/elementset/gnd#SubjectHeading"/>
+		</data>
+		<call-macro name="nwbibSetLobidSubject" field="907"/>
+		<call-macro name="nwbibSubjectRswkIdSetDctSubject" field="907"/>
+		<call-macro name="nwbibSubjectRswkIdSetRdfSubject" field="907"/>
+		<call-macro name="nwbibSubjectRswkIdSetType" field="907"/>
+		<call-macro name="nwibSetComplexSubjectRswkId" field="907"/>
+		<call-macro name="nwbibSetLobidSubject" field="907"/>  <!-- important to keep right order -->
 		<call-macro name="subjectRswkId" field="907"/>
 		<call-macro name="subjectRswkIdSetDctSubject" field="907"/>
 		<call-macro name="subjectRswkIdSetRdfSubject" field="907"/>
 		<call-macro name="subjectRswkIdSetType" field="907"/>
 		<call-macro name="complexSubjectRswkId" field="907"/>
 
+		<call-macro name="doubledPreferredNameSubjectChain" field="912"/>
+		<call-macro name="nwbibComplexSubjectRswkLabel" field="912"/>
+		<call-macro name="makeNwbibComplexSubjectId" field="912"/>
+		<call-macro name="setNwbibRdfSubject" field="912"/>
+		<data source="@nwbibComplexSubjectRswkLabel912" name="http://www.w3.org/2000/01/rdf-schema#label"/>
+		<data source="@nwbibComplexSubjectRswkLabel912" name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type">
+			<constant value="http://d-nb.info/standards/elementset/gnd#SubjectHeading"/>
+		</data>
+		<call-macro name="nwbibSetLobidSubject" field="912"/>
+		<call-macro name="nwbibSubjectRswkIdSetDctSubject" field="912"/>
+		<call-macro name="nwbibSubjectRswkIdSetRdfSubject" field="912"/>
+		<call-macro name="nwbibSubjectRswkIdSetType" field="912"/>
+		<call-macro name="nwibSetComplexSubjectRswkId" field="912"/>
+		<call-macro name="nwbibSetLobidSubject" field="912"/>  <!-- important to keep right order -->
 		<call-macro name="subjectRswkId" field="912"/>
 		<call-macro name="subjectRswkIdSetDctSubject" field="912"/>
 		<call-macro name="subjectRswkIdSetRdfSubject" field="912"/>
 		<call-macro name="subjectRswkIdSetType" field="912"/>
 		<call-macro name="complexSubjectRswkId" field="912"/>
 
+		<call-macro name="doubledPreferredNameSubjectChain" field="917"/>
+		<call-macro name="nwbibComplexSubjectRswkLabel" field="917"/>
+		<call-macro name="makeNwbibComplexSubjectId" field="917"/>
+		<call-macro name="setNwbibRdfSubject" field="917"/>
+		<data source="@nwbibComplexSubjectRswkLabel917" name="http://www.w3.org/2000/01/rdf-schema#label"/>
+		<data source="@nwbibComplexSubjectRswkLabel917" name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type">
+			<constant value="http://d-nb.info/standards/elementset/gnd#SubjectHeading"/>
+		</data>
+		<call-macro name="nwbibSetLobidSubject" field="917"/>
+		<call-macro name="nwbibSubjectRswkIdSetDctSubject" field="917"/>
+		<call-macro name="nwbibSubjectRswkIdSetRdfSubject" field="917"/>
+		<call-macro name="nwbibSubjectRswkIdSetType" field="917"/>
+		<call-macro name="nwibSetComplexSubjectRswkId" field="917"/>
+		<call-macro name="nwbibSetLobidSubject" field="917"/>  <!-- important to keep right order -->
 		<call-macro name="subjectRswkId" field="917"/>
 		<call-macro name="subjectRswkIdSetDctSubject" field="917"/>
 		<call-macro name="subjectRswkIdSetRdfSubject" field="917"/>
 		<call-macro name="subjectRswkIdSetType" field="917"/>
 		<call-macro name="complexSubjectRswkId" field="917"/>
 
+		<call-macro name="doubledPreferredNameSubjectChain" field="922"/>
+		<call-macro name="nwbibComplexSubjectRswkLabel" field="922"/>
+		<call-macro name="makeNwbibComplexSubjectId" field="922"/>
+		<call-macro name="setNwbibRdfSubject" field="922"/>
+		<data source="@nwbibComplexSubjectRswkLabel922" name="http://www.w3.org/2000/01/rdf-schema#label"/>
+		<data source="@nwbibComplexSubjectRswkLabel922" name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type">
+			<constant value="http://d-nb.info/standards/elementset/gnd#SubjectHeading"/>
+		</data>
+		<call-macro name="nwbibSetLobidSubject" field="922"/>
+		<call-macro name="nwbibSubjectRswkIdSetDctSubject" field="922"/>
+		<call-macro name="nwbibSubjectRswkIdSetRdfSubject" field="922"/>
+		<call-macro name="nwbibSubjectRswkIdSetType" field="922"/>
+		<call-macro name="nwibSetComplexSubjectRswkId" field="922"/>
+		<call-macro name="nwbibSetLobidSubject" field="922"/>  <!-- important to keep right order -->
 		<call-macro name="subjectRswkId" field="922"/>
 		<call-macro name="subjectRswkIdSetDctSubject" field="922"/>
 		<call-macro name="subjectRswkIdSetRdfSubject" field="922"/>
 		<call-macro name="subjectRswkIdSetType" field="922"/>
 		<call-macro name="complexSubjectRswkId" field="922"/>
 
+		<call-macro name="doubledPreferredNameSubjectChain" field="927"/>
+		<call-macro name="nwbibComplexSubjectRswkLabel" field="927"/>
+		<call-macro name="makeNwbibComplexSubjectId" field="927"/>
+		<call-macro name="setNwbibRdfSubject" field="927"/>
+		<data source="@nwbibComplexSubjectRswkLabel927" name="http://www.w3.org/2000/01/rdf-schema#label"/>
+		<data source="@nwbibComplexSubjectRswkLabel927" name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type">
+			<constant value="http://d-nb.info/standards/elementset/gnd#SubjectHeading"/>
+		</data>
+		<call-macro name="nwbibSetLobidSubject" field="927"/>
+		<call-macro name="nwbibSubjectRswkIdSetDctSubject" field="927"/>
+		<call-macro name="nwbibSubjectRswkIdSetRdfSubject" field="927"/>
+		<call-macro name="nwbibSubjectRswkIdSetType" field="927"/>
+		<call-macro name="nwibSetComplexSubjectRswkId" field="927"/>
+		<call-macro name="nwbibSetLobidSubject" field="927"/>  <!-- important to keep right order -->
 		<call-macro name="subjectRswkId" field="927"/>
 		<call-macro name="subjectRswkIdSetDctSubject" field="927"/>
 		<call-macro name="subjectRswkIdSetRdfSubject" field="927"/>
 		<call-macro name="subjectRswkIdSetType" field="927"/>
 		<call-macro name="complexSubjectRswkId" field="927"/>
 
+		<call-macro name="doubledPreferredNameSubjectChain" field="932"/>
+		<call-macro name="nwbibComplexSubjectRswkLabel" field="932"/>
+		<call-macro name="makeNwbibComplexSubjectId" field="932"/>
+		<call-macro name="setNwbibRdfSubject" field="932"/>
+		<data source="@nwbibComplexSubjectRswkLabel932" name="http://www.w3.org/2000/01/rdf-schema#label"/>
+		<data source="@nwbibComplexSubjectRswkLabel932" name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type">
+			<constant value="http://d-nb.info/standards/elementset/gnd#SubjectHeading"/>
+		</data>
+		<call-macro name="nwbibSetLobidSubject" field="932"/>
+		<call-macro name="nwbibSubjectRswkIdSetDctSubject" field="932"/>
+		<call-macro name="nwbibSubjectRswkIdSetRdfSubject" field="932"/>
+		<call-macro name="nwbibSubjectRswkIdSetType" field="932"/>
+		<call-macro name="nwibSetComplexSubjectRswkId" field="932"/>
+		<call-macro name="nwbibSetLobidSubject" field="932"/>  <!-- important to keep right order -->
 		<call-macro name="subjectRswkId" field="932"/>
 		<call-macro name="subjectRswkIdSetDctSubject" field="932"/>
 		<call-macro name="subjectRswkIdSetRdfSubject" field="932"/>
 		<call-macro name="subjectRswkIdSetType" field="932"/>
 		<call-macro name="complexSubjectRswkId" field="932"/>
 
+		<call-macro name="doubledPreferredNameSubjectChain" field="937"/>
+		<call-macro name="nwbibComplexSubjectRswkLabel" field="937"/>
+		<call-macro name="makeNwbibComplexSubjectId" field="937"/>
+		<call-macro name="setNwbibRdfSubject" field="937"/>
+		<data source="@nwbibComplexSubjectRswkLabel937" name="http://www.w3.org/2000/01/rdf-schema#label"/>
+		<data source="@nwbibComplexSubjectRswkLabel937" name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type">
+			<constant value="http://d-nb.info/standards/elementset/gnd#SubjectHeading"/>
+		</data>
+		<call-macro name="nwbibSetLobidSubject" field="937"/>
+		<call-macro name="nwbibSubjectRswkIdSetDctSubject" field="937"/>
+		<call-macro name="nwbibSubjectRswkIdSetRdfSubject" field="937"/>
+		<call-macro name="nwbibSubjectRswkIdSetType" field="937"/>
+		<call-macro name="nwibSetComplexSubjectRswkId" field="937"/>
+		<call-macro name="nwbibSetLobidSubject" field="937"/>  <!-- important to keep right order -->
 		<call-macro name="subjectRswkId" field="937"/>
 		<call-macro name="subjectRswkIdSetDctSubject" field="937"/>
 		<call-macro name="subjectRswkIdSetRdfSubject" field="937"/>
 		<call-macro name="subjectRswkIdSetType" field="937"/>
 		<call-macro name="complexSubjectRswkId" field="937"/>
 
+		<call-macro name="doubledPreferredNameSubjectChain" field="942"/>
+		<call-macro name="nwbibComplexSubjectRswkLabel" field="942"/>
+		<call-macro name="makeNwbibComplexSubjectId" field="942"/>
+		<call-macro name="setNwbibRdfSubject" field="942"/>
+		<data source="@nwbibComplexSubjectRswkLabel942" name="http://www.w3.org/2000/01/rdf-schema#label"/>
+		<data source="@nwbibComplexSubjectRswkLabel942" name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type">
+			<constant value="http://d-nb.info/standards/elementset/gnd#SubjectHeading"/>
+		</data>
+		<call-macro name="nwbibSetLobidSubject" field="942"/>
+		<call-macro name="nwbibSubjectRswkIdSetDctSubject" field="942"/>
+		<call-macro name="nwbibSubjectRswkIdSetRdfSubject" field="942"/>
+		<call-macro name="nwbibSubjectRswkIdSetType" field="942"/>
+		<call-macro name="nwibSetComplexSubjectRswkId" field="942"/>
+		<call-macro name="nwbibSetLobidSubject" field="942"/>  <!-- important to keep right order -->
 		<call-macro name="subjectRswkId" field="942"/>
 		<call-macro name="subjectRswkIdSetDctSubject" field="942"/>
 		<call-macro name="subjectRswkIdSetRdfSubject" field="942"/>
 		<call-macro name="subjectRswkIdSetType" field="942"/>
 		<call-macro name="complexSubjectRswkId" field="942"/>
 
+		<call-macro name="doubledPreferredNameSubjectChain" field="947"/>
+		<call-macro name="nwbibComplexSubjectRswkLabel" field="947"/>
+		<call-macro name="makeNwbibComplexSubjectId" field="947"/>
+		<call-macro name="setNwbibRdfSubject" field="947"/>
+		<data source="@nwbibComplexSubjectRswkLabel947" name="http://www.w3.org/2000/01/rdf-schema#label"/>
+		<data source="@nwbibComplexSubjectRswkLabel947" name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type">
+			<constant value="http://d-nb.info/standards/elementset/gnd#SubjectHeading"/>
+		</data>
+		<call-macro name="nwbibSetLobidSubject" field="947"/>
+		<call-macro name="nwbibSubjectRswkIdSetDctSubject" field="947"/>
+		<call-macro name="nwbibSubjectRswkIdSetRdfSubject" field="947"/>
+		<call-macro name="nwbibSubjectRswkIdSetType" field="947"/>
+		<call-macro name="nwibSetComplexSubjectRswkId" field="947"/>
+		<call-macro name="nwbibSetLobidSubject" field="947"/>  <!-- important to keep right order -->
 		<call-macro name="subjectRswkId" field="947"/>
 		<call-macro name="subjectRswkIdSetDctSubject" field="947"/>
 		<call-macro name="subjectRswkIdSetRdfSubject" field="947"/>
 		<call-macro name="subjectRswkIdSetType" field="947"/>
 		<call-macro name="complexSubjectRswkId" field="947"/>
-		<combine name="~rdf:subject" value="$[ns-lobid-resource]${subject}#!" flushWith="@complexSubjectRswkId9[01234][27]">
-			<data source="@complexSubjectRswkId9[01234][27]"/>
+		<combine name="~rdf:subject" value="$[ns-lobid-resource]${subject}#!"
+			flushWith="@complexSubjectRswkId9[01234][27]@nwbibComplexSubjectRswkId9[01234][27]">
+			<data source="@complexSubjectRswkId9[01234][27]|@nwbibComplexSubjectRswkId9[01234][27]"/>
 			<data source="@id" name="subject"/>
 		</combine>
 		<!-- /Schlagwortketten (aka "subject chains", "complex subjects" ...) -->
@@ -1877,8 +2004,8 @@
 				<regexp match="(.*)dx.doi.org(.*)"/>
 			</data>
 		</combine>
-		<combine name="http://www.w3.org/2000/01/rdf-schema#label"
-			value="DOI-Link" sameEntity="true">
+		<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="DOI-Link"
+			sameEntity="true">
 			<data source="@fulltextOnlineUri">
 				<regexp match="dx.doi.org"/>
 			</data>
@@ -1892,8 +2019,8 @@
 				<regexp match="http:\/\/nbn-resolving.de\/urn:nbn:de(.*)"/>
 			</data>
 		</combine>
-		<combine name="http://www.w3.org/2000/01/rdf-schema#label"
-			value="URN-Link" sameEntity="true">
+		<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="URN-Link"
+			sameEntity="true">
 			<data source="@fulltextOnlineUri">
 				<regexp match="http:\/\/nbn-resolving.de\/urn:nbn:de(.*)"/>
 			</data>
@@ -1949,7 +2076,7 @@
 		<data source="599s[-1].a" name="@dctIsPartOfArticle">
 			<regexp match="(.*)" format="$[ns-zdb-services]${1}"/>
 		</data>
-		<entity name="http://purl.org/dc/terms/isPartOf">
+		<entity name="$[ns-lobid-vocab]isPartOf">
 			<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="${isPartOfLiteral}">
 				<if>
 					<none>
@@ -1961,12 +2088,11 @@
 				</data>
 			</combine>
 		</entity>
-		<entity name="http://purl.org/lobid/lv#inSeries" flushWith="4[56789]3[-ab]1.a"
-			reset="true">
+		<entity name="$[ns-lobid-vocab]isPartOf" flushWith="4[56789]3[-ab]1.a" reset="true">
 			<data source="4[56789]3[-abr][-12].a" name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type">
-				<regexp match=".*" format="$[ns-lobid-vocab]SeriesRelation"/>
+				<regexp match=".*" format="$[ns-lobid-vocab]IsPartOfRelation"/>
 			</data>
-			<combine name="$[ns-lobid-vocab]series" value="$[ns-lobid-resource]${a}#!">
+			<combine name="$[ns-lobid-vocab]hasSuperordinate" value="$[ns-lobid-resource]${a}#!">
 				<data source="4[56789]3[-ab]1.a" name="a"/>
 			</combine>
 			<data source="4[56789]1[-ab]1.a" name="$[ns-lobid-vocab]numbering">
@@ -1974,14 +2100,27 @@
 				<trim></trim>
 			</data>
 		</entity>
-		<combine name="http://purl.org/dc/terms/isPartOf" value="${a}">
-			<data source="@dctIsPartOf" name="a">
-				<sanitizeUrl></sanitizeUrl>
+		<entity name="$[ns-lobid-vocab]isPartOf">
+			<combine name="$[ns-lobid-vocab]hasSuperordinate" value="${a}">
+				<data source="@dctIsPartOf" name="a">
+					<sanitizeUrl></sanitizeUrl>
+				</data>
+			</combine>
+			<data source="025z[2].a" name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type">
+				<regexp match=".*" format="$[ns-lobid-vocab]IsPartOfRelation"/>
 			</data>
+		</entity>
+		<data source="@dctIsPartOf" name="~rdf:subject"/>
+		<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="Zeitschriftendatenbank (ZDB)">
+			<data source="@dctIsPartOf"/>
+		</combine>
+		<combine name="~rdf:subject" value="$[ns-lobid-resource]${subject}#!" flushWith="@dctIsPartOf">
+			<data source="@id" name="subject"/>
 		</combine>
 		<!-- set labels for ids from MAB 450s fields -->
 		<call-macro name="setRdfSubject" field="4[56789]3[-ab]1.a"/>
-		<call-macro name="setLabelMAB451-491ToId" field_1="4[56789]3[-ab]1.a" field_2="4[56789]1[-ab]1.a"/>
+		<call-macro name="setLabelMAB451-491ToId" field_1="4[56789]3[-ab]1.a"
+			field_2="4[56789]1[-ab]1.a"/>
 		<call-macro name="setBackRdfSubject" field="4[56789]3[-ab]1.a"/>
 		<!-- ####################### -->
 		<!-- ########## classification -->
