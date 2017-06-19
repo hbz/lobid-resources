@@ -297,11 +297,16 @@ public class ElasticsearchIndexer
 		if (allIndices.size() >= 3) {
 			final List<String> list = new ArrayList<>(allIndices);
 			list.remove(name);
-			for (String indexToDelete : list.subList(0, list.size() - 2)) {
-				if (aliases(indexToDelete).isEmpty()) {
-					LOG.info("Deleting index: " + indexToDelete);
+			for (String indexToDelete : list) {
+				boolean hasAlias = client.admin().cluster()
+						.state(Requests.clusterStateRequest().nodes(true)
+								.indices(indexToDelete))
+						.actionGet().getState().getMetaData()
+						.hasAliases(new String[] { "*" }, new String[] { indexToDelete });
+				if (!hasAlias) {
 					client.admin().indices().delete(new DeleteIndexRequest(indexToDelete))
 							.actionGet();
+					LOG.info("Deleting index: " + indexToDelete);
 				}
 			}
 		}
