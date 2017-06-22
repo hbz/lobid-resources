@@ -30,7 +30,7 @@ public class IndexIntegrationTest extends LocalIndexSetup {
 	public static Collection<Object[]> data() {
 		// @formatter:off
 		return Arrays.asList(new Object[][] {
-			{ "title:der", /*->*/ 20 },
+			{ "title:der", /*->*/ 21 },
 			{ "title:Westfalen", /*->*/ 3 },
 			{ "contribution.agent.label:Westfalen", /*->*/ 7 },
 			{ "contribution.agent.id:\"http\\://d-nb.info/gnd/5265186-1\"", /*->*/ 1 },
@@ -40,15 +40,15 @@ public class IndexIntegrationTest extends LocalIndexSetup {
 			{ "title:Westfalen OR title:Münsterland", /*->*/ 4 },
 			{ "(title:Westfalen OR title:Münsterland) AND contribution.agent.id:\"http\\://d-nb.info/gnd/2019209-5\"", /*->*/ 1 },
 			{ "(title:Westfalen OR title:Münsterland) AND NOT contribution.agent.id:\"http\\://d-nb.info/gnd/2019209-5\"", /*->*/ 4-1 },
-			{ "subject.componentList.label:Westfalen", /*->*/ 7 },
-			{ "subject.componentList.id:\"http\\://d-nb.info/gnd/4042570-8\"", /*->*/ 2 },
+			{ "subject.componentList.label:Westfalen", /*->*/ 8 },
+			{ "subject.componentList.id:\"http\\://d-nb.info/gnd/4042570-8\"", /*->*/ 3 },
 			{ "subject.componentList.id:1113670827", /*->*/ 0 },
-			{ "subject.componentList.type:PlaceOrGeographicName", /*->*/ 26 },
+			{ "subject.componentList.type:PlaceOrGeographicName", /*->*/ 27 },
 			{ "publication.location:Berlin", /*->*/ 13 },
 			{ "publication.startDate:1993", /*->*/ 3 },
 			{ "publication.location:Berlin AND publication.startDate:1993", /*->*/ 1 },
 			{ "publication.location:Berlin AND publication.startDate:[1992 TO 2017]", /*->*/ 11 },
-			{ "inCollection.id:\"http\\://lobid.org/resources/HT014176012#\\!\"", /*->*/ 39 },
+			{ "inCollection.id:\"http\\://lobid.org/resources/HT014176012#\\!\"", /*->*/ 40 },
 			{ "inCollection.id:NWBib", /*->*/ 0 },
 			{ "publication.publishedBy:Springer", /*->*/ 2 },
 			{ "hasItem.id:\"http\\://lobid.org/items/TT003059252\\:DE-5-58\\:9%2F041#\\!\"", /*->*/ 1 },
