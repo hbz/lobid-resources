@@ -2,6 +2,8 @@
 
 package org.lobid.resources;
 
+import static org.elasticsearch.index.query.QueryBuilders.functionScoreQuery;//queryStringQuery;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -10,9 +12,13 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.StreamSupport;
 
 import org.culturegraph.mf.framework.DefaultObjectPipe;
 import org.culturegraph.mf.framework.ObjectReceiver;
@@ -29,9 +35,16 @@ import org.elasticsearch.client.transport.NoNodeAvailableException;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
+import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.index.query.QueryStringQueryBuilder;
+import org.elasticsearch.search.SearchHits;
+import org.lobid.resources.run.WikidataEntityGeodata2Es;
+import org.mortbay.log.Log;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.SortedSetMultimap;
 import com.google.common.collect.TreeMultimap;
 import com.google.common.io.CharStreams;
@@ -63,6 +76,8 @@ public class ElasticsearchIndexer
 	private String indexName;
 	private boolean updateIndex;
 	private String aliasSuffix;
+	private static String indexConfig = "index-config.json";
+	private static ObjectMapper mapper = new ObjectMapper();
 
 	/**
 	 * Keys to get index properties and the json document ("graph")
@@ -83,13 +98,16 @@ public class ElasticsearchIndexer
 	}
 
 	@Override
-	protected void onCloseStream() {
-		// feed the rest of the bulk
-		bulkRequest.execute().actionGet();
+	public void onCloseStream() {
+		// remove old and unprotected indices
 		if (!aliasSuffix.equals("NOALIAS") && !updateIndex
 				&& !aliasSuffix.toLowerCase().contains("test"))
-			updateAliases(indexName, aliasSuffix);
-		bulkRequest.setRefresh(true).get();
+			updateAliases();
+		// feed the rest of the bulk
+		if (bulkRequest.numberOfActions() != 0) {
+			bulkRequest.execute().actionGet();
+			bulkRequest.setRefresh(true).get();
+		}
 	}
 
 	// TODO use BulkProcessorbuilder by updating to ES 1.5
@@ -119,16 +137,30 @@ public class ElasticsearchIndexer
 
 	@Override
 	public void process(final HashMap<String, String> json) {
-		LOG.debug("Try to index " + json.get(Properties.ID.getName())
+		LOG.info("Try to index " + json.get(Properties.ID.getName())
 				+ " in ES type " + json.get(Properties.TYPE.getName()) + " Source:"
 				+ json.get(Properties.GRAPH.getName()));
 		updateRequest = new UpdateRequest(indexName,
 				json.get(Properties.TYPE.getName()), json.get(Properties.ID.getName()));
-		updateRequest.doc(json.get(Properties.GRAPH.getName()));
-		updateRequest.docAsUpsert(true);
+		String jsonDoc = json.get(Properties.GRAPH.getName());
 		if (json.containsKey(Properties.PARENT.getName())) {
 			updateRequest.parent(json.get(Properties.PARENT.getName()));
+		} else {
+			if (WikidataEntityGeodata2Es.getIndexAlias() != null) {
+				try {
+					JsonNode node = mapper.readValue(json.get(Properties.GRAPH.getName()),
+							JsonNode.class);
+					jsonDoc = enrich(WikidataEntityGeodata2Es.getIndexAlias(), "coverage",
+							"spatial", node);
+				} catch (IOException e1) {
+					LOG.info(
+							"Enrichment problem with" + json.get(Properties.ID.getName()),
+							e1);
+				}
+			}
 		}
+		updateRequest.doc(jsonDoc);
+		updateRequest.docAsUpsert(true);
 		bulkRequest.add(updateRequest);
 		docs++;
 		while (docs > bulkSize && retries > 0) {
@@ -149,6 +181,48 @@ public class ElasticsearchIndexer
 						+ ":" + e.getMessage() + " (" + retries + " more retries)");
 			}
 		}
+	}
+
+	private String enrich(final String index, final String queryField,
+			final String mergeField, JsonNode node) {
+		String query;
+		Iterable<Entry<String, JsonNode>> iterable = () -> node.fields();
+		Optional<Entry<String, JsonNode>> o =
+				StreamSupport.stream(iterable.spliterator(), false)
+						.filter(k -> k.getKey().equals(queryField)).findFirst();
+		if (o.isPresent()) {
+			query = o.get().getValue().toString();
+			query = query.replaceAll("[^\\p{IsAlphabetic}]", " ");
+			if (!query.isEmpty()) {
+				QueryStringQueryBuilder qsq =
+						QueryBuilders.queryStringQuery("spatial.label:" + query)
+								.field("spatial.label", 100.0f);
+				SearchHits hits = client.prepareSearch(index)
+						.setQuery(functionScoreQuery(qsq)).get().getHits();
+				if (hits.getTotalHits() > 0) {
+					Map<String, Object> source = hits.getAt(0).getSource();
+					try {
+						return node.toString().replaceAll("}$",
+								", \"" + mergeField + "\"" + ":"
+										+ mapper.writeValueAsString(source.get(mergeField)) + "}");
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				} else
+					Log.warn("Couldn't get a hit using index '" + index + "' querying '"
+							+ query + "'");
+			}
+		}
+		return node.toString();
+	}
+
+	/**
+	 * Sets the name of the index config json filename.
+	 * 
+	 * @param indexConfig the filename of the index config
+	 */
+	public void setIndexConfig(final String indexConfig) {
+		ElasticsearchIndexer.indexConfig = indexConfig;
 	}
 
 	/**
@@ -181,11 +255,10 @@ public class ElasticsearchIndexer
 	/**
 	 * Sets the suffix of elasticsearch index alias suffix
 	 * 
-	 * @param aliasSuffix may be an IP or a domain name
+	 * @param aliasSuffix musn't have '-' in it
 	 */
 	public void setIndexAliasSuffix(String aliasSuffix) {
 		this.aliasSuffix = aliasSuffix;
-
 	}
 
 	/**
@@ -235,7 +308,7 @@ public class ElasticsearchIndexer
 		String res = null;
 		try {
 			final InputStream config = Thread.currentThread().getContextClassLoader()
-					.getResourceAsStream("index-config.json");
+					.getResourceAsStream(indexConfig);
 			try (InputStreamReader reader = new InputStreamReader(config, "UTF-8")) {
 				res = CharStreams.toString(reader);
 			}
@@ -245,18 +318,22 @@ public class ElasticsearchIndexer
 		return res;
 	}
 
-	private void updateAliases(final String name, final String suffix) {
+	/**
+	 * Updates alias, may remove old indices.
+	 * 
+	 */
+	public void updateAliases() {
 		final SortedSetMultimap<String, String> indices =
-				groupByIndexCollection(name);
+				groupByIndexCollection(indexName);
 		for (String prefix : indices.keySet()) {
 			final SortedSet<String> indicesForPrefix = indices.get(prefix);
 			final String newIndex = indicesForPrefix.last();
-			final String newAlias = prefix + suffix;
+			final String newAlias = prefix + aliasSuffix;
 			LOG.info("Prefix " + prefix + ", newest index: " + newIndex);
 			removeOldAliases(indicesForPrefix, newAlias);
-			if (!name.equals(newAlias) && !newIndex.equals(newAlias))
+			if (!indexName.equals(newAlias) && !newIndex.equals(newAlias))
 				createNewAlias(newIndex, newAlias);
-			deleteOldIndices(name, indicesForPrefix);
+			deleteOldIndices(indexName, indicesForPrefix);
 		}
 	}
 

@@ -167,7 +167,8 @@ public class TestRdfToJsonConversion {
 					new ObjectMapper().convertValue(actual, JsonNode.class),
 					new ObjectMapper().convertValue(expected, JsonNode.class));
 		} catch (Exception e) {
-			e.printStackTrace();
+			TestRdfToJsonConversion.logger.warn(
+					"Problem with converting " + fnameNtriples + " to " + fnameJson);
 		}
 		if (testResult != testExpectedToBeEqual) {
 			allTestsSuccessful = false;

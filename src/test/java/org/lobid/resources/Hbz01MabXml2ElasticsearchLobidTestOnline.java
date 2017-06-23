@@ -21,8 +21,8 @@ import org.lobid.resources.run.MabXml2lobidJsonEs;
 @SuppressWarnings("javadoc")
 public final class Hbz01MabXml2ElasticsearchLobidTestOnline {
 	private TransportClient tc;
-	private final String CLUSTER_NAME = "quaoar1";
-	private final String HOSTNAME = "quaoar1.hbz-nrw.de";
+	private final String CLUSTER_NAME = "gaia-aither";
+	private final String HOSTNAME = "gaia.hbz-nrw.de";
 
 	@Test
 	public void testOnline() {

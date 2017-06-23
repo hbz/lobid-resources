@@ -38,6 +38,7 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.lobid.resources.run.MabXml2lobidJsonEs;
+import org.lobid.resources.run.WikidataEntityGeodata2Es;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -80,9 +81,11 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 	@BeforeClass
 	public static void setup() {
 		try {
-			Files.walk(Paths.get(DIRECTORY_TO_TEST_JSON_FILES))
-					.filter(Files::isRegularFile)
-					.forEach(fname -> testFiles.add(fname.getFileName().toString()));
+			if (System.getProperty("generateTestData", "false").equals("true")) {
+				Files.walk(Paths.get(DIRECTORY_TO_TEST_JSON_FILES))
+						.filter(Files::isRegularFile)
+						.forEach(fname -> testFiles.add(fname.getFileName().toString()));
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -105,7 +108,11 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 	 */
 	public static void etl(final Client cl,
 			RdfModel2ElasticsearchEtikettJsonLd etikettJsonLdConverter) {
-		client = cl;
+		// load wikidata geo coordinates into es
+		WikidataEntityGeodata2Es.setElasticsearchIndexer(cl);
+		WikidataEntityGeodata2Es.setWikidatEntitiesJsonDefaultLoadedFromFile();
+		WikidataEntityGeodata2Es.start();
+		WikidataEntityGeodata2Es.finish();
 		final FileOpener opener = new FileOpener();
 		final Triples2RdfModel triple2model = new Triples2RdfModel();
 		triple2model.setInput(Hbz01MabXmlEtlNtriples2Filesystem.N_TRIPLE);
@@ -173,6 +180,7 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 	private static void writeFile(final String TEST_FILENAME,
 			final String DOCUMENT) {
 		File testFile = new File(TEST_FILENAME);
+		LOG.info("Write" + TEST_FILENAME);
 		try {
 			FileUtils.writeStringToFile(testFile, DOCUMENT, false);
 		} catch (IOException e) {
@@ -186,6 +194,7 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 		esIndexer.setIndexName(LOBID_RESOURCES);
 		esIndexer.setIndexAliasSuffix("");
 		esIndexer.setUpdateNewestIndex(false);
+		esIndexer.setIndexConfig("index-config.json");
 		esIndexer.onSetReceiver();
 		return esIndexer;
 	}
@@ -263,12 +272,14 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 				map = mapper.readValue(jsonLd, Map.class);
 				map.put("@context", MabXml2lobidJsonEs.LOBID_RESOURCES_JSONLD_CONTEXT);
 				jsonLdWithoutContext = mapper.writeValueAsString(map);
+				LOG.info("ID to save= " + (String) map.get("id"));
 				filename = ((String) map.get("id"))
 						.replaceAll(
 								RdfModel2ElasticsearchEtikettJsonLd.LOBID_DOMAIN + ".*/", "")
 						.replaceAll("#!$", "");
 				testFiles.remove(filename);
 				filename = DIRECTORY_TO_TEST_JSON_FILES + filename;
+
 				if (!new File(filename).exists())
 					writeFile(filename, jsonLdWithoutContext);
 				else {
