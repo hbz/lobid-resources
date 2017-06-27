@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Spliterators;
 import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
@@ -91,9 +92,14 @@ public class Lobid {
 		// e.g. take DE-6 from http://lobid.org/organisations/DE-6#!
 		String simpleId =
 				id.replaceAll("https?://lobid.org/organisations?/(.+?)(#!)?$", "$1");
-		JsonNode json =
-				cachedJsonCall(id.startsWith("http") ? id : ORGS_BETA_ROOT + id)
-						.findValue("alternateName");
+		JsonNode org =
+				cachedJsonCall(id.startsWith("http") ? id : ORGS_BETA_ROOT + id);
+		if (org.size() == 0) {
+			Logger.warn("No data for: " + id);
+			return simpleId;
+		}
+		JsonNode json = Optional.ofNullable(org.findValue("alternateName"))
+				.orElse(Json.toJson(Arrays.asList(org.findValue("name"))));
 		String label = HtmlEscapers.htmlEscaper()
 				.escape(json == null ? "" : json.elements().next().asText());
 		Logger.trace("Get org label, {} -> {} -> {}", id, simpleId, label);
