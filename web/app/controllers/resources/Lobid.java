@@ -169,11 +169,12 @@ public class Lobid {
 		List<JsonNode> complexSubjects =
 				Json.toJson(response.getHits().getAt(0).getSource())
 						.findValues("componentList");
-		String label = complexSubjects.stream()
-				.flatMap((complexSubject) -> StreamSupport.stream(
-						Spliterators.spliteratorUnknownSize(complexSubject.elements(), 0), false))
-				.filter((s) -> s.has("id") && s.get("id").textValue().equals(uri))
-				.findFirst().map((s) -> s.get("label").textValue()).orElse(uri);
+		String label =
+				complexSubjects.stream()
+						.flatMap((complexSubject) -> StreamSupport.stream(Spliterators
+								.spliteratorUnknownSize(complexSubject.elements(), 0), false))
+						.filter((s) -> s.has("id") && s.get("id").textValue().equals(uri))
+						.findFirst().map((s) -> s.get("label").textValue()).orElse(uri);
 		return label;
 	}
 
