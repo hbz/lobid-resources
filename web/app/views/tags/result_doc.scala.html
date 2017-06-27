@@ -140,6 +140,10 @@
   seq(0).asOpt[String].getOrElse("--")
 }
 
+@sortedPublications(seq: Seq[JsValue]) = @{
+  seq.sortBy((v: JsValue) => ((v\"startDate").asOpt[String].getOrElse((v\"endDate").asOpt[String].getOrElse("0")).toInt))
+}
+
 @table(){
   @result_field("Titel", "title", doc, TableRow.VALUES)
   @result_field("Titelzusatz", "otherTitleInformation", doc, TableRow.VALUES)
@@ -149,7 +153,7 @@
   @with_icon("Publikationstyp", "type", controllers.resources.Application.TYPE_FIELD)
   @result_field("", "thesisInformation", doc, TableRow.VALUES)
 
-  @for(pub <- (doc\"publication").asOpt[Seq[JsValue]].getOrElse(Seq())){ @publication(pub) }
+  @for(pub <- sortedPublications((doc\"publication").asOpt[Seq[JsValue]].getOrElse(Seq()))){ @publication(pub) }
 
   @result_field("Auflage", "edition", doc, TableRow.VALUES)
   @result_field("ISBN", "isbn", doc, TableRow.VALUES)
