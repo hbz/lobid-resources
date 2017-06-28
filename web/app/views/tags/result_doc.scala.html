@@ -147,6 +147,7 @@
 @table(){
   @result_field("Titel", "title", doc, TableRow.VALUES)
   @result_field("Titelzusatz", "otherTitleInformation", doc, TableRow.VALUES)
+  @result_field("Unterreihe", "titleOfSubSeries", doc, TableRow.VALUES)
   @result_field("Verantwortlich", "responsibilityStatement", doc, TableRow.VALUES)
   @contributions((doc \ "contribution").asOpt[Seq[JsValue]].getOrElse(Seq()))
   @with_icon("Medientyp", "medium", controllers.resources.Application.MEDIUM_FIELD)
