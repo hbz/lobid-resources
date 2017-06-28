@@ -7,6 +7,15 @@
 @import controllers.resources.Index
 @import controllers.resources.Application.CONFIG
 
+@labelled(label: String, key: String) = {
+  @if((doc\key).asOpt[Seq[JsValue]].isDefined) {
+    <tr>
+      <td>@label</td>
+      <td><a href='@(((doc\key)(0)\"id").asOpt[String].getOrElse("--"))'>@(((doc\key)(0)\"label").asOpt[String].getOrElse("--"))</a></td>
+    </tr>
+  }
+}
+
 @table()(body: Html) = {
    <table class="table table-striped table-condensed">
   <tr>
@@ -127,6 +136,6 @@
 
   @subjects((doc \ "subject").asOpt[Seq[JsValue]].getOrElse(Seq()))
 
-  @result_field("Inhaltsangabe", "description", doc, TableRow.LINKS)
-  @result_field("Inhaltsverzeichnis", "tableOfContents", doc, TableRow.LINKS)
+  @labelled("Inhaltsangabe", "description")
+  @labelled("Inhaltsverzeichnis", "tableOfContents")
 }
