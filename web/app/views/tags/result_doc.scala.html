@@ -16,6 +16,42 @@
   }
 }
 
+@optional(label: String, key: String, v: JsValue) = {
+  @if((v\key).asOpt[String].isDefined) {
+   <br/> @((v\key).as[String])
+  }
+}
+
+@publication(pub: JsValue) = {
+  @defining(((pub\"startDate"),(pub\"endDate"))) { case (start,end) =>
+    <tr>
+      <td>
+        @if((pub \ "type").toString.contains("SecondaryPublicationEvent")){
+          Sekundärpublikation
+        } else {
+          Erschienen
+        }
+      </td>
+      <td>
+        @if(start != end &&
+            ((start.asOpt[String].isDefined && end.asOpt[String].isDefined) ||
+            (doc\"type").toString.contains("Series") || (doc\"type").toString.contains("Periodical"))) {
+          @* Show range if either both start and end are given, or if we want open ranges like "- 2015" *@
+          @start.asOpt[String].getOrElse("") &ndash; @end.asOpt[String].getOrElse("")
+        } else {
+          @* Otherwise show only one date, no range (no periodical or series, and just one date given) *@
+          @start.asOpt[String].getOrElse(end.asOpt[String].getOrElse(""))
+        }
+        @optional("Erscheinungsort", "location", pub)
+        @optional("Verlag", "publishedBy", pub)
+        @((pub\"frequency").asOpt[Seq[JsValue]].map { freq =>
+          optional("Erscheinungsweise", "label", freq.head)
+        })
+      </td>
+    </tr>
+  }
+}
+
 @table()(body: Html) = {
    <table class="table table-striped table-condensed">
   <tr>
@@ -104,6 +140,10 @@
   seq(0).asOpt[String].getOrElse("--")
 }
 
+@sortedPublications(seq: Seq[JsValue]) = @{
+  seq.sortBy((v: JsValue) => ((v\"startDate").asOpt[String].getOrElse((v\"endDate").asOpt[String].getOrElse("0")).toInt))
+}
+
 @table(){
   @result_field("Titel", "title", doc, TableRow.VALUES)
   @result_field("Titelzusatz", "otherTitleInformation", doc, TableRow.VALUES)
@@ -112,21 +152,16 @@
   @with_icon("Medientyp", "medium", controllers.resources.Application.MEDIUM_FIELD)
   @with_icon("Publikationstyp", "type", controllers.resources.Application.TYPE_FIELD)
   @result_field("", "thesisInformation", doc, TableRow.VALUES)
-  @defining(((doc\\"startDate"),(doc\\"endDate"))) { case (start,end) =>
-    @if(start.size > 0){<tr><td>Erschienen</td><td>@if(start != end && end.size > 0){
-      @first(start) &ndash; @first(end)} else {@first(start)}</td></tr>
-    }
-  }
+
+  @for(pub <- sortedPublications((doc\"publication").asOpt[Seq[JsValue]].getOrElse(Seq()))){ @publication(pub) }
+
   @result_field("Auflage", "edition", doc, TableRow.VALUES)
-  @result_field("Erscheinungsort", "location", doc, TableRow.VALUES)
-  @result_field("Verlag", "publishedBy", doc, TableRow.VALUES)
   @result_field("ISBN", "isbn", doc, TableRow.VALUES)
   @result_field("ISSN", "issn", doc, TableRow.VALUES)
   @result_field("URN", "urn", doc, TableRow.VALUES)
   @result_field("Umfang", "extent", doc, TableRow.VALUES)
   @result_field("Quelle", "bibliographicCitation", doc, TableRow.VALUES)
   @result_field("In", "containedIn", doc, TableRow.LINKS)
-  @result_field("Erscheinungsweise", "frequency", doc, TableRow.VALUES)
 
   @lobid2_part_of("isPartOf", "hasSuperordinate")
   @defining(lobidUrl((doc \ "hbzId").asOpt[String].getOrElse(""))){ id =>
