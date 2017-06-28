@@ -95,6 +95,11 @@ public class Lobid {
 		JsonNode org =
 				cachedJsonCall(id.startsWith("http") ? id : ORGS_BETA_ROOT + id);
 		if (org.size() == 0) {
+			if (simpleId.split("-").length == 3) {
+				String superSigel = id.substring(0, id.lastIndexOf('-'));
+				Logger.info("No data for: {}, trying {}", id, superSigel);
+				return organisationLabel(superSigel) + ": " + simpleId;
+			}
 			Logger.warn("No data for: " + id);
 			return simpleId;
 		}
