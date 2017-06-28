@@ -92,6 +92,9 @@ public class Lobid {
 		// e.g. take DE-6 from http://lobid.org/organisations/DE-6#!
 		String simpleId =
 				id.replaceAll("https?://lobid.org/organisations?/(.+?)(#!)?$", "$1");
+		if (simpleId.startsWith("ZDB-")) {
+			return "Paket elektronischer Ressourcen: " + simpleId;
+		}
 		JsonNode org =
 				cachedJsonCall(id.startsWith("http") ? id : ORGS_BETA_ROOT + id);
 		if (org.size() == 0) {
