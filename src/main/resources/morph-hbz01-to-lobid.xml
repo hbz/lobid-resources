@@ -2108,6 +2108,18 @@
 				<sanitizeUrl></sanitizeUrl>
 			</data>
 		</combine>
+		<combine name="http://purl.org/dc/terms/hasVersion" value="${a}">
+			<if>
+				<none>
+					<data source="552b1.a">
+						<regexp match="urn:"/>
+					</data>
+				</none>
+			</if>
+			<data source="552b1.a" name="a">
+				<regexp match=".*"/>
+			</data>
+		</combine>
 		<!-- rdf:seeAlso if 655 AND first three letter "Zusätzliche Angaben" -->
 		<combine name="http://www.w3.org/2000/01/rdf-schema#seeAlso" value="${seeAlsoUri}"
 			sameEntity="true">
