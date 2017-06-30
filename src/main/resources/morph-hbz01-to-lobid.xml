@@ -1022,10 +1022,10 @@
 		</data>
 		<!-- urn -->
 		<data source="552b[-1].a" name="@urn">
-			<regexp match="(^.*:.*\d+)$" format="${1}"/>
+			<regexp match="(urn:.*\d+)$" format="${1}"/>
 		</data>
 		<data source="URN-1.a" name="@urn">
-			<regexp match="(^.*:.*\d+)$" format="${1}"/>
+			<regexp match="(urn:.*\d+)$" format="${1}"/>
 		</data>
 		<data source="@urn" name="$[ns-lobid-vocab]urn"/>
 		<data source="@urn" name="http://umbel.org/umbel#isLike">
@@ -2106,6 +2106,18 @@
 			</if>
 			<data source="@linkUri" name="a">
 				<sanitizeUrl></sanitizeUrl>
+			</data>
+		</combine>
+		<combine name="http://purl.org/dc/terms/hasVersion" value="${a}">
+			<if>
+				<none>
+					<data source="552b1.a">
+						<regexp match="urn:"/>
+					</data>
+				</none>
+			</if>
+			<data source="552b1.a" name="a">
+				<regexp match=".*"/>
 			</data>
 		</combine>
 		<!-- rdf:seeAlso if 655 AND first three letter "Zusätzliche Angaben" -->
