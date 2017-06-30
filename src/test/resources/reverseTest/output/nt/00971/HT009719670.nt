@@ -4,19 +4,25 @@ _:b0 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://id.loc.gov/ontolo
 _:b1 <http://id.loc.gov/ontologies/bibframe/agent> <http://d-nb.info/gnd/133991210> .
 _:b1 <http://id.loc.gov/ontologies/bibframe/role> <http://id.loc.gov/vocabulary/relators/ctb> .
 _:b1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://id.loc.gov/ontologies/bibframe/Contribution> .
+_:b10 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> _:b2 .
+_:b10 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
 _:b2 <http://id.loc.gov/ontologies/bibframe/agent> <http://d-nb.info/gnd/11860225X> .
 _:b2 <http://id.loc.gov/ontologies/bibframe/role> <http://id.loc.gov/vocabulary/relators/ctb> .
 _:b2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://id.loc.gov/ontologies/bibframe/Contribution> .
-_:b3 <http://id.loc.gov/ontologies/bibframe/note> "Erschienen: 1 - 2, jeweils Videokass. u. Begleith."^^<http://www.w3.org/2001/XMLSchema#string> .
-_:b3 <http://schema.org/location> "Paris"^^<http://www.w3.org/2001/XMLSchema#string> .
-_:b3 <http://schema.org/publishedBy> "Hatier/Didier"^^<http://www.w3.org/2001/XMLSchema#string> .
-_:b3 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://schema.org/PublicationEvent> .
-_:b4 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> _:b0 .
-_:b4 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:b5 .
-_:b5 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> _:b1 .
-_:b5 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:b6 .
-_:b6 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> _:b2 .
-_:b6 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
+_:b3 <http://purl.org/lobid/lv#hasSuperordinate> _:b4 .
+_:b3 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://purl.org/lobid/lv#IsPartOfRelation> .
+_:b4 <http://www.w3.org/2000/01/rdf-schema#label> "Les films du losange"^^<http://www.w3.org/2001/XMLSchema#string> .
+_:b5 <http://purl.org/lobid/lv#hasSuperordinate> _:b6 .
+_:b5 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://purl.org/lobid/lv#IsPartOfRelation> .
+_:b6 <http://www.w3.org/2000/01/rdf-schema#label> "Collection libre \u00E9change"^^<http://www.w3.org/2001/XMLSchema#string> .
+_:b7 <http://id.loc.gov/ontologies/bibframe/note> "Erschienen: 1 - 2, jeweils Videokass. u. Begleith."^^<http://www.w3.org/2001/XMLSchema#string> .
+_:b7 <http://schema.org/location> "Paris"^^<http://www.w3.org/2001/XMLSchema#string> .
+_:b7 <http://schema.org/publishedBy> "Hatier/Didier"^^<http://www.w3.org/2001/XMLSchema#string> .
+_:b7 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://schema.org/PublicationEvent> .
+_:b8 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> _:b0 .
+_:b8 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:b9 .
+_:b9 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> _:b1 .
+_:b9 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:b10 .
 <http://d-nb.info/gnd/11860225X> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://d-nb.info/standards/elementset/gnd#Person> .
 <http://d-nb.info/gnd/11860225X> <http://www.w3.org/2000/01/rdf-schema#label> "Rohmer, Eric"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://d-nb.info/gnd/11860225X> <http://www.w3.org/2004/02/skos/core#altLabel> "Cordier, Gilbert"^^<http://www.w3.org/2001/XMLSchema#string> .
@@ -50,7 +56,7 @@ _:b6 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/0
 <http://lobid.org/resources/HT009719670> <http://purl.org/dc/terms/modified> "20050117"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/resources/HT009719670> <http://schema.org/sourceOrganization> <http://lobid.org/organisations/DE-467#!> .
 <http://lobid.org/resources/HT009719670> <http://www.w3.org/2000/01/rdf-schema#label> "lobid Ressource"^^<http://www.w3.org/2001/XMLSchema#string> .
-<http://lobid.org/resources/HT009719670#!> <http://id.loc.gov/ontologies/bibframe/contribution> _:b4 .
+<http://lobid.org/resources/HT009719670#!> <http://id.loc.gov/ontologies/bibframe/contribution> _:b8 .
 <http://lobid.org/resources/HT009719670#!> <http://id.loc.gov/ontologies/bibframe/hasItem> <http://lobid.org/items/HT009719670:DE-467:#!> .
 <http://lobid.org/resources/HT009719670#!> <http://id.loc.gov/ontologies/bibframe/responsibilityStatement> "s\u00E9lectionn\u00E9s par Janine Courtillon et Genevi\u00E8ve-Dominique de Salins"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/resources/HT009719670#!> <http://purl.org/dc/terms/language> <http://id.loc.gov/vocabulary/iso639-2/fra> .
@@ -59,8 +65,10 @@ _:b6 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/0
 <http://lobid.org/resources/HT009719670#!> <http://purl.org/dc/terms/title> "Le cin\u00E9ma de la vie"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/resources/HT009719670#!> <http://purl.org/lobid/lv#contributorOrder> "http://d-nb.info/gnd/172026644 | http://d-nb.info/gnd/133991210 | http://d-nb.info/gnd/11860225X"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/resources/HT009719670#!> <http://purl.org/lobid/lv#hbzID> "HT009719670"^^<http://www.w3.org/2001/XMLSchema#string> .
+<http://lobid.org/resources/HT009719670#!> <http://purl.org/lobid/lv#isPartOf> _:b3 .
+<http://lobid.org/resources/HT009719670#!> <http://purl.org/lobid/lv#isPartOf> _:b5 .
 <http://lobid.org/resources/HT009719670#!> <http://rdaregistry.info/Elements/u/P60493> "extraits de films de Eric Rohmer"^^<http://www.w3.org/2001/XMLSchema#string> .
-<http://lobid.org/resources/HT009719670#!> <http://schema.org/publication> _:b3 .
+<http://lobid.org/resources/HT009719670#!> <http://schema.org/publication> _:b7 .
 <http://lobid.org/resources/HT009719670#!> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://purl.org/dc/terms/BibliographicResource> .
 <http://lobid.org/resources/HT009719670#!> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://purl.org/ontology/bibo/MultiVolumeBook> .
 <http://lobid.org/resources/HT009719670#!> <http://www.w3.org/2002/07/owl#sameAs> <http://hub.culturegraph.org/resource/HBZ-HT009719670> .
