@@ -2084,9 +2084,19 @@
 			<data source="@linkUri"/>
 		</choose>
 		<!-- ... check if URI and if it's of type "webPageArchived" to determine if it's the archived 
-			web source -->
+			web source. URL musn't be an edoweb one. -->
+		<combine name="@655edoweb" value="${a}">
+			<choose name="a">
+				<data source="655e1.u" name="a">
+					<regexp match="^(?!http.?://.*edoweb).*$"/>
+				</data>
+				<data source="655e1.u" name="a">
+					<regexp match=".*" format="ignore"/> 
+				</data>
+			</choose>
+		</combine>
 		<combine name="$[ns-lobid-vocab]webPageArchived" value="${uri}">
-			<data source="655e1.u" name="uri">
+			<data source="@655edoweb" name="uri">
 				<regexp match="http.*"/>
 			</data>
 			<data source="@archived"/>
