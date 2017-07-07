@@ -1061,7 +1061,7 @@
 		<!-- ########## links to the fulltext, online doi, toc etc. -->
 		<!-- ####################### -->
 		<!-- doi -->
-		<data source="552a[-1].a" name="@doi">
+		<data source="552[ab][-1].a" name="@doi">
 			<replace pattern=" " with=""/>
 			<regexp match="^(10.(\d)+/(\S)+).*" format="${1}"/>
 		</data>
@@ -1072,9 +1072,16 @@
 		<data source="@doi" name="$[ns-bibo]doi">
 		</data>
 		<!-- urn -->
-		<data source="552b[-1].a" name="@urn">
-			<regexp match="(urn:.*\d+)$" format="${1}"/>
-		</data>
+		<combine name="@urn" value="${a}">
+			<choose name="a">
+				<data source="552b[-1].a">
+					<regexp match="(urn:.*\d+)$" format="${1}"/>
+				</data>
+				<data source="552b[-1].a">
+					<regexp match="^(nbn:de:.*\d)$" format="urn:${1}"/>
+				</data>
+			</choose>
+		</combine>
 		<data source="URN-1.a" name="@urn">
 			<regexp match="(urn:.*\d+)$" format="${1}"/>
 		</data>
@@ -2173,12 +2180,15 @@
 			<if>
 				<none>
 					<data source="552b1.a">
-						<regexp match="urn:"/>
+						<regexp match=".*urn.*"/>
+					</data>
+					<data source="552b1.a">
+						<regexp match="http:\/\/dx.doi.org\/.*"/>
 					</data>
 				</none>
 			</if>
 			<data source="552b1.a" name="a">
-				<regexp match=".*"/>
+				<regexp match="http.*"/>
 			</data>
 		</combine>
 		<!-- rdf:seeAlso if 655 AND first three letter "Zusätzliche Angaben" -->
