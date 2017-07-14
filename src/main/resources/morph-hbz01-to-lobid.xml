@@ -657,9 +657,16 @@
 		<data source="052." name="@collection">
 			<regexp match="^[jp].*|^.il.*|^...il.*|^.....il.*" format="$[ns-bibo]Periodical"/>
 		</data>
-		<data source="052." name="@collection">
-			<regexp match="^r|^.se|^...se|^.....se" format="$[ns-bibo]Series"/>
-		</data>
+		<combine name="@collection" value="${a}">
+			<if>
+				<none>
+					<data source="540[-ab][-1].[ab]"/>
+				</none>
+			</if>
+			<data source="052." name="a">
+				<regexp match="^r|^.se|^...se|^.....se" format="$[ns-bibo]Series"/>
+			</data>
+		</combine>
 		<data source="@collection" name="@typeOnly"/>
 		<!-- newspaper -->
 		<data source="052." name="@collection">
@@ -710,6 +717,24 @@
 				<sanitizeUrl></sanitizeUrl>
 			</data>
 		</combine>
+		<combine name="@typeOnly" value="${a}">
+			<if>
+				<none>
+					<data source="052.">
+						<regexp match="^........([dcwesmbqfaghtz])|^.........([dcwesmbqfaghtz])|^..........([dcwesmbqfaghtz])"/>
+					</data>
+					<data source="542[-ab][-1].[a]"/>
+				</none>
+			</if>
+			<choose name="a">
+				<data source="9[01234][27][-a][-1].f" name="a">
+					<regexp match="^Aufsatzsammlung" format="$[ns-lobid-vocab]EditedVolume"/>
+				</data>
+				<data source="9[01234][27][-a][-1].9" name="a">
+					<regexp match="4143413" format="$[ns-lobid-vocab]EditedVolume"/>
+				</data>
+			</choose>
+		</combine>
 		<!-- set default type -->
 		<combine name="@rdftype" value="$[ns-lobid-vocab]Miscellaneous" flushWith="record">
 			<if>
@@ -720,7 +745,6 @@
 			</if>
 			<data source="@id"/>
 		</combine>
-		<!-- <combine value="${a}" name=""> <data source="@frequency" name="a"/> </combine> -->
 		<!-- ####################### -->
 		<!-- ########## title -->
 		<!-- ####################### -->
@@ -1776,12 +1800,6 @@
 		</data>
 		<data source="902[-a][-1].f" name="@medium">
 			<regexp match="^Karte" format="$[ns-bibo]Map"/>
-		</data>
-		<data source="9[01234][27][-a][-1].f" name="@typeOnly">
-			<regexp match="^Aufsatzsammlung" format="$[ns-lobid-vocab]EditedVolume"/>
-		</data>
-		<data source="9[01234][27][-a][-1].9" name="@typeOnly">
-			<regexp match="4143413-4" format="$[ns-lobid-vocab]EditedVolume"/>
 		</data>
 		<!-- "Verweisungsformen" literals -->
 		<data source="9[56][27]-[12].[acefgkps]" name="@subjectMain">
