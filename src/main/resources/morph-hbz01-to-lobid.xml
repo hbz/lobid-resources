@@ -1221,24 +1221,52 @@
 		</data>
 		<!-- literals of creator (seems there are no corporateBodyCreators without gndID) -->
 		<data source="359[-ab][-12].a" name="http://id.loc.gov/ontologies/bibframe/responsibilityStatement"/>
-		<data source="1[02468][048][-aemn][12].[pa]|1[13579][26][-aemn][12].[pa]" name="@creatorPersonLabel"/>
+		<!-- <data source="1[02468][048][-aemn][12].[pa]|1[13579][26][-aemn][12].[pa]" name="@creatorPersonLabel"/> -->
 		<!-- bnode for creator when no ID -->
-		<combine name="@bnodeCreatorPersonLabel" value="_:${a}">
-			<if>
-				<none>
-					<data source="@GNDPersonId"/>
-				</none>
-			</if>
-			<data source="@creatorPersonLabel" name="a">
+		<combine name="@creatorPersonLabel104" value="${a}">
+			<data source="104[aemn][12].[pa]" name="a">
 				<replace pattern="&gt;" with=""/>
 				<replace pattern="&lt;" with=""/>
 			</data>
 		</combine>
-		<choose name="@creatorPersonOrCoorporateBodyBnodeOrId" flushWith="@GNDPersonId|@bnodeCreatorPersonLabel|@creatorCorporateBodyId">
+		<combine name="@bnodeCreatorPersonLabel104" value="_:${a}" flushWith="@creatorPersonLabel104">
+			<data source="@creatorPersonLabel104" name="a"/>
+		</combine>
+		
+		<combine name="http://id.loc.gov/ontologies/bibframe/note" value="abc${a}">
+	 	<data source="@creatorPersonLabel104" name="a"/>
+	 </combine>
+ <combine name="http://id.loc.gov/ontologies/bibframe/note" value="abcd${a}">
+		 <data source="@bnodeCreatorPersonLabel104" name="a"/>
+	 </combine> 
+	 	<combine name="~rdf:subject" value="${a}" flushWith="@bnodeCreatorPersonLabel104">
+		<data source="@bnodeCreatorPersonLabel104" name="a"/>
+</combine>
+	
+	<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="pchbz" flushWith="creatorPersonLabel104">
+		<data source="@creatorPersonLabel104" name="a"/>
+	</combine>
+		<call-macro name="setBackRdfSubject" field="@bnodeCreatorPersonLabel104"/>
+		
+		<!-- <combine name="@bnodeCreatorPersonLabel108" value="_:${a}">
+			<data source="108[aemn][12].[pa]" name="a">
+				<replace pattern="&gt;" with=""/>
+				<replace pattern="&lt;" with=""/>
+			</data>
+		</combine>
+				<data source="@bnodeCreatorPersonLabel108" name="~rdf:subject"/>
+				<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="${a}" flushWith="@bnodeCreatorPersonLabel108">
+					<data source="108[aemn][12].[pa]" name="a"/>
+				</combine>				<call-macro name="setBackRdfSubject" field="@bnodeCreatorPersonLabel108"/> -->
+
+<combine name="@creatorPersonOrCoorporateBodyBnodeOrId" value="${a}" >
+		<choose name="a" flushWith="@bnodeCreatorPersonLabel10[48]|@GNDPersonId|@creatorCorporateBodyId">
 			<data source="@GNDPersonId"/>
 			<data source="@creatorCorporateBodyId"/>
-			<data source="@bnodeCreatorPersonLabel"/>
+			<data source="@bnodeCreatorPersonLabel10[48]"/>
 		</choose>
+	</combine>
+
 		<!-- bnode for contributor when no ID -->
 		<data source="1[02468][048][bcf]1.[pa]|1[13579][26][bcf]1.[pa]|8[012][02468][-mn]-12.[pa]"
 			name="@contributorPersonLabel"/>
@@ -1252,6 +1280,7 @@
 			<data source="@contributorPersonId"/>
 			<data source="@bnodeContributorPersonLabel"/>
 		</choose>
+		
 		<data source="2[02468][048][bcf]1.[pa]|2[13579][26][bcf]1.[pa]|200-1.a" name="@contributorCoorporateBodyLabel"/>
 		<combine name="@bnodeContributorBodyLabel" value="_:${a}">
 			<data source="@contributorCoorporateBodyLabel" name="a">
@@ -1363,9 +1392,10 @@
 			<data source="[29]??[-abcfep][12].d" name="d"/>
 			<data source="[29]??[-abcfep][12].c" name="c"/>
 		</combine>
-		<data
-			source="@contributorPersonBnodeOrId|@contributorCorporateBodyBnodeOrId|@creatorPersonOrCoorporateBodyBnodeOrId"
+		<data 
+			source="@contributorPersonBnodeOrId|@contributorCorporateBodyBnodeOrId|@bnodeCreatorPersonLabel10[48]|@creatorPersonOrCoorporateBodyBnodeOrId"
 			name="@agentId"/>
+		<!-- <data source="@agentId" name="http://id.loc.gov/ontologies/bibframe/note"/> -->
 		<combine value="_:${a}${b}" name="@contributionBnode" sameEntity="true">
 			<data source="@agentId" name="a"/>
 			<data source="@relator" name="b"/>
@@ -1699,7 +1729,7 @@
 					<regexp match="[vV]orl|^\[ant\]$|^(ant)$" format="http://id.loc.gov/vocabulary/relators/ant"/>
 				</data>
 				<data source="@marcrelName" name="a">
-					<regexp match="[gG]esang|sng|Alt|Bariton|Bass|Baß|Sopr|Ten" format="http://id.loc.gov/vocabulary/relators/sng"/>
+					<regexp match="[gG]esang|sng|Alt|Bariton|Bass|Baß|Sopr|Ten" format="htt11p://id.loc.gov/vocabulary/relators/sng"/>
 				</data>
 				<data source="@marcrelName" name="a">
 					<regexp match="[iI]nterviewer|^\[ivr\]$|^(ivr)$" format="http://id.loc.gov/vocabulary/relators/ivr"/>
@@ -1711,7 +1741,7 @@
 					<regexp match="[kK]artogra|^\[ctg\]$|^(ctg)$" format="http://id.loc.gov/vocabulary/relators/ctg"/>
 				</data>
 				<data source="@marcrelName" name="a">
-					<regexp match="[mM]usi|^\[mus\]$|^(mus)$" format="http://id.loc.gov/vocabulary/relators/mus"/>
+					<regexp match="[mM]usi|^\[mus\]$|^(mus)$" format="http://id.loc.gov/voc11abulary/relators/mus"/>
 				</data>
 				<data source="@marcrelName" name="a">
 					<regexp match="[iI]nstr|Harfe|Gitarre|Klavier|Org" format="http://id.loc.gov/vocabulary/relators/itr"/>

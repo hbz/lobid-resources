@@ -1,16 +1,26 @@
 _:b0 <http://id.loc.gov/ontologies/bibframe/agent> <http://d-nb.info/gnd/115833986> .
 _:b0 <http://id.loc.gov/ontologies/bibframe/role> <http://id.loc.gov/vocabulary/relators/cre> .
 _:b0 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://id.loc.gov/ontologies/bibframe/Contribution> .
-_:b1 <http://id.loc.gov/ontologies/bibframe/agent> <http://d-nb.info/gnd/123385423> .
+_:b1 <http://id.loc.gov/ontologies/bibframe/agent> _:b2 .
 _:b1 <http://id.loc.gov/ontologies/bibframe/role> <http://id.loc.gov/vocabulary/relators/cre> .
 _:b1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://id.loc.gov/ontologies/bibframe/Contribution> .
-_:b2 <http://schema.org/location> "Waltrop"^^<http://www.w3.org/2001/XMLSchema#string> .
-_:b2 <http://schema.org/startDate> "2015"^^<http://www.w3.org/2001/XMLSchema#gYear> .
-_:b2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://schema.org/PublicationEvent> .
-_:b3 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> _:b0 .
-_:b3 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:b4 .
-_:b4 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> _:b1 .
-_:b4 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
+_:b10 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> _:b5 .
+_:b10 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
+_:b3 <http://id.loc.gov/ontologies/bibframe/agent> _:b4 .
+_:b3 <http://id.loc.gov/ontologies/bibframe/role> <http://id.loc.gov/vocabulary/relators/cre> .
+_:b3 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://id.loc.gov/ontologies/bibframe/Contribution> .
+_:b5 <http://id.loc.gov/ontologies/bibframe/agent> <http://d-nb.info/gnd/123385423> .
+_:b5 <http://id.loc.gov/ontologies/bibframe/role> <http://id.loc.gov/vocabulary/relators/cre> .
+_:b5 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://id.loc.gov/ontologies/bibframe/Contribution> .
+_:b6 <http://schema.org/location> "Waltrop"^^<http://www.w3.org/2001/XMLSchema#string> .
+_:b6 <http://schema.org/startDate> "2015"^^<http://www.w3.org/2001/XMLSchema#gYear> .
+_:b6 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://schema.org/PublicationEvent> .
+_:b7 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> _:b0 .
+_:b7 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:b8 .
+_:b8 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> _:b1 .
+_:b8 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:b9 .
+_:b9 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> _:b3 .
+_:b9 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:b10 .
 <http://d-nb.info/gnd/115833986> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://d-nb.info/standards/elementset/gnd#Person> .
 <http://d-nb.info/gnd/115833986> <http://www.w3.org/2000/01/rdf-schema#label> "Kayser, Klaus"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://d-nb.info/gnd/123385423> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://d-nb.info/standards/elementset/gnd#Person> .
@@ -38,8 +48,10 @@ _:b4 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/0
 <http://lobid.org/resources/HT018703339> <http://purl.org/dc/terms/modified> "20170703"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/resources/HT018703339> <http://schema.org/sourceOrganization> <http://lobid.org/organisations/DE-38M#!> .
 <http://lobid.org/resources/HT018703339> <http://www.w3.org/2000/01/rdf-schema#label> "lobid Ressource"^^<http://www.w3.org/2001/XMLSchema#string> .
-<http://lobid.org/resources/HT018703339#!> <http://id.loc.gov/ontologies/bibframe/contribution> _:b3 .
+<http://lobid.org/resources/HT018703339#!> <http://id.loc.gov/ontologies/bibframe/contribution> _:b7 .
 <http://lobid.org/resources/HT018703339#!> <http://id.loc.gov/ontologies/bibframe/hasItem> <http://lobid.org/items/HT018703339:DE-38M:#!> .
+<http://lobid.org/resources/HT018703339#!> <http://id.loc.gov/ontologies/bibframe/note> "abcBorkenfeld, Stephan"^^<http://www.w3.org/2001/XMLSchema#string> .
+<http://lobid.org/resources/HT018703339#!> <http://id.loc.gov/ontologies/bibframe/note> "abcd_:Borkenfeld, Stephan"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/resources/HT018703339#!> <http://id.loc.gov/ontologies/bibframe/responsibilityStatement> "Klaus Kayser ; Stephan Borkenfeld ; Amina Djenouni ; Gian Kayser"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/resources/HT018703339#!> <http://purl.org/dc/terms/bibliographicCitation> "Diagnostic pathology; 1 (2015), 14, S. 1 - 18 : Ill., graph. Darst."^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/resources/HT018703339#!> <http://purl.org/dc/terms/hasVersion> <http://digitool.hbz-nrw.de:1801/webclient/DeliveryManager?pid=6337271&custom_att_2=simple_viewer> .
@@ -48,13 +60,13 @@ _:b4 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/0
 <http://lobid.org/resources/HT018703339#!> <http://purl.org/dc/terms/subject> <http://dewey.info/class/610/> .
 <http://lobid.org/resources/HT018703339#!> <http://purl.org/dc/terms/title> "Analysis of texture and objects in microscopic images"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/resources/HT018703339#!> <http://purl.org/lobid/lv#containedIn> <http://lobid.org/resources/HT018615288#!> .
-<http://lobid.org/resources/HT018703339#!> <http://purl.org/lobid/lv#contributorOrder> "http://d-nb.info/gnd/115833986 | http://d-nb.info/gnd/123385423"^^<http://www.w3.org/2001/XMLSchema#string> .
+<http://lobid.org/resources/HT018703339#!> <http://purl.org/lobid/lv#contributorOrder> "http://d-nb.info/gnd/115833986 | Borkenfeld, Stephan | http://d-nb.info/gnd/123385423"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/resources/HT018703339#!> <http://purl.org/lobid/lv#fulltextOnline> <http://digitool.hbz-nrw.de:1801/webclient/DeliveryManager?pid=6337271&custom_att_2=simple_viewer> .
 <http://lobid.org/resources/HT018703339#!> <http://purl.org/lobid/lv#fulltextOnline> <http://dx.doi.org/10.17629/www.diagnosticpathology.eu-2015-1:14> .
 <http://lobid.org/resources/HT018703339#!> <http://purl.org/lobid/lv#hbzID> "HT018703339"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/resources/HT018703339#!> <http://purl.org/lobid/lv#inCollection> <http://repository.publisso.de> .
 <http://lobid.org/resources/HT018703339#!> <http://purl.org/ontology/bibo/doi> "10.17629/www.diagnosticpathology.eu-2015-1:14"^^<http://www.w3.org/2001/XMLSchema#string> .
-<http://lobid.org/resources/HT018703339#!> <http://schema.org/publication> _:b2 .
+<http://lobid.org/resources/HT018703339#!> <http://schema.org/publication> _:b6 .
 <http://lobid.org/resources/HT018703339#!> <http://umbel.org/umbel#isLike> <http://dx.doi.org/10.17629/www.diagnosticpathology.eu-2015-1:14> .
 <http://lobid.org/resources/HT018703339#!> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://purl.org/dc/terms/BibliographicResource> .
 <http://lobid.org/resources/HT018703339#!> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://purl.org/ontology/bibo/Article> .
