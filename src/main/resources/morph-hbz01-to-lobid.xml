@@ -124,8 +124,7 @@
 						</data>
 					</combine>
 				</entity>
-				<combine name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" 
-					value="$[ns-lobid-vocab]IsPartOfRelation">
+				<combine name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" value="$[ns-lobid-vocab]IsPartOfRelation">
 					<if>
 						<none>
 							<data source="$[field_1]"/>
@@ -1165,14 +1164,17 @@
 			<data source="@id" name="id"/>
 		</combine>
 		<call-macro name="setRdfSubjectDescribedBy" field="070a1.a"/>
-		<call-macro name="setProvenance" field_1="http://schema.org/provider" field_2="070a1.a"/>
-				<!-- set subject uri of resource anew -->
+		<call-macro name="setProvenance" field_1="http://schema.org/provider"
+			field_2="070a1.a"/>
+		<!-- set subject uri of resource anew -->
 		<call-macro name="setBackRdfSubject" field="070a1.a"/>
 		<call-macro name="setRdfSubjectDescribedBy" field="070-1.a"/>
-		<call-macro name="setProvenance" field_1="http://schema.org/sourceOrganization" field_2="070-1.a"/>
+		<call-macro name="setProvenance" field_1="http://schema.org/sourceOrganization"
+			field_2="070-1.a"/>
 		<call-macro name="setBackRdfSubject" field="070-1.a"/>
 		<call-macro name="setRdfSubjectDescribedBy" field="070b1.a"/>
-		<call-macro name="setProvenance" field_1="http://open-services.net/ns/core#modifiedBy" field_2="070b1.a"/>
+		<call-macro name="setProvenance" field_1="http://open-services.net/ns/core#modifiedBy"
+			field_2="070b1.a"/>
 		<call-macro name="setBackRdfSubject" field="070b1.a"/>
 		<combine name="~rdf:subject" value="${a}">
 			<data source="003-1.a"/>
@@ -1223,49 +1225,69 @@
 		<data source="359[-ab][-12].a" name="http://id.loc.gov/ontologies/bibframe/responsibilityStatement"/>
 		<!-- <data source="1[02468][048][-aemn][12].[pa]|1[13579][26][-aemn][12].[pa]" name="@creatorPersonLabel"/> -->
 		<!-- bnode for creator when no ID -->
-		<combine name="@creatorPersonLabel104" value="${a}">
+		<!-- geht gut - aber macht eben ALLES ! -->
+			<combine name="@creatorPersonLabel104" value="${a}" >
+			<data source="10[48][aemn][12].[pa]" name="a">
+				<replace pattern="&gt;" with=""/>
+				<replace pattern="&lt;" with=""/>
+			</data>
+			
+			</combine>
+		<!--geht nihjct - warum nur?! <combine name="@creatorPersonLabel104" value="${a}" flushWith="108a1.a" sameEntity="true">
+			<if>
+				<none>
+					<data source="104??.9"/>
+				</none>
+			</if>
 			<data source="104[aemn][12].[pa]" name="a">
 				<replace pattern="&gt;" with=""/>
 				<replace pattern="&lt;" with=""/>
 			</data>
 		</combine>
-		<combine name="@bnodeCreatorPersonLabel104" value="_:${a}" flushWith="@creatorPersonLabel104">
-			<data source="@creatorPersonLabel104" name="a"/>
-		</combine>
-		
-		<combine name="http://id.loc.gov/ontologies/bibframe/note" value="abc${a}">
-	 	<data source="@creatorPersonLabel104" name="a"/>
-	 </combine>
- <combine name="http://id.loc.gov/ontologies/bibframe/note" value="abcd${a}">
-		 <data source="@bnodeCreatorPersonLabel104" name="a"/>
-	 </combine> 
-	 	<combine name="~rdf:subject" value="${a}" flushWith="@bnodeCreatorPersonLabel104">
-		<data source="@bnodeCreatorPersonLabel104" name="a"/>
-</combine>
-	
-	<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="pchbz" flushWith="creatorPersonLabel104">
-		<data source="@creatorPersonLabel104" name="a"/>
-	</combine>
-		<call-macro name="setBackRdfSubject" field="@bnodeCreatorPersonLabel104"/>
-		
-		<!-- <combine name="@bnodeCreatorPersonLabel108" value="_:${a}">
+		<combine name="@creatorPersonLabel104" value="${a}" flushWith="112??">
+			<if>
+				<none>
+					<data source="108??.9"/>
+				</none>
+			</if>
 			<data source="108[aemn][12].[pa]" name="a">
 				<replace pattern="&gt;" with=""/>
 				<replace pattern="&lt;" with=""/>
 			</data>
+		</combine> -->
+		<combine name="@bnodeCreatorPersonLabel104" value="_:${a}"> <!-- flushWith="@creatorPersonLabel104" -->
+			<data source="@creatorPersonLabel104" name="a"/>
 		</combine>
-				<data source="@bnodeCreatorPersonLabel108" name="~rdf:subject"/>
-				<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="${a}" flushWith="@bnodeCreatorPersonLabel108">
-					<data source="108[aemn][12].[pa]" name="a"/>
-				</combine>				<call-macro name="setBackRdfSubject" field="@bnodeCreatorPersonLabel108"/> -->
 
-<combine name="@creatorPersonOrCoorporateBodyBnodeOrId" value="${a}" >
-		<choose name="a" flushWith="@bnodeCreatorPersonLabel10[48]|@GNDPersonId|@creatorCorporateBodyId">
-			<data source="@GNDPersonId"/>
-			<data source="@creatorCorporateBodyId"/>
-			<data source="@bnodeCreatorPersonLabel10[48]"/>
-		</choose>
+	<combine name="http://id.loc.gov/ontologies/bibframe/note" value="abc${a}">
+		<data source="@creatorPersonLabel104" name="a"/>
 	</combine>
+		<!-- <combine name="http://id.loc.gov/ontologies/bibframe/note" value="abcd${a}"> <data source="@bnodeCreatorPersonLabel104" 
+			name="a"/> </combine> -->
+		<combine name="~rdf:subject" value="_:${a}"> <!-- flushWith="@bnodeCreatorPersonLabel104" -->
+			<data source="@creatorPersonLabel104" name="a"/>
+		</combine>
+		<data source="@creatorPersonLabel104" name="http://www.w3.org/2000/01/rdf-schema#label"/>
+		<data source="@creatorPersonLabel104" name="http://www.w3.org/2000/01/rdf-schema#label"/>
+		<combine name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" value="http://d-nb.info/standards/elementset/gnd#Person"
+			flushWith="@creatorPersonLabel104">
+			<data source="@creatorPersonLabel104" name="a"/>
+		</combine>
+		<call-macro name="setBackRdfSubject" field="@bnodeCreatorPersonLabel104"/>
+
+		<!-- <combine name="@bnodeCreatorPersonLabel108" value="_:${a}"> <data source="108[aemn][12].[pa]" 
+			name="a"> <replace pattern="&gt;" with=""/> <replace pattern="&lt;" with=""/> </data> </combine> 
+			<data source="@bnodeCreatorPersonLabel108" name="~rdf:subject"/> <combine name="http://www.w3.org/2000/01/rdf-schema#label" 
+			value="${a}" flushWith="@bnodeCreatorPersonLabel108"> <data source="108[aemn][12].[pa]" name="a"/> 
+			</combine> <call-macro name="setBackRdfSubject" field="@bnodeCreatorPersonLabel108"/> -->
+
+		<combine name="@creatorPersonOrCoorporateBodyBnodeOrId" value="${a}">
+			<choose name="a" flushWith="@bnodeCreatorPersonLabel104|@GNDPersonId|@creatorCorporateBodyId">
+				<data source="@GNDPersonId"/>
+				<data source="@creatorCorporateBodyId"/>
+				<data source="@bnodeCreatorPersonLabel104"/>
+			</choose>
+		</combine>
 
 		<!-- bnode for contributor when no ID -->
 		<data source="1[02468][048][bcf]1.[pa]|1[13579][26][bcf]1.[pa]|8[012][02468][-mn]-12.[pa]"
@@ -1280,7 +1302,7 @@
 			<data source="@contributorPersonId"/>
 			<data source="@bnodeContributorPersonLabel"/>
 		</choose>
-		
+
 		<data source="2[02468][048][bcf]1.[pa]|2[13579][26][bcf]1.[pa]|200-1.a" name="@contributorCoorporateBodyLabel"/>
 		<combine name="@bnodeContributorBodyLabel" value="_:${a}">
 			<data source="@contributorCoorporateBodyLabel" name="a">
@@ -1392,8 +1414,8 @@
 			<data source="[29]??[-abcfep][12].d" name="d"/>
 			<data source="[29]??[-abcfep][12].c" name="c"/>
 		</combine>
-		<data 
-			source="@contributorPersonBnodeOrId|@contributorCorporateBodyBnodeOrId|@bnodeCreatorPersonLabel10[48]|@creatorPersonOrCoorporateBodyBnodeOrId"
+		<data
+			source="@contributorPersonBnodeOrId|@contributorCorporateBodyBnodeOrId|@creatorPersonOrCoorporateBodyBnodeOrId"
 			name="@agentId"/>
 		<!-- <data source="@agentId" name="http://id.loc.gov/ontologies/bibframe/note"/> -->
 		<combine value="_:${a}${b}" name="@contributionBnode" sameEntity="true">
@@ -2179,7 +2201,7 @@
 					<regexp match="^(?!http.?://.*edoweb).*$"/>
 				</data>
 				<data source="655e1.u" name="a">
-					<regexp match=".*" format="ignore"/> 
+					<regexp match=".*" format="ignore"/>
 				</data>
 			</choose>
 		</combine>
@@ -2307,18 +2329,18 @@
 		<data source="599s[-1].a" name="@dctIsPartOfArticle">
 			<regexp match="(.*)" format="$[ns-zdb-services]${1}"/>
 		</data>
-		<call-macro name="createEntityForHasSuperordinateWithoutIdWithNumbering" 
+		<call-macro name="createEntityForHasSuperordinateWithoutIdWithNumbering"
 			field_1="453[-abr][-12].a" field_2="451[-ab]1.a"/>
-		<call-macro name="createEntityForHasSuperordinateWithoutIdWithNumbering" 
+		<call-macro name="createEntityForHasSuperordinateWithoutIdWithNumbering"
 			field_1="463[-abr][-12].a" field_2="461[-ab]1.a"/>
-		<call-macro name="createEntityForHasSuperordinateWithoutIdWithNumbering" 
+		<call-macro name="createEntityForHasSuperordinateWithoutIdWithNumbering"
 			field_1="473[-abr][-12].a" field_2="471[-ab]1.a"/>
-		<call-macro name="createEntityForHasSuperordinateWithoutIdWithNumbering" 
+		<call-macro name="createEntityForHasSuperordinateWithoutIdWithNumbering"
 			field_1="483[-abr][-12].a" field_2="481[-ab]1.a"/>
-		<call-macro name="createEntityForHasSuperordinateWithoutIdWithNumbering" 
+		<call-macro name="createEntityForHasSuperordinateWithoutIdWithNumbering"
 			field_1="493[-abr][-12].a" field_2="491[-ab]1.a"/>
-		<!-- isPartOf with 4[56789]1 and number and 4[56789]3, in the test data 
-			there is no resource with 4[56789]5 but no numbering in 4[56789]1 -->
+		<!-- isPartOf with 4[56789]1 and number and 4[56789]3, in the test data there is no resource 
+			with 4[56789]5 but no numbering in 4[56789]1 -->
 		<entity name="$[ns-lobid-vocab]isPartOf" flushWith="4[56789]3[-ab]1.a" reset="true">
 			<data source="4[56789][13][-abr][-12].a" name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type">
 				<regexp match=".*" format="$[ns-lobid-vocab]IsPartOfRelation"/>
