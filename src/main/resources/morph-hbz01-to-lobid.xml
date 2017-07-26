@@ -618,23 +618,12 @@
 		<data source="052." name="@rdftype">
 			<regexp match="^.no|^...no|^.....no" format="$[ns-bibo]Standard"/>
 		</data>
-		<!-- norm -->
-		<data source="051." name="@rdftype">
-			<regexp match="^.x|^..x|^...x" format="$[ns-lobid-vocab]Schoolbook"/>
-		</data>
 		<!-- legislation -->
 		<data source="051." name="@rdftype">
 			<regexp match="^.l|^..l|^...l" format="$[ns-lobid-vocab]Legislation"/>
 		</data>
 		<data source="052." name="@rdftype">
 			<regexp match="^.ag|^...ag|^.....ag" format="$[ns-lobid-vocab]Legislation"/>
-		</data>
-		<!-- thesis -->
-		<data source="051." name="@rdftype">
-			<regexp match="^.[uy]|^..[uy]|^...[uy]" format="$[ns-bibo]Thesis"/>
-		</data>
-		<data source="052." name="@rdftype">
-			<regexp match="^.sc|^...sc|^.....sc" format="$[ns-bibo]Thesis"/>
 		</data>
 		<!-- proceedings -->
 		<data source="051." name="@rdftype">
@@ -649,6 +638,24 @@
 		</data>
 		<data source="9[01234][27]-[-12].9" name="@rdftype">
 			<regexp match="4128022-2" format="http://purl.org/ontology/bibo/Report"/>
+		</data>
+		<!-- statistics -->
+		<data source="051." name="@rdftype">
+			<regexp match="^.s|^..s|^...s" format="http://purl.org/lobid/lv#Statistics"/>
+		</data>
+		<data source="052." name="@rdftype">
+			<regexp match="^.st|^..st|^...st|^....st|^.....st|^......st" format="http://purl.org/lobid/lv#Statistics"/>
+		</data>
+		<!-- schoolbook -->
+		<data source="051." name="@rdftype">
+			<regexp match="^.x|^..x|^...x" format="$[ns-lobid-vocab]Schoolbook"/>
+		</data>
+		<!-- thesis -->
+		<data source="051." name="@rdftype">
+			<regexp match="^.[uy]|^..[uy]|^...[uy]" format="$[ns-bibo]Thesis"/>
+		</data>
+		<data source="052." name="@rdftype">
+			<regexp match="^.sc|^...sc|^.....sc" format="$[ns-bibo]Thesis"/>
 		</data>
 		<!-- 052: type -->
 		<data source="052." name="@article">
