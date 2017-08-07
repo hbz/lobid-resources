@@ -567,6 +567,9 @@
 				<data source="051.">
 					<regexp match="^m|^s|^.x|^..x|^...x|^....[fkls]"/>
 				</data>
+				<data source="902-[12].f">
+					<regexp match="Atlas"/>
+				</data>
 			</choose>
 		</combine>
 		<!-- music -->
@@ -575,6 +578,9 @@
 		</data>
 		<data source="052." name="@rdftype">
 			<regexp match="^.mu|^...mu|^.....mu" format="http://purl.org/ontology/mo/PublishedScore"/>
+		</data>
+		<data source="541[-ab]?.?|551??.?" name="@rdftype">
+			<regexp match=".*" format="http://purl.org/ontology/mo/PublishedScore"/>
 		</data>
 		<!-- amtliche Druckschrift -->
 		<data source="051." name="@rdftype">
@@ -610,6 +616,9 @@
 		</data>
 		<data source="052." name="@rdftype">
 			<regexp match="^.ez|^...ez|^.....ez" format="$[ns-bibo]ReferenceSource"/>
+		</data>
+		<data source="902-[12].f" name="@rdftype">
+			<regexp match="W[ö|oe]rterbuch" format="$[ns-bibo]ReferenceSource"/>
 		</data>
 		<!-- norm -->
 		<data source="051." name="@rdftype">
