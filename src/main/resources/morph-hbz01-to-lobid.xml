@@ -567,8 +567,11 @@
 				<data source="051.">
 					<regexp match="^m|^s|^.x|^..x|^...x|^....[fkls]"/>
 				</data>
-				<data source="902-[12].f">
-					<regexp match="Atlas"/>
+				<data source="062-1.a">
+					<regexp match="Band"/>
+				</data>
+				<data source="9[01234][27]-[-1].f">
+					<regexp match="Anthologie|Atlas|Auktionskatalog|Bildband|Bilderbuch|Jugendbuch|Jugendsachbuch|Kinderbuch|Kindersachbuch|Kochbuch|Lehrbuch|Lesebuch"/>
 				</data>
 			</choose>
 		</combine>
@@ -578,6 +581,9 @@
 		</data>
 		<data source="052." name="@rdftype">
 			<regexp match="^.mu|^...mu|^.....mu" format="http://purl.org/ontology/mo/PublishedScore"/>
+		</data>
+		<data source="334-1.a" name="@rdftype">
+			<regexp match="Musikdruck" format="http://purl.org/ontology/mo/PublishedScore"/>
 		</data>
 		<data source="541[-ab]?.?|551??.?" name="@rdftype">
 			<regexp match=".*" format="http://purl.org/ontology/mo/PublishedScore"/>
@@ -606,6 +612,9 @@
 		<data source="052." name="@rdftype">
 			<regexp match="^.b[g]|^...b[g]|^.....b[g]" format="$[ns-lobid-vocab]Biography"/>
 		</data>
+		<data source="9[01234][27]-[-1].f" name="@rdftype">
+			<regexp match="Autobiographie|Biographie" format="$[ns-lobid-vocab]Biography"/>
+		</data>
 		<!-- festschrift -->
 		<data source="051." name="@rdftype">
 			<regexp match="^.f|^..f|^...f" format="$[ns-lobid-vocab]Festschrift"/>
@@ -617,8 +626,8 @@
 		<data source="052." name="@rdftype">
 			<regexp match="^.ez|^...ez|^.....ez" format="$[ns-bibo]ReferenceSource"/>
 		</data>
-		<data source="902-[12].f" name="@rdftype">
-			<regexp match="W[ö|oe]rterbuch" format="$[ns-bibo]ReferenceSource"/>
+		<data source="9[01234][27]-[-12].f" name="@rdftype">
+			<regexp match="Bestimmungsbuch|Enzyklopädie|Werkverzeichnis|W[ö|oe]rterbuch" format="$[ns-bibo]ReferenceSource"/>
 		</data>
 		<!-- norm -->
 		<data source="051." name="@rdftype">
@@ -627,9 +636,15 @@
 		<data source="052." name="@rdftype">
 			<regexp match="^.no|^...no|^.....no" format="$[ns-bibo]Standard"/>
 		</data>
-		<!-- norm -->
+		<data source="9[01234][27]-[-12].f" name="@rdftype">
+			<regexp match="Norm|Richtlinie" format="$[ns-bibo]Standard"/>
+		</data>
+		<!-- schoolbook -->
 		<data source="051." name="@rdftype">
 			<regexp match="^.x|^..x|^...x" format="$[ns-lobid-vocab]Schoolbook"/>
+		</data>
+		<data source="9[01234][27]-[1].f" name="@rdftype">
+			<regexp match="Schulbuch" format="$[ns-lobid-vocab]Schoolbook"/>
 		</data>
 		<!-- legislation -->
 		<data source="051." name="@rdftype">
@@ -645,12 +660,18 @@
 		<data source="052." name="@rdftype">
 			<regexp match="^.sc|^...sc|^.....sc" format="$[ns-bibo]Thesis"/>
 		</data>
+		<data source="519-[12].?" name="@rdftype">
+			<regexp match=".*" format="$[ns-bibo]Thesis"/>
+		</data>
 		<!-- proceedings -->
 		<data source="051." name="@rdftype">
 			<regexp match="^.k|^..k|^...k" format="$[ns-bibo]Proceedings"/>
 		</data>
 		<data source="052." name="@rdftype">
 			<regexp match="^.ko|^...ko|^.....ko" format="$[ns-bibo]Proceedings"/>
+		</data>
+		<data source="9[01234][27]-[-1].f" name="@rdftype">
+			<regexp match="Kongress" format="$[ns-bibo]Proceedings"/>
 		</data>
 		<!-- report -->
 		<data source="051." name="@rdftype">
@@ -659,12 +680,18 @@
 		<data source="9[01234][27]-[-12].9" name="@rdftype">
 			<regexp match="4128022-2" format="http://purl.org/ontology/bibo/Report"/>
 		</data>
+		<data source="9[01234][27]-[1].f" name="@rdftype">
+			<regexp match="Bericht|Erlebnisbericht|Forschungsbericht|Literaturbericht|Reisebericht" format="http://purl.org/ontology/bibo/Report"/>
+		</data>
 		<!-- 052: type -->
 		<data source="052." name="@article">
 			<regexp match="^[af]|^.au|^...au|^.....au" format="$[ns-bibo]Article"/>
 		</data>
 		<data source="052." name="@collection">
 			<regexp match="^[jp].*|^.il.*|^...il.*|^.....il.*" format="$[ns-bibo]Periodical"/>
+		</data>
+		<data source="9[01234][27]-[-1].f" name="@collection">
+			<regexp match="Zeitschrift" format="$[ns-bibo]Periodical"/>
 		</data>
 		<combine name="@collection" value="${a}">
 			<if>
@@ -676,6 +703,9 @@
 				<regexp match="^r|^.se|^...se|^.....se" format="$[ns-bibo]Series"/>
 			</data>
 		</combine>
+		<data source="9[01234][27]-[1].f" name="@collection">
+			<regexp match="Schriftenreihe" format="$[ns-bibo]Series"/>
+		</data>
 		<data source="@collection" name="@typeOnly"/>
 		<!-- newspaper -->
 		<data source="052." name="@collection">
@@ -683,6 +713,9 @@
 		</data>
 		<data source="052." name="@collection">
 			<regexp match="^z|^.[url]p|^...[url]p|^.....[url]p" format="$[ns-bibo]Newspaper"/>
+		</data>
+		<data source="9[01234][27]-[-1].f" name="@collection">
+			<regexp match="Zeitung" format="$[ns-bibo]Newspaper"/>
 		</data>
 		<!-- online -->
 		<data source="050." name="@1018">
