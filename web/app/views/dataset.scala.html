@@ -35,9 +35,10 @@
 			</a></td>
 		</tr>
 		}
+		<tr><td>Basiert auf</td><td><a href='@json.get("isBasedOn").get("url").asText()'>@json.get("isBasedOn").get("name").asText()</a></td></tr>
 		<tr><td>Veröffentlicht am</td><td>@json.get("datePublished").asText()</td></tr>
 		<tr><td>Sprache</td><td>@json.get("inLanguage").elements().next().asText()</td></tr>
-		<tr><td>Ergänzungsfrquenz</td><td>@json.get("accrualPeriodicity").get("label").get("de").asText()</td></tr>
+		<tr><td>Ergänzungsfrequenz</td><td>@json.get("accrualPeriodicity").get("label").get("de").asText()</td></tr>
 		<tr><td>Kontakt</td><td><a href='@json.get("contactPoint").asText()'>@json.get("contactPoint").asText()</a></td></tr>
 	</table>
 	<h3>Datendistribution</h3>
