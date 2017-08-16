@@ -324,7 +324,39 @@
 				</choose>
 			</combine>
 		</macro>
-		<!-- /altLabel -->
+		<!-- setting dateOfBirth and dateOfDeath for MAB 100s -->
+		<macro name="livingStatisticsSetRdfSubject">
+			<combine name="~rdf:subject" value="${a}">
+				<data source="$[field]"/>
+				<data source="$[gndId]" name="a">
+					<regexp match="\(DE-588\)(.*)" format="http://d-nb.info/gnd/${1}"/>
+				</data>
+			</combine>
+		</macro>
+		<macro name="dateOfBirthMAB100s">
+			<combine name="$[ns-gnd]dateOfBirth" value="${a}" sameEntity="true">
+				<choose name="a" flushWith="$[gndId]" sameEntity="true">
+					<data source="$[field]">
+						<regexp match="^([0-9]{4})-.*" format="${1}"/>
+					</data>
+					<data source="$[field]">
+						<regexp match="([0-9]{3})-.*" format="0${1}"/>
+					</data>
+				</choose>
+			</combine>
+		</macro>
+		<macro name="dateOfDeathMAB100s">
+			<combine name="$[ns-gnd]dateOfDeath" value="${a}" sameEntity="true">
+				<choose name="a" flushWith="$[gndId]" sameEntity="true">
+					<data source="$[field]">
+						<regexp match="^[0-9]{1,4}-([0-9]{4})" format="${1}"/>
+					</data>
+					<data source="$[field]">
+						<regexp match="^[0-9]{1,4}-([0-9]{3})" format="0${1}"/>
+					</data>
+				</choose>
+			</combine>
+		</macro>		
 	</macros>
 	<rules>
 		<!-- subject as bnodes and their two properties (label & type ) -->
@@ -1504,6 +1536,121 @@
 			</data>
 		</combine>
 		<data source="@altLabelPerson|@altLabelCorporateBody" name="http://www.w3.org/2004/02/skos/core#altLabel"/>
+		
+		<call-macro name="livingStatisticsSetRdfSubject" field="100[-abcefmnp][12].d" gndId="100[-abcefmnp][12].9"/>
+		<call-macro name="dateOfBirthMAB100s" field="100[-abcefmnp][12].d" gndId="100[-abcefmnp][12].9"/>
+		<call-macro name="dateOfDeathMAB100s" field="100[-abcefmnp][12].d" gndId="100[-abcefmnp][12].9"/>
+		<call-macro name="setBackRdfSubject" field="100[-abcefmnp][12].9"/>
+		
+		<call-macro name="livingStatisticsSetRdfSubject" field="104[-abcefmnp][12].d" gndId="104[-abcefmnp][12].9"/>
+		<call-macro name="dateOfBirthMAB100s" field="104[-abcefmnp][12].d" gndId="104[-abcefmnp][12].9"/>
+		<call-macro name="dateOfDeathMAB100s" field="104[-abcefmnp][12].d" gndId="104[-abcefmnp][12].9"/>
+		<call-macro name="setBackRdfSubject" field="104[-abcefmnp][12].9"/>
+		
+		<call-macro name="livingStatisticsSetRdfSubject" field="108[-abcefmnp][12].d" gndId="108[-abcefmnp][12].9"/>
+		<call-macro name="dateOfBirthMAB100s" field="108[-abcefmnp][12].d" gndId="108[-abcefmnp][12].9"/>
+		<call-macro name="dateOfDeathMAB100s" field="108[-abcefmnp][12].d" gndId="108[-abcefmnp][12].9"/>
+		<call-macro name="setBackRdfSubject" field="108[-abcefmnp][12].9"/>
+		
+		<call-macro name="livingStatisticsSetRdfSubject" field="112[-abcefmnp][12].d" gndId="112[-abcefmnp][12].9"/>
+		<call-macro name="dateOfBirthMAB100s" field="112[-abcefmnp][12].d" gndId="112[-abcefmnp][12].9"/>
+		<call-macro name="dateOfDeathMAB100s" field="112[-abcefmnp][12].d" gndId="112[-abcefmnp][12].9"/>
+		<call-macro name="setBackRdfSubject" field="112[-abcefmnp][12].9"/>
+		
+		<call-macro name="livingStatisticsSetRdfSubject" field="116[-abcefmnp][12].d" gndId="116[-abcefmnp][12].9"/>
+		<call-macro name="dateOfBirthMAB100s" field="116[-abcefmnp][12].d" gndId="116[-abcefmnp][12].9"/>
+		<call-macro name="dateOfDeathMAB100s" field="116[-abcefmnp][12].d" gndId="116[-abcefmnp][12].9"/>
+		<call-macro name="setBackRdfSubject" field="116[-abcefmnp][12].9"/>
+		
+		<call-macro name="livingStatisticsSetRdfSubject" field="120[-abcefmnp][12].d" gndId="120[-abcefmnp][12].9"/>
+		<call-macro name="dateOfBirthMAB100s" field="120[-abcefmnp][12].d" gndId="120[-abcefmnp][12].9"/>
+		<call-macro name="dateOfDeathMAB100s" field="120[-abcefmnp][12].d" gndId="120[-abcefmnp][12].9"/>
+		<call-macro name="setBackRdfSubject" field="120[-abcefmnp][12].9"/>
+		
+		<call-macro name="livingStatisticsSetRdfSubject" field="132[-abcefmnp][12].d" gndId="132[-abcefmnp][12].9"/>
+		<call-macro name="dateOfBirthMAB100s" field="132[-abcefmnp][12].d" gndId="132[-abcefmnp][12].9"/>
+		<call-macro name="dateOfDeathMAB100s" field="132[-abcefmnp][12].d" gndId="132[-abcefmnp][12].9"/>
+		<call-macro name="setBackRdfSubject" field="132[-abcefmnp][12].9"/>
+		
+		<call-macro name="livingStatisticsSetRdfSubject" field="136[-abcefmnp][12].d" gndId="136[-abcefmnp][12].9"/>
+		<call-macro name="dateOfBirthMAB100s" field="136[-abcefmnp][12].d" gndId="136[-abcefmnp][12].9"/>
+		<call-macro name="dateOfDeathMAB100s" field="136[-abcefmnp][12].d" gndId="136[-abcefmnp][12].9"/>
+		<call-macro name="setBackRdfSubject" field="136[-abcefmnp][12].9"/>
+		
+		<call-macro name="livingStatisticsSetRdfSubject" field="140[-abcefmnp][12].d" gndId="140[-abcefmnp][12].9"/>
+		<call-macro name="dateOfBirthMAB100s" field="140[-abcefmnp][12].d" gndId="140[-abcefmnp][12].9"/>
+		<call-macro name="dateOfDeathMAB100s" field="140[-abcefmnp][12].d" gndId="140[-abcefmnp][12].9"/>
+		<call-macro name="setBackRdfSubject" field="140[-abcefmnp][12].9"/>
+		
+		<call-macro name="livingStatisticsSetRdfSubject" field="144[-abcefmnp][12].d" gndId="144[-abcefmnp][12].9"/>
+		<call-macro name="dateOfBirthMAB100s" field="144[-abcefmnp][12].d" gndId="144[-abcefmnp][12].9"/>
+		<call-macro name="dateOfDeathMAB100s" field="144[-abcefmnp][12].d" gndId="144[-abcefmnp][12].9"/>
+		<call-macro name="setBackRdfSubject" field="144[-abcefmnp][12].9"/>
+		
+		<call-macro name="livingStatisticsSetRdfSubject" field="148[-abcefmnp][12].d" gndId="148[-abcefmnp][12].9"/>
+		<call-macro name="dateOfBirthMAB100s" field="148[-abcefmnp][12].d" gndId="148[-abcefmnp][12].9"/>
+		<call-macro name="dateOfDeathMAB100s" field="148[-abcefmnp][12].d" gndId="148[-abcefmnp][12].9"/>
+		<call-macro name="setBackRdfSubject" field="148[-abcefmnp][12].9"/>
+		
+		<call-macro name="livingStatisticsSetRdfSubject" field="152[-abcefmnp][12].d" gndId="152[-abcefmnp][12].9"/>
+		<call-macro name="dateOfBirthMAB100s" field="152[-abcefmnp][12].d" gndId="152[-abcefmnp][12].9"/>
+		<call-macro name="dateOfDeathMAB100s" field="152[-abcefmnp][12].d" gndId="152[-abcefmnp][12].9"/>
+		<call-macro name="setBackRdfSubject" field="152[-abcefmnp][12].9"/>
+		
+		<call-macro name="livingStatisticsSetRdfSubject" field="156[-abcefmnp][12].d" gndId="156[-abcefmnp][12].9"/>
+		<call-macro name="dateOfBirthMAB100s" field="156[-abcefmnp][12].d" gndId="156[-abcefmnp][12].9"/>
+		<call-macro name="dateOfDeathMAB100s" field="156[-abcefmnp][12].d" gndId="156[-abcefmnp][12].9"/>
+		<call-macro name="setBackRdfSubject" field="156[-abcefmnp][12].9"/>
+		
+		<call-macro name="livingStatisticsSetRdfSubject" field="160[-abcefmnp][12].d" gndId="160[-abcefmnp][12].9"/>
+		<call-macro name="dateOfBirthMAB100s" field="160[-abcefmnp][12].d" gndId="160[-abcefmnp][12].9"/>
+		<call-macro name="dateOfDeathMAB100s" field="160[-abcefmnp][12].d" gndId="160[-abcefmnp][12].9"/>
+		<call-macro name="setBackRdfSubject" field="160[-abcefmnp][12].9"/>
+		
+		<call-macro name="livingStatisticsSetRdfSubject" field="164[-abcefmnp][12].d" gndId="164[-abcefmnp][12].9"/>
+		<call-macro name="dateOfBirthMAB100s" field="164[-abcefmnp][12].d" gndId="164[-abcefmnp][12].9"/>
+		<call-macro name="dateOfDeathMAB100s" field="164[-abcefmnp][12].d" gndId="164[-abcefmnp][12].9"/>
+		<call-macro name="setBackRdfSubject" field="164[-abcefmnp][12].9"/>
+		
+		<call-macro name="livingStatisticsSetRdfSubject" field="168[-abcefmnp][12].d" gndId="168[-abcefmnp][12].9"/>
+		<call-macro name="dateOfBirthMAB100s" field="168[-abcefmnp][12].d" gndId="168[-abcefmnp][12].9"/>
+		<call-macro name="dateOfDeathMAB100s" field="168[-abcefmnp][12].d" gndId="168[-abcefmnp][12].9"/>
+		<call-macro name="setBackRdfSubject" field="168[-abcefmnp][12].9"/>
+		
+		<call-macro name="livingStatisticsSetRdfSubject" field="172[-abcefmnp][12].d" gndId="172[-abcefmnp][12].9"/>
+		<call-macro name="dateOfBirthMAB100s" field="172[-abcefmnp][12].d" gndId="172[-abcefmnp][12].9"/>
+		<call-macro name="dateOfDeathMAB100s" field="172[-abcefmnp][12].d" gndId="172[-abcefmnp][12].9"/>
+		<call-macro name="setBackRdfSubject" field="172[-abcefmnp][12].9"/>
+		
+		<call-macro name="livingStatisticsSetRdfSubject" field="176[-abcefmnp][12].d" gndId="176[-abcefmnp][12].9"/>
+		<call-macro name="dateOfBirthMAB100s" field="176[-abcefmnp][12].d" gndId="176[-abcefmnp][12].9"/>
+		<call-macro name="dateOfDeathMAB100s" field="176[-abcefmnp][12].d" gndId="176[-abcefmnp][12].9"/>
+		<call-macro name="setBackRdfSubject" field="176[-abcefmnp][12].9"/>
+		
+		<call-macro name="livingStatisticsSetRdfSubject" field="180[-abcefmnp][12].d" gndId="180[-abcefmnp][12].9"/>
+		<call-macro name="dateOfBirthMAB100s" field="180[-abcefmnp][12].d" gndId="180[-abcefmnp][12].9"/>
+		<call-macro name="dateOfDeathMAB100s" field="180[-abcefmnp][12].d" gndId="180[-abcefmnp][12].9"/>
+		<call-macro name="setBackRdfSubject" field="180[-abcefmnp][12].9"/>
+		
+		<call-macro name="livingStatisticsSetRdfSubject" field="184[-abcefmnp][12].d" gndId="184[-abcefmnp][12].9"/>
+		<call-macro name="dateOfBirthMAB100s" field="184[-abcefmnp][12].d" gndId="184[-abcefmnp][12].9"/>
+		<call-macro name="dateOfDeathMAB100s" field="184[-abcefmnp][12].d" gndId="184[-abcefmnp][12].9"/>
+		<call-macro name="setBackRdfSubject" field="184[-abcefmnp][12].9"/>
+		
+		<call-macro name="livingStatisticsSetRdfSubject" field="188[-abcefmnp][12].d" gndId="188[-abcefmnp][12].9"/>
+		<call-macro name="dateOfBirthMAB100s" field="188[-abcefmnp][12].d" gndId="188[-abcefmnp][12].9"/>
+		<call-macro name="dateOfDeathMAB100s" field="188[-abcefmnp][12].d" gndId="188[-abcefmnp][12].9"/>
+		<call-macro name="setBackRdfSubject" field="188[-abcefmnp][12].9"/>
+		
+		<call-macro name="livingStatisticsSetRdfSubject" field="192[-abcefmnp][12].d" gndId="192[-abcefmnp][12].9"/>
+		<call-macro name="dateOfBirthMAB100s" field="192[-abcefmnp][12].d" gndId="192[-abcefmnp][12].9"/>
+		<call-macro name="dateOfDeathMAB100s" field="192[-abcefmnp][12].d" gndId="192[-abcefmnp][12].9"/>
+		<call-macro name="setBackRdfSubject" field="192[-abcefmnp][12].9"/>
+	
+		<call-macro name="livingStatisticsSetRdfSubject" field="196[-abcefmnp][12].d" gndId="196[-abcefmnp][12].9"/>
+		<call-macro name="dateOfBirthMAB100s" field="196[-abcefmnp][12].d" gndId="196[-abcefmnp][12].9"/>
+		<call-macro name="dateOfDeathMAB100s" field="196[-abcefmnp][12].d" gndId="196[-abcefmnp][12].9"/>
+		<call-macro name="setBackRdfSubject" field="196[-abcefmnp][12].9"/>
 		<!-- ########### -->
 		<!-- # Create subgraph: temporarily set new subjects or contributor id -->
 		<!-- ########### -->
