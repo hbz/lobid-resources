@@ -324,7 +324,45 @@
 				</choose>
 			</combine>
 		</macro>
-		<!-- /altLabel -->
+		<!-- setting dateOfBirth and dateOfDeath for MAB 100s -->
+		<macro name="livingStatisticsSetRdfSubject">
+			<combine name="~rdf:subject" value="${a}">
+				<data source="$[field]"/>
+				<data source="$[gndId]" name="a">
+					<regexp match="\(DE-588\)(.*)" format="http://d-nb.info/gnd/${1}"/>
+				</data>
+			</combine>
+		</macro>
+		<macro name="dateOfBirthMAB100s">
+			<combine name="$[ns-gnd]dateOfBirth" value="${a}" sameEntity="true">
+				<choose name="a" flushWith="$[gndId]" sameEntity="true">
+					<data source="$[field]">
+						<regexp match="^([0-9]{4})-.*" format="${1}"/>
+					</data>
+					<data source="$[field]">
+						<regexp match="([0-9]{3})-.*" format="0${1}"/>
+					</data>
+				</choose>
+			</combine>
+		</macro>
+		<macro name="dateOfDeathMAB100s">
+			<combine name="$[ns-gnd]dateOfDeath" value="${a}" sameEntity="true">
+				<choose name="a" flushWith="$[gndId]" sameEntity="true">
+					<data source="$[field]">
+						<regexp match="^[0-9]{1,4}-([0-9]{4})" format="${1}"/>
+					</data>
+					<data source="$[field]">
+						<regexp match="^[0-9]{1,4}-([0-9]{3})" format="0${1}"/>
+					</data>
+					<data source="$[field]">
+						<regexp match="^-([0-9]{4})" format="${1}"/>
+					</data>
+					<data source="$[field]">
+						<regexp match="^-([0-9]{3})" format="0${1}"/>
+					</data>
+				</choose>
+			</combine>
+		</macro>		
 	</macros>
 	<rules>
 		<!-- subject as bnodes and their two properties (label & type ) -->
@@ -1546,6 +1584,10 @@
 			</data>
 		</combine>
 		<data source="@altLabelPerson|@altLabelCorporateBody" name="http://www.w3.org/2004/02/skos/core#altLabel"/>
+		<call-macro name="livingStatisticsSetRdfSubject" field="1[0123456789][02468][-abcefmnp][12].d" gndId="1[0123456789][02468][-abcefmnp][12].9"/>
+		<call-macro name="dateOfBirthMAB100s" field="1[0123456789][02468][-abcefmnp][12].d" gndId="1[0123456789][02468][-abcefmnp][12].9"/>
+		<call-macro name="dateOfDeathMAB100s" field="1[0123456789][02468][-abcefmnp][12].d" gndId="1[0123456789][02468][-abcefmnp][12].9"/>
+		<call-macro name="setBackRdfSubject" field="1[0123456789][02468][-abcefmnp][12].9"/>
 		<!-- ########### -->
 		<!-- # Create subgraph: temporarily set new subjects or contributor id -->
 		<!-- ########### -->
@@ -1653,6 +1695,12 @@
 				</data>
 				<data source="9[01234][27]-[-12].d">
 					<regexp match="^[0-9]{1,4}-([0-9]{3})" format="0${1}"/>
+				</data>
+				<data source="9[01234][27]-[-12].d">
+					<regexp match="^-([0-9]{4})" format="${1}"/>
+				</data>
+				<data source="9[01234][27]-[-12].d">
+					<regexp match="^-([0-9]{3})" format="0${1}"/>
 				</data>
 			</choose>
 		</combine>
