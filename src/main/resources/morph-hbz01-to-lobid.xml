@@ -1345,9 +1345,8 @@
 				<replace pattern="&lt;" with=""/>
 			</data>
 		</combine>
-		<choose name="@creatorPersonOrCoorporateBodyBnodeOrId" flushWith="@GNDPersonId|@bnodeCreatorPersonLabel|@creatorCorporateBodyId">
+		<choose name="@creatorPersonOrId" flushWith="@GNDPersonId|@bnodeCreatorPersonLabel">
 			<data source="@GNDPersonId"/>
-			<data source="@creatorCorporateBodyId"/>
 			<data source="@bnodeCreatorPersonLabel"/>
 		</choose>
 		<!-- bnode for contributor when no ID -->
@@ -1475,7 +1474,7 @@
 			<data source="[29]??[-abcfep][12].c" name="c"/>
 		</combine>
 		<data
-			source="@contributorPersonBnodeOrId|@contributorCorporateBodyBnodeOrId|@creatorPersonOrCoorporateBodyBnodeOrId"
+			source="@contributorPersonBnodeOrId|@contributorCorporateBodyBnodeOrId|@creatorPersonOrId|@creatorCorporateBodyId"
 			name="@agentId"/>
 		<combine value="_:${a}${b}" name="@contributionBnode" sameEntity="true">
 			<data source="@agentId" name="a"/>
@@ -1536,7 +1535,7 @@
 		<combine name="$[ns-lobid-vocab]contributorOrder" value="${a}">
 			<concat delimiter=" | " name="a">
 				<data
-					source="@creatorPersonOrCoorporateBodyBnodeOrId|@contributorPersonBnodeOrId|@contributorCorporateBodyBnodeOrId">
+					source="@creatorPersonOrId|@contributorPersonBnodeOrId|@contributorCorporateBodyBnodeOrId|@creatorCorporateBodyId">
 					<replace pattern="_:" with=""/>
 				</data>
 			</concat>
@@ -1757,7 +1756,7 @@
 		</data>
 		<combine name="@relator" value="${a}">
 			<choose name="a"
-				flushWith="@contributorPersonBnodeOrId|@contributorCorporateBodyBnodeOrId|@creatorPersonOrCoorporateBodyBnodeOrId">
+				flushWith="@contributorPersonBnodeOrId|@contributorCorporateBodyBnodeOrId|@creatorPersonOrId|@creatorCorporateBodyId">
 				<!-- map literals to marc relator property -->
 				<data source="@marcrelName" name="a">
 					<regexp match="[dD]ars|^\[act\]$|^(act)$" format="http://id.loc.gov/vocabulary/relators/act"/>
@@ -1874,8 +1873,12 @@
 				<data source="@contributorPersonBnodeOrId" name="a">
 					<regexp match=".*" format="http://id.loc.gov/vocabulary/relators/ctb"/>
 				</data>
+				<!-- always issuing body -->
+				<data source="@creatorCorporateBodyId" name="a">
+					<regexp match=".*" format="http://id.loc.gov/vocabulary/relators/isb"/>
+				</data>
 				<!-- always creator -->
-				<data source="@creatorPersonOrCoorporateBodyBnodeOrId" name="a">
+				<data source="@creatorPersonOrId" name="a">
 					<regexp match=".*" format="http://id.loc.gov/vocabulary/relators/cre"/>
 				</data>
 			</choose>
