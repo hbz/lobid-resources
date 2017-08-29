@@ -427,7 +427,7 @@
 		<!-- ####################### -->
 		<!-- ####### Child, link to parent and vice versa, e.g. HT000009600 -->
 		<!-- ####################### -->
-		<data source="529z1.9" name="@supplement"/>
+		<data source="529z1.9|770z1.9" name="@supplement"/>
 		<!-- ####################### -->
 		<!-- ####### Set owl:sameAs -->
 		<!-- ####################### -->
@@ -947,18 +947,18 @@
 		<!-- ########## predecessor and successor -->
 		<!-- ####################### -->
 		<combine name="@predecessorHbzId" value="${a}">
-			<data source="531[-xyz]1.9" name="a">
+			<data source="531[-xyz]1.9|780[-xyz]1.9" name="a">
 				<regexp match="(.*)" format="$[ns-lobid-resource]${1}"/>
 			</data>
 		</combine>
-		<combine name="@predecessorLabel" flushWith="531[-xyz]1.a" value="${a}">
-			<choose name="a" flushWith="531[-xyz]1.a">
-				<data source="531[-xyz]1.a">
+		<combine name="@predecessorLabel" flushWith="531[-xyz]1.a|780[-xyz]1.a" value="${a}">
+			<choose name="a" flushWith="531[-xyz]1.a|780[-xyz]1.a">
+				<data source="531[-xyz]1.a|780[-xyz]1.a">
 					<regexp match="&lt;&lt;(.*)&gt;&gt;(.*)"/>
 					<replace pattern="&gt;&gt;" with=""/>
 					<replace pattern="&lt;&lt;" with=""/>
 				</data>
-				<data source="531[-xyz]1.a"/>
+				<data source="531[-xyz]1.a|780[-xyz]1.a"/>
 			</choose>
 		</combine>
 		<data source="@predecessorHbzId" name="http://rdaregistry.info/Elements/u/P60261"/>
@@ -973,18 +973,18 @@
 			<data source="@id" name="subject"/>
 		</combine>
 		<combine name="@successorHbzId" value="${a}">
-			<data source="533[-xyz]1.9" name="a">
+			<data source="533[-xyz]1.9|780[-xyz]1.9" name="a">
 				<regexp match="(.*)" format="$[ns-lobid-resource]${1}"/>
 			</data>
 		</combine>
-		<combine name="@successorLabel" flushWith="533[-xyz]1.a" value="${a}">
-			<choose name="a" flushWith="533[-xyz]1.a">
-				<data source="533[-xyz]1.a">
+		<combine name="@successorLabel" flushWith="533[-xyz]1.a|780[-xyz]1.a" value="${a}">
+			<choose name="a" flushWith="533[-xyz]1.a|780[-xyz]1.a">
+				<data source="533[-xyz]1.a|780[-xyz]1.a">
 					<regexp match="&lt;&lt;(.*)&gt;&gt;(.*)"/>
 					<replace pattern="&gt;&gt;" with=""/>
 					<replace pattern="&lt;&lt;" with=""/>
 				</data>
-				<data source="533[-xyz]1.a"/>
+				<data source="533[-xyz]1.a|780[-xyz]1.a"/>
 			</choose>
 		</combine>
 		<data source="@successorHbzId" name="http://rdaregistry.info/Elements/u/P60278"/>
