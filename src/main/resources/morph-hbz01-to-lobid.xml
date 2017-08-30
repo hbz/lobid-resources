@@ -893,6 +893,12 @@
 		<data source="335[-abcd][-1].a" name="@otherTitle"/>
 		<data source="34[01234567][-ab][-1].[ab]" name="http://purl.org/dc/terms/alternative"/>
 		<data source="376[-adb][-1].[ad]" name="$[ns-bibo]shortTitle"/>
+		<entity name="http://purl.org/lobid/lv#translatedTitle" reset="true">
+			<data source="377-1.a" name="http://www.w3.org/2000/01/rdf-schema#label"/>
+			<data source="377-1.y" name="http://purl.org/dc/terms/language">
+				<regexp match="(.*)" format="http://id.loc.gov/vocabulary/iso639-2/${1}"/>
+			</data>
+		</entity>
 		<data source="504-1.a" name="http://purl.org/dc/terms/alternative"/>
 		<data source="@otherTitle" name="http://rdaregistry.info/Elements/u/P60493">
 			<replace pattern="&gt;" with=""/>
