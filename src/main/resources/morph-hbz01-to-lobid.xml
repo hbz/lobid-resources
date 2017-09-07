@@ -2239,17 +2239,16 @@
 		</combine>
 		<!--first three chars of "Resolving System" or "Volltext" or "EZB" or "Archivierte Online 
 			Ressource " or "Online-Ausgabe" <=> @fulltextOnlineUri> -->
-		<combine name="@fulltextOnlineUri" value="${uri}" sameEntity="true">
-			<data source="655[-eu][ -1].[x3]">
-				<regexp match="^[AERVO][rZoen][cBls]"/>
-			</data>
-			<data source="@linkUri" name="uri"/>
-		</combine>
 		<combine name="@fulltextOnlineUri" value="${a}" sameEntity="true">
 			<data source="655[-eu][ -1].[x3]">
-				<regexp match="Volltext"/>
+				<regexp match="Archivierte Online|EZB|Online-Ausg|Resolving-System|Volltext"/>
 			</data>
 			<data source="@linkUri" name="a"/>
+		</combine>
+		<combine name="@fulltextOnlineUri" value="${a}" sameEntity="true">
+			<data source="@linkUri" name="a">
+				<regexp match="http:\/\/dx.doi.org\/.*|http:\/\/nbn-resolving.de\/urn.*"/>
+			</data>
 		</combine>
 		<!-- emit URI only if there are no description subfields ... -->
 		<choose name="@urlLonely" flushWith="655[-eu][ -1]">
@@ -2332,13 +2331,13 @@
 		<!-- Set label for URNs -->
 		<combine name="~rdf:subject" value="${a}">
 			<data source="@fulltextOnlineUri" name="a">
-				<regexp match="http:\/\/nbn-resolving.de\/urn:nbn:de(.*)"/>
+				<regexp match=".*nbn-resolving.de\/urn.*"/>
 			</data>
 		</combine>
 		<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="URN-Link"
 			sameEntity="true">
 			<data source="@fulltextOnlineUri">
-				<regexp match="http:\/\/nbn-resolving.de\/urn:nbn:de(.*)"/>
+				<regexp match="nbn-resolving.de\/urn"/>
 			</data>
 		</combine>
 		<combine name="~rdf:subject" value="$[ns-lobid-resource]${subject}#!" flushWith="@fulltextOnlineUri">
