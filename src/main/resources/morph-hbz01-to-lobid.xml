@@ -501,31 +501,46 @@
 		<!-- ####################### -->
 		<!-- ########## carrier and type -->
 		<!-- ####################### -->
-		<!-- print -->
-		<data source="050." name="@medium">
-			<regexp match="^[abcd]" format="http://rdaregistry.info/termList/RDAproductionMethod/1010"/>
-		</data>
-		<data source="050." name="@medium">
-			<regexp match="^.......a" format="http://rdaregistry.info/termList/RDAproductionMethod/1010"/>
-		</data>
-		<!-- multimedia -->
-		<data source="050." name="@medium">
-			<regexp match="^.......a" format="http://iflastandards.info/ns/isbd/terms/mediatype/T1008"/>
-		</data>
 		<!--audio -->
+		<combine name="@mediumAudio" value="$[ns-bibo]AudioDocument">
+			<choose>
+				<data source="050.">
+					<regexp match="^.....a"/>
+				</data>
+				<data source="062-1.a">
+					<regexp match="Audio"/>
+				</data>
+				<data source="334-[12].a">
+					<regexp match="^[Tt][oO]|Audio-CD"/>
+				</data>
+				<data source="9[01234][27]-1.f">
+					<regexp match="Hörbuch|Tonträger"/>
+				</data>
+			</choose>
+		</combine>
+		<!-- audio cassette -->
 		<data source="050." name="@mediumAudio">
-			<regexp match="^.....a" format="$[ns-bibo]AudioDocument"/>
+			<regexp match="^.....ad" format="http://id.loc.gov/vocabulary/carriers/ss"/>
+		</data>
+		<data source="334-1.a" name="@mediumAudio">
+			<regexp match="Kompaktkassette|MC|Tonkassette" format="http://id.loc.gov/vocabulary/carriers/ss"/>
 		</data>
 		<data source="@mediumAudio" name="@medium"/>
-		<data source="334-[12].a" name="@mediumAudio">
-			<regexp match="^[Tt][oO]" format="$[ns-bibo]AudioDocument"/>
-		</data>
 		<!--audio visual video -->
 		<data source="050." name="@matVideo">
 			<regexp match="^.....[bc]"/>
 		</data>
+		<data source="062-1.a" name="@matVideo">
+			<regexp match="Video"/>
+		</data>
 		<data source="334-[12].a" name="@matVideo">
 			<regexp match="^Bildton"/>
+		</data>
+		<data source="433-1.a" name="@matVideo">
+			<regexp match="DVD-Video|Video.*"/>
+		</data>
+		<data source="9[01234][27]-1.f" name="@matVideo">
+			<regexp match="DVD-Video|Video[ck]assette"/>
 		</data>
 		<data source="@matVideo" name="@medium">
 			<regexp match=".*" format="$[ns-bibo]AudioVisualDocument"/>
@@ -536,39 +551,6 @@
 		<data source="334-[12].a" name="@medium">
 			<regexp match="^Bildton" format="$[ns-bibo]AudioVisualDocument"/>
 		</data>
-		<!-- picture -->
-		<data source="050." name="@medium">
-			<regexp match="^.....d" format="$[ns-bibo]Image"/>
-		</data>
-		<data source="334-[12].a" name="@medium">
-			<regexp match="^Bildli" format="$[ns-bibo]Image"/>
-		</data>
-		<!-- microform -->
-		<data source="050." name="@medium">
-			<regexp match="^...[abc]" format="http://rdaregistry.info/termList/RDAMediaType/1002"/>
-		</data>
-		<data source="334-[12].a" name="@medium">
-			<regexp match="^Mikrofor" format="http://rdaregistry.info/termList/RDAMediaType/1002"/>
-		</data>
-		<data source="057." name="@medium">
-			<regexp match=".*" format="http://rdaregistry.info/termList/RDAMediaType/1002"/>
-		</data>
-		<!-- Dini Kim , TODO dcterms:medium "rdacarrier:1044" (unmediated) -->
-		<!-- map -->
-		<data source="050." name="@medium">
-			<regexp match="^..........a" format="$[ns-bibo]Map"/>
-		</data>
-		<!-- vinyl -->
-		<data source="050." name="@mediumAudio">
-			<regexp match="^.....aj" format="http://purl.org/ontology/mo/Vinyl"/>
-		</data>
-		<data source="050." name="@mediumAudio">
-			<regexp match="^.....aj" format="$[ns-bibo]AudioDocument"/>
-		</data>
-		<!-- audio cassette -->
-		<data source="050." name="@mediumAudio">
-			<regexp match="^.....ad" format="http://purl.org/library/CassetteTape"/>
-		</data>
 		<!-- braille -->
 		<data source="050." name="@medium">
 			<regexp match="^....a" format="http://purl.org/library/BrailleBook"/>
@@ -576,6 +558,23 @@
 		<data source="050." name="@medium">
 			<regexp match="^....a" format="http://rdaregistry.info/termList/RDAproductionMethod/1010"/>
 		</data>
+		<!-- computer carriers -->
+		<data source="050." name="@medium">
+			<regexp match="^........[abcdefz]" format="http://rdaregistry.info/termList/RDAMediaType/1003"/>
+		</data>
+		<data source="058." name="@medium">
+			<regexp match="^.[^r]" format="http://rdaregistry.info/termList/RDAMediaType/1003"/>
+		</data>
+		<combine name="@medium" value="http://rdaregistry.info/termList/RDAMediaType/1003">
+			<if>
+				<none>
+					<data source="@1018"/>
+				</none>
+			</if>
+			<data source="334-1.a">
+				<regexp match="[eE]lektr"/>
+			</data>
+		</combine>
 		<!-- game -->
 		<data source="050." name="@rdftype">
 			<regexp match="^.........a" format="http://schema.org/Game"/>
@@ -584,10 +583,87 @@
 		<data source="050." name="@medium">
 			<regexp match="^.a" format="http://purl.org/ontology/bibo/Manuscript"/>
 		</data>
-		<!-- Computer carriers -->
+		<!-- map -->
 		<data source="050." name="@medium">
-			<regexp match="^........[abcdefz]" format="http://rdaregistry.info/termList/RDAMediaType/1003"/>
+			<regexp match="^..........a" format="$[ns-bibo]Map"/>
 		</data>
+		<data source="433[-c].a" name="@medium">
+			<regexp match="Kt.|Karte" format="$[ns-bibo]Map"/>
+		</data>
+		<data source="9[01234][27]-1.f" name="@medium">
+			<regexp match="Altkarte|Karte|Stadtplan" format="$[ns-bibo]Map"/>
+		</data>
+		<!-- microform -->
+		<data source="050." name="@medium">
+			<regexp match="^...[abc]" format="http://rdaregistry.info/termList/RDAMediaType/1002"/>
+		</data>
+		<data source="057." name="@medium">
+			<regexp match=".*" format="http://rdaregistry.info/termList/RDAMediaType/1002"/>
+		</data>
+		<data source="334-[12].a" name="@medium">
+			<regexp match="^Mikrofor" format="http://rdaregistry.info/termList/RDAMediaType/1002"/>
+		</data>
+		<data source="40[03]-1.a" name="@medium">
+			<regexp match="Mikrofiche" format="http://rdaregistry.info/termList/RDAMediaType/1002"/>
+		</data>
+		<data source="9[01234][27]-1.f" name="@medium">
+			<regexp match="Mikroform" format="http://rdaregistry.info/termList/RDAMediaType/1002"/>
+		</data>
+		<!-- multimedia -->
+		<data source="050." name="@medium">
+			<regexp match="^.......a" format="http://iflastandards.info/ns/isbd/terms/mediatype/T1008"/>
+		</data>
+		<data source="334-[-12].a" name="@medium">
+			<regexp match="Medienkombination" format="http://iflastandards.info/ns/isbd/terms/mediatype/T1008"/>
+		</data>
+		<data source="9[01234][27]-[-1].f" name="@medium">
+			<regexp match="Medienkombination" format="http://iflastandards.info/ns/isbd/terms/mediatype/T1008"/>
+		</data>
+		<!-- online -->
+		<data source="050." name="@1018">
+			<regexp match="^........g" format="http://rdaregistry.info/termList/RDACarrierType/1018"/>
+		</data>
+		<data source="058." name="@1018">
+			<regexp match="^.r" format="http://rdaregistry.info/termList/RDACarrierType/1018"/>
+		</data>
+		<data source="652a[-1].a" name="@1018">
+			<regexp match="^[AaOo][rn]" format="http://rdaregistry.info/termList/RDACarrierType/1018"/>
+		</data>
+		<data source="@1018" name="@medium"/>
+		<!-- picture -->
+		<data source="050." name="@medium">
+			<regexp match="^.....d" format="$[ns-bibo]Image"/>
+		</data>
+		<data source="334-[12].a" name="@medium">
+			<regexp match="^Bildli" format="$[ns-bibo]Image"/>
+		</data>
+		<!-- print -->
+		<data source="050." name="@medium">
+			<regexp match="^[abcd]" format="http://rdaregistry.info/termList/RDAproductionMethod/1010"/>
+		</data>
+		<data source="050." name="@medium">
+			<regexp match="^.......a" format="http://rdaregistry.info/termList/RDAproductionMethod/1010"/>
+		</data>
+		<data source="334-[12].a" name="@medium">
+			<regexp match="Plakat" format="http://rdaregistry.info/termList/RDAproductionMethod/1010"/>
+		</data>
+		<data source="40[03]-1.a" name="@medium">
+			<regexp match="Nachdruck|Reprint" format="http://rdaregistry.info/termList/RDAproductionMethod/1010"/>
+		</data>
+		<!-- vinyl -->
+		<data source="050." name="@mediumAudio">
+			<regexp match="^.....aj" format="http://purl.org/ontology/mo/Vinyl"/>
+		</data>
+		<data source="050." name="@mediumAudio">
+			<regexp match="^.....aj" format="$[ns-bibo]AudioDocument"/>
+		</data>
+		<data source="334-[12].a" name="@mediumAudio">
+			<regexp match="Schallplatte" format="http://purl.org/ontology/mo/Vinyl"/>
+		</data>
+		<data source="334-[12].a" name="@mediumAudio">
+			<regexp match="Schallplatte" format="$[ns-bibo]AudioDocument"/>
+		</data>
+		<!-- Dini Kim , TODO dcterms:medium "rdacarrier:1044" (unmediated) -->
 		<combine name="~rdf:subject" value="${a}" flushWith="@typeOnly">
 			<data source="@typeOnly"/>
 			<data source="@id" name="a">
@@ -800,17 +876,6 @@
 		<data source="9[01234][27]-[-1].f" name="@collection">
 			<regexp match="Zeitung" format="$[ns-bibo]Newspaper"/>
 		</data>
-		<!-- online -->
-		<data source="050." name="@1018">
-			<regexp match="^........g" format="http://rdaregistry.info/termList/RDACarrierType/1018"/>
-		</data>
-		<data source="058." name="@1018">
-			<regexp match="^.r" format="http://rdaregistry.info/termList/RDACarrierType/1018"/>
-		</data>
-		<data source="652a[-1].a" name="@1018">
-			<regexp match="^[AaOo][rn]" format="http://rdaregistry.info/termList/RDACarrierType/1018"/>
-		</data>
-		<data source="@1018" name="@medium"/>
 		<!-- computer carrier (disks etc) -->
 		<data source="058." name="@medium">
 			<regexp match="^.[^r]" format="http://rdaregistry.info/termList/RDAMediaType/1003"/>
@@ -1970,9 +2035,6 @@
 			<split delimiter=" / "/>
 			<replace pattern="&gt;&gt;" with=""/>
 			<replace pattern="&lt;&lt;" with=""/>
-		</data>
-		<data source="902[-a][-1].f" name="@medium">
-			<regexp match="^Karte" format="$[ns-bibo]Map"/>
 		</data>
 		<!-- "Verweisungsformen" literals -->
 		<data source="9[56][27]-[12].[acefgkps]" name="@subjectMain">
