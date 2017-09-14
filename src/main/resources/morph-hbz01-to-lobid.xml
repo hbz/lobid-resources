@@ -2608,18 +2608,24 @@
 		<data source="700l[-1].[ab]" name="http://purl.org/lobid/lv#inCollection">
 			<regexp match="^rpb.*" format="$[ns-lobid-resource]HT013494180#!"/>
 		</data>
-		<entity name="http://purl.org/dc/terms/subject">
-			<data source="700l[-1].a" name="http://www.w3.org/2004/02/skos/core#notation">
-				<regexp match="^rpbr.*"/>
-			</data>
-			<entity name="http://id.loc.gov/ontologies/bibframe/source">
-				<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="RPB-Raumsystematik">
-					<data source="700l[-1].a">
-						<regexp match="^rpbr.*"/>
-					</data>
-				</combine>
-			</entity>
+		<combine value="_:${a}" name="http://purl.org/dc/terms/subject">
+			<data source="700l[-1].a" name="a"/>
+		</combine>
+		<combine value="_:${a}" name="~rdf:subject">
+			<data source="700l[-1].a" name="a"/>
+		</combine>
+		<data source="700l[-1].a" name="http://www.w3.org/2004/02/skos/core#notation">
+			<regexp match="^rpbr.*"/>
+		</data>
+		<entity name="http://id.loc.gov/ontologies/bibframe/source">
+			<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="RPB-Raumsystematik">
+				<data source="700l[-1].a">
+					<regexp match="^rpbr.*"/>
+				</data>
+			</combine>
 		</entity>
+		<call-macro name="setBackRdfSubject" field="700l[-1].a"/>
+
 		<!-- ####################### -->
 		<!-- ########## isbn -->
 		<!-- ####################### -->
