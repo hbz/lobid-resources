@@ -124,8 +124,7 @@
 						</data>
 					</combine>
 				</entity>
-				<combine name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" 
-					value="$[ns-lobid-vocab]IsPartOfRelation">
+				<combine name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" value="$[ns-lobid-vocab]IsPartOfRelation">
 					<if>
 						<none>
 							<data source="$[field_1]"/>
@@ -647,7 +646,8 @@
 					<regexp match="Band"/>
 				</data>
 				<data source="9[01234][27]-[-1].f">
-					<regexp match="Anthologie|Atlas|Auktionskatalog|Bildband|Bilderbuch|Jugendbuch|Jugendsachbuch|Kinderbuch|Kindersachbuch|Kochbuch|Lehrbuch|Lesebuch"/>
+					<regexp
+						match="Anthologie|Atlas|Auktionskatalog|Bildband|Bilderbuch|Jugendbuch|Jugendsachbuch|Kinderbuch|Kindersachbuch|Kochbuch|Lehrbuch|Lesebuch"/>
 				</data>
 			</choose>
 		</combine>
@@ -703,7 +703,8 @@
 			<regexp match="^.ez|^...ez|^.....ez" format="$[ns-bibo]ReferenceSource"/>
 		</data>
 		<data source="9[01234][27]-[-12].f" name="@rdftype">
-			<regexp match="Bestimmungsbuch|Enzyklopädie|Werkverzeichnis|W[ö|oe]rterbuch" format="$[ns-bibo]ReferenceSource"/>
+			<regexp match="Bestimmungsbuch|Enzyklopädie|Werkverzeichnis|W[ö|oe]rterbuch"
+				format="$[ns-bibo]ReferenceSource"/>
 		</data>
 		<!-- norm -->
 		<data source="051." name="@rdftype">
@@ -757,7 +758,8 @@
 			<regexp match="4128022-2" format="http://purl.org/ontology/bibo/Report"/>
 		</data>
 		<data source="9[01234][27]-[1].f" name="@rdftype">
-			<regexp match="Bericht|Erlebnisbericht|Forschungsbericht|Literaturbericht|Reisebericht" format="http://purl.org/ontology/bibo/Report"/>
+			<regexp match="Bericht|Erlebnisbericht|Forschungsbericht|Literaturbericht|Reisebericht"
+				format="http://purl.org/ontology/bibo/Report"/>
 		</data>
 		<!-- statistics -->
 		<data source="051." name="@rdftype">
@@ -846,7 +848,8 @@
 			<if>
 				<none>
 					<data source="052.">
-						<regexp match="^........([dcwesmbqfaghtz])|^.........([dcwesmbqfaghtz])|^..........([dcwesmbqfaghtz])"/>
+						<regexp
+							match="^........([dcwesmbqfaghtz])|^.........([dcwesmbqfaghtz])|^..........([dcwesmbqfaghtz])"/>
 					</data>
 					<data source="542[-ab][-1].[a]"/>
 				</none>
@@ -1314,14 +1317,17 @@
 			<data source="@id" name="id"/>
 		</combine>
 		<call-macro name="setRdfSubjectDescribedBy" field="070a1.a"/>
-		<call-macro name="setProvenance" field_1="http://schema.org/provider" field_2="070a1.a"/>
-				<!-- set subject uri of resource anew -->
+		<call-macro name="setProvenance" field_1="http://schema.org/provider"
+			field_2="070a1.a"/>
+		<!-- set subject uri of resource anew -->
 		<call-macro name="setBackRdfSubject" field="070a1.a"/>
 		<call-macro name="setRdfSubjectDescribedBy" field="070-1.a"/>
-		<call-macro name="setProvenance" field_1="http://schema.org/sourceOrganization" field_2="070-1.a"/>
+		<call-macro name="setProvenance" field_1="http://schema.org/sourceOrganization"
+			field_2="070-1.a"/>
 		<call-macro name="setBackRdfSubject" field="070-1.a"/>
 		<call-macro name="setRdfSubjectDescribedBy" field="070b1.a"/>
-		<call-macro name="setProvenance" field_1="http://open-services.net/ns/core#modifiedBy" field_2="070b1.a"/>
+		<call-macro name="setProvenance" field_1="http://open-services.net/ns/core#modifiedBy"
+			field_2="070b1.a"/>
 		<call-macro name="setBackRdfSubject" field="070b1.a"/>
 		<combine name="~rdf:subject" value="${a}">
 			<data source="003-1.a"/>
@@ -1629,10 +1635,14 @@
 			</data>
 		</combine>
 		<data source="@altLabelPerson|@altLabelCorporateBody" name="http://www.w3.org/2004/02/skos/core#altLabel"/>
-		<call-macro name="livingStatisticsSetRdfSubject" field="1[0123456789][02468][-abcefmnp][12].d" gndId="1[0123456789][02468][-abcefmnp][12].9"/>
-		<call-macro name="dateOfBirthMAB100s" field="1[0123456789][02468][-abcefmnp][12].d" gndId="1[0123456789][02468][-abcefmnp][12].9"/>
-		<call-macro name="dateOfDeathMAB100s" field="1[0123456789][02468][-abcefmnp][12].d" gndId="1[0123456789][02468][-abcefmnp][12].9"/>
-		<call-macro name="nonYearLivingStatistics" field="1[0123456789][02468][-abcefmnp][12].d" gndId="1[0123456789][02468][-abcefmnp][12].9"/>
+		<call-macro name="livingStatisticsSetRdfSubject" field="1[0123456789][02468][-abcefmnp][12].d"
+			gndId="1[0123456789][02468][-abcefmnp][12].9"/>
+		<call-macro name="dateOfBirthMAB100s" field="1[0123456789][02468][-abcefmnp][12].d"
+			gndId="1[0123456789][02468][-abcefmnp][12].9"/>
+		<call-macro name="dateOfDeathMAB100s" field="1[0123456789][02468][-abcefmnp][12].d"
+			gndId="1[0123456789][02468][-abcefmnp][12].9"/>
+		<call-macro name="nonYearLivingStatistics" field="1[0123456789][02468][-abcefmnp][12].d"
+			gndId="1[0123456789][02468][-abcefmnp][12].9"/>
 		<call-macro name="setBackRdfSubject" field="1[0123456789][02468][-abcefmnp][12].9"/>
 		<!-- ########### -->
 		<!-- # Create subgraph: temporarily set new subjects or contributor id -->
@@ -2339,7 +2349,7 @@
 					<regexp match="^(?!http.?://.*edoweb).*$"/>
 				</data>
 				<data source="655e1.u" name="a">
-					<regexp match=".*" format="ignore"/> 
+					<regexp match=".*" format="ignore"/>
 				</data>
 			</choose>
 		</combine>
@@ -2467,18 +2477,18 @@
 		<data source="599s[-1].a" name="@dctIsPartOfArticle">
 			<regexp match="(.*)" format="$[ns-zdb-services]${1}"/>
 		</data>
-		<call-macro name="createEntityForHasSuperordinateWithoutIdWithNumbering" 
+		<call-macro name="createEntityForHasSuperordinateWithoutIdWithNumbering"
 			field_1="453[-abr][-12].a" field_2="451[-ab]1.a"/>
-		<call-macro name="createEntityForHasSuperordinateWithoutIdWithNumbering" 
+		<call-macro name="createEntityForHasSuperordinateWithoutIdWithNumbering"
 			field_1="463[-abr][-12].a" field_2="461[-ab]1.a"/>
-		<call-macro name="createEntityForHasSuperordinateWithoutIdWithNumbering" 
+		<call-macro name="createEntityForHasSuperordinateWithoutIdWithNumbering"
 			field_1="473[-abr][-12].a" field_2="471[-ab]1.a"/>
-		<call-macro name="createEntityForHasSuperordinateWithoutIdWithNumbering" 
+		<call-macro name="createEntityForHasSuperordinateWithoutIdWithNumbering"
 			field_1="483[-abr][-12].a" field_2="481[-ab]1.a"/>
-		<call-macro name="createEntityForHasSuperordinateWithoutIdWithNumbering" 
+		<call-macro name="createEntityForHasSuperordinateWithoutIdWithNumbering"
 			field_1="493[-abr][-12].a" field_2="491[-ab]1.a"/>
-		<!-- isPartOf with 4[56789]1 and number and 4[56789]3, in the test data 
-			there is no resource with 4[56789]5 but no numbering in 4[56789]1 -->
+		<!-- isPartOf with 4[56789]1 and number and 4[56789]3, in the test data there is no resource 
+			with 4[56789]5 but no numbering in 4[56789]1 -->
 		<entity name="$[ns-lobid-vocab]isPartOf" flushWith="4[56789]3[-ab]1.a" reset="true">
 			<data source="4[56789][13][-abr][-12].a" name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type">
 				<regexp match=".*" format="$[ns-lobid-vocab]IsPartOfRelation"/>
