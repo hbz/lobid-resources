@@ -180,7 +180,7 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 	private static void writeFile(final String TEST_FILENAME,
 			final String DOCUMENT) {
 		File testFile = new File(TEST_FILENAME);
-		LOG.info("Write" + TEST_FILENAME);
+		LOG.info("Write " + TEST_FILENAME);
 		try {
 			FileUtils.writeStringToFile(testFile, DOCUMENT, false);
 		} catch (IOException e) {
@@ -272,14 +272,12 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 				map = mapper.readValue(jsonLd, Map.class);
 				map.put("@context", MabXml2lobidJsonEs.LOBID_RESOURCES_JSONLD_CONTEXT);
 				jsonLdWithoutContext = mapper.writeValueAsString(map);
-				LOG.info("ID to save= " + (String) map.get("id"));
 				filename = ((String) map.get("id"))
 						.replaceAll(
 								RdfModel2ElasticsearchEtikettJsonLd.LOBID_DOMAIN + ".*/", "")
 						.replaceAll("#!$", "");
 				testFiles.remove(filename);
 				filename = DIRECTORY_TO_TEST_JSON_FILES + filename;
-
 				if (!new File(filename).exists())
 					writeFile(filename, jsonLdWithoutContext);
 				else {

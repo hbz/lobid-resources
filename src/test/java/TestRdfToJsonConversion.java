@@ -189,7 +189,7 @@ public class TestRdfToJsonConversion {
 			String json =
 					new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT)
 							.writeValueAsString(actual);
-			TestRdfToJsonConversion.logger.info("Creating: \n" + json);
+			TestRdfToJsonConversion.logger.debug("Creating: \n" + json);
 			FileUtils.writeStringToFile(new File(fnameJson), json);
 		} catch (IOException e) {
 			org.junit.Assert.assertFalse("Problems creating file " + e.getMessage(),

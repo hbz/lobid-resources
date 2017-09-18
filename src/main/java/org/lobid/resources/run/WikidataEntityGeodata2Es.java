@@ -131,6 +131,8 @@ public class WikidataEntityGeodata2Es {
 							node.get("item").get("value").textValue()))
 					.map(transform2lobidWikidata()) //
 					.forEach(index2Es());
+		} catch (Exception e) {
+			LOG.error("Can't get wikidata entities ", e);
 		}
 	}
 

@@ -39,7 +39,6 @@ import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.QueryStringQueryBuilder;
 import org.elasticsearch.search.SearchHits;
 import org.lobid.resources.run.WikidataEntityGeodata2Es;
-import org.mortbay.log.Log;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -137,7 +136,7 @@ public class ElasticsearchIndexer
 
 	@Override
 	public void process(final HashMap<String, String> json) {
-		LOG.info("Try to index " + json.get(Properties.ID.getName())
+		LOG.debug("Try to index " + json.get(Properties.ID.getName())
 				+ " in ES type " + json.get(Properties.TYPE.getName()) + " Source:"
 				+ json.get(Properties.GRAPH.getName()));
 		updateRequest = new UpdateRequest(indexName,
@@ -185,6 +184,7 @@ public class ElasticsearchIndexer
 
 	private String enrich(final String index, final String queryField,
 			final String mergeField, JsonNode node) {
+
 		String query;
 		Iterable<Entry<String, JsonNode>> iterable = () -> node.fields();
 		Optional<Entry<String, JsonNode>> o =
@@ -197,8 +197,15 @@ public class ElasticsearchIndexer
 				QueryStringQueryBuilder qsq =
 						QueryBuilders.queryStringQuery("spatial.label:" + query)
 								.field("spatial.label", 100.0f);
-				SearchHits hits = client.prepareSearch(index)
-						.setQuery(functionScoreQuery(qsq)).get().getHits();
+				SearchHits hits = null;
+				try {
+					hits = client.prepareSearch(index).setQuery(functionScoreQuery(qsq))
+							.get().getHits();
+				} catch (Exception e) {
+					LOG.warn("Couldn't get a hit using index '" + index + "' querying '"
+							+ query + "'", e.getLocalizedMessage());
+					return node.toString();
+				}
 				if (hits.getTotalHits() > 0) {
 					Map<String, Object> source = hits.getAt(0).getSource();
 					try {
@@ -206,11 +213,13 @@ public class ElasticsearchIndexer
 								", \"" + mergeField + "\"" + ":"
 										+ mapper.writeValueAsString(source.get(mergeField)) + "}");
 					} catch (IOException e) {
-						e.printStackTrace();
+						LOG.warn("Couldn't get a hit using index '" + index + "' querying '"
+								+ query + "'", e.getLocalizedMessage());
 					}
+
 				} else
-					Log.warn("Couldn't get a hit using index '" + index + "' querying '"
-							+ query + "'");
+					LOG.warn(
+							"No hit using index '" + index + "' querying '" + query + "'");
 			}
 		}
 		return node.toString();
