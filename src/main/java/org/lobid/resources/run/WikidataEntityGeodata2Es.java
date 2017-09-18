@@ -96,11 +96,9 @@ public class WikidataEntityGeodata2Es {
 	}
 
 	private static void setElasticsearchIndexer() {
-		final String indexNamePrefix = "tmp";
-		final String indexAliasSuffix = "genwbi";
-		setIndexAlias(indexNamePrefix + indexAliasSuffix);
+		final String indexNamePrefix = "geo_nwbib";
+		setIndexAlias(indexNamePrefix);
 		esIndexer.setIndexName(indexNamePrefix + "-" + DATE);
-		esIndexer.setIndexAliasSuffix(indexAliasSuffix);
 		esIndexer.setUpdateNewestIndex(false);
 		esIndexer.setIndexConfig("index-config-wd-geodata.json");
 		esIndexer.onSetReceiver();

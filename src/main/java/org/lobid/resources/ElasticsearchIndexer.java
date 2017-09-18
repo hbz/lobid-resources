@@ -74,7 +74,7 @@ public class ElasticsearchIndexer
 	private int docs = 0;
 	private String indexName;
 	private boolean updateIndex;
-	private String aliasSuffix;
+	private String aliasSuffix = "";
 	private static String indexConfig = "index-config.json";
 	private static ObjectMapper mapper = new ObjectMapper();
 
