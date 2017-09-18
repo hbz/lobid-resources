@@ -78,6 +78,8 @@ public final class MabXml2lobidJsonEs {
 		esIndexer.setIndexAliasSuffix(indexAliasSuffix);
 		esIndexer.setUpdateNewestIndex(update);
 		esIndexer.onSetReceiver();
+		WikidataGeodata2Es.setProductionIndexerConfigs();
+		WikidataGeodata2Es.storeIfIndexExists(esIndexer.getElasticsearchClient());
 		StreamBatchLogger batchLogger = new StreamBatchLogger();
 		batchLogger.setBatchSize(100000);
 		ObjectBatchLogger<HashMap<String, String>> objectBatchLogger =

@@ -38,7 +38,7 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.lobid.resources.run.MabXml2lobidJsonEs;
-import org.lobid.resources.run.WikidataEntityGeodata2Es;
+import org.lobid.resources.run.WikidataGeodata2Es;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -109,10 +109,10 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 	public static void etl(final Client cl,
 			RdfModel2ElasticsearchEtikettJsonLd etikettJsonLdConverter) {
 		// load wikidata geo coordinates into es
-		WikidataEntityGeodata2Es.setElasticsearchIndexer(cl);
-		WikidataEntityGeodata2Es.setWikidatEntitiesJsonDefaultLoadedFromFile();
-		WikidataEntityGeodata2Es.start();
-		WikidataEntityGeodata2Es.finish();
+		WikidataGeodata2Es.setElasticsearchIndexer(cl);
+		WikidataGeodata2Es.filterWikidataEntitiesDump2EsGeodata(
+				"src/test/resources/wikidataEntities.json");
+		WikidataGeodata2Es.finish();
 		final FileOpener opener = new FileOpener();
 		final Triples2RdfModel triple2model = new Triples2RdfModel();
 		triple2model.setInput(Hbz01MabXmlEtlNtriples2Filesystem.N_TRIPLE);

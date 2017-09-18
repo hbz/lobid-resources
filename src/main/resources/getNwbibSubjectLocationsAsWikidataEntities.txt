@@ -1,9 +1,12 @@
 https://query.wikidata.org/sparql?query=
-SELECT ?item WHERE {
-  hint:Query hint:optimizer "None".
-  ?item wdt:P131* wd:Q1198;
-        wdt:P31/wdt:P279* wd:Q387917.
-  FILTER NOT EXISTS { ?item wdt:P31/wdt:P279* wd:Q192611 }
-  FILTER NOT EXISTS { ?item wdt:P31/wdt:P279* wd:Q20296613 }
-  FILTER NOT EXISTS { ?item wdt:P31/wdt:P279* wd:Q1643757 }
-} limit 100
+SELECT DISTINCT ?item WHERE {
+	hint:Query hint:optimizer "None".
+	{ ?item wdt:P131* wd:Q1198;
+		wdt:P31/wdt:P279* wd:Q387917. }
+	UNION 
+	{ ?item wdt:P131* wd:Q1198;
+		wdt:P31 wd:Q82794. }
+	FILTER NOT EXISTS { ?item wdt:P31/wdt:P279* wd:Q192611 }
+	FILTER NOT EXISTS { ?item wdt:P31/wdt:P279* wd:Q20296613 }
+	FILTER NOT EXISTS { ?item wdt:P31/wdt:P279* wd:Q1643757 }
+} limit 40000

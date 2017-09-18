@@ -2,8 +2,6 @@
 
 package org.lobid.resources;
 
-import static org.elasticsearch.index.query.QueryBuilders.functionScoreQuery;//queryStringQuery;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -12,7 +10,6 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
@@ -35,15 +32,17 @@ import org.elasticsearch.client.transport.NoNodeAvailableException;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
-import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.index.query.QueryStringQueryBuilder;
+import org.elasticsearch.index.query.MultiMatchQueryBuilder;
 import org.elasticsearch.search.SearchHits;
-import org.lobid.resources.run.WikidataEntityGeodata2Es;
+import org.lobid.resources.run.WikidataGeodata2Es;
+import org.mortbay.log.Log;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.SortedSetMultimap;
 import com.google.common.collect.TreeMultimap;
 import com.google.common.io.CharStreams;
@@ -77,6 +76,7 @@ public class ElasticsearchIndexer
 	private String aliasSuffix = "";
 	private static String indexConfig = "index-config.json";
 	private static ObjectMapper mapper = new ObjectMapper();
+	double MINIMUM_SCORE = 4.0;
 
 	/**
 	 * Keys to get index properties and the json document ("graph")
@@ -98,15 +98,14 @@ public class ElasticsearchIndexer
 
 	@Override
 	public void onCloseStream() {
+		bulkRequest.setRefresh(true).get();
 		// remove old and unprotected indices
 		if (!aliasSuffix.equals("NOALIAS") && !updateIndex
 				&& !aliasSuffix.toLowerCase().contains("test"))
 			updateAliases();
 		// feed the rest of the bulk
-		if (bulkRequest.numberOfActions() != 0) {
+		if (bulkRequest.numberOfActions() != 0)
 			bulkRequest.execute().actionGet();
-			bulkRequest.setRefresh(true).get();
-		}
 	}
 
 	// TODO use BulkProcessorbuilder by updating to ES 1.5
@@ -132,6 +131,8 @@ public class ElasticsearchIndexer
 		} else
 			createIndex();
 		bulkRequest.setRefresh(false);
+		LOG.info(
+				"Threshold minimum score for spatial enrichment: " + MINIMUM_SCORE);
 	}
 
 	@Override
@@ -145,11 +146,11 @@ public class ElasticsearchIndexer
 		if (json.containsKey(Properties.PARENT.getName())) {
 			updateRequest.parent(json.get(Properties.PARENT.getName()));
 		} else {
-			if (WikidataEntityGeodata2Es.getIndexAlias() != null) {
+			if (WikidataGeodata2Es.getIndexExists()) {
 				try {
-					JsonNode node = mapper.readValue(json.get(Properties.GRAPH.getName()),
-							JsonNode.class);
-					jsonDoc = enrich(WikidataEntityGeodata2Es.getIndexAlias(), "coverage",
+					ObjectNode node = mapper.readValue(
+							json.get(Properties.GRAPH.getName()), ObjectNode.class);
+					jsonDoc = enrich(WikidataGeodata2Es.getIndexAlias(), "coverage",
 							"spatial", node);
 				} catch (IOException e1) {
 					LOG.info(
@@ -183,46 +184,65 @@ public class ElasticsearchIndexer
 	}
 
 	private String enrich(final String index, final String queryField,
-			final String mergeField, JsonNode node) {
-
-		String query;
+			final String SPATIAL, ObjectNode node) {
+		String[] query;
 		Iterable<Entry<String, JsonNode>> iterable = () -> node.fields();
 		Optional<Entry<String, JsonNode>> o =
 				StreamSupport.stream(iterable.spliterator(), false)
 						.filter(k -> k.getKey().equals(queryField)).findFirst();
 		if (o.isPresent()) {
-			query = o.get().getValue().toString();
-			query = query.replaceAll("[^\\p{IsAlphabetic}]", " ");
-			if (!query.isEmpty()) {
-				QueryStringQueryBuilder qsq =
-						QueryBuilders.queryStringQuery("spatial.label:" + query)
-								.field("spatial.label", 100.0f);
+			query = o.get().getValue().toString().split("\",\"");
+			ArrayNode spatialNode = node.putArray(SPATIAL);
+			for (int i = 0; i < query.length; i++) {
+				query[i] = query[i].replaceAll("[^\\p{IsAlphabetic}]", " ");
+				MultiMatchQueryBuilder qsq = new MultiMatchQueryBuilder(query[i],
+						SPATIAL + ".label^5", "aliases.de.value");
 				SearchHits hits = null;
 				try {
-					hits = client.prepareSearch(index).setQuery(functionScoreQuery(qsq))
-							.get().getHits();
+					hits = client.prepareSearch(index).setQuery(qsq).get().getHits();
+					JsonNode newSpatialNode;
+					if (hits.getTotalHits() > 0) {
+						ObjectNode source = mapper
+								.readValue(hits.getAt(0).getSourceAsString(), ObjectNode.class);
+						LOG.info(i + " 1.Hit Query=" + query[i] + " score="
+								+ hits.getAt(0).getScore() + " source="
+								+ hits.getAt(0).getSource());
+						if (hits.getAt(0).getScore() < MINIMUM_SCORE) {
+							LOG.info("Score " + hits.getAt(0).getScore() + " to low. Queried "
+									+ query[i]);
+							newSpatialNode = fallbackQuery(query[i]);
+						} else
+							newSpatialNode = source.get(SPATIAL);
+						if (newSpatialNode != null)
+							spatialNode.add(newSpatialNode);
+					} else {
+						newSpatialNode = fallbackQuery(query[i]);
+						if (newSpatialNode != null)
+							spatialNode.add(newSpatialNode);
+					}
 				} catch (Exception e) {
 					LOG.warn("Couldn't get a hit using index '" + index + "' querying '"
-							+ query + "'", e.getLocalizedMessage());
-					return node.toString();
+							+ query[i] + "'", e.getLocalizedMessage());
 				}
-				if (hits.getTotalHits() > 0) {
-					Map<String, Object> source = hits.getAt(0).getSource();
-					try {
-						return node.toString().replaceAll("}$",
-								", \"" + mergeField + "\"" + ":"
-										+ mapper.writeValueAsString(source.get(mergeField)) + "}");
-					} catch (IOException e) {
-						LOG.warn("Couldn't get a hit using index '" + index + "' querying '"
-								+ query + "'", e.getLocalizedMessage());
-					}
-
-				} else
-					LOG.warn(
-							"No hit using index '" + index + "' querying '" + query + "'");
 			}
+			if (spatialNode.size() > 0)
+				node.set(SPATIAL, spatialNode);
+			else
+				node.remove(SPATIAL);
 		}
 		return node.toString();
+	}
+
+	private static JsonNode fallbackQuery(final String QUERY) {
+		LOG.info(
+				"Fallback - querying https://www.wikidata.org...&srsearch=" + QUERY);
+		JsonNode jn = WikidataGeodata2Es
+				.extractEntitiesFromWikidataApiQueryAndTranformThemAndIndex2Es(
+						"https://www.wikidata.org/w/api.php?action=query&list=search&format=json&srsearch="
+								+ QUERY);
+		if (jn != null)
+			Log.info("Fallback success: " + QUERY + "!");
+		return jn;
 	}
 
 	/**
@@ -277,6 +297,16 @@ public class ElasticsearchIndexer
 	 */
 	public void setElasticsearchClient(Client client) {
 		this.client = client;
+	}
+
+	/**
+	 * Sets the elasticsearch client.
+	 * 
+	 * @return client the elasticsearch client
+	 * 
+	 */
+	public Client getElasticsearchClient() {
+		return this.client;
 	}
 
 	/**
