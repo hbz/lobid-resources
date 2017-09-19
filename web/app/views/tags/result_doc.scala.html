@@ -144,6 +144,12 @@
   seq.sortBy((v: JsValue) => ((v\"startDate").asOpt[String].getOrElse((v\"endDate").asOpt[String].getOrElse("0")).toInt))
 }
 
+@withPrefixedLink(label: String, prefix: String, node: JsValue) = {
+	@for(array <- node.asOpt[Seq[JsValue]]; if array.size > 0; value <- array.head.asOpt[String]){
+		<tr><td>@label</td><td><a href='@prefix@value'>@value</a></td></tr>
+	}
+}
+
 @table(){
   @result_field("Titel", "title", doc, TableRow.VALUES)
   @result_field("Titelzusatz", "otherTitleInformation", doc, TableRow.VALUES)
@@ -159,7 +165,8 @@
   @result_field("Auflage", "edition", doc, TableRow.VALUES)
   @result_field("ISBN", "isbn", doc, TableRow.VALUES)
   @result_field("ISSN", "issn", doc, TableRow.VALUES)
-  @result_field("URN", "urn", doc, TableRow.VALUES)
+  @withPrefixedLink("DOI", "https://dx.doi.org/", doc \ "doi")
+  @withPrefixedLink("URN", "https://nbn-resolving.org/", doc \ "urn")
   @result_field("Umfang", "extent", doc, TableRow.VALUES)
   @result_field("Quelle", "bibliographicCitation", doc, TableRow.VALUES)
   @result_field("In", "containedIn", doc, TableRow.LINKS)
