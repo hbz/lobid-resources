@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+import org.mortbay.log.Log;
 import org.openrdf.model.BNode;
 import org.openrdf.model.Graph;
 import org.openrdf.model.Statement;
@@ -257,10 +258,14 @@ public class JsonConverter {
 	private void addBlankNodeToJsonResult(Map<String, Object> jsonResult,
 			String key, String uri, Etikett e) {
 		if (jsonResult.containsKey(key)) {
-			@SuppressWarnings("unchecked")
-			Set<Map<String, Object>> literals =
-					(Set<Map<String, Object>>) jsonResult.get(key);
-			literals.add(createObjectWithoutId(uri));
+			try {
+				@SuppressWarnings("unchecked")
+				Set<Map<String, Object>> literals =
+						(Set<Map<String, Object>>) jsonResult.get(key);
+				literals.add(createObjectWithoutId(uri));
+			} catch (Exception ex) {
+				Log.warn("Couldn't add bnode: " + jsonResult.get(key), ex);
+			}
 		} else {
 			if (e.container != null
 					&& e.container.equals(Etikett.Container.SET.getName())) {
