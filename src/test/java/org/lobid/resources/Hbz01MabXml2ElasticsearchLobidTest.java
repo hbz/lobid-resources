@@ -109,10 +109,14 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 	public static void etl(final Client cl,
 			RdfModel2ElasticsearchEtikettJsonLd etikettJsonLdConverter) {
 		// load wikidata geo coordinates into es
+		WikidataGeodata2Es.esIndexer
+				.setIndexName(WikidataGeodata2Es.getIndexAlias());
 		WikidataGeodata2Es.setElasticsearchIndexer(cl);
 		WikidataGeodata2Es.filterWikidataEntitiesDump2EsGeodata(
 				"src/test/resources/wikidataEntities.json");
 		WikidataGeodata2Es.finish();
+		ElasticsearchIndexer.MINIMUM_SCORE = 1.0;
+
 		final FileOpener opener = new FileOpener();
 		final Triples2RdfModel triple2model = new Triples2RdfModel();
 		triple2model.setInput(Hbz01MabXmlEtlNtriples2Filesystem.N_TRIPLE);

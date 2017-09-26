@@ -45,7 +45,8 @@ import com.ning.http.client.Response;
 public class WikidataGeodata2Es {
 
 	private static final String JSON = "application/json";
-	static ElasticsearchIndexer esIndexer = new ElasticsearchIndexer();
+	// TODO getter?
+	public static ElasticsearchIndexer esIndexer = new ElasticsearchIndexer();
 	private static final String DATE =
 			new SimpleDateFormat("yyyyMMdd-HHmmss").format(new Date());
 	private static final Logger LOG =
@@ -61,9 +62,12 @@ public class WikidataGeodata2Es {
 	public static void main(String... args)
 			throws UnsupportedEncodingException, IOException {
 		setProductionIndexerConfigs();
+		if (System.getProperty("update", "false").equals("true")) {
+			esIndexer.setUpdateNewestIndex(true);
+			LOG.info("Update index: true");
+		} else
+			esIndexer.setUpdateNewestIndex(false);
 		LOG.info("Going to index");
-		// setWikidatEntitiesJsonDefaultLoadedFromFile();
-
 		extractEntitiesFromSparqlQueryTranformThemAndIndex2Es(new String(
 				Files.readAllBytes(Paths.get(
 						"src/main/resources/getNwbibSubjectLocationsAsWikidataEntities.txt")),
@@ -74,6 +78,7 @@ public class WikidataGeodata2Es {
 	static void setProductionIndexerConfigs() {
 		esIndexer.setClustername("gaia-aither");
 		esIndexer.setHostname("gaia.hbz-nrw.de");
+		esIndexer.setIndexName(indexAlias + "-" + DATE);
 		setElasticsearchIndexer();
 	}
 
@@ -104,10 +109,7 @@ public class WikidataGeodata2Es {
 	}
 
 	private static void setElasticsearchIndexer() {
-		final String indexNamePrefix = indexAlias;
-		setIndexAlias(indexNamePrefix);
-		esIndexer.setIndexName(indexNamePrefix + "-" + DATE);
-		esIndexer.setUpdateNewestIndex(false);
+		setIndexAlias(indexAlias);
 		esIndexer.setIndexConfig("index-config-wd-geodata.json");
 		esIndexer.onSetReceiver();
 	}

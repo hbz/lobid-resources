@@ -33,6 +33,7 @@ import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.index.query.MultiMatchQueryBuilder;
+import org.elasticsearch.rest.action.admin.indices.alias.delete.AliasesNotFoundException;
 import org.elasticsearch.search.SearchHits;
 import org.lobid.resources.run.WikidataGeodata2Es;
 import org.mortbay.log.Log;
@@ -76,7 +77,8 @@ public class ElasticsearchIndexer
 	private String aliasSuffix = "";
 	private static String indexConfig = "index-config.json";
 	private static ObjectMapper mapper = new ObjectMapper();
-	double MINIMUM_SCORE = 4.0;
+	// TODDO setter?
+	public static double MINIMUM_SCORE = 4.0;
 
 	/**
 	 * Keys to get index properties and the json document ("graph")
@@ -202,11 +204,12 @@ public class ElasticsearchIndexer
 					hits = client.prepareSearch(index).setQuery(qsq).get().getHits();
 					JsonNode newSpatialNode;
 					if (hits.getTotalHits() > 0) {
-						ObjectNode source = mapper
-								.readValue(hits.getAt(0).getSourceAsString(), ObjectNode.class);
+						ObjectNode source = mapper.readValue(
+								hits.getAt(0).getSource().get(SPATIAL).toString(),
+								ObjectNode.class);
 						LOG.info(i + " 1.Hit Query=" + query[i] + " score="
 								+ hits.getAt(0).getScore() + " source="
-								+ hits.getAt(0).getSource());
+								+ hits.getAt(0).getSource().get("spatial"));
 						if (hits.getAt(0).getScore() < MINIMUM_SCORE) {
 							LOG.info("Score " + hits.getAt(0).getScore() + " to low. Queried "
 									+ query[i]);
@@ -239,7 +242,8 @@ public class ElasticsearchIndexer
 		JsonNode jn = WikidataGeodata2Es
 				.extractEntitiesFromWikidataApiQueryAndTranformThemAndIndex2Es(
 						"https://www.wikidata.org/w/api.php?action=query&list=search&format=json&srsearch="
-								+ QUERY);
+								+ QUERY)
+				.get("spatial");
 		if (jn != null)
 			Log.info("Fallback success: " + QUERY + "!");
 		return jn;
@@ -390,15 +394,19 @@ public class ElasticsearchIndexer
 
 	private void removeOldAliases(final SortedSet<String> indicesForPrefix,
 			final String newAlias) {
-		for (String name : indicesForPrefix) {
-			final Set<String> aliases = aliases(name);
-			for (String alias : aliases) {
-				if (alias.equals(newAlias)) {
-					LOG.info("Delete alias index,alias: " + name + "," + alias);
-					client.admin().indices().prepareAliases().removeAlias(name, alias)
-							.execute().actionGet();
+		try {
+			for (String name : indicesForPrefix) {
+				final Set<String> aliases = aliases(name);
+				for (String alias : aliases) {
+					if (alias.equals(newAlias)) {
+						LOG.info("Delete alias index,alias: " + name + "," + alias);
+						client.admin().indices().prepareAliases().removeAlias(name, alias)
+								.execute().actionGet();
+					}
 				}
 			}
+		} catch (AliasesNotFoundException e) {
+			LOG.warn("Alias not found", e);
 		}
 	}
 
