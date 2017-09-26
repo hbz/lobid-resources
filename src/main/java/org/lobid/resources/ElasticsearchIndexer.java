@@ -10,9 +10,12 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.StreamSupport;
 
 import org.culturegraph.mf.framework.DefaultObjectPipe;
 import org.culturegraph.mf.framework.ObjectReceiver;
@@ -29,9 +32,18 @@ import org.elasticsearch.client.transport.NoNodeAvailableException;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
+import org.elasticsearch.index.query.MultiMatchQueryBuilder;
+import org.elasticsearch.rest.action.admin.indices.alias.delete.AliasesNotFoundException;
+import org.elasticsearch.search.SearchHits;
+import org.lobid.resources.run.WikidataGeodata2Es;
+import org.mortbay.log.Log;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.SortedSetMultimap;
 import com.google.common.collect.TreeMultimap;
 import com.google.common.io.CharStreams;
@@ -62,7 +74,11 @@ public class ElasticsearchIndexer
 	private int docs = 0;
 	private String indexName;
 	private boolean updateIndex;
-	private String aliasSuffix;
+	private String aliasSuffix = "";
+	private static String indexConfig = "index-config.json";
+	private static ObjectMapper mapper = new ObjectMapper();
+	// TODDO setter?
+	public static double MINIMUM_SCORE = 4.0;
 
 	/**
 	 * Keys to get index properties and the json document ("graph")
@@ -83,13 +99,15 @@ public class ElasticsearchIndexer
 	}
 
 	@Override
-	protected void onCloseStream() {
-		// feed the rest of the bulk
-		bulkRequest.execute().actionGet();
+	public void onCloseStream() {
+		bulkRequest.setRefresh(true).get();
+		// remove old and unprotected indices
 		if (!aliasSuffix.equals("NOALIAS") && !updateIndex
 				&& !aliasSuffix.toLowerCase().contains("test"))
-			updateAliases(indexName, aliasSuffix);
-		bulkRequest.setRefresh(true).get();
+			updateAliases();
+		// feed the rest of the bulk
+		if (bulkRequest.numberOfActions() != 0)
+			bulkRequest.execute().actionGet();
 	}
 
 	// TODO use BulkProcessorbuilder by updating to ES 1.5
@@ -115,6 +133,8 @@ public class ElasticsearchIndexer
 		} else
 			createIndex();
 		bulkRequest.setRefresh(false);
+		LOG.info(
+				"Threshold minimum score for spatial enrichment: " + MINIMUM_SCORE);
 	}
 
 	@Override
@@ -124,11 +144,25 @@ public class ElasticsearchIndexer
 				+ json.get(Properties.GRAPH.getName()));
 		updateRequest = new UpdateRequest(indexName,
 				json.get(Properties.TYPE.getName()), json.get(Properties.ID.getName()));
-		updateRequest.doc(json.get(Properties.GRAPH.getName()));
-		updateRequest.docAsUpsert(true);
+		String jsonDoc = json.get(Properties.GRAPH.getName());
 		if (json.containsKey(Properties.PARENT.getName())) {
 			updateRequest.parent(json.get(Properties.PARENT.getName()));
+		} else {
+			if (WikidataGeodata2Es.getIndexExists()) {
+				try {
+					ObjectNode node = mapper.readValue(
+							json.get(Properties.GRAPH.getName()), ObjectNode.class);
+					jsonDoc = enrich(WikidataGeodata2Es.getIndexAlias(), "coverage",
+							"spatial", node);
+				} catch (IOException e1) {
+					LOG.info(
+							"Enrichment problem with" + json.get(Properties.ID.getName()),
+							e1);
+				}
+			}
 		}
+		updateRequest.doc(jsonDoc);
+		updateRequest.docAsUpsert(true);
 		bulkRequest.add(updateRequest);
 		docs++;
 		while (docs > bulkSize && retries > 0) {
@@ -149,6 +183,78 @@ public class ElasticsearchIndexer
 						+ ":" + e.getMessage() + " (" + retries + " more retries)");
 			}
 		}
+	}
+
+	private String enrich(final String index, final String queryField,
+			final String SPATIAL, ObjectNode node) {
+		String[] query;
+		Iterable<Entry<String, JsonNode>> iterable = () -> node.fields();
+		Optional<Entry<String, JsonNode>> o =
+				StreamSupport.stream(iterable.spliterator(), false)
+						.filter(k -> k.getKey().equals(queryField)).findFirst();
+		if (o.isPresent()) {
+			query = o.get().getValue().toString().split("\",\"");
+			ArrayNode spatialNode = node.putArray(SPATIAL);
+			for (int i = 0; i < query.length; i++) {
+				query[i] = query[i].replaceAll("[^\\p{IsAlphabetic}]", " ");
+				MultiMatchQueryBuilder qsq = new MultiMatchQueryBuilder(query[i],
+						SPATIAL + ".label^5", "aliases.de.value");
+				SearchHits hits = null;
+				try {
+					hits = client.prepareSearch(index).setQuery(qsq).get().getHits();
+					JsonNode newSpatialNode;
+					if (hits.getTotalHits() > 0) {
+						ObjectNode source = mapper
+								.readValue(hits.getAt(0).getSourceAsString(), ObjectNode.class);
+						LOG.info("SourceAsString: " + hits.getAt(0).getSourceAsString());
+						newSpatialNode = source.findPath(SPATIAL);
+						LOG.info(i + " 1.Hit Query=" + query[i] + " score="
+								+ hits.getAt(0).getScore() + " source=" + source.toString());
+						if (hits.getAt(0).getScore() < MINIMUM_SCORE) {
+							LOG.info("Score " + hits.getAt(0).getScore() + " to low. Queried "
+									+ query[i]);
+							newSpatialNode = fallbackQuery(query[i]);
+						}
+						if (newSpatialNode != null)
+							spatialNode.add(newSpatialNode);
+					} else {
+						newSpatialNode = fallbackQuery(query[i]);
+						if (newSpatialNode != null)
+							spatialNode.add(newSpatialNode);
+					}
+				} catch (Exception e) {
+					LOG.warn("Couldn't get a hit using index '" + index + "' querying '"
+							+ query[i] + "'", e.getMessage());
+				}
+			}
+			if (spatialNode.size() > 0)
+				node.set(SPATIAL, spatialNode);
+			else
+				node.remove(SPATIAL);
+		}
+		return node.toString();
+	}
+
+	private static JsonNode fallbackQuery(final String QUERY) {
+		LOG.info(
+				"Fallback - querying https://www.wikidata.org...&srsearch=" + QUERY);
+		JsonNode jn = WikidataGeodata2Es
+				.extractEntitiesFromWikidataApiQueryAndTranformThemAndIndex2Es(
+						"https://www.wikidata.org/w/api.php?action=query&list=search&format=json&srsearch="
+								+ QUERY)
+				.get("spatial");
+		if (jn != null)
+			Log.info("Fallback success: " + QUERY + "!");
+		return jn;
+	}
+
+	/**
+	 * Sets the name of the index config json filename.
+	 * 
+	 * @param indexConfig the filename of the index config
+	 */
+	public void setIndexConfig(final String indexConfig) {
+		ElasticsearchIndexer.indexConfig = indexConfig;
 	}
 
 	/**
@@ -181,11 +287,10 @@ public class ElasticsearchIndexer
 	/**
 	 * Sets the suffix of elasticsearch index alias suffix
 	 * 
-	 * @param aliasSuffix may be an IP or a domain name
+	 * @param aliasSuffix musn't have '-' in it
 	 */
 	public void setIndexAliasSuffix(String aliasSuffix) {
 		this.aliasSuffix = aliasSuffix;
-
 	}
 
 	/**
@@ -195,6 +300,16 @@ public class ElasticsearchIndexer
 	 */
 	public void setElasticsearchClient(Client client) {
 		this.client = client;
+	}
+
+	/**
+	 * Sets the elasticsearch client.
+	 * 
+	 * @return client the elasticsearch client
+	 * 
+	 */
+	public Client getElasticsearchClient() {
+		return this.client;
 	}
 
 	/**
@@ -235,7 +350,7 @@ public class ElasticsearchIndexer
 		String res = null;
 		try {
 			final InputStream config = Thread.currentThread().getContextClassLoader()
-					.getResourceAsStream("index-config.json");
+					.getResourceAsStream(indexConfig);
 			try (InputStreamReader reader = new InputStreamReader(config, "UTF-8")) {
 				res = CharStreams.toString(reader);
 			}
@@ -245,18 +360,22 @@ public class ElasticsearchIndexer
 		return res;
 	}
 
-	private void updateAliases(final String name, final String suffix) {
+	/**
+	 * Updates alias, may remove old indices.
+	 * 
+	 */
+	public void updateAliases() {
 		final SortedSetMultimap<String, String> indices =
-				groupByIndexCollection(name);
+				groupByIndexCollection(indexName);
 		for (String prefix : indices.keySet()) {
 			final SortedSet<String> indicesForPrefix = indices.get(prefix);
 			final String newIndex = indicesForPrefix.last();
-			final String newAlias = prefix + suffix;
+			final String newAlias = prefix + aliasSuffix;
 			LOG.info("Prefix " + prefix + ", newest index: " + newIndex);
 			removeOldAliases(indicesForPrefix, newAlias);
-			if (!name.equals(newAlias) && !newIndex.equals(newAlias))
+			if (!indexName.equals(newAlias) && !newIndex.equals(newAlias))
 				createNewAlias(newIndex, newAlias);
-			deleteOldIndices(name, indicesForPrefix);
+			deleteOldIndices(indexName, indicesForPrefix);
 		}
 	}
 
@@ -274,15 +393,19 @@ public class ElasticsearchIndexer
 
 	private void removeOldAliases(final SortedSet<String> indicesForPrefix,
 			final String newAlias) {
-		for (String name : indicesForPrefix) {
-			final Set<String> aliases = aliases(name);
-			for (String alias : aliases) {
-				if (alias.equals(newAlias)) {
-					LOG.info("Delete alias index,alias: " + name + "," + alias);
-					client.admin().indices().prepareAliases().removeAlias(name, alias)
-							.execute().actionGet();
+		try {
+			for (String name : indicesForPrefix) {
+				final Set<String> aliases = aliases(name);
+				for (String alias : aliases) {
+					if (alias.equals(newAlias)) {
+						LOG.info("Delete alias index,alias: " + name + "," + alias);
+						client.admin().indices().prepareAliases().removeAlias(name, alias)
+								.execute().actionGet();
+					}
 				}
 			}
+		} catch (AliasesNotFoundException e) {
+			LOG.warn("Alias not found", e);
 		}
 	}
 

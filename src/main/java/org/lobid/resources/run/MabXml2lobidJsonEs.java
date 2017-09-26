@@ -44,7 +44,6 @@ public final class MabXml2lobidJsonEs {
 		indexName =
 				indexName.matches(".*-20.*") || args[5].toLowerCase().equals("exact")
 						? indexName : indexName + "-" + date;
-
 		String indexAliasSuffix = args[2];
 		String node = args[3];
 		String cluster = args[4];
@@ -78,6 +77,12 @@ public final class MabXml2lobidJsonEs {
 		esIndexer.setIndexAliasSuffix(indexAliasSuffix);
 		esIndexer.setUpdateNewestIndex(update);
 		esIndexer.onSetReceiver();
+		WikidataGeodata2Es.setProductionIndexerConfigs();
+		// Hard set to (presumably, normally) existing index. Don't make a new one!
+		WikidataGeodata2Es.esIndexer
+				.setIndexName(WikidataGeodata2Es.getIndexAlias());
+		WikidataGeodata2Es.esIndexer.setUpdateNewestIndex(true);
+		WikidataGeodata2Es.storeIfIndexExists(esIndexer.getElasticsearchClient());
 		StreamBatchLogger batchLogger = new StreamBatchLogger();
 		batchLogger.setBatchSize(100000);
 		ObjectBatchLogger<HashMap<String, String>> objectBatchLogger =
@@ -93,5 +98,6 @@ public final class MabXml2lobidJsonEs {
 				.setReceiver(batchLogger);
 		opener.process(new File(inputPath).getAbsolutePath());
 		opener.closeStream();
+		WikidataGeodata2Es.esIndexer.onCloseStream();
 	}
 }

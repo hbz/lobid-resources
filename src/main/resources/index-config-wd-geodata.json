@@ -1,0 +1,52 @@
+{
+      "mappings" : {
+         "wikidata-geo" : {
+            "properties" : {
+               "spatial" : {
+                  "properties" : {
+                     "id" : {
+                        "index": "not_analyzed",
+                        "type" : "string"
+                     },
+                     "type" : {
+                        "index": "no",
+                        "type" : "string"
+                     },
+                     "geo" : {
+                        "properties" : {
+                           "type" : {
+                              "index": "no",
+                              "type" : "string"
+                           },
+                           "lat" : {
+                              "type" : "double"
+                           },
+                           "lon" : {
+                              "type" : "double"
+                           }
+                        }
+                     },
+                     "label" : {
+                        "type" : "string"
+                     }
+                  }
+               },
+               "alias" : {
+                  "properties" : {
+                     "de" : {
+                        "properties" : {
+                           "value" : {
+                              "type" : "string"
+                           },
+                           "language" : {
+                              "index": "no",
+                              "type" : "string"
+                           }
+                        }
+                     }
+                  }
+               }
+            }
+         }
+      }
+}

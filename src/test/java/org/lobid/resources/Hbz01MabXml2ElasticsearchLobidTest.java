@@ -38,6 +38,7 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.lobid.resources.run.MabXml2lobidJsonEs;
+import org.lobid.resources.run.WikidataGeodata2Es;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -80,9 +81,11 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 	@BeforeClass
 	public static void setup() {
 		try {
-			Files.walk(Paths.get(DIRECTORY_TO_TEST_JSON_FILES))
-					.filter(Files::isRegularFile)
-					.forEach(fname -> testFiles.add(fname.getFileName().toString()));
+			if (System.getProperty("generateTestData", "false").equals("true")) {
+				Files.walk(Paths.get(DIRECTORY_TO_TEST_JSON_FILES))
+						.filter(Files::isRegularFile)
+						.forEach(fname -> testFiles.add(fname.getFileName().toString()));
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -105,7 +108,15 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 	 */
 	public static void etl(final Client cl,
 			RdfModel2ElasticsearchEtikettJsonLd etikettJsonLdConverter) {
-		client = cl;
+		// load wikidata geo coordinates into es
+		WikidataGeodata2Es.esIndexer
+				.setIndexName(WikidataGeodata2Es.getIndexAlias());
+		WikidataGeodata2Es.setElasticsearchIndexer(cl);
+		WikidataGeodata2Es.filterWikidataEntitiesDump2EsGeodata(
+				"src/test/resources/wikidataEntities.json");
+		WikidataGeodata2Es.finish();
+		ElasticsearchIndexer.MINIMUM_SCORE = 1.0;
+
 		final FileOpener opener = new FileOpener();
 		final Triples2RdfModel triple2model = new Triples2RdfModel();
 		triple2model.setInput(Hbz01MabXmlEtlNtriples2Filesystem.N_TRIPLE);
@@ -120,6 +131,7 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 				new File(Hbz01MabXmlEtlNtriples2Filesystem.TEST_FILENAME_ALEPHXMLCLOBS)
 						.getAbsolutePath());
 		opener.closeStream();
+		WikidataGeodata2Es.esIndexer.onCloseStream();
 	}
 
 	@SuppressWarnings("static-method")
@@ -173,6 +185,7 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 	private static void writeFile(final String TEST_FILENAME,
 			final String DOCUMENT) {
 		File testFile = new File(TEST_FILENAME);
+		LOG.info("Write " + TEST_FILENAME);
 		try {
 			FileUtils.writeStringToFile(testFile, DOCUMENT, false);
 		} catch (IOException e) {
@@ -186,6 +199,7 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 		esIndexer.setIndexName(LOBID_RESOURCES);
 		esIndexer.setIndexAliasSuffix("");
 		esIndexer.setUpdateNewestIndex(false);
+		esIndexer.setIndexConfig("index-config.json");
 		esIndexer.onSetReceiver();
 		return esIndexer;
 	}

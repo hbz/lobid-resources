@@ -1,0 +1,24 @@
+https://query.wikidata.org/sparql?query=
+SELECT DISTINCT
+?item
+?itemLabel
+?partOf
+WHERE {
+  hint:Query hint:optimizer "None".
+  { ?item wdt:P131* wd:Q1198;
+        wdt:P31/wdt:P279* wd:Q387917 .
+  }
+  UNION
+  {  ?item wdt:P131* wd:Q1198 ;
+       wdt:P31 wd:Q82794 .
+  }
+  FILTER NOT EXISTS { ?item wdt:P31/wdt:P279* wd:Q192611 }
+  FILTER NOT EXISTS { ?item wdt:P31/wdt:P279* wd:Q20296613 }
+  FILTER NOT EXISTS { ?item wdt:P31/wdt:P279* wd:Q1643757 }
+  FILTER NOT EXISTS { ?item wdt:P31/wdt:P279* wd:Q2520712 }
+  FILTER NOT EXISTS { ?item wdt:P31/wdt:P279* wd:Q478847 }
+  FILTER NOT EXISTS { ?item wdt:P31/wdt:P279* wd:Q2740635 }
+  SERVICE wikibase:label {  bd:serviceParam wikibase:language "de" }
+  OPTIONAL { ?item wdt:P150 ?hasPart }
+  OPTIONAL { ?item wdt:P131 ?partOf }
+}limit 40000
