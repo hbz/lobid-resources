@@ -131,6 +131,7 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 				new File(Hbz01MabXmlEtlNtriples2Filesystem.TEST_FILENAME_ALEPHXMLCLOBS)
 						.getAbsolutePath());
 		opener.closeStream();
+		WikidataGeodata2Es.esIndexer.onCloseStream();
 	}
 
 	@SuppressWarnings("static-method")

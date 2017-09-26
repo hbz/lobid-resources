@@ -72,6 +72,7 @@ public class WikidataGeodata2Es {
 				Files.readAllBytes(Paths.get(
 						"src/main/resources/getNwbibSubjectLocationsAsWikidataEntities.txt")),
 				"UTF-8"));
+		// TODO finish() ?
 		esIndexer.onCloseStream();
 	}
 
@@ -109,6 +110,8 @@ public class WikidataGeodata2Es {
 	}
 
 	private static void setElasticsearchIndexer() {
+		// TODO use system.properties to set it
+		esIndexer.setIndexAliasSuffix("NOALIAS");
 		setIndexAlias(indexAlias);
 		esIndexer.setIndexConfig("index-config-wd-geodata.json");
 		esIndexer.onSetReceiver();
@@ -198,7 +201,7 @@ public class WikidataGeodata2Es {
 	 * Finish loading data into elasticsearch.
 	 */
 	public static void finish() {
-		esIndexer.updateAliases();
+		// esIndexer.updateAliases();
 		esIndexer.onCloseStream();
 		storeIfIndexExists(esIndexer.getElasticsearchClient());
 	}

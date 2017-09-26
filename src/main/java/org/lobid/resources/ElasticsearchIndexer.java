@@ -204,18 +204,17 @@ public class ElasticsearchIndexer
 					hits = client.prepareSearch(index).setQuery(qsq).get().getHits();
 					JsonNode newSpatialNode;
 					if (hits.getTotalHits() > 0) {
-						ObjectNode source = mapper.readValue(
-								hits.getAt(0).getSource().get(SPATIAL).toString(),
-								ObjectNode.class);
+						ObjectNode source = mapper
+								.readValue(hits.getAt(0).getSourceAsString(), ObjectNode.class);
+						LOG.info("SourceAsString: " + hits.getAt(0).getSourceAsString());
+						newSpatialNode = source.findPath(SPATIAL);
 						LOG.info(i + " 1.Hit Query=" + query[i] + " score="
-								+ hits.getAt(0).getScore() + " source="
-								+ hits.getAt(0).getSource().get("spatial"));
+								+ hits.getAt(0).getScore() + " source=" + source.toString());
 						if (hits.getAt(0).getScore() < MINIMUM_SCORE) {
 							LOG.info("Score " + hits.getAt(0).getScore() + " to low. Queried "
 									+ query[i]);
 							newSpatialNode = fallbackQuery(query[i]);
-						} else
-							newSpatialNode = source.get(SPATIAL);
+						}
 						if (newSpatialNode != null)
 							spatialNode.add(newSpatialNode);
 					} else {
@@ -225,7 +224,7 @@ public class ElasticsearchIndexer
 					}
 				} catch (Exception e) {
 					LOG.warn("Couldn't get a hit using index '" + index + "' querying '"
-							+ query[i] + "'", e.getLocalizedMessage());
+							+ query[i] + "'", e.getMessage());
 				}
 			}
 			if (spatialNode.size() > 0)
