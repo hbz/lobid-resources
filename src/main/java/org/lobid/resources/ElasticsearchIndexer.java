@@ -9,6 +9,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Optional;
@@ -196,7 +197,7 @@ public class ElasticsearchIndexer
 			query = o.get().getValue().toString().split("\",\"");
 			ArrayNode spatialNode = node.putArray(SPATIAL);
 			for (int i = 0; i < query.length; i++) {
-				query[i] = query[i].replaceAll("[^\\p{IsAlphabetic}]", " ");
+				query[i] = query[i].replaceAll("[^\\p{IsAlphabetic}]", " ").trim();
 				MultiMatchQueryBuilder qsq = new MultiMatchQueryBuilder(query[i],
 						SPATIAL + ".label^5", "aliases.de.value");
 				SearchHits hits = null;
@@ -225,6 +226,7 @@ public class ElasticsearchIndexer
 				} catch (Exception e) {
 					LOG.warn("Couldn't get a hit using index '" + index + "' querying '"
 							+ query[i] + "'", e.getMessage());
+					lookupCache.add(query[i]);
 				}
 			}
 			if (spatialNode.size() > 0)
@@ -235,7 +237,13 @@ public class ElasticsearchIndexer
 		return node.toString();
 	}
 
+	static HashSet<String> lookupCache = new HashSet<>();
+
 	private static JsonNode fallbackQuery(final String QUERY) {
+		if (lookupCache.contains(QUERY)) {
+			LOG.info("Already lookuped " + QUERY + "with no good result, skipping");
+			return null;
+		}
 		LOG.info(
 				"Fallback - querying https://www.wikidata.org...&srsearch=" + QUERY);
 		JsonNode jn = WikidataGeodata2Es
@@ -245,6 +253,7 @@ public class ElasticsearchIndexer
 				.get("spatial");
 		if (jn != null)
 			Log.info("Fallback success: " + QUERY + "!");
+		lookupCache.add(QUERY);
 		return jn;
 	}
 
