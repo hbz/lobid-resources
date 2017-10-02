@@ -430,8 +430,8 @@
 			<data source="@id" name="subject"/>
 		</combine>
 		<combine name="http://purl.org/dc/terms/subject" value="${a}"
-			flushWith="@deweyId|@nwbibSubject|@nwbibSpatialSubject|@rpb2Subject|@rpbSubject" reset="true">
-			<data source="@deweyId|@nwbibSubject|@nwbibSpatialSubject|@rpb2Subject|@rpbSubject"
+			flushWith="@nwbibSubject|@nwbibSpatialSubject|@rpb2Subject|@rpbSubject" reset="true">
+			<data source="@nwbibSubject|@nwbibSpatialSubject|@rpb2Subject|@rpbSubject"
 				name="a"/>
 		</combine>
 		<!-- ####################### -->
@@ -1654,10 +1654,22 @@
 		<!-- #######subjects -->
 		<!-- ####################### -->
 		<!-- ddc links -->
-		<data source="70[05][-b][-12345].a" name="@deweyId">
-			<regexp match="([0-9]{3})" format="http://dewey.info/class/${1}/"/>
-			<sanitizeUrl></sanitizeUrl>
-		</data>
+		<entity name="http://purl.org/dc/terms/subject" reset="true" sameEntity="true">
+			<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="${a}" reset="true">
+				<data source="700[-b][-12345].a|705?[-12345].a" name="a">
+					<regexp match="([0-9]{3}.*)"/>
+					<lookup in="deweyLabels"/>
+				</data>
+			</combine>
+			<combine name="http://www.w3.org/2004/02/skos/core#notation" value="${a}" reset="true">
+				<data source="700[-b][-12345].a|705?[-12345].a" name="a"/>
+			</combine>
+			<combine name="http://id.loc.gov/ontologies/bibframe/source" value="${a}" reset="true">
+				<data source="700[-b][-12345].a|705?[-12345].a" name="a">
+					<regexp match=".*" format="http://d-nb.info/gnd/4149423-4"/>
+				</data>
+			</combine>
+		</entity>
 		<!-- gnd links -->
 		<data source="9[01234][27]-[-12].9" name="@subjectLinks">
 			<regexp match="\(DE-588\)(.*)" format="http://d-nb.info/gnd/${1}"/>
@@ -2719,7 +2731,7 @@
 			<data source="501-1.a"/>
 		</choose>
 		<!-- ####### sources of the subjects - for GND search 7749153-1 -->
-		<data source="@nwbibSubject|@nwbibSpatialSubject|@rpb2Subject|@rpbSubject|@deweyId"
+		<data source="@nwbibSubject|@nwbibSpatialSubject|@rpb2Subject|@rpbSubject"
 			name="~rdf:subject"/>
 		<data source="@nwbibSubject" name="http://id.loc.gov/ontologies/bibframe/source">
 			<constant value="http://purl.org/lobid/nwbib"/> <!--nwbib -->
@@ -2733,11 +2745,8 @@
 		<data source="@rpbSubject" name="http://id.loc.gov/ontologies/bibframe/source">
 			<constant value="https://w3id.org/lobid/rpb"/> <!--rpb -->
 		</data>
-		<data source="@deweyId" name="http://id.loc.gov/ontologies/bibframe/source">
-			<constant value="http://d-nb.info/gnd/4149423-4"/><!--dewey -->
-		</data>
 		<combine name="~rdf:subject" value="$[ns-lobid-resource]${id}#!"
-			flushWith="@nwbibSubject|@nwbibSpatialSubject|@rpb2Subject|@rpbSubject|@deweyId">
+			flushWith="@nwbibSubject|@nwbibSpatialSubject|@rpb2Subject|@rpbSubject">
 			<data source="@id" name="id"/>
 		</combine>
 		<!-- /sources of the subjects -->
@@ -2750,6 +2759,7 @@
 	<!-- ########### maps -->
 	<!-- ####################### -->
 	<maps>
+		<filemap name="deweyLabels" files="deweyLabels.tsv"/>
 		<filemap name="sigel2isilMap" files="sigel2isilMap.csv"/>
 		<filemap name="iso639xToIso639-3-Map" files="iso639xToIso639-3-Map.tsv"/>
 	</maps>
