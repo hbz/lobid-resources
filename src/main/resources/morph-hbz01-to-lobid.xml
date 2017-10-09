@@ -400,6 +400,24 @@
 				</data>
 			</combine>
 		</macro>
+		<macro name="addDeweyNotationAndLabel">
+			<entity name="http://purl.org/dc/terms/subject" reset="true" sameEntity="true">
+				<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="${a}" reset="true">
+					<data source="$[field]" name="a">
+						<regexp match="([0-9]{3}.*)"/>
+						<lookup in="deweyLabels"/>
+					</data>
+				</combine>
+				<combine name="http://www.w3.org/2004/02/skos/core#notation" value="${a}" reset="true">
+					<data source="$[field]" name="a"/>
+				</combine>
+				<combine name="http://id.loc.gov/ontologies/bibframe/source" value="${a}" reset="true">
+					<data source="$[field]" name="a">
+						<regexp match=".*" format="http://d-nb.info/gnd/4149423-4"/>
+					</data>
+				</combine>
+			</entity>
+		</macro>
 	</macros>
 	<rules>
 		<!-- subject as bnodes and their two properties (label & type ) -->
@@ -1654,22 +1672,9 @@
 		<!-- #######subjects -->
 		<!-- ####################### -->
 		<!-- ddc links -->
-		<entity name="http://purl.org/dc/terms/subject" reset="true" sameEntity="true">
-			<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="${a}" reset="true">
-				<data source="700[-b][-12345].a|705?[-12345].a" name="a">
-					<regexp match="([0-9]{3}.*)"/>
-					<lookup in="deweyLabels"/>
-				</data>
-			</combine>
-			<combine name="http://www.w3.org/2004/02/skos/core#notation" value="${a}" reset="true">
-				<data source="700[-b][-12345].a|705?[-12345].a" name="a"/>
-			</combine>
-			<combine name="http://id.loc.gov/ontologies/bibframe/source" value="${a}" reset="true">
-				<data source="700[-b][-12345].a|705?[-12345].a" name="a">
-					<regexp match=".*" format="http://d-nb.info/gnd/4149423-4"/>
-				</data>
-			</combine>
-		</entity>
+		<call-macro name="addDeweyNotationAndLabel" field="700[-b][-12345].a"/>
+		<call-macro name="addDeweyNotationAndLabel" field="705?[-12345].a"/>
+		<call-macro name="addDeweyNotationAndLabel" field="705?[-12345].c"/>
 		<!-- gnd links -->
 		<data source="9[01234][27]-[-12].9" name="@subjectLinks">
 			<regexp match="\(DE-588\)(.*)" format="http://d-nb.info/gnd/${1}"/>
