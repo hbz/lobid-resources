@@ -111,7 +111,7 @@ public class WikidataGeodata2Es {
 
 	private static void setElasticsearchIndexer() {
 		// TODO use system.properties to set it
-		esIndexer.setIndexAliasSuffix("NOALIAS");
+		esIndexer.setIndexAliasSuffix("-staging");
 		setIndexAlias(indexAlias);
 		esIndexer.setIndexConfig("index-config-wd-geodata.json");
 		esIndexer.onSetReceiver();
@@ -151,35 +151,6 @@ public class WikidataGeodata2Es {
 		} catch (Exception e) {
 			LOG.error("Can't get wikidata entities ", e);
 		}
-	}
-
-	/**
-	 * Starts getting the wikidata entities from the wikidata-API and load them
-	 * into elasticsearch.
-	 * 
-	 * @param QUERY the SPARQL-query
-	 * @return JsonNode or null
-	 * 
-	 */
-	public static JsonNode extractEntitiesFromWikidataApiQueryAndTranformThemAndIndex2Es(
-			final String QUERY) {
-		try (AsyncHttpClient client = new AsyncHttpClient()) {
-			JsonNode jnode = toApiResponse(client, QUERY);
-			jnode = jnode.get("query").get("search").findPath("title");
-			if (jnode.isMissingNode())
-				LOG.info("No hit for " + QUERY);
-			else {
-				JsonNode jn = toApiResponse(client,
-						"http://www.wikidata.org/entity/" + jnode.asText());
-				Pair<String, JsonNode> lobidWikidata =
-						transform2lobidWikidata().apply(jn);
-				index2Es().accept(lobidWikidata);
-				return lobidWikidata.second;
-			}
-		} catch (Exception e) {
-			LOG.info("Fallback failed: " + QUERY);
-		}
-		return null;
 	}
 
 	/**
