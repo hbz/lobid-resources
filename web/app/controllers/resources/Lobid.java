@@ -4,6 +4,7 @@ package controllers.resources;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -29,7 +30,6 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.html.HtmlEscapers;
 
 import play.Logger;
-import play.Play;
 import play.cache.Cache;
 import play.libs.F.Promise;
 import play.libs.Json;
@@ -365,7 +365,7 @@ public class Lobid {
 	 */
 	public static String opacUrl(String itemUri) {
 		try (InputStream stream =
-				Play.application().resourceAsStream("isil2opac_hbzid.json")) {
+				new URL(Application.CONFIG.getString("isil2opac_hbzid")).openStream()) {
 			JsonNode json = Json.parse(stream);
 			String[] hbzId_isil_sig =
 					itemUri.substring(itemUri.indexOf("items/") + 6).split(":");
