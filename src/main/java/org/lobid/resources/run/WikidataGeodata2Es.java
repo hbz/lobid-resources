@@ -120,6 +120,7 @@ public class WikidataGeodata2Es {
 	private static JsonNode toApiResponse(AsyncHttpClient client, String api)
 			throws InterruptedException, ExecutionException, JsonParseException,
 			JsonMappingException, IOException {
+		Thread.sleep(100); // be nice throttle down
 		Response response = client.prepareGet(api).setHeader("Accept", JSON)
 				.setFollowRedirects(true).execute().get();
 		return new ObjectMapper().readValue(response.getResponseBodyAsStream(),
@@ -195,16 +196,22 @@ public class WikidataGeodata2Es {
 
 	private static Consumer<Pair<String, JsonNode>> index2Es() {
 		return idAndJson -> {
-			if (idAndJson == null)
-				return;
-			HashMap<String, String> jsonMap = new HashMap<>();
-			jsonMap.put(ElasticsearchIndexer.Properties.TYPE.getName(),
-					"wikidata-geo");
-			jsonMap.put(ElasticsearchIndexer.Properties.GRAPH.getName(),
-					idAndJson.second.toString());
-			jsonMap.put(ElasticsearchIndexer.Properties.ID.getName(),
-					idAndJson.first);
-			esIndexer.process(jsonMap);
+			try {
+				if (idAndJson == null) {
+					return;
+				}
+				HashMap<String, String> jsonMap = new HashMap<>();
+				jsonMap.put(ElasticsearchIndexer.Properties.TYPE.getName(),
+						"wikidata-geo");
+				jsonMap.put(ElasticsearchIndexer.Properties.GRAPH.getName(),
+						idAndJson.second.toString());
+				jsonMap.put(ElasticsearchIndexer.Properties.ID.getName(),
+						idAndJson.first);
+				esIndexer.process(jsonMap);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				LOG.error("Couldn't index a json document from the wd-entity ", e);
+			}
 		};
 	}
 
@@ -215,33 +222,39 @@ public class WikidataGeodata2Es {
 	 * @return a Pair of String and JsonNode
 	 */
 	public static Function<JsonNode, Pair<String, JsonNode>> transform2lobidWikidata() {
+
 		return node -> {
-			JsonNode geoNode = node.findPath("P625").findPath("mainsnak")
-					.findPath("datavalue").findPath("value");
-			ObjectMapper mapper = new ObjectMapper();
-			ObjectNode root = mapper.createObjectNode();
-			ObjectNode spatial = mapper.createObjectNode();
-			ObjectNode geo = mapper.createObjectNode();
-			root.set("spatial", spatial);
-			JsonNode aliasesNode = node.findPath("aliases").findPath("de");
-			if (!aliasesNode.isMissingNode())
-				root.set("aliases", aliasesNode);
-			spatial.put("type", "Location");
-			spatial.put("id",
-					"http://www.wikidata.org/entity/" + node.findPath("id").asText());
-			spatial.put("label",
-					node.findPath("labels").findPath("de").findPath("value").asText());
-			if (!geoNode.isMissingNode()
-					&& !geoNode.findPath("latitude").isMissingNode()) {
-				spatial.set("geo", geo);
-				geo.put("type", "GeoCoordinates");
-				geo.put("lat", geoNode.findPath("latitude").asDouble(0.0));
-				geo.put("lon", geoNode.findPath("longitude").asDouble(0.0));
-			} else {
-				LOG.info("No geo coords for "
-						+ node.findPath("labels").findPath("de").findPath("value").asText()
-						+ ": " + node.findPath("id").asText());
-				return null;
+			ObjectNode root = null;
+			try {
+				JsonNode geoNode = node.findPath("P625").findPath("mainsnak")
+						.findPath("datavalue").findPath("value");
+				ObjectMapper mapper = new ObjectMapper();
+				root = mapper.createObjectNode();
+				ObjectNode spatial = mapper.createObjectNode();
+				ObjectNode geo = mapper.createObjectNode();
+				root.set("spatial", spatial);
+				JsonNode aliasesNode = node.findPath("aliases").findPath("de");
+				if (!aliasesNode.isMissingNode())
+					root.set("aliases", aliasesNode);
+				spatial.put("type", "Location");
+				spatial.put("id",
+						"http://www.wikidata.org/entity/" + node.findPath("id").asText());
+				spatial.put("label",
+						node.findPath("labels").findPath("de").findPath("value").asText());
+				if (!geoNode.isMissingNode()
+						&& !geoNode.findPath("latitude").isMissingNode()) {
+					spatial.set("geo", geo);
+					geo.put("type", "GeoCoordinates");
+					geo.put("lat", geoNode.findPath("latitude").asDouble(0.0));
+					geo.put("lon", geoNode.findPath("longitude").asDouble(0.0));
+				} else {
+					LOG.info("No geo coords for " + node.findPath("labels").findPath("de")
+							.findPath("value").asText() + ": "
+							+ node.findPath("id").asText());
+				}
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				LOG.error("Couldn't build a json document from the wd-entity ", e);
 			}
 			return Pair.of(node.findPath("id").asText(), root);
 		};
