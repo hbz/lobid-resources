@@ -45,7 +45,6 @@ import com.ning.http.client.Response;
 public class WikidataGeodata2Es {
 
 	private static final String JSON = "application/json";
-	// TODO getter?
 	public static ElasticsearchIndexer esIndexer = new ElasticsearchIndexer();
 	private static final String DATE =
 			new SimpleDateFormat("yyyyMMdd-HHmmss").format(new Date());
@@ -72,7 +71,6 @@ public class WikidataGeodata2Es {
 				Files.readAllBytes(Paths.get(
 						"src/main/resources/getNwbibSubjectLocationsAsWikidataEntities.txt")),
 				"UTF-8"));
-		// TODO finish() ?
 		esIndexer.onCloseStream();
 	}
 
@@ -173,7 +171,6 @@ public class WikidataGeodata2Es {
 	 * Finish loading data into elasticsearch.
 	 */
 	public static void finish() {
-		// esIndexer.updateAliases();
 		esIndexer.onCloseStream();
 		storeIfIndexExists(esIndexer.getElasticsearchClient());
 	}
