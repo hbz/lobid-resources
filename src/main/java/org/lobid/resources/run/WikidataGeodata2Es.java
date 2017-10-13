@@ -45,7 +45,6 @@ import com.ning.http.client.Response;
 public class WikidataGeodata2Es {
 
 	private static final String JSON = "application/json";
-	// TODO getter?
 	public static ElasticsearchIndexer esIndexer = new ElasticsearchIndexer();
 	private static final String DATE =
 			new SimpleDateFormat("yyyyMMdd-HHmmss").format(new Date());
@@ -61,25 +60,31 @@ public class WikidataGeodata2Es {
 	 */
 	public static void main(String... args)
 			throws UnsupportedEncodingException, IOException {
-		setProductionIndexerConfigs();
+		String indexName = indexAlias + "-" + DATE;
+		if (!System.getProperty("indexName", "").isEmpty()) {
+			indexName = System.getProperty("indexName");
+		}
+		setProductionIndexerConfigs(indexName);
 		if (System.getProperty("update", "false").equals("true")) {
 			esIndexer.setUpdateNewestIndex(true);
-			LOG.info("Update index: true");
-		} else
+			LOG.info("Going to update index, not creating a new one");
+		} else {
 			esIndexer.setUpdateNewestIndex(false);
+			LOG.info("Going to create a new index, not updating an existing one");
+		}
 		LOG.info("Going to index");
 		extractEntitiesFromSparqlQueryTranformThemAndIndex2Es(new String(
 				Files.readAllBytes(Paths.get(
 						"src/main/resources/getNwbibSubjectLocationsAsWikidataEntities.txt")),
 				"UTF-8"));
-		// TODO finish() ?
 		esIndexer.onCloseStream();
 	}
 
-	static void setProductionIndexerConfigs() {
+	static void setProductionIndexerConfigs(final String INDEX_NAME) {
 		esIndexer.setClustername("gaia-aither");
 		esIndexer.setHostname("gaia.hbz-nrw.de");
-		esIndexer.setIndexName(indexAlias + "-" + DATE);
+		LOG.info("Set index-name to: " + INDEX_NAME);
+		esIndexer.setIndexName(INDEX_NAME);
 		setElasticsearchIndexer();
 	}
 
@@ -120,7 +125,7 @@ public class WikidataGeodata2Es {
 	private static JsonNode toApiResponse(AsyncHttpClient client, String api)
 			throws InterruptedException, ExecutionException, JsonParseException,
 			JsonMappingException, IOException {
-		Thread.sleep(100); // be nice throttle down
+		Thread.sleep(500); // be nice throttle down
 		Response response = client.prepareGet(api).setHeader("Accept", JSON)
 				.setFollowRedirects(true).execute().get();
 		return new ObjectMapper().readValue(response.getResponseBodyAsStream(),
@@ -173,7 +178,6 @@ public class WikidataGeodata2Es {
 	 * Finish loading data into elasticsearch.
 	 */
 	public static void finish() {
-		// esIndexer.updateAliases();
 		esIndexer.onCloseStream();
 		storeIfIndexExists(esIndexer.getElasticsearchClient());
 	}
@@ -215,14 +219,15 @@ public class WikidataGeodata2Es {
 		};
 	}
 
+	private static HashMap<String, JsonNode> locatedInMapCache = new HashMap<>();
+
 	/**
-	 * Filters the geo data and aliases and labels and builds a simple JSON
-	 * document.
+	 * Filters the geo data and aliases and labels, gets the superordinated
+	 * locatedIn-node and builds a simple JSON document.
 	 * 
 	 * @return a Pair of String and JsonNode
 	 */
 	public static Function<JsonNode, Pair<String, JsonNode>> transform2lobidWikidata() {
-
 		return node -> {
 			ObjectNode root = null;
 			try {
@@ -252,8 +257,27 @@ public class WikidataGeodata2Es {
 							.findPath("value").asText() + ": "
 							+ node.findPath("id").asText());
 				}
+				String locatedInId = node.findPath("P131").findPath("mainsnak")
+						.findPath("datavalue").findPath("value").findPath("id").asText();
+				if (!locatedInId.isEmpty()) {
+					JsonNode locatedInNode;
+					if (locatedInMapCache.containsKey(locatedInId)) {
+						locatedInNode = locatedInMapCache.get(locatedInId);
+					} else {
+						try (AsyncHttpClient client = new AsyncHttpClient()) {
+							JsonNode jnode = toApiResponse(client,
+									"https://www.wikidata.org/entity/" + locatedInId);
+							String locatedInLabel = jnode.findPath("labels").findPath("de")
+									.findPath("value").asText();
+							LOG.debug("Found locatedIn id:" + locatedInId + " with label "
+									+ locatedInLabel);
+							locatedInNode = jnode.findPath("labels").findPath("de");
+							locatedInMapCache.put(locatedInId, locatedInNode);
+						}
+					}
+					root.set("locatedIn", locatedInNode);
+				}
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
 				LOG.error("Couldn't build a json document from the wd-entity ", e);
 			}
 			return Pair.of(node.findPath("id").asText(), root);
