@@ -64,7 +64,6 @@ public class WikidataGeodata2Es {
 		if (!System.getProperty("indexName", "").isEmpty()) {
 			indexName = System.getProperty("indexName");
 		}
-		setProductionIndexerConfigs(indexName);
 		if (System.getProperty("update", "false").equals("true")) {
 			esIndexer.setUpdateNewestIndex(true);
 			LOG.info("Going to update index, not creating a new one");
@@ -72,6 +71,7 @@ public class WikidataGeodata2Es {
 			esIndexer.setUpdateNewestIndex(false);
 			LOG.info("Going to create a new index, not updating an existing one");
 		}
+		setProductionIndexerConfigs(indexName);
 		LOG.info("Going to index");
 		extractEntitiesFromSparqlQueryTranformThemAndIndex2Es(new String(
 				Files.readAllBytes(Paths.get(
