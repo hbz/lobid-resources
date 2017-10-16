@@ -73,7 +73,7 @@ public class ElasticsearchIndexer
 	private int bulkSize = 5000;
 	private int docs = 0;
 	private String indexName;
-	private boolean updateIndex;
+	private boolean updateNewestIndex;
 	private String aliasSuffix = "";
 	private static String indexConfig = "index-config.json";
 	private static ObjectMapper mapper = new ObjectMapper();
@@ -102,7 +102,7 @@ public class ElasticsearchIndexer
 	public void onCloseStream() {
 		bulkRequest.setRefresh(true).get();
 		// remove old and unprotected indices
-		if (!aliasSuffix.equals("NOALIAS") && !updateIndex
+		if (!aliasSuffix.equals("NOALIAS") && !updateNewestIndex
 				&& !aliasSuffix.toLowerCase().contains("test"))
 			updateAliases();
 		// feed the rest of the bulk
@@ -128,8 +128,9 @@ public class ElasticsearchIndexer
 			this.client = this.tc.addTransportAddress(this.NODE);
 		}
 		bulkRequest = client.prepareBulk();
-		if (updateIndex) {
-			getNewestIndex();
+		if (updateNewestIndex) {
+			if (indexName == null)
+				getNewestIndex();
 		} else
 			createIndex();
 		bulkRequest.setRefresh(false);
@@ -313,7 +314,7 @@ public class ElasticsearchIndexer
 	 * @param updateIndex name of the index
 	 */
 	public void setUpdateNewestIndex(final boolean updateIndex) {
-		this.updateIndex = updateIndex;
+		this.updateNewestIndex = updateIndex;
 	}
 
 	private void getNewestIndex() {
