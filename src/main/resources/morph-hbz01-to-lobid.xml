@@ -400,6 +400,282 @@
 				</data>
 			</combine>
 		</macro>
+		<macro name="addBnodeForCreatorPersonLabel">
+			<combine name="@bnodeCreatorPersonLabel2" value="_:${a}">
+				<if>
+					<none>
+						<data source="$[field][-aemn][12].9"/>
+					</none>
+				</if>
+				<data source="$[field][-aemn][12].[ap]" name="a"/>
+			</combine>
+		</macro>
+		
+		<macro name="setLabelVariableForPersonsWithoutGNDId">
+			<combine name="@preferredNameForThePerson$[field]" value="${a}"
+				flushWith="$[field][-amn][12].9|$[field][bcefp][1234].9|$[field][-aemn][12].[pa]|$[field][bcf]1.[pa]">
+				<data source="$[field][-aemn][12].[pa]|$[field][bcf]1.[pa]" name="a">
+					<replace pattern="&gt;&gt;" with=""/>
+					<replace pattern="&lt;&lt;" with=""/>
+				</data>
+				<data
+					source="$[field][-amn][12].9|$[field][bcefp][1234].9|$[field][-aemn][12].[pa]|$[field][bcf]1.[pa]"/>
+			</combine>
+		</macro>
+		
+		<macro name="setPersonEntityDataWithoutGNDId">
+			<combine name="@personLabelWithoutGNDId$[field]" value="${a}">
+				<if>
+					<none>
+						<data source="$[field][-abcefp]1.9"/>
+					</none>
+				</if>
+				<!-- <data source="@preferredNameForThePerson$[field]" name="a"/> -->
+				<data source="$[field][-aemn][12].[pa]|$[field][bcf]1.[pa]" name="a"/>
+			</combine>
+		</macro>
+		<macro name="addPersonEntityDataWithoutGNDId">
+			<entity name="http://id.loc.gov/ontologies/bibframe/contribution" reset="true">
+				<entity name="http://id.loc.gov/ontologies/bibframe/agent">
+					<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="${a}">
+						<!-- <data source="@personLabelWithoutGNDId$[field]" name="a"/> -->
+						<if>
+							<none>
+								<data source="$[field][-abcefp]1.9"/>
+							</none>
+						</if>
+						<data source="$[field][bcf]1.[pa]|$[field][-aemn][12].[pa]" name="a"/>
+					</combine>
+					<data source="$[field][-abcefp]1.[pa]" name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type">
+						<constant value="http://d-nb.info/standards/elementset/gnd#Person"/>
+					</data>
+				</entity>
+				<combine name="http://id.loc.gov/ontologies/bibframe/role" value="${a}">
+					<data source="@relator$[field]" name="a"/>
+				</combine>
+				<combine name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" value="${a}">
+					<data source="$[field][-abcefp]1.[pa]" name="a">
+						<constant value="http://id.loc.gov/ontologies/bibframe/Contribution"/>
+					</data>
+				</combine>
+			</entity>
+		</macro>
+		
+		<macro name="setRelatorPerson">
+			<combine name="@relator$[field]" value="${a}">
+				<choose name="a">
+				<!-- <choose name="a"
+					flushWith="@contributorPersonBnodeOrId|@contributorCorporateBodyBnodeOrId|@GNDPersonId|@creatorCorporateBodyId|@bnodeCreatorPersonLabel"> -->
+					<!-- map literals to marc relator property -->
+					<data source="$[field]?[12].[b4]" name="a">
+						<regexp match="[dD]ars|^\[act\]$|^(act)$" format="http://id.loc.gov/vocabulary/relators/act"/>
+					</data>
+					<data source="$[field]?[12].[b4]" name="a">
+						<regexp match="[hH]rsg|^\[edt\]$|^(edt)$" format="http://id.loc.gov/vocabulary/relators/edt"/>
+					</data>
+					<data source="$[field]?[12].[b4]" name="a">
+						<regexp match="[bB]egr" format="http://id.loc.gov/vocabulary/relators/org"/>
+					</data>
+					<data source="$[field]?[12].[b4]" name="a">
+						<regexp match="^\[isb\]$|^(isb)$" format="http://id.loc.gov/vocabulary/relators/isb"/>
+					</data>
+					<data source="$[field]?[12].[b4]" name="a">
+						<regexp match="[rR]egi|^\[drt\]$|^(drt)$" format="http://id.loc.gov/vocabulary/relators/drt"/>
+					</data>
+					<data source="$[field]?[12].[b4]" name="a">
+						<regexp match="bers|^\[trl\]$|^(trl)$" format="http://id.loc.gov/vocabulary/relators/trl"/>
+					</data>
+					<data source="$[field]?[12].[b4]" name="a">
+						<regexp match="[iI]ll|[zZ]eichn" format="http://id.loc.gov/vocabulary/relators/ill"/>
+					</data>
+					<data source="$[field]?[12].[b4]" name="a">
+						<regexp match="[aA]rtist|^\[art\]$|^(art)$" format="http://id.loc.gov/vocabulary/relators/art"/>
+					</data>
+					<data source="$[field]?[12].[b4]" name="a">
+						<regexp match="[mM]itarb|^\[clb\]$|^(clb)$" format="http://id.loc.gov/vocabulary/relators/clb"/>
+					</data>
+					<data source="$[field]?[12].[b4]" name="a">
+						<regexp match=".*[oO]togr.*|^\[pht\]$|^(pht)$" format="http://id.loc.gov/vocabulary/relators/pht"/>
+					</data>
+					<data source="$[field]?[12].[b4]" name="a">
+						<regexp match=".*[dD]ir|^\[cnd\]$|^(cnd)$" format="http://id.loc.gov/vocabulary/relators/cnd"/>
+					</data>
+					<data source="$[field]?[12].[b4]" name="a">
+						<regexp match="[kK]omp|^\[cmp\]$|^(cmp)$" format="http://id.loc.gov/vocabulary/relators/cmp"/>
+					</data>
+					<data source="$[field]?[12].[b4]" name="a">
+						<regexp match="[vV]orw|^\[aui\]$|^(aui)$" format="http://id.loc.gov/vocabulary/relators/aui"/>
+					</data>
+					<data source="$[field]?[12].[b4]" name="a">
+						<regexp match="[lL]ibr" format="http://id.loc.gov/vocabulary/relators/lbt"/>
+					</data>
+					<data source="$[field]?[12].[b4]" name="a">
+						<regexp match="[dD]rehb|^\[aus\]$|^(aus)$" format="http://id.loc.gov/vocabulary/relators/aus"/>
+					</data>
+					<data source="$[field]?[12].[b4]" name="a">
+						<regexp match="[sS]ammler|^\[col\]$|^(col)$" format="http://id.loc.gov/vocabulary/relators/col"/>
+					</data>
+					<data source="$[field]?[12].[b4]" name="a">
+						<regexp match="[bB]eitr|^\[ctb\]$|^(ctb)$" format="http://id.loc.gov/vocabulary/relators/ctb"/>
+					</data>
+					<data source="$[field]?[12].[b4]" name="a">
+						<regexp match="[sS]precher" format="http://id.loc.gov/vocabulary/relators/spk"/>
+					</data>
+					<data source="$[field]?[12].[b4]" name="a">
+						<regexp match="[kK]amera|^\[cng\]$|^(cng)$" format="http://id.loc.gov/vocabulary/relators/cng"/>
+					</data>
+					<data source="$[field]?[12].[b4]" name="a">
+						<regexp match="[vV]orl|^\[ant\]$|^(ant)$" format="http://id.loc.gov/vocabulary/relators/ant"/>
+					</data>
+					<data source="$[field]?[12].[b4]" name="a">
+						<regexp match="[gG]esang|sng|Alt|Bariton|Bass|Baß|Sopr|Ten" format="http://id.loc.gov/vocabulary/relators/sng"/>
+					</data>
+					<data source="$[field]?[12].[b4]" name="a">
+						<regexp match="[iI]nterviewer|^\[ivr\]$|^(ivr)$" format="http://id.loc.gov/vocabulary/relators/ivr"/>
+					</data>
+					<data source="$[field]?[12].[b4]" name="a">
+						<regexp match="[iI]nterviewter|^\[ive\]$|^(ive)$" format="http://id.loc.gov/vocabulary/relators/ive"/>
+					</data>
+					<data source="$[field]?[12].[b4]" name="a">
+						<regexp match="[kK]artogra|^\[ctg\]$|^(ctg)$" format="http://id.loc.gov/vocabulary/relators/ctg"/>
+					</data>
+					<data source="$[field]?[12].[b4]" name="a">
+						<regexp match="[mM]usi|^\[mus\]$|^(mus)$" format="http://id.loc.gov/vocabulary/relators/mus"/>
+					</data>
+					<data source="$[field]?[12].[b4]" name="a">
+						<regexp match="[iI]nstr|Harfe|Gitarre|Klavier|Org" format="http://id.loc.gov/vocabulary/relators/itr"/>
+					</data>
+					<data source="$[field]?[12].[b4]" name="a">
+						<regexp match="[nN]ach|^\[aft\]$|^(aft)$" format="http://id.loc.gov/vocabulary/relators/aft"/>
+					</data>
+					<data source="$[field]?[12].[b4]" name="a">
+						<regexp match="[lL]tg" format="http://id.loc.gov/vocabulary/relators/led"/>
+					</data>
+					<data source="$[field]?[12].[b4]" name="a">
+						<regexp match="[pP]rod|^\[pro\]$|^(pro)$" format="http://id.loc.gov/vocabulary/relators/pro"/>
+					</data>
+					<data source="$[field]?[12].[b4]" name="a">
+						<regexp match="[sS]techer|^\[egr\]$|^(egr)$" format="http://id.loc.gov/vocabulary/relators/egr"/>
+					</data>
+					<data source="$[field]?[12].[b4]" name="a">
+						<regexp match="[wW]idmun|^\[dte\]$|^(dte)$" format="http://id.loc.gov/vocabulary/relators/dte"/>
+					</data>
+					<data source="$[field]?[12].[b4]" name="a">
+						<regexp match="[rR]ed" format="http://id.loc.gov/vocabulary/relators/red"/>
+					</data>
+					<data source="$[field]?[12].[b4]" name="a">
+						<regexp match="^\[hnr\]$|^(hnr)$" format="http://id.loc.gov/vocabulary/relators/hnr"/>
+					</data>
+					<data source="104f1.p" name="a">
+						<regexp match=".*" format="http://id.loc.gov/vocabulary/relators/hnr"/>
+					</data>
+					<data source="1??e[1234].p" name="a">  <!-- see #150 -->
+						<regexp match=".*" format="http://id.loc.gov/vocabulary/relators/prf"/>
+					</data>
+					<data source="$[field]?[12].[b4]" name="a">
+						<regexp match="[iI]nterpr|^\[prf\]$|^(prf)$" format="http://id.loc.gov/vocabulary/relators/prf"/>
+					</data>
+					<!-- default -->
+					<data source="$[field][bcf][12].[pa]" name="a">
+						<regexp match=".*" format="http://id.loc.gov/vocabulary/relators/ctb"/>
+					</data>
+					<!-- always creator -->
+					<data source="$[field][-amn][12].9">
+						<regexp match=".*" format="http://id.loc.gov/vocabulary/relators/cre"/>
+					</data>
+					<data source="$[field][-aemn][12].[pa]">
+						<regexp match=".*" format="http://id.loc.gov/vocabulary/relators/cre"/>
+					</data>
+				</choose>
+			</combine>
+		</macro>
+		
+		<macro name="addPersonEntityDataWithGNDId">
+			<entity name="http://id.loc.gov/ontologies/bibframe/contribution" reset="true">
+				<combine name="http://id.loc.gov/ontologies/bibframe/agent" value="${a}" >
+					<data source="$[field][-abcefp][12].9" name="a">
+						<regexp match="\(DE-588\)(.*)" format="http://d-nb.info/gnd/${1}"/>
+					</data>
+				</combine>
+				<combine name="http://id.loc.gov/ontologies/bibframe/role" value="${a}">
+					<data source="@relator$[field]" name="a"/>
+				</combine>
+				<data source="$[field][-abcefp][12].9" name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type">
+					<constant value="http://id.loc.gov/ontologies/bibframe/Contribution"/>
+				</data>
+			</entity>
+		</macro>
+		
+		<macro name="setRelatorNonPerson">
+			<combine name="@relatorNonPerson$[field]" value="${a}">
+				<choose name="a">
+					<data source="$[field][bcefp][12].?">
+						<regexp match=".*" format="http://id.loc.gov/vocabulary/relators/ctb"/>
+					</data>
+					<data source="$[field][-a][12].?">
+						<regexp match=".*" format="http://id.loc.gov/vocabulary/relators/cre"/>
+					</data>
+				</choose>
+			</combine>
+		</macro>
+		<macro name="setNonPersonEntityDataWithoutGNDId">
+			<combine name="@nonPersonEntityDataWithoutGNDId$[field]" value="${a}">
+				<if>
+					<none>
+						<data source="$[field][-ab]1.9"/>
+					</none>
+				</if>
+				<data source="$[field][-ab]1.a" name="a"/>
+			</combine>
+		</macro>
+		<macro name="addNonPersonEntityDataWithoutGNDId">
+			<entity name="http://id.loc.gov/ontologies/bibframe/contribution" reset="true">
+				<entity name="http://id.loc.gov/ontologies/bibframe/agent">
+					<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="${a}">
+						<data source="$[field][-abce]1.a" name="a"/>
+					</combine>
+					<combine name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" value="${a}">
+						<data source="@typeVariable" name="a"/>
+					</combine>
+				</entity>
+				<combine name="http://id.loc.gov/ontologies/bibframe/role" value="${a}">
+					<data source="@relatorNonPerson$[field]" name="a"/>
+				</combine>
+				<combine name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" value="${a}">
+					<data source="$[field][-abce]1.a" name="a">
+						<constant value="http://id.loc.gov/ontologies/bibframe/Contribution"/>
+					</data>
+				</combine>
+			</entity>
+		</macro>
+		<macro name="addNonPersonEntityDataWithGNDId">
+			<entity name="http://id.loc.gov/ontologies/bibframe/contribution" reset="true">
+				<combine name="http://id.loc.gov/ontologies/bibframe/agent" value="${a}">
+					<data source="$[field][-abce][12].9" name="a">
+						<regexp match="\(DE-588\)(.*)" format="http://d-nb.info/gnd/${1}"/>
+					</data>
+				</combine>
+				<combine name="http://id.loc.gov/ontologies/bibframe/role" value="${a}">
+					<data source="@relatorNonPerson$[field]" name="a"/>
+				</combine>
+				<combine name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" value="${a}">
+					<data source="$[field][-abce][12].9" name="a">
+						<constant value="http://id.loc.gov/ontologies/bibframe/Contribution"/>
+					</data>
+				</combine>
+			</entity>
+		</macro>
+		<macro name="setContributorOrder">
+			<combine name="@contributorOrder$[field]" value="${a}">
+				<choose name="a">
+					<data source="$[field][-abcefmn][12].9" name="a">
+						<regexp match="\(DE-588\)(.*)" format="http://d-nb.info/gnd/${1}"/>
+					</data>
+					<data source="$[field][-aemn][12].[pa]" name="a"/>
+					<data source="$[field][bcf]1.[pa]" name="a"/>
+				</choose>
+			</combine>
+		</macro>
 	</macros>
 	<rules>
 		<!-- subject as bnodes and their two properties (label & type ) -->
@@ -1454,11 +1730,6 @@
 				<replace pattern="&lt;" with=""/>
 			</data>
 		</combine>
-		<choose name="@creatorPersonOrCoorporateBodyBnodeOrId" flushWith="@GNDPersonId|@bnodeCreatorPersonLabel|@creatorCorporateBodyId">
-			<data source="@GNDPersonId"/>
-			<data source="@creatorCorporateBodyId"/>
-			<data source="@bnodeCreatorPersonLabel"/>
-		</choose>
 		<!-- bnode for contributor when no ID -->
 		<data source="1[02468][048][bcf]1.[pa]|1[13579][26][bcf]1.[pa]|8[012][02468][-mn]-12.[pa]"
 			name="@contributorPersonLabel"/>
@@ -1483,6 +1754,339 @@
 			<data source="@contributorCorporateBodyId"/>
 			<data source="@bnodeContributorBodyLabel"/>
 		</choose>
+		
+		<!-- ####################### -->
+		<!-- person data without GNDId -->
+		<!-- ####################### -->
+		<!-- HT009993506, HT018700720, HT018703339: label nicht in @preferredNameForThePerson -->
+		
+		<!-- <call-macro name="setLabelVariableForPersonsWithoutGNDId" field="100"/>
+		<call-macro name="setPersonEntityDataWithoutGNDId" field="100"/> -->
+		<call-macro name="addPersonEntityDataWithoutGNDId" field="100"/>
+		
+		<!-- <call-macro name="setLabelVariableForPersonsWithoutGNDId" field="104"/>
+		<call-macro name="setPersonEntityDataWithoutGNDId" field="104"/> -->
+		<call-macro name="addPersonEntityDataWithoutGNDId" field="104"/>
+		
+		<!-- <entity name="http://id.loc.gov/ontologies/bibframe/contribution" reset="true">
+			<entity name="http://id.loc.gov/ontologies/bibframe/agent" 
+				flushWith="@personLabelWithoutGNDId$[field]">
+				<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="${a}">
+					<data source="@personLabelWithoutGNDId$[field]" name="a"/>
+				</combine>
+				<data source="$[field][-abcefp]1.[pa]" name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type">
+					<constant value="http://d-nb.info/standards/elementset/gnd#Person"/>
+				</data>
+			</entity>
+			<combine name="http://id.loc.gov/ontologies/bibframe/role" value="${a}">
+				<data source="@relator" name="a"/>
+			</combine>
+			<combine name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" value="${a}">
+				<data source="$[field][-abcefp]1.[pa]" name="a">
+					<constant value="http://id.loc.gov/ontologies/bibframe/Contribution"/>
+				</data>
+			</combine>
+		</entity> -->
+	
+		
+		<call-macro name="setLabelVariableForPersonsWithoutGNDId" field="108"/>
+		<call-macro name="setPersonEntityDataWithoutGNDId" field="108"/>
+		<call-macro name="addPersonEntityDataWithoutGNDId" field="108"/>
+		
+		<call-macro name="setLabelVariableForPersonsWithoutGNDId" field="112"/>
+		<call-macro name="setPersonEntityDataWithoutGNDId" field="112"/>
+		<call-macro name="addPersonEntityDataWithoutGNDId" field="112"/>
+		<call-macro name="setLabelVariableForPersonsWithoutGNDId" field="116"/>
+		<call-macro name="setPersonEntityDataWithoutGNDId" field="116"/>
+		<call-macro name="addPersonEntityDataWithoutGNDId" field="116"/>
+		<call-macro name="setLabelVariableForPersonsWithoutGNDId" field="120"/>
+		<call-macro name="setPersonEntityDataWithoutGNDId" field="120"/>
+		<call-macro name="addPersonEntityDataWithoutGNDId" field="120"/>
+		<call-macro name="setLabelVariableForPersonsWithoutGNDId" field="124"/>
+		<call-macro name="setPersonEntityDataWithoutGNDId" field="124"/>
+		<call-macro name="addPersonEntityDataWithoutGNDId" field="124"/>
+		<call-macro name="setLabelVariableForPersonsWithoutGNDId" field="128"/>
+		<call-macro name="setPersonEntityDataWithoutGNDId" field="128"/>
+		<call-macro name="addPersonEntityDataWithoutGNDId" field="128"/>
+		<call-macro name="setLabelVariableForPersonsWithoutGNDId" field="132"/>
+		<call-macro name="setPersonEntityDataWithoutGNDId" field="132"/>
+		<call-macro name="addPersonEntityDataWithoutGNDId" field="132"/>
+		<call-macro name="setLabelVariableForPersonsWithoutGNDId" field="136"/>
+		<call-macro name="setPersonEntityDataWithoutGNDId" field="136"/>
+		<call-macro name="addPersonEntityDataWithoutGNDId" field="136"/>
+		<call-macro name="setLabelVariableForPersonsWithoutGNDId" field="140"/>
+		<call-macro name="setPersonEntityDataWithoutGNDId" field="140"/>
+		<call-macro name="addPersonEntityDataWithoutGNDId" field="140"/>
+		<call-macro name="setLabelVariableForPersonsWithoutGNDId" field="144"/>
+		<call-macro name="setPersonEntityDataWithoutGNDId" field="144"/>
+		<call-macro name="addPersonEntityDataWithoutGNDId" field="144"/>
+		<call-macro name="setLabelVariableForPersonsWithoutGNDId" field="148"/>
+		<call-macro name="setPersonEntityDataWithoutGNDId" field="148"/>
+		<call-macro name="addPersonEntityDataWithoutGNDId" field="148"/>
+		<call-macro name="setLabelVariableForPersonsWithoutGNDId" field="152"/>
+		<call-macro name="setPersonEntityDataWithoutGNDId" field="152"/>
+		<call-macro name="addPersonEntityDataWithoutGNDId" field="152"/>
+		<call-macro name="setLabelVariableForPersonsWithoutGNDId" field="156"/>
+		<call-macro name="setPersonEntityDataWithoutGNDId" field="156"/>
+		<call-macro name="addPersonEntityDataWithoutGNDId" field="156"/>
+		<call-macro name="setLabelVariableForPersonsWithoutGNDId" field="160"/>
+		<call-macro name="setPersonEntityDataWithoutGNDId" field="160"/>
+		<call-macro name="addPersonEntityDataWithoutGNDId" field="160"/>
+		<call-macro name="setLabelVariableForPersonsWithoutGNDId" field="164"/>
+		<call-macro name="setPersonEntityDataWithoutGNDId" field="164"/>
+		<call-macro name="addPersonEntityDataWithoutGNDId" field="164"/>
+		<call-macro name="setLabelVariableForPersonsWithoutGNDId" field="168"/>
+		<call-macro name="setPersonEntityDataWithoutGNDId" field="168"/>
+		<call-macro name="addPersonEntityDataWithoutGNDId" field="168"/>
+		<call-macro name="setLabelVariableForPersonsWithoutGNDId" field="172"/>
+		<call-macro name="setPersonEntityDataWithoutGNDId" field="172"/>
+		<call-macro name="addPersonEntityDataWithoutGNDId" field="172"/>
+		<call-macro name="setLabelVariableForPersonsWithoutGNDId" field="176"/>
+		<call-macro name="setPersonEntityDataWithoutGNDId" field="176"/>
+		<call-macro name="addPersonEntityDataWithoutGNDId" field="176"/>
+		<call-macro name="setLabelVariableForPersonsWithoutGNDId" field="180"/>
+		<call-macro name="setPersonEntityDataWithoutGNDId" field="180"/>
+		<call-macro name="addPersonEntityDataWithoutGNDId" field="180"/>
+		<call-macro name="setLabelVariableForPersonsWithoutGNDId" field="184"/>
+		<call-macro name="setPersonEntityDataWithoutGNDId" field="184"/>
+		<call-macro name="addPersonEntityDataWithoutGNDId" field="184"/>
+		<call-macro name="setLabelVariableForPersonsWithoutGNDId" field="188"/>
+		<call-macro name="setPersonEntityDataWithoutGNDId" field="188"/>
+		<call-macro name="addPersonEntityDataWithoutGNDId" field="188"/>
+		<call-macro name="setLabelVariableForPersonsWithoutGNDId" field="192"/>
+		<call-macro name="setPersonEntityDataWithoutGNDId" field="192"/>
+		<call-macro name="addPersonEntityDataWithoutGNDId" field="192"/>
+		<call-macro name="setLabelVariableForPersonsWithoutGNDId" field="196"/>
+		<call-macro name="setPersonEntityDataWithoutGNDId" field="196"/>
+		<call-macro name="addPersonEntityDataWithoutGNDId" field="196"/>
+		
+		
+		<!-- ####################### -->
+		<!-- person data with GNDId -->
+		<!-- ####################### -->
+		<call-macro name="setRelatorPerson" field="100"/>
+		<call-macro name="addPersonEntityDataWithGNDId" field="100"/>
+		<call-macro name="setRelatorPerson" field="104"/>
+		<call-macro name="addPersonEntityDataWithGNDId" field="104"/>
+		
+		<call-macro name="setRelatorPerson" field="108"/>
+		<call-macro name="addPersonEntityDataWithGNDId" field="108"/>
+		
+		<call-macro name="setRelatorPerson" field="112"/>
+		<call-macro name="addPersonEntityDataWithGNDId" field="112"/>
+		<call-macro name="setRelatorPerson" field="116"/>
+		<call-macro name="addPersonEntityDataWithGNDId" field="116"/>
+		
+		<call-macro name="setRelatorPerson" field="120"/>
+		<call-macro name="addPersonEntityDataWithGNDId" field="120"/>
+		<call-macro name="setRelatorPerson" field="124"/>
+		<call-macro name="addPersonEntityDataWithGNDId" field="124"/>
+		<call-macro name="setRelatorPerson" field="128"/>
+		<call-macro name="addPersonEntityDataWithGNDId" field="128"/>
+		
+		<call-macro name="setRelatorPerson" field="132"/>
+		<call-macro name="addPersonEntityDataWithGNDId" field="132"/>
+		<call-macro name="setRelatorPerson" field="136"/>
+		<call-macro name="addPersonEntityDataWithGNDId" field="136"/>
+		
+		<call-macro name="setRelatorPerson" field="140"/>
+		<call-macro name="addPersonEntityDataWithGNDId" field="140"/>
+		<call-macro name="setRelatorPerson" field="144"/>
+		<call-macro name="addPersonEntityDataWithGNDId" field="144"/>
+		<call-macro name="setRelatorPerson" field="148"/>
+		<call-macro name="addPersonEntityDataWithGNDId" field="148"/>
+		
+		<call-macro name="setRelatorPerson" field="152"/>
+		<call-macro name="addPersonEntityDataWithGNDId" field="152"/>
+		<call-macro name="setRelatorPerson" field="156"/>
+		<call-macro name="addPersonEntityDataWithGNDId" field="156"/>
+		
+		<call-macro name="setRelatorPerson" field="160"/>
+		<call-macro name="addPersonEntityDataWithGNDId" field="160"/>
+		<call-macro name="setRelatorPerson" field="164"/>
+		<call-macro name="addPersonEntityDataWithGNDId" field="164"/>
+		<call-macro name="setRelatorPerson" field="168"/>
+		<call-macro name="addPersonEntityDataWithGNDId" field="168"/>
+		
+		<call-macro name="setRelatorPerson" field="172"/>
+		<call-macro name="addPersonEntityDataWithGNDId" field="172"/>
+		<call-macro name="setRelatorPerson" field="176"/>
+		<call-macro name="addPersonEntityDataWithGNDId" field="176"/>
+		
+		<call-macro name="setRelatorPerson" field="180"/>
+		<call-macro name="addPersonEntityDataWithGNDId" field="180"/>
+		<call-macro name="setRelatorPerson" field="184"/>
+		<call-macro name="addPersonEntityDataWithGNDId" field="184"/>
+		<call-macro name="setRelatorPerson" field="188"/>
+		<call-macro name="addPersonEntityDataWithGNDId" field="188"/>
+		
+		<call-macro name="setRelatorPerson" field="192"/>
+		<call-macro name="addPersonEntityDataWithGNDId" field="192"/>
+		<call-macro name="setRelatorPerson" field="196"/>
+		<call-macro name="addPersonEntityDataWithGNDId" field="196"/>
+		
+		<!-- ####################### -->
+		<!-- non-person entity data without GNDId -->
+		<!-- ####################### -->
+		<!-- missing: type of agent, role -->
+		<!-- BT000110055: not .9 doesn't work -->
+		
+		<combine name="@typeVariable" value="${a}"
+			flushWith="@subjectLinks|@creatorCorporateBodyId|@contributorCorporateBodyBnodeOrId"
+			sameEntity="true">
+			<choose name="a"
+				flushWith="@subjectLinks|@creatorCorporateBodyId|@contributorCorporateBodyBnodeOrId"
+				sameEntity="true">
+				<data source="@preferredNameConcatEventE">
+					<constant value="$[ns-gnd]ConferenceOrEvent"/>
+				</data>
+				<data source="@preferredNameForThePlaceOrGeographicName|@nameOfCreatingCorporateBodyG">
+					<constant value="$[ns-gnd]PlaceOrGeographicName"/>
+				</data>
+				<data
+					source="9[01234][27]-[-12].k|@creatorCorporateBodyId|@contributorCorporateBodyBnodeOrId">
+					<constant value="$[ns-gnd]CorporateBody"/>
+				</data>
+			</choose>
+		</combine>
+		
+						
+		<call-macro name="setRelatorNonPerson" field="200"/>
+		<call-macro name="setRelatorNonPerson" field="204"/>
+		<call-macro name="setRelatorNonPerson" field="208"/>
+		
+		<call-macro name="setRelatorNonPerson" field="212"/>
+		<call-macro name="setRelatorNonPerson" field="216"/>
+		
+		<call-macro name="setRelatorNonPerson" field="220"/>
+		<call-macro name="setRelatorNonPerson" field="224"/>
+		<call-macro name="setRelatorNonPerson" field="228"/>
+		
+		<call-macro name="setRelatorNonPerson" field="232"/>
+		<call-macro name="setRelatorNonPerson" field="236"/>
+		
+		<call-macro name="setRelatorNonPerson" field="240"/>
+		<call-macro name="setRelatorNonPerson" field="244"/>
+		<call-macro name="setRelatorNonPerson" field="248"/>
+		
+		<call-macro name="setRelatorNonPerson" field="252"/>
+		<call-macro name="setRelatorNonPerson" field="256"/>
+		
+		<call-macro name="setRelatorNonPerson" field="260"/>
+		<call-macro name="setRelatorNonPerson" field="264"/>
+		<call-macro name="setRelatorNonPerson" field="268"/>
+		
+		<call-macro name="setRelatorNonPerson" field="272"/>
+		<call-macro name="setRelatorNonPerson" field="276"/>
+		
+		<call-macro name="setRelatorNonPerson" field="280"/>
+		<call-macro name="setRelatorNonPerson" field="284"/>
+		<call-macro name="setRelatorNonPerson" field="288"/>
+		
+		<call-macro name="setRelatorNonPerson" field="292"/>
+		<call-macro name="setRelatorNonPerson" field="296"/>
+		
+		
+		<call-macro name="setNonPersonEntityDataWithoutGNDId" field="200"/>
+		<call-macro name="addNonPersonEntityDataWithoutGNDId" field="200"/>
+		
+		<call-macro name="setNonPersonEntityDataWithoutGNDId" field="204"/>
+		<call-macro name="addNonPersonEntityDataWithoutGNDId" field="204"/>
+		
+		<call-macro name="setNonPersonEntityDataWithoutGNDId" field="208"/>
+		<call-macro name="addNonPersonEntityDataWithoutGNDId" field="208"/>
+		
+		<call-macro name="setNonPersonEntityDataWithoutGNDId" field="212"/>
+		<call-macro name="addNonPersonEntityDataWithoutGNDId" field="212"/>
+		
+		<call-macro name="setNonPersonEntityDataWithoutGNDId" field="216"/>
+		<call-macro name="addNonPersonEntityDataWithoutGNDId" field="216"/>
+		<call-macro name="setNonPersonEntityDataWithoutGNDId" field="220"/>
+		<call-macro name="addNonPersonEntityDataWithoutGNDId" field="220"/>
+		<call-macro name="setNonPersonEntityDataWithoutGNDId" field="224"/>
+		<call-macro name="addNonPersonEntityDataWithoutGNDId" field="224"/>
+		<call-macro name="setNonPersonEntityDataWithoutGNDId" field="228"/>
+		<call-macro name="addNonPersonEntityDataWithoutGNDId" field="228"/>
+		<call-macro name="setNonPersonEntityDataWithoutGNDId" field="232"/>
+		<call-macro name="addNonPersonEntityDataWithoutGNDId" field="232"/>
+		<call-macro name="setNonPersonEntityDataWithoutGNDId" field="236"/>
+		<call-macro name="addNonPersonEntityDataWithoutGNDId" field="236"/>
+		<call-macro name="setNonPersonEntityDataWithoutGNDId" field="240"/>
+		<call-macro name="addNonPersonEntityDataWithoutGNDId" field="240"/>
+		<call-macro name="setNonPersonEntityDataWithoutGNDId" field="244"/>
+		<call-macro name="addNonPersonEntityDataWithoutGNDId" field="244"/>
+		<call-macro name="setNonPersonEntityDataWithoutGNDId" field="248"/>
+		<call-macro name="addNonPersonEntityDataWithoutGNDId" field="248"/>
+		<call-macro name="setNonPersonEntityDataWithoutGNDId" field="252"/>
+		<call-macro name="addNonPersonEntityDataWithoutGNDId" field="252"/>
+		<call-macro name="setNonPersonEntityDataWithoutGNDId" field="256"/>
+		<call-macro name="addNonPersonEntityDataWithoutGNDId" field="256"/>
+		<call-macro name="setNonPersonEntityDataWithoutGNDId" field="260"/>
+		<call-macro name="addNonPersonEntityDataWithoutGNDId" field="260"/>
+		<call-macro name="setNonPersonEntityDataWithoutGNDId" field="264"/>
+		<call-macro name="addNonPersonEntityDataWithoutGNDId" field="264"/>
+		<call-macro name="setNonPersonEntityDataWithoutGNDId" field="268"/>
+		<call-macro name="addNonPersonEntityDataWithoutGNDId" field="268"/>
+		<call-macro name="setNonPersonEntityDataWithoutGNDId" field="272"/>
+		<call-macro name="addNonPersonEntityDataWithoutGNDId" field="272"/>
+		<call-macro name="setNonPersonEntityDataWithoutGNDId" field="276"/>
+		<call-macro name="addNonPersonEntityDataWithoutGNDId" field="276"/>
+		<call-macro name="setNonPersonEntityDataWithoutGNDId" field="280"/>
+		<call-macro name="addNonPersonEntityDataWithoutGNDId" field="280"/>
+		<call-macro name="setNonPersonEntityDataWithoutGNDId" field="284"/>
+		<call-macro name="addNonPersonEntityDataWithoutGNDId" field="284"/>
+		<call-macro name="setNonPersonEntityDataWithoutGNDId" field="288"/>
+		<call-macro name="addNonPersonEntityDataWithoutGNDId" field="288"/>
+		<call-macro name="setNonPersonEntityDataWithoutGNDId" field="292"/>
+		<call-macro name="addNonPersonEntityDataWithoutGNDId" field="292"/>
+		<call-macro name="setNonPersonEntityDataWithoutGNDId" field="296"/>
+		<call-macro name="addNonPersonEntityDataWithoutGNDId" field="296"/>
+		
+		
+		<!-- ####################### -->
+		<!-- non-person entity data with GNDId -->
+		<!-- ####################### -->
+
+		
+
+		<call-macro name="addNonPersonEntityDataWithGNDId" field="200"/>
+		<!-- <combine name="~rdf:subject" value="${a}" sameEntity="true">
+			<data source="200[-abce][12].9" name="a">
+				<regexp match="\(DE-588\)(.*)" format="http://d-nb.info/gnd/${1}"/>
+			</data>
+		</combine>
+		<combine name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" value="${a}" sameEntity="true">
+			<data source="@typeVariable" name="a"/>
+		</combine>
+		<call-macro name="setBackRdfSubject" field="200b1.9"/> -->
+		
+		
+		<call-macro name="addNonPersonEntityDataWithGNDId" field="204"/>
+		<call-macro name="addNonPersonEntityDataWithGNDId" field="208"/>
+		<call-macro name="addNonPersonEntityDataWithGNDId" field="212"/>
+		<call-macro name="addNonPersonEntityDataWithGNDId" field="216"/>
+		<call-macro name="addNonPersonEntityDataWithGNDId" field="220"/>
+		<call-macro name="addNonPersonEntityDataWithGNDId" field="224"/>
+		<call-macro name="addNonPersonEntityDataWithGNDId" field="228"/>
+		<call-macro name="addNonPersonEntityDataWithGNDId" field="232"/>
+		<call-macro name="addNonPersonEntityDataWithGNDId" field="236"/>
+		<call-macro name="addNonPersonEntityDataWithGNDId" field="240"/>
+		<call-macro name="addNonPersonEntityDataWithGNDId" field="244"/>
+		<call-macro name="addNonPersonEntityDataWithGNDId" field="248"/>
+		<call-macro name="addNonPersonEntityDataWithGNDId" field="252"/>
+		<call-macro name="addNonPersonEntityDataWithGNDId" field="256"/>
+		<call-macro name="addNonPersonEntityDataWithGNDId" field="260"/>
+		<call-macro name="addNonPersonEntityDataWithGNDId" field="264"/>
+		<call-macro name="addNonPersonEntityDataWithGNDId" field="268"/>
+		<call-macro name="addNonPersonEntityDataWithGNDId" field="272"/>
+		<call-macro name="addNonPersonEntityDataWithGNDId" field="276"/>
+		<call-macro name="addNonPersonEntityDataWithGNDId" field="280"/>
+		<call-macro name="addNonPersonEntityDataWithGNDId" field="284"/>
+		<call-macro name="addNonPersonEntityDataWithGNDId" field="288"/>
+		<call-macro name="addNonPersonEntityDataWithGNDId" field="292"/>
+		<call-macro name="addNonPersonEntityDataWithGNDId" field="296"/>
+
+			
 		<!-- ####################### -->
 		<!-- ################ koerperschaften -->
 		<!-- ####################### -->
@@ -1583,13 +2187,32 @@
 			<data source="[29]??[-abcfep][12].d" name="d"/>
 			<data source="[29]??[-abcfep][12].c" name="c"/>
 		</combine>
+		
+		<call-macro name="addBnodeForCreatorPersonLabel" field="100"/>
+		<call-macro name="addBnodeForCreatorPersonLabel" field="104"/>
+		<call-macro name="addBnodeForCreatorPersonLabel" field="108"/>
+		<call-macro name="addBnodeForCreatorPersonLabel" field="112"/>
+		
+		<combine name="~rdf:subject" value="${a}">
+			<data source="@bnodeCreatorPersonLabel2" name="a"/>
+		</combine>
+		<data source="@bnodeCreatorPersonLabel2" name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type">
+			<regexp match=".*" format="http://d-nb.info/standards/elementset/gnd#Person"/>
+		</data>
+		<call-macro name="setBackRdfSubject" field="@bnodeCreatorPersonLabel2"/>
+		
+		<combine name="http://id.loc.gov/ontologies/bibframe/note" value="bnodeCreatorPersonLabel2: ${a}">
+			<data source="@bnodeCreatorPersonLabel2" name="a"/>
+		</combine>
+		
 		<data
-			source="@contributorPersonBnodeOrId|@contributorCorporateBodyBnodeOrId|@creatorPersonOrCoorporateBodyBnodeOrId"
+			source="@contributorPersonBnodeOrId|@contributorCorporateBodyBnodeOrId|@GNDPersonId|@creatorCorporateBodyId|@bnodeCreatorPersonLabel"
 			name="@agentId"/>
 		<combine value="_:${a}${b}" name="@contributionBnode" sameEntity="true">
 			<data source="@agentId" name="a"/>
 			<data source="@relator" name="b"/>
 		</combine>
+			
 		<combine name="@relatorNode" value="${a}">
 			<data source="@relator" name="a"/>
 			<data source="@agentId"/>
@@ -1616,13 +2239,13 @@
 			<data source="@relatorNode|@contributionBnode"/>
 			<data source="@agentId"/>
 		</combine>
-		<entity name="~rdf:list" reset="true">
+		<!-- <entity name="~rdf:list" reset="true">
 			<combine name="http://id.loc.gov/ontologies/bibframe/contribution" value="${a}"
 				sameEntity="true" reset="true">
 				<data source="@contributionBnode" name="a"/>
 				<data source="@relatorNode"/>
 			</combine>
-		</entity>
+		</entity> -->
 		<!-- ####################### -->
 		<!-- ################ koerperschaften and persons -->
 		<!-- ####################### -->
@@ -1642,14 +2265,114 @@
 				<sanitizeUrl></sanitizeUrl>
 			</data>
 		</combine>
+		
+		<call-macro name="setContributorOrder" field="100"/>
+		<call-macro name="setContributorOrder" field="104"/>
+		<call-macro name="setContributorOrder" field="108"/>
+		<call-macro name="setContributorOrder" field="112"/>
+		<call-macro name="setContributorOrder" field="116"/>
+		<call-macro name="setContributorOrder" field="120"/>
+		<call-macro name="setContributorOrder" field="124"/>
+		<call-macro name="setContributorOrder" field="128"/>
+		<call-macro name="setContributorOrder" field="132"/>
+		<call-macro name="setContributorOrder" field="136"/>
+		<call-macro name="setContributorOrder" field="140"/>
+		<call-macro name="setContributorOrder" field="144"/>
+		<call-macro name="setContributorOrder" field="148"/>
+		<call-macro name="setContributorOrder" field="152"/>
+		<call-macro name="setContributorOrder" field="156"/>
+		<call-macro name="setContributorOrder" field="160"/>
+		<call-macro name="setContributorOrder" field="164"/>
+		<call-macro name="setContributorOrder" field="168"/>
+		<call-macro name="setContributorOrder" field="172"/>
+		<call-macro name="setContributorOrder" field="176"/>
+		<call-macro name="setContributorOrder" field="180"/>
+		<call-macro name="setContributorOrder" field="184"/>
+		<call-macro name="setContributorOrder" field="188"/>
+		<call-macro name="setContributorOrder" field="192"/>
+		<call-macro name="setContributorOrder" field="196"/>
+		
+		<call-macro name="setContributorOrder" field="200"/>
+		<call-macro name="setContributorOrder" field="204"/>
+		<call-macro name="setContributorOrder" field="208"/>
+		<call-macro name="setContributorOrder" field="212"/>
+		<call-macro name="setContributorOrder" field="216"/>
+		<call-macro name="setContributorOrder" field="220"/>
+		<call-macro name="setContributorOrder" field="224"/>
+		<call-macro name="setContributorOrder" field="228"/>
+		<call-macro name="setContributorOrder" field="232"/>
+		<call-macro name="setContributorOrder" field="236"/>
+		<call-macro name="setContributorOrder" field="240"/>
+		<call-macro name="setContributorOrder" field="244"/>
+		<call-macro name="setContributorOrder" field="248"/>
+		<call-macro name="setContributorOrder" field="252"/>
+		<call-macro name="setContributorOrder" field="256"/>
+		<call-macro name="setContributorOrder" field="260"/>
+		<call-macro name="setContributorOrder" field="264"/>
+		<call-macro name="setContributorOrder" field="268"/>
+		<call-macro name="setContributorOrder" field="272"/>
+		<call-macro name="setContributorOrder" field="276"/>
+		<call-macro name="setContributorOrder" field="280"/>
+		<call-macro name="setContributorOrder" field="284"/>
+		<call-macro name="setContributorOrder" field="288"/>
+		<call-macro name="setContributorOrder" field="292"/>
+		<call-macro name="setContributorOrder" field="296"/>
+		
 		<combine name="$[ns-lobid-vocab]contributorOrder" value="${a}">
 			<concat delimiter=" | " name="a">
-				<data
-					source="@creatorPersonOrCoorporateBodyBnodeOrId|@contributorPersonBnodeOrId|@contributorCorporateBodyBnodeOrId">
-					<replace pattern="_:" with=""/>
-				</data>
+				<data source="@contributorOrder100"/>
+				<data source="@contributorOrder104"/>
+				<data source="@contributorOrder108"/>
+				<data source="@contributorOrder112"/>
+				<data source="@contributorOrder116"/>
+				<data source="@contributorOrder120"/>
+				<data source="@contributorOrder124"/>
+				<data source="@contributorOrder128"/>
+				<data source="@contributorOrder132"/>
+				<data source="@contributorOrder136"/>
+				<data source="@contributorOrder140"/>
+				<data source="@contributorOrder144"/>
+				<data source="@contributorOrder148"/>
+				<data source="@contributorOrder152"/>
+				<data source="@contributorOrder156"/>
+				<data source="@contributorOrder160"/>
+				<data source="@contributorOrder164"/>
+				<data source="@contributorOrder168"/>
+				<data source="@contributorOrder172"/>
+				<data source="@contributorOrder176"/>
+				<data source="@contributorOrder180"/>
+				<data source="@contributorOrder184"/>
+				<data source="@contributorOrder188"/>
+				<data source="@contributorOrder192"/>
+				<data source="@contributorOrder196"/>
+				<data source="@contributorOrder200"/>
+				<data source="@contributorOrder204"/>
+				<data source="@contributorOrder208"/>
+				<data source="@contributorOrder212"/>
+				<data source="@contributorOrder216"/>
+				<data source="@contributorOrder220"/>
+				<data source="@contributorOrder224"/>
+				<data source="@contributorOrder228"/>
+				<data source="@contributorOrder232"/>
+				<data source="@contributorOrder236"/>
+				<data source="@contributorOrder240"/>
+				<data source="@contributorOrder244"/>
+				<data source="@contributorOrder248"/>
+				<data source="@contributorOrder252"/>
+				<data source="@contributorOrder256"/>
+				<data source="@contributorOrder260"/>
+				<data source="@contributorOrder264"/>
+				<data source="@contributorOrder268"/>
+				<data source="@contributorOrder272"/>
+				<data source="@contributorOrder276"/>
+				<data source="@contributorOrder280"/>
+				<data source="@contributorOrder284"/>
+				<data source="@contributorOrder288"/>
+				<data source="@contributorOrder292"/>
+				<data source="@contributorOrder296"/>
 			</concat>
 		</combine>
+
 		<!-- ####################### -->
 		<!-- #######subjects -->
 		<!-- ####################### -->
@@ -1874,12 +2597,16 @@
 				<data source="@preferredNameForThePlaceOrGeographicName|@nameOfCreatingCorporateBodyG">
 					<constant value="$[ns-gnd]PlaceOrGeographicName"/>
 				</data>
-				<data
+				<!-- <data
 					source="9[01234][27]-[-12].k|@creatorCorporateBodyId|@contributorCorporateBodyBnodeOrId">
+					<constant value="$[ns-gnd]CorporateBody"/> -->
+				<data
+					source="9[01234][27]-[-12].k|@creatorCorporateBodyId|@contributorCoorporateBodyLabel|@contributorCorporateBodyId">
 					<constant value="$[ns-gnd]CorporateBody"/>
 				</data>
 			</choose>
 		</combine>
+		
 		<choose name="@preferredName" sameEntity="true"
 			flushWith="@subjectLinks|@preferredNameP|@GNDPersonId|@creatorCorporateBodyId|@contributorPersonId|@contributorCorporateBodyId">
 			<data source="@preferredNameConcatEventENDC"/>
@@ -1888,11 +2615,12 @@
 			<data source="@nameOfCreatingCorporateBody"/>
 			<data source="@nameOfContributingCorporateBody"/>
 			<data source="@preferredNameSemicolon"/>
+			<data source="@creatorPersonLabel"/>
 			<data source="@preferredNamePersonConcatSubject"/>
 			<data source="@nameOfSubjectCorporateBody"/>
 			<data source="@preferredNameConcatSubject"/>
 			<data source="9[01234][27]-[-12].t"/>
-		</choose>
+		</choose>		
 		<choose name="@preferredName" flushWith="@contributorPersonBnodeOrId|@contributorCorporateBodyBnodeOrId"
 			sameEntity="true">
 			<data source="@preferredNamePersonConcatSubject"/>
@@ -1907,7 +2635,7 @@
 		</data>
 		<combine name="@relator" value="${a}">
 			<choose name="a"
-				flushWith="@contributorPersonBnodeOrId|@contributorCorporateBodyBnodeOrId|@creatorPersonOrCoorporateBodyBnodeOrId">
+				flushWith="@contributorPersonBnodeOrId|@contributorCorporateBodyBnodeOrId|@GNDPersonId|@creatorCorporateBodyId|@bnodeCreatorPersonLabel">
 				<!-- map literals to marc relator property -->
 				<data source="@marcrelName" name="a">
 					<regexp match="[dD]ars|^\[act\]$|^(act)$" format="http://id.loc.gov/vocabulary/relators/act"/>
@@ -2025,11 +2753,19 @@
 					<regexp match=".*" format="http://id.loc.gov/vocabulary/relators/ctb"/>
 				</data>
 				<!-- always creator -->
-				<data source="@creatorPersonOrCoorporateBodyBnodeOrId" name="a">
+				<data source="@GNDPersonId">
+					<regexp match=".*" format="http://id.loc.gov/vocabulary/relators/cre"/>
+				</data>
+				<data source="@creatorCorporateBodyId">
+					<regexp match=".*" format="http://id.loc.gov/vocabulary/relators/cre"/>
+				</data>
+				<data source="@bnodeCreatorPersonLabel">
 					<regexp match=".*" format="http://id.loc.gov/vocabulary/relators/cre"/>
 				</data>
 			</choose>
 		</combine>
+		
+		
 		<!-- END contributor/creator -->
 		<!-- ########### -->
 		<!-- # set subject uri of resource anew -->
