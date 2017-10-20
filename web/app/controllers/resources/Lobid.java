@@ -250,7 +250,7 @@ public class Lobid {
 			return Lobid.gndLabel(uris.get(0), field);
 		}
 		String configKey = keys.getOrDefault(field, "");
-		String type = selectType(uris, configKey).toLowerCase();
+		String type = selectType(uris, configKey);
 		if (type.isEmpty())
 			return "";
 		@SuppressWarnings("unchecked")
@@ -302,7 +302,7 @@ public class Lobid {
 		Logger.trace("Types: " + types);
 		@SuppressWarnings("unchecked")
 		List<Pair<String, Integer>> selected =
-				types.stream().map(String::toLowerCase).map(t -> {
+				types.stream().map(t -> {
 					List<Object> vals = ((List<Object>) Application.CONFIG
 							.getObject(configKey).unwrapped().get(t));
 					if (vals == null)

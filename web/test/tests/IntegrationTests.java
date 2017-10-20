@@ -68,8 +68,8 @@ public class IntegrationTests extends LocalIndexSetup {
 			Stream<Long> counts =
 					terms.getBuckets().stream().map(Bucket::getDocCount);
 			assertThat(values.collect(Collectors.toList())).contains(
-					"bibliographicresource", "book", "thesis", "miscellaneous",
-					"article");
+					"BibliographicResource", "Book", "Thesis", "Miscellaneous",
+					"Article");
 			assertThat(counts.collect(Collectors.toList())).excludes(0);
 		});
 	}
