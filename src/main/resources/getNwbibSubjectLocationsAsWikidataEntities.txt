@@ -8,10 +8,6 @@ WHERE {
   { ?item wdt:P131* wd:Q1198;
         wdt:P31/wdt:P279* wd:Q387917 .
   }
-  UNION
-  {  ?item wdt:P131* wd:Q1198 ;
-       wdt:P31 wd:Q82794 .
-  }
   FILTER NOT EXISTS { ?item wdt:P31/wdt:P279* wd:Q192611 }
   FILTER NOT EXISTS { ?item wdt:P31/wdt:P279* wd:Q20296613 }
   FILTER NOT EXISTS { ?item wdt:P31/wdt:P279* wd:Q1643757 }
