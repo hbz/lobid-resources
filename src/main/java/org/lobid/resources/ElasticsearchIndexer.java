@@ -204,9 +204,9 @@ public class ElasticsearchIndexer
 					LOG.info(
 							"Already lookuped " + query[i] + "with no good result, skipping");
 				} else {
-					MultiMatchQueryBuilder qsq =
-							new MultiMatchQueryBuilder(query[i], SPATIAL + ".label^5",
-									"aliases.de.value", "locatedIn.de.value^0.3");
+					MultiMatchQueryBuilder qsq = new MultiMatchQueryBuilder(query[i],
+							SPATIAL + ".label^5", "aliases.value", "locatedIn.value^3")
+									.type(MultiMatchQueryBuilder.Type.CROSS_FIELDS);
 					SearchHits hits = null;
 					try {
 						hits = client.prepareSearch(index).setQuery(qsq).get().getHits();
