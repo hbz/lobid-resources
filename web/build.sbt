@@ -2,7 +2,7 @@ name := "lobid-resources-web"
 
 version := "0.1.0-SNAPSHOT"
 
-scalaVersion := "2.11.2"
+scalaVersion := "2.11.11"
 
 libraryDependencies ++= Seq(
   cache,

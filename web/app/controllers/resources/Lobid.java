@@ -317,7 +317,7 @@ public class Lobid {
 		Collections.sort(selected, (a, b) -> b.getRight().compareTo(a.getRight()));
 		Logger.trace("Selected: " + selected);
 		return selected.isEmpty() ? ""
-				: selected.get(0).getLeft().contains("miscellaneous")
+				: selected.get(0).getLeft().contains("Miscellaneous")
 						&& selected.size() > 1 ? selected.get(1).getLeft()
 								: selected.get(0).getLeft();
 	}

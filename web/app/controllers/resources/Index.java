@@ -64,6 +64,9 @@ public class Index {
 	private static final String CLUSTER_NAME =
 			Application.CONFIG.getString("index.cluster.name");
 	private static final String OWNER_ID_FIELD = "heldBy.id";
+	private static final String SPATIAL_LABEL_FIELD = "spatial.label";
+	private static final String SPATIAL_GEO_FIELD = "spatial.geo";
+	private static final String SUBJECT_ID_FIELD = "subject.id";
 
 	private JsonNode result;
 	private long total = 0;
@@ -94,9 +97,9 @@ public class Index {
 	/**
 	 * The values supported for the `aggregations` query parameter.
 	 */
-	public static final List<String> SUPPORTED_AGGREGATIONS =
-			Arrays.asList(ISSUED_FIELD, SUBJECT_FIELD, TYPE_FIELD, MEDIUM_FIELD,
-					OWNER_AGGREGATION, AGENT_FIELD);
+	public static final List<String> SUPPORTED_AGGREGATIONS = Arrays.asList(
+			ISSUED_FIELD, SUBJECT_FIELD, TYPE_FIELD, MEDIUM_FIELD, OWNER_AGGREGATION,
+			AGENT_FIELD, SPATIAL_LABEL_FIELD, SPATIAL_GEO_FIELD, SUBJECT_ID_FIELD);
 
 	/**
 	 * @param q The current query string
