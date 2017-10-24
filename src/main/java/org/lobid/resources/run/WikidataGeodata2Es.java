@@ -249,7 +249,6 @@ public class WikidataGeodata2Es {
 				if (!geoNode.isMissingNode()
 						&& !geoNode.findPath("latitude").isMissingNode()) {
 					spatial.set("geo", geo);
-					geo.put("type", "GeoCoordinates");
 					geo.put("lat", geoNode.findPath("latitude").asDouble(0.0));
 					geo.put("lon", geoNode.findPath("longitude").asDouble(0.0));
 				} else {
