@@ -21,11 +21,10 @@ import org.junit.runners.Parameterized.Parameters;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import play.libs.Json;
+import play.mvc.Http;
 import play.mvc.Http.Status;
 import play.mvc.Result;
-import play.test.FakeRequest;
 import play.test.Helpers;
-import scala.Option;
 
 /**
  * Test customizable aggregations.
@@ -51,7 +50,7 @@ public class AggregationsTest extends LocalIndexSetup {
 			{ "&aggregations=invalid", /*->*/ 0, Status.BAD_REQUEST },});
 	} // @formatter:on
 
-	private FakeRequest fakeRequest;
+	private Http.RequestBuilder fakeRequest;
 	private int expectedNumberOfAggragations;
 	private int expectedResponseStatus;
 
@@ -67,16 +66,16 @@ public class AggregationsTest extends LocalIndexSetup {
 	public void test() {
 		running(fakeApplication(), () -> {
 			Result route = route(fakeRequest);
-			int responseStatus = Helpers.status(route);
+			int responseStatus = route.status();
 			assertThat(responseStatus).as("response status")
 					.isEqualTo(expectedResponseStatus);
 			if (responseStatus == Status.OK) {
 				JsonNode aggregationNode =
 						Json.parse(Helpers.contentAsString(route)).findValue("aggregation");
-				Option<String> aggregationsQueryParam =
-						fakeRequest.getWrappedRequest().getQueryString("aggregations");
-				if (!aggregationsQueryParam.isDefined()
-						|| aggregationsQueryParam.get().equals("")) {
+				String aggregationsQueryParam =
+						fakeRequest.build().getQueryString("aggregations");
+				if (aggregationsQueryParam == null
+						|| aggregationsQueryParam.isEmpty()) {
 					assertThat(aggregationNode).isNull();
 				} else {
 					int numberOfAggregations =

@@ -5,10 +5,8 @@ package tests;
 import static org.fest.assertions.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static play.test.Helpers.GET;
-import static play.test.Helpers.contentType;
 import static play.test.Helpers.fakeApplication;
 import static play.test.Helpers.fakeRequest;
-import static play.test.Helpers.header;
 import static play.test.Helpers.route;
 import static play.test.Helpers.running;
 import static play.test.Helpers.testServer;
@@ -80,7 +78,7 @@ public class IntegrationTests extends LocalIndexSetup {
 			Result result =
 					route(fakeRequest(GET, "/resources/search?q=buch&format=html"));
 			assertThat(result).isNotNull();
-			assertThat(Helpers.contentType(result)).isEqualTo("text/html");
+			assertThat(result.contentType()).isEqualTo("text/html");
 			String text = Helpers.contentAsString(result);
 			assertThat(text).contains("lobid-resources").contains("buch");
 		});
@@ -92,8 +90,7 @@ public class IntegrationTests extends LocalIndexSetup {
 			Result result =
 					route(fakeRequest(GET, "/resources/search?q=buch&format=bulk"));
 			assertThat(result).isNotNull();
-			assertThat(Helpers.contentType(result))
-					.isEqualTo("application/x-jsonlines");
+			assertThat(result.contentType()).isEqualTo("application/x-jsonlines");
 			String text = Helpers.contentAsString(result);
 			assertThat(text.split("\\n").length).isGreaterThanOrEqualTo(10);
 		});
@@ -154,8 +151,8 @@ public class IntegrationTests extends LocalIndexSetup {
 		running(fakeApplication(), () -> {
 			Result result = route(fakeRequest(GET, path));
 			assertThat(result).isNotNull();
-			assertThat(contentType(result)).isEqualTo("application/ld+json");
-			assertThat(header("Access-Control-Allow-Origin", result)).isEqualTo("*");
+			assertThat(result.contentType()).isEqualTo("application/ld+json");
+			assertThat(result.header("Access-Control-Allow-Origin")).isEqualTo("*");
 		});
 	}
 }

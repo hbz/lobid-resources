@@ -106,11 +106,11 @@
       <td>@role</td>
       <td>@for(
               c <- cs;
-              agent = (c \ "agent");
+              agent = (c \ "agent").get;
               agents = agent.asOpt[Seq[JsValue]].getOrElse(Seq(agent));
-              label = (agents(0) \ "label").asOpt[String].getOrElse("--");
-              id = (agents(0) \ "id").asOpt[String]) {
-        <a title="Nach weiteren Titeln von '@label' suchen" href='@resources.routes.Application.query(agent=id.getOrElse(label))'/>@label</a>
+              label = (agents(0) \ "label").toOption.getOrElse("--");
+              id = (agents(0) \ "id").toOption) {
+        <a title="Nach weiteren Titeln von '@label' suchen" href='@resources.routes.Application.query(agent=id.getOrElse(label).toString)'/>@label</a>
         @if(id.isDefined){<a title="Linked-Data-Quelle zu '@label' abrufen" href='@id'><span class='glyphicon glyphicon-link'></span></a>}
         @if(c!=cs.last){ | }
       }</td>
@@ -144,7 +144,7 @@
   seq.sortBy((v: JsValue) => ((v\"startDate").asOpt[String].getOrElse((v\"endDate").asOpt[String].getOrElse("0")).toInt))
 }
 
-@withPrefixedLink(label: String, prefix: String, node: JsValue) = {
+@withPrefixedLink(label: String, prefix: String, node: JsReadable) = {
 	@for(array <- node.asOpt[Seq[JsValue]]; if array.size > 0; value <- array.head.asOpt[String]){
 		<tr><td>@label</td><td><a href='@prefix@value'>@value</a></td></tr>
 	}
