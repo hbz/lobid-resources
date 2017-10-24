@@ -160,19 +160,20 @@ public class Application extends Controller {
 	 * @param sort Sorting order for results ("newest", "oldest", "" -> relevance)
 	 * @param set The set
 	 * @param format The response format (see {@code Accept.Format})
-	 * @param aggregations The comma separated aggregation fields
+	 * @param aggs The comma separated aggregation fields
 	 * @return The search results
 	 */
 	public static Promise<Result> query(final String q, final String agent,
 			final String name, final String subject, final String id,
 			final String publisher, final String issued, final String medium,
 			final int from, final int size, final String owner, String t, String sort,
-			String set, String format, String aggregations) {
+			String set, String format, String aggs) {
+		final String aggregations = aggs == null ? "" : aggs;
 		if (!aggregations.isEmpty() && !Index.SUPPORTED_AGGREGATIONS
 				.containsAll(Arrays.asList(aggregations.split(",")))) {
 			return Promise.promise(() -> badRequest(
-					String.format("Unsupported aggregations: %s (supported: %s)",
-							aggregations, Index.SUPPORTED_AGGREGATIONS)));
+					String.format("Unsupported aggregations: %s (supported: %s)", aggregations,
+							Index.SUPPORTED_AGGREGATIONS)));
 		}
 		addCorsHeader();
 		String uuid = session("uuid");
@@ -204,8 +205,8 @@ public class Application extends Controller {
 			result = bulkResult(q, owner, index);
 		} else {
 			result = Promise.promise(() -> {
-				Index queryResources = index.queryResources(queryString, from, size,
-						sort, owner, aggregations);
+				Index queryResources =
+						index.queryResources(queryString, from, size, sort, owner, aggregations);
 				boolean returnSuggestions = responseFormat.startsWith("json:");
 				JsonNode json = returnSuggestions
 						? toSuggestions(queryResources.getResult(), format.split(":")[1])
@@ -280,9 +281,9 @@ public class Application extends Controller {
 		result.put("@context", host + routes.Application.context());
 		result.put("id", host + request().uri());
 		result.put("totalItems", index.getTotal());
-		result.put("member", json);
+		result.putPOJO("member", json);
 		if (index.getAggregations() != null) {
-			result.put("aggregation", aggregationsAsJson(index));
+			result.putPOJO("aggregation", aggregationsAsJson(index));
 		}
 		return result;
 	}
@@ -352,7 +353,7 @@ public class Application extends Controller {
 			Stream<Map<String, Object>> buckets =
 					terms.getBuckets().stream().map((Bucket b) -> ImmutableMap.of(//
 							"key", b.getKeyAsString(), "doc_count", b.getDocCount()));
-			aggregations.put(aggregation.getKey(),
+			aggregations.putPOJO(aggregation.getKey(),
 					Json.toJson(buckets.collect(Collectors.toList())));
 		}
 		return aggregations;
@@ -462,7 +463,7 @@ public class Application extends Controller {
 	private static void cacheOnRedeem(final String cacheId,
 			final Promise<Result> resultPromise, final int duration) {
 		resultPromise.onRedeem((Result result) -> {
-			if (play.test.Helpers.status(result) == Http.Status.OK)
+			if (result.status() == Http.Status.OK)
 				Cache.set(cacheId, resultPromise, duration);
 		});
 	}

@@ -7,6 +7,9 @@ import static org.mockito.Mockito.mock;
 import static play.test.Helpers.running;
 import static play.test.Helpers.testServer;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -22,11 +25,11 @@ import org.junit.runners.Parameterized.Parameters;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.collect.ImmutableMap;
 
+import play.Logger;
 import play.Play;
 import play.libs.Json;
 import play.mvc.Http;
 import play.mvc.Result;
-import play.test.FakeRequest;
 import play.test.Helpers;
 
 /**
@@ -81,14 +84,19 @@ public class InputStringsTest extends LocalIndexSetup {
 	@Test
 	public void test() {
 		running(testServer(3333), () -> {
-			Result result = Helpers.callAction(
-					controllers.resources.routes.ref.Application.query(input, "", "", "",
-							"", "", "", "", 0, 10, "", "", "", "", "", ""),
-					new FakeRequest(Helpers.GET, "/")
-							.withFormUrlEncodedBody(ImmutableMap.of()));
+			String uri = controllers.resources.routes.Application.query(input, "", "",
+					"", "", "", "", "", 0, 10, "", "", "", "", "", "").toString();
+			try {
+				URLDecoder.decode(input, StandardCharsets.UTF_8.name());
+			} catch (IllegalArgumentException | UnsupportedEncodingException x) {
+				Logger.warn("Can't decode: " + input, x);
+				return;
+			}
+			Result result = Helpers.route(new Http.RequestBuilder().uri(uri)
+					.method(Helpers.GET).path("/").bodyForm(ImmutableMap.of()));
 			// we don't expect any server errors (see
 			// https://en.wikipedia.org/wiki/List_of_HTTP_status_codes#5xx_Server_Error)
-			assertThat((Helpers.status(result) + "")).matches("[^5]..");
+			assertThat(result.status() + "").matches("[^5]..");
 		});
 	}
 

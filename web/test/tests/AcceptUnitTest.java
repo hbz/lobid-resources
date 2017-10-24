@@ -15,10 +15,7 @@ import org.junit.runners.Parameterized.Parameters;
 
 import controllers.resources.Accept;
 import play.api.http.MediaRange;
-import play.api.mvc.Request;
-import play.mvc.Http.RequestBody;
-import play.test.FakeRequest;
-import scala.collection.JavaConversions;
+import play.mvc.Http;
 
 /**
  * Unit tests for functionality provided by the {@link Accept} class.
@@ -38,8 +35,8 @@ public class AcceptUnitTest {
 			{ fakeRequest(), null, /*->*/ "json" },
 			{ fakeRequest(), "", /*->*/ "json" },
 			{ fakeRequest(), "pdf", /*->*/ "json" },
-			{ fakeRequest().withHeader("Accept", ""), null, /*->*/ "json" },
-			{ fakeRequest().withHeader("Accept", "application/pdf"), null, /*->*/ "json" },
+			{ fakeRequest().header("Accept", ""), null, /*->*/ "json" },
+			{ fakeRequest().header("Accept", "application/pdf"), null, /*->*/ "json" },
 			// no header, just format parameter:
 			{ fakeRequest(), "html", /*->*/ "html" },
 			{ fakeRequest(), "json", /*->*/ "json" },
@@ -47,28 +44,28 @@ public class AcceptUnitTest {
 			{ fakeRequest(), "ttl", /*->*/ "ttl" },
 			{ fakeRequest(), "nt", /*->*/ "nt" },
 			// supported content types, no format parameter given:
-			{ fakeRequest().withHeader("Accept", "text/html"), null, /*->*/ "html" },
-			{ fakeRequest().withHeader("Accept", "application/json"), null, /*->*/ "json" },
-			{ fakeRequest().withHeader("Accept", "application/ld+json"), null, /*->*/ "json" },
-			{ fakeRequest().withHeader("Accept", "text/plain"), null, /*->*/ "nt" },
-			{ fakeRequest().withHeader("Accept", "application/n-triples"), null, /*->*/ "nt" },
-			{ fakeRequest().withHeader("Accept", "text/turtle"), null, /*->*/ "ttl" },
-			{ fakeRequest().withHeader("Accept", "application/x-turtle"), null, /*->*/ "ttl" },
-			{ fakeRequest().withHeader("Accept", "application/xml"), null, /*->*/ "rdf" },
-			{ fakeRequest().withHeader("Accept", "application/rdf+xml"), null, /*->*/ "rdf" },
-			{ fakeRequest().withHeader("Accept", "text/xml"), null, /*->*/ "rdf" },
+			{ fakeRequest().header("Accept", "text/html"), null, /*->*/ "html" },
+			{ fakeRequest().header("Accept", "application/json"), null, /*->*/ "json" },
+			{ fakeRequest().header("Accept", "application/ld+json"), null, /*->*/ "json" },
+			{ fakeRequest().header("Accept", "text/plain"), null, /*->*/ "nt" },
+			{ fakeRequest().header("Accept", "application/n-triples"), null, /*->*/ "nt" },
+			{ fakeRequest().header("Accept", "text/turtle"), null, /*->*/ "ttl" },
+			{ fakeRequest().header("Accept", "application/x-turtle"), null, /*->*/ "ttl" },
+			{ fakeRequest().header("Accept", "application/xml"), null, /*->*/ "rdf" },
+			{ fakeRequest().header("Accept", "application/rdf+xml"), null, /*->*/ "rdf" },
+			{ fakeRequest().header("Accept", "text/xml"), null, /*->*/ "rdf" },
 			// we pick the preferred content type:
-			{ fakeRequest().withHeader("Accept", "text/html,application/json"), null, /*->*/"html" },
-			{ fakeRequest().withHeader("Accept", "application/json,text/html"), null, /*->*/ "json" },
+			{ fakeRequest().header("Accept", "text/html,application/json"), null, /*->*/"html" },
+			{ fakeRequest().header("Accept", "application/json,text/html"), null, /*->*/ "json" },
 			// format parameter overrides header:
-			{ fakeRequest().withHeader("Accept", "text/html"), "json", /*->*/ "json" }});
+			{ fakeRequest().header("Accept", "text/html"), "json", /*->*/ "json" }});
 	} // @formatter:on
 
-	private FakeRequest fakeRequest;
+	private Http.RequestBuilder fakeRequest;
 	private String passedFormat;
 	private String expectedFormat;
 
-	public AcceptUnitTest(FakeRequest request, String givenFormat,
+	public AcceptUnitTest(Http.RequestBuilder request, String givenFormat,
 			String expectedFormat) {
 		this.fakeRequest = request;
 		this.passedFormat = givenFormat;
@@ -77,9 +74,7 @@ public class AcceptUnitTest {
 
 	@Test
 	public void test() {
-		Request<RequestBody> request = fakeRequest.getWrappedRequest();
-		Collection<MediaRange> acceptedTypes =
-				JavaConversions.asJavaCollection(request.acceptedTypes());
+		Collection<MediaRange> acceptedTypes = fakeRequest.build().acceptedTypes();
 		String description =
 				String.format("resulting format for passedFormat=%s, acceptedTypes=%s",
 						passedFormat, acceptedTypes);

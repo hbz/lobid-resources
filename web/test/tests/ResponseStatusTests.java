@@ -19,7 +19,6 @@ import org.junit.runners.Parameterized.Parameters;
 
 import play.mvc.Http.Status;
 import play.mvc.Result;
-import play.test.Helpers;
 
 /**
  * Test response status codes for different requests.
@@ -59,7 +58,7 @@ public class ResponseStatusTests extends LocalIndexSetup {
 	public void testResponseStatus() {
 		running(fakeApplication(), () -> {
 			Result result = route(fakeRequest(GET, request));
-			assertThat(Helpers.status(result)).isEqualTo(expectedResponseStatus);
+			assertThat(result.status()).isEqualTo(expectedResponseStatus);
 		});
 	}
 
