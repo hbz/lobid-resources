@@ -63,15 +63,15 @@
 }
 
 @nestedIds(property: String) = @{
-	(doc\property).asOpt[Seq[JsValue]].getOrElse(Seq()).map((v: JsValue) => (v \ "id").asOpt[String].getOrElse("No id in " + v))
+	(doc\property).get.asOpt[Seq[JsValue]].getOrElse(Seq()).map((v: JsValue) => (v \ "id").get.asOpt[String].getOrElse("No id in " + v))
 }
 
 @singleOrMultiString(property: String) = @{
-	(doc\property).asOpt[Seq[String]].getOrElse(Seq((doc\property).asOpt[String].getOrElse("--")))
+	(doc\property).get.asOpt[Seq[String]].getOrElse(Seq((doc\property).get.asOpt[String].getOrElse("--")))
 }
 
 @with_icon(label: String, property: String, fullField: String) = {
-  @if((doc\property).asOpt[JsValue].isDefined) {
+  @if((doc\property).get.asOpt[JsValue].isDefined) {
     @defining(if(property != "type") { nestedIds(property) } else { singleOrMultiString(property) }){ v =>
       <tr><td>@label</td><td><span class="@Lobid.facetIcon(v,fullField)"></span> @Lobid.facetLabel(v,fullField,"")</td></tr>
     }
@@ -108,8 +108,8 @@
               c <- cs;
               agent = (c \ "agent").get;
               agents = agent.asOpt[Seq[JsValue]].getOrElse(Seq(agent));
-              label = (agents(0) \ "label").toOption.getOrElse("--");
-              id = (agents(0) \ "id").toOption) {
+              label = (agents(0) \ "label").get.asOpt[String].getOrElse("--");
+              id = (agents(0) \ "id").get.asOpt[String]) {
         <a title="Nach weiteren Titeln von '@label' suchen" href='@resources.routes.Application.query(agent=id.getOrElse(label).toString)'/>@label</a>
         @if(id.isDefined){<a title="Linked-Data-Quelle zu '@label' abrufen" href='@id'><span class='glyphicon glyphicon-link'></span></a>}
         @if(c!=cs.last){ | }
