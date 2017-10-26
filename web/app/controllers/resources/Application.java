@@ -172,8 +172,8 @@ public class Application extends Controller {
 		if (!aggregations.isEmpty() && !Index.SUPPORTED_AGGREGATIONS
 				.containsAll(Arrays.asList(aggregations.split(",")))) {
 			return Promise.promise(() -> badRequest(
-					String.format("Unsupported aggregations: %s (supported: %s)", aggregations,
-							Index.SUPPORTED_AGGREGATIONS)));
+					String.format("Unsupported aggregations: %s (supported: %s)",
+							aggregations, Index.SUPPORTED_AGGREGATIONS)));
 		}
 		addCorsHeader();
 		String uuid = session("uuid");
@@ -205,8 +205,8 @@ public class Application extends Controller {
 			result = bulkResult(q, owner, index);
 		} else {
 			result = Promise.promise(() -> {
-				Index queryResources =
-						index.queryResources(queryString, from, size, sort, owner, aggregations);
+				Index queryResources = index.queryResources(queryString, from, size,
+						sort, owner, aggregations);
 				boolean returnSuggestions = responseFormat.startsWith("json:");
 				JsonNode json = returnSuggestions
 						? toSuggestions(queryResources.getResult(), format.split(":")[1])
@@ -582,17 +582,23 @@ public class Application extends Controller {
 			String fullLabel = pair.getRight();
 			String term = json.get("key").asText();
 			String mediumQuery = !field.equals(MEDIUM_FIELD) //
-					? medium : queryParam(medium, term);
+					? medium
+					: queryParam(medium, term);
 			String typeQuery = !field.equals(TYPE_FIELD) //
-					? t : queryParam(t, term);
+					? t
+					: queryParam(t, term);
 			String ownerQuery = !field.equals(OWNER_AGGREGATION) //
-					? owner : withoutAndOperator(queryParam(owner, term));
+					? owner
+					: withoutAndOperator(queryParam(owner, term));
 			String subjectQuery = !field.equals(SUBJECT_FIELD) //
-					? subject : queryParam(subject, term);
+					? subject
+					: queryParam(subject, term);
 			String agentQuery = !field.equals(AGENT_FIELD) //
-					? agent : queryParam(agent, term);
+					? agent
+					: queryParam(agent, term);
 			String issuedQuery = !field.equals(ISSUED_FIELD) //
-					? issued : queryParam(issued, term);
+					? issued
+					: queryParam(issued, term);
 
 			boolean current = current(subject, agent, medium, owner, t, field, term);
 
@@ -601,11 +607,10 @@ public class Application extends Controller {
 							publisher, issuedQuery, mediumQuery, from, size, ownerQuery,
 							typeQuery, sort(sort, subjectQuery), set, null, field).url();
 
-			String result = String.format(
-					"<li " + (current ? "class=\"active\"" : "")
-							+ "><a class=\"%s-facet-link\" href='%s'>"
-							+ "<input onclick=\"location.href='%s'\" class=\"facet-checkbox\" "
-							+ "type=\"checkbox\" %s>&nbsp;%s</input>" + "</a></li>",
+			String result = String.format("<li " + (current ? "class=\"active\"" : "")
+					+ "><a class=\"%s-facet-link\" href='%s'>"
+					+ "<input onclick=\"location.href='%s'\" class=\"facet-checkbox\" "
+					+ "type=\"checkbox\" %s>&nbsp;%s</input>" + "</a></li>",
 					Math.abs(field.hashCode()), routeUrl, routeUrl,
 					current ? "checked" : "", fullLabel);
 
@@ -729,8 +734,9 @@ public class Application extends Controller {
 			return Promise.pure(redirect(routes.Application.showStars(format,
 					starred.stream().collect(Collectors.joining(",")))));
 		}
-		final List<String> starredIds = starred.isEmpty() && ids.trim().isEmpty()
-				? starred : Arrays.asList(ids.split(","));
+		final List<String> starredIds =
+				starred.isEmpty() && ids.trim().isEmpty() ? starred
+						: Arrays.asList(ids.split(","));
 		String cacheKey = "starsForIds." + starredIds;
 		Object cachedJson = Cache.get(cacheKey);
 		if (cachedJson != null && cachedJson instanceof List) {

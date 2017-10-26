@@ -110,8 +110,9 @@ public class Index {
 		String fullQuery = q.isEmpty() ? "*" : "(" + q + ")";
 		for (int i = 0; i < values.length; i++) {
 			String fieldValue = values[i];
-			String fieldName = fieldValue.contains("http")
-					? QUERY_FIELDS[i].replace(".label", ".id") : QUERY_FIELDS[i];
+			String fieldName =
+					fieldValue.contains("http") ? QUERY_FIELDS[i].replace(".label", ".id")
+							: QUERY_FIELDS[i];
 			if (fieldName.toLowerCase().endsWith("date")
 					&& fieldValue.matches("(\\d{1,4}|\\*)-(\\d{1,4}|\\*)")) {
 				String[] fromTo = fieldValue.split("-");
