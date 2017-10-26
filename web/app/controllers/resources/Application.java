@@ -229,12 +229,12 @@ public class Application extends Controller {
 					issued, medium, from, size, 0L, owner, t, sort, set);
 			String message = "Could not query index: " + throwable.getMessage();
 			boolean badRequest = throwable instanceof IllegalArgumentException;
-			flashError(badRequest);
 			if (badRequest) {
-				Logger.warn(message);
+				Logger.warn(message, throwable);
+				flashError(badRequest);
 				return badRequest(html);
 			}
-			Logger.error(message);
+			Logger.error(message, throwable);
 			return internalServerError(html);
 		});
 	}
