@@ -106,10 +106,10 @@
       <td>@role</td>
       <td>@for(
               c <- cs;
-              agent = (c \ "agent").get;
+              agent <- (c \ "agent").toOption;
               agents = agent.asOpt[Seq[JsValue]].getOrElse(Seq(agent));
-              label = (agents(0) \ "label").get.asOpt[String].getOrElse("--");
-              id = (agents(0) \ "id").get.asOpt[String]) {
+              label = (agents(0) \ "label").asOpt[String].getOrElse("--");
+              id = (agents(0) \ "id").asOpt[String]) {
         <a title="Nach weiteren Titeln von '@label' suchen" href='@resources.routes.Application.query(agent=id.getOrElse(label).toString)'/>@label</a>
         @if(id.isDefined){<a title="Linked-Data-Quelle zu '@label' abrufen" href='@id'><span class='glyphicon glyphicon-link'></span></a>}
         @if(c!=cs.last){ | }
