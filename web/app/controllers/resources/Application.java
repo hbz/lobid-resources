@@ -163,13 +163,14 @@ public class Application extends Controller {
 	 * @param set The set
 	 * @param format The response format (see {@code Accept.Format})
 	 * @param aggs The comma separated aggregation fields
+	 * @param location A single "lat,lon" point or space delimited points polygon
 	 * @return The search results
 	 */
 	public static Promise<Result> query(final String q, final String agent,
 			final String name, final String subject, final String id,
 			final String publisher, final String issued, final String medium,
 			final int from, final int size, final String owner, String t, String sort,
-			String set, String format, String aggs) {
+			String set, String format, String aggs, String location) {
 		final String aggregations = aggs == null ? "" : aggs;
 		if (!aggregations.isEmpty() && !Index.SUPPORTED_AGGREGATIONS
 				.containsAll(Arrays.asList(aggregations.split(",")))) {
@@ -208,7 +209,7 @@ public class Application extends Controller {
 		} else {
 			result = Promise.promise(() -> {
 				Index queryResources = index.queryResources(queryString, from, size,
-						sort, owner, aggregations);
+						sort, owner, aggregations, location);
 				boolean returnSuggestions = responseFormat.startsWith("json:");
 				JsonNode json = returnSuggestions
 						? toSuggestions(queryResources.getResult(), format.split(":")[1])
@@ -541,12 +542,13 @@ public class Application extends Controller {
 	 * @param field The facet field (the field to facet over)
 	 * @param sort Sorting order for results ("newest", "oldest", "" -> relevance)
 	 * @param set The set
+	 * @param location A single "lat,lon" point or space delimited points polygon
 	 * @return The search results
 	 */
 	public static Promise<Result> facets(String q, String agent, String name,
 			String subject, String id, String publisher, String issued, String medium,
 			int from, int size, String owner, String t, String field, String sort,
-			String set) {
+			String set, String location) {
 
 		String key =
 				String.format("facets.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s", field, q,
@@ -579,8 +581,10 @@ public class Application extends Controller {
 		Comparator<Pair<JsonNode, String>> sorter = (p1, p2) -> {
 			String t1 = p1.getLeft().get("key").asText();
 			String t2 = p2.getLeft().get("key").asText();
-			boolean t1Current = current(subject, agent, medium, owner, t, field, t1);
-			boolean t2Current = current(subject, agent, medium, owner, t, field, t2);
+			boolean t1Current =
+					current(subject, agent, medium, owner, t, field, t1, location);
+			boolean t2Current =
+					current(subject, agent, medium, owner, t, field, t2, location);
 			if (t1Current == t2Current) {
 				if (!field.equals(ISSUED_FIELD)) {
 					Integer c1 = p1.getLeft().get("doc_count").asInt();
@@ -616,13 +620,19 @@ public class Application extends Controller {
 			String issuedQuery = !field.equals(ISSUED_FIELD) //
 					? issued
 					: queryParam(issued, term);
+			String locationQuery = !field.equals(Index.SPATIAL_GEO_FIELD) //
+					? location
+					: queryParam(location, term);
 
-			boolean current = current(subject, agent, medium, owner, t, field, term);
+			boolean current =
+					current(subject, agent, medium, owner, t, field, term, location);
 
 			String routeUrl =
-					routes.Application.query(q, agentQuery, name, subjectQuery, id,
-							publisher, issuedQuery, mediumQuery, from, size, ownerQuery,
-							typeQuery, sort(sort, subjectQuery), set, null, field).url();
+					routes.Application
+							.query(q, agentQuery, name, subjectQuery, id, publisher,
+									issuedQuery, mediumQuery, from, size, ownerQuery, typeQuery,
+									sort(sort, subjectQuery), set, null, field, locationQuery)
+							.url();
 
 			String result = String.format("<li " + (current ? "class=\"active\"" : "")
 					+ "><a class=\"%s-facet-link\" href='%s'>"
@@ -636,7 +646,7 @@ public class Application extends Controller {
 
 		Promise<Result> promise =
 				query(q, agent, name, subject, id, publisher, issued, medium, from,
-						size, owner, t, sort, set, "json", field).map(result -> {
+						size, owner, t, sort, set, "json", field, location).map(result -> {
 							JsonNode json = Json.parse(Helpers.contentAsString(result))
 									.get("aggregation");
 							Stream<JsonNode> stream =
@@ -667,12 +677,13 @@ public class Application extends Controller {
 	}
 
 	private static boolean current(String subject, String agent, String medium,
-			String owner, String t, String field, String term) {
+			String owner, String t, String field, String term, String location) {
 		return field.equals(MEDIUM_FIELD) && contains(medium, term)
 				|| field.equals(TYPE_FIELD) && contains(t, term)
 				|| field.equals(OWNER_AGGREGATION) && contains(owner, term)
 				|| field.equals(SUBJECT_FIELD) && contains(subject, term)
-				|| field.equals(AGENT_FIELD) && contains(agent, term);
+				|| field.equals(AGENT_FIELD) && contains(agent, term)
+				|| field.equals(Index.SPATIAL_GEO_FIELD) && contains(location, term);
 	}
 
 	private static boolean contains(String value, String term) {

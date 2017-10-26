@@ -24,9 +24,12 @@ import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.transport.TransportClient;
+import org.elasticsearch.common.geo.GeoPoint;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.GeoDistanceQueryBuilder;
+import org.elasticsearch.index.query.GeoPolygonQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
@@ -65,7 +68,7 @@ public class Index {
 			Application.CONFIG.getString("index.cluster.name");
 	private static final String OWNER_ID_FIELD = "heldBy.id";
 	private static final String SPATIAL_LABEL_FIELD = "spatial.label.raw";
-	private static final String SPATIAL_GEO_FIELD = "spatial.geo";
+	static final String SPATIAL_GEO_FIELD = "spatial.geo";
 	private static final String SUBJECT_ID_FIELD = "subject.id";
 
 	private JsonNode result;
@@ -154,7 +157,7 @@ public class Index {
 	public long totalHits(String q) {
 		try {
 			return Cache.getOrElse("total-" + q,
-					() -> queryResources(q, 0, 0, "", "", "").getTotal(),
+					() -> queryResources(q, 0, 0, "", "", "", "").getTotal(),
 					Application.ONE_DAY);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -169,17 +172,23 @@ public class Index {
 	 * @param sort "newest", "oldest", or "" for relevance
 	 * @param owner Owner institution
 	 * @param aggregations The comma separated aggregation fields
+	 * @param location A single "lat,lon" point or space delimited points polygon
 	 * @return This index, get results via {@link #getResult()} and
 	 *         {@link #getTotal()}
 	 */
 	public Index queryResources(String q, int from, int size, String sort,
-			String owner, @SuppressWarnings("hiding") String aggregations) {
+			String owner, @SuppressWarnings("hiding") String aggregations,
+			String location) {
 		Index resultIndex = withClient((Client client) -> {
 			QueryBuilder query = owner.isEmpty() ? QueryBuilders.queryStringQuery(q)
 					: ownerQuery(q, owner);
 			validate(client, query);
 			Logger.trace("queryResources: q={}, from={}, size={}, sort={}, query={}",
 					q, from, size, sort, query);
+			if (!location.isEmpty()) {
+				query =
+						QueryBuilders.boolQuery().must(query).must(polygonQuery(location));
+			}
 			SearchRequestBuilder requestBuilder = client.prepareSearch(INDEX_NAME)
 					.setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
 					.setTypes(TYPE_RESOURCE).setQuery(query).setFrom(from).setSize(size);
@@ -203,6 +212,48 @@ public class Index {
 			return this;
 		});
 		return resultIndex;
+	}
+
+	private static QueryBuilder polygonQuery(String location) {
+		String[] points = location.split(" ");
+		String field = SPATIAL_GEO_FIELD;
+		QueryBuilder result = null;
+		if (points.length == 1) {
+			result = geoDistanceFilter(field, locationArray(points[0]));
+		} else if (points.length == 2) {
+			result = QueryBuilders.boolQuery()
+					.should(geoDistanceFilter(field, locationArray(points[0])))
+					.should(geoDistanceFilter(field, locationArray(points[1])));
+		} else {
+			GeoPolygonQueryBuilder filter = QueryBuilders.geoPolygonQuery(field);
+			for (String point : points) {
+				String[] latLon = locationArray(point);
+				filter = filter.addPoint(Double.parseDouble(latLon[0].trim()),
+						Double.parseDouble(latLon[1].trim()));
+			}
+			result = filter;
+		}
+		return result;
+	}
+
+	private static String[] locationArray(String loc) {
+		String[] pointLocation = null;
+		if (loc.contains(",")) {
+			pointLocation = loc.split(",");
+		} else {
+			GeoPoint point = new GeoPoint(loc);
+			pointLocation = new String[] { //
+					String.valueOf(point.getLat()), String.valueOf(point.getLon()) };
+		}
+		return pointLocation;
+	}
+
+	private static GeoDistanceQueryBuilder geoDistanceFilter(String field,
+			String[] latLon) {
+		return QueryBuilders.geoDistanceQuery(field)
+				.point(Double.parseDouble(latLon[0].trim()),
+						Double.parseDouble(latLon[1].trim()))
+				.distance("100m");
 	}
 
 	static void validate(Client client, QueryBuilder query) {
@@ -313,7 +364,7 @@ public class Index {
 			} else if (field.equals(SPATIAL_GEO_FIELD)) {
 				searchRequest
 						.addAggregation(AggregationBuilders.geohashGrid(SPATIAL_GEO_FIELD)
-								.field(SPATIAL_GEO_FIELD).precision(5));
+								.field(SPATIAL_GEO_FIELD).precision(9));
 			} else {
 				boolean many = field.equals("publication.startDate");
 				searchRequest.addAggregation(AggregationBuilders.terms(field)

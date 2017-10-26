@@ -58,7 +58,7 @@ public class IntegrationTests extends LocalIndexSetup {
 			String queryString =
 					index.buildQueryString("köln", "", "", "", "", "", "", "", "");
 			Index queryResources = index.queryResources(queryString, 0, 0, "", "",
-					Joiner.on(",").join(Index.SUPPORTED_AGGREGATIONS));
+					Joiner.on(",").join(Index.SUPPORTED_AGGREGATIONS), "");
 			Aggregations facets = queryResources.getAggregations();
 			Terms terms = facets.get("type");
 			Stream<String> values =
@@ -120,7 +120,7 @@ public class IntegrationTests extends LocalIndexSetup {
 	public void responseJsonFilterSearch() {
 		running(testServer(3333), () -> {
 			Index index = new Index();
-			index = index.queryResources("*", 0, 100, "", "", "");
+			index = index.queryResources("*", 0, 100, "", "", "", "");
 			assertThat(index.getTotal()).isGreaterThanOrEqualTo(100);
 			JsonNode hits = index.getResult();
 			assertThat(hits.isArray()).as("hits is an array").isTrue();
