@@ -99,7 +99,7 @@ public class Index {
 	 */
 	public static final List<String> SUPPORTED_AGGREGATIONS = Arrays.asList(
 			ISSUED_FIELD, SUBJECT_FIELD, TYPE_FIELD, MEDIUM_FIELD, OWNER_AGGREGATION,
-			AGENT_FIELD, SPATIAL_LABEL_FIELD, SPATIAL_GEO_FIELD, SUBJECT_ID_FIELD);
+			AGENT_FIELD, SPATIAL_LABEL_FIELD, SUBJECT_ID_FIELD);
 
 	/**
 	 * @param q The current query string
