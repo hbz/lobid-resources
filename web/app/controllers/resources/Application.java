@@ -28,14 +28,16 @@ import java.util.stream.StreamSupport;
 import org.apache.commons.lang3.tuple.Pair;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.Client;
+import org.elasticsearch.common.geo.GeoPoint;
 import org.elasticsearch.common.io.Streams;
 import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.aggregations.Aggregation;
 import org.elasticsearch.search.aggregations.bucket.children.InternalChildren;
+import org.elasticsearch.search.aggregations.bucket.geogrid.GeoHashGrid;
+import org.elasticsearch.search.aggregations.bucket.geogrid.InternalGeoHashGrid;
 import org.elasticsearch.search.aggregations.bucket.terms.Terms;
-import org.elasticsearch.search.aggregations.bucket.terms.Terms.Bucket;
 import org.elasticsearch.search.sort.SortOrder;
 import org.elasticsearch.search.sort.SortParseElement;
 
@@ -347,16 +349,31 @@ public class Application extends Controller {
 		for (final Entry<String, Aggregation> aggregation : index.getAggregations()
 				.asMap().entrySet()) {
 			Aggregation value = aggregation.getValue();
-			Terms terms = (Terms) (value instanceof InternalChildren
-					? ((InternalChildren) value).getAggregations().get(OWNER_AGGREGATION)
-					: value);
-			Stream<Map<String, Object>> buckets =
-					terms.getBuckets().stream().map((Bucket b) -> ImmutableMap.of(//
-							"key", b.getKeyAsString(), "doc_count", b.getDocCount()));
+			Stream<Map<String, Object>> buckets = collectAggregation(value);
 			aggregations.putPOJO(aggregation.getKey(),
 					Json.toJson(buckets.collect(Collectors.toList())));
 		}
 		return aggregations;
+	}
+
+	private static Stream<Map<String, Object>> collectAggregation(
+			Aggregation value) {
+		Stream<Map<String, Object>> buckets;
+		if (value instanceof InternalGeoHashGrid) {
+			InternalGeoHashGrid grid = (InternalGeoHashGrid) value;
+			buckets = grid.getBuckets().stream().map((GeoHashGrid.Bucket b) -> {
+				GeoPoint point = new GeoPoint(b.getKeyAsString());
+				String latLon = point.lat() + "," + point.lon();
+				return ImmutableMap.of("key", latLon, "doc_count", b.getDocCount());
+			});
+		} else {
+			Terms terms = (Terms) (value instanceof InternalChildren
+					? ((InternalChildren) value).getAggregations().get(OWNER_AGGREGATION)
+					: value);
+			buckets = terms.getBuckets().stream().map((Terms.Bucket b) -> ImmutableMap
+					.of("key", b.getKeyAsString(), "doc_count", b.getDocCount()));
+		}
+		return buckets;
 	}
 
 	/**

@@ -64,7 +64,7 @@ public class Index {
 	private static final String CLUSTER_NAME =
 			Application.CONFIG.getString("index.cluster.name");
 	private static final String OWNER_ID_FIELD = "heldBy.id";
-	private static final String SPATIAL_LABEL_FIELD = "spatial.label";
+	private static final String SPATIAL_LABEL_FIELD = "spatial.label.raw";
 	private static final String SPATIAL_GEO_FIELD = "spatial.geo";
 	private static final String SUBJECT_ID_FIELD = "subject.id";
 
@@ -99,7 +99,7 @@ public class Index {
 	 */
 	public static final List<String> SUPPORTED_AGGREGATIONS = Arrays.asList(
 			ISSUED_FIELD, SUBJECT_FIELD, TYPE_FIELD, MEDIUM_FIELD, OWNER_AGGREGATION,
-			AGENT_FIELD, SPATIAL_LABEL_FIELD, SUBJECT_ID_FIELD);
+			AGENT_FIELD, SPATIAL_LABEL_FIELD, SPATIAL_GEO_FIELD, SUBJECT_ID_FIELD);
 
 	/**
 	 * @param q The current query string
@@ -310,6 +310,10 @@ public class Index {
 								.childType(TYPE_ITEM).subAggregation(AggregationBuilders
 										.terms(field).field(OWNER_ID_FIELD).size(defaultSize));
 				searchRequest.addAggregation(ownerAggregation);
+			} else if (field.equals(SPATIAL_GEO_FIELD)) {
+				searchRequest
+						.addAggregation(AggregationBuilders.geohashGrid(SPATIAL_GEO_FIELD)
+								.field(SPATIAL_GEO_FIELD).precision(5));
 			} else {
 				boolean many = field.equals("publication.startDate");
 				searchRequest.addAggregation(AggregationBuilders.terms(field)
