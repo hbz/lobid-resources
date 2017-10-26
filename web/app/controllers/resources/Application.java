@@ -28,14 +28,16 @@ import java.util.stream.StreamSupport;
 import org.apache.commons.lang3.tuple.Pair;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.Client;
+import org.elasticsearch.common.geo.GeoPoint;
 import org.elasticsearch.common.io.Streams;
 import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.aggregations.Aggregation;
 import org.elasticsearch.search.aggregations.bucket.children.InternalChildren;
+import org.elasticsearch.search.aggregations.bucket.geogrid.GeoHashGrid;
+import org.elasticsearch.search.aggregations.bucket.geogrid.InternalGeoHashGrid;
 import org.elasticsearch.search.aggregations.bucket.terms.Terms;
-import org.elasticsearch.search.aggregations.bucket.terms.Terms.Bucket;
 import org.elasticsearch.search.sort.SortOrder;
 import org.elasticsearch.search.sort.SortParseElement;
 
@@ -161,19 +163,20 @@ public class Application extends Controller {
 	 * @param set The set
 	 * @param format The response format (see {@code Accept.Format})
 	 * @param aggs The comma separated aggregation fields
+	 * @param location A single "lat,lon" point or space delimited points polygon
 	 * @return The search results
 	 */
 	public static Promise<Result> query(final String q, final String agent,
 			final String name, final String subject, final String id,
 			final String publisher, final String issued, final String medium,
 			final int from, final int size, final String owner, String t, String sort,
-			String set, String format, String aggs) {
+			String set, String format, String aggs, String location) {
 		final String aggregations = aggs == null ? "" : aggs;
 		if (!aggregations.isEmpty() && !Index.SUPPORTED_AGGREGATIONS
 				.containsAll(Arrays.asList(aggregations.split(",")))) {
 			return Promise.promise(() -> badRequest(
-					String.format("Unsupported aggregations: %s (supported: %s)", aggregations,
-							Index.SUPPORTED_AGGREGATIONS)));
+					String.format("Unsupported aggregations: %s (supported: %s)",
+							aggregations, Index.SUPPORTED_AGGREGATIONS)));
 		}
 		addCorsHeader();
 		String uuid = session("uuid");
@@ -205,8 +208,8 @@ public class Application extends Controller {
 			result = bulkResult(q, owner, index);
 		} else {
 			result = Promise.promise(() -> {
-				Index queryResources =
-						index.queryResources(queryString, from, size, sort, owner, aggregations);
+				Index queryResources = index.queryResources(queryString, from, size,
+						sort, owner, aggregations, location);
 				boolean returnSuggestions = responseFormat.startsWith("json:");
 				JsonNode json = returnSuggestions
 						? toSuggestions(queryResources.getResult(), format.split(":")[1])
@@ -229,12 +232,12 @@ public class Application extends Controller {
 					issued, medium, from, size, 0L, owner, t, sort, set);
 			String message = "Could not query index: " + throwable.getMessage();
 			boolean badRequest = throwable instanceof IllegalArgumentException;
-			flashError(badRequest);
 			if (badRequest) {
-				Logger.warn(message);
+				Logger.warn(message, throwable);
+				flashError(badRequest);
 				return badRequest(html);
 			}
-			Logger.error(message);
+			Logger.error(message, throwable);
 			return internalServerError(html);
 		});
 	}
@@ -347,16 +350,31 @@ public class Application extends Controller {
 		for (final Entry<String, Aggregation> aggregation : index.getAggregations()
 				.asMap().entrySet()) {
 			Aggregation value = aggregation.getValue();
-			Terms terms = (Terms) (value instanceof InternalChildren
-					? ((InternalChildren) value).getAggregations().get(OWNER_AGGREGATION)
-					: value);
-			Stream<Map<String, Object>> buckets =
-					terms.getBuckets().stream().map((Bucket b) -> ImmutableMap.of(//
-							"key", b.getKeyAsString(), "doc_count", b.getDocCount()));
+			Stream<Map<String, Object>> buckets = collectAggregation(value);
 			aggregations.putPOJO(aggregation.getKey(),
 					Json.toJson(buckets.collect(Collectors.toList())));
 		}
 		return aggregations;
+	}
+
+	private static Stream<Map<String, Object>> collectAggregation(
+			Aggregation value) {
+		Stream<Map<String, Object>> buckets;
+		if (value instanceof InternalGeoHashGrid) {
+			InternalGeoHashGrid grid = (InternalGeoHashGrid) value;
+			buckets = grid.getBuckets().stream().map((GeoHashGrid.Bucket b) -> {
+				GeoPoint point = new GeoPoint(b.getKeyAsString());
+				String latLon = point.lat() + "," + point.lon();
+				return ImmutableMap.of("key", latLon, "doc_count", b.getDocCount());
+			});
+		} else {
+			Terms terms = (Terms) (value instanceof InternalChildren
+					? ((InternalChildren) value).getAggregations().get(OWNER_AGGREGATION)
+					: value);
+			buckets = terms.getBuckets().stream().map((Terms.Bucket b) -> ImmutableMap
+					.of("key", b.getKeyAsString(), "doc_count", b.getDocCount()));
+		}
+		return buckets;
 	}
 
 	/**
@@ -524,12 +542,13 @@ public class Application extends Controller {
 	 * @param field The facet field (the field to facet over)
 	 * @param sort Sorting order for results ("newest", "oldest", "" -> relevance)
 	 * @param set The set
+	 * @param location A single "lat,lon" point or space delimited points polygon
 	 * @return The search results
 	 */
 	public static Promise<Result> facets(String q, String agent, String name,
 			String subject, String id, String publisher, String issued, String medium,
 			int from, int size, String owner, String t, String field, String sort,
-			String set) {
+			String set, String location) {
 
 		String key =
 				String.format("facets.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s", field, q,
@@ -562,8 +581,10 @@ public class Application extends Controller {
 		Comparator<Pair<JsonNode, String>> sorter = (p1, p2) -> {
 			String t1 = p1.getLeft().get("key").asText();
 			String t2 = p2.getLeft().get("key").asText();
-			boolean t1Current = current(subject, agent, medium, owner, t, field, t1);
-			boolean t2Current = current(subject, agent, medium, owner, t, field, t2);
+			boolean t1Current =
+					current(subject, agent, medium, owner, t, field, t1, location);
+			boolean t2Current =
+					current(subject, agent, medium, owner, t, field, t2, location);
 			if (t1Current == t2Current) {
 				if (!field.equals(ISSUED_FIELD)) {
 					Integer c1 = p1.getLeft().get("doc_count").asInt();
@@ -582,30 +603,41 @@ public class Application extends Controller {
 			String fullLabel = pair.getRight();
 			String term = json.get("key").asText();
 			String mediumQuery = !field.equals(MEDIUM_FIELD) //
-					? medium : queryParam(medium, term);
+					? medium
+					: queryParam(medium, term);
 			String typeQuery = !field.equals(TYPE_FIELD) //
-					? t : queryParam(t, term);
+					? t
+					: queryParam(t, term);
 			String ownerQuery = !field.equals(OWNER_AGGREGATION) //
-					? owner : withoutAndOperator(queryParam(owner, term));
+					? owner
+					: withoutAndOperator(queryParam(owner, term));
 			String subjectQuery = !field.equals(SUBJECT_FIELD) //
-					? subject : queryParam(subject, term);
+					? subject
+					: queryParam(subject, term);
 			String agentQuery = !field.equals(AGENT_FIELD) //
-					? agent : queryParam(agent, term);
+					? agent
+					: queryParam(agent, term);
 			String issuedQuery = !field.equals(ISSUED_FIELD) //
-					? issued : queryParam(issued, term);
+					? issued
+					: queryParam(issued, term);
+			String locationQuery = !field.equals(Index.SPATIAL_GEO_FIELD) //
+					? location
+					: queryParam(location, term);
 
-			boolean current = current(subject, agent, medium, owner, t, field, term);
+			boolean current =
+					current(subject, agent, medium, owner, t, field, term, location);
 
 			String routeUrl =
-					routes.Application.query(q, agentQuery, name, subjectQuery, id,
-							publisher, issuedQuery, mediumQuery, from, size, ownerQuery,
-							typeQuery, sort(sort, subjectQuery), set, null, field).url();
+					routes.Application
+							.query(q, agentQuery, name, subjectQuery, id, publisher,
+									issuedQuery, mediumQuery, from, size, ownerQuery, typeQuery,
+									sort(sort, subjectQuery), set, null, field, locationQuery)
+							.url();
 
-			String result = String.format(
-					"<li " + (current ? "class=\"active\"" : "")
-							+ "><a class=\"%s-facet-link\" href='%s'>"
-							+ "<input onclick=\"location.href='%s'\" class=\"facet-checkbox\" "
-							+ "type=\"checkbox\" %s>&nbsp;%s</input>" + "</a></li>",
+			String result = String.format("<li " + (current ? "class=\"active\"" : "")
+					+ "><a class=\"%s-facet-link\" href='%s'>"
+					+ "<input onclick=\"location.href='%s'\" class=\"facet-checkbox\" "
+					+ "type=\"checkbox\" %s>&nbsp;%s</input>" + "</a></li>",
 					Math.abs(field.hashCode()), routeUrl, routeUrl,
 					current ? "checked" : "", fullLabel);
 
@@ -614,7 +646,7 @@ public class Application extends Controller {
 
 		Promise<Result> promise =
 				query(q, agent, name, subject, id, publisher, issued, medium, from,
-						size, owner, t, sort, set, "json", field).map(result -> {
+						size, owner, t, sort, set, "json", field, location).map(result -> {
 							JsonNode json = Json.parse(Helpers.contentAsString(result))
 									.get("aggregation");
 							Stream<JsonNode> stream =
@@ -645,12 +677,13 @@ public class Application extends Controller {
 	}
 
 	private static boolean current(String subject, String agent, String medium,
-			String owner, String t, String field, String term) {
+			String owner, String t, String field, String term, String location) {
 		return field.equals(MEDIUM_FIELD) && contains(medium, term)
 				|| field.equals(TYPE_FIELD) && contains(t, term)
 				|| field.equals(OWNER_AGGREGATION) && contains(owner, term)
 				|| field.equals(SUBJECT_FIELD) && contains(subject, term)
-				|| field.equals(AGENT_FIELD) && contains(agent, term);
+				|| field.equals(AGENT_FIELD) && contains(agent, term)
+				|| field.equals(Index.SPATIAL_GEO_FIELD) && contains(location, term);
 	}
 
 	private static boolean contains(String value, String term) {
@@ -729,8 +762,9 @@ public class Application extends Controller {
 			return Promise.pure(redirect(routes.Application.showStars(format,
 					starred.stream().collect(Collectors.joining(",")))));
 		}
-		final List<String> starredIds = starred.isEmpty() && ids.trim().isEmpty()
-				? starred : Arrays.asList(ids.split(","));
+		final List<String> starredIds =
+				starred.isEmpty() && ids.trim().isEmpty() ? starred
+						: Arrays.asList(ids.split(","));
 		String cacheKey = "starsForIds." + starredIds;
 		Object cachedJson = Cache.get(cacheKey);
 		if (cachedJson != null && cachedJson instanceof List) {
