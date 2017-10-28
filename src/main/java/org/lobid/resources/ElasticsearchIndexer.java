@@ -205,7 +205,7 @@ public class ElasticsearchIndexer
 							"Already lookuped " + query[i] + "with no good result, skipping");
 				} else {
 					MultiMatchQueryBuilder qsq = new MultiMatchQueryBuilder(query[i],
-							SPATIAL + ".label^5", "aliases.value", "locatedIn.value^3")
+							SPATIAL + ".label^5", "aliases.value^1.5", "locatedIn.value^3")
 									.type(MultiMatchQueryBuilder.Type.CROSS_FIELDS);
 					SearchHits hits = null;
 					try {
