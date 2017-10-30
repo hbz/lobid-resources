@@ -6,7 +6,6 @@ import static controllers.resources.Application.MEDIUM_FIELD;
 import static controllers.resources.Application.OWNER_AGGREGATION;
 import static controllers.resources.Application.SUBJECT_FIELD;
 import static controllers.resources.Application.TYPE_FIELD;
-import static org.elasticsearch.index.query.QueryBuilders.hasChildQuery;
 import static org.elasticsearch.index.query.QueryBuilders.matchQuery;
 
 import java.net.InetAddress;
@@ -17,6 +16,7 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import org.apache.lucene.search.join.ScoreMode;
 import org.elasticsearch.action.admin.indices.validate.query.ValidateQueryResponse;
 import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.action.search.SearchRequestBuilder;
@@ -32,13 +32,16 @@ import org.elasticsearch.index.query.GeoDistanceQueryBuilder;
 import org.elasticsearch.index.query.GeoPolygonQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.join.aggregations.ChildrenAggregationBuilder;
+import org.elasticsearch.join.query.JoinQueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
+import org.elasticsearch.search.aggregations.AggregationBuilder;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
 import org.elasticsearch.search.aggregations.Aggregations;
-import org.elasticsearch.search.aggregations.bucket.children.ChildrenBuilder;
 import org.elasticsearch.search.sort.SortBuilders;
 import org.elasticsearch.search.sort.SortOrder;
+import org.elasticsearch.transport.client.PreBuiltTransportClient;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -113,9 +116,8 @@ public class Index {
 		String fullQuery = q.isEmpty() ? "*" : "(" + q + ")";
 		for (int i = 0; i < values.length; i++) {
 			String fieldValue = values[i];
-			String fieldName =
-					fieldValue.contains("http") ? QUERY_FIELDS[i].replace(".label", ".id")
-							: QUERY_FIELDS[i];
+			String fieldName = fieldValue.contains("http")
+					? QUERY_FIELDS[i].replace(".label", ".id") : QUERY_FIELDS[i];
 			if (fieldName.toLowerCase().endsWith("date")
 					&& fieldValue.matches("(\\d{1,4}|\\*)-(\\d{1,4}|\\*)")) {
 				String[] fromTo = fieldValue.split("-");
@@ -225,12 +227,14 @@ public class Index {
 					.should(geoDistanceFilter(field, locationArray(points[0])))
 					.should(geoDistanceFilter(field, locationArray(points[1])));
 		} else {
-			GeoPolygonQueryBuilder filter = QueryBuilders.geoPolygonQuery(field);
+			List<GeoPoint> geoPoints = new ArrayList<>();
 			for (String point : points) {
 				String[] latLon = locationArray(point);
-				filter = filter.addPoint(Double.parseDouble(latLon[0].trim()),
-						Double.parseDouble(latLon[1].trim()));
+				geoPoints.add(new GeoPoint(Double.parseDouble(latLon[0].trim()),
+						Double.parseDouble(latLon[1].trim())));
 			}
+			GeoPolygonQueryBuilder filter =
+					QueryBuilders.geoPolygonQuery(field, geoPoints);
 			result = filter;
 		}
 		return result;
@@ -271,8 +275,8 @@ public class Index {
 		final String[] owners = owner.split(",");
 		for (String o : owners) {
 			final String ownerId = prefix + o.replace(prefix, "");
-			ownersQuery = ownersQuery
-					.should(hasChildQuery("item", matchQuery(OWNER_ID_FIELD, ownerId)));
+			ownersQuery = ownersQuery.should(JoinQueryBuilders.hasChildQuery("item",
+					matchQuery(OWNER_ID_FIELD, ownerId), ScoreMode.None));
 		}
 		return QueryBuilders.boolQuery().must(QueryBuilders.queryStringQuery(q))
 				.must(ownersQuery);
@@ -356,10 +360,11 @@ public class Index {
 		int defaultSize = 100;
 		Arrays.asList(fields).forEach(field -> {
 			if (field.equals("owner")) {
-				ChildrenBuilder ownerAggregation =
-						AggregationBuilders.children(Application.OWNER_AGGREGATION)
-								.childType(TYPE_ITEM).subAggregation(AggregationBuilders
-										.terms(field).field(OWNER_ID_FIELD).size(defaultSize));
+				AggregationBuilder ownerAggregation =
+						new ChildrenAggregationBuilder(Application.OWNER_AGGREGATION,
+								TYPE_ITEM)
+										.subAggregation(AggregationBuilders.terms(field)
+												.field(OWNER_ID_FIELD).size(defaultSize));
 				searchRequest.addAggregation(ownerAggregation);
 			} else if (field.equals(SPATIAL_GEO_FIELD)) {
 				searchRequest
@@ -379,9 +384,8 @@ public class Index {
 			return function.apply(elasticsearchClient);
 		}
 		Settings settings =
-				Settings.settingsBuilder().put("cluster.name", CLUSTER_NAME).build();
-		try (TransportClient client =
-				TransportClient.builder().settings(settings).build()) {
+				Settings.builder().put("cluster.name", CLUSTER_NAME).build();
+		try (TransportClient client = new PreBuiltTransportClient(settings)) {
 			addHosts(client);
 			return function.apply(client);
 		}

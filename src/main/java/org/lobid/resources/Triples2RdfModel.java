@@ -5,13 +5,13 @@ package org.lobid.resources;
 
 import java.io.StringReader;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.culturegraph.mf.framework.DefaultObjectPipe;
 import org.culturegraph.mf.framework.ObjectReceiver;
 import org.culturegraph.mf.framework.annotations.Description;
 import org.culturegraph.mf.framework.annotations.In;
 import org.culturegraph.mf.framework.annotations.Out;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.rdf.model.Model;
@@ -42,7 +42,7 @@ public class Triples2RdfModel
 	private int count = 0;
 	private String serialization = "TURTLE";
 	private static final Logger LOG =
-			LoggerFactory.getLogger(Triples2RdfModel.class);
+			LogManager.getLogger(Triples2RdfModel.class);
 	Reasoner boundReasoner;
 	Property propertyIdentifyingTheNodeForInferencing;
 	boolean inferencing;
@@ -104,11 +104,11 @@ public class Triples2RdfModel
 	}
 
 	private void reasoning(Model model) {
-		ExtendedIterator<Triple> it =
-				ModelFactory.createInfModel(boundReasoner, model).getGraph().find(
-						model.listSubjectsWithProperty(
-								propertyIdentifyingTheNodeForInferencing).next().asNode(),
-						null, null);
+		ExtendedIterator<Triple> it = ModelFactory
+				.createInfModel(boundReasoner, model).getGraph()
+				.find(model
+						.listSubjectsWithProperty(propertyIdentifyingTheNodeForInferencing)
+						.next().asNode(), null, null);
 		Model model1 = ModelFactory.createDefaultModel();
 		while (it.hasNext()) {
 			Triple triple = it.next().asTriple();

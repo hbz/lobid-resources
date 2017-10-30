@@ -9,6 +9,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.stream.Stream;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.culturegraph.mf.morph.Metamorph;
 import org.culturegraph.mf.stream.converter.xml.AlephMabXmlHandler;
 import org.culturegraph.mf.stream.converter.xml.XmlDecoder;
@@ -16,8 +18,6 @@ import org.culturegraph.mf.stream.source.FileOpener;
 import org.culturegraph.mf.stream.source.TarReader;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Transform hbz01 Aleph Mab XML catalog records into ntriples files.
@@ -33,7 +33,7 @@ public final class Hbz01MabXmlEtlNtriples2Filesystem {
 	static boolean testFailed = false;
 	static final String NTRIPLES_DEBUG_FILES = "src/test/resources/input/nt";
 	private static final Logger LOG =
-			LoggerFactory.getLogger(Hbz01MabXmlEtlNtriples2Filesystem.class);
+			LogManager.getLogger(Hbz01MabXmlEtlNtriples2Filesystem.class);
 
 	/**
 	 * Clean directory from old test files when property is set.

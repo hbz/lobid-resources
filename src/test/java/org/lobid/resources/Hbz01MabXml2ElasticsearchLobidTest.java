@@ -2,8 +2,6 @@
  * Licensed under the Eclipse Public License 1.0 */
 package org.lobid.resources;
 
-import static org.elasticsearch.node.NodeBuilder.nodeBuilder;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -23,6 +21,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.culturegraph.mf.morph.Metamorph;
 import org.culturegraph.mf.stream.converter.xml.AlephMabXmlHandler;
 import org.culturegraph.mf.stream.converter.xml.XmlDecoder;
@@ -30,17 +30,18 @@ import org.culturegraph.mf.stream.source.FileOpener;
 import org.culturegraph.mf.stream.source.TarReader;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.Client;
+import org.elasticsearch.common.network.NetworkModule;
 import org.elasticsearch.common.settings.Settings;
+import org.elasticsearch.env.Environment;
 import org.elasticsearch.index.query.MatchAllQueryBuilder;
 import org.elasticsearch.node.Node;
+import org.elasticsearch.node.NodeValidationException;
 import org.elasticsearch.search.SearchHit;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.lobid.resources.run.MabXml2lobidJsonEs;
 import org.lobid.resources.run.WikidataGeodata2Es;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -67,7 +68,7 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 	private static Node node;
 	static Client client;
 	private static final Logger LOG =
-			LoggerFactory.getLogger(Hbz01MabXml2ElasticsearchLobidTest.class);
+			LogManager.getLogger(Hbz01MabXml2ElasticsearchLobidTest.class);
 	private static final String LOBID_RESOURCES =
 			"test-resources-" + LocalDateTime.now().toLocalDate() + "-"
 					+ LocalDateTime.now().toLocalTime();
@@ -89,11 +90,17 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		node = nodeBuilder().local(true)
-				.settings(Settings.builder().put("index.number_of_replicas", "0")
-						.put("index.number_of_shards", "1").put("path.home", "tmp/")
-						.build())
-				.node();
+		node = new Node(Settings.builder()
+				.put(Node.NODE_NAME_SETTING.getKey(), "testNode")
+				.put(NetworkModule.TRANSPORT_TYPE_KEY, NetworkModule.LOCAL_TRANSPORT)
+				.put(NetworkModule.HTTP_ENABLED.getKey(), false) //
+				.put(Environment.PATH_HOME_SETTING.getKey(), "tmp")//
+				.build());
+		try {
+			node.start();
+		} catch (NodeValidationException e) {
+			e.printStackTrace();
+		}
 		client = node.client();
 		client.admin().indices().prepareDelete("_all").execute().actionGet();
 		client.admin().cluster().prepareHealth().setWaitForYellowStatus().execute()
@@ -115,7 +122,7 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 		WikidataGeodata2Es.filterWikidataEntitiesDump2EsGeodata(
 				"src/test/resources/wikidataEntities.json");
 		WikidataGeodata2Es.finish();
-		ElasticsearchIndexer.MINIMUM_SCORE = 1.0;
+		ElasticsearchIndexer.MINIMUM_SCORE = 1.4;
 
 		final FileOpener opener = new FileOpener();
 		final Triples2RdfModel triple2model = new Triples2RdfModel();
@@ -211,7 +218,11 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 	@AfterClass
 	public static void down() {
 		client.admin().indices().prepareDelete("_all").execute().actionGet();
-		node.close();
+		try {
+			node.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		testFiles.forEach(lobidResource -> {
 			LOG.warn(lobidResource
 					+ " could not be retrieved from ES. Maybe not part of the source archive at"

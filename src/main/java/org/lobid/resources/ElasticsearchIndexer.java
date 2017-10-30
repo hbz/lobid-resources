@@ -2,6 +2,8 @@
 
 package org.lobid.resources;
 
+import static org.elasticsearch.common.xcontent.XContentType.JSON;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -18,6 +20,8 @@ import java.util.SortedSet;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.StreamSupport;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.culturegraph.mf.framework.DefaultObjectPipe;
 import org.culturegraph.mf.framework.ObjectReceiver;
 import org.culturegraph.mf.framework.annotations.In;
@@ -25,6 +29,7 @@ import org.culturegraph.mf.framework.annotations.Out;
 import org.elasticsearch.action.admin.cluster.state.ClusterStateRequest;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
 import org.elasticsearch.action.bulk.BulkRequestBuilder;
+import org.elasticsearch.action.support.WriteRequest.RefreshPolicy;
 import org.elasticsearch.action.update.UpdateRequest;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.IndicesAdminClient;
@@ -34,11 +39,10 @@ import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.index.query.MultiMatchQueryBuilder;
-import org.elasticsearch.rest.action.admin.indices.alias.delete.AliasesNotFoundException;
+import org.elasticsearch.rest.action.admin.indices.AliasesNotFoundException;
 import org.elasticsearch.search.SearchHits;
+import org.elasticsearch.transport.client.PreBuiltTransportClient;
 import org.lobid.resources.run.WikidataGeodata2Es;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -46,7 +50,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.SortedSetMultimap;
 import com.google.common.collect.TreeMultimap;
-import com.google.common.io.CharStreams;
+import com.google.gdata.util.common.io.CharStreams;
 
 /**
  * Index JSON into elasticsearch.
@@ -60,7 +64,7 @@ public class ElasticsearchIndexer
 		extends DefaultObjectPipe<HashMap<String, String>, ObjectReceiver<Void>> {
 
 	private static final Logger LOG =
-			LoggerFactory.getLogger(ElasticsearchIndexer.class);
+			LogManager.getLogger(ElasticsearchIndexer.class);
 	private String hostname;
 	private String clustername;
 	private BulkRequestBuilder bulkRequest;
@@ -100,7 +104,7 @@ public class ElasticsearchIndexer
 
 	@Override
 	public void onCloseStream() {
-		bulkRequest.setRefresh(true).get();
+		bulkRequest.setRefreshPolicy(RefreshPolicy.IMMEDIATE);
 		// remove old and unprotected indices
 		if (!aliasSuffix.equals("NOALIAS") && !updateNewestIndex
 				&& !aliasSuffix.toLowerCase().contains("test"))
@@ -114,7 +118,8 @@ public class ElasticsearchIndexer
 	@Override
 	public void onSetReceiver() {
 		if (client == null) {
-			Settings settings = Settings.settingsBuilder()
+	System.out.println("clustername="+this.clustername);
+			Settings settings = Settings.builder()
 					.put("cluster.name", this.clustername)
 					.put("client.transport.sniff", false)
 					.put("client.transport.ping_timeout", 120, TimeUnit.SECONDS).build();
@@ -124,7 +129,8 @@ public class ElasticsearchIndexer
 			} catch (UnknownHostException e) {
 				e.printStackTrace();
 			}
-			this.tc = TransportClient.builder().settings(settings).build();
+
+			this.tc = new PreBuiltTransportClient(settings);
 			this.client = this.tc.addTransportAddress(this.NODE);
 		}
 		bulkRequest = client.prepareBulk();
@@ -133,7 +139,7 @@ public class ElasticsearchIndexer
 				getNewestIndex();
 		} else
 			createIndex();
-		bulkRequest.setRefresh(false);
+		bulkRequest.setRefreshPolicy(RefreshPolicy.NONE);
 		LOG.info(
 				"Threshold minimum score for spatial enrichment: " + MINIMUM_SCORE);
 	}
@@ -162,7 +168,7 @@ public class ElasticsearchIndexer
 				}
 			}
 		}
-		updateRequest.doc(jsonDoc);
+		updateRequest.doc(jsonDoc, JSON);
 		updateRequest.docAsUpsert(true);
 		bulkRequest.add(updateRequest);
 		docs++;
@@ -171,7 +177,6 @@ public class ElasticsearchIndexer
 				bulkRequest.execute().actionGet();
 				docs = 0;
 				bulkRequest = client.prepareBulk();
-				bulkRequest.setRefresh(false);
 				break; // stop retry-while
 			} catch (final NoNodeAvailableException e) {
 				retries--;
@@ -187,10 +192,15 @@ public class ElasticsearchIndexer
 	}
 
 	HashSet<String> unsuccessfullyLookup = new HashSet<>();
+	HashMap<String, Float> FIELD_BOOST = new HashMap<>();
 
 	private String enrich(final String index, final String queryField,
 			final String SPATIAL, ObjectNode node) {
 		String[] query;
+		FIELD_BOOST.put(SPATIAL + ".label", 5.0f);
+		FIELD_BOOST.put("locatedIn.value", 2.0f);
+		FIELD_BOOST.put("aliases.value", 1.0f);
+
 		Iterable<Entry<String, JsonNode>> iterable = () -> node.fields();
 		Optional<Entry<String, JsonNode>> o =
 				StreamSupport.stream(iterable.spliterator(), false)
@@ -204,9 +214,9 @@ public class ElasticsearchIndexer
 					LOG.info(
 							"Already lookuped " + query[i] + "with no good result, skipping");
 				} else {
-					MultiMatchQueryBuilder qsq = new MultiMatchQueryBuilder(query[i],
-							SPATIAL + ".label^5", "aliases.value^1.5", "locatedIn.value^3")
-									.type(MultiMatchQueryBuilder.Type.CROSS_FIELDS);
+					MultiMatchQueryBuilder qsq =
+							new MultiMatchQueryBuilder(query[i]).fields(FIELD_BOOST)
+									.type(MultiMatchQueryBuilder.Type.MOST_FIELDS);
 					SearchHits hits = null;
 					try {
 						hits = client.prepareSearch(index).setQuery(qsq).get().getHits();

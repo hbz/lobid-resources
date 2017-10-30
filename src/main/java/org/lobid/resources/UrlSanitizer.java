@@ -16,9 +16,9 @@
 package org.lobid.resources;
 
 import org.apache.commons.validator.routines.UrlValidator;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.culturegraph.mf.morph.functions.AbstractSimpleStatelessFunction;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Checks if a string is a valid absolute URL. If it is not, try to repair the
@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory;
  * @author Pascal Christoph (dr0i)
  */
 public final class UrlSanitizer extends AbstractSimpleStatelessFunction {
-	private static final Logger LOG = LoggerFactory.getLogger(UrlSanitizer.class);
+	private static final Logger LOG = LogManager.getLogger(UrlSanitizer.class);
 	static UrlValidator urlValidator =
 			new UrlValidator(UrlValidator.ALLOW_2_SLASHES);
 
