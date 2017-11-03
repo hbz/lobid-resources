@@ -2,16 +2,12 @@ _:b0 <http://id.loc.gov/ontologies/bibframe/agent> <http://d-nb.info/gnd/1106703
 _:b0 <http://id.loc.gov/ontologies/bibframe/role> <http://id.loc.gov/vocabulary/relators/edt> .
 _:b0 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://id.loc.gov/ontologies/bibframe/Contribution> .
 _:b1 <http://id.loc.gov/ontologies/bibframe/agent> <http://d-nb.info/gnd/2029773-7> .
-_:b1 <http://id.loc.gov/ontologies/bibframe/role> <http://id.loc.gov/vocabulary/relators/isb> .
+_:b1 <http://id.loc.gov/ontologies/bibframe/role> <http://id.loc.gov/vocabulary/relators/ctb> .
 _:b1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://id.loc.gov/ontologies/bibframe/Contribution> .
 _:b10 <http://schema.org/location> "Mainz"^^<http://www.w3.org/2001/XMLSchema#string> .
 _:b10 <http://schema.org/publishedBy> "Landtag Rheinland-Pfalz"^^<http://www.w3.org/2001/XMLSchema#string> .
 _:b10 <http://schema.org/startDate> "2017"^^<http://www.w3.org/2001/XMLSchema#gYear> .
 _:b10 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://schema.org/PublicationEvent> .
-_:b11 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> _:b0 .
-_:b11 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:b12 .
-_:b12 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> _:b1 .
-_:b12 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
 _:b3 <http://id.loc.gov/ontologies/bibframe/source> _:b4 .
 _:b3 <http://www.w3.org/2004/02/skos/core#notation> "rpbr_99_o31500000_"^^<http://www.w3.org/2001/XMLSchema#string> .
 _:b4 <http://www.w3.org/2000/01/rdf-schema#label> "RPB-Raumsystematik"^^<http://www.w3.org/2001/XMLSchema#string> .
@@ -46,8 +42,8 @@ _:b9 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://purl.org/lobid/lv
 <http://d-nb.info/gnd/4149423-4> <http://www.w3.org/2000/01/rdf-schema#label> "Dewey-Dezimalklassifikation"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://hub.culturegraph.org/resource/HBZ-HT019440025> <http://www.w3.org/2000/01/rdf-schema#label> "Culturegraph Ressource"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://id.loc.gov/vocabulary/iso639-2/deu> <http://www.w3.org/2000/01/rdf-schema#label> "Deutsch"^^<http://www.w3.org/2001/XMLSchema#string> .
+<http://id.loc.gov/vocabulary/relators/ctb> <http://www.w3.org/2000/01/rdf-schema#label> "Mitwirkende"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://id.loc.gov/vocabulary/relators/edt> <http://www.w3.org/2000/01/rdf-schema#label> "Herausgeber/in"^^<http://www.w3.org/2001/XMLSchema#string> .
-<http://id.loc.gov/vocabulary/relators/isb> <http://www.w3.org/2000/01/rdf-schema#label> "Herausgeber/in"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/items/HT019440025:DE-929:> <http://www.w3.org/2000/01/rdf-schema#label> "lobid Bestandsressource"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/items/HT019440025:DE-929:#!> <http://id.loc.gov/ontologies/bibframe/heldBy> <http://lobid.org/organisations/DE-929> .
 <http://lobid.org/items/HT019440025:DE-929:#!> <http://id.loc.gov/ontologies/bibframe/itemOf> <http://lobid.org/resources/HT019440025#!> .
@@ -64,7 +60,8 @@ _:b9 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://purl.org/lobid/lv
 <http://lobid.org/resources/HT019440025> <http://purl.org/dc/terms/created> "20170905"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/resources/HT019440025> <http://schema.org/sourceOrganization> <http://lobid.org/organisations/DE-929#!> .
 <http://lobid.org/resources/HT019440025> <http://www.w3.org/2000/01/rdf-schema#label> "lobid Ressource"^^<http://www.w3.org/2001/XMLSchema#string> .
-<http://lobid.org/resources/HT019440025#!> <http://id.loc.gov/ontologies/bibframe/contribution> _:b11 .
+<http://lobid.org/resources/HT019440025#!> <http://id.loc.gov/ontologies/bibframe/contribution> _:b0 .
+<http://lobid.org/resources/HT019440025#!> <http://id.loc.gov/ontologies/bibframe/contribution> _:b1 .
 <http://lobid.org/resources/HT019440025#!> <http://id.loc.gov/ontologies/bibframe/extent> "1 Online-Ressource (89 Seiten)"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/resources/HT019440025#!> <http://id.loc.gov/ontologies/bibframe/hasItem> <http://lobid.org/items/HT019440025:DE-929:#!> .
 <http://lobid.org/resources/HT019440025#!> <http://id.loc.gov/ontologies/bibframe/responsibilityStatement> "Herausgeber: Der Pr\u00E4sident des Landtags Rheinland-Pfalz ; verantwortlich: Hans-Peter Hexemer, Leiter Kommunikation und neue Medien"^^<http://www.w3.org/2001/XMLSchema#string> .
