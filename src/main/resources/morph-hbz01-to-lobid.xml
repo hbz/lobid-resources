@@ -79,6 +79,96 @@
 				</data>
 			</combine>
 		</macro>
+		<macro name="setGNDPersonId">
+			<data source="$[field][-amn][12].9" name="@GNDPersonId$[field]">
+				<regexp match="\(DE-588\)(.*)" format="http://d-nb.info/gnd/${1}"/>
+				<sanitizeUrl></sanitizeUrl>
+			</data>
+		</macro>
+		<macro name="setCreatorPersonLabel">
+			<combine name="@creatorPersonLabel$[field]" value="${a}">
+				<data source="$[field][-aemn][12].[pa]" name="a">
+					<replace pattern="&gt;" with=""/>
+					<replace pattern="&lt;" with=""/>
+				</data>
+			</combine>
+		</macro>
+		<macro name="setContributorPersonLabel">
+			<combine name="@contributorPersonLabel$[field]" value="${a}">
+				<data source="$[field][-bcf]1.[pa]" name="a">
+					<replace pattern="&gt;" with=""/>
+					<replace pattern="&lt;" with=""/>
+				</data>
+			</combine>
+		</macro>
+		<macro name="setBnodeCreatorPersonLabel">
+			<combine name="@bnodeCreatorPersonLabel$[field]" value="_:${a}">
+				<if>
+					<none>
+						<data source="@GNDPersonId$[field]"/>
+					</none>
+				</if>
+				<data source="@creatorPersonLabel$[field]" name="a">
+					<replace pattern="&gt;" with=""/>
+					<replace pattern="&lt;" with=""/>
+				</data>
+			</combine>
+		</macro>
+		<macro name="setBnodeContributorPersonLabel">
+			<combine name="@bnodeContributorPersonLabel$[field]" value="_:${a}">
+				<if>
+					<none>
+						<data source="@GNDPersonId$[field]"/>
+					</none>
+				</if>
+				<data source="@contributorPersonLabel$[field]" name="a">
+					<replace pattern="&gt;" with=""/>
+					<replace pattern="&lt;" with=""/>
+				</data>
+			</combine>
+		</macro>
+		<macro name="setCreatorPersonBnodeOrId">
+			<choose name="@creatorPersonBnodeOrId$[field]" flushWith="@GNDPersonId$[field]|@bnodeCreatorPersonLabel$[field]">
+				<data source="@GNDPersonId$[field]"/>
+				<data source="@bnodeCreatorPersonLabel$[field]"/>
+			</choose>
+		</macro>
+		<macro name="setContributorPersonBnodeOrId">
+			<choose name="@contributorPersonBnodeOrId$[field]">
+				<!-- <choose name="@contributorPersonBnodeOrId$[field]"> -->
+				<data source="@contributorPersonId$[field]"/>
+				<data source="@bnodeContributorPersonLabel$[field]"/>
+			</choose>
+		</macro>
+		<macro name="setContributorCorporateBodyBnode">
+			<combine name="@contributorCorporateBodyBnode$[field]" value="_:${a}">
+				<data source="@contributorCorporateBodyLabel$[field]" name="a">
+					<replace pattern="&gt;" with=""/>
+					<replace pattern="&lt;" with=""/>
+				</data>
+			</combine>
+		</macro>
+		<macro name="setContributorCorporateBodyBnodeOrId">
+			<choose name="@contributorCorporateBodyBnodeOrId$[field]" flushWith="$[field][bcefp][12].[a9]">
+				<data source="@contributingCorporateBodyId$[field]"/>
+				<data source="@contributorCorporateBodyBnode$[field]"/>
+			</choose>
+		</macro>
+		<macro name="setCreatorCorporateBodyBnode">
+			<combine name="@creatorCorporateBodyBnode$[field]" value="_:${a}">
+				<data source="@creatorCorporateBodyLabel$[field]" name="a">
+					<replace pattern="&gt;" with=""/>
+					<replace pattern="&lt;" with=""/>
+				</data>
+			</combine>
+		</macro>
+		<macro name="setCreatorCorporateBodyBnodeOrId">
+			<choose name="@creatorCorporateBodyBnodeOrId$[field]" flushWith="$[field][bcf][12].[a9]">
+				<data source="@creatorCorporateBodyId$[field]"/>
+				<data source="@creatorCorporateBodyBnode$[field]"/>
+			</choose>
+		</macro>
+		
 		<macro name="setLabelMAB451-491ToId">
 			<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="${a}"
 				flushWith="$[field_1]">
@@ -425,16 +515,6 @@
 				</combine>
 			</entity>
 		</macro>
-		<macro name="addBnodeForCreatorPersonLabel">
-			<combine name="@bnodeCreatorPersonLabel2" value="_:${a}">
-				<if>
-					<none>
-						<data source="$[field][-aemn][12].9"/>
-					</none>
-				</if>
-				<data source="$[field][-aemn][12].[ap]" name="a"/>
-			</combine>
-		</macro>
 		
 		<macro name="setLabelVariableForPersonsWithoutGNDId">
 			<combine name="@preferredNameForThePerson$[field]" value="${a}"
@@ -448,22 +528,10 @@
 			</combine>
 		</macro>
 		
-		<macro name="setPersonEntityDataWithoutGNDId">
-			<combine name="@personLabelWithoutGNDId$[field]" value="${a}">
-				<if>
-					<none>
-						<data source="$[field][-abcefp]1.9"/>
-					</none>
-				</if>
-				<!-- <data source="@preferredNameForThePerson$[field]" name="a"/> -->
-				<data source="$[field][-aemn][12].[pa]|$[field][bcf]1.[pa]" name="a"/>
-			</combine>
-		</macro>
-		<macro name="addPersonEntityDataWithoutGNDId">
+		<!-- <macro name="addPersonEntityDataWithoutGNDId">
 			<entity name="http://id.loc.gov/ontologies/bibframe/contribution" reset="true">
 				<entity name="http://id.loc.gov/ontologies/bibframe/agent">
 					<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="${a}">
-						<!-- <data source="@personLabelWithoutGNDId$[field]" name="a"/> -->
 						<if>
 							<none>
 								<data source="$[field][-abcefp]1.9"/>
@@ -484,7 +552,7 @@
 					</data>
 				</combine>
 			</entity>
-		</macro>
+		</macro> -->
 		
 		<macro name="setRelatorPerson">
 			<combine name="@relator$[field]" value="${a}">
@@ -614,8 +682,14 @@
 				</choose>
 			</combine>
 		</macro>
+		<macro name="setContributionBnode">
+			<combine value="_:${a}${b}" name="@contributionBnode$[field]">
+				<data source="@agentId$[field]" name="a"/>
+				<data source="@relator$[field]" name="b"/>
+			</combine>
+		</macro>
 		
-		<macro name="addPersonEntityDataWithGNDId">
+		<!-- <macro name="addPersonEntityDataWithGNDId">
 			<entity name="http://id.loc.gov/ontologies/bibframe/contribution" reset="true">
 				<combine name="http://id.loc.gov/ontologies/bibframe/agent" value="${a}" >
 					<data source="$[field][-abcefp][12].9" name="a">
@@ -629,10 +703,10 @@
 					<constant value="http://id.loc.gov/ontologies/bibframe/Contribution"/>
 				</data>
 			</entity>
-		</macro>
+		</macro> -->
 		
 		<macro name="setRelatorNonPerson">
-			<combine name="@relatorNonPerson$[field]" value="${a}">
+			<combine name="@relator$[field]" value="${a}">
 				<choose name="a">
 					<data source="$[field][bcefp][12].?">
 						<regexp match=".*" format="http://id.loc.gov/vocabulary/relators/ctb"/>
@@ -641,6 +715,20 @@
 						<regexp match=".*" format="http://id.loc.gov/vocabulary/relators/cre"/>
 					</data>
 				</choose>
+			</combine>
+		</macro>
+		<macro name="setContributingCorporateBodyId">
+			<combine name="@contributingCorporateBodyId$[field]" value="${a}">
+				<data source="$[field][bcefp][12].9" name="a">
+					<regexp match="\(DE-588\)(.*)" format="http://d-nb.info/gnd/${1}"/>
+				</data>
+			</combine>
+		</macro>
+		<macro name="setCreatorCorporateBodyId">
+			<combine name="@creatorCorporateBodyId$[field]" value="${a}">
+				<data source="$[field][-a][12].9" name="a">
+					<regexp match="\(DE-588\)(.*)" format="http://d-nb.info/gnd/${1}"/>
+				</data>
 			</combine>
 		</macro>
 		<macro name="setNonPersonEntityDataWithoutGNDId">
@@ -653,7 +741,7 @@
 				<data source="$[field][-ab]1.a" name="a"/>
 			</combine>
 		</macro>
-		<macro name="addNonPersonEntityDataWithoutGNDId">
+		<!-- <macro name="addNonPersonEntityDataWithoutGNDId">
 			<entity name="http://id.loc.gov/ontologies/bibframe/contribution" reset="true">
 				<entity name="http://id.loc.gov/ontologies/bibframe/agent">
 					<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="${a}">
@@ -664,7 +752,7 @@
 					</combine>
 				</entity>
 				<combine name="http://id.loc.gov/ontologies/bibframe/role" value="${a}">
-					<data source="@relatorNonPerson$[field]" name="a"/>
+					<data source="@relator$[field]" name="a"/>
 				</combine>
 				<combine name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" value="${a}">
 					<data source="$[field][-abce]1.a" name="a">
@@ -681,7 +769,7 @@
 					</data>
 				</combine>
 				<combine name="http://id.loc.gov/ontologies/bibframe/role" value="${a}">
-					<data source="@relatorNonPerson$[field]" name="a"/>
+					<data source="@relator$[field]" name="a"/>
 				</combine>
 				<combine name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" value="${a}">
 					<data source="$[field][-abce][12].9" name="a">
@@ -689,15 +777,123 @@
 					</data>
 				</combine>
 			</entity>
+		</macro> -->
+		<macro name="setRelatorNode">
+			<combine name="@relatorNode$[field]" value="${a}">
+				<data source="@relator$[field]" name="a"/>
+				<data source="@agentId$[field]"/>
+			</combine>
 		</macro>
+		<macro name="setSubjectContributionBnode">
+			<combine name="~rdf:subject" value="${a}" flushWith="@relatorNode$[field]">
+				<data source="@contributionBnode$[field]" name="a"/>
+			</combine>
+		</macro>
+		<macro name="setRoleForContributionBnode">
+			<combine name="http://id.loc.gov/ontologies/bibframe/role" value="${a}"
+				sameEntity="true">
+				<data source="@relatorNode$[field]" name="a"/>
+				<data source="@contributionBnode$[field]"/>
+			</combine>
+		</macro>
+		<macro name="setTypeContributionForContributionBnode">
+			<combine name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" value="http://id.loc.gov/ontologies/bibframe/Contribution"
+				flushWith="@relatorNode$[field]" sameEntity="true">
+				<data source="@contributionBnode$[field]"/>
+			</combine>
+		</macro>
+		<macro name="setAgentForContributionBnode">
+			<combine name="http://id.loc.gov/ontologies/bibframe/agent" value="${a}"
+				flushWith="@relatorNode$[field]">
+				<data source="@agentId$[field]" name="a"/>
+			</combine>
+		</macro>
+		<macro name="setBackSubjectContributionBnode">
+			<combine name="~rdf:subject" value="$[ns-lobid-resource]${subject}#!">
+				<data source="@id" name="subject"/>
+				<data source="@relatorNode$[field]|@contributionBnode$[field]"/>
+				<data source="@agentId$[field]"/>
+			</combine>
+		</macro>
+		<macro name="setSubjectAgentIdForContributionBnode">
+			<combine name="~rdf:subject" value="${a}" flushWith="@contributionBnode$[field]">
+				<data source="@agentId$[field]" name="a"/>
+			</combine>
+		</macro>
+		<macro name="setLabelForPersonAgent">
+			<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="${a}" flushWith="@contributionBnode$[field]">
+				<data source="@creatorPersonLabel$[field]|@contributorPersonLabel$[field]" name="a"/>
+			</combine>
+		</macro>
+		<macro name="setTypePersonForAgent">
+			<combine name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" value="http://d-nb.info/standards/elementset/gnd#Person">
+				<data source="@contributionBnode$[field]"/>
+			</combine>
+		</macro>
+		<macro name="setPreferredNameConcatSubject">
+			<combine name="@preferredNameConcatSubject$[field]" value="${a}" sameEntity="true">
+				<concat delimiter=", " name="a" sameEntity="true">
+					<data source="$[field][-abcdfep][12-].[bcdghknsxz]"/>
+				</concat>
+			</combine>
+		</macro>
+		<macro name="setContributorPersonId">
+			<data source="$[field][bcefp][1234].9" name="@contributorPersonId$[field]">
+				<regexp match="\(DE-588\)(.*)" format="http://d-nb.info/gnd/${1}"/>
+				<sanitizeUrl></sanitizeUrl>
+			</data>
+		</macro>
+		<macro name="setSubjectAgentIdForCorporateBody">
+			<combine name="~rdf:subject" value="${a}" flushWith="@agentId$[field]">
+				<data source="@agentId$[field]" name="a"/>
+			</combine>
+		</macro>
+		<macro name="setCreatorCorporateBodyLabelInAgent">
+			<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="${a}" flushWith="@agentId$[field]">
+				<data source="@creatorCorporateBodyLabel$[field]" name="a"/>
+			</combine>
+		</macro>
+		<macro name="setContributorCorporateBodyLabelInAgent">
+			<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="${a}" flushWith="@agentId$[field]">
+				<data source="@contributorCorporateBodyLabel$[field]" name="a"/>
+			</combine>
+		</macro>
+		<macro name="setTypeCorporateBodyInAgent">
+			<combine name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" value="${a}" flushWith="@agentId$[field]" >
+				<choose name="a" flushWith="@agentId$[field]"> 
+					<data source="@preferredNameConcatEventE$[field]">
+						<constant value="$[ns-gnd]ConferenceOrEvent"/>
+					</data>
+					<data source="@preferredNameConcatSubject$[field]|@nameOfCreatingCorporateBodyG$[field]">
+						<constant value="$[ns-gnd]PlaceOrGeographicName"/>
+					</data> 
+					<data source="@contributorCorporateBodyLabel$[field]|@creatorCorporateBodyLabel$[field]|@contributingCorporateBodyId$[field]|@creatorCorporateBodyId$[field]">
+						<constant value="$[ns-gnd]CorporateBody"/>
+					</data>
+				</choose>
+			</combine>
+		</macro>
+		<macro name="setBackRdfSubjectForCorporateBodyAgent">
+			<combine name="~rdf:subject" value="$[ns-lobid-resource]${id}#!" flushWith="@agentId$[field]">
+				<data source="@id" name="id"/>
+				<data source="@contributorPersonLabel$[field]"/>
+			</combine>
+		</macro>
+		
 		<macro name="setContributorOrder">
 			<combine name="@contributorOrder$[field]" value="${a}">
 				<choose name="a">
 					<data source="$[field][-abcefmn][12].9" name="a">
 						<regexp match="\(DE-588\)(.*)" format="http://d-nb.info/gnd/${1}"/>
 					</data>
-					<data source="$[field][-aemn][12].[pa]" name="a"/>
-					<data source="$[field][bcf]1.[pa]" name="a"/>
+					<data source="$[field][-aemn][12].[pa]" name="a">
+						<replace pattern="&gt;" with=""/>
+						<replace pattern="&lt;" with=""/>
+					</data>
+					<data source="$[field][bcf]1.[pa]" name="a">
+						<replace pattern="&gt;" with=""/>
+						<replace pattern="&lt;" with=""/>
+					</data>
 				</choose>
 			</combine>
 		</macro>
@@ -1748,11 +1944,39 @@
 			<regexp match="\(DE-588\)(.*)" format="http://d-nb.info/gnd/${1}"/>
 			<sanitizeUrl></sanitizeUrl>
 		</data>
+
+		<call-macro name="setGNDPersonId" field="100"/>
+		<call-macro name="setGNDPersonId" field="104"/>
+		<call-macro name="setGNDPersonId" field="108"/>
+		<call-macro name="setGNDPersonId" field="112"/>
+		<call-macro name="setGNDPersonId" field="116"/>
+		<call-macro name="setGNDPersonId" field="120"/>
+		<call-macro name="setGNDPersonId" field="124"/>
+		<call-macro name="setGNDPersonId" field="128"/>
+		<call-macro name="setGNDPersonId" field="132"/>
+		<call-macro name="setGNDPersonId" field="136"/>
+		<call-macro name="setGNDPersonId" field="140"/>
+		<call-macro name="setGNDPersonId" field="144"/>
+		<call-macro name="setGNDPersonId" field="148"/>
+		<call-macro name="setGNDPersonId" field="152"/>
+		<call-macro name="setGNDPersonId" field="156"/>
+		<call-macro name="setGNDPersonId" field="160"/>
+		<call-macro name="setGNDPersonId" field="164"/>
+		<call-macro name="setGNDPersonId" field="168"/>
+		<call-macro name="setGNDPersonId" field="172"/>
+		<call-macro name="setGNDPersonId" field="176"/>
+		<call-macro name="setGNDPersonId" field="180"/>
+		<call-macro name="setGNDPersonId" field="184"/>
+		<call-macro name="setGNDPersonId" field="188"/>
+		<call-macro name="setGNDPersonId" field="192"/>
+		<call-macro name="setGNDPersonId" field="196"/>
+		
+		
 		<!-- literals of creator (seems there are no corporateBodyCreators without gndID) -->
 		<data source="359[-ab][-12].a" name="http://id.loc.gov/ontologies/bibframe/responsibilityStatement"/>
 		<data source="1[02468][048][-aemn][12].[pa]|1[13579][26][-aemn][12].[pa]" name="@creatorPersonLabel"/>
 		<!-- bnode for creator when no ID -->
-		<combine name="@bnodeCreatorPersonLabel" value="_:${a}">
+		<combine name="@bnodeCreatorPersonLabel" value="_:${a}" sameEntity="true">
 			<if>
 				<none>
 					<data source="@GNDPersonId"/>
@@ -1763,8 +1987,171 @@
 				<replace pattern="&lt;" with=""/>
 			</data>
 		</combine>
+
+		
+		<call-macro name="setContributorPersonLabel" field="100"/>
+		<call-macro name="setContributorPersonLabel" field="104"/>
+		<call-macro name="setContributorPersonLabel" field="108"/>
+		<call-macro name="setContributorPersonLabel" field="112"/>
+		<call-macro name="setContributorPersonLabel" field="116"/>
+		<call-macro name="setContributorPersonLabel" field="120"/>
+		<call-macro name="setContributorPersonLabel" field="124"/>
+		<call-macro name="setContributorPersonLabel" field="128"/>
+		<call-macro name="setContributorPersonLabel" field="132"/>
+		<call-macro name="setContributorPersonLabel" field="136"/>
+		<call-macro name="setContributorPersonLabel" field="140"/>
+		<call-macro name="setContributorPersonLabel" field="144"/>
+		<call-macro name="setContributorPersonLabel" field="148"/>
+		<call-macro name="setContributorPersonLabel" field="152"/>
+		<call-macro name="setContributorPersonLabel" field="156"/>
+		<call-macro name="setContributorPersonLabel" field="160"/>
+		<call-macro name="setContributorPersonLabel" field="164"/>
+		<call-macro name="setContributorPersonLabel" field="168"/>
+		<call-macro name="setContributorPersonLabel" field="172"/>
+		<call-macro name="setContributorPersonLabel" field="176"/>
+		<call-macro name="setContributorPersonLabel" field="180"/>
+		<call-macro name="setContributorPersonLabel" field="184"/>
+		<call-macro name="setContributorPersonLabel" field="188"/>
+		<call-macro name="setContributorPersonLabel" field="192"/>
+		<call-macro name="setContributorPersonLabel" field="196"/>
+		
+
+		<call-macro name="setBnodeContributorPersonLabel" field="100"/>
+		
+		<!-- <combine name="@bnodeContributorPersonLabel$[field]" value="${a}">
+			<if>
+				<none>
+					<data source="@GNDPersonId$[field]"/>
+				</none>
+			</if>
+			<data source="@contributorPersonLabel$[field]" name="a">
+				<replace pattern="&gt;" with=""/>
+				<replace pattern="&lt;" with=""/>
+			</data>
+		</combine> -->
+		
+		<call-macro name="setBnodeContributorPersonLabel" field="104"/>
+		<call-macro name="setBnodeContributorPersonLabel" field="108"/>
+		<call-macro name="setBnodeContributorPersonLabel" field="112"/>
+		<call-macro name="setBnodeContributorPersonLabel" field="116"/>
+		<call-macro name="setBnodeContributorPersonLabel" field="120"/>
+		<call-macro name="setBnodeContributorPersonLabel" field="124"/>
+		<call-macro name="setBnodeContributorPersonLabel" field="128"/>
+		<call-macro name="setBnodeContributorPersonLabel" field="132"/>
+		<call-macro name="setBnodeContributorPersonLabel" field="136"/>
+		<call-macro name="setBnodeContributorPersonLabel" field="140"/>
+		<call-macro name="setBnodeContributorPersonLabel" field="144"/>
+		<call-macro name="setBnodeContributorPersonLabel" field="148"/>
+		<call-macro name="setBnodeContributorPersonLabel" field="152"/>
+		<call-macro name="setBnodeContributorPersonLabel" field="156"/>
+		<call-macro name="setBnodeContributorPersonLabel" field="160"/>
+		<call-macro name="setBnodeContributorPersonLabel" field="164"/>
+		<call-macro name="setBnodeContributorPersonLabel" field="168"/>
+		<call-macro name="setBnodeContributorPersonLabel" field="172"/>
+		<call-macro name="setBnodeContributorPersonLabel" field="176"/>
+		<call-macro name="setBnodeContributorPersonLabel" field="180"/>
+		<call-macro name="setBnodeContributorPersonLabel" field="184"/>
+		<call-macro name="setBnodeContributorPersonLabel" field="188"/>
+		<call-macro name="setBnodeContributorPersonLabel" field="192"/>
+		<call-macro name="setBnodeContributorPersonLabel" field="196"/>
+		
+		<call-macro name="setCreatorPersonLabel" field="100"/>
+		<call-macro name="setBnodeCreatorPersonLabel" field="100"/>
+		<call-macro name="setCreatorPersonLabel" field="104"/>
+		<call-macro name="setBnodeCreatorPersonLabel" field="104"/>
+		<call-macro name="setCreatorPersonLabel" field="108"/>
+		<call-macro name="setBnodeCreatorPersonLabel" field="108"/>
+		<call-macro name="setCreatorPersonLabel" field="112"/>
+		<call-macro name="setBnodeCreatorPersonLabel" field="112"/>
+		<call-macro name="setCreatorPersonLabel" field="116"/>
+		<call-macro name="setBnodeCreatorPersonLabel" field="116"/>
+		<call-macro name="setCreatorPersonLabel" field="120"/>
+		<call-macro name="setBnodeCreatorPersonLabel" field="120"/>
+		<call-macro name="setCreatorPersonLabel" field="124"/>
+		<call-macro name="setBnodeCreatorPersonLabel" field="124"/>
+		<call-macro name="setCreatorPersonLabel" field="128"/>
+		<call-macro name="setBnodeCreatorPersonLabel" field="128"/>
+		<call-macro name="setCreatorPersonLabel" field="132"/>
+		<call-macro name="setBnodeCreatorPersonLabel" field="132"/>
+		<call-macro name="setCreatorPersonLabel" field="136"/>
+		<call-macro name="setBnodeCreatorPersonLabel" field="136"/>
+		<call-macro name="setCreatorPersonLabel" field="140"/>
+		<call-macro name="setBnodeCreatorPersonLabel" field="140"/>
+		<call-macro name="setCreatorPersonLabel" field="144"/>
+		<call-macro name="setBnodeCreatorPersonLabel" field="144"/>
+		<call-macro name="setCreatorPersonLabel" field="148"/>
+		<call-macro name="setBnodeCreatorPersonLabel" field="148"/>
+		<call-macro name="setCreatorPersonLabel" field="152"/>
+		<call-macro name="setBnodeCreatorPersonLabel" field="152"/>
+		<call-macro name="setCreatorPersonLabel" field="156"/>
+		<call-macro name="setBnodeCreatorPersonLabel" field="156"/>
+		<call-macro name="setCreatorPersonLabel" field="160"/>
+		<call-macro name="setBnodeCreatorPersonLabel" field="160"/>
+		<call-macro name="setCreatorPersonLabel" field="164"/>
+		<call-macro name="setBnodeCreatorPersonLabel" field="164"/>
+		<call-macro name="setCreatorPersonLabel" field="168"/>
+		<call-macro name="setBnodeCreatorPersonLabel" field="168"/>
+		<call-macro name="setCreatorPersonLabel" field="172"/>
+		<call-macro name="setBnodeCreatorPersonLabel" field="172"/>
+		<call-macro name="setCreatorPersonLabel" field="176"/>
+		<call-macro name="setBnodeCreatorPersonLabel" field="176"/>
+		<call-macro name="setCreatorPersonLabel" field="180"/>
+		<call-macro name="setBnodeCreatorPersonLabel" field="180"/>
+		<call-macro name="setCreatorPersonLabel" field="184"/>
+		<call-macro name="setBnodeCreatorPersonLabel" field="184"/>
+		<call-macro name="setCreatorPersonLabel" field="188"/>
+		<call-macro name="setBnodeCreatorPersonLabel" field="188"/>
+		<call-macro name="setCreatorPersonLabel" field="192"/>
+		<call-macro name="setBnodeCreatorPersonLabel" field="192"/>
+		<call-macro name="setCreatorPersonLabel" field="196"/>
+		<call-macro name="setBnodeCreatorPersonLabel" field="196"/>
+		
+
+		<!-- <choose name="@creatorPersonOrCoorporateBodyBnodeOrId" flushWith="@GNDPersonId|@bnodeCreatorPersonLabel|@creatorCorporateBodyId">
+			<data source="@GNDPersonId"/>
+			<data source="@creatorCorporateBodyId"/>
+			<data source="@bnodeCreatorPersonLabel"/>
+		</choose> -->
+		<!-- <choose name="@contributorPersonBnodeOrId100">
+			<data source="@contributorPersonId100"/> -->
+			<!-- <data source="@bnodeContributorPersonLabel100"/> -->
+		<!-- </choose> -->
+		
+		<!-- <choose name="@contributorPersonBnodeOrId100" flushWith="@contributorPersonId100|@bnodeContributorPersonLabel100">
+			<data source="@contributorPersonId100"/>
+			<data source="@bnodeContributorPersonLabel100"/>
+		</choose> -->
+		
+		
+		<call-macro name="setCreatorPersonBnodeOrId" field="100"/>
+		<call-macro name="setCreatorPersonBnodeOrId" field="104"/>
+		<call-macro name="setCreatorPersonBnodeOrId" field="108"/>
+		<call-macro name="setCreatorPersonBnodeOrId" field="112"/>
+		<call-macro name="setCreatorPersonBnodeOrId" field="116"/>
+		<call-macro name="setCreatorPersonBnodeOrId" field="120"/>
+		<call-macro name="setCreatorPersonBnodeOrId" field="124"/>
+		<call-macro name="setCreatorPersonBnodeOrId" field="128"/>
+		<call-macro name="setCreatorPersonBnodeOrId" field="132"/>
+		<call-macro name="setCreatorPersonBnodeOrId" field="136"/>
+		<call-macro name="setCreatorPersonBnodeOrId" field="140"/>
+		<call-macro name="setCreatorPersonBnodeOrId" field="144"/>
+		<call-macro name="setCreatorPersonBnodeOrId" field="148"/>
+		<call-macro name="setCreatorPersonBnodeOrId" field="152"/>
+		<call-macro name="setCreatorPersonBnodeOrId" field="156"/>
+		<call-macro name="setCreatorPersonBnodeOrId" field="160"/>
+		<call-macro name="setCreatorPersonBnodeOrId" field="164"/>
+		<call-macro name="setCreatorPersonBnodeOrId" field="168"/>
+		<call-macro name="setCreatorPersonBnodeOrId" field="172"/>
+		<call-macro name="setCreatorPersonBnodeOrId" field="176"/>
+		<call-macro name="setCreatorPersonBnodeOrId" field="180"/>
+		<call-macro name="setCreatorPersonBnodeOrId" field="184"/>
+		<call-macro name="setCreatorPersonBnodeOrId" field="188"/>
+		<call-macro name="setCreatorPersonBnodeOrId" field="192"/>
+		<call-macro name="setCreatorPersonBnodeOrId" field="196"/>
+		
+		
 		<!-- bnode for contributor when no ID -->
-		<data source="1[02468][048][bcf]1.[pa]|1[13579][26][bcf]1.[pa]|8[012][02468][-mn]-12.[pa]"
+		<!-- <data source="1[02468][048][bcf]1.[pa]|1[13579][26][bcf]1.[pa]|8[012][02468][-mn]-12.[pa]"
 			name="@contributorPersonLabel"/>
 		<combine name="@bnodeContributorPersonLabel" value="_:${a}">
 			<data source="@contributorPersonLabel" name="a">
@@ -1786,128 +2173,52 @@
 		<choose name="@contributorCorporateBodyBnodeOrId" flushWith="2????">
 			<data source="@contributorCorporateBodyId"/>
 			<data source="@bnodeContributorBodyLabel"/>
-		</choose>
+		</choose> -->
 		
 		<!-- ####################### -->
 		<!-- person data without GNDId -->
 		<!-- ####################### -->
-		<!-- HT009993506, HT018700720, HT018703339: label nicht in @preferredNameForThePerson -->
-		
-		<!-- <call-macro name="setLabelVariableForPersonsWithoutGNDId" field="100"/>
-		<call-macro name="setPersonEntityDataWithoutGNDId" field="100"/> -->
-		<call-macro name="addPersonEntityDataWithoutGNDId" field="100"/>
-		
-		<!-- <call-macro name="setLabelVariableForPersonsWithoutGNDId" field="104"/>
-		<call-macro name="setPersonEntityDataWithoutGNDId" field="104"/> -->
-		<call-macro name="addPersonEntityDataWithoutGNDId" field="104"/>
-		
-		<!-- <entity name="http://id.loc.gov/ontologies/bibframe/contribution" reset="true">
-			<entity name="http://id.loc.gov/ontologies/bibframe/agent" 
-				flushWith="@personLabelWithoutGNDId$[field]">
-				<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="${a}">
-					<data source="@personLabelWithoutGNDId$[field]" name="a"/>
-				</combine>
-				<data source="$[field][-abcefp]1.[pa]" name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type">
-					<constant value="http://d-nb.info/standards/elementset/gnd#Person"/>
-				</data>
-			</entity>
-			<combine name="http://id.loc.gov/ontologies/bibframe/role" value="${a}">
-				<data source="@relator" name="a"/>
-			</combine>
-			<combine name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" value="${a}">
-				<data source="$[field][-abcefp]1.[pa]" name="a">
-					<constant value="http://id.loc.gov/ontologies/bibframe/Contribution"/>
-				</data>
-			</combine>
-		</entity> -->
-	
-		
-		<call-macro name="setLabelVariableForPersonsWithoutGNDId" field="108"/>
-		<call-macro name="setPersonEntityDataWithoutGNDId" field="108"/>
-		<call-macro name="addPersonEntityDataWithoutGNDId" field="108"/>
-		
-		<call-macro name="setLabelVariableForPersonsWithoutGNDId" field="112"/>
-		<call-macro name="setPersonEntityDataWithoutGNDId" field="112"/>
-		<call-macro name="addPersonEntityDataWithoutGNDId" field="112"/>
-		<call-macro name="setLabelVariableForPersonsWithoutGNDId" field="116"/>
-		<call-macro name="setPersonEntityDataWithoutGNDId" field="116"/>
-		<call-macro name="addPersonEntityDataWithoutGNDId" field="116"/>
-		<call-macro name="setLabelVariableForPersonsWithoutGNDId" field="120"/>
-		<call-macro name="setPersonEntityDataWithoutGNDId" field="120"/>
+		<!-- <call-macro name="addPersonEntityDataWithoutGNDId" field="100"/>
+		<call-macro name="addPersonEntityDataWithoutGNDId" field="104"/> -->
+		<!-- <call-macro name="addPersonEntityDataWithoutGNDId" field="108"/>
+		<call-macro name="addPersonEntityDataWithoutGNDId" field="112"/> -->
+		<!-- <call-macro name="addPersonEntityDataWithoutGNDId" field="116"/>
 		<call-macro name="addPersonEntityDataWithoutGNDId" field="120"/>
-		<call-macro name="setLabelVariableForPersonsWithoutGNDId" field="124"/>
-		<call-macro name="setPersonEntityDataWithoutGNDId" field="124"/>
 		<call-macro name="addPersonEntityDataWithoutGNDId" field="124"/>
-		<call-macro name="setLabelVariableForPersonsWithoutGNDId" field="128"/>
-		<call-macro name="setPersonEntityDataWithoutGNDId" field="128"/>
 		<call-macro name="addPersonEntityDataWithoutGNDId" field="128"/>
-		<call-macro name="setLabelVariableForPersonsWithoutGNDId" field="132"/>
-		<call-macro name="setPersonEntityDataWithoutGNDId" field="132"/>
 		<call-macro name="addPersonEntityDataWithoutGNDId" field="132"/>
-		<call-macro name="setLabelVariableForPersonsWithoutGNDId" field="136"/>
-		<call-macro name="setPersonEntityDataWithoutGNDId" field="136"/>
 		<call-macro name="addPersonEntityDataWithoutGNDId" field="136"/>
-		<call-macro name="setLabelVariableForPersonsWithoutGNDId" field="140"/>
-		<call-macro name="setPersonEntityDataWithoutGNDId" field="140"/>
 		<call-macro name="addPersonEntityDataWithoutGNDId" field="140"/>
-		<call-macro name="setLabelVariableForPersonsWithoutGNDId" field="144"/>
-		<call-macro name="setPersonEntityDataWithoutGNDId" field="144"/>
 		<call-macro name="addPersonEntityDataWithoutGNDId" field="144"/>
-		<call-macro name="setLabelVariableForPersonsWithoutGNDId" field="148"/>
-		<call-macro name="setPersonEntityDataWithoutGNDId" field="148"/>
 		<call-macro name="addPersonEntityDataWithoutGNDId" field="148"/>
-		<call-macro name="setLabelVariableForPersonsWithoutGNDId" field="152"/>
-		<call-macro name="setPersonEntityDataWithoutGNDId" field="152"/>
 		<call-macro name="addPersonEntityDataWithoutGNDId" field="152"/>
-		<call-macro name="setLabelVariableForPersonsWithoutGNDId" field="156"/>
-		<call-macro name="setPersonEntityDataWithoutGNDId" field="156"/>
 		<call-macro name="addPersonEntityDataWithoutGNDId" field="156"/>
-		<call-macro name="setLabelVariableForPersonsWithoutGNDId" field="160"/>
-		<call-macro name="setPersonEntityDataWithoutGNDId" field="160"/>
 		<call-macro name="addPersonEntityDataWithoutGNDId" field="160"/>
-		<call-macro name="setLabelVariableForPersonsWithoutGNDId" field="164"/>
-		<call-macro name="setPersonEntityDataWithoutGNDId" field="164"/>
 		<call-macro name="addPersonEntityDataWithoutGNDId" field="164"/>
-		<call-macro name="setLabelVariableForPersonsWithoutGNDId" field="168"/>
-		<call-macro name="setPersonEntityDataWithoutGNDId" field="168"/>
 		<call-macro name="addPersonEntityDataWithoutGNDId" field="168"/>
-		<call-macro name="setLabelVariableForPersonsWithoutGNDId" field="172"/>
-		<call-macro name="setPersonEntityDataWithoutGNDId" field="172"/>
 		<call-macro name="addPersonEntityDataWithoutGNDId" field="172"/>
-		<call-macro name="setLabelVariableForPersonsWithoutGNDId" field="176"/>
-		<call-macro name="setPersonEntityDataWithoutGNDId" field="176"/>
 		<call-macro name="addPersonEntityDataWithoutGNDId" field="176"/>
-		<call-macro name="setLabelVariableForPersonsWithoutGNDId" field="180"/>
-		<call-macro name="setPersonEntityDataWithoutGNDId" field="180"/>
 		<call-macro name="addPersonEntityDataWithoutGNDId" field="180"/>
-		<call-macro name="setLabelVariableForPersonsWithoutGNDId" field="184"/>
-		<call-macro name="setPersonEntityDataWithoutGNDId" field="184"/>
 		<call-macro name="addPersonEntityDataWithoutGNDId" field="184"/>
-		<call-macro name="setLabelVariableForPersonsWithoutGNDId" field="188"/>
-		<call-macro name="setPersonEntityDataWithoutGNDId" field="188"/>
 		<call-macro name="addPersonEntityDataWithoutGNDId" field="188"/>
-		<call-macro name="setLabelVariableForPersonsWithoutGNDId" field="192"/>
-		<call-macro name="setPersonEntityDataWithoutGNDId" field="192"/>
 		<call-macro name="addPersonEntityDataWithoutGNDId" field="192"/>
-		<call-macro name="setLabelVariableForPersonsWithoutGNDId" field="196"/>
-		<call-macro name="setPersonEntityDataWithoutGNDId" field="196"/>
-		<call-macro name="addPersonEntityDataWithoutGNDId" field="196"/>
+		<call-macro name="addPersonEntityDataWithoutGNDId" field="196"/> -->
 		
 		
 		<!-- ####################### -->
 		<!-- person data with GNDId -->
 		<!-- ####################### -->
-		<call-macro name="setRelatorPerson" field="100"/>
+		<!-- <call-macro name="setRelatorPerson" field="100"/>
 		<call-macro name="addPersonEntityDataWithGNDId" field="100"/>
 		<call-macro name="setRelatorPerson" field="104"/>
-		<call-macro name="addPersonEntityDataWithGNDId" field="104"/>
+		<call-macro name="addPersonEntityDataWithGNDId" field="104"/> -->
 		
-		<call-macro name="setRelatorPerson" field="108"/>
+		<!-- <call-macro name="setRelatorPerson" field="108"/>
 		<call-macro name="addPersonEntityDataWithGNDId" field="108"/>
 		
 		<call-macro name="setRelatorPerson" field="112"/>
-		<call-macro name="addPersonEntityDataWithGNDId" field="112"/>
-		<call-macro name="setRelatorPerson" field="116"/>
+		<call-macro name="addPersonEntityDataWithGNDId" field="112"/> -->
+		<!-- <call-macro name="setRelatorPerson" field="116"/>
 		<call-macro name="addPersonEntityDataWithGNDId" field="116"/>
 		
 		<call-macro name="setRelatorPerson" field="120"/>
@@ -1956,14 +2267,11 @@
 		<call-macro name="setRelatorPerson" field="192"/>
 		<call-macro name="addPersonEntityDataWithGNDId" field="192"/>
 		<call-macro name="setRelatorPerson" field="196"/>
-		<call-macro name="addPersonEntityDataWithGNDId" field="196"/>
+		<call-macro name="addPersonEntityDataWithGNDId" field="196"/> -->
 		
 		<!-- ####################### -->
 		<!-- non-person entity data without GNDId -->
 		<!-- ####################### -->
-		<!-- missing: type of agent, role -->
-		<!-- BT000110055: not .9 doesn't work -->
-		
 		<combine name="@typeVariable" value="${a}"
 			flushWith="@subjectLinks|@creatorCorporateBodyId|@contributorCorporateBodyBnodeOrId"
 			sameEntity="true">
@@ -1982,8 +2290,7 @@
 				</data>
 			</choose>
 		</combine>
-		
-						
+
 		<call-macro name="setRelatorNonPerson" field="200"/>
 		<call-macro name="setRelatorNonPerson" field="204"/>
 		<call-macro name="setRelatorNonPerson" field="208"/>
@@ -2020,18 +2327,14 @@
 		<call-macro name="setRelatorNonPerson" field="296"/>
 		
 		
-		<call-macro name="setNonPersonEntityDataWithoutGNDId" field="200"/>
+		<!-- <call-macro name="setNonPersonEntityDataWithoutGNDId" field="200"/>
 		<call-macro name="addNonPersonEntityDataWithoutGNDId" field="200"/>
-		
 		<call-macro name="setNonPersonEntityDataWithoutGNDId" field="204"/>
 		<call-macro name="addNonPersonEntityDataWithoutGNDId" field="204"/>
-		
 		<call-macro name="setNonPersonEntityDataWithoutGNDId" field="208"/>
 		<call-macro name="addNonPersonEntityDataWithoutGNDId" field="208"/>
-		
 		<call-macro name="setNonPersonEntityDataWithoutGNDId" field="212"/>
 		<call-macro name="addNonPersonEntityDataWithoutGNDId" field="212"/>
-		
 		<call-macro name="setNonPersonEntityDataWithoutGNDId" field="216"/>
 		<call-macro name="addNonPersonEntityDataWithoutGNDId" field="216"/>
 		<call-macro name="setNonPersonEntityDataWithoutGNDId" field="220"/>
@@ -2073,27 +2376,12 @@
 		<call-macro name="setNonPersonEntityDataWithoutGNDId" field="292"/>
 		<call-macro name="addNonPersonEntityDataWithoutGNDId" field="292"/>
 		<call-macro name="setNonPersonEntityDataWithoutGNDId" field="296"/>
-		<call-macro name="addNonPersonEntityDataWithoutGNDId" field="296"/>
-		
+		<call-macro name="addNonPersonEntityDataWithoutGNDId" field="296"/> -->
 		
 		<!-- ####################### -->
 		<!-- non-person entity data with GNDId -->
 		<!-- ####################### -->
-
-		
-
-		<call-macro name="addNonPersonEntityDataWithGNDId" field="200"/>
-		<!-- <combine name="~rdf:subject" value="${a}" sameEntity="true">
-			<data source="200[-abce][12].9" name="a">
-				<regexp match="\(DE-588\)(.*)" format="http://d-nb.info/gnd/${1}"/>
-			</data>
-		</combine>
-		<combine name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" value="${a}" sameEntity="true">
-			<data source="@typeVariable" name="a"/>
-		</combine>
-		<call-macro name="setBackRdfSubject" field="200b1.9"/> -->
-		
-		
+		<!-- <call-macro name="addNonPersonEntityDataWithGNDId" field="200"/>
 		<call-macro name="addNonPersonEntityDataWithGNDId" field="204"/>
 		<call-macro name="addNonPersonEntityDataWithGNDId" field="208"/>
 		<call-macro name="addNonPersonEntityDataWithGNDId" field="212"/>
@@ -2117,7 +2405,7 @@
 		<call-macro name="addNonPersonEntityDataWithGNDId" field="284"/>
 		<call-macro name="addNonPersonEntityDataWithGNDId" field="288"/>
 		<call-macro name="addNonPersonEntityDataWithGNDId" field="292"/>
-		<call-macro name="addNonPersonEntityDataWithGNDId" field="296"/>
+		<call-macro name="addNonPersonEntityDataWithGNDId" field="296"/> -->
 
 			
 		<!-- ####################### -->
@@ -2127,6 +2415,8 @@
 			<regexp match="\(DE-588\)(.*)" format="http://d-nb.info/gnd/${1}"/>
 			<sanitizeUrl></sanitizeUrl>
 		</data>
+		
+		
 		<data source="[29]?[02468][-a][12].k" name="@nameOfCreatingCorporateBodyK">
 			<replace pattern="&gt;&gt;" with=""/>
 			<replace pattern="&lt;&lt;" with=""/>
@@ -2220,61 +2510,1257 @@
 			<data source="[29]??[-abcfep][12].d" name="d"/>
 			<data source="[29]??[-abcfep][12].c" name="c"/>
 		</combine>
-		
-		<call-macro name="addBnodeForCreatorPersonLabel" field="100"/>
-		<call-macro name="addBnodeForCreatorPersonLabel" field="104"/>
-		<call-macro name="addBnodeForCreatorPersonLabel" field="108"/>
-		<call-macro name="addBnodeForCreatorPersonLabel" field="112"/>
-		
-		<combine name="~rdf:subject" value="${a}">
-			<data source="@bnodeCreatorPersonLabel2" name="a"/>
-		</combine>
-		<data source="@bnodeCreatorPersonLabel2" name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type">
-			<regexp match=".*" format="http://d-nb.info/standards/elementset/gnd#Person"/>
-		</data>
-		<call-macro name="setBackRdfSubject" field="@bnodeCreatorPersonLabel2"/>
-		
 		<data
 			source="@contributorPersonBnodeOrId|@contributorCorporateBodyBnodeOrId|@GNDPersonId|@creatorCorporateBodyId|@bnodeCreatorPersonLabel"
 			name="@agentId"/>
-		<combine value="_:${a}${b}" name="@contributionBnode" sameEntity="true">
+		
+		<!-- <combine value="_:${a}${b}" name="@contributionBnode" sameEntity="true">
 			<data source="@agentId" name="a"/>
 			<data source="@relator" name="b"/>
+		</combine> -->
+		<!-- <combine value="_:${a}${b}" name="@contributionBnode100">
+			<data source="@agentId100" name="a"/>
+			<data source="@relator100" name="b"/>
+		</combine> -->
+		<call-macro name="setContributingCorporateBodyId" field="200"/>
+		<call-macro name="setContributingCorporateBodyId" field="204"/>
+		<call-macro name="setContributingCorporateBodyId" field="208"/>
+		<call-macro name="setContributingCorporateBodyId" field="212"/>
+		<call-macro name="setContributingCorporateBodyId" field="216"/>
+		<call-macro name="setContributingCorporateBodyId" field="220"/>
+		<call-macro name="setContributingCorporateBodyId" field="224"/>
+		<call-macro name="setContributingCorporateBodyId" field="228"/>
+		<call-macro name="setContributingCorporateBodyId" field="232"/>
+		<call-macro name="setContributingCorporateBodyId" field="236"/>
+		<call-macro name="setContributingCorporateBodyId" field="240"/>
+		<call-macro name="setContributingCorporateBodyId" field="244"/>
+		<call-macro name="setContributingCorporateBodyId" field="248"/>
+		<call-macro name="setContributingCorporateBodyId" field="252"/>
+		<call-macro name="setContributingCorporateBodyId" field="256"/>
+		<call-macro name="setContributingCorporateBodyId" field="260"/>
+		<call-macro name="setContributingCorporateBodyId" field="264"/>
+		<call-macro name="setContributingCorporateBodyId" field="268"/>
+		<call-macro name="setContributingCorporateBodyId" field="272"/>
+		<call-macro name="setContributingCorporateBodyId" field="276"/>
+		<call-macro name="setContributingCorporateBodyId" field="280"/>
+		<call-macro name="setContributingCorporateBodyId" field="284"/>
+		<call-macro name="setContributingCorporateBodyId" field="288"/>
+		<call-macro name="setContributingCorporateBodyId" field="292"/>
+		<call-macro name="setContributingCorporateBodyId" field="296"/>
+
+		<call-macro name="setCreatorCorporateBodyId" field="200"/>
+		<call-macro name="setCreatorCorporateBodyId" field="204"/>
+		<call-macro name="setCreatorCorporateBodyId" field="208"/>
+		<call-macro name="setCreatorCorporateBodyId" field="212"/>
+		<call-macro name="setCreatorCorporateBodyId" field="216"/>
+		<call-macro name="setCreatorCorporateBodyId" field="220"/>
+		<call-macro name="setCreatorCorporateBodyId" field="224"/>
+		<call-macro name="setCreatorCorporateBodyId" field="228"/>
+		<call-macro name="setCreatorCorporateBodyId" field="232"/>
+		<call-macro name="setCreatorCorporateBodyId" field="236"/>
+		<call-macro name="setCreatorCorporateBodyId" field="240"/>
+		<call-macro name="setCreatorCorporateBodyId" field="244"/>
+		<call-macro name="setCreatorCorporateBodyId" field="248"/>
+		<call-macro name="setCreatorCorporateBodyId" field="252"/>
+		<call-macro name="setCreatorCorporateBodyId" field="256"/>
+		<call-macro name="setCreatorCorporateBodyId" field="260"/>
+		<call-macro name="setCreatorCorporateBodyId" field="264"/>
+		<call-macro name="setCreatorCorporateBodyId" field="268"/>
+		<call-macro name="setCreatorCorporateBodyId" field="272"/>
+		<call-macro name="setCreatorCorporateBodyId" field="276"/>
+		<call-macro name="setCreatorCorporateBodyId" field="280"/>
+		<call-macro name="setCreatorCorporateBodyId" field="284"/>
+		<call-macro name="setCreatorCorporateBodyId" field="288"/>
+		<call-macro name="setCreatorCorporateBodyId" field="292"/>
+		<call-macro name="setCreatorCorporateBodyId" field="296"/>
+		
+		<call-macro name="setContributorPersonBnodeOrId" field="100"/>
+		<call-macro name="setContributorPersonBnodeOrId" field="104"/>
+		<call-macro name="setContributorPersonBnodeOrId" field="108"/>
+		<call-macro name="setContributorPersonBnodeOrId" field="112"/>
+		<call-macro name="setContributorPersonBnodeOrId" field="116"/>
+		<call-macro name="setContributorPersonBnodeOrId" field="120"/>
+		<call-macro name="setContributorPersonBnodeOrId" field="124"/>
+		<call-macro name="setContributorPersonBnodeOrId" field="128"/>
+		<call-macro name="setContributorPersonBnodeOrId" field="132"/>
+		<call-macro name="setContributorPersonBnodeOrId" field="136"/>
+		<call-macro name="setContributorPersonBnodeOrId" field="140"/>
+		<call-macro name="setContributorPersonBnodeOrId" field="144"/>
+		<call-macro name="setContributorPersonBnodeOrId" field="148"/>
+		<call-macro name="setContributorPersonBnodeOrId" field="152"/>
+		<call-macro name="setContributorPersonBnodeOrId" field="156"/>
+		<call-macro name="setContributorPersonBnodeOrId" field="160"/>
+		<call-macro name="setContributorPersonBnodeOrId" field="164"/>
+		<call-macro name="setContributorPersonBnodeOrId" field="168"/>
+		<call-macro name="setContributorPersonBnodeOrId" field="172"/>
+		<call-macro name="setContributorPersonBnodeOrId" field="176"/>
+		<call-macro name="setContributorPersonBnodeOrId" field="180"/>
+		<call-macro name="setContributorPersonBnodeOrId" field="184"/>
+		<call-macro name="setContributorPersonBnodeOrId" field="188"/>
+		<call-macro name="setContributorPersonBnodeOrId" field="192"/>
+		<call-macro name="setContributorPersonBnodeOrId" field="196"/>
+		
+		
+		<data source="@creatorPersonBnodeOrId100" name="@agentId100"/>
+		<data source="@contributorPersonBnodeOrId100" name="@agentId100"/>
+		<data source="@creatorPersonBnodeOrId104" name="@agentId104"/>
+		<data source="@contributorPersonBnodeOrId104" name="@agentId104"/>
+		<data source="@creatorPersonBnodeOrId108" name="@agentId108"/>
+		<data source="@contributorPersonBnodeOrId108" name="@agentId108"/>
+		<data source="@creatorPersonBnodeOrId112" name="@agentId112"/>
+		<data source="@contributorPersonBnodeOrId112" name="@agentId112"/>
+		<data source="@creatorPersonBnodeOrId116" name="@agentId116"/>
+		<data source="@contributorPersonBnodeOrId116" name="@agentId116"/>
+		<data source="@creatorPersonBnodeOrId120" name="@agentId120"/>
+		<data source="@contributorPersonBnodeOrId120" name="@agentId120"/>
+		<data source="@creatorPersonBnodeOrId124" name="@agentId124"/>
+		<data source="@contributorPersonBnodeOrId124" name="@agentId124"/>
+		<data source="@creatorPersonBnodeOrId128" name="@agentId128"/>
+		<data source="@contributorPersonBnodeOrId128" name="@agentId128"/>
+		<data source="@creatorPersonBnodeOrId132" name="@agentId132"/>
+		<data source="@contributorPersonBnodeOrId132" name="@agentId132"/>
+		<data source="@creatorPersonBnodeOrId136" name="@agentId136"/>
+		<data source="@contributorPersonBnodeOrId136" name="@agentId136"/>
+		<data source="@creatorPersonBnodeOrId140" name="@agentId140"/>
+		<data source="@contributorPersonBnodeOrId140" name="@agentId140"/>
+		<data source="@creatorPersonBnodeOrId144" name="@agentId144"/>
+		<data source="@contributorPersonBnodeOrId144" name="@agentId144"/>
+		<data source="@creatorPersonBnodeOrId148" name="@agentId148"/>
+		<data source="@contributorPersonBnodeOrId148" name="@agentId148"/>
+		<data source="@creatorPersonBnodeOrId152" name="@agentId152"/>
+		<data source="@contributorPersonBnodeOrId152" name="@agentId152"/>
+		<data source="@creatorPersonBnodeOrId156" name="@agentId156"/>
+		<data source="@contributorPersonBnodeOrId156" name="@agentId156"/>
+		<data source="@creatorPersonBnodeOrId160" name="@agentId160"/>
+		<data source="@contributorPersonBnodeOrId160" name="@agentId160"/>
+		<data source="@creatorPersonBnodeOrId164" name="@agentId164"/>
+		<data source="@contributorPersonBnodeOrId164" name="@agentId164"/>
+		<data source="@creatorPersonBnodeOrId168" name="@agentId168"/>
+		<data source="@contributorPersonBnodeOrId168" name="@agentId168"/>
+		<data source="@creatorPersonBnodeOrId172" name="@agentId172"/>
+		<data source="@contributorPersonBnodeOrId172" name="@agentId172"/>
+		<data source="@creatorPersonBnodeOrId176" name="@agentId176"/>
+		<data source="@contributorPersonBnodeOrId176" name="@agentId176"/>
+		<data source="@creatorPersonBnodeOrId180" name="@agentId180"/>
+		<data source="@contributorPersonBnodeOrId180" name="@agentId180"/>
+		<data source="@creatorPersonBnodeOrId184" name="@agentId184"/>
+		<data source="@contributorPersonBnodeOrId184" name="@agentId184"/>
+		<data source="@creatorPersonBnodeOrId188" name="@agentId188"/>
+		<data source="@contributorPersonBnodeOrId188" name="@agentId188"/>
+		<data source="@creatorPersonBnodeOrId192" name="@agentId192"/>
+		<data source="@contributorPersonBnodeOrId192" name="@agentId192"/>
+		<data source="@creatorPersonBnodeOrId196" name="@agentId196"/>
+		<data source="@contributorPersonBnodeOrId196" name="@agentId196"/>
+		
+		<data source="200[bcf]1.[pa]" name="@contributorCorporateBodyLabel200"/>
+		<data source="204[bcf]1.[pa]" name="@contributorCorporateBodyLabel204"/>
+		<data source="208[bcf]1.[pa]" name="@contributorCorporateBodyLabel208"/>
+		<data source="212[bcf]1.[pa]" name="@contributorCorporateBodyLabel212"/>
+		<data source="216[bcf]1.[pa]" name="@contributorCorporateBodyLabel216"/>
+		<data source="220[bcf]1.[pa]" name="@contributorCorporateBodyLabel220"/>
+		<data source="224[bcf]1.[pa]" name="@contributorCorporateBodyLabel224"/>
+		<data source="228[bcf]1.[pa]" name="@contributorCorporateBodyLabel228"/>
+		<data source="232[bcf]1.[pa]" name="@contributorCorporateBodyLabel232"/>
+		<data source="236[bcf]1.[pa]" name="@contributorCorporateBodyLabel236"/>
+		<data source="240[bcf]1.[pa]" name="@contributorCorporateBodyLabel240"/>
+		<data source="244[bcf]1.[pa]" name="@contributorCorporateBodyLabel244"/>
+		<data source="248[bcf]1.[pa]" name="@contributorCorporateBodyLabel248"/>
+		<data source="252[bcf]1.[pa]" name="@contributorCorporateBodyLabel252"/>
+		<data source="256[bcf]1.[pa]" name="@contributorCorporateBodyLabel256"/>
+		<data source="260[bcf]1.[pa]" name="@contributorCorporateBodyLabel260"/>
+		<data source="264[bcf]1.[pa]" name="@contributorCorporateBodyLabel264"/>
+		<data source="268[bcf]1.[pa]" name="@contributorCorporateBodyLabel268"/>
+		<data source="272[bcf]1.[pa]" name="@contributorCorporateBodyLabel272"/>
+		<data source="276[bcf]1.[pa]" name="@contributorCorporateBodyLabel276"/>
+		<data source="280[bcf]1.[pa]" name="@contributorCorporateBodyLabel280"/>
+		<data source="284[bcf]1.[pa]" name="@contributorCorporateBodyLabel284"/>
+		<data source="288[bcf]1.[pa]" name="@contributorCorporateBodyLabel288"/>
+		<data source="292[bcf]1.[pa]" name="@contributorCorporateBodyLabel292"/>
+		<data source="296[bcf]1.[pa]" name="@contributorCorporateBodyLabel296"/>
+		
+		<data source="200[-aemn]1.[pa]" name="@creatorCorporateBodyLabelPA200"/>
+		<data source="204[-aemn]1.[pa]" name="@creatorCorporateBodyLabelPA204"/>
+		<data source="208[-aemn]1.[pa]" name="@creatorCorporateBodyLabelPA208"/>
+		<data source="212[-aemn]1.[pa]" name="@creatorCorporateBodyLabelPA212"/>
+		<data source="216[-aemn]1.[pa]" name="@creatorCorporateBodyLabelPA216"/>
+		<data source="220[-aemn]1.[pa]" name="@creatorCorporateBodyLabelPA220"/>
+		<data source="224[-aemn]1.[pa]" name="@creatorCorporateBodyLabelPA224"/>
+		<data source="228[-aemn]1.[pa]" name="@creatorCorporateBodyLabelPA228"/>
+		<data source="232[-aemn]1.[pa]" name="@creatorCorporateBodyLabelPA232"/>
+		<data source="236[-aemn]1.[pa]" name="@creatorCorporateBodyLabelPA236"/>
+		<data source="240[-aemn]1.[pa]" name="@creatorCorporateBodyLabelPA240"/>
+		<data source="244[-aemn]1.[pa]" name="@creatorCorporateBodyLabelPA244"/>
+		<data source="248[-aemn]1.[pa]" name="@creatorCorporateBodyLabelPA248"/>
+		<data source="252[-aemn]1.[pa]" name="@creatorCorporateBodyLabelPA252"/>
+		<data source="256[-aemn]1.[pa]" name="@creatorCorporateBodyLabelPA256"/>
+		<data source="260[-aemn]1.[pa]" name="@creatorCorporateBodyLabelPA260"/>
+		<data source="264[-aemn]1.[pa]" name="@creatorCorporateBodyLabelPA264"/>
+		<data source="268[-aemn]1.[pa]" name="@creatorCorporateBodyLabelPA268"/>
+		<data source="272[-aemn]1.[pa]" name="@creatorCorporateBodyLabelPA272"/>
+		<data source="276[-aemn]1.[pa]" name="@creatorCorporateBodyLabelPA276"/>
+		<data source="280[-aemn]1.[pa]" name="@creatorCorporateBodyLabelPA280"/>
+		<data source="284[-aemn]1.[pa]" name="@creatorCorporateBodyLabelPA284"/>
+		<data source="288[-aemn]1.[pa]" name="@creatorCorporateBodyLabelPA288"/>
+		<data source="292[-aemn]1.[pa]" name="@creatorCorporateBodyLabelPA292"/>
+		<data source="296[-aemn]1.[pa]" name="@creatorCorporateBodyLabelPA296"/>
+		
+		<!-- <combine name="@contributorCorporateBodyBnode200" value="_:${a}">
+			<data source="@contributorCorporateBodyLabel200" name="a">
+				<replace pattern="&gt;" with=""/>
+				<replace pattern="&lt;" with=""/>
+			</data>
+		</combine> -->
+		
+		<call-macro name="setContributorCorporateBodyBnode" field="200"/>
+		<call-macro name="setContributorCorporateBodyBnode" field="204"/>
+		<call-macro name="setContributorCorporateBodyBnode" field="208"/>
+		<call-macro name="setContributorCorporateBodyBnode" field="212"/>
+		<call-macro name="setContributorCorporateBodyBnode" field="216"/>
+		<call-macro name="setContributorCorporateBodyBnode" field="220"/>
+		<call-macro name="setContributorCorporateBodyBnode" field="224"/>
+		<call-macro name="setContributorCorporateBodyBnode" field="228"/>
+		<call-macro name="setContributorCorporateBodyBnode" field="232"/>
+		<call-macro name="setContributorCorporateBodyBnode" field="236"/>
+		<call-macro name="setContributorCorporateBodyBnode" field="240"/>
+		<call-macro name="setContributorCorporateBodyBnode" field="244"/>
+		<call-macro name="setContributorCorporateBodyBnode" field="248"/>
+		<call-macro name="setContributorCorporateBodyBnode" field="252"/>
+		<call-macro name="setContributorCorporateBodyBnode" field="256"/>
+		<call-macro name="setContributorCorporateBodyBnode" field="260"/>
+		<call-macro name="setContributorCorporateBodyBnode" field="264"/>
+		<call-macro name="setContributorCorporateBodyBnode" field="268"/>
+		<call-macro name="setContributorCorporateBodyBnode" field="272"/>
+		<call-macro name="setContributorCorporateBodyBnode" field="276"/>
+		<call-macro name="setContributorCorporateBodyBnode" field="280"/>
+		<call-macro name="setContributorCorporateBodyBnode" field="284"/>
+		<call-macro name="setContributorCorporateBodyBnode" field="288"/>
+		<call-macro name="setContributorCorporateBodyBnode" field="292"/>
+		<call-macro name="setContributorCorporateBodyBnode" field="296"/>
+
+		<call-macro name="setContributorCorporateBodyBnodeOrId" field="200"/>
+		<call-macro name="setContributorCorporateBodyBnodeOrId" field="204"/>
+		<call-macro name="setContributorCorporateBodyBnodeOrId" field="208"/>
+		<call-macro name="setContributorCorporateBodyBnodeOrId" field="212"/>
+		<call-macro name="setContributorCorporateBodyBnodeOrId" field="216"/>
+		<call-macro name="setContributorCorporateBodyBnodeOrId" field="220"/>
+		<call-macro name="setContributorCorporateBodyBnodeOrId" field="224"/>
+		<call-macro name="setContributorCorporateBodyBnodeOrId" field="228"/>
+		<call-macro name="setContributorCorporateBodyBnodeOrId" field="232"/>
+		<call-macro name="setContributorCorporateBodyBnodeOrId" field="236"/>
+		<call-macro name="setContributorCorporateBodyBnodeOrId" field="240"/>
+		<call-macro name="setContributorCorporateBodyBnodeOrId" field="244"/>
+		<call-macro name="setContributorCorporateBodyBnodeOrId" field="248"/>
+		<call-macro name="setContributorCorporateBodyBnodeOrId" field="252"/>
+		<call-macro name="setContributorCorporateBodyBnodeOrId" field="256"/>
+		<call-macro name="setContributorCorporateBodyBnodeOrId" field="260"/>
+		<call-macro name="setContributorCorporateBodyBnodeOrId" field="264"/>
+		<call-macro name="setContributorCorporateBodyBnodeOrId" field="268"/>
+		<call-macro name="setContributorCorporateBodyBnodeOrId" field="272"/>
+		<call-macro name="setContributorCorporateBodyBnodeOrId" field="276"/>
+		<call-macro name="setContributorCorporateBodyBnodeOrId" field="280"/>
+		<call-macro name="setContributorCorporateBodyBnodeOrId" field="284"/>
+		<call-macro name="setContributorCorporateBodyBnodeOrId" field="288"/>
+		<call-macro name="setContributorCorporateBodyBnodeOrId" field="292"/>
+		<call-macro name="setContributorCorporateBodyBnodeOrId" field="296"/>
+
+		<!-- <macro name="setCreatorCorporateBodyBnode">
+			<combine name="@creatorCorporateBodyBnode$[field]" value="_:${a}">
+				<data source="@creatorCorporateBodyLabel$[field]" name="a">
+					<replace pattern="&gt;" with=""/>
+					<replace pattern="&lt;" with=""/>
+				</data>
+			</combine>
+		</macro>
+		<macro name="setCreatorCorporateBodyBnodeOrId">
+			<choose name="@creatorCorporateBodyBnodeOrId$[field]" flushWith="$[field][bcf][12].[a9]">
+				<data source="@creatorCorporateBodyId$[field]"/>
+				<data source="@creatorCorporateBodyBnode$[field]"/>
+			</choose>
+		</macro> -->
+		<combine name="http://id.loc.gov/ontologies/bibframe/note" value="@relator200: ${a}">
+			<data source="@relator200" name="a"/>
 		</combine>
-			
-		<combine name="@relatorNode" value="${a}">
+		<combine name="http://id.loc.gov/ontologies/bibframe/note" value="@agentId200: ${a}">
+			<data source="@agentId200" name="a"/>
+		</combine>
+		<combine name="@creatorCorporateBodyBnode200" value="_:${a}">
+			<data source="@creatorCorporateBodyLabelPA200" name="a">
+				<replace pattern="&gt;" with=""/>
+				<replace pattern="&lt;" with=""/>
+			</data>
+		</combine>
+		<choose name="@creatorCorporateBodyBnodeOrId200">
+			<data source="@creatorCorporateBodyId200"/>
+			<data source="@creatorCorporateBodyBnode200"/>
+		</choose>
+		<combine name="http://id.loc.gov/ontologies/bibframe/note" value="@creatorCorporateBodyBnodeOrId200: ${a}">
+			<data source="@creatorCorporateBodyBnodeOrId200" name="a"/>
+		</combine>
+		<combine name="http://id.loc.gov/ontologies/bibframe/note" value="@creatorCorporateBodyBnode200: ${a}">
+			<data source="@creatorCorporateBodyBnode200" name="a"/>
+		</combine>
+		<combine name="http://id.loc.gov/ontologies/bibframe/note" value="@creatorCorporateBodyLabel200: ${a}">
+			<data source="@creatorCorporateBodyLabel200" name="a"/>
+		</combine>
+		<!-- <combine name="http://id.loc.gov/ontologies/bibframe/note" value="@contributionBnode200: ${a}">
+			<data source="@contributionBnode200" name="a"/>
+		</combine> -->
+		
+
+		<data source="@creatorCorporateBodyId200" name="@agentId200"/>
+		<!-- <data source="@creatorCorporateBodyBnodeOrId200" name="@agent200"/> -->
+		<data source="@contributorCorporateBodyBnodeOrId200" name="@agentId200"/>
+		<data source="@contributorCorporateBodyBnodeOrId204" name="@agentId204"/>
+		<data source="@creatorCorporateBodyId204" name="@agentId204"/>
+		<data source="@contributorCorporateBodyBnodeOrId208" name="@agentId208"/>
+		<data source="@creatorCorporateBodyId208" name="@agentId208"/>
+		<data source="@contributorCorporateBodyBnodeOrId212" name="@agentId212"/>
+		<data source="@creatorCorporateBodyId212" name="@agentId212"/>
+		<data source="@contributorCorporateBodyBnodeOrId216" name="@agentId216"/>
+		<data source="@creatorCorporateBodyId216" name="@agentId216"/>
+		<data source="@contributorCorporateBodyBnodeOrId220" name="@agentId220"/>
+		<data source="@creatorCorporateBodyId220" name="@agentId220"/>
+		<data source="@contributorCorporateBodyBnodeOrId224" name="@agentId224"/>
+		<data source="@creatorCorporateBodyId224" name="@agentId224"/>
+		<data source="@contributorCorporateBodyBnodeOrId228" name="@agentId228"/>
+		<data source="@creatorCorporateBodyId228" name="@agentId228"/>
+		<data source="@contributorCorporateBodyBnodeOrId232" name="@agentId232"/>
+		<data source="@creatorCorporateBodyId232" name="@agentId232"/>
+		<data source="@contributorCorporateBodyBnodeOrId236" name="@agentId236"/>
+		<data source="@creatorCorporateBodyId236" name="@agentId236"/>
+		<data source="@contributorCorporateBodyBnodeOrId240" name="@agentId240"/>
+		<data source="@creatorCorporateBodyId240" name="@agentId240"/>
+		<data source="@contributorCorporateBodyBnodeOrId244" name="@agentId244"/>
+		<data source="@creatorCorporateBodyId244" name="@agentId244"/>
+		<data source="@contributorCorporateBodyBnodeOrId248" name="@agentId248"/>
+		<data source="@creatorCorporateBodyId248" name="@agentId248"/>
+		<data source="@contributorCorporateBodyBnodeOrId252" name="@agentId252"/>
+		<data source="@creatorCorporateBodyId252" name="@agentId252"/>
+		<data source="@contributorCorporateBodyBnodeOrId256" name="@agentId256"/>
+		<data source="@creatorCorporateBodyId256" name="@agentId256"/>
+		<data source="@contributorCorporateBodyBnodeOrId260" name="@agentId260"/>
+		<data source="@creatorCorporateBodyId260" name="@agentId260"/>
+		<data source="@contributorCorporateBodyBnodeOrId264" name="@agentId264"/>
+		<data source="@creatorCorporateBodyId264" name="@agentId264"/>
+		<data source="@contributorCorporateBodyBnodeOrId268" name="@agentId268"/>
+		<data source="@creatorCorporateBodyId268" name="@agentId268"/>
+		<data source="@contributorCorporateBodyBnodeOrId272" name="@agentId272"/>
+		<data source="@creatorCorporateBodyId272" name="@agentId272"/>
+		<data source="@contributorCorporateBodyBnodeOrId276" name="@agentId276"/>
+		<data source="@creatorCorporateBodyId276" name="@agentId276"/>
+		<data source="@contributorCorporateBodyBnodeOrId280" name="@agentId280"/>
+		<data source="@creatorCorporateBodyId280" name="@agentId280"/>
+		<data source="@contributorCorporateBodyBnodeOrId284" name="@agentId284"/>
+		<data source="@creatorCorporateBodyId284" name="@agentId284"/>
+		<data source="@contributorCorporateBodyBnodeOrId288" name="@agentId288"/>
+		<data source="@creatorCorporateBodyId288" name="@agentId288"/>
+		<data source="@contributorCorporateBodyBnodeOrId292" name="@agentId292"/>
+		<data source="@creatorCorporateBodyId292" name="@agentId292"/>
+		<data source="@contributorCorporateBodyBnodeOrId296" name="@agentId296"/>
+		<data source="@creatorCorporateBodyId296" name="@agentId296"/>
+		
+		
+		
+		<call-macro name="setContributionBnode" field="100"/>
+		<call-macro name="setContributionBnode" field="104"/>
+		<call-macro name="setContributionBnode" field="108"/>
+		<call-macro name="setContributionBnode" field="112"/>
+		<call-macro name="setContributionBnode" field="116"/>
+		<call-macro name="setContributionBnode" field="120"/>
+		<call-macro name="setContributionBnode" field="124"/>
+		<call-macro name="setContributionBnode" field="128"/>
+		<call-macro name="setContributionBnode" field="132"/>
+		<call-macro name="setContributionBnode" field="136"/>
+		<call-macro name="setContributionBnode" field="140"/>
+		<call-macro name="setContributionBnode" field="144"/>
+		<call-macro name="setContributionBnode" field="148"/>
+		<call-macro name="setContributionBnode" field="152"/>
+		<call-macro name="setContributionBnode" field="156"/>
+		<call-macro name="setContributionBnode" field="160"/>
+		<call-macro name="setContributionBnode" field="164"/>
+		<call-macro name="setContributionBnode" field="168"/>
+		<call-macro name="setContributionBnode" field="172"/>
+		<call-macro name="setContributionBnode" field="176"/>
+		<call-macro name="setContributionBnode" field="180"/>
+		<call-macro name="setContributionBnode" field="184"/>
+		<call-macro name="setContributionBnode" field="188"/>
+		<call-macro name="setContributionBnode" field="192"/>
+		<call-macro name="setContributionBnode" field="196"/>
+		
+		<call-macro name="setContributionBnode" field="200"/>
+		<call-macro name="setContributionBnode" field="204"/>
+		<call-macro name="setContributionBnode" field="208"/>
+		<call-macro name="setContributionBnode" field="212"/>
+		<call-macro name="setContributionBnode" field="216"/>
+		<call-macro name="setContributionBnode" field="220"/>
+		<call-macro name="setContributionBnode" field="224"/>
+		<call-macro name="setContributionBnode" field="228"/>
+		<call-macro name="setContributionBnode" field="232"/>
+		<call-macro name="setContributionBnode" field="236"/>
+		<call-macro name="setContributionBnode" field="240"/>
+		<call-macro name="setContributionBnode" field="244"/>
+		<call-macro name="setContributionBnode" field="248"/>
+		<call-macro name="setContributionBnode" field="252"/>
+		<call-macro name="setContributionBnode" field="256"/>
+		<call-macro name="setContributionBnode" field="260"/>
+		<call-macro name="setContributionBnode" field="264"/>
+		<call-macro name="setContributionBnode" field="268"/>
+		<call-macro name="setContributionBnode" field="272"/>
+		<call-macro name="setContributionBnode" field="276"/>
+		<call-macro name="setContributionBnode" field="280"/>
+		<call-macro name="setContributionBnode" field="284"/>
+		<call-macro name="setContributionBnode" field="288"/>
+		<call-macro name="setContributionBnode" field="292"/>
+		<call-macro name="setContributionBnode" field="296"/>
+		
+		<!-- <combine name="@relatorNode" value="${a}">
 			<data source="@relator" name="a"/>
 			<data source="@agentId"/>
-		</combine>
-		<combine name="~rdf:subject" value="${a}" flushWith="@relatorNode">
+		</combine> -->
+		<call-macro name="setRelatorPerson" field="100"/>
+		<call-macro name="setRelatorNode" field="100"/>
+
+		<call-macro name="setRelatorPerson" field="104"/>
+		<call-macro name="setRelatorNode" field="104"/>
+
+		<call-macro name="setRelatorPerson" field="108"/>
+		<call-macro name="setRelatorNode" field="108"/>
+
+		<call-macro name="setRelatorPerson" field="112"/>
+		<call-macro name="setRelatorNode" field="112"/>
+		
+		<call-macro name="setRelatorPerson" field="116"/>
+		<call-macro name="setRelatorNode" field="116"/>
+		<call-macro name="setRelatorPerson" field="120"/>
+		<call-macro name="setRelatorNode" field="120"/>
+		<call-macro name="setRelatorPerson" field="124"/>
+		<call-macro name="setRelatorNode" field="124"/>
+		<call-macro name="setRelatorPerson" field="128"/>
+		<call-macro name="setRelatorNode" field="128"/>
+		<call-macro name="setRelatorPerson" field="132"/>
+		<call-macro name="setRelatorNode" field="132"/>
+		<call-macro name="setRelatorPerson" field="136"/>
+		<call-macro name="setRelatorNode" field="136"/>
+		<call-macro name="setRelatorPerson" field="140"/>
+		<call-macro name="setRelatorNode" field="140"/>
+		<call-macro name="setRelatorPerson" field="144"/>
+		<call-macro name="setRelatorNode" field="144"/>
+		<call-macro name="setRelatorPerson" field="148"/>
+		<call-macro name="setRelatorNode" field="148"/>
+		<call-macro name="setRelatorPerson" field="152"/>
+		<call-macro name="setRelatorNode" field="152"/>
+		<call-macro name="setRelatorPerson" field="156"/>
+		<call-macro name="setRelatorNode" field="156"/>
+		<call-macro name="setRelatorPerson" field="160"/>
+		<call-macro name="setRelatorNode" field="160"/>
+		<call-macro name="setRelatorPerson" field="164"/>
+		<call-macro name="setRelatorNode" field="164"/>
+		<call-macro name="setRelatorPerson" field="168"/>
+		<call-macro name="setRelatorNode" field="168"/>
+		<call-macro name="setRelatorPerson" field="172"/>
+		<call-macro name="setRelatorNode" field="172"/>
+		<call-macro name="setRelatorPerson" field="176"/>
+		<call-macro name="setRelatorNode" field="176"/>
+		<call-macro name="setRelatorPerson" field="180"/>
+		<call-macro name="setRelatorNode" field="180"/>
+		<call-macro name="setRelatorPerson" field="184"/>
+		<call-macro name="setRelatorNode" field="184"/>
+		<call-macro name="setRelatorPerson" field="188"/>
+		<call-macro name="setRelatorNode" field="188"/>
+		<call-macro name="setRelatorPerson" field="192"/>
+		<call-macro name="setRelatorNode" field="192"/>
+		<call-macro name="setRelatorPerson" field="196"/>
+		<call-macro name="setRelatorNode" field="196"/>
+
+		<call-macro name="setRelatorNode" field="200"/>
+		<call-macro name="setRelatorNode" field="204"/>
+		<call-macro name="setRelatorNode" field="208"/>
+		<call-macro name="setRelatorNode" field="212"/>
+		<call-macro name="setRelatorNode" field="216"/>
+		<call-macro name="setRelatorNode" field="220"/>
+		<call-macro name="setRelatorNode" field="224"/>
+		<call-macro name="setRelatorNode" field="228"/>
+		<call-macro name="setRelatorNode" field="232"/>
+		<call-macro name="setRelatorNode" field="236"/>
+		<call-macro name="setRelatorNode" field="240"/>
+		<call-macro name="setRelatorNode" field="244"/>
+		<call-macro name="setRelatorNode" field="248"/>
+		<call-macro name="setRelatorNode" field="252"/>
+		<call-macro name="setRelatorNode" field="256"/>
+		<call-macro name="setRelatorNode" field="260"/>
+		<call-macro name="setRelatorNode" field="264"/>
+		<call-macro name="setRelatorNode" field="268"/>
+		<call-macro name="setRelatorNode" field="272"/>
+		<call-macro name="setRelatorNode" field="276"/>
+		<call-macro name="setRelatorNode" field="280"/>
+		<call-macro name="setRelatorNode" field="284"/>
+		<call-macro name="setRelatorNode" field="288"/>
+		<call-macro name="setRelatorNode" field="292"/>
+		<call-macro name="setRelatorNode" field="296"/>
+		
+		<!-- <combine name="~rdf:subject" value="${a}" flushWith="@relatorNode">
 			<data source="@contributionBnode" name="a"/>
-		</combine>
-		<combine name="http://id.loc.gov/ontologies/bibframe/role" value="${a}"
+		</combine> -->
+		<!-- <combine name="~rdf:subject" value="${a}" flushWith="@relatorNode100">
+			<data source="@contributionBnode100" name="a"/>
+		</combine> -->
+		<call-macro name="setSubjectContributionBnode" field="100"/>
+		
+		<!-- <combine name="http://id.loc.gov/ontologies/bibframe/role" value="${a}"
 			sameEntity="true" flushWith="@relatorNode">
 			<data source="@relatorNode" name="a"/>
 			<data source="@contributionBnode"/>
-		</combine>
-		<combine name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" value="http://id.loc.gov/ontologies/bibframe/Contribution"
+		</combine> -->
+		<!-- <combine name="http://id.loc.gov/ontologies/bibframe/role" value="${a}"
+			sameEntity="true">
+			<data source="@relatorNode100" name="a"/>
+			<data source="@contributionBnode100"/>
+		</combine> -->
+		<!-- <call-macro name="setRoleForContributionBnode" field="100"/> -->
+		<call-macro name="setRoleForContributionBnode" field="100"/>
+		
+		<!-- <combine name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" value="http://id.loc.gov/ontologies/bibframe/Contribution"
 			flushWith="@relatorNode" sameEntity="true">
 			<data source="@contributionBnode"/>
-		</combine>
-		<combine name="http://id.loc.gov/ontologies/bibframe/agent" value="${a}"
+		</combine> -->
+		<!-- <combine name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" value="http://id.loc.gov/ontologies/bibframe/Contribution"
+			flushWith="@relatorNode100" sameEntity="true">
+			<data source="@contributionBnode100"/>
+		</combine> -->
+		<call-macro name="setTypeContributionForContributionBnode" field="100"/>
+		
+		<!-- <combine name="http://id.loc.gov/ontologies/bibframe/agent" value="${a}"
 			flushWith="@relatorNode">
 			<data source="@agentId" name="a"/>
-		</combine>
+		</combine> -->
+		<!-- <combine name="http://id.loc.gov/ontologies/bibframe/agent" value="${a}"
+			flushWith="@relatorNode100">
+			<data source="@agentId100" name="a"/>
+		</combine> -->
+		<call-macro name="setAgentForContributionBnode" field="100"/>
+		
 		<!-- set subject uri of resource anew -->
-		<combine name="~rdf:subject" value="$[ns-lobid-resource]${subject}#!">
+		<!-- <combine name="~rdf:subject" value="$[ns-lobid-resource]${subject}#!">
 			<data source="@id" name="subject"/>
 			<data source="@relatorNode|@contributionBnode"/>
 			<data source="@agentId"/>
-		</combine>
-		<!-- <entity name="~rdf:list" reset="true">
+		</combine> -->
+		<!-- <combine name="~rdf:subject" value="$[ns-lobid-resource]${subject}#!">
+			<data source="@id" name="subject"/>
+			<data source="@relatorNode100|@contributionBnode100"/>
+			<data source="@agentId100"/>
+		</combine> -->
+		<call-macro name="setBackSubjectContributionBnode" field="100"/>
+		
+		<call-macro name="setSubjectAgentIdForContributionBnode" field="100"/>
+		<call-macro name="setLabelForPersonAgent" field="100"/>
+		<call-macro name="setTypePersonForAgent" field="100"/>
+		<call-macro name="setBackRdfSubject" field="100"/>
+		
+		
+		<call-macro name="setSubjectContributionBnode" field="104"/>
+		<call-macro name="setRoleForContributionBnode" field="104"/>
+		<call-macro name="setTypeContributionForContributionBnode" field="104"/>
+		<call-macro name="setAgentForContributionBnode" field="104"/>
+		<call-macro name="setBackSubjectContributionBnode" field="104"/>
+		
+		<call-macro name="setSubjectAgentIdForContributionBnode" field="104"/>
+		<call-macro name="setLabelForPersonAgent" field="104"/>
+		<call-macro name="setTypePersonForAgent" field="104"/>
+		<call-macro name="setBackRdfSubject" field="104"/>
+		
+		
+		<call-macro name="setSubjectContributionBnode" field="108"/>
+		<call-macro name="setRoleForContributionBnode" field="108"/>
+		<call-macro name="setTypeContributionForContributionBnode" field="108"/>
+		<call-macro name="setAgentForContributionBnode" field="108"/>
+		<call-macro name="setBackSubjectContributionBnode" field="108"/>
+		
+		<call-macro name="setSubjectAgentIdForContributionBnode" field="108"/>
+		<call-macro name="setLabelForPersonAgent" field="108"/>
+		<call-macro name="setTypePersonForAgent" field="108"/>
+		<call-macro name="setBackRdfSubject" field="108"/>
+		
+
+		<call-macro name="setSubjectContributionBnode" field="112"/>
+		<call-macro name="setRoleForContributionBnode" field="112"/>
+		<call-macro name="setTypeContributionForContributionBnode" field="112"/>
+		<call-macro name="setAgentForContributionBnode" field="112"/>
+		<call-macro name="setBackSubjectContributionBnode" field="112"/>
+		
+		<call-macro name="setSubjectAgentIdForContributionBnode" field="112"/>
+		<call-macro name="setLabelForPersonAgent" field="112"/>
+		<call-macro name="setTypePersonForAgent" field="112"/>
+		<call-macro name="setBackRdfSubject" field="112"/>
+		
+		<call-macro name="setSubjectContributionBnode" field="116"/>
+		<call-macro name="setRoleForContributionBnode" field="116"/>
+		<call-macro name="setTypeContributionForContributionBnode" field="116"/>
+		<call-macro name="setAgentForContributionBnode" field="116"/>
+		<call-macro name="setBackSubjectContributionBnode" field="116"/>
+		
+		<call-macro name="setSubjectAgentIdForContributionBnode" field="116"/>
+		<call-macro name="setLabelForPersonAgent" field="116"/>
+		<call-macro name="setTypePersonForAgent" field="116"/>
+		<call-macro name="setBackRdfSubject" field="116"/>
+		
+		
+		<call-macro name="setSubjectContributionBnode" field="120"/>
+		<call-macro name="setRoleForContributionBnode" field="120"/>
+		<call-macro name="setTypeContributionForContributionBnode" field="120"/>
+		<call-macro name="setAgentForContributionBnode" field="120"/>
+		<call-macro name="setBackSubjectContributionBnode" field="120"/>
+		
+		<call-macro name="setSubjectAgentIdForContributionBnode" field="120"/>
+		<call-macro name="setLabelForPersonAgent" field="120"/>
+		<call-macro name="setTypePersonForAgent" field="120"/>
+		<call-macro name="setBackRdfSubject" field="120"/>
+		
+		
+		<call-macro name="setSubjectContributionBnode" field="124"/>
+		<call-macro name="setRoleForContributionBnode" field="124"/>
+		<call-macro name="setTypeContributionForContributionBnode" field="124"/>
+		<call-macro name="setAgentForContributionBnode" field="124"/>
+		<call-macro name="setBackSubjectContributionBnode" field="124"/>
+		
+		<call-macro name="setSubjectAgentIdForContributionBnode" field="124"/>
+		<call-macro name="setLabelForPersonAgent" field="124"/>
+		<call-macro name="setTypePersonForAgent" field="124"/>
+		<call-macro name="setBackRdfSubject" field="124"/>
+		
+		
+		<call-macro name="setSubjectContributionBnode" field="128"/>
+		<call-macro name="setRoleForContributionBnode" field="128"/>
+		<call-macro name="setTypeContributionForContributionBnode" field="128"/>
+		<call-macro name="setAgentForContributionBnode" field="128"/>
+		<call-macro name="setBackSubjectContributionBnode" field="128"/>
+		
+		<call-macro name="setSubjectAgentIdForContributionBnode" field="128"/>
+		<call-macro name="setLabelForPersonAgent" field="128"/>
+		<call-macro name="setTypePersonForAgent" field="128"/>
+		<call-macro name="setBackRdfSubject" field="128"/>
+		
+		
+		<call-macro name="setSubjectContributionBnode" field="132"/>
+		<call-macro name="setRoleForContributionBnode" field="132"/>
+		<call-macro name="setTypeContributionForContributionBnode" field="132"/>
+		<call-macro name="setAgentForContributionBnode" field="132"/>
+		<call-macro name="setBackSubjectContributionBnode" field="132"/>
+		
+		<call-macro name="setSubjectAgentIdForContributionBnode" field="132"/>
+		<call-macro name="setLabelForPersonAgent" field="132"/>
+		<call-macro name="setTypePersonForAgent" field="132"/>
+		<call-macro name="setBackRdfSubject" field="132"/>
+		
+		
+		<call-macro name="setSubjectContributionBnode" field="136"/>
+		<call-macro name="setRoleForContributionBnode" field="136"/>
+		<call-macro name="setTypeContributionForContributionBnode" field="136"/>
+		<call-macro name="setAgentForContributionBnode" field="136"/>
+		<call-macro name="setBackSubjectContributionBnode" field="136"/>
+		
+		<call-macro name="setSubjectAgentIdForContributionBnode" field="136"/>
+		<call-macro name="setLabelForPersonAgent" field="136"/>
+		<call-macro name="setTypePersonForAgent" field="136"/>
+		<call-macro name="setBackRdfSubject" field="136"/>
+		
+		
+		<call-macro name="setSubjectContributionBnode" field="140"/>
+		<call-macro name="setRoleForContributionBnode" field="140"/>
+		<call-macro name="setTypeContributionForContributionBnode" field="140"/>
+		<call-macro name="setAgentForContributionBnode" field="140"/>
+		<call-macro name="setBackSubjectContributionBnode" field="140"/>
+		
+		<call-macro name="setSubjectAgentIdForContributionBnode" field="140"/>
+		<call-macro name="setLabelForPersonAgent" field="140"/>
+		<call-macro name="setTypePersonForAgent" field="140"/>
+		<call-macro name="setBackRdfSubject" field="140"/>
+		
+		
+		<call-macro name="setSubjectContributionBnode" field="144"/>
+		<call-macro name="setRoleForContributionBnode" field="144"/>
+		<call-macro name="setTypeContributionForContributionBnode" field="144"/>
+		<call-macro name="setAgentForContributionBnode" field="144"/>
+		<call-macro name="setBackSubjectContributionBnode" field="144"/>
+		
+		<call-macro name="setSubjectAgentIdForContributionBnode" field="144"/>
+		<call-macro name="setLabelForPersonAgent" field="144"/>
+		<call-macro name="setTypePersonForAgent" field="144"/>
+		<call-macro name="setBackRdfSubject" field="144"/>
+		
+		
+		<call-macro name="setSubjectContributionBnode" field="148"/>
+		<call-macro name="setRoleForContributionBnode" field="148"/>
+		<call-macro name="setTypeContributionForContributionBnode" field="148"/>
+		<call-macro name="setAgentForContributionBnode" field="148"/>
+		<call-macro name="setBackSubjectContributionBnode" field="148"/>
+		
+		<call-macro name="setSubjectAgentIdForContributionBnode" field="148"/>
+		<call-macro name="setLabelForPersonAgent" field="148"/>
+		<call-macro name="setTypePersonForAgent" field="148"/>
+		<call-macro name="setBackRdfSubject" field="148"/>
+		
+		
+		<call-macro name="setSubjectContributionBnode" field="152"/>
+		<call-macro name="setRoleForContributionBnode" field="152"/>
+		<call-macro name="setTypeContributionForContributionBnode" field="152"/>
+		<call-macro name="setAgentForContributionBnode" field="152"/>
+		<call-macro name="setBackSubjectContributionBnode" field="152"/>
+		
+		<call-macro name="setSubjectAgentIdForContributionBnode" field="152"/>
+		<call-macro name="setLabelForPersonAgent" field="152"/>
+		<call-macro name="setTypePersonForAgent" field="152"/>
+		<call-macro name="setBackRdfSubject" field="152"/>
+		
+		
+		<call-macro name="setSubjectContributionBnode" field="156"/>
+		<call-macro name="setRoleForContributionBnode" field="156"/>
+		<call-macro name="setTypeContributionForContributionBnode" field="156"/>
+		<call-macro name="setAgentForContributionBnode" field="156"/>
+		<call-macro name="setBackSubjectContributionBnode" field="156"/>
+		
+		<call-macro name="setSubjectAgentIdForContributionBnode" field="156"/>
+		<call-macro name="setLabelForPersonAgent" field="156"/>
+		<call-macro name="setTypePersonForAgent" field="156"/>
+		<call-macro name="setBackRdfSubject" field="156"/>
+		
+		
+		<call-macro name="setSubjectContributionBnode" field="160"/>
+		<call-macro name="setRoleForContributionBnode" field="160"/>
+		<call-macro name="setTypeContributionForContributionBnode" field="160"/>
+		<call-macro name="setAgentForContributionBnode" field="160"/>
+		<call-macro name="setBackSubjectContributionBnode" field="160"/>
+		
+		<call-macro name="setSubjectAgentIdForContributionBnode" field="160"/>
+		<call-macro name="setLabelForPersonAgent" field="160"/>
+		<call-macro name="setTypePersonForAgent" field="160"/>
+		<call-macro name="setBackRdfSubject" field="160"/>
+		
+		
+		<call-macro name="setSubjectContributionBnode" field="164"/>
+		<call-macro name="setRoleForContributionBnode" field="164"/>
+		<call-macro name="setTypeContributionForContributionBnode" field="164"/>
+		<call-macro name="setAgentForContributionBnode" field="164"/>
+		<call-macro name="setBackSubjectContributionBnode" field="164"/>
+		
+		<call-macro name="setSubjectAgentIdForContributionBnode" field="164"/>
+		<call-macro name="setLabelForPersonAgent" field="164"/>
+		<call-macro name="setTypePersonForAgent" field="164"/>
+		<call-macro name="setBackRdfSubject" field="164"/>
+		
+		
+		<call-macro name="setSubjectContributionBnode" field="168"/>
+		<call-macro name="setRoleForContributionBnode" field="168"/>
+		<call-macro name="setTypeContributionForContributionBnode" field="168"/>
+		<call-macro name="setAgentForContributionBnode" field="168"/>
+		<call-macro name="setBackSubjectContributionBnode" field="168"/>
+		
+		<call-macro name="setSubjectAgentIdForContributionBnode" field="168"/>
+		<call-macro name="setLabelForPersonAgent" field="168"/>
+		<call-macro name="setTypePersonForAgent" field="168"/>
+		<call-macro name="setBackRdfSubject" field="168"/>
+		
+		
+		<call-macro name="setSubjectContributionBnode" field="172"/>
+		<call-macro name="setRoleForContributionBnode" field="172"/>
+		<call-macro name="setTypeContributionForContributionBnode" field="172"/>
+		<call-macro name="setAgentForContributionBnode" field="172"/>
+		<call-macro name="setBackSubjectContributionBnode" field="172"/>
+		
+		<call-macro name="setSubjectAgentIdForContributionBnode" field="172"/>
+		<call-macro name="setLabelForPersonAgent" field="172"/>
+		<call-macro name="setTypePersonForAgent" field="172"/>
+		<call-macro name="setBackRdfSubject" field="172"/>
+		
+		
+		<call-macro name="setSubjectContributionBnode" field="176"/>
+		<call-macro name="setRoleForContributionBnode" field="176"/>
+		<call-macro name="setTypeContributionForContributionBnode" field="176"/>
+		<call-macro name="setAgentForContributionBnode" field="176"/>
+		<call-macro name="setBackSubjectContributionBnode" field="176"/>
+		
+		<call-macro name="setSubjectAgentIdForContributionBnode" field="176"/>
+		<call-macro name="setLabelForPersonAgent" field="176"/>
+		<call-macro name="setTypePersonForAgent" field="176"/>
+		<call-macro name="setBackRdfSubject" field="176"/>
+		
+		
+		<call-macro name="setSubjectContributionBnode" field="180"/>
+		<call-macro name="setRoleForContributionBnode" field="180"/>
+		<call-macro name="setTypeContributionForContributionBnode" field="180"/>
+		<call-macro name="setAgentForContributionBnode" field="180"/>
+		<call-macro name="setBackSubjectContributionBnode" field="180"/>
+		
+		<call-macro name="setSubjectAgentIdForContributionBnode" field="180"/>
+		<call-macro name="setLabelForPersonAgent" field="180"/>
+		<call-macro name="setTypePersonForAgent" field="180"/>
+		<call-macro name="setBackRdfSubject" field="180"/>
+		
+		
+		<call-macro name="setSubjectContributionBnode" field="184"/>
+		<call-macro name="setRoleForContributionBnode" field="184"/>
+		<call-macro name="setTypeContributionForContributionBnode" field="184"/>
+		<call-macro name="setAgentForContributionBnode" field="184"/>
+		<call-macro name="setBackSubjectContributionBnode" field="184"/>
+		
+		<call-macro name="setSubjectAgentIdForContributionBnode" field="184"/>
+		<call-macro name="setLabelForPersonAgent" field="184"/>
+		<call-macro name="setTypePersonForAgent" field="184"/>
+		<call-macro name="setBackRdfSubject" field="184"/>
+		
+		
+		<call-macro name="setSubjectContributionBnode" field="188"/>
+		<call-macro name="setRoleForContributionBnode" field="188"/>
+		<call-macro name="setTypeContributionForContributionBnode" field="188"/>
+		<call-macro name="setAgentForContributionBnode" field="188"/>
+		<call-macro name="setBackSubjectContributionBnode" field="188"/>
+		
+		<call-macro name="setSubjectAgentIdForContributionBnode" field="188"/>
+		<call-macro name="setLabelForPersonAgent" field="188"/>
+		<call-macro name="setTypePersonForAgent" field="188"/>
+		<call-macro name="setBackRdfSubject" field="188"/>
+		
+		
+		<call-macro name="setSubjectContributionBnode" field="192"/>
+		<call-macro name="setRoleForContributionBnode" field="192"/>
+		<call-macro name="setTypeContributionForContributionBnode" field="192"/>
+		<call-macro name="setAgentForContributionBnode" field="192"/>
+		<call-macro name="setBackSubjectContributionBnode" field="192"/>
+		
+		<call-macro name="setSubjectAgentIdForContributionBnode" field="192"/>
+		<call-macro name="setLabelForPersonAgent" field="192"/>
+		<call-macro name="setTypePersonForAgent" field="192"/>
+		<call-macro name="setBackRdfSubject" field="192"/>
+		
+		
+		<call-macro name="setSubjectContributionBnode" field="196"/>
+		<call-macro name="setRoleForContributionBnode" field="196"/>
+		<call-macro name="setTypeContributionForContributionBnode" field="196"/>
+		<call-macro name="setAgentForContributionBnode" field="196"/>
+		<call-macro name="setBackSubjectContributionBnode" field="196"/>
+
+		<call-macro name="setSubjectAgentIdForContributionBnode" field="196"/>
+		<call-macro name="setLabelForPersonAgent" field="196"/>
+		<call-macro name="setTypePersonForAgent" field="196"/>
+		<call-macro name="setBackRdfSubject" field="196"/>
+		
+		
+		
+		<data source="200[-abcfep][12].e" name="@preferredNameConcatEventE200"/>
+		<data source="204[-abcfep][12].e" name="@preferredNameConcatEventE204"/>
+		<data source="208[-abcfep][12].e" name="@preferredNameConcatEventE208"/>
+		<data source="212[-abcfep][12].e" name="@preferredNameConcatEventE212"/>
+		<data source="216[-abcfep][12].e" name="@preferredNameConcatEventE216"/>
+		<data source="220[-abcfep][12].e" name="@preferredNameConcatEventE220"/>
+		<data source="224[-abcfep][12].e" name="@preferredNameConcatEventE224"/>
+		<data source="228[-abcfep][12].e" name="@preferredNameConcatEventE228"/>
+		<data source="232[-abcfep][12].e" name="@preferredNameConcatEventE232"/>
+		<data source="236[-abcfep][12].e" name="@preferredNameConcatEventE236"/>
+		<data source="240[-abcfep][12].e" name="@preferredNameConcatEventE240"/>
+		<data source="244[-abcfep][12].e" name="@preferredNameConcatEventE244"/>
+		<data source="248[-abcfep][12].e" name="@preferredNameConcatEventE248"/>
+		<data source="252[-abcfep][12].e" name="@preferredNameConcatEventE252"/>
+		<data source="256[-abcfep][12].e" name="@preferredNameConcatEventE256"/>
+		<data source="260[-abcfep][12].e" name="@preferredNameConcatEventE260"/>
+		<data source="264[-abcfep][12].e" name="@preferredNameConcatEventE264"/>
+		<data source="268[-abcfep][12].e" name="@preferredNameConcatEventE268"/>
+		<data source="272[-abcfep][12].e" name="@preferredNameConcatEventE272"/>
+		<data source="276[-abcfep][12].e" name="@preferredNameConcatEventE276"/>
+		<data source="280[-abcfep][12].e" name="@preferredNameConcatEventE280"/>
+		<data source="284[-abcfep][12].e" name="@preferredNameConcatEventE284"/>
+		<data source="288[-abcfep][12].e" name="@preferredNameConcatEventE288"/>
+		<data source="292[-abcfep][12].e" name="@preferredNameConcatEventE292"/>
+		<data source="296[-abcfep][12].e" name="@preferredNameConcatEventE296"/>
+		
+		<data source="200[-a][12].g" name="@nameOfCreatingCorporateBodyG200"/>
+		<data source="204[-a][12].g" name="@nameOfCreatingCorporateBodyG204"/>
+		<data source="208[-a][12].g" name="@nameOfCreatingCorporateBodyG208"/>
+		<data source="212[-a][12].g" name="@nameOfCreatingCorporateBodyG212"/>
+		<data source="216[-a][12].g" name="@nameOfCreatingCorporateBodyG216"/>
+		<data source="220[-a][12].g" name="@nameOfCreatingCorporateBodyG220"/>
+		<data source="224[-a][12].g" name="@nameOfCreatingCorporateBodyG224"/>
+		<data source="228[-a][12].g" name="@nameOfCreatingCorporateBodyG228"/>
+		<data source="232[-a][12].g" name="@nameOfCreatingCorporateBodyG232"/>
+		<data source="236[-a][12].g" name="@nameOfCreatingCorporateBodyG236"/>
+		<data source="240[-a][12].g" name="@nameOfCreatingCorporateBodyG240"/>
+		<data source="244[-a][12].g" name="@nameOfCreatingCorporateBodyG244"/>
+		<data source="248[-a][12].g" name="@nameOfCreatingCorporateBodyG248"/>
+		<data source="252[-a][12].g" name="@nameOfCreatingCorporateBodyG252"/>
+		<data source="256[-a][12].g" name="@nameOfCreatingCorporateBodyG256"/>
+		<data source="260[-a][12].g" name="@nameOfCreatingCorporateBodyG260"/>
+		<data source="264[-a][12].g" name="@nameOfCreatingCorporateBodyG264"/>
+		<data source="268[-a][12].g" name="@nameOfCreatingCorporateBodyG268"/>
+		<data source="272[-a][12].g" name="@nameOfCreatingCorporateBodyG272"/>
+		<data source="276[-a][12].g" name="@nameOfCreatingCorporateBodyG276"/>
+		<data source="280[-a][12].g" name="@nameOfCreatingCorporateBodyG280"/>
+		<data source="284[-a][12].g" name="@nameOfCreatingCorporateBodyG284"/>
+		<data source="288[-a][12].g" name="@nameOfCreatingCorporateBodyG288"/>
+		<data source="292[-a][12].g" name="@nameOfCreatingCorporateBodyG292"/>
+		<data source="296[-a][12].g" name="@nameOfCreatingCorporateBodyG296"/>
+		
+		<call-macro name="setPreferredNameConcatSubject" field="200"/>
+		<call-macro name="setPreferredNameConcatSubject" field="204"/>
+		<call-macro name="setPreferredNameConcatSubject" field="208"/>
+		<call-macro name="setPreferredNameConcatSubject" field="212"/>
+		<call-macro name="setPreferredNameConcatSubject" field="216"/>
+		<call-macro name="setPreferredNameConcatSubject" field="220"/>
+		<call-macro name="setPreferredNameConcatSubject" field="224"/>
+		<call-macro name="setPreferredNameConcatSubject" field="228"/>
+		<call-macro name="setPreferredNameConcatSubject" field="232"/>
+		<call-macro name="setPreferredNameConcatSubject" field="236"/>
+		<call-macro name="setPreferredNameConcatSubject" field="240"/>
+		<call-macro name="setPreferredNameConcatSubject" field="244"/>
+		<call-macro name="setPreferredNameConcatSubject" field="248"/>
+		<call-macro name="setPreferredNameConcatSubject" field="252"/>
+		<call-macro name="setPreferredNameConcatSubject" field="256"/>
+		<call-macro name="setPreferredNameConcatSubject" field="260"/>
+		<call-macro name="setPreferredNameConcatSubject" field="264"/>
+		<call-macro name="setPreferredNameConcatSubject" field="268"/>
+		<call-macro name="setPreferredNameConcatSubject" field="272"/>
+		<call-macro name="setPreferredNameConcatSubject" field="276"/>
+		<call-macro name="setPreferredNameConcatSubject" field="280"/>
+		<call-macro name="setPreferredNameConcatSubject" field="284"/>
+		<call-macro name="setPreferredNameConcatSubject" field="288"/>
+		<call-macro name="setPreferredNameConcatSubject" field="292"/>
+		<call-macro name="setPreferredNameConcatSubject" field="296"/>
+		
+
+		<call-macro name="setSubjectContributionBnode" field="200"/>
+		<call-macro name="setRoleForContributionBnode" field="200"/>
+		<call-macro name="setTypeContributionForContributionBnode" field="200"/>
+		<call-macro name="setAgentForContributionBnode" field="200"/>
+		<call-macro name="setBackSubjectContributionBnode" field="200"/>
+		
+
+		<call-macro name="setSubjectAgentIdForCorporateBody" field="200"/>
+		<call-macro name="setCreatorCorporateBodyLabelInAgent" field="200"/>
+		<call-macro name="setContributorCorporateBodyLabelInAgent" field="200"/>
+		<call-macro name="setTypeCorporateBodyInAgent" field="200"/>
+		<call-macro name="setBackRdfSubjectForCorporateBodyAgent" field="200"/>
+		
+
+		<call-macro name="setSubjectContributionBnode" field="204"/>
+		<call-macro name="setRoleForContributionBnode" field="204"/>
+		<call-macro name="setTypeContributionForContributionBnode" field="204"/>
+		<call-macro name="setAgentForContributionBnode" field="204"/>
+		<call-macro name="setBackSubjectContributionBnode" field="204"/>
+		
+		<call-macro name="setSubjectAgentIdForCorporateBody" field="204"/>
+		<call-macro name="setCreatorCorporateBodyLabelInAgent" field="204"/>
+		<call-macro name="setContributorCorporateBodyLabelInAgent" field="204"/>
+		<call-macro name="setTypeCorporateBodyInAgent" field="204"/>
+		<call-macro name="setBackRdfSubjectForCorporateBodyAgent" field="204"/>
+		
+		
+		<call-macro name="setSubjectContributionBnode" field="208"/>
+		<call-macro name="setRoleForContributionBnode" field="208"/>
+		<call-macro name="setTypeContributionForContributionBnode" field="208"/>
+		<call-macro name="setAgentForContributionBnode" field="208"/>
+		<call-macro name="setBackSubjectContributionBnode" field="208"/>
+		
+		<call-macro name="setSubjectAgentIdForCorporateBody" field="208"/>
+		<call-macro name="setCreatorCorporateBodyLabelInAgent" field="208"/>
+		<call-macro name="setContributorCorporateBodyLabelInAgent" field="208"/>
+		<call-macro name="setTypeCorporateBodyInAgent" field="208"/>
+		<call-macro name="setBackRdfSubjectForCorporateBodyAgent" field="208"/>
+		
+		
+		<call-macro name="setSubjectContributionBnode" field="212"/>
+		<call-macro name="setRoleForContributionBnode" field="212"/>
+		<call-macro name="setTypeContributionForContributionBnode" field="212"/>
+		<call-macro name="setAgentForContributionBnode" field="212"/>
+		<call-macro name="setBackSubjectContributionBnode" field="212"/>
+		
+		<call-macro name="setSubjectAgentIdForCorporateBody" field="212"/>
+		<call-macro name="setCreatorCorporateBodyLabelInAgent" field="212"/>
+		<call-macro name="setContributorCorporateBodyLabelInAgent" field="212"/>
+		<call-macro name="setTypeCorporateBodyInAgent" field="212"/>
+		<call-macro name="setBackRdfSubjectForCorporateBodyAgent" field="212"/>
+		
+		
+		<call-macro name="setSubjectContributionBnode" field="216"/>
+		<call-macro name="setRoleForContributionBnode" field="216"/>
+		<call-macro name="setTypeContributionForContributionBnode" field="216"/>
+		<call-macro name="setAgentForContributionBnode" field="216"/>
+		<call-macro name="setBackSubjectContributionBnode" field="216"/>
+		
+		<call-macro name="setSubjectAgentIdForCorporateBody" field="216"/>
+		<call-macro name="setCreatorCorporateBodyLabelInAgent" field="216"/>
+		<call-macro name="setContributorCorporateBodyLabelInAgent" field="216"/>
+		<call-macro name="setTypeCorporateBodyInAgent" field="216"/>
+		<call-macro name="setBackRdfSubjectForCorporateBodyAgent" field="216"/>
+		
+		
+		<call-macro name="setSubjectContributionBnode" field="220"/>
+		<call-macro name="setRoleForContributionBnode" field="220"/>
+		<call-macro name="setTypeContributionForContributionBnode" field="220"/>
+		<call-macro name="setAgentForContributionBnode" field="220"/>
+		<call-macro name="setBackSubjectContributionBnode" field="220"/>
+		
+		<call-macro name="setSubjectAgentIdForCorporateBody" field="220"/>
+		<call-macro name="setCreatorCorporateBodyLabelInAgent" field="220"/>
+		<call-macro name="setContributorCorporateBodyLabelInAgent" field="220"/>
+		<call-macro name="setTypeCorporateBodyInAgent" field="220"/>
+		<call-macro name="setBackRdfSubjectForCorporateBodyAgent" field="220"/>
+		
+		
+		<call-macro name="setSubjectContributionBnode" field="224"/>
+		<call-macro name="setRoleForContributionBnode" field="224"/>
+		<call-macro name="setTypeContributionForContributionBnode" field="224"/>
+		<call-macro name="setAgentForContributionBnode" field="224"/>
+		<call-macro name="setBackSubjectContributionBnode" field="224"/>
+		
+		<call-macro name="setSubjectAgentIdForCorporateBody" field="224"/>
+		<call-macro name="setCreatorCorporateBodyLabelInAgent" field="224"/>
+		<call-macro name="setContributorCorporateBodyLabelInAgent" field="224"/>
+		<call-macro name="setTypeCorporateBodyInAgent" field="224"/>
+		<call-macro name="setBackRdfSubjectForCorporateBodyAgent" field="224"/>
+		
+		
+		<call-macro name="setSubjectContributionBnode" field="228"/>
+		<call-macro name="setRoleForContributionBnode" field="228"/>
+		<call-macro name="setTypeContributionForContributionBnode" field="228"/>
+		<call-macro name="setAgentForContributionBnode" field="228"/>
+		<call-macro name="setBackSubjectContributionBnode" field="228"/>
+		
+		<call-macro name="setSubjectAgentIdForCorporateBody" field="228"/>
+		<call-macro name="setCreatorCorporateBodyLabelInAgent" field="228"/>
+		<call-macro name="setContributorCorporateBodyLabelInAgent" field="228"/>
+		<call-macro name="setTypeCorporateBodyInAgent" field="228"/>
+		<call-macro name="setBackRdfSubjectForCorporateBodyAgent" field="228"/>
+		
+		
+		<call-macro name="setSubjectContributionBnode" field="232"/>
+		<call-macro name="setRoleForContributionBnode" field="232"/>
+		<call-macro name="setTypeContributionForContributionBnode" field="232"/>
+		<call-macro name="setAgentForContributionBnode" field="232"/>
+		<call-macro name="setBackSubjectContributionBnode" field="232"/>
+		
+		<call-macro name="setSubjectAgentIdForCorporateBody" field="232"/>
+		<call-macro name="setCreatorCorporateBodyLabelInAgent" field="232"/>
+		<call-macro name="setContributorCorporateBodyLabelInAgent" field="232"/>
+		<call-macro name="setTypeCorporateBodyInAgent" field="232"/>
+		<call-macro name="setBackRdfSubjectForCorporateBodyAgent" field="232"/>
+		
+		
+		<call-macro name="setSubjectContributionBnode" field="236"/>
+		<call-macro name="setRoleForContributionBnode" field="236"/>
+		<call-macro name="setTypeContributionForContributionBnode" field="236"/>
+		<call-macro name="setAgentForContributionBnode" field="236"/>
+		<call-macro name="setBackSubjectContributionBnode" field="236"/>
+		
+		<call-macro name="setSubjectAgentIdForCorporateBody" field="236"/>
+		<call-macro name="setCreatorCorporateBodyLabelInAgent" field="236"/>
+		<call-macro name="setContributorCorporateBodyLabelInAgent" field="236"/>
+		<call-macro name="setTypeCorporateBodyInAgent" field="236"/>
+		<call-macro name="setBackRdfSubjectForCorporateBodyAgent" field="236"/>
+		
+		
+		<call-macro name="setSubjectContributionBnode" field="240"/>
+		<call-macro name="setRoleForContributionBnode" field="240"/>
+		<call-macro name="setTypeContributionForContributionBnode" field="240"/>
+		<call-macro name="setAgentForContributionBnode" field="240"/>
+		<call-macro name="setBackSubjectContributionBnode" field="240"/>
+		
+		<call-macro name="setSubjectAgentIdForCorporateBody" field="240"/>
+		<call-macro name="setCreatorCorporateBodyLabelInAgent" field="240"/>
+		<call-macro name="setContributorCorporateBodyLabelInAgent" field="240"/>
+		<call-macro name="setTypeCorporateBodyInAgent" field="240"/>
+		<call-macro name="setBackRdfSubjectForCorporateBodyAgent" field="240"/>
+		
+		
+		<call-macro name="setSubjectContributionBnode" field="244"/>
+		<call-macro name="setRoleForContributionBnode" field="244"/>
+		<call-macro name="setTypeContributionForContributionBnode" field="244"/>
+		<call-macro name="setAgentForContributionBnode" field="244"/>
+		<call-macro name="setBackSubjectContributionBnode" field="244"/>
+		
+		<call-macro name="setSubjectAgentIdForCorporateBody" field="244"/>
+		<call-macro name="setCreatorCorporateBodyLabelInAgent" field="244"/>
+		<call-macro name="setContributorCorporateBodyLabelInAgent" field="244"/>
+		<call-macro name="setTypeCorporateBodyInAgent" field="244"/>
+		<call-macro name="setBackRdfSubjectForCorporateBodyAgent" field="244"/>
+		
+		
+		<call-macro name="setSubjectContributionBnode" field="248"/>
+		<call-macro name="setRoleForContributionBnode" field="248"/>
+		<call-macro name="setTypeContributionForContributionBnode" field="248"/>
+		<call-macro name="setAgentForContributionBnode" field="248"/>
+		<call-macro name="setBackSubjectContributionBnode" field="248"/>
+		
+		<call-macro name="setSubjectAgentIdForCorporateBody" field="248"/>
+		<call-macro name="setCreatorCorporateBodyLabelInAgent" field="248"/>
+		<call-macro name="setContributorCorporateBodyLabelInAgent" field="248"/>
+		<call-macro name="setTypeCorporateBodyInAgent" field="248"/>
+		<call-macro name="setBackRdfSubjectForCorporateBodyAgent" field="248"/>
+		
+		
+		<call-macro name="setSubjectContributionBnode" field="252"/>
+		<call-macro name="setRoleForContributionBnode" field="252"/>
+		<call-macro name="setTypeContributionForContributionBnode" field="252"/>
+		<call-macro name="setAgentForContributionBnode" field="252"/>
+		<call-macro name="setBackSubjectContributionBnode" field="252"/>
+		
+		<call-macro name="setSubjectAgentIdForCorporateBody" field="252"/>
+		<call-macro name="setCreatorCorporateBodyLabelInAgent" field="252"/>
+		<call-macro name="setContributorCorporateBodyLabelInAgent" field="252"/>
+		<call-macro name="setTypeCorporateBodyInAgent" field="252"/>
+		<call-macro name="setBackRdfSubjectForCorporateBodyAgent" field="252"/>
+		
+		
+		<call-macro name="setSubjectContributionBnode" field="256"/>
+		<call-macro name="setRoleForContributionBnode" field="256"/>
+		<call-macro name="setTypeContributionForContributionBnode" field="256"/>
+		<call-macro name="setAgentForContributionBnode" field="256"/>
+		<call-macro name="setBackSubjectContributionBnode" field="256"/>
+		
+		<call-macro name="setSubjectAgentIdForCorporateBody" field="256"/>
+		<call-macro name="setCreatorCorporateBodyLabelInAgent" field="256"/>
+		<call-macro name="setContributorCorporateBodyLabelInAgent" field="256"/>
+		<call-macro name="setTypeCorporateBodyInAgent" field="256"/>
+		<call-macro name="setBackRdfSubjectForCorporateBodyAgent" field="256"/>
+		
+		
+		<call-macro name="setSubjectContributionBnode" field="260"/>
+		<call-macro name="setRoleForContributionBnode" field="260"/>
+		<call-macro name="setTypeContributionForContributionBnode" field="260"/>
+		<call-macro name="setAgentForContributionBnode" field="260"/>
+		<call-macro name="setBackSubjectContributionBnode" field="260"/>
+		
+		<call-macro name="setSubjectAgentIdForCorporateBody" field="260"/>
+		<call-macro name="setCreatorCorporateBodyLabelInAgent" field="260"/>
+		<call-macro name="setContributorCorporateBodyLabelInAgent" field="260"/>
+		<call-macro name="setTypeCorporateBodyInAgent" field="260"/>
+		<call-macro name="setBackRdfSubjectForCorporateBodyAgent" field="260"/>
+		
+		
+		<call-macro name="setSubjectContributionBnode" field="264"/>
+		<call-macro name="setRoleForContributionBnode" field="264"/>
+		<call-macro name="setTypeContributionForContributionBnode" field="264"/>
+		<call-macro name="setAgentForContributionBnode" field="264"/>
+		<call-macro name="setBackSubjectContributionBnode" field="264"/>
+		
+		<call-macro name="setSubjectAgentIdForCorporateBody" field="264"/>
+		<call-macro name="setCreatorCorporateBodyLabelInAgent" field="264"/>
+		<call-macro name="setContributorCorporateBodyLabelInAgent" field="264"/>
+		<call-macro name="setTypeCorporateBodyInAgent" field="264"/>
+		<call-macro name="setBackRdfSubjectForCorporateBodyAgent" field="264"/>
+		
+		
+		<call-macro name="setSubjectContributionBnode" field="268"/>
+		<call-macro name="setRoleForContributionBnode" field="268"/>
+		<call-macro name="setTypeContributionForContributionBnode" field="268"/>
+		<call-macro name="setAgentForContributionBnode" field="268"/>
+		<call-macro name="setBackSubjectContributionBnode" field="268"/>
+		
+		<call-macro name="setSubjectAgentIdForCorporateBody" field="268"/>
+		<call-macro name="setCreatorCorporateBodyLabelInAgent" field="268"/>
+		<call-macro name="setContributorCorporateBodyLabelInAgent" field="268"/>
+		<call-macro name="setTypeCorporateBodyInAgent" field="268"/>
+		<call-macro name="setBackRdfSubjectForCorporateBodyAgent" field="268"/>
+		
+		
+		<call-macro name="setSubjectContributionBnode" field="272"/>
+		<call-macro name="setRoleForContributionBnode" field="272"/>
+		<call-macro name="setTypeContributionForContributionBnode" field="272"/>
+		<call-macro name="setAgentForContributionBnode" field="272"/>
+		<call-macro name="setBackSubjectContributionBnode" field="272"/>
+		
+		<call-macro name="setSubjectAgentIdForCorporateBody" field="272"/>
+		<call-macro name="setCreatorCorporateBodyLabelInAgent" field="272"/>
+		<call-macro name="setContributorCorporateBodyLabelInAgent" field="272"/>
+		<call-macro name="setTypeCorporateBodyInAgent" field="272"/>
+		<call-macro name="setBackRdfSubjectForCorporateBodyAgent" field="272"/>
+		
+		
+		<call-macro name="setSubjectContributionBnode" field="276"/>
+		<call-macro name="setRoleForContributionBnode" field="276"/>
+		<call-macro name="setTypeContributionForContributionBnode" field="276"/>
+		<call-macro name="setAgentForContributionBnode" field="276"/>
+		<call-macro name="setBackSubjectContributionBnode" field="276"/>
+		
+		<call-macro name="setSubjectAgentIdForCorporateBody" field="276"/>
+		<call-macro name="setCreatorCorporateBodyLabelInAgent" field="276"/>
+		<call-macro name="setContributorCorporateBodyLabelInAgent" field="276"/>
+		<call-macro name="setTypeCorporateBodyInAgent" field="276"/>
+		<call-macro name="setBackRdfSubjectForCorporateBodyAgent" field="276"/>
+		
+		
+		<call-macro name="setSubjectContributionBnode" field="280"/>
+		<call-macro name="setRoleForContributionBnode" field="280"/>
+		<call-macro name="setTypeContributionForContributionBnode" field="280"/>
+		<call-macro name="setAgentForContributionBnode" field="280"/>
+		<call-macro name="setBackSubjectContributionBnode" field="280"/>
+		
+		<call-macro name="setSubjectAgentIdForCorporateBody" field="280"/>
+		<call-macro name="setCreatorCorporateBodyLabelInAgent" field="280"/>
+		<call-macro name="setContributorCorporateBodyLabelInAgent" field="280"/>
+		<call-macro name="setTypeCorporateBodyInAgent" field="280"/>
+		<call-macro name="setBackRdfSubjectForCorporateBodyAgent" field="280"/>
+		
+		
+		<call-macro name="setSubjectContributionBnode" field="284"/>
+		<call-macro name="setRoleForContributionBnode" field="284"/>
+		<call-macro name="setTypeContributionForContributionBnode" field="284"/>
+		<call-macro name="setAgentForContributionBnode" field="284"/>
+		<call-macro name="setBackSubjectContributionBnode" field="284"/>
+		
+		<call-macro name="setSubjectAgentIdForCorporateBody" field="284"/>
+		<call-macro name="setCreatorCorporateBodyLabelInAgent" field="284"/>
+		<call-macro name="setContributorCorporateBodyLabelInAgent" field="284"/>
+		<call-macro name="setTypeCorporateBodyInAgent" field="284"/>
+		<call-macro name="setBackRdfSubjectForCorporateBodyAgent" field="284"/>
+		
+		
+		<call-macro name="setSubjectContributionBnode" field="288"/>
+		<call-macro name="setRoleForContributionBnode" field="288"/>
+		<call-macro name="setTypeContributionForContributionBnode" field="288"/>
+		<call-macro name="setAgentForContributionBnode" field="288"/>
+		<call-macro name="setBackSubjectContributionBnode" field="288"/>
+		
+		<call-macro name="setSubjectAgentIdForCorporateBody" field="288"/>
+		<call-macro name="setCreatorCorporateBodyLabelInAgent" field="288"/>
+		<call-macro name="setContributorCorporateBodyLabelInAgent" field="288"/>
+		<call-macro name="setTypeCorporateBodyInAgent" field="288"/>
+		<call-macro name="setBackRdfSubjectForCorporateBodyAgent" field="288"/>
+		
+		
+		<call-macro name="setSubjectContributionBnode" field="292"/>
+		<call-macro name="setRoleForContributionBnode" field="292"/>
+		<call-macro name="setTypeContributionForContributionBnode" field="292"/>
+		<call-macro name="setAgentForContributionBnode" field="292"/>
+		<call-macro name="setBackSubjectContributionBnode" field="292"/>
+		
+		<call-macro name="setSubjectAgentIdForCorporateBody" field="292"/>
+		<call-macro name="setCreatorCorporateBodyLabelInAgent" field="292"/>
+		<call-macro name="setContributorCorporateBodyLabelInAgent" field="292"/>
+		<call-macro name="setTypeCorporateBodyInAgent" field="292"/>
+		<call-macro name="setBackRdfSubjectForCorporateBodyAgent" field="292"/>
+		
+		
+		<call-macro name="setSubjectContributionBnode" field="296"/>
+		<call-macro name="setRoleForContributionBnode" field="296"/>
+		<call-macro name="setTypeContributionForContributionBnode" field="296"/>
+		<call-macro name="setAgentForContributionBnode" field="296"/>
+		<call-macro name="setBackSubjectContributionBnode" field="296"/>
+		
+		<call-macro name="setSubjectAgentIdForCorporateBody" field="296"/>
+		<call-macro name="setCreatorCorporateBodyLabelInAgent" field="296"/>
+		<call-macro name="setContributorCorporateBodyLabelInAgent" field="296"/>
+		<call-macro name="setTypeCorporateBodyInAgent" field="296"/>
+		<call-macro name="setBackRdfSubjectForCorporateBodyAgent" field="296"/>
+		
+		
+		
+		
+		<entity name="~rdf:list" reset="true">
 			<combine name="http://id.loc.gov/ontologies/bibframe/contribution" value="${a}"
 				sameEntity="true" reset="true">
-				<data source="@contributionBnode" name="a"/>
-				<data source="@relatorNode"/>
+				<data source="@contributionBnode[12][0123456789][02468]" name="a"/>
+				<data source="@relatorNode[12][0123456789][02468]"/>
 			</combine>
-		</entity> -->
+		</entity>
+		
 		<!-- ####################### -->
 		<!-- ################ koerperschaften and persons -->
 		<!-- ####################### -->
@@ -2294,6 +3780,33 @@
 				<sanitizeUrl></sanitizeUrl>
 			</data>
 		</combine>
+		
+		<call-macro name="setContributorPersonId" field="100"/>
+		<call-macro name="setContributorPersonId" field="104"/>
+		<call-macro name="setContributorPersonId" field="108"/>
+		<call-macro name="setContributorPersonId" field="112"/>
+		<call-macro name="setContributorPersonId" field="116"/>
+		<call-macro name="setContributorPersonId" field="120"/>
+		<call-macro name="setContributorPersonId" field="124"/>
+		<call-macro name="setContributorPersonId" field="128"/>
+		<call-macro name="setContributorPersonId" field="132"/>
+		<call-macro name="setContributorPersonId" field="136"/>
+		<call-macro name="setContributorPersonId" field="140"/>
+		<call-macro name="setContributorPersonId" field="144"/>
+		<call-macro name="setContributorPersonId" field="148"/>
+		<call-macro name="setContributorPersonId" field="152"/>
+		<call-macro name="setContributorPersonId" field="156"/>
+		<call-macro name="setContributorPersonId" field="160"/>
+		<call-macro name="setContributorPersonId" field="164"/>
+		<call-macro name="setContributorPersonId" field="168"/>
+		<call-macro name="setContributorPersonId" field="172"/>
+		<call-macro name="setContributorPersonId" field="176"/>
+		<call-macro name="setContributorPersonId" field="180"/>
+		<call-macro name="setContributorPersonId" field="184"/>
+		<call-macro name="setContributorPersonId" field="188"/>
+		<call-macro name="setContributorPersonId" field="192"/>
+		<call-macro name="setContributorPersonId" field="196"/>
+		
 		
 		<call-macro name="setContributorOrder" field="100"/>
 		<call-macro name="setContributorOrder" field="104"/>
