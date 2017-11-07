@@ -173,6 +173,8 @@
 		</macro>
 		<macro name="makeNwbibComplexSubjectId">
 			<data source="@nwbibComplexSubjectRswkLabel$[field]" name="@nwbibComplexSubjectRswkId$[field]">
+				<replace pattern="&gt;" with=""/>
+				<replace pattern="&lt;" with=""/>
 				<regexp match="(.*)" format="_:${1}"/>
 			</data>
 		</macro>
@@ -415,10 +417,12 @@
 						<lookup in="deweyLabels"/>
 					</data>
 				</combine>
-				<combine name="http://www.w3.org/2004/02/skos/core#notation" value="${a}" reset="true">
+				<combine name="http://www.w3.org/2004/02/skos/core#notation" value="${a}"
+					reset="true">
 					<data source="$[field]" name="a"/>
 				</combine>
-				<combine name="http://id.loc.gov/ontologies/bibframe/source" value="${a}" reset="true">
+				<combine name="http://id.loc.gov/ontologies/bibframe/source" value="${a}"
+					reset="true">
 					<data source="$[field]" name="a">
 						<regexp match=".*" format="http://d-nb.info/gnd/4149423-4"/>
 					</data>
@@ -456,8 +460,7 @@
 		</combine>
 		<combine name="http://purl.org/dc/terms/subject" value="${a}"
 			flushWith="@nwbibSubject|@nwbibSpatialSubject|@rpb2Subject|@rpbSubject" reset="true">
-			<data source="@nwbibSubject|@nwbibSpatialSubject|@rpb2Subject|@rpbSubject"
-				name="a"/>
+			<data source="@nwbibSubject|@nwbibSpatialSubject|@rpb2Subject|@rpbSubject" name="a"/>
 		</combine>
 		<!-- ####################### -->
 		<!-- ####### Get subject uri of each record -->
@@ -2651,10 +2654,12 @@
 		<!-- ignore '99' in e.g. '700n|a 99|b Bonn', but take 'b' to lookup ID's ,see HT018131501 -->
 		<combine name="@nwbib700_99" value="${a}" sameEntity="true">
 			<data source="700n[-1].a">
-				<regexp
-					match="^99\b|^97\b|^96\b"/>
+				<regexp match="^99\b|^97\b|^96\b"/>
 			</data>
-			<data source="700n[-1].b" name="a"/>
+			<data source="700n[-1].b" name="a">
+				<replace pattern="&gt;&gt;" with=""/>
+				<replace pattern="&lt;&lt;" with=""/>
+			</data>
 		</combine>
 		<!-- geo enrichment nwbib 99 -->
 		<data source="@nwbib700_99" name="http://purl.org/dc/elements/1.1/coverage"/>
@@ -2689,7 +2694,7 @@
 		</combine>
 		<call-macro name="addTypeCollection" field="@edoweb"/>
 		<combine name="~rdf:subject" value="$[ns-lobid-resource]${a}#!">
-				<data source="@edoweb" name="a"/>
+			<data source="@edoweb" name="a"/>
 		</combine>
 		<!-- Fachrepositorium Lebenswissenschaften -->
 		<combine name="@ellinet" value="${a}">
@@ -2796,8 +2801,7 @@
 			<data source="501-1.a"/>
 		</choose>
 		<!-- ####### sources of the subjects - for GND search 7749153-1 -->
-		<data source="@nwbibSubject|@nwbibSpatialSubject|@rpb2Subject|@rpbSubject"
-			name="~rdf:subject"/>
+		<data source="@nwbibSubject|@nwbibSpatialSubject|@rpb2Subject|@rpbSubject" name="~rdf:subject"/>
 		<data source="@nwbibSubject" name="http://id.loc.gov/ontologies/bibframe/source">
 			<constant value="http://purl.org/lobid/nwbib"/> <!--nwbib -->
 		</data>
