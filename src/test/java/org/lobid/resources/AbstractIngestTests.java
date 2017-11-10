@@ -130,6 +130,10 @@ public abstract class AbstractIngestTests {
 		for (int i = 0; i < expectedSet.size(); i++) {
 			String expected = expectedIterator.next();
 			String actual = actualIterator.next();
+			if (expected.endsWith("<http://www.w3.org/2001/XMLSchema#double> .")) {
+				expected = expected.replace(",", ".");
+				actual = actual.replace(",", ".");
+			}
 			if (!expected.equals(actual)) {
 				failed = true;
 				message.append("\nExpected:" + expected + "\nbut was :" + actual);
