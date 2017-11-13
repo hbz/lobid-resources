@@ -71,6 +71,10 @@ public class WikidataGeodata2Es {
 			esIndexer.setUpdateNewestIndex(false);
 			LOG.info("Going to create a new index, not updating an existing one");
 		}
+		String aliasSuffix = System.getProperty("aliasSuffix", "");
+		LOG.info("Alias suffix configured:'" + aliasSuffix + "' ...");
+		LOG.info("... so the alias is: '" + indexAlias + "'");
+		esIndexer.setIndexAliasSuffix(aliasSuffix);
 		setProductionIndexerConfigs(indexName);
 		LOG.info("Going to index");
 		extractEntitiesFromSparqlQueryTranformThemAndIndex2Es(new String(
@@ -105,18 +109,17 @@ public class WikidataGeodata2Es {
 	}
 
 	/**
-	 * Initialize the class with a given client.
+	 * Initialize the class with a given client. Only used by junit tests.
 	 * 
 	 * @param client the elasticsearch client
 	 */
 	public static void setElasticsearchIndexer(Client client) {
 		esIndexer.setElasticsearchClient(client);
+		esIndexer.setIndexAliasSuffix("-staging");
 		setElasticsearchIndexer();
 	}
 
 	private static void setElasticsearchIndexer() {
-		// TODO use system.properties to set it
-		esIndexer.setIndexAliasSuffix("-staging");
 		setIndexAlias(indexAlias);
 		esIndexer.setIndexConfig("index-config-wd-geodata.json");
 		esIndexer.onSetReceiver();
