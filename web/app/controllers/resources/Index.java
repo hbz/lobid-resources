@@ -289,12 +289,15 @@ public class Index {
 	 */
 	public Index getItem(String id) {
 		return withClient((Client client) -> {
+			String parent = id.split(":")[0];
 			GetResponse response = client.prepareGet(INDEX_NAME, TYPE_ITEM, id)
-					.setParent(id.split(":")[0]).execute().actionGet();
+					.setParent(parent).execute().actionGet();
 			if (response.isExists()) {
 				String sourceAsString = response.getSourceAsString();
 				result = Json.parse(sourceAsString);
 				total = 1;
+			} else {
+				Logger.warn("No item found for ID {}, parent {}", id, parent);
 			}
 			return this;
 		});

@@ -31,7 +31,7 @@ import play.mvc.Result;
 public class AcceptIntegrationTest extends LocalIndexSetup {
 
 	// test data parameters, formatted as "input /*->*/ expected output"
-	@Parameters
+	@Parameters(name = "_ -> {1}")
 	public static Collection<Object[]> data() {
 		// @formatter:off
 		return Arrays.asList(new Object[][] {
