@@ -77,10 +77,10 @@ public class WikidataGeodata2Es {
 		esIndexer.setIndexAliasSuffix(aliasSuffix);
 		setProductionIndexerConfigs(indexName);
 		LOG.info("Going to index");
-		extractEntitiesFromSparqlQueryTranformThemAndIndex2Es(new String(
+		extractEntitiesFromSparqlQueryTranformThemAndIndex2Es((new String(
 				Files.readAllBytes(Paths.get(
 						"src/main/resources/getNwbibSubjectLocationsAsWikidataEntities.txt")),
-				"UTF-8"));
+				"UTF-8")).replaceAll("#.*\\n", ""));
 		esIndexer.onCloseStream();
 	}
 
