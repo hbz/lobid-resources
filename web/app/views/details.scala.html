@@ -24,7 +24,7 @@
 } else {
   @defining(Json.parse(docJson)) { doc =>
     @main("", if( (doc\\"title").isEmpty) "lobid-resources - Vollanzeige" else (doc\\"title")(0).asOpt[String].getOrElse(q)) {
-      <h1>@((doc\\"title")(0).asOpt[String].getOrElse(q))</h1>
+      <h1>@((doc\\"title")(0).asOpt[String].getOrElse(q)) @for(subTitle <- (doc \ "otherTitleInformation").asOpt[Seq[String]]){<br/><small>@subTitle</small>}</h1>
       <div class="row" id="search-results">
       @defining(Lobid.items(doc.toString)) { items =>
         @defining(!(doc\\"isPartOf").isEmpty && (doc\"type").toString.contains("Article")){superordination =>
