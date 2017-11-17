@@ -24,10 +24,10 @@
 } else {
   @defining(Json.parse(docJson)) { doc =>
     @main("", if( (doc\\"title").isEmpty) "lobid-resources - Vollanzeige" else (doc\\"title")(0).asOpt[String].getOrElse(q)) {
-      <h1>@((doc\\"title")(0).asOpt[String].getOrElse(q))</h1>
+      <h1>@((doc\\"title")(0).asOpt[String].getOrElse(q)) @for(subTitle <- (doc \ "otherTitleInformation").asOpt[Seq[String]]){<br/><small>@subTitle</small>}</h1>
       <div class="row" id="search-results">
       @defining(Lobid.items(doc.toString)) { items =>
-        @defining(!(doc\\"isPartOf").isEmpty && (doc\"type").toString.contains("Article")){superordination =>
+        @defining(!(doc\\"containedIn").isEmpty && (doc\"type").toString.contains("Article")){superordination =>
           <div class="col-md-@if(items.isEmpty && !doc.toString.contains("fulltextOnline") && !superordination){12} else {8}">
             <dl>
             @defining((doc\\"hbzId")(0).asOpt[String].getOrElse(q)){ id =>
@@ -64,7 +64,7 @@
                 <th style="width: 30%"></th>
                 <th style="width: 70%"></th>
               </tr>
-              @result_field("Zum Bestand siehe:", "hasSuperordinate", doc, TableRow.LINKS)
+              @result_field("Zum Bestand siehe:", "containedIn", doc, TableRow.LINKS)
             </table>
             </dd>
             }
