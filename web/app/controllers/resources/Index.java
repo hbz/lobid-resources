@@ -289,15 +289,16 @@ public class Index {
 	 */
 	public Index getItem(String id) {
 		return withClient((Client client) -> {
-			String parent = id.split(":")[0];
-			GetResponse response = client.prepareGet(INDEX_NAME, TYPE_ITEM, id)
-					.setParent(parent).execute().actionGet();
-			if (response.isExists()) {
-				String sourceAsString = response.getSourceAsString();
+			SearchRequestBuilder requestBuilder = client.prepareSearch(INDEX_NAME)
+					.setSearchType(SearchType.DFS_QUERY_THEN_FETCH).setTypes(TYPE_ITEM)
+					.setQuery(QueryBuilders.idsQuery().addIds(id)).setSize(1);
+			SearchResponse response = requestBuilder.execute().actionGet();
+			if (response.getHits().getTotalHits() > 0) {
+				String sourceAsString = response.getHits().getAt(0).getSourceAsString();
 				result = Json.parse(sourceAsString);
 				total = 1;
 			} else {
-				Logger.warn("No item found for ID {}, parent {}", id, parent);
+				Logger.warn("No item found for ID {}", id);
 			}
 			return this;
 		});
