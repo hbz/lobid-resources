@@ -4,6 +4,7 @@ package views;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -215,9 +216,15 @@ public enum TableRow {
 					value.replaceAll("lobid.org/resource/", "lobid.org/resources/"),
 					Lobid.resourceLabel(value) };
 		}
-		String label =
-				labels.isPresent() && labels.get().size() > 0 ? labels.get().get(0)
-						: value.startsWith("http") ? URI.create(value).getHost() : value;
+		String label;
+		try {
+			label =
+					labels.isPresent() && labels.get().size() > 0 ? labels.get().get(0)
+							: value.startsWith("http") ? new URI(value).getHost() : value;
+		} catch (URISyntaxException e) {
+			Logger.warn("No valid URI: {}", value);
+			label = value;
+		}
 		return new String[] { value, label };
 	}
 
