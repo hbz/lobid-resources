@@ -231,10 +231,15 @@ public class JsonConverter {
 						(ArrayList<Map<String, Object>>) jsonResult.get(key);
 				literals.add(createObjectWithId(uri));
 			} else {
-				@SuppressWarnings("unchecked")
-				Set<Map<String, Object>> literals =
-						(Set<Map<String, Object>>) jsonResult.get(key);
-				literals.add(createObjectWithId(uri));
+				try {
+					@SuppressWarnings("unchecked")
+					Set<Map<String, Object>> literals =
+							(Set<Map<String, Object>>) jsonResult.get(key);
+					literals.add(createObjectWithId(uri));
+				} catch (Exception ex) {
+					Log.warn("Problem with adding " + uri + " to " + jsonResult.get(key)
+							+ ". Maybe its not declared as 'set'?", ex);
+				}
 			}
 		} else {
 			if (e.container != null

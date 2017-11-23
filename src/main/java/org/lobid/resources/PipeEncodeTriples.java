@@ -115,10 +115,12 @@ public class PipeEncodeTriples extends AbstractGraphPipeEncoder {
 		} else if (name.matches(HTTP)) {
 			try {
 				final Property prop = model.createProperty(name);
-				if (!name.contains(PROPERTY_AS_LITERALS) && (value.matches(HTTP)
-						|| value.matches(BNODE) || value.matches(FTP)
-						|| (value.startsWith(URN) && storeUrnAsUri)
-						|| value.startsWith("mailto"))) {
+				if (!name.contains(PROPERTY_AS_LITERALS)
+						&& !name.endsWith("terms/title")
+						&& (value.matches(HTTP) || value.matches(BNODE)
+								|| value.matches(FTP)
+								|| (value.startsWith(URN) && storeUrnAsUri)
+								|| value.startsWith("mailto"))) {
 					boolean uri = true;
 					// either add uri ...
 					if (!isRdfList)

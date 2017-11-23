@@ -196,18 +196,17 @@ public class ElasticsearchIndexer
 
 	private String enrich(final String index, final String queryField,
 			final String SPATIAL, ObjectNode node) {
-		String[] query;
 		FIELD_BOOST.put(SPATIAL + ".label", 5.0f);
 		FIELD_BOOST.put("locatedIn.value", 2.0f);
 		FIELD_BOOST.put("aliases.value", 1.0f);
-
 		Iterable<Entry<String, JsonNode>> iterable = () -> node.fields();
 		Optional<Entry<String, JsonNode>> o =
 				StreamSupport.stream(iterable.spliterator(), false)
 						.filter(k -> k.getKey().equals(queryField)).findFirst();
 		if (o.isPresent()) {
-			query = o.get().getValue().toString().split("\",\"");
+			String[] query = o.get().getValue().toString().split("\",\"");
 			ArrayNode spatialNode = node.putArray(SPATIAL);
+			HashSet<String> wdIds = new HashSet<>();
 			for (int i = 0; i < query.length; i++) {
 				query[i] = query[i].replaceAll("[^\\p{IsAlphabetic}]", " ").trim();
 				if (unsuccessfullyLookup.contains(query[i])) {
@@ -233,9 +232,13 @@ public class ElasticsearchIndexer
 										+ " to low. Queried " + query[i]);
 								unsuccessfullyLookup.add(query[i]);
 							} else {
-								if (newSpatialNode != null)
-									spatialNode.add(newSpatialNode);
-								else
+								if (newSpatialNode != null) {
+									String wdId = newSpatialNode.findPath("id").toString();
+									if (!wdIds.contains(wdId)) { // add entity only once
+										spatialNode.add(newSpatialNode);
+										wdIds.add(wdId);
+									}
+								} else
 									unsuccessfullyLookup.add(query[i]);
 							}
 						}
