@@ -91,6 +91,8 @@ public class Application extends Controller {
 	public static final String MEDIUM_FIELD = "medium.id";
 	/** The internal ES aggregation name for the owner facet. */
 	public static final String OWNER_AGGREGATION = "owner";
+	/** The internal ES aggregation name for the topics. */
+	public static final String TOPIC_AGGREGATION = "topic";
 	/** The internal ES field for subjects. */
 	public static final String SUBJECT_FIELD = "subject.componentList.id";
 	/** The internal ES field for contributing agents. */
