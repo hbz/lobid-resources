@@ -473,8 +473,14 @@
                            "type" : "keyword"
                         },
                      "label": {
-                        "type": "text"
-                        },
+                        "type": "text",
+                        "fields": {
+                            "raw": {
+                                "type": "keyword",
+                                "index": "true"
+                            }
+                        }
+                     },
                      "type": {
                         "index" : "true",
                         "type": "keyword"
