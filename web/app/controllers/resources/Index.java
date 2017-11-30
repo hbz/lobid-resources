@@ -9,7 +9,10 @@ import static controllers.resources.Application.TOPIC_AGGREGATION;
 import static controllers.resources.Application.TYPE_FIELD;
 import static org.elasticsearch.index.query.QueryBuilders.matchQuery;
 
+import java.io.IOException;
 import java.net.InetAddress;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -391,9 +394,10 @@ public class Index {
 				// TODO: store script only once, on startup?
 				PutStoredScriptResponse response = storeScript(client, lang, id);
 				if (response.isAcknowledged()) {
-					searchRequest.addAggregation(
-							AggregationBuilders.terms(TOPIC_AGGREGATION).script(new Script(
-									ScriptType.STORED, lang, id, Collections.emptyMap())));
+					searchRequest.addAggregation(AggregationBuilders
+							.terms(TOPIC_AGGREGATION).script(new Script(ScriptType.STORED,
+									lang, id, Collections.emptyMap()))
+							.size(9999));
 				}
 			} else {
 				boolean many = field.equals("publication.startDate");
@@ -406,9 +410,15 @@ public class Index {
 
 	private static PutStoredScriptResponse storeScript(Client client, String lang,
 			String id) {
-		String script = // TODO: use subject.componentList.label.raw
-				"String chain = \"\"; for(String id : doc['subject.componentList.id']) {"
-						+ "chain += \" \" + id} return chain.trim();";
+		String script = "";
+		try {
+			script = Files
+					.readAllLines(Paths
+							.get(Play.application().getFile("conf/topic.painless").toURI()))
+					.stream().collect(Collectors.joining("\n"));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		ObjectNode scriptObject = Json.newObject();
 		scriptObject.putObject("script").put("lang", lang).put("source", script);
 		Logger.debug("Will store script: {}", scriptObject);
