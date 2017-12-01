@@ -173,7 +173,7 @@ public class Index {
 	public long totalHits(String q) {
 		try {
 			return Cache.getOrElse("total-" + q,
-					() -> queryResources(q, 0, 0, "", "", "", "").getTotal(),
+					() -> queryResources(q, 0, 0, "", "", "", "", "").getTotal(),
 					Application.ONE_DAY);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -189,12 +189,13 @@ public class Index {
 	 * @param owner Owner institution
 	 * @param aggregations The comma separated aggregation fields
 	 * @param location A single "lat,lon" point or space delimited points polygon
+	 * @param nested The nested object path. If non-empty, use q as nested query
 	 * @return This index, get results via {@link #getResult()} and
 	 *         {@link #getTotal()}
 	 */
 	public Index queryResources(String q, int from, int size, String sort,
 			String owner, @SuppressWarnings("hiding") String aggregations,
-			String location) {
+			String location, String nested) {
 		Index resultIndex = withClient((Client client) -> {
 			QueryBuilder query = owner.isEmpty() ? QueryBuilders.queryStringQuery(q)
 					: ownerQuery(q, owner);
@@ -204,6 +205,9 @@ public class Index {
 			if (!location.isEmpty()) {
 				query =
 						QueryBuilders.boolQuery().must(query).must(polygonQuery(location));
+			}
+			if (!nested.isEmpty()) {
+				query = QueryBuilders.nestedQuery(nested, query, ScoreMode.Avg);
 			}
 			SearchRequestBuilder requestBuilder = client.prepareSearch(INDEX_NAME)
 					.setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
