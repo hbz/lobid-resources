@@ -5,18 +5,24 @@ import static controllers.resources.Application.ISSUED_FIELD;
 import static controllers.resources.Application.MEDIUM_FIELD;
 import static controllers.resources.Application.OWNER_AGGREGATION;
 import static controllers.resources.Application.SUBJECT_FIELD;
+import static controllers.resources.Application.TOPIC_AGGREGATION;
 import static controllers.resources.Application.TYPE_FIELD;
 import static org.elasticsearch.index.query.QueryBuilders.matchQuery;
 
+import java.io.IOException;
 import java.net.InetAddress;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.apache.lucene.search.join.ScoreMode;
+import org.elasticsearch.action.admin.cluster.storedscripts.PutStoredScriptResponse;
 import org.elasticsearch.action.admin.indices.validate.query.ValidateQueryResponse;
 import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.action.search.SearchRequestBuilder;
@@ -24,9 +30,11 @@ import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.transport.TransportClient;
+import org.elasticsearch.common.bytes.BytesArray;
 import org.elasticsearch.common.geo.GeoPoint;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
+import org.elasticsearch.common.xcontent.XContentType;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.GeoDistanceQueryBuilder;
 import org.elasticsearch.index.query.GeoPolygonQueryBuilder;
@@ -34,6 +42,8 @@ import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.join.aggregations.ChildrenAggregationBuilder;
 import org.elasticsearch.join.query.JoinQueryBuilders;
+import org.elasticsearch.script.Script;
+import org.elasticsearch.script.ScriptType;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.aggregations.AggregationBuilder;
@@ -44,8 +54,10 @@ import org.elasticsearch.search.sort.SortOrder;
 import org.elasticsearch.transport.client.PreBuiltTransportClient;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import play.Logger;
+import play.Play;
 import play.cache.Cache;
 import play.libs.Json;
 
@@ -103,9 +115,10 @@ public class Index {
 	/**
 	 * The values supported for the `aggregations` query parameter.
 	 */
-	public static final List<String> SUPPORTED_AGGREGATIONS = Arrays.asList(
-			ISSUED_FIELD, SUBJECT_FIELD, TYPE_FIELD, MEDIUM_FIELD, OWNER_AGGREGATION,
-			AGENT_FIELD, SPATIAL_LABEL_FIELD, SPATIAL_GEO_FIELD, SUBJECT_ID_FIELD);
+	public static final List<String> SUPPORTED_AGGREGATIONS =
+			Arrays.asList(ISSUED_FIELD, SUBJECT_FIELD, TYPE_FIELD, MEDIUM_FIELD,
+					OWNER_AGGREGATION, AGENT_FIELD, SPATIAL_LABEL_FIELD,
+					SPATIAL_GEO_FIELD, SUBJECT_ID_FIELD, TOPIC_AGGREGATION);
 
 	/**
 	 * @param q The current query string
@@ -116,8 +129,9 @@ public class Index {
 		String fullQuery = q.isEmpty() ? "*" : "(" + q + ")";
 		for (int i = 0; i < values.length; i++) {
 			String fieldValue = values[i];
-			String fieldName = fieldValue.contains("http")
-					? QUERY_FIELDS[i].replace(".label", ".id") : QUERY_FIELDS[i];
+			String fieldName =
+					fieldValue.contains("http") ? QUERY_FIELDS[i].replace(".label", ".id")
+							: QUERY_FIELDS[i];
 			if (fieldName.toLowerCase().endsWith("date")
 					&& fieldValue.matches("(\\d{1,4}|\\*)-(\\d{1,4}|\\*)")) {
 				String[] fromTo = fieldValue.split("-");
@@ -159,7 +173,7 @@ public class Index {
 	public long totalHits(String q) {
 		try {
 			return Cache.getOrElse("total-" + q,
-					() -> queryResources(q, 0, 0, "", "", "", "").getTotal(),
+					() -> queryResources(q, 0, 0, "", "", "", "", "").getTotal(),
 					Application.ONE_DAY);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -175,12 +189,13 @@ public class Index {
 	 * @param owner Owner institution
 	 * @param aggregations The comma separated aggregation fields
 	 * @param location A single "lat,lon" point or space delimited points polygon
+	 * @param nested The nested object path. If non-empty, use q as nested query
 	 * @return This index, get results via {@link #getResult()} and
 	 *         {@link #getTotal()}
 	 */
 	public Index queryResources(String q, int from, int size, String sort,
 			String owner, @SuppressWarnings("hiding") String aggregations,
-			String location) {
+			String location, String nested) {
 		Index resultIndex = withClient((Client client) -> {
 			QueryBuilder query = owner.isEmpty() ? QueryBuilders.queryStringQuery(q)
 					: ownerQuery(q, owner);
@@ -191,6 +206,9 @@ public class Index {
 				query =
 						QueryBuilders.boolQuery().must(query).must(polygonQuery(location));
 			}
+			if (!nested.isEmpty()) {
+				query = QueryBuilders.nestedQuery(nested, query, ScoreMode.Avg);
+			}
 			SearchRequestBuilder requestBuilder = client.prepareSearch(INDEX_NAME)
 					.setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
 					.setTypes(TYPE_RESOURCE).setQuery(query).setFrom(from).setSize(size);
@@ -200,7 +218,7 @@ public class Index {
 			}
 			if (!aggregations.isEmpty()) {
 				requestBuilder =
-						withAggregations(requestBuilder, aggregations.split(","));
+						withAggregations(client, requestBuilder, aggregations.split(","));
 			}
 			SearchResponse response = requestBuilder.execute().actionGet();
 			SearchHits hits = response.getHits();
@@ -359,11 +377,11 @@ public class Index {
 		return total;
 	}
 
-	private static SearchRequestBuilder withAggregations(
+	private static SearchRequestBuilder withAggregations(Client client,
 			final SearchRequestBuilder searchRequest, String... fields) {
 		int defaultSize = 100;
 		Arrays.asList(fields).forEach(field -> {
-			if (field.equals("owner")) {
+			if (field.equals(OWNER_AGGREGATION)) {
 				AggregationBuilder ownerAggregation =
 						new ChildrenAggregationBuilder(Application.OWNER_AGGREGATION,
 								TYPE_ITEM)
@@ -374,6 +392,17 @@ public class Index {
 				searchRequest
 						.addAggregation(AggregationBuilders.geohashGrid(SPATIAL_GEO_FIELD)
 								.field(SPATIAL_GEO_FIELD).precision(9));
+			} else if (field.equals(TOPIC_AGGREGATION) && !Play.isTest()) {
+				String lang = "painless";
+				String id = "topic-aggregation";
+				// TODO: store script only once, on startup?
+				PutStoredScriptResponse response = storeScript(client, lang, id);
+				if (response.isAcknowledged()) {
+					searchRequest.addAggregation(AggregationBuilders
+							.terms(TOPIC_AGGREGATION).script(new Script(ScriptType.STORED,
+									lang, id, Collections.emptyMap()))
+							.size(9999));
+				}
 			} else {
 				boolean many = field.equals("publication.startDate");
 				searchRequest.addAggregation(AggregationBuilders.terms(field)
@@ -381,6 +410,25 @@ public class Index {
 			}
 		});
 		return searchRequest;
+	}
+
+	private static PutStoredScriptResponse storeScript(Client client, String lang,
+			String id) {
+		String script = "";
+		try {
+			script = Files
+					.readAllLines(Paths
+							.get(Play.application().getFile("conf/topic.painless").toURI()))
+					.stream().collect(Collectors.joining("\n"));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		ObjectNode scriptObject = Json.newObject();
+		scriptObject.putObject("script").put("lang", lang).put("source", script);
+		Logger.debug("Will store script: {}", scriptObject);
+		return client.admin().cluster().preparePutStoredScript().setId(id)
+				.setContent(new BytesArray(scriptObject.toString()), XContentType.JSON)
+				.get();
 	}
 
 	<T> T withClient(Function<Client, T> function) {

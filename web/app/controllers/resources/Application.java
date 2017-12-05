@@ -91,6 +91,8 @@ public class Application extends Controller {
 	public static final String MEDIUM_FIELD = "medium.id";
 	/** The internal ES aggregation name for the owner facet. */
 	public static final String OWNER_AGGREGATION = "owner";
+	/** The internal ES aggregation name for the topics. */
+	public static final String TOPIC_AGGREGATION = "topic";
 	/** The internal ES field for subjects. */
 	public static final String SUBJECT_FIELD = "subject.componentList.id";
 	/** The internal ES field for contributing agents. */
@@ -166,13 +168,14 @@ public class Application extends Controller {
 	 * @param format The response format (see {@code Accept.Format})
 	 * @param aggs The comma separated aggregation fields
 	 * @param location A single "lat,lon" point or space delimited points polygon
+	 * @param nested The nested object path. If non-empty, use q as nested query
 	 * @return The search results
 	 */
 	public static Promise<Result> query(final String q, final String agent,
 			final String name, final String subject, final String id,
 			final String publisher, final String issued, final String medium,
 			final int from, final int size, final String owner, String t, String sort,
-			String set, String format, String aggs, String location) {
+			String set, String format, String aggs, String location, String nested) {
 		final String aggregations = aggs == null ? "" : aggs;
 		if (!aggregations.isEmpty() && !Index.SUPPORTED_AGGREGATIONS
 				.containsAll(Arrays.asList(aggregations.split(",")))) {
@@ -211,7 +214,7 @@ public class Application extends Controller {
 		} else {
 			result = Promise.promise(() -> {
 				Index queryResources = index.queryResources(queryString, from, size,
-						sort, owner, aggregations, location);
+						sort, owner, aggregations, location, nested);
 				boolean returnSuggestions = responseFormat.startsWith("json:");
 				JsonNode json = returnSuggestions
 						? toSuggestions(queryResources.getResult(), format.split(":")[1])
@@ -544,16 +547,17 @@ public class Application extends Controller {
 	 * @param sort Sorting order for results ("newest", "oldest", "" -> relevance)
 	 * @param set The set
 	 * @param location A single "lat,lon" point or space delimited points polygon
+	 * @param nested The nested object path. If non-empty, use q as nested query
 	 * @return The search results
 	 */
 	public static Promise<Result> facets(String q, String agent, String name,
 			String subject, String id, String publisher, String issued, String medium,
 			int from, int size, String owner, String t, String field, String sort,
-			String set, String location) {
+			String set, String location, String nested) {
 
-		String key =
-				String.format("facets.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s", field, q,
-						agent, name, id, publisher, set, subject, issued, medium, owner, t);
+		String key = String.format("facets.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s",
+				field, q, agent, name, id, publisher, set, subject, issued, medium,
+				owner, t, nested);
 		Result cachedResult = (Result) Cache.get(key);
 		if (cachedResult != null) {
 			return Promise.promise(() -> cachedResult);
@@ -621,12 +625,11 @@ public class Application extends Controller {
 			boolean current =
 					current(subject, agent, medium, owner, t, field, term, location);
 
-			String routeUrl =
-					routes.Application
-							.query(q, agentQuery, name, subjectQuery, id, publisher,
-									issuedQuery, mediumQuery, from, size, ownerQuery, typeQuery,
-									sort(sort, subjectQuery), set, null, field, locationQuery)
-							.url();
+			String routeUrl = routes.Application
+					.query(q, agentQuery, name, subjectQuery, id, publisher, issuedQuery,
+							mediumQuery, from, size, ownerQuery, typeQuery,
+							sort(sort, subjectQuery), set, null, field, locationQuery, nested)
+					.url();
 
 			String result = String.format(
 					"<li " + (current ? "class=\"active\"" : "")
@@ -641,28 +644,29 @@ public class Application extends Controller {
 
 		Promise<Result> promise =
 				query(q, agent, name, subject, id, publisher, issued, medium, from,
-						size, owner, t, sort, set, "json", field, location).map(result -> {
-							JsonNode json = Json.parse(Helpers.contentAsString(result))
-									.get("aggregation");
-							Stream<JsonNode> stream =
-									StreamSupport.stream(Spliterators.spliteratorUnknownSize(
-											json.get(field).elements(), 0), false);
-							String labelKey = String.format(
-									"facets-labels.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s", field, q,
-									agent, name, id, publisher, set, subject, issued, medium,
-									field.equals(OWNER_AGGREGATION) ? "" : owner, t);
-
-							@SuppressWarnings("unchecked")
-							List<Pair<JsonNode, String>> labelledFacets =
-									(List<Pair<JsonNode, String>>) Cache.get(labelKey);
-							if (labelledFacets == null) {
-								labelledFacets = stream.map(toLabel).filter(labelled)
-										.collect(Collectors.toList());
-								Cache.set(labelKey, labelledFacets, ONE_DAY);
-							}
-							return labelledFacets.stream().sorted(sorter).map(toHtml)
-									.collect(Collectors.toList());
-						}).map(lis -> ok(String.join("\n", lis)));
+						size, owner, t, sort, set, "json", field, location, nested)
+								.map(result -> {
+									JsonNode json = Json.parse(Helpers.contentAsString(result))
+											.get("aggregation");
+									Stream<JsonNode> stream =
+											StreamSupport.stream(Spliterators.spliteratorUnknownSize(
+													json.get(field).elements(), 0), false);
+									String labelKey = String.format(
+											"facets-labels.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s",
+											field, q, agent, name, id, publisher, set, subject,
+											issued, medium,
+											field.equals(OWNER_AGGREGATION) ? "" : owner, t);
+									@SuppressWarnings("unchecked")
+									List<Pair<JsonNode, String>> labelledFacets =
+											(List<Pair<JsonNode, String>>) Cache.get(labelKey);
+									if (labelledFacets == null) {
+										labelledFacets = stream.map(toLabel).filter(labelled)
+												.collect(Collectors.toList());
+										Cache.set(labelKey, labelledFacets, ONE_DAY);
+									}
+									return labelledFacets.stream().sorted(sorter).map(toHtml)
+											.collect(Collectors.toList());
+								}).map(lis -> ok(String.join("\n", lis)));
 		promise.onRedeem(r -> Cache.set(key, r, ONE_DAY));
 		return promise;
 	}
