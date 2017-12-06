@@ -69,6 +69,10 @@ import play.libs.Json;
  */
 public class Index {
 
+	/** The cluster hosts as configred in resources.conf */
+	public static final List<String> CLUSTER_HOSTS =
+			Application.CONFIG.getList("index.cluster.hosts").stream()
+					.map(v -> v.unwrapped().toString()).collect(Collectors.toList());
 	static final String INDEX_NAME = Application.CONFIG.getString("index.name");
 	private static final String TYPE_ITEM =
 			Application.CONFIG.getString("index.type.item");
@@ -76,9 +80,6 @@ public class Index {
 			Application.CONFIG.getString("index.type.resource");
 	private static final int CLUSTER_PORT =
 			Application.CONFIG.getInt("index.cluster.port");
-	private static final List<String> CLUSTER_HOSTS =
-			Application.CONFIG.getList("index.cluster.hosts").stream()
-					.map(v -> v.unwrapped().toString()).collect(Collectors.toList());
 	private static final String CLUSTER_NAME =
 			Application.CONFIG.getString("index.cluster.name");
 	private static final String OWNER_ID_FIELD = "heldBy.id";
