@@ -82,7 +82,7 @@ public class ElasticsearchIndexer
 	private static String indexConfig = "index-config.json";
 	private static ObjectMapper mapper = new ObjectMapper();
 	// TODDO setter?
-	public static double MINIMUM_SCORE = 0.4;
+	public static double MINIMUM_SCORE = 20.0;
 
 	/**
 	 * Keys to get index properties and the json document ("graph")
@@ -196,9 +196,9 @@ public class ElasticsearchIndexer
 
 	private String enrich(final String index, final String queryField,
 			final String SPATIAL, ObjectNode node) {
-		FIELD_BOOST.put(SPATIAL + ".label", 5.0f);
-		FIELD_BOOST.put("locatedIn.value", 2.0f);
-		FIELD_BOOST.put("aliases.value", 1.0f);
+		FIELD_BOOST.put(SPATIAL + ".label", 10.0f);
+		FIELD_BOOST.put("locatedIn.value", 1.0f);
+		FIELD_BOOST.put("aliases.value", 2.0f);
 		Iterable<Entry<String, JsonNode>> iterable = () -> node.fields();
 		Optional<Entry<String, JsonNode>> o =
 				StreamSupport.stream(iterable.spliterator(), false)
@@ -215,7 +215,7 @@ public class ElasticsearchIndexer
 				} else {
 					MultiMatchQueryBuilder qsq =
 							new MultiMatchQueryBuilder(query[i]).fields(FIELD_BOOST)
-									.type(MultiMatchQueryBuilder.Type.MOST_FIELDS);
+									.type(MultiMatchQueryBuilder.Type.CROSS_FIELDS);
 					SearchHits hits = null;
 					try {
 						hits = client.prepareSearch(index).setQuery(qsq).get().getHits();
