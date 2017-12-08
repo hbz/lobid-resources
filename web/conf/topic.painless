@@ -1,0 +1,17 @@
+// return doc['subject.componentList.id'].stream().collect(Collectors.joining(" | "))
+
+def result = new ArrayList();
+
+if(params._source.containsKey("subject")) {
+	for(subject in params._source.subject) {
+		if(subject.containsKey("componentList")) {
+			def current = new ArrayList();
+			for(item in subject.componentList) {
+				current.add(item.label);
+			}
+			result.add(current.stream().collect(Collectors.joining(" | ")));
+		}
+	}
+}
+
+return result

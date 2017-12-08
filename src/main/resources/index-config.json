@@ -379,6 +379,8 @@
                "type" : "text"
             },
             "contribution" : {
+               "type" : "nested",
+               "include_in_parent" : "true",
                "properties" : {
                   "agent" : {
                      "properties" : {
@@ -465,8 +467,12 @@
                }
             },
             "subject": {
+               "type" : "nested",
+               "include_in_parent" : "true",
                "properties": {
                   "componentList": {
+                     "type" : "nested",
+                     "include_in_parent" : "true",
                      "properties": {
                         "id": {
                            "index" : "true",
