@@ -1,20 +1,34 @@
 https://query.wikidata.org/sparql?query=
-SELECT DISTINCT
-?item
-?itemLabel
+# Get administrative areas in North Rhine-Westphalia with German labels
+SELECT DISTINCT 
+?item 
+?itemLabel 
 ?partOf
+?gnd
+?dissolutionDate
+(group_concat(distinct ?hasPart; separator = ", ") as ?parts)
 WHERE {
   hint:Query hint:optimizer "None".
-  { ?item wdt:P131* wd:Q1198;
-        wdt:P31/wdt:P279* wd:Q387917 .
+  { ?item wdt:P131* wd:Q1198 .
+       { ?item wdt:P31 wd:Q829277 . } # Regierungsbezirk in NRW
+   UNION
+       { ?item wdt:P31 wd:Q106658 . } # Landkreis
+   UNION
+       { ?item wdt:P31 wd:Q262166 . } # Gemeinde
+   UNION
+       { ?item wdt:P31 wd:Q22865 . } # kreisfreie Stadt
+   UNION
+       { ?item wdt:P31 wd:Q253019 . } # Ortsteil
+   UNION
+       { ?item wdt:P31 wd:Q1852178 . } # Stadteil von Düsseldorf
+   UNION
+       { ?item wdt:P31 wd:Q15632166 . } # Stadtteil von Köln
   }
-  FILTER NOT EXISTS { ?item wdt:P31/wdt:P279* wd:Q192611 }
-  FILTER NOT EXISTS { ?item wdt:P31/wdt:P279* wd:Q20296613 }
-  FILTER NOT EXISTS { ?item wdt:P31/wdt:P279* wd:Q1643757 }
-  FILTER NOT EXISTS { ?item wdt:P31/wdt:P279* wd:Q2520712 }
-  FILTER NOT EXISTS { ?item wdt:P31/wdt:P279* wd:Q478847 }
-  FILTER NOT EXISTS { ?item wdt:P31/wdt:P279* wd:Q2740635 }
   SERVICE wikibase:label {  bd:serviceParam wikibase:language "de" }
-  OPTIONAL { ?item wdt:P150 ?hasPart }
+  OPTIONAL { ?item wdt:P227 ?gnd }
+  OPTIONAL { ?item wdt:P576 ?dissolutionDate }
+  OPTIONAL { ?item wdt:P150 ?hasPart . }
   OPTIONAL { ?item wdt:P131 ?partOf }
-}limit 10000
+}
+
+GROUP BY ?item ?itemLabel ?partOf ?gnd ?dissolutionDate
