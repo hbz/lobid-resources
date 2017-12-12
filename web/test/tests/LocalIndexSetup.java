@@ -2,8 +2,6 @@
 
 package tests;
 
-import static org.elasticsearch.node.NodeBuilder.nodeBuilder;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -24,8 +22,11 @@ import org.elasticsearch.action.bulk.BulkResponse;
 import org.elasticsearch.action.index.IndexRequestBuilder;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.IndicesAdminClient;
+import org.elasticsearch.common.network.NetworkModule;
 import org.elasticsearch.common.settings.Settings;
+import org.elasticsearch.env.Environment;
 import org.elasticsearch.node.Node;
+import org.elasticsearch.node.NodeValidationException;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 
@@ -53,12 +54,18 @@ public abstract class LocalIndexSetup {
 
 	@BeforeClass
 	public static void setup() {
-		node = nodeBuilder().local(true)
-				.settings(Settings.settingsBuilder()//
-						.put("index.number_of_replicas", "0")//
-						.put("index.number_of_shards", "1")//
-						.put("path.home", "test/resources/index").build())
-				.node();
+		node = new Node(
+				Settings.builder().put(Node.NODE_NAME_SETTING.getKey(), "testNode")
+						.put(NetworkModule.TRANSPORT_TYPE_KEY,
+								NetworkModule.LOCAL_TRANSPORT)
+				.put(NetworkModule.HTTP_ENABLED.getKey(), false) //
+				.put(Environment.PATH_HOME_SETTING.getKey(), "test/resources/index")//
+				.build());
+		try {
+			node.start();
+		} catch (NodeValidationException e) {
+			e.printStackTrace();
+		}
 		client = node.client();
 		client.admin().indices().prepareDelete("_all").execute().actionGet();
 		client.admin().cluster().prepareHealth().setWaitForYellowStatus().execute()
@@ -76,7 +83,11 @@ public abstract class LocalIndexSetup {
 	@AfterClass
 	public static void down() {
 		client.admin().indices().prepareDelete(TEST_INDEX).execute().actionGet();
-		node.close();
+		try {
+			node.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		Index.elasticsearchClient = null;
 	}
 

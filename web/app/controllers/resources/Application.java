@@ -33,13 +33,13 @@ import org.elasticsearch.common.io.Streams;
 import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.join.aggregations.Children;
 import org.elasticsearch.search.aggregations.Aggregation;
-import org.elasticsearch.search.aggregations.bucket.children.InternalChildren;
 import org.elasticsearch.search.aggregations.bucket.geogrid.GeoHashGrid;
 import org.elasticsearch.search.aggregations.bucket.geogrid.InternalGeoHashGrid;
 import org.elasticsearch.search.aggregations.bucket.terms.Terms;
+import org.elasticsearch.search.sort.FieldSortBuilder;
 import org.elasticsearch.search.sort.SortOrder;
-import org.elasticsearch.search.sort.SortParseElement;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -64,6 +64,7 @@ import play.mvc.Http;
 import play.mvc.Result;
 import play.test.Helpers;
 import play.twirl.api.Html;
+
 import views.html.api;
 import views.html.dataset;
 import views.html.details;
@@ -71,6 +72,7 @@ import views.html.details_item;
 import views.html.index;
 import views.html.query;
 import views.html.stars;
+ 
 
 /**
  * The main application controller.
@@ -89,6 +91,8 @@ public class Application extends Controller {
 	public static final String MEDIUM_FIELD = "medium.id";
 	/** The internal ES aggregation name for the owner facet. */
 	public static final String OWNER_AGGREGATION = "owner";
+	/** The internal ES aggregation name for the topics. */
+	public static final String TOPIC_AGGREGATION = "topic";
 	/** The internal ES field for subjects. */
 	public static final String SUBJECT_FIELD = "subject.componentList.id";
 	/** The internal ES field for contributing agents. */
@@ -164,13 +168,14 @@ public class Application extends Controller {
 	 * @param format The response format (see {@code Accept.Format})
 	 * @param aggs The comma separated aggregation fields
 	 * @param location A single "lat,lon" point or space delimited points polygon
+	 * @param nested The nested object path. If non-empty, use q as nested query
 	 * @return The search results
 	 */
 	public static Promise<Result> query(final String q, final String agent,
 			final String name, final String subject, final String id,
 			final String publisher, final String issued, final String medium,
 			final int from, final int size, final String owner, String t, String sort,
-			String set, String format, String aggs, String location) {
+			String set, String format, String aggs, String location, String nested) {
 		final String aggregations = aggs == null ? "" : aggs;
 		if (!aggregations.isEmpty() && !Index.SUPPORTED_AGGREGATIONS
 				.containsAll(Arrays.asList(aggregations.split(",")))) {
@@ -209,7 +214,7 @@ public class Application extends Controller {
 		} else {
 			result = Promise.promise(() -> {
 				Index queryResources = index.queryResources(queryString, from, size,
-						sort, owner, aggregations, location);
+						sort, owner, aggregations, location, nested);
 				boolean returnSuggestions = responseFormat.startsWith("json:");
 				JsonNode json = returnSuggestions
 						? toSuggestions(queryResources.getResult(), format.split(":")[1])
@@ -248,30 +253,29 @@ public class Application extends Controller {
 			Chunks<String> chunks = StringChunks.whenReady(out -> {
 				SearchResponse lastResponse =
 						index.<SearchResponse> withClient((Client client) -> {
-							QueryBuilder query =
-									owner.isEmpty() ? QueryBuilders.queryStringQuery(q)
-											: Index.ownerQuery(q, owner);
-							Index.validate(client, query);
-							Logger.trace("bulkResources: q={}, owner={}, query={}", q, owner,
-									query);
-							TimeValue keepAlive = new TimeValue(60000);
-							SearchResponse scrollResp = client.prepareSearch(Index.INDEX_NAME)
-									.addSort(SortParseElement.DOC_FIELD_NAME, SortOrder.ASC)
-									.setScroll(keepAlive).setQuery(query)
-									.setSize(100 /* hits per shard for each scroll */).get();
-							String scrollId = scrollResp.getScrollId();
-							while (scrollResp.getHits().iterator().hasNext()) {
-								scrollResp.getHits().forEach((hit) -> {
-									out.write(hit.getSourceAsString());
-									out.write("\n");
-								});
-								scrollResp = client.prepareSearchScroll(scrollId)
-										.setScroll(keepAlive).execute().actionGet();
-								scrollId = scrollResp.getScrollId();
-							}
-							out.close();
-							return scrollResp;
+					QueryBuilder query = owner.isEmpty()
+							? QueryBuilders.queryStringQuery(q) : Index.ownerQuery(q, owner);
+					Index.validate(client, query);
+					Logger.trace("bulkResources: q={}, owner={}, query={}", q, owner,
+							query);
+					TimeValue keepAlive = new TimeValue(60000);
+					SearchResponse scrollResp = client.prepareSearch(Index.INDEX_NAME)
+							.addSort(FieldSortBuilder.DOC_FIELD_NAME, SortOrder.ASC)
+							.setScroll(keepAlive).setQuery(query)
+							.setSize(100 /* hits per shard for each scroll */).get();
+					String scrollId = scrollResp.getScrollId();
+					while (scrollResp.getHits().iterator().hasNext()) {
+						scrollResp.getHits().forEach((hit) -> {
+							out.write(hit.getSourceAsString());
+							out.write("\n");
 						});
+						scrollResp = client.prepareSearchScroll(scrollId)
+								.setScroll(keepAlive).execute().actionGet();
+						scrollId = scrollResp.getScrollId();
+					}
+					out.close();
+					return scrollResp;
+				});
 				Logger.trace("Last search response for bulk request: " + lastResponse);
 			});
 			return ok(chunks).as(Accept.Format.BULK.types[0]);
@@ -361,15 +365,15 @@ public class Application extends Controller {
 			Aggregation value) {
 		Stream<Map<String, Object>> buckets;
 		if (value instanceof InternalGeoHashGrid) {
-			InternalGeoHashGrid grid = (InternalGeoHashGrid) value;
+			GeoHashGrid grid = (GeoHashGrid) value;
 			buckets = grid.getBuckets().stream().map((GeoHashGrid.Bucket b) -> {
 				GeoPoint point = new GeoPoint(b.getKeyAsString());
 				String latLon = point.lat() + "," + point.lon();
 				return ImmutableMap.of("key", latLon, "doc_count", b.getDocCount());
 			});
 		} else {
-			Terms terms = (Terms) (value instanceof InternalChildren
-					? ((InternalChildren) value).getAggregations().get(OWNER_AGGREGATION)
+			Terms terms = (Terms) (value instanceof Children
+					? ((Children) value).getAggregations().get(OWNER_AGGREGATION)
 					: value);
 			buckets = terms.getBuckets().stream().map((Terms.Bucket b) -> ImmutableMap
 					.of("key", b.getKeyAsString(), "doc_count", b.getDocCount()));
@@ -543,16 +547,17 @@ public class Application extends Controller {
 	 * @param sort Sorting order for results ("newest", "oldest", "" -> relevance)
 	 * @param set The set
 	 * @param location A single "lat,lon" point or space delimited points polygon
+	 * @param nested The nested object path. If non-empty, use q as nested query
 	 * @return The search results
 	 */
 	public static Promise<Result> facets(String q, String agent, String name,
 			String subject, String id, String publisher, String issued, String medium,
 			int from, int size, String owner, String t, String field, String sort,
-			String set, String location) {
+			String set, String location, String nested) {
 
-		String key =
-				String.format("facets.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s", field, q,
-						agent, name, id, publisher, set, subject, issued, medium, owner, t);
+		String key = String.format("facets.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s",
+				field, q, agent, name, id, publisher, set, subject, issued, medium,
+				owner, t, nested);
 		Result cachedResult = (Result) Cache.get(key);
 		if (cachedResult != null) {
 			return Promise.promise(() -> cachedResult);
@@ -603,41 +608,34 @@ public class Application extends Controller {
 			String fullLabel = pair.getRight();
 			String term = json.get("key").asText();
 			String mediumQuery = !field.equals(MEDIUM_FIELD) //
-					? medium
-					: queryParam(medium, term);
+					? medium : queryParam(medium, term);
 			String typeQuery = !field.equals(TYPE_FIELD) //
-					? t
-					: queryParam(t, term);
+					? t : queryParam(t, term);
 			String ownerQuery = !field.equals(OWNER_AGGREGATION) //
-					? owner
-					: withoutAndOperator(queryParam(owner, term));
+					? owner : withoutAndOperator(queryParam(owner, term));
 			String subjectQuery = !field.equals(SUBJECT_FIELD) //
-					? subject
-					: queryParam(subject, term);
+					? subject : queryParam(subject, term);
 			String agentQuery = !field.equals(AGENT_FIELD) //
-					? agent
-					: queryParam(agent, term);
+					? agent : queryParam(agent, term);
 			String issuedQuery = !field.equals(ISSUED_FIELD) //
-					? issued
-					: queryParam(issued, term);
+					? issued : queryParam(issued, term);
 			String locationQuery = !field.equals(Index.SPATIAL_GEO_FIELD) //
-					? location
-					: queryParam(location, term);
+					? location : queryParam(location, term);
 
 			boolean current =
 					current(subject, agent, medium, owner, t, field, term, location);
 
-			String routeUrl =
-					routes.Application
-							.query(q, agentQuery, name, subjectQuery, id, publisher,
-									issuedQuery, mediumQuery, from, size, ownerQuery, typeQuery,
-									sort(sort, subjectQuery), set, null, field, locationQuery)
-							.url();
+			String routeUrl = routes.Application
+					.query(q, agentQuery, name, subjectQuery, id, publisher, issuedQuery,
+							mediumQuery, from, size, ownerQuery, typeQuery,
+							sort(sort, subjectQuery), set, null, field, locationQuery, nested)
+					.url();
 
-			String result = String.format("<li " + (current ? "class=\"active\"" : "")
-					+ "><a class=\"%s-facet-link\" href='%s'>"
-					+ "<input onclick=\"location.href='%s'\" class=\"facet-checkbox\" "
-					+ "type=\"checkbox\" %s>&nbsp;%s</input>" + "</a></li>",
+			String result = String.format(
+					"<li " + (current ? "class=\"active\"" : "")
+							+ "><a class=\"%s-facet-link\" href='%s'>"
+							+ "<input onclick=\"location.href='%s'\" class=\"facet-checkbox\" "
+							+ "type=\"checkbox\" %s>&nbsp;%s</input>" + "</a></li>",
 					Math.abs(field.hashCode()), routeUrl, routeUrl,
 					current ? "checked" : "", fullLabel);
 
@@ -646,28 +644,29 @@ public class Application extends Controller {
 
 		Promise<Result> promise =
 				query(q, agent, name, subject, id, publisher, issued, medium, from,
-						size, owner, t, sort, set, "json", field, location).map(result -> {
-							JsonNode json = Json.parse(Helpers.contentAsString(result))
-									.get("aggregation");
-							Stream<JsonNode> stream =
-									StreamSupport.stream(Spliterators.spliteratorUnknownSize(
-											json.get(field).elements(), 0), false);
-							String labelKey = String.format(
-									"facets-labels.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s", field, q,
-									agent, name, id, publisher, set, subject, issued, medium,
-									field.equals(OWNER_AGGREGATION) ? "" : owner, t);
-
-							@SuppressWarnings("unchecked")
-							List<Pair<JsonNode, String>> labelledFacets =
-									(List<Pair<JsonNode, String>>) Cache.get(labelKey);
-							if (labelledFacets == null) {
-								labelledFacets = stream.map(toLabel).filter(labelled)
-										.collect(Collectors.toList());
-								Cache.set(labelKey, labelledFacets, ONE_DAY);
-							}
-							return labelledFacets.stream().sorted(sorter).map(toHtml)
-									.collect(Collectors.toList());
-						}).map(lis -> ok(String.join("\n", lis)));
+						size, owner, t, sort, set, "json", field, location, nested)
+								.map(result -> {
+									JsonNode json = Json.parse(Helpers.contentAsString(result))
+											.get("aggregation");
+									Stream<JsonNode> stream =
+											StreamSupport.stream(Spliterators.spliteratorUnknownSize(
+													json.get(field).elements(), 0), false);
+									String labelKey = String.format(
+											"facets-labels.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s",
+											field, q, agent, name, id, publisher, set, subject,
+											issued, medium,
+											field.equals(OWNER_AGGREGATION) ? "" : owner, t);
+									@SuppressWarnings("unchecked")
+									List<Pair<JsonNode, String>> labelledFacets =
+											(List<Pair<JsonNode, String>>) Cache.get(labelKey);
+									if (labelledFacets == null) {
+										labelledFacets = stream.map(toLabel).filter(labelled)
+												.collect(Collectors.toList());
+										Cache.set(labelKey, labelledFacets, ONE_DAY);
+									}
+									return labelledFacets.stream().sorted(sorter).map(toHtml)
+											.collect(Collectors.toList());
+								}).map(lis -> ok(String.join("\n", lis)));
 		promise.onRedeem(r -> Cache.set(key, r, ONE_DAY));
 		return promise;
 	}
@@ -762,9 +761,8 @@ public class Application extends Controller {
 			return Promise.pure(redirect(routes.Application.showStars(format,
 					starred.stream().collect(Collectors.joining(",")))));
 		}
-		final List<String> starredIds =
-				starred.isEmpty() && ids.trim().isEmpty() ? starred
-						: Arrays.asList(ids.split(","));
+		final List<String> starredIds = starred.isEmpty() && ids.trim().isEmpty()
+				? starred : Arrays.asList(ids.split(","));
 		String cacheKey = "starsForIds." + starredIds;
 		Object cachedJson = Cache.get(cacheKey);
 		if (cachedJson != null && cachedJson instanceof List) {

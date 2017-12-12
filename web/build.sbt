@@ -1,6 +1,6 @@
 name := "lobid-resources-web"
 
-version := "0.1.0-SNAPSHOT"
+version := "0.2.0-SNAPSHOT"
 
 scalaVersion := "2.11.11"
 
@@ -8,7 +8,9 @@ libraryDependencies ++= Seq(
   cache,
   javaWs,
   "com.typesafe.play" % "play-test_2.11" % "2.4.11",
-  "org.elasticsearch" % "elasticsearch" % "2.3.3" withSources()
+  "org.elasticsearch.plugin" % "parent-join-client" % "5.6.3" withSources(),
+  "org.elasticsearch" % "elasticsearch" % "5.6.3" withSources(),
+  "org.elasticsearch.client" % "transport" % "5.6.3" withSources()
     // otherwise javaWs won't work
     exclude ("io.netty", "netty"),
   "org.mockito" % "mockito-core" % "1.9.5",
@@ -16,6 +18,9 @@ libraryDependencies ++= Seq(
   "com.github.jsonld-java" % "jsonld-java-jena" % "0.4.1",
   "org.apache.jena" % "jena-arq" % "2.9.3",
   "com.google.gdata" % "core" % "1.47.1" exclude ("com.google.guava", "guava"),
+  "org.apache.logging.log4j" % "log4j-core" % "2.9.1",
+  "org.apache.logging.log4j" % "log4j-api" % "2.9.1",
+  "org.apache.logging.log4j" % "log4j-1.2-api" % "2.9.1",
   "org.easytesting" % "fest-assert" % "1.4" % "test"
 )
 

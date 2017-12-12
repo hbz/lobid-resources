@@ -84,8 +84,8 @@ public class InputStringsTest extends LocalIndexSetup {
 	@Test
 	public void test() {
 		running(testServer(3333), () -> {
-			String uri = controllers.resources.routes.Application.query(input, "", "",
-					"", "", "", "", "", 0, 10, "", "", "", "", "", "", "").toString();
+			String uri = controllers.resources.Application.query(input, "", "", "",
+					"", "", "", "", 0, 10, "", "", "", "", "", "", "", "").toString();
 			try {
 				URLDecoder.decode(input, StandardCharsets.UTF_8.name());
 			} catch (IllegalArgumentException | UnsupportedEncodingException x) {

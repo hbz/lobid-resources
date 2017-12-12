@@ -11,12 +11,12 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.culturegraph.mf.framework.StreamReceiver;
 import org.culturegraph.mf.framework.annotations.Description;
 import org.culturegraph.mf.framework.annotations.In;
 import org.culturegraph.mf.framework.annotations.Out;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.graph.NodeFactory;
 import com.hp.hpl.jena.rdf.model.AnonId;
@@ -51,7 +51,7 @@ public class PipeEncodeTriples extends AbstractGraphPipeEncoder {
 	final static String PROPERTY_AS_LITERALS = "Order";
 	private boolean fixSubject = false;
 	private static final Logger LOG =
-			LoggerFactory.getLogger(PipeEncodeTriples.class);
+			LogManager.getLogger(PipeEncodeTriples.class);
 	private boolean storeUrnAsUri = false;
 	private TreeMap<Integer, RDFList> treeMapOfRDFList;
 	HashMap<String, TreeMap<Integer, RDFList>> hashMapOfTreeMapOfRDFList;

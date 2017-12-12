@@ -13,8 +13,8 @@ import java.util.Stack;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -33,7 +33,7 @@ import com.fasterxml.jackson.databind.node.JsonNodeType;
  */
 @SuppressWarnings("javadoc")
 public final class CompareJsonMaps {
-	final static Logger logger = LoggerFactory.getLogger(CompareJsonMaps.class);
+	final static Logger logger = LogManager.getLogger(CompareJsonMaps.class);
 	Stack<String> stack = new Stack<>();
 	static final String JSON_LD_CONTEXT = "[@context";
 	private static boolean IGNORE_CONTEXT = true;

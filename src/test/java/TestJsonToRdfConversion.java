@@ -34,11 +34,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openrdf.rio.RDFFormat;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import de.hbz.lobid.helper.EtikettMaker;
 import de.hbz.lobid.helper.EtikettMakerInterface;
@@ -53,7 +53,7 @@ import de.hbz.lobid.helper.RdfUtils;
 public class TestJsonToRdfConversion {
 
 	final static Logger logger =
-			LoggerFactory.getLogger(TestJsonToRdfConversion.class);
+			LogManager.getLogger(TestJsonToRdfConversion.class);
 
 	private static EtikettMakerInterface etikettMaker =
 			new EtikettMaker(new File(Thread.currentThread().getContextClassLoader()

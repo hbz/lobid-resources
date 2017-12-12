@@ -25,12 +25,12 @@ import java.nio.file.Paths;
 import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.lobid.resources.run.MabXml2lobidJsonEs;
 import org.openrdf.rio.RDFFormat;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -64,7 +64,7 @@ public class TestRdfToJsonConversion {
 			new EtikettMaker(Thread.currentThread().getContextClassLoader()
 					.getResourceAsStream("labelsApi_1.json"));
 	final static Logger logger =
-			LoggerFactory.getLogger(TestRdfToJsonConversion.class);
+			LogManager.getLogger(TestRdfToJsonConversion.class);
 	final static String LOBID_RESOURCES_URI_PREFIX =
 			"http://lobid.org/resources/";
 	final static String LOBID_RESOURCES_API_1_0_URI_PREFIX =
@@ -150,9 +150,10 @@ public class TestRdfToJsonConversion {
 		TestRdfToJsonConversion.logger
 				.debug("Convert " + fnameNtriples + " to " + fnameJson);
 		boolean testResult = false;
+		boolean FILE_EXISTS = new File(fnameJson).exists();
 		try (InputStream in = new FileInputStream(new File(fnameNtriples));
-				InputStream out = new File(fnameJson).exists()
-						? new FileInputStream(new File(fnameJson)) : makeFile(fnameJson)) {
+				InputStream out = FILE_EXISTS ? new FileInputStream(new File(fnameJson))
+						: makeFile(fnameJson)) {
 			actual = new JsonConverter(etikettMaker).convertLobidData(in,
 					RDFFormat.NTRIPLES, uri,
 					MabXml2lobidJsonEs.LOBID_RESOURCES_JSONLD_CONTEXT);
@@ -160,15 +161,17 @@ public class TestRdfToJsonConversion {
 			TestRdfToJsonConversion.logger
 					.debug(new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT)
 							.writeValueAsString(actual));
-			TestRdfToJsonConversion.logger.debug(
-					"Begin comparing files: " + fnameNtriples + " against " + fnameJson);
-			expected = new ObjectMapper().readValue(out, Map.class);
-			testResult = new CompareJsonMaps().writeFileAndTestJson(
-					new ObjectMapper().convertValue(actual, JsonNode.class),
-					new ObjectMapper().convertValue(expected, JsonNode.class));
+			if (FILE_EXISTS) {
+				TestRdfToJsonConversion.logger.debug("Begin comparing files: "
+						+ fnameNtriples + " against " + fnameJson);
+				expected = new ObjectMapper().readValue(out, Map.class);
+				testResult = new CompareJsonMaps().writeFileAndTestJson(
+						new ObjectMapper().convertValue(actual, JsonNode.class),
+						new ObjectMapper().convertValue(expected, JsonNode.class));
+			}
 		} catch (Exception e) {
-			TestRdfToJsonConversion.logger.warn(
-					"Problem with converting " + fnameNtriples + " to " + fnameJson);
+			TestRdfToJsonConversion.logger.warn("Problem with converting "
+					+ fnameNtriples + " to " + fnameJson + "\n" + e.getMessage());
 		}
 		if (testResult != testExpectedToBeEqual) {
 			allTestsSuccessful = false;

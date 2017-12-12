@@ -27,14 +27,14 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.mortbay.log.Log;
 import org.openrdf.model.BNode;
 import org.openrdf.model.Graph;
 import org.openrdf.model.Statement;
 import org.openrdf.model.impl.URIImpl;
 import org.openrdf.rio.RDFFormat;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -52,7 +52,7 @@ public class JsonConverter {
 	private String labelKey;
 	private String idAlias;
 
-	final static Logger logger = LoggerFactory.getLogger(JsonConverter.class);
+	final static Logger logger = LogManager.getLogger(JsonConverter.class);
 
 	String first = "http://www.w3.org/1999/02/22-rdf-syntax-ns#first";
 	String rest = "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest";

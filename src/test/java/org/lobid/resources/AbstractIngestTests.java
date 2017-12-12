@@ -15,11 +15,11 @@ import java.util.TreeSet;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.culturegraph.mf.morph.Metamorph;
 import org.culturegraph.mf.morph.MorphErrorHandler;
 import org.junit.Assert;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Helper class for executing tests.
@@ -31,7 +31,7 @@ import org.slf4j.LoggerFactory;
 public abstract class AbstractIngestTests {
 
 	private static final Logger LOG =
-			LoggerFactory.getLogger(AbstractIngestTests.class);
+			LogManager.getLogger(AbstractIngestTests.class);
 
 	protected Metamorph metamorph;
 
