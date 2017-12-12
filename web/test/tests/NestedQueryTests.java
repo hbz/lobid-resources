@@ -72,7 +72,8 @@ public class NestedQueryTests extends LocalIndexSetup {
 
 	private long hitsForQuery() {
 		return nestedString.isEmpty() ? index.totalHits(queryString)
-				: index.queryResources(queryString, 0, 1, "", "", "", "", nestedString)
+				: index
+						.queryResources(queryString, 0, 1, "", "", "", "", nestedString, "")
 						.getTotal();
 	}
 

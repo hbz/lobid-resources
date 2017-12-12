@@ -118,9 +118,8 @@ public class Index {
 		String fullQuery = q.isEmpty() ? "*" : "(" + q + ")";
 		for (int i = 0; i < values.length; i++) {
 			String fieldValue = values[i];
-			String fieldName =
-					fieldValue.contains("http") ? QUERY_FIELDS[i].replace(".label", ".id")
-							: QUERY_FIELDS[i];
+			String fieldName = fieldValue.contains("http")
+					? QUERY_FIELDS[i].replace(".label", ".id") : QUERY_FIELDS[i];
 			if (fieldName.toLowerCase().endsWith("date")
 					&& fieldValue.matches("(\\d{1,4}|\\*)-(\\d{1,4}|\\*)")) {
 				String[] fromTo = fieldValue.split("-");
@@ -162,7 +161,7 @@ public class Index {
 	public long totalHits(String q) {
 		try {
 			return Cache.getOrElse("total-" + q,
-					() -> queryResources(q, 0, 0, "", "", "", "", "").getTotal(),
+					() -> queryResources(q, 0, 0, "", "", "", "", "", "").getTotal(),
 					Application.ONE_DAY);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -179,12 +178,13 @@ public class Index {
 	 * @param aggregations The comma separated aggregation fields
 	 * @param location A single "lat,lon" point or space delimited points polygon
 	 * @param nested The nested object path. If non-empty, use q as nested query
+	 * @param filter A filter to apply to the query, supports query string syntax
 	 * @return This index, get results via {@link #getResult()} and
 	 *         {@link #getTotal()}
 	 */
 	public Index queryResources(String q, int from, int size, String sort,
 			String owner, @SuppressWarnings("hiding") String aggregations,
-			String location, String nested) {
+			String location, String nested, String filter) {
 		Index resultIndex = withClient((Client client) -> {
 			QueryBuilder query = owner.isEmpty() ? QueryBuilders.queryStringQuery(q)
 					: ownerQuery(q, owner);
@@ -208,6 +208,9 @@ public class Index {
 			if (!aggregations.isEmpty()) {
 				requestBuilder =
 						withAggregations(client, requestBuilder, aggregations.split(","));
+			}
+			if (!filter.isEmpty()) {
+				requestBuilder.setPostFilter(QueryBuilders.queryStringQuery(filter));
 			}
 			SearchResponse response = requestBuilder.execute().actionGet();
 			SearchHits hits = response.getHits();
