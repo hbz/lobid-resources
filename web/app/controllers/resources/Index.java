@@ -10,7 +10,6 @@ import static controllers.resources.Application.TYPE_FIELD;
 import static org.elasticsearch.index.query.QueryBuilders.matchQuery;
 
 import java.io.IOException;
-import java.net.InetAddress;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -29,11 +28,8 @@ import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.client.Client;
-import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.bytes.BytesArray;
 import org.elasticsearch.common.geo.GeoPoint;
-import org.elasticsearch.common.settings.Settings;
-import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.common.xcontent.XContentType;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.GeoDistanceQueryBuilder;
@@ -51,7 +47,6 @@ import org.elasticsearch.search.aggregations.AggregationBuilders;
 import org.elasticsearch.search.aggregations.Aggregations;
 import org.elasticsearch.search.sort.SortBuilders;
 import org.elasticsearch.search.sort.SortOrder;
-import org.elasticsearch.transport.client.PreBuiltTransportClient;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -74,13 +69,7 @@ public class Index {
 			Application.CONFIG.getString("index.type.item");
 	static final String TYPE_RESOURCE =
 			Application.CONFIG.getString("index.type.resource");
-	private static final int CLUSTER_PORT =
-			Application.CONFIG.getInt("index.cluster.port");
-	private static final List<String> CLUSTER_HOSTS =
-			Application.CONFIG.getList("index.cluster.hosts").stream()
-					.map(v -> v.unwrapped().toString()).collect(Collectors.toList());
-	private static final String CLUSTER_NAME =
-			Application.CONFIG.getString("index.cluster.name");
+
 	private static final String OWNER_ID_FIELD = "heldBy.id";
 	private static final String SPATIAL_LABEL_FIELD = "spatial.label.raw";
 	static final String SPATIAL_GEO_FIELD = "spatial.geo";
@@ -435,24 +424,7 @@ public class Index {
 		if (elasticsearchClient != null) {
 			return function.apply(elasticsearchClient);
 		}
-		Settings settings =
-				Settings.builder().put("cluster.name", CLUSTER_NAME).build();
-		try (TransportClient client = new PreBuiltTransportClient(settings)) {
-			addHosts(client);
-			return function.apply(client);
-		}
-	}
-
-	private static void addHosts(TransportClient client) {
-		for (String host : CLUSTER_HOSTS) {
-			try {
-				client.addTransportAddress(new InetSocketTransportAddress(
-						InetAddress.getByName(host), CLUSTER_PORT));
-			} catch (Exception e) {
-				Logger.warn("Could not add host {} to Elasticsearch client: {}", host,
-						e.getMessage());
-			}
-		}
+		return null;
 	}
 
 }
