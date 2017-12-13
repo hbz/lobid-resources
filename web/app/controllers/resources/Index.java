@@ -177,7 +177,7 @@ public class Index {
 	 * @param owner Owner institution
 	 * @param aggregations The comma separated aggregation fields
 	 * @param location A single "lat,lon" point or space delimited points polygon
-	 * @param nested The nested object path. If non-empty, use q as nested query
+	 * @param nested A nested query, formatted as "<nested field>:<query string>"
 	 * @param filter A filter to apply to the query, supports query string syntax
 	 * @return This index, get results via {@link #getResult()} and
 	 *         {@link #getTotal()}
@@ -196,7 +196,11 @@ public class Index {
 						QueryBuilders.boolQuery().must(query).must(polygonQuery(location));
 			}
 			if (!nested.isEmpty()) {
-				query = QueryBuilders.nestedQuery(nested, query, ScoreMode.Avg);
+				String nestedFieldName = nested.substring(0, nested.indexOf(':'));
+				String nestedQueryString = nested.substring(nested.indexOf(':') + 1);
+				QueryBuilder nestedQuery = QueryBuilders.nestedQuery(nestedFieldName,
+						QueryBuilders.queryStringQuery(nestedQueryString), ScoreMode.Avg);
+				query = QueryBuilders.boolQuery().must(query).must(nestedQuery);
 			}
 			if (!filter.isEmpty()) {
 				query = QueryBuilders.boolQuery().must(query)

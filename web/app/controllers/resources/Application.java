@@ -166,7 +166,7 @@ public class Application extends Controller {
 	 * @param format The response format (see {@code Accept.Format})
 	 * @param aggs The comma separated aggregation fields
 	 * @param location A single "lat,lon" point or space delimited points polygon
-	 * @param nested The nested object path. If non-empty, use q as nested query
+	 * @param nested A nested query, formatted as "<nested field>:<query string>"
 	 * @param filter A filter to apply to the query, supports query string syntax
 	 * @return The search results
 	 */
