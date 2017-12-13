@@ -198,6 +198,10 @@ public class Index {
 			if (!nested.isEmpty()) {
 				query = QueryBuilders.nestedQuery(nested, query, ScoreMode.Avg);
 			}
+			if (!filter.isEmpty()) {
+				query = QueryBuilders.boolQuery().must(query)
+						.filter(QueryBuilders.queryStringQuery(filter));
+			}
 			SearchRequestBuilder requestBuilder = client.prepareSearch(INDEX_NAME)
 					.setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
 					.setTypes(TYPE_RESOURCE).setQuery(query).setFrom(from).setSize(size);
@@ -208,9 +212,6 @@ public class Index {
 			if (!aggregations.isEmpty()) {
 				requestBuilder =
 						withAggregations(client, requestBuilder, aggregations.split(","));
-			}
-			if (!filter.isEmpty()) {
-				requestBuilder.setPostFilter(QueryBuilders.queryStringQuery(filter));
 			}
 			SearchResponse response = requestBuilder.execute().actionGet();
 			SearchHits hits = response.getHits();
