@@ -48,8 +48,6 @@ public class LocalIndex {
 	private Node node;
 	private Client client;
 
-	private static final String TEST_INDEX = "resources";
-
 	/**
 	 * Create a new local index based on our test set
 	 */
@@ -87,7 +85,8 @@ public class LocalIndex {
 
 	/** Delete the index data and close the local node. */
 	public void shutdown() {
-		client.admin().indices().prepareDelete(TEST_INDEX).execute().actionGet();
+		client.admin().indices().prepareDelete(Index.INDEX_NAME).execute()
+				.actionGet();
 		try {
 			node.close();
 		} catch (IOException e) {
@@ -146,12 +145,13 @@ public class LocalIndex {
 	private IndexRequestBuilder createRequestBuilder(final String type, String id,
 			String parent, final Map<String, Object> map) {
 		final IndicesAdminClient admin = client.admin().indices();
-		if (!admin.prepareExists(TEST_INDEX).execute().actionGet().isExists()) {
-			admin.prepareCreate(TEST_INDEX).setSource(config(), XContentType.JSON)
-					.execute().actionGet();
+		if (!admin.prepareExists(Index.INDEX_NAME).execute().actionGet()
+				.isExists()) {
+			admin.prepareCreate(Index.INDEX_NAME)
+					.setSource(config(), XContentType.JSON).execute().actionGet();
 		}
 		final IndexRequestBuilder request =
-				client.prepareIndex(TEST_INDEX, type, id).setSource(map);
+				client.prepareIndex(Index.INDEX_NAME, type, id).setSource(map);
 		return parent.isEmpty() ? request : request.setParent(parent);
 	}
 
