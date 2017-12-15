@@ -89,8 +89,8 @@ public class Index {
 	 * {@link #buildQueryString(String, String...)}
 	 */
 	public static final String[] QUERY_FIELDS =
-			new String[] { "contribution.agent.label", "title",
-					"subject.componentList.id|subject.componentList.label|subject.label",
+			new String[] { "contribution.agent.label", "title|otherTitleInformation",
+					"subject.componentList.id|subject.componentList.label|subject.label|subjectAltLabel",
 					"isbn|issn", "publication.publishedBy", "publication.startDate",
 					"medium.id", "type", "collectedBy.id" };
 
