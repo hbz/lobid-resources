@@ -144,7 +144,7 @@ public class Index {
 			for (int j = 0; j < vals.length; j++) {
 				String v = vals[j];
 				q += f + ":"
-						+ (f.endsWith(".id") ? "\"" + Lobid.escapeUri(v) + "\"" : v);
+						+ (v.startsWith("http") ? "\"" + Lobid.escapeUri(v) + "\"" : v);
 				if (j < vals.length - 1)
 					q += " AND ";
 			}
