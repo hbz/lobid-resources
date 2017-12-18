@@ -28,8 +28,8 @@ import org.culturegraph.mf.framework.annotations.In;
 import org.culturegraph.mf.framework.annotations.Out;
 import org.elasticsearch.action.admin.cluster.state.ClusterStateRequest;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
+import org.elasticsearch.action.admin.indices.settings.put.UpdateSettingsRequestBuilder;
 import org.elasticsearch.action.bulk.BulkRequestBuilder;
-import org.elasticsearch.action.support.WriteRequest.RefreshPolicy;
 import org.elasticsearch.action.update.UpdateRequest;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.IndicesAdminClient;
@@ -104,7 +104,6 @@ public class ElasticsearchIndexer
 
 	@Override
 	public void onCloseStream() {
-		bulkRequest.setRefreshPolicy(RefreshPolicy.IMMEDIATE);
 		// remove old and unprotected indices
 		if (!aliasSuffix.equals("NOALIAS") && !updateNewestIndex
 				&& !aliasSuffix.toLowerCase().contains("test"))
@@ -112,13 +111,20 @@ public class ElasticsearchIndexer
 		// feed the rest of the bulk
 		if (bulkRequest.numberOfActions() != 0)
 			bulkRequest.execute().actionGet();
+		// set replicas to 1 and refresh intervall
+		UpdateSettingsRequestBuilder usrb =
+				client.admin().indices().prepareUpdateSettings();
+		usrb.setIndices(indexName);
+		Settings settings = Settings.builder().put("index.refresh_interval", "30s")
+				.put("index.number_of_replicas", 1).build();
+		usrb.setSettings(settings);
+		usrb.execute().actionGet();
 	}
 
-	// TODO use BulkProcessorbuilder by updating to ES 1.5
 	@Override
 	public void onSetReceiver() {
 		if (client == null) {
-	System.out.println("clustername="+this.clustername);
+			LOG.info("clustername=" + this.clustername);
 			Settings settings = Settings.builder()
 					.put("cluster.name", this.clustername)
 					.put("client.transport.sniff", false)
@@ -139,7 +145,13 @@ public class ElasticsearchIndexer
 				getNewestIndex();
 		} else
 			createIndex();
-		bulkRequest.setRefreshPolicy(RefreshPolicy.NONE);
+		UpdateSettingsRequestBuilder usrb =
+				client.admin().indices().prepareUpdateSettings();
+		usrb.setIndices(indexName);
+		Settings settings = Settings.builder().put("index.refresh_interval", -1)
+				.put("index.number_of_replicas", 0).build();
+		usrb.setSettings(settings);
+		usrb.execute().actionGet();
 		LOG.info(
 				"Threshold minimum score for spatial enrichment: " + MINIMUM_SCORE);
 	}
