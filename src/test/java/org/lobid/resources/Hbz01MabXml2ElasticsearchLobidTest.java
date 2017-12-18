@@ -112,6 +112,7 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 		WikidataGeodata2Es.filterWikidataEntitiesDump2EsGeodata(
 				"src/test/resources/wikidataEntities.json");
 		WikidataGeodata2Es.finish();
+		// WikidataGeodata2Es.esIndexer.onCloseStream();
 		etl(client, new RdfModel2ElasticsearchEtikettJsonLd());
 	}
 
@@ -137,12 +138,13 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 				new File(Hbz01MabXmlEtlNtriples2Filesystem.TEST_FILENAME_ALEPHXMLCLOBS)
 						.getAbsolutePath());
 		opener.closeStream();
-		WikidataGeodata2Es.esIndexer.onCloseStream();
+
 	}
 
 	@SuppressWarnings("static-method")
 	@Test
 	public void testJson() {
+		LOG.info("Testing getting Json from ES");
 		ElasticsearchDocuments.getAsJson();
 		if (testFailed)
 			throw new AssertionError();
@@ -151,6 +153,7 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 	@SuppressWarnings("static-method")
 	@Test
 	public void testNtriples() {
+		LOG.info("Testing getting Json from ES and transform that to ntriples");
 		getElasticsearchDocsAsNtriplesAndTestAndWrite();
 	}
 

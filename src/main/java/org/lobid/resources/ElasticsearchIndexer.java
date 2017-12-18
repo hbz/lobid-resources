@@ -104,6 +104,7 @@ public class ElasticsearchIndexer
 
 	@Override
 	public void onCloseStream() {
+		LOG.info("Closing ES index with name: " + indexName);
 		// remove old and unprotected indices
 		if (!aliasSuffix.equals("NOALIAS") && !updateNewestIndex
 				&& !aliasSuffix.toLowerCase().contains("test"))
@@ -111,7 +112,8 @@ public class ElasticsearchIndexer
 		// feed the rest of the bulk
 		if (bulkRequest.numberOfActions() != 0)
 			bulkRequest.execute().actionGet();
-		// set replicas to 1 and refresh intervall
+		// refresh and set replicas to 1 and refresh intervall
+		client.admin().indices().prepareRefresh(indexName).get();
 		UpdateSettingsRequestBuilder usrb =
 				client.admin().indices().prepareUpdateSettings();
 		usrb.setIndices(indexName);
@@ -119,6 +121,7 @@ public class ElasticsearchIndexer
 				.put("index.number_of_replicas", 1).build();
 		usrb.setSettings(settings);
 		usrb.execute().actionGet();
+		LOG.info("... closed ES index with name: " + indexName);
 	}
 
 	@Override
