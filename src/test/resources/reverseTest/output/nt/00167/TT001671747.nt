@@ -4,9 +4,13 @@ _:b0 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://id.loc.gov/ontolo
 _:b1 <http://id.loc.gov/ontologies/bibframe/agent> <http://d-nb.info/gnd/137082479> .
 _:b1 <http://id.loc.gov/ontologies/bibframe/role> <http://id.loc.gov/vocabulary/relators/red> .
 _:b1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://id.loc.gov/ontologies/bibframe/Contribution> .
-_:b10 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> _:b4 .
-_:b10 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
-_:b3 <http://www.loc.gov/mads/rdf/v1#componentList> _:b8 .
+_:b10 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <http://d-nb.info/gnd/4065781-4> .
+_:b10 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:b11 .
+_:b11 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <http://d-nb.info/gnd/4073972-7> .
+_:b11 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:b12 .
+_:b12 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> _:b4 .
+_:b12 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
+_:b3 <http://www.loc.gov/mads/rdf/v1#componentList> _:b10 .
 _:b3 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.loc.gov/mads/rdf/v1#ComplexSubject> .
 _:b4 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://d-nb.info/standards/elementset/gnd#SubjectHeading> .
 _:b4 <http://www.w3.org/2000/01/rdf-schema#label> "Atlas"^^<http://www.w3.org/2001/XMLSchema#string> .
@@ -17,12 +21,12 @@ _:b6 <http://schema.org/location> "M\u00FCnster"^^<http://www.w3.org/2001/XMLSch
 _:b6 <http://schema.org/publishedBy> "Aschendorff"^^<http://www.w3.org/2001/XMLSchema#string> .
 _:b6 <http://schema.org/startDate> "1990"^^<http://www.w3.org/2001/XMLSchema#gYear> .
 _:b6 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://schema.org/PublicationEvent> .
-_:b7 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> "http://d-nb.info/gnd/4065781-4, http://d-nb.info/gnd/4073972-7, Atlas"^^<http://www.w3.org/2001/XMLSchema#string> .
-_:b7 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
-_:b8 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <http://d-nb.info/gnd/4065781-4> .
-_:b8 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:b9 .
-_:b9 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <http://d-nb.info/gnd/4073972-7> .
-_:b9 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:b10 .
+_:b7 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> _:b0 .
+_:b7 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:b8 .
+_:b8 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> _:b1 .
+_:b8 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
+_:b9 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> "http://d-nb.info/gnd/4065781-4, http://d-nb.info/gnd/4073972-7, Atlas"^^<http://www.w3.org/2001/XMLSchema#string> .
+_:b9 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
 <http://d-nb.info/gnd/137082479> <http://d-nb.info/standards/elementset/gnd#dateOfBirth> "1938"^^<http://www.w3.org/2001/XMLSchema#gYear> .
 <http://d-nb.info/gnd/137082479> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://d-nb.info/standards/elementset/gnd#Person> .
 <http://d-nb.info/gnd/137082479> <http://www.w3.org/2000/01/rdf-schema#label> "Mayr, Alois"^^<http://www.w3.org/2001/XMLSchema#string> .
@@ -107,8 +111,7 @@ _:b9 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:b10 .
 <http://lobid.org/resources/TT001671747> <http://schema.org/provider> <http://lobid.org/organisations/DE-386#!> .
 <http://lobid.org/resources/TT001671747> <http://schema.org/sourceOrganization> <http://lobid.org/organisations/DE-386#!> .
 <http://lobid.org/resources/TT001671747> <http://www.w3.org/2000/01/rdf-schema#label> "lobid Ressource"^^<http://www.w3.org/2001/XMLSchema#string> .
-<http://lobid.org/resources/TT001671747#!> <http://id.loc.gov/ontologies/bibframe/contribution> _:b0 .
-<http://lobid.org/resources/TT001671747#!> <http://id.loc.gov/ontologies/bibframe/contribution> _:b1 .
+<http://lobid.org/resources/TT001671747#!> <http://id.loc.gov/ontologies/bibframe/contribution> _:b7 .
 <http://lobid.org/resources/TT001671747#!> <http://id.loc.gov/ontologies/bibframe/extent> "[2] Bl. : graph. Darst., Kt."^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/resources/TT001671747#!> <http://id.loc.gov/ontologies/bibframe/hasItem> <http://lobid.org/items/TT001671747:DE-290:GOA%207%2F62-3,5,1#!> .
 <http://lobid.org/resources/TT001671747#!> <http://id.loc.gov/ontologies/bibframe/hasItem> <http://lobid.org/items/TT001671747:DE-386:GOA%207%2F62-3,5,1#!> .
@@ -133,7 +136,7 @@ _:b9 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:b10 .
 <http://lobid.org/resources/TT001671747#!> <http://purl.org/lobid/lv#subjectAltLabel> "Regionalkunde"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/resources/TT001671747#!> <http://purl.org/lobid/lv#subjectAltLabel> "Westfalen (Provinzialverband)"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/resources/TT001671747#!> <http://purl.org/lobid/lv#subjectAltLabel> "Westfalen (Volk, Neuzeit)"^^<http://www.w3.org/2001/XMLSchema#string> .
-<http://lobid.org/resources/TT001671747#!> <http://purl.org/lobid/lv#subjectOrder> _:b7 .
+<http://lobid.org/resources/TT001671747#!> <http://purl.org/lobid/lv#subjectOrder> _:b9 .
 <http://lobid.org/resources/TT001671747#!> <http://purl.org/ontology/bibo/isbn> "3402061740"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/resources/TT001671747#!> <http://purl.org/ontology/bibo/isbn> "9783402061749"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/resources/TT001671747#!> <http://schema.org/publication> _:b6 .
