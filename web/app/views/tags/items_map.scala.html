@@ -12,6 +12,7 @@
 @import play.api.Play.current
 @import controllers.resources._
 @import play.api.cache.Cache
+@import play.Logger
 
 @string(value: JsValue) = { @value.asOpt[String].getOrElse("--") }
 
@@ -67,7 +68,6 @@ map.addLayer(layer);
         json = Json.parse(Lobid.cachedJsonCall(owner).toString);
         ownerUrl = if((json\\"url").isEmpty) owner else (json\\"url")(0).as[String];
         ownerName = if((json\\"name").isEmpty) "" else (json\\"name")(0).as[String]) {
-
           var details = '<tr><td><i>Bibliothek:</i></td><td>'+
             '<i>@if(!ownerName.isEmpty){<a href="@ownerUrl">@ownerName</a>}else{&lt;Keine Angabe&gt;}</i></td></tr>'
             @defining(Lobid.opacUrl(items(key).head)){ opacLink =>
@@ -79,7 +79,10 @@ map.addLayer(layer);
           else
             allTableDetails += '<tr><th style="width: 30%"/><th style="width: 70%"/></tr>' + tableDetails;
         @for((item,i) <- items(key).zipWithIndex;
-            itemJson = Json.parse(new controllers.resources.Index().getItem(item.replaceAll("https?://lobid\\.org/items/|#!", "")).getResult().toString);
+            itemId = item.replaceAll("https?://lobid\\.org/items/|#!", "");
+            itemJsonNode = new controllers.resources.Index().getItem(itemId).getResult();
+            if(itemJsonNode != null);
+            itemJson = Json.parse(itemJsonNode.toString);
             owners = (itemJson\\"heldBy");
             if(!owners.isEmpty);
             signatures = (itemJson\\"callNumber");

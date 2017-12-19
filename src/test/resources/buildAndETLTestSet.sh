@@ -27,4 +27,4 @@ tar cfj $TEST_FILE $DATA_DIR
 # index test resources:
 cd $PROJECT_ROOT
 mkdir -p log
-mvn exec:java -Dexec.mainClass="org.lobid.resources.run.MabXml2lobidJsonEs" -Dexec.args="$WORKING_DIR/$TEST_FILE resources-smalltest NOALIAS gaia.hbz-nrw.de gaia-aither create" -DjsonLdContext="http://test.lobid.org/resources/context.jsonld"
+mvn exec:java -Dexec.mainClass="org.lobid.resources.run.MabXml2lobidJsonEs" -Dexec.args="$WORKING_DIR/$TEST_FILE resources-smalltest NOALIAS weywot4.hbz-nrw.de weywot create" -DjsonLdContext="http://test.lobid.org/resources/context.jsonld"

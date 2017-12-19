@@ -5,18 +5,18 @@
                "spatial" : {
                   "properties" : {
                      "id" : {
-                        "index": "not_analyzed",
-                        "type" : "string"
+                        "index": "true",
+                        "type" : "keyword"
                      },
                      "type" : {
-                        "index": "no",
-                        "type" : "string"
+                        "index": "false",
+                        "type" : "keyword"
                      },
                      "geo" : {
                            "type" : "geo_point"
                      },
                      "label" : {
-                        "type" : "string"
+                        "type" : "text"
                      }
                   }
                },
@@ -25,11 +25,11 @@
                      "de" : {
                         "properties" : {
                            "value" : {
-                              "type" : "string"
+                              "type" : "text"
                            },
                            "language" : {
-                              "index": "no",
-                              "type" : "string"
+                              "index": "false",
+                              "type" : "keyword"
                            }
                         }
                      }

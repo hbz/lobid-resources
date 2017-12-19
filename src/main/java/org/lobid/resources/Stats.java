@@ -10,13 +10,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.culturegraph.mf.framework.DefaultStreamReceiver;
 import org.culturegraph.mf.framework.StreamReceiver;
 import org.culturegraph.mf.framework.annotations.Description;
 import org.culturegraph.mf.framework.annotations.In;
 import org.culturegraph.mf.framework.annotations.Out;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Sums and sorts occurrences of a field. Facultatively also occurrences of the
@@ -33,7 +33,7 @@ import org.slf4j.LoggerFactory;
 @Out(Void.class)
 public final class Stats extends DefaultStreamReceiver {
 	private static final Logger LOG =
-			LoggerFactory.getLogger(DefaultStreamReceiver.class);
+			LogManager.getLogger(DefaultStreamReceiver.class);
 	private final HashMap<String, HashMap<String, Integer>> occurrenceOfMultipleFieldsMap =
 			new HashMap<>();
 	// stores how many records have that field at least once

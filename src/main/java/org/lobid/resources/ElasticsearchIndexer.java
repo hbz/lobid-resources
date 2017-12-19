@@ -2,6 +2,8 @@
 
 package org.lobid.resources;
 
+import static org.elasticsearch.common.xcontent.XContentType.JSON;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -18,12 +20,15 @@ import java.util.SortedSet;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.StreamSupport;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.culturegraph.mf.framework.DefaultObjectPipe;
 import org.culturegraph.mf.framework.ObjectReceiver;
 import org.culturegraph.mf.framework.annotations.In;
 import org.culturegraph.mf.framework.annotations.Out;
 import org.elasticsearch.action.admin.cluster.state.ClusterStateRequest;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
+import org.elasticsearch.action.admin.indices.settings.put.UpdateSettingsRequestBuilder;
 import org.elasticsearch.action.bulk.BulkRequestBuilder;
 import org.elasticsearch.action.update.UpdateRequest;
 import org.elasticsearch.client.Client;
@@ -34,11 +39,10 @@ import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.index.query.MultiMatchQueryBuilder;
-import org.elasticsearch.rest.action.admin.indices.alias.delete.AliasesNotFoundException;
+import org.elasticsearch.rest.action.admin.indices.AliasesNotFoundException;
 import org.elasticsearch.search.SearchHits;
+import org.elasticsearch.transport.client.PreBuiltTransportClient;
 import org.lobid.resources.run.WikidataGeodata2Es;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -46,7 +50,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.SortedSetMultimap;
 import com.google.common.collect.TreeMultimap;
-import com.google.common.io.CharStreams;
+import com.google.gdata.util.common.io.CharStreams;
 
 /**
  * Index JSON into elasticsearch.
@@ -60,7 +64,7 @@ public class ElasticsearchIndexer
 		extends DefaultObjectPipe<HashMap<String, String>, ObjectReceiver<Void>> {
 
 	private static final Logger LOG =
-			LoggerFactory.getLogger(ElasticsearchIndexer.class);
+			LogManager.getLogger(ElasticsearchIndexer.class);
 	private String hostname;
 	private String clustername;
 	private BulkRequestBuilder bulkRequest;
@@ -78,7 +82,7 @@ public class ElasticsearchIndexer
 	private static String indexConfig = "index-config.json";
 	private static ObjectMapper mapper = new ObjectMapper();
 	// TODDO setter?
-	public static double MINIMUM_SCORE = 0.4;
+	public static double MINIMUM_SCORE = 20.0;
 
 	/**
 	 * Keys to get index properties and the json document ("graph")
@@ -100,7 +104,7 @@ public class ElasticsearchIndexer
 
 	@Override
 	public void onCloseStream() {
-		bulkRequest.setRefresh(true).get();
+		LOG.info("Closing ES index with name: " + indexName);
 		// remove old and unprotected indices
 		if (!aliasSuffix.equals("NOALIAS") && !updateNewestIndex
 				&& !aliasSuffix.toLowerCase().contains("test"))
@@ -108,13 +112,23 @@ public class ElasticsearchIndexer
 		// feed the rest of the bulk
 		if (bulkRequest.numberOfActions() != 0)
 			bulkRequest.execute().actionGet();
+		// refresh and set replicas to 1 and refresh intervall
+		client.admin().indices().prepareRefresh(indexName).get();
+		UpdateSettingsRequestBuilder usrb =
+				client.admin().indices().prepareUpdateSettings();
+		usrb.setIndices(indexName);
+		Settings settings = Settings.builder().put("index.refresh_interval", "30s")
+				.put("index.number_of_replicas", 1).build();
+		usrb.setSettings(settings);
+		usrb.execute().actionGet();
+		LOG.info("... closed ES index with name: " + indexName);
 	}
 
-	// TODO use BulkProcessorbuilder by updating to ES 1.5
 	@Override
 	public void onSetReceiver() {
 		if (client == null) {
-			Settings settings = Settings.settingsBuilder()
+			LOG.info("clustername=" + this.clustername);
+			Settings settings = Settings.builder()
 					.put("cluster.name", this.clustername)
 					.put("client.transport.sniff", false)
 					.put("client.transport.ping_timeout", 120, TimeUnit.SECONDS).build();
@@ -124,7 +138,8 @@ public class ElasticsearchIndexer
 			} catch (UnknownHostException e) {
 				e.printStackTrace();
 			}
-			this.tc = TransportClient.builder().settings(settings).build();
+
+			this.tc = new PreBuiltTransportClient(settings);
 			this.client = this.tc.addTransportAddress(this.NODE);
 		}
 		bulkRequest = client.prepareBulk();
@@ -133,7 +148,13 @@ public class ElasticsearchIndexer
 				getNewestIndex();
 		} else
 			createIndex();
-		bulkRequest.setRefresh(false);
+		UpdateSettingsRequestBuilder usrb =
+				client.admin().indices().prepareUpdateSettings();
+		usrb.setIndices(indexName);
+		Settings settings = Settings.builder().put("index.refresh_interval", -1)
+				.put("index.number_of_replicas", 0).build();
+		usrb.setSettings(settings);
+		usrb.execute().actionGet();
 		LOG.info(
 				"Threshold minimum score for spatial enrichment: " + MINIMUM_SCORE);
 	}
@@ -162,7 +183,7 @@ public class ElasticsearchIndexer
 				}
 			}
 		}
-		updateRequest.doc(jsonDoc);
+		updateRequest.doc(jsonDoc, JSON);
 		updateRequest.docAsUpsert(true);
 		bulkRequest.add(updateRequest);
 		docs++;
@@ -171,7 +192,6 @@ public class ElasticsearchIndexer
 				bulkRequest.execute().actionGet();
 				docs = 0;
 				bulkRequest = client.prepareBulk();
-				bulkRequest.setRefresh(false);
 				break; // stop retry-while
 			} catch (final NoNodeAvailableException e) {
 				retries--;
@@ -187,9 +207,13 @@ public class ElasticsearchIndexer
 	}
 
 	HashSet<String> unsuccessfullyLookup = new HashSet<>();
+	HashMap<String, Float> FIELD_BOOST = new HashMap<>();
 
 	private String enrich(final String index, final String queryField,
 			final String SPATIAL, ObjectNode node) {
+		FIELD_BOOST.put(SPATIAL + ".label", 10.0f);
+		FIELD_BOOST.put("locatedIn.value", 1.0f);
+		FIELD_BOOST.put("aliases.value", 2.0f);
 		Iterable<Entry<String, JsonNode>> iterable = () -> node.fields();
 		Optional<Entry<String, JsonNode>> o =
 				StreamSupport.stream(iterable.spliterator(), false)
@@ -204,8 +228,8 @@ public class ElasticsearchIndexer
 					LOG.info(
 							"Already lookuped " + query[i] + "with no good result, skipping");
 				} else {
-					MultiMatchQueryBuilder qsq = new MultiMatchQueryBuilder(query[i],
-							SPATIAL + ".label^5", "aliases.value^1.5", "locatedIn.value^3")
+					MultiMatchQueryBuilder qsq =
+							new MultiMatchQueryBuilder(query[i]).fields(FIELD_BOOST)
 									.type(MultiMatchQueryBuilder.Type.CROSS_FIELDS);
 					SearchHits hits = null;
 					try {

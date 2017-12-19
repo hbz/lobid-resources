@@ -14,10 +14,10 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.elasticsearch.client.Client;
 import org.lobid.resources.ElasticsearchIndexer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -49,7 +49,7 @@ public class WikidataGeodata2Es {
 	private static final String DATE =
 			new SimpleDateFormat("yyyyMMdd-HHmmss").format(new Date());
 	private static final Logger LOG =
-			LoggerFactory.getLogger(WikidataGeodata2Es.class);
+			LogManager.getLogger(WikidataGeodata2Es.class);
 	private static String indexAlias = "geo_nwbib";
 	private static boolean indexExists = false;
 
@@ -85,8 +85,8 @@ public class WikidataGeodata2Es {
 	}
 
 	static void setProductionIndexerConfigs(final String INDEX_NAME) {
-		esIndexer.setClustername("gaia-aither");
-		esIndexer.setHostname("gaia.hbz-nrw.de");
+		esIndexer.setClustername("weywot");
+		esIndexer.setHostname("weywot5.hbz-nrw.de");
 		LOG.info("Set index-name to: " + INDEX_NAME);
 		esIndexer.setIndexName(INDEX_NAME);
 		setElasticsearchIndexer();

@@ -41,5 +41,4 @@ public class IndexUnitTest {
 				.isEqualTo(
 						"* AND (contribution.agent.label:Melville) AND (isbn:123 AND isbn:456 OR (issn:123 AND issn:456))");
 	}
-
 }

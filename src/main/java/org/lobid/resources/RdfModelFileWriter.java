@@ -16,14 +16,14 @@ import org.apache.commons.io.IOUtils;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.riot.RDFLanguages;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.culturegraph.mf.exceptions.MetafactureException;
 import org.culturegraph.mf.framework.DefaultObjectReceiver;
 import org.culturegraph.mf.framework.annotations.Description;
 import org.culturegraph.mf.framework.annotations.In;
 import org.culturegraph.mf.framework.annotations.Out;
 import org.culturegraph.mf.util.xml.FilenameExtractor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.rdf.model.Model;
 
@@ -46,7 +46,7 @@ import com.hp.hpl.jena.rdf.model.Model;
 public final class RdfModelFileWriter extends DefaultObjectReceiver<Model>
 		implements FilenameExtractor {
 	private static final Logger LOG =
-			LoggerFactory.getLogger(RdfModelFileWriter.class);
+			LogManager.getLogger(RdfModelFileWriter.class);
 
 	private FilenameUtil filenameUtil = new FilenameUtil();
 	private Lang serialization;
@@ -108,11 +108,9 @@ public final class RdfModelFileWriter extends DefaultObjectReceiver<Model>
 	public void process(final Model model) {
 		String identifier = null;
 		try {
-			identifier =
-					model
-							.listObjectsOfProperty(
-									model.createProperty(filenameUtil.property))
-							.next().toString();
+			identifier = model
+					.listObjectsOfProperty(model.createProperty(filenameUtil.property))
+					.next().toString();
 			LOG.debug("Going to store identifier=" + identifier);
 		} catch (NoSuchElementException e) {
 			LOG.warn(

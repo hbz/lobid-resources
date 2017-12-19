@@ -11,12 +11,12 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 import org.apache.jena.riot.RDFDataMgr;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.culturegraph.mf.framework.DefaultObjectPipe;
 import org.culturegraph.mf.framework.ObjectReceiver;
 import org.culturegraph.mf.framework.annotations.In;
 import org.culturegraph.mf.framework.annotations.Out;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -44,7 +44,7 @@ import de.hbz.lobid.helper.JsonConverter;
 public final class RdfModel2ElasticsearchEtikettJsonLd
 		extends DefaultObjectPipe<Model, ObjectReceiver<HashMap<String, String>>> {
 	private static final Logger LOG =
-			LoggerFactory.getLogger(RdfModel2ElasticsearchEtikettJsonLd.class);
+			LogManager.getLogger(RdfModel2ElasticsearchEtikettJsonLd.class);
 	// the items will have their own index type and ES parents
 	private static final String PROPERTY_TO_PARENT = "itemOf";
 	static String LOBID_DOMAIN = "http://lobid.org/";

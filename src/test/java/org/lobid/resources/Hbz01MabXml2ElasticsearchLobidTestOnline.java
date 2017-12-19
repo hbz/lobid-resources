@@ -8,6 +8,7 @@ import java.net.UnknownHostException;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
+import org.elasticsearch.transport.client.PreBuiltTransportClient;
 import org.junit.Test;
 import org.lobid.resources.run.MabXml2lobidJsonEs;
 
@@ -21,14 +22,14 @@ import org.lobid.resources.run.MabXml2lobidJsonEs;
 @SuppressWarnings("javadoc")
 public final class Hbz01MabXml2ElasticsearchLobidTestOnline {
 	private TransportClient tc;
-	private final String CLUSTER_NAME = "gaia-aither";
-	private final String HOSTNAME = "gaia.hbz-nrw.de";
+	private final String CLUSTER_NAME = "weywot";
+	private final String HOSTNAME = "weywot4.hbz-nrw.de";
 
 	@Test
 	public void testOnline() {
 		Settings settings =
-				Settings.settingsBuilder().put("cluster.name", CLUSTER_NAME).build();
-		tc = TransportClient.builder().settings(settings).build();
+				Settings.builder().put("cluster.name", CLUSTER_NAME).build();
+		this.tc = new PreBuiltTransportClient(settings);
 		try {
 			Hbz01MabXml2ElasticsearchLobidTest.etl(
 					tc.addTransportAddress(new InetSocketTransportAddress(
