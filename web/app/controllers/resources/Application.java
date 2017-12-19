@@ -64,7 +64,6 @@ import play.mvc.Http;
 import play.mvc.Result;
 import play.test.Helpers;
 import play.twirl.api.Html;
-
 import views.html.api;
 import views.html.dataset;
 import views.html.details;
@@ -72,7 +71,6 @@ import views.html.details_item;
 import views.html.index;
 import views.html.query;
 import views.html.stars;
- 
 
 /**
  * The main application controller.
@@ -168,14 +166,16 @@ public class Application extends Controller {
 	 * @param format The response format (see {@code Accept.Format})
 	 * @param aggs The comma separated aggregation fields
 	 * @param location A single "lat,lon" point or space delimited points polygon
-	 * @param nested The nested object path. If non-empty, use q as nested query
+	 * @param nested A nested query, formatted as "<nested field>:<query string>"
+	 * @param filter A filter to apply to the query, supports query string syntax
 	 * @return The search results
 	 */
 	public static Promise<Result> query(final String q, final String agent,
 			final String name, final String subject, final String id,
 			final String publisher, final String issued, final String medium,
 			final int from, final int size, final String owner, String t, String sort,
-			String set, String format, String aggs, String location, String nested) {
+			String set, String format, String aggs, String location, String nested,
+			String filter) {
 		final String aggregations = aggs == null ? "" : aggs;
 		if (!aggregations.isEmpty() && !Index.SUPPORTED_AGGREGATIONS
 				.containsAll(Arrays.asList(aggregations.split(",")))) {
@@ -214,7 +214,7 @@ public class Application extends Controller {
 		} else {
 			result = Promise.promise(() -> {
 				Index queryResources = index.queryResources(queryString, from, size,
-						sort, owner, aggregations, location, nested);
+						sort, owner, aggregations, location, nested, filter);
 				boolean returnSuggestions = responseFormat.startsWith("json:");
 				JsonNode json = returnSuggestions
 						? toSuggestions(queryResources.getResult(), format.split(":")[1])
@@ -253,29 +253,30 @@ public class Application extends Controller {
 			Chunks<String> chunks = StringChunks.whenReady(out -> {
 				SearchResponse lastResponse =
 						index.<SearchResponse> withClient((Client client) -> {
-					QueryBuilder query = owner.isEmpty()
-							? QueryBuilders.queryStringQuery(q) : Index.ownerQuery(q, owner);
-					Index.validate(client, query);
-					Logger.trace("bulkResources: q={}, owner={}, query={}", q, owner,
-							query);
-					TimeValue keepAlive = new TimeValue(60000);
-					SearchResponse scrollResp = client.prepareSearch(Index.INDEX_NAME)
-							.addSort(FieldSortBuilder.DOC_FIELD_NAME, SortOrder.ASC)
-							.setScroll(keepAlive).setQuery(query)
-							.setSize(100 /* hits per shard for each scroll */).get();
-					String scrollId = scrollResp.getScrollId();
-					while (scrollResp.getHits().iterator().hasNext()) {
-						scrollResp.getHits().forEach((hit) -> {
-							out.write(hit.getSourceAsString());
-							out.write("\n");
+							QueryBuilder query =
+									owner.isEmpty() ? QueryBuilders.queryStringQuery(q)
+											: Index.ownerQuery(q, owner);
+							Index.validate(client, query);
+							Logger.trace("bulkResources: q={}, owner={}, query={}", q, owner,
+									query);
+							TimeValue keepAlive = new TimeValue(60000);
+							SearchResponse scrollResp = client.prepareSearch(Index.INDEX_NAME)
+									.addSort(FieldSortBuilder.DOC_FIELD_NAME, SortOrder.ASC)
+									.setScroll(keepAlive).setQuery(query)
+									.setSize(100 /* hits per shard for each scroll */).get();
+							String scrollId = scrollResp.getScrollId();
+							while (scrollResp.getHits().iterator().hasNext()) {
+								scrollResp.getHits().forEach((hit) -> {
+									out.write(hit.getSourceAsString());
+									out.write("\n");
+								});
+								scrollResp = client.prepareSearchScroll(scrollId)
+										.setScroll(keepAlive).execute().actionGet();
+								scrollId = scrollResp.getScrollId();
+							}
+							out.close();
+							return scrollResp;
 						});
-						scrollResp = client.prepareSearchScroll(scrollId)
-								.setScroll(keepAlive).execute().actionGet();
-						scrollId = scrollResp.getScrollId();
-					}
-					out.close();
-					return scrollResp;
-				});
 				Logger.trace("Last search response for bulk request: " + lastResponse);
 			});
 			return ok(chunks).as(Accept.Format.BULK.types[0]);
@@ -548,12 +549,13 @@ public class Application extends Controller {
 	 * @param set The set
 	 * @param location A single "lat,lon" point or space delimited points polygon
 	 * @param nested The nested object path. If non-empty, use q as nested query
+	 * @param filter A filter to apply to the query, supports query string syntax
 	 * @return The search results
 	 */
 	public static Promise<Result> facets(String q, String agent, String name,
 			String subject, String id, String publisher, String issued, String medium,
 			int from, int size, String owner, String t, String field, String sort,
-			String set, String location, String nested) {
+			String set, String location, String nested, String filter) {
 
 		String key = String.format("facets.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s",
 				field, q, agent, name, id, publisher, set, subject, issued, medium,
@@ -625,11 +627,10 @@ public class Application extends Controller {
 			boolean current =
 					current(subject, agent, medium, owner, t, field, term, location);
 
-			String routeUrl = routes.Application
-					.query(q, agentQuery, name, subjectQuery, id, publisher, issuedQuery,
-							mediumQuery, from, size, ownerQuery, typeQuery,
-							sort(sort, subjectQuery), set, null, field, locationQuery, nested)
-					.url();
+			String routeUrl = routes.Application.query(q, agentQuery, name,
+					subjectQuery, id, publisher, issuedQuery, mediumQuery, from, size,
+					ownerQuery, typeQuery, sort(sort, subjectQuery), set, null, field,
+					locationQuery, nested, filter).url();
 
 			String result = String.format(
 					"<li " + (current ? "class=\"active\"" : "")
@@ -644,7 +645,7 @@ public class Application extends Controller {
 
 		Promise<Result> promise =
 				query(q, agent, name, subject, id, publisher, issued, medium, from,
-						size, owner, t, sort, set, "json", field, location, nested)
+						size, owner, t, sort, set, "json", field, location, nested, filter)
 								.map(result -> {
 									JsonNode json = Json.parse(Helpers.contentAsString(result))
 											.get("aggregation");

@@ -29,20 +29,20 @@ public class NestedQueryTests extends LocalIndexSetup {
 		// @formatter:off
 		return Arrays.asList(new Object[][] {
 			// Nested query: only return hits where query matches 1 nested pseudo-doc:
-			{ "contribution", "contribution.agent.label:SCHOLLE AND contribution.role.label:Mitwirkende", /*->*/ 1 },
+			{ "contribution:contribution.agent.label:SCHOLLE AND contribution.role.label:Mitwirkende", "", /*->*/ 1 },
 			// Nested query: don't match if query parts match different nested docs:
-			{ "contribution", "contribution.agent.label:SCHOLLE AND contribution.role.label:Autor", /*->*/ 0 },
+			{ "contribution:contribution.agent.label:SCHOLLE AND contribution.role.label:Autor", "", /*->*/ 0 },
 			// Normal query: return hits where query matches parent top-level doc:
 			{ "", "contribution.agent.label:SCHOLLE AND contribution.role.label:Autor", /*->*/ 1 },
 			// Same for 'subject' nested field:
-			{ "subject", "subject.label:Westfalen AND subject.source.label:Raumsystematik", /*->*/ 1 },
-			{ "subject", "subject.label:Westfalen AND subject.source.label:Sachsystematik", /*->*/ 0 },
+			{ "subject:subject.label:Westfalen AND subject.source.label:Raumsystematik", "", /*->*/ 1 },
+			{ "subject:subject.label:Westfalen AND subject.source.label:Sachsystematik", "", /*->*/ 0 },
 			{ "", "subject.label:Westfalen AND subject.source.label:Sachsystematik", /*->*/ 1 },
 			// Same for 'subject.componentList' nested field:
-			{ "subject.componentList", 
-				"subject.componentList.label:Freudenberg AND subject.componentList.type:PlaceOrGeographicName", /*->*/ 1 },
-			{ "subject.componentList", 
-				"subject.componentList.label:Freudenberg AND subject.componentList.type:SubjectHeading", /*->*/ 0 },
+			{ "subject.componentList:subject.componentList.label:Freudenberg AND subject.componentList.type:PlaceOrGeographicName", 
+				"", /*->*/ 1 },
+			{ "subject.componentList:subject.componentList.label:Freudenberg AND subject.componentList.type:SubjectHeading", 
+				"", /*->*/ 0 },
 			{ "", "subject.componentList.label:Freudenberg AND subject.componentList.type:SubjectHeading", /*->*/ 1 }
 		});
 	} // @formatter:on
@@ -72,7 +72,7 @@ public class NestedQueryTests extends LocalIndexSetup {
 
 	private long hitsForQuery() {
 		return nestedString.isEmpty() ? index.totalHits(queryString)
-				: index.queryResources(queryString, 0, 1, "", "", "", "", nestedString)
+				: index.queryResources("*", 0, 1, "", "", "", "", nestedString, "")
 						.getTotal();
 	}
 

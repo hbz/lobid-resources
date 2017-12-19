@@ -51,6 +51,7 @@ $('input.search-resources').autocomplete({
 	<p>
 	@desc("Einfache Feldsuche: \"title\"", resources.routes.Application.query("title:ehrenfeld", format="json"))
 	@desc("Geschachtelte Feldsuche: \"contribution.agent.label\"", resources.routes.Application.query("contribution.agent.label:Melville", format="json"))
+	@desc("In eingebetteten Objekten suchen: \"nested\"", resources.routes.Application.query("", format="json", nested="contribution:contribution.agent.label:Melville AND contribution.role.label:Autor"))
 	@desc("Bereichssuche: \"publication.startDate:[* TO 1500]\"", resources.routes.Application.query("publication.startDate:[* TO 1500]", format="json"))
 	</p>
 	<p>Eine detaillierte Beschreibung der Abfragemöglichkeiten finden Sie in der Dokumentation der <a href="https://lucene.apache.org/core/5_5_0/queryparser/org/apache/lucene/queryparser/classic/package-summary.html#package_description">Lucene query string syntax</a>.</p>

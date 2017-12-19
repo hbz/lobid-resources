@@ -10,7 +10,6 @@ import static controllers.resources.Application.TYPE_FIELD;
 import static org.elasticsearch.index.query.QueryBuilders.matchQuery;
 
 import java.io.IOException;
-import java.net.InetAddress;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -29,11 +28,8 @@ import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.client.Client;
-import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.bytes.BytesArray;
 import org.elasticsearch.common.geo.GeoPoint;
-import org.elasticsearch.common.settings.Settings;
-import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.common.xcontent.XContentType;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.GeoDistanceQueryBuilder;
@@ -51,7 +47,6 @@ import org.elasticsearch.search.aggregations.AggregationBuilders;
 import org.elasticsearch.search.aggregations.Aggregations;
 import org.elasticsearch.search.sort.SortBuilders;
 import org.elasticsearch.search.sort.SortOrder;
-import org.elasticsearch.transport.client.PreBuiltTransportClient;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -74,13 +69,7 @@ public class Index {
 			Application.CONFIG.getString("index.type.item");
 	static final String TYPE_RESOURCE =
 			Application.CONFIG.getString("index.type.resource");
-	private static final int CLUSTER_PORT =
-			Application.CONFIG.getInt("index.cluster.port");
-	private static final List<String> CLUSTER_HOSTS =
-			Application.CONFIG.getList("index.cluster.hosts").stream()
-					.map(v -> v.unwrapped().toString()).collect(Collectors.toList());
-	private static final String CLUSTER_NAME =
-			Application.CONFIG.getString("index.cluster.name");
+
 	private static final String OWNER_ID_FIELD = "heldBy.id";
 	private static final String SPATIAL_LABEL_FIELD = "spatial.label.raw";
 	static final String SPATIAL_GEO_FIELD = "spatial.geo";
@@ -100,8 +89,8 @@ public class Index {
 	 * {@link #buildQueryString(String, String...)}
 	 */
 	public static final String[] QUERY_FIELDS =
-			new String[] { "contribution.agent.label", "title",
-					"subject.componentList.id|subject.componentList.label|subject.label",
+			new String[] { "contribution.agent.label", "title|otherTitleInformation",
+					"subject.componentList.id|subject.componentList.label|subject.label|subjectAltLabel",
 					"isbn|issn", "publication.publishedBy", "publication.startDate",
 					"medium.id", "type", "collectedBy.id" };
 
@@ -129,9 +118,8 @@ public class Index {
 		String fullQuery = q.isEmpty() ? "*" : "(" + q + ")";
 		for (int i = 0; i < values.length; i++) {
 			String fieldValue = values[i];
-			String fieldName =
-					fieldValue.contains("http") ? QUERY_FIELDS[i].replace(".label", ".id")
-							: QUERY_FIELDS[i];
+			String fieldName = fieldValue.contains("http")
+					? QUERY_FIELDS[i].replace(".label", ".id") : QUERY_FIELDS[i];
 			if (fieldName.toLowerCase().endsWith("date")
 					&& fieldValue.matches("(\\d{1,4}|\\*)-(\\d{1,4}|\\*)")) {
 				String[] fromTo = fieldValue.split("-");
@@ -156,7 +144,7 @@ public class Index {
 			for (int j = 0; j < vals.length; j++) {
 				String v = vals[j];
 				q += f + ":"
-						+ (f.endsWith(".id") ? "\"" + Lobid.escapeUri(v) + "\"" : v);
+						+ (v.startsWith("http") ? "\"" + Lobid.escapeUri(v) + "\"" : v);
 				if (j < vals.length - 1)
 					q += " AND ";
 			}
@@ -173,7 +161,7 @@ public class Index {
 	public long totalHits(String q) {
 		try {
 			return Cache.getOrElse("total-" + q,
-					() -> queryResources(q, 0, 0, "", "", "", "", "").getTotal(),
+					() -> queryResources(q, 0, 0, "", "", "", "", "", "").getTotal(),
 					Application.ONE_DAY);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -189,13 +177,14 @@ public class Index {
 	 * @param owner Owner institution
 	 * @param aggregations The comma separated aggregation fields
 	 * @param location A single "lat,lon" point or space delimited points polygon
-	 * @param nested The nested object path. If non-empty, use q as nested query
+	 * @param nested A nested query, formatted as "<nested field>:<query string>"
+	 * @param filter A filter to apply to the query, supports query string syntax
 	 * @return This index, get results via {@link #getResult()} and
 	 *         {@link #getTotal()}
 	 */
 	public Index queryResources(String q, int from, int size, String sort,
 			String owner, @SuppressWarnings("hiding") String aggregations,
-			String location, String nested) {
+			String location, String nested, String filter) {
 		Index resultIndex = withClient((Client client) -> {
 			QueryBuilder query = owner.isEmpty() ? QueryBuilders.queryStringQuery(q)
 					: ownerQuery(q, owner);
@@ -207,7 +196,15 @@ public class Index {
 						QueryBuilders.boolQuery().must(query).must(polygonQuery(location));
 			}
 			if (!nested.isEmpty()) {
-				query = QueryBuilders.nestedQuery(nested, query, ScoreMode.Avg);
+				String nestedFieldName = nested.substring(0, nested.indexOf(':'));
+				String nestedQueryString = nested.substring(nested.indexOf(':') + 1);
+				QueryBuilder nestedQuery = QueryBuilders.nestedQuery(nestedFieldName,
+						QueryBuilders.queryStringQuery(nestedQueryString), ScoreMode.Avg);
+				query = QueryBuilders.boolQuery().must(query).must(nestedQuery);
+			}
+			if (!filter.isEmpty()) {
+				query = QueryBuilders.boolQuery().must(query)
+						.filter(QueryBuilders.queryStringQuery(filter));
 			}
 			SearchRequestBuilder requestBuilder = client.prepareSearch(INDEX_NAME)
 					.setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
@@ -435,24 +432,7 @@ public class Index {
 		if (elasticsearchClient != null) {
 			return function.apply(elasticsearchClient);
 		}
-		Settings settings =
-				Settings.builder().put("cluster.name", CLUSTER_NAME).build();
-		try (TransportClient client = new PreBuiltTransportClient(settings)) {
-			addHosts(client);
-			return function.apply(client);
-		}
-	}
-
-	private static void addHosts(TransportClient client) {
-		for (String host : CLUSTER_HOSTS) {
-			try {
-				client.addTransportAddress(new InetSocketTransportAddress(
-						InetAddress.getByName(host), CLUSTER_PORT));
-			} catch (Exception e) {
-				Logger.warn("Could not add host {} to Elasticsearch client: {}", host,
-						e.getMessage());
-			}
-		}
+		return null;
 	}
 
 }
