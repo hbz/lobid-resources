@@ -10,9 +10,10 @@ import static play.test.Helpers.fakeRequest;
 import static play.test.Helpers.route;
 import static play.test.Helpers.running;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.stream.Collectors;
+import java.util.Map;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,6 +22,7 @@ import org.junit.runners.Parameterized.Parameters;
 
 import controllers.resources.RdfConverter;
 import controllers.resources.RdfConverter.RdfFormat;
+import play.libs.Json;
 import play.mvc.Result;
 
 /**
@@ -32,25 +34,35 @@ public class RdfConverterTests extends LocalIndexSetup {
 
 	@Parameters(name = "{0}")
 	public static Collection<Object[]> data() {
-		return Arrays.asList(RdfFormat.values()).stream()
-				.map(format -> new Object[] { format }).collect(Collectors.toList());
+		return Arrays
+				.asList(new Object[][] { { "TT050409948" }, { "BT000041593" } });
 	}
 
-	private RdfFormat format;
+	private String id;
 
-	public RdfConverterTests(RdfFormat format) {
-		this.format = format;
+	public RdfConverterTests(String id) {
+		this.id = id;
 	}
 
 	@Test
 	public void testJsonldToRdf() {
 		running(fakeApplication(), () -> {
-			Result result = route(fakeRequest(GET, "/resources/TT050409948"));
+			Result result = route(fakeRequest(GET, "/resources/" + id));
 			assertThat(result).isNotNull();
 			String jsonLd = contentAsString(result);
 			assertThat(jsonLd).isNotNull();
-			String rdf = RdfConverter.toRdf(jsonLd, format);
-			assertThat(rdf).isNotNull();
+			jsonLd = withLocalContext(jsonLd);
+			for (RdfFormat format : RdfFormat.values()) {
+				String rdf = RdfConverter.toRdf(jsonLd, format);
+				assertThat(rdf).isNotNull()
+						.as(String.format("RDF in format %s should not be null", format));
+			}
 		});
+	}
+
+	private static String withLocalContext(String jsonLd) {
+		Map<String, Object> json = Json.fromJson(Json.parse(jsonLd), Map.class);
+		json.put("@context", new File("conf/context.jsonld").toURI());
+		return Json.toJson(json).toString();
 	}
 }
