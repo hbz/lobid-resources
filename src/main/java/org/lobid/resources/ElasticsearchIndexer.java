@@ -39,6 +39,7 @@ import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.index.query.MultiMatchQueryBuilder;
+import org.elasticsearch.index.query.Operator;
 import org.elasticsearch.rest.action.admin.indices.AliasesNotFoundException;
 import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.transport.client.PreBuiltTransportClient;
@@ -82,7 +83,7 @@ public class ElasticsearchIndexer
 	private static String indexConfig = "index-config.json";
 	private static ObjectMapper mapper = new ObjectMapper();
 	// TODDO setter?
-	public static double MINIMUM_SCORE = 20.0;
+	public static double MINIMUM_SCORE = 5.0;
 
 	/**
 	 * Keys to get index properties and the json document ("graph")
@@ -230,7 +231,8 @@ public class ElasticsearchIndexer
 				} else {
 					MultiMatchQueryBuilder qsq =
 							new MultiMatchQueryBuilder(query[i]).fields(FIELD_BOOST)
-									.type(MultiMatchQueryBuilder.Type.CROSS_FIELDS);
+									.type(MultiMatchQueryBuilder.Type.CROSS_FIELDS)
+									.operator(Operator.AND);
 					SearchHits hits = null;
 					try {
 						hits = client.prepareSearch(index).setQuery(qsq).get().getHits();
