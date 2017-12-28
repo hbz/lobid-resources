@@ -225,45 +225,42 @@ public class ElasticsearchIndexer
 			HashSet<String> wdIds = new HashSet<>();
 			for (int i = 0; i < query.length; i++) {
 				query[i] = query[i].replaceAll("[^\\p{IsAlphabetic}]", " ").trim();
-				if (unsuccessfullyLookup.contains(query[i])) {
-					LOG.info(
-							"Already lookuped " + query[i] + "with no good result, skipping");
-				} else {
+				try {
+					if (unsuccessfullyLookup.contains(query[i]))
+						throw new Exception(
+								"Already lookuped with no good result, skipping");
 					MultiMatchQueryBuilder qsq =
 							new MultiMatchQueryBuilder(query[i]).fields(FIELD_BOOST)
 									.type(MultiMatchQueryBuilder.Type.CROSS_FIELDS)
 									.operator(Operator.AND);
 					SearchHits hits = null;
-					try {
-						hits = client.prepareSearch(index).setQuery(qsq).get().getHits();
-						JsonNode newSpatialNode;
-						if (hits.getTotalHits() > 0) {
-							ObjectNode source = mapper.readValue(
-									hits.getAt(0).getSourceAsString(), ObjectNode.class);
-							LOG.info("SourceAsString: " + hits.getAt(0).getSourceAsString());
-							newSpatialNode = source.findPath(SPATIAL);
-							LOG.info(i + " 1.Hit Query=" + query[i] + " score="
-									+ hits.getAt(0).getScore() + " source=" + source.toString());
-							if (hits.getAt(0).getScore() < MINIMUM_SCORE) {
-								LOG.info("Score " + hits.getAt(0).getScore()
-										+ " to low. Queried " + query[i]);
-								unsuccessfullyLookup.add(query[i]);
-							} else {
-								if (newSpatialNode != null) {
-									String wdId = newSpatialNode.findPath("id").toString();
-									if (!wdIds.contains(wdId)) { // add entity only once
-										spatialNode.add(newSpatialNode);
-										wdIds.add(wdId);
-									}
-								} else
-									unsuccessfullyLookup.add(query[i]);
-							}
+					hits = client.prepareSearch(index).setQuery(qsq).get().getHits();
+					JsonNode newSpatialNode;
+					if (hits.getTotalHits() > 0) {
+						ObjectNode source = mapper
+								.readValue(hits.getAt(0).getSourceAsString(), ObjectNode.class);
+						newSpatialNode = source.findPath(SPATIAL);
+						LOG.info(i + " 1.Hit Query=" + query[i] + " score="
+								+ hits.getAt(0).getScore() + " source=" + source.toString());
+						if (hits.getAt(0).getScore() < MINIMUM_SCORE) {
+							unsuccessfullyLookup.add(query[i]);
+							throw new Exception(
+									"Score " + hits.getAt(0).getScore() + " to low.");
 						}
-					} catch (Exception e) {
-						LOG.warn("Couldn't get a hit using index '" + index + "' querying '"
-								+ query[i] + "'", e.getMessage());
-						unsuccessfullyLookup.add(query[i]);
-					}
+						if (newSpatialNode != null) {
+							String wdId = newSpatialNode.findPath("id").toString();
+							if (!wdIds.contains(wdId)) { // add entity only once
+								spatialNode.add(newSpatialNode);
+								wdIds.add(wdId);
+							}
+						} else
+							unsuccessfullyLookup.add(query[i]);
+					} else
+						throw new Exception("No hit.");
+				} catch (Exception e) {
+					LOG.warn("Couldn't get a hit using index '" + index + "' querying '"
+							+ query[i] + "'. " + e.getMessage());
+					unsuccessfullyLookup.add(query[i]);
 				}
 			}
 			if (spatialNode.size() > 0)
