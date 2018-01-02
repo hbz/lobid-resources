@@ -281,6 +281,7 @@ public class WikidataGeodata2Es {
 				}
 			} catch (Exception e) {
 				LOG.error("Couldn't build a json document from the wd-entity ", e);
+				return null;
 			}
 			return Pair.of(node.findPath("id").asText(), root);
 		};
