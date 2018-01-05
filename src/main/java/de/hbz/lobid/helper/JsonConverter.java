@@ -257,7 +257,6 @@ public class JsonConverter {
 					jsonResult.put(key, createObjectWithId(uri));
 			}
 		}
-
 	}
 
 	private void addBlankNodeToJsonResult(Map<String, Object> jsonResult,

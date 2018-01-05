@@ -37,9 +37,10 @@ public final class UrlSanitizer extends AbstractSimpleStatelessFunction {
 	}
 
 	private static String sanitizeUrl(final String value) {
-		String url = value.trim();
 		// unwise characters (rfc2396) :
-		url = url.replace("\\", "%5C").replace("|", "%7C");
+		String url = value.replace("\\", "%5C").replace("|", "%7C");
+		url = url.replaceAll("<.*>", "");
+		url = url.trim();
 		if (url.matches(".*#.*#.*")) {// allow only one fragment
 			url = url.substring(0, (url.indexOf("#", url.indexOf("#") + 1)));
 		}
