@@ -3564,66 +3564,23 @@
 		<call-macro name="setTypeCorporateBodyInAgent" field="296"/>
 		<call-macro name="setBackRdfSubjectForCorporateBodyAgent" field="296"/>
 
-
-
-
 		<combine name="~rdf:subject" value="$[ns-lobid-resource]${id}#!">
 			<data source="@id" name="id"/>
 			<data source="@contributionBnode[12][0123456789][02468]"/>
 			<data source="@relatorNode[12][0123456789][02468]"/>
 		</combine>
-		<!-- tried: @contributionBnode100|@contributionBnode200 -->
-		<!-- tried: @contributionBnode200|@contributionBnode100 -->
-		<!-- tried: multiple lists -->
-		<!-- tried: multiple combines in one list -->
-		<!-- tried: flushWith @contributionBnode at combine tag leads to StackOverflow -->
-		<!-- tried: flushWith @contributionBnode at entity tag leads to no contribution -->
-		<!-- tried: put contributionBnodes in one or two variables and show variables -->
-		
-		<!-- <entity name="~rdf:list" reset="true">
-			<combine name="http://id.loc.gov/ontologies/bibframe/contribution" value="${a}"
-				reset="true" sameEntity="true"> -->
-				<!-- <data source="@contributionBnode[12][0123456789][02468]" name="a"/>
-				<data source="@relatorNode[12][0123456789][02468]"/> -->
-				<!-- <data source="@contributionBnode1[0123456789][02468]|@contributionBnode2[0123456789][02468]" name="a"/>
-				<data source="@relatorNode1[0123456789][02468]|@relatorNode2[0123456789][02468]"/> -->
-				<!-- <data source="@contributionBnode" name="a"/>
-				<data source="@relatorNode"/> -->
-				<!-- <data source="@contributionBnode1[0123456789][02468]" name="a"/>
-				<data source="@relatorNode1[0123456789][02468]"/>
-			</combine>
-			<combine name="http://id.loc.gov/ontologies/bibframe/contribution" value="${a}"
-				reset="true" sameEntity="true">
-				<data source="@contributionBnode2[0123456789][02468]" name="a"/>
-				<data source="@relatorNode2[0123456789][02468]"/>
-			</combine>
-		</entity> -->
-		
-		
 		<entity name="~rdf:list" reset="true">
 			<combine name="http://id.loc.gov/ontologies/bibframe/contribution" value="${a}"
 				sameEntity="true" reset="true">
 				<data source="@contributionBnode[12][0123456789][02468]" name="a"/>
 				<data source="@relatorNode[12][0123456789][02468]"/>
-				<!-- <data source="@contributionBnode1[0123456789][02468]|@contributionBnode2[0123456789][02468]" name="a"/>
-				<data source="@relatorNode1[0123456789][02468]|@relatorNode2[0123456789][02468]"/> -->
-				<!-- <data source="@contributionBnode" name="a"/>
-				<data source="@relatorNode"/> -->
 			</combine>	
 		</entity>
-	
-	
-	
-		
 		<combine name="~rdf:subject" value="${a}">
 			<data source="@id"/>
 			<data source="@contributionBnode[12][0123456789][02468]" name="a"/>
 			<data source="@relatorNode[12][0123456789][02468]"/>
-			<!-- <data source="@contributionBnode" name="a"/>
-			<data source="@relatorNode"/> -->
 		</combine>
-
-
 		<!-- ####################### -->
 		<!-- ################ koerperschaften and persons -->
 		<!-- ####################### -->
@@ -3643,8 +3600,6 @@
 				<sanitizeUrl></sanitizeUrl>
 			</data>
 		</combine>
-
-		
 
 		<call-macro name="setContributorOrder" field="100"/>
 		<call-macro name="setContributorOrder" field="104"/>
