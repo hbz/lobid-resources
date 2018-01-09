@@ -46,15 +46,17 @@
    },
    "mappings" : {
       "item" : {
+         "date_detection" : "false",
          "properties" : {
-            "describedby" : {
+            "describedBy" : {
                "properties" : {
                   "id" : {
                      "type" : "keyword",
                      "index" : "true"
                   },
                   "label" : {
-                     "type" : "text"
+                     "type" : "text",
+                     "index": "false"
                   }
                }
             },
@@ -104,11 +106,27 @@
          },
          "_all" : {
             "analyzer" : "german_analyzer"
-         },
-         "date_detection" : false
+         }
       },
       "resource" : {
+         "dynamic": false,
          "properties" : {
+            "inCollection": {
+                "properties": {
+                  "id": {
+                     "index" : "true",
+                     "type" : "keyword"
+                  },
+                  "label": {
+                    "type": "text",
+                    "index": "false"
+                  },
+                  "type": {
+                    "type": "text",
+                    "index": "false"
+                  }
+                }
+              },
             "actor" : {
                "properties" : {
                   "preferredName" : {
@@ -167,6 +185,88 @@
             "alternativeTitle" : {
                "analyzer" : "german_analyzer",
                "type" : "text"
+            },
+            "responsibilityStatement": {
+               "type": "text",
+               "index": "true"
+            },
+            "natureOfContent" : {
+               "properties" : {
+                  "id" : {
+                     "index" : "true",
+                     "type" : "keyword"
+                  },
+                  "label" : {
+                     "type" : "text",
+                     "index": "true"
+                  }
+               }
+            },
+            "successor" : {
+               "properties" : {
+                  "id" : {
+                     "index" : "true",
+                     "type" : "keyword"
+                  },
+                  "label" : {
+                     "type" : "text",
+                     "index": "true"
+                  }
+               }
+            },
+            "predecessor" : {
+               "properties" : {
+                  "id" : {
+                     "index" : "true",
+                     "type" : "keyword"
+                  },
+                  "label" : {
+                     "type" : "text",
+                     "index": "true"
+                  }
+               }
+            },
+            "predecessor" : {
+               "properties" : {
+                  "id" : {
+                     "index" : "true",
+                     "type" : "keyword"
+                  },
+                  "label" : {
+                     "type" : "text",
+                     "index": "true"
+                  }
+               }
+            },
+            "supplement" : {
+               "properties" : {
+                  "id" : {
+                     "index" : "true",
+                     "type" : "keyword"
+                  },
+                  "label" : {
+                     "type" : "text",
+                     "index": "false"
+                  }
+               }
+            },
+            "spatial": {
+               "properties": {
+                 "geo": {
+                   "type": "geo_point"
+                 },
+                 "id": {
+                   "type": "keyword"
+                 },
+                "label": {
+                  "type": "text",
+                  "type": "keyword"
+                }
+              },
+              "type": {
+                "type": "keyword",
+                "index": false
+              }
             },
             "issued" : {
                "type" : "text"
@@ -249,6 +349,10 @@
                "analyzer" : "id_analyzer",
                "type" : "text"
             },
+            "subjectAltLabel": {
+               "type": "text",
+               "index": "true"
+            },
             "sameAs" : {
                "properties" : {
                   "label" : {
@@ -307,6 +411,26 @@
             "shortTitle" : {
                "analyzer" : "german_analyzer",
                "type" : "text"
+            },
+            "notation": {
+              "type": "text",
+              "index": "false"
+            },
+            "dateOfBirthAndDeath": {
+               "type": "text",
+               "index": "false"
+            },
+            "primaryForm": {
+               "properties" : {
+                  "label" : {
+                     "index" : "false",
+                     "type" : "text"
+                  },
+                  "id" : {
+                     "type" : "keyword",
+                     "index" : "true"
+                  }
+                }
             },
             "hasItem" : {
                "properties" : {
@@ -428,6 +552,10 @@
                "type" : "text",
                "analyzer" : "german_analyzer"
             },
+            "titleOfSubSeries" : {
+               "type" : "text",
+               "analyzer" : "german_analyzer"
+            },
             "medium" : {
                "properties" : {
                   "id" : {
@@ -478,7 +606,7 @@
                         "id": {
                            "index" : "true",
                            "type" : "keyword"
-                        },
+                     },
                      "label": {
                         "type": "text",
                         "fields": {
@@ -486,6 +614,18 @@
                                 "type": "keyword",
                                 "index": "true"
                             }
+                        }
+                     },
+                     "source": {
+                        "properties": {
+                          "id": {
+                            "type": "keyword",
+                            "index": "true"
+                          },
+                          "label": {
+                            "type": "text",
+                            "index": "true"
+                          }
                         }
                      },
                      "type": {
@@ -499,8 +639,21 @@
                   "type": "keyword"
                   },
                "label": {
+                  "index" : "true",
                   "type": "text"
                   },
+               "source": {
+                  "properties": {
+                     "id": {
+                         "type": "keyword",
+                          "index": "true"
+                      },
+                      "label": {
+                         "type": "text",
+                         "index": "true"
+                      }
+                  }
+               },
                "type": {
                   "index" : "true",
                   "type": "keyword"
@@ -638,9 +791,25 @@
             },
             "isPartOf" : {
                "properties" : {
-                  "id" : {
-                     "type" : "keyword",
-                     "index" : "true"
+                  "hasSuperordinate": {
+                     "properties": {
+                        "id": {
+                          "type": "keyword",
+                          "index": "true"
+                        },
+                        "label": {
+                          "type": "text",
+                          "index": "true"
+                        }
+                     }
+                  },
+                  "numbering": {
+                     "type": "text",
+                     "index": "true"
+                  },
+                 "type": {
+                     "type": "text",
+                     "index": "no"
                   }
                }
             },
@@ -824,7 +993,7 @@
                "type" : "text",
                "analyzer" : "id_analyzer"
             },
-            "describedby" : {
+            "describedBy" : {
                "properties" : {
                   "dateCreated" : {
                      "type" : "text"
@@ -837,7 +1006,44 @@
                      "type" : "text"
                   },
                   "label" : {
-                     "type" : "text"
+                     "type" : "text",
+                     "index": "false"
+                  },
+                  "modifiedBy" : {
+                     "properties" : {
+                        "id" : {
+                           "index" : "true",
+                           "type" : "keyword"
+                        },
+                        "label": {
+                           "index" : "false",
+                           "type" : "keyword"
+                        }
+                     }
+                  },
+                  "sourceOrganization" : {
+                     "properties" : {
+                        "id" : {
+                           "index" : "true",
+                           "type" : "keyword"
+                        },
+                        "label": {
+                           "index" : "false",
+                           "type" : "keyword"
+                        }
+                     }
+                  },
+                  "provider" : {
+                     "properties" : {
+                        "id" : {
+                           "index" : "true",
+                           "type" : "keyword"
+                        },
+                        "label": {
+                           "index" : "false",
+                           "type" : "keyword"
+                        }
+                     }
                   }
                }
             },
@@ -904,20 +1110,20 @@
                             "type": "keyword",
                             "index": "true"
                         }
-                    }
+                     }
                   }
                }
-            }
+           }
          },
-         "date_detection" : false,
-         "_all" : {
+         "date_detection" : "false",
+          "_all" : {
             "analyzer" : "german_analyzer"
          }
       },
       "_default_" : {
-         "_all" : {
-            "analyzer" : "german_analyzer"
-         }
-      }
+       "_all" : {
+          "analyzer" : "german_analyzer"
+       }
+    }
    }
 }
