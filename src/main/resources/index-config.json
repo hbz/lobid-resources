@@ -108,7 +108,24 @@
          "date_detection" : false
       },
       "resource" : {
+         "dynamic": false,
          "properties" : {
+            "inCollection": {
+                "properties": {
+                  "id": {
+                     "index" : "true",
+                     "type" : "keyword"
+                  },
+                  "label": {
+                    "type": "text",
+                    "index": "false"
+                  },
+                  "type": {
+                    "type": "text",
+                    "index": "false"
+                  }
+                }
+              },
             "actor" : {
                "properties" : {
                   "preferredName" : {
@@ -478,7 +495,7 @@
                         "id": {
                            "index" : "true",
                            "type" : "keyword"
-                        },
+                     },
                      "label": {
                         "type": "text",
                         "fields": {
@@ -486,6 +503,18 @@
                                 "type": "keyword",
                                 "index": "true"
                             }
+                        }
+                     },
+                     "source": {
+                        "properties": {
+                          "id": {
+                            "type": "keyword",
+                            "index": "true"
+                          },
+                          "label": {
+                            "type": "text",
+                            "index": "true"
+                          }
                         }
                      },
                      "type": {
@@ -499,8 +528,21 @@
                   "type": "keyword"
                   },
                "label": {
+                  "index" : "true",
                   "type": "text"
                   },
+               "source": {
+                  "properties": {
+                     "id": {
+                         "type": "keyword",
+                          "index": "true"
+                      },
+                      "label": {
+                         "type": "text",
+                         "index": "true"
+                      }
+                  }
+               },
                "type": {
                   "index" : "true",
                   "type": "keyword"
