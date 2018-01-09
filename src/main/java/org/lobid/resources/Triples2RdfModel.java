@@ -104,11 +104,11 @@ public class Triples2RdfModel
 	}
 
 	private void reasoning(Model model) {
-		ExtendedIterator<Triple> it = ModelFactory
-				.createInfModel(boundReasoner, model).getGraph()
-				.find(model
-						.listSubjectsWithProperty(propertyIdentifyingTheNodeForInferencing)
-						.next().asNode(), null, null);
+		ExtendedIterator<Triple> it =
+				ModelFactory.createInfModel(boundReasoner, model).getGraph().find(
+						model.listSubjectsWithProperty(
+								propertyIdentifyingTheNodeForInferencing).next().asNode(),
+						null, null);
 		Model model1 = ModelFactory.createDefaultModel();
 		while (it.hasNext()) {
 			Triple triple = it.next().asTriple();
