@@ -34,6 +34,7 @@ import org.elasticsearch.common.xcontent.XContentType;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.GeoDistanceQueryBuilder;
 import org.elasticsearch.index.query.GeoPolygonQueryBuilder;
+import org.elasticsearch.index.query.Operator;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.join.aggregations.ChildrenAggregationBuilder;
@@ -186,7 +187,9 @@ public class Index {
 			String owner, @SuppressWarnings("hiding") String aggregations,
 			String location, String nested, String filter) {
 		Index resultIndex = withClient((Client client) -> {
-			QueryBuilder query = owner.isEmpty() ? QueryBuilders.queryStringQuery(q)
+			QueryBuilder query = owner.isEmpty()
+					? QueryBuilders.queryStringQuery(q).defaultOperator(
+							q.toLowerCase().contains("title") ? Operator.AND : Operator.OR)
 					: ownerQuery(q, owner);
 			validate(client, query);
 			Logger.trace("queryResources: q={}, from={}, size={}, sort={}, query={}",
