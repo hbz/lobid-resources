@@ -119,23 +119,6 @@
                     "index": "false"
                   }
                 }
-              },
-            "actor" : {
-               "properties" : {
-                  "preferredName" : {
-                     "type" : "text",
-                     "analyzer" : "ngram_analyzer",
-                     "search_analyzer" : "german_analyzer"
-                  },
-                  "id" : {
-                     "type" : "keyword"
-                  },
-                  "preferredNameForThePerson" : {
-                     "search_analyzer" : "german_analyzer",
-                     "analyzer" : "ngram_analyzer",
-                     "type" : "text"
-                  }
-               }
             },
             "dateOfBirth" : {
                "type" : "text"
@@ -147,28 +130,6 @@
                   },
                   "label" : {
                      "type" : "text"
-                  }
-               }
-            },
-            "contributor" : {
-               "properties" : {
-                  "preferredName" : {
-                     "search_analyzer" : "german_analyzer",
-                     "analyzer" : "ngram_analyzer",
-                     "type" : "text"
-                  },
-                  "preferredNameForTheCorporateBody" : {
-                     "type" : "text",
-                     "analyzer" : "ngram_analyzer",
-                     "search_analyzer" : "german_analyzer"
-                  },
-                  "preferredNameForThePerson" : {
-                     "search_analyzer" : "german_analyzer",
-                     "analyzer" : "ngram_analyzer",
-                     "type" : "text"
-                  },
-                  "id" : {
-                     "type" : "keyword"
                   }
                }
             },
@@ -251,26 +212,10 @@
             "issued" : {
                "type" : "text"
             },
-            "honoree" : {
-               "properties" : {
-                  "preferredName" : {
-                     "type" : "text",
-                     "analyzer" : "ngram_analyzer",
-                     "search_analyzer" : "german_analyzer"
-                  },
-                  "preferredNameForThePerson" : {
-                     "search_analyzer" : "german_analyzer",
-                     "analyzer" : "ngram_analyzer",
-                     "type" : "text"
-                  },
-                  "id" : {
-                     "type" : "keyword"
-                  }
-               }
-            },
             "source" : {
                "properties" : {
                   "label" : {
+                     "index" : "false",
                      "type" : "text"
                   },
                   "id" : {
@@ -525,33 +470,6 @@
                   }
                }
             },
-            "creator" : {
-               "properties" : {
-                  "preferredNameForTheCorporateBody" : {
-                     "search_analyzer" : "german_analyzer",
-                     "analyzer" : "ngram_analyzer",
-                     "type" : "text"
-                  },
-                  "preferredName" : {
-                     "type" : "text",
-                     "search_analyzer" : "german_analyzer",
-                     "analyzer" : "ngram_analyzer"
-                  },
-                  "preferredNameForThePerson" : {
-                     "type" : "text",
-                     "search_analyzer" : "german_analyzer",
-                     "analyzer" : "ngram_analyzer"
-                  },
-                  "preferredNameForThePlaceOrGeographicName" : {
-                     "analyzer" : "ngram_analyzer",
-                     "search_analyzer" : "german_analyzer",
-                     "type" : "text"
-                  },
-                  "id" : {
-                     "type" : "text"
-                  }
-               }
-            },
             "subject": {
                "type" : "nested",
                "include_in_parent" : "true",
@@ -689,6 +607,7 @@
                      "type" : "keyword"
                   },
                   "label" : {
+                     "index" : "false",
                      "type" : "text"
                   }
                }
@@ -710,23 +629,6 @@
                "type" : "text",
                "analyzer" : "ngram_analyzer",
                "search_analyzer" : "german_analyzer"
-            },
-            "redaktor" : {
-               "properties" : {
-                  "id" : {
-                     "type" : "keyword"
-                  },
-                  "preferredNameForThePerson" : {
-                     "analyzer" : "ngram_analyzer",
-                     "search_analyzer" : "german_analyzer",
-                     "type" : "text"
-                  },
-                  "preferredName" : {
-                     "type" : "text",
-                     "analyzer" : "ngram_analyzer",
-                     "search_analyzer" : "german_analyzer"
-                  }
-               }
             },
             "isPartOf" : {
                "properties" : {
@@ -791,46 +693,7 @@
                   }
                }
             },
-            "editor" : {
-               "properties" : {
-                  "preferredName" : {
-                     "analyzer" : "ngram_analyzer",
-                     "search_analyzer" : "german_analyzer",
-                     "type" : "text"
-                  },
-                  "id" : {
-                     "type" : "keyword"
-                  },
-                  "preferredNameForThePerson" : {
-                     "analyzer" : "ngram_analyzer",
-                     "search_analyzer" : "german_analyzer",
-                     "type" : "text"
-                  }
-               }
-            },
-            "composer" : {
-               "properties" : {
-                  "preferredName" : {
-                     "type" : "text",
-                     "search_analyzer" : "german_analyzer",
-                     "analyzer" : "ngram_analyzer"
-                  },
-                  "id" : {
-                     "type" : "keyword"
-                  },
-                  "preferredNameForThePerson" : {
-                     "type" : "text",
-                     "search_analyzer" : "german_analyzer",
-                     "analyzer" : "ngram_analyzer"
-                  }
-               }
-            },
             "dateOfDeath" : {
-               "type" : "text"
-            },
-            "creatorName" : {
-               "search_analyzer" : "german_analyzer",
-               "analyzer" : "ngram_analyzer",
                "type" : "text"
             },
             "subjectOrder" : {
@@ -879,23 +742,6 @@
             },
             "note" : {
                "type" : "text"
-            },
-            "singer" : {
-               "properties" : {
-                  "preferredName" : {
-                     "type" : "text",
-                     "search_analyzer" : "german_analyzer",
-                     "analyzer" : "ngram_analyzer"
-                  },
-                  "preferredNameForThePerson" : {
-                     "type" : "text",
-                     "search_analyzer" : "german_analyzer",
-                     "analyzer" : "ngram_analyzer"
-                  },
-                  "id" : {
-                     "type" : "keyword"
-                  }
-               }
             },
             "contributorOrder" : {
                "type" : "text",
@@ -974,40 +820,6 @@
             },
             "oclcNumber" : {
                "type" : "text"
-            },
-            "photographer" : {
-               "properties" : {
-                  "id" : {
-                     "type" : "keyword"
-                  },
-                  "preferredNameForThePerson" : {
-                     "analyzer" : "ngram_analyzer",
-                     "search_analyzer" : "german_analyzer",
-                     "type" : "text"
-                  },
-                  "preferredName" : {
-                     "type" : "text",
-                     "search_analyzer" : "german_analyzer",
-                     "analyzer" : "ngram_analyzer"
-                  }
-               }
-            },
-            "director" : {
-               "properties" : {
-                  "preferredName" : {
-                     "type" : "text",
-                     "analyzer" : "ngram_analyzer",
-                     "search_analyzer" : "german_analyzer"
-                  },
-                  "id" : {
-                     "type" : "keyword"
-                  },
-                  "preferredNameForThePerson" : {
-                     "type" : "text",
-                     "analyzer" : "ngram_analyzer",
-                     "search_analyzer" : "german_analyzer"
-                  }
-               }
             },
             "spatial" : {
                "properties" : {
