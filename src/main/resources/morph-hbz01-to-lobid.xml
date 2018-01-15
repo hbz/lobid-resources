@@ -1569,10 +1569,10 @@
 			</concat>
 			<data source="@titleRemainder331"/>
 		</combine>
-		<combine name="@titleRemainder2title331+085" value="${a}">
-			<concat delimiter=" / " name="a">
+		<combine name="@title331AndSubseries360" value="${a}">
+			<concat delimiter=". " name="a">
 				<data source="@titleRemainder331"/>
-				<data source="@085"/>
+				<data source="@titleOfSubSeries"/>
 			</concat>
 		</combine>
 		<combine name="@otherTitle" value="${titleRemainder}">
@@ -1630,7 +1630,7 @@
 					<replace pattern="&gt;" with=""/>
 					<replace pattern="&lt;" with=""/>
 				</data>
-				<data source="@titleRemainder2title331+085">
+				<data source="@title331AndSubseries360">
 					<replace pattern="&gt;" with=""/>
 					<replace pattern="&lt;" with=""/>
 				</data>
