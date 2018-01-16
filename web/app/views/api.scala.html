@@ -11,7 +11,7 @@
 
 @sample_doc(hbzId: String, label: String) = {
 	<h5 id='@(label.toLowerCase)'><a href='@resources.routes.Application.resource(hbzId, format="html")'>@label</a> <small><a href='#@(label.toLowerCase)'><span class='glyphicon glyphicon-link'></span></a></small></h5>
-	<pre><code>@(Json.prettyPrint(Json.parse(new controllers.resources.Index().getResource(hbzId).getResult().toString)))</code></pre>
+	<pre><code>@(Json.prettyPrint(Json.parse(new controllers.resources.Search.Builder().build().getResource(hbzId).getResult().toString)))</code></pre>
 }
 
 @sampleUsageCode() = {

@@ -29,7 +29,8 @@ import org.junit.Test;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.base.Joiner;
 
-import controllers.resources.Index;
+import controllers.resources.Queries;
+import controllers.resources.Search;
 import play.mvc.Http;
 import play.mvc.Result;
 import play.test.Helpers;
@@ -54,11 +55,10 @@ public class IntegrationTests extends LocalIndexSetup {
 	@Test
 	public void testFacets() {
 		running(testServer(3333), () -> {
-			Index index = new Index();
-			String queryString =
-					index.buildQueryString("köln", "", "", "", "", "", "", "", "");
-			Index queryResources = index.queryResources(queryString, 0, 0, "", "",
-					Joiner.on(",").join(Index.SUPPORTED_AGGREGATIONS), "", "", "");
+			Search index =
+					new Search.Builder().query(new Queries.Builder().q("köln").build())
+							.aggs(Joiner.on(",").join(Search.SUPPORTED_AGGREGATIONS)).build();
+			Search queryResources = index.queryResources();
 			Aggregations facets = queryResources.getAggregations();
 			Terms terms = facets.get("type");
 			Stream<String> values =
@@ -99,8 +99,9 @@ public class IntegrationTests extends LocalIndexSetup {
 	@Test
 	public void sizeRequest() {
 		running(testServer(3333), () -> {
-			Index index = new Index();
-			Long hits = index.totalHits("hbzId:TT050409948");
+			Search index = new Search.Builder()
+					.query(new Queries.Builder().q("hbzId:TT050409948").build()).build();
+			Long hits = index.totalHits();
 			assertThat(hits).isGreaterThan(0);
 		});
 	}
@@ -108,26 +109,27 @@ public class IntegrationTests extends LocalIndexSetup {
 	@Test
 	public void responseJsonFilterGet() {
 		running(testServer(3333), () -> {
-			Index index = new Index();
+			Search index = new Search.Builder().build();
 			JsonNode hit = index.getResource("TT050409948").getResult();
 			assertThat(hit.isObject()).as("hit is an object").isTrue();
 			assertThat(hit.findValue("hbzId").asText()).isEqualTo("TT050409948");
-			Index.HIDE_FIELDS.forEach(field -> assertThat(hit.get(field)).isNull());
+			Search.HIDE_FIELDS.forEach(field -> assertThat(hit.get(field)).isNull());
 		});
 	}
 
 	@Test
 	public void responseJsonFilterSearch() {
 		running(testServer(3333), () -> {
-			Index index = new Index();
-			index = index.queryResources("*", 0, 100, "", "", "", "", "", "");
+			Search index = new Search.Builder()
+					.query(new Queries.Builder().q("*").build()).size(100).build();
+			index = index.queryResources();
 			assertThat(index.getTotal()).isGreaterThanOrEqualTo(100);
 			JsonNode hits = index.getResult();
 			assertThat(hits.isArray()).as("hits is an array").isTrue();
 			List<JsonNode> nodes = new ArrayList<>();
 			Iterator<JsonNode> elements = hits.elements();
 			elements.forEachRemaining(node -> {
-				Index.HIDE_FIELDS
+				Search.HIDE_FIELDS
 						.forEach(field -> assertThat(node.get(field)).as(field).isNull());
 				nodes.add(node);
 			});
@@ -140,10 +142,13 @@ public class IntegrationTests extends LocalIndexSetup {
 	@Test
 	public void queryFilter() {
 		running(testServer(3333), () -> {
-			Index all =
-					new Index().queryResources("*", 0, 100, "", "", "", "", "", "");
-			Index nwbib = new Index().queryResources("*", 0, 100, "", "", "", "", "",
-					"inCollection.id:HT014176012");
+			Search all =
+					new Search.Builder().query(new Queries.Builder().q("*").build())
+							.size(100).build().queryResources();
+			Search nwbib = new Search.Builder()
+					.query(new Queries.Builder().q("*")
+							.filter("inCollection.id:HT014176012").build())
+					.size(100).build().queryResources();
 			assertThat(all.getTotal()).isGreaterThan(nwbib.getTotal());
 		});
 	}

@@ -14,7 +14,8 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
-import controllers.resources.Index;
+import controllers.resources.Queries;
+import controllers.resources.Search;
 
 /**
  * See http://www.playframework.com/documentation/2.4.x/JavaFunctionalTest
@@ -48,16 +49,17 @@ public class NestedQueryTests extends LocalIndexSetup {
 	} // @formatter:on
 
 	private String nestedString;
-	private String queryString;
 	private int expectedResultCount;
-	private Index index;
+	private Search index;
 
 	public NestedQueryTests(String nestedString, String queryString,
 			int resultCount) {
 		this.nestedString = nestedString;
-		this.queryString = queryString;
 		this.expectedResultCount = resultCount;
-		this.index = new Index();
+		this.index = new Search.Builder()
+				.query(
+						new Queries.Builder().q(queryString).nested(nestedString).build())
+				.size(1).build();
 	}
 
 	@Test
@@ -71,9 +73,8 @@ public class NestedQueryTests extends LocalIndexSetup {
 	}
 
 	private long hitsForQuery() {
-		return nestedString.isEmpty() ? index.totalHits(queryString)
-				: index.queryResources("*", 0, 1, "", "", "", "", nestedString, "")
-						.getTotal();
+		return nestedString.isEmpty() ? index.totalHits()
+				: index.queryResources().getTotal();
 	}
 
 }

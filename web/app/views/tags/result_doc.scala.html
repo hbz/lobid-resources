@@ -4,7 +4,8 @@
 @import play.api.libs.json._
 @import views.TableRow
 @import controllers.resources.Lobid
-@import controllers.resources.Index
+@import controllers.resources.Search
+@import controllers.resources.Queries
 @import controllers.resources.Application.CONFIG
 
 @labelled(label: String, key: String) = {
@@ -80,7 +81,7 @@
 }
 
 @subordinated(field:String, id:String, label:String, values:(String,String)) = {
-  @defining(new Index().totalHits(field+":\""+Lobid.escapeUri(id)+"\"")){ hits => @if(hits > 0) {
+  @defining(new Search.Builder().query(new Queries.Builder().q(field+":\""+Lobid.escapeUri(id)+"\"").build()).build().totalHits()){ hits => @if(hits > 0) {
     @defining(if(hits==1){values._1} else {values._2}){ value =>
     <tr><td>@label</td><td><a title="@value" href="@resources.routes.Application.query(q=field+":\""+Lobid.escapeUri(id)+"\"")">@hits @value</a></td></tr>
   }}}

@@ -14,10 +14,11 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
-import controllers.resources.Index;
+import controllers.resources.Queries;
+import controllers.resources.Search;
 
 /**
- * Integration tests for functionality provided by the {@link Index} class.
+ * Integration tests for functionality provided by the {@link Search} class.
  * 
  * @author Fabian Steeg (fsteeg)
  */
@@ -56,20 +57,19 @@ public class IndexIntegrationTest extends LocalIndexSetup {
 		});
 	} // @formatter:on
 
-	private String queryString;
 	private int expectedResultCount;
-	private Index index;
+	private Search index;
 
 	public IndexIntegrationTest(String queryString, int resultCount) {
-		this.queryString = queryString;
 		this.expectedResultCount = resultCount;
-		this.index = new Index();
+		this.index = new Search.Builder()
+				.query(new Queries.Builder().q(queryString).build()).build();
 	}
 
 	@Test
 	public void testResultCount() {
 		running(fakeApplication(), () -> {
-			assertThat(index.totalHits(queryString)).isEqualTo(expectedResultCount);
+			assertThat(index.totalHits()).isEqualTo(expectedResultCount);
 		});
 	}
 
