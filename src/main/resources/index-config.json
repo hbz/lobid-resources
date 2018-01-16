@@ -70,7 +70,8 @@
                      "type" : "text"
                   },
                   "id" : {
-                     "type" : "keyword"
+                     "type" : "keyword",
+                     "index": "false"
                   }
                }
             },
@@ -612,9 +613,13 @@
             },
             "itemOf" : {
                "properties" : {
+                  "label" : {
+                     "index": "false",
+                     "type" : "text"
+                  },
                   "id" : {
-                     "index" : "false",
-                     "type" : "keyword"
+                     "type" : "keyword",
+                     "index": "false"
                   }
                }
             },
