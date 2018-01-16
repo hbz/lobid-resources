@@ -1568,12 +1568,6 @@
 			</concat>
 			<data source="@titleRemainder331"/>
 		</combine>
-		<combine name="@title331AndSubseries360" value="${a}">
-			<concat delimiter=". " name="a">
-				<data source="@titleRemainder331"/>
-				<data source="@titleOfSubSeries"/>
-			</concat>
-		</combine>
 		<combine name="@otherTitle" value="${titleRemainder}">
 			<if>
 				<none>
@@ -1629,7 +1623,7 @@
 					<replace pattern="&gt;" with=""/>
 					<replace pattern="&lt;" with=""/>
 				</data>
-				<data source="@title331AndSubseries360">
+				<data source="331[-ab][-1].a">
 					<replace pattern="&gt;" with=""/>
 					<replace pattern="&lt;" with=""/>
 				</data>
