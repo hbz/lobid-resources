@@ -350,8 +350,7 @@ public class Queries {
 					final String query = qTrimmed.startsWith("http://") ? qTrimmed
 							: "http://d-nb.info/gnd/" + qTrimmed;
 					final MatchQueryBuilder subjectIdQuery =
-							matchQuery(fields().get(0) + ".@id", query.trim())
-									.operator(Operator.AND);
+							matchQuery(fields().get(0), query.trim()).operator(Operator.AND);
 					boolQuery = hasLabel || isAndQuery ? boolQuery.must(subjectIdQuery)
 							: boolQuery.should(subjectIdQuery);
 				} else {
