@@ -350,8 +350,9 @@ public class Queries {
 				if (qTrimmed.startsWith("http") || qTrimmed.matches("[\\d\\-X]+")) {
 					final String query = qTrimmed.startsWith("http://") ? qTrimmed
 							: "http://d-nb.info/gnd/" + qTrimmed;
-					final MatchQueryBuilder subjectIdQuery =
-							matchQuery(fields().get(0), query.trim()).operator(Operator.AND);
+					final MatchQueryBuilder subjectIdQuery = matchQuery(
+							query.contains("nwbib") ? fields().get(0) : fields().get(1),
+							query.trim()).operator(Operator.AND);
 					boolQuery = hasLabel || isAndQuery ? boolQuery.must(subjectIdQuery)
 							: boolQuery.should(subjectIdQuery);
 				} else {
