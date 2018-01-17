@@ -327,6 +327,7 @@ public class Queries {
 		@Override
 		public List<String> fields() {
 			return Arrays.asList(/* @formatter:off*/
+					"subject.id",
 					"subject.componentList.id",
 					"subject.componentList.label",
 					"subject.label",
