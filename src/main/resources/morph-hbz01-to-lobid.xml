@@ -1520,24 +1520,33 @@
 			value="http://d-nb.info/standards/elementset/gnd#Work">
 			<data source="@containsExampleOfWorkId303"/>
 		</combine>
-		<concat delimiter=", " name="@concatContainsExampleOfWorkTitleSubtitle" 
+		<concat delimiter=". " name="@concatContainsExampleOfWorkTitleSubtitle" 
 			flushWith="@containsExampleOfWorkId303" sameEntity="true">
 			<data source="303t1.u"/>
 		</concat>
-		<combine name="@containsExampleOfWorkTitle" value="${t}, ${u}" 
+		<combine name="@containsExampleOfWorkTitle" value="${t} ${n}. ${u}" 
 			flushWith="@containsExampleOfWorkId303" sameEntity="true">
 			<data source="303t1.t" name="t">
 				<replace pattern="&lt;&lt;|&gt;&gt;" with=""/>
 			</data>
+			<data source="303t1.n" name="n"/>
 			<data source="@concatContainsExampleOfWorkTitleSubtitle" name="u"/>
 		</combine>
 		<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="${a}"
 			flushWith="@containsExampleOfWorkId303" sameEntity="true">
 			<choose name="a" flushWith="@containsExampleOfWorkId303" sameEntity="true">
 				<data source="@containsExampleOfWorkTitle">
-					<regexp match="(.*), $" format="${1}"/>
+					<regexp match="(.*)&gt; . $" format="${1}&gt;"/>
 				</data>
-				<data source="@containsExampleOfWorkTitle"/>
+				<data source="@containsExampleOfWorkTitle">
+					<regexp match="(.*). $" format="${1}"/>
+				</data>
+				<data source="@containsExampleOfWorkTitle">
+					<replace pattern=" \. " with=". "/>
+				</data>
+				<data source="@containsExampleOfWorkTitle">
+					<regexp match="(.*) " format="${1}"/>
+				</data>
 			</choose>
 		</combine>
 		<combine name="http://rdaregistry.info/Elements/w/P10065" value="${p} ${d}" 
