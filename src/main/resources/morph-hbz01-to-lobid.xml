@@ -415,44 +415,15 @@
 			</combine>
 		</macro>
 		<macro name="subjectRswkIdSetDctSubject">
-			<!-- <combine name="http://purl.org/dc/terms/subject" value="_:$[field]-$[indicator2]_${subject}"
-				flushWith="@complexSubjectRswkId$[field]-$[indicator2]" reset="true">
-				<data source="@complexSubjectRswkId$[field]-$[indicator2]" name="subject"/> -->
-			<!-- <combine name="http://purl.org/dc/terms/subject" value="_:$[field]-$[indicator2]_${subject}"
-				flushWith="@concatComplexSubjectRswkId$[field]-$[indicator2]" reset="true"> -->
-			<!-- <combine name="http://purl.org/dc/terms/subject" value="_:$[field]-$[indicator2]_${subject}"
-				flushWith="@concatComplexSubjectRswkId$[field]-$[indicator2]">
-				<data source="@concatComplexSubjectRswkId$[field]-$[indicator2]" name="subject"/> -->
-			<!-- <combine name="http://purl.org/dc/terms/subject" value="_:$[field]-$[indicator2]"
-				flushWith="@concatComplexSubjectRswkId$[field]-$[indicator2]">
-				<data source="@concatComplexSubjectRswkId$[field]-$[indicator2]"/> -->
 				<combine name="http://purl.org/dc/terms/subject" value="_:$[field]-$[indicator2]"
 					flushWith="@concatComplexSubjectRswkId$[field]-$[indicator2]">
 					<data source="@concatComplexSubjectRswkId$[field]-$[indicator2]"/>
-			<!-- <combine name="http://purl.org/dc/terms/subject" value="_:$[field]-$[indicator2]_${subject}"
-				flushWith="@complexSubjectRswkId$[field]-$[indicator2]">
-				<data source="@concatComplexSubjectRswkId$[field]-$[indicator2]" name="subject"/> -->
-			<!-- <combine name="http://purl.org/dc/terms/subject" value="_:$[field]-$[indicator2]_${subject}"
-				flushWith="@concatComplexSubjectRswkId$[field]-$[indicator2]">
-				<data source="@complexSubjectRswkId$[field]-$[indicator2]" name="subject"/> -->
 			</combine>
 		</macro>
 		<macro name="subjectRswkIdSetRdfSubject">
-			<!-- <combine name="~rdf:subject" value="_:$[field]-$[indicator2]_${subject}"
-				flushWith="@complexSubjectRswkId$[field]-$[indicator2]" reset="true">
-				<data source="@complexSubjectRswkId$[field]-$[indicator2]" name="subject"/> -->
-			<!-- <combine name="~rdf:subject" value="_:$[field]-$[indicator2]_${subject}"
-				flushWith="@concatComplexSubjectRswkId$[field]-$[indicator2]" reset="true">
-				<data source="@concatComplexSubjectRswkId$[field]-$[indicator2]" name="subject"/> -->
 				<combine name="~rdf:subject" value="_:$[field]-$[indicator2]"
 					flushWith="@concatComplexSubjectRswkId$[field]-$[indicator2]" reset="true">
 					<data source="@concatComplexSubjectRswkId$[field]-$[indicator2]"/>
-			<!-- <combine name="~rdf:subject" value="_:$[field]-$[indicator2]_${subject}"
-				flushWith="@concatComplexSubjectRswkId$[field]-$[indicator2]" reset="true">
-				<data source="@complexSubjectRswkId$[field]-$[indicator2]" name="subject"/> -->
-			<!-- <combine name="~rdf:subject" value="_:$[field]-$[indicator2]_${subject}"
-				flushWith="@complexSubjectRswkId$[field]-$[indicator2]" reset="true">
-				<data source="@concatComplexSubjectRswkId$[field]-$[indicator2]" name="subject"/> -->
 			</combine>
 		</macro>
 		<macro name="subjectRswkIdSetType">
@@ -1650,6 +1621,44 @@
 		<combine name="http://purl.org/lobid/lv#containsExampleOfWork" value="${a}">
 			<data source="@containsExampleOfWorkId303" name="a"/>
 		</combine>
+		<concat delimiter=". " name="@concatContainsExampleOfWorkTitleSubtitle" 
+			flushWith="@containsExampleOfWorkId303" sameEntity="true">
+			<data source="303t1.u"/>
+		</concat>
+		<combine name="@containsExampleOfWorkTitleWithNumbering" value="${t}, ${n} (${r})" sameEntity="true">
+			<data source="303t1.t" name="t"/>
+			<data source="303t1.n" name="n"/>
+			<data source="303t1.r" name="r"/>
+		</combine>
+		<combine name="@containsExampleOfWorkTitle" value="${t}. ${u}" 
+			flushWith="@containsExampleOfWorkId303" sameEntity="true">
+			<data source="303t1.t" name="t">
+				<replace pattern="&lt;&lt;|&gt;&gt;" with=""/>
+			</data>
+			<data source="@concatContainsExampleOfWorkTitleSubtitle" name="u"/>
+		</combine>
+		<concat delimiter=", " name="@concatContainsExampleOfWorkTitleInstrumentation"
+			flushWith="@containsExampleOfWorkId303" sameEntity="true">
+			<data source="303t1.m"/>
+		</concat>
+		<combine name="@containsExampleOfWorkTitleWithInstrumentation2" value="${t}, ${m}"
+			sameEntity="true">
+			<data source="@containsExampleOfWorkTitle" name="t">
+				<regexp match="^(.*)\. ([a-zA-Z].*)$" format="${1}. ${2}"/>
+			</data>
+			<data source="@concatContainsExampleOfWorkTitleInstrumentation" name="m"/>
+		</combine>
+		<combine name="@containsExampleOfWorkTitleWithInstrumentation" value="${t}, ${m}"
+			flushWith="@containsExampleOfWorkId303" sameEntity="true">
+			<data source="@containsExampleOfWorkTitle" name="t">
+				<regexp match="^(.*)\. $" format="${1}"/>
+			</data>
+			<data source="@concatContainsExampleOfWorkTitleInstrumentation" name="m"/>
+		</combine>
+		<combine name="@containsExampleOfWorkTitleWithNumberingAndInstrumentation" value="${tnr}, ${m}" sameEntity="true">
+			<data source="@containsExampleOfWorkTitleWithNumbering" name="tnr"/>
+			<data source="@containsExampleOfWorkInstumentation" name="m"/>
+		</combine>
 		<combine name="~rdf:subject" value="${a}">
 			<data source="@containsExampleOfWorkId303" name="a"/>
 		</combine>
@@ -1657,30 +1666,21 @@
 			value="http://d-nb.info/standards/elementset/gnd#Work">
 			<data source="@containsExampleOfWorkId303"/>
 		</combine>
-		<concat delimiter=", " name="@concatContainsExampleOfWorkTitleSubtitle" 
-			flushWith="@containsExampleOfWorkId303" sameEntity="true">
-			<data source="303t1.u"/>
-		</concat>
-		<combine name="@containsExampleOfWorkTitle" value="${t}, ${u}" 
-			flushWith="@containsExampleOfWorkId303" sameEntity="true">
-			<data source="303t1.t" name="t">
-				<replace pattern="&lt;&lt;|&gt;&gt;" with=""/>
-			</data>
-			<data source="@concatContainsExampleOfWorkTitleSubtitle" name="u"/>
-		</combine>
 		<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="${a}"
 			flushWith="@containsExampleOfWorkId303" sameEntity="true">
 			<choose name="a" flushWith="@containsExampleOfWorkId303" sameEntity="true">
-				<data source="@containsExampleOfWorkTitle">
-					<regexp match="(.*), $" format="${1}"/>
-				</data>
+				<data source="@containsExampleOfWorkTitleWithNumbering"/>
+				<data source="@containsExampleOfWorkTitleWithInstrumentation2"/>
+				<data source="@containsExampleOfWorkTitleWithInstrumentation"/>
 				<data source="@containsExampleOfWorkTitle"/>
 			</choose>
 		</combine>
-		<combine name="http://rdaregistry.info/Elements/w/P10065" value="${p} ${d}" 
+		<combine name="http://rdaregistry.info/Elements/w/P10065" value="${p}${d}" 
 			flushWith="@containsExampleOfWorkId303" sameEntity="true">
 			<data source="303t1.p" name="p"/>
-			<data source="303t1.d" name="d"/>
+			<data source="303t1.d" name="d">
+				<regexp match="(.*)" format=" ${1}"/>
+			</data>
 		</combine>
 		<combine name="~rdf:subject" value="$[ns-lobid-resource]${id}#!" flushWith="@containsExampleOfWorkId303">
 			<data source="303t1.t"/>
