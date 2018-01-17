@@ -90,9 +90,10 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		node = new Node(Settings.builder()
-				.put(Node.NODE_NAME_SETTING.getKey(), "testNode")
-				.put(NetworkModule.TRANSPORT_TYPE_KEY, NetworkModule.LOCAL_TRANSPORT)
+		node = new Node(
+				Settings.builder().put(Node.NODE_NAME_SETTING.getKey(), "testNode")
+						.put(NetworkModule.TRANSPORT_TYPE_KEY,
+								NetworkModule.LOCAL_TRANSPORT)
 				.put(NetworkModule.HTTP_ENABLED.getKey(), false) //
 				.put(Environment.PATH_HOME_SETTING.getKey(), "tmp")//
 				.build());
@@ -173,8 +174,11 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 		try (Scanner scanner = new Scanner(DOCUMENT)) {
 			while (scanner.hasNextLine()) {
 				String line = scanner.nextLine();
-				if (!line.isEmpty())
+				if (!line.isEmpty()) {
+					line = line.replaceAll("(_:\\w*)", "_:bnodeDummy").replaceFirst(",$",
+							"");
 					set.add(line);
+				}
 			}
 		}
 		return set;
