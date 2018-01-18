@@ -1913,11 +1913,15 @@
 			<data source="@itemId"/>
 			<data source="@sigel2isilMap" name="isil"/>
 		</combine>
-		<combine name="http://id.loc.gov/ontologies/bibframe/note" value="${a}"
-			sameEntity="true">
-			<data source="@itemId"/>
-			<data source="088 ?.b" name="a"/>
-		</combine>
+    <combine name="http://id.loc.gov/ontologies/bibframe/note" value="${a}"
+      sameEntity="true">
+      <choose flushWith="@itemId" sameEntity="true">
+        <data source="088 ?.b" name="a">
+          <regexp match="^(http.*)" format="Siehe: ${1}"/>
+        </data>
+        <data source="088 ?.b" name="a"/>
+      </choose>
+    </combine>
 		<combine name="@signature" value="${signature}" sameEntity="true">
 			<data source="@itemId"/>
 			<data source="088 ?.c" name="signature"/>
