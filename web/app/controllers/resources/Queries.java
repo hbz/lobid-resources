@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import org.apache.lucene.search.join.ScoreMode;
 import org.elasticsearch.common.geo.GeoPoint;
@@ -55,7 +56,8 @@ public class Queries {
 		NESTED(new Queries.NestedQuery()), //
 		T(new Queries.TypeQuery()), //
 		FILTER(new Queries.FilterQuery()), //
-		OWNER(new Queries.OwnerQuery());
+		OWNER(new Queries.OwnerQuery()), //
+		WORD(new Queries.WordQuery());
 
 		private AbstractIndexQuery q;
 
@@ -104,6 +106,7 @@ public class Queries {
 	private final String nested;
 	private final String location;
 	private final String filter;
+	private final String word;
 
 	/**
 	 * @param builder The builder to use for this
@@ -122,6 +125,7 @@ public class Queries {
 		this.nested = builder.nested;
 		this.location = builder.location;
 		this.filter = builder.filter;
+		this.word = builder.word;
 	}
 
 	@SuppressWarnings("javadoc")
@@ -139,6 +143,7 @@ public class Queries {
 		private String nested = "";
 		private String location = "";
 		private String filter = "";
+		private String word = "";
 
 		//@formatter:off
 		public Builder() {}
@@ -155,6 +160,7 @@ public class Queries {
 		public Builder nested(String val) { nested = val; return this; }
 		public Builder location(String val) { location = val; return this; }
 		public Builder filter(String val) { filter = val; return this; }
+		public Builder word(String val) { word = val; return this; }
 		public QueryBuilder build() { return new Queries(this).query(); }
 		//@formatter:on
 
@@ -176,6 +182,7 @@ public class Queries {
 						.put(Parameter.T, t)
 						.put(Parameter.FILTER, filter)
 						.put(Parameter.OWNER, owner)
+						.put(Parameter.WORD, word)
 						.build());/*@formatter:on*/
 
 		BoolQueryBuilder result = QueryBuilders.boolQuery();
@@ -582,10 +589,12 @@ public class Queries {
 		@Override
 		public List<String> fields() {
 			List<String> fields = new ArrayList<>();
-			fields.addAll(new SubjectQuery().fields());
-			fields.addAll(new AuthorQuery().fields());
-			fields.addAll(new NameQuery().fields());
-			fields.addAll(new PublisherQuery().fields());
+			List<Parameter> exclude = Arrays.asList(Parameter.WORD,
+					Parameter.LOCATION, Parameter.Q, Parameter.SCROLL);
+			for (Parameter p : Arrays.asList(Parameter.values()).stream()
+					.filter(p -> !exclude.contains(p)).collect(Collectors.toList())) {
+				fields.addAll(p.q.fields());
+			}
 			return fields;
 		}
 

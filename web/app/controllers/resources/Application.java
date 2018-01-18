@@ -161,7 +161,7 @@ public class Application extends Controller {
 	 * @param owner Owner filter for resource queries
 	 * @param t Type filter for resource queries
 	 * @param sort Sorting order for results ("newest", "oldest", "" -> relevance)
-	 * @param set The set
+	 * @param word The 'word' query, a concept from the hbz union catalog
 	 * @param format The response format (see {@code Accept.Format})
 	 * @param aggs The comma separated aggregation fields
 	 * @param location A single "lat,lon" point or space delimited points polygon
@@ -173,9 +173,8 @@ public class Application extends Controller {
 			final String name, final String subject, final String id,
 			final String publisher, final String issued, final String medium,
 			final int from, final int size, final String owner, String t, String sort,
-			String set, String format, String aggs, String location, String nested,
+			String word, String format, String aggs, String location, String nested,
 			String filter) {
-		// TODO: remove 'set'?
 		final String aggregations = aggs == null ? "" : aggs;
 		if (!aggregations.isEmpty() && !Search.SUPPORTED_AGGREGATIONS
 				.containsAll(Arrays.asList(aggregations.split(",")))) {
@@ -208,7 +207,7 @@ public class Application extends Controller {
 		QueryBuilder queryBuilder = new Queries.Builder().q(q).agent(agent)
 				.name(name).subject(subject).id(id).publisher(publisher).issued(issued)
 				.medium(medium).t(t).owner(owner).nested(nested).location(location)
-				.filter(filter).build();
+				.filter(filter).word(word).build();
 		Search index = new Search.Builder().query(queryBuilder).from(from)
 				.size(size).sort(sort).aggs(aggregations).build();
 		Promise<Result> result;
@@ -227,7 +226,7 @@ public class Application extends Controller {
 				return htmlRequested
 						? ok(query.render(s, q, agent, name, subject, id, publisher, issued,
 								medium, from, size, queryResources.getTotal(), owner, t, sort,
-								set))
+								word))
 						: (returnSuggestions ? withCallback(json)
 								: responseFor(withQueryMetadata(json, index),
 										Accept.Format.JSON_LD.queryParamString));
@@ -236,7 +235,7 @@ public class Application extends Controller {
 		cacheOnRedeem(cacheId, result, ONE_HOUR);
 		return result.recover((Throwable throwable) -> {
 			Html html = query.render("[]", q, agent, name, subject, id, publisher,
-					issued, medium, from, size, 0L, owner, t, sort, set);
+					issued, medium, from, size, 0L, owner, t, sort, word);
 			String message = "Could not query index: " + throwable.getMessage();
 			boolean badRequest = throwable instanceof IllegalArgumentException;
 			if (badRequest) {
@@ -550,7 +549,7 @@ public class Application extends Controller {
 	 * @param t Type filter for resource queries
 	 * @param field The facet field (the field to facet over)
 	 * @param sort Sorting order for results ("newest", "oldest", "" -> relevance)
-	 * @param set The set
+	 * @param word The 'word' query, a concept from the hbz union catalog
 	 * @param location A single "lat,lon" point or space delimited points polygon
 	 * @param nested The nested object path. If non-empty, use q as nested query
 	 * @param filter A filter to apply to the query, supports query string syntax
@@ -559,10 +558,10 @@ public class Application extends Controller {
 	public static Promise<Result> facets(String q, String agent, String name,
 			String subject, String id, String publisher, String issued, String medium,
 			int from, int size, String owner, String t, String field, String sort,
-			String set, String location, String nested, String filter) {
+			String word, String location, String nested, String filter) {
 
 		String key = String.format("facets.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s",
-				field, q, agent, name, id, publisher, set, subject, issued, medium,
+				field, q, agent, name, id, publisher, word, subject, issued, medium,
 				owner, t, nested);
 		Result cachedResult = (Result) Cache.get(key);
 		if (cachedResult != null) {
@@ -614,33 +613,39 @@ public class Application extends Controller {
 			String fullLabel = pair.getRight();
 			String term = json.get("key").asText();
 			String mediumQuery = !field.equals(MEDIUM_FIELD) //
-					? medium : queryParam(medium, term);
+					? medium
+					: queryParam(medium, term);
 			String typeQuery = !field.equals(TYPE_FIELD) //
-					? t : queryParam(t, term);
+					? t
+					: queryParam(t, term);
 			String ownerQuery = !field.equals(OWNER_AGGREGATION) //
-					? owner : withoutAndOperator(queryParam(owner, term));
+					? owner
+					: withoutAndOperator(queryParam(owner, term));
 			String subjectQuery = !field.equals(SUBJECT_FIELD) //
-					? subject : queryParam(subject, term);
+					? subject
+					: queryParam(subject, term);
 			String agentQuery = !field.equals(AGENT_FIELD) //
-					? agent : queryParam(agent, term);
+					? agent
+					: queryParam(agent, term);
 			String issuedQuery = !field.equals(ISSUED_FIELD) //
-					? issued : queryParam(issued, term);
+					? issued
+					: queryParam(issued, term);
 			String locationQuery = !field.equals(Search.SPATIAL_GEO_FIELD) //
-					? location : queryParam(location, term);
+					? location
+					: queryParam(location, term);
 
 			boolean current =
 					current(subject, agent, medium, owner, t, field, term, location);
 
 			String routeUrl = routes.Application.query(q, agentQuery, name,
 					subjectQuery, id, publisher, issuedQuery, mediumQuery, from, size,
-					ownerQuery, typeQuery, sort(sort, subjectQuery), set, null, field,
+					ownerQuery, typeQuery, sort(sort, subjectQuery), word, null, field,
 					locationQuery, nested, filter).url();
 
-			String result = String.format(
-					"<li " + (current ? "class=\"active\"" : "")
-							+ "><a class=\"%s-facet-link\" href='%s'>"
-							+ "<input onclick=\"location.href='%s'\" class=\"facet-checkbox\" "
-							+ "type=\"checkbox\" %s>&nbsp;%s</input>" + "</a></li>",
+			String result = String.format("<li " + (current ? "class=\"active\"" : "")
+					+ "><a class=\"%s-facet-link\" href='%s'>"
+					+ "<input onclick=\"location.href='%s'\" class=\"facet-checkbox\" "
+					+ "type=\"checkbox\" %s>&nbsp;%s</input>" + "</a></li>",
 					Math.abs(field.hashCode()), routeUrl, routeUrl,
 					current ? "checked" : "", fullLabel);
 
@@ -649,7 +654,7 @@ public class Application extends Controller {
 
 		Promise<Result> promise =
 				query(q, agent, name, subject, id, publisher, issued, medium, from,
-						size, owner, t, sort, set, "json", field, location, nested, filter)
+						size, owner, t, sort, word, "json", field, location, nested, filter)
 								.map(result -> {
 									JsonNode json = Json.parse(Helpers.contentAsString(result))
 											.get("aggregation");
@@ -658,7 +663,7 @@ public class Application extends Controller {
 													json.get(field).elements(), 0), false);
 									String labelKey = String.format(
 											"facets-labels.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s",
-											field, q, agent, name, id, publisher, set, subject,
+											field, q, agent, name, id, publisher, word, subject,
 											issued, medium,
 											field.equals(OWNER_AGGREGATION) ? "" : owner, t);
 									@SuppressWarnings("unchecked")
@@ -766,8 +771,9 @@ public class Application extends Controller {
 			return Promise.pure(redirect(routes.Application.showStars(format,
 					starred.stream().collect(Collectors.joining(",")))));
 		}
-		final List<String> starredIds = starred.isEmpty() && ids.trim().isEmpty()
-				? starred : Arrays.asList(ids.split(","));
+		final List<String> starredIds =
+				starred.isEmpty() && ids.trim().isEmpty() ? starred
+						: Arrays.asList(ids.split(","));
 		String cacheKey = "starsForIds." + starredIds;
 		Object cachedJson = Cache.get(cacheKey);
 		if (cachedJson != null && cachedJson instanceof List) {
