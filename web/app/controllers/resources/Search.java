@@ -8,31 +8,21 @@ import static controllers.resources.Application.SUBJECT_FIELD;
 import static controllers.resources.Application.TOPIC_AGGREGATION;
 import static controllers.resources.Application.TYPE_FIELD;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
-import org.elasticsearch.action.admin.cluster.storedscripts.PutStoredScriptResponse;
 import org.elasticsearch.action.admin.indices.validate.query.ValidateQueryResponse;
 import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.client.Client;
-import org.elasticsearch.common.bytes.BytesArray;
-import org.elasticsearch.common.xcontent.XContentType;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.join.aggregations.ChildrenAggregationBuilder;
-import org.elasticsearch.script.Script;
-import org.elasticsearch.script.ScriptType;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.aggregations.AggregationBuilder;
@@ -42,10 +32,8 @@ import org.elasticsearch.search.sort.SortBuilders;
 import org.elasticsearch.search.sort.SortOrder;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import play.Logger;
-import play.Play;
 import play.cache.Cache;
 import play.libs.Json;
 
@@ -164,8 +152,7 @@ public class Search {
 						.order(sort.equals("newest") ? SortOrder.DESC : SortOrder.ASC));
 			}
 			if (!aggs.isEmpty()) {
-				requestBuilder =
-						withAggregations(client, requestBuilder, aggs.split(","));
+				requestBuilder = withAggregations(requestBuilder, aggs.split(","));
 			}
 			SearchResponse response = requestBuilder.execute().actionGet();
 			SearchHits hits = response.getHits();
@@ -267,58 +254,28 @@ public class Search {
 		return total;
 	}
 
-	private static SearchRequestBuilder withAggregations(Client client,
+	private static SearchRequestBuilder withAggregations(
 			final SearchRequestBuilder searchRequest, String... fields) {
-		int defaultSize = 100;
 		Arrays.asList(fields).forEach(field -> {
+			int size = field.equals(TOPIC_AGGREGATION) ? 9999
+					: (field.equals(ISSUED_FIELD) ? 1000 : 100);
 			if (field.equals(OWNER_AGGREGATION)) {
 				AggregationBuilder ownerAggregation =
 						new ChildrenAggregationBuilder(Application.OWNER_AGGREGATION,
 								TYPE_ITEM)
 										.subAggregation(AggregationBuilders.terms(field)
-												.field(OWNER_ID_FIELD).size(defaultSize));
+												.field(OWNER_ID_FIELD).size(size));
 				searchRequest.addAggregation(ownerAggregation);
 			} else if (field.equals(SPATIAL_GEO_FIELD)) {
 				searchRequest
 						.addAggregation(AggregationBuilders.geohashGrid(SPATIAL_GEO_FIELD)
 								.field(SPATIAL_GEO_FIELD).precision(9));
-			} else if (field.equals(TOPIC_AGGREGATION) && !Play.isTest()) {
-				String lang = "painless";
-				String id = "topic-aggregation";
-				// TODO: store script only once, on startup?
-				PutStoredScriptResponse response = storeScript(client, lang, id);
-				if (response.isAcknowledged()) {
-					searchRequest.addAggregation(AggregationBuilders
-							.terms(TOPIC_AGGREGATION).script(new Script(ScriptType.STORED,
-									lang, id, Collections.emptyMap()))
-							.size(9999));
-				}
 			} else {
-				boolean many = field.equals("publication.startDate");
-				searchRequest.addAggregation(AggregationBuilders.terms(field)
-						.field(field).size(many ? 1000 : defaultSize));
+				searchRequest.addAggregation(
+						AggregationBuilders.terms(field).field(field).size(size));
 			}
 		});
 		return searchRequest;
-	}
-
-	private static PutStoredScriptResponse storeScript(Client client, String lang,
-			String id) {
-		String script = "";
-		try {
-			script = Files
-					.readAllLines(Paths
-							.get(Play.application().getFile("conf/topic.painless").toURI()))
-					.stream().collect(Collectors.joining("\n"));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		ObjectNode scriptObject = Json.newObject();
-		scriptObject.putObject("script").put("lang", lang).put("source", script);
-		Logger.debug("Will store script: {}", scriptObject);
-		return client.admin().cluster().preparePutStoredScript().setId(id)
-				.setContent(new BytesArray(scriptObject.toString()), XContentType.JSON)
-				.get();
 	}
 
 	<T> T withClient(Function<Client, T> function) {
