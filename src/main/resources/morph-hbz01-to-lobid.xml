@@ -307,38 +307,15 @@
 				<data source="@id" name="subject"/>
 			</combine>
 		</macro>
-		<!-- <macro name="setPreferredNameConcatTitleWithSubfield">
-			<combine name="@preferredNameConcatTitleWithSubfield$[field]" value="${t}. ${n} ${u}">
-				<data source="$[field][-t]1.t" name="t"/>
-				<data source="$[field][-t]1.n" name="n"/>
-				<data source="$[field][-t]1.u" name="u"/>
-			</combine>
-		</macro>
-				
-		</macro> -->
 		<macro name="subject-chain-name1">
-			<!-- <combine name="@preferredNameSubjectChain$[field_1]-1" value="${a}${e}${d}${c}${perm}"> -->
 			<combine name="@preferredNameSubjectChain$[field_1]-1" value="${a}">
 				<choose name="a" flushWith="$[field_1]??|$[field_2]-1.a" sameEntity="true">
-					<!-- <concat delimiter=". " name="a" flushWith="$[field_1]-[-1].t">
-						<data source="$[field_1]-[-1].t"/>
-						<concat delimiter=" " name="n" flushWith="$[field_1]-[-1].n">
-							<data source="$[field_1]-[-1].n"/>
-							<concat delimiter=", " name="u" flushWith="$[field_1]-[-1].u">
-								<data source="$[field_1]-[-1].u"/>
-							</concat>
-						</concat>
-					</concat> -->
 					<data source="@preferredNameConcatEventENDC"/>
 					<data source="@preferredNamePersonConcatSubject"/>
 					<data source="@preferredNameConcatTitleWithNumberingSubject"/>
 					<data source="@preferredNameConcatTitleWithoutNumberingSubject"/>
-					
-					
 					<concat delimiter="" name="a" flushWith="$[field_1]??|$[field_2]-1.a">
 						<data source="$[field_1]-[-1].[abfghknpskxz-]">
-					<!-- <concat delimiter="" name="a" flushWith="$[field_1]-[-1].[efghpsz]" sameEntity="true">
-						<data source="$[field_1]-[-1].[abfghnkpskxz-]"> -->
 							<replace pattern="^" with=", "/>
 						</data>
 						<concat delimiter="" name="e" flushWith="$[field_1]??">
@@ -394,14 +371,12 @@
 							<regexp match="(.*)" format=": ${1}"/>
 						</data>
 					</concat>
-					
 				</concat>
 			</combine>
 		</macro>
 		<macro name="subject-chain-perm1">
 			<combine name="@subjectChainPerm$[field]-1" value="${a}">
 				<concat delimiter=" | " name="a">
-					<!-- <data source="@preferredNameSubjectChain$[field]"> -->
 					<data source="@preferredNameSubjectChain$[field]-1">
 						<replace pattern="^, " with=""/>
 						<replace pattern=", $" with=""/>
@@ -412,7 +387,6 @@
 		<macro name="subject-chain-perm2">
 			<combine name="@subjectChainPerm$[field]-2" value="${a}">
 				<concat delimiter=" | " name="a">
-					<!-- <data source="@preferredNameSubjectChain$[field]"> -->
 					<data source="@preferredNameSubjectChain$[field]-2">
 						<replace pattern="^, " with=""/>
 						<replace pattern=", $" with=""/>
@@ -495,7 +469,6 @@
 				</data>
 			</combine>
 		</macro>
-
 		<!-- prefer gnd subjects IDs to literals -->
 		<macro name="subjectOrder">
 			<combine name="@subjectOrder" value="${a}">
@@ -658,7 +631,6 @@
 				</combine>
 			</entity>
 		</macro>
-
 		<macro name="setLabelVariableForPersonsWithoutGNDId">
 			<combine name="@preferredNameForThePerson$[field]" value="${a}"
 				flushWith="$[field][-amn][12].9|$[field][bcefp][1234].9|$[field][-aemn][12].[pa]|$[field][bcf]1.[pa]">
@@ -904,16 +876,10 @@
 		<macro name="setPreferredNameConcatTitleWithoutNumberingSubject">
 			<combine name="@preferredNameConcatTitleWithoutNumberingSubject" value="${t}. ${u}" 
 				flushWith="$[field][-t][12].u" sameEntity="true">
-				<!-- <if>
-					<none>
-						<data source="$[field][-t][12].n"/>
-					</none>
-				</if> -->
 				<data source="$[field][-t][12].t" name="t"/>
 				<data source="$[field][-t][12].u" name="u"/>
 			</combine>
 		</macro>
-				
 		<macro name="setPreferredNameConcatSubject">
 			<combine name="@preferredNameConcatSubject$[field]" value="${a}" sameEntity="true">
 				<concat delimiter=", " name="a" sameEntity="true">
@@ -1732,7 +1698,6 @@
 		<!-- ########## publisher -->
 		<!-- ####################### -->
 		<!-- primary publication -->
-		<!-- <replace pattern="^\[" with=""/> <replace pattern="\]$" with=""/> -->
 		<data source="41[05][-abcu][-12].a|419-[12].a|594[-abc][-12].a" name="@placeOfPublication_"/>
 		<choose name="@placeOfPublication" flushWith="@placeOfPublication_">
 			<data source="@placeOfPublication_">
@@ -2053,7 +2018,6 @@
 			<regexp match="\(DE-588\)(.*)" format="http://d-nb.info/gnd/${1}"/>
 			<sanitizeUrl></sanitizeUrl>
 		</data>
-
 		<call-macro name="setGNDPersonId" field="100"/>
 		<call-macro name="setGNDPersonId" field="104"/>
 		<call-macro name="setGNDPersonId" field="108"/>
@@ -2079,7 +2043,6 @@
 		<call-macro name="setGNDPersonId" field="188"/>
 		<call-macro name="setGNDPersonId" field="192"/>
 		<call-macro name="setGNDPersonId" field="196"/>
-
 		<!-- literals of creator (seems there are no corporateBodyCreators without gndID) -->
 		<data source="359[-ab][-12].a" name="http://id.loc.gov/ontologies/bibframe/responsibilityStatement"/>
 		<data source="1[02468][048][-aemn][12].[pa]|1[13579][26][-aemn][12].[pa]" name="@creatorPersonLabel"/>
@@ -3898,62 +3861,6 @@
 		<call-macro name="setPreferredNameConcatTitleWithoutNumberingSubject" field="937"/>
 		<call-macro name="setPreferredNameConcatTitleWithoutNumberingSubject" field="942"/>
 		<call-macro name="setPreferredNameConcatTitleWithoutNumberingSubject" field="947"/>
-		
-		
-		<!-- <combine name="@preferredNameConcatTitleWithNumberingSubject902" value="${t}. ${n} ${u}">
-			<data source="902-1.t" name="t"/>
-			<data source="902-1.n" name="n"/>
-			<data source="902-1.u" name="u"/>
-		</combine>
-		<combine name="@personPC902" value="${p}, ${c}">
-			<data source="902-1.p" name="p"/>
-			<data source="902-1.c" name="c"/>
-		</combine>
-		<combine name="@personPCD902" value="${p}, ${c} (${d})">
-			<data source="902-1.p" name="p"/>
-			<data source="902-1.c" name="c"/>
-			<data source="902-1.d" name="d"/>
-		</combine>
-		<combine name="@personPCOrPCD902" value="${a}" sameEntity="true">
-			<choose name="a">
-				<data source="@personPCD902"/>
-				<data source="@personPC902"/>
-			</choose>
-		</combine>
-		<combine name="@geoSubject902" value="${g}">
-			<data source="902-1.g" name="g"/>
-		</combine>
-		<combine name="@formalSubject902" value="${f}">
-			<data source="902-1.f" name="f"/>
-		</combine>
-		<combine name="@thematicSubject902" value="${s}">
-			<data source="902-1.s" name="s"/>
-		</combine>
-		<combine name="@preferredNameConcatTitleWithoutNumberingSubject902" value="${t}. ${u}"
-			sameEntity="true">
-			<data source="902-1.t" name="t"/>
-			<data source="902-1.u" name="u"/>
-		</combine>
-		<combine name="http://id.loc.gov/ontologies/bibframe/note" value="${a}">
-			<concat delimiter=" | " name="a">
-				<data source="@preferredNameConcatTitleWithNumberingSubject902"/>
-				<data source="@personPCOrPCD902"/>
-				<data source="@geoSubject902"/>
-				<data source="@formalSubject902"/>
-				<data source="@thematicSubject902"/>
-				<data source="@preferredNameConcatTitleWithoutNumberingSubject902"/>
-			</concat>
-		</combine> -->
-		<!-- <combine name="@preferredNameConcatTitle" value="${a}" sameEntity="true">
-			<choose name="a" sameEntity="true">
-				<data source="@preferredNameConcatTitleWithNumberingSubject"/>
-				<data source="@preferredNameConcatTitleWithoutNumberingSubject"/>
-			</choose>
-		</combine> -->
-		<combine name="http://id.loc.gov/ontologies/bibframe/note" value="@preferredNameConcatTitle: ${a}">
-			<data source="@preferredNameConcatTitle" name="a"/>
-		</combine>
-		
 		<!-- This was hard. See hbz/lobid#267 -->
 		<combine name="@preferredNamePersonConcatSubjectPC" value="${a}" sameEntity="true"
 			flushWith="@subjectLinks">
@@ -4166,13 +4073,6 @@
 				</data>
 			</choose>
 		</combine>
-
-		<!-- <combine name="@preferredNameConcatTitleWithoutNumberingSubject" value="${t}. ${u}">
-			<data source="907-1.t" name="t"/>
-			<data source="907-1.u" name="u"/>
-		</combine> -->
-
-		
 		<choose name="@preferredName" sameEntity="true"
 			flushWith="@subjectLinks|@preferredNameP|@GNDPersonId|@contributorPersonId|@contributorCorporateBodyId">
 			<data source="@preferredNameConcatEventENDC"/>
@@ -4242,8 +4142,6 @@
 		<!-- Schlagwortketten (aka "subject chains", with permutation number) - It's necessary to 
 			repeat the combines to fire correctly when dealing with multiple e.g. "902". Use macros to 
 			avoid duplication. Use gnd subjects literals, use even if link present/> -->
-		
-		
 		<call-macro name="subject-chain-name1" field_1="902" field_2="903"/>
 		<call-macro name="subject-chain-perm1" field="902"/>
 		<call-macro name="subject-chain-name2" field_1="902" field_2="903"/>
@@ -4635,7 +4533,6 @@
 		<call-macro name="setRdfSubjectComplexSubjectRswkId" field="947-2"/>
 		<call-macro name="setSubjectChainInLabel" field="947-2"/>
 		<call-macro name="setBackRdfSubjectForSubjectChainLabel" field="947-2"/>
-
 
 		<combine name="~rdf:subject" value="$[ns-lobid-resource]${subject}#!"
 			flushWith="@concatComplexSubjectRswkId9[01234][27]@nwbibComplexSubjectRswkId9[01234][27]">
