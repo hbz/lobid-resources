@@ -1510,7 +1510,7 @@
 		<!-- ########## title -->
 		<!-- ####################### -->
 		<data source="304[-a]1.a" name="http://purl.org/dc/terms/alternative">
-		  <replace pattern="^http://" with="Siehe: http://" />
+		  <replace pattern="^http" with="Siehe: http" />
 		</data>
 		<data source="310[-ab][-12].a" name="@title310"/>
 		<data source="@title310" name="@title"/>
@@ -1568,16 +1568,16 @@
 		<!-- deliberatley not everything linked with OR '|' because of performance problems -->
 		<data source="335[-abcd][-1].a" name="@otherTitle"/>
 		<data source="34[01234567][-ab][-1].[ab]" name="http://purl.org/dc/terms/alternative">
-          <replace pattern="^http://" with="Siehe: http://" />
+		  <replace pattern="^http" with="Siehe: http" />
 		</data>
 		<data source="376[-adb][-1].[ad]" name="$[ns-bibo]shortTitle"/>
 		<data source="504-1.a" name="http://purl.org/dc/terms/alternative">
-		  <replace pattern="^http://" with="Siehe: http://"/>
+		  <replace pattern="^http" with="Siehe: http" />
 		</data>
 		<data source="@otherTitle" name="http://rdaregistry.info/Elements/u/P60493">
 			<replace pattern="&gt;" with=""/>
 			<replace pattern="&lt;" with=""/>
-			<replace pattern="^http://" with="Siehe: http://"/>
+		    <replace pattern="^http" with="Siehe: http" />
 		</data>
 		<data source="675[-abcd][-12].a" name="$[ns-lobid-vocab]titleKeyword"/>
 		<!-- generating title using the superordination -->
@@ -1924,7 +1924,7 @@
       sameEntity="true">
       <choose flushWith="@itemId" sameEntity="true">
         <data source="088 ?.b" name="a">
-          <regexp match="^(http.*)" format="Siehe: ${1}"/>
+		  <replace pattern="^http" with="Siehe: http" />
         </data>
         <data source="088 ?.b" name="a"/>
       </choose>
@@ -4947,14 +4947,14 @@
 		<!-- ########## abstract -->
 		<!-- ####################### -->
 		<data source="750?[-1].a" name="http://purl.org/dc/terms/abstract">
-		  <replace pattern="^http://" with="Siehe: http://"/>
+		  <replace pattern="^http" with="Siehe: http" />
 		</data>
 		<!-- ####################### -->
 		<!-- ########## note -->
 		<!-- ####################### -->
 		<choose name="http://id.loc.gov/ontologies/bibframe/note">
 			<data source="501-1.a">
-				<regexp match="^(http.*)" format="Siehe: ${1}"/>
+		      <replace pattern="^http" with="Siehe: http" />
 			</data>
 			<data source="501-1.a"/>
 		</choose>
