@@ -4707,11 +4707,13 @@
 			<data source="59[0123568][-abcd][-12].a">
 				<replace pattern="&gt;&gt;" with=""/>
 				<replace pattern="&lt;&lt;" with=""/>
+				<replace pattern="^http" with="Siehe: http" />
 			</data>
 		</concat>
 		<data source="525[-a][-1].a" name="http://purl.org/dc/terms/bibliographicCitation">
 			<replace pattern="&gt;&gt;" with=""/>
 			<replace pattern="&lt;&lt;" with=""/>
+			<replace pattern="^http" with="Siehe: http" />
 		</data>
 		<combine name="http://id.loc.gov/ontologies/bibframe/supplement" value="${a}">
 			<choose name="a" flushWith="@supplement" sameEntity="true">
