@@ -1933,7 +1933,9 @@
 			<data source="@itemId"/>
 			<data source="088 ?.c" name="signature"/>
 		</combine>
-		<data source="@signature" name="http://purl.org/lobid/lv#callNumber"/>
+		<data source="@signature" name="http://purl.org/lobid/lv#callNumber">
+		    <replace pattern="^http" with="Siehe: http" />
+		</data>
 		<data source="@signature" name="http://www.w3.org/2000/01/rdf-schema#label"/>
 		<!-- provenance -->
     <combine name="@created" value="${a}">
