@@ -70,7 +70,8 @@
                      "type" : "text"
                   },
                   "id" : {
-                     "type" : "keyword"
+                     "type" : "keyword",
+                     "index": "false"
                   }
                }
             },
@@ -454,8 +455,13 @@
                         "id": {
                            "type" : "keyword"
                      },
-                     "label": {
-                        "type": "keyword"
+                      "label": {
+                        "type": "text",
+                        "fields": {
+                            "raw": {
+                                "type": "keyword"
+                            }
+                        }
                      },
                      "source": {
                         "properties": {
@@ -463,7 +469,6 @@
                             "type": "keyword"
                           },
                           "label": {
-                            "index" : "false",
                             "type": "text"
                           }
                         }
@@ -474,11 +479,16 @@
                      }
                   },
                "id": {
-                  "type": "keyword"
-                  },
+                 "type": "keyword"
+               },
                "label": {
-                  "type": "text"
-                  },
+                   "type": "text",
+                   "fields": {
+                       "raw": {
+                          "type": "keyword"
+                       }
+                   }
+               },
                "notation": {
                  "type": "text",
                  "index": "false"
@@ -489,7 +499,6 @@
                          "type": "keyword"
                       },
                       "label": {
-                         "index" : "false",
                          "type": "text"
                       }
                   }
@@ -604,8 +613,13 @@
             },
             "itemOf" : {
                "properties" : {
+                  "label" : {
+                     "index": "false",
+                     "type" : "text"
+                  },
                   "id" : {
-                     "type" : "keyword"
+                     "type" : "keyword",
+                     "index": "false"
                   }
                }
             },
