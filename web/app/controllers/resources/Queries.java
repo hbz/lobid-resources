@@ -603,7 +603,7 @@ public class Queries {
 			QueryStringQueryBuilder builder =
 					QueryBuilders.queryStringQuery(queryString);
 			fields().stream().forEach(f -> builder.field(f));
-			return builder;
+			return builder.defaultOperator(Operator.AND);
 		}
 	}
 
