@@ -439,9 +439,15 @@ public class Queries {
 		@Override
 		public QueryBuilder build(String queryString) {
 			final String[] elems = queryString.split("-");
-			return elems.length == 2 ? //
-					QueryBuilders.rangeQuery(fields().get(0)).gte(elems[0]).lte(elems[1])
-					: multiMatchQuery(queryString, fields().toArray(new String[] {}));
+			if (elems.length == 2) {
+				return QueryBuilders.rangeQuery(fields().get(0))//
+						.gte(bound(elems[0])).lte(bound(elems[1]));
+			}
+			return multiMatchQuery(queryString, fields().toArray(new String[] {}));
+		}
+
+		private static String bound(final String val) {
+			return val.equals("*") ? null /* = unbounded */ : val;
 		}
 	}
 
