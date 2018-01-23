@@ -1540,14 +1540,13 @@
 		<!-- ####################### -->
 		<data source="304[-a]1.a" name="http://purl.org/dc/terms/alternative"/>
 		<data source="310[-ab][-12].a" name="@title310"/>
-		<data source="@title310" name="@title"/>
 		<!-- has other title information. If no title exists yet, use these (331 or 333) as title. -->
 		<data source="331[-ab][-1].a" name="@titleRemainder331"/>
 		<data source="333[-ab][-1].a" name="@titleRemainder333"/>
 		<combine name="@titleRemainder2title331" value="${title}">
 			<if>
 				<none>
-					<data source="@title"/>
+					<data source="@title310"/>
 					<data source="@titleRemainder331Superordination"/>
 					<data source="085x1.l"/>
 				</none>
@@ -1557,7 +1556,7 @@
 		<combine name="@titleRemainder2title333" value="${title}">
 			<if>
 				<none>
-					<data source="@title"/>
+					<data source="@title310"/>
 					<data source="@titleRemainder331"/>
 				</none>
 			</if>
@@ -1569,6 +1568,13 @@
 			</concat>
 			<data source="@titleRemainder331"/>
 		</combine>
+		<!-- used to sort out otherTitleInformation if it's identical with title-->
+		<combine name="@firstHalfOfTitle" value="${a}">
+			<choose name="a">
+				<data source="@titleRemainder331Superordination2title"/>
+				<data source="@title310"/>
+			</choose>
+		</combine>
 		<combine name="@otherTitle" value="${titleRemainder}">
 			<if>
 				<none>
@@ -1576,6 +1582,7 @@
 					<data source="@titleRemainder331Superordination"/>
 				</none>
 			</if>
+			<data source="@firstHalfOfTitle"/>
 			<data source="@titleRemainder331" name="titleRemainder"/>
 		</combine>
 		<combine name="http://rdaregistry.info/Elements/u/P60327" value="${corporateBody4Title}">
