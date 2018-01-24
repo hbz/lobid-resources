@@ -116,7 +116,7 @@ public abstract class AbstractIngestTests {
 	private static SortedSet<String> asNormalizedSet(
 			Stream<String> unnormalizedStream) {
 		return new TreeSet<>(unnormalizedStream.flatMap(s -> Stream
-				.of(s.replaceFirst("(^_:\\w* )|( _:\\w* ?.$)", "_:bnodeDummy ")
+				.of(s.replaceFirst("(^_:\\w*)|( _:\\w* ?.$)", "_:bnodeDummy ")
 						.replaceFirst(",$", "")))
 				.collect(Collectors.toList()));
 	}

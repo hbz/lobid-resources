@@ -51,8 +51,8 @@ public class IndexIntegrationTest extends LocalIndexSetup {
 			{ "publication.location:Berlin AND publication.startDate:[1992 TO 2017]", /*->*/ 12 },
 			{ "inCollection.id:\"http\\://lobid.org/resources/HT014176012#\\!\"", /*->*/ 40 },
 			{ "inCollection.id:NWBib", /*->*/ 0 },
-			{ "publication.publishedBy:Springer", /*->*/ 3 },
-			{ "publication.publishedBy:Spring", /*->*/ 3 },
+			{ "publication.publishedBy:Springer", /*->*/ 4 },
+			{ "publication.publishedBy:Spring", /*->*/ 4 },
 			{ "hasItem.id:\"http\\://lobid.org/items/TT003059252\\:DE-5-58\\:9%2F041#\\!\"", /*->*/ 1 },
 			{ "hasItem.id:TT003059252\\:DE-5-58\\:9%2F041", /*->*/ 0 }
 		});
