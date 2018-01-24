@@ -214,7 +214,9 @@
                      "fielddata": true
                   },
                   "publishedBy" : {
-                     "type" : "text"
+                     "type" : "text",
+                     "search_analyzer" : "german_analyzer",
+                     "analyzer" : "ngram_analyzer"
                   },
                   "type" : {
                      "index" : "true",
@@ -655,11 +657,6 @@
                      "index" : "true"
                   }
                }
-            },
-            "publisher" : {
-               "type" : "text",
-               "search_analyzer" : "german_analyzer",
-               "analyzer" : "ngram_analyzer"
             },
             "seeAlso" : {
                "properties" : {
