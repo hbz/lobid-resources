@@ -4092,13 +4092,6 @@
 				source="@bnodeCreatorPersonLabel|@contributorPersonBnodeOrId|@contributorCorporateBodyBnodeOrId|@agentId|@altLabelPerson|@altLabelCorporateBody|@subjectLinks|@GNDPersonId|@creatorCorporateBodyId|@contributorPersonId|@contributorCorporateBodyId|@subjectTopic|@subjectMain"/>
 			<data source="@id" name="subject"/>
 		</combine>
-		<!-- other subjects -->
-		<data source="71[01][-abcdfz][123].a" name="http://purl.org/lobid/lv#subjectAltLabel">
-			<split delimiter=" / "/>
-			<regexp match="^(?!http).*$"/>
-			<replace pattern="&gt;&gt;" with=""/>
-			<replace pattern="&lt;&lt;" with=""/>
-		</data>
 		<!-- "Verweisungsformen" literals -->
 		<data source="9[56][27]-[12].[acefgkps]" name="@subjectMain">
 			<replace pattern="&gt;&gt;" with=""/>
@@ -4554,6 +4547,29 @@
 		<call-macro name="dctSubject" field="937"/>
 		<call-macro name="dctSubject" field="942"/>
 		<call-macro name="dctSubject" field="947"/>
+
+		<combine name="http://purl.org/dc/terms/subject" value="_:710${a}" flushWith="710[-abcdfz][123].a">
+			<data source="710[-abcdfz][123].a" name="a">
+				<split delimiter=" / "/>
+				<regexp match="^(?!http).*$"/>
+				<replace pattern="&gt;&gt;" with=""/>
+				<replace pattern="&lt;&lt;" with=""/>
+			</data>
+		</combine>
+		<combine name="~rdf:subject" value="_:710${a}" flushWith="710[-abcdfz][123].a">
+			<data source="710[-abcdfz][123].a" name="a">
+				<split delimiter=" / "/>
+				<regexp match="^(?!http).*$"/>
+				<replace pattern="&gt;&gt;" with=""/>
+				<replace pattern="&lt;&lt;" with=""/>
+			</data>
+		</combine>
+		<data source="710[-abcdfz][123].a" name="http://www.w3.org/2000/01/rdf-schema#label">
+			<regexp match="^(?!http).*$"/>
+			<replace pattern="&gt;&gt;" with=""/>
+			<replace pattern="&lt;&lt;" with=""/>
+		</data>
+		<call-macro name="setBackRdfSubject" field="710[-abcdfz][123].a"/>
 		<!-- ####################### -->
 		<!-- ##########fulltext, toc, seeAlso -->
 		<!-- ####################### -->
