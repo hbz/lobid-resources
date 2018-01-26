@@ -70,7 +70,8 @@
                      "type" : "text"
                   },
                   "id" : {
-                     "type" : "keyword"
+                     "type" : "keyword",
+                     "index": "false"
                   }
                }
             },
@@ -227,6 +228,21 @@
                      "type" : "text",
                      "fielddata": true
                   },
+                  "frequency" : {
+                     "properties" : {
+                        "id" : {
+                           "type" : "keyword"
+                        },
+                        "label" : {
+                           "index" : "false",
+                           "type" : "text"
+                        },
+                        "type" : {
+                           "index" : "false",
+                           "type" : "text"
+                        }
+                     }
+                  },
                   "publishedBy" : {
                      "type" : "text"
                   },
@@ -284,10 +300,6 @@
                      "type" : "text"
                   }
                }
-            },
-            "frequency" : {
-              "index" : "false",
-               "type" : "text"
             },
             "isFormatOf" : {
                "properties" : {
@@ -612,8 +624,13 @@
             },
             "itemOf" : {
                "properties" : {
+                  "label" : {
+                     "index": "false",
+                     "type" : "text"
+                  },
                   "id" : {
-                     "type" : "keyword"
+                     "type" : "keyword",
+                     "index": "false"
                   }
                }
             },

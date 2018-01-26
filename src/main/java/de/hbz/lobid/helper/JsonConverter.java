@@ -340,21 +340,13 @@ public class JsonConverter {
 				if (!mainSubjectOfTheResource.equals(s.getObject().stringValue())) {
 					createObject(newObject, s, e);
 				} else {
-					if (!statementVisited(s)) {
-						newObject.put(e.name, s.getObject().stringValue());
-					}
+					Map<String, Object> selfReference = new HashMap<>();
+					selfReference.put(idAlias, s.getObject().stringValue());
+					selfReference.put(labelKey, "lobid Ressource");
+					newObject.put(e.name, selfReference);
 				}
 			}
 		}
-	}
-
-	private boolean statementVisited(Statement s) {
-		boolean result = visited.containsKey(s);
-		if (result) {
-			logger.debug("Already visited " + s);
-		}
-		visited.put(s, s);
-		return result;
 	}
 
 	private Set<Statement> find(String uri) {
