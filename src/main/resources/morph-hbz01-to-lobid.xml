@@ -347,32 +347,39 @@
 			</combine>
 		</macro>
 		<macro name="subject-chain-name2">
-			<combine name="@preferredNameSubjectChain$[field_1]-2" value="${a}${e}${d}${c}">
-				<concat delimiter="" name="a" flushWith="$[field_1]??|$[field_2]-2.a">
-					<data source="$[field_1]-[2].[abfghknpskxz-]">
-						<replace pattern="^" with=", "/>
-					</data>
-					<concat delimiter="" name="e" flushWith="$[field_1]??">
-						<data source="$[field_1]-[2].e">
-							<replace pattern="^" with=""/>
-							<replace pattern="$" with=""/>
+			<combine name="@preferredNameSubjectChain$[field_1]-2" value="${a}">
+				<choose name="a" flushWith="$[field_1]??|$[field_2]-2.a" sameEntity="true">
+					<data source="@preferredNameConcatEventENDC"/>
+					<data source="@preferredNameSemicolon"/>
+					<data source="@preferredNamePersonConcatSubject"/>
+					<data source="@preferredNameConcatTitleWithNumberingSubject"/>
+					<data source="@preferredNameConcatTitleWithoutNumberingSubject"/>
+					<concat delimiter="" name="a" flushWith="$[field_1]??|$[field_2]-2.a">
+						<data source="$[field_1]-2.[abfghknpskxz-]">
+							<replace pattern="^" with=", "/>
 						</data>
-						<concat delimiter="" name="d" flushWith="$[field_1]??">
-							<data source="$[field_1]-[2].d">
-								<replace pattern="^" with=" ("/>
-								<replace pattern="$" with=")"/>
+						<concat delimiter="" name="e" flushWith="$[field_1]??">
+							<data source="$[field_1]-2.e">
+								<replace pattern="^" with=""/>
+								<replace pattern="$" with=""/>
+							</data>
+							<concat delimiter="" name="d" flushWith="$[field_1]??">
+								<data source="$[field_1]-2.d">
+									<replace pattern="^" with=" ("/>
+									<replace pattern="$" with=")"/>
+								</data>
+							</concat>
+						</concat>
+						<concat delimiter="" name="c" flushWith="$[field_1]??">
+							<data source="$[field_1]-2.c">
+								<regexp match="(.*)" format=", ${1}"/>
+							</data>
+							<data source="$[field_1]-2.t">
+								<regexp match="(.*)" format=": ${1}"/>
 							</data>
 						</concat>
 					</concat>
-					<concat delimiter="" name="c" flushWith="$[field_1]??">
-						<data source="$[field_1]-[2].c">
-							<regexp match="(.*)" format=", ${1}"/>
-						</data>
-						<data source="$[field_1]-[2].t">
-							<regexp match="(.*)" format=": ${1}"/>
-						</data>
-					</concat>
-				</concat>
+				</choose>
 			</combine>
 		</macro>
 		<macro name="subject-chain-perm1">
@@ -3939,6 +3946,10 @@
 		<data source="@subjectLinks" name="http://id.loc.gov/ontologies/bibframe/source">
 			<constant value="http://d-nb.info/gnd/7749153-1"/><!--gnd -->
 		</data>
+		<combine name="@preferredNameHT" value="${h}: ${t}" sameEntity="true">
+			<data source="9[01234][27]??.h" name="h"/>
+			<data source="9[01234][27]??.t" name="t"/>
+		</combine>
 		<!-- subjects which aren't persons (and thus the date needn't be ignored) -->
 		<combine name="@preferredNameConcatSubject" value="${a}" sameEntity="true"
 			flushWith="@creatorCorporateBodyId|@contributorCorporateBodyId|@subjectNotAPerson">
@@ -4106,6 +4117,7 @@
 			<data source="@nameOfSubjectCorporateBody"/>
 			<data source="@preferredNameConcatTitleWithNumberingSubject"/>
 			<data source="@preferredNameConcatTitleWithoutNumberingSubject"/>
+			<data source="@preferredNameHT"/>
 			<data source="@preferredNameConcatSubject"/>
 			<data source="9[01234][27]-[-12].t"/>
 		</choose>
