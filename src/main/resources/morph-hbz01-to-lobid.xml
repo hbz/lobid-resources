@@ -1932,23 +1932,17 @@
 			<replace pattern="&lt;" with=""/>
 			<replace pattern="^\[[sS]\.n\.\]$" with=""/>
 		</data>
-		<choose name="@startDateFirstPublication">
-			<!-- issue precedence -->
-			<!-- Multiple resource have [determined] volume numbers in this field. -->
-			<if>
-				<none>
-					<data source="425-[-1].a">
-						<regexp match="-(\d{4})|-....."/>
-					</data>
-				</none>
-			</if>
-			<data source="425[ab-p][-1].a|419-1c|595-[-12].a">
-				<regexp match="1\d{3}|20\d{2}"/>
-			</data>
-			<data source="089-[-1].a">
-				<regexp match="(.*)\. (1\d{3})|(.*)\. (20\d{2})" format="${2}"/>
-			</data>
-		</choose>
+		<combine name="@startDateFirstPublication" value="${a}">
+			<choose name="a">
+				<data source="425[ab-p][-1].a|419-1c|595-[-12].a">
+					<regexp match="^1\d{3}|^20\d{2}"/>
+				</data>
+				<!-- Multiple resource have [determined] volume numbers in this field. -->
+				<data source="089-[-1].a">
+					<regexp match="(.*)\. (1\d{3})|(.*)\. (20\d{2})" format="${2}"/>
+				</data>
+			</choose>
+		</combine>
 		<entity name="http://schema.org/publication" flushWith="record">
 			<data source="@placeOfPublication" name="http://schema.org/location"/>
 			<data source="@publisher" name="http://schema.org/publishedBy"/>
@@ -2160,7 +2154,9 @@
 			<data source="@itemId"/>
 			<data source="088 ?.c" name="signature"/>
 		</combine>
-		<data source="@signature" name="http://purl.org/lobid/lv#callNumber"/>
+		<data source="@signature" name="http://purl.org/lobid/lv#callNumber">
+		    <replace pattern="^http" with="Siehe: http" />
+		</data>
 		<data source="@signature" name="http://www.w3.org/2000/01/rdf-schema#label"/>
 		<!-- provenance -->
     <combine name="@created" value="${a}">
@@ -4982,11 +4978,13 @@
 			<data source="59[0123568][-abcd][-12].a">
 				<replace pattern="&gt;&gt;" with=""/>
 				<replace pattern="&lt;&lt;" with=""/>
+				<replace pattern="^http" with="Siehe: http" />
 			</data>
 		</concat>
 		<data source="525[-a][-1].a" name="http://purl.org/dc/terms/bibliographicCitation">
 			<replace pattern="&gt;&gt;" with=""/>
 			<replace pattern="&lt;&lt;" with=""/>
+			<replace pattern="^http" with="Siehe: http" />
 		</data>
 		<combine name="http://id.loc.gov/ontologies/bibframe/supplement" value="${a}">
 			<choose name="a" flushWith="@supplement" sameEntity="true">
