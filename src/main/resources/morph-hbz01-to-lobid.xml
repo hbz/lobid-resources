@@ -1705,23 +1705,17 @@
 			<replace pattern="&lt;" with=""/>
 			<replace pattern="^\[[sS]\.n\.\]$" with=""/>
 		</data>
-		<choose name="@startDateFirstPublication">
-			<!-- issue precedence -->
-			<!-- Multiple resource have [determined] volume numbers in this field. -->
-			<if>
-				<none>
-					<data source="425-[-1].a">
-						<regexp match="-(\d{4})|-....."/>
-					</data>
-				</none>
-			</if>
-			<data source="425[ab-p][-1].a|419-1c|595-[-12].a">
-				<regexp match="1\d{3}|20\d{2}"/>
-			</data>
-			<data source="089-[-1].a">
-				<regexp match="(.*)\. (1\d{3})|(.*)\. (20\d{2})" format="${2}"/>
-			</data>
-		</choose>
+		<combine name="@startDateFirstPublication" value="${a}">
+			<choose name="a">
+				<data source="425[ab-p][-1].a|419-1c|595-[-12].a">
+					<regexp match="^1\d{3}|^20\d{2}"/>
+				</data>
+				<!-- Multiple resource have [determined] volume numbers in this field. -->
+				<data source="089-[-1].a">
+					<regexp match="(.*)\. (1\d{3})|(.*)\. (20\d{2})" format="${2}"/>
+				</data>
+			</choose>
+		</combine>
 		<entity name="http://schema.org/publication" flushWith="record">
 			<data source="@placeOfPublication" name="http://schema.org/location"/>
 			<data source="@publisher" name="http://schema.org/publishedBy"/>
