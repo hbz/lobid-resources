@@ -205,6 +205,7 @@
 							</none>
 						</if>
 						<data source="$[field_2]" name="isPartOfLiteral">
+                            <replace pattern="^http" with="Siehe: http" />
 							<regexp match="(.*) ; (.*)" format="${1}"/>
 						</data>
 					</combine>
@@ -237,7 +238,9 @@
 								</data>
 							</none>
 						</if>
-						<data source="$[field_2]" name="a"/>
+						<data source="$[field_2]" name="a">
+						    <replace pattern="^http" with="Siehe: http" />
+						</data>
 					</combine>
 				</entity>
 				<data source="$[field_2]" name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type">
@@ -463,6 +466,7 @@
 					<replace pattern="\([0-9]{1,6} \|" with=""/>
 					<replace pattern=" [0-9]{1,6} \|" with=""/>
 					<replace pattern="[0-9]{1,6}\)$" with=""/>
+					<replace pattern="^http" with="Siehe: http" />
 				</data>
 			</combine>
 		</macro>
@@ -856,7 +860,9 @@
 		<macro name="setLabelForPersonAgent">
 			<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="${a}"
 				flushWith="@contributionBnode$[field]">
-				<data source="@creatorPersonLabel$[field]|@contributorPersonLabel$[field]" name="a"/>
+				<data source="@creatorPersonLabel$[field]|@contributorPersonLabel$[field]" name="a">
+				    <replace pattern="^http" with="Siehe: http" />
+				</data>
 			</combine>
 		</macro>
 		<macro name="setTypePersonForAgent">
@@ -1651,7 +1657,9 @@
 		</combine>
 		<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="${a}"
 			flushWith="@predecessorHbzId">
-			<data source="@predecessorLabel" name="a"/>
+			<data source="@predecessorLabel" name="a">
+			    <replace pattern="^http" with="Siehe: http" />
+			</data>
 		</combine>
 		<combine name="~rdf:subject" value="$[ns-lobid-resource]${subject}#!" flushWith="@predecessorHbzId">
 			<data source="@id" name="subject"/>
@@ -1680,7 +1688,9 @@
 		</combine>
 		<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="${a}"
 			flushWith="@successorHbzId">
-			<data source="@successorLabel" name="a"/>
+			<data source="@successorLabel" name="a">
+			    <replace pattern="^http" with="Siehe: http" />
+			</data>    
 		</combine>
 		<combine name="~rdf:subject" value="$[ns-lobid-resource]${subject}#!" flushWith="@successorHbzId">
 			<data source="@id" name="subject"/>
@@ -1926,6 +1936,12 @@
 			<data source="@itemId"/>
 			<data source="@sigel2isilMap" name="isil"/>
 		</combine>
+		<combine name="http://id.loc.gov/ontologies/bibframe/note" value="${a}"
+			sameEntity="true" flushWith="@itemId" >
+		<data source="088 ?.b" name="a">
+			<replace pattern="^http" with="Siehe: http" />
+		</data>
+		</combine>
     <combine name="http://id.loc.gov/ontologies/bibframe/note" value="${a}"
       sameEntity="true">
       <choose flushWith="@itemId" sameEntity="true">
@@ -1942,7 +1958,9 @@
 		<data source="@signature" name="http://purl.org/lobid/lv#callNumber">
 		    <replace pattern="^http" with="Siehe: http" />
 		</data>
-		<data source="@signature" name="http://www.w3.org/2000/01/rdf-schema#label"/>
+		<data source="@signature" name="http://www.w3.org/2000/01/rdf-schema#label">
+		    <replace pattern="^http" with="Siehe: http" />
+		</data>
 		<!-- provenance -->
     <combine name="@created" value="${a}">
       <choose name="a" flushWith="record">
