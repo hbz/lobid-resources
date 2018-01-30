@@ -1008,10 +1008,9 @@
 		<!-- ####################### -->
 		<!-- ####### hbz ID sameAs ZDB ID -->
 		<!-- ####################### -->
-		<data source="@idzdb" name="@zdbUrl">
+		<data source="@idzdb" name="http://www.w3.org/2002/07/owl#sameAs">
 			<regexp match="(.*)" format="$[ns-zdb-services]${1}"/>
 		</data>
-		<data source="@zdbUrl" name="http://www.w3.org/2002/07/owl#sameAs"/>
 		<data source="@idzdb" name="$[ns-lobid-vocab]zdbID"/>
 		<data source="@idzdb" name="http://purl.org/lobid/lv#inCollection">
 			<regexp match=".*" format="$[ns-lobid-resource]HT014846970#!"/>
@@ -1024,12 +1023,14 @@
 		<call-macro name="addTypeCollection" field="@idzdb"/>
 		<call-macro name="setBackRdfSubject" field="025z[-1].a"/>
 		<combine name="~rdf:subject" value="${a}">
-			<data source="@zdbUrl" name="a"/>
+			<data source="@idzdb" name="a">
+				<regexp match="(.*)" format="$[ns-zdb-services]${1}"/>
+			</data>
 		</combine>
 		<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="ZDB-Ressource">
-			<data source="@zdbUrl"/>
+			<data source="@idzdb"/>
 		</combine>
-		<call-macro name="setBackRdfSubject" field="@zdbUrl"/>
+		<call-macro name="setBackRdfSubject" field="@idzdb"/>
 		<!-- ####################### -->
 		<!-- ####### Secondary form, link to primary form and vice versa -->
 		<!-- ####################### -->
