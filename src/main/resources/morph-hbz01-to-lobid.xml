@@ -1972,6 +1972,12 @@
 			<data source="@itemId"/>
 			<data source="@sigel2isilMap" name="isil"/>
 		</combine>
+		<combine name="http://id.loc.gov/ontologies/bibframe/note" value="${a}"
+			sameEntity="true" flushWith="@itemId" >
+		<data source="088 ?.b" name="a">
+			<replace pattern="^http" with="Siehe: http" />
+		</data>
+		</combine>
     <combine name="http://id.loc.gov/ontologies/bibframe/note" value="${a}"
       sameEntity="true">
       <choose flushWith="@itemId" sameEntity="true">
