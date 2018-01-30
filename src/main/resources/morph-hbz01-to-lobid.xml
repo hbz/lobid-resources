@@ -1628,16 +1628,10 @@
 		<!-- ####################### -->
 		<!-- ########## predecessor and successor -->
 		<!-- ####################### -->
-		<combine name="@predecessorLabel" value="${a}" flushWith="531[-xyz]1.a">
-			<choose name="a" flushWith="531[-xyz]1.a">
-				<data source="531[-xyz]1.a">
-					<regexp match="&lt;&lt;(.*)&gt;&gt;(.*)"/>
-					<replace pattern="&gt;&gt;" with=""/>
-					<replace pattern="&lt;&lt;" with=""/>
-				</data>
-				<data source="531[-xyz]1.a"/>
-			</choose>
-		</combine>
+	    <data source="531[-xyz]1.a|780-1.t" name="@predecessorLabel">
+	        <replace pattern=".*---&gt; :? ?" with=""/>
+	        <replace pattern="&gt;|&lt;" with=""/>
+	    </data>
 		<combine name="@predecessorHbzId" value="${a}">
 			<data source="531[-xyz]1.9" name="a">
 				<regexp match="(.*)" format="$[ns-lobid-resource]${1}"/>
@@ -1649,7 +1643,7 @@
 					<data source="531[-xyz]1.9"/>
 				</none>
 			</if>
-			<data source="531[-xyz]1.a" name="a"/>
+			<data source="@predecessorLabel" name="a"/>
 		</combine>
 		<data source="@predecessorHbzId" name="http://rdaregistry.info/Elements/u/P60261"/>
 		<combine name="~rdf:subject" value="${a}" flushWith="@predecessorHbzId">
@@ -1662,24 +1656,11 @@
 		<combine name="~rdf:subject" value="$[ns-lobid-resource]${subject}#!" flushWith="@predecessorHbzId">
 			<data source="@id" name="subject"/>
 		</combine>
-		<combine name="@predecessorHbzId" value="_:${a}" flushWith="780-1.t">
-			<data source="780-1.t" name="a">
-				<regexp match=".*&gt; (.*)" format="${1}"/>
-			</data>
-		</combine>
-		<combine name="http://rdaregistry.info/Elements/u/P60261" value="${a}">
-			<data source="@predecessorHbzId" name="a"/>
-		</combine>
-		<combine name="~rdf:subject" value="${a}" flushWith="780-1.t">
-			<data source="@predecessorHbzId" name="a"/>
-		</combine>
-		<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="${a}">
-			<data source="780-1.t" name="a">
-				<regexp match=".*&gt; (.*)" format="${1}"/>
-			</data>
-		</combine>
-		<call-macro name="setBackRdfSubject" field="780-1.t"/>
 		<!-- successors -->
+		<data source="533[-xyz]1.a|785-1.t" name="@successorLabel" >
+	        <replace pattern=".*---&gt; :? ?" with=""/>
+	        <replace pattern="&gt;|&lt;" with=""/>
+		</data>
 		<combine name="@successorHbzId" value="${a}">
 			<data source="533[-xyz]1.9" name="a">
 				<regexp match="(.*)" format="$[ns-lobid-resource]${1}"/>
@@ -1691,17 +1672,7 @@
 					<data source="533[-xyz]1.9"/>
 				</none>
 			</if>
-			<data source="533[-xyz]1.a" name="a"/>
-		</combine>
-		<combine name="@successorLabel" value="${a}" flushWith="533[-xyz]1.a">
-			<choose name="a" flushWith="533[-xyz]1.a">
-				<data source="533[-xyz]1.a">
-					<regexp match="&lt;&lt;(.*)&gt;&gt;(.*)"/>
-					<replace pattern="&gt;&gt;" with=""/>
-					<replace pattern="&lt;&lt;" with=""/>
-				</data>
-				<data source="533[-xyz]1.a"/>
-			</choose>
+			<data source="@successorLabel" name="a"/>
 		</combine>
 		<data source="@successorHbzId" name="http://rdaregistry.info/Elements/u/P60278"/>
 		<combine name="~rdf:subject" value="${a}" flushWith="@successorHbzId">
@@ -1714,23 +1685,6 @@
 		<combine name="~rdf:subject" value="$[ns-lobid-resource]${subject}#!" flushWith="@successorHbzId">
 			<data source="@id" name="subject"/>
 		</combine>
-		<combine name="@successorHbzId" value="_:${a}" flushWith="785-1.t">
-			<data source="785-1.t" name="a">
-				<regexp match=".*&gt; (.*)" format="${1}"/>
-			</data>
-		</combine>
-		<combine name="http://rdaregistry.info/Elements/u/P60278" value="${a}">
-			<data source="@successorHbzId" name="a"/>
-		</combine>
-		<combine name="~rdf:subject" value="${a}" flushWith="785-1.t">
-			<data source="@successorHbzId" name="a"/>
-		</combine>
-		<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="${a}">
-			<data source="785-1.t" name="a">
-				<regexp match=".*&gt; (.*)" format="${1}"/>
-			</data>
-		</combine>
-		<call-macro name="setBackRdfSubject" field="785-1.t"/>
 		<!-- ####################### -->
 		<!-- ########## geo coordinates -->
 		<!-- ####################### -->
