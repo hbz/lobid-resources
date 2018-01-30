@@ -1239,7 +1239,7 @@
 		</combine>
 		<data name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" source="@rdftype|@typeOnly"/>
 		<data source="051." name="@article">
-			<regexp match="^a|^.t|^..t|^...t|^.....t" format="$[ns-bibo]Article"/>
+			<regexp match="^.t|^..t|^...t|^.....t" format="$[ns-bibo]Article"/>
 		</data>
 		<data source="051." name="@rdftype">
 			<regexp match="^[nt]" format="$[ns-bibo]MultiVolumeBook"/>
@@ -1470,7 +1470,9 @@
 		<data source="@article" name="@rdftype"/>
 		<combine name="@containedIn" value="${a}">
 			<data source="@dctIsPartOfHbzIdArticle|@dctIsPartOfArticle" name="a"/>
-			<data source="@article"/>
+			<data source="051.">
+				<regexp match="a|^.t|^..t|^...t|^.....t"/>
+			</data>
 		</combine>
 		<combine name="$[ns-lobid-vocab]containedIn" value="${a}">
 			<data source="@containedIn" name="a">
