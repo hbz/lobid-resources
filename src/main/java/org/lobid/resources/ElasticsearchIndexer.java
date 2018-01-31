@@ -84,6 +84,7 @@ public class ElasticsearchIndexer
 	private static ObjectMapper mapper = new ObjectMapper();
 	// TODDO setter?
 	public static double MINIMUM_SCORE = 5.0;
+	private HashMap<String, Object> settings = new HashMap<>();
 
 	/**
 	 * Keys to get index properties and the json document ("graph")
@@ -113,13 +114,13 @@ public class ElasticsearchIndexer
 		// feed the rest of the bulk
 		if (bulkRequest.numberOfActions() != 0)
 			bulkRequest.execute().actionGet();
-		// refresh and set replicas to 1 and refresh intervall
 		client.admin().indices().prepareRefresh(indexName).get();
 		UpdateSettingsRequestBuilder usrb =
 				client.admin().indices().prepareUpdateSettings();
 		usrb.setIndices(indexName);
-		Settings settings = Settings.builder().put("index.refresh_interval", "30s")
-				.put("index.number_of_replicas", 1).build();
+		// refresh and set replicas to 1 and refresh intervall
+		settings.put("index.refresh_interval", "30s");
+		settings.put("index.number_of_replicas", 1);
 		usrb.setSettings(settings);
 		usrb.execute().actionGet();
 		LOG.info("... closed ES index with name: " + indexName);
@@ -129,7 +130,7 @@ public class ElasticsearchIndexer
 	public void onSetReceiver() {
 		if (client == null) {
 			LOG.info("clustername=" + this.clustername);
-			Settings settings = Settings.builder()
+			Settings clientSettings = Settings.builder()
 					.put("cluster.name", this.clustername)
 					.put("client.transport.sniff", false)
 					.put("client.transport.ping_timeout", 120, TimeUnit.SECONDS).build();
@@ -140,7 +141,7 @@ public class ElasticsearchIndexer
 				e.printStackTrace();
 			}
 
-			this.tc = new PreBuiltTransportClient(settings);
+			this.tc = new PreBuiltTransportClient(clientSettings);
 			this.client = this.tc.addTransportAddress(this.NODE);
 		}
 		bulkRequest = client.prepareBulk();
@@ -152,8 +153,7 @@ public class ElasticsearchIndexer
 		UpdateSettingsRequestBuilder usrb =
 				client.admin().indices().prepareUpdateSettings();
 		usrb.setIndices(indexName);
-		Settings settings = Settings.builder().put("index.refresh_interval", -1)
-				.put("index.number_of_replicas", 0).build();
+		settings.put("index.refresh_interval", -1);
 		usrb.setSettings(settings);
 		usrb.execute().actionGet();
 		LOG.info(
@@ -365,6 +365,7 @@ public class ElasticsearchIndexer
 					+ this.client.settings().get("cluster.name"));
 			adminClient.prepareCreate(indexName).setSource(config()).execute()
 					.actionGet();
+			settings.put("index.number_of_replicas", 0);
 		} else
 			LOG.info("Index already exists, going to UPDATE index " + indexName);
 	}
