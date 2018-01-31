@@ -41,32 +41,34 @@ Number MAB2 | Field name MAB2 | if & how transformed
 050.10 | DATENTRAEGER [Landkarten] | → bibo/Map. Used for bibo/book if other publication types don't fit.
 050 | DATENTRAEGER [not used] | 5-6.a[abcefghijklmn][CD-DA (Compact Disc Digital Audio, Single Compact Disc)/ CD-Bildplatte/ Tonband/ Micro-Cassette (Diktier- oder Stenocassette)/ Digital Audio Tape (DAT-Cassette)/ Digital Compact Cassette (DCC-Cassette)/ Cartridge (8-Track Cartridge)/ Drahtton (Stahlband)/ Walze (Zylinder)/ Klavierrolle (Mechanisches Klavier)/ Filmtonspur/ Tonbildreihe], 5-6.uu/yy/zz [unbekannt/nicht spezifiziert/sonstige audiovisuelle Medien], 8 RDAMediaType/1003 (Computer), 11-13 [Anzahl der physischen Einheiten]
 051	|	VEROEFFENTLICHUNGSSPEZIFISCHE ANGABEN ZU BEGRENZTEN WERKEN | Used for bibo/book if 050 fits and other publication types don't. Not used: 1-3.[acgijopqsvz]. 
-051.0 | Erscheinungsform | [nt] → bibo/MultiVolumeBook
-051.1-3 | Veroeffentlichungsart und Inhalt | b → bibo/Bibliography, d → bibo/ReferenceSource, e → bibo/ReferenceSource, f → Festschrift, h → bibo/Biography, k → bibo/Proceedings, l → [ns-lobid-vocab]Legislation, m → mo/PublishedScore, , n → bibo/Standard, r → bibo/Report, t → bibo/Article, u → bibo/Thesis, x → bibo/Schoolbook, 
-051.6 | Kennzeichnung Amtlicher Druckschriften | → [ns-lobid-vocab]OfficialPublication. 
+051.0 | Erscheinungsform | [nt] → bibo/MultiVolumeBook, m → bibo/Book
+051.1-3 | Veroeffentlichungsart und Inhalt | b → bibo/Bibliography, d → bibo/ReferenceSource, e → bibo/ReferenceSource, f → Festschrift, h → bibo/Biography, k → bibo/Proceedings, l → [ns-lobid-vocab]Legislation, m → mo/PublishedScore, , n → bibo/Standard, r → bibo/Report, s → lobid/Statistics, t → bibo/Article, u → bibo/Thesis, x → bibo/Schoolbook and bibo/Book
+051.4 | Literaturtyp | [flks] → bibo/Book
+051.6 | Kennzeichnung Amtlicher Druckschriften | → [ns-lobid-vocab]OfficialPublication
 052	|	VEROEFFENTLICHUNGSSPEZIFISCHE ANGABEN ZU FORTLAUFENDEN SAMMELWERKEN | Used for bibo/book if 050 fits and other publication types don't. Not used: 1-6.ab/am/az/kt/da/di/es/ft/fz/fb/ha/in/li/lo/me/mg/pa/pt/re/rf/rg/so/st/ub/uu/xj. → bibframe/frequency.
-052.1-6 | Veroeffentlichungsart und Inhalt | .aa → [ns-lobid-vocab]OfficialPublication, .ao → bibo/Newspaper, .ag → [ns-lobid-vocab]Legislation, .au → bibo/Article, .bi → [ns-lobid-vocab]Bibliography, .bg → [ns-lobid-vocab]Biography,  .eo → bibo/Newspaper, .ez  → bibo/ReferenceSource, .il → bibo/Periodical, .ko → bibo/Proceedings, .lp → bibo/Newspaper, .mu → .mo/PublishedScore, .no → bibo/Standard, .rp → bibo/Newspaper, sc → bibo/Thesis, .se → bibo/Series, .up → bibo/Newspaper.  
+052.1-6 | Veroeffentlichungsart und Inhalt | .aa → [ns-lobid-vocab]OfficialPublication, .ao → bibo/Newspaper, .ag → [ns-lobid-vocab]Legislation, .au → bibo/Article, .bi → [ns-lobid-vocab]Bibliography, .bg → [ns-lobid-vocab]Biography,  .eo → bibo/Newspaper, .ez  → bibo/ReferenceSource, .il → bibo/Periodical, .ko → bibo/Proceedings, .lp → bibo/Newspaper, .mu → .mo/PublishedScore, .no → bibo/Standard, .rp → bibo/Newspaper, sc → bibo/Thesis, .se → bibo/Series (if no ISBN from MAB 540), .up → bibo/Newspaper.
 053	|	NACHLAESSE UND AUTOGRAPHEN | -
 057	|	MATERIALSPEZIFISCHE CODES FUER MIKROFORMEN | → RDAMediaType/1002
 058 | | → RDAMediaType/1003 (Computer)
+062 | | → bibo/AudioDocument, bibo/AudioVisualDocument, http://rdaregistry.info/termList/RDAMediaType/1008 (Video)
 065	|	NORMDATENSPEZIFISCHE ANGABEN ZUR PND | -
 066	|	NORMDATENSPEZIFISCHE ANGABEN ZUR GKD | -
 067	|	NORMDATENSPEZIFISCHE ANGABEN ZUR SWD | -
 068	|	NORMDATENSPEZIFISCHE CODIERUNGEN | -
-070	|	IDENTIFIZIERUNGSMERKMALE DER BEARBEITENDEN INSTITUTION | -
+070	|	IDENTIFIZIERUNGSMERKMALE DER BEARBEITENDEN INSTITUTION | subfield a → schema.org/provider, subfield - → schema.org/sourceOrganization, subfield b → modifiedBy
 071	|	IDENTIFIZIERUNGSMERKMALE DER BESITZENDEN INSTITUTION | -
 072	|	CODIERTE ANGABEN ZUR BESITZENDEN INSTITUTION | -
 073	|	SONDERSAMMELGEBIETSNUMMER | -
 074	|	SONDERSAMMELGEBIETSNOTATION | -
 075	|	ZDB-PRIORITAETSZAHL | -
 076/079/081	|	FREI DEFINIERBARE ANWENDERSPEZIFISCHE ANGABEN, KENNZEICHEN UND CODES | -
-078 | | → purl.org/ontology/holding#collectedBy
+078 | | → http://purl.org/lobid/lv#inCollection (e: e-Package, n: NWBib, r: edoweb, publisso)
 080	|	ZUGRIFFS- UND UPDATE-ANWEISUNGEN | -
 088	|	FREI DEFINIERBARE ANWENDERSPEZIFISCHE ANGABEN, KENNZEICHEN UND CODES | Used for creating item id. → bibframe/note, → bibframe/heldBy, → bibframe/itemOf, → bibframe/hasItem, → lobid/lv#callNumber
 089	|	Bandangaben in Vorlageform | Used for [ns-lobid-vocab]numbering and creating title by concating superordinated title and volume number. One of the alternatives for non-existing 425.
 090	|	Bandangaben in Sortierform | Used for [ns-lobid-vocab]numbering and creating title by concating superordinated title and volume number.
 1?? |  | If something matches a GND-id in the 100s fields then it is put into creatorPersonId to work with it. Is put into marcrelName to test if it matches specific LoC vocabulary of bibo. 
-100	|	Name der 1. Person in Ansetzungsform | Used for creatorLabel and then mapped on dc/terms/creator.
+100	|	Name der 1. Person in Ansetzungsform | Used for creatorLabel and then mapped on dc/terms/creator. subfield d: dateOfBirth, dateOfDeath, dateOfBirthAndDeath
 101	|	Verweisungsformen zum Namen der 1. Person | 
 102	|	Identifikationsnummer des Personennamensatzes der 1. Person | Used for creatorLabel and then mapped on dc/terms/creator.
 103	|	Körperschaft, bei der die 1. Person beschäftigt ist | 
@@ -107,14 +109,14 @@ Number MAB2 | Field name MAB2 | if & how transformed
 350, 354 | zu ergänzende Urheber zum Parallelsachtitel | -
 351/355	|	Zusätze zum [3./4.] Parallelsachtitel | -
 359	|	Verfasserangabe | → bibframe/responsibilityStatement
-360	|	Unterreihen | -
+360	|	Unterreihen | → http://rdaregistry.info/Elements/u/P60517 (titleOfSubSeries)
 361 | Beigefügte Werke | -
 365	|	Zusätze zur gesamten Vorlage | -
 369	|	Verfasserangabe zur gesamten Vorlage | -
 370	|	Weitere Sachtitel | -
 376	|	Normierte Zeitschriftentitel | → bibo/shortTitle.
-400	|	Ausgabebezeichnung in normierter Form | -
-403	|	Ausgabebezeichnung in Vorlageform | -
+400	|	Ausgabebezeichnung in normierter Form | subfield [an] → bibo/edition
+403	|	Ausgabebezeichnung in Vorlageform | subfield [an] → bibo/edition
 405	|	Erscheinungsverlauf | -
 406	|	Normierter Erscheinungsverlauf | -
 407	|	Kartographische Materialien: Mathematische Angaben | → rdvocab.info/Elements/longitudeAndLatitude.
@@ -164,9 +166,9 @@ Number MAB2 | Field name MAB2 | if & how transformed
 528	|	Titel von Rezensionen | -
 529	|	Titel von fortlaufenden Beilagen | → bibframe/supplement
 530	|	Titel von Bezugswerken | -
-531	|	Hinweise auf frühere Ausgaben und Bände | -
+531	|	Hinweise auf frühere Ausgaben und Bände | → http://rdaregistry.info/Elements/u/P60261 (predecessor / Vorgänger)
 532 | Hinweise auf frühere und spätere sowie zeitweise gültige Titel | -
-533	|	Hinweise auf spätere Ausgaben und Bände | -
+533	|	Hinweise auf spätere Ausgaben und Bände | → http://rdaregistry.info/Elements/u/P60278 (successor / Nachfolger)
 534	|	Titelkonkordanzen | -
 535	|	Anzahl von Exemplaren | -
 536	|	Voraussichtlicher Erscheinungstermin | -
@@ -180,7 +182,7 @@ Number MAB2 | Field name MAB2 | if & how transformed
 546	|	Postvertriebskennzeichen | -
 550	|	Amtliche Druckschriftennummer | -
 551	|	Verlags-, Produktions- und Bestellnummer von Musikalien und Tonträgern | -
-552	|	Persistent Identifiers (PI) | If matches DOI or urn format mapped on bibo/doi or $[ns-lobid-vocab]urn respectively.
+552	|	Persistent Identifiers (PI) | If matches DOI or urn format mapped on bibo/doi or $[ns-lobid-vocab]urn respectively. subfield b → hasVersion (if no URN)
 553	|	Artikelnummer | -
 554	|	Hochschulschriftennummer | -
 556	|	Reportnummer | -
@@ -233,7 +235,7 @@ Number MAB2 | Field name MAB2 | if & how transformed
 681	|	Angaben zum Musikwerk | -
 682	|	Angaben zum Musikincipit | -
 683	|	Angaben zur Besetzung | -
-700	|	Notation eines Klassifikationssystems | → dc/terms/subject if matches dewey class. 700n → [ns-lobid-vocab]nwbibsubject.
+700	|	Notation eines Klassifikationssystems | → dc/terms/subject if matches dewey class. 700n → [ns-lobid-vocab]nwbibsubject. 700l → rpb-Notation and rpb-Raumsystematik
 705	|	DDC (Dewey Decimal Classification) analytisch | → dc/terms/subject if matches dewey class.
 710	|	Schlagwörter und Schlagwortketten | → purl.org/lobid/lv#subjectLabel.
 711	|	Schlagwörter und Schlagwortketten nach anderen Regelwerken | → purl.org/lobid/lv#subjectLabel.
@@ -244,6 +246,8 @@ Number MAB2 | Field name MAB2 | if & how transformed
 751/754/757	|	Verfasser der [1./2./3.] inhaltlichen Zusammenfassung | -
 752/755/758	|	Sprachen der 1. inhaltlichen Zusammenfassung | -
 753/756	|	[2./3.] inhaltliche Zusammenfassung | -
+780 || → http://rdaregistry.info/Elements/u/P60261 (predecessor / Vorgänger)
+785 || → http://rdaregistry.info/Elements/u/P60278 (successor / Nachfolger)
 8XX | Segment Nichtstandardmäßige Nebeneintragungen | Matches with some GND-id?
 9XX | Bei RSWK-Schlagwörtern erstes Unterfeld $f | Matches with some GND-id?
 902/907/912/927/922/927/932/937/942/947 | → dc/terms/subject if subfield 9 exists.
