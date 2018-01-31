@@ -34,7 +34,7 @@
         }
       </td>
       <td>
-        @if(start != end &&
+        @if(start != end && !(pub \ "type").toString.contains("SecondaryPublicationEvent") &&
             ((start.asOpt[String].isDefined && end.asOpt[String].isDefined) ||
             (doc\"type").toString.contains("Series") || (doc\"type").toString.contains("Periodical"))) {
           @* Show range if either both start and end are given, or if we want open ranges like "- 2015" *@
