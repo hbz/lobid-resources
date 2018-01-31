@@ -1150,16 +1150,6 @@
 		<data source="050." name="@medium">
 			<regexp match="^.a" format="http://purl.org/ontology/bibo/Manuscript"/>
 		</data>
-		<!-- map -->
-		<data source="050." name="@medium">
-			<regexp match="^..........a" format="$[ns-bibo]Map"/>
-		</data>
-		<data source="433[-c].a" name="@medium">
-			<regexp match="Kt.|Karte" format="$[ns-bibo]Map"/>
-		</data>
-		<data source="9[01234][27]-1.f" name="@medium">
-			<regexp match="Altkarte|Karte|Stadtplan" format="$[ns-bibo]Map"/>
-		</data>
 		<!-- microform -->
 		<data source="050." name="@medium">
 			<regexp match="^...[abc]" format="http://rdaregistry.info/termList/RDAMediaType/1002"/>
@@ -1197,13 +1187,6 @@
 			<regexp match="^[AaOo][rn]" format="http://rdaregistry.info/termList/RDACarrierType/1018"/>
 		</data>
 		<data source="@1018" name="@medium"/>
-		<!-- picture -->
-		<data source="050." name="@medium">
-			<regexp match="^.....d" format="$[ns-bibo]Image"/>
-		</data>
-		<data source="334-[12].a" name="@medium">
-			<regexp match="^Bildli" format="$[ns-bibo]Image"/>
-		</data>
 		<!-- print -->
 		<data source="050." name="@medium">
 			<regexp match="^[abcd]" format="http://rdaregistry.info/termList/RDAproductionMethod/1010"/>
@@ -1239,7 +1222,7 @@
 		</combine>
 		<data name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" source="@rdftype|@typeOnly"/>
 		<data source="051." name="@article">
-			<regexp match="^a|^.t|^..t|^...t|^.....t" format="$[ns-bibo]Article"/>
+			<regexp match="^.t|^..t|^...t|^.....t" format="$[ns-bibo]Article"/>
 		</data>
 		<data source="051." name="@rdftype">
 			<regexp match="^[nt]" format="$[ns-bibo]MultiVolumeBook"/>
@@ -1252,6 +1235,9 @@
 					<data source="@idzdb"/>
 					<data source="050.">
 						<regexp match="^.........a"/>
+					</data>
+					<data source="050.">
+						<regexp match="^..........a"/>
 					</data>
 					<data source="051.">
 						<regexp match="^a"/>
@@ -1339,6 +1325,13 @@
 		<data source="051." name="@rdftype">
 			<regexp match="^.f|^..f|^...f" format="$[ns-lobid-vocab]Festschrift"/>
 		</data>
+		<!-- picture -->
+		<data source="050." name="@rdftype">
+			<regexp match="^.....d" format="$[ns-bibo]Image"/>
+		</data>
+		<data source="334-[12].a" name="@rdftype">
+			<regexp match="^Bildli" format="$[ns-bibo]Image"/>
+		</data>
 		<!-- reference source -->
 		<data source="051." name="@rdftype">
 			<regexp match="^.[de]|^..[de]|^...[de]" format="$[ns-bibo]ReferenceSource"/>
@@ -1349,6 +1342,16 @@
 		<data source="9[01234][27]-[-12].f" name="@rdftype">
 			<regexp match="Bestimmungsbuch|Enzyklopädie|Werkverzeichnis|W[ö|oe]rterbuch"
 				format="$[ns-bibo]ReferenceSource"/>
+		</data>
+		<!-- map -->
+		<data source="050." name="@rdftype">
+			<regexp match="^..........a" format="$[ns-bibo]Map"/>
+		</data>
+		<data source="433[-c].a" name="@rdftype">
+			<regexp match="Kt.|Karte" format="$[ns-bibo]Map"/>
+		</data>
+		<data source="9[01234][27]-1.f" name="@rdftype">
+			<regexp match="Altkarte|Karte|Stadtplan" format="$[ns-bibo]Map"/>
 		</data>
 		<!-- norm -->
 		<data source="051." name="@rdftype">
@@ -1470,7 +1473,9 @@
 		<data source="@article" name="@rdftype"/>
 		<combine name="@containedIn" value="${a}">
 			<data source="@dctIsPartOfHbzIdArticle|@dctIsPartOfArticle" name="a"/>
-			<data source="@article"/>
+			<data source="051.">
+				<regexp match="^a|^.t|^..t|^...t|^.....t"/>
+			</data>
 		</combine>
 		<combine name="$[ns-lobid-vocab]containedIn" value="${a}">
 			<data source="@containedIn" name="a">
