@@ -204,7 +204,8 @@
             "publication" : {
                "properties" : {
                   "location" : {
-                     "type" : "text"
+                     "type" : "text",
+                     "analyzer" : "german_analyzer"
                   },
                   "endDate" : {
                      "type" : "text",
@@ -378,13 +379,15 @@
                            "type" : "keyword"
                         },
                         "label" : {
-                           "type" : "text"
+                           "type" : "text",
+                           "analyzer" : "german_analyzer"
                         },
                         "dateOfDeath" : {
                            "type" : "text"
                         },
                         "altLabel" : {
-                           "type" : "text"
+                           "type" : "text",
+                           "analyzer" : "german_analyzer"
                         },
                         "dateOfBirth" : {
                            "type" : "text"
@@ -441,6 +444,7 @@
                      },
                       "label": {
                         "type": "text",
+                        "analyzer" : "german_analyzer",
                         "fields": {
                             "raw": {
                                 "type": "keyword"
@@ -467,6 +471,7 @@
                },
                "label": {
                    "type": "text",
+                   "analyzer" : "german_analyzer",
                    "fields": {
                        "raw": {
                           "type": "keyword"
