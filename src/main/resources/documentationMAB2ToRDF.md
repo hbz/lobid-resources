@@ -1,4 +1,4 @@
-This table should answer questions like "where does this json comes from?". It builds partly on https://github.com/hbz/lobid/issues/161#issuecomment-272420198. → stands for "mapped on". Nearly identical titles were put together to shorten the table. Status: 22th March 2017
+This table should answer questions like "where does this json comes from?". It builds partly on https://github.com/hbz/lobid/issues/161#issuecomment-272420198. → stands for "mapped on". Nearly identical titles were put together to shorten the table. Status: 31st January 2018
 
 Number MAB2 | Field name MAB2 | if & how transformed
 ---------- | -------------- | ------------------------
