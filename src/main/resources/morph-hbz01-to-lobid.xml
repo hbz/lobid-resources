@@ -1028,6 +1028,15 @@
 		</combine>
 		<call-macro name="addTypeCollection" field="@idzdb"/>
 		<call-macro name="setBackRdfSubject" field="025z[-1].a"/>
+		<combine name="~rdf:subject" value="${a}">
+			<data source="@idzdb" name="a">
+				<regexp match="(.*)" format="$[ns-zdb-services]${1}"/>
+			</data>
+		</combine>
+		<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="ZDB-Ressource">
+			<data source="@idzdb"/>
+		</combine>
+		<call-macro name="setBackRdfSubject" field="@idzdb"/>
 		<!-- ####################### -->
 		<!-- ####### Secondary form, link to primary form and vice versa -->
 		<!-- ####################### -->
