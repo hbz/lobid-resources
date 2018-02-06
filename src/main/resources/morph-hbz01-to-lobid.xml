@@ -1274,6 +1274,9 @@
 					<data source="052.">
 						<regexp match="^[a-zA-Z]"/>
 					</data>
+					<data source="089-[-1].a|090-[-1].a">
+						<regexp match="Heft"/>
+					</data>
 					<data source="@matVideo"/>
 					<data source="@mediumAudio"/>
 					<data source="@archived"/>
@@ -1339,6 +1342,10 @@
 		<!-- festschrift -->
 		<data source="051." name="@rdftype">
 			<regexp match="^.f|^..f|^...f" format="$[ns-lobid-vocab]Festschrift"/>
+		</data>
+		<!-- issue and volume of periodical work -->
+		<data source="089|090-1.a" name="@rdftype">
+			<regexp match="Heft" format="http://schema.org/PublicationIssue"/>
 		</data>
 		<!-- reference source -->
 		<data source="051." name="@rdftype">
