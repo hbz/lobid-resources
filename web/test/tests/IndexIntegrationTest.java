@@ -32,7 +32,7 @@ public class IndexIntegrationTest extends LocalIndexSetup {
 	public static Collection<Object[]> data() {
 		// @formatter:off
 		return Arrays.asList(new Object[][] {
-			{ "title:der", /*->*/ 22 },
+			{ "title:der", /*->*/ 23 },
 			{ "title:Westfalen", /*->*/ 3 },
 			{ "contribution.agent.label:Westfalen", /*->*/ 7 },
 			{ "contribution.agent.label:Westfälen", /*->*/ 7 },
