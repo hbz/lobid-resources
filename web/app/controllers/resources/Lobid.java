@@ -149,12 +149,12 @@ public class Lobid {
 
 	private static String gndLabel(String uri, String field) {
 		Callable<String> getLabel = () -> {
-			return new Index().withClient((Client client) -> {
+			return new Search.Builder().build().withClient((Client client) -> {
 				QueryBuilder query = QueryBuilders
 						.queryStringQuery("* AND " + field + ":\"" + uri + "\"");
-				SearchRequestBuilder requestBuilder =
-						client.prepareSearch(Index.INDEX_NAME).setTypes(Index.TYPE_RESOURCE)
-								.setQuery(query).setFrom(0).setSize(1).setExplain(false);
+				SearchRequestBuilder requestBuilder = client
+						.prepareSearch(Search.INDEX_NAME).setTypes(Search.TYPE_RESOURCE)
+						.setQuery(query).setFrom(0).setSize(1).setExplain(false);
 				SearchResponse response = requestBuilder.execute().actionGet();
 				if (response.getHits().getTotalHits() == 0) {
 					return uri;
@@ -301,19 +301,18 @@ public class Lobid {
 			return types.get(0);
 		Logger.trace("Types: " + types);
 		@SuppressWarnings("unchecked")
-		List<Pair<String, Integer>> selected =
-				types.stream().map(t -> {
-					List<Object> vals = ((List<Object>) Application.CONFIG
-							.getObject(configKey).unwrapped().get(t));
-					if (vals == null)
-						return Pair.of(t, 0);
-					Integer specificity = (Integer) vals.get(2);
-					return ((String) vals.get(0)).isEmpty()
-							|| ((String) vals.get(1)).isEmpty() //
-									? Pair.of("", specificity) : Pair.of(t, specificity);
-				}).filter(t -> {
-					return !t.getLeft().isEmpty();
-				}).collect(Collectors.toList());
+		List<Pair<String, Integer>> selected = types.stream().map(t -> {
+			List<Object> vals = ((List<Object>) Application.CONFIG
+					.getObject(configKey).unwrapped().get(t));
+			if (vals == null)
+				return Pair.of(t, 0);
+			Integer specificity = (Integer) vals.get(2);
+			return ((String) vals.get(0)).isEmpty()
+					|| ((String) vals.get(1)).isEmpty() //
+							? Pair.of("", specificity) : Pair.of(t, specificity);
+		}).filter(t -> {
+			return !t.getLeft().isEmpty();
+		}).collect(Collectors.toList());
 		Collections.sort(selected, (a, b) -> b.getRight().compareTo(a.getRight()));
 		Logger.trace("Selected: " + selected);
 		return selected.isEmpty() ? ""

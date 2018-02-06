@@ -187,24 +187,6 @@
                   }
                }
             },
-            "spatial": {
-               "properties": {
-                 "geo": {
-                   "type": "geo_point"
-                 },
-                 "id": {
-                   "type": "keyword"
-                 },
-                "label": {
-                  "type": "text",
-                  "type": "keyword"
-                }
-              },
-              "type": {
-                "type": "keyword",
-                "index": false
-              }
-            },
             "issued" : {
                "type" : "text"
             },
@@ -222,7 +204,8 @@
             "publication" : {
                "properties" : {
                   "location" : {
-                     "type" : "text"
+                     "type" : "text",
+                     "analyzer" : "german_analyzer"
                   },
                   "endDate" : {
                      "type" : "text",
@@ -244,7 +227,9 @@
                      }
                   },
                   "publishedBy" : {
-                     "type" : "text"
+                     "type" : "text",
+                     "search_analyzer" : "german_analyzer",
+                     "analyzer" : "ngram_analyzer"
                   },
                   "type" : {
                      "type" : "keyword"
@@ -405,13 +390,15 @@
                            "type" : "keyword"
                         },
                         "label" : {
-                           "type" : "text"
+                           "type" : "text",
+                           "analyzer" : "german_analyzer"
                         },
                         "dateOfDeath" : {
                            "type" : "text"
                         },
                         "altLabel" : {
-                           "type" : "text"
+                           "type" : "text",
+                           "analyzer" : "german_analyzer"
                         },
                         "dateOfBirth" : {
                            "type" : "text"
@@ -468,6 +455,7 @@
                      },
                       "label": {
                         "type": "text",
+                        "analyzer" : "german_analyzer",
                         "fields": {
                             "raw": {
                                 "type": "keyword"
@@ -494,6 +482,7 @@
                },
                "label": {
                    "type": "text",
+                   "analyzer" : "german_analyzer",
                    "fields": {
                        "raw": {
                           "type": "keyword"

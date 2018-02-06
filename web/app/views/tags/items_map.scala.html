@@ -80,7 +80,7 @@ map.addLayer(layer);
             allTableDetails += '<tr><th style="width: 30%"/><th style="width: 70%"/></tr>' + tableDetails;
         @for((item,i) <- items(key).zipWithIndex;
             itemId = item.replaceAll("https?://lobid\\.org/items/|#!", "");
-            itemJsonNode = new controllers.resources.Index().getItem(itemId).getResult();
+            itemJsonNode = new controllers.resources.Search.Builder().build().getItem(itemId).getResult();
             if(itemJsonNode != null);
             itemJson = Json.parse(itemJsonNode.toString);
             owners = (itemJson\\"heldBy");
