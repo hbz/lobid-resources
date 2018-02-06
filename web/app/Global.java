@@ -11,8 +11,8 @@ import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.transport.client.PreBuiltTransportClient;
 
-import controllers.resources.Index;
 import controllers.resources.LocalIndex;
+import controllers.resources.Search;
 import play.Application;
 import play.GlobalSettings;
 import play.Logger;
@@ -53,7 +53,7 @@ public class Global extends GlobalSettings {
 			client = c;
 		}
 		if (client != null) {
-			Index.elasticsearchClient = client;
+			Search.elasticsearchClient = client;
 		}
 	}
 
