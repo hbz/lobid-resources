@@ -302,7 +302,7 @@ public class Queries {
 			} else if (search.matches("(http://d-nb\\.info/gnd/)?\\d+.*")) {
 				final String term = search.startsWith("http") ? search
 						: "http://d-nb.info/gnd/" + search;
-				query = multiMatchQuery(term, fields().toArray(new String[] {}));
+				query = multiMatchQuery(term, "contribution.agent.id");
 			} else {
 				query = nameMatchQuery(search);
 			}
@@ -321,9 +321,7 @@ public class Queries {
 		}
 
 		private QueryBuilder nameMatchQuery(final String search) {
-			final MultiMatchQueryBuilder query =
-					multiMatchQuery(search, fields().get(0)).operator(Operator.AND);
-			return fields().size() > 3 ? query.field(fields().get(3)) : query;
+			return multiMatchQuery(search, fields().get(0)).operator(Operator.AND);
 		}
 	}
 
