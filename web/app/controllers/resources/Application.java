@@ -32,7 +32,6 @@ import org.elasticsearch.common.geo.GeoPoint;
 import org.elasticsearch.common.io.Streams;
 import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.index.query.QueryBuilder;
-import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.join.aggregations.Children;
 import org.elasticsearch.search.aggregations.Aggregation;
 import org.elasticsearch.search.aggregations.bucket.geogrid.GeoHashGrid;
@@ -89,8 +88,8 @@ public class Application extends Controller {
 	public static final String MEDIUM_FIELD = "medium.id";
 	/** The internal ES aggregation name for the owner facet. */
 	public static final String OWNER_AGGREGATION = "owner";
-	/** The internal ES aggregation name for the topics. */
-	public static final String TOPIC_AGGREGATION = "topic";
+	/** The internal ES field for the topics. */
+	public static final String TOPIC_AGGREGATION = "subject.label.raw";
 	/** The internal ES field for subjects. */
 	public static final String SUBJECT_FIELD = "subject.componentList.id";
 	/** The internal ES field for contributing agents. */
@@ -162,7 +161,7 @@ public class Application extends Controller {
 	 * @param owner Owner filter for resource queries
 	 * @param t Type filter for resource queries
 	 * @param sort Sorting order for results ("newest", "oldest", "" -> relevance)
-	 * @param set The set
+	 * @param word The 'word' query, a concept from the hbz union catalog
 	 * @param format The response format (see {@code Accept.Format})
 	 * @param aggs The comma separated aggregation fields
 	 * @param location A single "lat,lon" point or space delimited points polygon
@@ -174,14 +173,14 @@ public class Application extends Controller {
 			final String name, final String subject, final String id,
 			final String publisher, final String issued, final String medium,
 			final int from, final int size, final String owner, String t, String sort,
-			String set, String format, String aggs, String location, String nested,
+			String word, String format, String aggs, String location, String nested,
 			String filter) {
 		final String aggregations = aggs == null ? "" : aggs;
-		if (!aggregations.isEmpty() && !Index.SUPPORTED_AGGREGATIONS
+		if (!aggregations.isEmpty() && !Search.SUPPORTED_AGGREGATIONS
 				.containsAll(Arrays.asList(aggregations.split(",")))) {
 			return Promise.promise(() -> badRequest(
 					String.format("Unsupported aggregations: %s (supported: %s)",
-							aggregations, Index.SUPPORTED_AGGREGATIONS)));
+							aggregations, Search.SUPPORTED_AGGREGATIONS)));
 		}
 		addCorsHeader();
 		String uuid = session("uuid");
@@ -205,16 +204,18 @@ public class Application extends Controller {
 		if (cachedResult != null)
 			return cachedResult;
 		Logger.debug("Not cached: {}, will cache for one hour", cacheId);
-		Index index = new Index();
-		String queryString = index.buildQueryString(q, agent, name, subject, id,
-				publisher, issued, medium, t, set);
+		QueryBuilder queryBuilder = new Queries.Builder().q(q).agent(agent)
+				.name(name).subject(subject).id(id).publisher(publisher).issued(issued)
+				.medium(medium).t(t).owner(owner).nested(nested).location(location)
+				.filter(filter).word(word).build();
+		Search index = new Search.Builder().query(queryBuilder).from(from)
+				.size(size).sort(sort).aggs(aggregations).build();
 		Promise<Result> result;
 		if (isBulkRequest) {
 			result = bulkResult(q, owner, index);
 		} else {
 			result = Promise.promise(() -> {
-				Index queryResources = index.queryResources(queryString, from, size,
-						sort, owner, aggregations, location, nested, filter);
+				Search queryResources = index.queryResources();
 				boolean returnSuggestions = responseFormat.startsWith("json:");
 				JsonNode json = returnSuggestions
 						? toSuggestions(queryResources.getResult(), format.split(":")[1])
@@ -225,7 +226,7 @@ public class Application extends Controller {
 				return htmlRequested
 						? ok(query.render(s, q, agent, name, subject, id, publisher, issued,
 								medium, from, size, queryResources.getTotal(), owner, t, sort,
-								set))
+								word))
 						: (returnSuggestions ? withCallback(json)
 								: responseFor(withQueryMetadata(json, index),
 										Accept.Format.JSON_LD.queryParamString));
@@ -234,7 +235,7 @@ public class Application extends Controller {
 		cacheOnRedeem(cacheId, result, ONE_HOUR);
 		return result.recover((Throwable throwable) -> {
 			Html html = query.render("[]", q, agent, name, subject, id, publisher,
-					issued, medium, from, size, 0L, owner, t, sort, set);
+					issued, medium, from, size, 0L, owner, t, sort, word);
 			String message = "Could not query index: " + throwable.getMessage();
 			boolean badRequest = throwable instanceof IllegalArgumentException;
 			if (badRequest) {
@@ -248,22 +249,22 @@ public class Application extends Controller {
 	}
 
 	private static Promise<Result> bulkResult(final String q, final String owner,
-			Index index) {
+			Search index) {
 		return Promise.promise(() -> {
 			Chunks<String> chunks = StringChunks.whenReady(out -> {
 				SearchResponse lastResponse =
 						index.<SearchResponse> withClient((Client client) -> {
 							QueryBuilder query =
-									owner.isEmpty() ? QueryBuilders.queryStringQuery(q)
-											: Index.ownerQuery(q, owner);
-							Index.validate(client, query);
+									new Queries.Builder().q(q).owner(owner).build();
+							Search.validate(client, query);
 							Logger.trace("bulkResources: q={}, owner={}, query={}", q, owner,
 									query);
 							TimeValue keepAlive = new TimeValue(60000);
-							SearchResponse scrollResp = client.prepareSearch(Index.INDEX_NAME)
-									.addSort(FieldSortBuilder.DOC_FIELD_NAME, SortOrder.ASC)
-									.setScroll(keepAlive).setQuery(query)
-									.setSize(100 /* hits per shard for each scroll */).get();
+							SearchResponse scrollResp =
+									client.prepareSearch(Search.INDEX_NAME)
+											.addSort(FieldSortBuilder.DOC_FIELD_NAME, SortOrder.ASC)
+											.setScroll(keepAlive).setQuery(query)
+											.setSize(100 /* hits per shard for each scroll */).get();
 							String scrollId = scrollResp.getScrollId();
 							while (scrollResp.getHits().iterator().hasNext()) {
 								scrollResp.getHits().forEach((hit) -> {
@@ -283,7 +284,7 @@ public class Application extends Controller {
 		});
 	}
 
-	private static JsonNode withQueryMetadata(JsonNode json, Index index) {
+	private static JsonNode withQueryMetadata(JsonNode json, Search index) {
 		ObjectNode result = Json.newObject();
 		String host = "http://" + request().host();
 		result.put("@context", host + routes.Application.context());
@@ -350,7 +351,7 @@ public class Application extends Controller {
 		return Optional.ofNullable(json.get(field));
 	}
 
-	private static JsonNode aggregationsAsJson(Index index) {
+	private static JsonNode aggregationsAsJson(Search index) {
 		ObjectNode aggregations = Json.newObject();
 		for (final Entry<String, Aggregation> aggregation : index.getAggregations()
 				.asMap().entrySet()) {
@@ -406,7 +407,8 @@ public class Application extends Controller {
 		if (cachedResult != null)
 			return cachedResult;
 		Promise<Result> promise = Promise.promise(() -> {
-			JsonNode result = new Index().getResource(id).getResult();
+			JsonNode result =
+					new Search.Builder().build().getResource(id).getResult();
 			boolean htmlRequested =
 					responseFormat.equals(Accept.Format.HTML.queryParamString);
 			if (htmlRequested) {
@@ -449,9 +451,10 @@ public class Application extends Controller {
 			 * https://github.com/hbz/lobid-resources/blob/master/src/main/java/org/lobid/resources/UrlEscaper.java#L31
 			 * @formatter:on
 			 */
-			JsonNode itemJson = new Index().getItem(
-					new PercentEscaper(PercentEscaper.SAFEPATHCHARS_URLENCODER, false)
-							.escape(id))
+			JsonNode itemJson = new Search.Builder().build()
+					.getItem(
+							new PercentEscaper(PercentEscaper.SAFEPATHCHARS_URLENCODER, false)
+									.escape(id))
 					.getResult();
 			boolean htmlRequested =
 					responseFormat.equals(Accept.Format.HTML.queryParamString);
@@ -546,7 +549,7 @@ public class Application extends Controller {
 	 * @param t Type filter for resource queries
 	 * @param field The facet field (the field to facet over)
 	 * @param sort Sorting order for results ("newest", "oldest", "" -> relevance)
-	 * @param set The set
+	 * @param word The 'word' query, a concept from the hbz union catalog
 	 * @param location A single "lat,lon" point or space delimited points polygon
 	 * @param nested The nested object path. If non-empty, use q as nested query
 	 * @param filter A filter to apply to the query, supports query string syntax
@@ -555,10 +558,10 @@ public class Application extends Controller {
 	public static Promise<Result> facets(String q, String agent, String name,
 			String subject, String id, String publisher, String issued, String medium,
 			int from, int size, String owner, String t, String field, String sort,
-			String set, String location, String nested, String filter) {
+			String word, String location, String nested, String filter) {
 
 		String key = String.format("facets.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s",
-				field, q, agent, name, id, publisher, set, subject, issued, medium,
+				field, q, agent, name, id, publisher, word, subject, issued, medium,
 				owner, t, nested);
 		Result cachedResult = (Result) Cache.get(key);
 		if (cachedResult != null) {
@@ -610,33 +613,39 @@ public class Application extends Controller {
 			String fullLabel = pair.getRight();
 			String term = json.get("key").asText();
 			String mediumQuery = !field.equals(MEDIUM_FIELD) //
-					? medium : queryParam(medium, term);
+					? medium
+					: queryParam(medium, term);
 			String typeQuery = !field.equals(TYPE_FIELD) //
-					? t : queryParam(t, term);
+					? t
+					: queryParam(t, term);
 			String ownerQuery = !field.equals(OWNER_AGGREGATION) //
-					? owner : withoutAndOperator(queryParam(owner, term));
+					? owner
+					: withoutAndOperator(queryParam(owner, term));
 			String subjectQuery = !field.equals(SUBJECT_FIELD) //
-					? subject : queryParam(subject, term);
+					? subject
+					: queryParam(subject, term);
 			String agentQuery = !field.equals(AGENT_FIELD) //
-					? agent : queryParam(agent, term);
+					? agent
+					: queryParam(agent, term);
 			String issuedQuery = !field.equals(ISSUED_FIELD) //
-					? issued : queryParam(issued, term);
-			String locationQuery = !field.equals(Index.SPATIAL_GEO_FIELD) //
-					? location : queryParam(location, term);
+					? issued
+					: queryParam(issued, term);
+			String locationQuery = !field.equals(Search.SPATIAL_GEO_FIELD) //
+					? location
+					: queryParam(location, term);
 
 			boolean current =
 					current(subject, agent, medium, owner, t, field, term, location);
 
 			String routeUrl = routes.Application.query(q, agentQuery, name,
 					subjectQuery, id, publisher, issuedQuery, mediumQuery, from, size,
-					ownerQuery, typeQuery, sort(sort, subjectQuery), set, null, field,
+					ownerQuery, typeQuery, sort(sort, subjectQuery), word, null, field,
 					locationQuery, nested, filter).url();
 
-			String result = String.format(
-					"<li " + (current ? "class=\"active\"" : "")
-							+ "><a class=\"%s-facet-link\" href='%s'>"
-							+ "<input onclick=\"location.href='%s'\" class=\"facet-checkbox\" "
-							+ "type=\"checkbox\" %s>&nbsp;%s</input>" + "</a></li>",
+			String result = String.format("<li " + (current ? "class=\"active\"" : "")
+					+ "><a class=\"%s-facet-link\" href='%s'>"
+					+ "<input onclick=\"location.href='%s'\" class=\"facet-checkbox\" "
+					+ "type=\"checkbox\" %s>&nbsp;%s</input>" + "</a></li>",
 					Math.abs(field.hashCode()), routeUrl, routeUrl,
 					current ? "checked" : "", fullLabel);
 
@@ -645,7 +654,7 @@ public class Application extends Controller {
 
 		Promise<Result> promise =
 				query(q, agent, name, subject, id, publisher, issued, medium, from,
-						size, owner, t, sort, set, "json", field, location, nested, filter)
+						size, owner, t, sort, word, "json", field, location, nested, filter)
 								.map(result -> {
 									JsonNode json = Json.parse(Helpers.contentAsString(result))
 											.get("aggregation");
@@ -654,7 +663,7 @@ public class Application extends Controller {
 													json.get(field).elements(), 0), false);
 									String labelKey = String.format(
 											"facets-labels.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s",
-											field, q, agent, name, id, publisher, set, subject,
+											field, q, agent, name, id, publisher, word, subject,
 											issued, medium,
 											field.equals(OWNER_AGGREGATION) ? "" : owner, t);
 									@SuppressWarnings("unchecked")
@@ -683,7 +692,7 @@ public class Application extends Controller {
 				|| field.equals(OWNER_AGGREGATION) && contains(owner, term)
 				|| field.equals(SUBJECT_FIELD) && contains(subject, term)
 				|| field.equals(AGENT_FIELD) && contains(agent, term)
-				|| field.equals(Index.SPATIAL_GEO_FIELD) && contains(location, term);
+				|| field.equals(Search.SPATIAL_GEO_FIELD) && contains(location, term);
 	}
 
 	private static boolean contains(String value, String term) {
@@ -762,8 +771,9 @@ public class Application extends Controller {
 			return Promise.pure(redirect(routes.Application.showStars(format,
 					starred.stream().collect(Collectors.joining(",")))));
 		}
-		final List<String> starredIds = starred.isEmpty() && ids.trim().isEmpty()
-				? starred : Arrays.asList(ids.split(","));
+		final List<String> starredIds =
+				starred.isEmpty() && ids.trim().isEmpty() ? starred
+						: Arrays.asList(ids.split(","));
 		String cacheKey = "starsForIds." + starredIds;
 		Object cachedJson = Cache.get(cacheKey);
 		if (cachedJson != null && cachedJson instanceof List) {
@@ -771,9 +781,9 @@ public class Application extends Controller {
 			List<JsonNode> json = (List<JsonNode>) cachedJson;
 			return Promise.pure(ok(stars.render(starredIds, json, format)));
 		}
-		List<JsonNode> vals =
-				starredIds.stream().map(id -> new Index().getResource(id).getResult())
-						.collect(Collectors.toList());
+		List<JsonNode> vals = starredIds.stream()
+				.map(id -> new Search.Builder().build().getResource(id).getResult())
+				.collect(Collectors.toList());
 		uncache(starredIds);
 		Cache.set(cacheKey, vals, ONE_DAY);
 		return Promise.pure(ok(stars.render(starredIds, vals, format)));

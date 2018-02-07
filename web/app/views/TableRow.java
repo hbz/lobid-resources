@@ -128,7 +128,7 @@ public enum TableRow {
 		private List<String> labelsFor(JsonNode doc, String value,
 				List<String> keys) {
 			List<String> result = new ArrayList<>();
-			if (doc != null) {
+			if (doc != null && doc.get(keys.get(0)) != null) {
 				JsonNode node = doc.get(keys.get(0)).iterator().next();
 				JsonNode id = node.get("id");
 				JsonNode label = node.get("label");
