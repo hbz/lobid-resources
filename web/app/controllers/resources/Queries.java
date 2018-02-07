@@ -302,7 +302,7 @@ public class Queries {
 			} else if (search.matches("(http://d-nb\\.info/gnd/)?\\d+.*")) {
 				final String term = search.startsWith("http") ? search
 						: "http://d-nb.info/gnd/" + search;
-				query = multiMatchQuery(term, fields().toArray(new String[] {}));
+				query = multiMatchQuery(term, "contribution.agent.id");
 			} else {
 				query = nameMatchQuery(search);
 			}
@@ -321,9 +321,7 @@ public class Queries {
 		}
 
 		private QueryBuilder nameMatchQuery(final String search) {
-			final MultiMatchQueryBuilder query =
-					multiMatchQuery(search, fields().get(0)).operator(Operator.AND);
-			return fields().size() > 3 ? query.field(fields().get(3)) : query;
+			return multiMatchQuery(search, fields().get(0)).operator(Operator.AND);
 		}
 	}
 
@@ -355,11 +353,11 @@ public class Queries {
 			for (String q : queryValues.split(",")) {
 				String qTrimmed = q.trim();
 				if (qTrimmed.startsWith("http") || qTrimmed.matches("[\\d\\-X]+")) {
-					final String query = qTrimmed.startsWith("http://") ? qTrimmed
+					final String query = qTrimmed.startsWith("http") ? qTrimmed
 							: "http://d-nb.info/gnd/" + qTrimmed;
-					final MatchQueryBuilder subjectIdQuery = matchQuery(
-							query.contains("nwbib") ? fields().get(0) : fields().get(1),
-							query.trim()).operator(Operator.AND);
+					final MatchQueryBuilder subjectIdQuery =
+							matchQuery(!query.contains("d-nb.info/gnd") ? fields().get(0)
+									: fields().get(1), query.trim()).operator(Operator.AND);
 					boolQuery = hasLabel || isAndQuery ? boolQuery.must(subjectIdQuery)
 							: boolQuery.should(subjectIdQuery);
 				} else {
