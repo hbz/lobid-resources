@@ -1796,21 +1796,21 @@
 		</combine>
 		<!-- building a bnode from 304-1.a didn't work -->
 		<combine name="http://purl.org/lobid/lv#exampleOfWork" value="_:exampleOfWorkBnode304"
-			flushWith="304[-a]1.a">
-			<data source="304[-a]1.a"/>
+			flushWith="304[-ab]1.a">
+			<data source="304[-ab]1.a"/>
 		</combine>
-		<combine name="~rdf:subject" value="_:exampleOfWorkBnode304" flushWith="304[-a]1.a">
-			<data source="304[-a]1.a"/>
+		<combine name="~rdf:subject" value="_:exampleOfWorkBnode304" flushWith="304[-ab]1.a">
+			<data source="304[-ab]1.a"/>
 		</combine>
 		<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="${a}"
-			flushWith="304[-a]1.a">
-			<data source="304[-a]1.a" name="a"/>
+			flushWith="304[-ab]1.[ab]">
+			<data source="304[-ab]1.a" name="a"/>
 		</combine>
 		<combine name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type"
-			value="http://d-nb.info/standards/elementset/gnd#Work" flushWith="304[-a]1.a">
-			<data source="304[-a]1.a"/>
+			value="http://d-nb.info/standards/elementset/gnd#Work" flushWith="304[-ab]1.a">
+			<data source="304[-ab]1.a"/>
 		</combine>
-		<combine name="~rdf:subject" value="$[ns-lobid-resource]${id}#!" flushWith="304[-a]1.a">
+		<combine name="~rdf:subject" value="$[ns-lobid-resource]${id}#!" flushWith="304[-ab]1.a">
 			<data source="@id" name="id"/>
 		</combine>
 		<!-- ####################### -->
