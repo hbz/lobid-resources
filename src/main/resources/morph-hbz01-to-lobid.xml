@@ -1552,16 +1552,6 @@
 		<!-- has other title information. If no title exists yet, use these (331 or 333) as title. -->
 		<data source="331[-ab][-1].a" name="@titleRemainder331"/>
 		<data source="333[-ab][-1].a" name="@titleRemainder333"/>
-		<combine name="@titleRemainder2title331" value="${title}">
-			<if>
-				<none>
-					<data source="@title310"/>
-					<data source="@titleRemainder331Superordination"/>
-					<data source="085x1.l"/>
-				</none>
-			</if>
-			<data source="@titleRemainder331" name="title"/>
-		</combine>
 		<combine name="@titleRemainder2title333" value="${title}">
 			<if>
 				<none>
@@ -1587,7 +1577,6 @@
 		<combine name="@otherTitle" value="${titleRemainder}">
 			<if>
 				<none>
-					<data source="@titleRemainder2title331"/>
 					<data source="@titleRemainder331Superordination"/>
 				</none>
 			</if>
