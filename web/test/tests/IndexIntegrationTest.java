@@ -32,7 +32,7 @@ public class IndexIntegrationTest extends LocalIndexSetup {
 	public static Collection<Object[]> data() {
 		// @formatter:off
 		return Arrays.asList(new Object[][] {
-			{ "title:der", /*->*/ 22 },
+			{ "title:der", /*->*/ 23 },
 			{ "title:Westfalen", /*->*/ 3 },
 			{ "contribution.agent.label:Westfalen", /*->*/ 7 },
 			{ "contribution.agent.label:Westfälen", /*->*/ 7 },
@@ -51,7 +51,7 @@ public class IndexIntegrationTest extends LocalIndexSetup {
 			{ "subject.componentList.id:\"http\\://d-nb.info/gnd/4042570-8\"", /*->*/ 3 },
 			{ "subject.componentList.id:1113670827", /*->*/ 0 },
 			{ "subject.componentList.type:PlaceOrGeographicName", /*->*/ 28 },
-			{ "publication.location:Berlin", /*->*/ 15 },
+			{ "publication.location:Berlin", /*->*/ 16 },
 			{ "publication.location:Köln", /*->*/ 4 },
 			{ "publication.location:Koln", /*->*/ 4 },
 			{ "publication.startDate:1993", /*->*/ 3 },
