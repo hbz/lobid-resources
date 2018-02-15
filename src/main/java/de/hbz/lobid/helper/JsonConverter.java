@@ -147,31 +147,36 @@ public class JsonConverter {
 	private void createObject(Map<String, Object> jsonResult, Statement s,
 			Etikett e) {
 		String key = e.name;
-		if (s.getObject() instanceof org.openrdf.model.Literal) {
-			addLiteralToJsonResult(jsonResult, key, s.getObject().stringValue(),
-					etikette.getEtikett(s.getPredicate().stringValue()));
-		} else {
-			if (s.getObject() instanceof org.openrdf.model.BNode) {
-				if (isList(s)) {
-					addListToJsonResult(jsonResult, key, ((BNode) s.getObject()).getID());
-				} else {
-					addBlankNodeToJsonResult(jsonResult, key,
-							((BNode) s.getObject()).getID(), e);
-				}
+		try {
+			if (s.getObject() instanceof org.openrdf.model.Literal) {
+				addLiteralToJsonResult(jsonResult, key, s.getObject().stringValue(),
+						etikette.getEtikett(s.getPredicate().stringValue()));
 			} else {
-				if (s.getPredicate().stringValue().equals(RDF_TYPE)) {
-					try {
-						addLiteralToJsonResult(jsonResult, key,
-								etikette.getEtikett(s.getObject().stringValue()).name,
-								etikette.getEtikett(s.getPredicate().stringValue()));
-					} catch (Exception ex) {
-						logger.info("", ex);
+				if (s.getObject() instanceof org.openrdf.model.BNode) {
+					if (isList(s)) {
+						addListToJsonResult(jsonResult, key,
+								((BNode) s.getObject()).getID());
+					} else {
+						addBlankNodeToJsonResult(jsonResult, key,
+								((BNode) s.getObject()).getID(), e);
 					}
 				} else {
-					addObjectToJsonResult(jsonResult, key, s.getObject().stringValue(),
-							e);
+					if (s.getPredicate().stringValue().equals(RDF_TYPE)) {
+						try {
+							addLiteralToJsonResult(jsonResult, key,
+									etikette.getEtikett(s.getObject().stringValue()).name,
+									etikette.getEtikett(s.getPredicate().stringValue()));
+						} catch (Exception ex) {
+							logger.info("", ex);
+						}
+					} else {
+						addObjectToJsonResult(jsonResult, key, s.getObject().stringValue(),
+								e);
+					}
 				}
 			}
+		} catch (Exception ex) {
+			Log.warn(ex);
 		}
 	}
 
