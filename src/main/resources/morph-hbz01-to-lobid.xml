@@ -5143,11 +5143,15 @@
 		</combine>
 		<call-macro name="addTypeCollection" field="@rpbLabel"/>
 		<call-macro name="setBackRdfSubject" field="700l[-1].a"/>
-		<combine value="_:${a}" name="http://purl.org/dc/terms/subject">
-			<data source="700l[-1].a" name="a"/>
+		<combine name="http://purl.org/dc/terms/subject" value="${a}">
+			<data source="700l[-1].a" name="a">
+				<regexp match="(^rpbr.*)" format="_:rpbr${1}"/>
+			</data>
 		</combine>
-		<combine value="_:${a}" name="~rdf:subject">
-			<data source="700l[-1].a" name="a"/>
+		<combine name="~rdf:subject" value="${a}">
+			<data source="700l[-1].a" name="a">
+				<regexp match="(^rpbr.*)" format="_:rpbr${1}"/>
+			</data>
 		</combine>
 		<data source="700l[-1].a" name="http://www.w3.org/2004/02/skos/core#notation">
 			<regexp match="^rpbr.*"/>
