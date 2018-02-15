@@ -212,7 +212,7 @@ public class Application extends Controller {
 				.size(size).sort(sort).aggs(aggregations).build();
 		Promise<Result> result;
 		if (isBulkRequest) {
-			result = bulkResult(q, owner, index);
+			result = bulkResult(q, nested, owner, index);
 		} else {
 			result = Promise.promise(() -> {
 				Search queryResources = index.queryResources();
@@ -248,14 +248,14 @@ public class Application extends Controller {
 		});
 	}
 
-	private static Promise<Result> bulkResult(final String q, final String owner,
-			Search index) {
+	private static Promise<Result> bulkResult(final String q, final String nested,
+			final String owner, Search index) {
 		return Promise.promise(() -> {
 			Chunks<String> chunks = StringChunks.whenReady(out -> {
 				SearchResponse lastResponse =
 						index.<SearchResponse> withClient((Client client) -> {
-							QueryBuilder query =
-									new Queries.Builder().q(q).owner(owner).build();
+							QueryBuilder query = new Queries.Builder().q(q).nested(nested)
+									.owner(owner).build();
 							Search.validate(client, query);
 							Logger.trace("bulkResources: q={}, owner={}, query={}", q, owner,
 									query);
