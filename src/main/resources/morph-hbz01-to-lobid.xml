@@ -1552,16 +1552,6 @@
 		<!-- has other title information. If no title exists yet, use these (331 or 333) as title. -->
 		<data source="331[-ab][-1].a" name="@titleRemainder331"/>
 		<data source="333[-ab][-1].a" name="@titleRemainder333"/>
-		<combine name="@titleRemainder2title331" value="${title}">
-			<if>
-				<none>
-					<data source="@title310"/>
-					<data source="@titleRemainder331Superordination"/>
-					<data source="085x1.l"/>
-				</none>
-			</if>
-			<data source="@titleRemainder331" name="title"/>
-		</combine>
 		<combine name="@titleRemainder2title333" value="${title}">
 			<if>
 				<none>
@@ -1587,7 +1577,6 @@
 		<combine name="@otherTitle" value="${titleRemainder}">
 			<if>
 				<none>
-					<data source="@titleRemainder2title331"/>
 					<data source="@titleRemainder331Superordination"/>
 				</none>
 			</if>
@@ -1604,13 +1593,10 @@
 		</combine>
 		<!-- deliberatley not everything linked with OR '|' because of performance problems -->
 		<data source="335[-abcd][-1].a" name="@otherTitle"/>
-		<data source="34[01234567][-ab][-1].[ab]" name="http://purl.org/dc/terms/alternative">
+		<data source="34[01234567][-ab][-1].[ab]|370[abc]1.a|504-1.a" name="http://purl.org/dc/terms/alternative">
 		  <replace pattern="^http" with="Siehe: http" />
 		</data>
 		<data source="376[-adb][-1].[ad]" name="$[ns-bibo]shortTitle"/>
-		<data source="504-1.a" name="http://purl.org/dc/terms/alternative">
-		  <replace pattern="^http" with="Siehe: http" />
-		</data>
 		<data source="@otherTitle" name="http://rdaregistry.info/Elements/u/P60493">
 			<replace pattern="&gt;" with=""/>
 			<replace pattern="&lt;" with=""/>
@@ -1796,21 +1782,21 @@
 		</combine>
 		<!-- building a bnode from 304-1.a didn't work -->
 		<combine name="http://purl.org/lobid/lv#exampleOfWork" value="_:exampleOfWorkBnode304"
-			flushWith="304[-a]1.a">
-			<data source="304[-a]1.a"/>
+			flushWith="304[-ab]1.a">
+			<data source="304[-ab]1.a"/>
 		</combine>
-		<combine name="~rdf:subject" value="_:exampleOfWorkBnode304" flushWith="304[-a]1.a">
-			<data source="304[-a]1.a"/>
+		<combine name="~rdf:subject" value="_:exampleOfWorkBnode304" flushWith="304[-ab]1.a">
+			<data source="304[-ab]1.a"/>
 		</combine>
 		<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="${a}"
-			flushWith="304[-a]1.a">
-			<data source="304[-a]1.a" name="a"/>
+			flushWith="304[-ab]1.[ab]">
+			<data source="304[-ab]1.a" name="a"/>
 		</combine>
 		<combine name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type"
-			value="http://d-nb.info/standards/elementset/gnd#Work" flushWith="304[-a]1.a">
-			<data source="304[-a]1.a"/>
+			value="http://d-nb.info/standards/elementset/gnd#Work" flushWith="304[-ab]1.a">
+			<data source="304[-ab]1.a"/>
 		</combine>
-		<combine name="~rdf:subject" value="$[ns-lobid-resource]${id}#!" flushWith="304[-a]1.a">
+		<combine name="~rdf:subject" value="$[ns-lobid-resource]${id}#!" flushWith="304[-ab]1.a">
 			<data source="@id" name="id"/>
 		</combine>
 		<!-- ####################### -->
@@ -4031,7 +4017,84 @@
 		<!-- #######subjects -->
 		<!-- ####################### -->
 		<!-- ddc links -->
-		<call-macro name="addDeweyNotationAndLabel" field="700[-b][-12345].a"/>
+		<combine name="@concatMAB700subfields" value="${a}" reset="true">
+			<concat delimiter="|" name="a">
+				<data source="700[-b][-12345].[a2]"/>
+			</concat>
+		</combine>
+		<combine name="@MAB700subfieldsWithoutDNB" value="${a}">
+			<data source="@concatMAB700subfields" name="a">
+				<replace pattern="(([0-9]{1,3}[.])?[0-9]+|\d{3}|[a-zA-Z])\|DNB|" with=""/>
+			</data>
+		</combine>
+		<combine name="@MAB700subfieldsWithoutKlassification" value="${a}">
+			<data source="@MAB700subfieldsWithoutDNB" name="a">
+				<regexp match="\d{3}\.((\d{1,4})*)|\d{3}"/>
+			</data>
+		</combine>
+		<!-- create dewey bnodes for MAB 700s with ZDB oder without classification -->
+		<combine name="@deweyBnode" value="${a}" sameEntity="true">
+			<data source="@MAB700subfieldsWithoutDNB" name="a">
+				<regexp match="(([0-9]{3}[.])?[0-9]+|\d{3})\|ZDB" format="_:${1}ZDB"/>
+			</data>
+		</combine>
+		<combine name="@deweyBnode" value="${a}">
+			<data source="@MAB700subfieldsWithoutKlassification" name="a">
+				<regexp match="^(([0-9]{3}[.])?[0-9]+|\d{3})$"
+					format="_:${1}sourceUnknown"/>
+			</data>
+		</combine>
+		<combine name="@deweyBnode" value="${a}">
+			<data source="@MAB700subfieldsWithoutKlassification" name="a">
+				<regexp match="^(([0-9]{3}[.])?[0-9]+|\d{3})|" format="_:${1}sourceUnknown"/>
+			</data>
+		</combine>
+		<combine name="@deweyBnode" value="${a}">
+			<data source="@MAB700subfieldsWithoutKlassification" name="a">
+				<regexp match="|(([0-9]{3}[.])?[0-9]+|\d{3})$" format="_:${1}sourceUnknown"/>
+			</data>
+		</combine>
+		<combine name="@deweyBnode" value="${a}">
+			<data source="@MAB700subfieldsWithoutKlassification" name="a">
+				<regexp match="|(([0-9]{3}[.])?[0-9]+|\d{3})|" format="_:${1}sourceUnknown"/>
+			</data>
+		</combine>
+		<combine name="@deweyBnode" value="${a}">
+			<data source="@MAB700subfieldsWithoutKlassification" name="a">
+				<regexp match="^(([0-9]{3}[.])?[0-9]+|\d{3})$" format="_:${1}sourceUnknown"/>
+			</data>
+		</combine>
+		<combine name="http://purl.org/dc/terms/subject" value="${a}" 
+			flushWith="@deweyBnode" sameEntity="true">
+			<data source="@deweyBnode" name="a"/>
+		</combine>
+		<combine name="~rdf:subject" value="${a}" 
+			flushWith="@deweyBnode" sameEntity="true">
+			<data source="@deweyBnode" name="a"/>
+		</combine>
+		<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="${a}" 
+			sameEntity="true" flushWith="@deweyBnode">
+			<data source="@deweyBnode" name="a">
+				<regexp match="_:(([0-9]{3}[.])?[0-9]+|\d{3}).*" format="${1}"/>
+				<lookup in="deweyLabels"/>
+			</data>
+		</combine>
+		<combine name="http://www.w3.org/2004/02/skos/core#notation" value="${a}"
+			sameEntity="true" flushWith="@deweyBnode">
+			<data source="@deweyBnode" name="a">
+				<regexp match="_:(([0-9]{3}[.])?[0-9]+|\d{3}).*" format="${1}"/>
+			</data>
+		</combine>
+		<combine name="http://id.loc.gov/ontologies/bibframe/source" value="${a}"
+			sameEntity="true" flushWith="@deweyBnode">
+			<data source="@deweyBnode" name="a">
+				<regexp match=".*" format="http://d-nb.info/gnd/4149423-4"/>
+			</data>
+		</combine>
+		<combine name="~rdf:subject" value="$[ns-lobid-resource]${subject}#!" >
+			<data source="@deweyBnode"/>
+			<data source="@id" name="subject"/>
+		</combine>
 		<call-macro name="addDeweyNotationAndLabel" field="705?[-12345].a"/>
 		<call-macro name="addDeweyNotationAndLabel" field="705?[-12345].c"/>
 		<!-- gnd links -->
@@ -5143,11 +5206,15 @@
 		</combine>
 		<call-macro name="addTypeCollection" field="@rpbLabel"/>
 		<call-macro name="setBackRdfSubject" field="700l[-1].a"/>
-		<combine value="_:${a}" name="http://purl.org/dc/terms/subject">
-			<data source="700l[-1].a" name="a"/>
+		<combine name="http://purl.org/dc/terms/subject" value="${a}">
+			<data source="700l[-1].a" name="a">
+				<regexp match="(^rpbr.*)" format="_:rpbr${1}"/>
+			</data>
 		</combine>
-		<combine value="_:${a}" name="~rdf:subject">
-			<data source="700l[-1].a" name="a"/>
+		<combine name="~rdf:subject" value="${a}">
+			<data source="700l[-1].a" name="a">
+				<regexp match="(^rpbr.*)" format="_:rpbr${1}"/>
+			</data>
 		</combine>
 		<data source="700l[-1].a" name="http://www.w3.org/2004/02/skos/core#notation">
 			<regexp match="^rpbr.*"/>
