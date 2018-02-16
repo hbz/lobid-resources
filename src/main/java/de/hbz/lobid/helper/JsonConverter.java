@@ -65,7 +65,6 @@ public class JsonConverter {
 	private String mainSubjectOfTheResource;
 
 	private EtikettMakerInterface etikette;
-	private Map<Statement, Statement> visited = new HashMap<>();
 
 	/**
 	 * @param e An EtikettMaker provides access to labels
