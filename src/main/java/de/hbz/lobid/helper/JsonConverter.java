@@ -29,13 +29,13 @@ import java.util.TreeMap;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.mortbay.log.Log;
 import org.openrdf.model.BNode;
 import org.openrdf.model.Graph;
 import org.openrdf.model.Statement;
 import org.openrdf.model.impl.URIImpl;
 import org.openrdf.rio.RDFFormat;
 
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
@@ -175,7 +175,7 @@ public class JsonConverter {
 				}
 			}
 		} catch (Exception ex) {
-			Log.warn(ex);
+			logger.warn(ex);
 		}
 	}
 
@@ -213,7 +213,12 @@ public class JsonConverter {
 					if (s.getObject() instanceof URIImpl) {
 						orderedList.add(createObjectWithId(s.getObject().stringValue()));
 					} else if (s.getObject() instanceof BNode) {
-						orderedList.add(createObjectWithoutId(s.getObject().stringValue()));
+						try {
+							orderedList
+									.add(createObjectWithoutId(s.getObject().stringValue()));
+						} catch (JsonMappingException e) {
+							logger.warn("Can't add ordered list", e.getMessage());
+						}
 					} else
 						orderedList.add(s.getObject().stringValue());
 					traverseList(s.getSubject().stringValue(), rest, orderedList);
@@ -242,8 +247,11 @@ public class JsonConverter {
 								(Set<Map<String, Object>>) jsonResult.get(key);
 						literals.add(createObjectWithId(uri));
 					} catch (Exception ex) {
-						Log.warn("Problem with adding " + uri + " to " + jsonResult.get(key)
-								+ ". Maybe its not declared as 'set'?", ex);
+						logger
+								.warn(
+										"Problem with adding " + uri + " to " + jsonResult.get(key)
+												+ ". Maybe its not declared as 'set'?",
+										ex.getMessage());
 					}
 				}
 			} else {
@@ -263,32 +271,35 @@ public class JsonConverter {
 				}
 			}
 		} catch (Exception ex) {
-			Log.warn(ex);
+			logger.warn(ex);
 		}
 	}
 
 	private void addBlankNodeToJsonResult(Map<String, Object> jsonResult,
 			String key, String uri, Etikett e) {
-		if (jsonResult.containsKey(key)) {
-			try {
+		try {
+			if (jsonResult.containsKey(key)) {
 				@SuppressWarnings("unchecked")
 				Set<Map<String, Object>> literals =
 						(Set<Map<String, Object>>) jsonResult.get(key);
 				literals.add(createObjectWithoutId(uri));
-			} catch (Exception ex) {
-				Log.warn("Couldn't add bnode: " + jsonResult.get(key), ex);
-			}
-		} else {
-			if (e.container != null
-					&& e.container.equals(Etikett.Container.SET.getName())) {
-				Set<Map<String, Object>> literals = new HashSet<>();
-				literals.add(createObjectWithoutId(uri));
-				jsonResult.put(key, literals);
 			} else {
-				Map<String, Object> literals = new TreeMap<>();
-				literals = createObjectWithoutId(uri);
-				jsonResult.put(key, literals);
+				if (e.container != null
+						&& e.container.equals(Etikett.Container.SET.getName())) {
+					Set<Map<String, Object>> literals = new HashSet<>();
+					literals.add(createObjectWithoutId(uri));
+					jsonResult.put(key, literals);
+				} else {
+					Map<String, Object> literals = new TreeMap<>();
+					literals = createObjectWithoutId(uri);
+					jsonResult.put(key, literals);
+				}
 			}
+		} catch (JsonMappingException ex) {
+			logger.debug("Ignored:", ex.getMessage());
+		} catch (Exception ex) {
+			logger.warn("Couldn't add bnode: " + jsonResult.get(key),
+					ex.getMessage());
 		}
 	}
 
@@ -316,11 +327,14 @@ public class JsonConverter {
 		}
 	}
 
-	private Map<String, Object> createObjectWithoutId(String uri) {
+	private Map<String, Object> createObjectWithoutId(String uri)
+			throws JsonMappingException {
 		Map<String, Object> newObject = new TreeMap<>();
 		if (uri != null) {
 			createObject(uri, newObject);
 		}
+		if (newObject.isEmpty())
+			throw JsonMappingException.from(null, "Json object is empty");
 		return newObject;
 	}
 
