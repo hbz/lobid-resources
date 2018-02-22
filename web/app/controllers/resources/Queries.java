@@ -596,6 +596,7 @@ public class Queries {
 					.filter(p -> !exclude.contains(p)).collect(Collectors.toList())) {
 				fields.addAll(p.q.fields());
 			}
+			fields.add("subject.label"); // no longer in SubjectQuery
 			return fields;
 		}
 
