@@ -1606,21 +1606,36 @@
 		<!-- generating title using the superordination -->
 		<data source="331[-ab][2].a" name="@titleRemainder331Superordination"/>
 		<!-- ... by concatenating fields. Two fields are optional, one mandatory -->
-		<combine name="@titleRemainder331Superordination2title" value="${a}${b}${c}"
-			flushWith="@titleRemainder331Superordination">
+		<concat delimiter=", " name="@allMAB089subfieldA">
+			<data source="089-[-1].a|089."/>
+		</concat>
+		<combine name="@titleRemainder331SuperordinationAndVolume089" value="${a}${b}${c}"
+			flushWith="@titleRemainder331Superordination|@allMAB089subfieldA">
 			<data source="@titleRemainder331Superordination" name="a"/>
-			<choose name="b" flushWith="@titleRemainder331Superordination">
-				<data source="090-[-1].a">
-					<regexp match="(.*)" format=", ${1}"/>
-				</data>
-				<data source="089-[-1].a">
-					<regexp match="(.*)" format=", ${1}"/>
-				</data>
-			</choose>
+			<data source="@allMAB089subfieldA" name="b">
+				<regexp match="(.*)" format=", ${1}"/>
+			</data>
 			<data source="@titleRemainder331" name="c">
 				<regexp match="(.*)" format=": ${1}"/>
 			</data>
 		</combine>
+		<combine name="@titleRemainder331SuperordinationAndVolume090" value="${a}${b}${c}"
+			flushWith="@titleRemainder331Superordination">
+			<data source="@titleRemainder331Superordination" name="a"/>
+			<data source="090-[-1].a" name="b">
+				<regexp match="(.*)" format=", ${1}"/>
+			</data>
+			<data source="@titleRemainder331" name="c">
+				<regexp match="(.*)" format=": ${1}"/>
+			</data>
+		</combine>
+		<combine name="@titleRemainder331Superordination2title" value="${a}">
+			<choose name="a">
+				<data source="@titleRemainder331SuperordinationAndVolume089"/>
+				<data source="@titleRemainder331SuperordinationAndVolume090"/>
+			</choose>
+		</combine>
+		
 		<combine name="http://purl.org/dc/terms/title" value="${a}">
 			<choose name="a">
 				<data source="@titleRemainder331Superordination2title">
@@ -2196,8 +2211,10 @@
 				<data source="@idVolume" name="a"/>
 			</combine>
 			<choose name="$[ns-lobid-vocab]numbering">
+				<concat delimiter=", " name="a">
+					<data source="089-[-1].a"/>
+				</concat>
 				<data source="090-[-1].a"/>
-				<data source="089-[-1].a"/>
 			</choose>
 		</entity>
 		<!-- ####################### -->
