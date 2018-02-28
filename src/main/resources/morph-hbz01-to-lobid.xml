@@ -1894,10 +1894,13 @@
 					<regexp match="^1\d{3}|^20\d{2}"/>
 				</data>
 				<data source="425[-abp][-1].a">
-					<regexp match=".*(1\d{3}).*" format="${1}"/>
+					<regexp match=".*\[([12]\d{3})\].*" format="${1}"/>
 				</data>
 				<data source="425[-abp][-1].a">
-					<regexp match=".*(20\d{2}).*" format="${1}"/>
+					<regexp match="[Jan|Febr]uar|März|April|[Ma|Jun|Jul]i|August|[Septem|Okto]ber|[Nov|Dez]ember] ([12]\d{3})$" format="${1}"/>
+				</data>
+				<data source="425[-abp][-1].a">
+					<regexp match="[01][0-9]\.([12]\d{3})$" format="${1}"/>
 				</data>
 				<!-- Multiple resource have [determined] volume numbers in this field. -->
 				<data source="089-[-1].a">
