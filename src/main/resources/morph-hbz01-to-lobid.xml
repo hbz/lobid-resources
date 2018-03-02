@@ -13,7 +13,6 @@
 		<var name="ns-lobid-organisation" value="http://lobid.org/organisations/"/>
 		<var name="ns-zdb-services" value="http://ld.zdb-services.de/resource/"/>
 		<var name="ns-gnd" value="http://d-nb.info/standards/elementset/gnd#"/>
-		<var name="ns-bibo" value="http://purl.org/ontology/bibo/"/>
 	</vars>
 	<macros>
 		<macro name="setRdfSubjectDescribedBy">
@@ -1093,7 +1092,7 @@
 			<regexp match="(.*)" format="http://worldcat.org/oclc/${1}"/>
 			<sanitizeUrl></sanitizeUrl>
 		</data>
-		<data source="@oclcNumber" name="$[ns-bibo]oclcnum"/>
+		<data source="@oclcNumber" name="$[ns-lobid-vocab]oclcNumber"/>
 		<!-- ####################### -->
 		<!-- ################ language -->
 		<!-- ####################### -->
@@ -1108,7 +1107,7 @@
 		<!-- ########## carrier and type -->
 		<!-- ####################### -->
 		<!--audio -->
-		<combine name="@mediumAudio" value="$[ns-bibo]AudioDocument">
+		<combine name="@mediumAudio" value="$[ns-lobid-vocab]AudioDocument">
 			<choose>
 				<data source="050.">
 					<regexp match="^.....a"/>
@@ -1149,13 +1148,13 @@
 			<regexp match="DVD-Video|Video[ck]assette"/>
 		</data>
 		<data source="@matVideo" name="@medium">
-			<regexp match=".*" format="$[ns-bibo]AudioVisualDocument"/>
+			<regexp match=".*" format="$[ns-lobid-vocab]AudioVisualDocument"/>
 		</data>
 		<data source="@matVideo" name="@medium">
 			<regexp match=".*" format="http://rdaregistry.info/termList/RDAMediaType/1008"/>
 		</data>
 		<data source="334-[12].a" name="@medium">
-			<regexp match="^Bildton" format="$[ns-bibo]AudioVisualDocument"/>
+			<regexp match="^Bildton" format="$[ns-lobid-vocab]AudioVisualDocument"/>
 		</data>
 		<!-- braille -->
 		<data source="050." name="@medium">
@@ -1187,17 +1186,17 @@
 		</data>
 		<!-- manuscript -->
 		<data source="050." name="@medium">
-			<regexp match="^.a" format="http://purl.org/ontology/bibo/Manuscript"/>
+			<regexp match="^.a" format="http://purl.org/lobid/lv#Manuscript"/>
 		</data>
 		<!-- map -->
 		<data source="050." name="@medium">
-			<regexp match="^..........a" format="$[ns-bibo]Map"/>
+			<regexp match="^..........a" format="http://schema.org/Map"/>
 		</data>
 		<data source="433[-c].a" name="@medium">
-			<regexp match="Kt.|Karte" format="$[ns-bibo]Map"/>
+			<regexp match="Kt.|Karte" format="http://schema.org/Map"/>
 		</data>
 		<data source="9[01234][27]-1.f" name="@medium">
-			<regexp match="Altkarte|Karte|Stadtplan" format="$[ns-bibo]Map"/>
+			<regexp match="Altkarte|Karte|Stadtplan" format="http://schema.org/Map"/>
 		</data>
 		<!-- microform -->
 		<data source="050." name="@medium">
@@ -1238,10 +1237,10 @@
 		<data source="@1018" name="@medium"/>
 		<!-- picture -->
 		<data source="050." name="@medium">
-			<regexp match="^.....d" format="$[ns-bibo]Image"/>
+			<regexp match="^.....d" format="$[ns-lobid-vocab]Image"/>
 		</data>
 		<data source="334-[12].a" name="@medium">
-			<regexp match="^Bildli" format="$[ns-bibo]Image"/>
+			<regexp match="^Bildli" format="$[ns-lobid-vocab]Image"/>
 		</data>
 		<!-- print -->
 		<data source="050." name="@medium">
@@ -1261,13 +1260,13 @@
 			<regexp match="^.....aj" format="http://purl.org/ontology/mo/Vinyl"/>
 		</data>
 		<data source="050." name="@mediumAudio">
-			<regexp match="^.....aj" format="$[ns-bibo]AudioDocument"/>
+			<regexp match="^.....aj" format="$[ns-lobid-vocab]AudioDocument"/>
 		</data>
 		<data source="334-[12].a" name="@mediumAudio">
 			<regexp match="Schallplatte" format="http://purl.org/ontology/mo/Vinyl"/>
 		</data>
 		<data source="334-[12].a" name="@mediumAudio">
-			<regexp match="Schallplatte" format="$[ns-bibo]AudioDocument"/>
+			<regexp match="Schallplatte" format="$[ns-lobid-vocab]AudioDocument"/>
 		</data>
 		<!-- Dini Kim , TODO dcterms:medium "rdacarrier:1044" (unmediated) -->
 		<combine name="~rdf:subject" value="${a}" flushWith="@typeOnly">
@@ -1278,14 +1277,14 @@
 		</combine>
 		<data name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" source="@rdftype|@typeOnly"/>
 		<data source="051." name="@article">
-			<regexp match="^a|^.t|^..t|^...t|^.....t" format="$[ns-bibo]Article"/>
+			<regexp match="^a|^.t|^..t|^...t|^.....t" format="http://schema.org/Article"/>
 		</data>
 		<data source="051." name="@rdftype">
-			<regexp match="^[nt]" format="$[ns-bibo]MultiVolumeBook"/>
+			<regexp match="^[nt]" format="$[ns-lobid-vocab]MultiVolumeBook"/>
 		</data>
 		<!-- type is book (and also manifestation) if 050 begins with 'a' and 051 or 052 is missing 
 			or 051 and 052 does not fulfill a certain pattern -->
-		<combine name="@rdftype" value="$[ns-bibo]Book">
+		<combine name="@rdftype" value="http://schema.org/Book">
 			<if>
 				<none>
 					<data source="@idzdb"/>
@@ -1380,24 +1379,24 @@
 		</data>
 		<!-- reference source -->
 		<data source="051." name="@rdftype">
-			<regexp match="^.[de]|^..[de]|^...[de]" format="$[ns-bibo]ReferenceSource"/>
+			<regexp match="^.[de]|^..[de]|^...[de]" format="$[ns-lobid-vocab]ReferenceSource"/>
 		</data>
 		<data source="052." name="@rdftype">
-			<regexp match="^.ez|^...ez|^.....ez" format="$[ns-bibo]ReferenceSource"/>
+			<regexp match="^.ez|^...ez|^.....ez" format="$[ns-lobid-vocab]ReferenceSource"/>
 		</data>
 		<data source="9[01234][27]-[-12].f" name="@rdftype">
 			<regexp match="Bestimmungsbuch|Enzyklopädie|Werkverzeichnis|W[ö|oe]rterbuch"
-				format="$[ns-bibo]ReferenceSource"/>
+				format="$[ns-lobid-vocab]ReferenceSource"/>
 		</data>
 		<!-- norm -->
 		<data source="051." name="@rdftype">
-			<regexp match="^.n|^..n|^...n" format="$[ns-bibo]Standard"/>
+			<regexp match="^.n|^..n|^...n" format="$[ns-lobid-vocab]Standard"/>
 		</data>
 		<data source="052." name="@rdftype">
-			<regexp match="^.no|^...no|^.....no" format="$[ns-bibo]Standard"/>
+			<regexp match="^.no|^...no|^.....no" format="$[ns-lobid-vocab]Standard"/>
 		</data>
 		<data source="9[01234][27]-[-12].f" name="@rdftype">
-			<regexp match="Norm|Richtlinie" format="$[ns-bibo]Standard"/>
+			<regexp match="Norm|Richtlinie" format="$[ns-lobid-vocab]Standard"/>
 		</data>
 		<!-- schoolbook -->
 		<data source="051." name="@rdftype">
@@ -1415,34 +1414,34 @@
 		</data>
 		<!-- thesis -->
 		<data source="051." name="@rdftype">
-			<regexp match="^.[uy]|^..[uy]|^...[uy]" format="$[ns-bibo]Thesis"/>
+			<regexp match="^.[uy]|^..[uy]|^...[uy]" format="http://schema.org/Thesis"/>
 		</data>
 		<data source="052." name="@rdftype">
-			<regexp match="^.sc|^...sc|^.....sc" format="$[ns-bibo]Thesis"/>
+			<regexp match="^.sc|^...sc|^.....sc" format="http://schema.org/Thesis"/>
 		</data>
 		<data source="519-[12].?" name="@rdftype">
-			<regexp match=".*" format="$[ns-bibo]Thesis"/>
+			<regexp match=".*" format="http://schema.org/Thesis"/>
 		</data>
 		<!-- proceedings -->
 		<data source="051." name="@rdftype">
-			<regexp match="^.k|^..k|^...k" format="$[ns-bibo]Proceedings"/>
+			<regexp match="^.k|^..k|^...k" format="$[ns-lobid-vocab]Proceedings"/>
 		</data>
 		<data source="052." name="@rdftype">
-			<regexp match="^.ko|^...ko|^.....ko" format="$[ns-bibo]Proceedings"/>
+			<regexp match="^.ko|^...ko|^.....ko" format="$[ns-lobid-vocab]Proceedings"/>
 		</data>
 		<data source="9[01234][27]-[-1].f" name="@rdftype">
-			<regexp match="Kongress" format="$[ns-bibo]Proceedings"/>
+			<regexp match="Kongress" format="$[ns-lobid-vocab]Proceedings"/>
 		</data>
 		<!-- report -->
 		<data source="051." name="@rdftype">
-			<regexp match="^.[r]|^..[r]|^...[r]" format="http://purl.org/ontology/bibo/Report"/>
+			<regexp match="^.[r]|^..[r]|^...[r]" format="http://schema.org/Report"/>
 		</data>
 		<data source="9[01234][27]-[-12].9" name="@rdftype">
-			<regexp match="4128022-2" format="http://purl.org/ontology/bibo/Report"/>
+			<regexp match="4128022-2" format="http://schema.org/Report"/>
 		</data>
 		<data source="9[01234][27]-[1].f" name="@rdftype">
 			<regexp match="Bericht|Erlebnisbericht|Forschungsbericht|Literaturbericht|Reisebericht"
-				format="http://purl.org/ontology/bibo/Report"/>
+				format="http://schema.org/Report"/>
 		</data>
 		<!-- statistics -->
 		<data source="051." name="@rdftype">
@@ -1453,13 +1452,13 @@
 		</data>
 		<!-- 052: type -->
 		<data source="052." name="@article">
-			<regexp match="^[af]|^.au|^...au|^.....au" format="$[ns-bibo]Article"/>
+			<regexp match="^[af]|^.au|^...au|^.....au" format="http://schema.org/Article"/>
 		</data>
 		<data source="052." name="@collection">
-			<regexp match="^[jp].*|^.il.*|^...il.*|^.....il.*" format="$[ns-bibo]Periodical"/>
+			<regexp match="^[jp].*|^.il.*|^...il.*|^.....il.*" format="http://schema.org/Periodical"/>
 		</data>
 		<data source="9[01234][27]-[-1].f" name="@collection">
-			<regexp match="Zeitschrift" format="$[ns-bibo]Periodical"/>
+			<regexp match="Zeitschrift" format="http://schema.org/Periodical"/>
 		</data>
 		<combine name="@collection" value="${a}">
 			<if>
@@ -1468,22 +1467,22 @@
 				</none>
 			</if>
 			<data source="052." name="a">
-				<regexp match="^r|^.se|^...se|^.....se" format="$[ns-bibo]Series"/>
+				<regexp match="^r|^.se|^...se|^.....se" format="$[ns-lobid-vocab]Series"/>
 			</data>
 		</combine>
 		<data source="9[01234][27]-[1].f" name="@collection">
-			<regexp match="Schriftenreihe" format="$[ns-bibo]Series"/>
+			<regexp match="Schriftenreihe" format="$[ns-lobid-vocab]Series"/>
 		</data>
 		<data source="@collection" name="@typeOnly"/>
 		<!-- newspaper -->
 		<data source="052." name="@collection">
-			<regexp match="^z|^.[ae]o|^...[ae]o|^.....[ae]o" format="$[ns-bibo]Newspaper"/>
+			<regexp match="^z|^.[ae]o|^...[ae]o|^.....[ae]o" format="http://schema.org/Newspaper"/>
 		</data>
 		<data source="052." name="@collection">
-			<regexp match="^z|^.[url]p|^...[url]p|^.....[url]p" format="$[ns-bibo]Newspaper"/>
+			<regexp match="^z|^.[url]p|^...[url]p|^.....[url]p" format="http://schema.org/Newspaper"/>
 		</data>
 		<data source="9[01234][27]-[-1].f" name="@collection">
-			<regexp match="Zeitung" format="$[ns-bibo]Newspaper"/>
+			<regexp match="Zeitung" format="http://schema.org/Newspaper"/>
 		</data>
 		<!-- computer carrier (disks etc) -->
 		<data source="058." name="@medium">
@@ -1596,7 +1595,7 @@
 		<data source="34[01234567][-ab][-1].[ab]|370[abc]1.a|504-1.a" name="http://purl.org/dc/terms/alternative">
 		  <replace pattern="^http" with="Siehe: http" />
 		</data>
-		<data source="376[-adb][-1].[ad]" name="$[ns-bibo]shortTitle"/>
+		<data source="376[-adb][-1].[ad]" name="$[ns-lobid-vocab]shortTitle"/>
 		<data source="@otherTitle" name="http://rdaregistry.info/Elements/u/P60493">
 			<replace pattern="&gt;" with=""/>
 			<replace pattern="&lt;" with=""/>
@@ -2010,7 +2009,7 @@
 		<!-- ####################### -->
 		<!-- ################ edition -->
 		<!-- ####################### -->
-		<combine name="$[ns-bibo]edition" value="${a}">
+		<combine name="http://id.loc.gov/ontologies/bibframe/edition" value="${a}">
 			<choose name="a">
 				<data source="400-1.[an]"/>
 				<data source="403-1.[an]"/>
@@ -2038,8 +2037,7 @@
 			<regexp match="(.*)" format="http://dx.doi.org/${1}"/>
 			<sanitizeUrl></sanitizeUrl>
 		</data>
-		<data source="@doi" name="$[ns-bibo]doi">
-		</data>
+		<data source="@doi" name="http://id.loc.gov/vocabulary/identifiers/doi"/>
 		<!-- urn -->
 		<combine name="@urn" value="${a}">
 			<choose name="a">
@@ -5251,18 +5249,18 @@
 		<!-- ####################### -->
 		<!-- ########## isbn -->
 		<!-- ####################### -->
-		<data source="540[-ab][-1].[ab]" name="$[ns-bibo]isbn">
+		<data source="540[-ab][-1].[ab]" name="http://id.loc.gov/vocabulary/identifiers/isbn">
 			<isbn to="clean"/>
 		</data>
-		<data source="540[-ab][-1].[ab]" name="$[ns-bibo]isbn">
+		<data source="540[-ab][-1].[ab]" name="http://id.loc.gov/vocabulary/identifiers/isbn">
 			<isbn to="isbn13"/>
 		</data>
 		<!--ISMN -->
-		<data source="541[-ab][-12].[ab]" name="http://purl.org/ontology/mo/ismn">
+		<data source="541[-ab][-12].[ab]" name="http://id.loc.gov/vocabulary/identifiers/ismn">
 			<replace pattern="-| " with=""/>
 		</data>
 		<!-- ISSN -->
-		<data source="542[-ab][-1].[a]" name="$[ns-bibo]issn">
+		<data source="542[-ab][-1].[a]" name="http://id.loc.gov/vocabulary/identifiers/issn">
 			<replace pattern="-| " with=""/>
 		</data>
 		<!-- ####################### -->
