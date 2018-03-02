@@ -1987,20 +1987,20 @@
 			</data>
 		</entity>
 		<!-- |674[-abc][-12].a <= YearOfPublication of the primary form. TODO find property -->
-		<combine name="@contentOfNatureGndId" value="${a}">
-			<data source="064[a][1].9" name="a">
+		<combine name="@natureOfContentGndId" value="${a}">
+			<data source="064[ac]1.9" name="a">
 				<regexp match="^(\(DE-588\))?(\d{3}.*)" format="http://d-nb.info/gnd/${2}"/>
 			</data>
 		</combine>
-		<data source="@contentOfNatureGndId" name="http://rdaregistry.info/Elements/u/P60584"/>
-		<combine name="~rdf:subject" value="${a}" flushWith="@contentOfNatureGndId">
-			<data source="@contentOfNatureGndId" name="a"/>
+		<data source="@natureOfContentGndId" name="http://rdaregistry.info/Elements/u/P60584"/>
+		<combine name="~rdf:subject" value="${a}" flushWith="@natureOfContentGndId">
+			<data source="@natureOfContentGndId" name="a"/>
 		</combine>
 		<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="${a}"
-			flushWith="@contentOfNatureGndId">
-			<data source="064a1.a" name="a"/>
+			flushWith="@natureOfContentGndId">
+			<data source="064[ac]1.a" name="a"/>
 		</combine>
-		<combine name="~rdf:subject" value="$[ns-lobid-resource]${subject}#!" flushWith="@contentOfNatureGndId">
+		<combine name="~rdf:subject" value="$[ns-lobid-resource]${subject}#!" flushWith="@natureOfContentGndId">
 			<data source="@id" name="subject"/>
 		</combine>
 		<!-- ####################### -->
@@ -2103,46 +2103,46 @@
 			<replace pattern="^http" with="Siehe: http" />
 		</data>
 		</combine>
-    <combine name="http://id.loc.gov/ontologies/bibframe/note" value="${a}"
-      sameEntity="true">
-      <choose flushWith="@itemId" sameEntity="true">
-        <data source="088 ?.b" name="a">
-		  <replace pattern="^http" with="Siehe: http" />
-        </data>
-        <data source="088 ?.b" name="a"/>
-      </choose>
-    </combine>
+		<combine name="http://id.loc.gov/ontologies/bibframe/note" value="${a}"
+			sameEntity="true">
+			<choose flushWith="@itemId" sameEntity="true">
+				<data source="088 ?.b" name="a">
+					<replace pattern="^http" with="Siehe: http" />
+				</data>
+				<data source="088 ?.b" name="a"/>
+			</choose>
+		</combine>
 		<combine name="@signature" value="${signature}" sameEntity="true">
 			<data source="@itemId"/>
 			<data source="088 ?.c" name="signature"/>
 		</combine>
 		<data source="@signature" name="http://purl.org/lobid/lv#callNumber">
-		    <replace pattern="^http" with="Siehe: http" />
+			<replace pattern="^http" with="Siehe: http" />
 		</data>
 		<data source="@signature" name="http://www.w3.org/2000/01/rdf-schema#label">
 		    <replace pattern="^http" with="Siehe: http" />
 		</data>
 		<!-- provenance -->
-    <combine name="@created" value="${a}">
-      <choose name="a" flushWith="record">
-          <data source="002[ab]1.a" name="a"/>
-          <data source="?????.?"/> <!--  ignored if missing -->
-      </choose>
-    </combine>
-    <combine name="http://www.w3.org/2007/05/powder-s#describedby" value="$[ns-lobid-resource]${a}">
-      <data source="@id" name="a"/>
-    </combine>
-    <combine name="~rdf:subject" value="${a}">
-      <data source="@created"/>
-      <data source="@id" name="a">
-        <regexp match="(.*)" format="$[ns-lobid-resource]${1}"/>
-      </data>
-    </combine>
-    <combine name="http://purl.org/dc/terms/created" value="${a}">
-      <data source="@created" name="a">
-        <regexp match="([0-9]{8})" format="${1}"/>
-      </data>
-    </combine>
+		<combine name="@created" value="${a}">
+			<choose name="a" flushWith="record">
+				<data source="002[ab]1.a" name="a"/>
+					<data source="?????.?"/> <!--  ignored if missing -->
+				</choose>
+		</combine>
+		<combine name="http://www.w3.org/2007/05/powder-s#describedby" value="$[ns-lobid-resource]${a}">
+			<data source="@id" name="a"/>
+		</combine>
+		<combine name="~rdf:subject" value="${a}">
+			<data source="@created"/>
+			<data source="@id" name="a">
+				<regexp match="(.*)" format="$[ns-lobid-resource]${1}"/>
+			</data>
+		</combine>
+		<combine name="http://purl.org/dc/terms/created" value="${a}">
+			<data source="@created" name="a">
+				<regexp match="([0-9]{8})" format="${1}"/>
+			</data>
+		</combine>
 		<!-- set subject uri of resource anew -->
 		<combine name="~rdf:subject" value="$[ns-lobid-resource]${id}#!">
 			<data source="@created"/>
