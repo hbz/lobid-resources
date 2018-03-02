@@ -331,12 +331,7 @@ public class Queries {
 	public static class SubjectQuery extends AbstractIndexQuery {
 		@Override
 		public List<String> fields() {
-			return Arrays.asList(/* @formatter:off*/
-					"subject.id",
-					"subject.componentList.id",
-					"subject.componentList.label",
-					"subject.label",
-					"subjectAltLabel");/* @formatter:on */
+			return Arrays.asList(); /* see build() below */
 		}
 
 		@Override
@@ -356,13 +351,15 @@ public class Queries {
 					final String query = qTrimmed.startsWith("http") ? qTrimmed
 							: "http://d-nb.info/gnd/" + qTrimmed;
 					final MatchQueryBuilder subjectIdQuery =
-							matchQuery(!query.contains("d-nb.info/gnd") ? fields().get(0)
-									: fields().get(1), query.trim()).operator(Operator.AND);
+							matchQuery(!query.contains("d-nb.info/gnd") ? "subject.id"
+									: "subject.componentList.id", query.trim())
+											.operator(Operator.AND);
 					boolQuery = hasLabel || isAndQuery ? boolQuery.must(subjectIdQuery)
 							: boolQuery.should(subjectIdQuery);
 				} else {
 					final MultiMatchQueryBuilder subjectLabelQuery =
-							multiMatchQuery(qTrimmed, fields().toArray(new String[] {}))
+							multiMatchQuery(qTrimmed, new String[] {"subject.componentList.label",
+									"subjectAltLabel"})
 									.operator(Operator.AND).type(Type.CROSS_FIELDS);
 					boolQuery = hasLabel || isAndQuery ? boolQuery.must(subjectLabelQuery)
 							: boolQuery.should(subjectLabelQuery);
@@ -599,6 +596,7 @@ public class Queries {
 					.filter(p -> !exclude.contains(p)).collect(Collectors.toList())) {
 				fields.addAll(p.q.fields());
 			}
+			fields.add("subject.label"); // no longer in SubjectQuery
 			return fields;
 		}
 
