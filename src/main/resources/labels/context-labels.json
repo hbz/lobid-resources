@@ -443,6 +443,14 @@
       "multilangLabel" : {}
    },
    {
+      "multilangLabel" : {},
+      "referenceType" : "@id",
+      "label" : "übergeordnete Ressource",
+      "uri" : "http://purl.org/lobid/lv#hasSuperordinate",
+      "name" : "hasSuperordinate",
+      "container" : "@set"
+   },
+   {
       "referenceType" : "String",
       "uri" : "http://purl.org/lobid/lv#hbzID",
       "icon" : "fa fa-bars",
@@ -459,11 +467,19 @@
       "multilangLabel" : {}
    },
    {
+      "referenceType" : "String",
+      "label" : "Oclc",
+      "uri" : "http://purl.org/lobid/lv#oclcNumber",
       "multilangLabel" : {},
-      "referenceType" : "@id",
-      "label" : "übergeordnete Ressource",
-      "uri" : "http://purl.org/lobid/lv#hasSuperordinate",
-      "name" : "hasSuperordinate",
+      "name" : "oclcNumber",
+      "container" : "@set"
+   },
+   {
+      "referenceType" : "String",
+      "label" : "Kurztitel",
+      "uri" : "http://purl.org/lobid/lv#shortTitle",
+      "multilangLabel" : {},
+      "name" : "shortTitle",
       "container" : "@set"
    },
    {
@@ -531,26 +547,6 @@
       "container" : "@set"
    },
    {
-      "referenceType" : "String",
-      "label" : "Doi",
-      "uri" : "http://purl.org/ontology/bibo/doi",
-      "multilangLabel" : {},
-      "name" : "doi",
-      "container" : "@set"
-   },
-   {
-      "name" : "Image",
-      "multilangLabel" : {},
-      "label" : "Bild",
-      "uri" : "http://purl.org/ontology/bibo/Image"
-   },
-   {
-      "name" : "Standard",
-      "uri" : "http://purl.org/ontology/bibo/Standard",
-      "label" : "Standard",
-      "multilangLabel" : {}
-   },
-   {
       "multilangLabel" : {},
       "name" : "Contribution",
       "uri" : "http://id.loc.gov/ontologies/bibframe/Contribution",
@@ -559,17 +555,33 @@
    {
       "multilangLabel" : {},
       "referenceType" : "String",
-      "uri" : "http://purl.org/ontology/bibo/edition",
+      "uri" : "http://id.loc.gov/ontologies/bibframe/edition",
       "label" : "Auflage",
       "name" : "edition",
+      "container" : "@set"
+   },
+   {
+      "referenceType" : "String",
+      "label" : "Doi",
+      "uri" : "http://id.loc.gov/vocabulary/identifiers/doi",
+      "multilangLabel" : {},
+      "name" : "doi",
       "container" : "@set"
    },
    {
       "multilangLabel" : {},
       "referenceType" : "String",
       "label" : "Isbn",
-      "uri" : "http://purl.org/ontology/bibo/isbn",
+      "uri" : "http://id.loc.gov/vocabulary/identifiers/isbn",
       "name" : "isbn",
+      "container" : "@set"
+   },
+   {
+      "referenceType" : "String",
+      "uri" : "http://id.loc.gov/vocabulary/identifiers/ismn",
+      "label" : "Ismn",
+      "multilangLabel" : {},
+      "name" : "ismn",
       "container" : "@set"
    },
    {
@@ -577,24 +589,8 @@
       "name" : "issn",
       "multilangLabel" : {},
       "label" : "Issn",
-      "uri" : "http://purl.org/ontology/bibo/issn",
+      "uri" : "http://id.loc.gov/vocabulary/identifiers/issn",
       "referenceType" : "String"
-   },
-   {
-      "referenceType" : "String",
-      "label" : "Oclc",
-      "uri" : "http://purl.org/ontology/bibo/oclcnum",
-      "multilangLabel" : {},
-      "name" : "oclcNumber",
-      "container" : "@set"
-   },
-   {
-      "referenceType" : "String",
-      "label" : "Kurztitel",
-      "uri" : "http://purl.org/ontology/bibo/shortTitle",
-      "multilangLabel" : {},
-      "name" : "shortTitle",
-      "container" : "@set"
    },
    {
       "multilangLabel" : {},
@@ -609,14 +605,6 @@
       "label" : "In Sammlung",
       "multilangLabel" : {},
       "name" : "inCollection",
-      "container" : "@set"
-   },
-   {
-      "referenceType" : "String",
-      "uri" : "http://purl.org/ontology/mo/ismn",
-      "label" : "Ismn",
-      "multilangLabel" : {},
-      "name" : "ismn",
       "container" : "@set"
    },
    {
@@ -715,7 +703,7 @@
    {
       "name" : "Article",
       "multilangLabel" : {},
-      "uri" : "http://purl.org/ontology/bibo/Article"
+      "uri" : "http://schema.org/Article"
    },
    {
       "name" : "BibliographicResource",
@@ -733,7 +721,7 @@
       "multilangLabel" : {}
    },
    {
-      "uri" : "http://purl.org/ontology/bibo/Book",
+      "uri" : "http://schema.org/Book",
       "multilangLabel" : {},
       "name" : "Book"
    },
@@ -783,6 +771,12 @@
       "multilangLabel" : {}
    },
    {
+      "name" : "Image",
+      "multilangLabel" : {},
+      "label" : "Bild",
+      "uri" : "http://purl.org/lobid/lv#Image"
+   },
+   {
       "multilangLabel" : {},
       "uri" : "http://purl.org/lobid/lv#Legislation",
       "name" : "Legislation"
@@ -794,11 +788,11 @@
    },
    {
       "name" : "MultiVolumeBook",
-      "uri" : "http://purl.org/ontology/bibo/MultiVolumeBook",
+      "uri" : "http://purl.org/lobid/lv#MultiVolumeBook",
       "multilangLabel" : {}
    },
    {
-      "uri" : "http://purl.org/ontology/bibo/Newspaper",
+      "uri" : "http://schema.org/Newspaper",
       "multilangLabel" : {},
       "name" : "Newspaper"
    },
@@ -808,13 +802,13 @@
       "uri" : "http://purl.org/lobid/lv#OfficialPublication"
    },
    {
-      "uri" : "http://purl.org/ontology/bibo/Periodical",
+      "uri" : "http://schema.org/Periodical",
       "multilangLabel" : {},
       "name" : "Periodical"
    },
    {
       "multilangLabel" : {},
-      "uri" : "http://purl.org/ontology/bibo/Proceedings",
+      "uri" : "http://purl.org/lobid/lv#Proceedings",
       "name" : "Proceedings"
    },
    {
@@ -824,12 +818,12 @@
    },
    {
       "name" : "ReferenceSource",
-      "uri" : "http://purl.org/ontology/bibo/ReferenceSource",
+      "uri" : "http://purl.org/lobid/lv#ReferenceSource",
       "multilangLabel" : {}
    },
    {
       "name" : "Report",
-      "uri" : "http://purl.org/ontology/bibo/Report",
+      "uri" : "http://schema.org/Report",
       "multilangLabel" : {}
    },
    {
@@ -840,7 +834,13 @@
    {
       "name" : "Series",
       "multilangLabel" : {},
-      "uri" : "http://purl.org/ontology/bibo/Series"
+      "uri" : "http://purl.org/lobid/lv#Series"
+   },
+   {
+      "name" : "Standard",
+      "uri" : "http://purl.org/lobid/lv#Standard",
+      "label" : "Standard",
+      "multilangLabel" : {}
    },
    {
       "multilangLabel" : {},
@@ -850,7 +850,7 @@
    {
       "name" : "Thesis",
       "multilangLabel" : {},
-      "uri" : "http://purl.org/ontology/bibo/Thesis"
+      "uri" : "http://schema.org/Thesis"
    },
    {
       "name" : "Person",
@@ -862,7 +862,6 @@
       "multilangLabel" : {},
       "name" : "PlaceOrGeographicName"
    },
-
    {
       "name" : "Item",
       "multilangLabel" : {},
