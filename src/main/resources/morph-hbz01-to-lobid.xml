@@ -2083,20 +2083,20 @@
 			</data>
 		</entity>
 		<!-- |674[-abc][-12].a <= YearOfPublication of the primary form. TODO find property -->
-		<combine name="@contentOfNatureGndId" value="${a}">
-			<data source="064[a][1].9" name="a">
+		<combine name="@natureOfContentGndId" value="${a}">
+			<data source="064[ac]1.9|064c2.9" name="a">
 				<regexp match="^(\(DE-588\))?(\d{3}.*)" format="http://d-nb.info/gnd/${2}"/>
 			</data>
 		</combine>
-		<data source="@contentOfNatureGndId" name="http://rdaregistry.info/Elements/u/P60584"/>
-		<combine name="~rdf:subject" value="${a}" flushWith="@contentOfNatureGndId">
-			<data source="@contentOfNatureGndId" name="a"/>
+		<data source="@natureOfContentGndId" name="http://rdaregistry.info/Elements/u/P60584"/>
+		<combine name="~rdf:subject" value="${a}" flushWith="@natureOfContentGndId">
+			<data source="@natureOfContentGndId" name="a"/>
 		</combine>
 		<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="${a}"
-			flushWith="@contentOfNatureGndId">
-			<data source="064a1.a" name="a"/>
+			flushWith="@natureOfContentGndId">
+			<data source="064[ac]1.a|064c2.a" name="a"/>
 		</combine>
-		<combine name="~rdf:subject" value="$[ns-lobid-resource]${subject}#!" flushWith="@contentOfNatureGndId">
+		<combine name="~rdf:subject" value="$[ns-lobid-resource]${subject}#!" flushWith="@natureOfContentGndId">
 			<data source="@id" name="subject"/>
 		</combine>
 		<!-- ####################### -->
