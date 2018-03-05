@@ -50,7 +50,7 @@ public class IndexIntegrationTest extends LocalIndexSetup {
 			{ "subject.label:Westfälen", /*->*/ 13 },
 			{ "subject.componentList.id:\"http\\://d-nb.info/gnd/4042570-8\"", /*->*/ 3 },
 			{ "subject.componentList.id:1113670827", /*->*/ 0 },
-			{ "subject.componentList.type:PlaceOrGeographicName", /*->*/ 28 },
+			{ "subject.componentList.type:PlaceOrGeographicName", /*->*/ 29 },
 			{ "publication.location:Berlin", /*->*/ 15 },
 			{ "publication.location:Köln", /*->*/ 4 },
 			{ "publication.location:Koln", /*->*/ 4 },
