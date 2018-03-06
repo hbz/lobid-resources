@@ -66,6 +66,9 @@ public class JsonConverter {
 
 	private EtikettMakerInterface etikette;
 
+	private String predicateToIdentifyRootSubject =
+			"http://www.w3.org/2007/05/powder-s#describedby";
+
 	/**
 	 * @param e An EtikettMaker provides access to labels
 	 */
@@ -93,7 +96,7 @@ public class JsonConverter {
 		try {
 			subject = g.parallelStream()
 					.filter(triple -> triple.getPredicate().stringValue()
-							.equals("http://www.w3.org/2007/05/powder-s#describedby"))
+							.equals(predicateToIdentifyRootSubject))
 					.filter(triple -> triple.getSubject().stringValue()
 							.startsWith(rootNodePrefix))
 					.findFirst().get().getSubject().toString();
@@ -176,6 +179,7 @@ public class JsonConverter {
 			}
 		} catch (Exception ex) {
 			logger.warn(ex);
+			ex.printStackTrace();
 		}
 	}
 
@@ -272,6 +276,7 @@ public class JsonConverter {
 			}
 		} catch (Exception ex) {
 			logger.warn(ex);
+			ex.printStackTrace();
 		}
 	}
 
@@ -342,31 +347,36 @@ public class JsonConverter {
 	private void createObject(String uri, Map<String, Object> newObject) {
 		for (Statement s : find(uri)) {
 			Etikett e = etikette.getEtikett(s.getPredicate().stringValue());
-			if (labelKey.equals(e.name)) {
-				newObject.put(e.name, s.getObject().stringValue());
-			} else if (s.getObject() instanceof org.openrdf.model.Literal) {
-				if (newObject.containsKey(e.name)) {
-					Object existingValue = newObject.get(e.name);
-					if (existingValue instanceof String) {
-						Set<String> icanmany = new HashSet<>();
-						icanmany.add((String) existingValue);
-						icanmany.add(s.getObject().stringValue());
-						newObject.put(e.name, icanmany);
+			try {
+				if (labelKey.equals(e.name)) {
+					newObject.put(e.name, s.getObject().stringValue());
+				} else if (s.getObject() instanceof org.openrdf.model.Literal) {
+					if (newObject.containsKey(e.name)) {
+						Object existingValue = newObject.get(e.name);
+						if (existingValue instanceof String) {
+							Set<String> icanmany = new HashSet<>();
+							icanmany.add((String) existingValue);
+							icanmany.add(s.getObject().stringValue());
+							newObject.put(e.name, icanmany);
+						} else {
+							((Set<String>) existingValue).add(s.getObject().stringValue());
+						}
 					} else {
-						((Set<String>) existingValue).add(s.getObject().stringValue());
+						newObject.put(e.name, s.getObject().stringValue());
 					}
 				} else {
-					newObject.put(e.name, s.getObject().stringValue());
+					if (!mainSubjectOfTheResource.equals(s.getObject().stringValue())) {
+						createObject(newObject, s, e);
+					} else {
+						Map<String, Object> selfReference = new HashMap<>();
+						selfReference.put(idAlias, s.getObject().stringValue());
+						selfReference.put(labelKey, "lobid Ressource");
+						newObject.put(e.name, selfReference);
+					}
 				}
-			} else {
-				if (!mainSubjectOfTheResource.equals(s.getObject().stringValue())) {
-					createObject(newObject, s, e);
-				} else {
-					Map<String, Object> selfReference = new HashMap<>();
-					selfReference.put(idAlias, s.getObject().stringValue());
-					selfReference.put(labelKey, "lobid Ressource");
-					newObject.put(e.name, selfReference);
-				}
+			} catch (Exception ex) {
+				logger.warn(ex + "; " + newObject.toString() + "; name=" + e.name + "; "
+						+ e.toString(), ex);
 			}
 		}
 	}
@@ -394,8 +404,14 @@ public class JsonConverter {
 				literals.add(value);
 				jsonResult.put(key, literals);
 			}
-		} else
-			jsonResult.put(key, value);
+		} else {
+			try {
+				jsonResult.put(key, value);
+			} catch (Exception ex) {
+				logger.warn(ex.getMessage());
+				ex.printStackTrace();
+			}
+		}
 	}
 
 	private void collect(Graph g) {
@@ -413,6 +429,27 @@ public class JsonConverter {
 	 */
 	public static ObjectMapper getObjectMapper() {
 		return objectMapper;
+	}
+
+	/**
+	 * Identifies the main node Id aka the root subject. This is important.
+	 * 
+	 * @param rootIdPredicate identifies the root subject by this property.
+	 *          Default is specified in {@link #getRootIdPredicate()}
+	 */
+	public void setRootIdPredicate(final String rootIdPredicate) {
+		this.predicateToIdentifyRootSubject = rootIdPredicate;
+	}
+
+	/**
+	 * Gets the property which identifies the main node Id aka the root subject.
+	 * This is important.
+	 * 
+	 * @return the property which identifies the root subject as String
+	 * 
+	 */
+	public String getRootIdPredicate() {
+		return this.predicateToIdentifyRootSubject;
 	}
 
 }
