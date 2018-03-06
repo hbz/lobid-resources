@@ -5217,9 +5217,18 @@
 		<!-- ####################### -->
 		<!--nwbib -->
 		<call-macro name="setBackRdfSubject" field="078n[-1].a"/>
-		<data source="078n[-1].a" name="http://purl.org/lobid/lv#inCollection">
-			<regexp match=".*" format="$[ns-lobid-resource]HT014176012#!"/>
-		</data>
+		<combine name="http://purl.org/lobid/lv#inCollection" value="${a}">
+			<if>
+				<none>
+					<data source="001-1.a">
+						<regexp match="HT014176012"/>
+					</data>
+				</none>
+			</if>
+			<data source="078n[-1].a" name="a">
+				<regexp match=".*" format="$[ns-lobid-resource]HT014176012#!"/>
+			</data>
+		</combine>
 		<combine name="~rdf:subject" value="${a}" sameEntity="true">
 			<data source="078n[-1].a" name="a">
 				<regexp match=".*" format="$[ns-lobid-resource]HT014176012#!"/>
