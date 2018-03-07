@@ -13,6 +13,14 @@
                   "tokenizer" : "standard",
                   "type" : "custom"
                },
+               "german_analyzer_unstemmed" : {
+                  "filter" : [
+                     "lowercase",
+                     "german_normalization"
+                  ],
+                  "tokenizer" : "standard",
+                  "type" : "custom"
+               },
                "id_analyzer" : {
                   "tokenizer" : "keyword",
                   "filter" : [
@@ -263,7 +271,14 @@
                "type" : "text"
             },
             "subjectAltLabel": {
-               "type": "text"
+               "type": "text",
+               "analyzer" : "german_analyzer",
+               "fields": {
+                    "unstemmed": {
+                        "type": "text",
+                        "analyzer" : "german_analyzer_unstemmed"
+                    }
+                }
             },
             "sameAs" : {
                "properties" : {
@@ -459,6 +474,10 @@
                         "fields": {
                             "raw": {
                                 "type": "keyword"
+                            },
+                            "unstemmed": {
+                                "type": "text",
+                                "analyzer" : "german_analyzer_unstemmed"
                             }
                         }
                      },
