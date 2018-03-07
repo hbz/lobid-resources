@@ -5219,7 +5219,7 @@
 		<call-macro name="addTypeCollection" field="078n[-1].a"/>
 		<call-macro name="setBackRdfSubject" field="078n[-1].a"/>
 		<data source="700n[-1].a" name="@nwbibSubject">
-			<regexp match="(\d\d\d\d\d\d)" format="http://purl.org/lobid/nwbib#s${1}"/>
+			<regexp match="(\d{6})" format="http://purl.org/lobid/nwbib#s${1}"/>
 		</data>
 		<!-- ignore '99' in e.g. '700n|a 99|b Bonn', but take 'b' to lookup ID's ,see HT018131501 -->
 		<combine name="@nwbib700_99" value="${a}" sameEntity="true">
@@ -5398,6 +5398,24 @@
 			flushWith="@nwbibSubject|@nwbibSpatialSubject|@rpb2Subject|@rpbSubject">
 			<data source="@id" name="id"/>
 		</combine>
+		
+		<!-- <data source="700n[-1].a" name="@nwbibSubject">
+			<regexp match="(\d{6})" format="http://purl.org/lobid/nwbib#s${1}"/>
+		</data> -->
+		<combine name="~rdf:subject" value="${a}" sameEntity="true">
+			<data source="@nwbibSubject" name="a"/>
+		</combine>
+		<combine name="http://www.w3.org/2004/02/skos/core#notation" value="${a}"
+			sameEntity="true">
+			<data source="@nwbibSubject" name="a">
+				<regexp match="http://purl.org/lobid/nwbib#s(\d{6})$" format="${1}"/>
+			</data>
+		</combine>
+		<combine name="~rdf:subject" value="$[ns-lobid-resource]${id}#!" 
+			flushWith="@nwbibSubject">
+			<data source="@id" name="id"/>
+		</combine>
+		
 		<combine name="~rdf:subject" value="${a}" sameEntity="true">
 			<data source="@rpbSubject" name="a"/>
 		</combine>
