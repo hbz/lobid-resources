@@ -3,9 +3,12 @@ Stand: 15.02.2018
 web/app/controllers/resources/Application.java
 test.nwbib.de
 Zur Erklärung: Alles was `markiert` ist, findet sich so in der MAB- bzw. JSON-Datei oder kann in die Suchmaske eingegeben werden. Mit der *einfachen Suche* ist der Suchschlitz gemeint, der auf der Startseite und zusammen mit der Trefferliste erscheint.
+
 Alles, was in eckigen Klammern steht, ist eine Option. Z.B. wird mit `540[-ab][-1].[ab]` nach den MAB-Feldern und Unterfeldern mit den ersten Indikatoren "leer", "1" oder "2", dem zweiten Indikator "leer" oder "1" und den Unterfeldern "a" und "b" gesucht. Bei nummerierten Listen wird der erste zutreffende Eintrag genommen.
- Bei den Einträgen zum MAB-Feld wird kurz beschrieben, wie diese in das JSON-Feld umgewandelt werden. Punkte innerhalb der JSON- oder MAB-Notationen zeigen eine tiefere Ebene an, z.B. zeigt `publication.startDate` an, dass die Eigenschaft `startDate` in `publication` enthalten ist.
-Als Beispiele werden die JSON-Dateien und MAB-XML-Dateien angegeben. 
+
+Bei den Einträgen zum MAB-Feld wird kurz beschrieben, wie diese in das JSON-Feld umgewandelt werden. Punkte innerhalb der JSON- oder MAB-Notationen zeigen eine tiefere Ebene an, z.B. zeigt `publication.startDate` an, dass die Eigenschaft `startDate` in `publication` enthalten ist.
+
+Als Beispiele werden die JSON-Dateien, MAB-XML-Dateien und NWBib-URLs angegeben. 
 
 ## Erweiterte Suche
 * Alle Wörter: Suche über alle Felder?
