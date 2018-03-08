@@ -5232,11 +5232,11 @@
 			<regexp match="(\d\d\d\d\d\d)" format="http://purl.org/lobid/nwbib#s${1}"/>
 		</data>
 		<!-- ignore '99' in e.g. '700n|a 99|b Bonn', but take 'b' to lookup ID's ,see HT018131501 -->
-		<combine name="@nwbib700_99" value="${a}" sameEntity="true">
-			<data source="700n[-1].a">
-				<regexp match="^99\b|^97\b|^96\b"/>
+		<combine name="@nwbib700_99" value="${b} | ${a}" sameEntity="true">
+			<data source="700n[-1].a" name="a">
+				<regexp match="^99\b|^97\b|^96\b|^74\b|^72\b|^54\b|^52\b|^37\b|^36\b|^35\b|^28\b|^24\b|^14\b|^12\b|^10\b"/>
 			</data>
-			<data source="700n[-1].b" name="a">
+			<data source="700n[-1].b" name="b">
 				<replace pattern="&gt;&gt;" with=""/>
 				<replace pattern="&lt;&lt;" with=""/>
 			</data>
