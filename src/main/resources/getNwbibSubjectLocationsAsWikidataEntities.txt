@@ -1,34 +1,32 @@
 https://query.wikidata.org/sparql?query=
-# Get administrative areas in North Rhine-Westphalia with German labels
+# Get areas in North Rhine-Westphalia with German labels
 SELECT DISTINCT 
 ?item 
 ?itemLabel 
-?partOf
-?gnd
-?dissolutionDate
-(group_concat(distinct ?hasPart; separator = ", ") as ?parts)
 WHERE {
-  hint:Query hint:optimizer "None".
-  { ?item wdt:P131* wd:Q1198 .
-       { ?item wdt:P31 wd:Q829277 . } # Regierungsbezirk in NRW
+  { 
+       { ?item wdt:P131* wd:Q1198 . }
+    UNION
+       { ?item p:P131 [ ps:P131 wd:Q1198 ] }
+       { ?item p:P31 [ ps:P31 wd:Q829277 ] . } # Regierungsbezirk in NRW
    UNION
-       { ?item wdt:P31 wd:Q106658 . } # Landkreis
+       { ?item p:P31 [ ps:P31 wd:Q106658 ] . } # Landkreis
    UNION
-       { ?item wdt:P31 wd:Q262166 . } # Gemeinde
+       { ?item p:P31 [ ps:P31 wd:Q262166 ] . } # Gemeinde
    UNION
-       { ?item wdt:P31 wd:Q22865 . } # kreisfreie Stadt
+       { ?item p:P31 [ ps:P31 wd:Q22865 ] . } # kreisfreie Stadt
    UNION
-       { ?item wdt:P31 wd:Q253019 . } # Ortsteil
+       { ?item p:P31 [ ps:P31 wd:Q253019 ]. } # Ortsteil
    UNION
-       { ?item wdt:P31 wd:Q1852178 . } # Stadteil von Düsseldorf
+       { ?item p:P31 [ ps:P31 wd:Q1852178 ] . } # Stadteil von Düsseldorf
    UNION
-       { ?item wdt:P31 wd:Q15632166 . } # Stadtteil von Köln
+       { ?item p:P31 [ ps:P31 wd:Q15632166 ] . } # Stadtteil von Köln
+   UNION
+       { ?item p:P31 [ ps:P31 wd:Q897303 ] . } # Kirchenkreis der evangelischen Kirche 
+   UNION
+       { ?item wdt:P31 [ ps:P31 wd:Q3146899 ] . } # Diözese der katholischen Kirche
+   UNION
+       { ?item p:P31 [ ps:P31 wd:Q2072238 ] . } # Erzdiözese der katholischen Kirche
   }
   SERVICE wikibase:label {  bd:serviceParam wikibase:language "de" }
-  OPTIONAL { ?item wdt:P227 ?gnd }
-  OPTIONAL { ?item wdt:P576 ?dissolutionDate }
-  OPTIONAL { ?item wdt:P150 ?hasPart . }
-  OPTIONAL { ?item wdt:P131 ?partOf }
 }
-
-GROUP BY ?item ?itemLabel ?partOf ?gnd ?dissolutionDate
