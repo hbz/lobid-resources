@@ -5384,12 +5384,11 @@
 		<!-- ####################### -->
 		<!-- ########## note -->
 		<!-- ####################### -->
-		<choose name="http://id.loc.gov/ontologies/bibframe/note">
-			<data source="501-1.a">
-		      <replace pattern="^http" with="Siehe: http" />
+		<combine name="http://id.loc.gov/ontologies/bibframe/note" value="${a}">
+			<data source="501-1.a" name="a">
+				<replace pattern="^http" with="Siehe: http" />
 			</data>
-			<data source="501-1.a"/>
-		</choose>
+		</combine>
 		<!-- ####### sources of the subjects - for GND search 7749153-1 -->
 		<data source="@nwbibSubject|@nwbibSpatialSubject|@rpb2Subject|@rpbSubject" name="~rdf:subject"/>
 		<data source="@nwbibSubject" name="http://id.loc.gov/ontologies/bibframe/source">
