@@ -1085,7 +1085,7 @@
 		<data source="@id" name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type">
 			<regexp match=".*" format="http://purl.org/dc/terms/BibliographicResource"/>
 		</data>
-		<data source="025z[2].a" name="@dctIsPartOf">
+		<data source="025z2.a" name="@dctIsPartOf">
 			<regexp match="(.*)" format="$[ns-zdb-services]${1}"/>
 		</data>
 		<data source="025o[-12].a" name="@oclcNumber"/>
@@ -1278,7 +1278,7 @@
 		</combine>
 		<data name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" source="@rdftype|@typeOnly"/>
 		<data source="051." name="@article">
-			<regexp match="^a|^.t|^..t|^...t|^.....t" format="$[ns-bibo]Article"/>
+			<regexp match="^.t|^..t|^...t|^.....t" format="$[ns-bibo]Article"/>
 		</data>
 		<data source="051." name="@rdftype">
 			<regexp match="^[nt]" format="$[ns-bibo]MultiVolumeBook"/>
@@ -1313,6 +1313,9 @@
 					<data source="052.">
 						<regexp match="^[a-zA-Z]"/>
 					</data>
+					<data source="089-[-1].a|090-[-1].a">
+						<regexp match="Heft"/>
+					</data>
 					<data source="@matVideo"/>
 					<data source="@mediumAudio"/>
 					<data source="@archived"/>
@@ -1328,6 +1331,7 @@
 				<data source="062-1.a">
 					<regexp match="Band"/>
 				</data>
+				<data source="089-[-1].a|090-[-1].a"/>
 				<data source="9[01234][27]-[-1].f">
 					<regexp
 						match="Anthologie|Atlas|Auktionskatalog|Bildband|Bilderbuch|Jugendbuch|Jugendsachbuch|Kinderbuch|Kindersachbuch|Kochbuch|Lehrbuch|Lesebuch"/>
@@ -1377,6 +1381,10 @@
 		<!-- festschrift -->
 		<data source="051." name="@rdftype">
 			<regexp match="^.f|^..f|^...f" format="$[ns-lobid-vocab]Festschrift"/>
+		</data>
+		<!-- issue and volume of periodical work -->
+		<data source="089|090-1.a" name="@rdftype">
+			<regexp match="Heft" format="http://schema.org/PublicationIssue"/>
 		</data>
 		<!-- reference source -->
 		<data source="051." name="@rdftype">
@@ -1509,7 +1517,9 @@
 		<data source="@article" name="@rdftype"/>
 		<combine name="@containedIn" value="${a}">
 			<data source="@dctIsPartOfHbzIdArticle|@dctIsPartOfArticle" name="a"/>
-			<data source="@article"/>
+			<data source="051.">
+				<regexp match="a|^.t|^..t|^...t|^.....t"/>
+			</data>
 		</combine>
 		<combine name="$[ns-lobid-vocab]containedIn" value="${a}">
 			<data source="@containedIn" name="a">
@@ -1593,7 +1603,7 @@
 		</combine>
 		<!-- deliberatley not everything linked with OR '|' because of performance problems -->
 		<data source="335[-abcd][-1].a" name="@otherTitle"/>
-		<data source="34[01234567][-ab][-1].[ab]|370[abc]1.a|504-1.a" name="http://purl.org/dc/terms/alternative">
+		<data source="34[01234567][-ab][-1].[ab]|370[abc]1.a|375e[-12].a|504-1.a" name="http://purl.org/dc/terms/alternative">
 		  <replace pattern="^http" with="Siehe: http" />
 		</data>
 		<data source="376[-adb][-1].[ad]" name="$[ns-bibo]shortTitle"/>
@@ -1773,15 +1783,36 @@
 			<data source="521-1.a"/>
 			<data source="@id" name="id"/>
 		</combine>
-		
-		
 		<!-- exampleOfWork -->
 		<combine name="@exampleOfWorkId" value="${a}">
 			<data source="303-1.9" name="a">
 				<regexp match="\(DE-588\)(.*)" format="http://d-nb.info/gnd/${1}"/>
 			</data>
 		</combine>
-		<combine name="http://purl.org/lobid/lv#exampleOfWork" value="${a}">
+		<combine name="@exampleOfWork303titleWithSubtitleAndOccupation" value="${t}${m}${f}${u}"
+			flushWith="@exampleOfWorkId">
+			<data source="303-1.t" name="t"/>
+			<concat delimiter="" name="m" flushWith="@exampleOfWorkId">
+				<data source="303-1.m">
+					<regexp match="(.*)" format=", ${1}"/>
+				</data>
+			</concat>
+			<data source="303-1.f" name="f">
+				<regexp match="(.*)" format=" (${1})"/>
+			</data>
+			<data source="303-1.u" name="u">
+				<regexp match="(.*)" format=". ${1}"/>
+			</data>
+		</combine>
+		<combine name="@exampleOfWork303title" value="${a}" flushWith="@exampleOfWorkId">
+			<if>
+				<none>
+					<data source="303-1.f"/>
+				</none>
+			</if>
+			<data source="303-1.t"/>
+		</combine>
+		<combine name="http://purl.org/lobid/lv#exampleOfWork" value="${a}" flushWith="@exampleOfWorkId">
 			<data source="@exampleOfWorkId" name="a"/>
 		</combine>
 		<combine name="~rdf:subject" value="${a}" flushWith="@exampleOfWorkId">
@@ -1793,14 +1824,75 @@
 			<data source="303-1.d" name="d"/>
 		</combine>
 		<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="${a}" 
-			flushWith="@exampleOfWorkId" >
+			flushWith="@exampleOfWorkId">
+			<choose name="a" flushWith="@exampleOfWorkId">
+				<data source="@exampleOfWork303titleWithSubtitleAndOccupation"/>
+				<data source="303-1.t"/>
+			</choose>
+		</combine>
+		<combine name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type"
+			value="http://d-nb.info/standards/elementset/gnd#Work" flushWith="@exampleOfWorkId">
+			<data source="@exampleOfWorkId"/>
+		</combine>
+		<combine name="~rdf:subject" value="$[ns-lobid-resource]${id}#!" flushWith="@exampleOfWorkId">
+			<data source="@id" name="id"/>
+		</combine>
+		<combine name="@exampleOfWorkBnode303" value="_:${a}">
+			<if>
+				<none>
+					<data source="303-1.9"/>
+				</none>
+			</if>
+			<data source="303-1.t" name="a">
+				<replace pattern="&lt;" with="("/>
+				<replace pattern="&gt;" with=")"/>
+			</data>
+		</combine>
+		<combine name="@creatorOfExampleOfWorkWithoutLivingStatistics" value="${a}">
+			<if>
+				<none>
+					<data source="303-1.d"/>
+					<data source="303-1.9"/>
+				</none>
+			</if>
+			<data source="303-1.p" name="p"/>
+		</combine>
+		<combine name="@exampleOfWorkLabelWithoutLivingStatistics" value="${a}">
+			<data source="@exampleOfWorkBnode303"/>
+			<data source="@creatorOfExampleOfWorkWithoutLivingStatistics" name="a"/>
+		</combine>
+		<combine name="http://purl.org/lobid/lv#exampleOfWork" value="${a}"
+			flushWith="@exampleOfWorkBnode303">
+			<data source="@exampleOfWorkBnode303" name="a"/>
+		</combine>
+		<combine name="~rdf:subject" value="${a}" flushWith="@exampleOfWorkBnode303">
+			<data source="@exampleOfWorkBnode303" name="a"/>
+		</combine>
+		<combine name="@exampleOfWorkCreator" value="${p} ${d}"
+			flushWith="@exampleOfWorkBnode303">
+			<data source="@exampleOfWorkBnode303"/>
+			<data source="303-1.p" name="p"/>
+			<data source="303-1.d" name="d"/>
+		</combine>
+		<combine name="http://rdaregistry.info/Elements/w/P10065" value="${a}"
+			flushWith="@exampleOfWorkBnode303">
+			<choose name="a" flushWith="@exampleOfWorkBnode303">
+				<data source="@exampleOfWorkCreator">
+					<replace pattern=" $" with=""/>
+				</data>
+				<data source="@exampleOfWorkCreator"/>
+			</choose>
+		</combine>
+		<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="${a}">
+			<data source="@exampleOfWorkBnode303"/>
 			<data source="303-1.t" name="a"/>
 		</combine>
 		<combine name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type"
 			value="http://d-nb.info/standards/elementset/gnd#Work">
-			<data source="@exampleOfWorkId"/>
+			<data source="@exampleOfWorkBnode303"/>
 		</combine>
-		<combine name="~rdf:subject" value="$[ns-lobid-resource]${id}#!" flushWith="@exampleOfWorkId">
+		<combine name="~rdf:subject" value="$[ns-lobid-resource]${id}#!">
+			<data source="@exampleOfWorkBnode303"/>
 			<data source="@id" name="id"/>
 		</combine>
 		<!-- building a bnode from 304-1.a didn't work -->
@@ -1904,6 +1996,9 @@
 				<replace pattern="\]$" with=""/>
 				<replace pattern="[sS]\.l\." with=""/>
 			</data>
+			<data source="@placeOfPublication_">
+				<regexp match="^[sS]\.[lL]\.$" format=""/>
+			</data>
 			<data source="@placeOfPublication_"/>
 		</choose>
 		<data source="41[27][-abcu][-12].[ag]|419-[12].b" name="@publisher">
@@ -1915,6 +2010,15 @@
 			<choose name="a">
 				<data source="425[ab-p][-1].a|419-1c|595-[-12].a">
 					<regexp match="^1\d{3}|^20\d{2}"/>
+				</data>
+				<data source="425[-abp][-1].a">
+					<regexp match=".*\[([12]\d{3})\].*" format="${1}"/>
+				</data>
+				<data source="425[-abp][-1].a">
+					<regexp match=".*[([Jan|Febr]uar)|März|April|([Ma|Jun|Jul]i)|August|([Septem|Okto]ber)|([Nov|Dez]ember)] ([12]\d{3})$" format="${1}"/>
+				</data>
+				<data source="425[-abp][-1].a">
+					<regexp match=".*[01][0-9]\.([12]\d{3})$" format="${1}"/>
 				</data>
 				<!-- Multiple resource have [determined] volume numbers in this field. -->
 				<data source="089-[-1].a">
@@ -2126,46 +2230,46 @@
 			<replace pattern="^http" with="Siehe: http" />
 		</data>
 		</combine>
-    <combine name="http://id.loc.gov/ontologies/bibframe/note" value="${a}"
-      sameEntity="true">
-      <choose flushWith="@itemId" sameEntity="true">
-        <data source="088 ?.b" name="a">
-		  <replace pattern="^http" with="Siehe: http" />
-        </data>
-        <data source="088 ?.b" name="a"/>
-      </choose>
-    </combine>
+		<combine name="http://id.loc.gov/ontologies/bibframe/note" value="${a}"
+			sameEntity="true">
+			<choose flushWith="@itemId" sameEntity="true">
+				<data source="088 ?.b" name="a">
+					<replace pattern="^http" with="Siehe: http" />
+				</data>
+				<data source="088 ?.b" name="a"/>
+			</choose>
+		</combine>
 		<combine name="@signature" value="${signature}" sameEntity="true">
 			<data source="@itemId"/>
 			<data source="088 ?.c" name="signature"/>
 		</combine>
 		<data source="@signature" name="http://purl.org/lobid/lv#callNumber">
-		    <replace pattern="^http" with="Siehe: http" />
+			<replace pattern="^http" with="Siehe: http" />
 		</data>
 		<data source="@signature" name="http://www.w3.org/2000/01/rdf-schema#label">
-		    <replace pattern="^http" with="Siehe: http" />
+			<replace pattern="^http" with="Siehe: http" />
 		</data>
 		<!-- provenance -->
-    <combine name="@created" value="${a}">
-      <choose name="a" flushWith="record">
-          <data source="002[ab]1.a" name="a"/>
-          <data source="?????.?"/> <!--  ignored if missing -->
-      </choose>
-    </combine>
-    <combine name="http://www.w3.org/2007/05/powder-s#describedby" value="$[ns-lobid-resource]${a}">
-      <data source="@id" name="a"/>
-    </combine>
-    <combine name="~rdf:subject" value="${a}">
-      <data source="@created"/>
-      <data source="@id" name="a">
-        <regexp match="(.*)" format="$[ns-lobid-resource]${1}"/>
-      </data>
-    </combine>
-    <combine name="http://purl.org/dc/terms/created" value="${a}">
-      <data source="@created" name="a">
-        <regexp match="([0-9]{8})" format="${1}"/>
-      </data>
-    </combine>
+		<combine name="@created" value="${a}">
+			<choose name="a" flushWith="record">
+				<data source="002[ab]1.a" name="a"/>
+				<data source="?????.?"/> <!--  ignored if missing -->
+			</choose>
+		</combine>
+		<combine name="http://www.w3.org/2007/05/powder-s#describedby" value="$[ns-lobid-resource]${a}">
+			<data source="@id" name="a"/>
+		</combine>
+		<combine name="~rdf:subject" value="${a}">
+			<data source="@created"/>
+			<data source="@id" name="a">
+				<regexp match="(.*)" format="$[ns-lobid-resource]${1}"/>
+			</data>
+		</combine>
+		<combine name="http://purl.org/dc/terms/created" value="${a}">
+			<data source="@created" name="a">
+				<regexp match="([0-9]{8})" format="${1}"/>
+			</data>
+		</combine>
 		<!-- set subject uri of resource anew -->
 		<combine name="~rdf:subject" value="$[ns-lobid-resource]${id}#!">
 			<data source="@created"/>
@@ -5064,7 +5168,7 @@
 				</data>
 			</choose>
 		</combine>
-		<data source="599[-b][-1].[a]" name="@dctIsPartOfHbzIdArticle">
+		<data source="599-[-1].a" name="@dctIsPartOfHbzIdArticle">
 			<regexp match="(.*)" format="$[ns-lobid-resource]${1}#!"/>
 		</data>
 		<!--s. #333 <data source="599[abcdefgh][-1].a" name="http://purl.org/dc/terms/isPartOf" /> -->
@@ -5177,21 +5281,25 @@
 			</data>
 		</combine>
 		<!--edoweb -->
-		<data source="078r1.a" name="@edoweb">
-			<regexp match="edoweb"/>
-		</data>
-		<call-macro name="setBackRdfSubject" field="@edoweb"/>
-		<data source="@edoweb" name="http://purl.org/lobid/lv#inCollection">
+		<combine name="@edowebURL" value="${a}">
+			<choose name="a">
+				<data source="655e1.u">
+					<regexp match="^http://www.edoweb.*|^https://www.edoweb.*|^http://edoweb.*"/>
+				</data>
+			</choose>
+		</combine>
+		<data source="@edowebURL" name="http://purl.org/lobid/lv#inCollection">
 			<regexp match=".*" format="$[ns-lobid-resource]HT016925914#!"/>
 		</data>
-		<combine name="~rdf:subject" value="${a}" sameEntity="true">
-			<data source="@edoweb" name="a">
+		<combine name="~rdf:subject" value="${a}" flushWith="@edowebURL">
+			<data source="@edowebURL" name="a">
 				<regexp match=".*" format="$[ns-lobid-resource]HT016925914#!"/>
 			</data>
 		</combine>
-		<call-macro name="addTypeCollection" field="@edoweb"/>
-		<combine name="~rdf:subject" value="$[ns-lobid-resource]${a}#!">
-			<data source="@edoweb" name="a"/>
+		<call-macro name="addTypeCollection" field="@edowebURL"/>
+		<combine name="~rdf:subject" value="$[ns-lobid-resource]${a}#!" flushWith="@edowebURL">
+			<data source="@edowebURL"/>
+			<data source="@id" name="a"/>
 		</combine>
 		<!-- Fachrepositorium Lebenswissenschaften -->
 		<combine name="@ellinet" value="${a}">
