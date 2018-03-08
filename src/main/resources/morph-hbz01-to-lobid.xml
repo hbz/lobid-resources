@@ -5372,8 +5372,12 @@
 			<replace pattern="-| " with=""/>
 		</data>
 		<!-- ISSN -->
-		<data source="542[-ab][-1].[a]" name="$[ns-bibo]issn">
+		<data source="542[-ab][-1].a" name="$[ns-bibo]issn">
 			<replace pattern="-| " with=""/>
+		</data>
+		<data source="545[-a][-1].[abcdop]" name="$[ns-lobid-vocab]issnOfParallelResource">
+			<regexp match="(\d{4}-\d{3}[0-9|X])" format="${1}"/>
+			<replace pattern="-" with=""/>
 		</data>
 		<!-- ####################### -->
 		<!-- ########## abstract -->
