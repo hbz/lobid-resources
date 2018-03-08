@@ -1609,10 +1609,17 @@
 		<concat delimiter=", " name="@allMAB089subfieldA">
 			<data source="089-[-1].a|089."/>
 		</concat>
+		<concat delimiter=", " name="@allMAB089subfieldN">
+			<data source="089-[-1].n"/>
+		</concat>
+		<choose name="@allMAB089subfieldAorN">
+			<data source="@allMAB089subfieldN"/>
+			<data source="@allMAB089subfieldA"/>
+		</choose>
 		<combine name="@titleRemainder331SuperordinationAndVolume089" value="${a}${b}${c}"
-			flushWith="@titleRemainder331Superordination|@allMAB089subfieldA">
+			flushWith="@titleRemainder331Superordination|@allMAB089subfieldAorN">
 			<data source="@titleRemainder331Superordination" name="a"/>
-			<data source="@allMAB089subfieldA" name="b">
+			<data source="@allMAB089subfieldAorN" name="b">
 				<regexp match="(.*)" format=", ${1}"/>
 			</data>
 			<data source="@titleRemainder331" name="c">
@@ -2210,9 +2217,7 @@
 				<data source="@idVolume" name="a"/>
 			</combine>
 			<choose name="$[ns-lobid-vocab]numbering">
-				<concat delimiter=", " name="a">
-					<data source="089-[-1].a|089."/>
-				</concat>
+				<data source="@allMAB089subfieldAorN"/>
 				<data source="090-[-1].a"/>
 			</choose>
 		</entity>
