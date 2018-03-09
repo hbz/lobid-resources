@@ -1894,6 +1894,27 @@
 			<data source="@id" name="id"/>
 		</combine>
 		<!-- ####################### -->
+		<!-- ########## other editions of same resource -->
+		<!-- ####################### -->
+		<combine name="@otherEditionOfResourceId" value="${a}">
+			<data source="527[-xyz]1.9" name="a">
+				<regexp match="(.*)" format="http://lobid.org/resources/${1}#!"/>
+			</data>
+		</combine>
+		<combine name="$[ns-lobid-vocab]otherEditionOfResource" value="${a}">
+			<data source="@otherEditionOfResourceId" name="a"/>
+		</combine>
+		<combine name="~rdf:subject" value="${a}" flushWith="@otherEditionOfResourceId">
+			<data source="@otherEditionOfResourceId" name="a"/>
+		</combine>
+		<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="${a}"
+			flushWith="@otherEditionOfResourceId">
+			<data source="527[-xyz]1.a" name="a"/>
+		</combine>
+		<combine name="~rdf:subject" value="$[ns-lobid-resource]${subject}#!" flushWith="@otherEditionOfResourceId">
+			<data source="@id" name="subject"/>
+		</combine>
+		<!-- ####################### -->
 		<!-- ########## predecessor and successor -->
 		<!-- ####################### -->
 	    <data source="531[-xyz]1.a|780-1.t" name="@predecessorLabel">
