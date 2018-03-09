@@ -1617,10 +1617,16 @@
 		<data source="331[-ab][2].a" name="@titleRemainder331Superordination"/>
 		<!-- ... by concatenating fields. Two fields are optional, one mandatory -->
 		<concat delimiter=", " name="@allMAB089subfieldA">
-			<data source="089-[-1].a|089."/>
+			<data source="089-[-1].a|089.">
+				<replace pattern="&lt;" with=""/>
+				<replace pattern="&gt;" with=""/>
+			</data>
 		</concat>
 		<concat delimiter=", " name="@allMAB089subfieldN">
-			<data source="089-[-1].n"/>
+			<data source="089-[-1].n">
+				<replace pattern="&lt;" with=""/>
+				<replace pattern="&gt;" with=""/>
+			</data>
 		</concat>
 		<choose name="@allMAB089subfieldAorN">
 			<data source="@allMAB089subfieldN"/>
