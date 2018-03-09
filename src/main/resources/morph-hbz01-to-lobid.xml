@@ -1042,9 +1042,18 @@
 			<regexp match="(.*)" format="$[ns-zdb-services]${1}"/>
 		</data>
 		<data source="@idzdb" name="$[ns-lobid-vocab]zdbID"/>
-		<data source="@idzdb" name="http://purl.org/lobid/lv#inCollection">
-			<regexp match=".*" format="$[ns-lobid-resource]HT014846970#!"/>
-		</data>
+		<combine name="http://purl.org/lobid/lv#inCollection" value="${a}">
+			<if>
+				<none>
+					<data source="001-1.a">
+						<regexp match="HT014846970"/>
+					</data>
+				</none>
+			</if>
+			<data source="@idzdb" name="a">
+				<regexp match=".*" format="$[ns-lobid-resource]HT014846970#!"/>
+			</data>
+		</combine>
 		<combine name="~rdf:subject" value="${a}" sameEntity="true">
 			<data source="@idzdb" name="a">
 				<regexp match=".*" format="$[ns-lobid-resource]HT014846970#!"/>
@@ -5245,9 +5254,18 @@
 		<!-- ####################### -->
 		<!--nwbib -->
 		<call-macro name="setBackRdfSubject" field="078n[-1].a"/>
-		<data source="078n[-1].a" name="http://purl.org/lobid/lv#inCollection">
-			<regexp match=".*" format="$[ns-lobid-resource]HT014176012#!"/>
-		</data>
+		<combine name="http://purl.org/lobid/lv#inCollection" value="${a}">
+			<if>
+				<none>
+					<data source="001-1.a">
+						<regexp match="HT014176012"/>
+					</data>
+				</none>
+			</if>
+			<data source="078n[-1].a" name="a">
+				<regexp match=".*" format="$[ns-lobid-resource]HT014176012#!"/>
+			</data>
+		</combine>
 		<combine name="~rdf:subject" value="${a}" sameEntity="true">
 			<data source="078n[-1].a" name="a">
 				<regexp match=".*" format="$[ns-lobid-resource]HT014176012#!"/>
@@ -5288,15 +5306,22 @@
 		</combine>
 		<!--edoweb -->
 		<combine name="@edowebURL" value="${a}">
-			<choose name="a">
-				<data source="655e1.u">
-					<regexp match="^http://www.edoweb.*|^https://www.edoweb.*|^http://edoweb.*"/>
-				</data>
-			</choose>
+			<data source="655e1.u" name="a">
+				<regexp match="^http://www.edoweb.*|^https://www.edoweb.*|^http://edoweb.*"/>
+			</data>
 		</combine>
-		<data source="@edowebURL" name="http://purl.org/lobid/lv#inCollection">
-			<regexp match=".*" format="$[ns-lobid-resource]HT016925914#!"/>
-		</data>
+		<combine name="http://purl.org/lobid/lv#inCollection" value="${a}">
+			<if>
+				<none>
+					<data source="001-1.a">
+						<regexp match="HT016925914"/>
+					</data>
+				</none>
+			</if>
+			<data source="@edowebURL" name="a">
+				<regexp match=".*" format="$[ns-lobid-resource]HT016925914#!"/>
+			</data>
+		</combine>
 		<combine name="~rdf:subject" value="${a}" flushWith="@edowebURL">
 			<data source="@edowebURL" name="a">
 				<regexp match=".*" format="$[ns-lobid-resource]HT016925914#!"/>
