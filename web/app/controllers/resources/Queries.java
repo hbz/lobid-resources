@@ -358,9 +358,10 @@ public class Queries {
 							: boolQuery.should(subjectIdQuery);
 				} else {
 					final MultiMatchQueryBuilder subjectLabelQuery =
-							multiMatchQuery(qTrimmed, new String[] {"subject.componentList.label",
-									"subjectAltLabel"})
-									.operator(Operator.AND).type(Type.CROSS_FIELDS);
+							multiMatchQuery(qTrimmed,
+									new String[] { "subject.componentList.label.unstemmed",
+											"subjectAltLabel.unstemmed" }).operator(Operator.AND)
+													.type(Type.CROSS_FIELDS);
 					boolQuery = hasLabel || isAndQuery ? boolQuery.must(subjectLabelQuery)
 							: boolQuery.should(subjectLabelQuery);
 				}
@@ -591,12 +592,15 @@ public class Queries {
 		public List<String> fields() {
 			List<String> fields = new ArrayList<>();
 			List<Parameter> exclude = Arrays.asList(Parameter.WORD,
-					Parameter.LOCATION, Parameter.Q, Parameter.SCROLL);
+					Parameter.LOCATION, Parameter.Q, Parameter.SCROLL, Parameter.SUBJECT);
 			for (Parameter p : Arrays.asList(Parameter.values()).stream()
 					.filter(p -> !exclude.contains(p)).collect(Collectors.toList())) {
 				fields.addAll(p.q.fields());
 			}
-			fields.add("subject.label"); // no longer in SubjectQuery
+			// no longer in SubjectQuery or unstemmed in SubjectQuery:
+			fields.add("subject.label");
+			fields.add("subject.componentList.label");
+			fields.add("subjectAltLabel");
 			return fields;
 		}
 
