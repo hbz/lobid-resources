@@ -1353,6 +1353,11 @@
 		<data source="052." name="@rdftype">
 			<regexp match="^.aa|^...aa|^.....aa" format="$[ns-lobid-vocab]OfficialPublication"/>
 		</data>
+		<!-- archived web page -->
+		<data source="051." name="@archived">
+			<regexp match="^.w" format="$[ns-lobid-vocab]ArchivedWebPage"/>
+		</data>
+		<data source="@archived" name="@rdftype"/>
 		<!-- article -->
 		<data source="051." name="@article">
 			<regexp match="^.t|^..t|^...t|^.....t" format="$[ns-bibo]Article"/>
@@ -1596,6 +1601,12 @@
 			<data source="@id"/>
 		</combine>
 		<data name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" source="@rdftype"/>
+		<combine name="~rdf:subject" value="${a}" flushWith="@rdftype">
+			<data source="@rdftype"/>
+			<data source="@id" name="a">
+				<regexp match="(.*)" format="$[ns-lobid-resource]${1}#!"/>
+			</data>
+		</combine>
 		<!-- ####################### -->
 		<!-- ########## containedIn -->
 		<!-- ####################### -->
@@ -2033,8 +2044,8 @@
 		<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="${a}"
 			flushWith="@successorHbzId">
 			<data source="@successorLabel" name="a">
-			    <replace pattern="^http" with="Siehe: http" />
-			</data>    
+				<replace pattern="^http" with="Siehe: http" />
+			</data>
 		</combine>
 		<combine name="~rdf:subject" value="$[ns-lobid-resource]${subject}#!" flushWith="@successorHbzId">
 			<data source="@id" name="subject"/>
@@ -2105,7 +2116,6 @@
 			<!-- ####################### -->
 			<!-- ########## frequency -->
 			<!-- ####################### -->
-			<!-- proceedings -->
 			<choose name="http://id.loc.gov/ontologies/bibframe/frequency">
 				<data source="052.">
 					<regexp match="^........t|^.........t|^..........t" format="http://marc21rdf.info/terms/continuingfre#i"/>
@@ -2196,7 +2206,7 @@
 		<!-- ####################### -->
 		<data source="433[-abc][-1].[aq]" name="http://id.loc.gov/ontologies/bibframe/extent"/>
 		<!-- ####################### -->
-		<!-- ################ edition -->
+		<!-- ############### edition -->
 		<!-- ####################### -->
 		<combine name="$[ns-bibo]edition" value="${a}">
 			<choose name="a">
@@ -2205,6 +2215,14 @@
 				<data source="510-1.a"/>
 			</choose>
 		</combine>
+		<!-- ####################### -->
+		<!-- ### responsibility statement -->
+		<!-- ####################### -->
+		<combine name="~rdf:subject" value="$[ns-lobid-resource]${id}#!">
+			<data source="359[-ab][-12].a"/>
+			<data source="@id" name="id"/>
+		</combine>
+		<data source="359[-ab][-12].a" name="http://id.loc.gov/ontologies/bibframe/responsibilityStatement"/>
 		<!-- ################ Hochschulschriftenvermerk aka thesisInformation -->
 		<concat delimiter=", " name="http://rdaregistry.info/Elements/u/P60489">
 			<data source="519-1.[ap]"/>
@@ -2414,7 +2432,6 @@
 		<call-macro name="setGNDPersonId" field="192"/>
 		<call-macro name="setGNDPersonId" field="196"/>
 		<!-- literals of creator (seems there are no corporateBodyCreators without gndID) -->
-		<data source="359[-ab][-12].a" name="http://id.loc.gov/ontologies/bibframe/responsibilityStatement"/>
 		<data source="1[02468][048][-aemn][12].[pa]|1[13579][26][-aemn][12].[pa]" name="@creatorPersonLabel"/>
 		<!-- bnode for creator when no ID -->
 		<combine name="@bnodeCreatorPersonLabel" value="_:${a}" sameEntity="true">
@@ -5055,10 +5072,6 @@
 		<!-- ####################### -->
 		<!-- ##########fulltext, toc, seeAlso -->
 		<!-- ####################### -->
-		<data source="051." name="@archived">
-			<regexp match="^.w" format="$[ns-lobid-vocab]ArchivedWebPage"/>
-		</data>
-		<data source="@archived" name="@rdftype"/>
 		<!-- fulltext online , if 655 AND 334 exists with "[eE][lL]"ektro.. -->
 		<combine name="@fulltextOnline" value="${link}">
 			<data source="334-[12].a">
