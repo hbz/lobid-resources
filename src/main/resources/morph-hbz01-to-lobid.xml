@@ -1975,123 +1975,24 @@
 		<!-- ####################### -->
 		<!-- ########## other editions of same resource -->
 		<!-- ####################### -->
-		<!-- online version -->
-		<combine name="@onlineVersionOfResourceId" value="${a}" sameEntity="true">
-			<data source="527[-xyz]1.[np]|775-1.[hin]|776-1.[hin]">
-				<regexp match="Online.*|Internet*|Website"/>
-			</data>
+		<combine name="@relatedResourceId" value="${a}" sameEntity="true">
 			<data source="527[-xyz]1.9|775-1.9|776-1.9" name="a">
 				<regexp match="([a-zA-Z]{2}\d{9})" format="http://lobid.org/resources/${1}#!"/>
 			</data>
 		</combine>
-		<combine name="$[ns-lobid-vocab]onlineVersionOfResource" value="${a}">
-			<data source="@onlineVersionOfResourceId" name="a"/>
+		<combine name="http://purl.org/dc/terms/relation" value="${a}">
+			<data source="@relatedResourceId" name="a"/>
 		</combine>
 		<combine name="~rdf:subject" value="${a}">
-			<data source="@onlineVersionOfResourceId" name="a"/>
+			<data source="@relatedResourceId" name="a"/>
 		</combine>
 		<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="${a}"
-			flushWith="@onlineVersionOfResourceId">
+			flushWith="@relatedResourceId">
 			<data source="527[-xyz]1.a|775-1.t|776-1.t" name="a">
 				<replace pattern="&lt;|&gt;" with=""/>
 			</data>
 		</combine>
-		<combine name="http://id.loc.gov/ontologies/bibframe/note" value="${a}"
-			flushWith="@onlineVersionOfResourceId">
-			<data source="527[-xyz]1.p|77[56]-1.i" name="a">
-				<replace pattern="\.:| ---\>" with=""/>
-			</data> 
-		</combine>
-		<combine name="~rdf:subject" value="$[ns-lobid-resource]${subject}#!" flushWith="@onlineVersionOfResourceId">
-			<data source="@id" name="subject"/>
-		</combine>
-		<!-- print version -->
-		<combine name="@printVersionOfResourceId" value="${a}" sameEntity="true">
-			<data source="527[-xyz]1.[np]|775-1.[hin]|776-1.[hin]">
-				<regexp match="Druck.*"/>
-			</data>
-			<data source="527[-xyz]1.9|775-1.9|776-1.9" name="a">
-				<regexp match="([a-zA-Z]{2}\d{9})" format="http://lobid.org/resources/${1}#!"/>
-			</data>
-		</combine>
-		<combine name="$[ns-lobid-vocab]printVersionOfResource" value="${a}" sameEntity="true">
-			<data source="@printVersionOfResourceId" name="a"/>
-		</combine>
-		<combine name="~rdf:subject" value="${a}">
-			<data source="@printVersionOfResourceId" name="a"/>
-		</combine>
-		<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="${a}" flushWith="@printVersionOfResourceId">
-			<data source="527[-xyz]1.a|775-1.t|776-1.t" name="a">
-				<replace pattern="&lt;|&gt;" with=""/>
-			</data>
-		</combine>
-		<combine name="http://id.loc.gov/ontologies/bibframe/note" value="${a}"
-			flushWith="@printVersionOfResourceId">
-			<data source="527[-xyz]1.p|77[56]-1.i" name="a">
-				<replace pattern="\.:| ---\>" with=""/>
-			</data> 
-		</combine>
-		<combine name="~rdf:subject" value="$[ns-lobid-resource]${subject}#!" flushWith="@printVersionOfResourceId">
-			<data source="@id" name="subject"/>
-		</combine>
-		<!-- CD or DVD version -->
-		<combine name="@dataCarrierVersionOfResourceId" value="${a}" sameEntity="true">
-			<data source="527[-xyz]1.[np]|775-1.[hin]|776-1.[hin]">
-				<regexp match="CD.*|Diskette.*|DVD.*"/>
-			</data>
-			<data source="527[-xyz]1.9|775-1.9|776-1.9" name="a">
-				<regexp match="([a-zA-Z]{2}\d{9})" format="http://lobid.org/resources/${1}#!"/>
-			</data>
-		</combine>
-		<combine name="$[ns-lobid-vocab]dataCarrierVersionOfResource" value="${a}" sameEntity="true">
-			<data source="@dataCarrierVersionOfResourceId" name="a"/>
-		</combine>
-		<combine name="~rdf:subject" value="${a}">
-			<data source="@dataCarrierVersionOfResourceId" name="a"/>
-		</combine>
-		<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="${a}"
-			flushWith="@dataCarrierVersionOfResourceId">
-			<data source="527[-xyz]1.a|775-1.t|776-1.t" name="a">
-				<replace pattern="&lt;|&gt;" with=""/>
-			</data>
-		</combine>
-		<combine name="http://id.loc.gov/ontologies/bibframe/note" value="${a}"
-			flushWith="@dataCarrierVersionOfResourceId">
-			<data source="527[-xyz]1.p|77[56]-1.i" name="a">
-				<replace pattern="\.:| ---\>" with=""/>
-			</data> 
-		</combine>
-		<combine name="~rdf:subject" value="$[ns-lobid-resource]${subject}#!"
-			flushWith="@dataCarrierVersionOfResourceId">
-			<data source="@id" name="subject"/>
-		</combine>
-		<!-- other versions -->
-		<combine name="@otherVersionOfResourceId" value="${a}" sameEntity="true">
-			<data source="527[-xyz]1.[np]|775-1.[hin]|776-1.[hin]">
-				<regexp match="Digital.*|Elektro.*|Parallel.*|Regional.*|Sonntag.*|Supplement"/>
-			</data>
-			<data source="527[-xyz]1.9|775-1.9|776-1.9" name="a">
-				<regexp match="([a-zA-Z]{2}\d{9})" format="http://lobid.org/resources/${1}#!"/>
-			</data>
-		</combine>
-		<combine name="$[ns-lobid-vocab]otherVersionOfResource" value="${a}" sameEntity="true">
-			<data source="@otherVersionOfResourceId" name="a"/>
-		</combine>
-		<combine name="~rdf:subject" value="${a}">
-			<data source="@otherVersionOfResourceId" name="a"/>
-		</combine>
-		<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="${a}" flushWith="@otherVersionOfResourceId">
-			<data source="527[-xyz]1.a|775-1.t|776-1.t" name="a">
-				<replace pattern="&lt;|&gt;" with=""/>
-			</data>
-		</combine>
-		<combine name="http://id.loc.gov/ontologies/bibframe/note" value="${a}"
-			flushWith="@otherVersionOfResourceId">
-			<data source="527[-xyz]1.p|77[56]-1.i" name="a">
-				<replace pattern="\.:| ---\>" with=""/>
-			</data> 
-		</combine>
-		<combine name="~rdf:subject" value="$[ns-lobid-resource]${subject}#!" flushWith="@otherVersionOfResourceId">
+		<combine name="~rdf:subject" value="$[ns-lobid-resource]${subject}#!" flushWith="@relatedResourceId">
 			<data source="@id" name="subject"/>
 		</combine>
 		<!-- ####################### -->
