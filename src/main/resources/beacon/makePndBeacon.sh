@@ -2,6 +2,11 @@
 set -euo pipefail # See http://redsymbol.net/articles/unofficial-bash-strict-mode/
 
 cd data
+TIMESTAMP=$(date +%Y-%m-%d)
+REVISIT=$(date +%Y-%m-%d --date="$TIMESTAMP  +1 month")
+
+sed -i "s/#REVISIT.*/#REVISIT: $REVISIT/g" beacon_head.txt
+sed -i "s/#TIMESTAMP.*/#TIMESTAMP: $TIMESTAMP/g" beacon_head.txt
 
 cp beacon_head.txt hbzlod-pndbeacon.txt
 
