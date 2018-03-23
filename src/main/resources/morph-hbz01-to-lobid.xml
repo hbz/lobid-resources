@@ -2009,6 +2009,29 @@
 			<data source="@id" name="id"/>
 		</combine>
 		<!-- ####################### -->
+		<!-- ########## other editions of same resource -->
+		<!-- ####################### -->
+		<combine name="@relatedResourceId" value="${a}" sameEntity="true">
+			<data source="527[-xyz]1.9|775-1.9|776-1.9" name="a">
+				<regexp match="([a-zA-Z]{2}\d{9})" format="http://lobid.org/resources/${1}#!"/>
+			</data>
+		</combine>
+		<combine name="http://purl.org/dc/terms/relation" value="${a}">
+			<data source="@relatedResourceId" name="a"/>
+		</combine>
+		<combine name="~rdf:subject" value="${a}">
+			<data source="@relatedResourceId" name="a"/>
+		</combine>
+		<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="${a}"
+			flushWith="@relatedResourceId">
+			<data source="527[-xyz]1.a|775-1.t|776-1.t" name="a">
+				<replace pattern="&lt;|&gt;" with=""/>
+			</data>
+		</combine>
+		<combine name="~rdf:subject" value="$[ns-lobid-resource]${subject}#!" flushWith="@relatedResourceId">
+			<data source="@id" name="subject"/>
+		</combine>
+		<!-- ####################### -->
 		<!-- ########## predecessor and successor -->
 		<!-- ####################### -->
 		<data source="531[-xyz]1.a|780-1.t" name="@predecessorLabel">
