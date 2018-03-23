@@ -1987,6 +1987,28 @@
 			<data source="@id" name="id"/>
 		</combine>
 		<!-- ####################### -->
+		<!-- ########## copyright information -->
+		<!-- ####################### -->
+		<combine name="http://schema.org/license" value="${a}">
+			<data source="444a1.u" name="a"/>
+		</combine>
+		<combine name="~rdf:subject" value="${a}"
+			flushWith="444a1.u" sameEntity="true">
+			<data source="444a1.u" name="a"/>
+		</combine>
+		<combine name="http://id.loc.gov/ontologies/bibframe/note" value="${a}"
+			sameEntity="true" flushWith="444a1.u">
+			<data source="444a1.n" name="a"/>
+		</combine>
+		<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="${a}">
+			<data source="444a1.u" name="a">
+				<regexp match=".*" format="Lizenz"/>
+			</data>
+		</combine>
+		<combine name="~rdf:subject" value="$[ns-lobid-resource]${id}#!" flushWith="444a1.u">
+			<data source="@id" name="id"/>
+		</combine>
+		<!-- ####################### -->
 		<!-- ########## predecessor and successor -->
 		<!-- ####################### -->
 	    <data source="531[-xyz]1.a|780-1.t" name="@predecessorLabel">
