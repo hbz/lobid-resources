@@ -1435,9 +1435,12 @@
 			<regexp match="^.f|^..f|^...f" format="$[ns-lobid-vocab]Festschrift"/>
 		</data>
 		<!-- issue and volume of periodical work -->
-		<data source="089|090-1.a" name="@rdftype">
-			<regexp match="Heft" format="http://schema.org/PublicationIssue"/>
-		</data>
+		<combine name="@rdftype" value="${a}">
+			<data source="025z2.a"/>
+			<data source="089|090-1.a" name="a">
+				<regexp match="Heft" format="http://schema.org/PublicationIssue"/>
+			</data>
+		</combine>
 		<!-- reference source -->
 		<data source="051." name="@rdftype">
 			<regexp match="^.[de]|^..[de]|^...[de]" format="$[ns-bibo]ReferenceSource"/>
