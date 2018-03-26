@@ -198,17 +198,6 @@
             "issued" : {
                "type" : "text"
             },
-            "source" : {
-               "properties" : {
-                  "label" : {
-                     "index" : "false",
-                     "type" : "text"
-                  },
-                  "id" : {
-                     "type" : "keyword"
-                  }
-               }
-            },
             "publication" : {
                "properties" : {
                   "location" : {
@@ -225,10 +214,6 @@
                            "type" : "keyword"
                         },
                         "label" : {
-                           "index" : "false",
-                           "type" : "text"
-                        },
-                        "type" : {
                            "index" : "false",
                            "type" : "text"
                         }
@@ -262,10 +247,6 @@
                "type" : "text",
                "analyzer" : "id_analyzer"
             },
-            "placeOfPublication" : {
-               "type" : "text",
-               "analyzer" : "german_analyzer"
-            },
             "hbzId" : {
                "analyzer" : "id_analyzer",
                "type" : "text"
@@ -291,17 +272,6 @@
                }
             },
             "tableOfContents" : {
-               "properties" : {
-                  "id" : {
-                     "type" : "keyword"
-                  },
-                  "label" : {
-                     "index" : "false",
-                     "type" : "text"
-                  }
-               }
-            },
-            "isFormatOf" : {
                "properties" : {
                   "id" : {
                      "type" : "keyword"
@@ -376,7 +346,8 @@
             "secondaryPublication" : {
                "properties" : {
                   "location" : {
-                     "type" : "text"
+                     "type" : "text",
+                     "analyzer" : "german_analyzer"
                   },
                   "startDate" : {
                      "type" : "text"
@@ -384,11 +355,10 @@
                   "type" : {
                      "type" : "keyword"
                   },
-                  "description" : {
-                     "type" : "text"
-                  },
                   "publishedBy" : {
-                     "type" : "text"
+                     "type" : "text",
+                     "search_analyzer" : "german_analyzer",
+                     "analyzer" : "ngram_analyzer"
                   }
                }
             },
@@ -536,9 +506,6 @@
             },
             "id" : {
                "type" : "keyword"
-            },
-            "volume" : {
-               "type" : "text"
             },
             "inSeries" : {
                "properties" : {
