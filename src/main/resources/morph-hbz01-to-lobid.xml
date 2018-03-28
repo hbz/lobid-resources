@@ -1241,16 +1241,6 @@
 		<data source="050." name="@medium">
 			<regexp match="^.a" format="http://purl.org/ontology/bibo/Manuscript"/>
 		</data>
-		<!-- map -->
-		<data source="050." name="@medium">
-			<regexp match="^..........a" format="$[ns-bibo]Map"/>
-		</data>
-		<data source="433[-c].a" name="@medium">
-			<regexp match="Kt.|Karte" format="$[ns-bibo]Map"/>
-		</data>
-		<data source="9[01234][27]-1.f" name="@medium">
-			<regexp match="Altkarte|Karte|Stadtplan" format="$[ns-bibo]Map"/>
-		</data>
 		<!-- microform -->
 		<data source="050." name="@medium">
 			<regexp match="^...[abc]" format="http://rdaregistry.info/termList/RDAMediaType/1002"/>
@@ -1321,7 +1311,6 @@
 				<regexp match="(.*)" format="$[ns-lobid-resource]${1}#!"/>
 			</data>
 		</combine>
-		<data name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" source="@rdftype|@typeOnly"/>
 		<data source="051." name="@article">
 			<regexp match="^.t|^..t|^...t|^.....t" format="$[ns-bibo]Article"/>
 		</data>
@@ -1433,6 +1422,16 @@
 		</data>
 		<data source="334-[12].a" name="@rdftype">
 			<regexp match="^Bildli" format="$[ns-bibo]Image"/>
+		</data>
+		<!-- map -->
+		<data source="050." name="@rdftype">
+			<regexp match="^..........a" format="$[ns-bibo]Map"/>
+		</data>
+		<data source="433[-c].a" name="@rdftype">
+			<regexp match="Kt.|Karte" format="$[ns-bibo]Map"/>
+		</data>
+		<data source="9[01234][27]-1.f" name="@rdftype">
+			<regexp match="Altkarte|Karte|Stadtplan" format="$[ns-bibo]Map"/>
 		</data>
 		<!-- issue and volume of periodical work -->
 		<data source="089|090-1.a" name="@rdftype">
@@ -1597,6 +1596,8 @@
 				</data>
 			</choose>
 		</combine>
+		<!-- set type -->
+		<data name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" source="@rdftype|@typeOnly"/>
 		<!-- set default type -->
 		<combine name="@rdftype" value="$[ns-lobid-vocab]Miscellaneous" flushWith="record">
 			<if>
