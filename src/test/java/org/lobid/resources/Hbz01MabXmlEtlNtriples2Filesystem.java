@@ -46,6 +46,7 @@ public final class Hbz01MabXmlEtlNtriples2Filesystem {
 				deleteFilesRecursively("input");
 				deleteFilesRecursively("output");
 				deleteFilesRecursively("reverseTest");
+				deleteFilesRecursively("jsonld-deletions");
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -55,8 +56,10 @@ public final class Hbz01MabXmlEtlNtriples2Filesystem {
 	private static void deleteFilesRecursively(final String DIRECTORY)
 			throws IOException {
 		LOG.info("Tabula rasa: cleaning test directory '" + DIRECTORY + "'");
-		try (Stream<Path> files = Files.find(
-				Paths.get(Hbz01MabXmlEtlNtriples2Filesystem.PATH_TO_TEST + DIRECTORY),
+		try (
+				Stream<Path> files = Files.find(
+						Paths.get(
+								Hbz01MabXmlEtlNtriples2Filesystem.PATH_TO_TEST + DIRECTORY),
 				100, (path, t) -> path.toFile().isFile())) {
 			files.filter(Files::isRegularFile).map(Path::toFile)
 					.forEach(File::delete);

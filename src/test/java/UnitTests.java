@@ -13,9 +13,10 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
 		org.lobid.resources.Hbz01MabXmlEtlNtriples2Filesystem.class,
+		org.lobid.resources.Hbz01MabXml2ElasticsearchLobidTest.class,
 		TestRdfToJsonConversion.class, TestJsonToRdfConversion.class,
 		TestGenerateContext.class,
-		org.lobid.resources.Hbz01MabXml2ElasticsearchLobidTest.class })
+		org.lobid.resources.Hbz01MabXmlDeletions2ElasticsearchTest.class })
 public final class UnitTests {
 	/* Suite class, groups tests via annotation above */
 }

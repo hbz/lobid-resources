@@ -40,6 +40,8 @@ import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.index.query.MultiMatchQueryBuilder;
 import org.elasticsearch.index.query.Operator;
+import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.index.query.QueryStringQueryBuilder;
 import org.elasticsearch.rest.action.admin.indices.AliasesNotFoundException;
 import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.transport.client.PreBuiltTransportClient;
@@ -80,11 +82,15 @@ public class ElasticsearchIndexer
 	private String indexName;
 	private boolean updateNewestIndex;
 	private String aliasSuffix = "";
-	private static String indexConfig = "index-config.json";
+	private static String indexConfig;
 	private static ObjectMapper mapper = new ObjectMapper();
-	// TODDO setter?
+	/** Defines the threshold for wikidata lookups */
 	public static double MINIMUM_SCORE = 5.0;
 	private HashMap<String, Object> settings = new HashMap<>();
+	/** Defines if the mabxml lookup should be done */
+	public boolean lookupMabxmlDeletion;
+	/** Defines if a wikidata lookup should be done */
+	public boolean lookupWikidata;
 
 	/**
 	 * Keys to get index properties and the json document ("graph")
@@ -140,7 +146,6 @@ public class ElasticsearchIndexer
 			} catch (UnknownHostException e) {
 				e.printStackTrace();
 			}
-
 			this.tc = new PreBuiltTransportClient(clientSettings);
 			this.client = this.tc.addTransportAddress(this.NODE);
 		}
@@ -168,10 +173,10 @@ public class ElasticsearchIndexer
 		updateRequest = new UpdateRequest(indexName,
 				json.get(Properties.TYPE.getName()), json.get(Properties.ID.getName()));
 		String jsonDoc = json.get(Properties.GRAPH.getName());
-		if (json.containsKey(Properties.PARENT.getName())) {
+		if (json.containsKey(Properties.PARENT.getName())) { // items
 			updateRequest.parent(json.get(Properties.PARENT.getName()));
 		} else {
-			if (WikidataGeodata2Es.getIndexExists()) {
+			if (lookupWikidata) {
 				try {
 					ObjectNode node = mapper.readValue(
 							json.get(Properties.GRAPH.getName()), ObjectNode.class);
@@ -182,6 +187,9 @@ public class ElasticsearchIndexer
 							"Enrichment problem with" + json.get(Properties.ID.getName()),
 							e1);
 				}
+			} else if (lookupMabxmlDeletion) {
+				jsonDoc =
+						enrichMabxmlDeletions(json.get(Properties.ID.getName()), jsonDoc);
 			}
 		}
 		updateRequest.doc(jsonDoc, JSON);
@@ -205,6 +213,27 @@ public class ElasticsearchIndexer
 						+ ":" + e.getMessage() + " (" + retries + " more retries)");
 			}
 		}
+	}
+
+	/*
+	 * Replace all aleph internal sysnumbers with lobid resources ids.
+	 */
+	private String enrichMabxmlDeletions(String alephId, String node) {
+		String ret = node;
+		QueryStringQueryBuilder query =
+				QueryBuilders.queryStringQuery("alephInternalSysnumber:" + alephId);
+		SearchHits hits = null;
+		try {
+			hits = getElasticsearchClient().prepareSearch("hbz01").setQuery(query)
+					.get().getHits();
+			if (hits.getTotalHits() > 0) {
+				ret = node.toString().replaceAll("/" + alephId,
+						"/" + hits.getAt(0).getId());
+			}
+		} catch (Exception e) {
+			LOG.warn(e.getMessage(), node);
+		}
+		return ret;
 	}
 
 	HashSet<String> unsuccessfullyLookup = new HashSet<>();
@@ -373,8 +402,9 @@ public class ElasticsearchIndexer
 	private static String config() {
 		String res = null;
 		try {
-			final InputStream config = Thread.currentThread().getContextClassLoader()
-					.getResourceAsStream(indexConfig);
+			final InputStream config =
+					Thread.currentThread().getContextClassLoader().getResourceAsStream(
+							indexConfig == null ? "index-config.json" : indexConfig);
 			try (InputStreamReader reader = new InputStreamReader(config, "UTF-8")) {
 				res = CharStreams.toString(reader);
 			}

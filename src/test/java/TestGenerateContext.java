@@ -17,5 +17,10 @@ public class TestGenerateContext {
 	public void writeContext() {
 		new EtikettMaker(new File(Thread.currentThread().getContextClassLoader()
 				.getResource("labels").getFile())).writeContext();
+		// deletions index
+		EtikettMaker em = new EtikettMaker(new File(Thread.currentThread()
+				.getContextClassLoader().getResource("deletion-labels").getFile()));
+		em.setContextLocation("web/conf/context-deletion.jsonld");
+		em.writeContext();
 	}
 }

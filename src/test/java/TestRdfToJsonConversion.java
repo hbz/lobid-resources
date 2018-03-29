@@ -154,9 +154,9 @@ public class TestRdfToJsonConversion {
 		try (InputStream in = new FileInputStream(new File(fnameNtriples));
 				InputStream out = FILE_EXISTS ? new FileInputStream(new File(fnameJson))
 						: makeFile(fnameJson)) {
+			MabXml2lobidJsonEs mabXml2lobidJsonEs = new MabXml2lobidJsonEs();
 			actual = new JsonConverter(etikettMaker).convertLobidData(in,
-					RDFFormat.NTRIPLES, uri,
-					MabXml2lobidJsonEs.LOBID_RESOURCES_JSONLD_CONTEXT);
+					RDFFormat.NTRIPLES, uri, mabXml2lobidJsonEs.jsonLdContext);
 			TestRdfToJsonConversion.logger.debug("Creates: ");
 			TestRdfToJsonConversion.logger
 					.debug(new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT)
