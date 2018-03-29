@@ -13,6 +13,14 @@
                   "tokenizer" : "standard",
                   "type" : "custom"
                },
+               "german_analyzer_unstemmed" : {
+                  "filter" : [
+                     "lowercase",
+                     "german_normalization"
+                  ],
+                  "tokenizer" : "standard",
+                  "type" : "custom"
+               },
                "id_analyzer" : {
                   "tokenizer" : "keyword",
                   "filter" : [
@@ -176,6 +184,17 @@
                   }
                }
             },
+            "related" : {
+               "properties" : {
+                  "id" : {
+                     "type" : "keyword"
+                  },
+                  "label" : {
+                     "index" : "false",
+                     "type" : "text"
+                  }
+               }
+            },
             "supplement" : {
                "properties" : {
                   "id" : {
@@ -187,26 +206,19 @@
                   }
                }
             },
-            "spatial": {
-               "properties": {
-                 "geo": {
-                   "type": "geo_point"
-                 },
-                 "id": {
-                   "type": "keyword"
-                 },
-                "label": {
-                  "type": "text",
-                  "type": "keyword"
-                }
-              },
-              "type": {
-                "type": "keyword",
-                "index": false
-              }
-            },
             "issued" : {
                "type" : "text"
+            },
+            "license" : {
+               "properties" : {
+                  "id" : {
+                     "type" : "keyword"
+                  },
+                  "label" : {
+                     "index" : "false",
+                     "type" : "text"
+                  }
+               }
             },
             "source" : {
                "properties" : {
@@ -222,7 +234,8 @@
             "publication" : {
                "properties" : {
                   "location" : {
-                     "type" : "text"
+                     "type" : "text",
+                     "analyzer" : "german_analyzer"
                   },
                   "endDate" : {
                      "type" : "text",
@@ -244,7 +257,9 @@
                      }
                   },
                   "publishedBy" : {
-                     "type" : "text"
+                     "type" : "text",
+                     "search_analyzer" : "german_analyzer",
+                     "analyzer" : "ngram_analyzer"
                   },
                   "type" : {
                      "type" : "keyword"
@@ -278,7 +293,14 @@
                "type" : "text"
             },
             "subjectAltLabel": {
-               "type": "text"
+               "type": "text",
+               "analyzer" : "german_analyzer",
+               "fields": {
+                    "unstemmed": {
+                        "type": "text",
+                        "analyzer" : "german_analyzer_unstemmed"
+                    }
+                }
             },
             "sameAs" : {
                "properties" : {
@@ -405,13 +427,15 @@
                            "type" : "keyword"
                         },
                         "label" : {
-                           "type" : "text"
+                           "type" : "text",
+                           "analyzer" : "german_analyzer"
                         },
                         "dateOfDeath" : {
                            "type" : "text"
                         },
                         "altLabel" : {
-                           "type" : "text"
+                           "type" : "text",
+                           "analyzer" : "german_analyzer"
                         },
                         "dateOfBirth" : {
                            "type" : "text"
@@ -468,9 +492,14 @@
                      },
                       "label": {
                         "type": "text",
+                        "analyzer" : "german_analyzer",
                         "fields": {
                             "raw": {
                                 "type": "keyword"
+                            },
+                            "unstemmed": {
+                                "type": "text",
+                                "analyzer" : "german_analyzer_unstemmed"
                             }
                         }
                      },
@@ -494,6 +523,7 @@
                },
                "label": {
                    "type": "text",
+                   "analyzer" : "german_analyzer",
                    "fields": {
                        "raw": {
                           "type": "keyword"
@@ -596,9 +626,7 @@
                }
             },
             "coverage" : {
-               "type" : "text",
-               "analyzer" : "ngram_analyzer",
-               "search_analyzer" : "german_analyzer"
+               "type" : "text"
             },
             "isPartOf" : {
                "properties" : {

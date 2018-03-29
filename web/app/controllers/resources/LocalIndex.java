@@ -85,7 +85,7 @@ public class LocalIndex {
 
 	/** Delete the index data and close the local node. */
 	public void shutdown() {
-		client.admin().indices().prepareDelete(Index.INDEX_NAME).execute()
+		client.admin().indices().prepareDelete(Search.INDEX_NAME).execute()
 				.actionGet();
 		try {
 			node.close();
@@ -106,8 +106,7 @@ public class LocalIndex {
 				String type = isItem ? "item" : "resource";
 				String id = file.getName();
 				String parent = isItem
-						? "http://lobid.org/resources/" + file.getName().split(":")[0]
-						: "";
+						? "http://lobid.org/resources/" + file.getName().split(":")[0] : "";
 				final Map<String, Object> map =
 						Json.fromJson(Json.parse(data), Map.class);
 				final IndexRequestBuilder requestBuilder =
@@ -145,13 +144,13 @@ public class LocalIndex {
 	private IndexRequestBuilder createRequestBuilder(final String type, String id,
 			String parent, final Map<String, Object> map) {
 		final IndicesAdminClient admin = client.admin().indices();
-		if (!admin.prepareExists(Index.INDEX_NAME).execute().actionGet()
+		if (!admin.prepareExists(Search.INDEX_NAME).execute().actionGet()
 				.isExists()) {
-			admin.prepareCreate(Index.INDEX_NAME)
+			admin.prepareCreate(Search.INDEX_NAME)
 					.setSource(config(), XContentType.JSON).execute().actionGet();
 		}
 		final IndexRequestBuilder request =
-				client.prepareIndex(Index.INDEX_NAME, type, id).setSource(map);
+				client.prepareIndex(Search.INDEX_NAME, type, id).setSource(map);
 		return parent.isEmpty() ? request : request.setParent(parent);
 	}
 

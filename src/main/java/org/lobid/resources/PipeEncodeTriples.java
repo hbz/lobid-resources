@@ -99,8 +99,11 @@ public class PipeEncodeTriples extends AbstractGraphPipeEncoder {
 
 	@Override
 	public void literal(final String name, final String value) {
-		if (value == null)
+		if (value == null || value.isEmpty()) {
+			LOG.debug("Value empty => ignoring triple: <" + subject + "> <" + name
+					+ "> \"\". ");
 			return;
+		}
 		if (name.equalsIgnoreCase(SUBJECT_NAME)) {
 			subject = value;
 			try {
@@ -129,14 +132,10 @@ public class PipeEncodeTriples extends AbstractGraphPipeEncoder {
 					else
 						addRdfList(uri, name, value, prop);
 				} else { // ... or add literal
-					if (!value.isEmpty()) {
-						if (!isRdfList)
-							resources.peek().addProperty(prop, value);
-						else
-							addRdfList(false, name, value, prop);
-					} else
-						LOG.info("Value empty => ignoring triple: <" + subject + "> <"
-								+ name + "> \"\". ");
+					if (!isRdfList)
+						resources.peek().addProperty(prop, value);
+					else
+						addRdfList(false, name, value, prop);
 				}
 			} catch (Exception e) {
 				LOG.warn("Problem with name=" + name + " value=" + value, e);

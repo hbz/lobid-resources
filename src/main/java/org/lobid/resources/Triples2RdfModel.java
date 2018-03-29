@@ -3,8 +3,11 @@
 
 package org.lobid.resources;
 
+import java.io.BufferedReader;
 import java.io.StringReader;
+import java.util.stream.Collectors;
 
+import org.apache.jena.riot.RiotException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.culturegraph.mf.framework.DefaultObjectPipe;
@@ -97,18 +100,35 @@ public class Triples2RdfModel
 				if (inferencing)
 					reasoning(model);
 				getReceiver().process(model);
+			} catch (RiotException rioe) {
+				LOG.warn("Resource with some broken triples:\n" + str);
+				String seb = new BufferedReader(new StringReader(str)).lines()
+						.filter((line) -> validTriple(line, model))
+						.collect(Collectors.joining("\n"));
+				model.read(new StringReader(seb), "test:uri" + count++, serialization);
+				getReceiver().process(model);
 			} catch (Exception e) {
 				LOG.error("Exception in " + str, e);
 			}
 		}
 	}
 
+	private boolean validTriple(String triple, Model model) {
+		try {
+			model.read(new StringReader(triple), "test:uri" + count++, serialization);
+		} catch (Exception e) {
+			LOG.info("... ignore broken triple: " + triple);
+			return false;
+		}
+		return true;
+	}
+
 	private void reasoning(Model model) {
-		ExtendedIterator<Triple> it =
-				ModelFactory.createInfModel(boundReasoner, model).getGraph().find(
-						model.listSubjectsWithProperty(
-								propertyIdentifyingTheNodeForInferencing).next().asNode(),
-						null, null);
+		ExtendedIterator<Triple> it = ModelFactory
+				.createInfModel(boundReasoner, model).getGraph()
+				.find(model
+						.listSubjectsWithProperty(propertyIdentifyingTheNodeForInferencing)
+						.next().asNode(), null, null);
 		Model model1 = ModelFactory.createDefaultModel();
 		while (it.hasNext()) {
 			Triple triple = it.next().asTriple();

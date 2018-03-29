@@ -14,7 +14,7 @@
     "type" : [ "Contribution" ]
   }, {
     "agent" : {
-      "altLabel" : "Entwicklungsagentur Rheinland-Pfalz e.V.",
+      "altLabel" : [ "Entwicklungsagentur Rheinland-Pfalz e.V.", "EA" ],
       "id" : "http://d-nb.info/gnd/16080300-7",
       "label" : "Entwicklungsagentur Rheinland-Pfalz",
       "type" : [ "CorporateBody" ]
@@ -26,9 +26,9 @@
     "type" : [ "Contribution" ]
   }, {
     "agent" : {
-      "altLabel" : [ "Conférence Franco-Germano-Suisse du Rhin Supérieur", "ORK", "Conférence du Rhin Supérieur", "Oberrheinkonferenz" ],
+      "altLabel" : [ "Conférence Franco-Germano-Suisse du Rhin Supérieur", "ORK", "Upper Rhine Conference", "Deutsch-Französisch-Schweizerische Oberrheinkonferenz", "Conférence du Rhin Supérieur", "D-F-CH Oberrheinkonferenz" ],
       "id" : "http://d-nb.info/gnd/5079636-7",
-      "label" : "Deutsch-Französisch-Schweizerische Oberrheinkonferenz",
+      "label" : "Oberrheinkonferenz",
       "type" : [ "CorporateBody" ]
     },
     "role" : {
@@ -40,6 +40,7 @@
   "contributorOrder" : [ "http://d-nb.info/gnd/121842118 | http://d-nb.info/gnd/16080300-7 | http://d-nb.info/gnd/5079636-7" ],
   "describedBy" : {
     "dateCreated" : "20150319",
+    "dateModified" : "20180227",
     "id" : "http://lobid.org/resources/HT018585406",
     "label" : "lobid Ressource",
     "sourceOrganization" : {
@@ -48,6 +49,10 @@
     }
   },
   "extent" : "45 S. : Ill., Kt.",
+  "fulltextOnline" : [ {
+    "id" : "https://www.edoweb-rlp.de/resource/edoweb:7000047",
+    "label" : "Edoweb"
+  } ],
   "hasItem" : [ {
     "heldBy" : {
       "id" : "http://lobid.org/organisations/DE-107",
@@ -56,6 +61,10 @@
     "id" : "http://lobid.org/items/HT018585406:DE-107:#!",
     "label" : "lobid Bestandsressource",
     "type" : [ "Item" ]
+  } ],
+  "hasVersion" : [ {
+    "id" : "https://www.edoweb-rlp.de/resource/edoweb:7000047",
+    "label" : "Edoweb"
   } ],
   "hbzId" : "HT018585406",
   "id" : "http://lobid.org/resources/HT018585406#!",
@@ -86,22 +95,13 @@
     "id" : "http://hub.culturegraph.org/resource/HBZ-HT018585406",
     "label" : "Culturegraph Ressource"
   } ],
-  "subject" : [ { }, {
-    "id" : "https://w3id.org/lobid/rpb2#n131",
-    "label" : "Landeskunde Pfalz",
-    "source" : {
-      "id" : "https://w3id.org/lobid/rpb2",
-      "label" : "RPB-Sachgruppen und Zusätze"
-    }
-  }, {
-    "id" : "https://w3id.org/lobid/rpb2#n740",
-    "label" : "Umweltschutz, Raumordn., Landschaft",
-    "source" : {
-      "id" : "https://w3id.org/lobid/rpb2",
-      "label" : "RPB-Sachgruppen und Zusätze"
-    }
-  }, {
+  "similar" : [ {
+    "id" : "http://nbn-resolving.de/urn:nbn:de:hbz:929:02-edoweb:70000475",
+    "label" : "http://nbn-resolving.de/urn:nbn:de:hbz:929:02-edoweb:70000475"
+  } ],
+  "subject" : [ {
     "componentList" : [ {
+      "gndIdentifier" : "4075561-7",
       "id" : "http://d-nb.info/gnd/4075561-7",
       "label" : "Oberrheinisches Tiefland",
       "source" : {
@@ -110,6 +110,7 @@
       },
       "type" : [ "PlaceOrGeographicName" ]
     }, {
+      "gndIdentifier" : "4034268-2",
       "id" : "http://d-nb.info/gnd/4034268-2",
       "label" : "Landesplanung",
       "source" : {
@@ -121,22 +122,41 @@
     "label" : "Oberrheinisches Tiefland | Landesplanung",
     "type" : [ "ComplexSubject" ]
   }, {
-    "id" : "https://w3id.org/lobid/rpb2#n106",
-    "label" : "Amtsdruckschriften Rheinland-Pfalz",
+    "id" : "http://purl.org/lobid/rpb#n572020",
+    "label" : "Landesplanung",
+    "notation" : "572020",
+    "source" : {
+      "id" : "https://w3id.org/lobid/rpb",
+      "label" : "Systematik der Rheinland-Pfälzischen Bibliographie"
+    }
+  }, {
+    "id" : "https://w3id.org/lobid/rpb2#n740",
+    "label" : "Umweltschutz, Raumordn., Landschaft",
+    "notation" : "740",
     "source" : {
       "id" : "https://w3id.org/lobid/rpb2",
       "label" : "RPB-Sachgruppen und Zusätze"
     }
   }, {
-    "id" : "http://purl.org/lobid/rpb#n572020",
-    "label" : "Landesplanung",
+    "id" : "https://w3id.org/lobid/rpb2#n131",
+    "label" : "Landeskunde Pfalz",
+    "notation" : "131",
     "source" : {
-      "id" : "https://w3id.org/lobid/rpb",
-      "label" : "Systematik der Rheinland-Pfälzischen Bibliographie"
+      "id" : "https://w3id.org/lobid/rpb2",
+      "label" : "RPB-Sachgruppen und Zusätze"
+    }
+  }, {
+    "id" : "https://w3id.org/lobid/rpb2#n106",
+    "label" : "Amtsdruckschriften Rheinland-Pfalz",
+    "notation" : "106",
+    "source" : {
+      "id" : "https://w3id.org/lobid/rpb2",
+      "label" : "RPB-Sachgruppen und Zusätze"
     }
   } ],
   "subjectAltLabel" : [ "Gebietsplanung", "Landesentwicklungsplanung", "Oberrheinische Tiefebene", "Oberrheinlande", "Oberrhein-Gebiet", "Oberrhein (Region)", "Oberrheinebene" ],
   "subjectOrder" : [ "http://d-nb.info/gnd/4075561-7, http://d-nb.info/gnd/4034268-2" ],
   "title" : "Endbericht Workshop Der Oberrhein als Europäische Metropolregion",
-  "type" : [ "BibliographicResource", "Book" ]
+  "type" : [ "BibliographicResource", "Book" ],
+  "urn" : [ "urn:nbn:de:hbz:929:02-edoweb:70000475" ]
 }

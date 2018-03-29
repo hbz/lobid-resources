@@ -5,8 +5,8 @@ package tests;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 
-import controllers.resources.Index;
 import controllers.resources.LocalIndex;
+import controllers.resources.Search;
 
 /**
  * Setup for the search tests. Creates a local ES index with test data.
@@ -21,12 +21,12 @@ public abstract class LocalIndexSetup {
 	@BeforeClass
 	public static void setup() {
 		index = new LocalIndex();
-		Index.elasticsearchClient = index.getNode().client();
+		Search.elasticsearchClient = index.getNode().client();
 	}
 
 	@AfterClass
 	public static void down() {
 		index.shutdown();
-		Index.elasticsearchClient = null;
+		Search.elasticsearchClient = null;
 	}
 }
