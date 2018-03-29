@@ -100,11 +100,14 @@ public final class MabXml2lobidJsonEs {
 		esIndexer.setIndexAliasSuffix(indexAliasSuffix);
 		esIndexer.setUpdateNewestIndex(update);
 		esIndexer.setIndexConfig(indexConfig);
-		esIndexer.lookupWikidata =
-				Boolean.parseBoolean(System.getProperty("lookupWikidata", "true"));
-		System.out.println("lookupWikidata: " + esIndexer.lookupWikidata);
 		esIndexer.lookupMabxmlDeletion = Boolean
 				.parseBoolean(System.getProperty("lookupMabxmlDeletion", "false"));
+		System.out
+				.println("lookupMabxmlDeletion: " + esIndexer.lookupMabxmlDeletion);
+		esIndexer.lookupWikidata =
+				Boolean.parseBoolean(esIndexer.lookupMabxmlDeletion ? "false"
+						: System.getProperty("lookupWikidata", "true"));
+		System.out.println("lookupWikidata: " + esIndexer.lookupWikidata);
 		if (esIndexer.lookupMabxmlDeletion)
 			esIndexer.lookupWikidata = false;
 		esIndexer.onSetReceiver();
