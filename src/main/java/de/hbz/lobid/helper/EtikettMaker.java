@@ -43,7 +43,7 @@ public class EtikettMaker implements EtikettMakerInterface {
 
 	private static final String TYPE = "type";
 	private static final String ID = "id";
-	private static final String CONTEXT_LOCATION = "web/conf/context.jsonld";
+	private String contextLocation = "web/conf/context.jsonld";
 
 	final static Logger logger = LogManager.getLogger(EtikettMaker.class);
 
@@ -187,7 +187,7 @@ public class EtikettMaker implements EtikettMakerInterface {
 		logger.info("Writing context file ...");
 		try {
 			JsonConverter.getObjectMapper().enable(SerializationFeature.INDENT_OUTPUT)
-					.writeValue(new File(CONTEXT_LOCATION), context);
+					.writeValue(new File(getContextLocation()), context);
 			logger.info("... done writing context file.");
 		} catch (Exception e) {
 			logger.error("Error during writing context file! ", e);
@@ -208,17 +208,16 @@ public class EtikettMaker implements EtikettMakerInterface {
 
 	private static List<Etikett> createLabels(InputStream[] labelInArr) {
 		logger.info("Create labels....");
-		String msg = "...succeed!";
 		List<Etikett> result = new ArrayList<>();
 		try {
 			for (InputStream is : labelInArr) {
 				result.addAll(loadFile(is, new ObjectMapper().getTypeFactory()
 						.constructCollectionType(List.class, Etikett.class)));
 			}
+			logger.info("...succeed!");
 		} catch (Exception e) {
-			msg = "...not succeeded!";
+			logger.warn("...not succeeded!");
 		}
-		logger.info(msg);
 		return result;
 	}
 
@@ -250,6 +249,7 @@ public class EtikettMaker implements EtikettMakerInterface {
 		try (InputStream in = labelIn) {
 			return new ObjectMapper().readValue(in, type);
 		} catch (Exception e) {
+			e.printStackTrace();
 			throw new RuntimeException("Error during initialization!", e);
 		}
 	}
@@ -291,6 +291,22 @@ public class EtikettMaker implements EtikettMakerInterface {
 	@Override
 	public String getLabelKey() {
 		return "label";
+	}
+
+	/**
+	 * @return filename of the jsonld-context
+	 */
+	public String getContextLocation() {
+		return contextLocation;
+	}
+
+	/**
+	 * Sets the filename of the jsonld-context.
+	 * 
+	 * @param contextFname the filename of the jsonld-context
+	 */
+	public void setContextLocation(final String contextFname) {
+		contextLocation = contextFname;
 	}
 
 }
