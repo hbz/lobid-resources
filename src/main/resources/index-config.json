@@ -133,9 +133,6 @@
                   }
                 }
             },
-            "dateOfBirth" : {
-               "type" : "text"
-            },
             "containedIn" : {
                "properties" : {
                   "id" : {
@@ -345,6 +342,26 @@
             "label" : {
                "type" : "text"
             },
+            "containsExampleOfWork" : {
+               "properties" : {
+                  "id" : {
+                     "type" : "keyword"
+                  },
+                  "creatorOfWork" : {
+                     "type" : "text"
+                  }
+               }
+            },
+            "exampleOfWork" : {
+               "properties" : {
+                  "id" : {
+                     "type" : "keyword"
+                  },
+                  "creatorOfWork" : {
+                     "type" : "text"
+                  }
+               }
+            },
             "contribution" : {
                "type" : "nested",
                "include_in_parent" : "true",
@@ -366,6 +383,9 @@
                            "analyzer" : "german_analyzer"
                         },
                         "dateOfBirth" : {
+                           "type" : "text"
+                        },
+                        "dateOfBirthAndDeath" : {
                            "type" : "text"
                         },
                         "id" : {
@@ -444,6 +464,15 @@
                      "type": {
                         "type": "keyword"
                         }
+                     },
+                     "dateOfBirthAndDeath" : {
+                        "type" : "text"
+                     },
+                     "dateOfBirth" : {
+                        "type" : "text"
+                     },
+                     "dateOfDeath" : {
+                        "type" : "text"
                      }
                   },
                "id": {
@@ -605,9 +634,6 @@
                   }
                }
             },
-            "dateOfDeath" : {
-               "type" : "text"
-            },
             "hasVersion" : {
                "properties" : {
                   "id" : {
@@ -716,7 +742,7 @@
                      "type" : "keyword"
                   },
                   "geo" : {
-                        "type" : "geo_point"
+                     "type" : "geo_point"
                   },
                   "label" : {
                      "type" : "text"
