@@ -98,7 +98,7 @@ public final class Hbz01MabXmlDeletions2ElasticsearchTest {
 						"testNodeHbz01MabXmlDeletions2ElasticsearchTest")
 				.put(NetworkModule.TRANSPORT_TYPE_KEY, NetworkModule.LOCAL_TRANSPORT)
 				.put(NetworkModule.HTTP_ENABLED.getKey(), false) //
-				.put(Environment.PATH_HOME_SETTING.getKey(), "tmp1")//
+				.put(Environment.PATH_HOME_SETTING.getKey(), "tmp")//
 				.build());
 		try {
 			node.start();
