@@ -271,17 +271,6 @@
                   }
                }
             },
-            "tableOfContents" : {
-               "properties" : {
-                  "id" : {
-                     "type" : "keyword"
-                  },
-                  "label" : {
-                     "index" : "false",
-                     "type" : "text"
-                  }
-               }
-            },
             "shortTitle" : {
                "analyzer" : "german_analyzer",
                "type" : "text"
@@ -304,6 +293,7 @@
             "hasItem" : {
                "properties" : {
                   "type" : {
+                     "index" : "false",
                      "type" : "keyword"
                   },
                   "id" : {
@@ -332,16 +322,6 @@
             "titleKeyword" : {
                "type" : "text",
                "analyzer" : "german_analyzer"
-            },
-            "description" : {
-               "properties" : {
-                  "label" : {
-                     "type" : "text"
-                  },
-                  "id" : {
-                     "type" : "keyword"
-                  }
-               }
             },
             "secondaryPublication" : {
                "properties" : {
@@ -607,17 +587,6 @@
                   }
                }
             },
-            "seeAlso" : {
-               "properties" : {
-                  "label" : {
-                     "type" : "text"
-                  },
-                  "id" : {
-                     "index" : "false",
-                     "type" : "keyword"
-                  }
-               }
-            },
             "doi" : {
                "analyzer" : "id_analyzer",
                "type" : "text"
@@ -637,12 +606,6 @@
                }
             },
             "dateOfDeath" : {
-               "type" : "text"
-            },
-            "subjectOrder" : {
-               "type" : "keyword"
-            },
-            "extent" : {
                "type" : "text"
             },
             "hasVersion" : {
@@ -674,10 +637,6 @@
             "note" : {
                "index" : "false",
                "type" : "text"
-            },
-            "contributorOrder" : {
-               "type" : "text",
-               "analyzer" : "id_analyzer"
             },
             "ismn" : {
                "type" : "text"
