@@ -53,35 +53,63 @@ public final class RdfModel2ElasticsearchEtikettJsonLd
 	private static String mainNodeId = null;
 	private static final String TYPE_ITEM = "item";
 	private static final String TYPE_RESOURCE = "resource";
-	private static Object JSONLD_CONTEXT;
+	private Object jsonLdContext;
 	private final Pattern INTERNAL_ID_PATTERN =
 			Pattern.compile("^" + LOBID_DOMAIN + ".*");
-	private static EtikettMakerInterface etikettMaker =
-			new EtikettMaker(new File(Thread.currentThread().getContextClassLoader()
-					.getResource("labels").getFile()));
-	private static String rootHbzIdPredicate = "http://purl.org/lobid/lv#hbzID";
+	private String labelsDirectoryName = "labels";
+	private EtikettMakerInterface etikettMaker;
+	private String rootHbzIdPredicate = "http://purl.org/lobid/lv#hbzID";
+	private static final String PREDICATE_TO_IDENTIFY_ROOT_SUBJECT =
+			"http://www.w3.org/2007/05/powder-s#describedby";
+	JsonConverter jc;
 
 	/**
 	 * Provides default constructor. Every json ld document gets the whole json ld
-	 * context defined in @see{EtikettMaker};
+	 * context defined in in the default @see{labelsDirectoryName} which is then
+	 * constructed via @see{EtikettMaker};
 	 */
 	public RdfModel2ElasticsearchEtikettJsonLd() {
-		this(etikettMaker.getContext().get("@context"));
+		this("default");
 	}
 
 	/**
 	 * Provides a json ld context. May be a json string or a http URI as string.
-	 * If its an URI the URI will we the value of the @context-field. If it's a
+	 * If its an URI the URI will be the value of the @context-field. If it's a
 	 * whole json string, the whole string is added under the @context field:
 	 * 
 	 * @param jsonLdContext May be a json as string or a http uri as string.
 	 */
 	public RdfModel2ElasticsearchEtikettJsonLd(final Object jsonLdContext) {
-		RdfModel2ElasticsearchEtikettJsonLd.JSONLD_CONTEXT = jsonLdContext;
-		if (jsonLdContext.toString().substring(0, 4).equalsIgnoreCase("http"))
-			LOG.info("Using context URI: " + jsonLdContext);
-		else
+		setup(jsonLdContext);
+	}
+
+	/**
+	 * Takes a filename which could be a directory to create the context jsonld
+	 * out of labels. Second parameter is the value of the jsonld @context field.
+	 * 
+	 * @param fn the name of the file
+	 * @param jsonContextLd the content of the @context field of the jsonld
+	 */
+	public RdfModel2ElasticsearchEtikettJsonLd(final File fn,
+			final String jsonContextLd) {
+		labelsDirectoryName = fn.getPath();
+		LOG.info("use labels directory: " + labelsDirectoryName);
+		setup(jsonContextLd);
+	}
+
+	private void setup(final Object jsonLdContext1) {
+		etikettMaker =
+				new EtikettMaker(new File(Thread.currentThread().getContextClassLoader()
+						.getResource(getLabelsDirectoryName()).getFile()));
+		if (jsonLdContext1.equals("default")) {
 			LOG.info("Adding json ld context to every document");
+			jsonLdContext = etikettMaker.getContext().get("@context");
+		} else if (jsonLdContext1.toString().substring(0, 4)
+				.equalsIgnoreCase("http")) {
+			jsonLdContext = jsonLdContext1.toString();
+			LOG.info("Using context URI: " + jsonLdContext);
+		}
+		jc = new JsonConverter(etikettMaker);
 	}
 
 	@Override
@@ -137,7 +165,7 @@ public final class RdfModel2ElasticsearchEtikettJsonLd
 		return submodel;
 	}
 
-	private static void setMainNodeId(Resource subjectResource) {
+	private void setMainNodeId(Resource subjectResource) {
 		StmtIterator stmtIt = subjectResource.listProperties();
 		while (stmtIt.hasNext()) {
 			Statement stmt = stmtIt.nextStatement();
@@ -160,12 +188,15 @@ public final class RdfModel2ElasticsearchEtikettJsonLd
 		if (model.isEmpty())
 			return;
 		try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
-			JsonConverter jc = new JsonConverter(etikettMaker);
+			jc = new JsonConverter(etikettMaker);
+			if (id.startsWith(LOBID_ITEM_URI_PREFIX)) {
+				jc.setRootIdPredicate(PREDICATE_TO_IDENTIFY_ROOT_SUBJECT);
+			} else
+				jc.setRootIdPredicate(rootHbzIdPredicate);
 			RDFDataMgr.write(out, model, org.apache.jena.riot.RDFFormat.NTRIPLES);
 			Map<String, Object> jsonMap =
 					jc.convertLobidData(new ByteArrayInputStream(out.toByteArray()),
-							org.openrdf.rio.RDFFormat.NTRIPLES, id,
-							RdfModel2ElasticsearchEtikettJsonLd.JSONLD_CONTEXT);
+							org.openrdf.rio.RDFFormat.NTRIPLES, id, jsonLdContext);
 			getReceiver().process(addInternalProperties(new HashMap<String, String>(),
 					id, JsonConverter.getObjectMapper().writeValueAsString(jsonMap)));
 		} catch (IOException e) {
@@ -201,6 +232,47 @@ public final class RdfModel2ElasticsearchEtikettJsonLd
 		jsonMap.put(ElasticsearchIndexer.Properties.TYPE.getName(), type);
 		jsonMap.put(ElasticsearchIndexer.Properties.ID.getName(), idWithoutDomain);
 		return jsonMap;
+	}
+
+	/**
+	 * Identifies the main node Id aka the root subject. This is important.
+	 * 
+	 * @param rootId identifies the root subject by this property. Default is
+	 *          specified in {@link #getRootIdPredicate()}
+	 */
+	public void setRootIdPredicate(final String rootId) {
+		this.rootHbzIdPredicate = rootId;
+		jc.setRootIdPredicate(rootId);
+	}
+
+	/**
+	 * Gets the property which identifies the main node Id aka the root subject.
+	 * This is important. The default is "http://purl.org/lobid/lv#hbzID".
+	 * 
+	 * @return the property which identifies the root subject as String
+	 * 
+	 */
+	public String getRootIdPredicate() {
+		return this.rootHbzIdPredicate;
+	}
+
+	/**
+	 * Gets the name of the directory of the label(s). Will be used to create
+	 * jsonld-context.
+	 * 
+	 * @return the directory name to the label(s)
+	 */
+	public String getLabelsDirectoryName() {
+		return labelsDirectoryName;
+	}
+
+	/**
+	 * Gets the value of the @context field in the jsonld.
+	 * 
+	 * @return the content of the @context field of the jsonld.
+	 */
+	public String getJsonLdContext() {
+		return jsonLdContext.toString();
 	}
 
 }

@@ -78,6 +78,7 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 			Hbz01MabXmlEtlNtriples2Filesystem.PATH_TO_TEST + "jsonld/";
 	static HashSet<String> testFiles = new HashSet<>();
 	static boolean testFailed = false;
+	static MabXml2lobidJsonEs mabXml2lobidJsonEs = new MabXml2lobidJsonEs();
 
 	@BeforeClass
 	public static void setup() {
@@ -90,10 +91,10 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		node = new Node(
-				Settings.builder().put(Node.NODE_NAME_SETTING.getKey(), "testNode")
-						.put(NetworkModule.TRANSPORT_TYPE_KEY,
-								NetworkModule.LOCAL_TRANSPORT)
+		node = new Node(Settings.builder()
+				.put(Node.NODE_NAME_SETTING.getKey(),
+						"testNodeHbz01MabXml2ElasticsearchLobidTest")
+				.put(NetworkModule.TRANSPORT_TYPE_KEY, NetworkModule.LOCAL_TRANSPORT)
 				.put(NetworkModule.HTTP_ENABLED.getKey(), false) //
 				.put(Environment.PATH_HOME_SETTING.getKey(), "tmp")//
 				.build());
@@ -113,8 +114,8 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 		WikidataGeodata2Es.filterWikidataEntitiesDump2EsGeodata(
 				"src/test/resources/wikidataEntities.json");
 		WikidataGeodata2Es.finish();
-		// WikidataGeodata2Es.esIndexer.onCloseStream();
-		etl(client, new RdfModel2ElasticsearchEtikettJsonLd());
+		etl(client, new RdfModel2ElasticsearchEtikettJsonLd(
+				MabXml2lobidJsonEs.jsonLdContext));
 	}
 
 	/*
@@ -213,6 +214,7 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 		esIndexer.setIndexAliasSuffix("");
 		esIndexer.setUpdateNewestIndex(false);
 		esIndexer.setIndexConfig("index-config.json");
+		esIndexer.lookupWikidata = true;
 		esIndexer.onSetReceiver();
 		return esIndexer;
 	}
@@ -292,7 +294,7 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 			mapper.enable(SerializationFeature.INDENT_OUTPUT);
 			try {
 				map = mapper.readValue(jsonLd, Map.class);
-				map.put("@context", MabXml2lobidJsonEs.LOBID_RESOURCES_JSONLD_CONTEXT);
+				map.put("@context", MabXml2lobidJsonEs.jsonLdContext);
 				jsonLdWithoutContext = mapper.writeValueAsString(map);
 				filename = ((String) map.get("id"))
 						.replaceAll(
