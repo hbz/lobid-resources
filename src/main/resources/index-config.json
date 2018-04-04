@@ -459,72 +459,72 @@
                      "properties": {
                         "id": {
                            "type" : "keyword"
-                     },
-                      "label": {
-                        "type": "text",
-                        "analyzer" : "german_analyzer",
-                        "fields": {
-                            "raw": {
-                                "type": "keyword"
-                            },
-                            "unstemmed": {
-                                "type": "text",
-                                "analyzer" : "german_analyzer_unstemmed"
-                            }
+                        },
+                        "dateOfBirthAndDeath" : {
+                           "type" : "text"
+                        },
+                        "dateOfBirth" : {
+                           "type" : "text"
+                        },
+                        "dateOfDeath" : {
+                           "type" : "text"
+                        },
+                        "label": {
+                           "type": "text",
+                           "analyzer" : "german_analyzer",
+                           "fields": {
+                              "raw": {
+                                 "type": "keyword"
+                              },
+                              "unstemmed": {
+                                 "type": "text",
+                                 "analyzer" : "german_analyzer_unstemmed"
+                              }
+                           }
+                        },
+                        "source": {
+                           "properties": {
+                              "id": {
+                                 "type": "keyword"
+                              },
+                              "label": {
+                                 "type": "text"
+                              }
+                           }
+                        },
+                        "type": {
+                           "type": "keyword"
                         }
-                     },
-                     "source": {
-                        "properties": {
-                          "id": {
-                            "type": "keyword"
-                          },
-                          "label": {
-                            "type": "text"
-                          }
-                        }
-                     },
-                     "type": {
-                        "type": "keyword"
-                        }
-                     },
-                     "dateOfBirthAndDeath" : {
-                        "type" : "text"
-                     },
-                     "dateOfBirth" : {
-                        "type" : "text"
-                     },
-                     "dateOfDeath" : {
-                        "type" : "text"
                      }
                   },
-               "id": {
-                 "type": "keyword"
-               },
-               "label": {
-                   "type": "text",
-                   "analyzer" : "german_analyzer",
-                   "fields": {
-                       "raw": {
-                          "type": "keyword"
-                       }
-                   }
-               },
-               "notation": {
-                 "type": "text",
-                 "index": "false"
-               },
-               "source": {
-                  "properties": {
-                     "id": {
-                         "type": "keyword"
-                      },
-                      "label": {
-                         "type": "text"
+                  "id": {
+                     "type": "keyword"
+                  },
+                  "label": {
+                     "type": "text",
+                     "analyzer" : "german_analyzer",
+                     "fields": {
+                        "raw": {
+                           "type": "keyword"
+                        }
                       }
-                  }
-               },
-               "type": {
-                  "type": "keyword"
+                  },
+                  "notation": {
+                     "type": "text",
+                     "index": "false"
+                  },
+                  "source": {
+                     "properties": {
+                        "id": {
+                            "type": "keyword"
+                         },
+                         "label": {
+                            "type": "text"
+                         }
+                     }
+                  },
+                  "type": {
+                     "type": "keyword"
                   }
                }
             },
