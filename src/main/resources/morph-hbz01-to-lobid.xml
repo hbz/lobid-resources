@@ -348,9 +348,9 @@
 		</macro>
 		<!-- / nwbib speciality -->
 		<macro name="setBackRdfSubject">
-			<combine name="~rdf:subject" value="$[ns-lobid-resource]${subject}#!"
-				flushWith="$[field]">
+			<combine name="~rdf:subject" value="$[ns-lobid-resource]${subject}#!">
 				<data source="@id" name="subject"/>
+				<data source="$[field]"/>
 			</combine>
 		</macro>
 		<macro name="subject-chain-name1">
@@ -1157,9 +1157,9 @@
 			<regexp match="(.*)" format="http://id.loc.gov/vocabulary/iso639-2/${1}"/>
 		</data>
 		<!-- ####################### -->
-		<!-- ########## carrier and type -->
+		<!-- ########## medium -->
 		<!-- ####################### -->
-		<!--audio -->
+		<!-- audio -->
 		<combine name="@mediumAudio" value="$[ns-bibo]AudioDocument">
 			<choose>
 				<data source="050.">
@@ -1216,7 +1216,7 @@
 		<data source="050." name="@medium">
 			<regexp match="^....a" format="http://rdaregistry.info/termList/RDAproductionMethod/1010"/>
 		</data>
-		<!-- computer carriers -->
+		<!-- computer carrier (disks etc.) -->
 		<data source="050." name="@medium">
 			<regexp match="^........[abcdefz]" format="http://rdaregistry.info/termList/RDAMediaType/1003"/>
 		</data>
@@ -1233,10 +1233,12 @@
 				<regexp match="[eE]lektr"/>
 			</data>
 		</combine>
-		<!-- game -->
-		<data source="050." name="@rdftype">
-			<regexp match="^.........a" format="http://schema.org/Game"/>
+		<!-- electronic -->
+		<!-- looking for Blu-ray, Cartridge, CD, Diskette, DVD, Festplatte, HD-DVD, Kassette, USB -->
+		<data source="652a[-1].a" name="@medium">
+			<regexp match="^[BbCcDdHhFfKkUu][AaDdEeIiLlSsVv]" format="http://rdaregistry.info/termList/RDAMediaType/1003"/>
 		</data>
+		<data source="@medium" name="http://purl.org/dc/terms/medium"/>
 		<!-- manuscript -->
 		<data source="050." name="@medium">
 			<regexp match="^.a" format="http://purl.org/ontology/bibo/Manuscript"/>
@@ -1321,19 +1323,221 @@
 		<data source="334-[12].a" name="@mediumAudio">
 			<regexp match="Schallplatte" format="$[ns-bibo]AudioDocument"/>
 		</data>
-		<!-- Dini Kim , TODO dcterms:medium "rdacarrier:1044" (unmediated) -->
-		<combine name="~rdf:subject" value="${a}" flushWith="@typeOnly">
-			<data source="@typeOnly"/>
+		<!-- set default medium -->
+		<combine name="@medium" value="$[ns-lobid-vocab]Miscellaneous" flushWith="record">
+			<if>
+				<none>
+					<data source="@medium">
+						<regexp match=".*"/>
+					</data>
+				</none>
+			</if>
+			<data source="@id"/>
+		</combine>
+		<combine name="~rdf:subject" value="${a}" flushWith="@medium">
+			<data source="@medium"/>
 			<data source="@id" name="a">
 				<regexp match="(.*)" format="$[ns-lobid-resource]${1}#!"/>
 			</data>
 		</combine>
-		<data name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" source="@rdftype|@typeOnly"/>
+		<!-- ####################### -->
+		<!-- ########## type -->
+		<!-- ####################### -->
+		<!-- amtliche Druckschrift -->
+		<data source="051." name="@rdftype">
+			<regexp match="^......[bfiklmorsu]" format="$[ns-lobid-vocab]OfficialPublication"/>
+		</data>
+		<data source="052." name="@rdftype">
+			<regexp match="^.aa|^............[bfiklmorsu]" format="$[ns-lobid-vocab]OfficialPublication"/>
+		</data>
+		<data source="052." name="@rdftype">
+			<regexp match="^.aa|^...aa|^.....aa" format="$[ns-lobid-vocab]OfficialPublication"/>
+		</data>
+		<!-- archived web page -->
+		<data source="051." name="@archived">
+			<regexp match="^.w" format="$[ns-lobid-vocab]ArchivedWebPage"/>
+		</data>
+		<data source="@archived" name="@rdftype"/>
+		<!-- article -->
 		<data source="051." name="@article">
 			<regexp match="^.t|^..t|^...t|^.....t" format="$[ns-bibo]Article"/>
 		</data>
+		<data source="052." name="@article">
+			<regexp match="^[af]|^.au|^...au|^.....au" format="$[ns-bibo]Article"/>
+		</data>
+		<data source="@article" name="@rdftype"/>
+		<!-- bibliography -->
+		<data source="051." name="@rdftype">
+			<regexp match="^.[b]|^..[b]|^...[b]" format="$[ns-lobid-vocab]Bibliography"/>
+		</data>
+		<data source="052." name="@rdftype">
+			<regexp match="^.b[i]|^...b[i]|^.....b[i]" format="$[ns-lobid-vocab]Bibliography"/>
+		</data>
+		<!-- biography -->
+		<data source="051." name="@rdftype">
+			<regexp match="^.[h]|^..[h]|^...[h]" format="$[ns-lobid-vocab]Biography"/>
+		</data>
+		<data source="052." name="@rdftype">
+			<regexp match="^.b[g]|^...b[g]|^.....b[g]" format="$[ns-lobid-vocab]Biography"/>
+		</data>
+		<data source="9[01234][27]-[-1].f" name="@rdftype">
+			<regexp match="Autobiographie|Biographie" format="$[ns-lobid-vocab]Biography"/>
+		</data>
+		<!-- edited volume -->
+		<combine name="@rdftype" value="${a}">
+			<if>
+				<none>
+					<data source="052.">
+						<regexp
+							match="^........([dcwesmbqfaghtz])|^.........([dcwesmbqfaghtz])|^..........([dcwesmbqfaghtz])"/>
+					</data>
+					<data source="542[-ab][-1].[a]"/>
+				</none>
+			</if>
+			<choose name="a">
+				<data source="9[01234][27][-a][-1].f" name="a">
+					<regexp match="^Aufsatzsammlung" format="$[ns-lobid-vocab]EditedVolume"/>
+				</data>
+				<data source="9[01234][27][-a][-1].9" name="a">
+					<regexp match="4143413" format="$[ns-lobid-vocab]EditedVolume"/>
+				</data>
+			</choose>
+		</combine>
+		<!-- festschrift -->
+		<data source="051." name="@rdftype">
+			<regexp match="^.f|^..f|^...f" format="$[ns-lobid-vocab]Festschrift"/>
+		</data>
+		<!-- game -->
+		<data source="050." name="@rdftype">
+			<regexp match="^.........a" format="http://schema.org/Game"/>
+		</data>
+		<!-- legislation -->
+		<data source="051." name="@rdftype">
+			<regexp match="^.l|^..l|^...l" format="$[ns-lobid-vocab]Legislation"/>
+		</data>
+		<data source="052." name="@rdftype">
+			<regexp match="^.ag|^...ag|^.....ag" format="$[ns-lobid-vocab]Legislation"/>
+		</data>
+		<!-- multi-volume book -->
 		<data source="051." name="@rdftype">
 			<regexp match="^[nt]" format="$[ns-bibo]MultiVolumeBook"/>
+		</data>
+		<!-- music -->
+		<data source="051." name="@rdftype">
+			<regexp match="^.m|^..m|^...m" format="http://purl.org/ontology/mo/PublishedScore"/>
+		</data>
+		<data source="052." name="@rdftype">
+			<regexp match="^.mu|^...mu|^.....mu" format="http://purl.org/ontology/mo/PublishedScore"/>
+		</data>
+		<data source="334-1.a" name="@rdftype">
+			<regexp match="Musikdruck" format="http://purl.org/ontology/mo/PublishedScore"/>
+		</data>
+		<data source="541[-ab]?.?" name="@rdftype">
+			<regexp match=".*" format="http://purl.org/ontology/mo/PublishedScore"/>
+		</data>
+		<!-- newspaper -->
+		<data source="052." name="@rdftype">
+			<regexp match="^z|^.[ae]o|^...[ae]o|^.....[ae]o" format="$[ns-bibo]Newspaper"/>
+		</data>
+		<data source="052." name="@rdftype">
+			<regexp match="^z|^.[url]p|^...[url]p|^.....[url]p" format="$[ns-bibo]Newspaper"/>
+		</data>
+		<data source="9[01234][27]-[-1].f" name="@rdftype">
+			<regexp match="Zeitung" format="$[ns-bibo]Newspaper"/>
+		</data>
+		<!-- norm -->
+		<data source="051." name="@rdftype">
+			<regexp match="^.n|^..n|^...n" format="$[ns-bibo]Standard"/>
+		</data>
+		<data source="052." name="@rdftype">
+			<regexp match="^.no|^...no|^.....no" format="$[ns-bibo]Standard"/>
+		</data>
+		<data source="9[01234][27]-[-12].f" name="@rdftype">
+			<regexp match="Norm|Richtlinie" format="$[ns-bibo]Standard"/>
+		</data>
+		<!-- periodical -->
+		<data source="052." name="@rdftype">
+			<regexp match="^[jp].*|^.il.*|^...il.*|^.....il.*" format="$[ns-bibo]Periodical"/>
+		</data>
+		<data source="9[01234][27]-[-1].f" name="@rdftype">
+			<regexp match="Zeitschrift" format="$[ns-bibo]Periodical"/>
+		</data>
+		<!-- proceedings -->
+		<data source="051." name="@rdftype">
+			<regexp match="^.k|^..k|^...k" format="$[ns-bibo]Proceedings"/>
+		</data>
+		<data source="052." name="@rdftype">
+			<regexp match="^.ko|^...ko|^.....ko" format="$[ns-bibo]Proceedings"/>
+		</data>
+		<data source="9[01234][27]-[-1].f" name="@rdftype">
+			<regexp match="Kongress" format="$[ns-bibo]Proceedings"/>
+		</data>
+		<!-- issue and volume of periodical work -->
+		<combine name="@rdftype" value="${a}">
+			<data source="025z2.a"/>
+			<data source="089|090-1.a" name="a">
+				<regexp match="Heft" format="http://schema.org/PublicationIssue"/>
+			</data>
+		</combine>
+		<!-- reference source -->
+		<data source="051." name="@rdftype">
+			<regexp match="^.[de]|^..[de]|^...[de]" format="$[ns-bibo]ReferenceSource"/>
+		</data>
+		<data source="052." name="@rdftype">
+			<regexp match="^.ez|^...ez|^.....ez" format="$[ns-bibo]ReferenceSource"/>
+		</data>
+		<data source="9[01234][27]-[-12].f" name="@rdftype">
+			<regexp match="Bestimmungsbuch|Enzyklopädie|Werkverzeichnis|W[ö|oe]rterbuch"
+				format="$[ns-bibo]ReferenceSource"/>
+		</data>
+		<!-- report -->
+		<data source="051." name="@rdftype">
+			<regexp match="^.[r]|^..[r]|^...[r]" format="http://purl.org/ontology/bibo/Report"/>
+		</data>
+		<data source="9[01234][27]-[-12].9" name="@rdftype">
+			<regexp match="4128022-2" format="http://purl.org/ontology/bibo/Report"/>
+		</data>
+		<data source="9[01234][27]-[1].f" name="@rdftype">
+			<regexp match="Bericht|Erlebnisbericht|Forschungsbericht|Literaturbericht|Reisebericht"
+				format="http://purl.org/ontology/bibo/Report"/>
+		</data>
+		<!-- schoolbook -->
+		<data source="051." name="@rdftype">
+			<regexp match="^.x|^..x|^...x" format="$[ns-lobid-vocab]Schoolbook"/>
+		</data>
+		<data source="9[01234][27]-[1].f" name="@rdftype">
+			<regexp match="Schulbuch" format="$[ns-lobid-vocab]Schoolbook"/>
+		</data>
+		<!-- series -->
+		<combine name="@rdftype" value="${a}">
+			<if>
+				<none>
+					<data source="540[-ab][-1].[ab]"/>
+				</none>
+			</if>
+			<data source="052." name="a">
+				<regexp match="^r|^.se|^...se|^.....se" format="$[ns-bibo]Series"/>
+			</data>
+		</combine>
+		<data source="9[01234][27]-[1].f" name="@rdftype">
+			<regexp match="Schriftenreihe" format="$[ns-bibo]Series"/>
+		</data>
+		<!-- statistics -->
+		<data source="051." name="@rdftype">
+			<regexp match="^.s|^..s|^...s" format="http://purl.org/lobid/lv#Statistics"/>
+		</data>
+		<data source="052." name="@rdftype">
+			<regexp match="^.st|^..st|^...st|^....st|^.....st|^......st" format="http://purl.org/lobid/lv#Statistics"/>
+		</data>
+		<!-- thesis -->
+		<data source="051." name="@rdftype">
+			<regexp match="^.[uy]|^..[uy]|^...[uy]" format="$[ns-bibo]Thesis"/>
+		</data>
+		<data source="052." name="@rdftype">
+			<regexp match="^.sc|^...sc|^.....sc" format="$[ns-bibo]Thesis"/>
+		</data>
+		<data source="519-[12].?" name="@rdftype">
+			<regexp match=".*" format="$[ns-bibo]Thesis"/>
 		</data>
 		<!-- type is book (and also manifestation) if 050 begins with 'a' and 051 or 052 is missing 
 			or 051 and 052 does not fulfill a certain pattern -->
@@ -1390,186 +1594,25 @@
 				</data>
 			</choose>
 		</combine>
-		<!-- music -->
-		<data source="051." name="@rdftype">
-			<regexp match="^.m|^..m|^...m" format="http://purl.org/ontology/mo/PublishedScore"/>
-		</data>
-		<data source="052." name="@rdftype">
-			<regexp match="^.mu|^...mu|^.....mu" format="http://purl.org/ontology/mo/PublishedScore"/>
-		</data>
-		<data source="334-1.a" name="@rdftype">
-			<regexp match="Musikdruck" format="http://purl.org/ontology/mo/PublishedScore"/>
-		</data>
-		<data source="541[-ab]?.?" name="@rdftype">
-			<regexp match=".*" format="http://purl.org/ontology/mo/PublishedScore"/>
-		</data>
-		<!-- amtliche Druckschrift -->
-		<data source="051." name="@rdftype">
-			<regexp match="^......[bfiklmorsu]" format="$[ns-lobid-vocab]OfficialPublication"/>
-		</data>
-		<data source="052." name="@rdftype">
-			<regexp match="^.aa|^............[bfiklmorsu]" format="$[ns-lobid-vocab]OfficialPublication"/>
-		</data>
-		<data source="052." name="@rdftype">
-			<regexp match="^.aa|^...aa|^.....aa" format="$[ns-lobid-vocab]OfficialPublication"/>
-		</data>
-		<!-- bibliography -->
-		<data source="051." name="@rdftype">
-			<regexp match="^.[b]|^..[b]|^...[b]" format="$[ns-lobid-vocab]Bibliography"/>
-		</data>
-		<data source="052." name="@rdftype">
-			<regexp match="^.b[i]|^...b[i]|^.....b[i]" format="$[ns-lobid-vocab]Bibliography"/>
-		</data>
-		<!-- biography -->
-		<data source="051." name="@rdftype">
-			<regexp match="^.[h]|^..[h]|^...[h]" format="$[ns-lobid-vocab]Biography"/>
-		</data>
-		<data source="052." name="@rdftype">
-			<regexp match="^.b[g]|^...b[g]|^.....b[g]" format="$[ns-lobid-vocab]Biography"/>
-		</data>
-		<data source="9[01234][27]-[-1].f" name="@rdftype">
-			<regexp match="Autobiographie|Biographie" format="$[ns-lobid-vocab]Biography"/>
-		</data>
-		<!-- festschrift -->
-		<data source="051." name="@rdftype">
-			<regexp match="^.f|^..f|^...f" format="$[ns-lobid-vocab]Festschrift"/>
-		</data>
-		<!-- issue and volume of periodical work -->
-		<combine name="@rdftype" value="${a}">
-			<data source="025z2.a"/>
-			<data source="089|090-1.a" name="a">
-				<regexp match="Heft" format="http://schema.org/PublicationIssue"/>
-			</data>
-		</combine>
-		<!-- reference source -->
-		<data source="051." name="@rdftype">
-			<regexp match="^.[de]|^..[de]|^...[de]" format="$[ns-bibo]ReferenceSource"/>
-		</data>
-		<data source="052." name="@rdftype">
-			<regexp match="^.ez|^...ez|^.....ez" format="$[ns-bibo]ReferenceSource"/>
-		</data>
-		<data source="9[01234][27]-[-12].f" name="@rdftype">
-			<regexp match="Bestimmungsbuch|Enzyklopädie|Werkverzeichnis|W[ö|oe]rterbuch"
-				format="$[ns-bibo]ReferenceSource"/>
-		</data>
-		<!-- norm -->
-		<data source="051." name="@rdftype">
-			<regexp match="^.n|^..n|^...n" format="$[ns-bibo]Standard"/>
-		</data>
-		<data source="052." name="@rdftype">
-			<regexp match="^.no|^...no|^.....no" format="$[ns-bibo]Standard"/>
-		</data>
-		<data source="9[01234][27]-[-12].f" name="@rdftype">
-			<regexp match="Norm|Richtlinie" format="$[ns-bibo]Standard"/>
-		</data>
-		<!-- schoolbook -->
-		<data source="051." name="@rdftype">
-			<regexp match="^.x|^..x|^...x" format="$[ns-lobid-vocab]Schoolbook"/>
-		</data>
-		<data source="9[01234][27]-[1].f" name="@rdftype">
-			<regexp match="Schulbuch" format="$[ns-lobid-vocab]Schoolbook"/>
-		</data>
-		<!-- legislation -->
-		<data source="051." name="@rdftype">
-			<regexp match="^.l|^..l|^...l" format="$[ns-lobid-vocab]Legislation"/>
-		</data>
-		<data source="052." name="@rdftype">
-			<regexp match="^.ag|^...ag|^.....ag" format="$[ns-lobid-vocab]Legislation"/>
-		</data>
-		<!-- thesis -->
-		<data source="051." name="@rdftype">
-			<regexp match="^.[uy]|^..[uy]|^...[uy]" format="$[ns-bibo]Thesis"/>
-		</data>
-		<data source="052." name="@rdftype">
-			<regexp match="^.sc|^...sc|^.....sc" format="$[ns-bibo]Thesis"/>
-		</data>
-		<data source="519-[12].?" name="@rdftype">
-			<regexp match=".*" format="$[ns-bibo]Thesis"/>
-		</data>
-		<!-- proceedings -->
-		<data source="051." name="@rdftype">
-			<regexp match="^.k|^..k|^...k" format="$[ns-bibo]Proceedings"/>
-		</data>
-		<data source="052." name="@rdftype">
-			<regexp match="^.ko|^...ko|^.....ko" format="$[ns-bibo]Proceedings"/>
-		</data>
-		<data source="9[01234][27]-[-1].f" name="@rdftype">
-			<regexp match="Kongress" format="$[ns-bibo]Proceedings"/>
-		</data>
-		<!-- report -->
-		<data source="051." name="@rdftype">
-			<regexp match="^.[r]|^..[r]|^...[r]" format="http://purl.org/ontology/bibo/Report"/>
-		</data>
-		<data source="9[01234][27]-[-12].9" name="@rdftype">
-			<regexp match="4128022-2" format="http://purl.org/ontology/bibo/Report"/>
-		</data>
-		<data source="9[01234][27]-[1].f" name="@rdftype">
-			<regexp match="Bericht|Erlebnisbericht|Forschungsbericht|Literaturbericht|Reisebericht"
-				format="http://purl.org/ontology/bibo/Report"/>
-		</data>
-		<!-- statistics -->
-		<data source="051." name="@rdftype">
-			<regexp match="^.s|^..s|^...s" format="http://purl.org/lobid/lv#Statistics"/>
-		</data>
-		<data source="052." name="@rdftype">
-			<regexp match="^.st|^..st|^...st|^....st|^.....st|^......st" format="http://purl.org/lobid/lv#Statistics"/>
-		</data>
-		<!-- 052: type -->
-		<data source="052." name="@article">
-			<regexp match="^[af]|^.au|^...au|^.....au" format="$[ns-bibo]Article"/>
-		</data>
-		<data source="052." name="@collection">
-			<regexp match="^[jp].*|^.il.*|^...il.*|^.....il.*" format="$[ns-bibo]Periodical"/>
-		</data>
-		<data source="9[01234][27]-[-1].f" name="@collection">
-			<regexp match="Zeitschrift" format="$[ns-bibo]Periodical"/>
-		</data>
-		<combine name="@collection" value="${a}">
+		<!-- set default type -->
+		<combine name="@rdftype" value="$[ns-lobid-vocab]Miscellaneous" flushWith="record">
 			<if>
 				<none>
-					<data source="540[-ab][-1].[ab]"/>
-				</none>
-			</if>
-			<data source="052." name="a">
-				<regexp match="^r|^.se|^...se|^.....se" format="$[ns-bibo]Series"/>
-			</data>
-		</combine>
-		<data source="9[01234][27]-[1].f" name="@collection">
-			<regexp match="Schriftenreihe" format="$[ns-bibo]Series"/>
-		</data>
-		<data source="@collection" name="@typeOnly"/>
-		<!-- newspaper -->
-		<data source="052." name="@collection">
-			<regexp match="^z|^.[ae]o|^...[ae]o|^.....[ae]o" format="$[ns-bibo]Newspaper"/>
-		</data>
-		<data source="052." name="@collection">
-			<regexp match="^z|^.[url]p|^...[url]p|^.....[url]p" format="$[ns-bibo]Newspaper"/>
-		</data>
-		<data source="9[01234][27]-[-1].f" name="@collection">
-			<regexp match="Zeitung" format="$[ns-bibo]Newspaper"/>
-		</data>
-		<!-- computer carrier (disks etc) -->
-		<data source="058." name="@medium">
-			<regexp match="^.[^r]" format="http://rdaregistry.info/termList/RDAMediaType/1003"/>
-		</data>
-		<!-- electronic -->
-		<!-- looking for Blu-ray, Cartridge, CD, Diskette, DVD, Festplatte, HD-DVD, Kassette, USB -->
-		<data source="652a[-1].a" name="@medium">
-			<regexp match="^[BbCcDdHhFfKkUu][AaDdEeIiLlSsVv]" format="http://rdaregistry.info/termList/RDAMediaType/1003"/>
-		</data>
-		<data source="@medium" name="http://purl.org/dc/terms/medium"/>
-		<!-- set default medium -->
-		<combine name="@medium" value="$[ns-lobid-vocab]Miscellaneous" flushWith="record">
-			<if>
-				<none>
-					<data source="@medium">
-						<regexp match=".*"/>
-					</data>
+					<data source="@rdftype"/>
 				</none>
 			</if>
 			<data source="@id"/>
 		</combine>
-		<data source="@article" name="@rdftype"/>
+		<data name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" source="@rdftype"/>
+		<combine name="~rdf:subject" value="${a}" flushWith="@rdftype">
+			<data source="@rdftype"/>
+			<data source="@id" name="a">
+				<regexp match="(.*)" format="$[ns-lobid-resource]${1}#!"/>
+			</data>
+		</combine>
+		<!-- ####################### -->
+		<!-- ########## containedIn -->
+		<!-- ####################### -->
 		<combine name="@containedIn" value="${a}">
 			<data source="@dctIsPartOfHbzIdArticle|@dctIsPartOfArticle" name="a"/>
 			<data source="051.">
@@ -1580,35 +1623,6 @@
 			<data source="@containedIn" name="a">
 				<sanitizeUrl></sanitizeUrl>
 			</data>
-		</combine>
-		<combine name="@typeOnly" value="${a}">
-			<if>
-				<none>
-					<data source="052.">
-						<regexp
-							match="^........([dcwesmbqfaghtz])|^.........([dcwesmbqfaghtz])|^..........([dcwesmbqfaghtz])"/>
-					</data>
-					<data source="542[-ab][-1].[a]"/>
-				</none>
-			</if>
-			<choose name="a">
-				<data source="9[01234][27][-a][-1].f" name="a">
-					<regexp match="^Aufsatzsammlung" format="$[ns-lobid-vocab]EditedVolume"/>
-				</data>
-				<data source="9[01234][27][-a][-1].9" name="a">
-					<regexp match="4143413" format="$[ns-lobid-vocab]EditedVolume"/>
-				</data>
-			</choose>
-		</combine>
-		<!-- set default type -->
-		<combine name="@rdftype" value="$[ns-lobid-vocab]Miscellaneous" flushWith="record">
-			<if>
-				<none>
-					<data source="@rdftype"/>
-					<data source="@typeOnly"/>
-				</none>
-			</if>
-			<data source="@id"/>
 		</combine>
 		<!-- ####################### -->
 		<!-- ########## title -->
@@ -1976,21 +1990,68 @@
 			<data source="@id" name="id"/>
 		</combine>
 		<!-- ####################### -->
+		<!-- ########## copyright information -->
+		<!-- ####################### -->
+		<combine name="http://schema.org/license" value="${a}">
+			<data source="444a1.u" name="a"/>
+		</combine>
+		<combine name="~rdf:subject" value="${a}"
+			flushWith="444a1.u" sameEntity="true">
+			<data source="444a1.u" name="a"/>
+		</combine>
+		<combine name="http://id.loc.gov/ontologies/bibframe/note" value="${a}"
+			sameEntity="true" flushWith="444a1.u">
+			<data source="444a1.n" name="a"/>
+		</combine>
+		<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="${a}">
+			<data source="444a1.u" name="a">
+				<regexp match=".*" format="Lizenz"/>
+			</data>
+		</combine>
+		<combine name="~rdf:subject" value="$[ns-lobid-resource]${id}#!" flushWith="444a1.u">
+			<data source="@id" name="id"/>
+		</combine>
+		<!-- ####################### -->
+		<!-- ########## other editions of same resource -->
+		<!-- ####################### -->
+		<combine name="@relatedResourceId" value="${a}" sameEntity="true">
+			<data source="527[-xyz]1.9|775-1.9|776-1.9" name="a">
+				<regexp match="([a-zA-Z]{2}\d{9})" format="http://lobid.org/resources/${1}#!"/>
+			</data>
+		</combine>
+		<combine name="http://purl.org/dc/terms/relation" value="${a}">
+			<data source="@relatedResourceId" name="a"/>
+		</combine>
+		<combine name="~rdf:subject" value="${a}">
+			<data source="@relatedResourceId" name="a"/>
+		</combine>
+		<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="${a}"
+			flushWith="@relatedResourceId">
+			<data source="527[-xyz]1.a|775-1.t|776-1.t" name="a">
+				<replace pattern="&lt;|&gt;" with=""/>
+			</data>
+		</combine>
+		<combine name="~rdf:subject" value="$[ns-lobid-resource]${subject}#!" flushWith="@relatedResourceId">
+			<data source="@id" name="subject"/>
+		</combine>
+		<!-- ####################### -->
 		<!-- ########## predecessor and successor -->
 		<!-- ####################### -->
-	    <data source="531[-xyz]1.a|780-1.t" name="@predecessorLabel">
-	        <replace pattern=".*---&gt; :? ?" with=""/>
-	        <replace pattern="&gt;|&lt;" with=""/>
-	    </data>
+		<data source="531[-xyz]1.a|780-1.t" name="@predecessorLabel">
+			<replace pattern=".*---&gt; :? ?" with=""/>
+			<replace pattern="&gt;|&lt;" with=""/>
+		</data>
 		<combine name="@predecessorHbzId" value="${a}">
-			<data source="531[-xyz]1.9" name="a">
-				<regexp match="(.*)" format="$[ns-lobid-resource]${1}"/>
+			<data source="531[-xyz]1.9|780-1.9" name="a">
+				<regexp match="([BCHT]T.*)" format="$[ns-lobid-resource]${1}#!"/>
 			</data>
 		</combine>
 		<combine name="@predecessorHbzId" value="_:${a}">
 			<if>
 				<none>
-					<data source="531[-xyz]1.9"/>
+					<data source="531[-xyz]1.9|780-1.9">
+						<regexp match="([BCHT]T.*)"/>
+					</data>
 				</none>
 			</if>
 			<data source="@predecessorLabel" name="a"/>
@@ -2014,14 +2075,16 @@
 	        <replace pattern="&gt;|&lt;" with=""/>
 		</data>
 		<combine name="@successorHbzId" value="${a}">
-			<data source="533[-xyz]1.9" name="a">
-				<regexp match="(.*)" format="$[ns-lobid-resource]${1}"/>
+			<data source="533[-xyz]1.9|785-1.9" name="a">
+				<regexp match="([BCHT]T.*)" format="$[ns-lobid-resource]${1}#!"/>
 			</data>
 		</combine>
 		<combine name="@successorHbzId" value="_:${a}">
 			<if>
 				<none>
-					<data source="533[-xyz]1.9"/>
+					<data source="533[-xyz]1.9|785-1.9">
+						<regexp match="([BCHT]T.*)"/>
+					</data>
 				</none>
 			</if>
 			<data source="@successorLabel" name="a"/>
@@ -2033,8 +2096,8 @@
 		<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="${a}"
 			flushWith="@successorHbzId">
 			<data source="@successorLabel" name="a">
-			    <replace pattern="^http" with="Siehe: http" />
-			</data>    
+				<replace pattern="^http" with="Siehe: http" />
+			</data>
 		</combine>
 		<combine name="~rdf:subject" value="$[ns-lobid-resource]${subject}#!" flushWith="@successorHbzId">
 			<data source="@id" name="subject"/>
@@ -2105,7 +2168,6 @@
 			<!-- ####################### -->
 			<!-- ########## frequency -->
 			<!-- ####################### -->
-			<!-- proceedings -->
 			<choose name="http://id.loc.gov/ontologies/bibframe/frequency">
 				<data source="052.">
 					<regexp match="^........t|^.........t|^..........t" format="http://marc21rdf.info/terms/continuingfre#i"/>
@@ -2192,11 +2254,11 @@
 			<data source="@id" name="subject"/>
 		</combine>
 		<!-- ####################### -->
-		<!-- ########## description extent -->
+		<!-- ########## extent -->
 		<!-- ####################### -->
-		<data source="433[-abc][-1].[aq]" name="http://id.loc.gov/ontologies/bibframe/extent"/>
+		<data source="433[-abc][-1].[aq]|653-1.a" name="http://id.loc.gov/ontologies/bibframe/extent"/>
 		<!-- ####################### -->
-		<!-- ################ edition -->
+		<!-- ############### edition -->
 		<!-- ####################### -->
 		<combine name="$[ns-bibo]edition" value="${a}">
 			<choose name="a">
@@ -2205,6 +2267,14 @@
 				<data source="510-1.a"/>
 			</choose>
 		</combine>
+		<!-- ####################### -->
+		<!-- ### responsibility statement -->
+		<!-- ####################### -->
+		<combine name="~rdf:subject" value="$[ns-lobid-resource]${id}#!">
+			<data source="359[-ab][-12].a"/>
+			<data source="@id" name="id"/>
+		</combine>
+		<data source="359[-ab][-12].a" name="http://id.loc.gov/ontologies/bibframe/responsibilityStatement"/>
 		<!-- ################ Hochschulschriftenvermerk aka thesisInformation -->
 		<concat delimiter=", " name="http://rdaregistry.info/Elements/u/P60489">
 			<data source="519-1.[ap]"/>
@@ -2311,29 +2381,23 @@
 			<replace pattern="^http" with="Siehe: http" />
 		</data>
 		<!-- provenance -->
-		<combine name="@created" value="${a}">
-			<choose name="a" flushWith="record">
-				<data source="002[ab]1.a" name="a"/>
-				<data source="?????.?"/> <!--  ignored if missing -->
-			</choose>
-		</combine>
 		<combine name="http://www.w3.org/2007/05/powder-s#describedby" value="$[ns-lobid-resource]${a}">
 			<data source="@id" name="a"/>
 		</combine>
 		<combine name="~rdf:subject" value="${a}">
-			<data source="@created"/>
+			<data source="002[ab]1.a"/>
 			<data source="@id" name="a">
 				<regexp match="(.*)" format="$[ns-lobid-resource]${1}"/>
 			</data>
 		</combine>
 		<combine name="http://purl.org/dc/terms/created" value="${a}">
-			<data source="@created" name="a">
+			<data source="002[ab]1.a" name="a">
 				<regexp match="([0-9]{8})" format="${1}"/>
 			</data>
 		</combine>
 		<!-- set subject uri of resource anew -->
 		<combine name="~rdf:subject" value="$[ns-lobid-resource]${id}#!">
-			<data source="@created"/>
+			<data source="002[ab]1.a"/>
 			<data source="@id" name="id"/>
 		</combine>
 		<call-macro name="setRdfSubjectDescribedBy" field="070a1.a"/>
@@ -2420,7 +2484,6 @@
 		<call-macro name="setGNDPersonId" field="192"/>
 		<call-macro name="setGNDPersonId" field="196"/>
 		<!-- literals of creator (seems there are no corporateBodyCreators without gndID) -->
-		<data source="359[-ab][-12].a" name="http://id.loc.gov/ontologies/bibframe/responsibilityStatement"/>
 		<data source="1[02468][048][-aemn][12].[pa]|1[13579][26][-aemn][12].[pa]" name="@creatorPersonLabel"/>
 		<!-- bnode for creator when no ID -->
 		<combine name="@bnodeCreatorPersonLabel" value="_:${a}" sameEntity="true">
@@ -5061,10 +5124,6 @@
 		<!-- ####################### -->
 		<!-- ##########fulltext, toc, seeAlso -->
 		<!-- ####################### -->
-		<data source="051." name="@archived">
-			<regexp match="^.w" format="$[ns-lobid-vocab]ArchivedWebPage"/>
-		</data>
-		<data source="@archived" name="@rdftype"/>
 		<!-- fulltext online , if 655 AND 334 exists with "[eE][lL]"ektro.. -->
 		<combine name="@fulltextOnline" value="${link}">
 			<data source="334-[12].a">

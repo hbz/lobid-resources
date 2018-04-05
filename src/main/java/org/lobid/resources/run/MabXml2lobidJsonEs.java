@@ -1,4 +1,4 @@
-/* Copyright 2015  hbz, Pascal Christoph.
+/* Copyright 2015,2018  hbz, Pascal Christoph.
  * Licensed under the Eclipse Public License 1.0 */
 package org.lobid.resources.run;
 
@@ -25,19 +25,22 @@ import com.hp.hpl.jena.rdf.model.Model;
 
 /**
  * Transform hbz01 Aleph Mab XML catalog data into lobid elasticsearch ready
- * JSON-LD and index that into elasticsearch.
+ * JSON-LD and index that into elasticsearch. Using proper parameters the aleph
+ * "Loeschsaetze" will be etl'ed into an index of its own.
  * 
  * @author Pascal Christoph (dr0i)
  * 
  */
 @SuppressWarnings("javadoc")
 public final class MabXml2lobidJsonEs {
-	public final static String LOBID_RESOURCES_JSONLD_CONTEXT =
+	public static String jsonLdContext =
 			"http://lobid.org/resources/context.jsonld";
+	private static final String MORPH_FN_PREFIX = "src/main/resources/";
+	private static RdfModel2ElasticsearchEtikettJsonLd rdf2json;
 
 	public static void main(String... args) {
 		String usage =
-				"<input path>%s<index name>%s<index alias suffix>%s<node>%s<cluster>%s<'update' (will take latest index), 'exact' (will take ->'index name' even when no timestamp is suffixed) , else create new index with actual timestamp>%s";
+				"<input path>%s<index name>%s<index alias suffix>%s<node>%s<cluster>%s<'update' (will take latest index), 'exact' (will take ->'index name' even when no timestamp is suffixed) , else create new index with actual timestamp>%s<optional: filename of index-config>%s<optional: filename of morph>%s<optional: jsonld-context-uri>%s";
 		String inputPath = args[0];
 		String indexName = args[1];
 		String date = new SimpleDateFormat("yyyyMMdd-HHmmss").format(new Date());
@@ -48,20 +51,40 @@ public final class MabXml2lobidJsonEs {
 		String node = args[3];
 		String cluster = args[4];
 		boolean update = args[5].toLowerCase().equals("update");
-		System.out.println(
-				"It is specified:\n" + String.format(usage, ": " + inputPath + "\n",
-						": " + indexName + "\n", ": " + indexAliasSuffix + "\n",
-						": " + node + "\n", ": " + cluster, ": " + "\n" + update));
-		if (args.length != 6) {
+		System.out.println("It is specified:\n"
+				+ String.format(usage, ": " + inputPath + "\n", ": " + indexName + "\n",
+						": " + indexAliasSuffix + "\n", ": " + node + "\n", ": " + cluster,
+						": " + "\n" + update, " ", " ", " "));
+		if (args.length < 6) {
 			System.err.println("Usage: MabXml2lobidJsonEs"
-					+ String.format(usage, " ", " ", " ", " ", " ", " "));
+					+ String.format(usage, " ", " ", " ", " ", " ", " ", " ", " ", " "));
 			return;
 		}
-		String jsonLdContext =
-				System.getProperty("jsonLdContext", LOBID_RESOURCES_JSONLD_CONTEXT);
-		System.out.println("using jsonLdContext: " + jsonLdContext);
+		String indexConfig = args.length >= 7 ? args[6] : "index-config.json";
+		System.out.println("using indexConfig: " + indexConfig);
+		String morphFileName = args.length >= 8 ? MORPH_FN_PREFIX + args[7]
+				: MORPH_FN_PREFIX + "morph-hbz01-to-lobid.xml";
+		System.out.println("using morph: " + morphFileName);
+		MabXml2lobidJsonEs mabXml2lobidJsonEs = new MabXml2lobidJsonEs();
+		if (args.length >= 9)
+			jsonLdContext = args[8];
+		if (args.length >= 10)
+			rdf2json = new RdfModel2ElasticsearchEtikettJsonLd(new File(args[9]),
+					jsonLdContext);
+		else
+			rdf2json = new RdfModel2ElasticsearchEtikettJsonLd(
+					mabXml2lobidJsonEs.jsonLdContext);
+		System.out.println("using jsonLdContext: " + rdf2json.getJsonLdContext());
+		System.out
+				.println("using jsonLdDirectory: " + rdf2json.getLabelsDirectoryName());
+		rdf2json.getLabelsDirectoryName();
+		if (args.length >= 11) {
+			rdf2json.setRootIdPredicate(args[10]);
+		}
+		System.out
+				.println("using rootIdPredicate: " + rdf2json.getRootIdPredicate());
 		DefaultObjectPipe<Model, ObjectReceiver<HashMap<String, String>>> jsonConverter =
-				new RdfModel2ElasticsearchEtikettJsonLd(jsonLdContext);
+				rdf2json;
 		// hbz catalog transformation
 		final FileOpener opener = new FileOpener();
 		if (inputPath.toLowerCase().endsWith("bz2")) {
@@ -76,6 +99,17 @@ public final class MabXml2lobidJsonEs {
 		esIndexer.setIndexName(indexName);
 		esIndexer.setIndexAliasSuffix(indexAliasSuffix);
 		esIndexer.setUpdateNewestIndex(update);
+		esIndexer.setIndexConfig(indexConfig);
+		esIndexer.lookupMabxmlDeletion = Boolean
+				.parseBoolean(System.getProperty("lookupMabxmlDeletion", "false"));
+		System.out
+				.println("lookupMabxmlDeletion: " + esIndexer.lookupMabxmlDeletion);
+		esIndexer.lookupWikidata =
+				Boolean.parseBoolean(esIndexer.lookupMabxmlDeletion ? "false"
+						: System.getProperty("lookupWikidata", "true"));
+		System.out.println("lookupWikidata: " + esIndexer.lookupWikidata);
+		if (esIndexer.lookupMabxmlDeletion)
+			esIndexer.lookupWikidata = false;
 		esIndexer.onSetReceiver();
 		WikidataGeodata2Es.storeIfIndexExists(esIndexer.getElasticsearchClient());
 		StreamBatchLogger batchLogger = new StreamBatchLogger();
@@ -88,9 +122,7 @@ public final class MabXml2lobidJsonEs {
 				.setReceiver(esIndexer);
 		opener.setReceiver(new TarReader()).setReceiver(new XmlDecoder())
 				.setReceiver(new AlephMabXmlHandler())
-				.setReceiver(
-						new Metamorph("src/main/resources/morph-hbz01-to-lobid.xml"))
-				.setReceiver(batchLogger);
+				.setReceiver(new Metamorph(morphFileName)).setReceiver(batchLogger);
 		opener.process(new File(inputPath).getAbsolutePath());
 		opener.closeStream();
 	}

@@ -30,12 +30,14 @@ public final class Hbz01MabXml2ElasticsearchLobidTestOnline {
 		Settings settings =
 				Settings.builder().put("cluster.name", CLUSTER_NAME).build();
 		this.tc = new PreBuiltTransportClient(settings);
+
 		try {
+			MabXml2lobidJsonEs mabXml2lobidJsonEs = new MabXml2lobidJsonEs();
 			Hbz01MabXml2ElasticsearchLobidTest.etl(
 					tc.addTransportAddress(new InetSocketTransportAddress(
 							InetAddress.getByName(HOSTNAME), 9300)),
 					new RdfModel2ElasticsearchEtikettJsonLd(
-							MabXml2lobidJsonEs.LOBID_RESOURCES_JSONLD_CONTEXT));
+							mabXml2lobidJsonEs.jsonLdContext));
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		}
