@@ -494,7 +494,7 @@ public class Application extends Controller {
 		});
 	}
 
-	private static Status responseFor(JsonNode responseJson,
+	static Status responseFor(JsonNode responseJson,
 			String responseFormat) throws JsonProcessingException {
 		String content = "";
 		String contentType = "";

@@ -45,6 +45,7 @@ $('input.search-resources').autocomplete({
 	@desc("Suche über alle Felder", resources.routes.Application.query("kunst", format="json"))
 	@desc("Suche mit Paginierung", resources.routes.Application.query("kunst", from = 2, size = 2, format="json"))
 	@desc("Einschränkung auf Bestand in Bibliotheken", resources.routes.Application.query("kunst", owner = "DE-290,DE-294", format="json"))
+	@desc("Löschungen zwischen zwei Zeitpunkten", resources.routes.Deletions.query("describedBy.deleted:>201803028 AND describedBy.deleted:<20180405",size=3))
 
 	<h2 id='query-syntax'>Abfragemöglichkeiten <small><a href='#query-syntax'><span class='glyphicon glyphicon-link'></span></a></small></h2>
 
