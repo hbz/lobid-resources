@@ -9,6 +9,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -91,6 +93,14 @@ public class ElasticsearchIndexer
 	public boolean lookupMabxmlDeletion;
 	/** Defines if a wikidata lookup should be done */
 	public boolean lookupWikidata;
+	/**
+	 * The date now. Handy to append to index-name to build multiple index' in
+	 * parallel. Switch then by setting the alias.
+	 */
+	public static final String DATE =
+			LocalDateTime.now().toLocalDate().format(DateTimeFormatter.BASIC_ISO_DATE)
+					+ "-" + LocalDateTime.now().getHour()
+					+ LocalDateTime.now().getMinute() + LocalDateTime.now().getSecond();
 
 	/**
 	 * Keys to get index properties and the json document ("graph")
@@ -136,6 +146,8 @@ public class ElasticsearchIndexer
 	public void onSetReceiver() {
 		if (client == null) {
 			LOG.info("clustername=" + this.clustername);
+			LOG.info("hostname=" + this.hostname);
+
 			Settings clientSettings = Settings.builder()
 					.put("cluster.name", this.clustername)
 					.put("client.transport.sniff", false)
@@ -159,6 +171,7 @@ public class ElasticsearchIndexer
 				client.admin().indices().prepareUpdateSettings();
 		usrb.setIndices(indexName);
 		settings.put("index.refresh_interval", -1);
+		LOG.info("Set index.refresh_interval to -1");
 		usrb.setSettings(settings);
 		usrb.execute().actionGet();
 		LOG.info(
