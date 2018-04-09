@@ -524,19 +524,6 @@
 				</data>
 			</combine>
 		</macro>
-		<!-- prefer gnd subjects IDs to literals -->
-		<macro name="subjectOrder">
-			<combine name="@subjectOrder" value="${a}">
-				<concat delimiter=", " name="a">
-					<choose name="a" flushWith="$[field]-[-12]" sameEntity="true">
-						<data source="$[field]-[-12].9">
-							<regexp match="\(DE-588\)(.*)" format="http://d-nb.info/gnd/${1}"/>
-						</data>
-						<data source="$[field]-[-12].[acfghkpstkz-]"/>
-					</choose>
-				</concat>
-			</combine>
-		</macro>
 		<!-- subjects without ID -->
 		<macro name="dctSubject">
 			<combine name="@rdfTypeSubject" value="${a}" flushWith="$[field]-[-12]" reset="true"
@@ -992,24 +979,6 @@
 				<data source="@contributorPersonLabel$[field]"/>
 			</combine>
 		</macro>
-
-		<macro name="setContributorOrder">
-			<combine name="@contributorOrder$[field]" value="${a}">
-				<choose name="a">
-					<data source="$[field][-abcefmn][12].9" name="a">
-						<regexp match="\(DE-588\)(.*)" format="http://d-nb.info/gnd/${1}"/>
-					</data>
-					<data source="$[field][-aemn][12].[pa]" name="a">
-						<replace pattern="&gt;" with=""/>
-						<replace pattern="&lt;" with=""/>
-					</data>
-					<data source="$[field][bcf]1.[pa]" name="a">
-						<replace pattern="&gt;" with=""/>
-						<replace pattern="&lt;" with=""/>
-					</data>
-				</choose>
-			</combine>
-		</macro>
 		<macro name="setNameOfCreatingCorporateBodyComposed">
 			<combine name="@nameOfCreatingCorporateBodyComposed$[field]$[subfield_1]"
 				value="${a}, ${b}">
@@ -1243,16 +1212,6 @@
 		<data source="050." name="@medium">
 			<regexp match="^.a" format="http://purl.org/ontology/bibo/Manuscript"/>
 		</data>
-		<!-- map -->
-		<data source="050." name="@medium">
-			<regexp match="^..........a" format="$[ns-bibo]Map"/>
-		</data>
-		<data source="433[-c].a" name="@medium">
-			<regexp match="Kt.|Karte" format="$[ns-bibo]Map"/>
-		</data>
-		<data source="9[01234][27]-1.f" name="@medium">
-			<regexp match="Altkarte|Karte|Stadtplan" format="$[ns-bibo]Map"/>
-		</data>
 		<!-- microform -->
 		<data source="050." name="@medium">
 			<regexp match="^...[abc]" format="http://rdaregistry.info/termList/RDAMediaType/1002"/>
@@ -1290,13 +1249,6 @@
 			<regexp match="^[AaOo][rn]" format="http://rdaregistry.info/termList/RDACarrierType/1018"/>
 		</data>
 		<data source="@1018" name="@medium"/>
-		<!-- picture -->
-		<data source="050." name="@medium">
-			<regexp match="^.....d" format="$[ns-bibo]Image"/>
-		</data>
-		<data source="334-[12].a" name="@medium">
-			<regexp match="^Bildli" format="$[ns-bibo]Image"/>
-		</data>
 		<!-- print -->
 		<data source="050." name="@medium">
 			<regexp match="^[abcd]" format="http://rdaregistry.info/termList/RDAproductionMethod/1010"/>
@@ -1406,6 +1358,27 @@
 		<!-- festschrift -->
 		<data source="051." name="@rdftype">
 			<regexp match="^.f|^..f|^...f" format="$[ns-lobid-vocab]Festschrift"/>
+		</data>
+		<!-- picture -->
+		<data source="050." name="@rdftype">
+			<regexp match="^.....d" format="$[ns-bibo]Image"/>
+		</data>
+		<data source="334-[12].a" name="@rdftype">
+			<regexp match="^Bildli" format="$[ns-bibo]Image"/>
+		</data>
+		<!-- map -->
+		<data source="050." name="@rdftype">
+			<regexp match="^..........a" format="$[ns-bibo]Map"/>
+		</data>
+		<data source="433[-c].a" name="@rdftype">
+			<regexp match="Kt.|Karte" format="$[ns-bibo]Map"/>
+		</data>
+		<data source="9[01234][27]-1.f" name="@rdftype">
+			<regexp match="Altkarte|Karte|Stadtplan" format="$[ns-bibo]Map"/>
+		</data>
+		<!-- issue and volume of periodical work -->
+		<data source="089|090-1.a" name="@rdftype">
+			<regexp match="Heft" format="http://schema.org/PublicationIssue"/>
 		</data>
 		<!-- game -->
 		<data source="050." name="@rdftype">
@@ -1591,6 +1564,8 @@
 				</data>
 			</choose>
 		</combine>
+		<!-- set type -->
+		<data name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" source="@rdftype"/>
 		<!-- set default type -->
 		<combine name="@rdftype" value="$[ns-lobid-vocab]Miscellaneous" flushWith="record">
 			<if>
@@ -1600,7 +1575,6 @@
 			</if>
 			<data source="@id"/>
 		</combine>
-		<data name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" source="@rdftype"/>
 		<combine name="~rdf:subject" value="${a}" flushWith="@rdftype">
 			<data source="@rdftype"/>
 			<data source="@id" name="a">
@@ -2623,6 +2597,7 @@
 		<call-macro name="setCreatorPersonLabel" field="196"/>
 		<call-macro name="setBnodeCreatorPersonLabel" field="196"/>
 
+
 		<call-macro name="setCreatorPersonBnodeOrId" field="100"/>
 		<call-macro name="setContributorPersonBnodeOrId" field="100"/>
 		<data source="@creatorPersonBnodeOrId100" name="@agentId100"/>
@@ -2850,15 +2825,19 @@
 		<call-macro name="setRelatorNonPerson" field="288"/>
 		<call-macro name="setRelatorNonPerson" field="292"/>
 		<call-macro name="setRelatorNonPerson" field="296"/>
-
 		<!-- ####################### -->
 		<!-- ################ koerperschaften -->
 		<!-- ####################### -->
+		<combine name="~rdf:subject" value="$[ns-lobid-resource]${a}#!">
+			<data source="@id" name="a"/>
+			<choose>
+				<data source="[12][0123456789][02468][-abcefmn][12].[pa9]"/>
+			</choose>
+		</combine>
 		<data source="2?[02468][-a][12].9" name="@creatorCorporateBodyId">
 			<regexp match="\(DE-588\)(.*)" format="http://d-nb.info/gnd/${1}"/>
 			<sanitizeUrl></sanitizeUrl>
 		</data>
-
 		<data source="[29]?[02468][-a][12].k" name="@nameOfCreatingCorporateBodyK">
 			<replace pattern="&gt;&gt;" with=""/>
 			<replace pattern="&lt;&lt;" with=""/>
@@ -4150,117 +4129,6 @@
 				<sanitizeUrl></sanitizeUrl>
 			</data>
 		</combine>
-
-		<call-macro name="setContributorOrder" field="100"/>
-		<call-macro name="setContributorOrder" field="104"/>
-		<call-macro name="setContributorOrder" field="108"/>
-		<call-macro name="setContributorOrder" field="112"/>
-		<call-macro name="setContributorOrder" field="116"/>
-		<call-macro name="setContributorOrder" field="120"/>
-		<call-macro name="setContributorOrder" field="124"/>
-		<call-macro name="setContributorOrder" field="128"/>
-		<call-macro name="setContributorOrder" field="132"/>
-		<call-macro name="setContributorOrder" field="136"/>
-		<call-macro name="setContributorOrder" field="140"/>
-		<call-macro name="setContributorOrder" field="144"/>
-		<call-macro name="setContributorOrder" field="148"/>
-		<call-macro name="setContributorOrder" field="152"/>
-		<call-macro name="setContributorOrder" field="156"/>
-		<call-macro name="setContributorOrder" field="160"/>
-		<call-macro name="setContributorOrder" field="164"/>
-		<call-macro name="setContributorOrder" field="168"/>
-		<call-macro name="setContributorOrder" field="172"/>
-		<call-macro name="setContributorOrder" field="176"/>
-		<call-macro name="setContributorOrder" field="180"/>
-		<call-macro name="setContributorOrder" field="184"/>
-		<call-macro name="setContributorOrder" field="188"/>
-		<call-macro name="setContributorOrder" field="192"/>
-		<call-macro name="setContributorOrder" field="196"/>
-		<call-macro name="setContributorOrder" field="200"/>
-		<call-macro name="setContributorOrder" field="204"/>
-		<call-macro name="setContributorOrder" field="208"/>
-		<call-macro name="setContributorOrder" field="212"/>
-		<call-macro name="setContributorOrder" field="216"/>
-		<call-macro name="setContributorOrder" field="220"/>
-		<call-macro name="setContributorOrder" field="224"/>
-		<call-macro name="setContributorOrder" field="228"/>
-		<call-macro name="setContributorOrder" field="232"/>
-		<call-macro name="setContributorOrder" field="236"/>
-		<call-macro name="setContributorOrder" field="240"/>
-		<call-macro name="setContributorOrder" field="244"/>
-		<call-macro name="setContributorOrder" field="248"/>
-		<call-macro name="setContributorOrder" field="252"/>
-		<call-macro name="setContributorOrder" field="256"/>
-		<call-macro name="setContributorOrder" field="260"/>
-		<call-macro name="setContributorOrder" field="264"/>
-		<call-macro name="setContributorOrder" field="268"/>
-		<call-macro name="setContributorOrder" field="272"/>
-		<call-macro name="setContributorOrder" field="276"/>
-		<call-macro name="setContributorOrder" field="280"/>
-		<call-macro name="setContributorOrder" field="284"/>
-		<call-macro name="setContributorOrder" field="288"/>
-		<call-macro name="setContributorOrder" field="292"/>
-		<call-macro name="setContributorOrder" field="296"/>
-
-		<combine name="~rdf:subject" value="$[ns-lobid-resource]${a}#!">
-			<data source="@id" name="a"/>
-			<data source="@contributorOrder[12][0-9][02468]"/>
-		</combine>
-		<combine name="$[ns-lobid-vocab]contributorOrder" value="${a}">
-			<concat delimiter=" | " name="a">
-				<data source="@contributorOrder100"/>
-				<data source="@contributorOrder104"/>
-				<data source="@contributorOrder108"/>
-				<data source="@contributorOrder112"/>
-				<data source="@contributorOrder116"/>
-				<data source="@contributorOrder120"/>
-				<data source="@contributorOrder124"/>
-				<data source="@contributorOrder128"/>
-				<data source="@contributorOrder132"/>
-				<data source="@contributorOrder136"/>
-				<data source="@contributorOrder140"/>
-				<data source="@contributorOrder144"/>
-				<data source="@contributorOrder148"/>
-				<data source="@contributorOrder152"/>
-				<data source="@contributorOrder156"/>
-				<data source="@contributorOrder160"/>
-				<data source="@contributorOrder164"/>
-				<data source="@contributorOrder168"/>
-				<data source="@contributorOrder172"/>
-				<data source="@contributorOrder176"/>
-				<data source="@contributorOrder180"/>
-				<data source="@contributorOrder184"/>
-				<data source="@contributorOrder188"/>
-				<data source="@contributorOrder192"/>
-				<data source="@contributorOrder196"/>
-				<data source="@contributorOrder200"/>
-				<data source="@contributorOrder204"/>
-				<data source="@contributorOrder208"/>
-				<data source="@contributorOrder212"/>
-				<data source="@contributorOrder216"/>
-				<data source="@contributorOrder220"/>
-				<data source="@contributorOrder224"/>
-				<data source="@contributorOrder228"/>
-				<data source="@contributorOrder232"/>
-				<data source="@contributorOrder236"/>
-				<data source="@contributorOrder240"/>
-				<data source="@contributorOrder244"/>
-				<data source="@contributorOrder248"/>
-				<data source="@contributorOrder252"/>
-				<data source="@contributorOrder256"/>
-				<data source="@contributorOrder260"/>
-				<data source="@contributorOrder264"/>
-				<data source="@contributorOrder268"/>
-				<data source="@contributorOrder272"/>
-				<data source="@contributorOrder276"/>
-				<data source="@contributorOrder280"/>
-				<data source="@contributorOrder284"/>
-				<data source="@contributorOrder288"/>
-				<data source="@contributorOrder292"/>
-				<data source="@contributorOrder296"/>
-			</concat>
-		</combine>
-
 		<!-- ####################### -->
 		<!-- #######subjects -->
 		<!-- ####################### -->
@@ -5061,25 +4929,6 @@
 			<data source="@concatComplexSubjectRswkId9[01234][27]|@nwbibComplexSubjectRswkId9[01234][27]"/>
 			<data source="@id" name="subject"/>
 		</combine>
-		<!-- /Schlagwortketten (aka "subject chains", "complex subjects" ...) -->
-		<!--|@subjectLabelBnode ############ "schlagwortketten" (aka subject chains) as ordered lists -->
-		<call-macro name="subjectOrder" field="902"/>
-		<call-macro name="subjectOrder" field="907"/>
-		<call-macro name="subjectOrder" field="912"/>
-		<call-macro name="subjectOrder" field="917"/>
-		<call-macro name="subjectOrder" field="922"/>
-		<call-macro name="subjectOrder" field="927"/>
-		<call-macro name="subjectOrder" field="932"/>
-		<call-macro name="subjectOrder" field="937"/>
-		<call-macro name="subjectOrder" field="942"/>
-		<call-macro name="subjectOrder" field="947"/>
-		<combine name="~rdf:subject" value="$[ns-lobid-resource]${id}#!"
-			flushWith="@subjectOrder">
-			<data source="@id" name="id"/>
-		</combine>
-		<entity name="~rdf:list" reset="true">
-			<data name="$[ns-lobid-vocab]subjectOrder" source="@subjectOrder"/>
-		</entity>
 		<!-- subjects without ID -->
 		<call-macro name="dctSubject" field="902"/>
 		<call-macro name="dctSubject" field="907"/>
