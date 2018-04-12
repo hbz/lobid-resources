@@ -133,9 +133,6 @@
                   }
                 }
             },
-            "dateOfBirth" : {
-               "type" : "text"
-            },
             "containedIn" : {
                "properties" : {
                   "id" : {
@@ -220,17 +217,6 @@
                   }
                }
             },
-            "source" : {
-               "properties" : {
-                  "label" : {
-                     "index" : "false",
-                     "type" : "text"
-                  },
-                  "id" : {
-                     "type" : "keyword"
-                  }
-               }
-            },
             "publication" : {
                "properties" : {
                   "location" : {
@@ -247,10 +233,6 @@
                            "type" : "keyword"
                         },
                         "label" : {
-                           "index" : "false",
-                           "type" : "text"
-                        },
-                        "type" : {
                            "index" : "false",
                            "type" : "text"
                         }
@@ -284,10 +266,6 @@
                "type" : "text",
                "analyzer" : "id_analyzer"
             },
-            "placeOfPublication" : {
-               "type" : "text",
-               "analyzer" : "german_analyzer"
-            },
             "hbzId" : {
                "analyzer" : "id_analyzer",
                "type" : "text"
@@ -308,28 +286,6 @@
                      "type" : "text"
                   },
                   "id" : {
-                     "type" : "text"
-                  }
-               }
-            },
-            "tableOfContents" : {
-               "properties" : {
-                  "id" : {
-                     "type" : "keyword"
-                  },
-                  "label" : {
-                     "index" : "false",
-                     "type" : "text"
-                  }
-               }
-            },
-            "isFormatOf" : {
-               "properties" : {
-                  "id" : {
-                     "type" : "keyword"
-                  },
-                  "label" : {
-                     "index" : "false",
                      "type" : "text"
                   }
                }
@@ -356,6 +312,7 @@
             "hasItem" : {
                "properties" : {
                   "type" : {
+                     "index" : "false",
                      "type" : "keyword"
                   },
                   "id" : {
@@ -385,20 +342,11 @@
                "type" : "text",
                "analyzer" : "german_analyzer"
             },
-            "description" : {
-               "properties" : {
-                  "label" : {
-                     "type" : "text"
-                  },
-                  "id" : {
-                     "type" : "keyword"
-                  }
-               }
-            },
             "secondaryPublication" : {
                "properties" : {
                   "location" : {
-                     "type" : "text"
+                     "type" : "text",
+                     "analyzer" : "german_analyzer"
                   },
                   "startDate" : {
                      "type" : "text"
@@ -406,16 +354,35 @@
                   "type" : {
                      "type" : "keyword"
                   },
-                  "description" : {
-                     "type" : "text"
-                  },
                   "publishedBy" : {
-                     "type" : "text"
+                     "type" : "text",
+                     "search_analyzer" : "german_analyzer",
+                     "analyzer" : "ngram_analyzer"
                   }
                }
             },
             "label" : {
                "type" : "text"
+            },
+            "containsExampleOfWork" : {
+               "properties" : {
+                  "id" : {
+                     "type" : "keyword"
+                  },
+                  "creatorOfWork" : {
+                     "type" : "text"
+                  }
+               }
+            },
+            "exampleOfWork" : {
+               "properties" : {
+                  "id" : {
+                     "type" : "keyword"
+                  },
+                  "creatorOfWork" : {
+                     "type" : "text"
+                  }
+               }
             },
             "contribution" : {
                "type" : "nested",
@@ -438,6 +405,9 @@
                            "analyzer" : "german_analyzer"
                         },
                         "dateOfBirth" : {
+                           "type" : "text"
+                        },
+                        "dateOfBirthAndDeath" : {
                            "type" : "text"
                         },
                         "id" : {
@@ -489,63 +459,72 @@
                      "properties": {
                         "id": {
                            "type" : "keyword"
-                     },
-                      "label": {
-                        "type": "text",
-                        "analyzer" : "german_analyzer",
-                        "fields": {
-                            "raw": {
-                                "type": "keyword"
-                            },
-                            "unstemmed": {
-                                "type": "text",
-                                "analyzer" : "german_analyzer_unstemmed"
-                            }
-                        }
-                     },
-                     "source": {
-                        "properties": {
-                          "id": {
-                            "type": "keyword"
-                          },
-                          "label": {
-                            "type": "text"
-                          }
-                        }
-                     },
-                     "type": {
-                        "type": "keyword"
+                        },
+                        "dateOfBirthAndDeath" : {
+                           "type" : "text"
+                        },
+                        "dateOfBirth" : {
+                           "type" : "text"
+                        },
+                        "dateOfDeath" : {
+                           "type" : "text"
+                        },
+                        "label": {
+                           "type": "text",
+                           "analyzer" : "german_analyzer",
+                           "fields": {
+                              "raw": {
+                                 "type": "keyword"
+                              },
+                              "unstemmed": {
+                                 "type": "text",
+                                 "analyzer" : "german_analyzer_unstemmed"
+                              }
+                           }
+                        },
+                        "source": {
+                           "properties": {
+                              "id": {
+                                 "type": "keyword"
+                              },
+                              "label": {
+                                 "type": "text"
+                              }
+                           }
+                        },
+                        "type": {
+                           "type": "keyword"
                         }
                      }
                   },
-               "id": {
-                 "type": "keyword"
-               },
-               "label": {
-                   "type": "text",
-                   "analyzer" : "german_analyzer",
-                   "fields": {
-                       "raw": {
-                          "type": "keyword"
-                       }
-                   }
-               },
-               "notation": {
-                 "type": "text",
-                 "index": "false"
-               },
-               "source": {
-                  "properties": {
-                     "id": {
-                         "type": "keyword"
-                      },
-                      "label": {
-                         "type": "text"
+                  "id": {
+                     "type": "keyword"
+                  },
+                  "label": {
+                     "type": "text",
+                     "analyzer" : "german_analyzer",
+                     "fields": {
+                        "raw": {
+                           "type": "keyword"
+                        }
                       }
-                  }
-               },
-               "type": {
-                  "type": "keyword"
+                  },
+                  "notation": {
+                     "type": "text",
+                     "index": "false"
+                  },
+                  "source": {
+                     "properties": {
+                        "id": {
+                            "type": "keyword"
+                         },
+                         "label": {
+                            "type": "text"
+                         }
+                     }
+                  },
+                  "type": {
+                     "type": "keyword"
                   }
                }
             },
@@ -558,9 +537,6 @@
             },
             "id" : {
                "type" : "keyword"
-            },
-            "volume" : {
-               "type" : "text"
             },
             "inSeries" : {
                "properties" : {
@@ -662,17 +638,6 @@
                   }
                }
             },
-            "seeAlso" : {
-               "properties" : {
-                  "label" : {
-                     "type" : "text"
-                  },
-                  "id" : {
-                     "index" : "false",
-                     "type" : "keyword"
-                  }
-               }
-            },
             "doi" : {
                "analyzer" : "id_analyzer",
                "type" : "text"
@@ -690,15 +655,6 @@
                      "type" : "keyword"
                   }
                }
-            },
-            "dateOfDeath" : {
-               "type" : "text"
-            },
-            "subjectOrder" : {
-               "type" : "keyword"
-            },
-            "extent" : {
-               "type" : "text"
             },
             "hasVersion" : {
                "properties" : {
@@ -729,10 +685,6 @@
             "note" : {
                "index" : "false",
                "type" : "text"
-            },
-            "contributorOrder" : {
-               "type" : "text",
-               "analyzer" : "id_analyzer"
             },
             "ismn" : {
                "type" : "text"
@@ -812,7 +764,7 @@
                      "type" : "keyword"
                   },
                   "geo" : {
-                        "type" : "geo_point"
+                     "type" : "geo_point"
                   },
                   "label" : {
                      "type" : "text"
