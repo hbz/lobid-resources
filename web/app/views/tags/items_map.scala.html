@@ -33,17 +33,7 @@
 </table>
 @if(items.size > 1){<a href="#" onclick="$('#table').show(); $(this).hide()">Details zum Bestand als Liste anzeigen</a>}
 <script>
-// Some alternative tiles:
-var layer = L.tileLayer('https://maps.wikimedia.org/osm-intl/{z}/{x}/{y}.png');
-//var layer = L.tileLayer('http://toolserver.org/tiles/hikebike/{z}/{x}/{y}.png');
-//var layer = L.tileLayer('http://{s}.www.toolserver.org/tiles/germany/{z}/{x}/{y}.png');
-//var layer0 = new L.StamenTileLayer("watercolor"); // include script above, add both layers
-//var layer1 = L.tileLayer('http://a.www.toolserver.org/tiles/osm-labels-de/{z}/{x}/{y}.png');
-/*
-var layer = L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    subdomains: 'abc'
-});
-*/
+var layer = L.tileLayer('https://lobid.org/tiles/{z}/{x}/{y}.png');
 var nrw = new L.LatLng(51.50, 7.8)
 var map = new L.Map("items-map", {
     center: nrw,
