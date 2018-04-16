@@ -5311,7 +5311,7 @@
 		<data source="078r1.a" name="http://www.w3.org/2000/01/rdf-schema#label">
 			<regexp match="ellinet" format="Fachrepositorium Lebenswissenschaften"/>
 		</data>
-		<!--rheinland pfalz -->
+		<!--Rheinland-Pfalz -->
 		<data source="700l[-1].a" name="@rpb2Subject">
 			<regexp match="^(\d{3})$" format="https://w3id.org/lobid/rpb2#n${1}"/>
 		</data>
@@ -5352,6 +5352,28 @@
 			</combine>
 		</entity>
 		<call-macro name="setBackRdfSubject" field="700l[-1].a"/>
+		<!-- Elektronische Zeitschriftendatenbank -->
+		<combine name="@ezbSubject" value="http://lobid.org/resources/HT016356466#!">
+			<data source="655e1.u">
+				<regexp match="http://www.bibliothek.uni-regensburg.de/ezeit.*"/>
+			</data>
+		</combine>
+		<data source="655e1.u" name="@ezbLabel">
+			<regexp match="http://www.bibliothek.uni-regensburg.de/ezeit.*" format="Elektronische Zeitschriftenbibliothek (EZB)"/>
+		</data>
+		<combine name="http://purl.org/lobid/lv#inCollection" value="${a}" flushWith="@ezbLabel">
+			<data source="@ezbSubject" name="a"/>
+		</combine>
+		<combine name="~rdf:subject" value="${a}" flushWith="@ezbLabel">
+			<data source="@ezbSubject" name="a"/>
+		</combine>
+		<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="${a}" flushWith="@ezbLabel">
+			<data source="@ezbLabel" name="a"/>
+		</combine>
+		<combine name="~rdf:subject" value="$[ns-lobid-resource]${id}#!" flushWith="@ezbLabel">
+			<data source="@ezbSubject"/>
+			<data source="@id" name="id"/>
+		</combine>
 		<!-- ####################### -->
 		<!-- ########## epackages -->
 		<!-- ####################### -->
