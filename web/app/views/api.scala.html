@@ -53,7 +53,7 @@ $('input.search-resources').autocomplete({
 	@desc("Geschachtelte Feldsuche: \"contribution.agent.label\"", resources.routes.Application.query("contribution.agent.label:Melville", format="json"))
 	@desc("In eingebetteten Objekten suchen: \"nested\"", resources.routes.Application.query("", format="json", nested="contribution:contribution.agent.label:Melville AND contribution.role.label:Autor"))
 	@desc("Bereichssuche: \"publication.startDate:[* TO 1500]\"", resources.routes.Application.query("publication.startDate:[* TO 1500]", format="json"))
-	@desc("Löschungen zwischen zwei Zeitpunkten", resources.routes.Deletions.query("describedBy.deleted:[201803028 TO 20180405]"))
+	@desc("Löschungen zwischen zwei Zeitpunkten", resources.routes.Deletions.query("describedBy.deleted:[20180328 TO 20180405]"))
 	</p>
 	<p>Eine detaillierte Beschreibung der Abfragemöglichkeiten finden Sie in der Dokumentation der <a href="https://lucene.apache.org/core/5_5_0/queryparser/org/apache/lucene/queryparser/classic/package-summary.html#package_description">Lucene query string syntax</a>.</p>
 	<p>Bitte beachten Sie insbesondere, dass bei der Suche nach URLs Sonderzeichen wie Doppelpunkte, Schräg- und Bindestriche maskiert werden müssen:</p>
