@@ -30,7 +30,7 @@ public final class Entityfacts2Es {
 		String indexName = "entityfacts-" + ElasticsearchIndexer.DATE;
 		ElasticsearchIndexer esIndexer = new ElasticsearchIndexer();
 		esIndexer.setClustername("weywot");
-		esIndexer.setHostname("weywot3.hbz-nrw.de"); //
+		esIndexer.setHostname("weywot3.hbz-nrw.de");
 		esIndexer.setIndexName(indexName);
 		esIndexer.setIndexAliasSuffix("NOALIAS");
 		esIndexer.setUpdateNewestIndex(false);

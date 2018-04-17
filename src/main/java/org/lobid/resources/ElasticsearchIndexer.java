@@ -93,14 +93,14 @@ public class ElasticsearchIndexer
 	public boolean lookupMabxmlDeletion;
 	/** Defines if a wikidata lookup should be done */
 	public boolean lookupWikidata;
+	private static final LocalDateTime now = LocalDateTime.now();
 	/**
 	 * The date now. Handy to append to index-name to build multiple index' in
 	 * parallel. Switch then by setting the alias.
 	 */
 	public static final String DATE =
-			LocalDateTime.now().toLocalDate().format(DateTimeFormatter.BASIC_ISO_DATE)
-					+ "-" + LocalDateTime.now().getHour()
-					+ LocalDateTime.now().getMinute() + LocalDateTime.now().getSecond();
+			now.toLocalDate().format(DateTimeFormatter.BASIC_ISO_DATE) + "-"
+					+ now.getHour() + now.getMinute() + now.getSecond();
 
 	/**
 	 * Keys to get index properties and the json document ("graph")
