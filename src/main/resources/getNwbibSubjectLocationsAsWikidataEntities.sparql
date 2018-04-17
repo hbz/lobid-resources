@@ -22,11 +22,11 @@ WHERE {
    UNION
        { ?item p:P31 [ ps:P31 wd:Q15632166 ] . } # Stadtteil von Köln
    UNION
-       { ?item p:P31 [ ps:P31 wd:Q897303 ] . } # Kirchenkreis der evangelischen Kirche 
+       { ?item wdt:P31/wdt:P279* wd:Q3146899 } # Diözese der katholischen Kirche
    UNION
-       { ?item wdt:P31 [ ps:P31 wd:Q3146899 ] . } # Diözese der katholischen Kirche
+      { ?item p:P361 [ps:P361 wd:Q1380992 ] } # Teil der ev. Kirche im Rheinland
    UNION
-       { ?item p:P31 [ ps:P31 wd:Q2072238 ] . } # Erzdiözese der katholischen Kirche
+      { ?item p:P361 [ ps:P361 wd:Q1381014 ] } # Teil der ev. Kirche Westfalen
   }
   SERVICE wikibase:label {  bd:serviceParam wikibase:language "de" }
 }
