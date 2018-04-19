@@ -79,7 +79,7 @@ public class WikidataGeodata2Es {
 		LOG.info("Going to index");
 		extractEntitiesFromSparqlQueryTranformThemAndIndex2Es((new String(
 				Files.readAllBytes(Paths.get(
-						"src/main/resources/getNwbibSubjectLocationsAsWikidataEntities.txt")),
+						"src/main/resources/getNwbibSubjectLocationsAsWikidataEntities.sparql")),
 				"UTF-8")).replaceAll("#.*\\n", ""));
 		esIndexer.onCloseStream();
 	}

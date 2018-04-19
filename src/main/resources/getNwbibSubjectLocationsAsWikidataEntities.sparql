@@ -1,0 +1,32 @@
+https://query.wikidata.org/sparql?query=
+# Get areas in North Rhine-Westphalia with German labels
+SELECT DISTINCT 
+?item 
+?itemLabel 
+WHERE {
+  { 
+       { ?item wdt:P131* wd:Q1198 . }
+    UNION
+       { ?item p:P131 [ ps:P131 wd:Q1198 ] }
+       { ?item p:P31 [ ps:P31 wd:Q829277 ] . } # Regierungsbezirk in NRW
+   UNION
+       { ?item p:P31 [ ps:P31 wd:Q106658 ] . } # Landkreis
+   UNION
+       { ?item p:P31 [ ps:P31 wd:Q262166 ] . } # Gemeinde
+   UNION
+       { ?item p:P31 [ ps:P31 wd:Q22865 ] . } # kreisfreie Stadt
+   UNION
+       { ?item p:P31 [ ps:P31 wd:Q253019 ]. } # Ortsteil
+   UNION
+       { ?item p:P31 [ ps:P31 wd:Q1852178 ] . } # Stadteil von Düsseldorf
+   UNION
+       { ?item p:P31 [ ps:P31 wd:Q15632166 ] . } # Stadtteil von Köln
+   UNION
+       { ?item wdt:P31/wdt:P279* wd:Q3146899 } # Diözese der katholischen Kirche
+   UNION
+      { ?item p:P361 [ps:P361 wd:Q1380992 ] } # Teil der ev. Kirche im Rheinland
+   UNION
+      { ?item p:P361 [ ps:P361 wd:Q1381014 ] } # Teil der ev. Kirche Westfalen
+  }
+  SERVICE wikibase:label {  bd:serviceParam wikibase:language "de" }
+}
