@@ -1725,7 +1725,7 @@
 		<!-- ####################### -->
 		<combine name="@containsExampleOfWorkId303" value="${a}">
 			<data source="303t1.9" name="a">
-				<regexp match="\(DE-588\)(.*)" format="http://d-nb.info/gnd/${1}"/>
+				<regexp match="\(DE-588\)(\d{8,9}[0-9X]|\d{7}-[0-9])" format="http://d-nb.info/gnd/${1}"/>
 			</data>
 		</combine>
 		<combine name="http://purl.org/lobid/lv#containsExampleOfWork" value="${a}">
@@ -1828,7 +1828,7 @@
 		<!-- exampleOfWork -->
 		<combine name="@exampleOfWorkId" value="${a}">
 			<data source="303-1.9" name="a">
-				<regexp match="\(DE-588\)(.*)" format="http://d-nb.info/gnd/${1}"/>
+				<regexp match="\(DE-588\)(\d{8,9}[0-9X]|\d{7}-[0-9])" format="http://d-nb.info/gnd/${1}"/>
 			</data>
 		</combine>
 		<combine name="@exampleOfWork303titleWithSubtitleAndOccupation" value="${t}${m}${f}${u}"
