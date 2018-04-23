@@ -30,6 +30,7 @@ import org.elasticsearch.action.admin.cluster.state.ClusterStateRequest;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
 import org.elasticsearch.action.admin.indices.settings.put.UpdateSettingsRequestBuilder;
 import org.elasticsearch.action.bulk.BulkRequestBuilder;
+import org.elasticsearch.action.bulk.BulkResponse;
 import org.elasticsearch.action.update.UpdateRequest;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.IndicesAdminClient;
@@ -198,7 +199,10 @@ public class ElasticsearchIndexer
 		docs++;
 		while (docs > bulkSize && retries > 0) {
 			try {
-				bulkRequest.execute().actionGet();
+				BulkResponse bulkResponse = bulkRequest.execute().actionGet();
+				if (bulkResponse.hasFailures()) {
+					LOG.warn("Bulk insert failed: " + bulkResponse.buildFailureMessage());
+				}
 				docs = 0;
 				bulkRequest = client.prepareBulk();
 				break; // stop retry-while
@@ -211,6 +215,8 @@ public class ElasticsearchIndexer
 				}
 				LOG.warn("Retry indexing record" + json.get(Properties.ID.getName())
 						+ ":" + e.getMessage() + " (" + retries + " more retries)");
+			} catch (final Exception ex) {
+				LOG.warn(ex);
 			}
 		}
 	}
