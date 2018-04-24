@@ -8,6 +8,7 @@ import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -23,6 +24,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.gdata.util.common.base.Pair;
 import com.ning.http.client.AsyncHttpClient;
@@ -44,6 +46,8 @@ import com.ning.http.client.Response;
  */
 public class WikidataGeodata2Es {
 
+	private static final String HTTP_WWW_WIKIDATA_ORG_ENTITY =
+			"http://www.wikidata.org/entity/";
 	private static final String JSON = "application/json";
 	public static ElasticsearchIndexer esIndexer = new ElasticsearchIndexer();
 	private static final String DATE =
@@ -244,9 +248,10 @@ public class WikidataGeodata2Es {
 				JsonNode aliasesNode = node.findPath("aliases").findPath("de");
 				if (!aliasesNode.isMissingNode())
 					root.set("aliases", aliasesNode);
-				spatial.put("type", "Location");
+				ArrayNode type = mapper.createObjectNode().arrayNode();
+				type.add("Location");
 				spatial.put("id",
-						"http://www.wikidata.org/entity/" + node.findPath("id").asText());
+						HTTP_WWW_WIKIDATA_ORG_ENTITY + node.findPath("id").asText());
 				spatial.put("label",
 						node.findPath("labels").findPath("de").findPath("value").asText());
 				if (!geoNode.isMissingNode()
@@ -268,7 +273,7 @@ public class WikidataGeodata2Es {
 					} else {
 						try (AsyncHttpClient client = new AsyncHttpClient()) {
 							JsonNode jnode = toApiResponse(client,
-									"https://www.wikidata.org/entity/" + locatedInId);
+									HTTP_WWW_WIKIDATA_ORG_ENTITY + locatedInId);
 							String locatedInLabel = jnode.findPath("labels").findPath("de")
 									.findPath("value").asText();
 							LOG.debug("Found locatedIn id:" + locatedInId + " with label "
@@ -279,6 +284,12 @@ public class WikidataGeodata2Es {
 					}
 					root.set("locatedIn", locatedInNode);
 				}
+				List<JsonNode> typeNode = node.findPath("P31").findValues("mainsnak");
+				if (!typeNode.isEmpty())
+					typeNode.parallelStream()
+							.forEach(e -> type.add(HTTP_WWW_WIKIDATA_ORG_ENTITY
+									+ e.findPath("datavalue").findPath("id").asText()));
+				spatial.set("type", type);
 			} catch (Exception e) {
 				LOG.error("Couldn't build a json document from the wd-entity ", e);
 				return null;

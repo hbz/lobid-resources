@@ -1,15 +1,18 @@
 {
+      "settings" : {
+         "index" : {
+            "number_of_shards" : 3
+         }
+      },
       "mappings" : {
          "wikidata-geo" : {
             "properties" : {
                "spatial" : {
                   "properties" : {
                      "id" : {
-                        "index": "true",
                         "type" : "keyword"
                      },
                      "type" : {
-                        "index": "false",
                         "type" : "keyword"
                      },
                      "geo" : {
