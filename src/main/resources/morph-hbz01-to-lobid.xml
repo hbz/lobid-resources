@@ -4585,14 +4585,6 @@
 			<data source="9[01234][27]-[-12].g"/>
 			<data source="@preferredNameConcatSubject" name="a"/>
 		</combine>
-		
-		<!-- <combine name="$[ns-gnd]dateOfBirthAndDeath" value="${a}" sameEntity="true">
-			<data source="@subjectLinks"/>
-			<data source="@preferredNameP"/>
-			<data source="9[01234][27]-[-12].d" name="a">
-				<regexp match="^ca\..*|.*Jh\."/>
-			</data>
-		</combine> -->
 		<combine name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" value="${a}"
 			flushWith="@subjectLinks|@contributorCorporateBodyBnodeOrId" sameEntity="true">
 			<choose name="a"
