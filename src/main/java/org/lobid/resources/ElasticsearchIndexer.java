@@ -42,6 +42,7 @@ import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.index.query.MultiMatchQueryBuilder;
 import org.elasticsearch.index.query.Operator;
+import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.QueryStringQueryBuilder;
 import org.elasticsearch.rest.action.admin.indices.AliasesNotFoundException;
@@ -55,6 +56,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.SortedSetMultimap;
 import com.google.common.collect.TreeMultimap;
+import com.google.gdata.util.common.base.Pair;
 import com.google.gdata.util.common.io.CharStreams;
 
 /**
@@ -93,7 +95,9 @@ public class ElasticsearchIndexer
 	public boolean lookupMabxmlDeletion;
 	/** Defines if a wikidata lookup should be done */
 	public boolean lookupWikidata;
+	private static HashSet<String> unsuccessfullyLookup = new HashSet<>();
 	private static final LocalDateTime now = LocalDateTime.now();
+
 	/**
 	 * The date now. Handy to append to index-name to build multiple index' in
 	 * parallel. Switch then by setting the alias.
@@ -194,7 +198,7 @@ public class ElasticsearchIndexer
 					ObjectNode node = mapper.readValue(
 							json.get(Properties.GRAPH.getName()), ObjectNode.class);
 					jsonDoc = enrich(WikidataGeodata2Es.getIndexAlias(), "coverage",
-							"spatial", node);
+							WikidataGeodata2Es.SPATIAL, node);
 				} catch (IOException e1) {
 					LOG.info(
 							"Enrichment problem with" + json.get(Properties.ID.getName()),
@@ -249,43 +253,45 @@ public class ElasticsearchIndexer
 		return ret;
 	}
 
-	HashSet<String> unsuccessfullyLookup = new HashSet<>();
-	HashMap<String, Float> FIELD_BOOST = new HashMap<>();
-
 	private String enrich(final String index, final String queryField,
 			final String SPATIAL, ObjectNode node) {
-		FIELD_BOOST.put(SPATIAL + ".label", 10.0f);
-		FIELD_BOOST.put("locatedIn.value", 1.0f);
-		FIELD_BOOST.put("aliases.value", 2.0f);
 		Iterable<Entry<String, JsonNode>> iterable = () -> node.fields();
 		Optional<Entry<String, JsonNode>> o =
 				StreamSupport.stream(iterable.spliterator(), false)
 						.filter(k -> k.getKey().equals(queryField)).findFirst();
 		if (o.isPresent()) {
-			String[] query = o.get().getValue().toString().split("\",\"");
+			String[] coverage = o.get().getValue().toString().split("\",\"");
 			ArrayNode spatialNode = node.putArray(SPATIAL);
 			HashSet<String> wdIds = new HashSet<>();
-			for (int i = 0; i < query.length; i++) {
-				query[i] = query[i].replaceAll("[^\\p{IsAlphabetic}]", " ").trim();
+			for (int i = 0; i < coverage.length; i++) {
+				Pair<String, String> query = new Pair<>(
+						coverage[i].replaceAll("[^\\p{IsAlphabetic}]", " ").trim() + " ",
+						WikidataGeodata2Es.NWBIB_LOCATION_CODES_2_WIKIDATA_ENTITIES
+								.getOrDefault(
+										coverage[i].replaceAll("[^\\p{Digit}]", " ").trim(), ""));
 				try {
-					if (unsuccessfullyLookup.contains(query[i]))
+					if (unsuccessfullyLookup.contains(query.first + query.second))
 						throw new Exception(
 								"Already lookuped with no good result, skipping");
-					MultiMatchQueryBuilder qsq =
-							new MultiMatchQueryBuilder(query[i]).fields(FIELD_BOOST)
-									.type(MultiMatchQueryBuilder.Type.CROSS_FIELDS)
-									.operator(Operator.AND);
 					SearchHits hits = null;
-					hits = client.prepareSearch(index).setQuery(qsq).get().getHits();
+					QueryBuilder queryBuilded = QueryBuilders.boolQuery()
+							.must(new MultiMatchQueryBuilder(query.first)
+									.fields(WikidataGeodata2Es.FIELD_BOOST)
+									.type(MultiMatchQueryBuilder.Type.CROSS_FIELDS)
+									.operator(Operator.AND))
+							.should(new MultiMatchQueryBuilder(query.second)
+									.fields(WikidataGeodata2Es.TYPE));
+					hits = client.prepareSearch(index).setQuery(queryBuilded).get()
+							.getHits();
 					JsonNode newSpatialNode;
 					if (hits.getTotalHits() > 0) {
 						ObjectNode source = mapper
 								.readValue(hits.getAt(0).getSourceAsString(), ObjectNode.class);
 						newSpatialNode = source.findPath(SPATIAL);
-						LOG.info(i + " 1.Hit Query=" + query[i] + " score="
+						LOG.info(i + " 1.Hit Query=" + query + " score="
 								+ hits.getAt(0).getScore() + " source=" + source.toString());
 						if (hits.getAt(0).getScore() < MINIMUM_SCORE) {
-							unsuccessfullyLookup.add(query[i]);
+							unsuccessfullyLookup.add(query.first + query.second);
 							throw new Exception(
 									"Score " + hits.getAt(0).getScore() + " to low.");
 						}
@@ -296,13 +302,13 @@ public class ElasticsearchIndexer
 								wdIds.add(wdId);
 							}
 						} else
-							unsuccessfullyLookup.add(query[i]);
+							unsuccessfullyLookup.add(query.first + query.second);
 					} else
 						throw new Exception("No hit.");
 				} catch (Exception e) {
 					LOG.warn("Couldn't get a hit using index '" + index + "' querying '"
-							+ query[i] + "'. " + e.getMessage());
-					unsuccessfullyLookup.add(query[i]);
+							+ query + "'. " + e.getMessage());
+					unsuccessfullyLookup.add(query.first + query.second);
 				}
 			}
 			if (spatialNode.size() > 0)
