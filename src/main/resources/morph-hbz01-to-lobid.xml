@@ -2385,6 +2385,26 @@
 		<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="Software lobid-resources" flushWith="@id">
 			<data source="@processionBnode"/>
 		</combine>
+		<combine name="~rdf:subject" value="$[ns-lobid-resource]${id}#!">
+			<data source="@id" name="id"/>
+		</combine>
+		<combine name="@catalogOrZdbResource" value="${a}">
+			<choose name="a">
+				<data source="025z1.a">
+					<constant value="Ressource der Zeitschriftendatenbank (ZDB)"/>
+				</data>
+				<data source="001?1.a">
+					<constant value="Ressource aus dem hbz-Verbundkatalog"/>
+				</data>
+			</choose>
+		</combine>
+		<combine name="~rdf:subject" value="http://lobid.org/hbz01/${a}" flushWith="@catalogOrZdbResource">
+			<data source="@id" name="a"/>
+		</combine>
+		<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="${a}" flushWith="@catalogOrZdbResource">
+			<data source="@catalogOrZdbResource" name="a"/>
+		</combine>
+		<call-macro name="setBackRdfSubject" field="@catalogOrZdbResource"/>
 		<!-- set subject uri of resource anew -->
 		<call-macro name="setBackRdfSubject" field="070a1.a"/>
 		<call-macro name="setRdfSubjectDescribedBy" field="070-1.a"/>
