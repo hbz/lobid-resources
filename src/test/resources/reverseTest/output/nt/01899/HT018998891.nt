@@ -8,8 +8,11 @@ _:b2 <http://schema.org/location> "Leipzig"^^<http://www.w3.org/2001/XMLSchema#s
 _:b2 <http://schema.org/publishedBy> "Grosse"^^<http://www.w3.org/2001/XMLSchema#string> .
 _:b2 <http://schema.org/startDate> "1593"^^<http://www.w3.org/2001/XMLSchema#gYear> .
 _:b2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://schema.org/PublicationEvent> .
-_:b3 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> _:b0 .
-_:b3 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
+_:b3 <http://schema.org/instrument> <https://github.com/hbz/lobid-resources> .
+_:b3 <http://schema.org/object> <http://lobid.org/hbz01/HT018998891> .
+_:b3 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://schema.org/Action> .
+_:b4 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> _:b0 .
+_:b4 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
 <http://d-nb.info/gnd/130303402> <http://d-nb.info/standards/elementset/gnd#dateOfBirthAndDeath> "ca. 2. H\u00E4lfte 16. Jh."^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://d-nb.info/gnd/130303402> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://d-nb.info/standards/elementset/gnd#Person> .
 <http://d-nb.info/gnd/130303402> <http://www.w3.org/2000/01/rdf-schema#label> "Stieber, Thomas"^^<http://www.w3.org/2001/XMLSchema#string> .
@@ -19,6 +22,7 @@ _:b3 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/0
 <http://id.loc.gov/vocabulary/iso639-2/deu> <http://www.w3.org/2000/01/rdf-schema#label> "Deutsch"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://id.loc.gov/vocabulary/iso639-2/lat> <http://www.w3.org/2000/01/rdf-schema#label> "Latein"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://id.loc.gov/vocabulary/relators/cre> <http://www.w3.org/2000/01/rdf-schema#label> "Autor/in"^^<http://www.w3.org/2001/XMLSchema#string> .
+<http://lobid.org/hbz01/HT018998891> <http://www.w3.org/2000/01/rdf-schema#label> "http://lobid.org/hbz01"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/items/HT018998891:DE-Zw1:> <http://www.w3.org/2000/01/rdf-schema#label> "lobid Bestandsressource"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/items/HT018998891:DE-Zw1:#!> <http://id.loc.gov/ontologies/bibframe/heldBy> <http://lobid.org/organisations/DE-Zw1> .
 <http://lobid.org/items/HT018998891:DE-Zw1:#!> <http://id.loc.gov/ontologies/bibframe/itemOf> <http://lobid.org/resources/HT018998891#!> .
@@ -31,9 +35,10 @@ _:b3 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/0
 <http://lobid.org/resources/HT018998891> <http://open-services.net/ns/core#modifiedBy> <http://lobid.org/organisations/DE-929#!> .
 <http://lobid.org/resources/HT018998891> <http://purl.org/dc/terms/created> "20160613"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/resources/HT018998891> <http://purl.org/dc/terms/modified> "20160620"^^<http://www.w3.org/2001/XMLSchema#string> .
+<http://lobid.org/resources/HT018998891> <http://purl.org/lobid/lv#resultOf> _:b3 .
 <http://lobid.org/resources/HT018998891> <http://schema.org/sourceOrganization> <http://lobid.org/organisations/DE-929#!> .
 <http://lobid.org/resources/HT018998891> <http://www.w3.org/2000/01/rdf-schema#label> "lobid Ressource"^^<http://www.w3.org/2001/XMLSchema#string> .
-<http://lobid.org/resources/HT018998891#!> <http://id.loc.gov/ontologies/bibframe/contribution> _:b3 .
+<http://lobid.org/resources/HT018998891#!> <http://id.loc.gov/ontologies/bibframe/contribution> _:b4 .
 <http://lobid.org/resources/HT018998891#!> <http://id.loc.gov/ontologies/bibframe/extent> "[10], 232 Bl."^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/resources/HT018998891#!> <http://id.loc.gov/ontologies/bibframe/hasItem> <http://lobid.org/items/HT018998891:DE-Zw1:#!> .
 <http://lobid.org/resources/HT018998891#!> <http://purl.org/dc/terms/language> <http://id.loc.gov/vocabulary/iso639-2/deu> .
@@ -55,3 +60,4 @@ _:b3 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/0
 <http://rdaregistry.info/termList/RDAproductionMethod/1010> <http://www.w3.org/2000/01/rdf-schema#label> "Print"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://resolver.staatsbibliothek-berlin.de/SBB00006B8200000000> <http://www.w3.org/2000/01/rdf-schema#label> "http://resolver.staatsbibliothek-berlin.de/SBB00006B8200000000"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://worldcat.org/oclc/VD16%20S%209000> <http://www.w3.org/2000/01/rdf-schema#label> "http://worldcat.org/oclc"^^<http://www.w3.org/2001/XMLSchema#string> .
+<https://github.com/hbz/lobid-resources> <http://www.w3.org/2000/01/rdf-schema#label> "Software lobid-resources"^^<http://www.w3.org/2001/XMLSchema#string> .

@@ -3,19 +3,24 @@ _:b0 <http://id.loc.gov/ontologies/bibframe/role> <http://id.loc.gov/vocabulary/
 _:b0 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://id.loc.gov/ontologies/bibframe/Contribution> .
 _:b1 <http://schema.org/startDate> "1986"^^<http://www.w3.org/2001/XMLSchema#gYear> .
 _:b1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://schema.org/PublicationEvent> .
-_:b2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> _:b0 .
-_:b2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
+_:b2 <http://schema.org/instrument> <https://github.com/hbz/lobid-resources> .
+_:b2 <http://schema.org/object> <http://lobid.org/hbz01/BT000067443> .
+_:b2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://schema.org/Action> .
+_:b3 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> _:b0 .
+_:b3 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
 <http://d-nb.info/gnd/118033948> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://d-nb.info/standards/elementset/gnd#Person> .
 <http://d-nb.info/gnd/118033948> <http://www.w3.org/2000/01/rdf-schema#label> "Meier, Elmar"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://hub.culturegraph.org/resource/HBZ-BT000067443> <http://www.w3.org/2000/01/rdf-schema#label> "Culturegraph Ressource"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://id.loc.gov/vocabulary/relators/cre> <http://www.w3.org/2000/01/rdf-schema#label> "Autor/in"^^<http://www.w3.org/2001/XMLSchema#string> .
+<http://lobid.org/hbz01/BT000067443> <http://www.w3.org/2000/01/rdf-schema#label> "http://lobid.org/hbz01"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/organisations/DE-605#!> <http://www.w3.org/2000/01/rdf-schema#label> "lobid Organisation"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/resources/BT000067443> <http://open-services.net/ns/core#modifiedBy> <http://lobid.org/organisations/DE-605#!> .
 <http://lobid.org/resources/BT000067443> <http://purl.org/dc/terms/created> "19960816"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/resources/BT000067443> <http://purl.org/dc/terms/modified> "19960816"^^<http://www.w3.org/2001/XMLSchema#string> .
+<http://lobid.org/resources/BT000067443> <http://purl.org/lobid/lv#resultOf> _:b2 .
 <http://lobid.org/resources/BT000067443> <http://schema.org/sourceOrganization> <http://lobid.org/organisations/DE-605#!> .
 <http://lobid.org/resources/BT000067443> <http://www.w3.org/2000/01/rdf-schema#label> "lobid Ressource"^^<http://www.w3.org/2001/XMLSchema#string> .
-<http://lobid.org/resources/BT000067443#!> <http://id.loc.gov/ontologies/bibframe/contribution> _:b2 .
+<http://lobid.org/resources/BT000067443#!> <http://id.loc.gov/ontologies/bibframe/contribution> _:b3 .
 <http://lobid.org/resources/BT000067443#!> <http://id.loc.gov/ontologies/bibframe/note> "Anfang s. Jg. 5 (1985) S. 22-29"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/resources/BT000067443#!> <http://purl.org/dc/elements/1.1/coverage> "Coesfeld (Kreis) | 97"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/resources/BT000067443#!> <http://purl.org/dc/terms/bibliographicCitation> "Kiebitz. - 6 (1986), S. 29-36, S. 63-67"^^<http://www.w3.org/2001/XMLSchema#string> .
@@ -44,3 +49,4 @@ _:b2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/0
 <http://purl.org/lobid/nwbib-spatial#n97> <http://www.w3.org/2000/01/rdf-schema#label> "Kreise"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://purl.org/lobid/nwbib-spatial#n97> <http://www.w3.org/2004/02/skos/core#notation> "97"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://rdaregistry.info/termList/RDAproductionMethod/1010> <http://www.w3.org/2000/01/rdf-schema#label> "Print"^^<http://www.w3.org/2001/XMLSchema#string> .
+<https://github.com/hbz/lobid-resources> <http://www.w3.org/2000/01/rdf-schema#label> "Software lobid-resources"^^<http://www.w3.org/2001/XMLSchema#string> .

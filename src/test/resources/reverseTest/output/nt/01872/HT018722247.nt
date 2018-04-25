@@ -8,8 +8,11 @@ _:b2 <http://schema.org/location> "Berlin"^^<http://www.w3.org/2001/XMLSchema#st
 _:b2 <http://schema.org/publishedBy> "Pro Generika e.V."^^<http://www.w3.org/2001/XMLSchema#string> .
 _:b2 <http://schema.org/startDate> "2012"^^<http://www.w3.org/2001/XMLSchema#gYear> .
 _:b2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://schema.org/PublicationEvent> .
-_:b3 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> _:b0 .
-_:b3 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
+_:b3 <http://schema.org/instrument> <https://github.com/hbz/lobid-resources> .
+_:b3 <http://schema.org/object> <http://lobid.org/hbz01/HT018722247> .
+_:b3 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://schema.org/Action> .
+_:b4 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> _:b0 .
+_:b4 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
 <http://d-nb.info/gnd/16090896-6> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://d-nb.info/standards/elementset/gnd#CorporateBody> .
 <http://d-nb.info/gnd/16090896-6> <http://www.w3.org/2000/01/rdf-schema#label> "Pro Generika e.V."^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://d-nb.info/gnd/16090896-6> <http://www.w3.org/2004/02/skos/core#altLabel> "Progenerika"^^<http://www.w3.org/2001/XMLSchema#string> .
@@ -17,6 +20,7 @@ _:b3 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/0
 <http://hub.culturegraph.org/resource/HBZ-HT018722247> <http://www.w3.org/2000/01/rdf-schema#label> "Culturegraph Ressource"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://id.loc.gov/vocabulary/iso639-2/deu> <http://www.w3.org/2000/01/rdf-schema#label> "Deutsch"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://id.loc.gov/vocabulary/relators/cre> <http://www.w3.org/2000/01/rdf-schema#label> "Autor/in"^^<http://www.w3.org/2001/XMLSchema#string> .
+<http://lobid.org/hbz01/HT018722247> <http://www.w3.org/2000/01/rdf-schema#label> "http://lobid.org/hbz01"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/items/HT018722247:DE-38M:> <http://www.w3.org/2000/01/rdf-schema#label> "lobid Bestandsressource"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/items/HT018722247:DE-38M:#!> <http://id.loc.gov/ontologies/bibframe/heldBy> <http://lobid.org/organisations/DE-38M> .
 <http://lobid.org/items/HT018722247:DE-38M:#!> <http://id.loc.gov/ontologies/bibframe/itemOf> <http://lobid.org/resources/HT018722247#!> .
@@ -26,9 +30,10 @@ _:b3 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/0
 <http://lobid.org/organisations/DE-38M> <http://www.w3.org/2000/01/rdf-schema#label> "lobid Organisation"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/organisations/DE-38M#!> <http://www.w3.org/2000/01/rdf-schema#label> "lobid Organisation"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/resources/HT018722247> <http://purl.org/dc/terms/created> "20150810"^^<http://www.w3.org/2001/XMLSchema#string> .
+<http://lobid.org/resources/HT018722247> <http://purl.org/lobid/lv#resultOf> _:b3 .
 <http://lobid.org/resources/HT018722247> <http://schema.org/sourceOrganization> <http://lobid.org/organisations/DE-38M#!> .
 <http://lobid.org/resources/HT018722247> <http://www.w3.org/2000/01/rdf-schema#label> "lobid Ressource"^^<http://www.w3.org/2001/XMLSchema#string> .
-<http://lobid.org/resources/HT018722247#!> <http://id.loc.gov/ontologies/bibframe/contribution> _:b3 .
+<http://lobid.org/resources/HT018722247#!> <http://id.loc.gov/ontologies/bibframe/contribution> _:b4 .
 <http://lobid.org/resources/HT018722247#!> <http://id.loc.gov/ontologies/bibframe/hasItem> <http://lobid.org/items/HT018722247:DE-38M:#!> .
 <http://lobid.org/resources/HT018722247#!> <http://purl.org/dc/terms/language> <http://id.loc.gov/vocabulary/iso639-2/deu> .
 <http://lobid.org/resources/HT018722247#!> <http://purl.org/dc/terms/medium> <http://rdaregistry.info/termList/RDACarrierType/1018> .
@@ -46,3 +51,4 @@ _:b3 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/0
 <http://rdaregistry.info/termList/RDACarrierType/1018> <http://www.w3.org/2000/01/rdf-schema#label> "Online-Ressource"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://repository.publisso.de> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://id.loc.gov/ontologies/bibframe/Collection> .
 <http://repository.publisso.de> <http://www.w3.org/2000/01/rdf-schema#label> "Fachrepositorium Lebenswissenschaften"^^<http://www.w3.org/2001/XMLSchema#string> .
+<https://github.com/hbz/lobid-resources> <http://www.w3.org/2000/01/rdf-schema#label> "Software lobid-resources"^^<http://www.w3.org/2001/XMLSchema#string> .

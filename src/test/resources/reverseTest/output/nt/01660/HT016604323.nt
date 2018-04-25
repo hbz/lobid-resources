@@ -4,10 +4,12 @@ _:b0 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://id.loc.gov/ontolo
 _:b1 <http://id.loc.gov/ontologies/bibframe/agent> <http://d-nb.info/gnd/16090142-X> .
 _:b1 <http://id.loc.gov/ontologies/bibframe/role> <http://id.loc.gov/vocabulary/relators/cre> .
 _:b1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://id.loc.gov/ontologies/bibframe/Contribution> .
+_:b10 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> _:b4 .
+_:b10 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
 _:b2 <http://id.loc.gov/ontologies/bibframe/source> <http://d-nb.info/gnd/4149423-4> .
 _:b2 <http://www.w3.org/2000/01/rdf-schema#label> "Medizin und Gesundheit"^^<http://www.w3.org/2001/XMLSchema#string> .
 _:b2 <http://www.w3.org/2004/02/skos/core#notation> "610"^^<http://www.w3.org/2001/XMLSchema#string> .
-_:b3 <http://www.loc.gov/mads/rdf/v1#componentList> _:b8 .
+_:b3 <http://www.loc.gov/mads/rdf/v1#componentList> _:b9 .
 _:b3 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.loc.gov/mads/rdf/v1#ComplexSubject> .
 _:b3 <http://www.w3.org/2000/01/rdf-schema#label> "PsychiatrieVerbund Westfalen, Beschwerdekommission | Bericht"^^<http://www.w3.org/2001/XMLSchema#string> .
 _:b4 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://d-nb.info/standards/elementset/gnd#SubjectHeading> .
@@ -18,14 +20,15 @@ _:b5 <http://schema.org/location> "M\u00FCnster"^^<http://www.w3.org/2001/XMLSch
 _:b5 <http://schema.org/publishedBy> "Landschaftsverb. Westfalen-Lippe"^^<http://www.w3.org/2001/XMLSchema#string> .
 _:b5 <http://schema.org/startDate> "2005"^^<http://www.w3.org/2001/XMLSchema#gYear> .
 _:b5 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://schema.org/PublicationEvent> .
-_:b6 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> _:b0 .
-_:b6 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:b7 .
-_:b7 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> _:b1 .
-_:b7 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
-_:b8 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <http://d-nb.info/gnd/16090142-X> .
-_:b8 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:b9 .
-_:b9 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> _:b4 .
-_:b9 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
+_:b6 <http://schema.org/instrument> <https://github.com/hbz/lobid-resources> .
+_:b6 <http://schema.org/object> <http://lobid.org/hbz01/HT016604323> .
+_:b6 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://schema.org/Action> .
+_:b7 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> _:b0 .
+_:b7 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:b8 .
+_:b8 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> _:b1 .
+_:b8 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
+_:b9 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <http://d-nb.info/gnd/16090142-X> .
+_:b9 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:b10 .
 <http://d-nb.info/gnd/16090142-X> <http://d-nb.info/standards/elementset/gnd#gndIdentifier> "16090142-X"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://d-nb.info/gnd/16090142-X> <http://id.loc.gov/ontologies/bibframe/source> <http://d-nb.info/gnd/7749153-1> .
 <http://d-nb.info/gnd/16090142-X> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://d-nb.info/standards/elementset/gnd#CorporateBody> .
@@ -46,6 +49,7 @@ _:b9 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/0
 <http://id.loc.gov/vocabulary/relators/cre> <http://www.w3.org/2000/01/rdf-schema#label> "Autor/in"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://id.loc.gov/vocabulary/relators/ctb> <http://www.w3.org/2000/01/rdf-schema#label> "Mitwirkende"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://ld.zdb-services.de/resource/2581964-1> <http://www.w3.org/2000/01/rdf-schema#label> "ZDB-Ressource"^^<http://www.w3.org/2001/XMLSchema#string> .
+<http://lobid.org/hbz01/HT016604323> <http://www.w3.org/2000/01/rdf-schema#label> "http://lobid.org/hbz01"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/items/HT016604323:DE-6:XB%203534> <http://www.w3.org/2000/01/rdf-schema#label> "lobid Bestandsressource"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/items/HT016604323:DE-6:XB%203534#!> <http://id.loc.gov/ontologies/bibframe/heldBy> <http://lobid.org/organisations/DE-6> .
 <http://lobid.org/items/HT016604323:DE-6:XB%203534#!> <http://id.loc.gov/ontologies/bibframe/itemOf> <http://lobid.org/resources/HT016604323#!> .
@@ -64,10 +68,11 @@ _:b9 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/0
 <http://lobid.org/resources/HT016604323> <http://open-services.net/ns/core#modifiedBy> <http://lobid.org/organisations/DE-9999#!> .
 <http://lobid.org/resources/HT016604323> <http://purl.org/dc/terms/created> "20101116"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/resources/HT016604323> <http://purl.org/dc/terms/modified> "20141121"^^<http://www.w3.org/2001/XMLSchema#string> .
+<http://lobid.org/resources/HT016604323> <http://purl.org/lobid/lv#resultOf> _:b6 .
 <http://lobid.org/resources/HT016604323> <http://schema.org/provider> <http://lobid.org/organisations/DE-101#!> .
 <http://lobid.org/resources/HT016604323> <http://schema.org/sourceOrganization> <http://lobid.org/organisations/DE-6#!> .
 <http://lobid.org/resources/HT016604323> <http://www.w3.org/2000/01/rdf-schema#label> "lobid Ressource"^^<http://www.w3.org/2001/XMLSchema#string> .
-<http://lobid.org/resources/HT016604323#!> <http://id.loc.gov/ontologies/bibframe/contribution> _:b6 .
+<http://lobid.org/resources/HT016604323#!> <http://id.loc.gov/ontologies/bibframe/contribution> _:b7 .
 <http://lobid.org/resources/HT016604323#!> <http://id.loc.gov/ontologies/bibframe/hasItem> <http://lobid.org/items/HT016604323:DE-6:XB%203534#!> .
 <http://lobid.org/resources/HT016604323#!> <http://id.loc.gov/ontologies/bibframe/responsibilityStatement> "Hrsg.: Landschaftsverband Westfalen-Lippe, LWL-Abteilung f\u00FCr Krankenh\u00E4user und Gesundheitswesen, LWL-PsychiatrieVerbund Westfalen"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/resources/HT016604323#!> <http://purl.org/dc/terms/alternative> "LWL - f\u00FCr die Menschen. F\u00FCr Westfalen-Lippe"^^<http://www.w3.org/2001/XMLSchema#string> .
@@ -103,3 +108,4 @@ _:b9 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/0
 <http://purl.org/lobid/nwbib-spatial#n05> <http://www.w3.org/2000/01/rdf-schema#label> "Westfalen"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://purl.org/lobid/nwbib-spatial#n05> <http://www.w3.org/2004/02/skos/core#notation> "05"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://rdaregistry.info/termList/RDAproductionMethod/1010> <http://www.w3.org/2000/01/rdf-schema#label> "Print"^^<http://www.w3.org/2001/XMLSchema#string> .
+<https://github.com/hbz/lobid-resources> <http://www.w3.org/2000/01/rdf-schema#label> "Software lobid-resources"^^<http://www.w3.org/2001/XMLSchema#string> .

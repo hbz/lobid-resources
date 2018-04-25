@@ -3,8 +3,10 @@ _:b0 <http://id.loc.gov/ontologies/bibframe/role> <http://id.loc.gov/vocabulary/
 _:b0 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://id.loc.gov/ontologies/bibframe/Contribution> .
 _:b1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://d-nb.info/standards/elementset/gnd#Person> .
 _:b1 <http://www.w3.org/2000/01/rdf-schema#label> "Hierl, Ludwig!1022520547!"^^<http://www.w3.org/2001/XMLSchema#string> .
-_:b10 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> _:b4 .
-_:b10 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
+_:b10 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> _:b2 .
+_:b10 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:b11 .
+_:b11 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> _:b4 .
+_:b11 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
 _:b2 <http://id.loc.gov/ontologies/bibframe/agent> _:b3 .
 _:b2 <http://id.loc.gov/ontologies/bibframe/role> <http://id.loc.gov/vocabulary/relators/edt> .
 _:b2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://id.loc.gov/ontologies/bibframe/Contribution> .
@@ -22,9 +24,10 @@ _:b7 <http://schema.org/location> "Hamburg"^^<http://www.w3.org/2001/XMLSchema#s
 _:b7 <http://schema.org/publishedBy> "tredition GmbH"^^<http://www.w3.org/2001/XMLSchema#string> .
 _:b7 <http://schema.org/startDate> "2017"^^<http://www.w3.org/2001/XMLSchema#gYear> .
 _:b7 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://schema.org/PublicationEvent> .
-_:b8 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> _:b0 .
-_:b8 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:b9 .
-_:b9 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> _:b2 .
+_:b8 <http://schema.org/instrument> <https://github.com/hbz/lobid-resources> .
+_:b8 <http://schema.org/object> <http://lobid.org/hbz01/HT019552585> .
+_:b8 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://schema.org/Action> .
+_:b9 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> _:b0 .
 _:b9 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:b10 .
 <http://d-nb.info/gnd/4149423-4> <http://www.w3.org/2000/01/rdf-schema#label> "Dewey-Dezimalklassifikation"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://d-nb.info/gnd/4179998-7> <http://www.w3.org/2000/01/rdf-schema#label> "Monografische Reihe"^^<http://www.w3.org/2001/XMLSchema#string> .
@@ -33,6 +36,7 @@ _:b9 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:b10 .
 <http://id.loc.gov/vocabulary/iso639-2/deu> <http://www.w3.org/2000/01/rdf-schema#label> "Deutsch"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://id.loc.gov/vocabulary/relators/edt> <http://www.w3.org/2000/01/rdf-schema#label> "Herausgeber/in"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://ld.zdb-services.de/resource/2915820-5> <http://www.w3.org/2000/01/rdf-schema#label> "ZDB-Ressource"^^<http://www.w3.org/2001/XMLSchema#string> .
+<http://lobid.org/hbz01/HT019552585> <http://www.w3.org/2000/01/rdf-schema#label> "http://lobid.org/hbz01"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/items/HT019552585:DE-385:> <http://www.w3.org/2000/01/rdf-schema#label> "lobid Bestandsressource"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/items/HT019552585:DE-385:#!> <http://id.loc.gov/ontologies/bibframe/heldBy> <http://lobid.org/organisations/DE-385> .
 <http://lobid.org/items/HT019552585:DE-385:#!> <http://id.loc.gov/ontologies/bibframe/itemOf> <http://lobid.org/resources/HT019552585#!> .
@@ -90,10 +94,11 @@ _:b9 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:b10 .
 <http://lobid.org/resources/HT019552585> <http://open-services.net/ns/core#modifiedBy> <http://lobid.org/organisations/DE-18#!> .
 <http://lobid.org/resources/HT019552585> <http://purl.org/dc/terms/created> "20180104"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/resources/HT019552585> <http://purl.org/dc/terms/modified> "20180104"^^<http://www.w3.org/2001/XMLSchema#string> .
+<http://lobid.org/resources/HT019552585> <http://purl.org/lobid/lv#resultOf> _:b8 .
 <http://lobid.org/resources/HT019552585> <http://schema.org/provider> <http://lobid.org/organisations/DE-101#!> .
 <http://lobid.org/resources/HT019552585> <http://schema.org/sourceOrganization> <http://lobid.org/organisations/DE-18#!> .
 <http://lobid.org/resources/HT019552585> <http://www.w3.org/2000/01/rdf-schema#label> "lobid Ressource"^^<http://www.w3.org/2001/XMLSchema#string> .
-<http://lobid.org/resources/HT019552585#!> <http://id.loc.gov/ontologies/bibframe/contribution> _:b8 .
+<http://lobid.org/resources/HT019552585#!> <http://id.loc.gov/ontologies/bibframe/contribution> _:b9 .
 <http://lobid.org/resources/HT019552585#!> <http://id.loc.gov/ontologies/bibframe/extent> "Online-Ressource"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/resources/HT019552585#!> <http://id.loc.gov/ontologies/bibframe/hasItem> <http://lobid.org/items/HT019552585:DE-385:#!> .
 <http://lobid.org/resources/HT019552585#!> <http://id.loc.gov/ontologies/bibframe/hasItem> <http://lobid.org/items/HT019552585:DE-38:#!> .
@@ -123,3 +128,4 @@ _:b9 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:b10 .
 <http://lobid.org/resources/HT019552585#!> <http://www.w3.org/2002/07/owl#sameAs> <http://ld.zdb-services.de/resource/2915820-5> .
 <http://lobid.org/resources/HT019552585#!> <http://www.w3.org/2007/05/powder-s#describedby> <http://lobid.org/resources/HT019552585> .
 <http://rdaregistry.info/termList/RDACarrierType/1018> <http://www.w3.org/2000/01/rdf-schema#label> "Online-Ressource"^^<http://www.w3.org/2001/XMLSchema#string> .
+<https://github.com/hbz/lobid-resources> <http://www.w3.org/2000/01/rdf-schema#label> "Software lobid-resources"^^<http://www.w3.org/2001/XMLSchema#string> .

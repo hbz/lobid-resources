@@ -1,19 +1,22 @@
 _:b0 <http://id.loc.gov/ontologies/bibframe/agent> <http://d-nb.info/gnd/118935259> .
 _:b0 <http://id.loc.gov/ontologies/bibframe/role> <http://id.loc.gov/vocabulary/relators/cre> .
 _:b0 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://id.loc.gov/ontologies/bibframe/Contribution> .
-_:b1 <http://www.loc.gov/mads/rdf/v1#componentList> _:b4 .
+_:b1 <http://www.loc.gov/mads/rdf/v1#componentList> _:b5 .
 _:b1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.loc.gov/mads/rdf/v1#ComplexSubject> .
 _:b1 <http://www.w3.org/2000/01/rdf-schema#label> "Kant, Immanuel | Philosophie"^^<http://www.w3.org/2001/XMLSchema#string> .
 _:b2 <http://schema.org/location> "Cambridge"^^<http://www.w3.org/2001/XMLSchema#string> .
 _:b2 <http://schema.org/publishedBy> "Cambridge Univ. Pr."^^<http://www.w3.org/2001/XMLSchema#string> .
 _:b2 <http://schema.org/startDate> "1978"^^<http://www.w3.org/2001/XMLSchema#gYear> .
 _:b2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://schema.org/PublicationEvent> .
-_:b3 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> _:b0 .
-_:b3 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
-_:b4 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <http://d-nb.info/gnd/118559796> .
-_:b4 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:b5 .
-_:b5 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <http://d-nb.info/gnd/4045791-6> .
-_:b5 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
+_:b3 <http://schema.org/instrument> <https://github.com/hbz/lobid-resources> .
+_:b3 <http://schema.org/object> <http://lobid.org/hbz01/HT000052280> .
+_:b3 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://schema.org/Action> .
+_:b4 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> _:b0 .
+_:b4 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
+_:b5 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <http://d-nb.info/gnd/118559796> .
+_:b5 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:b6 .
+_:b6 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <http://d-nb.info/gnd/4045791-6> .
+_:b6 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
 <http://d-nb.info/gnd/118559796> <http://d-nb.info/standards/elementset/gnd#dateOfBirth> "1724"^^<http://www.w3.org/2001/XMLSchema#gYear> .
 <http://d-nb.info/gnd/118559796> <http://d-nb.info/standards/elementset/gnd#dateOfDeath> "1804"^^<http://www.w3.org/2001/XMLSchema#gYear> .
 <http://d-nb.info/gnd/118559796> <http://d-nb.info/standards/elementset/gnd#gndIdentifier> "118559796"^^<http://www.w3.org/2001/XMLSchema#string> .
@@ -35,13 +38,15 @@ _:b5 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/0
 <http://hub.culturegraph.org/resource/HBZ-HT000052280> <http://www.w3.org/2000/01/rdf-schema#label> "Culturegraph Ressource"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://id.loc.gov/vocabulary/iso639-2/eng> <http://www.w3.org/2000/01/rdf-schema#label> "Englisch"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://id.loc.gov/vocabulary/relators/cre> <http://www.w3.org/2000/01/rdf-schema#label> "Autor/in"^^<http://www.w3.org/2001/XMLSchema#string> .
+<http://lobid.org/hbz01/HT000052280> <http://www.w3.org/2000/01/rdf-schema#label> "http://lobid.org/hbz01"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/organisations/DE-385#!> <http://www.w3.org/2000/01/rdf-schema#label> "lobid Organisation"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/organisations/DE-61#!> <http://www.w3.org/2000/01/rdf-schema#label> "lobid Organisation"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/resources/HT000052280> <http://open-services.net/ns/core#modifiedBy> <http://lobid.org/organisations/DE-385#!> .
 <http://lobid.org/resources/HT000052280> <http://purl.org/dc/terms/modified> "20020315"^^<http://www.w3.org/2001/XMLSchema#string> .
+<http://lobid.org/resources/HT000052280> <http://purl.org/lobid/lv#resultOf> _:b3 .
 <http://lobid.org/resources/HT000052280> <http://schema.org/sourceOrganization> <http://lobid.org/organisations/DE-61#!> .
 <http://lobid.org/resources/HT000052280> <http://www.w3.org/2000/01/rdf-schema#label> "lobid Ressource"^^<http://www.w3.org/2001/XMLSchema#string> .
-<http://lobid.org/resources/HT000052280#!> <http://id.loc.gov/ontologies/bibframe/contribution> _:b3 .
+<http://lobid.org/resources/HT000052280#!> <http://id.loc.gov/ontologies/bibframe/contribution> _:b4 .
 <http://lobid.org/resources/HT000052280#!> <http://id.loc.gov/ontologies/bibframe/extent> "XII, 319 S."^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/resources/HT000052280#!> <http://id.loc.gov/ontologies/bibframe/responsibilityStatement> "C. D. Broad"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/resources/HT000052280#!> <http://purl.org/dc/terms/language> <http://id.loc.gov/vocabulary/iso639-2/eng> .
@@ -130,3 +135,4 @@ _:b5 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/0
 <http://lobid.org/resources/HT000052280#!> <http://www.w3.org/2002/07/owl#sameAs> <http://hub.culturegraph.org/resource/HBZ-HT000052280> .
 <http://lobid.org/resources/HT000052280#!> <http://www.w3.org/2007/05/powder-s#describedby> <http://lobid.org/resources/HT000052280> .
 <http://rdaregistry.info/termList/RDAproductionMethod/1010> <http://www.w3.org/2000/01/rdf-schema#label> "Print"^^<http://www.w3.org/2001/XMLSchema#string> .
+<https://github.com/hbz/lobid-resources> <http://www.w3.org/2000/01/rdf-schema#label> "Software lobid-resources"^^<http://www.w3.org/2001/XMLSchema#string> .

@@ -1,7 +1,7 @@
 _:b0 <http://id.loc.gov/ontologies/bibframe/agent> <http://d-nb.info/gnd/14320713X> .
 _:b0 <http://id.loc.gov/ontologies/bibframe/role> <http://id.loc.gov/vocabulary/relators/cre> .
 _:b0 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://id.loc.gov/ontologies/bibframe/Contribution> .
-_:b1 <http://www.loc.gov/mads/rdf/v1#componentList> _:b7 .
+_:b1 <http://www.loc.gov/mads/rdf/v1#componentList> _:b8 .
 _:b1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.loc.gov/mads/rdf/v1#ComplexSubject> .
 _:b1 <http://www.w3.org/2000/01/rdf-schema#label> "LINUX"^^<http://www.w3.org/2001/XMLSchema#string> .
 _:b2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://d-nb.info/standards/elementset/gnd#Work> .
@@ -13,10 +13,13 @@ _:b5 <http://schema.org/location> "Weinheim"^^<http://www.w3.org/2001/XMLSchema#
 _:b5 <http://schema.org/publishedBy> "Wiley-VCH"^^<http://www.w3.org/2001/XMLSchema#string> .
 _:b5 <http://schema.org/startDate> "2011"^^<http://www.w3.org/2001/XMLSchema#gYear> .
 _:b5 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://schema.org/PublicationEvent> .
-_:b6 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> _:b0 .
-_:b6 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
-_:b7 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <http://d-nb.info/gnd/4337730-0> .
+_:b6 <http://schema.org/instrument> <https://github.com/hbz/lobid-resources> .
+_:b6 <http://schema.org/object> <http://lobid.org/hbz01/HT016382441> .
+_:b6 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://schema.org/Action> .
+_:b7 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> _:b0 .
 _:b7 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
+_:b8 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <http://d-nb.info/gnd/4337730-0> .
+_:b8 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
 <http://d-nb.info/gnd/14320713X> <http://d-nb.info/standards/elementset/gnd#dateOfBirth> "1962"^^<http://www.w3.org/2001/XMLSchema#gYear> .
 <http://d-nb.info/gnd/14320713X> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://d-nb.info/standards/elementset/gnd#Person> .
 <http://d-nb.info/gnd/14320713X> <http://www.w3.org/2000/01/rdf-schema#label> "Blum, Richard"^^<http://www.w3.org/2001/XMLSchema#string> .
@@ -32,6 +35,7 @@ _:b7 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/0
 <http://hub.culturegraph.org/resource/HBZ-HT016382441> <http://www.w3.org/2000/01/rdf-schema#label> "Culturegraph Ressource"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://id.loc.gov/vocabulary/iso639-2/deu> <http://www.w3.org/2000/01/rdf-schema#label> "Deutsch"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://id.loc.gov/vocabulary/relators/cre> <http://www.w3.org/2000/01/rdf-schema#label> "Autor/in"^^<http://www.w3.org/2001/XMLSchema#string> .
+<http://lobid.org/hbz01/HT016382441> <http://www.w3.org/2000/01/rdf-schema#label> "http://lobid.org/hbz01"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/items/HT016382441:DE-1044:11%20=%20TWR5408> <http://www.w3.org/2000/01/rdf-schema#label> "lobid Bestandsressource"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/items/HT016382441:DE-1044:11%20=%20TWR5408#!> <http://id.loc.gov/ontologies/bibframe/heldBy> <http://lobid.org/organisations/DE-1044> .
 <http://lobid.org/items/HT016382441:DE-1044:11%20=%20TWR5408#!> <http://id.loc.gov/ontologies/bibframe/itemOf> <http://lobid.org/resources/HT016382441#!> .
@@ -218,10 +222,11 @@ _:b7 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/0
 <http://lobid.org/resources/HT016382441> <http://open-services.net/ns/core#modifiedBy> <http://lobid.org/organisations/DE-51#!> .
 <http://lobid.org/resources/HT016382441> <http://purl.org/dc/terms/created> "20100607"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/resources/HT016382441> <http://purl.org/dc/terms/modified> "20110309"^^<http://www.w3.org/2001/XMLSchema#string> .
+<http://lobid.org/resources/HT016382441> <http://purl.org/lobid/lv#resultOf> _:b6 .
 <http://lobid.org/resources/HT016382441> <http://schema.org/provider> <http://lobid.org/organisations/DE-101#!> .
 <http://lobid.org/resources/HT016382441> <http://schema.org/sourceOrganization> <http://lobid.org/organisations/DE-6#!> .
 <http://lobid.org/resources/HT016382441> <http://www.w3.org/2000/01/rdf-schema#label> "lobid Ressource"^^<http://www.w3.org/2001/XMLSchema#string> .
-<http://lobid.org/resources/HT016382441#!> <http://id.loc.gov/ontologies/bibframe/contribution> _:b6 .
+<http://lobid.org/resources/HT016382441#!> <http://id.loc.gov/ontologies/bibframe/contribution> _:b7 .
 <http://lobid.org/resources/HT016382441#!> <http://id.loc.gov/ontologies/bibframe/extent> "418 S. : zahlr. Ill., graph. Darst."^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/resources/HT016382441#!> <http://id.loc.gov/ontologies/bibframe/hasItem> <http://lobid.org/items/HT016382441:DE-1044:11%20=%20TWR5408#!> .
 <http://lobid.org/resources/HT016382441#!> <http://id.loc.gov/ontologies/bibframe/hasItem> <http://lobid.org/items/HT016382441:DE-1044:11%20=%20TWR5408%2B1#!> .
@@ -266,6 +271,7 @@ _:b7 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/0
 <http://lobid.org/resources/HT016382441#!> <http://www.w3.org/2002/07/owl#sameAs> <http://hub.culturegraph.org/resource/HBZ-HT016382441> .
 <http://lobid.org/resources/HT016382441#!> <http://www.w3.org/2007/05/powder-s#describedby> <http://lobid.org/resources/HT016382441> .
 <http://rdaregistry.info/termList/RDAproductionMethod/1010> <http://www.w3.org/2000/01/rdf-schema#label> "Print"^^<http://www.w3.org/2001/XMLSchema#string> .
+<https://github.com/hbz/lobid-resources> <http://www.w3.org/2000/01/rdf-schema#label> "Software lobid-resources"^^<http://www.w3.org/2001/XMLSchema#string> .
 <https://w3id.org/lobid/rpb2> <http://www.w3.org/2000/01/rdf-schema#label> "RPB-Sachgruppen und Zus\u00E4tze"^^<http://www.w3.org/2001/XMLSchema#string> .
 <https://w3id.org/lobid/rpb2#n820> <http://id.loc.gov/ontologies/bibframe/source> <https://w3id.org/lobid/rpb2> .
 <https://w3id.org/lobid/rpb2#n820> <http://www.w3.org/2000/01/rdf-schema#label> "Informatik, Kybernetik"^^<http://www.w3.org/2001/XMLSchema#string> .

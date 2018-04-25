@@ -11,14 +11,18 @@ _:b4 <http://schema.org/location> "Augsburg"^^<http://www.w3.org/2001/XMLSchema#
 _:b4 <http://schema.org/publishedBy> "Wi\u00DFner Musikbuch-Verlag"^^<http://www.w3.org/2001/XMLSchema#string> .
 _:b4 <http://schema.org/startDate> "2016"^^<http://www.w3.org/2001/XMLSchema#gYear> .
 _:b4 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://schema.org/PublicationEvent> .
-_:b5 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> _:b0 .
-_:b5 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
+_:b5 <http://schema.org/instrument> <https://github.com/hbz/lobid-resources> .
+_:b5 <http://schema.org/object> <http://lobid.org/hbz01/HT018786244> .
+_:b5 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://schema.org/Action> .
+_:b6 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> _:b0 .
+_:b6 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
 <http://d-nb.info/gnd/1097306496> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://d-nb.info/standards/elementset/gnd#Person> .
 <http://d-nb.info/gnd/1097306496> <http://www.w3.org/2000/01/rdf-schema#label> "Kruse, Andreas"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://digitool.hbz-nrw.de:1801/webclient/DeliveryManager?pid=6774059&custom_att_2=simple_viewer> <http://www.w3.org/2000/01/rdf-schema#label> "Digitool"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://hub.culturegraph.org/resource/HBZ-HT018786244> <http://www.w3.org/2000/01/rdf-schema#label> "Culturegraph Ressource"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://id.loc.gov/vocabulary/iso639-2/deu> <http://www.w3.org/2000/01/rdf-schema#label> "Deutsch"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://id.loc.gov/vocabulary/relators/cre> <http://www.w3.org/2000/01/rdf-schema#label> "Autor/in"^^<http://www.w3.org/2001/XMLSchema#string> .
+<http://lobid.org/hbz01/HT018786244> <http://www.w3.org/2000/01/rdf-schema#label> "http://lobid.org/hbz01"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/items/HT018786244:DE-1156:Sbh%2010%20%2F%20For%201%20%2F%20133> <http://www.w3.org/2000/01/rdf-schema#label> "lobid Bestandsressource"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/items/HT018786244:DE-1156:Sbh%2010%20%2F%20For%201%20%2F%20133#!> <http://id.loc.gov/ontologies/bibframe/heldBy> <http://lobid.org/organisations/DE-1156> .
 <http://lobid.org/items/HT018786244:DE-1156:Sbh%2010%20%2F%20For%201%20%2F%20133#!> <http://id.loc.gov/ontologies/bibframe/itemOf> <http://lobid.org/resources/HT018786244#!> .
@@ -78,10 +82,11 @@ _:b5 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/0
 <http://lobid.org/resources/HT018786244> <http://open-services.net/ns/core#modifiedBy> <http://lobid.org/organisations/DE-1156#!> .
 <http://lobid.org/resources/HT018786244> <http://purl.org/dc/terms/created> "20151022"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/resources/HT018786244> <http://purl.org/dc/terms/modified> "20160420"^^<http://www.w3.org/2001/XMLSchema#string> .
+<http://lobid.org/resources/HT018786244> <http://purl.org/lobid/lv#resultOf> _:b5 .
 <http://lobid.org/resources/HT018786244> <http://schema.org/provider> <http://lobid.org/organisations/DE-101#!> .
 <http://lobid.org/resources/HT018786244> <http://schema.org/sourceOrganization> <http://lobid.org/organisations/DE-6#!> .
 <http://lobid.org/resources/HT018786244> <http://www.w3.org/2000/01/rdf-schema#label> "lobid Ressource"^^<http://www.w3.org/2001/XMLSchema#string> .
-<http://lobid.org/resources/HT018786244#!> <http://id.loc.gov/ontologies/bibframe/contribution> _:b5 .
+<http://lobid.org/resources/HT018786244#!> <http://id.loc.gov/ontologies/bibframe/contribution> _:b6 .
 <http://lobid.org/resources/HT018786244#!> <http://id.loc.gov/ontologies/bibframe/extent> "353 Seiten"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/resources/HT018786244#!> <http://id.loc.gov/ontologies/bibframe/hasItem> <http://lobid.org/items/HT018786244:DE-1156:Sbh%2010%20%2F%20For%201%20%2F%20133#!> .
 <http://lobid.org/resources/HT018786244#!> <http://id.loc.gov/ontologies/bibframe/hasItem> <http://lobid.org/items/HT018786244:DE-1156:Sbh%2010%20%2F%20For%201%20%2F%20133%20%2F%20a#!> .
@@ -108,3 +113,4 @@ _:b5 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/0
 <http://lobid.org/resources/HT018786244#!> <http://www.w3.org/2007/05/powder-s#describedby> <http://lobid.org/resources/HT018786244> .
 <http://rdaregistry.info/termList/RDAproductionMethod/1010> <http://www.w3.org/2000/01/rdf-schema#label> "Print"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://www.folkwang-uni.de/fileadmin/medien/Downloads/Bibliothek/Inhaltsverzeichnisse/HT018786244.pdf> <http://www.w3.org/2000/01/rdf-schema#label> "http://www.folkwang-uni.de/fileadmin"^^<http://www.w3.org/2001/XMLSchema#string> .
+<https://github.com/hbz/lobid-resources> <http://www.w3.org/2000/01/rdf-schema#label> "Software lobid-resources"^^<http://www.w3.org/2001/XMLSchema#string> .
