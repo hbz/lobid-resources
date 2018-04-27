@@ -2374,6 +2374,17 @@
 		<combine name="~rdf:subject" value="${a}" flushWith="@id">
 			<data source="@processionBnode" name="a"/>
 		</combine>
+		<combine name="@processingDateAndTime" value="${a}">
+			<data source="@id" name="a">
+				<timestamp format="yyyy-MM-dd'T'HH:mm:ss" timezone="Europe/Berlin"/>
+			</data>
+		</combine>
+		<combine name="~rdf:subject" value="${a}" flushWith="@processingDateAndTime">
+			<data source="@processingBnode" name="a"/>
+		</combine>
+		<combine name="http://schema.org/endTime" value="${a}" flushWith="@processingDateAndTime">
+			<data source="@processingDateAndTime" name="a"/>
+		</combine>
 		<combine name="http://schema.org/object" value="${a}" flushWith="@id">
 			<data source="@id" name="a">
 				<regexp match="(.*)" format="http://lobid.org/hbz01/${1}"/>
