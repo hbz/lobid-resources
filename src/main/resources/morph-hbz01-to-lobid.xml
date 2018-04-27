@@ -2371,45 +2371,6 @@
 		<combine name="http://schema.org/instrument" value="https://github.com/hbz/lobid-resources" flushWith="@id">
 			<data source="@processionBnode"/>
 		</combine>
-		<combine name="@noteModificationTime" value="${a}">
-			<choose name="a">
-				<data source="003-1.a">
-					<regexp match="1\d{7}|200[0-6]\d{4}|20070[1-6]\d{2}|2007070[1-3]" format="Verarbeitet am 04.07.2017"/>
-				</data>
-				<data source="003-1.a">
-					<regexp match="2007070[4-9]|200707[1-3][1-9]|2007(0[89]|1[012])[0-3][0-9]|200[89]\d{4}|20\d{6}|2[1-9]\d{6}"
-						format="Verarbeitet am Wochenende nach dateModified"/>
-				</data>
-			</choose>
-		</combine>
-		<combine name="~rdf:subject" value="${a}" flushWith="@noteModificationTime">
-			<data source="@processionBnode" name="a"/>
-		</combine>
-		<!-- add processing period statement -->
-		<combine name="http://id.loc.gov/ontologies/bibframe/note" value="${a}" flushWith="@noteModificationTime">
-			<data source="@noteModificationTime" name="a"/>
-		</combine>
-		<combine name="@noteCreationTime" value="${a}">
-			<choose name="a">
-				<data source="@noteModificationTime">
-					<regexp match=".*" format=""/>
-				</data>
-				<data source="002[ab]1.a">
-					<regexp match="1\d{7}|200[0-6]\d{4}|20070[1-6]\d{2}|200[0-7]070[1-3]" format="Verarbeitet am 04.07.2017"/>
-				</data>
-				<data source="002[ab]1.a">
-					<regexp match="2007070[4-9]|200707[1-3][1-9]|2007(0[89]|1[012])[0-3][0-9]|200[89]\d{4}|20\d{6}|2[1-9]\d{6}"
-						format="Verarbeitet am Tag nach dateCreated"/>
-				</data>
-			</choose>
-		</combine>
-		<combine name="~rdf:subject" value="${a}" flushWith="@noteCreationTime">
-			<data source="@processionBnode" name="a"/>
-		</combine>
-		<combine name="http://id.loc.gov/ontologies/bibframe/note" value="${a}" flushWith="@noteCreationTime">
-			<data source="@noteCreationTime" name="a"/>
-		</combine>
-
 		<combine name="~rdf:subject" value="${a}" flushWith="@id">
 			<data source="@processionBnode" name="a"/>
 		</combine>
