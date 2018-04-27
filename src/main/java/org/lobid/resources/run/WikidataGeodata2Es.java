@@ -60,6 +60,7 @@ public class WikidataGeodata2Es {
 	public static final String SPATIAL = "spatial";
 	private static String indexAlias = "geo_nwbib";
 	private static boolean indexExists = false;
+
 	/**
 	 * This maps the nwbib location codes to wikidata entities.
 	 */
@@ -293,7 +294,6 @@ public class WikidataGeodata2Es {
 				if (!aliasesNode.isMissingNode())
 					root.set("aliases", aliasesNode);
 				ArrayNode type = mapper.createObjectNode().arrayNode();
-				type.add("Q2221906"); // default
 				spatial.put("id",
 						HTTP_WWW_WIKIDATA_ORG_ENTITY + node.findPath("id").asText());
 				spatial.put("label",
@@ -329,10 +329,12 @@ public class WikidataGeodata2Es {
 					root.set("locatedIn", locatedInNode);
 				}
 				List<JsonNode> typeNode = node.findPath("P31").findValues("mainsnak");
-				if (!typeNode.isEmpty())
-					typeNode.parallelStream().forEach(
-							e -> type.add(e.findPath("datavalue").findPath("id").asText()));
-				spatial.set("type", type);
+				if (!typeNode.isEmpty()) {
+					typeNode.parallelStream()
+							.forEach(e -> type.add(HTTP_WWW_WIKIDATA_ORG_ENTITY
+									+ e.findPath("datavalue").findPath("id").asText()));
+					spatial.set("type", type);
+				}
 				LOG.debug("Wikidata-Type extracted for " + root.get("locatedIn") + " "
 						+ type.toString());
 			} catch (Exception e) {
