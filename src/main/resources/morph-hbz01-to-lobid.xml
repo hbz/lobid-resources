@@ -1714,7 +1714,7 @@
 				</data>
 			</choose>
 		</combine>
-		<choose name="@titleVariable">
+		<!-- <choose name="@titleVariable">
 			<data source="@titleRemainder331Superordination2title">
 				<replace pattern="&gt;" with=""/>
 				<replace pattern="&lt;" with=""/>
@@ -1731,8 +1731,8 @@
 				<replace pattern="&gt;" with=""/>
 				<replace pattern="&lt;" with=""/>
 			</data>
-		</choose>
-		<combine name="~rdf:subject" value="$[ns-lobid-resource]${a}" flushWith="@titleVariable">
+		</choose> -->
+		<!-- <combine name="~rdf:subject" value="$[ns-lobid-resource]${a}" flushWith="@titleVariable">
 			<data source="@processionBnode"/>
 			<data source="@id" name="a"/>
 		</combine>
@@ -1744,7 +1744,7 @@
 		<combine name="~rdf:subject" value="$[ns-lobid-resource]${id}#!" flushWith="@titleVariable">
 			<data source="@titleVariable"/>
 			<data source="@id" name="id"/>
-		</combine>
+		</combine> -->
 		<data source="360-[12].a" name="@titleOfSubSeries"/>
 		<combine name="http://rdaregistry.info/Elements/u/P60517" value="${a}">
 			<concat delimiter=". " name="a">
@@ -2393,6 +2393,11 @@
 			<data source="@processionBnode"/>
 			<data source="@id" name="a"/>
 		</combine>
+		<combine name="http://www.w3.org/2000/01/rdf-schema#label"
+			value="Webseite der hbz-Ressource ${a}" flushWith="@id">
+			<data source="@processionBnode"/>
+			<data source="@id" name="a"/>
+		</combine>
 		<combine name="http://purl.org/lobid/lv#resultOf" value="${a}" flushWith="@id">
 			<data source="@processionBnode" name="a"/>
 		</combine>
@@ -2452,31 +2457,25 @@
 		<combine name="~rdf:subject" value="$[ns-lobid-resource]${id}#!">
 			<data source="@id" name="id"/>
 		</combine>
-		<combine name="@catalogOrZdbResource" value="${a}">
-			<choose name="a">
-				<data source="025z1.a">
-					<constant value="Ressource der Zeitschriftendatenbank (ZDB)"/>
-				</data>
-				<data source="001?1.a">
-					<constant value="Ressource aus dem hbz-Verbundkatalog"/>
-				</data>
-			</choose>
+		<combine name="@resourceOriginLabel" value="hbz-Ressource ${id} im Exportformat MAB2-XML"
+			flushWith="@id">
+			<data source="@id" name="id"/>
 		</combine>
-		<combine name="~rdf:subject" value="http://lobid.org/hbz01/${a}" flushWith="@catalogOrZdbResource">
+		<combine name="~rdf:subject" value="http://lobid.org/hbz01/${a}" flushWith="@id">
 			<data source="@id" name="a"/>
 		</combine>
-		<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="${a}" flushWith="@catalogOrZdbResource">
-			<data source="@catalogOrZdbResource" name="a"/>
+		<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="${a}" flushWith="@id">
+			<data source="@resourceOriginLabel" name="a"/>
 		</combine>
 		<combine name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" value="http://schema.org/DataFeedItem"
-			flushWith="@catalogOrZdbResource">
-			<data source="@catalogOrZdbResource"/>
+			flushWith="@id">
+			<data source="@resourceOriginLabel"/>
 		</combine>
 		<combine name="$[ns-lobid-resource]isPartOf" value="https://datahub.io/dataset/hbz_unioncatalog"
-			flushWith="@catalogOrZdbResource">
-			<data source="@catalogOrZdbResource"/>
+			flushWith="@id">
+			<data source="@resourceOriginLabel"/>
 		</combine>
-		<call-macro name="setBackRdfSubject" field="@catalogOrZdbResource"/>
+		<call-macro name="setBackRdfSubject" field="@id"/>
 		<!-- set subject uri of resource anew -->
 		<call-macro name="setBackRdfSubject" field="070a1.a"/>
 		<call-macro name="setRdfSubjectDescribedBy" field="070-1.a"/>
