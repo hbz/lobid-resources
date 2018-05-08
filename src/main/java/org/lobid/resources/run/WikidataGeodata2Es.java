@@ -54,8 +54,54 @@ public class WikidataGeodata2Es {
 			new SimpleDateFormat("yyyyMMdd-HHmmss").format(new Date());
 	private static final Logger LOG =
 			LogManager.getLogger(WikidataGeodata2Es.class);
+	/**
+	 * This is the root node of the geo data.
+	 */
+	public static final String SPATIAL = "spatial";
 	private static String indexAlias = "geo_nwbib";
 	private static boolean indexExists = false;
+
+	/**
+	 * This maps the nwbib location codes to wikidata entities.
+	 */
+	public static HashMap<String, String> NWBIB_LOCATION_CODES_2_WIKIDATA_ENTITIES =
+			new HashMap<String, String>() {
+				private static final long serialVersionUID = 12L;
+
+				{
+					put("99", "Q22865 Q262166 Q253019 Q1852178 Q15632166");
+					put("97", "Q106658");
+					put("96", "Q829277");
+					put("36", "Q3146899 Q2072238");
+					put("97", "Q106658");
+					put("35", "Q1380992 Q1381014");
+
+				}
+			};
+	/**
+	 * This provides a boost map for literal queries to be more precisely scored.
+	 */
+	public static HashMap<String, Float> FIELD_BOOST =
+			new HashMap<String, Float>() {
+				private static final long serialVersionUID = 13L;
+
+				{
+					put(SPATIAL + ".label", 10.0f);
+					put("locatedIn.value", 1.0f);
+					put("aliases.value", 2.0f);
+					put(SPATIAL + ".type", 4.0f);
+				}
+			};
+	/**
+	 * This provides a boost map for type queries to be more precisely scored.
+	 */
+	public static HashMap<String, Float> TYPE = new HashMap<String, Float>() {
+		private static final long serialVersionUID = 14L;
+
+		{
+			put(SPATIAL + ".type", 4.0f);
+		}
+	};
 
 	/**
 	 * @param args ignored
@@ -220,7 +266,6 @@ public class WikidataGeodata2Es {
 						idAndJson.first);
 				esIndexer.process(jsonMap);
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
 				LOG.error("Couldn't index a json document from the wd-entity ", e);
 			}
 		};
@@ -244,12 +289,11 @@ public class WikidataGeodata2Es {
 				root = mapper.createObjectNode();
 				ObjectNode spatial = mapper.createObjectNode();
 				ObjectNode geo = mapper.createObjectNode();
-				root.set("spatial", spatial);
+				root.set(SPATIAL, spatial);
 				JsonNode aliasesNode = node.findPath("aliases").findPath("de");
 				if (!aliasesNode.isMissingNode())
 					root.set("aliases", aliasesNode);
 				ArrayNode type = mapper.createObjectNode().arrayNode();
-				type.add("Location");
 				spatial.put("id",
 						HTTP_WWW_WIKIDATA_ORG_ENTITY + node.findPath("id").asText());
 				spatial.put("label",
@@ -285,11 +329,14 @@ public class WikidataGeodata2Es {
 					root.set("locatedIn", locatedInNode);
 				}
 				List<JsonNode> typeNode = node.findPath("P31").findValues("mainsnak");
-				if (!typeNode.isEmpty())
+				if (!typeNode.isEmpty()) {
 					typeNode.parallelStream()
 							.forEach(e -> type.add(HTTP_WWW_WIKIDATA_ORG_ENTITY
 									+ e.findPath("datavalue").findPath("id").asText()));
-				spatial.set("type", type);
+					spatial.set("type", type);
+				}
+				LOG.debug("Wikidata-Type extracted for " + root.get("locatedIn") + " "
+						+ type.toString());
 			} catch (Exception e) {
 				LOG.error("Couldn't build a json document from the wd-entity ", e);
 				return null;

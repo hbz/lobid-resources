@@ -646,6 +646,104 @@
 				</data>
 			</combine>
 		</macro>
+		<macro name="setRSWKSubjectId">
+			<combine name="@$[field]Id" value="${a}">
+				<data source="$[field]-[-12].9" name="a">
+					<regexp match="\(DE-588\)(.*)" format="http://d-nb.info/gnd/${1}"/>
+				</data>
+				<data source="$[field]-[-12].p"/>
+			</combine>
+		</macro>
+		<macro name="setRdfSubjectForRSWKSubject">
+			<combine name="~rdf:subject" value="${a}" sameEntity="true">
+				<data source="@$[field]Id" name="a"/>
+			</combine>
+		</macro>
+		<macro name="setRSWKSubjectDateOfBirth">
+			<combine name="$[ns-gnd]dateOfBirth" value="${a}" flushWith="@$[field]Id" sameEntity="true">
+				<choose name="a" flushWith="@$[field]Id" sameEntity="true">
+					<data source="$[field]-[-12].t">
+						<regexp match=".*" format=""/>
+					</data>
+					<data source="$[field]-[-12].d">
+						<regexp match="^([012][0-9]{3})-" format="${1}"/>
+					</data>
+					<data source="$[field]-[-12].d">
+						<regexp match="^([1-9][0-9]{2})-" format="0${1}"/>
+					</data>
+					<data source="$[field]-[-12].d">
+						<regexp match="^([1-9][0-9])-" format="00${1}"/>
+					</data>
+					<data source="$[field]-[-12].d">
+						<regexp match="^([0-9])-" format="000${1}"/>
+					</data>
+					<data source="$[field]-[-12].d">
+						<regexp match="^v([012][0-9]{3})-" format="-${1}"/>
+					</data>
+					<data source="$[field]-[-12].d">
+						<regexp match="^v([1-9][0-9]{2})-" format="-0${1}"/>
+					</data>
+					<data source="$[field]-[-12].d">
+						<regexp match="^v([1-9][0-9])-" format="-00${1}"/>
+					</data>
+					<data source="$[field]-[-12].d">
+						<regexp match="^v([0-9])-" format="-000${1}"/>
+					</data>
+				</choose>
+			</combine>
+		</macro>
+		<macro name="setRSWKSubjectDateOfDeath">
+			<combine name="$[ns-gnd]dateOfDeath" value="${a}" flushWith="@$[field]Id" sameEntity="true">
+				<choose name="a" flushWith="@$[field]Id" sameEntity="true">
+					<data source="$[field]-[-12].t">
+						<regexp match=".*" format=""/>
+					</data>
+					<data source="$[field]-[-12].d">
+						<regexp match="-([012][0-9]{3})$" format="${1}"/>
+					</data>
+					<data source="$[field]-[-12].d">
+						<regexp match="-([1-9][0-9]{2})$" format="0${1}"/>
+					</data>
+					<data source="$[field]-[-12].d">
+						<regexp match="-([1-9][0-9])$" format="00${1}"/>
+					</data>
+					<data source="$[field]-[-12].d">
+						<regexp match="-([0-9])$" format="000${1}"/>
+					</data>
+					<data source="$[field]-[-12].d">
+						<regexp match="-v([012][0-9]{3})$" format="-${1}"/>
+					</data>
+					<data source="$[field]-[-12].d">
+						<regexp match="-v([1-9][0-9]{2})$" format="-0${1}"/>
+					</data>
+					<data source="$[field]-[-12].d">
+						<regexp match="-v([1-9][0-9])$" format="-00${1}"/>
+					</data>
+					<data source="$[field]-[-12].d">
+						<regexp match="-v([0-9])$" format="-000${1}"/>
+					</data>
+				</choose>
+			</combine>
+		</macro>
+		<macro name="setRSWKSubjectDateOfBirthAndDeath">
+			<combine name="$[ns-gnd]dateOfBirthAndDeath" value="${a}" flushWith="@$[field]Id" sameEntity="true">
+				<choose name="a" flushWith="@$[field]Id" sameEntity="true">
+					<data source="$[field]-[-12].t">
+						<regexp match=".*" format=""/>
+					</data>
+					<data source="$[field]-[-12].d">
+						<regexp match="^ca\..*|.*Jh\."/>
+					</data>
+				</choose>
+			</combine>
+		</macro>
+		<macro name="setBackRdfSubjectForRSWKSubject">
+			<combine name="~rdf:subject" value="$[ns-lobid-resource]${id}#!" flushWith="@$[field]Id">
+				<data source="@id" name="id"/>
+				<data source="@$[field]Id" name="a"/>
+			</combine>
+		</macro>
+		
 		<macro name="addTypeCollection">
 			<combine name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" value="${a}">
 				<data source="$[field]" name="a">
@@ -1372,10 +1470,6 @@
 		<data source="9[01234][27]-1.f" name="@rdftype">
 			<regexp match="Altkarte|Karte|Stadtplan" format="$[ns-bibo]Map"/>
 		</data>
-		<!-- issue and volume of periodical work -->
-		<data source="089|090-1.a" name="@rdftype">
-			<regexp match="Heft" format="http://schema.org/PublicationIssue"/>
-		</data>
 		<!-- game -->
 		<data source="050." name="@rdftype">
 			<regexp match="^.........a" format="http://schema.org/Game"/>
@@ -1442,9 +1536,12 @@
 			<regexp match="Kongress" format="$[ns-bibo]Proceedings"/>
 		</data>
 		<!-- issue and volume of periodical work -->
-		<data source="089|090-1.a" name="@rdftype">
-			<regexp match="Heft" format="http://schema.org/PublicationIssue"/>
-		</data>
+		<combine name="@rdftype" value="${a}">
+			<data source="025z2.a"/>
+			<data source="089|090-1.a" name="a">
+				<regexp match=".*" format="http://schema.org/PublicationIssue"/>
+			</data>
+		</combine>
 		<!-- reference source -->
 		<data source="051." name="@rdftype">
 			<regexp match="^.[de]|^..[de]|^...[de]" format="$[ns-bibo]ReferenceSource"/>
@@ -4439,6 +4536,128 @@
 				<replace pattern="&lt;&lt;" with=""/>
 			</data>
 		</combine>
+		
+		<!-- set living statistics for RSWK subject 902 if not type work -->
+		<call-macro name="setRSWKSubjectId" field="902"/>
+		<call-macro name="setRdfSubjectForRSWKSubject" field="902"/>
+		<call-macro name="setRSWKSubjectDateOfBirth" field="902"/>
+		<call-macro name="setBackRdfSubjectForRSWKSubject" field="902"/>
+		<call-macro name="setRdfSubjectForRSWKSubject" field="902"/>
+		<call-macro name="setRSWKSubjectDateOfDeath" field="902"/>
+		<call-macro name="setBackRdfSubjectForRSWKSubject" field="902"/>
+		<call-macro name="setRdfSubjectForRSWKSubject" field="902"/>
+		<call-macro name="setRSWKSubjectDateOfBirthAndDeath" field="902"/>
+		<call-macro name="setBackRdfSubjectForRSWKSubject" field="902"/>
+		
+		<!-- set living statistics for RSWK subject 907 if not type work -->
+		<call-macro name="setRSWKSubjectId" field="907"/>
+		<call-macro name="setRdfSubjectForRSWKSubject" field="907"/>
+		<call-macro name="setRSWKSubjectDateOfBirth" field="907"/>
+		<call-macro name="setBackRdfSubjectForRSWKSubject" field="907"/>
+		<call-macro name="setRdfSubjectForRSWKSubject" field="907"/>
+		<call-macro name="setRSWKSubjectDateOfDeath" field="907"/>
+		<call-macro name="setBackRdfSubjectForRSWKSubject" field="907"/>
+		<call-macro name="setRdfSubjectForRSWKSubject" field="907"/>
+		<call-macro name="setRSWKSubjectDateOfBirthAndDeath" field="907"/>
+		<call-macro name="setBackRdfSubjectForRSWKSubject" field="907"/>
+		
+		<!-- set living statistics for RSWK subject 912 if not type work -->
+		<call-macro name="setRSWKSubjectId" field="912"/>
+		<call-macro name="setRdfSubjectForRSWKSubject" field="912"/>
+		<call-macro name="setRSWKSubjectDateOfBirth" field="912"/>
+		<call-macro name="setBackRdfSubjectForRSWKSubject" field="912"/>
+		<call-macro name="setRdfSubjectForRSWKSubject" field="912"/>
+		<call-macro name="setRSWKSubjectDateOfDeath" field="912"/>
+		<call-macro name="setBackRdfSubjectForRSWKSubject" field="912"/>
+		<call-macro name="setRdfSubjectForRSWKSubject" field="912"/>
+		<call-macro name="setRSWKSubjectDateOfBirthAndDeath" field="912"/>
+		<call-macro name="setBackRdfSubjectForRSWKSubject" field="912"/>
+		
+		<!-- set living statistics for RSWK subject 917 if not type work -->
+		<call-macro name="setRSWKSubjectId" field="917"/>
+		<call-macro name="setRdfSubjectForRSWKSubject" field="917"/>
+		<call-macro name="setRSWKSubjectDateOfBirth" field="917"/>
+		<call-macro name="setBackRdfSubjectForRSWKSubject" field="917"/>
+		<call-macro name="setRdfSubjectForRSWKSubject" field="917"/>
+		<call-macro name="setRSWKSubjectDateOfDeath" field="917"/>
+		<call-macro name="setBackRdfSubjectForRSWKSubject" field="917"/>
+		<call-macro name="setRdfSubjectForRSWKSubject" field="917"/>
+		<call-macro name="setRSWKSubjectDateOfBirthAndDeath" field="917"/>
+		<call-macro name="setBackRdfSubjectForRSWKSubject" field="917"/>
+		
+		<!-- set living statistics for RSWK subject 922 if not type work -->
+		<call-macro name="setRSWKSubjectId" field="922"/>
+		<call-macro name="setRdfSubjectForRSWKSubject" field="922"/>
+		<call-macro name="setRSWKSubjectDateOfBirth" field="922"/>
+		<call-macro name="setBackRdfSubjectForRSWKSubject" field="922"/>
+		<call-macro name="setRdfSubjectForRSWKSubject" field="922"/>
+		<call-macro name="setRSWKSubjectDateOfDeath" field="922"/>
+		<call-macro name="setBackRdfSubjectForRSWKSubject" field="922"/>
+		<call-macro name="setRdfSubjectForRSWKSubject" field="922"/>
+		<call-macro name="setRSWKSubjectDateOfBirthAndDeath" field="922"/>
+		<call-macro name="setBackRdfSubjectForRSWKSubject" field="922"/>
+		
+		<!-- set living statistics for RSWK subject 927 if not type work -->
+		<call-macro name="setRSWKSubjectId" field="927"/>
+		<call-macro name="setRdfSubjectForRSWKSubject" field="927"/>
+		<call-macro name="setRSWKSubjectDateOfBirth" field="927"/>
+		<call-macro name="setBackRdfSubjectForRSWKSubject" field="927"/>
+		<call-macro name="setRdfSubjectForRSWKSubject" field="927"/>
+		<call-macro name="setRSWKSubjectDateOfDeath" field="927"/>
+		<call-macro name="setBackRdfSubjectForRSWKSubject" field="927"/>
+		<call-macro name="setRdfSubjectForRSWKSubject" field="927"/>
+		<call-macro name="setRSWKSubjectDateOfBirthAndDeath" field="927"/>
+		<call-macro name="setBackRdfSubjectForRSWKSubject" field="927"/>
+		
+		<!-- set living statistics for RSWK subject 932 if not type work -->
+		<call-macro name="setRSWKSubjectId" field="932"/>
+		<call-macro name="setRdfSubjectForRSWKSubject" field="932"/>
+		<call-macro name="setRSWKSubjectDateOfBirth" field="932"/>
+		<call-macro name="setBackRdfSubjectForRSWKSubject" field="932"/>
+		<call-macro name="setRdfSubjectForRSWKSubject" field="932"/>
+		<call-macro name="setRSWKSubjectDateOfDeath" field="932"/>
+		<call-macro name="setBackRdfSubjectForRSWKSubject" field="932"/>
+		<call-macro name="setRdfSubjectForRSWKSubject" field="932"/>
+		<call-macro name="setRSWKSubjectDateOfBirthAndDeath" field="932"/>
+		<call-macro name="setBackRdfSubjectForRSWKSubject" field="932"/>
+		
+		<!-- set living statistics for RSWK subject 937 if not type work -->
+		<call-macro name="setRSWKSubjectId" field="937"/>
+		<call-macro name="setRdfSubjectForRSWKSubject" field="937"/>
+		<call-macro name="setRSWKSubjectDateOfBirth" field="937"/>
+		<call-macro name="setBackRdfSubjectForRSWKSubject" field="937"/>
+		<call-macro name="setRdfSubjectForRSWKSubject" field="937"/>
+		<call-macro name="setRSWKSubjectDateOfDeath" field="937"/>
+		<call-macro name="setBackRdfSubjectForRSWKSubject" field="937"/>
+		<call-macro name="setRdfSubjectForRSWKSubject" field="937"/>
+		<call-macro name="setRSWKSubjectDateOfBirthAndDeath" field="937"/>
+		<call-macro name="setBackRdfSubjectForRSWKSubject" field="937"/>
+		
+		<!-- set living statistics for RSWK subject 942 if not type work -->
+		<call-macro name="setRSWKSubjectId" field="942"/>
+		<call-macro name="setRdfSubjectForRSWKSubject" field="942"/>
+		<call-macro name="setRSWKSubjectDateOfBirth" field="942"/>
+		<call-macro name="setBackRdfSubjectForRSWKSubject" field="942"/>
+		<call-macro name="setRdfSubjectForRSWKSubject" field="942"/>
+		<call-macro name="setRSWKSubjectDateOfDeath" field="942"/>
+		<call-macro name="setBackRdfSubjectForRSWKSubject" field="942"/>
+		<call-macro name="setRdfSubjectForRSWKSubject" field="942"/>
+		<call-macro name="setRSWKSubjectDateOfBirthAndDeath" field="942"/>
+		<call-macro name="setBackRdfSubjectForRSWKSubject" field="942"/>
+		
+		<!-- set living statistics for RSWK subject 947 if not type work -->
+		<call-macro name="setRSWKSubjectId" field="947"/>
+		<call-macro name="setRdfSubjectForRSWKSubject" field="947"/>
+		<call-macro name="setRSWKSubjectDateOfBirth" field="947"/>
+		<call-macro name="setBackRdfSubjectForRSWKSubject" field="947"/>
+		<call-macro name="setRdfSubjectForRSWKSubject" field="947"/>
+		<call-macro name="setRSWKSubjectDateOfDeath" field="947"/>
+		<call-macro name="setBackRdfSubjectForRSWKSubject" field="947"/>
+		<call-macro name="setRdfSubjectForRSWKSubject" field="947"/>
+		<call-macro name="setRSWKSubjectDateOfBirthAndDeath" field="947"/>
+		<call-macro name="setBackRdfSubjectForRSWKSubject" field="947"/>
+
+
 		<combine name="@preferredNameSemicolon" value="${a}: ${b}" sameEntity="true">
 			<data source="@preferredNameP" name="a"/>
 			<data source="9[01234][27]-[-12].t" name="b">
@@ -4466,73 +4685,6 @@
 			<data source="@subjectLinks"/>
 			<data source="9[01234][27]-[-12].g"/>
 			<data source="@preferredNameConcatSubject" name="a"/>
-		</combine>
-		<combine name="$[ns-gnd]dateOfBirth" value="${a}" sameEntity="true">
-			<data source="@subjectLinks"/>
-			<data source="@preferredNameP"/>
-			<choose name="a" flushWith="9[01234][27]-[-12].d" sameEntity="true">
-				<data source="9[01234][27]-[-12].d">
-					<regexp match="^([012][0-9]{3})-" format="${1}"/>
-				</data>
-				<data source="9[01234][27]-[-12].d">
-					<regexp match="^([1-9][0-9]{2})-" format="0${1}"/>
-				</data>
-				<data source="9[01234][27]-[-12].d">
-					<regexp match="^([1-9][0-9])-" format="00${1}"/>
-				</data>
-				<data source="9[01234][27]-[-12].d">
-					<regexp match="^([0-9])-" format="000${1}"/>
-				</data>
-				<data source="9[01234][27]-[-12].d">
-					<regexp match="^v([012][0-9]{3})-" format="-${1}"/>
-				</data>
-				<data source="9[01234][27]-[-12].d">
-					<regexp match="^v([1-9][0-9]{2})-" format="-0${1}"/>
-				</data>
-				<data source="9[01234][27]-[-12].d">
-					<regexp match="^v([1-9][0-9])-" format="-00${1}"/>
-				</data>
-				<data source="9[01234][27]-[-12].d">
-					<regexp match="^v([0-9])-" format="-000${1}"/>
-				</data>
-			</choose>
-		</combine>
-		<combine name="$[ns-gnd]dateOfDeath" value="${a}" sameEntity="true">
-			<data source="@subjectLinks"/>
-			<data source="@preferredNameP"/>
-			<choose name="a" flushWith="9[01234][27]-[-12].d" sameEntity="true">
-				<data source="9[01234][27]-[-12].d">
-					<regexp match="-([012][0-9]{3})$" format="${1}"/>
-				</data>
-				<data source="9[01234][27]-[-12].d">
-					<regexp match="-([1-9][0-9]{2})$" format="0${1}"/>
-				</data>
-				<data source="9[01234][27]-[-12].d">
-					<regexp match="-([1-9][0-9])$" format="00${1}"/>
-				</data>
-				<data source="9[01234][27]-[-12].d">
-					<regexp match="-([0-9])$" format="000${1}"/>
-				</data>
-				<data source="9[01234][27]-[-12].d">
-					<regexp match="-v([012][0-9]{3})$" format="-${1}"/>
-				</data>
-				<data source="9[01234][27]-[-12].d">
-					<regexp match="-v([1-9][0-9]{2})$" format="-0${1}"/>
-				</data>
-				<data source="9[01234][27]-[-12].d">
-					<regexp match="-v([1-9][0-9])$" format="-00${1}"/>
-				</data>
-				<data source="9[01234][27]-[-12].d">
-					<regexp match="-v([0-9])$" format="-000${1}"/>
-				</data>
-			</choose>
-		</combine>
-		<combine name="$[ns-gnd]dateOfBirthAndDeath" value="${a}" sameEntity="true">
-			<data source="@subjectLinks"/>
-			<data source="@preferredNameP"/>
-			<data source="9[01234][27]-[-12].d" name="a">
-				<regexp match="^ca\..*|.*Jh\."/>
-			</data>
 		</combine>
 		<combine name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" value="${a}"
 			flushWith="@subjectLinks|@contributorCorporateBodyBnodeOrId" sameEntity="true">
