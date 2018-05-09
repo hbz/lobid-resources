@@ -120,9 +120,10 @@ public enum TableRow {
 								: String.format(
 										"<a title=\"Titeldetails anzeigen\" href=\"%s\">%s</a>",
 										refAndLabel[0], refAndLabel[1]);
-				results.add(result.replace("Band", "").trim());
+				results.add(result.replaceAll("^(Band|Volume)", "").trim());
 			}
-			return results.stream().collect(Collectors.joining(", Band "));
+			return results.stream().collect(Collectors.joining(String.format(", %s",
+					results.toString().contains("Band") ? "" : "Band ")));
 		}
 
 		private List<String> labelsFor(JsonNode doc, String value,
