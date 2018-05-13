@@ -56,10 +56,8 @@ public final class Hbz01MabXmlEtlNtriples2Filesystem {
 	private static void deleteFilesRecursively(final String DIRECTORY)
 			throws IOException {
 		LOG.info("Tabula rasa: cleaning test directory '" + DIRECTORY + "'");
-		try (
-				Stream<Path> files = Files.find(
-						Paths.get(
-								Hbz01MabXmlEtlNtriples2Filesystem.PATH_TO_TEST + DIRECTORY),
+		try (Stream<Path> files = Files.find(
+				Paths.get(Hbz01MabXmlEtlNtriples2Filesystem.PATH_TO_TEST + DIRECTORY),
 				100, (path, t) -> path.toFile().isFile())) {
 			files.filter(Files::isRegularFile).map(Path::toFile)
 					.forEach(File::delete);
@@ -68,8 +66,9 @@ public final class Hbz01MabXmlEtlNtriples2Filesystem {
 
 	/**
 	 * ETL stands for extract, transform, load. Extract data from AlephmabXml
-	 * clobs, transform into lobid ntriples and load this into the filesystem. The
-	 * files are used as input for the @see de.hbz.lobid.helper.JsonConverter .
+	 * clobs, transform into lobid ntriples defaulting the "endTime" triples (for
+	 * test purpose) and load this into the filesystem. The files are used as
+	 * input for the @see de.hbz.lobid.helper.JsonConverter .
 	 */
 	@SuppressWarnings("static-method")
 	@Test
@@ -86,8 +85,11 @@ public final class Hbz01MabXmlEtlNtriples2Filesystem {
 				.setReceiver(new AlephMabXmlHandler())
 				.setReceiver(
 						new Metamorph("src/main/resources/morph-hbz01-to-lobid.xml"))
-				.setReceiver(new PipeEncodeTriples()).setReceiver(triple2model)
-				.setReceiver(rdfModelFileWriter);
+				.setReceiver(new PipeEncodeTriples())
+				.setReceiver(new SimpleStringSubstituter(
+						"endTime> \"\\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\"",
+						"endTime> \"0001-01-01T00:00:00\""))
+				.setReceiver(triple2model).setReceiver(rdfModelFileWriter);
 		opener.process(new File(TEST_FILENAME_ALEPHXMLCLOBS).getAbsolutePath());
 		opener.closeStream();
 	}
