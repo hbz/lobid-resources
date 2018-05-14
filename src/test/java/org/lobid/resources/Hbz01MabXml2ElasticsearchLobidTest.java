@@ -6,7 +6,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.StringWriter;
-import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -54,6 +53,7 @@ import com.github.jsonldjava.utils.JSONUtils;
 import com.hp.hpl.jena.rdf.model.Model;
 
 import de.hbz.lobid.helper.CompareJsonMaps;
+import de.hbz.lobid.helper.EtikettMaker;
 
 /**
  * Transform hbz01 Aleph Mab XML catalog data into lobid elasticsearch JSON-LD.
@@ -80,8 +80,6 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 	static HashSet<String> testFiles = new HashSet<>();
 	static boolean testFailed = false;
 	static MabXml2lobidJsonEs mabXml2lobidJsonEs = new MabXml2lobidJsonEs();
-	private static final String CONTEXT_PATH = "web/conf/context.jsonld";
-	private static final URI CONTEXT_URI = new File(CONTEXT_PATH).toURI();
 
 	@BeforeClass
 	public static void setup() {
@@ -287,8 +285,6 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 		}
 
 		private static String cleanseEndtime(String jsonld) {
-			com.github.jsonldjava.utils.URL url =
-					new com.github.jsonldjava.utils.URL();
 			return jsonld.replaceFirst(
 					"\"endTime\":\"\\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\"",
 					"\"endTime\":\"0001-01-01T00:00:00\"");
@@ -306,7 +302,7 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 			mapper.enable(SerializationFeature.INDENT_OUTPUT);
 			try {
 				map = mapper.readValue(jsonLd, Map.class);
-				map.put("@context", CONTEXT_PATH);
+				map.put("@context", EtikettMaker.getContextLocation());
 				jsonLdWithoutContext = mapper.writeValueAsString(map);
 				filename = ((String) map.get("id"))
 						.replaceAll(
@@ -340,7 +336,9 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 				LOG.trace("toRdf: " + jsonLd);
 				String jsonWithLocalContext = jsonLd.replaceFirst(
 						"@context\":\"http://lobid.org/resources/context.jsonld\"",
-						"@context\":\"" + CONTEXT_URI.toString() + "\"");
+						"@context\":\""
+								+ new File(EtikettMaker.getContextLocation()).toURI().toString()
+								+ "\"");
 				final Object jsonObject = JSONUtils.fromString(jsonWithLocalContext);
 				final JenaTripleCallback callback = new JenaTripleCallback();
 				final Model model = (Model) JsonLdProcessor.toRDF(jsonObject, callback);

@@ -11,6 +11,7 @@ import static play.test.Helpers.route;
 import static play.test.Helpers.running;
 
 import java.io.File;
+import java.net.URI;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
@@ -31,6 +32,7 @@ import play.mvc.Result;
 @SuppressWarnings("javadoc")
 @RunWith(Parameterized.class)
 public class RdfConverterTests extends LocalIndexSetup {
+	private final URI CONTEXT_URI = new File("conf/context.jsonld").toURI();
 
 	@Parameters(name = "{0}")
 	public static Collection<Object[]> data() {
@@ -60,9 +62,9 @@ public class RdfConverterTests extends LocalIndexSetup {
 		});
 	}
 
-	private static String withLocalContext(String jsonLd) {
+	private String withLocalContext(String jsonLd) {
 		Map<String, Object> json = Json.fromJson(Json.parse(jsonLd), Map.class);
-		json.put("@context", new File("conf/context.jsonld").toURI());
+		json.put("@context", CONTEXT_URI);
 		return Json.toJson(json).toString();
 	}
 }

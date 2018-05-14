@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -47,6 +48,8 @@ public class LocalIndex {
 
 	private Node node;
 	private Client client;
+	private static final URI CONTEXT_URI =
+			new File("conf/context.jsonld").toURI();
 
 	/**
 	 * Create a new local index based on our test set
@@ -109,6 +112,7 @@ public class LocalIndex {
 						? "http://lobid.org/resources/" + file.getName().split(":")[0] : "";
 				final Map<String, Object> map =
 						Json.fromJson(Json.parse(data), Map.class);
+				map.put("@context", CONTEXT_URI);
 				final IndexRequestBuilder requestBuilder =
 						createRequestBuilder(type, id, parent, map);
 				bulkRequest.add(requestBuilder);
