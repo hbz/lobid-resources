@@ -53,7 +53,6 @@ import com.github.jsonldjava.utils.JSONUtils;
 import com.hp.hpl.jena.rdf.model.Model;
 
 import de.hbz.lobid.helper.CompareJsonMaps;
-import de.hbz.lobid.helper.EtikettMaker;
 
 /**
  * Transform hbz01 Aleph Mab XML catalog data into lobid elasticsearch JSON-LD.
@@ -302,7 +301,8 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 			mapper.enable(SerializationFeature.INDENT_OUTPUT);
 			try {
 				map = mapper.readValue(jsonLd, Map.class);
-				map.put("@context", EtikettMaker.getContextLocation());
+				map.put("@context", mabXml2lobidJsonEs
+						.getRdfModel2ElasticsearchEtikettJsonLd().getContextLocation());
 				jsonLdWithoutContext = mapper.writeValueAsString(map);
 				filename = ((String) map.get("id"))
 						.replaceAll(
@@ -336,8 +336,9 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 				LOG.trace("toRdf: " + jsonLd);
 				String jsonWithLocalContext = jsonLd.replaceFirst(
 						"@context\":\"http://lobid.org/resources/context.jsonld\"",
-						"@context\":\""
-								+ new File(EtikettMaker.getContextLocation()).toURI().toString()
+						"@context\":\"" + new File(mabXml2lobidJsonEs
+								.getRdfModel2ElasticsearchEtikettJsonLd().getContextLocation())
+										.toURI().toString()
 								+ "\"");
 				final Object jsonObject = JSONUtils.fromString(jsonWithLocalContext);
 				final JenaTripleCallback callback = new JenaTripleCallback();

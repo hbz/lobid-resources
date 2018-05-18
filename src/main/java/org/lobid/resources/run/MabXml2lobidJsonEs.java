@@ -32,11 +32,12 @@ import com.hp.hpl.jena.rdf.model.Model;
  * 
  */
 @SuppressWarnings("javadoc")
-public final class MabXml2lobidJsonEs {
+public class MabXml2lobidJsonEs {
 	public static String jsonLdContext =
 			"http://lobid.org/resources/context.jsonld";
 	private static final String MORPH_FN_PREFIX = "src/main/resources/";
-	private static RdfModel2ElasticsearchEtikettJsonLd rdf2json;
+	private static RdfModel2ElasticsearchEtikettJsonLd model2json =
+			new RdfModel2ElasticsearchEtikettJsonLd();
 
 	public static void main(String... args) {
 		String usage =
@@ -69,22 +70,22 @@ public final class MabXml2lobidJsonEs {
 		if (args.length >= 9)
 			jsonLdContext = args[8];
 		if (args.length >= 10)
-			rdf2json = new RdfModel2ElasticsearchEtikettJsonLd(new File(args[9]),
+			model2json = new RdfModel2ElasticsearchEtikettJsonLd(new File(args[9]),
 					jsonLdContext);
 		else
-			rdf2json = new RdfModel2ElasticsearchEtikettJsonLd(
+			model2json = new RdfModel2ElasticsearchEtikettJsonLd(
 					mabXml2lobidJsonEs.jsonLdContext);
-		System.out.println("using jsonLdContext: " + rdf2json.getJsonLdContext());
+		System.out.println("using jsonLdContext: " + model2json.getJsonLdContext());
 		System.out
-				.println("using jsonLdDirectory: " + rdf2json.getLabelsDirectoryName());
-		rdf2json.getLabelsDirectoryName();
+				.println("using jsonLdDirectory: " + model2json.getLabelsDirectoryName());
+		model2json.getLabelsDirectoryName();
 		if (args.length >= 11) {
-			rdf2json.setRootIdPredicate(args[10]);
+			model2json.setRootIdPredicate(args[10]);
 		}
 		System.out
-				.println("using rootIdPredicate: " + rdf2json.getRootIdPredicate());
+				.println("using rootIdPredicate: " + model2json.getRootIdPredicate());
 		DefaultObjectPipe<Model, ObjectReceiver<HashMap<String, String>>> jsonConverter =
-				rdf2json;
+				model2json;
 		// hbz catalog transformation
 		final FileOpener opener = new FileOpener();
 		if (inputPath.toLowerCase().endsWith("bz2")) {
@@ -125,5 +126,9 @@ public final class MabXml2lobidJsonEs {
 				.setReceiver(new Metamorph(morphFileName)).setReceiver(batchLogger);
 		opener.process(new File(inputPath).getAbsolutePath());
 		opener.closeStream();
+	}
+
+	public RdfModel2ElasticsearchEtikettJsonLd getRdfModel2ElasticsearchEtikettJsonLd() {
+		return model2json;
 	}
 }

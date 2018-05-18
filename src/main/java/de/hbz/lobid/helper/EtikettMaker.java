@@ -43,7 +43,7 @@ public class EtikettMaker implements EtikettMakerInterface {
 
 	private static final String TYPE = "type";
 	private static final String ID = "id";
-	private static String contextLocation = "web/conf/context.jsonld";
+	private String contextLocation = "web/conf/context.jsonld";
 
 	final static Logger logger = LogManager.getLogger(EtikettMaker.class);
 
@@ -296,7 +296,8 @@ public class EtikettMaker implements EtikettMakerInterface {
 	/**
 	 * @return filename of the jsonld-context
 	 */
-	public static String getContextLocation() {
+	@Override
+	public String getContextLocation() {
 		return contextLocation;
 	}
 
