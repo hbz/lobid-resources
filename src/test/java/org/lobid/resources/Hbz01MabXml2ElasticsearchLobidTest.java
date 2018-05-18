@@ -18,7 +18,6 @@ import java.util.Scanner;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
@@ -272,8 +271,7 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 		static String getAsNtriples() {
 			return Arrays.asList(getElasticsearchDocuments().getHits().getHits())
 					.parallelStream()
-					.flatMap(
-							hit -> Stream.of(toRdf(cleanseEndtime(hit.getSourceAsString()))))
+					.map(hit -> toRdf(cleanseEndtime(hit.getSourceAsString())))
 					.collect(Collectors.joining());
 		}
 
