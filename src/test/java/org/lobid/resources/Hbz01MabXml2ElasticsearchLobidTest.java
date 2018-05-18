@@ -285,7 +285,7 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 
 		private static String cleanseEndtime(String jsonld) {
 			return jsonld.replaceFirst(
-					"\"endTime\":\"\\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\"",
+					"\"endTime\":\"\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\"",
 					"\"endTime\":\"0001-01-01T00:00:00\"");
 		}
 

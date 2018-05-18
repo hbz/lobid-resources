@@ -87,7 +87,7 @@ public final class Hbz01MabXmlEtlNtriples2Filesystem {
 						new Metamorph("src/main/resources/morph-hbz01-to-lobid.xml"))
 				.setReceiver(new PipeEncodeTriples())
 				.setReceiver(new SimpleStringSubstituter(
-						"endTime> \"\\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\"",
+						"endTime> \"\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\"",
 						"endTime> \"0001-01-01T00:00:00\""))
 				.setReceiver(triple2model).setReceiver(rdfModelFileWriter);
 		opener.process(new File(TEST_FILENAME_ALEPHXMLCLOBS).getAbsolutePath());
