@@ -4,16 +4,18 @@ _:b0 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://id.loc.gov/ontolo
 _:b1 <http://id.loc.gov/ontologies/bibframe/agent> <http://d-nb.info/gnd/118657496> .
 _:b1 <http://id.loc.gov/ontologies/bibframe/role> <http://id.loc.gov/vocabulary/relators/ctb> .
 _:b1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://id.loc.gov/ontologies/bibframe/Contribution> .
-_:b10 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> _:b1 .
+_:b10 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> _:b0 .
 _:b10 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:b11 .
-_:b11 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> _:b2 .
+_:b11 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> _:b1 .
 _:b11 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:b12 .
-_:b12 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> _:b3 .
+_:b12 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> _:b2 .
 _:b12 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:b13 .
-_:b13 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> _:b4 .
+_:b13 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> _:b3 .
 _:b13 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:b14 .
-_:b14 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> _:b5 .
-_:b14 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
+_:b14 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> _:b4 .
+_:b14 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:b15 .
+_:b15 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> _:b5 .
+_:b15 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
 _:b2 <http://id.loc.gov/ontologies/bibframe/agent> <http://d-nb.info/gnd/143102893> .
 _:b2 <http://id.loc.gov/ontologies/bibframe/role> <http://id.loc.gov/vocabulary/relators/act> .
 _:b2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://id.loc.gov/ontologies/bibframe/Contribution> .
@@ -33,8 +35,10 @@ _:b8 <http://schema.org/location> "Segrate (Milano)"^^<http://www.w3.org/2001/XM
 _:b8 <http://schema.org/publishedBy> "Mondadori Video"^^<http://www.w3.org/2001/XMLSchema#string> .
 _:b8 <http://schema.org/startDate> "1992"^^<http://www.w3.org/2001/XMLSchema#gYear> .
 _:b8 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://schema.org/PublicationEvent> .
-_:b9 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> _:b0 .
-_:b9 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:b10 .
+_:b9 <http://schema.org/endTime> "0001-01-01T00:00:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+_:b9 <http://schema.org/instrument> <https://github.com/hbz/lobid-resources> .
+_:b9 <http://schema.org/object> <http://lobid.org/hbz01/HT006266886> .
+_:b9 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://schema.org/CreateAction> .
 <http://d-nb.info/gnd/118657496> <http://d-nb.info/standards/elementset/gnd#dateOfBirth> "1916"^^<http://www.w3.org/2001/XMLSchema#gYear> .
 <http://d-nb.info/gnd/118657496> <http://d-nb.info/standards/elementset/gnd#dateOfDeath> "2000"^^<http://www.w3.org/2001/XMLSchema#gYear> .
 <http://d-nb.info/gnd/118657496> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://d-nb.info/standards/elementset/gnd#Person> .
@@ -66,6 +70,9 @@ _:b9 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:b10 .
 <http://id.loc.gov/vocabulary/relators/act> <http://www.w3.org/2000/01/rdf-schema#label> "Schauspieler/in"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://id.loc.gov/vocabulary/relators/ctb> <http://www.w3.org/2000/01/rdf-schema#label> "Mitwirkende"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://id.loc.gov/vocabulary/relators/drt> <http://www.w3.org/2000/01/rdf-schema#label> "Regie"^^<http://www.w3.org/2001/XMLSchema#string> .
+<http://lobid.org/hbz01/HT006266886> <http://purl.org/lobid/lv#isPartOf> <https://datahub.io/dataset/hbz_unioncatalog> .
+<http://lobid.org/hbz01/HT006266886> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://schema.org/DataFeedItem> .
+<http://lobid.org/hbz01/HT006266886> <http://www.w3.org/2000/01/rdf-schema#label> "hbz-Ressource HT006266886 im Exportformat MAB2-XML"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/items/HT006266886:DE-467:Medienzentrum> <http://www.w3.org/2000/01/rdf-schema#label> "lobid Bestandsressource"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/items/HT006266886:DE-467:Medienzentrum#!> <http://id.loc.gov/ontologies/bibframe/heldBy> <http://lobid.org/organisations/DE-467> .
 <http://lobid.org/items/HT006266886:DE-467:Medienzentrum#!> <http://id.loc.gov/ontologies/bibframe/itemOf> <http://lobid.org/resources/HT006266886#!> .
@@ -78,9 +85,12 @@ _:b9 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:b10 .
 <http://lobid.org/resources/HT006266886> <http://open-services.net/ns/core#modifiedBy> <http://lobid.org/organisations/DE-467#!> .
 <http://lobid.org/resources/HT006266886> <http://purl.org/dc/terms/created> "19981218"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/resources/HT006266886> <http://purl.org/dc/terms/modified> "20021108"^^<http://www.w3.org/2001/XMLSchema#string> .
+<http://lobid.org/resources/HT006266886> <http://purl.org/lobid/lv#inDataset> <http://lobid.org/resources/dataset#!> .
+<http://lobid.org/resources/HT006266886> <http://purl.org/lobid/lv#resultOf> _:b9 .
 <http://lobid.org/resources/HT006266886> <http://schema.org/sourceOrganization> <http://lobid.org/organisations/DE-467#!> .
-<http://lobid.org/resources/HT006266886> <http://www.w3.org/2000/01/rdf-schema#label> "lobid Ressource"^^<http://www.w3.org/2001/XMLSchema#string> .
-<http://lobid.org/resources/HT006266886#!> <http://id.loc.gov/ontologies/bibframe/contribution> _:b9 .
+<http://lobid.org/resources/HT006266886> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://purl.org/lobid/lv#BibliographicDescription> .
+<http://lobid.org/resources/HT006266886> <http://www.w3.org/2000/01/rdf-schema#label> "Webseite der hbz-Ressource HT006266886"^^<http://www.w3.org/2001/XMLSchema#string> .
+<http://lobid.org/resources/HT006266886#!> <http://id.loc.gov/ontologies/bibframe/contribution> _:b10 .
 <http://lobid.org/resources/HT006266886#!> <http://id.loc.gov/ontologies/bibframe/extent> "1 Videokassette (VHS, 93 Min.) : farb."^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/resources/HT006266886#!> <http://id.loc.gov/ontologies/bibframe/hasItem> <http://lobid.org/items/HT006266886:DE-467:Medienzentrum#!> .
 <http://lobid.org/resources/HT006266886#!> <http://id.loc.gov/ontologies/bibframe/responsibilityStatement> "Regia: Vittorio DeSica. Interpreti: Dominique Sanda ; Lino Capolicchio ; Fabio Testi ; Helmut Berger"^^<http://www.w3.org/2001/XMLSchema#string> .
@@ -97,5 +107,9 @@ _:b9 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:b10 .
 <http://lobid.org/resources/HT006266886#!> <http://www.w3.org/2000/01/rdf-schema#label> "lobid Ressource"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/resources/HT006266886#!> <http://www.w3.org/2002/07/owl#sameAs> <http://hub.culturegraph.org/resource/HBZ-HT006266886> .
 <http://lobid.org/resources/HT006266886#!> <http://www.w3.org/2007/05/powder-s#describedby> <http://lobid.org/resources/HT006266886> .
+<http://lobid.org/resources/dataset#!> <http://www.w3.org/2000/01/rdf-schema#label> "lobid-resources \u2013 Der hbz-Verbundkatalog als Linked Open Data"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://purl.org/ontology/bibo/AudioVisualDocument> <http://www.w3.org/2000/01/rdf-schema#label> "Audio-Visuell"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://rdaregistry.info/termList/RDAMediaType/1008> <http://www.w3.org/2000/01/rdf-schema#label> "Video"^^<http://www.w3.org/2001/XMLSchema#string> .
+<https://datahub.io/dataset/hbz_unioncatalog> <http://www.w3.org/2000/01/rdf-schema#label> "https://datahub.io/dataset"^^<http://www.w3.org/2001/XMLSchema#string> .
+<https://github.com/hbz/lobid-resources> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://schema.org/SoftwareApplication> .
+<https://github.com/hbz/lobid-resources> <http://www.w3.org/2000/01/rdf-schema#label> "Software lobid-resources"^^<http://www.w3.org/2001/XMLSchema#string> .

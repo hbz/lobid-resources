@@ -72,4 +72,9 @@ public interface EtikettMakerInterface {
 	 */
 	public String getLabelKey();
 
+	/**
+	 * @return filename of the jsonld-context
+	 */
+	public String getContextLocation();
+
 }

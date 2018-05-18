@@ -1,5 +1,5 @@
 {
-  "@context" : "http://lobid.org/resources/context.jsonld",
+  "@context" : "web/conf/context.jsonld",
   "bibliographicCitation" : "Heimatblätter. - 82 (2002), S. 149-152 : Ill.",
   "containedIn" : [ {
     "id" : "http://lobid.org/resources/HT006991655#!",
@@ -21,11 +21,34 @@
   "describedBy" : {
     "dateCreated" : "20040216",
     "id" : "http://lobid.org/resources/HT013925945",
-    "label" : "lobid Ressource",
+    "inDataset" : {
+      "id" : "http://lobid.org/resources/dataset#!",
+      "label" : "lobid-resources – Der hbz-Verbundkatalog als Linked Open Data"
+    },
+    "label" : "Webseite der hbz-Ressource HT013925945",
+    "resultOf" : {
+      "endTime" : "0001-01-01T00:00:00",
+      "instrument" : {
+        "id" : "https://github.com/hbz/lobid-resources",
+        "label" : "Software lobid-resources",
+        "type" : [ "SoftwareApplication" ]
+      },
+      "object" : {
+        "id" : "http://lobid.org/hbz01/HT013925945",
+        "isPartOf" : [ {
+          "id" : "https://datahub.io/dataset/hbz_unioncatalog",
+          "label" : "https://datahub.io/dataset"
+        } ],
+        "label" : "hbz-Ressource HT013925945 im Exportformat MAB2-XML",
+        "type" : [ "DataFeedItem" ]
+      },
+      "type" : [ "CreateAction" ]
+    },
     "sourceOrganization" : {
       "id" : "http://lobid.org/organisations/DE-6#!",
       "label" : "lobid Organisation"
-    }
+    },
+    "type" : [ "BibliographicDescription" ]
   },
   "hbzId" : "HT013925945",
   "id" : "http://lobid.org/resources/HT013925945#!",

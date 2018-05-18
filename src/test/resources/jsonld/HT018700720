@@ -1,5 +1,5 @@
 {
-  "@context" : "http://lobid.org/resources/context.jsonld",
+  "@context" : "web/conf/context.jsonld",
   "contribution" : [ {
     "agent" : {
       "id" : "http://d-nb.info/gnd/136371671",
@@ -61,11 +61,34 @@
     "dateCreated" : "20150716",
     "dateModified" : "20150720",
     "id" : "http://lobid.org/resources/HT018700720",
-    "label" : "lobid Ressource",
+    "inDataset" : {
+      "id" : "http://lobid.org/resources/dataset#!",
+      "label" : "lobid-resources – Der hbz-Verbundkatalog als Linked Open Data"
+    },
+    "label" : "Webseite der hbz-Ressource HT018700720",
+    "resultOf" : {
+      "endTime" : "0001-01-01T00:00:00",
+      "instrument" : {
+        "id" : "https://github.com/hbz/lobid-resources",
+        "label" : "Software lobid-resources",
+        "type" : [ "SoftwareApplication" ]
+      },
+      "object" : {
+        "id" : "http://lobid.org/hbz01/HT018700720",
+        "isPartOf" : [ {
+          "id" : "https://datahub.io/dataset/hbz_unioncatalog",
+          "label" : "https://datahub.io/dataset"
+        } ],
+        "label" : "hbz-Ressource HT018700720 im Exportformat MAB2-XML",
+        "type" : [ "DataFeedItem" ]
+      },
+      "type" : [ "CreateAction" ]
+    },
     "sourceOrganization" : {
       "id" : "http://lobid.org/organisations/DE-38M#!",
       "label" : "lobid Organisation"
-    }
+    },
+    "type" : [ "BibliographicDescription" ]
   },
   "doi" : [ "10.4126/38m-006326817" ],
   "edition" : [ "Aufl.: 1.3.02.15" ],

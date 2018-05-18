@@ -3,10 +3,17 @@ _:b0 <http://www.w3.org/2004/02/skos/core#notation> "010"^^<http://www.w3.org/20
 _:b1 <http://schema.org/location> "Berlin"^^<http://www.w3.org/2001/XMLSchema#string> .
 _:b1 <http://schema.org/startDate> "2000"^^<http://www.w3.org/2001/XMLSchema#gYear> .
 _:b1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://schema.org/PublicationEvent> .
+_:b2 <http://schema.org/endTime> "0001-01-01T00:00:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+_:b2 <http://schema.org/instrument> <https://github.com/hbz/lobid-resources> .
+_:b2 <http://schema.org/object> <http://lobid.org/hbz01/HT014846970> .
+_:b2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://schema.org/CreateAction> .
 <http://d-nb.info/gnd/4149423-4> <http://www.w3.org/2000/01/rdf-schema#label> "Dewey-Dezimalklassifikation"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://hub.culturegraph.org/resource/HBZ-HT014846970> <http://www.w3.org/2000/01/rdf-schema#label> "Culturegraph Ressource"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://id.loc.gov/vocabulary/iso639-2/deu> <http://www.w3.org/2000/01/rdf-schema#label> "Deutsch"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://ld.zdb-services.de/resource/2250528-3> <http://www.w3.org/2000/01/rdf-schema#label> "ZDB-Ressource"^^<http://www.w3.org/2001/XMLSchema#string> .
+<http://lobid.org/hbz01/HT014846970> <http://purl.org/lobid/lv#isPartOf> <https://datahub.io/dataset/hbz_unioncatalog> .
+<http://lobid.org/hbz01/HT014846970> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://schema.org/DataFeedItem> .
+<http://lobid.org/hbz01/HT014846970> <http://www.w3.org/2000/01/rdf-schema#label> "hbz-Ressource HT014846970 im Exportformat MAB2-XML"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/items/HT014846970:DE-38:> <http://www.w3.org/2000/01/rdf-schema#label> "lobid Bestandsressource"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/items/HT014846970:DE-38:#!> <http://id.loc.gov/ontologies/bibframe/heldBy> <http://lobid.org/organisations/DE-38> .
 <http://lobid.org/items/HT014846970:DE-38:#!> <http://id.loc.gov/ontologies/bibframe/itemOf> <http://lobid.org/resources/HT014846970#!> .
@@ -21,9 +28,12 @@ _:b1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://schema.org/Public
 <http://lobid.org/resources/HT014846970> <http://open-services.net/ns/core#modifiedBy> <http://lobid.org/organisations/DE-9001#!> .
 <http://lobid.org/resources/HT014846970> <http://purl.org/dc/terms/created> "20060911"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/resources/HT014846970> <http://purl.org/dc/terms/modified> "20171019"^^<http://www.w3.org/2001/XMLSchema#string> .
+<http://lobid.org/resources/HT014846970> <http://purl.org/lobid/lv#inDataset> <http://lobid.org/resources/dataset#!> .
+<http://lobid.org/resources/HT014846970> <http://purl.org/lobid/lv#resultOf> _:b2 .
 <http://lobid.org/resources/HT014846970> <http://schema.org/provider> <http://lobid.org/organisations/DE-101#!> .
 <http://lobid.org/resources/HT014846970> <http://schema.org/sourceOrganization> <http://lobid.org/organisations/DE-18#!> .
-<http://lobid.org/resources/HT014846970> <http://www.w3.org/2000/01/rdf-schema#label> "lobid Ressource"^^<http://www.w3.org/2001/XMLSchema#string> .
+<http://lobid.org/resources/HT014846970> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://purl.org/lobid/lv#BibliographicDescription> .
+<http://lobid.org/resources/HT014846970> <http://www.w3.org/2000/01/rdf-schema#label> "Webseite der hbz-Ressource HT014846970"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/resources/HT014846970#!> <http://id.loc.gov/ontologies/bibframe/hasItem> <http://lobid.org/items/HT014846970:DE-38:#!> .
 <http://lobid.org/resources/HT014846970#!> <http://id.loc.gov/ontologies/bibframe/note> "Gesehen am 19.10.2017"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/resources/HT014846970#!> <http://id.loc.gov/ontologies/bibframe/responsibilityStatement> "Staatsbibliothek zu Berlin ; Deutsche Nationalbibliothek"^^<http://www.w3.org/2001/XMLSchema#string> .
@@ -46,5 +56,9 @@ _:b1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://schema.org/Public
 <http://lobid.org/resources/HT014846970#!> <http://www.w3.org/2002/07/owl#sameAs> <http://hub.culturegraph.org/resource/HBZ-HT014846970> .
 <http://lobid.org/resources/HT014846970#!> <http://www.w3.org/2002/07/owl#sameAs> <http://ld.zdb-services.de/resource/2250528-3> .
 <http://lobid.org/resources/HT014846970#!> <http://www.w3.org/2007/05/powder-s#describedby> <http://lobid.org/resources/HT014846970> .
+<http://lobid.org/resources/dataset#!> <http://www.w3.org/2000/01/rdf-schema#label> "lobid-resources \u2013 Der hbz-Verbundkatalog als Linked Open Data"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://rdaregistry.info/termList/RDACarrierType/1018> <http://www.w3.org/2000/01/rdf-schema#label> "Online-Ressource"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://www.bibliothek.uni-regensburg.de/dbinfo/frontdoor.php?titel_id=188> <http://www.w3.org/2000/01/rdf-schema#label> "http://www.bibliothek.uni-regensburg.de/dbinfo"^^<http://www.w3.org/2001/XMLSchema#string> .
+<https://datahub.io/dataset/hbz_unioncatalog> <http://www.w3.org/2000/01/rdf-schema#label> "https://datahub.io/dataset"^^<http://www.w3.org/2001/XMLSchema#string> .
+<https://github.com/hbz/lobid-resources> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://schema.org/SoftwareApplication> .
+<https://github.com/hbz/lobid-resources> <http://www.w3.org/2000/01/rdf-schema#label> "Software lobid-resources"^^<http://www.w3.org/2001/XMLSchema#string> .

@@ -1,5 +1,5 @@
 {
-  "@context" : "http://lobid.org/resources/context.jsonld",
+  "@context" : "web/conf/context.jsonld",
   "bibliographicCitation" : "Westfalen; 88. 2010 (2012), S. 175-179",
   "containedIn" : [ {
     "id" : "http://lobid.org/resources/HT001374559#!",
@@ -22,15 +22,38 @@
     "dateCreated" : "20120228",
     "dateModified" : "20120229",
     "id" : "http://lobid.org/resources/HT017150239",
-    "label" : "lobid Ressource",
+    "inDataset" : {
+      "id" : "http://lobid.org/resources/dataset#!",
+      "label" : "lobid-resources – Der hbz-Verbundkatalog als Linked Open Data"
+    },
+    "label" : "Webseite der hbz-Ressource HT017150239",
     "modifiedBy" : {
       "id" : "http://lobid.org/organisations/DE-6#!",
       "label" : "lobid Organisation"
     },
+    "resultOf" : {
+      "endTime" : "0001-01-01T00:00:00",
+      "instrument" : {
+        "id" : "https://github.com/hbz/lobid-resources",
+        "label" : "Software lobid-resources",
+        "type" : [ "SoftwareApplication" ]
+      },
+      "object" : {
+        "id" : "http://lobid.org/hbz01/HT017150239",
+        "isPartOf" : [ {
+          "id" : "https://datahub.io/dataset/hbz_unioncatalog",
+          "label" : "https://datahub.io/dataset"
+        } ],
+        "label" : "hbz-Ressource HT017150239 im Exportformat MAB2-XML",
+        "type" : [ "DataFeedItem" ]
+      },
+      "type" : [ "CreateAction" ]
+    },
     "sourceOrganization" : {
       "id" : "http://lobid.org/organisations/DE-6#!",
       "label" : "lobid Organisation"
-    }
+    },
+    "type" : [ "BibliographicDescription" ]
   },
   "hbzId" : "HT017150239",
   "id" : "http://lobid.org/resources/HT017150239#!",

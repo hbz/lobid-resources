@@ -296,6 +296,7 @@ public class EtikettMaker implements EtikettMakerInterface {
 	/**
 	 * @return filename of the jsonld-context
 	 */
+	@Override
 	public String getContextLocation() {
 		return contextLocation;
 	}

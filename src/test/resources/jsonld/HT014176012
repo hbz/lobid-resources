@@ -1,5 +1,5 @@
 {
-  "@context" : "http://lobid.org/resources/context.jsonld",
+  "@context" : "web/conf/context.jsonld",
   "contribution" : [ {
     "agent" : {
       "altLabel" : [ "hbz", "Hochschulbibliothekszentrum", "hbz Köln", "Hochschulbibliothekszentrum NRW", "Hochschulbibliothekszentrum des Landes NRW" ],
@@ -17,7 +17,11 @@
     "dateCreated" : "20041006",
     "dateModified" : "20170405",
     "id" : "http://lobid.org/resources/HT014176012",
-    "label" : "lobid Ressource",
+    "inDataset" : {
+      "id" : "http://lobid.org/resources/dataset#!",
+      "label" : "lobid-resources – Der hbz-Verbundkatalog als Linked Open Data"
+    },
+    "label" : "Webseite der hbz-Ressource HT014176012",
     "modifiedBy" : {
       "id" : "http://lobid.org/organisations/DE-6#!",
       "label" : "lobid Organisation"
@@ -26,10 +30,29 @@
       "id" : "http://lobid.org/organisations/DE-101#!",
       "label" : "lobid Organisation"
     },
+    "resultOf" : {
+      "endTime" : "0001-01-01T00:00:00",
+      "instrument" : {
+        "id" : "https://github.com/hbz/lobid-resources",
+        "label" : "Software lobid-resources",
+        "type" : [ "SoftwareApplication" ]
+      },
+      "object" : {
+        "id" : "http://lobid.org/hbz01/HT014176012",
+        "isPartOf" : [ {
+          "id" : "https://datahub.io/dataset/hbz_unioncatalog",
+          "label" : "https://datahub.io/dataset"
+        } ],
+        "label" : "hbz-Ressource HT014176012 im Exportformat MAB2-XML",
+        "type" : [ "DataFeedItem" ]
+      },
+      "type" : [ "CreateAction" ]
+    },
     "sourceOrganization" : {
       "id" : "http://lobid.org/organisations/DE-1#!",
       "label" : "lobid Organisation"
-    }
+    },
+    "type" : [ "BibliographicDescription" ]
   },
   "hasVersion" : [ {
     "id" : "http://www.bibliothek.uni-regensburg.de/dbinfo/frontdoor.php?titel_id=1815",

@@ -3,8 +3,12 @@ _:b0 <http://id.loc.gov/ontologies/bibframe/role> <http://id.loc.gov/vocabulary/
 _:b0 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://id.loc.gov/ontologies/bibframe/Contribution> .
 _:b1 <http://schema.org/startDate> "2010"^^<http://www.w3.org/2001/XMLSchema#gYear> .
 _:b1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://schema.org/PublicationEvent> .
-_:b2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> _:b0 .
-_:b2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
+_:b2 <http://schema.org/endTime> "0001-01-01T00:00:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+_:b2 <http://schema.org/instrument> <https://github.com/hbz/lobid-resources> .
+_:b2 <http://schema.org/object> <http://lobid.org/hbz01/HT016618741> .
+_:b2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://schema.org/CreateAction> .
+_:b3 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> _:b0 .
+_:b3 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
 <http://d-nb.info/gnd/143001299> <http://d-nb.info/standards/elementset/gnd#dateOfBirth> "1972"^^<http://www.w3.org/2001/XMLSchema#gYear> .
 <http://d-nb.info/gnd/143001299> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://d-nb.info/standards/elementset/gnd#Person> .
 <http://d-nb.info/gnd/143001299> <http://www.w3.org/2000/01/rdf-schema#label> "Rasch, Christiane"^^<http://www.w3.org/2001/XMLSchema#string> .
@@ -13,6 +17,9 @@ _:b2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/0
 <http://hub.culturegraph.org/resource/HBZ-HT016618741> <http://www.w3.org/2000/01/rdf-schema#label> "Culturegraph Ressource"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://id.loc.gov/vocabulary/iso639-2/deu> <http://www.w3.org/2000/01/rdf-schema#label> "Deutsch"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://id.loc.gov/vocabulary/relators/cre> <http://www.w3.org/2000/01/rdf-schema#label> "Autor/in"^^<http://www.w3.org/2001/XMLSchema#string> .
+<http://lobid.org/hbz01/HT016618741> <http://purl.org/lobid/lv#isPartOf> <https://datahub.io/dataset/hbz_unioncatalog> .
+<http://lobid.org/hbz01/HT016618741> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://schema.org/DataFeedItem> .
+<http://lobid.org/hbz01/HT016618741> <http://www.w3.org/2000/01/rdf-schema#label> "hbz-Ressource HT016618741 im Exportformat MAB2-XML"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/items/HT016618741:DE-61:> <http://www.w3.org/2000/01/rdf-schema#label> "lobid Bestandsressource"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/items/HT016618741:DE-61:#!> <http://id.loc.gov/ontologies/bibframe/heldBy> <http://lobid.org/organisations/DE-61> .
 <http://lobid.org/items/HT016618741:DE-61:#!> <http://id.loc.gov/ontologies/bibframe/itemOf> <http://lobid.org/resources/HT016618741#!> .
@@ -25,9 +32,12 @@ _:b2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/0
 <http://lobid.org/resources/HT016618741> <http://open-services.net/ns/core#modifiedBy> <http://lobid.org/organisations/DE-61#!> .
 <http://lobid.org/resources/HT016618741> <http://purl.org/dc/terms/created> "20101207"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/resources/HT016618741> <http://purl.org/dc/terms/modified> "20110330"^^<http://www.w3.org/2001/XMLSchema#string> .
+<http://lobid.org/resources/HT016618741> <http://purl.org/lobid/lv#inDataset> <http://lobid.org/resources/dataset#!> .
+<http://lobid.org/resources/HT016618741> <http://purl.org/lobid/lv#resultOf> _:b2 .
 <http://lobid.org/resources/HT016618741> <http://schema.org/sourceOrganization> <http://lobid.org/organisations/DE-61#!> .
-<http://lobid.org/resources/HT016618741> <http://www.w3.org/2000/01/rdf-schema#label> "lobid Ressource"^^<http://www.w3.org/2001/XMLSchema#string> .
-<http://lobid.org/resources/HT016618741#!> <http://id.loc.gov/ontologies/bibframe/contribution> _:b2 .
+<http://lobid.org/resources/HT016618741> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://purl.org/lobid/lv#BibliographicDescription> .
+<http://lobid.org/resources/HT016618741> <http://www.w3.org/2000/01/rdf-schema#label> "Webseite der hbz-Ressource HT016618741"^^<http://www.w3.org/2001/XMLSchema#string> .
+<http://lobid.org/resources/HT016618741#!> <http://id.loc.gov/ontologies/bibframe/contribution> _:b3 .
 <http://lobid.org/resources/HT016618741#!> <http://id.loc.gov/ontologies/bibframe/extent> "Online-Ressource"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/resources/HT016618741#!> <http://id.loc.gov/ontologies/bibframe/hasItem> <http://lobid.org/items/HT016618741:DE-61:#!> .
 <http://lobid.org/resources/HT016618741#!> <http://id.loc.gov/ontologies/bibframe/responsibilityStatement> "Christiane Rasch"^^<http://www.w3.org/2001/XMLSchema#string> .
@@ -48,6 +58,10 @@ _:b2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/0
 <http://lobid.org/resources/HT016618741#!> <http://www.w3.org/2000/01/rdf-schema#label> "lobid Ressource"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/resources/HT016618741#!> <http://www.w3.org/2002/07/owl#sameAs> <http://hub.culturegraph.org/resource/HBZ-HT016618741> .
 <http://lobid.org/resources/HT016618741#!> <http://www.w3.org/2007/05/powder-s#describedby> <http://lobid.org/resources/HT016618741> .
+<http://lobid.org/resources/dataset#!> <http://www.w3.org/2000/01/rdf-schema#label> "lobid-resources \u2013 Der hbz-Verbundkatalog als Linked Open Data"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://nbn-resolving.de/urn/resolver.pl?urn=urn:nbn:de:hbz:061-20101201-135613-9> <http://www.w3.org/2000/01/rdf-schema#label> "URN-Link"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://nbn-resolving.de/urn:nbn:de:hbz:061-20101201-135613-9> <http://www.w3.org/2000/01/rdf-schema#label> "http://nbn-resolving.de/urn:nbn:de:hbz:061-20101201-135613-9"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://rdaregistry.info/termList/RDACarrierType/1018> <http://www.w3.org/2000/01/rdf-schema#label> "Online-Ressource"^^<http://www.w3.org/2001/XMLSchema#string> .
+<https://datahub.io/dataset/hbz_unioncatalog> <http://www.w3.org/2000/01/rdf-schema#label> "https://datahub.io/dataset"^^<http://www.w3.org/2001/XMLSchema#string> .
+<https://github.com/hbz/lobid-resources> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://schema.org/SoftwareApplication> .
+<https://github.com/hbz/lobid-resources> <http://www.w3.org/2000/01/rdf-schema#label> "Software lobid-resources"^^<http://www.w3.org/2001/XMLSchema#string> .

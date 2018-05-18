@@ -104,8 +104,8 @@ public final class RdfModel2ElasticsearchEtikettJsonLd
 		if (jsonLdContext1.equals("default")) {
 			LOG.info("Adding json ld context to every document");
 			jsonLdContext = etikettMaker.getContext().get("@context");
-		} else if (jsonLdContext1.toString().substring(0, 4)
-				.equalsIgnoreCase("http")) {
+		} else
+			if (jsonLdContext1.toString().substring(0, 4).equalsIgnoreCase("http")) {
 			jsonLdContext = jsonLdContext1.toString();
 			LOG.info("Using context URI: " + jsonLdContext);
 		}
@@ -273,6 +273,13 @@ public final class RdfModel2ElasticsearchEtikettJsonLd
 	 */
 	public String getJsonLdContext() {
 		return jsonLdContext.toString();
+	}
+
+	/**
+	 * @return filename of the jsonld-context
+	 */
+	public String getContextLocation() {
+		return etikettMaker.getContextLocation();
 	}
 
 }

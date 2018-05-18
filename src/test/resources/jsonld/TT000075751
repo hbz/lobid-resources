@@ -1,5 +1,5 @@
 {
-  "@context" : "http://lobid.org/resources/context.jsonld",
+  "@context" : "web/conf/context.jsonld",
   "contribution" : [ {
     "agent" : {
       "altLabel" : [ "Britten, Edward B.", "Britten, Edward Benjamin", "Britten, ..." ],
@@ -89,7 +89,11 @@
     "dateCreated" : "19990816",
     "dateModified" : "20120309",
     "id" : "http://lobid.org/resources/TT000075751",
-    "label" : "lobid Ressource",
+    "inDataset" : {
+      "id" : "http://lobid.org/resources/dataset#!",
+      "label" : "lobid-resources – Der hbz-Verbundkatalog als Linked Open Data"
+    },
+    "label" : "Webseite der hbz-Ressource TT000075751",
     "modifiedBy" : {
       "id" : "http://lobid.org/organisations/DE-467#!",
       "label" : "lobid Organisation"
@@ -98,10 +102,29 @@
       "id" : "http://lobid.org/organisations/DE-Kn38#!",
       "label" : "lobid Organisation"
     },
+    "resultOf" : {
+      "endTime" : "0001-01-01T00:00:00",
+      "instrument" : {
+        "id" : "https://github.com/hbz/lobid-resources",
+        "label" : "Software lobid-resources",
+        "type" : [ "SoftwareApplication" ]
+      },
+      "object" : {
+        "id" : "http://lobid.org/hbz01/TT000075751",
+        "isPartOf" : [ {
+          "id" : "https://datahub.io/dataset/hbz_unioncatalog",
+          "label" : "https://datahub.io/dataset"
+        } ],
+        "label" : "hbz-Ressource TT000075751 im Exportformat MAB2-XML",
+        "type" : [ "DataFeedItem" ]
+      },
+      "type" : [ "CreateAction" ]
+    },
     "sourceOrganization" : {
       "id" : "http://lobid.org/organisations/DE-Kn38#!",
       "label" : "lobid Organisation"
-    }
+    },
+    "type" : [ "BibliographicDescription" ]
   },
   "exampleOfWork" : {
     "label" : "Folk song arrangements",

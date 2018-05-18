@@ -1,5 +1,5 @@
 {
-  "@context" : "http://lobid.org/resources/context.jsonld",
+  "@context" : "web/conf/context.jsonld",
   "alternativeTitle" : [ "Einheitswerte des Grundvermögens nach der Hauptfeststellung", "Finanzen und Steuern" ],
   "contribution" : [ {
     "agent" : {
@@ -18,7 +18,11 @@
     "dateCreated" : "19991120",
     "dateModified" : "20080109",
     "id" : "http://lobid.org/resources/HT012237361",
-    "label" : "lobid Ressource",
+    "inDataset" : {
+      "id" : "http://lobid.org/resources/dataset#!",
+      "label" : "lobid-resources – Der hbz-Verbundkatalog als Linked Open Data"
+    },
+    "label" : "Webseite der hbz-Ressource HT012237361",
     "modifiedBy" : {
       "id" : "http://lobid.org/organisations/DE-9001#!",
       "label" : "lobid Organisation"
@@ -27,10 +31,29 @@
       "id" : "http://lobid.org/organisations/DE-101#!",
       "label" : "lobid Organisation"
     },
+    "resultOf" : {
+      "endTime" : "0001-01-01T00:00:00",
+      "instrument" : {
+        "id" : "https://github.com/hbz/lobid-resources",
+        "label" : "Software lobid-resources",
+        "type" : [ "SoftwareApplication" ]
+      },
+      "object" : {
+        "id" : "http://lobid.org/hbz01/HT012237361",
+        "isPartOf" : [ {
+          "id" : "https://datahub.io/dataset/hbz_unioncatalog",
+          "label" : "https://datahub.io/dataset"
+        } ],
+        "label" : "hbz-Ressource HT012237361 im Exportformat MAB2-XML",
+        "type" : [ "DataFeedItem" ]
+      },
+      "type" : [ "CreateAction" ]
+    },
     "sourceOrganization" : {
       "id" : "http://lobid.org/organisations/DE-9001#!",
       "label" : "lobid Organisation"
-    }
+    },
+    "type" : [ "BibliographicDescription" ]
   },
   "hasItem" : [ {
     "callNumber" : "Per. 5157",

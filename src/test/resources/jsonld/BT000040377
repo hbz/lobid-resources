@@ -1,5 +1,5 @@
 {
-  "@context" : "http://lobid.org/resources/context.jsonld",
+  "@context" : "web/conf/context.jsonld",
   "bibliographicCitation" : "Rheine gestern, heute, morgen. - 11 (1983), S. 26-38 : Abb.",
   "containedIn" : [ {
     "id" : "http://lobid.org/resources/HT003759287#!",
@@ -22,15 +22,38 @@
     "dateCreated" : "19960814",
     "dateModified" : "19960814",
     "id" : "http://lobid.org/resources/BT000040377",
-    "label" : "lobid Ressource",
+    "inDataset" : {
+      "id" : "http://lobid.org/resources/dataset#!",
+      "label" : "lobid-resources – Der hbz-Verbundkatalog als Linked Open Data"
+    },
+    "label" : "Webseite der hbz-Ressource BT000040377",
     "modifiedBy" : {
       "id" : "http://lobid.org/organisations/DE-605#!",
       "label" : "lobid Organisation"
     },
+    "resultOf" : {
+      "endTime" : "0001-01-01T00:00:00",
+      "instrument" : {
+        "id" : "https://github.com/hbz/lobid-resources",
+        "label" : "Software lobid-resources",
+        "type" : [ "SoftwareApplication" ]
+      },
+      "object" : {
+        "id" : "http://lobid.org/hbz01/BT000040377",
+        "isPartOf" : [ {
+          "id" : "https://datahub.io/dataset/hbz_unioncatalog",
+          "label" : "https://datahub.io/dataset"
+        } ],
+        "label" : "hbz-Ressource BT000040377 im Exportformat MAB2-XML",
+        "type" : [ "DataFeedItem" ]
+      },
+      "type" : [ "CreateAction" ]
+    },
     "sourceOrganization" : {
       "id" : "http://lobid.org/organisations/DE-605#!",
       "label" : "lobid Organisation"
-    }
+    },
+    "type" : [ "BibliographicDescription" ]
   },
   "hbzId" : "BT000040377",
   "id" : "http://lobid.org/resources/BT000040377#!",

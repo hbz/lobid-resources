@@ -1,9 +1,11 @@
 _:b0 <http://id.loc.gov/ontologies/bibframe/agent> <http://d-nb.info/gnd/105667129> .
 _:b0 <http://id.loc.gov/ontologies/bibframe/role> <http://id.loc.gov/vocabulary/relators/ctb> .
 _:b0 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://id.loc.gov/ontologies/bibframe/Contribution> .
-_:b1 <http://www.loc.gov/mads/rdf/v1#componentList> _:b7 .
+_:b1 <http://www.loc.gov/mads/rdf/v1#componentList> _:b8 .
 _:b1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.loc.gov/mads/rdf/v1#ComplexSubject> .
 _:b1 <http://www.w3.org/2000/01/rdf-schema#label> "Geschichte 1945-2003 | Geschichtsunterricht | Schulbuch"^^<http://www.w3.org/2001/XMLSchema#string> .
+_:b10 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> _:b3 .
+_:b10 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
 _:b2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://d-nb.info/standards/elementset/gnd#SubjectHeading> .
 _:b2 <http://www.w3.org/2000/01/rdf-schema#label> "Geschichte 1945-2003"^^<http://www.w3.org/2001/XMLSchema#string> .
 _:b3 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://d-nb.info/standards/elementset/gnd#SubjectHeading> .
@@ -15,14 +17,16 @@ _:b5 <http://schema.org/location> "Bamberg"^^<http://www.w3.org/2001/XMLSchema#s
 _:b5 <http://schema.org/publishedBy> "Buchner"^^<http://www.w3.org/2001/XMLSchema#string> .
 _:b5 <http://schema.org/startDate> "2003"^^<http://www.w3.org/2001/XMLSchema#gYear> .
 _:b5 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://schema.org/PublicationEvent> .
-_:b6 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> _:b0 .
-_:b6 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
-_:b7 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> _:b2 .
-_:b7 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:b8 .
-_:b8 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <http://d-nb.info/gnd/4020533-2> .
+_:b6 <http://schema.org/endTime> "0001-01-01T00:00:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+_:b6 <http://schema.org/instrument> <https://github.com/hbz/lobid-resources> .
+_:b6 <http://schema.org/object> <http://lobid.org/hbz01/HT015865114> .
+_:b6 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://schema.org/CreateAction> .
+_:b7 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> _:b0 .
+_:b7 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
+_:b8 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> _:b2 .
 _:b8 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:b9 .
-_:b9 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> _:b3 .
-_:b9 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
+_:b9 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <http://d-nb.info/gnd/4020533-2> .
+_:b9 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:b10 .
 <http://d-nb.info/gnd/105667129> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://d-nb.info/standards/elementset/gnd#Person> .
 <http://d-nb.info/gnd/105667129> <http://www.w3.org/2000/01/rdf-schema#label> "Weber, J\u00FCrgen"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://d-nb.info/gnd/4020533-2> <http://d-nb.info/standards/elementset/gnd#gndIdentifier> "4020533-2"^^<http://www.w3.org/2001/XMLSchema#string> .
@@ -33,6 +37,9 @@ _:b9 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/0
 <http://hub.culturegraph.org/resource/HBZ-HT015865114> <http://www.w3.org/2000/01/rdf-schema#label> "Culturegraph Ressource"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://id.loc.gov/vocabulary/iso639-2/deu> <http://www.w3.org/2000/01/rdf-schema#label> "Deutsch"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://id.loc.gov/vocabulary/relators/ctb> <http://www.w3.org/2000/01/rdf-schema#label> "Mitwirkende"^^<http://www.w3.org/2001/XMLSchema#string> .
+<http://lobid.org/hbz01/HT015865114> <http://purl.org/lobid/lv#isPartOf> <https://datahub.io/dataset/hbz_unioncatalog> .
+<http://lobid.org/hbz01/HT015865114> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://schema.org/DataFeedItem> .
+<http://lobid.org/hbz01/HT015865114> <http://www.w3.org/2000/01/rdf-schema#label> "hbz-Ressource HT015865114 im Exportformat MAB2-XML"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/items/HT015865114:DE-294-11:> <http://www.w3.org/2000/01/rdf-schema#label> "lobid Bestandsressource"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/items/HT015865114:DE-294-11:#!> <http://id.loc.gov/ontologies/bibframe/heldBy> <http://lobid.org/organisations/DE-294-11> .
 <http://lobid.org/items/HT015865114:DE-294-11:#!> <http://id.loc.gov/ontologies/bibframe/itemOf> <http://lobid.org/resources/HT015865114#!> .
@@ -66,9 +73,12 @@ _:b9 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/0
 <http://lobid.org/resources/HT015865114> <http://open-services.net/ns/core#modifiedBy> <http://lobid.org/organisations/DE-929#!> .
 <http://lobid.org/resources/HT015865114> <http://purl.org/dc/terms/created> "20090317"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/resources/HT015865114> <http://purl.org/dc/terms/modified> "20090318"^^<http://www.w3.org/2001/XMLSchema#string> .
+<http://lobid.org/resources/HT015865114> <http://purl.org/lobid/lv#inDataset> <http://lobid.org/resources/dataset#!> .
+<http://lobid.org/resources/HT015865114> <http://purl.org/lobid/lv#resultOf> _:b6 .
 <http://lobid.org/resources/HT015865114> <http://schema.org/sourceOrganization> <http://lobid.org/organisations/DE-929#!> .
-<http://lobid.org/resources/HT015865114> <http://www.w3.org/2000/01/rdf-schema#label> "lobid Ressource"^^<http://www.w3.org/2001/XMLSchema#string> .
-<http://lobid.org/resources/HT015865114#!> <http://id.loc.gov/ontologies/bibframe/contribution> _:b6 .
+<http://lobid.org/resources/HT015865114> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://purl.org/lobid/lv#BibliographicDescription> .
+<http://lobid.org/resources/HT015865114> <http://www.w3.org/2000/01/rdf-schema#label> "Webseite der hbz-Ressource HT015865114"^^<http://www.w3.org/2001/XMLSchema#string> .
+<http://lobid.org/resources/HT015865114#!> <http://id.loc.gov/ontologies/bibframe/contribution> _:b7 .
 <http://lobid.org/resources/HT015865114#!> <http://id.loc.gov/ontologies/bibframe/hasItem> <http://lobid.org/items/HT015865114:DE-294-11:#!> .
 <http://lobid.org/resources/HT015865114#!> <http://id.loc.gov/ontologies/bibframe/hasItem> <http://lobid.org/items/HT015865114:DE-6-290:#!> .
 <http://lobid.org/resources/HT015865114#!> <http://id.loc.gov/ontologies/bibframe/hasItem> <http://lobid.org/items/HT015865114:DE-929:#!> .
@@ -96,7 +106,11 @@ _:b9 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/0
 <http://lobid.org/resources/HT015865114#!> <http://www.w3.org/2000/01/rdf-schema#label> "lobid Ressource"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/resources/HT015865114#!> <http://www.w3.org/2002/07/owl#sameAs> <http://hub.culturegraph.org/resource/HBZ-HT015865114> .
 <http://lobid.org/resources/HT015865114#!> <http://www.w3.org/2007/05/powder-s#describedby> <http://lobid.org/resources/HT015865114> .
+<http://lobid.org/resources/dataset#!> <http://www.w3.org/2000/01/rdf-schema#label> "lobid-resources \u2013 Der hbz-Verbundkatalog als Linked Open Data"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://rdaregistry.info/termList/RDAproductionMethod/1010> <http://www.w3.org/2000/01/rdf-schema#label> "Print"^^<http://www.w3.org/2001/XMLSchema#string> .
+<https://datahub.io/dataset/hbz_unioncatalog> <http://www.w3.org/2000/01/rdf-schema#label> "https://datahub.io/dataset"^^<http://www.w3.org/2001/XMLSchema#string> .
+<https://github.com/hbz/lobid-resources> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://schema.org/SoftwareApplication> .
+<https://github.com/hbz/lobid-resources> <http://www.w3.org/2000/01/rdf-schema#label> "Software lobid-resources"^^<http://www.w3.org/2001/XMLSchema#string> .
 <https://w3id.org/lobid/rpb2> <http://www.w3.org/2000/01/rdf-schema#label> "RPB-Sachgruppen und Zus\u00E4tze"^^<http://www.w3.org/2001/XMLSchema#string> .
 <https://w3id.org/lobid/rpb2#n107> <http://id.loc.gov/ontologies/bibframe/source> <https://w3id.org/lobid/rpb2> .
 <https://w3id.org/lobid/rpb2#n107> <http://www.w3.org/2000/01/rdf-schema#label> "Schulb\u00FCcher"^^<http://www.w3.org/2001/XMLSchema#string> .

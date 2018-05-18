@@ -1,4 +1,4 @@
-_:b0 <http://www.loc.gov/mads/rdf/v1#componentList> _:b6 .
+_:b0 <http://www.loc.gov/mads/rdf/v1#componentList> _:b7 .
 _:b0 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.loc.gov/mads/rdf/v1#ComplexSubject> .
 _:b0 <http://www.w3.org/2000/01/rdf-schema#label> "Niederlande | Geschichte | Zeitschrift"^^<http://www.w3.org/2001/XMLSchema#string> .
 _:b1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://d-nb.info/standards/elementset/gnd#SubjectHeading> .
@@ -15,12 +15,16 @@ _:b5 <http://schema.org/location> "Assen"^^<http://www.w3.org/2001/XMLSchema#str
 _:b5 <http://schema.org/publishedBy> "Van Gorcum"^^<http://www.w3.org/2001/XMLSchema#string> .
 _:b5 <http://schema.org/startDate> "2006"^^<http://www.w3.org/2001/XMLSchema#gYear> .
 _:b5 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://schema.org/PublicationEvent> .
-_:b6 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <http://d-nb.info/gnd/4042203-3> .
-_:b6 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:b7 .
-_:b7 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> _:b1 .
+_:b6 <http://schema.org/endTime> "0001-01-01T00:00:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+_:b6 <http://schema.org/instrument> <https://github.com/hbz/lobid-resources> .
+_:b6 <http://schema.org/object> <http://lobid.org/hbz01/HT015082724> .
+_:b6 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://schema.org/CreateAction> .
+_:b7 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <http://d-nb.info/gnd/4042203-3> .
 _:b7 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:b8 .
-_:b8 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> _:b2 .
-_:b8 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
+_:b8 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> _:b1 .
+_:b8 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:b9 .
+_:b9 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> _:b2 .
+_:b9 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
 <http://d-nb.info/gnd/4042203-3> <http://d-nb.info/standards/elementset/gnd#gndIdentifier> "4042203-3"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://d-nb.info/gnd/4042203-3> <http://id.loc.gov/ontologies/bibframe/source> <http://d-nb.info/gnd/7749153-1> .
 <http://d-nb.info/gnd/4042203-3> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://d-nb.info/standards/elementset/gnd#PlaceOrGeographicName> .
@@ -29,6 +33,9 @@ _:b8 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/0
 <http://d-nb.info/gnd/7749153-1> <http://www.w3.org/2000/01/rdf-schema#label> "Gemeinsame Normdatei (GND)"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://hub.culturegraph.org/resource/HBZ-HT015082724> <http://www.w3.org/2000/01/rdf-schema#label> "Culturegraph Ressource"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://id.loc.gov/vocabulary/iso639-2/nld> <http://www.w3.org/2000/01/rdf-schema#label> "Niederl\u00E4ndisch"^^<http://www.w3.org/2001/XMLSchema#string> .
+<http://lobid.org/hbz01/HT015082724> <http://purl.org/lobid/lv#isPartOf> <https://datahub.io/dataset/hbz_unioncatalog> .
+<http://lobid.org/hbz01/HT015082724> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://schema.org/DataFeedItem> .
+<http://lobid.org/hbz01/HT015082724> <http://www.w3.org/2000/01/rdf-schema#label> "hbz-Ressource HT015082724 im Exportformat MAB2-XML"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/items/HT015082724:DE-361:CA000%20T340%5B119> <http://www.w3.org/2000/01/rdf-schema#label> "lobid Bestandsressource"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/items/HT015082724:DE-361:CA000%20T340%5B119#!> <http://id.loc.gov/ontologies/bibframe/heldBy> <http://lobid.org/organisations/DE-361> .
 <http://lobid.org/items/HT015082724:DE-361:CA000%20T340%5B119#!> <http://id.loc.gov/ontologies/bibframe/itemOf> <http://lobid.org/resources/HT015082724#!> .
@@ -41,8 +48,11 @@ _:b8 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/0
 <http://lobid.org/organisations/DE-361#!> <http://www.w3.org/2000/01/rdf-schema#label> "lobid Organisation"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/resources/HT001373475#!> <http://www.w3.org/2000/01/rdf-schema#label> "lobid Ressource"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/resources/HT015082724> <http://purl.org/dc/terms/created> "20070508"^^<http://www.w3.org/2001/XMLSchema#string> .
+<http://lobid.org/resources/HT015082724> <http://purl.org/lobid/lv#inDataset> <http://lobid.org/resources/dataset#!> .
+<http://lobid.org/resources/HT015082724> <http://purl.org/lobid/lv#resultOf> _:b6 .
 <http://lobid.org/resources/HT015082724> <http://schema.org/sourceOrganization> <http://lobid.org/organisations/DE-361#!> .
-<http://lobid.org/resources/HT015082724> <http://www.w3.org/2000/01/rdf-schema#label> "lobid Ressource"^^<http://www.w3.org/2001/XMLSchema#string> .
+<http://lobid.org/resources/HT015082724> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://purl.org/lobid/lv#BibliographicDescription> .
+<http://lobid.org/resources/HT015082724> <http://www.w3.org/2000/01/rdf-schema#label> "Webseite der hbz-Ressource HT015082724"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/resources/HT015082724#!> <http://id.loc.gov/ontologies/bibframe/hasItem> <http://lobid.org/items/HT015082724:DE-361:CA000%20T340%5B119#!> .
 <http://lobid.org/resources/HT015082724#!> <http://purl.org/dc/terms/language> <http://id.loc.gov/vocabulary/iso639-2/nld> .
 <http://lobid.org/resources/HT015082724#!> <http://purl.org/dc/terms/medium> <http://rdaregistry.info/termList/RDAproductionMethod/1010> .
@@ -61,4 +71,8 @@ _:b8 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/0
 <http://lobid.org/resources/HT015082724#!> <http://www.w3.org/2000/01/rdf-schema#label> "lobid Ressource"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/resources/HT015082724#!> <http://www.w3.org/2002/07/owl#sameAs> <http://hub.culturegraph.org/resource/HBZ-HT015082724> .
 <http://lobid.org/resources/HT015082724#!> <http://www.w3.org/2007/05/powder-s#describedby> <http://lobid.org/resources/HT015082724> .
+<http://lobid.org/resources/dataset#!> <http://www.w3.org/2000/01/rdf-schema#label> "lobid-resources \u2013 Der hbz-Verbundkatalog als Linked Open Data"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://rdaregistry.info/termList/RDAproductionMethod/1010> <http://www.w3.org/2000/01/rdf-schema#label> "Print"^^<http://www.w3.org/2001/XMLSchema#string> .
+<https://datahub.io/dataset/hbz_unioncatalog> <http://www.w3.org/2000/01/rdf-schema#label> "https://datahub.io/dataset"^^<http://www.w3.org/2001/XMLSchema#string> .
+<https://github.com/hbz/lobid-resources> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://schema.org/SoftwareApplication> .
+<https://github.com/hbz/lobid-resources> <http://www.w3.org/2000/01/rdf-schema#label> "Software lobid-resources"^^<http://www.w3.org/2001/XMLSchema#string> .

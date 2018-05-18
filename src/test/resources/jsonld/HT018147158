@@ -1,5 +1,5 @@
 {
-  "@context" : "http://lobid.org/resources/context.jsonld",
+  "@context" : "web/conf/context.jsonld",
   "contribution" : [ {
     "agent" : {
       "altLabel" : [ "Die Ehrenfelder, Gemeinnützige Wohnungsgenossenschaft eG", "Gemeinnützige Wohnungsgenossenschaft eG", "Gemeinnützige Wohnungsgenossenschaft Ehrenfeld", "Gemeinnützige Wohnungsgenossenschaft" ],
@@ -18,7 +18,11 @@
     "dateCreated" : "20140127",
     "dateModified" : "20140523",
     "id" : "http://lobid.org/resources/HT018147158",
-    "label" : "lobid Ressource",
+    "inDataset" : {
+      "id" : "http://lobid.org/resources/dataset#!",
+      "label" : "lobid-resources – Der hbz-Verbundkatalog als Linked Open Data"
+    },
+    "label" : "Webseite der hbz-Ressource HT018147158",
     "modifiedBy" : {
       "id" : "http://lobid.org/organisations/DE-9999#!",
       "label" : "lobid Organisation"
@@ -27,10 +31,29 @@
       "id" : "http://lobid.org/organisations/DE-101#!",
       "label" : "lobid Organisation"
     },
+    "resultOf" : {
+      "endTime" : "0001-01-01T00:00:00",
+      "instrument" : {
+        "id" : "https://github.com/hbz/lobid-resources",
+        "label" : "Software lobid-resources",
+        "type" : [ "SoftwareApplication" ]
+      },
+      "object" : {
+        "id" : "http://lobid.org/hbz01/HT018147158",
+        "isPartOf" : [ {
+          "id" : "https://datahub.io/dataset/hbz_unioncatalog",
+          "label" : "https://datahub.io/dataset"
+        } ],
+        "label" : "hbz-Ressource HT018147158 im Exportformat MAB2-XML",
+        "type" : [ "DataFeedItem" ]
+      },
+      "type" : [ "CreateAction" ]
+    },
     "sourceOrganization" : {
       "id" : "http://lobid.org/organisations/DE-1141#!",
       "label" : "lobid Organisation"
-    }
+    },
+    "type" : [ "BibliographicDescription" ]
   },
   "hbzId" : "HT018147158",
   "id" : "http://lobid.org/resources/HT018147158#!",

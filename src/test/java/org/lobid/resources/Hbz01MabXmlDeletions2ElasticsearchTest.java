@@ -17,7 +17,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
@@ -215,9 +214,9 @@ public final class Hbz01MabXmlDeletions2ElasticsearchTest {
 					.find(
 							Paths.get(Hbz01MabXmlEtlNtriples2Filesystem.PATH_TO_TEST
 									+ "/jsonld-deletions"),
-							100,
-							(name, t) -> name.toFile().getName()
-									.matches(".*" + fname + "\\.?(json)?(nt)?"))
+					100,
+					(name, t) -> name.toFile().getName()
+							.matches(".*" + fname + "\\.?(json)?(nt)?"))
 					.collect(Collectors.toList());
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -243,8 +242,7 @@ public final class Hbz01MabXmlDeletions2ElasticsearchTest {
 
 		static String getAsNtriples() {
 			return Arrays.asList(getElasticsearchDocuments().getHits().getHits())
-					.parallelStream()
-					.flatMap(hit -> Stream.of(toRdf(hit.getSourceAsString())))
+					.parallelStream().map(hit -> toRdf(hit.getSourceAsString()))
 					.collect(Collectors.joining());
 		}
 
