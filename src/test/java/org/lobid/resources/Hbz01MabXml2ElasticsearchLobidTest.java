@@ -65,19 +65,20 @@ import de.hbz.lobid.helper.CompareJsonMaps;
 @SuppressWarnings("javadoc")
 public final class Hbz01MabXml2ElasticsearchLobidTest {
 	private static Node node;
-	static Client client;
+	private static Client client;
 	private static final Logger LOG =
 			LogManager.getLogger(Hbz01MabXml2ElasticsearchLobidTest.class);
 	private static final String LOBID_RESOURCES =
 			"test-resources-" + LocalDateTime.now().toLocalDate() + "-"
 					+ LocalDateTime.now().toLocalTime();
-	static final String TEST_FILENAME_NTRIPLES =
+	private static final String TEST_FILENAME_NTRIPLES =
 			Hbz01MabXmlEtlNtriples2Filesystem.PATH_TO_TEST + "hbz01.es.nt";
-	static final String DIRECTORY_TO_TEST_JSON_FILES =
+	private static final String DIRECTORY_TO_TEST_JSON_FILES =
 			Hbz01MabXmlEtlNtriples2Filesystem.PATH_TO_TEST + "jsonld/";
-	static HashSet<String> testFiles = new HashSet<>();
-	static boolean testFailed = false;
-	static MabXml2lobidJsonEs mabXml2lobidJsonEs = new MabXml2lobidJsonEs();
+	private static HashSet<String> testFiles = new HashSet<>();
+	private static boolean testFailed = false;
+	private static MabXml2lobidJsonEs mabXml2lobidJsonEs =
+			new MabXml2lobidJsonEs();
 
 	@BeforeClass
 	public static void setup() {
@@ -122,7 +123,7 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 	 * clobs, transform into lobid ntriples, transform that into elasticsearch
 	 * json-ld, index that into elasticsearch.
 	 */
-	public static void etl(final Client cl,
+	static void etl(final Client cl,
 			RdfModel2ElasticsearchEtikettJsonLd etikettJsonLdConverter) {
 		ElasticsearchIndexer.MINIMUM_SCORE = 1.4;
 		final FileOpener opener = new FileOpener();
@@ -158,7 +159,7 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 		getElasticsearchDocsAsNtriplesAndTestAndWrite();
 	}
 
-	public static void getElasticsearchDocsAsNtriplesAndTestAndWrite() {
+	static void getElasticsearchDocsAsNtriplesAndTestAndWrite() {
 		SortedSet<String> set =
 				getSortedSet(ElasticsearchDocuments.getAsNtriples());
 		try {
@@ -261,14 +262,14 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 		}
 	}
 
-	static class ElasticsearchDocuments {
+	private static class ElasticsearchDocuments {
 		static private SearchResponse getElasticsearchDocuments() {
 			return client.prepareSearch(LOBID_RESOURCES)
 					.setQuery(new MatchAllQueryBuilder()).setFrom(0).setSize(10000)
 					.execute().actionGet();
 		}
 
-		static String getAsNtriples() {
+		private static String getAsNtriples() {
 			return Arrays.asList(getElasticsearchDocuments().getHits().getHits())
 					.parallelStream()
 					.map(hit -> toRdf(cleanseEndtime(hit.getSourceAsString())))
