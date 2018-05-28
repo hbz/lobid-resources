@@ -117,6 +117,14 @@
 		</dependency>
 	</dependencies>
 	<build>
+		  <resources>
+                        <resource>
+                                <directory>${basedir}/src/main/resources</directory>
+                                <excludes>
+                                        <exclude>beacon/data/*.jsonl</exclude>
+                                </excludes>
+                        </resource>
+                </resources>
 		<pluginManagement>
 			<plugins>
 				<plugin>
