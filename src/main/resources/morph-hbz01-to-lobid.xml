@@ -1920,6 +1920,14 @@
 				<regexp match="(.*)" format=" ${1}"/>
 			</data>
 		</combine>
+		<combine name="http://rdaregistry.info/Elements/w/P10079" value="${n}"
+			flushWith="@containsExampleOfWorkId303" sameEntity="true">
+			<data source="303t1.n" name="n"/>
+		</combine>
+		<combine name="http://rdaregistry.info/Elements/w/P10221" value="${r}"
+			flushWith="@containsExampleOfWorkId303" sameEntity="true">
+			<data source="303t1.r" name="r"/>
+		</combine>
 		<combine name="~rdf:subject" value="$[ns-lobid-resource]${id}#!" flushWith="@containsExampleOfWorkId303">
 			<data source="303t1.t"/>
 			<data source="@id" name="id"/>
@@ -1976,6 +1984,14 @@
 			flushWith="@exampleOfWorkId">
 			<data source="303-1.p" name="p"/>
 			<data source="303-1.d" name="d"/>
+		</combine>
+		<combine name="http://rdaregistry.info/Elements/w/P10079" value="${n}"
+			flushWith="@exampleOfWorkId" sameEntity="true">
+			<data source="303-1.n" name="n"/>
+		</combine>
+		<combine name="http://rdaregistry.info/Elements/w/P10221" value="${r}"
+			flushWith="@exampleOfWorkId" sameEntity="true">
+			<data source="303-1.r" name="r"/>
 		</combine>
 		<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="${a}" 
 			flushWith="@exampleOfWorkId">
