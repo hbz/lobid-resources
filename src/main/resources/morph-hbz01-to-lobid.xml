@@ -743,33 +743,12 @@
 				<data source="@$[field]Id" name="a"/>
 			</combine>
 		</macro>
-		
 		<macro name="addTypeCollection">
 			<combine name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" value="${a}">
 				<data source="$[field]" name="a">
 					<constant value="http://id.loc.gov/ontologies/bibframe/Collection"/>
 				</data>
 			</combine>
-		</macro>
-		<macro name="addDeweyNotationAndLabel">
-			<entity name="http://purl.org/dc/terms/subject" reset="true" sameEntity="true">
-				<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="${a}" reset="true">
-					<data source="$[field]" name="a">
-						<regexp match="([0-9]{3}.*)"/>
-						<lookup in="deweyLabels"/>
-					</data>
-				</combine>
-				<combine name="http://www.w3.org/2004/02/skos/core#notation" value="${a}"
-					reset="true">
-					<data source="$[field]" name="a"/>
-				</combine>
-				<combine name="http://id.loc.gov/ontologies/bibframe/source" value="${a}"
-					reset="true">
-					<data source="$[field]" name="a">
-						<regexp match=".*" format="http://d-nb.info/gnd/4149423-4"/>
-					</data>
-				</combine>
-			</entity>
 		</macro>
 		<macro name="setLabelVariableForPersonsWithoutGNDId">
 			<combine name="@preferredNameForThePerson$[field]" value="${a}"
@@ -4410,8 +4389,44 @@
 			<data source="@deweyBnode"/>
 			<data source="@id" name="subject"/>
 		</combine>
-		<call-macro name="addDeweyNotationAndLabel" field="705?[-12345].a"/>
-		<call-macro name="addDeweyNotationAndLabel" field="705?[-12345].c"/>
+		<combine name="@dewey705a" value="${a}" flushWith="705a1.a">
+			<data source="705a1.a" name="a"/>
+		</combine>
+		<combine name="http://purl.org/dc/terms/subject" value="_:${a}deweyBnode"
+			flushWith="@dewey705a" sameEntity="true" reset="true">
+			<data source="@dewey705a" name="a"/>
+		</combine>
+		<combine name="~rdf:subject" value="_:${a}deweyBnode"
+			flushWith="@dewey705a" sameEntity="true" reset="true">
+			<data source="@dewey705a" name="a"/>
+		</combine>
+		<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="${a}"
+			flushWith="@dewey705a" sameEntity="true" reset="true">
+			<choose name="a" flushWith="@dewey705a" sameEntity="true" reset="true">
+				<data source="@dewey705a" name="a">
+					<lookup in="deweyLabels"/>
+				</data>
+				<data source="@dewey705a" name="a">
+					<regexp match="[0-9]{3}"/>
+					<lookup in="deweyLabels"/>
+				</data>
+			</choose>
+		</combine>
+		<combine name="http://www.w3.org/2004/02/skos/core#notation" value="${a}"
+			flushWith="@dewey705a" sameEntity="true" reset="true">
+			<data source="@dewey705a" name="a"/>
+		</combine>
+		<combine name="http://id.loc.gov/ontologies/bibframe/source" value="${a}"
+			flushWith="@dewey705a" sameEntity="true">
+			<data source="@dewey705a" name="a">
+				<constant value="http://d-nb.info/gnd/4149423-4"/>
+			</data>
+		</combine>
+		<combine name="~rdf:subject" value="$[ns-lobid-resource]${id}#!"
+			flushWith="@dewey705a">
+			<data source="@dewey705a"/>
+			<data source="@id" name="id"/>
+		</combine>
 		<!-- gnd links -->
 		<data source="9[01234][27]-[-12].9" name="@subjectLinks">
 			<regexp match="\(DE-588\)(.*)" format="http://d-nb.info/gnd/${1}"/>
