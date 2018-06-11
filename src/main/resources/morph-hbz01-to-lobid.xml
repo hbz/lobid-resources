@@ -1849,15 +1849,13 @@
 			</concat>
 		</combine>
 		<!-- ####################### -->
-		<!-- ########## containsExampleOfWork and exampleOfWork -->
+		<!-- ########## containsExampleOfWork -->
 		<!-- ####################### -->
+		<!-- define variables -->
 		<combine name="@containsExampleOfWorkId303" value="${a}">
 			<data source="303t1.9" name="a">
 				<regexp match="\(DE-588\)(\d{8,9}[0-9X]|\d{7}-[0-9])" format="http://d-nb.info/gnd/${1}"/>
 			</data>
-		</combine>
-		<combine name="http://purl.org/lobid/lv#containsExampleOfWork" value="${a}">
-			<data source="@containsExampleOfWorkId303" name="a"/>
 		</combine>
 		<concat delimiter=". " name="@concatContainsExampleOfWorkTitleSubtitle" 
 			flushWith="@containsExampleOfWorkId303" sameEntity="true">
@@ -1897,6 +1895,41 @@
 			<data source="@containsExampleOfWorkTitleWithNumbering" name="tnr"/>
 			<data source="@containsExampleOfWorkInstumentation" name="m"/>
 		</combine>
+		<!-- add instrumentation for contained examples of work of MAB 303t -->
+		<combine name="@containsExampleOfWorkId303Instrumentation" value="${a}" sameEntity="true">
+			<data source="303t1.m"/>
+			<data source="303t1.9" name="a">
+				<regexp match="\(DE-588\)(\d{8,9}[0-9X]|\d{7}-[0-9])" format="http://d-nb.info/gnd/${1}"/>
+			</data>
+		</combine>
+		<combine name="~rdf:subject" value="${a}">
+			<data source="@containsExampleOfWorkId303Instrumentation" name="a"/>
+		</combine>
+		<combine name="http://rdaregistry.info/Elements/w/P10220" value="${m}"
+			flushWith="@containsExampleOfWorkId303Instrumentation" sameEntity="true">
+			<data source="@concatContainsExampleOfWorkTitleInstrumentation" name="m">
+				<regexp match="(.*),.*" format="${1}"/>
+			</data>
+		</combine>
+		<combine name="http://rdaregistry.info/Elements/w/P10220" value="${m}"
+			flushWith="@containsExampleOfWorkId303Instrumentation" sameEntity="true">
+			<data source="@concatContainsExampleOfWorkTitleInstrumentation" name="m">
+				<regexp match=".*, (.*)" format="${1}"/>
+			</data>
+		</combine>
+		<combine name="http://rdaregistry.info/Elements/w/P10220" value="${m}"
+			flushWith="@containsExampleOfWorkId303Instrumentation" sameEntity="true" reset="true">
+			<data source="@concatContainsExampleOfWorkTitleInstrumentation" name="m">
+				<regexp match=".*, (.*), .*" format="${1}"/>
+			</data>
+		</combine>
+		<combine name="~rdf:subject" value="$[ns-lobid-resource]${id}#!" flushWith="@containsExampleOfWorkId303Instrumentation">
+			<data source="@id" name="id"/>
+		</combine>
+		<!-- add rest for contained examples of work of MAB 303t -->
+		<combine name="http://purl.org/lobid/lv#containsExampleOfWork" value="${a}">
+			<data source="@containsExampleOfWorkId303" name="a"/>
+		</combine>
 		<combine name="~rdf:subject" value="${a}">
 			<data source="@containsExampleOfWorkId303" name="a"/>
 		</combine>
@@ -1928,24 +1961,29 @@
 			flushWith="@containsExampleOfWorkId303" sameEntity="true">
 			<data source="303t1.r" name="r"/>
 		</combine>
-		<combine name="~rdf:subject" value="$[ns-lobid-resource]${id}#!" flushWith="@containsExampleOfWorkId303">
+		<combine name="~rdf:subject" value="$[ns-lobid-resource]${id}#!"
+			flushWith="@containsExampleOfWorkId303">
 			<data source="303t1.t"/>
 			<data source="@id" name="id"/>
 		</combine>
-  	<entity name="$[ns-lobid-vocab]containsExampleOfWork">
-	   	<if>
-		  	<none>
-		  		<data source="303t1.t"/>
-		  	</none>
-		  </if>
-	  	<data source="521-1.a" name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type">
-	   		<constant value="http://d-nb.info/standards/elementset/gnd#Work"/>
-		  </data>
-	   	<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="${a}">
-	   		<data source="521-1.a" name="a"/>
-	   	</combine>
-	  </entity>
-		<!-- exampleOfWork -->
+		<!-- fallback solution for contained examples of work -->
+		<entity name="$[ns-lobid-vocab]containsExampleOfWork">
+			<if>
+				<none>
+					<data source="303t1.t"/>
+				</none>
+			</if>
+			<data source="521-1.[at]" name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type">
+				<constant value="http://d-nb.info/standards/elementset/gnd#Work"/>
+			</data>
+			<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="${a}">
+				<data source="521-1.[at]" name="a"/>
+			</combine>
+		</entity>
+		<!-- ####################### -->
+		<!-- ########## exampleOfWork -->
+		<!-- ####################### -->
+		<!-- define variables -->
 		<combine name="@exampleOfWorkId" value="${a}">
 			<data source="303-1.9" name="a">
 				<regexp match="\(DE-588\)(\d{8,9}[0-9X]|\d{7}-[0-9])" format="http://d-nb.info/gnd/${1}"/>
@@ -1974,6 +2012,66 @@
 			</if>
 			<data source="303-1.t"/>
 		</combine>
+		<combine name="@exampleOfWorkBnode303" value="_:${a}">
+			<if>
+				<none>
+					<data source="303-1.9"/>
+				</none>
+			</if>
+			<data source="303-1.t" name="a">
+				<replace pattern="&lt;" with="("/>
+				<replace pattern="&gt;" with=")"/>
+			</data>
+		</combine>
+		<combine name="@creatorOfExampleOfWorkWithoutLivingStatistics" value="${a}">
+			<if>
+				<none>
+					<data source="303-1.d"/>
+					<data source="303-1.9"/>
+				</none>
+			</if>
+			<data source="303-1.p" name="p"/>
+		</combine>
+		<combine name="@exampleOfWorkLabelWithoutLivingStatistics" value="${a}">
+			<data source="@exampleOfWorkBnode303"/>
+			<data source="@creatorOfExampleOfWorkWithoutLivingStatistics" name="a"/>
+		</combine>
+		<!-- add instrumentation of examples of work -->
+		<combine name="@exampleOfWorkId303Instrumentation" value="${a}" sameEntity="true">
+			<data source="303-1.m"/>
+			<data source="303-1.9" name="a">
+				<regexp match="\(DE-588\)(\d{8,9}[0-9X]|\d{7}-[0-9])" format="http://d-nb.info/gnd/${1}"/>
+			</data>
+		</combine>
+		<concat delimiter=", " name="@concatExampleOfWorkTitleInstrumentation"
+			flushWith="@exampleOfWorkId303Instrumentation" sameEntity="true">
+			<data source="303-1.m"/>
+		</concat>
+		<combine name="~rdf:subject" value="${a}">
+			<data source="@exampleOfWorkId303Instrumentation" name="a"/>
+		</combine>
+		<combine name="http://rdaregistry.info/Elements/w/P10220" value="${m}"
+			flushWith="@exampleOfWorkId303Instrumentation" sameEntity="true">
+			<data source="@concatExampleOfWorkTitleInstrumentation" name="m">
+				<regexp match="(.*),.*" format="${1}"/>
+			</data>
+		</combine>
+		<combine name="http://rdaregistry.info/Elements/w/P10220" value="${m}"
+			flushWith="@exampleOfWorkId303Instrumentation" sameEntity="true">
+			<data source="@concatExampleOfWorkTitleInstrumentation" name="m">
+				<regexp match=".*, (.*)" format="${1}"/>
+			</data>
+		</combine>
+		<combine name="http://rdaregistry.info/Elements/w/P10220" value="${m}"
+			flushWith="@exampleOfWorkId303Instrumentation" sameEntity="true" reset="true">
+			<data source="@concatExampleOfWorkTitleInstrumentation" name="m">
+				<regexp match=".*, (.*), .*" format="${1}"/>
+			</data>
+		</combine>
+		<combine name="~rdf:subject" value="$[ns-lobid-resource]${id}#!" flushWith="@exampleOfWorkId303Instrumentation">
+			<data source="@id" name="id"/>
+		</combine>
+		<!-- add rest for examples of work -->
 		<combine name="http://purl.org/lobid/lv#exampleOfWork" value="${a}" flushWith="@exampleOfWorkId">
 			<data source="@exampleOfWorkId" name="a"/>
 		</combine>
@@ -2007,30 +2105,7 @@
 		<combine name="~rdf:subject" value="$[ns-lobid-resource]${id}#!" flushWith="@exampleOfWorkId">
 			<data source="@id" name="id"/>
 		</combine>
-		<combine name="@exampleOfWorkBnode303" value="_:${a}">
-			<if>
-				<none>
-					<data source="303-1.9"/>
-				</none>
-			</if>
-			<data source="303-1.t" name="a">
-				<replace pattern="&lt;" with="("/>
-				<replace pattern="&gt;" with=")"/>
-			</data>
-		</combine>
-		<combine name="@creatorOfExampleOfWorkWithoutLivingStatistics" value="${a}">
-			<if>
-				<none>
-					<data source="303-1.d"/>
-					<data source="303-1.9"/>
-				</none>
-			</if>
-			<data source="303-1.p" name="p"/>
-		</combine>
-		<combine name="@exampleOfWorkLabelWithoutLivingStatistics" value="${a}">
-			<data source="@exampleOfWorkBnode303"/>
-			<data source="@creatorOfExampleOfWorkWithoutLivingStatistics" name="a"/>
-		</combine>
+		<!-- add examples of work if no id exists -->
 		<combine name="http://purl.org/lobid/lv#exampleOfWork" value="${a}"
 			flushWith="@exampleOfWorkBnode303">
 			<data source="@exampleOfWorkBnode303" name="a"/>
