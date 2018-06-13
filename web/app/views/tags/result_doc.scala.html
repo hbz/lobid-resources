@@ -93,14 +93,20 @@
 }
 
 @lobid2_part_of(field: String, subField: String) = {
-  @if(!(doc \ field).isInstanceOf[JsUndefined]){
-      @Html(TableRow.VALUES_MULTI.process(new com.fasterxml.jackson.databind.ObjectMapper().readTree(doc.toString()),
-      field,
-      "q",
-      if(((doc \ field)(0) \ "numbering").asOpt[String].isDefined) {"Erschienen als"} else {"Erschienen in"},
-      Seq((((doc \ field)(0) \ subField)(0) \ "id").asOpt[String].getOrElse("--")),
-      Optional.of(Seq(subField, "numbering"))))
-  }
+  <tr>
+    <td>@if((doc \ "isPartOf").toString.contains("numbering")) { Erschienen als } else { Erschienen in }</td>
+    <td>
+    @for(
+      partOf <- (doc \ "isPartOf").asOpt[Seq[JsValue]].getOrElse(Seq());
+      superordinate <- (partOf \ "hasSuperordinate").asOpt[Seq[JsValue]].getOrElse(Seq());
+      label <- (superordinate \ "label").asOpt[String];
+      id = (superordinate \ "id").asOpt[String];
+      // See https://github.com/hbz/lobid-resources/issues/828 for the Band/Volume edge cases
+      numbering = (partOf \ "numbering").asOpt[String].getOrElse("").replaceAll("^(Band|Volume)", "").trim){
+     @if(id.isDefined) {<a href="@id.get">@label</a>} else {@label}@if(!numbering.isEmpty){, @if(!numbering.contains("Band")){Band }@numbering}<br/>
+    }
+    </td>
+  </tr>
 }
 
 @contributions(contributions: Seq[JsValue]) = {
