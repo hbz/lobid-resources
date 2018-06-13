@@ -93,6 +93,7 @@
 }
 
 @lobid2_part_of(field: String, subField: String) = {
+  @if((doc \ "isPartOf").asOpt[JsValue].isDefined){
   <tr>
     <td>@if((doc \ "isPartOf").toString.contains("numbering")) { Erschienen als } else { Erschienen in }</td>
     <td>
@@ -107,6 +108,7 @@
     }
     </td>
   </tr>
+  }
 }
 
 @contributions(contributions: Seq[JsValue]) = {
