@@ -254,7 +254,12 @@ public class Queries {
 
 		@Override
 		public QueryBuilder build(final String queryString) {
-			return QueryBuilders.queryStringQuery(queryString).field(fields().get(0));
+			QueryStringQueryBuilder query =
+					QueryBuilders.queryStringQuery(queryString);
+			for (String f : new NameQuery().fields()) {
+				query = query.field(f, 1.0f);
+			}
+			return query.field(fields().get(0));
 		}
 	}
 
