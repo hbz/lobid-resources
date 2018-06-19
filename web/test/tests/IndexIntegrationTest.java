@@ -71,7 +71,7 @@ public class IndexIntegrationTest extends LocalIndexSetup {
 			{ "publication.startDate:1993", /*->*/ 3 },
 			{ "publication.location:Berlin AND publication.startDate:1993", /*->*/ 1 },
 			{ "publication.location:Berlin AND publication.startDate:[1992 TO 2017]", /*->*/ 13 },
-			{ "inCollection.id:\"http\\://lobid.org/resources/HT014176012#\\!\"", /*->*/ 41 },
+			{ "inCollection.id:\"http\\://lobid.org/resources/HT014176012#\\!\"", /*->*/ 40 },
 			{ "inCollection.id:NWBib", /*->*/ 0 },
 			{ "publication.publishedBy:Springer", /*->*/ 4 },
 			{ "publication.publishedBy:Spring", /*->*/ 4 },
@@ -79,7 +79,7 @@ public class IndexIntegrationTest extends LocalIndexSetup {
 			{ "publication.publishedBy:DÄG", /*->*/ 1 },
 			{ "hasItem.id:\"http\\://lobid.org/items/TT003059252\\:DE-5-58\\:9%2F041#\\!\"", /*->*/ 1 },
 			{ "hasItem.id:TT003059252\\:DE-5-58\\:9%2F041", /*->*/ 0 },
-			{ "coverage:99", /*->*/ 23}
+			{ "coverage:99", /*->*/ 22}
 		});
 	} // @formatter:on
 
