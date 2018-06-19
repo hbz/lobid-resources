@@ -4434,49 +4434,22 @@
 		<!-- ddc links -->
 		<combine name="@concatMAB700subfields" value="${a}" reset="true">
 			<concat delimiter="|" name="a">
-				<data source="700[-b][-12345].[a2]"/>
+				<data source="700-[-12345].[a2]"/>
 			</concat>
 		</combine>
 		<combine name="@MAB700subfieldsWithoutDNB" value="${a}">
 			<data source="@concatMAB700subfields" name="a">
-				<replace pattern="(([0-9]{1,3}[.])?[0-9]+|\d{3}|[a-zA-Z])\|DNB|" with=""/>
+				<replace pattern="[0-9]*\|DNB|[0-9]{3}\.[0-9]*\|DNB" with=""/>
 			</data>
 		</combine>
-		<combine name="@MAB700subfieldsWithoutKlassification" value="${a}">
-			<data source="@MAB700subfieldsWithoutDNB" name="a">
-				<regexp match="\d{3}\.((\d{1,4})*)|\d{3}"/>
-			</data>
-		</combine>
-		<!-- create dewey bnodes for MAB 700s with ZDB oder without classification -->
 		<combine name="@deweyBnode" value="${a}" sameEntity="true">
 			<data source="@MAB700subfieldsWithoutDNB" name="a">
-				<regexp match="(([0-9]{3}[.])?[0-9]+|\d{3})\|ZDB" format="_:${1}ZDB"/>
+				<regexp match="([0-9]{3}|[0-9]{3}\.[0-9]*)\|ZDB" format="_:${1}"/>
 			</data>
 		</combine>
-		<combine name="@deweyBnode" value="${a}">
-			<data source="@MAB700subfieldsWithoutKlassification" name="a">
-				<regexp match="^(([0-9]{3}[.])?[0-9]+|\d{3})$"
-					format="_:${1}sourceUnknown"/>
-			</data>
-		</combine>
-		<combine name="@deweyBnode" value="${a}">
-			<data source="@MAB700subfieldsWithoutKlassification" name="a">
-				<regexp match="^(([0-9]{3}[.])?[0-9]+|\d{3})|" format="_:${1}sourceUnknown"/>
-			</data>
-		</combine>
-		<combine name="@deweyBnode" value="${a}">
-			<data source="@MAB700subfieldsWithoutKlassification" name="a">
-				<regexp match="|(([0-9]{3}[.])?[0-9]+|\d{3})$" format="_:${1}sourceUnknown"/>
-			</data>
-		</combine>
-		<combine name="@deweyBnode" value="${a}">
-			<data source="@MAB700subfieldsWithoutKlassification" name="a">
-				<regexp match="|(([0-9]{3}[.])?[0-9]+|\d{3})|" format="_:${1}sourceUnknown"/>
-			</data>
-		</combine>
-		<combine name="@deweyBnode" value="${a}">
-			<data source="@MAB700subfieldsWithoutKlassification" name="a">
-				<regexp match="^(([0-9]{3}[.])?[0-9]+|\d{3})$" format="_:${1}sourceUnknown"/>
+		<combine name="@deweyBnode" value="${a}" sameEntity="true">
+			<data source="700b[-12345].a" name="a">
+				<regexp match="(.*)" format="_:${1}"/>
 			</data>
 		</combine>
 		<combine name="http://purl.org/dc/terms/subject" value="${a}" 
@@ -4490,14 +4463,14 @@
 		<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="${a}" 
 			sameEntity="true" flushWith="@deweyBnode">
 			<data source="@deweyBnode" name="a">
-				<regexp match="_:(([0-9]{3}[.])?[0-9]+|\d{3}).*" format="${1}"/>
+				<regexp match="_:(.*)" format="${1}"/>
 				<lookup in="deweyLabels"/>
 			</data>
 		</combine>
 		<combine name="http://www.w3.org/2004/02/skos/core#notation" value="${a}"
 			sameEntity="true" flushWith="@deweyBnode">
 			<data source="@deweyBnode" name="a">
-				<regexp match="_:(([0-9]{3}[.])?[0-9]+|\d{3}).*" format="${1}"/>
+				<regexp match="_:(.*)" format="${1}"/>
 			</data>
 		</combine>
 		<combine name="http://id.loc.gov/ontologies/bibframe/source" value="${a}"
@@ -4510,6 +4483,7 @@
 			<data source="@deweyBnode"/>
 			<data source="@id" name="subject"/>
 		</combine>
+		
 		<combine name="@dewey705a" value="${a}" flushWith="705a1.a">
 			<data source="705a1.a" name="a"/>
 		</combine>
