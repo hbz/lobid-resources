@@ -4362,36 +4362,6 @@
 			<data source="@deweyBnode"/>
 			<data source="@id" name="subject"/>
 		</combine>
-		<!-- non-DDC links -->
-		<combine name="@subjectWithoutClassificationBnode" value="_:${a}" sameEntity="true">
-			<data source="@MAB700subfieldsWithoutDNB" name="a">
-				<regexp match="^\d.*\d$"/>
-			</data>
-		</combine>
-		<combine name="http://purl.org/dc/terms/subject" value="${a}" 
-			flushWith="@subjectWithoutClassificationBnode" sameEntity="true">
-			<data source="@subjectWithoutClassificationBnode" name="a"/>
-		</combine>
-		<combine name="~rdf:subject" value="${a}" 
-			flushWith="@subjectWithoutClassificationBnode" sameEntity="true">
-			<data source="@subjectWithoutClassificationBnode" name="a"/>
-		</combine>
-		<combine name="http://www.w3.org/2004/02/skos/core#notation" value="${a}"
-			sameEntity="true" flushWith="@subjectWithoutClassificationBnode">
-			<data source="@subjectWithoutClassificationBnode" name="a">
-				<regexp match="_:(.*)" format="${1}"/>
-			</data>
-		</combine>
-		<combine name="http://id.loc.gov/ontologies/bibframe/source" value="${a}"
-			sameEntity="true" flushWith="@subjectWithoutClassificationBnode">
-			<data source="@subjectWithoutClassificationBnode" name="a">
-				<constant value="https://www.wikidata.org/wiki/Q5962346"/>
-			</data>
-		</combine>
-		<combine name="~rdf:subject" value="$[ns-lobid-resource]${subject}#!" >
-			<data source="@subjectWithoutClassificationBnode"/>
-			<data source="@id" name="subject"/>
-		</combine>
 		
 		<combine name="@dewey705a" value="${a}" flushWith="705a1.a">
 			<data source="705a1.a" name="a"/>
