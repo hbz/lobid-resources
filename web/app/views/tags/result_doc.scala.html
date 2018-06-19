@@ -18,9 +18,11 @@
   }
 }
 
-@optional(label: String, key: String, v: JsValue) = {
-  @if((v\key).asOpt[String].isDefined) {
-    @((v\key).as[String]) <br/>
+@optional(lookup: JsLookupResult) = {
+  @defining(lookup.asOpt[Seq[JsValue]].getOrElse(Seq(lookup))) { elems =>
+    @for(elem <- elems; elemString <- elem.asOpt[String]) {
+      @(elemString)@if(elem!=elems.last){ | } else {<br/>}
+    }
   }
 }
 
@@ -35,6 +37,7 @@
         }
       </td>
       <td>
+        @optional(pub \ "description")
         @if(start != end && !(pub \ "type").toString.contains("SecondaryPublicationEvent") &&
             ((start.asOpt[String].isDefined && end.asOpt[String].isDefined) ||
             (doc\"type").toString.contains("Series") || (doc\"type").toString.contains("Periodical"))) {
@@ -45,10 +48,10 @@
           @start.asOpt[String].getOrElse(end.asOpt[String].getOrElse(""))
         }
         @if(start.toOption.isDefined || end.toOption.isDefined) { <br/> }
-        @optional("Erscheinungsort", "location", pub)
-        @optional("Verlag", "publishedBy", pub)
+        @optional(pub \ "location")
+        @optional(pub \ "publishedBy")
         @((pub\"frequency").asOpt[Seq[JsValue]].map { freq =>
-          optional("Erscheinungsweise", "label", freq.head)
+          optional(freq.head \ "label")
         })
       </td>
     </tr>
@@ -93,13 +96,21 @@
 }
 
 @lobid2_part_of(field: String, subField: String) = {
-  @if(!(doc \ field).isInstanceOf[JsUndefined]){
-      @Html(TableRow.VALUES_MULTI.process(new com.fasterxml.jackson.databind.ObjectMapper().readTree(doc.toString()),
-      field,
-      "q",
-      if(((doc \ field)(0) \ "numbering").asOpt[String].isDefined) {"Erschienen als"} else {"Erschienen in"},
-      Seq((((doc \ field)(0) \ subField)(0) \ "id").asOpt[String].getOrElse("--")),
-      Optional.of(Seq(subField, "numbering"))))
+  @if((doc \ "isPartOf").asOpt[JsValue].isDefined){
+  <tr>
+    <td>@if((doc \ "isPartOf").toString.contains("numbering")) { Erschienen als } else { Erschienen in }</td>
+    <td>
+    @for(
+      partOf <- (doc \ "isPartOf").asOpt[Seq[JsValue]].getOrElse(Seq());
+      superordinate <- (partOf \ "hasSuperordinate").asOpt[Seq[JsValue]].getOrElse(Seq());
+      label <- (superordinate \ "label").asOpt[String];
+      id = (superordinate \ "id").asOpt[String];
+      // See https://github.com/hbz/lobid-resources/issues/828 for the Band/Volume edge cases
+      numbering = (partOf \ "numbering").asOpt[String].getOrElse("").replaceAll("^(Band|Volume)", "").trim){
+     @if(id.isDefined) {<a href="@id.get">@label</a>} else {@label}@if(!numbering.isEmpty){, @if(!numbering.contains("Band")){Band }@numbering}<br/>
+    }
+    </td>
+  </tr>
   }
 }
 
@@ -153,7 +164,7 @@
 }
 
 @sortedPublications(seq: Seq[JsValue]) = @{
-  seq.sortBy((v: JsValue) => ((v\"startDate").asOpt[String].getOrElse((v\"endDate").asOpt[String].getOrElse("0")).toInt))
+  seq.sortBy((v: JsValue) => ((v\"type").asOpt[Seq[String]].map({case t::Nil => Seq("PublicationEvent", "SecondaryPublicationEvent").indexOf(t)})))
 }
 
 @withPrefixedLink(label: String, prefix: String, node: JsReadable) = {
