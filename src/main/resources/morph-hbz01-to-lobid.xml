@@ -3209,8 +3209,8 @@
 		</combine>
 		<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="${t} (${f})"
 			flushWith="@contributorCorporateBodyId" sameEntity="true">
-			<data source="2?[02468]b1.t" name="t"/>
-			<data source="2?[02468]b1.f" name="f"/>
+			<data source="2?[02468][bcefp]1.t" name="t"/>
+			<data source="2?[02468][bcefp]1.f" name="f"/>
 		</combine>
 		<combine name="~rdf:subject" value="$[ns-lobid-resource]${id}#!"
 			flushWith="@contributorCorporateBodyId" sameEntity="true">
@@ -5836,6 +5836,17 @@
 			flushWith="@nwbibSubject|@nwbibSpatialSubject|@rpb2Subject|@rpbSubject">
 			<data source="@id" name="id"/>
 		</combine>
+		
+		<combine name="~rdf:subject" value="${a}"
+			sameEntity="true" flushWith="@creatorCorporateBodyId">
+			<data source="@creatorCorporateBodyId" name="a"/>
+		</combine>
+		<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="${t} (${f})"
+			flushWith="@creatorCorporateBodyId" sameEntity="true">
+			<data source="2?[02468][-a]1.t" name="t"/>
+			<data source="2?[02468][-a]1.f" name="f"/>
+		</combine>
+		
 		<!-- Adding of notations for vocabularies -->
 		<combine name="~rdf:subject" value="${a}" sameEntity="true">
 			<data source="@subjectLinks|@GNDPersonId|@creatorCorporateBodyId|@contributorCorporateBodyId|@contributorPersonId" name="a"/>
