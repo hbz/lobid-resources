@@ -562,7 +562,8 @@
 						<data source="$[field][-abcefmn][12].p"/>
 						<data source="$[field][-abcefmn][12].c"/>
 					</concat>
-					<data source="$[field][-abcefmn][12].[apk]" name="a">
+					<data source="@altLabelKB"/>
+					<data source="$[field][-abcefmn][12].[aepk]" name="a">
 						<replace pattern="&gt;&gt;" with=""/>
 						<replace pattern="&lt;&lt;" with=""/>
 					</data>
@@ -4575,6 +4576,10 @@
 				<regexp match="\(DE-588\)(.*)" format="http://d-nb.info/gnd/${1}"/>
 				<sanitizeUrl></sanitizeUrl>
 			</data>
+		</combine>
+		<combine name="@altLabelKB" value="${k}. ${b}" sameEntity="true">
+			<data source="2?[13579]?[12].k" name="k"/>
+			<data source="2?[13579]?[12].b" name="b"/>
 		</combine>
 		<call-macro name="altLabel" type="CorporateBody" field="2?[13579]"/>
 		<combine name="~rdf:subject" value="${a}" flushWith="@altLabelCorporateBody">
