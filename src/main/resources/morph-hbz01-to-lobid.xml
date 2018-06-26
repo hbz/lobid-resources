@@ -500,12 +500,6 @@
 				<data source="@concatComplexSubjectRswkId$[field]" name="subject"/>
 			</combine>
 		</macro>
-		<macro name="setBackRdfSubjectForSubjectChainLabel">
-			<combine name="~rdf:subject" value="$[ns-lobid-resource]${id}#!">
-				<data source="@concatComplexSubjectRswkId$[field]"/>
-				<data source="@id" name="id"/>
-			</combine>
-		</macro>
 		<macro name="setSubjectChainInLabel">
 			<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="${a}"
 				flushWith="@concatComplexSubjectRswkId$[field]">
@@ -5034,14 +5028,14 @@
 		<call-macro name="subjectRswkIdSetRdfSubject" field="902" indicator2="2"/>
 		<call-macro name="subjectRswkIdSetType" field="902" indicator2="2"/>
 		<call-macro name="complexSubjectRswkId" field="902" indicator2="2"/>
-		
+
 		<call-macro name="setRdfSubjectComplexSubjectRswkId" field="902-1"/>
 		<call-macro name="setSubjectChainInLabel" field="902-1"/>
-		<call-macro name="setBackRdfSubjectForSubjectChainLabel" field="902-1"/>
-		
+		<call-macro name="setBackRdfSubject" field="@concatComplexSubjectRswkId902-1"/>
+
 		<call-macro name="setRdfSubjectComplexSubjectRswkId" field="902-2"/>
 		<call-macro name="setSubjectChainInLabel" field="902-2"/>
-		<call-macro name="setBackRdfSubjectForSubjectChainLabel" field="902-2"/>
+		<call-macro name="setBackRdfSubject" field="@concatComplexSubjectRswkId902-2"/>
 
 
 		<call-macro name="doubledPreferredNameSubjectChain" field="907"/>
@@ -5071,15 +5065,15 @@
 		<call-macro name="subjectRswkIdSetType" field="907" indicator2="2"/>
 		<call-macro name="complexSubjectRswkId" field="907" indicator2="2"/>
 
-		
+
 		<call-macro name="setRdfSubjectComplexSubjectRswkId" field="907-1"/>
 		<call-macro name="setSubjectChainInLabel" field="907-1"/>
-		<call-macro name="setBackRdfSubjectForSubjectChainLabel" field="907-1"/>
+		<call-macro name="setBackRdfSubject" field="@concatComplexSubjectRswkId907-1"/>
 		<call-macro name="setRdfSubjectComplexSubjectRswkId" field="907-2"/>
 		<call-macro name="setSubjectChainInLabel" field="907-2"/>
-		<call-macro name="setBackRdfSubjectForSubjectChainLabel" field="907-2"/>
-		
-		
+		<call-macro name="setBackRdfSubject" field="@concatComplexSubjectRswkId907-2"/>
+
+
 		<call-macro name="doubledPreferredNameSubjectChain" field="912"/>
 		<call-macro name="nwbibComplexSubjectRswkLabel" field="912"/>
 		<call-macro name="makeNwbibComplexSubjectId" field="912"/>
@@ -5109,12 +5103,12 @@
 
 		<call-macro name="setRdfSubjectComplexSubjectRswkId" field="912-1"/>
 		<call-macro name="setSubjectChainInLabel" field="912-1"/>
-		<call-macro name="setBackRdfSubjectForSubjectChainLabel" field="912-1"/>
+		<call-macro name="setBackRdfSubject" field="@concatComplexSubjectRswkId912-1"/>
 		<call-macro name="setRdfSubjectComplexSubjectRswkId" field="912-2"/>
 		<call-macro name="setSubjectChainInLabel" field="912-2"/>
-		<call-macro name="setBackRdfSubjectForSubjectChainLabel" field="912-2"/>
-		
-		
+		<call-macro name="setBackRdfSubject" field="@concatComplexSubjectRswkId912-2"/>
+
+
 		<call-macro name="doubledPreferredNameSubjectChain" field="917"/>
 		<call-macro name="nwbibComplexSubjectRswkLabel" field="917"/>
 		<call-macro name="makeNwbibComplexSubjectId" field="917"/>
@@ -5144,10 +5138,10 @@
 
 		<call-macro name="setRdfSubjectComplexSubjectRswkId" field="917-1"/>
 		<call-macro name="setSubjectChainInLabel" field="917-1"/>
-		<call-macro name="setBackRdfSubjectForSubjectChainLabel" field="917-1"/>
+		<call-macro name="setBackRdfSubject" field="@concatComplexSubjectRswkId917-1"/>
 		<call-macro name="setRdfSubjectComplexSubjectRswkId" field="917-2"/>
 		<call-macro name="setSubjectChainInLabel" field="917-2"/>
-		<call-macro name="setBackRdfSubjectForSubjectChainLabel" field="917-2"/>
+		<call-macro name="setBackRdfSubject" field="@concatComplexSubjectRswkId917-2"/>
 
 
 		<call-macro name="doubledPreferredNameSubjectChain" field="922"/>
@@ -5179,10 +5173,10 @@
 
 		<call-macro name="setRdfSubjectComplexSubjectRswkId" field="922-1"/>
 		<call-macro name="setSubjectChainInLabel" field="922-1"/>
-		<call-macro name="setBackRdfSubjectForSubjectChainLabel" field="922-1"/>
+		<call-macro name="setBackRdfSubject" field="@concatComplexSubjectRswkId922-1"/>
 		<call-macro name="setRdfSubjectComplexSubjectRswkId" field="922-2"/>
 		<call-macro name="setSubjectChainInLabel" field="922-2"/>
-		<call-macro name="setBackRdfSubjectForSubjectChainLabel" field="922-2"/>
+		<call-macro name="setBackRdfSubject" field="@concatComplexSubjectRswkId922-2"/>
 		
 		
 		<call-macro name="doubledPreferredNameSubjectChain" field="927"/>
@@ -5214,12 +5208,12 @@
 
 		<call-macro name="setRdfSubjectComplexSubjectRswkId" field="927-1"/>
 		<call-macro name="setSubjectChainInLabel" field="927-1"/>
-		<call-macro name="setBackRdfSubjectForSubjectChainLabel" field="927-1"/>
+		<call-macro name="setBackRdfSubject" field="@concatComplexSubjectRswkId927-1"/>
 		<call-macro name="setRdfSubjectComplexSubjectRswkId" field="927-2"/>
 		<call-macro name="setSubjectChainInLabel" field="927-2"/>
-		<call-macro name="setBackRdfSubjectForSubjectChainLabel" field="927-2"/>
-		
-		
+		<call-macro name="setBackRdfSubject" field="@concatComplexSubjectRswkId927-2"/>
+
+
 		<call-macro name="doubledPreferredNameSubjectChain" field="932"/>
 		<call-macro name="nwbibComplexSubjectRswkLabel" field="932"/>
 		<call-macro name="makeNwbibComplexSubjectId" field="932"/>
@@ -5249,12 +5243,12 @@
 
 		<call-macro name="setRdfSubjectComplexSubjectRswkId" field="932-1"/>
 		<call-macro name="setSubjectChainInLabel" field="932-1"/>
-		<call-macro name="setBackRdfSubjectForSubjectChainLabel" field="932-1"/>
+		<call-macro name="setBackRdfSubject" field="@concatComplexSubjectRswkId932-1"/>
 		<call-macro name="setRdfSubjectComplexSubjectRswkId" field="932-2"/>
 		<call-macro name="setSubjectChainInLabel" field="932-2"/>
-		<call-macro name="setBackRdfSubjectForSubjectChainLabel" field="932-2"/>
-		
-		
+		<call-macro name="setBackRdfSubject" field="@concatComplexSubjectRswkId932-2"/>
+
+
 		<call-macro name="doubledPreferredNameSubjectChain" field="937"/>
 		<call-macro name="nwbibComplexSubjectRswkLabel" field="937"/>
 		<call-macro name="makeNwbibComplexSubjectId" field="937"/>
@@ -5284,12 +5278,12 @@
 
 		<call-macro name="setRdfSubjectComplexSubjectRswkId" field="937-1"/>
 		<call-macro name="setSubjectChainInLabel" field="937-1"/>
-		<call-macro name="setBackRdfSubjectForSubjectChainLabel" field="937-1"/>
+		<call-macro name="setBackRdfSubject" field="@concatComplexSubjectRswkId937-1"/>
 		<call-macro name="setRdfSubjectComplexSubjectRswkId" field="937-2"/>
 		<call-macro name="setSubjectChainInLabel" field="937-2"/>
-		<call-macro name="setBackRdfSubjectForSubjectChainLabel" field="937-2"/>
-		
-		
+		<call-macro name="setBackRdfSubject" field="@concatComplexSubjectRswkId937-2"/>
+
+
 		<call-macro name="doubledPreferredNameSubjectChain" field="942"/>
 		<call-macro name="nwbibComplexSubjectRswkLabel" field="942"/>
 		<call-macro name="makeNwbibComplexSubjectId" field="942"/>
@@ -5319,12 +5313,12 @@
 
 		<call-macro name="setRdfSubjectComplexSubjectRswkId" field="942-1"/>
 		<call-macro name="setSubjectChainInLabel" field="942-1"/>
-		<call-macro name="setBackRdfSubjectForSubjectChainLabel" field="942-1"/>
+		<call-macro name="setBackRdfSubject" field="@concatComplexSubjectRswkId942-1"/>
 		<call-macro name="setRdfSubjectComplexSubjectRswkId" field="942-2"/>
 		<call-macro name="setSubjectChainInLabel" field="942-2"/>
-		<call-macro name="setBackRdfSubjectForSubjectChainLabel" field="942-2"/>
-		
-		
+		<call-macro name="setBackRdfSubject" field="@concatComplexSubjectRswkId942-2"/>
+
+
 		<call-macro name="doubledPreferredNameSubjectChain" field="947"/>
 		<call-macro name="nwbibComplexSubjectRswkLabel" field="947"/>
 		<call-macro name="makeNwbibComplexSubjectId" field="947"/>
@@ -5351,13 +5345,13 @@
 		<call-macro name="subjectRswkIdSetRdfSubject" field="947" indicator2="2"/>
 		<call-macro name="subjectRswkIdSetType" field="947" indicator2="2"/>
 		<call-macro name="complexSubjectRswkId" field="947" indicator2="2"/>
-		
+
 		<call-macro name="setRdfSubjectComplexSubjectRswkId" field="947-1"/>
 		<call-macro name="setSubjectChainInLabel" field="947-1"/>
-		<call-macro name="setBackRdfSubjectForSubjectChainLabel" field="947-1"/>
+		<call-macro name="setBackRdfSubject" field="@concatComplexSubjectRswkId947-1"/>
 		<call-macro name="setRdfSubjectComplexSubjectRswkId" field="947-2"/>
 		<call-macro name="setSubjectChainInLabel" field="947-2"/>
-		<call-macro name="setBackRdfSubjectForSubjectChainLabel" field="947-2"/>
+		<call-macro name="setBackRdfSubject" field="@concatComplexSubjectRswkId947-2"/>
 
 		<!-- add type person if no title or family -->
 		<combine name="~rdf:subject" value="${a}" sameEntity="true">
