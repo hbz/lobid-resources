@@ -557,11 +557,14 @@
 		<macro name="altLabel">
 			<combine name="@altLabel$[type]" value="${a}" flushWith="$[field]??">
 				<choose name="a" flushWith="$[field]??">
-					<data source="@preferredNameConcatEventEDC|@preferredNameConcatEventENDC" name="a"/>
+					<data source="@preferredNameConcatEventENDC"/>
+					<data source="@preferredNameConcatEventEDC"/>
+					<data source="@altLabelEC"/>
 					<concat delimiter=", " name="a" sameEntity="true" flushWith="$[field][-abcefmn][12].c">
 						<data source="$[field][-abcefmn][12].p"/>
 						<data source="$[field][-abcefmn][12].c"/>
 					</concat>
+					<data source="@altLabelEBH"/>
 					<data source="@altLabelKB"/>
 					<data source="$[field][-abcefmn][12].[aepk]" name="a">
 						<replace pattern="&gt;&gt;" with=""/>
@@ -3218,13 +3221,13 @@
 			<data source="@id" name="id"/>
 		</combine>
 		<data source="[29]??[-abcfep][12].e" name="@preferredNameConcatEventE"/>
-		<combine name="@preferredNameConcatEventEDC" value="${e}, ${d}, ${c}"
+		<combine name="@preferredNameConcatEventEDC" value="${e} (${d} : ${c})"
 			sameEntity="true">
 			<data source="@preferredNameConcatEventE" name="e"/>
 			<data source="[29]??[-abcfep][12].d" name="d"/>
 			<data source="[29]??[-abcfep][12].c" name="c"/>
 		</combine>
-		<combine name="@preferredNameConcatEventENDC" value="${n} ${e}, ${d}, ${c}"
+		<combine name="@preferredNameConcatEventENDC" value="${e} (${n} : ${d} : ${c})"
 			sameEntity="true">
 			<data source="[29]??[-abcfep][12].n" name="n"/>
 			<data source="[29]??[-abcfep][12].e" name="e"/>
@@ -4580,6 +4583,15 @@
 		<combine name="@altLabelKB" value="${k}. ${b}" sameEntity="true">
 			<data source="2?[13579]?[12].k" name="k"/>
 			<data source="2?[13579]?[12].b" name="b"/>
+		</combine>
+		<combine name="@altLabelEBH" value="${e}. ${b} (${h})" sameEntity="true">
+			<data source="2?[13579]?[12].e" name="e"/>
+			<data source="2?[13579]?[12].b" name="b"/>
+			<data source="2?[13579]?[12].h" name="h"/>
+		</combine>
+		<combine name="@altLabelEC" value="${e} (${c})" sameEntity="true">
+			<data source="2?[13579]?[12].e" name="e"/>
+			<data source="2?[13579]?[12].c" name="c"/>
 		</combine>
 		<call-macro name="altLabel" type="CorporateBody" field="2?[13579]"/>
 		<combine name="~rdf:subject" value="${a}" flushWith="@altLabelCorporateBody">
