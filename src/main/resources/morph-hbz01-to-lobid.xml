@@ -1026,9 +1026,7 @@
 		<macro name="setCreatorCorporateBodyLabelInAgent">
 			<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="${a}"
 				flushWith="@agentId$[field]">
-				<data
-					source="@creatorCorporateBodyLabelPA$[field]|@nameOfCreatingCorporateBodyG$[field]|@preferredNameConcatEventE$[field]"
-					name="a"/>
+				<data source="$[field]-[-12].a" name="a"/>
 			</combine>
 		</macro>
 		<macro name="setContributorCorporateBodyLabelInAgent">
@@ -3234,6 +3232,13 @@
 			<data source="[29]??[-abcfep][12].d" name="d"/>
 			<data source="[29]??[-abcfep][12].c" name="c"/>
 		</combine>
+		<combine name="@preferredNameConcatEventEHDC" value="${e} (${h} : ${d} : ${c})"
+			sameEntity="true">
+			<data source="[29]??[-abcfep][12].e" name="e"/>
+			<data source="[29]??[-abcfep][12].h" name="h"/>
+			<data source="[29]??[-abcfep][12].d" name="d"/>
+			<data source="[29]??[-abcfep][12].c" name="c"/>
+		</combine>
 		<call-macro name="setContributingCorporateBodyId" field="200"/>
 		<call-macro name="setContributingCorporateBodyId" field="204"/>
 		<call-macro name="setContributingCorporateBodyId" field="208"/>
@@ -4833,6 +4838,7 @@
 		<choose name="@preferredName" sameEntity="true"
 			flushWith="@subjectLinks|@preferredNameP|@GNDPersonId|@contributorPersonId|@creatorCorporateBodyId|@contributorCorporateBodyId">
 			<data source="@preferredNameConcatEventENDC"/>
+			<data source="@preferredNameConcatEventEHDC"/>
 			<data source="@preferredNameConcatEventEDC"/>
 			<data source="@preferredNameConcatEventE"/>
 			<data source="@nameOfCreatingCorporateBody"/>
