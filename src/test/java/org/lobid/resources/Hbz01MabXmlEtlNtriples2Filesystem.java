@@ -41,9 +41,9 @@ public final class Hbz01MabXmlEtlNtriples2Filesystem {
 	@BeforeClass
 	public static void removeTestFiles() {
 		try {
+			deleteFilesRecursively("input");
 			if (System.getProperty("generateTestData", "false").equals("true")) {
 				deleteFilesRecursively("jsonld");
-				deleteFilesRecursively("input");
 				deleteFilesRecursively("output");
 				deleteFilesRecursively("reverseTest");
 				deleteFilesRecursively("jsonld-deletions");
