@@ -750,6 +750,18 @@
 				</data>
 			</combine>
 		</macro>
+		<macro name="setAlternativeTitleWithoutAddition">
+			<combine name="http://purl.org/dc/terms/alternative" value="${a}">
+				<if>
+					<none>
+						<data source="$[excludeField]"/>
+					</none>
+				</if>
+				<data source="$[field]" name="a">
+					<replace pattern="^http" with="Siehe: http" />
+				</data>
+			</combine>
+		</macro>
 		<macro name="setLabelVariableForPersonsWithoutGNDId">
 			<combine name="@preferredNameForThePerson$[field]" value="${a}"
 				flushWith="$[field][-amn][12].9|$[field][bcefp][1234].9|$[field][-aemn][12].[pa]|$[field][bcf]1.[pa]">
@@ -1715,9 +1727,60 @@
 		</combine>
 		<!-- deliberatley not everything linked with OR '|' because of performance problems -->
 		<data source="335[-abcd][-1].a" name="@otherTitle"/>
-		<data source="34[01234567][-ab][-1].[ab]|370[abc]1.a|375e[-12].a|504-1.a" name="http://purl.org/dc/terms/alternative">
+		<data source="370[abc]1.a|375[-e][-12].a|504-1.a" name="http://purl.org/dc/terms/alternative">
 		  <replace pattern="^http" with="Siehe: http" />
 		</data>
+
+		<call-macro name="setAlternativeTitleWithoutAddition" excludeField="343[-ab][-1].[ab]"
+			field="34[01][-ab][-1].[ab]"/>
+		<call-macro name="setAlternativeTitleWithoutAddition" excludeField="347[-ab][-1].[ab]"
+			field="34[45][-ab][-1].[ab]"/>
+		<call-macro name="setAlternativeTitleWithoutAddition" excludeField="351[-ab][-1].[ab]"
+			field="34[89][-ab][-1].[ab]"/>
+		<call-macro name="setAlternativeTitleWithoutAddition" excludeField="355[-ab][-1].[ab]"
+			field="35[23][-ab][-1].[ab]"/>
+		<!-- add alternative title with addition -->
+		<combine name="@betterParallelTitle340or341" value="${a}">
+			<choose name="a">
+				<data source="340[-ab][-1].[ab]"/>
+				<data source="341[-ab][-1].[ab]"/>
+			</choose>
+		</combine>
+		<combine name="http://purl.org/dc/terms/alternative" value="${a}. ${b}">
+			<data source="@betterParallelTitle340or341" name="a"/>
+			<data source="343[-ab]1.[ab]" name="b"/>
+		</combine>
+		<combine name="@betterParallelTitle344or345" value="${a}">
+			<choose name="a">
+				<data source="344[-ab][-1].[ab]"/>
+				<data source="345[-ab][-1].[ab]"/>
+			</choose>
+		</combine>
+		<combine name="http://purl.org/dc/terms/alternative" value="${a}. ${b}">
+			<data source="@betterParallelTitle344or345" name="a"/>
+			<data source="347[-ab]1.[ab]" name="b"/>
+		</combine>
+		<combine name="@betterParallelTitle348or349" value="${a}">
+			<choose name="a">
+				<data source="348[-ab][-1].[ab]"/>
+				<data source="349[-ab][-1].[ab]"/>
+			</choose>
+		</combine>
+		<combine name="http://purl.org/dc/terms/alternative" value="${a}. ${b}">
+			<data source="@betterParallelTitle348or349" name="a"/>
+			<data source="351[-ab]1.[ab]" name="b"/>
+		</combine>
+		<combine name="@betterParallelTitle352or353" value="${a}">
+			<choose name="a">
+				<data source="352[-ab][-1].[ab]"/>
+				<data source="353[-ab][-1].[ab]"/>
+			</choose>
+		</combine>
+		<combine name="http://purl.org/dc/terms/alternative" value="${a}. ${b}">
+			<data source="@betterParallelTitle352or353" name="a"/>
+			<data source="355[-ab]1.[ab]" name="b"/>
+		</combine>
+
 		<data source="376[-adb][-1].[ad]" name="$[ns-bibo]shortTitle"/>
 		<data source="@otherTitle" name="http://rdaregistry.info/Elements/u/P60493">
 			<replace pattern="&gt;" with=""/>
