@@ -3138,12 +3138,12 @@
 			<data source="@nameOfCreatingCorporateBodyK" name="k"/>
 			<data source="@nameOfCreatingCorporateBodyH" name="h"/>
 		</combine>
-		<combine name="@nameOfCreatingCorporateBodyB" value="${a}" sameEntity="true">
+		<combine name="@nameOfCreatingCorporateBodyB" value="${a}">
 			<concat delimiter=", " name="a" flushWith="@creatorCorporateBodyId|@subjectLinks">
 				<data source="[29]?[02468][-a][12].b"/>
 			</concat>
 		</combine>
-		<combine name="@nameOfCreatingCorporateBodyKB" value="${k}. ${b}" sameEntity="true">
+		<combine name="@nameOfCreatingCorporateBodyKB" value="${k}. ${b}">
 			<data source="@nameOfCreatingCorporateBodyB" name="b"/>
 			<data source="@nameOfCreatingCorporateBodyK" name="k"/>
 		</combine>
@@ -3153,7 +3153,7 @@
 			<data source="@nameOfCreatingCorporateBodyH" name="h"/>
 			<data source="@nameOfCreatingCorporateBodyK" name="k"/>
 		</combine>
-		<combine name="@nameOfCreatingCorporateBody" value="${a}" sameEntity="true"
+		<combine name="@nameOfCreatingCorporateBody" value="${a}"
 			flushWith="@creatorCorporateBodyId"> <!-- no Verweisungsformen (aka alternate labels) -->
 			<choose name="a" flushWith="@creatorCorporateBodyId">
 				<data source="@nameOfCreatingCorporateBodyKHB"/>
@@ -4614,7 +4614,7 @@
 		<!-- # Create subgraph: temporarily set new subjects or contributor id -->
 		<!-- ########### -->
 		<data name="~rdf:subject"
-			source="@bnodeCreatorPersonLabel|@contributorPersonBnodeOrId|@contributorCorporateBodyBnodeOrId|@subjectLinks|@GNDPersonId|@contributorPersonId|@contributorCorporateBodyId"/>
+			source="@bnodeCreatorPersonLabel|@contributorPersonBnodeOrId|@contributorCorporateBodyBnodeOrId|@subjectLinks|@GNDPersonId|@contributorPersonId|@creatorCorporateBodyId|@contributorCorporateBodyId"/>
 		<!-- subjects which are persons (and thus the date is to be ignored, see hbz/lobid#244 ) -->
 		<combine name="@preferredNamePersonConcatSubject" value="${a}" sameEntity="true"
 			flushWith="@GNDPersonId|@contributorPersonId|@preferredNameP">
@@ -4831,7 +4831,7 @@
 			</choose>
 		</combine>
 		<choose name="@preferredName" sameEntity="true"
-			flushWith="@subjectLinks|@preferredNameP|@GNDPersonId|@contributorPersonId|@contributorCorporateBodyId">
+			flushWith="@subjectLinks|@preferredNameP|@GNDPersonId|@contributorPersonId|@creatorCorporateBodyId|@contributorCorporateBodyId">
 			<data source="@preferredNameConcatEventENDC"/>
 			<data source="@preferredNameConcatEventEDC"/>
 			<data source="@preferredNameConcatEventE"/>
