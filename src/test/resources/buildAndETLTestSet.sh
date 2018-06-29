@@ -15,15 +15,18 @@ PROJECT_ROOT=$WORKING_DIR/../../..
 TEST_FILE="test.tar.bz2"
 
 # build test set:
-cd $PROJECT_ROOT
-mvn clean assembly:assembly -DdescriptorId=jar-with-dependencies -DskipTests
-mvn exec:java -Dexec.mainClass="org.lobid.resources.run.DownloadTestSet"
-cd $WORKING_DIR/$DATA_DIR
-tar xfj $WORKING_DIR/hbz01XmlClobs.tar.bz2
-cd $WORKING_DIR
-rm $TEST_FILE || true
-tar cfj $TEST_FILE $DATA_DIR
+function buildTestSet() {
+	cd $PROJECT_ROOT
+	mvn clean assembly:assembly -DdescriptorId=jar-with-dependencies -DskipTests
+	mvn exec:java -Dexec.mainClass="org.lobid.resources.run.DownloadTestSet"
+	cd $WORKING_DIR/$DATA_DIR
+	tar xfj $WORKING_DIR/hbz01XmlClobs.tar.bz2
+	cd $WORKING_DIR
+	rm $TEST_FILE || true
+	tar cfj $TEST_FILE $DATA_DIR
+}
 
+buildTestSet
 # index test resources:
 cd $PROJECT_ROOT
 mkdir -p log
