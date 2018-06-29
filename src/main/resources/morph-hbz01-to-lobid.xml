@@ -2643,6 +2643,11 @@
 			<data source="@processionBnode"/>
 			<data source="@id" name="a"/>
 		</combine>
+		<combine name="http://schema.org/license" value="${a}" flushWith="@id">
+			<data source="@id" name="a">
+				<constant value="http://creativecommons.org/publicdomain/zero/1.0"/>
+			</data>
+		</combine>
 		<combine name="http://www.w3.org/2000/01/rdf-schema#label"
 			value="Webseite der hbz-Ressource ${a}" flushWith="@id">
 			<data source="@processionBnode"/>
