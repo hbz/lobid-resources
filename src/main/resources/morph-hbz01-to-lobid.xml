@@ -551,12 +551,16 @@
 		<macro name="altLabel">
 			<combine name="@altLabel$[type]" value="${a}" flushWith="$[field]??">
 				<choose name="a" flushWith="$[field]??">
-					<data source="@preferredNameConcatEventEDC|@preferredNameConcatEventENDC" name="a"/>
+					<data source="@preferredNameConcatEventENDC"/>
+					<data source="@preferredNameConcatEventEDC"/>
+					<data source="@altLabelEC"/>
 					<concat delimiter=", " name="a" sameEntity="true" flushWith="$[field][-abcefmn][12].c">
 						<data source="$[field][-abcefmn][12].p"/>
 						<data source="$[field][-abcefmn][12].c"/>
 					</concat>
-					<data source="$[field][-abcefmn][12].[apk]" name="a">
+					<data source="@altLabelEBH"/>
+					<data source="@altLabelKB"/>
+					<data source="$[field][-abcefmn][12].[aepk]" name="a">
 						<replace pattern="&gt;&gt;" with=""/>
 						<replace pattern="&lt;&lt;" with=""/>
 					</data>
@@ -1028,9 +1032,7 @@
 		<macro name="setCreatorCorporateBodyLabelInAgent">
 			<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="${a}"
 				flushWith="@agentId$[field]">
-				<data
-					source="@creatorCorporateBodyLabelPA$[field]|@nameOfCreatingCorporateBodyG$[field]|@preferredNameConcatEventE$[field]"
-					name="a"/>
+				<data source="$[field]-[-12].a" name="a"/>
 			</combine>
 		</macro>
 		<macro name="setContributorCorporateBodyLabelInAgent">
@@ -3196,12 +3198,12 @@
 			<data source="@nameOfCreatingCorporateBodyK" name="k"/>
 			<data source="@nameOfCreatingCorporateBodyH" name="h"/>
 		</combine>
-		<combine name="@nameOfCreatingCorporateBodyB" value="${a}" sameEntity="true">
+		<combine name="@nameOfCreatingCorporateBodyB" value="${a}">
 			<concat delimiter=", " name="a" flushWith="@creatorCorporateBodyId|@subjectLinks">
 				<data source="[29]?[02468][-a][12].b"/>
 			</concat>
 		</combine>
-		<combine name="@nameOfCreatingCorporateBodyKB" value="${k}. ${b}" sameEntity="true">
+		<combine name="@nameOfCreatingCorporateBodyKB" value="${k}. ${b}">
 			<data source="@nameOfCreatingCorporateBodyB" name="b"/>
 			<data source="@nameOfCreatingCorporateBodyK" name="k"/>
 		</combine>
@@ -3211,7 +3213,7 @@
 			<data source="@nameOfCreatingCorporateBodyH" name="h"/>
 			<data source="@nameOfCreatingCorporateBodyK" name="k"/>
 		</combine>
-		<combine name="@nameOfCreatingCorporateBody" value="${a}" sameEntity="true"
+		<combine name="@nameOfCreatingCorporateBody" value="${a}"
 			flushWith="@creatorCorporateBodyId"> <!-- no Verweisungsformen (aka alternate labels) -->
 			<choose name="a" flushWith="@creatorCorporateBodyId">
 				<data source="@nameOfCreatingCorporateBodyKHB"/>
@@ -3279,16 +3281,23 @@
 			<data source="@id" name="id"/>
 		</combine>
 		<data source="[29]??[-abcfep][12].e" name="@preferredNameConcatEventE"/>
-		<combine name="@preferredNameConcatEventEDC" value="${e}, ${d}, ${c}"
+		<combine name="@preferredNameConcatEventEDC" value="${e} (${d} : ${c})"
 			sameEntity="true">
 			<data source="@preferredNameConcatEventE" name="e"/>
 			<data source="[29]??[-abcfep][12].d" name="d"/>
 			<data source="[29]??[-abcfep][12].c" name="c"/>
 		</combine>
-		<combine name="@preferredNameConcatEventENDC" value="${n} ${e}, ${d}, ${c}"
+		<combine name="@preferredNameConcatEventENDC" value="${e} (${n} : ${d} : ${c})"
 			sameEntity="true">
 			<data source="[29]??[-abcfep][12].n" name="n"/>
 			<data source="[29]??[-abcfep][12].e" name="e"/>
+			<data source="[29]??[-abcfep][12].d" name="d"/>
+			<data source="[29]??[-abcfep][12].c" name="c"/>
+		</combine>
+		<combine name="@preferredNameConcatEventEHDC" value="${e} (${h} : ${d} : ${c})"
+			sameEntity="true">
+			<data source="[29]??[-abcfep][12].e" name="e"/>
+			<data source="[29]??[-abcfep][12].h" name="h"/>
 			<data source="[29]??[-abcfep][12].d" name="d"/>
 			<data source="[29]??[-abcfep][12].c" name="c"/>
 		</combine>
@@ -4699,6 +4708,19 @@
 				<sanitizeUrl></sanitizeUrl>
 			</data>
 		</combine>
+		<combine name="@altLabelKB" value="${k}. ${b}" sameEntity="true">
+			<data source="2?[13579]?[12].k" name="k"/>
+			<data source="2?[13579]?[12].b" name="b"/>
+		</combine>
+		<combine name="@altLabelEBH" value="${e}. ${b} (${h})" sameEntity="true">
+			<data source="2?[13579]?[12].e" name="e"/>
+			<data source="2?[13579]?[12].b" name="b"/>
+			<data source="2?[13579]?[12].h" name="h"/>
+		</combine>
+		<combine name="@altLabelEC" value="${e} (${c})" sameEntity="true">
+			<data source="2?[13579]?[12].e" name="e"/>
+			<data source="2?[13579]?[12].c" name="c"/>
+		</combine>
 		<call-macro name="altLabel" type="CorporateBody" field="2?[13579]"/>
 		<combine name="~rdf:subject" value="${a}" flushWith="@altLabelCorporateBody">
 			<data source="2????.9" name="a">
@@ -4720,7 +4742,7 @@
 		<!-- # Create subgraph: temporarily set new subjects or contributor id -->
 		<!-- ########### -->
 		<data name="~rdf:subject"
-			source="@bnodeCreatorPersonLabel|@contributorPersonBnodeOrId|@contributorCorporateBodyBnodeOrId|@subjectLinks|@GNDPersonId|@contributorPersonId|@contributorCorporateBodyId"/>
+			source="@bnodeCreatorPersonLabel|@contributorPersonBnodeOrId|@contributorCorporateBodyBnodeOrId|@subjectLinks|@GNDPersonId|@contributorPersonId|@creatorCorporateBodyId|@contributorCorporateBodyId"/>
 		<!-- subjects which are persons (and thus the date is to be ignored, see hbz/lobid#244 ) -->
 		<combine name="@preferredNamePersonConcatSubject" value="${a}" sameEntity="true"
 			flushWith="@GNDPersonId|@contributorPersonId|@preferredNameP">
@@ -4937,8 +4959,9 @@
 			</choose>
 		</combine>
 		<choose name="@preferredName" sameEntity="true"
-			flushWith="@subjectLinks|@preferredNameP|@GNDPersonId|@contributorPersonId|@contributorCorporateBodyId">
+			flushWith="@subjectLinks|@preferredNameP|@GNDPersonId|@contributorPersonId|@creatorCorporateBodyId|@contributorCorporateBodyId">
 			<data source="@preferredNameConcatEventENDC"/>
+			<data source="@preferredNameConcatEventEHDC"/>
 			<data source="@preferredNameConcatEventEDC"/>
 			<data source="@preferredNameConcatEventE"/>
 			<data source="@nameOfCreatingCorporateBody"/>
