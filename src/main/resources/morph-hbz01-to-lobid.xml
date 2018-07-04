@@ -776,112 +776,128 @@
 				<choose name="a">
 					<!-- map literals to marc relator property -->
 					<data source="$[field]?[12].[b4]" name="a">
-						<regexp match="[dD]ars|^\[act\]$|^(act)$" format="http://id.loc.gov/vocabulary/relators/act"/>
+						<regexp match="[dD]ars|^\[act\]$|^act$" format="http://id.loc.gov/vocabulary/relators/act"/>
 					</data>
 					<data source="$[field]?[12].[b4]" name="a">
-						<regexp match="[hH]rsg|^\[edt\]$|^(edt)$" format="http://id.loc.gov/vocabulary/relators/edt"/>
+						<regexp match="[nN]ach|^\[aft\]$|^aft$" format="http://id.loc.gov/vocabulary/relators/aft"/>
 					</data>
 					<data source="$[field]?[12].[b4]" name="a">
-						<regexp match="[bB]egr" format="http://id.loc.gov/vocabulary/relators/org"/>
+						<regexp match="[vV]orl|^\[ant\]$|^ant$" format="http://id.loc.gov/vocabulary/relators/ant"/>
 					</data>
 					<data source="$[field]?[12].[b4]" name="a">
-						<regexp match="^\[isb\]$|^(isb)$" format="http://id.loc.gov/vocabulary/relators/isb"/>
+						<regexp match="[aA]rtist|Künstler|^\[art\]$|^art$" format="http://id.loc.gov/vocabulary/relators/art"/>
 					</data>
 					<data source="$[field]?[12].[b4]" name="a">
-						<regexp match="[rR]egi|^\[drt\]$|^(drt)$" format="http://id.loc.gov/vocabulary/relators/drt"/>
+						<regexp match="[vV]orw|^\[aui\]$|^aui$" format="http://id.loc.gov/vocabulary/relators/aui"/>
 					</data>
 					<data source="$[field]?[12].[b4]" name="a">
-						<regexp match="bers|^\[trl\]$|^(trl)$" format="http://id.loc.gov/vocabulary/relators/trl"/>
+						<regexp match="[dD]rehb|^\[aus\]$|^aus$" format="http://id.loc.gov/vocabulary/relators/aus"/>
+					</data>
+					<data source="$[field]?[12].[b4]" name="a">
+						<regexp match="[cC]horeogr" format="http://id.loc.gov/vocabulary/relators/chr"/>
+					</data>
+					<data source="$[field]?[12].[b4]" name="a">
+						<regexp match="[mM]itarb|^\[clb\]$|^clb$" format="http://id.loc.gov/vocabulary/relators/clb"/>
+					</data>
+					<data source="$[field]?[12].[b4]" name="a">
+						<regexp match="[bB]eitr|^\[ctb\]$|^ctb$|[mM]itarb" format="http://id.loc.gov/vocabulary/relators/ctb"/>
+					</data>
+					<data source="$[field]?[12].[b4]" name="a">
+						<regexp match="[kK]omp|^\[cmp\]$|^cmp$" format="http://id.loc.gov/vocabulary/relators/cmp"/>
+					</data>
+					<data source="$[field]?[12].[b4]" name="a">
+						<regexp match=".*[dD]ir|^\[cnd\]$|^cnd$|Chorleit" format="http://id.loc.gov/vocabulary/relators/cnd"/>
+					</data>
+					<data source="$[field]?[12].[b4]" name="a">
+						<regexp match="[kK]amera|^\[cng\]$|^cng$" format="http://id.loc.gov/vocabulary/relators/cng"/>
+					</data>
+					<data source="$[field]?[12].[b4]" name="a">
+						<regexp match="[sS]ammler|^\[col\]$|^col$" format="http://id.loc.gov/vocabulary/relators/col"/>
+					</data>
+					<data source="$[field]?[12].[b4]" name="a">
+						<regexp match="author|[tT]extverf|Verfasser|^cre$|^\[cre\]$" format="http://id.loc.gov/vocabulary/relators/cre"/>
+					</data>
+					<data source="$[field]?[12].[b4]" name="a">
+						<regexp match="Beitr" format="http://id.loc.gov/vocabulary/relators/ctb"/>
+					</data>
+					<data source="$[field]?[12].[b4]" name="a">
+						<regexp match="[kK]artogra|^\[ctg\]$|^ctg$" format="http://id.loc.gov/vocabulary/relators/ctg"/>
+					</data>
+					<data source="$[field]?[12].[b4]" name="a">
+						<regexp match="Tänzer" format="http://id.loc.gov/vocabulary/relators/dnc"/>
+					</data>
+					<data source="$[field]?[12].[b4]" name="a">
+						<regexp match="[rR]egi|^\[drt\]$|^drt$" format="http://id.loc.gov/vocabulary/relators/drt"/>
+					</data>
+					<data source="$[field]?[12].[b4]" name="a">
+						<regexp match="[wW]idmun|^\[dte\]$|^dte$" format="http://id.loc.gov/vocabulary/relators/dte"/>
+					</data>
+					<data source="$[field]?[12].[b4]" name="a">
+						<!-- <regexp match="[hH]rsg|^\[edt\]$|^edt$|editor|Herausg|[eE]d\." format="http://id.loc.gov/vocabulary/relators/edt"/> -->
+						<regexp match="[hH]rsg|^\[edt\]$|^edt$|editor|Herausg|^[eE]d\.$" format="http://id.loc.gov/vocabulary/relators/edt"/>
+					</data>
+					<data source="$[field]?[12].[b4]" name="a">
+						<regexp match="[sS]techer|^\[egr\]$|^egr$" format="http://id.loc.gov/vocabulary/relators/egr"/>
+					</data>
+					<data source="$[field]?[12].[b4]" name="a">
+						<regexp match="^\[hnr\]$|^hnr$|Widmungsempfänger" format="http://id.loc.gov/vocabulary/relators/hnr"/>
+					</data>
+					<data source="104f1.p" name="a">
+						<regexp match=".*" format="http://id.loc.gov/vocabulary/relators/hnr"/>
 					</data>
 					<data source="$[field]?[12].[b4]" name="a">
 						<regexp match="[iI]ll|[zZ]eichn" format="http://id.loc.gov/vocabulary/relators/ill"/>
 					</data>
 					<data source="$[field]?[12].[b4]" name="a">
-						<regexp match="[aA]rtist|^\[art\]$|^(art)$" format="http://id.loc.gov/vocabulary/relators/art"/>
+						<regexp match="^\[isb\]$|^isb$" format="http://id.loc.gov/vocabulary/relators/isb"/>
 					</data>
 					<data source="$[field]?[12].[b4]" name="a">
-						<regexp match="[mM]itarb|^\[clb\]$|^(clb)$" format="http://id.loc.gov/vocabulary/relators/clb"/>
+						<regexp match="[iI]nterviewter|^\[ive\]$|^ive$" format="http://id.loc.gov/vocabulary/relators/ive"/>
 					</data>
 					<data source="$[field]?[12].[b4]" name="a">
-						<regexp match=".*[oO]togr.*|^\[pht\]$|^(pht)$" format="http://id.loc.gov/vocabulary/relators/pht"/>
+						<regexp match="[iI]nterviewer|^\[ivr\]$|^ivr$" format="http://id.loc.gov/vocabulary/relators/ivr"/>
 					</data>
 					<data source="$[field]?[12].[b4]" name="a">
-						<regexp match=".*[dD]ir|^\[cnd\]$|^(cnd)$" format="http://id.loc.gov/vocabulary/relators/cnd"/>
+						<regexp match="^itr$|^\[itr\]$|[iI]nstr|[cC]embalo|Fagott|Flöte|(Gitarre|guitar)|(Harfe|harp)|Horn|(Klarinette|clarinet)|(Klavier|[pP]iano)|Kontrabass|Laute|Oboe|Org|Posaune|Saxophon|(Schlagzeug|drums)|Tromp|[vV]ioloncello|Violine" format="http://id.loc.gov/vocabulary/relators/itr"/>
 					</data>
 					<data source="$[field]?[12].[b4]" name="a">
-						<regexp match="[kK]omp|^\[cmp\]$|^(cmp)$" format="http://id.loc.gov/vocabulary/relators/cmp"/>
-					</data>
-					<data source="$[field]?[12].[b4]" name="a">
-						<regexp match="[vV]orw|^\[aui\]$|^(aui)$" format="http://id.loc.gov/vocabulary/relators/aui"/>
-					</data>
-					<data source="$[field]?[12].[b4]" name="a">
-						<regexp match="[lL]ibr" format="http://id.loc.gov/vocabulary/relators/lbt"/>
-					</data>
-					<data source="$[field]?[12].[b4]" name="a">
-						<regexp match="[dD]rehb|^\[aus\]$|^(aus)$" format="http://id.loc.gov/vocabulary/relators/aus"/>
-					</data>
-					<data source="$[field]?[12].[b4]" name="a">
-						<regexp match="[sS]ammler|^\[col\]$|^(col)$" format="http://id.loc.gov/vocabulary/relators/col"/>
-					</data>
-					<data source="$[field]?[12].[b4]" name="a">
-						<regexp match="[bB]eitr|^\[ctb\]$|^(ctb)$" format="http://id.loc.gov/vocabulary/relators/ctb"/>
-					</data>
-					<data source="$[field]?[12].[b4]" name="a">
-						<regexp match="[sS]precher" format="http://id.loc.gov/vocabulary/relators/spk"/>
-					</data>
-					<data source="$[field]?[12].[b4]" name="a">
-						<regexp match="[kK]amera|^\[cng\]$|^(cng)$" format="http://id.loc.gov/vocabulary/relators/cng"/>
-					</data>
-					<data source="$[field]?[12].[b4]" name="a">
-						<regexp match="[vV]orl|^\[ant\]$|^(ant)$" format="http://id.loc.gov/vocabulary/relators/ant"/>
-					</data>
-					<data source="$[field]?[12].[b4]" name="a">
-						<regexp match="[gG]esang|sng|Alt|Bariton|Bass|Baß|Sopr|Ten" format="http://id.loc.gov/vocabulary/relators/sng"/>
-					</data>
-					<data source="$[field]?[12].[b4]" name="a">
-						<regexp match="[iI]nterviewer|^\[ivr\]$|^(ivr)$" format="http://id.loc.gov/vocabulary/relators/ivr"/>
-					</data>
-					<data source="$[field]?[12].[b4]" name="a">
-						<regexp match="[iI]nterviewter|^\[ive\]$|^(ive)$" format="http://id.loc.gov/vocabulary/relators/ive"/>
-					</data>
-					<data source="$[field]?[12].[b4]" name="a">
-						<regexp match="[kK]artogra|^\[ctg\]$|^(ctg)$" format="http://id.loc.gov/vocabulary/relators/ctg"/>
-					</data>
-					<data source="$[field]?[12].[b4]" name="a">
-						<regexp match="[mM]usi|^\[mus\]$|^(mus)$" format="http://id.loc.gov/vocabulary/relators/mus"/>
-					</data>
-					<data source="$[field]?[12].[b4]" name="a">
-						<regexp match="[iI]nstr|Harfe|Gitarre|Klavier|Org" format="http://id.loc.gov/vocabulary/relators/itr"/>
-					</data>
-					<data source="$[field]?[12].[b4]" name="a">
-						<regexp match="[nN]ach|^\[aft\]$|^(aft)$" format="http://id.loc.gov/vocabulary/relators/aft"/>
+						<regexp match="[lL]ibr|^lbt$|^\[lbt\]$" format="http://id.loc.gov/vocabulary/relators/lbt"/>
 					</data>
 					<data source="$[field]?[12].[b4]" name="a">
 						<regexp match="[lL]tg" format="http://id.loc.gov/vocabulary/relators/led"/>
 					</data>
 					<data source="$[field]?[12].[b4]" name="a">
-						<regexp match="[pP]rod|^\[pro\]$|^(pro)$" format="http://id.loc.gov/vocabulary/relators/pro"/>
+						<regexp match="Moderation" format="http://id.loc.gov/vocabulary/relators/mod"/>
 					</data>
 					<data source="$[field]?[12].[b4]" name="a">
-						<regexp match="[sS]techer|^\[egr\]$|^(egr)$" format="http://id.loc.gov/vocabulary/relators/egr"/>
+						<regexp match="[mM]usi|^\[mus\]$|^mus$" format="http://id.loc.gov/vocabulary/relators/mus"/>
 					</data>
 					<data source="$[field]?[12].[b4]" name="a">
-						<regexp match="[wW]idmun|^\[dte\]$|^(dte)$" format="http://id.loc.gov/vocabulary/relators/dte"/>
+						<regexp match="[bB]egr" format="http://id.loc.gov/vocabulary/relators/org"/>
+					</data>
+					<data source="$[field]?[12].[b4]" name="a">
+						<regexp match=".*[oO]togr.*|^\[pht\]$|^pht$" format="http://id.loc.gov/vocabulary/relators/pht"/>
+					</data>
+					<data source="$[field]?[12].[b4]" name="a">
+						<regexp match="[iI]nterpr|^\[prf\]$|^prf$" format="http://id.loc.gov/vocabulary/relators/prf"/>
+					</data>
+					<data source="$[field]?[12].[b4]" name="a">
+						<regexp match="[pP]rod|^\[pro\]$|^pro$" format="http://id.loc.gov/vocabulary/relators/pro"/>
 					</data>
 					<data source="$[field]?[12].[b4]" name="a">
 						<regexp match="[rR]ed" format="http://id.loc.gov/vocabulary/relators/red"/>
 					</data>
 					<data source="$[field]?[12].[b4]" name="a">
-						<regexp match="^\[hnr\]$|^(hnr)$" format="http://id.loc.gov/vocabulary/relators/hnr"/>
+						<regexp match="[gG]esang|^sng$|^\[sng\]$|Alt|Bariton|Bass|Baß|Counterten|Mezzosopr|Sopr|Ten" format="http://id.loc.gov/vocabulary/relators/sng"/>
 					</data>
-					<data source="104f1.p" name="a">
-						<regexp match=".*" format="http://id.loc.gov/vocabulary/relators/hnr"/>
+					<data source="$[field]?[12].[b4]" name="a">
+						<regexp match="[sS]precher" format="http://id.loc.gov/vocabulary/relators/spk"/>
+					</data>
+					<data source="$[field]?[12].[b4]" name="a">
+						<regexp match="bers|^\[trl\]$|^trl$" format="http://id.loc.gov/vocabulary/relators/trl"/>
 					</data>
 					<data source="1??e[1234].p" name="a">  <!-- see #150 -->
 						<regexp match=".*" format="http://id.loc.gov/vocabulary/relators/prf"/>
-					</data>
-					<data source="$[field]?[12].[b4]" name="a">
-						<regexp match="[iI]nterpr|^\[prf\]$|^(prf)$" format="http://id.loc.gov/vocabulary/relators/prf"/>
 					</data>
 					<!-- default -->
 					<data source="$[field][bcf][12].[pa]" name="a">
