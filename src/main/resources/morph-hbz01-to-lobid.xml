@@ -361,8 +361,11 @@
 					<data source="@preferredNamePersonConcatSubject"/>
 					<data source="@preferredNameConcatTitleWithNumberingSubject"/>
 					<data source="@preferredNameConcatTitleWithoutNumberingSubject"/>
+					<concat delimiter=" | " name="a" flushWith="$[field_1]??">
+						<data source="$[field_1]-[-1].a"/>
+					</concat>
 					<concat delimiter="" name="a" flushWith="$[field_1]??|$[field_2]-1.a">
-						<data source="$[field_1]-[-1].[abfghknpskxz-]">
+						<data source="$[field_1]-[-1].[bfghknpskxz-]">
 							<replace pattern="^" with=", "/>
 						</data>
 						<concat delimiter="" name="e" flushWith="$[field_1]??">
@@ -434,6 +437,7 @@
 					<data source="@preferredNameSubjectChain$[field]-1">
 						<replace pattern="^, " with=""/>
 						<replace pattern=", $" with=""/>
+						<!-- <replace pattern=", " with=" | "/> -->
 					</data>
 				</concat>
 			</combine>
@@ -444,6 +448,7 @@
 					<data source="@preferredNameSubjectChain$[field]-2">
 						<replace pattern="^, " with=""/>
 						<replace pattern=", $" with=""/>
+						<!-- <replace pattern=", " with=" | "/> -->
 					</data>
 				</concat>
 			</combine>
@@ -5062,6 +5067,7 @@
 		<call-macro name="subject-chain-perm1" field="947"/>
 		<call-macro name="subject-chain-name2" field_1="947" field_2="948"/>
 		<call-macro name="subject-chain-perm2" field="947"/>
+
 
 		<call-macro name="doubledPreferredNameSubjectChain" field="902"/>
 		<call-macro name="nwbibComplexSubjectRswkLabel" field="902"/>
