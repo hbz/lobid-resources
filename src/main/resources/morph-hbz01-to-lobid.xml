@@ -361,8 +361,11 @@
 					<data source="@preferredNamePersonConcatSubject"/>
 					<data source="@preferredNameConcatTitleWithNumberingSubject"/>
 					<data source="@preferredNameConcatTitleWithoutNumberingSubject"/>
+					<concat delimiter=" | " name="a" flushWith="$[field_1]??">
+						<data source="$[field_1]-[-1].a"/>
+					</concat>
 					<concat delimiter="" name="a" flushWith="$[field_1]??|$[field_2]-1.a">
-						<data source="$[field_1]-[-1].[abfghknpskxz-]">
+						<data source="$[field_1]-[-1].[bfghknpskxz-]">
 							<replace pattern="^" with=", "/>
 						</data>
 						<concat delimiter="" name="e" flushWith="$[field_1]??">
