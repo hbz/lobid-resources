@@ -2591,43 +2591,48 @@
 		<!-- provenance -->
 		<combine name="http://www.w3.org/2007/05/powder-s#describedby" value="$[ns-lobid-resource]${a}">
 			<data source="@id" name="a"/>
-		</combine>
+    </combine>
+    <combine name="@dateCreated" value="${a}">
+      <choose name="a">
+        <data source="002[ab]1.a" name="a">
+          <regexp match="([0-9]{4}0[0-9][0-2][0-9])" format="${1}"/>
+        </data>
+        <data source="002[ab]1.a" name="a">
+          <regexp match="([0-9]{4}0[0-9]3[0-1])" format="${1}"/>
+        </data>
+        <data source="002[ab]1.a" name="a">
+          <regexp match="([0-9]{4}1[0-2][0-2][0-9])" format="${1}"/>
+        </data>
+        <data source="002[ab]1.a" name="a">
+          <regexp match="([0-9]{4}1[0-2]3[0-1])" format="${1}"/>
+        </data>
+        <data source="003-1.a" name="a">
+          <regexp match="([0-9]{8})" format="${1}"/>
+        </data>
+        <data source="@id" name="a">
+          <constant value="00010101"/>
+        </data>
+      </choose>
+    </combine>
 		<combine name="~rdf:subject" value="${a}">
-			<data source="002[ab]1.a"/>
+			<data source="@dateCreated|003-1.a"/>
 			<data source="@id" name="a">
 				<regexp match="(.*)" format="$[ns-lobid-resource]${1}"/>
 			</data>
 		</combine>
 		<combine name="http://purl.org/dc/terms/created" value="${a}">
-			<data source="002[ab]1.a" name="a">
-				<regexp match="([0-9]{8})" format="${1}"/>
-			</data>
+			<data source="@dateCreated" name="a"/>
 		</combine>
-		<combine name="~rdf:subject" value="${a}">
-			<if>
-				<none>
-					<data source="002[ab]1.a"/>
-				</none>
-			</if>
-			<data source="@id" name="a">
-				<regexp match="(.*)" format="$[ns-lobid-resource]${1}"/>
-			</data>
-		</combine>
-		<combine name="http://purl.org/dc/terms/created" value="${a}">
-			<if>
-				<none>
-					<data source="002[ab]1.a"/>
-				</none>
-			</if>
-			<data source="003-1.a" name="a">
-				<regexp match="([0-9]{8})" format="${1}"/>
-			</data>
-		</combine>
-		<!-- set subject uri of resource anew -->
-		<combine name="~rdf:subject" value="$[ns-lobid-resource]${id}#!">
-			<data source="002[ab]1.a"/>
-			<data source="@id" name="id"/>
-		</combine>
+    <combine name="http://purl.org/dc/terms/modified" value="${a}">
+      <data source="003-1.a" name="a">
+        <regexp match="([0-9]{8})" format="${1}"/>
+      </data>
+    </combine>
+    <!-- set subject uri of resource anew -->
+    <combine name="~rdf:subject" value="$[ns-lobid-resource]${id}#!">
+      <data source="003-1.a|@dateCreated" name="a"/>
+      <data source="@id" name="id"/>
+    </combine>
 		<call-macro name="setRdfSubjectDescribedBy" field="070a1.a"/>
 		<call-macro name="setProvenance" field_1="http://schema.org/provider"
 			field_2="070a1.a"/>
@@ -2737,22 +2742,6 @@
 		<call-macro name="setProvenance" field_1="http://open-services.net/ns/core#modifiedBy"
 			field_2="070b1.a"/>
 		<call-macro name="setBackRdfSubject" field="070b1.a"/>
-		<combine name="~rdf:subject" value="${a}">
-			<data source="003-1.a"/>
-			<data source="@id" name="a">
-				<regexp match="(.*)" format="$[ns-lobid-resource]${1}"/>
-			</data>
-		</combine>
-		<combine name="http://purl.org/dc/terms/modified" value="${a}">
-			<data source="003-1.a" name="a">
-				<regexp match="([0-9]{8})" format="${1}"/>
-			</data>
-		</combine>
-		<!-- set subject uri of resource anew -->
-		<combine name="~rdf:subject" value="$[ns-lobid-resource]${id}#!">
-			<data source="003-1.a" name="a"/>
-			<data source="@id" name="id"/>
-		</combine>
 		<combine name="~rdf:subject" value="$[ns-lobid-resource]${id}#!">
 			<data source="@id" name="id"/>
 			<data source="@itemId"/>
