@@ -2597,16 +2597,7 @@
 		<combine name="@dateCreated" value="${a}">
 			<choose name="a">
 				<data source="002[ab]1.a" name="a">
-					<regexp match="([0-9]{4}0[0-9][0-2][0-9])" format="${1}"/>
-				</data>
-				<data source="002[ab]1.a" name="a">
-					<regexp match="([0-9]{4}0[0-9]3[0-1])" format="${1}"/>
-				</data>
-				<data source="002[ab]1.a" name="a">
-					<regexp match="([0-9]{4}1[0-2][0-2][0-9])" format="${1}"/>
-				</data>
-				<data source="002[ab]1.a" name="a">
-					<regexp match="([0-9]{4}1[0-2]3[0-1])" format="${1}"/>
+					<dateformat inputformat="yyyyMMdd" outputpattern="yyyyMMdd" fallback="00010101"/>
 				</data>
 				<data source="003-1.a" name="a">
 					<regexp match="([0-9]{8})" format="${1}"/>
