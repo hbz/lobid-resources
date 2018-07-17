@@ -127,6 +127,37 @@
 				</data>
 			</combine>
 		</macro>
+		<macro name="chooseRelatorNotFrom100sRoleFields">
+			<choose name="@relatorNotFrom100sRoleFields$[field]">
+				<data source="$[field]f1.p" name="a">
+					<regexp match=".*" format="http://id.loc.gov/vocabulary/relators/hnr"/>
+				</data>
+				<data source="$[field]e[1234].p" name="a">  <!-- see #150 -->
+					<regexp match=".*" format="http://id.loc.gov/vocabulary/relators/prf"/>
+				</data>
+				<!-- default -->
+				<data source="$[field][bcf][12].[pa]" name="a">
+					<regexp match=".*" format="http://id.loc.gov/vocabulary/relators/ctb"/>
+				</data>
+				<!-- always creator -->
+				<data source="$[field][-amn][12].9">
+					<regexp match=".*" format="http://id.loc.gov/vocabulary/relators/cre"/>
+				</data>
+				<data source="$[field][-aemn][12].[pa]">
+					<regexp match=".*" format="http://id.loc.gov/vocabulary/relators/cre"/>
+				</data>
+			</choose>
+		</macro>
+		<macro name="setRelatorNotFrom100sRoleFields">
+			<combine name="@relator$[field]" value="${a}">
+				<if>
+					<none>
+						<data source="@relator$[field]"/>
+					</none>
+				</if>
+				<data source="@relatorNotFrom100sRoleFields$[field]" name="a"/>
+			</combine>
+		</macro>
 		<macro name="setCreatorPersonBnodeOrId">
 			<choose name="@creatorPersonBnodeOrId$[field]" flushWith="@GNDPersonId$[field]|@bnodeCreatorPersonLabel$[field]">
 				<data source="@GNDPersonId$[field]"/>
@@ -772,11 +803,14 @@
 			</combine>
 		</macro>
 		<macro name="setRelatorPerson">
-			<combine name="@relator$[field]" value="${a}">
-				<choose name="a">
+			<combine name="@relator$[field]" value="${a}" flushWith="$[field]?[12].[b4]">
+				<choose name="a" flushWith="$[field]?[12].[b4]">
 					<!-- map literals to marc relator property -->
 					<data source="$[field]?[12].[b4]" name="a">
 						<regexp match="[dD]ars|^\[act\]$|^(act)$" format="http://id.loc.gov/vocabulary/relators/act"/>
+					</data>
+					<data source="$[field]?[12].4" name="a">
+						<regexp match="^\[aut\]$|^(aut)$" format="http://id.loc.gov/vocabulary/relators/cre"/>
 					</data>
 					<data source="$[field]?[12].[b4]" name="a">
 						<regexp match="[hH]rsg|^\[edt\]$|^(edt)$" format="http://id.loc.gov/vocabulary/relators/edt"/>
@@ -874,33 +908,10 @@
 					<data source="$[field]?[12].[b4]" name="a">
 						<regexp match="^\[hnr\]$|^(hnr)$" format="http://id.loc.gov/vocabulary/relators/hnr"/>
 					</data>
-					<data source="104f1.p" name="a">
-						<regexp match=".*" format="http://id.loc.gov/vocabulary/relators/hnr"/>
-					</data>
-					<data source="1??e[1234].p" name="a">  <!-- see #150 -->
-						<regexp match=".*" format="http://id.loc.gov/vocabulary/relators/prf"/>
-					</data>
 					<data source="$[field]?[12].[b4]" name="a">
 						<regexp match="[iI]nterpr|^\[prf\]$|^(prf)$" format="http://id.loc.gov/vocabulary/relators/prf"/>
 					</data>
-					<!-- default -->
-					<data source="$[field][bcf][12].[pa]" name="a">
-						<regexp match=".*" format="http://id.loc.gov/vocabulary/relators/ctb"/>
-					</data>
-					<!-- always creator -->
-					<data source="$[field][-amn][12].9">
-						<regexp match=".*" format="http://id.loc.gov/vocabulary/relators/cre"/>
-					</data>
-					<data source="$[field][-aemn][12].[pa]">
-						<regexp match=".*" format="http://id.loc.gov/vocabulary/relators/cre"/>
-					</data>
 				</choose>
-			</combine>
-		</macro>
-		<macro name="setContributionBnode">
-			<combine value="_:${a}${b}" name="@contributionBnode$[field]">
-				<data source="@agentId$[field]" name="a"/>
-				<data source="@relator$[field]" name="b"/>
 			</combine>
 		</macro>
 		<macro name="setRelatorNonPerson">
@@ -913,6 +924,12 @@
 						<regexp match=".*" format="http://id.loc.gov/vocabulary/relators/cre"/>
 					</data>
 				</choose>
+			</combine>
+		</macro>
+		<macro name="setContributionBnode">
+			<combine value="_:${a}${b}" name="@contributionBnode$[field]">
+				<data source="@agentId$[field]" name="a"/>
+				<data source="@relator$[field]" name="b"/>
 			</combine>
 		</macro>
 		<macro name="setContributingCorporateBodyId">
@@ -941,21 +958,108 @@
 		</macro>
 		<macro name="setRelatorNode">
 			<combine name="@relatorNode$[field]" value="${a}">
-				<data source="@relator$[field]" name="a"/>
+				<data source="@relator$[field]first|@relator$[field]second|@relator$[field]last" name="a"/>
+				<!-- <data source="@agentId$[field]"/> -->
+			</combine>
+		</macro>
+		<macro name="setRelatorConcat">
+			<combine name="@relator$[field]concat" value="${a}">
+				<concat delimiter="|" name="a">
+					<data source="@relator$[field]"/>
+				</concat>
+			</combine>
+		</macro>
+		<macro name="setFirstRelator">
+			<combine name="@relatorNode$[field]first" value="${a}" flushWith="@relator$[field]concat">
 				<data source="@agentId$[field]"/>
+				<choose name="a" flushWith="@relator$[field]concat">
+					<data source="@relator$[field]concat">
+						<regexp match="^(http:\/\/id\.loc\.gov\/vocabulary\/relators\/[a-zA-Z]{3})\|" format="${1}"/>
+					</data>
+					<data source="@relator$[field]concat" name="b">
+						<regexp match="^http:\/\/id\.loc\.gov\/vocabulary\/relators\/[a-zA-Z]{3}$"/>
+					</data>
+				</choose>
+			</combine>
+		</macro>
+		<macro name="setSecondRelator">
+			<combine name="@relatorNode$[field]second" value="${a}">
+				<data source="@agentId$[field]"/>
+				<data source="@relator$[field]concat" name="a">
+					<regexp match="\|(http:\/\/id\.loc\.gov\/vocabulary\/relators\/[a-zA-Z]{3})\|" format="${1}"/>
+				</data>
+			</combine>
+		</macro>
+		<macro name="setLastRelator">
+			<combine name="@relatorNode$[field]last" value="${a}">
+				<data source="@agentId$[field]"/>
+				<data source="@relator$[field]concat" name="a">
+					<regexp match="\|(http:\/\/id\.loc\.gov\/vocabulary\/relators\/[a-zA-Z]{3})$" format="${1}"/>
+				</data>
+			</combine>
+		</macro>
+		<macro name="setFirstContributionBnodeOfMAB100sfield">
+			<combine name="@contributionBnode$[field]first" value="_:${a}${b}">
+				<data source="@agentId$[field]" name="a"/>
+				<choose name="b">
+					<data source="@relator$[field]concat">
+						<regexp match="^(http:\/\/id\.loc\.gov\/vocabulary\/relators\/[a-zA-Z]{3})\|" format="${1}"/>
+					</data>
+					<data source="@relator$[field]concat" name="b">
+						<regexp match="^http:\/\/id\.loc\.gov\/vocabulary\/relators\/[a-zA-Z]{3}$"/>
+					</data>
+				</choose>
+			</combine>
+		</macro>
+		<macro name="setSecondContributionBnodeOfMAB100sfield">
+			<combine name="@contributionBnode$[field]second" value="_:${a}${b}">
+				<data source="@agentId$[field]" name="a"/>
+				<data source="@relator$[field]concat" name="b">
+					<regexp match="\|(http:\/\/id\.loc\.gov\/vocabulary\/relators\/[a-zA-Z]{3})\|" format="${1}"/>
+				</data>
+			</combine>
+		</macro>
+		<macro name="setLastContributionBnodeOfMAB100sfield">
+			<combine name="@contributionBnode$[field]last" value="_:${a}${b}">
+				<data source="@agentId$[field]" name="a"/>
+				<data source="@relator$[field]concat" name="b">
+					<regexp match="\|(http:\/\/id\.loc\.gov\/vocabulary\/relators\/[a-zA-Z]{3})$" format="${1}"/>
+				</data>
+			</combine>
+		</macro>
+		<macro name="setRdfSubjectContributionBnode">
+			<combine name="~rdf:subject" value="${a}" flushWith="@contributionBnode$[field]$[part]">
+				<data source="@contributionBnode$[field]$[part]" name="a"/>
+			</combine>
+		</macro>
+		<macro name="setAgentAtContribution">
+			<combine name="http://id.loc.gov/ontologies/bibframe/agent" value="${a}" flushWith="@contributionBnode$[field]$[part]">
+				<data source="@agentId$[field]" name="a"/>
+			</combine>
+		</macro>
+		<macro name="setRoleAtContribution">
+			<combine name="http://id.loc.gov/ontologies/bibframe/role" value="${a}" flushWith="@contributionBnode$[field]$[part]">
+				<data source="@relatorNode$[field]$[part]" name="a"/>
+			</combine>
+		</macro>
+		<macro name="setTypePersonAtContribution">
+			<combine name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" value="${a}" flushWith="@contributionBnode$[field]$[part]">
+				<data source="@contributionBnode$[field]$[part]" name="a">
+					<constant value="http://id.loc.gov/ontologies/bibframe/Contribution"/>
+				</data>
 			</combine>
 		</macro>
 		<macro name="setSubjectContributionBnode">
-			<combine name="~rdf:subject" value="${a}" flushWith="@relatorNode$[field]"
+			<combine name="~rdf:subject" value="${a}" flushWith="@relatorNode$[field]first|@relatorNode$[field]second|@relatorNode$[field]last"
 				sameEntity="true">
-				<data source="@contributionBnode$[field]" name="a"/>
+				<data source="@contributionBnode$[field]first|@contributionBnode$[field]second|@contributionBnode$[field]last" name="a"/>
 			</combine>
 		</macro>
 		<macro name="setRoleForContributionBnode">
 			<combine name="http://id.loc.gov/ontologies/bibframe/role" value="${a}"
 				sameEntity="true">
-				<data source="@relatorNode$[field]" name="a"/>
-				<data source="@contributionBnode$[field]"/>
+				<data source="@relatorNode$[field]first|@relatorNode$[field]second|@relatorNode$[field]last" name="a"/>
+				<data source="@contributionBnode$[field]first|@contributionBnode$[field]second|@contributionBnode$[field]last"/>
 			</combine>
 		</macro>
 		<macro name="setTypeContributionForContributionBnode">
@@ -968,7 +1072,7 @@
 			<combine name="http://id.loc.gov/ontologies/bibframe/agent" value="${a}">
 				<data source="@agentId$[field]" name="a"/>
 				<data source="@contributionBnode$[field]"/>
-				<data source="@relatorNode$[field]"/>
+				<!-- <data source="@relatorNode$[field]"/> -->
 			</combine>
 		</macro>
 		<macro name="setBackSubjectContributionBnode">
@@ -979,15 +1083,15 @@
 			</combine>
 		</macro>
 		<macro name="setSubjectAgentIdForContributionBnode">
-			<combine name="~rdf:subject" value="${a}" flushWith="@contributionBnode$[field]">
+			<combine name="~rdf:subject" value="${a}" flushWith="@agentId$[field]">
 				<data source="@agentId$[field]" name="a"/>
 			</combine>
 		</macro>
 		<macro name="setLabelForPersonAgent">
 			<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="${a}"
-				flushWith="@contributionBnode$[field]">
+				flushWith="@agentId$[field]">
 				<data source="@creatorPersonLabel$[field]|@contributorPersonLabel$[field]" name="a">
-				    <replace pattern="^http" with="Siehe: http" />
+					<replace pattern="^http" with="Siehe: http" />
 				</data>
 			</combine>
 		</macro>
@@ -2950,208 +3054,918 @@
 		<call-macro name="setCreatorPersonLabel" field="196"/>
 		<call-macro name="setBnodeCreatorPersonLabel" field="196"/>
 
+		<!-- set type Person for all MAB 100s agents -->
+		<combine name="~rdf:subject" value="${a}" flushWith="@agentId1[0123456789][02468]">
+			<data source="@agentId1[0123456789][02468]" name="a"/>
+		</combine>
+		<combine name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" value="${a}" flushWith="@agentId1[0123456789][02468]">
+			<data source="@agentId1[0123456789][02468]" name="a">
+				<constant value="http://d-nb.info/standards/elementset/gnd#Person"/>
+			</data>
+		</combine>
+		<call-macro name="setBackRdfSubject" field="@agentId1[0123456789][02468]"/>
+
 
 		<call-macro name="setCreatorPersonBnodeOrId" field="100"/>
 		<call-macro name="setContributorPersonBnodeOrId" field="100"/>
 		<data source="@creatorPersonBnodeOrId100" name="@agentId100"/>
 		<data source="@contributorPersonBnodeOrId100" name="@agentId100"/>
-		<call-macro name="setContributionBnode" field="100"/>
+		<!-- <call-macro name="setContributionBnode" field="100"/> -->
 		<call-macro name="setRelatorPerson" field="100"/>
-		<call-macro name="setRelatorNode" field="100"/>
+		<call-macro name="chooseRelatorNotFrom100sRoleFields" field="100"/>
+		<call-macro name="setRelatorNotFrom100sRoleFields" field="100"/>
+		<!-- <call-macro name="setRelatorNode" field="100"/> -->
+		<call-macro name="setRelatorConcat" field="100"/>
+		<call-macro name="setFirstRelator" field="100"/>
+		<call-macro name="setSecondRelator" field="100"/>
+		<call-macro name="setLastRelator" field="100"/>
+		<call-macro name="setFirstContributionBnodeOfMAB100sfield" field="100"/>
+		<call-macro name="setSecondContributionBnodeOfMAB100sfield" field="100"/>
+		<call-macro name="setLastContributionBnodeOfMAB100sfield" field="100"/>
+
+		<call-macro name="setRdfSubjectContributionBnode" field="100" part="first"/>
+		<call-macro name="setAgentAtContribution" field="100" part="first"/>
+		<call-macro name="setRoleAtContribution" field="100" part="first"/>
+		<call-macro name="setTypePersonAtContribution" field="100" part="first"/>
+		<call-macro name="setBackRdfSubject" field="@contributionBnode100first"/>
+
+		<call-macro name="setRdfSubjectContributionBnode" field="100" part="second"/>
+		<call-macro name="setAgentAtContribution" field="100" part="second"/>
+		<call-macro name="setRoleAtContribution" field="100" part="second"/>
+		<call-macro name="setTypePersonAtContribution" field="100" part="second"/>
+		<call-macro name="setBackRdfSubject" field="@contributionBnode100second"/>
+
+		<call-macro name="setRdfSubjectContributionBnode" field="100" part="last"/>
+		<call-macro name="setAgentAtContribution" field="100" part="last"/>
+		<call-macro name="setRoleAtContribution" field="100" part="last"/>
+		<call-macro name="setTypePersonAtContribution" field="100" part="last"/>
+		<call-macro name="setBackRdfSubject" field="@contributionBnode100last"/>
+
 
 		<call-macro name="setCreatorPersonBnodeOrId" field="104"/>
 		<call-macro name="setContributorPersonBnodeOrId" field="104"/>
 		<data source="@creatorPersonBnodeOrId104" name="@agentId104"/>
 		<data source="@contributorPersonBnodeOrId104" name="@agentId104"/>
-		<call-macro name="setContributionBnode" field="104"/>
+		<!-- <call-macro name="setContributionBnode" field="104"/> -->
 		<call-macro name="setRelatorPerson" field="104"/>
+		<call-macro name="chooseRelatorNotFrom100sRoleFields" field="104"/>
+		<call-macro name="setRelatorNotFrom100sRoleFields" field="104"/>
 		<call-macro name="setRelatorNode" field="104"/>
+		<call-macro name="setRelatorConcat" field="104"/>
+		<call-macro name="setFirstRelator" field="104"/>
+		<call-macro name="setSecondRelator" field="104"/>
+		<call-macro name="setLastRelator" field="104"/>
+		<call-macro name="setFirstContributionBnodeOfMAB100sfield" field="104"/>
+		<call-macro name="setSecondContributionBnodeOfMAB100sfield" field="104"/>
+		<call-macro name="setLastContributionBnodeOfMAB100sfield" field="104"/>
+
+		<call-macro name="setRdfSubjectContributionBnode" field="104" part="first"/>
+		<call-macro name="setAgentAtContribution" field="104" part="first"/>
+		<call-macro name="setRoleAtContribution" field="104" part="first"/>
+		<call-macro name="setTypePersonAtContribution" field="104" part="first"/>
+		<call-macro name="setBackRdfSubject" field="@contributionBnode104first"/>
+
+		<call-macro name="setRdfSubjectContributionBnode" field="104" part="second"/>
+		<call-macro name="setAgentAtContribution" field="104" part="second"/>
+		<call-macro name="setRoleAtContribution" field="104" part="second"/>
+		<call-macro name="setTypePersonAtContribution" field="104" part="second"/>
+		<call-macro name="setBackRdfSubject" field="@contributionBnode104second"/>
+
+		<call-macro name="setRdfSubjectContributionBnode" field="104" part="last"/>
+		<call-macro name="setAgentAtContribution" field="104" part="last"/>
+		<call-macro name="setRoleAtContribution" field="104" part="last"/>
+		<call-macro name="setTypePersonAtContribution" field="104" part="last"/>
+		<call-macro name="setBackRdfSubject" field="@contributionBnode104last"/>
+
 
 		<call-macro name="setCreatorPersonBnodeOrId" field="108"/>
 		<call-macro name="setContributorPersonBnodeOrId" field="108"/>
 		<data source="@creatorPersonBnodeOrId108" name="@agentId108"/>
 		<data source="@contributorPersonBnodeOrId108" name="@agentId108"/>
-		<call-macro name="setContributionBnode" field="108"/>
 		<call-macro name="setRelatorPerson" field="108"/>
+		<call-macro name="chooseRelatorNotFrom100sRoleFields" field="108"/>
+		<call-macro name="setRelatorNotFrom100sRoleFields" field="108"/>
 		<call-macro name="setRelatorNode" field="108"/>
+		<call-macro name="setRelatorConcat" field="108"/>
+		<call-macro name="setFirstRelator" field="108"/>
+		<call-macro name="setSecondRelator" field="108"/>
+		<call-macro name="setLastRelator" field="108"/>
+		<call-macro name="setFirstContributionBnodeOfMAB100sfield" field="108"/>
+		<call-macro name="setSecondContributionBnodeOfMAB100sfield" field="108"/>
+		<call-macro name="setLastContributionBnodeOfMAB100sfield" field="108"/>
+
+		<call-macro name="setRdfSubjectContributionBnode" field="108" part="first"/>
+		<call-macro name="setAgentAtContribution" field="108" part="first"/>
+		<call-macro name="setRoleAtContribution" field="108" part="first"/>
+		<call-macro name="setTypePersonAtContribution" field="108" part="first"/>
+		<call-macro name="setBackRdfSubject" field="@contributionBnode108first"/>
+
+		<call-macro name="setRdfSubjectContributionBnode" field="108" part="second"/>
+		<call-macro name="setAgentAtContribution" field="108" part="second"/>
+		<call-macro name="setRoleAtContribution" field="108" part="second"/>
+		<call-macro name="setTypePersonAtContribution" field="108" part="second"/>
+		<call-macro name="setBackRdfSubject" field="@contributionBnode108second"/>
+
+		<call-macro name="setRdfSubjectContributionBnode" field="108" part="last"/>
+		<call-macro name="setAgentAtContribution" field="108" part="last"/>
+		<call-macro name="setRoleAtContribution" field="108" part="last"/>
+		<call-macro name="setTypePersonAtContribution" field="108" part="last"/>
+		<call-macro name="setBackRdfSubject" field="@contributionBnode108last"/>
+
 
 		<call-macro name="setCreatorPersonBnodeOrId" field="112"/>
 		<call-macro name="setContributorPersonBnodeOrId" field="112"/>
 		<data source="@creatorPersonBnodeOrId112" name="@agentId112"/>
 		<data source="@contributorPersonBnodeOrId112" name="@agentId112"/>
-		<call-macro name="setContributionBnode" field="112"/>
+		<!-- <call-macro name="setContributionBnode" field="112"/> -->
 		<call-macro name="setRelatorPerson" field="112"/>
+		<call-macro name="chooseRelatorNotFrom100sRoleFields" field="112"/>
+		<call-macro name="setRelatorNotFrom100sRoleFields" field="112"/>
 		<call-macro name="setRelatorNode" field="112"/>
+		<call-macro name="setRelatorConcat" field="112"/>
+		<call-macro name="setFirstRelator" field="112"/>
+		<call-macro name="setSecondRelator" field="112"/>
+		<call-macro name="setLastRelator" field="112"/>
+		<call-macro name="setFirstContributionBnodeOfMAB100sfield" field="112"/>
+		<call-macro name="setSecondContributionBnodeOfMAB100sfield" field="112"/>
+		<call-macro name="setLastContributionBnodeOfMAB100sfield" field="112"/>
+
+		<call-macro name="setRdfSubjectContributionBnode" field="112" part="first"/>
+		<call-macro name="setAgentAtContribution" field="112" part="first"/>
+		<call-macro name="setRoleAtContribution" field="112" part="first"/>
+		<call-macro name="setTypePersonAtContribution" field="112" part="first"/>
+		<call-macro name="setBackRdfSubject" field="@contributionBnode112first"/>
+
+		<call-macro name="setRdfSubjectContributionBnode" field="112" part="second"/>
+		<call-macro name="setAgentAtContribution" field="112" part="second"/>
+		<call-macro name="setRoleAtContribution" field="112" part="second"/>
+		<call-macro name="setTypePersonAtContribution" field="112" part="second"/>
+		<call-macro name="setBackRdfSubject" field="@contributionBnode112second"/>
+
+		<call-macro name="setRdfSubjectContributionBnode" field="112" part="last"/>
+		<call-macro name="setAgentAtContribution" field="112" part="last"/>
+		<call-macro name="setRoleAtContribution" field="112" part="last"/>
+		<call-macro name="setTypePersonAtContribution" field="112" part="last"/>
+		<call-macro name="setBackRdfSubject" field="@contributionBnode112last"/>
+
 
 		<call-macro name="setCreatorPersonBnodeOrId" field="116"/>
 		<call-macro name="setContributorPersonBnodeOrId" field="116"/>
 		<data source="@creatorPersonBnodeOrId116" name="@agentId116"/>
 		<data source="@contributorPersonBnodeOrId116" name="@agentId116"/>
-		<call-macro name="setContributionBnode" field="116"/>
+		<!-- <call-macro name="setContributionBnode" field="116"/> -->
 		<call-macro name="setRelatorPerson" field="116"/>
+		<call-macro name="chooseRelatorNotFrom100sRoleFields" field="116"/>
+		<call-macro name="setRelatorNotFrom100sRoleFields" field="116"/>
 		<call-macro name="setRelatorNode" field="116"/>
+		<call-macro name="setRelatorConcat" field="116"/>
+		<call-macro name="setFirstRelator" field="116"/>
+		<call-macro name="setSecondRelator" field="116"/>
+		<call-macro name="setLastRelator" field="116"/>
+		<call-macro name="setFirstContributionBnodeOfMAB100sfield" field="116"/>
+		<call-macro name="setSecondContributionBnodeOfMAB100sfield" field="116"/>
+		<call-macro name="setLastContributionBnodeOfMAB100sfield" field="116"/>
+
+		<call-macro name="setRdfSubjectContributionBnode" field="116" part="first"/>
+		<call-macro name="setAgentAtContribution" field="116" part="first"/>
+		<call-macro name="setRoleAtContribution" field="116" part="first"/>
+		<call-macro name="setTypePersonAtContribution" field="116" part="first"/>
+		<call-macro name="setBackRdfSubject" field="@contributionBnode116first"/>
+
+		<call-macro name="setRdfSubjectContributionBnode" field="116" part="second"/>
+		<call-macro name="setAgentAtContribution" field="116" part="second"/>
+		<call-macro name="setRoleAtContribution" field="116" part="second"/>
+		<call-macro name="setTypePersonAtContribution" field="116" part="second"/>
+		<call-macro name="setBackRdfSubject" field="@contributionBnode116second"/>
+
+		<call-macro name="setRdfSubjectContributionBnode" field="116" part="last"/>
+		<call-macro name="setAgentAtContribution" field="116" part="last"/>
+		<call-macro name="setRoleAtContribution" field="116" part="last"/>
+		<call-macro name="setTypePersonAtContribution" field="116" part="last"/>
+		<call-macro name="setBackRdfSubject" field="@contributionBnode116last"/>
+
 
 		<call-macro name="setCreatorPersonBnodeOrId" field="120"/>
 		<call-macro name="setContributorPersonBnodeOrId" field="120"/>
 		<data source="@creatorPersonBnodeOrId120" name="@agentId120"/>
 		<data source="@contributorPersonBnodeOrId120" name="@agentId120"/>
-		<call-macro name="setContributionBnode" field="120"/>
+		<!-- <call-macro name="setContributionBnode" field="120"/> -->
 		<call-macro name="setRelatorPerson" field="120"/>
+		<call-macro name="chooseRelatorNotFrom100sRoleFields" field="120"/>
+		<call-macro name="setRelatorNotFrom100sRoleFields" field="120"/>
 		<call-macro name="setRelatorNode" field="120"/>
+		<call-macro name="setRelatorConcat" field="120"/>
+		<call-macro name="setFirstRelator" field="120"/>
+		<call-macro name="setSecondRelator" field="120"/>
+		<call-macro name="setLastRelator" field="120"/>
+		<call-macro name="setFirstContributionBnodeOfMAB100sfield" field="120"/>
+		<call-macro name="setSecondContributionBnodeOfMAB100sfield" field="120"/>
+		<call-macro name="setLastContributionBnodeOfMAB100sfield" field="120"/>
+
+		<call-macro name="setRdfSubjectContributionBnode" field="120" part="first"/>
+		<call-macro name="setAgentAtContribution" field="120" part="first"/>
+		<call-macro name="setRoleAtContribution" field="120" part="first"/>
+		<call-macro name="setTypePersonAtContribution" field="120" part="first"/>
+		<call-macro name="setBackRdfSubject" field="@contributionBnode120first"/>
+
+		<call-macro name="setRdfSubjectContributionBnode" field="120" part="second"/>
+		<call-macro name="setAgentAtContribution" field="120" part="second"/>
+		<call-macro name="setRoleAtContribution" field="120" part="second"/>
+		<call-macro name="setTypePersonAtContribution" field="120" part="second"/>
+		<call-macro name="setBackRdfSubject" field="@contributionBnode120second"/>
+
+		<call-macro name="setRdfSubjectContributionBnode" field="120" part="last"/>
+		<call-macro name="setAgentAtContribution" field="120" part="last"/>
+		<call-macro name="setRoleAtContribution" field="120" part="last"/>
+		<call-macro name="setTypePersonAtContribution" field="120" part="last"/>
+		<call-macro name="setBackRdfSubject" field="@contributionBnode120last"/>
+
 
 		<call-macro name="setCreatorPersonBnodeOrId" field="124"/>
 		<call-macro name="setContributorPersonBnodeOrId" field="124"/>
 		<data source="@creatorPersonBnodeOrId124" name="@agentId124"/>
 		<data source="@contributorPersonBnodeOrId124" name="@agentId124"/>
-		<call-macro name="setContributionBnode" field="124"/>
+		<!-- <call-macro name="setContributionBnode" field="124"/> -->
 		<call-macro name="setRelatorPerson" field="124"/>
+		<call-macro name="chooseRelatorNotFrom100sRoleFields" field="124"/>
+		<call-macro name="setRelatorNotFrom100sRoleFields" field="124"/>
 		<call-macro name="setRelatorNode" field="124"/>
+		<call-macro name="setRelatorConcat" field="124"/>
+		<call-macro name="setFirstRelator" field="124"/>
+		<call-macro name="setSecondRelator" field="124"/>
+		<call-macro name="setLastRelator" field="124"/>
+		<call-macro name="setFirstContributionBnodeOfMAB100sfield" field="124"/>
+		<call-macro name="setSecondContributionBnodeOfMAB100sfield" field="124"/>
+		<call-macro name="setLastContributionBnodeOfMAB100sfield" field="124"/>
+
+		<call-macro name="setRdfSubjectContributionBnode" field="124" part="first"/>
+		<call-macro name="setAgentAtContribution" field="124" part="first"/>
+		<call-macro name="setRoleAtContribution" field="124" part="first"/>
+		<call-macro name="setTypePersonAtContribution" field="124" part="first"/>
+		<call-macro name="setBackRdfSubject" field="@contributionBnode124first"/>
+
+		<call-macro name="setRdfSubjectContributionBnode" field="124" part="second"/>
+		<call-macro name="setAgentAtContribution" field="124" part="second"/>
+		<call-macro name="setRoleAtContribution" field="124" part="second"/>
+		<call-macro name="setTypePersonAtContribution" field="124" part="second"/>
+		<call-macro name="setBackRdfSubject" field="@contributionBnode124second"/>
+
+		<call-macro name="setRdfSubjectContributionBnode" field="124" part="last"/>
+		<call-macro name="setAgentAtContribution" field="124" part="last"/>
+		<call-macro name="setRoleAtContribution" field="124" part="last"/>
+		<call-macro name="setTypePersonAtContribution" field="124" part="last"/>
+		<call-macro name="setBackRdfSubject" field="@contributionBnode124last"/>
+
 
 		<call-macro name="setCreatorPersonBnodeOrId" field="128"/>
 		<call-macro name="setContributorPersonBnodeOrId" field="128"/>
 		<data source="@creatorPersonBnodeOrId128" name="@agentId128"/>
 		<data source="@contributorPersonBnodeOrId128" name="@agentId128"/>
-		<call-macro name="setContributionBnode" field="128"/>
+		<!-- <call-macro name="setContributionBnode" field="128"/> -->
 		<call-macro name="setRelatorPerson" field="128"/>
+		<call-macro name="chooseRelatorNotFrom100sRoleFields" field="128"/>
+		<call-macro name="setRelatorNotFrom100sRoleFields" field="128"/>
 		<call-macro name="setRelatorNode" field="128"/>
+		<call-macro name="setRelatorConcat" field="128"/>
+		<call-macro name="setFirstRelator" field="128"/>
+		<call-macro name="setSecondRelator" field="128"/>
+		<call-macro name="setLastRelator" field="128"/>
+		<call-macro name="setFirstContributionBnodeOfMAB100sfield" field="128"/>
+		<call-macro name="setSecondContributionBnodeOfMAB100sfield" field="128"/>
+		<call-macro name="setLastContributionBnodeOfMAB100sfield" field="128"/>
+
+		<call-macro name="setRdfSubjectContributionBnode" field="128" part="first"/>
+		<call-macro name="setAgentAtContribution" field="128" part="first"/>
+		<call-macro name="setRoleAtContribution" field="128" part="first"/>
+		<call-macro name="setTypePersonAtContribution" field="128" part="first"/>
+		<call-macro name="setBackRdfSubject" field="@contributionBnode128first"/>
+
+		<call-macro name="setRdfSubjectContributionBnode" field="128" part="second"/>
+		<call-macro name="setAgentAtContribution" field="128" part="second"/>
+		<call-macro name="setRoleAtContribution" field="128" part="second"/>
+		<call-macro name="setTypePersonAtContribution" field="128" part="second"/>
+		<call-macro name="setBackRdfSubject" field="@contributionBnode128second"/>
+
+		<call-macro name="setRdfSubjectContributionBnode" field="128" part="last"/>
+		<call-macro name="setAgentAtContribution" field="128" part="last"/>
+		<call-macro name="setRoleAtContribution" field="128" part="last"/>
+		<call-macro name="setTypePersonAtContribution" field="128" part="last"/>
+		<call-macro name="setBackRdfSubject" field="@contributionBnode128last"/>
+
 
 		<call-macro name="setCreatorPersonBnodeOrId" field="132"/>
 		<call-macro name="setContributorPersonBnodeOrId" field="132"/>
 		<data source="@creatorPersonBnodeOrId132" name="@agentId132"/>
 		<data source="@contributorPersonBnodeOrId132" name="@agentId132"/>
-		<call-macro name="setContributionBnode" field="132"/>
+		<!-- <call-macro name="setContributionBnode" field="132"/> -->
 		<call-macro name="setRelatorPerson" field="132"/>
+		<call-macro name="chooseRelatorNotFrom100sRoleFields" field="132"/>
+		<call-macro name="setRelatorNotFrom100sRoleFields" field="132"/>
 		<call-macro name="setRelatorNode" field="132"/>
+		<call-macro name="setRelatorConcat" field="132"/>
+		<call-macro name="setFirstRelator" field="132"/>
+		<call-macro name="setSecondRelator" field="132"/>
+		<call-macro name="setLastRelator" field="132"/>
+		<call-macro name="setFirstContributionBnodeOfMAB100sfield" field="132"/>
+		<call-macro name="setSecondContributionBnodeOfMAB100sfield" field="132"/>
+		<call-macro name="setLastContributionBnodeOfMAB100sfield" field="132"/>
+
+		<call-macro name="setRdfSubjectContributionBnode" field="132" part="first"/>
+		<call-macro name="setAgentAtContribution" field="132" part="first"/>
+		<call-macro name="setRoleAtContribution" field="132" part="first"/>
+		<call-macro name="setTypePersonAtContribution" field="132" part="first"/>
+		<call-macro name="setBackRdfSubject" field="@contributionBnode132first"/>
+
+		<call-macro name="setRdfSubjectContributionBnode" field="132" part="second"/>
+		<call-macro name="setAgentAtContribution" field="132" part="second"/>
+		<call-macro name="setRoleAtContribution" field="132" part="second"/>
+		<call-macro name="setTypePersonAtContribution" field="132" part="second"/>
+		<call-macro name="setBackRdfSubject" field="@contributionBnode132second"/>
+
+		<call-macro name="setRdfSubjectContributionBnode" field="132" part="last"/>
+		<call-macro name="setAgentAtContribution" field="132" part="last"/>
+		<call-macro name="setRoleAtContribution" field="132" part="last"/>
+		<call-macro name="setTypePersonAtContribution" field="132" part="last"/>
+		<call-macro name="setBackRdfSubject" field="@contributionBnode132last"/>
+
 
 		<call-macro name="setCreatorPersonBnodeOrId" field="136"/>
 		<call-macro name="setContributorPersonBnodeOrId" field="136"/>
 		<data source="@creatorPersonBnodeOrId136" name="@agentId136"/>
 		<data source="@contributorPersonBnodeOrId136" name="@agentId136"/>
-		<call-macro name="setContributionBnode" field="136"/>
+		<!-- <call-macro name="setContributionBnode" field="136"/> -->
 		<call-macro name="setRelatorPerson" field="136"/>
+		<call-macro name="chooseRelatorNotFrom100sRoleFields" field="136"/>
+		<call-macro name="setRelatorNotFrom100sRoleFields" field="136"/>
 		<call-macro name="setRelatorNode" field="136"/>
+		<call-macro name="setRelatorConcat" field="136"/>
+		<call-macro name="setFirstRelator" field="136"/>
+		<call-macro name="setSecondRelator" field="136"/>
+		<call-macro name="setLastRelator" field="136"/>
+		<call-macro name="setFirstContributionBnodeOfMAB100sfield" field="136"/>
+		<call-macro name="setSecondContributionBnodeOfMAB100sfield" field="136"/>
+		<call-macro name="setLastContributionBnodeOfMAB100sfield" field="136"/>
+
+		<call-macro name="setRdfSubjectContributionBnode" field="136" part="first"/>
+		<call-macro name="setAgentAtContribution" field="136" part="first"/>
+		<call-macro name="setRoleAtContribution" field="136" part="first"/>
+		<call-macro name="setTypePersonAtContribution" field="136" part="first"/>
+		<call-macro name="setBackRdfSubject" field="@contributionBnode136first"/>
+
+		<call-macro name="setRdfSubjectContributionBnode" field="136" part="second"/>
+		<call-macro name="setAgentAtContribution" field="136" part="second"/>
+		<call-macro name="setRoleAtContribution" field="136" part="second"/>
+		<call-macro name="setTypePersonAtContribution" field="136" part="second"/>
+		<call-macro name="setBackRdfSubject" field="@contributionBnode136second"/>
+
+		<call-macro name="setRdfSubjectContributionBnode" field="136" part="last"/>
+		<call-macro name="setAgentAtContribution" field="136" part="last"/>
+		<call-macro name="setRoleAtContribution" field="136" part="last"/>
+		<call-macro name="setTypePersonAtContribution" field="136" part="last"/>
+		<call-macro name="setBackRdfSubject" field="@contributionBnode136last"/>
+
 
 		<call-macro name="setCreatorPersonBnodeOrId" field="140"/>
 		<call-macro name="setContributorPersonBnodeOrId" field="140"/>
 		<data source="@creatorPersonBnodeOrId140" name="@agentId140"/>
 		<data source="@contributorPersonBnodeOrId140" name="@agentId140"/>
-		<call-macro name="setContributionBnode" field="140"/>
+		<!-- <call-macro name="setContributionBnode" field="140"/> -->
 		<call-macro name="setRelatorPerson" field="140"/>
+		<call-macro name="chooseRelatorNotFrom100sRoleFields" field="140"/>
+		<call-macro name="setRelatorNotFrom100sRoleFields" field="140"/>
 		<call-macro name="setRelatorNode" field="140"/>
+		<call-macro name="setRelatorConcat" field="140"/>
+		<call-macro name="setFirstRelator" field="140"/>
+		<call-macro name="setSecondRelator" field="140"/>
+		<call-macro name="setLastRelator" field="140"/>
+		<call-macro name="setFirstContributionBnodeOfMAB100sfield" field="140"/>
+		<call-macro name="setSecondContributionBnodeOfMAB100sfield" field="140"/>
+		<call-macro name="setLastContributionBnodeOfMAB100sfield" field="140"/>
+
+		<call-macro name="setRdfSubjectContributionBnode" field="140" part="first"/>
+		<call-macro name="setAgentAtContribution" field="140" part="first"/>
+		<call-macro name="setRoleAtContribution" field="140" part="first"/>
+		<call-macro name="setTypePersonAtContribution" field="140" part="first"/>
+		<call-macro name="setBackRdfSubject" field="@contributionBnode140first"/>
+
+		<call-macro name="setRdfSubjectContributionBnode" field="140" part="second"/>
+		<call-macro name="setAgentAtContribution" field="140" part="second"/>
+		<call-macro name="setRoleAtContribution" field="140" part="second"/>
+		<call-macro name="setTypePersonAtContribution" field="140" part="second"/>
+		<call-macro name="setBackRdfSubject" field="@contributionBnode140second"/>
+
+		<call-macro name="setRdfSubjectContributionBnode" field="140" part="last"/>
+		<call-macro name="setAgentAtContribution" field="140" part="last"/>
+		<call-macro name="setRoleAtContribution" field="140" part="last"/>
+		<call-macro name="setTypePersonAtContribution" field="140" part="last"/>
+		<call-macro name="setBackRdfSubject" field="@contributionBnode140last"/>
+
 
 		<call-macro name="setCreatorPersonBnodeOrId" field="144"/>
 		<call-macro name="setContributorPersonBnodeOrId" field="144"/>
 		<data source="@creatorPersonBnodeOrId144" name="@agentId144"/>
 		<data source="@contributorPersonBnodeOrId144" name="@agentId144"/>
-		<call-macro name="setContributionBnode" field="144"/>
+		<!-- <call-macro name="setContributionBnode" field="144"/> -->
 		<call-macro name="setRelatorPerson" field="144"/>
+		<call-macro name="chooseRelatorNotFrom100sRoleFields" field="144"/>
+		<call-macro name="setRelatorNotFrom100sRoleFields" field="144"/>
 		<call-macro name="setRelatorNode" field="144"/>
+		<call-macro name="setRelatorConcat" field="144"/>
+		<call-macro name="setFirstRelator" field="144"/>
+		<call-macro name="setSecondRelator" field="144"/>
+		<call-macro name="setLastRelator" field="144"/>
+		<call-macro name="setFirstContributionBnodeOfMAB100sfield" field="144"/>
+		<call-macro name="setSecondContributionBnodeOfMAB100sfield" field="144"/>
+		<call-macro name="setLastContributionBnodeOfMAB100sfield" field="144"/>
+
+		<call-macro name="setRdfSubjectContributionBnode" field="144" part="first"/>
+		<call-macro name="setAgentAtContribution" field="144" part="first"/>
+		<call-macro name="setRoleAtContribution" field="144" part="first"/>
+		<call-macro name="setTypePersonAtContribution" field="144" part="first"/>
+		<call-macro name="setBackRdfSubject" field="@contributionBnode144first"/>
+
+		<call-macro name="setRdfSubjectContributionBnode" field="144" part="second"/>
+		<call-macro name="setAgentAtContribution" field="144" part="second"/>
+		<call-macro name="setRoleAtContribution" field="144" part="second"/>
+		<call-macro name="setTypePersonAtContribution" field="144" part="second"/>
+		<call-macro name="setBackRdfSubject" field="@contributionBnode140second"/>
+
+		<call-macro name="setRdfSubjectContributionBnode" field="144" part="last"/>
+		<call-macro name="setAgentAtContribution" field="144" part="last"/>
+		<call-macro name="setRoleAtContribution" field="144" part="last"/>
+		<call-macro name="setTypePersonAtContribution" field="144" part="last"/>
+		<call-macro name="setBackRdfSubject" field="@contributionBnode144last"/>
+
 
 		<call-macro name="setCreatorPersonBnodeOrId" field="148"/>
 		<call-macro name="setContributorPersonBnodeOrId" field="148"/>
 		<data source="@creatorPersonBnodeOrId148" name="@agentId148"/>
 		<data source="@contributorPersonBnodeOrId148" name="@agentId148"/>
-		<call-macro name="setContributionBnode" field="148"/>
+		<!-- <call-macro name="setContributionBnode" field="148"/> -->
 		<call-macro name="setRelatorPerson" field="148"/>
+		<call-macro name="chooseRelatorNotFrom100sRoleFields" field="148"/>
+		<call-macro name="setRelatorNotFrom100sRoleFields" field="148"/>
 		<call-macro name="setRelatorNode" field="148"/>
+		<call-macro name="setRelatorConcat" field="148"/>
+
+		<call-macro name="setFirstRelator" field="148"/>
+		<call-macro name="setSecondRelator" field="148"/>
+		<call-macro name="setLastRelator" field="148"/>
+		<call-macro name="setFirstContributionBnodeOfMAB100sfield" field="148"/>
+		<call-macro name="setSecondContributionBnodeOfMAB100sfield" field="148"/>
+		<call-macro name="setLastContributionBnodeOfMAB100sfield" field="148"/>
+
+		<call-macro name="setRdfSubjectContributionBnode" field="148" part="first"/>
+		<call-macro name="setAgentAtContribution" field="148" part="first"/>
+		<call-macro name="setRoleAtContribution" field="148" part="first"/>
+		<call-macro name="setTypePersonAtContribution" field="148" part="first"/>
+		<call-macro name="setBackRdfSubject" field="@contributionBnode148first"/>
+
+		<call-macro name="setRdfSubjectContributionBnode" field="148" part="second"/>
+		<call-macro name="setAgentAtContribution" field="148" part="second"/>
+		<call-macro name="setRoleAtContribution" field="148" part="second"/>
+		<call-macro name="setTypePersonAtContribution" field="148" part="second"/>
+		<call-macro name="setBackRdfSubject" field="@contributionBnode148second"/>
+
+		<call-macro name="setRdfSubjectContributionBnode" field="148" part="last"/>
+		<call-macro name="setAgentAtContribution" field="148" part="last"/>
+		<call-macro name="setRoleAtContribution" field="148" part="last"/>
+		<call-macro name="setTypePersonAtContribution" field="148" part="last"/>
+		<call-macro name="setBackRdfSubject" field="@contributionBnode148last"/>
+
 
 		<call-macro name="setCreatorPersonBnodeOrId" field="152"/>
 		<call-macro name="setContributorPersonBnodeOrId" field="152"/>
 		<data source="@creatorPersonBnodeOrId152" name="@agentId152"/>
 		<data source="@contributorPersonBnodeOrId152" name="@agentId152"/>
-		<call-macro name="setContributionBnode" field="152"/>
+		<!-- <call-macro name="setContributionBnode" field="152"/> -->
 		<call-macro name="setRelatorPerson" field="152"/>
+		<call-macro name="chooseRelatorNotFrom100sRoleFields" field="152"/>
+		<call-macro name="setRelatorNotFrom100sRoleFields" field="152"/>
 		<call-macro name="setRelatorNode" field="152"/>
+		<call-macro name="setRelatorConcat" field="152"/>
+		<call-macro name="setFirstRelator" field="152"/>
+		<call-macro name="setSecondRelator" field="152"/>
+		<call-macro name="setLastRelator" field="152"/>
+		<call-macro name="setFirstContributionBnodeOfMAB100sfield" field="152"/>
+		<call-macro name="setSecondContributionBnodeOfMAB100sfield" field="152"/>
+		<call-macro name="setLastContributionBnodeOfMAB100sfield" field="152"/>
+
+		<call-macro name="setRdfSubjectContributionBnode" field="152" part="first"/>
+		<call-macro name="setAgentAtContribution" field="152" part="first"/>
+		<call-macro name="setRoleAtContribution" field="152" part="first"/>
+		<call-macro name="setTypePersonAtContribution" field="152" part="first"/>
+		<call-macro name="setBackRdfSubject" field="@contributionBnode152first"/>
+
+		<call-macro name="setRdfSubjectContributionBnode" field="152" part="second"/>
+		<call-macro name="setAgentAtContribution" field="152" part="second"/>
+		<call-macro name="setRoleAtContribution" field="152" part="second"/>
+		<call-macro name="setTypePersonAtContribution" field="152" part="second"/>
+		<call-macro name="setBackRdfSubject" field="@contributionBnode152second"/>
+
+		<call-macro name="setRdfSubjectContributionBnode" field="152" part="last"/>
+		<call-macro name="setAgentAtContribution" field="152" part="last"/>
+		<call-macro name="setRoleAtContribution" field="152" part="last"/>
+		<call-macro name="setTypePersonAtContribution" field="152" part="last"/>
+		<call-macro name="setBackRdfSubject" field="@contributionBnode152last"/>
+
 
 		<call-macro name="setCreatorPersonBnodeOrId" field="156"/>
 		<call-macro name="setContributorPersonBnodeOrId" field="156"/>
 		<data source="@creatorPersonBnodeOrId156" name="@agentId156"/>
 		<data source="@contributorPersonBnodeOrId156" name="@agentId156"/>
-		<call-macro name="setContributionBnode" field="156"/>
+		<!-- <call-macro name="setContributionBnode" field="156"/> -->
 		<call-macro name="setRelatorPerson" field="156"/>
+		<call-macro name="chooseRelatorNotFrom100sRoleFields" field="156"/>
+		<call-macro name="setRelatorNotFrom100sRoleFields" field="156"/>
 		<call-macro name="setRelatorNode" field="156"/>
+		<call-macro name="setRelatorConcat" field="156"/>
+		<call-macro name="setFirstRelator" field="156"/>
+		<call-macro name="setSecondRelator" field="156"/>
+		<call-macro name="setLastRelator" field="156"/>
+		<call-macro name="setFirstContributionBnodeOfMAB100sfield" field="156"/>
+		<call-macro name="setSecondContributionBnodeOfMAB100sfield" field="156"/>
+		<call-macro name="setLastContributionBnodeOfMAB100sfield" field="156"/>
+
+		<call-macro name="setRdfSubjectContributionBnode" field="156" part="first"/>
+		<call-macro name="setAgentAtContribution" field="156" part="first"/>
+		<call-macro name="setRoleAtContribution" field="156" part="first"/>
+		<call-macro name="setTypePersonAtContribution" field="156" part="first"/>
+		<call-macro name="setBackRdfSubject" field="@contributionBnode156first"/>
+
+		<call-macro name="setRdfSubjectContributionBnode" field="156" part="second"/>
+		<call-macro name="setAgentAtContribution" field="156" part="second"/>
+		<call-macro name="setRoleAtContribution" field="156" part="second"/>
+		<call-macro name="setTypePersonAtContribution" field="156" part="second"/>
+		<call-macro name="setBackRdfSubject" field="@contributionBnode156second"/>
+
+		<call-macro name="setRdfSubjectContributionBnode" field="156" part="last"/>
+		<call-macro name="setAgentAtContribution" field="156" part="last"/>
+		<call-macro name="setRoleAtContribution" field="156" part="last"/>
+		<call-macro name="setTypePersonAtContribution" field="156" part="last"/>
+		<call-macro name="setBackRdfSubject" field="@contributionBnode156last"/>
+
 
 		<call-macro name="setCreatorPersonBnodeOrId" field="160"/>
 		<call-macro name="setContributorPersonBnodeOrId" field="160"/>
 		<data source="@creatorPersonBnodeOrId160" name="@agentId160"/>
 		<data source="@contributorPersonBnodeOrId160" name="@agentId160"/>
-		<call-macro name="setContributionBnode" field="160"/>
+		<!-- <call-macro name="setContributionBnode" field="160"/> -->
 		<call-macro name="setRelatorPerson" field="160"/>
+		<call-macro name="chooseRelatorNotFrom100sRoleFields" field="160"/>
+		<call-macro name="setRelatorNotFrom100sRoleFields" field="160"/>
 		<call-macro name="setRelatorNode" field="160"/>
+		<call-macro name="setRelatorConcat" field="160"/>
+		<call-macro name="setFirstRelator" field="160"/>
+		<call-macro name="setSecondRelator" field="160"/>
+		<call-macro name="setLastRelator" field="160"/>
+		<call-macro name="setFirstContributionBnodeOfMAB100sfield" field="160"/>
+		<call-macro name="setSecondContributionBnodeOfMAB100sfield" field="160"/>
+		<call-macro name="setLastContributionBnodeOfMAB100sfield" field="160"/>
+
+		<call-macro name="setRdfSubjectContributionBnode" field="160" part="first"/>
+		<call-macro name="setAgentAtContribution" field="160" part="first"/>
+		<call-macro name="setRoleAtContribution" field="160" part="first"/>
+		<call-macro name="setTypePersonAtContribution" field="160" part="first"/>
+		<call-macro name="setBackRdfSubject" field="@contributionBnode160first"/>
+
+		<call-macro name="setRdfSubjectContributionBnode" field="160" part="second"/>
+		<call-macro name="setAgentAtContribution" field="160" part="second"/>
+		<call-macro name="setRoleAtContribution" field="160" part="second"/>
+		<call-macro name="setTypePersonAtContribution" field="160" part="second"/>
+		<call-macro name="setBackRdfSubject" field="@contributionBnode160second"/>
+
+		<call-macro name="setRdfSubjectContributionBnode" field="160" part="last"/>
+		<call-macro name="setAgentAtContribution" field="160" part="last"/>
+		<call-macro name="setRoleAtContribution" field="160" part="last"/>
+		<call-macro name="setTypePersonAtContribution" field="160" part="last"/>
+		<call-macro name="setBackRdfSubject" field="@contributionBnode160last"/>
+
 
 		<call-macro name="setCreatorPersonBnodeOrId" field="164"/>
 		<call-macro name="setContributorPersonBnodeOrId" field="164"/>
 		<data source="@creatorPersonBnodeOrId164" name="@agentId164"/>
 		<data source="@contributorPersonBnodeOrId164" name="@agentId164"/>
-		<call-macro name="setContributionBnode" field="164"/>
+		<!-- <call-macro name="setContributionBnode" field="164"/> -->
 		<call-macro name="setRelatorPerson" field="164"/>
+		<call-macro name="chooseRelatorNotFrom100sRoleFields" field="164"/>
+		<call-macro name="setRelatorNotFrom100sRoleFields" field="164"/>
 		<call-macro name="setRelatorNode" field="164"/>
+		<call-macro name="setRelatorConcat" field="164"/>
+		<call-macro name="setFirstRelator" field="164"/>
+		<call-macro name="setSecondRelator" field="164"/>
+		<call-macro name="setLastRelator" field="164"/>
+		<call-macro name="setFirstContributionBnodeOfMAB100sfield" field="164"/>
+		<call-macro name="setSecondContributionBnodeOfMAB100sfield" field="164"/>
+		<call-macro name="setLastContributionBnodeOfMAB100sfield" field="164"/>
+
+		<call-macro name="setRdfSubjectContributionBnode" field="164" part="first"/>
+		<call-macro name="setAgentAtContribution" field="164" part="first"/>
+		<call-macro name="setRoleAtContribution" field="164" part="first"/>
+		<call-macro name="setTypePersonAtContribution" field="164" part="first"/>
+		<call-macro name="setBackRdfSubject" field="@contributionBnode164first"/>
+
+		<call-macro name="setRdfSubjectContributionBnode" field="164" part="second"/>
+		<call-macro name="setAgentAtContribution" field="164" part="second"/>
+		<call-macro name="setRoleAtContribution" field="164" part="second"/>
+		<call-macro name="setTypePersonAtContribution" field="164" part="second"/>
+		<call-macro name="setBackRdfSubject" field="@contributionBnode164second"/>
+
+		<call-macro name="setRdfSubjectContributionBnode" field="164" part="last"/>
+		<call-macro name="setAgentAtContribution" field="164" part="last"/>
+		<call-macro name="setRoleAtContribution" field="164" part="last"/>
+		<call-macro name="setTypePersonAtContribution" field="164" part="last"/>
+		<call-macro name="setBackRdfSubject" field="@contributionBnode164last"/>
+
 
 		<call-macro name="setCreatorPersonBnodeOrId" field="168"/>
 		<call-macro name="setContributorPersonBnodeOrId" field="168"/>
 		<data source="@creatorPersonBnodeOrId168" name="@agentId168"/>
 		<data source="@contributorPersonBnodeOrId168" name="@agentId168"/>
-		<call-macro name="setContributionBnode" field="168"/>
+		<!-- <call-macro name="setContributionBnode" field="168"/> -->
 		<call-macro name="setRelatorPerson" field="168"/>
+		<call-macro name="chooseRelatorNotFrom100sRoleFields" field="168"/>
+		<call-macro name="setRelatorNotFrom100sRoleFields" field="168"/>
 		<call-macro name="setRelatorNode" field="168"/>
+		<call-macro name="setRelatorConcat" field="168"/>
+		<call-macro name="setFirstRelator" field="168"/>
+		<call-macro name="setSecondRelator" field="168"/>
+		<call-macro name="setLastRelator" field="168"/>
+		<call-macro name="setFirstContributionBnodeOfMAB100sfield" field="168"/>
+		<call-macro name="setSecondContributionBnodeOfMAB100sfield" field="168"/>
+		<call-macro name="setLastContributionBnodeOfMAB100sfield" field="168"/>
+
+		<call-macro name="setRdfSubjectContributionBnode" field="168" part="first"/>
+		<call-macro name="setAgentAtContribution" field="168" part="first"/>
+		<call-macro name="setRoleAtContribution" field="168" part="first"/>
+		<call-macro name="setTypePersonAtContribution" field="168" part="first"/>
+		<call-macro name="setBackRdfSubject" field="@contributionBnode168first"/>
+
+		<call-macro name="setRdfSubjectContributionBnode" field="168" part="second"/>
+		<call-macro name="setAgentAtContribution" field="168" part="second"/>
+		<call-macro name="setRoleAtContribution" field="168" part="second"/>
+		<call-macro name="setTypePersonAtContribution" field="168" part="second"/>
+		<call-macro name="setBackRdfSubject" field="@contributionBnode168second"/>
+
+		<call-macro name="setRdfSubjectContributionBnode" field="168" part="last"/>
+		<call-macro name="setAgentAtContribution" field="168" part="last"/>
+		<call-macro name="setRoleAtContribution" field="168" part="last"/>
+		<call-macro name="setTypePersonAtContribution" field="168" part="last"/>
+		<call-macro name="setBackRdfSubject" field="@contributionBnode168last"/>
+
 
 		<call-macro name="setCreatorPersonBnodeOrId" field="172"/>
 		<call-macro name="setContributorPersonBnodeOrId" field="172"/>
 		<data source="@creatorPersonBnodeOrId172" name="@agentId172"/>
 		<data source="@contributorPersonBnodeOrId172" name="@agentId172"/>
-		<call-macro name="setContributionBnode" field="172"/>
+		<!-- <call-macro name="setContributionBnode" field="172"/> -->
 		<call-macro name="setRelatorPerson" field="172"/>
+		<call-macro name="chooseRelatorNotFrom100sRoleFields" field="172"/>
+		<call-macro name="setRelatorNotFrom100sRoleFields" field="172"/>
 		<call-macro name="setRelatorNode" field="172"/>
+		<call-macro name="setRelatorConcat" field="172"/>
+		<call-macro name="setFirstRelator" field="172"/>
+		<call-macro name="setSecondRelator" field="172"/>
+		<call-macro name="setLastRelator" field="172"/>
+		<call-macro name="setFirstContributionBnodeOfMAB100sfield" field="172"/>
+		<call-macro name="setSecondContributionBnodeOfMAB100sfield" field="172"/>
+		<call-macro name="setLastContributionBnodeOfMAB100sfield" field="172"/>
+
+		<call-macro name="setRdfSubjectContributionBnode" field="172" part="first"/>
+		<call-macro name="setAgentAtContribution" field="172" part="first"/>
+		<call-macro name="setRoleAtContribution" field="172" part="first"/>
+		<call-macro name="setTypePersonAtContribution" field="172" part="first"/>
+		<call-macro name="setBackRdfSubject" field="@contributionBnode172first"/>
+
+		<call-macro name="setRdfSubjectContributionBnode" field="172" part="second"/>
+		<call-macro name="setAgentAtContribution" field="172" part="second"/>
+		<call-macro name="setRoleAtContribution" field="172" part="second"/>
+		<call-macro name="setTypePersonAtContribution" field="172" part="second"/>
+		<call-macro name="setBackRdfSubject" field="@contributionBnode172second"/>
+
+		<call-macro name="setRdfSubjectContributionBnode" field="172" part="last"/>
+		<call-macro name="setAgentAtContribution" field="172" part="last"/>
+		<call-macro name="setRoleAtContribution" field="172" part="last"/>
+		<call-macro name="setTypePersonAtContribution" field="172" part="last"/>
+		<call-macro name="setBackRdfSubject" field="@contributionBnode172last"/>
+
 
 		<call-macro name="setCreatorPersonBnodeOrId" field="176"/>
 		<call-macro name="setContributorPersonBnodeOrId" field="176"/>
 		<data source="@creatorPersonBnodeOrId176" name="@agentId176"/>
 		<data source="@contributorPersonBnodeOrId176" name="@agentId176"/>
-		<call-macro name="setContributionBnode" field="176"/>
+		<!-- <call-macro name="setContributionBnode" field="176"/> -->
 		<call-macro name="setRelatorPerson" field="176"/>
+		<call-macro name="chooseRelatorNotFrom100sRoleFields" field="176"/>
+		<call-macro name="setRelatorNotFrom100sRoleFields" field="176"/>
 		<call-macro name="setRelatorNode" field="176"/>
+		<call-macro name="setRelatorConcat" field="176"/>
+		<call-macro name="setFirstRelator" field="176"/>
+		<call-macro name="setSecondRelator" field="176"/>
+		<call-macro name="setLastRelator" field="176"/>
+		<call-macro name="setFirstContributionBnodeOfMAB100sfield" field="176"/>
+		<call-macro name="setSecondContributionBnodeOfMAB100sfield" field="176"/>
+		<call-macro name="setLastContributionBnodeOfMAB100sfield" field="176"/>
+
+		<call-macro name="setRdfSubjectContributionBnode" field="176" part="first"/>
+		<call-macro name="setAgentAtContribution" field="176" part="first"/>
+		<call-macro name="setRoleAtContribution" field="176" part="first"/>
+		<call-macro name="setTypePersonAtContribution" field="176" part="first"/>
+		<call-macro name="setBackRdfSubject" field="@contributionBnode176first"/>
+
+		<call-macro name="setRdfSubjectContributionBnode" field="176" part="second"/>
+		<call-macro name="setAgentAtContribution" field="176" part="second"/>
+		<call-macro name="setRoleAtContribution" field="176" part="second"/>
+		<call-macro name="setTypePersonAtContribution" field="176" part="second"/>
+		<call-macro name="setBackRdfSubject" field="@contributionBnode176second"/>
+
+		<call-macro name="setRdfSubjectContributionBnode" field="176" part="last"/>
+		<call-macro name="setAgentAtContribution" field="176" part="last"/>
+		<call-macro name="setRoleAtContribution" field="176" part="last"/>
+		<call-macro name="setTypePersonAtContribution" field="176" part="last"/>
+		<call-macro name="setBackRdfSubject" field="@contributionBnode176last"/>
+
 
 		<call-macro name="setCreatorPersonBnodeOrId" field="180"/>
 		<call-macro name="setContributorPersonBnodeOrId" field="180"/>
 		<data source="@creatorPersonBnodeOrId180" name="@agentId180"/>
 		<data source="@contributorPersonBnodeOrId180" name="@agentId180"/>
-		<call-macro name="setContributionBnode" field="180"/>
+		<!-- <call-macro name="setContributionBnode" field="180"/> -->
 		<call-macro name="setRelatorPerson" field="180"/>
+		<call-macro name="chooseRelatorNotFrom100sRoleFields" field="180"/>
+		<call-macro name="setRelatorNotFrom100sRoleFields" field="180"/>
 		<call-macro name="setRelatorNode" field="180"/>
+		<call-macro name="setRelatorConcat" field="180"/>
+		<call-macro name="setFirstRelator" field="180"/>
+		<call-macro name="setSecondRelator" field="180"/>
+		<call-macro name="setLastRelator" field="180"/>
+		<call-macro name="setFirstContributionBnodeOfMAB100sfield" field="180"/>
+		<call-macro name="setSecondContributionBnodeOfMAB100sfield" field="180"/>
+		<call-macro name="setLastContributionBnodeOfMAB100sfield" field="180"/>
+
+		<call-macro name="setRdfSubjectContributionBnode" field="180" part="first"/>
+		<call-macro name="setAgentAtContribution" field="180" part="first"/>
+		<call-macro name="setRoleAtContribution" field="180" part="first"/>
+		<call-macro name="setTypePersonAtContribution" field="180" part="first"/>
+		<call-macro name="setBackRdfSubject" field="@contributionBnode180first"/>
+
+		<call-macro name="setRdfSubjectContributionBnode" field="180" part="second"/>
+		<call-macro name="setAgentAtContribution" field="180" part="second"/>
+		<call-macro name="setRoleAtContribution" field="180" part="second"/>
+		<call-macro name="setTypePersonAtContribution" field="180" part="second"/>
+		<call-macro name="setBackRdfSubject" field="@contributionBnode180second"/>
+
+		<call-macro name="setRdfSubjectContributionBnode" field="180" part="last"/>
+		<call-macro name="setAgentAtContribution" field="180" part="last"/>
+		<call-macro name="setRoleAtContribution" field="180" part="last"/>
+		<call-macro name="setTypePersonAtContribution" field="180" part="last"/>
+		<call-macro name="setBackRdfSubject" field="@contributionBnode180last"/>
+
 
 		<call-macro name="setCreatorPersonBnodeOrId" field="184"/>
 		<call-macro name="setContributorPersonBnodeOrId" field="184"/>
 		<data source="@creatorPersonBnodeOrId184" name="@agentId184"/>
 		<data source="@contributorPersonBnodeOrId184" name="@agentId184"/>
-		<call-macro name="setContributionBnode" field="184"/>
+		<!-- <call-macro name="setContributionBnode" field="184"/> -->
 		<call-macro name="setRelatorPerson" field="184"/>
+		<call-macro name="chooseRelatorNotFrom100sRoleFields" field="184"/>
+		<call-macro name="setRelatorNotFrom100sRoleFields" field="184"/>
 		<call-macro name="setRelatorNode" field="184"/>
+		<call-macro name="setRelatorConcat" field="184"/>
+		<call-macro name="setFirstRelator" field="184"/>
+		<call-macro name="setSecondRelator" field="184"/>
+		<call-macro name="setLastRelator" field="184"/>
+		<call-macro name="setFirstContributionBnodeOfMAB100sfield" field="184"/>
+		<call-macro name="setSecondContributionBnodeOfMAB100sfield" field="184"/>
+		<call-macro name="setLastContributionBnodeOfMAB100sfield" field="184"/>
+
+		<call-macro name="setRdfSubjectContributionBnode" field="184" part="first"/>
+		<call-macro name="setAgentAtContribution" field="184" part="first"/>
+		<call-macro name="setRoleAtContribution" field="184" part="first"/>
+		<call-macro name="setTypePersonAtContribution" field="184" part="first"/>
+		<call-macro name="setBackRdfSubject" field="@contributionBnode184first"/>
+
+		<call-macro name="setRdfSubjectContributionBnode" field="184" part="second"/>
+		<call-macro name="setAgentAtContribution" field="184" part="second"/>
+		<call-macro name="setRoleAtContribution" field="184" part="second"/>
+		<call-macro name="setTypePersonAtContribution" field="184" part="second"/>
+		<call-macro name="setBackRdfSubject" field="@contributionBnode184second"/>
+
+		<call-macro name="setRdfSubjectContributionBnode" field="184" part="last"/>
+		<call-macro name="setAgentAtContribution" field="184" part="last"/>
+		<call-macro name="setRoleAtContribution" field="184" part="last"/>
+		<call-macro name="setTypePersonAtContribution" field="184" part="last"/>
+		<call-macro name="setBackRdfSubject" field="@contributionBnode184last"/>
+
 
 		<call-macro name="setCreatorPersonBnodeOrId" field="188"/>
 		<call-macro name="setContributorPersonBnodeOrId" field="188"/>
 		<data source="@creatorPersonBnodeOrId188" name="@agentId188"/>
 		<data source="@contributorPersonBnodeOrId188" name="@agentId188"/>
-		<call-macro name="setContributionBnode" field="188"/>
+		<!-- <call-macro name="setContributionBnode" field="188"/> -->
 		<call-macro name="setRelatorPerson" field="188"/>
+		<call-macro name="chooseRelatorNotFrom100sRoleFields" field="188"/>
+		<call-macro name="setRelatorNotFrom100sRoleFields" field="188"/>
 		<call-macro name="setRelatorNode" field="188"/>
+		<call-macro name="setRelatorConcat" field="188"/>
+		<call-macro name="setFirstRelator" field="188"/>
+		<call-macro name="setSecondRelator" field="188"/>
+		<call-macro name="setLastRelator" field="188"/>
+		<call-macro name="setFirstContributionBnodeOfMAB100sfield" field="188"/>
+		<call-macro name="setSecondContributionBnodeOfMAB100sfield" field="188"/>
+		<call-macro name="setLastContributionBnodeOfMAB100sfield" field="188"/>
+
+		<call-macro name="setRdfSubjectContributionBnode" field="188" part="first"/>
+		<call-macro name="setAgentAtContribution" field="188" part="first"/>
+		<call-macro name="setRoleAtContribution" field="188" part="first"/>
+		<call-macro name="setTypePersonAtContribution" field="188" part="first"/>
+		<call-macro name="setBackRdfSubject" field="@contributionBnode188first"/>
+
+		<call-macro name="setRdfSubjectContributionBnode" field="188" part="second"/>
+		<call-macro name="setAgentAtContribution" field="188" part="second"/>
+		<call-macro name="setRoleAtContribution" field="188" part="second"/>
+		<call-macro name="setTypePersonAtContribution" field="188" part="second"/>
+		<call-macro name="setBackRdfSubject" field="@contributionBnode188second"/>
+
+		<call-macro name="setRdfSubjectContributionBnode" field="188" part="last"/>
+		<call-macro name="setAgentAtContribution" field="188" part="last"/>
+		<call-macro name="setRoleAtContribution" field="188" part="last"/>
+		<call-macro name="setTypePersonAtContribution" field="188" part="last"/>
+		<call-macro name="setBackRdfSubject" field="@contributionBnode188last"/>
+
 
 		<call-macro name="setCreatorPersonBnodeOrId" field="192"/>
 		<call-macro name="setContributorPersonBnodeOrId" field="192"/>
 		<data source="@creatorPersonBnodeOrId192" name="@agentId192"/>
 		<data source="@contributorPersonBnodeOrId192" name="@agentId192"/>
-		<call-macro name="setContributionBnode" field="192"/>
+		<!-- <call-macro name="setContributionBnode" field="192"/> -->
 		<call-macro name="setRelatorPerson" field="192"/>
+		<call-macro name="chooseRelatorNotFrom100sRoleFields" field="192"/>
+		<call-macro name="setRelatorNotFrom100sRoleFields" field="192"/>
 		<call-macro name="setRelatorNode" field="192"/>
+		<call-macro name="setRelatorConcat" field="192"/>
+		<call-macro name="setFirstRelator" field="192"/>
+		<call-macro name="setSecondRelator" field="192"/>
+		<call-macro name="setLastRelator" field="192"/>
+		<call-macro name="setFirstContributionBnodeOfMAB100sfield" field="192"/>
+		<call-macro name="setSecondContributionBnodeOfMAB100sfield" field="192"/>
+		<call-macro name="setLastContributionBnodeOfMAB100sfield" field="192"/>
+
+		<call-macro name="setRdfSubjectContributionBnode" field="192" part="first"/>
+		<call-macro name="setAgentAtContribution" field="192" part="first"/>
+		<call-macro name="setRoleAtContribution" field="192" part="first"/>
+		<call-macro name="setTypePersonAtContribution" field="192" part="first"/>
+		<call-macro name="setBackRdfSubject" field="@contributionBnode192first"/>
+
+		<call-macro name="setRdfSubjectContributionBnode" field="192" part="second"/>
+		<call-macro name="setAgentAtContribution" field="192" part="second"/>
+		<call-macro name="setRoleAtContribution" field="192" part="second"/>
+		<call-macro name="setTypePersonAtContribution" field="192" part="second"/>
+		<call-macro name="setBackRdfSubject" field="@contributionBnode192second"/>
+
+		<call-macro name="setRdfSubjectContributionBnode" field="192" part="last"/>
+		<call-macro name="setAgentAtContribution" field="192" part="last"/>
+		<call-macro name="setRoleAtContribution" field="192" part="last"/>
+		<call-macro name="setTypePersonAtContribution" field="192" part="last"/>
+		<call-macro name="setBackRdfSubject" field="@contributionBnode192last"/>
+
 
 		<call-macro name="setCreatorPersonBnodeOrId" field="196"/>
 		<call-macro name="setContributorPersonBnodeOrId" field="196"/>
 		<data source="@creatorPersonBnodeOrId196" name="@agentId196"/>
 		<data source="@contributorPersonBnodeOrId196" name="@agentId196"/>
-		<call-macro name="setContributionBnode" field="196"/>
+		<!-- <call-macro name="setContributionBnode" field="196"/> -->
 		<call-macro name="setRelatorPerson" field="196"/>
+		<call-macro name="chooseRelatorNotFrom100sRoleFields" field="196"/>
+		<call-macro name="setRelatorNotFrom100sRoleFields" field="196"/>
 		<call-macro name="setRelatorNode" field="196"/>
+		<call-macro name="setRelatorConcat" field="196"/>
+		<call-macro name="setFirstRelator" field="196"/>
+		<call-macro name="setSecondRelator" field="196"/>
+		<call-macro name="setLastRelator" field="196"/>
+		<call-macro name="setFirstContributionBnodeOfMAB100sfield" field="196"/>
+		<call-macro name="setSecondContributionBnodeOfMAB100sfield" field="196"/>
+		<call-macro name="setLastContributionBnodeOfMAB100sfield" field="196"/>
+
+		<call-macro name="setRdfSubjectContributionBnode" field="196" part="first"/>
+		<call-macro name="setAgentAtContribution" field="196" part="first"/>
+		<call-macro name="setRoleAtContribution" field="196" part="first"/>
+		<call-macro name="setTypePersonAtContribution" field="196" part="first"/>
+		<call-macro name="setBackRdfSubject" field="@contributionBnode196first"/>
+
+		<call-macro name="setRdfSubjectContributionBnode" field="196" part="second"/>
+		<call-macro name="setAgentAtContribution" field="196" part="second"/>
+		<call-macro name="setRoleAtContribution" field="196" part="second"/>
+		<call-macro name="setTypePersonAtContribution" field="196" part="second"/>
+		<call-macro name="setBackRdfSubject" field="@contributionBnode196second"/>
+
+		<call-macro name="setRdfSubjectContributionBnode" field="196" part="last"/>
+		<call-macro name="setAgentAtContribution" field="196" part="last"/>
+		<call-macro name="setRoleAtContribution" field="196" part="last"/>
+		<call-macro name="setTypePersonAtContribution" field="196" part="last"/>
+		<call-macro name="setBackRdfSubject" field="@contributionBnode196last"/>
 		<!-- ####################### -->
-		<!-- ################ koerperschaften -->
+		<!-- ################ Koerperschaften -->
 		<!-- ####################### -->
 		<!-- non-person entity data without GNDId -->
 		<call-macro name="setRelatorNonPerson" field="200"/>
@@ -3764,7 +4578,7 @@
 		<data source="@contributorCorporateBodyBnodeOrId296|@creatorCorporateBodyBnodeOrId296"
 			name="@agentId296"/>
 
-		<call-macro name="setContributionBnode" field="200"/>
+		<!-- <call-macro name="setContributionBnode" field="200"/>
 		<call-macro name="setContributionBnode" field="204"/>
 		<call-macro name="setContributionBnode" field="208"/>
 		<call-macro name="setContributionBnode" field="212"/>
@@ -3788,56 +4602,92 @@
 		<call-macro name="setContributionBnode" field="284"/>
 		<call-macro name="setContributionBnode" field="288"/>
 		<call-macro name="setContributionBnode" field="292"/>
-		<call-macro name="setContributionBnode" field="296"/>
+		<call-macro name="setContributionBnode" field="296"/> -->
+		
+		
+		<!-- <call-macro name="setCreatorPersonBnodeOrId" field="196"/>
+		<call-macro name="setContributorPersonBnodeOrId" field="196"/>
+		<data source="@creatorPersonBnodeOrId196" name="@agentId196"/>
+		<data source="@contributorPersonBnodeOrId196" name="@agentId196"/>
+		<call-macro name="setRelatorPerson" field="196"/>
+		<call-macro name="setRelatorNode" field="196"/>
+		<call-macro name="setRelatorConcat" field="196"/>
+		<call-macro name="setFirstRelator" field="196"/>
+		<call-macro name="setSecondRelator" field="196"/>
+		<call-macro name="setLastRelator" field="196"/>
+		<call-macro name="setFirstContributionBnodeOfMAB100sfield" field="196"/>
+		<call-macro name="setSecondContributionBnodeOfMAB100sfield" field="196"/>
+		<call-macro name="setLastContributionBnodeOfMAB100sfield" field="196"/>
+
+		<call-macro name="setRdfSubjectContributionBnode" field="196" part="first"/>
+		<call-macro name="setAgentAtContribution" field="196" part="first"/>
+		<call-macro name="setRoleAtContribution" field="196" part="first"/>
+		<call-macro name="setTypePersonAtContribution" field="196" part="first"/>
+		<call-macro name="setBackRdfSubject" field="@contributionBnode196first"/>
+
+		<call-macro name="setRdfSubjectContributionBnode" field="196" part="second"/>
+		<call-macro name="setAgentAtContribution" field="196" part="second"/>
+		<call-macro name="setRoleAtContribution" field="196" part="second"/>
+		<call-macro name="setTypePersonAtContribution" field="196" part="second"/>
+		<call-macro name="setBackRdfSubject" field="@contributionBnode196second"/>
+
+		<call-macro name="setRdfSubjectContributionBnode" field="196" part="last"/>
+		<call-macro name="setAgentAtContribution" field="196" part="last"/>
+		<call-macro name="setRoleAtContribution" field="196" part="last"/>
+		<call-macro name="setTypePersonAtContribution" field="196" part="last"/>
+		<call-macro name="setBackRdfSubject" field="@contributionBnode196last"/> -->
+		
+		
 
 		<call-macro name="setSubjectContributionBnode" field="100"/>
-		<call-macro name="setRoleForContributionBnode" field="100"/>
+		<!-- <call-macro name="setRoleForContributionBnode" field="100"/> -->
 		<call-macro name="setTypeContributionForContributionBnode" field="100"/>
 		<call-macro name="setAgentForContributionBnode" field="100"/>
 		<call-macro name="setBackSubjectContributionBnode" field="100"/>
 
 		<call-macro name="setSubjectAgentIdForContributionBnode" field="100"/>
 		<call-macro name="setLabelForPersonAgent" field="100"/>
-		<call-macro name="setTypePersonForAgent" field="100"/>
+		<!-- <call-macro name="setTypePersonForAgent" field="100"/> -->
 		<call-macro name="setBackRdfSubject" field="100"/>
 
+
 		<call-macro name="setSubjectContributionBnode" field="104"/>
-		<call-macro name="setRoleForContributionBnode" field="104"/>
+		<!-- <call-macro name="setRoleForContributionBnode" field="104"/> -->
 		<call-macro name="setTypeContributionForContributionBnode" field="104"/>
 		<call-macro name="setAgentForContributionBnode" field="104"/>
 		<call-macro name="setBackSubjectContributionBnode" field="104"/>
 
 		<call-macro name="setSubjectAgentIdForContributionBnode" field="104"/>
 		<call-macro name="setLabelForPersonAgent" field="104"/>
-		<call-macro name="setTypePersonForAgent" field="104"/>
+		<!-- <call-macro name="setTypePersonForAgent" field="104"/> -->
 		<call-macro name="setBackRdfSubject" field="104"/>
 
 
 		<call-macro name="setSubjectContributionBnode" field="108"/>
-		<call-macro name="setRoleForContributionBnode" field="108"/>
+		<!-- <call-macro name="setRoleForContributionBnode" field="108"/> -->
 		<call-macro name="setTypeContributionForContributionBnode" field="108"/>
 		<call-macro name="setAgentForContributionBnode" field="108"/>
 		<call-macro name="setBackSubjectContributionBnode" field="108"/>
 
 		<call-macro name="setSubjectAgentIdForContributionBnode" field="108"/>
 		<call-macro name="setLabelForPersonAgent" field="108"/>
-		<call-macro name="setTypePersonForAgent" field="108"/>
+		<!-- <call-macro name="setTypePersonForAgent" field="108"/> -->
 		<call-macro name="setBackRdfSubject" field="108"/>
 
 
 		<call-macro name="setSubjectContributionBnode" field="112"/>
-		<call-macro name="setRoleForContributionBnode" field="112"/>
+		<!-- <call-macro name="setRoleForContributionBnode" field="112"/> -->
 		<call-macro name="setTypeContributionForContributionBnode" field="112"/>
 		<call-macro name="setAgentForContributionBnode" field="112"/>
 		<call-macro name="setBackSubjectContributionBnode" field="112"/>
 
 		<call-macro name="setSubjectAgentIdForContributionBnode" field="112"/>
 		<call-macro name="setLabelForPersonAgent" field="112"/>
-		<call-macro name="setTypePersonForAgent" field="112"/>
+		<!-- <call-macro name="setTypePersonForAgent" field="112"/> -->
 		<call-macro name="setBackRdfSubject" field="112"/>
 
 		<call-macro name="setSubjectContributionBnode" field="116"/>
-		<call-macro name="setRoleForContributionBnode" field="116"/>
+		<!-- <call-macro name="setRoleForContributionBnode" field="116"/> -->
 		<call-macro name="setTypeContributionForContributionBnode" field="116"/>
 		<call-macro name="setAgentForContributionBnode" field="116"/>
 		<call-macro name="setBackSubjectContributionBnode" field="116"/>
@@ -3849,7 +4699,7 @@
 
 
 		<call-macro name="setSubjectContributionBnode" field="120"/>
-		<call-macro name="setRoleForContributionBnode" field="120"/>
+		<!-- <call-macro name="setRoleForContributionBnode" field="120"/> -->
 		<call-macro name="setTypeContributionForContributionBnode" field="120"/>
 		<call-macro name="setAgentForContributionBnode" field="120"/>
 		<call-macro name="setBackSubjectContributionBnode" field="120"/>
@@ -3861,7 +4711,7 @@
 
 
 		<call-macro name="setSubjectContributionBnode" field="124"/>
-		<call-macro name="setRoleForContributionBnode" field="124"/>
+		<!-- <call-macro name="setRoleForContributionBnode" field="124"/> -->
 		<call-macro name="setTypeContributionForContributionBnode" field="124"/>
 		<call-macro name="setAgentForContributionBnode" field="124"/>
 		<call-macro name="setBackSubjectContributionBnode" field="124"/>
@@ -3873,7 +4723,7 @@
 
 
 		<call-macro name="setSubjectContributionBnode" field="128"/>
-		<call-macro name="setRoleForContributionBnode" field="128"/>
+		<!-- <call-macro name="setRoleForContributionBnode" field="128"/> -->
 		<call-macro name="setTypeContributionForContributionBnode" field="128"/>
 		<call-macro name="setAgentForContributionBnode" field="128"/>
 		<call-macro name="setBackSubjectContributionBnode" field="128"/>
@@ -3885,7 +4735,7 @@
 
 
 		<call-macro name="setSubjectContributionBnode" field="132"/>
-		<call-macro name="setRoleForContributionBnode" field="132"/>
+		<!-- <call-macro name="setRoleForContributionBnode" field="132"/> -->
 		<call-macro name="setTypeContributionForContributionBnode" field="132"/>
 		<call-macro name="setAgentForContributionBnode" field="132"/>
 		<call-macro name="setBackSubjectContributionBnode" field="132"/>
@@ -3897,7 +4747,7 @@
 
 
 		<call-macro name="setSubjectContributionBnode" field="136"/>
-		<call-macro name="setRoleForContributionBnode" field="136"/>
+		<!-- <call-macro name="setRoleForContributionBnode" field="136"/> -->
 		<call-macro name="setTypeContributionForContributionBnode" field="136"/>
 		<call-macro name="setAgentForContributionBnode" field="136"/>
 		<call-macro name="setBackSubjectContributionBnode" field="136"/>
@@ -3909,7 +4759,7 @@
 
 
 		<call-macro name="setSubjectContributionBnode" field="140"/>
-		<call-macro name="setRoleForContributionBnode" field="140"/>
+		<!-- <call-macro name="setRoleForContributionBnode" field="140"/> -->
 		<call-macro name="setTypeContributionForContributionBnode" field="140"/>
 		<call-macro name="setAgentForContributionBnode" field="140"/>
 		<call-macro name="setBackSubjectContributionBnode" field="140"/>
@@ -3921,7 +4771,7 @@
 
 
 		<call-macro name="setSubjectContributionBnode" field="144"/>
-		<call-macro name="setRoleForContributionBnode" field="144"/>
+		<!-- <call-macro name="setRoleForContributionBnode" field="144"/> -->
 		<call-macro name="setTypeContributionForContributionBnode" field="144"/>
 		<call-macro name="setAgentForContributionBnode" field="144"/>
 		<call-macro name="setBackSubjectContributionBnode" field="144"/>
@@ -3933,7 +4783,7 @@
 
 
 		<call-macro name="setSubjectContributionBnode" field="148"/>
-		<call-macro name="setRoleForContributionBnode" field="148"/>
+		<!-- <call-macro name="setRoleForContributionBnode" field="148"/> -->
 		<call-macro name="setTypeContributionForContributionBnode" field="148"/>
 		<call-macro name="setAgentForContributionBnode" field="148"/>
 		<call-macro name="setBackSubjectContributionBnode" field="148"/>
@@ -3945,7 +4795,7 @@
 
 
 		<call-macro name="setSubjectContributionBnode" field="152"/>
-		<call-macro name="setRoleForContributionBnode" field="152"/>
+		<!-- <call-macro name="setRoleForContributionBnode" field="152"/> -->
 		<call-macro name="setTypeContributionForContributionBnode" field="152"/>
 		<call-macro name="setAgentForContributionBnode" field="152"/>
 		<call-macro name="setBackSubjectContributionBnode" field="152"/>
@@ -3957,7 +4807,7 @@
 
 
 		<call-macro name="setSubjectContributionBnode" field="156"/>
-		<call-macro name="setRoleForContributionBnode" field="156"/>
+		<!-- <call-macro name="setRoleForContributionBnode" field="156"/> -->
 		<call-macro name="setTypeContributionForContributionBnode" field="156"/>
 		<call-macro name="setAgentForContributionBnode" field="156"/>
 		<call-macro name="setBackSubjectContributionBnode" field="156"/>
@@ -3969,7 +4819,7 @@
 
 
 		<call-macro name="setSubjectContributionBnode" field="160"/>
-		<call-macro name="setRoleForContributionBnode" field="160"/>
+		<!-- <call-macro name="setRoleForContributionBnode" field="160"/> -->
 		<call-macro name="setTypeContributionForContributionBnode" field="160"/>
 		<call-macro name="setAgentForContributionBnode" field="160"/>
 		<call-macro name="setBackSubjectContributionBnode" field="160"/>
@@ -3981,7 +4831,7 @@
 
 
 		<call-macro name="setSubjectContributionBnode" field="164"/>
-		<call-macro name="setRoleForContributionBnode" field="164"/>
+		<!-- <call-macro name="setRoleForContributionBnode" field="164"/> -->
 		<call-macro name="setTypeContributionForContributionBnode" field="164"/>
 		<call-macro name="setAgentForContributionBnode" field="164"/>
 		<call-macro name="setBackSubjectContributionBnode" field="164"/>
@@ -3993,7 +4843,7 @@
 
 
 		<call-macro name="setSubjectContributionBnode" field="168"/>
-		<call-macro name="setRoleForContributionBnode" field="168"/>
+		<!-- <call-macro name="setRoleForContributionBnode" field="168"/> -->
 		<call-macro name="setTypeContributionForContributionBnode" field="168"/>
 		<call-macro name="setAgentForContributionBnode" field="168"/>
 		<call-macro name="setBackSubjectContributionBnode" field="168"/>
@@ -4005,7 +4855,7 @@
 
 
 		<call-macro name="setSubjectContributionBnode" field="172"/>
-		<call-macro name="setRoleForContributionBnode" field="172"/>
+		<!-- <call-macro name="setRoleForContributionBnode" field="172"/> -->
 		<call-macro name="setTypeContributionForContributionBnode" field="172"/>
 		<call-macro name="setAgentForContributionBnode" field="172"/>
 		<call-macro name="setBackSubjectContributionBnode" field="172"/>
@@ -4017,7 +4867,7 @@
 
 
 		<call-macro name="setSubjectContributionBnode" field="176"/>
-		<call-macro name="setRoleForContributionBnode" field="176"/>
+		<!-- <call-macro name="setRoleForContributionBnode" field="176"/> -->
 		<call-macro name="setTypeContributionForContributionBnode" field="176"/>
 		<call-macro name="setAgentForContributionBnode" field="176"/>
 		<call-macro name="setBackSubjectContributionBnode" field="176"/>
@@ -4029,7 +4879,7 @@
 
 
 		<call-macro name="setSubjectContributionBnode" field="180"/>
-		<call-macro name="setRoleForContributionBnode" field="180"/>
+		<!-- <call-macro name="setRoleForContributionBnode" field="180"/> -->
 		<call-macro name="setTypeContributionForContributionBnode" field="180"/>
 		<call-macro name="setAgentForContributionBnode" field="180"/>
 		<call-macro name="setBackSubjectContributionBnode" field="180"/>
@@ -4041,7 +4891,7 @@
 
 
 		<call-macro name="setSubjectContributionBnode" field="184"/>
-		<call-macro name="setRoleForContributionBnode" field="184"/>
+		<!-- <call-macro name="setRoleForContributionBnode" field="184"/> -->
 		<call-macro name="setTypeContributionForContributionBnode" field="184"/>
 		<call-macro name="setAgentForContributionBnode" field="184"/>
 		<call-macro name="setBackSubjectContributionBnode" field="184"/>
@@ -4053,7 +4903,7 @@
 
 
 		<call-macro name="setSubjectContributionBnode" field="188"/>
-		<call-macro name="setRoleForContributionBnode" field="188"/>
+		<!-- <call-macro name="setRoleForContributionBnode" field="188"/> -->
 		<call-macro name="setTypeContributionForContributionBnode" field="188"/>
 		<call-macro name="setAgentForContributionBnode" field="188"/>
 		<call-macro name="setBackSubjectContributionBnode" field="188"/>
@@ -4065,7 +4915,7 @@
 
 
 		<call-macro name="setSubjectContributionBnode" field="192"/>
-		<call-macro name="setRoleForContributionBnode" field="192"/>
+		<!-- <call-macro name="setRoleForContributionBnode" field="192"/> -->
 		<call-macro name="setTypeContributionForContributionBnode" field="192"/>
 		<call-macro name="setAgentForContributionBnode" field="192"/>
 		<call-macro name="setBackSubjectContributionBnode" field="192"/>
@@ -4077,7 +4927,7 @@
 
 
 		<call-macro name="setSubjectContributionBnode" field="196"/>
-		<call-macro name="setRoleForContributionBnode" field="196"/>
+		<!-- <call-macro name="setRoleForContributionBnode" field="196"/> -->
 		<call-macro name="setTypeContributionForContributionBnode" field="196"/>
 		<call-macro name="setAgentForContributionBnode" field="196"/>
 		<call-macro name="setBackSubjectContributionBnode" field="196"/>
@@ -4465,14 +5315,14 @@
 
 		<combine name="~rdf:subject" value="$[ns-lobid-resource]${id}#!">
 			<data source="@id" name="id"/>
-			<data source="@contributionBnode[12][0123456789][02468]"/>
-			<data source="@relatorNode[12][0123456789][02468]"/>
 		</combine>
-		<entity name="~rdf:list" reset="true">
+		<entity name="~rdf:list" reset="true" sameEntity="true">
 			<combine name="http://id.loc.gov/ontologies/bibframe/contribution" value="${a}"
 				sameEntity="true" reset="true">
-				<data source="@contributionBnode[12][0123456789][02468]" name="a"/>
-				<data source="@relatorNode[12][0123456789][02468]"/>
+				<!-- <data source="@contributionBnode[12][0123456789][02468]" name="a"/> -->
+				<!-- <data source="@relatorNode[12][0123456789][02468]"/> -->
+				<data source="@contributionBnode1[0123456789][02468]first|@contributionBnode1[0123456789][02468]second|@contributionBnode1[0123456789][02468]last" name="a"/>
+				<!-- <data source="@relatorNode100first|@relatorNode100second|@relatorNode100last"/> -->
 			</combine>
 		</entity>
 		<combine name="@corporateBodyForTitle" value="${corporateBody4Title}">
