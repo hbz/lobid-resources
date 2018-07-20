@@ -1,15 +1,26 @@
-_:b0 <http://schema.org/endDate> "1975"^^<http://www.w3.org/2001/XMLSchema#gYear> .
-_:b0 <http://schema.org/location> "Bad Ems"^^<http://www.w3.org/2001/XMLSchema#string> .
-_:b0 <http://schema.org/publishedBy> "Statist. Landesamt"^^<http://www.w3.org/2001/XMLSchema#string> .
-_:b0 <http://schema.org/startDate> "1975"^^<http://www.w3.org/2001/XMLSchema#gYear> .
-_:b0 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://schema.org/PublicationEvent> .
-_:b1 <http://schema.org/endTime> "0001-01-01T00:00:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
-_:b1 <http://schema.org/instrument> <https://github.com/hbz/lobid-resources> .
-_:b1 <http://schema.org/object> <http://lobid.org/hbz01/HT012237361> .
-_:b1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://schema.org/CreateAction> .
+_:b0 <http://id.loc.gov/ontologies/bibframe/agent> <http://d-nb.info/gnd/36467-8> .
+_:b0 <http://id.loc.gov/ontologies/bibframe/role> <http://id.loc.gov/vocabulary/relators/cre> .
+_:b0 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://id.loc.gov/ontologies/bibframe/Contribution> .
+_:b1 <http://schema.org/endDate> "1975"^^<http://www.w3.org/2001/XMLSchema#gYear> .
+_:b1 <http://schema.org/location> "Bad Ems"^^<http://www.w3.org/2001/XMLSchema#string> .
+_:b1 <http://schema.org/publishedBy> "Statist. Landesamt"^^<http://www.w3.org/2001/XMLSchema#string> .
+_:b1 <http://schema.org/startDate> "1975"^^<http://www.w3.org/2001/XMLSchema#gYear> .
+_:b1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://schema.org/PublicationEvent> .
+_:b2 <http://schema.org/endTime> "0001-01-01T00:00:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+_:b2 <http://schema.org/instrument> <https://github.com/hbz/lobid-resources> .
+_:b2 <http://schema.org/object> <http://lobid.org/hbz01/HT012237361> .
+_:b2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://schema.org/CreateAction> .
+_:b3 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> _:b0 .
+_:b3 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
 <http://creativecommons.org/publicdomain/zero/1.0> <http://www.w3.org/2000/01/rdf-schema#label> "Creative Commons-Lizenz CC0 1.0 Universal"^^<http://www.w3.org/2001/XMLSchema#string> .
+<http://d-nb.info/gnd/36467-8> <http://d-nb.info/standards/elementset/gnd#gndIdentifier> "36467-8"^^<http://www.w3.org/2001/XMLSchema#string> .
+<http://d-nb.info/gnd/36467-8> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://d-nb.info/standards/elementset/gnd#CorporateBody> .
+<http://d-nb.info/gnd/36467-8> <http://www.w3.org/2000/01/rdf-schema#label> "Rheinland-Pfalz. Statistisches Landesamt"^^<http://www.w3.org/2001/XMLSchema#string> .
+<http://d-nb.info/gnd/36467-8> <http://www.w3.org/2004/02/skos/core#altLabel> "Statistisches Landesamt"^^<http://www.w3.org/2001/XMLSchema#string> .
+<http://d-nb.info/gnd/36467-8> <http://www.w3.org/2004/02/skos/core#altLabel> "Statistisches Landesamt Rheinland-Pfalz"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://hub.culturegraph.org/resource/HBZ-HT012237361> <http://www.w3.org/2000/01/rdf-schema#label> "Culturegraph Ressource"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://id.loc.gov/vocabulary/iso639-2/deu> <http://www.w3.org/2000/01/rdf-schema#label> "Deutsch"^^<http://www.w3.org/2001/XMLSchema#string> .
+<http://id.loc.gov/vocabulary/relators/cre> <http://www.w3.org/2000/01/rdf-schema#label> "Autor/in"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://ld.zdb-services.de/resource/590016-5> <http://www.w3.org/2000/01/rdf-schema#label> "ZDB-Ressource"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/hbz01/HT012237361> <http://purl.org/lobid/lv#isPartOf> <https://datahub.io/dataset/hbz_unioncatalog> .
 <http://lobid.org/hbz01/HT012237361> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://schema.org/DataFeedItem> .
@@ -28,12 +39,13 @@ _:b1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://schema.org/Create
 <http://lobid.org/resources/HT012237361> <http://purl.org/dc/terms/created> "19991120"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/resources/HT012237361> <http://purl.org/dc/terms/modified> "20080109"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/resources/HT012237361> <http://purl.org/lobid/lv#inDataset> <http://lobid.org/resources/dataset#!> .
-<http://lobid.org/resources/HT012237361> <http://purl.org/lobid/lv#resultOf> _:b1 .
+<http://lobid.org/resources/HT012237361> <http://purl.org/lobid/lv#resultOf> _:b2 .
 <http://lobid.org/resources/HT012237361> <http://schema.org/license> <http://creativecommons.org/publicdomain/zero/1.0> .
 <http://lobid.org/resources/HT012237361> <http://schema.org/provider> <http://lobid.org/organisations/DE-101#!> .
 <http://lobid.org/resources/HT012237361> <http://schema.org/sourceOrganization> <http://lobid.org/organisations/DE-9001#!> .
 <http://lobid.org/resources/HT012237361> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://purl.org/lobid/lv#BibliographicDescription> .
 <http://lobid.org/resources/HT012237361> <http://www.w3.org/2000/01/rdf-schema#label> "Webseite der hbz-Ressource HT012237361"^^<http://www.w3.org/2001/XMLSchema#string> .
+<http://lobid.org/resources/HT012237361#!> <http://id.loc.gov/ontologies/bibframe/contribution> _:b3 .
 <http://lobid.org/resources/HT012237361#!> <http://id.loc.gov/ontologies/bibframe/hasItem> <http://lobid.org/items/HT012237361:DE-107:Per.%205157#!> .
 <http://lobid.org/resources/HT012237361#!> <http://purl.org/dc/terms/alternative> "Einheitswerte des Grundverm\u00F6gens nach der Hauptfeststellung"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/resources/HT012237361#!> <http://purl.org/dc/terms/alternative> "Finanzen und Steuern"^^<http://www.w3.org/2001/XMLSchema#string> .
@@ -45,7 +57,7 @@ _:b1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://schema.org/Create
 <http://lobid.org/resources/HT012237361#!> <http://purl.org/lobid/lv#zdbID> "590016-5"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/resources/HT012237361#!> <http://rdaregistry.info/Elements/u/P60493> "Statistische Berichte des Statistischen Landesamtes Rheinland-Pfalz"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lobid.org/resources/HT012237361#!> <http://rdaregistry.info/Elements/u/P60517> "L, Finanzen und Steuern. IV. 6, Einheitswerte des Grundverm\u00F6gens nach der Hauptfeststellung : Gemeindeergebnisse"^^<http://www.w3.org/2001/XMLSchema#string> .
-<http://lobid.org/resources/HT012237361#!> <http://schema.org/publication> _:b0 .
+<http://lobid.org/resources/HT012237361#!> <http://schema.org/publication> _:b1 .
 <http://lobid.org/resources/HT012237361#!> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://purl.org/dc/terms/BibliographicResource> .
 <http://lobid.org/resources/HT012237361#!> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://purl.org/lobid/lv#Statistics> .
 <http://lobid.org/resources/HT012237361#!> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://purl.org/ontology/bibo/Periodical> .
