@@ -1,5 +1,5 @@
 /*
- * Copyright 2014,2018 Deutsche Nationalbibliothek
+ * Copyright 2014,2018 Deutsche Nationalbibliothek and hbz
  *
  * Licensed under the Apache License, Version 2.0 the "License";
  * you may not use this file except in compliance with the License.
@@ -130,7 +130,7 @@ public class DateFormat extends AbstractSimpleStatelessFunction {
 	}
 
 	static {
-		final Set<String> set = new HashSet<String>();
+		final Set<String> set = new HashSet<>();
 		Collections.addAll(set, Locale.getISOLanguages());
 		SUPPORTED_LANGUAGES = Collections.unmodifiableSet(set);
 	}
@@ -139,6 +139,7 @@ public class DateFormat extends AbstractSimpleStatelessFunction {
 	public final String process(final String value) {
 		String result = value;
 		final SimpleDateFormat sdf = new SimpleDateFormat(inputFormat);
+		sdf.setLenient(false);
 		try {
 			final Calendar c = Calendar.getInstance();
 			c.setTime(sdf.parse(value));
@@ -159,6 +160,7 @@ public class DateFormat extends AbstractSimpleStatelessFunction {
 			}
 
 			final SimpleDateFormat sdfo = new SimpleDateFormat(p, outputLocale);
+			sdfo.setLenient(false);
 			result = sdfo.format(c.getTime());
 
 			if (removeLeadingZeros) {
@@ -189,6 +191,7 @@ public class DateFormat extends AbstractSimpleStatelessFunction {
 	 * {@link #setInputFormat(String) setInputFormat method}.
 	 * 
 	 * @author Pascal Christoph (dr0i)
+	 * @param outputPattern the output pattern
 	 */
 	public final void setOutputPattern(final String outputPattern) {
 		this.outputPattern = outputPattern;
@@ -199,6 +202,7 @@ public class DateFormat extends AbstractSimpleStatelessFunction {
 	 * method} couldn't be parsed.
 	 * 
 	 * @author Pascal Christoph (dr0i)
+	 * @param fallback the fallback for the output
 	 */
 	public final void setFallback(final String fallback) {
 		this.fallback = fallback;
