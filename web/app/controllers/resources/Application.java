@@ -162,7 +162,7 @@ public class Application extends Controller {
 	 * @param t Type filter for resource queries
 	 * @param sort Sorting order for results ("newest", "oldest", "" -> relevance)
 	 * @param word The 'word' query, a concept from the hbz union catalog
-	 * @param format The response format (see {@code Accept.Format})
+	 * @param f The response format (see {@code Accept.Format})
 	 * @param aggs The comma separated aggregation fields
 	 * @param location A single "lat,lon" point or space delimited points polygon
 	 * @param nested A nested query, formatted as "<nested field>:<query string>"
@@ -173,8 +173,10 @@ public class Application extends Controller {
 			final String name, final String subject, final String id,
 			final String publisher, final String issued, final String medium,
 			final int from, final int size, final String owner, String t, String sort,
-			String word, String format, String aggs, String location, String nested,
+			String word, String f, String aggs, String location, String nested,
 			String filter) {
+		// bulk -> jsonl, see https://github.com/hbz/lobid-resources/issues/861
+		final String format = f != null && f.equals("bulk") ? "jsonl" : f;
 		final String aggregations = aggs == null ? "" : aggs;
 		if (!aggregations.isEmpty() && !Search.SUPPORTED_AGGREGATIONS
 				.containsAll(Arrays.asList(aggregations.split(",")))) {

@@ -19,9 +19,9 @@ public class Accept {
 	}
 
 	enum Format {
+		BULK("jsonl", "application/x-jsonlines"), //
 		JSON_LD("json(.+)?", "application/json", "application/ld+json"), //
 		HTML("html", "text/html"), //
-		BULK("bulk", "application/x-jsonlines"), //
 		RDF_XML("rdf", "application/rdf+xml", "application/xml", "text/xml"), //
 		N_TRIPLE("nt", "application/n-triples", "text/plain"), //
 		TURTLE("ttl", "text/turtle", "application/x-turtle");
