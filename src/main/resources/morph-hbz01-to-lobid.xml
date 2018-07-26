@@ -282,7 +282,7 @@
 							</none>
 						</if>
 						<data source="$[field_2]" name="a">
-						    <replace pattern="^http" with="Siehe: http" />
+								<replace pattern="^http" with="Siehe: http" />
 						</data>
 					</combine>
 				</entity>
@@ -361,8 +361,11 @@
 					<data source="@preferredNamePersonConcatSubject"/>
 					<data source="@preferredNameConcatTitleWithNumberingSubject"/>
 					<data source="@preferredNameConcatTitleWithoutNumberingSubject"/>
+					<concat delimiter=" | " name="a" flushWith="$[field_1]??">
+						<data source="$[field_1]-[-1].a"/>
+					</concat>
 					<concat delimiter="" name="a" flushWith="$[field_1]??|$[field_2]-1.a">
-						<data source="$[field_1]-[-1].[abfghknpskxz-]">
+						<data source="$[field_1]-[-1].[bfghknpskxz-]">
 							<replace pattern="^" with=", "/>
 						</data>
 						<concat delimiter="" name="e" flushWith="$[field_1]??">
@@ -1086,7 +1089,7 @@
 			<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="${a}"
 				flushWith="@contributionBnode$[field]">
 				<data source="@creatorPersonLabel$[field]|@contributorPersonLabel$[field]" name="a">
-				    <replace pattern="^http" with="Siehe: http" />
+						<replace pattern="^http" with="Siehe: http" />
 				</data>
 			</combine>
 		</macro>
@@ -1875,12 +1878,11 @@
 			<data source="@betterParallelTitle352or353" name="a"/>
 			<data source="355[-ab]1.[ab]" name="b"/>
 		</combine>
-
 		<data source="376[-adb][-1].[ad]" name="$[ns-bibo]shortTitle"/>
 		<data source="@otherTitle" name="http://rdaregistry.info/Elements/u/P60493">
 			<replace pattern="&gt;" with=""/>
 			<replace pattern="&lt;" with=""/>
-		    <replace pattern="^http" with="Siehe: http" />
+				<replace pattern="^http" with="Siehe: http" />
 		</data>
 		<data source="675[-abcd][-12].a" name="$[ns-lobid-vocab]titleKeyword"/>
 		<!-- generating title using the superordination -->
@@ -2370,7 +2372,7 @@
 		<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="${a}"
 			flushWith="@predecessorHbzId">
 			<data source="@predecessorLabel" name="a">
-			    <replace pattern="^http" with="Siehe: http" />
+					<replace pattern="^http" with="Siehe: http" />
 			</data>
 		</combine>
 		<combine name="~rdf:subject" value="$[ns-lobid-resource]${subject}#!" flushWith="@predecessorHbzId">
@@ -2378,8 +2380,8 @@
 		</combine>
 		<!-- successors -->
 		<data source="533[-xyz]1.a|785-1.t" name="@successorLabel" >
-	        <replace pattern=".*---&gt; :? ?" with=""/>
-	        <replace pattern="&gt;|&lt;" with=""/>
+					<replace pattern=".*---&gt; :? ?" with=""/>
+					<replace pattern="&gt;|&lt;" with=""/>
 		</data>
 		<combine name="@successorHbzId" value="${a}">
 			<data source="533[-xyz]1.9|785-1.9" name="a">
@@ -2691,40 +2693,36 @@
 		<combine name="http://www.w3.org/2007/05/powder-s#describedby" value="$[ns-lobid-resource]${a}">
 			<data source="@id" name="a"/>
 		</combine>
+		<combine name="@dateCreated" value="${a}">
+			<choose name="a">
+				<data source="002[ab]1.a" name="a">
+					<dateformat inputformat="yyyyMMdd" outputpattern="yyyyMMdd" fallback="00010101"/>
+				</data>
+				<data source="003-1.a" name="a">
+					<regexp match="([0-9]{8})" format="${1}"/>
+				</data>
+				<data source="@id" name="a">
+					<constant value="00010101"/>
+				</data>
+			</choose>
+		</combine>
 		<combine name="~rdf:subject" value="${a}">
-			<data source="002[ab]1.a"/>
+			<data source="@dateCreated|003-1.a"/>
 			<data source="@id" name="a">
 				<regexp match="(.*)" format="$[ns-lobid-resource]${1}"/>
 			</data>
 		</combine>
 		<combine name="http://purl.org/dc/terms/created" value="${a}">
-			<data source="002[ab]1.a" name="a">
-				<regexp match="([0-9]{8})" format="${1}"/>
-			</data>
+			<data source="@dateCreated" name="a"/>
 		</combine>
-		<combine name="~rdf:subject" value="${a}">
-			<if>
-				<none>
-					<data source="002[ab]1.a"/>
-				</none>
-			</if>
-			<data source="@id" name="a">
-				<regexp match="(.*)" format="$[ns-lobid-resource]${1}"/>
-			</data>
-		</combine>
-		<combine name="http://purl.org/dc/terms/created" value="${a}">
-			<if>
-				<none>
-					<data source="002[ab]1.a"/>
-				</none>
-			</if>
+		<combine name="http://purl.org/dc/terms/modified" value="${a}">
 			<data source="003-1.a" name="a">
 				<regexp match="([0-9]{8})" format="${1}"/>
 			</data>
 		</combine>
 		<!-- set subject uri of resource anew -->
 		<combine name="~rdf:subject" value="$[ns-lobid-resource]${id}#!">
-			<data source="002[ab]1.a"/>
+			<data source="003-1.a|@dateCreated" name="a"/>
 			<data source="@id" name="id"/>
 		</combine>
 		<call-macro name="setRdfSubjectDescribedBy" field="070a1.a"/>
@@ -2836,22 +2834,6 @@
 		<call-macro name="setProvenance" field_1="http://open-services.net/ns/core#modifiedBy"
 			field_2="070b1.a"/>
 		<call-macro name="setBackRdfSubject" field="070b1.a"/>
-		<combine name="~rdf:subject" value="${a}">
-			<data source="003-1.a"/>
-			<data source="@id" name="a">
-				<regexp match="(.*)" format="$[ns-lobid-resource]${1}"/>
-			</data>
-		</combine>
-		<combine name="http://purl.org/dc/terms/modified" value="${a}">
-			<data source="003-1.a" name="a">
-				<regexp match="([0-9]{8})" format="${1}"/>
-			</data>
-		</combine>
-		<!-- set subject uri of resource anew -->
-		<combine name="~rdf:subject" value="$[ns-lobid-resource]${id}#!">
-			<data source="003-1.a" name="a"/>
-			<data source="@id" name="id"/>
-		</combine>
 		<combine name="~rdf:subject" value="$[ns-lobid-resource]${id}#!">
 			<data source="@id" name="id"/>
 			<data source="@itemId"/>
@@ -4583,45 +4565,26 @@
 			<data source="@titleRemainder333" name="corporateBody4Title"/>
 			<data source="34[26]-1.a|35[04]-1.a"/>
 		</combine>
-		<combine name="@corporateBodyForTitleBnode" value="_:${a}ContributionBnode">
+		<combine name="@corporateBodyForTitleBnode" value="_:${a}contributionBnode" flushWith="@corporateBodyForTitleAgentBnode">
 			<data source="@corporateBodyForTitle" name="a"/>
 		</combine>
-		<entity name="~rdf:list" reset="true">
-			<combine name="http://id.loc.gov/ontologies/bibframe/contribution" value="${a}"
-				sameEntity="true" reset="true" flushWith="@corporateBodyForTitleBnode">
+		<combine name="@corporateBodyForTitleAgentBnode" value="_:${a}agentBnode">
+			<data source="@corporateBodyForTitle" name="a"/>
+		</combine>
+		<entity name="~rdf:list">
+			<combine name="http://id.loc.gov/ontologies/bibframe/contribution" value="${a}">
 				<data source="@corporateBodyForTitleBnode" name="a"/>
 			</combine>
 		</entity>
+		<combine name="~rdf:subject" value="${a}" flushWith="@corporateBodyForTitleAgentBnode">
+			<data source="@corporateBodyForTitleBnode" name="a"/>
+		</combine>
+		<combine name="http://id.loc.gov/ontologies/bibframe/agent" value="${a}" flushWith="@corporateBodyForTitleAgentBnode">
+			<data source="@corporateBodyForTitleAgentBnode" name="a"/>
+		</combine>
 		<combine name="~rdf:subject" value="${a}" sameEntity="true"
 			flushWith="@corporateBodyForTitleBnode">
 			<data source="@corporateBodyForTitleBnode" name="a"/>
-		</combine>
-		<combine name="http://id.loc.gov/ontologies/bibframe/agent"
-			value="_:${a}agentBnode" sameEntity="true" flushWith="@corporateBodyForTitleBnode">
-			<data source="@corporateBodyForTitle" name="a"/>
-		</combine>
-		<combine name="~rdf:subject" value="_:${a}agentBnode" sameEntity="true"
-			flushWith="@corporateBodyForTitleBnode">
-			<data source="@corporateBodyForTitle" name="a"/>
-		</combine>
-		<combine name="http://www.w3.org/2004/02/skos/core#altLabel" value="${a}"
-			flushWith="@corporateBodyForTitleBnode">
-			<data source="342-1.a" name="a"/>
-		</combine>
-		<combine name="http://www.w3.org/2004/02/skos/core#altLabel" value="${a}"
-			flushWith="@corporateBodyForTitleBnode">
-			<data source="346-1.a" name="a"/>
-		</combine>
-		<combine name="http://www.w3.org/2004/02/skos/core#altLabel" value="${a}"
-			flushWith="@corporateBodyForTitleBnode">
-			<data source="350-1.a" name="a"/>
-		</combine>
-		<combine name="http://www.w3.org/2004/02/skos/core#altLabel" value="${a}"
-			flushWith="@corporateBodyForTitleBnode">
-			<data source="354-1.a" name="a"/>
-		</combine>
-		<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="${a}">
-			<data source="@corporateBodyForTitle" name="a"/>
 		</combine>
 		<combine name="http://id.loc.gov/ontologies/bibframe/role"
 			value="http://id.loc.gov/vocabulary/relators/cre" flushWith="@corporateBodyForTitleBnode">
@@ -4630,6 +4593,34 @@
 		<combine name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type"
 			value="http://id.loc.gov/ontologies/bibframe/Contribution" flushWith="@corporateBodyForTitleBnode">
 			<data source="34[26]-1.a|35[04]-1.a"/>
+		</combine>
+		<combine name="~rdf:subject" value="${a}" flushWith="@corporateBodyForTitleAgentBnode">
+			<data source="@corporateBodyForTitleAgentBnode" name="a"/>
+		</combine>
+		<combine name="http://www.w3.org/2004/02/skos/core#altLabel" value="${a}"
+			flushWith="@corporateBodyForTitleAgentBnode" reset="true">
+			<data source="342-1.a" name="a"/>
+		</combine>
+		<combine name="http://www.w3.org/2004/02/skos/core#altLabel" value="${a}"
+			flushWith="@corporateBodyForTitleAgentBnode">
+			<data source="346-1.a" name="a"/>
+		</combine>
+		<combine name="http://www.w3.org/2004/02/skos/core#altLabel" value="${a}"
+			flushWith="@corporateBodyForTitleAgentBnode">
+			<data source="350-1.a" name="a"/>
+		</combine>
+		<combine name="http://www.w3.org/2004/02/skos/core#altLabel" value="${a}"
+			flushWith="@corporateBodyForTitleAgentBnode">
+			<data source="354-1.a" name="a"/>
+		</combine>
+		<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="${a}">
+			<data source="@corporateBodyForTitle" name="a"/>
+		</combine>
+		<combine name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" value="${a}"
+			flushWith="@corporateBodyForTitleAgentBnode">
+			<data source="@corporateBodyForTitleAgentBnode" name="a">
+				<constant value="http://d-nb.info/standards/elementset/gnd#CorporateBody"/>
+			</data>
 		</combine>
 		<combine name="~rdf:subject" value="$[ns-lobid-resource]${subject}#!">
 			<data source="@id" name="subject"/>
