@@ -29,6 +29,8 @@ JAVA_OPTS=$(echo "$JAVA_OPTS" |sed 's#,#\ #g')
 
 cd $HOME/git/$REPO/web
 kill $(cat target/universal/stage/RUNNING_PID)
+sleep 14
+kill -9 $(cat target/universal/stage/RUNNING_PID)
 rm target/universal/stage/RUNNING_PID
 echo "Going to sleep for 11 seconds. Then lookup the process list for the repo name.
 If everything is fine, 'monit' is going to start the $REPO instance ..."
