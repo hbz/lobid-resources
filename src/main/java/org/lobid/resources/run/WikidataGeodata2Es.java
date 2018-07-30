@@ -276,11 +276,12 @@ public class WikidataGeodata2Es {
 	 * Filters the geo data and aliases and labels, gets the superordinated
 	 * locatedIn-node and builds a simple JSON document.
 	 * 
-	 * @return a Pair of String and JsonNode
+	 * @return a Pair of Id and JsonNode
 	 */
 	public static Function<JsonNode, Pair<String, JsonNode>> transform2lobidWikidata() {
 		return node -> {
 			ObjectNode root = null;
+			String id;
 			try {
 				JsonNode geoNode = node.findPath("P625").findPath("mainsnak")
 						.findPath("datavalue").findPath("value");
@@ -293,8 +294,8 @@ public class WikidataGeodata2Es {
 				if (!aliasesNode.isMissingNode())
 					root.set("aliases", aliasesNode);
 				ArrayNode type = mapper.createObjectNode().arrayNode();
-				spatial.put("id",
-						HTTP_WWW_WIKIDATA_ORG_ENTITY + node.findPath("id").asText());
+				id = node.with("entities").fieldNames().next();
+				spatial.put("id", HTTP_WWW_WIKIDATA_ORG_ENTITY + id);
 				spatial.put("label",
 						node.findPath("labels").findPath("de").findPath("value").asText());
 				if (!geoNode.isMissingNode()
@@ -327,20 +328,20 @@ public class WikidataGeodata2Es {
 					}
 					root.set("locatedIn", locatedInNode);
 				}
-				List<JsonNode> typeNode = node.findPath("P31").findValues("mainsnak");
+				List<JsonNode> typeNode = node.findValues("P31");
 				if (!typeNode.isEmpty()) {
 					typeNode.parallelStream()
-							.forEach(e -> type.add(HTTP_WWW_WIKIDATA_ORG_ENTITY
-									+ e.findPath("datavalue").findPath("id").asText()));
+							.forEach(e -> e.findValues("mainsnak")
+									.forEach(e1 -> type.add(HTTP_WWW_WIKIDATA_ORG_ENTITY
+											+ e1.findPath("datavalue").findPath("id").asText())));
 					spatial.set("type", type);
 				}
-				LOG.debug("Wikidata-Type extracted for " + root.get("locatedIn") + " "
-						+ type.toString());
+				LOG.debug("Wikidata-Type extracted for type " + type.toString());
 			} catch (Exception e) {
 				LOG.error("Couldn't build a json document from the wd-entity ", e);
 				return null;
 			}
-			return Pair.of(node.findPath("id").asText(), root);
+			return Pair.of(id, root);
 		};
 	}
 
