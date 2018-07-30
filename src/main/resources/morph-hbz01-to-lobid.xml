@@ -5732,14 +5732,11 @@
 
 		<combine name="@chooseIsPartNoteIn" value="${a}">
 			<choose name="a">
-				<!-- <data source="501-1.a">
-					<regexp match="In: ([a-zA-Z ]*[a-zA-Z])" format="${1}"/>
-				</data> -->
 				<data source="501-1.a">
-					<regexp match="^In: ([a-zA-Z ]*[a-zA-Z])\. (Bd.*|Vol.*|Nr.*)$" format="${1}"/>
+					<regexp match="^[iI]n: ([a-zA-Zäöüß ]*[a-zA-Zäöüß&quot;ÄÖÜ&#44;&#45;])\. (Bd.*|Vol.*|Nr.*)$" format="${1}"/>
 				</data>
 				<data source="501-1.a">
-					<regexp match="^In: ([a-zA-Z ]*[a-zA-Z])$" format="${1}"/>
+					<regexp match="^[iI]n: ([a-zA-Zäöüß]*, [a-zA-Zäöüß]*: [ a-zA-Z&quot;äöüßÄÖÜ&#44;&#45;]*)" format="${1}"/>
 				</data>
 			</choose>
 		</combine>
@@ -5790,20 +5787,39 @@
 		<combine name="@chooseIsPartNoteAus" value="${a}">
 			<choose name="a">
 				<data source="501-1.a">
-					<regexp match="^Aus: ([a-zA-Z \.]*[a-zA-Z\.])\. (Jg.|Vol.|Bd.|H.|Nr.)" format="${1}"/>
+					<regexp match="^Aus.* [iI]n:.*" format=""/>
 				</data>
 				<data source="501-1.a">
-					<regexp match="^Aus: ([a-zA-Z \.]*[a-zA-Z\.])" format="${1}"/>
+					<regexp match="^Aus: ([a-zA-Z äöüß&#45;]*): (Jg.|Vol.|Bd.|H.|Nr.|[0-9]*\.[0-9]*)" format="${1}"/>
 				</data>
-				<!-- <data source="501-1.a">
-					<regexp match="Aus: ([a-zA-Z \.]*[a-zA-Z\.])" format="${1}"/>
-				</data> -->
+				<data source="501-1.a">
+					<regexp match="^Aus: ([a-zA-Zäöüß&#45;]*, [a-zA-Zäöüß-]*: *[a-zA-ZäöüßÄÖÜ\. ][a-zA-Zäöüß])\. (Jg.|Vol.|Bd.|H.|Nr.)" format="${1}"/>
+				</data>
+				<data source="501-1.a">
+					<regexp match="^Aus: ([a-zA-Zäöüß&#45;]*, [a-zA-Zäöüß-]*: .*)\. (Jg.|Vol.|Bd.|H.|Nr.)" format="${1}"/>
+				</data>
+				<data source="501-1.a">
+					<regexp match="^Aus: ([a-zA-Zäöüß&#45;]*, [a-zA-Zäöüß-]*: .*[a-zA-ZäöüßÄÖÜ])$" format="${1}"/>
+				</data>
+				<data source="501-1.a">
+					<regexp match="^Aus: ([a-zA-Z äöüß&#45;]*: [a-zA-ZäöüßÄÖÜ&#46; ]*[a-zäöüß]) ; (Bd.*|Jg.*|H.*|Nr.*|Vol.*|[0-9]*\.[0-9]*)$" format="${1}"/>
+				</data>
+				<data source="501-1.a">
+					<regexp match="^Aus: ([a-zA-Z äöüß&#45;]*: [a-zA-ZäöüßÄÖÜ&#46; ]*[a-zäöüß])$" format="${1}"/>
+				</data>
+				<data source="501-1.a">
+					<regexp match="^Aus: ([a-zA-Z äöüß&#45;]*: [a-zA-Z\. äöüßÄÖÜ]*)\. (Jg.|Vol.|Bd.|H.|Nr.)" format="${1}"/>
+				</data>
+				<data source="501-1.a">
+					<regexp match="^Aus: ([a-zA-ZäöüßÄÖÜ][a-zA-Z-äöüßÄÖÜ\. ]*[a-zA-Zäöüß\.])" format="${1}"/>
+				</data>
 			</choose>
 		</combine>
 		<combine name="@isPartNoteBnodeAus" value="_:isPartNoteBnodeAus">
 			<if>
 				<none>
 					<data source="599[-s][-1].a"/>
+					<data source="4[56789]1[-ab]1.a"/>
 				</none>
 			</if>
 			<data source="@chooseIsPartNoteAus"/>
@@ -5821,20 +5837,28 @@
 		<combine name="$[ns-lobid-vocab]numbering" value="${a}" flushWith="@isPartNoteBnodeAus">
 			<choose name="a" flushWith="@isPartNoteBnodeAus">
 				<data source="501-1.a">
-					<regexp match="((Jg.|Vol.).*[0-9])" format="${1}"/>
+					<regexp match="^Aus.* [iI]n:.*" format=""/>
 				</data>
 				<data source="501-1.a">
-					<regexp match="([0-9][0-9 \.]*[0-9])"/>
+					<regexp match="((Bd.|Jg.|Vol.).*[0-9])" format="${1}"/>
 				</data>
 				<data source="501-1.a">
-					<regexp match=" [;\.] ([0-9]*)$"/>
+					<regexp match="([0-9][0-9 \.]*[0-9])" format="${1}"/>
+				</data>
+				<data source="501-1.a">
+					<regexp match=" [;\.] ([0-9]*)$" format="${1}"/>
 				</data>
 			</choose> 
 		</combine>
 		<combine name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" value="${a}" flushWith="@isPartNoteBnodeAus">
-			<data source="501-1.a" name="a">
-				<constant value="$[ns-lobid-vocab]IsPartOfRelation"/>
-			</data>
+			<choose name="a" flushWith="@isPartNoteBnodeAus">
+				<data source="501-1.a">
+					<regexp match="^Aus.* [iI]n:.*" format=""/>
+				</data>
+				<data source="501-1.a" name="a">
+					<constant value="$[ns-lobid-vocab]IsPartOfRelation"/>
+				</data>
+			</choose>
 		</combine>
 		<call-macro name="setBackRdfSubject" field="@isPartNoteBnodeAus"/>
 
