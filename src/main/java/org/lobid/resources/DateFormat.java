@@ -171,7 +171,7 @@ public class DateFormat extends AbstractSimpleStatelessFunction {
 		} catch (final Exception e) {
 			if (fallback != null) {
 				LOG.warn(
-						"Couldn't parse date" + value + ".Set to fallback: " + fallback);
+						"Couldn't parse date " + value + ".Set to fallback: " + fallback);
 				result = fallback;
 			}
 		}
