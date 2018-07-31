@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.text.Collator;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -69,6 +71,7 @@ import views.html.details;
 import views.html.details_item;
 import views.html.index;
 import views.html.query;
+import views.html.rss;
 import views.html.stars;
 
 /**
@@ -105,6 +108,14 @@ public class Application extends Controller {
 	static final int ONE_HOUR = 60 * 60;
 	/** The number of seconds in one day. */
 	public static final int ONE_DAY = 24 * ONE_HOUR;
+
+	/** Date format used in RSS feeds. */
+	public static final DateFormat RSS_DATE_FORMAT =
+			new SimpleDateFormat("E, dd MMM yyyy HH:mm:ss Z");
+
+	/** Date format used in lobid-resources describedBy.dateCreated field. */
+	public static final DateFormat LOBID_DATE_FORMAT =
+			new SimpleDateFormat("yyyyMMdd");
 
 	/**
 	 * @return The index page.
@@ -217,21 +228,34 @@ public class Application extends Controller {
 			result = bulkResult(q, nested, owner, index);
 		} else {
 			result = Promise.promise(() -> {
+				// TODO: avoid redundant call here if RSS is requested
 				Search queryResources = index.queryResources();
 				boolean returnSuggestions = responseFormat.startsWith("json:");
-				JsonNode json = returnSuggestions
-						? toSuggestions(queryResources.getResult(), format.split(":")[1])
-						: queryResources.getResult();
+				JsonNode json =
+						returnSuggestions ? toSuggestions(queryResources.getResult(),
+								responseFormat.split(":")[1]) : queryResources.getResult();
 				String s = json.toString();
-				boolean htmlRequested =
-						responseFormat.equals(Accept.Format.HTML.queryParamString);
-				return htmlRequested
-						? ok(query.render(s, q, agent, name, subject, id, publisher, issued,
-								medium, from, size, queryResources.getTotal(), owner, t, sort,
-								word))
-						: (returnSuggestions ? withCallback(json)
-								: responseFor(withQueryMetadata(json, index),
-										Accept.Format.JSON_LD.queryParamString));
+				switch (Format.of(responseFormat)) {
+				case HTML:
+					return ok(query.render(s, q, agent, name, subject, id, publisher,
+							issued, medium, from, size, queryResources.getTotal(), owner, t,
+							sort, word));
+				case RSS:
+					// TODO: link from html (see https://ar.al/2018/06/29/reclaiming-rss/)
+					JsonNode jsonForRss =
+							new Search.Builder().query(queryBuilder).from(from).size(size)
+									.sort("newest").build().queryResources().getResult();
+					String[] segments = request().uri().split("/");
+					String queryDetails = Arrays.asList(segments).get(segments.length - 1)
+							.replace("search?", "").replaceAll("&?format=rss", "");
+					return ok(rss.render(jsonForRss.toString(),
+							request().uri().replaceAll("&?format=rss", ""), queryDetails))
+									.as("application/rss+xml");
+				default:
+					return returnSuggestions ? withCallback(json)
+							: responseFor(withQueryMetadata(json, index),
+									Accept.Format.JSON_LD.queryParamString);
+				}
 			});
 		}
 		cacheOnRedeem(cacheId, result, ONE_HOUR);

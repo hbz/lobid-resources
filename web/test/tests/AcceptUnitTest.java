@@ -40,9 +40,11 @@ public class AcceptUnitTest {
 			// no header, just format parameter:
 			{ fakeRequest(), "html", /*->*/ "html" },
 			{ fakeRequest(), "json", /*->*/ "json" },
+			{ fakeRequest(), "json:title", /*->*/ "json:title" },
 			{ fakeRequest(), "rdf", /*->*/ "rdf" },
 			{ fakeRequest(), "ttl", /*->*/ "ttl" },
 			{ fakeRequest(), "nt", /*->*/ "nt" },
+			{ fakeRequest(), "rss", /*->*/ "rss" },
 			// supported content types, no format parameter given:
 			{ fakeRequest().header("Accept", "text/html"), null, /*->*/ "html" },
 			{ fakeRequest().header("Accept", "application/json"), null, /*->*/ "json" },
@@ -54,6 +56,7 @@ public class AcceptUnitTest {
 			{ fakeRequest().header("Accept", "application/xml"), null, /*->*/ "rdf" },
 			{ fakeRequest().header("Accept", "application/rdf+xml"), null, /*->*/ "rdf" },
 			{ fakeRequest().header("Accept", "text/xml"), null, /*->*/ "rdf" },
+			{ fakeRequest().header("Accept", "application/rss+xml"), null, /*->*/ "rss" },
 			// we pick the preferred content type:
 			{ fakeRequest().header("Accept", "text/html,application/json"), null, /*->*/"html" },
 			{ fakeRequest().header("Accept", "application/json,text/html"), null, /*->*/ "json" },
