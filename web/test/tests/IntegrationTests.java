@@ -104,6 +104,8 @@ public class IntegrationTests extends LocalIndexSetup {
 			assertThat(result.contentType()).isEqualTo("application/x-jsonlines");
 			String text = Helpers.contentAsString(result);
 			assertThat(text.split("\\n").length).isGreaterThanOrEqualTo(10);
+			assertThat(result.header(Http.HeaderNames.CONTENT_DISPOSITION))
+					.isNotNull().isNotEmpty().contains("attachment; filename=");
 		});
 	}
 

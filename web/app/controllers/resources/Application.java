@@ -188,6 +188,7 @@ public class Application extends Controller {
 			String filter) {
 		// bulk -> jsonl, see https://github.com/hbz/lobid-resources/issues/861
 		final String format = f != null && f.equals("bulk") ? "jsonl" : f;
+
 		final String aggregations = aggs == null ? "" : aggs;
 		if (!aggregations.isEmpty() && !Search.SUPPORTED_AGGREGATIONS
 				.containsAll(Arrays.asList(aggregations.split(",")))) {
@@ -195,70 +196,52 @@ public class Application extends Controller {
 					String.format("Unsupported aggregations: %s (supported: %s)",
 							aggregations, Search.SUPPORTED_AGGREGATIONS)));
 		}
-		addCorsHeader();
-		String uuid = session("uuid");
-		if (uuid == null) {
-			uuid = UUID.randomUUID().toString();
-			session("uuid", uuid);
-		}
+
 		String responseFormat = Accept.formatFor(format, request().acceptedTypes());
-		boolean isBulkRequest =
-				responseFormat.equals(Accept.Format.BULK.queryParamString);
-		if (isBulkRequest) {
-			response().setHeader("Content-Disposition",
-					String.format(
-							"attachment; filename=\"lobid-resources-bulk-%s.jsonl\"",
-							System.currentTimeMillis()));
-		}
-		String cacheId = String.format("%s-%s-%s-%s", uuid, request().uri(),
-				Accept.formatFor(format, request().acceptedTypes()), starredIds());
+		addResponseHeaders(responseFormat);
+
+		String cacheId = createCacheId(format);
 		@SuppressWarnings("unchecked")
 		Promise<Result> cachedResult = (Promise<Result>) Cache.get(cacheId);
 		if (cachedResult != null)
 			return cachedResult;
+
 		Logger.debug("Not cached: {}, will cache for one hour", cacheId);
 		QueryBuilder queryBuilder = new Queries.Builder().q(q).agent(agent)
 				.name(name).subject(subject).id(id).publisher(publisher).issued(issued)
 				.medium(medium).t(t).owner(owner).nested(nested).location(location)
 				.filter(filter).word(word).build();
+		String sortBy =
+				responseFormat.equals(Accept.Format.RSS.queryParamString) ? "newest"
+						: sort;
 		Search index = new Search.Builder().query(queryBuilder).from(from)
-				.size(size).sort(sort).aggs(aggregations).build();
-		Promise<Result> result;
-		if (isBulkRequest) {
-			result = bulkResult(q, nested, owner, index);
-		} else {
-			result = Promise.promise(() -> {
-				// TODO: avoid redundant call here if RSS is requested
-				Search queryResources = index.queryResources();
-				boolean returnSuggestions = responseFormat.startsWith("json:");
-				JsonNode json =
-						returnSuggestions ? toSuggestions(queryResources.getResult(),
-								responseFormat.split(":")[1]) : queryResources.getResult();
-				String s = json.toString();
-				switch (Format.of(responseFormat)) {
-				case HTML:
-					return ok(query.render(s, q, agent, name, subject, id, publisher,
-							issued, medium, from, size, queryResources.getTotal(), owner, t,
-							sort, word));
-				case RSS:
-					// TODO: link from html (see https://ar.al/2018/06/29/reclaiming-rss/)
-					JsonNode jsonForRss =
-							new Search.Builder().query(queryBuilder).from(from).size(size)
-									.sort("newest").build().queryResources().getResult();
-					String[] segments = request().uri().split("/");
-					String queryDetails = Arrays.asList(segments).get(segments.length - 1)
-							.replace("search?", "").replaceAll("&?format=rss", "");
-					return ok(rss.render(jsonForRss.toString(),
-							request().uri().replaceAll("&?format=rss", ""), queryDetails))
-									.as("application/rss+xml");
-				default:
-					return returnSuggestions ? withCallback(json)
-							: responseFor(withQueryMetadata(json, index),
-									Accept.Format.JSON_LD.queryParamString);
-				}
-			});
-		}
+				.size(size).sort(sortBy).aggs(aggregations).build();
+
+		Promise<Result> result =
+				createResult(q, agent, name, subject, id, publisher, issued, medium,
+						from, size, owner, t, sort, word, nested, responseFormat, index);
 		cacheOnRedeem(cacheId, result, ONE_HOUR);
+
+		return resultOrError(q, agent, name, subject, id, publisher, issued, medium,
+				from, size, owner, t, sort, word, result);
+	}
+
+	private static String createCacheId(final String format) {
+		String uuid = session("uuid");
+		if (uuid == null) {
+			uuid = UUID.randomUUID().toString();
+			session("uuid", uuid);
+		}
+		String cacheId = String.format("%s-%s-%s-%s", uuid, request().uri(),
+				Accept.formatFor(format, request().acceptedTypes()), starredIds());
+		return cacheId;
+	}
+
+	private static Promise<Result> resultOrError(final String q,
+			final String agent, final String name, final String subject,
+			final String id, final String publisher, final String issued,
+			final String medium, final int from, final int size, final String owner,
+			String t, String sort, String word, Promise<Result> result) {
 		return result.recover((Throwable throwable) -> {
 			Html html = query.render("[]", q, agent, name, subject, id, publisher,
 					issued, medium, from, size, 0L, owner, t, sort, word);
@@ -272,6 +255,55 @@ public class Application extends Controller {
 			Logger.error(message, throwable);
 			return internalServerError(html);
 		});
+	}
+
+	private static Promise<Result> createResult(final String q,
+			final String agent, final String name, final String subject,
+			final String id, final String publisher, final String issued,
+			final String medium, final int from, final int size, final String owner,
+			String t, String sort, String word, String nested, String responseFormat,
+			Search index) {
+		Promise<Result> result =
+				responseFormat.equals(Accept.Format.BULK.queryParamString)
+						? bulkResult(q, nested, owner, index)
+						: Promise.promise(() -> {
+							Search queryResources = index.queryResources();
+							JsonNode json = queryResources.getResult();
+							String s = json.toString();
+							switch (Format.of(responseFormat)) {
+							case HTML:
+								return ok(query.render(s, q, agent, name, subject, id,
+										publisher, issued, medium, from, size,
+										queryResources.getTotal(), owner, t, sort, word));
+							case RSS:
+								// TODO: link from html (see
+								// https://ar.al/2018/06/29/reclaiming-rss/)
+								String[] segments = request().uri().split("/");
+								String queryDetails =
+										Arrays.asList(segments).get(segments.length - 1)
+												.replace("search?", "").replaceAll("&?format=rss", "");
+								return ok(rss.render(s,
+										request().uri().replaceAll("&?format=rss", ""),
+										queryDetails)).as("application/rss+xml");
+							default:
+								return responseFormat.startsWith("json:")
+										? withCallback(
+												toSuggestions(json, responseFormat.split(":")[1]))
+										: responseFor(withQueryMetadata(json, index),
+												Accept.Format.JSON_LD.queryParamString);
+							}
+						});
+		return result;
+	}
+
+	private static void addResponseHeaders(String responseFormat) {
+		addCorsHeader();
+		if (responseFormat.equals(Accept.Format.BULK.queryParamString)) {
+			response().setHeader("Content-Disposition",
+					String.format(
+							"attachment; filename=\"lobid-resources-bulk-%s.jsonl\"",
+							System.currentTimeMillis()));
+		}
 	}
 
 	private static Promise<Result> bulkResult(final String q, final String nested,
