@@ -66,11 +66,14 @@ $('input.search-resources').autocomplete({
 
 	<p>Standardmäßig liefert dieser Dienst strukturierte API-Antworten (als JSON):</p>
 	<p><code>curl http://lobid.org@resources.routes.Application.resource("HT018472857")</code></p>
-	<p>Er unterstützt Content-Negotiation über den Accept-Header für JSON (application/json), JSON lines (application/x-jsonlines) oder HTML (text/html):</p>
+	<p>Er unterstützt Content-Negotiation für JSON (application/json), JSON lines (application/x-jsonlines), RSS (application/rss+xml) und HTML (text/html):</p>
 	<p><code>curl --header "Accept: application/json" http://lobid.org@resources.routes.Application.query("kunst")</code></p>
+	<p><code>curl --header "Accept: application/rss+xml" http://lobid.org@resources.routes.Application.query("kunst")</code></p>
 	<p><code>curl --header "Accept: application/x-jsonlines" http://lobid.org@resources.routes.Application.query("kunst") > kunst.jsonl</code></p>
-	<p>Der Query-Parameter "format" (Werte: html,json,jsonl) kann verwendet werden, um den Accept-Header aufzuheben, z.B. zur Anzeige von JSON im Browser:</p>
+	<p>Der Query-Parameter "format" (Werte: html,json,jsonl,rss) kann verwendet werden, um den Accept-Header aufzuheben, z.B. zur Anzeige von JSON im Browser:</p>
 	<p><a href='@resources.routes.Application.resource("HT018472857", format="json")'>@resources.routes.Application.resource("HT018472857", format="json")</a></p>
+	<p>Oder zum Abonnieren eines RSS-Feeds:</p>
+	<p><a href='@resources.routes.Application.query("kunst", format="rss")'>@resources.routes.Application.query("kunst", format="rss")</a></p>
 	<p>Der Wert des Format-Parameters kann für Einzeltreffer auch in URLs als Dateiendung verwendet werden:</p>
 	<p><a href='@resources.routes.Application.resourceDotFormat("HT018472857", format="json")'>@resources.routes.Application.resourceDotFormat("HT018472857", format="json")</a></p>
 	<p>Für größere Anfragen kann die Antwort als gzip komprimiert werden:</p>

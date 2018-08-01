@@ -276,8 +276,6 @@ public class Application extends Controller {
 										publisher, issued, medium, from, size,
 										queryResources.getTotal(), owner, t, sort, word));
 							case RSS:
-								// TODO: link from html (see
-								// https://ar.al/2018/06/29/reclaiming-rss/)
 								String[] segments = request().uri().split("/");
 								String queryDetails =
 										Arrays.asList(segments).get(segments.length - 1)
