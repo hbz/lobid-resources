@@ -1,6 +1,6 @@
 @* Copyright 2014 Fabian Steeg, hbz. Licensed under the GPLv2 *@
 
-@(q: String, title: String)(content: Html)
+@(q: String, title: String, rss: Option[String] = None)(content: Html)
 
 @import controllers.resources.Lobid
 
@@ -9,12 +9,13 @@
 <html>
     <head>
         <title>@title</title>
-        <link rel="stylesheet" media="all" href="@controllers.routes.Assets.at("stylesheets/bootstrap.min.css")">
-        <link rel="stylesheet" media="all" href="@controllers.routes.Assets.at("stylesheets/octicons.css")">
-        <link rel="stylesheet" media="all" href="@controllers.routes.Assets.at("stylesheets/jquery-ui.min.css")">
-        <link rel="stylesheet" media="all" href='@controllers.routes.Assets.at("stylesheets/font-awesome.min.css")'>
-        <link rel="stylesheet" media="all" href="@controllers.routes.Assets.at("stylesheets/resources.css")">
-        <link rel="shortcut icon" type="image/png" href="@controllers.routes.Assets.at("images/favicon.png")">
+        <link rel="stylesheet" media="all" href="@controllers.routes.Assets.at("stylesheets/bootstrap.min.css")"/>
+        <link rel="stylesheet" media="all" href="@controllers.routes.Assets.at("stylesheets/octicons.css")"/>
+        <link rel="stylesheet" media="all" href="@controllers.routes.Assets.at("stylesheets/jquery-ui.min.css")"/>
+        <link rel="stylesheet" media="all" href='@controllers.routes.Assets.at("stylesheets/font-awesome.min.css")'/>
+        <link rel="stylesheet" media="all" href="@controllers.routes.Assets.at("stylesheets/resources.css")"/>
+        <link rel="shortcut icon" type="image/png" href="@controllers.routes.Assets.at("images/favicon.png")"/>
+        @for(rssPath <- rss){<link id='rss' rel="alternate" type="application/rss+xml" href="@controllers.resources.Application.CONFIG.getString("host")@rssPath"/>}
         <script src="@controllers.routes.Assets.at("javascripts/jquery-1.10.2.min.js")"></script>
         <script src="@controllers.routes.Assets.at("javascripts/jquery-ui.min.js")"></script>
         <script src="@controllers.routes.Assets.at("javascripts/bootstrap.min.js")"></script>
@@ -63,7 +64,7 @@
                   </div><!--/.nav-collapse -->
                 </div><!--/.container-fluid -->
             </div>
-            @if(request.uri.toString() != resources.routes.Application.advanced().toString()){@tags.search_form(q)}
+            @if(request.uri.toString() != resources.routes.Application.advanced().toString() && !title.contains("API")){@tags.search_form(q)}
             @content
             <div class="panel panel-default footer">
               <div class="panel-body">

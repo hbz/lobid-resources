@@ -50,7 +50,7 @@
 	if(q.contains("hasSuperordinate")) {select(("Band","Bände"))} else if (q.contains("containedIn")) {select(("Beitrag","Beiträge"))} else {""}
 }
 
-@main(q, "lobid-resources - Ergebnisliste") {
+@main(q, "lobid-resources - Ergebnisliste", rss = Some(resources.routes.Application.query(q,agent,name,subject,id,publisher,issued,medium,from,size,owner,t,word=word,format="rss").toString)) {
     @if(Seq(name, id, publisher).exists(!_.isEmpty)){ @* advanced search, not shown in facets *@
       @tags.search_advanced("Suche aktualisieren", q, agent, name, subject, id, publisher, issued, sortParam)
       <script>$("#search-simple").hide()</script>
@@ -82,7 +82,14 @@
              <div class="panel panel-default">
                  <div class="panel-body" style="text-align:center">
                  <div class="row">
-                    <div class="col-md-1"></div>
+                    <div class="col-md-1 text-left">
+                    <a rel='alternate' type='application/rss+xml' href='@resources.routes.Application.query(q,agent,name,subject,id,publisher,issued,medium,from,size,owner,t,word=word,format="rss")'>
+                        <span class="octicon octicon-rss" title='RSS-Feed für diese Suchanfrage'></span>
+                    </a>
+                    <a rel='alternate' type='application/ld+json' href='@resources.routes.Application.query(q,agent,name,subject,id,publisher,issued,medium,from,size,owner,t,word=word,format="json")'>
+                        <img class='json-ld-icon' src='@routes.Assets.at("images/json-ld.png")' title='JSON-LD für diese Suchanfrage'>
+                    </a>
+                    </div>
                     <div class="col-md-10">
                      @allHits @if(!q.isEmpty && !labelRaw.isEmpty) {
                       @defining("http://lobid.org/resources/" + q.substring(q.lastIndexOf("/")+1, q.length()-1)) { lobidUrl =>
