@@ -603,6 +603,7 @@ collector.
       <element ref="tns:java"/>
       <element ref="tns:urlescape"/>
       <element ref="tns:sanitizeUrl"/>
+      <element ref="tns:dateformat" />
     </choice>
   </group>
   <!-- <element name="if-not-received"> -->
@@ -883,6 +884,37 @@ litereals)
 		</complexType>
 	</element>
 
+	<element name="dateformat">
+		<annotation>
+			<documentation>Format a date in a specific format.</documentation>
+		</annotation>
+		<complexType>
+			<attribute name="inputformat" type="string" use="optional" default="dd.MM.yyyy" />
+			<attribute name="fallback" type="string" use="optional" />
+			<attribute name="outputpattern" type="string" use="optional"/>
+			<attribute name="outputformat" use="optional" default="LONG">
+				<simpleType>
+					<restriction base="string">
+						<enumeration value="FULL" />
+						<enumeration value="LONG" />
+						<enumeration value="MEDIUM" />
+						<enumeration value="SHORT" />
+					</restriction>
+				</simpleType>
+			</attribute>
+            <attribute name="era" use="optional" default="AUTO">
+                <simpleType>
+                    <restriction base="string">
+                        <enumeration value="AUTO" />
+                        <enumeration value="AD" />
+                        <enumeration value="BC" />
+                    </restriction>
+                </simpleType>
+            </attribute>
+            <attribute name="removeLeadingZeros" type="boolean" use="optional" default="false" />
+			<attribute name="language" type="string" use="optional" />
+		</complexType>
+	</element>
 
   <element name="constant">
     <annotation>
