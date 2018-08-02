@@ -2696,6 +2696,7 @@
 		<combine name="@dateCreated" value="${a}">
 			<choose name="a">
 				<data source="002[ab]1.a" name="a">
+					<regexp match="^[0-9]{8}"/>
 					<dateformat inputformat="yyyyMMdd" outputpattern="yyyyMMdd" fallback="00010101"/>
 				</data>
 				<data source="003-1.a" name="a">
