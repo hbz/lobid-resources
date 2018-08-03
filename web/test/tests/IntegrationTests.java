@@ -86,13 +86,26 @@ public class IntegrationTests extends LocalIndexSetup {
 
 	@Test
 	public void bulkRequest() {
+		bulkRequestWith("jsonl");
+	}
+
+	@Test
+	// old format param for bulk, keep for comaptibility, see:
+	// https://github.com/hbz/lobid-resources/issues/861
+	public void bulkRequestCompatibility() {
+		bulkRequestWith("bulk");
+	}
+
+	private static void bulkRequestWith(String param) {
 		running(testServer(3333), () -> {
 			Result result =
-					route(fakeRequest(GET, "/resources/search?q=buch&format=bulk"));
+					route(fakeRequest(GET, "/resources/search?q=buch&format=" + param));
 			assertThat(result).isNotNull();
 			assertThat(result.contentType()).isEqualTo("application/x-jsonlines");
 			String text = Helpers.contentAsString(result);
 			assertThat(text.split("\\n").length).isGreaterThanOrEqualTo(10);
+			assertThat(result.header(Http.HeaderNames.CONTENT_DISPOSITION))
+					.isNotNull().isNotEmpty().contains("attachment; filename=");
 		});
 	}
 

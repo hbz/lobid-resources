@@ -1,0 +1,18 @@
+@* Copyright 2018 Fabian Steeg, hbz. Licensed under the GPLv2 *@
+@(result: String, uri: String, query: String)@defining(play.api.libs.json.Json.parse(result).asOpt[Seq[play.api.libs.json.JsValue]].getOrElse(Seq()).zipWithIndex) { hits =><?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>lobid-resources @query</title>
+    <link>@controllers.resources.Application.CONFIG.getString("host")@uri</link>
+    <description>hbz union catalogue query @query</description>
+    @for((doc,i) <- hits; id = (doc\\"hbzId")(0).as[String]) {
+    <item>
+      <title>@((doc\"title").asOpt[String].getOrElse(""))</title>
+      <link>@controllers.resources.Application.CONFIG.getString("host")@resources.routes.Application.resource(id, null)</link>
+      <pubDate>@controllers.resources.Application.RSS_DATE_FORMAT.format(controllers.resources.Application.LOBID_DATE_FORMAT.parse((doc\"describedBy"\"dateCreated").asOpt[String].getOrElse("")))</pubDate>
+      <description><![CDATA[@tags.result_doc(doc)]]></description>
+    </item>
+	}
+  </channel>
+</rss>
+}

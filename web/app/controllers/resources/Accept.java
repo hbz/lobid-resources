@@ -19,12 +19,13 @@ public class Accept {
 	}
 
 	enum Format {
+		BULK("jsonl", "application/x-jsonlines"), //
 		JSON_LD("json(.+)?", "application/json", "application/ld+json"), //
 		HTML("html", "text/html"), //
-		BULK("bulk", "application/x-jsonlines"), //
 		RDF_XML("rdf", "application/rdf+xml", "application/xml", "text/xml"), //
 		N_TRIPLE("nt", "application/n-triples", "text/plain"), //
-		TURTLE("ttl", "text/turtle", "application/x-turtle");
+		TURTLE("ttl", "text/turtle", "application/x-turtle"), //
+		RSS("rss", "application/rss+xml");
 
 		String[] types;
 		String queryParamString;
@@ -32,6 +33,15 @@ public class Accept {
 		private Format(String format, String... types) {
 			this.queryParamString = format;
 			this.types = types;
+		}
+
+		public static Format of(String format) {
+			for (Format f : Format.values()) {
+				if (format.equals(f.queryParamString)) {
+					return f;
+				}
+			}
+			return Format.JSON_LD;
 		}
 	}
 

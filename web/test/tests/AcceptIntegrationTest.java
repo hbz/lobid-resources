@@ -43,9 +43,11 @@ public class AcceptIntegrationTest extends LocalIndexSetup {
 			{ fakeRequest(GET, "/resources/search?q=*").header("Accept", "text/plain"), /*->*/ "application/json" },
 			// search, others formats as query param:
 			{ fakeRequest(GET, "/resources/search?q=*&format=html"), /*->*/ "text/html" },
+			{ fakeRequest(GET, "/resources/search?q=*&format=rss"), /*->*/ "application/rss+xml" },
 			// search, others formats via header:
 			{ fakeRequest(GET, "/resources/search?q=*").header("Accept", "application/json"), /*->*/ "application/json" },
 			{ fakeRequest(GET, "/resources/search?q=*").header("Accept", "text/html"), /*->*/ "text/html" },
+			{ fakeRequest(GET, "/resources/search?q=*").header("Accept", "application/rss+xml"), /*->*/ "application/rss+xml" },
 			// get, default format: JSON
 			{ fakeRequest(GET, "/resources/HT018907266"), /*->*/ "application/json" },
 			{ fakeRequest(GET, "/resources/HT018907266?format="), /*->*/ "application/json" },

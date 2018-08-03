@@ -224,8 +224,8 @@
                      "analyzer" : "german_analyzer"
                   },
                   "endDate" : {
-                     "type" : "text",
-                     "fielddata": true
+                     "type": "date",
+                     "format": "yyyy"
                   },
                   "frequency" : {
                      "properties" : {
@@ -247,8 +247,8 @@
                      "type" : "keyword"
                   },
                   "startDate" : {
-                     "type" : "text",
-                     "fielddata": true
+                     "type": "date",
+                     "format": "yyyy"
                   }
                }
             },
@@ -341,25 +341,6 @@
             "titleKeyword" : {
                "type" : "text",
                "analyzer" : "german_analyzer"
-            },
-            "secondaryPublication" : {
-               "properties" : {
-                  "location" : {
-                     "type" : "text",
-                     "analyzer" : "german_analyzer"
-                  },
-                  "startDate" : {
-                     "type" : "text"
-                  },
-                  "type" : {
-                     "type" : "keyword"
-                  },
-                  "publishedBy" : {
-                     "type" : "text",
-                     "search_analyzer" : "german_analyzer",
-                     "analyzer" : "ngram_analyzer"
-                  }
-               }
             },
             "label" : {
                "type" : "text"
@@ -712,14 +693,16 @@
             "describedBy" : {
                "properties" : {
                   "dateCreated" : {
-                     "type" : "text"
+                     "type": "date",
+                     "format": "yyyyMMdd"
                   },
                   "id" : {
                      "index" :"false",
                      "type" : "keyword"
                   },
                   "dateModified" : {
-                     "type" : "text"
+                     "type": "date",
+                     "format": "yyyyMMdd"
                   },
                   "label" : {
                      "type" : "text",
