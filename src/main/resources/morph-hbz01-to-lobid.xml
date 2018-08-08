@@ -833,10 +833,10 @@
 						<regexp match="[dD]rehb|^\[aus\]$|^aus$" format="http://id.loc.gov/vocabulary/relators/aus"/>
 					</data>
 					<data source="$[field]?[12].b" name="a">
-						<regexp match="B[ü|ue]hnenbild" format="http://purl.org/lobid/lv#stageDesign"/>
+						<regexp match="B[ü|ue]hnenbild" format="http://purl.org/lobid/lv#StageDesign"/>
 					</data>
 					<data source="$[field]?[12].b" name="a">
-						<regexp match="Choreinstud" format="http://purl.org/lobid/lv#choirTraining"/>
+						<regexp match="Choreinstud" format="http://purl.org/lobid/lv#ChoirTraining"/>
 					</data>
 					<data source="$[field]?[12].[b4]" name="a">
 						<regexp match="[cC]horeogr" format="http://id.loc.gov/vocabulary/relators/chr"/>
@@ -1076,14 +1076,20 @@
 			</combine>
 		</macro>
 		<macro name="setFirstRelator">
-			<combine name="@relatorNode$[field]first" value="${a}" flushWith="@relator$[field]concat">
+			<combine name="@relatorNode$[field]first" value="${a}">
 				<data source="@agentId$[field]"/>
-				<choose name="a" flushWith="@relator$[field]concat">
+				<choose name="a">
 					<data source="@relator$[field]concat">
 						<regexp match="^(http:\/\/id\.loc\.gov\/vocabulary\/relators\/[a-zA-Z]{3})\|" format="${1}"/>
 					</data>
+					<data source="@relator$[field]concat">
+						<regexp match="^(http:\/\/purl\.org\/lobid\/lv#(StageDesign|ChoirTraining))\|" format="${1}"/>
+					</data>
 					<data source="@relator$[field]concat" name="b">
 						<regexp match="^http:\/\/id\.loc\.gov\/vocabulary\/relators\/[a-zA-Z]{3}$"/>
+					</data>
+					<data source="@relator$[field]concat">
+						<regexp match="^http:\/\/purl\.org\/lobid\/lv#(StageDesign|ChoirTraining)$"/>
 					</data>
 				</choose>
 			</combine>
@@ -1091,17 +1097,27 @@
 		<macro name="setSecondRelator">
 			<combine name="@relatorNode$[field]second" value="${a}">
 				<data source="@agentId$[field]"/>
-				<data source="@relator$[field]concat" name="a">
-					<regexp match="\|(http:\/\/id\.loc\.gov\/vocabulary\/relators\/[a-zA-Z]{3})\|" format="${1}"/>
-				</data>
+				<choose name="a">
+					<data source="@relator$[field]concat" name="a">
+						<regexp match="\|(http:\/\/id\.loc\.gov\/vocabulary\/relators\/[a-zA-Z]{3})\|" format="${1}"/>
+					</data>
+					<data source="@relator$[field]concat" name="a">
+						<regexp match="\|(http:\/\/purl\.org\/lobid\/lv#(StageDesign|ChoirTraining))\|" format="${1}"/>
+					</data>
+				</choose>
 			</combine>
 		</macro>
 		<macro name="setLastRelator">
 			<combine name="@relatorNode$[field]last" value="${a}">
 				<data source="@agentId$[field]"/>
-				<data source="@relator$[field]concat" name="a">
-					<regexp match="\|(http:\/\/id\.loc\.gov\/vocabulary\/relators\/[a-zA-Z]{3})$" format="${1}"/>
-				</data>
+				<choose name="a">
+					<data source="@relator$[field]concat" name="a">
+						<regexp match="\|(http:\/\/id\.loc\.gov\/vocabulary\/relators\/[a-zA-Z]{3})$" format="${1}"/>
+					</data>
+					<data source="@relator$[field]concat" name="a">
+						<regexp match="\|(http:\/\/purl\.org\/lobid\/lv#(StageDesign|ChoirTraining))\|" format="${1}"/>
+					</data>
+				</choose>
 			</combine>
 		</macro>
 		<macro name="setFirstContributionBnodeOfEntityField">
@@ -1111,8 +1127,14 @@
 					<data source="@relator$[field]concat">
 						<regexp match="^(http:\/\/id\.loc\.gov\/vocabulary\/relators\/[a-zA-Z]{3})\|" format="${1}"/>
 					</data>
+					<data source="@relator$[field]concat">
+						<regexp match="^(http:\/\/purl\.org\/lobid\/lv#(StageDesign|ChoirTraining))\|" format="${1}"/>
+					</data>
 					<data source="@relator$[field]concat" name="b">
 						<regexp match="^http:\/\/id\.loc\.gov\/vocabulary\/relators\/[a-zA-Z]{3}$"/>
+					</data>
+					<data source="@relator$[field]concat">
+						<regexp match="^http:\/\/purl\.org\/lobid\/lv#(StageDesign|ChoirTraining)$"/>
 					</data>
 				</choose>
 			</combine>
@@ -1120,17 +1142,27 @@
 		<macro name="setSecondContributionBnodeOfEntityField">
 			<combine name="@contributionBnode$[field]second" value="_:${a}${b}">
 				<data source="@agentId$[field]" name="a"/>
-				<data source="@relator$[field]concat" name="b">
-					<regexp match="\|(http:\/\/id\.loc\.gov\/vocabulary\/relators\/[a-zA-Z]{3})\|" format="${1}"/>
-				</data>
+				<choose name="b">
+					<data source="@relator$[field]concat" name="b">
+						<regexp match="\|(http:\/\/id\.loc\.gov\/vocabulary\/relators\/[a-zA-Z]{3})\|" format="${1}"/>
+					</data>
+					<data source="@relator$[field]concat">
+						<regexp match="\|(http:\/\/purl\.org\/lobid\/lv#(StageDesign|ChoirTraining))\|" format="${1}"/>
+					</data>
+				</choose>
 			</combine>
 		</macro>
 		<macro name="setLastContributionBnodeOfEntityField">
 			<combine name="@contributionBnode$[field]last" value="_:${a}${b}">
 				<data source="@agentId$[field]" name="a"/>
-				<data source="@relator$[field]concat" name="b">
-					<regexp match="\|(http:\/\/id\.loc\.gov\/vocabulary\/relators\/[a-zA-Z]{3})$" format="${1}"/>
-				</data>
+				<choose name="b">
+					<data source="@relator$[field]concat" name="b">
+						<regexp match="\|(http:\/\/id\.loc\.gov\/vocabulary\/relators\/[a-zA-Z]{3})$" format="${1}"/>
+					</data>
+					<data source="@relator$[field]concat">
+						<regexp match="\|(http:\/\/purl\.org\/lobid\/lv#(StageDesign|ChoirTraining))$" format="${1}"/>
+					</data>
+				</choose>
 			</combine>
 		</macro>
 		<macro name="setRdfSubjectContributionBnode">
