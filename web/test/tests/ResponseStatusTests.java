@@ -41,6 +41,9 @@ public class ResponseStatusTests extends LocalIndexSetup {
 			{ "/resources/123?format=html", /*->*/ Status.NOT_FOUND },
 			{ "/items/123?format=html", /*->*/ Status.NOT_FOUND },
 			{ "/resources/search?q=*", /*->*/ Status.OK },
+			{ "/resources/search?q=test", /*->*/ Status.OK },
+			{ "/resources/search?word=*", /*->*/ Status.OK },
+			{ "/resources/search?word=test", /*->*/ Status.OK },
 			{ "/resources/search?q=[]", /*->*/ Status.BAD_REQUEST },
 			{ "/resources/search?q=[]?format=html", /*->*/ Status.BAD_REQUEST }
 		});
