@@ -596,8 +596,9 @@ public class Queries {
 		@Override
 		public List<String> fields() {
 			List<String> fields = new ArrayList<>();
-			List<Parameter> exclude = Arrays.asList(Parameter.WORD,
-					Parameter.LOCATION, Parameter.Q, Parameter.SCROLL, Parameter.SUBJECT);
+			List<Parameter> exclude =
+					Arrays.asList(Parameter.WORD, Parameter.LOCATION, Parameter.Q,
+							Parameter.SCROLL, Parameter.SUBJECT, Parameter.ISSUED);
 			for (Parameter p : Arrays.asList(Parameter.values()).stream()
 					.filter(p -> !exclude.contains(p)).collect(Collectors.toList())) {
 				fields.addAll(p.q.fields());

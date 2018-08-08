@@ -2552,7 +2552,9 @@
 		<entity name="http://schema.org/publication" flushWith="record">
 			<data source="@placeOfPublication" name="http://schema.org/location"/>
 			<data source="@publisher" name="http://schema.org/publishedBy"/>
-			<data source="@startDateFirstPublication" name="http://schema.org/startDate"/>
+			<data source="@startDateFirstPublication" name="http://schema.org/startDate">
+        <dateformat inputformat="yyyy" outputpattern="yyyy" fallback="0001"/>
+      </data>
 			<!-- range of date. Only if 021 not exists but 425c. Take 4 digits. -->
 			<choose name="http://schema.org/endDate">
 				<if>
@@ -2562,6 +2564,7 @@
 				</if>
 				<data source="425c[-1].a">
 					<regexp match="[12]\d{3}"/>
+          <dateformat inputformat="yyyy" outputpattern="yyyy" fallback="0001"/>
 				</data>
 			</choose>
 			<!-- ####################### -->
@@ -2627,8 +2630,12 @@
 			<data source="@placeOfSecondaryPublication" name="http://schema.org/location"/>
 			<data source="@secondaryPublisher" name="http://schema.org/publishedBy"/>
 			<data source="@descriptionOfSecondaryPublication" name="http://purl.org/dc/terms/description"/>
-			<data source="@startDateSecondaryPublication" name="http://schema.org/startDate"/>
-			<data source="@endDateSecondaryPublication" name="http://schema.org/endDate"/>
+			<data source="@startDateSecondaryPublication" name="http://schema.org/startDate">
+			  <dateformat inputformat="yyyy" outputpattern="yyyy" fallback="0001"/>
+			</data>
+			<data source="@endDateSecondaryPublication" name="http://schema.org/endDate">
+        <dateformat inputformat="yyyy" outputpattern="yyyy" fallback="0001"/>
+      </data>
 			<data
 				source="@secondaryPublisher|@startDateSecondaryPublication|@endDateSecondaryPublication|@placeOfSecondaryPublication|@descriptionOfSecondaryPublication"
 				name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type">
