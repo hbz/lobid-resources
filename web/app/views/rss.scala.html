@@ -7,7 +7,7 @@
     <description>hbz union catalogue query @query</description>
     @for((doc,i) <- hits; id = (doc\\"hbzId")(0).as[String]) {
     <item>
-      <title>@((doc\"title").asOpt[String].getOrElse(""))</title>
+      <title>@((doc\"title").asOpt[String].getOrElse((doc\"hbzId").asOpt[String].getOrElse("")))</title>
       <link>@controllers.resources.Application.CONFIG.getString("host")@resources.routes.Application.resource(id, null)</link>
       <pubDate>@controllers.resources.Application.RSS_DATE_FORMAT.format(controllers.resources.Application.LOBID_DATE_FORMAT.parse((doc\"describedBy"\"dateCreated").asOpt[String].getOrElse("")))</pubDate>
       <description><![CDATA[@tags.result_doc(doc)]]></description>
