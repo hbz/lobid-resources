@@ -593,6 +593,7 @@
 					</concat>
 					<data source="@altLabelEBH"/>
 					<data source="@altLabelKB"/>
+					<data source="@altLabelKH"/>
 					<data source="$[field][-abcefmn][12].[aepk]" name="a">
 						<replace pattern="&gt;&gt;" with=""/>
 						<replace pattern="&lt;&lt;" with=""/>
@@ -6086,6 +6087,10 @@
 		<combine name="@altLabelKB" value="${k}. ${b}" sameEntity="true">
 			<data source="2?[13579]?[12].k" name="k"/>
 			<data source="2?[13579]?[12].b" name="b"/>
+		</combine>
+		<combine name="@altLabelKH" value="${k}. ${h}" sameEntity="true">
+			<data source="2?[13579]?[12].k" name="k"/>
+			<data source="2?[13579]?[12].h" name="h"/>
 		</combine>
 		<combine name="@altLabelEBH" value="${e}. ${b} (${h})" sameEntity="true">
 			<data source="2?[13579]?[12].e" name="e"/>
