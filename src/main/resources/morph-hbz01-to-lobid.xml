@@ -7109,6 +7109,149 @@
 			field_3="483[-ab]1.a" numbering="48"/>
 		<call-macro name="createEntityForHasSuperordinateWithIdAndNumbering"
 			field_3="493[-ab]1.a" numbering="49"/>
+
+		<combine name="@chooseIsPartNoteIn" value="${a}">
+			<choose name="a">
+				<data source="501-1.a">
+					<regexp match="^[iI]n: ([a-zA-Zäöüß ]*[a-zA-Zäöüß&quot;ÄÖÜ&#44;&#45;])\. (Bd.*|Vol.*|Nr.*)$" format="${1}"/>
+				</data>
+				<data source="501-1.a">
+					<regexp match="^[iI]n: ([a-zA-Zäöüß]*, [a-zA-Zäöüß]*: [ a-zA-Z&quot;äöüßÄÖÜ&#44;&#45;]*)" format="${1}"/>
+				</data>
+			</choose>
+		</combine>
+		<combine name="@isPartNoteBnodeIn" value="_:isPartNoteBnodeIn">
+			<if>
+				<none>
+					<data source="4[56789]3[-ab]1.a"/>
+				</none>
+			</if>
+			<data source="@chooseIsPartNoteIn"/>
+		</combine>
+		
+		<combine name="$[ns-lobid-vocab]isPartOf" value="${a}" flushWith="@isPartNoteBnodeIn">
+			<data source="@isPartNoteBnodeIn" name="a"/>
+		</combine>
+		<combine name="~rdf:subject" value="${a}" flushWith="@isPartNoteBnodeIn">
+			<data source="@isPartNoteBnodeIn" name="a"/>
+		</combine>
+		<combine name="$[ns-lobid-vocab]hasSuperordinate" value="_:hasSuperordinateNoteBnodeIn" flushWith="@isPartNoteBnodeIn">
+			<data source="@chooseIsPartNoteIn"/>
+		</combine>
+		<combine name="$[ns-lobid-vocab]numbering" value="${a}" flushWith="@isPartNoteBnodeIn">
+			<choose name="a" flushWith="@isPartNoteBnodeIn">
+				<data source="501-1.a" name="a">
+					<regexp match="(Bd. .*|Bd .*|Vol. .*|Vol .*)" format="${1}"/>
+				</data>
+				<data source="501-1.a">
+					<regexp match="(Nr. .*|Nr .*|No. .*|No .*)"/>
+				</data>
+			</choose> 
+		</combine>
+		<combine name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" value="${a}" flushWith="@isPartNoteBnodeIn">
+			<data source="501-1.a" name="a">
+				<constant value="$[ns-lobid-vocab]IsPartOfRelation"/>
+			</data>
+		</combine>
+		<call-macro name="setBackRdfSubject" field="@isPartNoteBnodeIn"/>
+
+		<combine name="~rdf:subject" value="_:hasSuperordinateNoteBnodeIn" flushWith="@isPartNoteBnodeIn">
+			<data source="@isPartNoteBnodeIn"/>
+		</combine>
+		<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="${a}" flushWith="@isPartNoteBnodeIn">
+			<data source="@chooseIsPartNoteIn" name="a"/>
+		</combine>
+		<call-macro name="setBackRdfSubject" field="@isPartNoteBnodeIn"/>
+		
+		
+		<combine name="@chooseIsPartNoteAus" value="${a}">
+			<choose name="a">
+				<data source="501-1.a">
+					<regexp match="^Aus.* [iI]n:.*" format=""/>
+				</data>
+				<data source="501-1.a">
+					<regexp match="^Aus: ([a-zA-Z äöüß&#45;]*): (Jg.|Vol.|Bd.|H.|Nr.|[0-9]*\.[0-9]*)" format="${1}"/>
+				</data>
+				<data source="501-1.a">
+					<regexp match="^Aus: ([a-zA-Zäöüß&#45;]*, [a-zA-Zäöüß-]*: *[a-zA-ZäöüßÄÖÜ\. ][a-zA-Zäöüß])\. (Jg.|Vol.|Bd.|H.|Nr.)" format="${1}"/>
+				</data>
+				<data source="501-1.a">
+					<regexp match="^Aus: ([a-zA-Zäöüß&#45;]*, [a-zA-Zäöüß-]*: .*)\. (Jg.|Vol.|Bd.|H.|Nr.)" format="${1}"/>
+				</data>
+				<data source="501-1.a">
+					<regexp match="^Aus: ([a-zA-Zäöüß&#45;]*, [a-zA-Zäöüß-]*: .*[a-zA-ZäöüßÄÖÜ])$" format="${1}"/>
+				</data>
+				<data source="501-1.a">
+					<regexp match="^Aus: ([a-zA-Z äöüß&#45;]*: [a-zA-ZäöüßÄÖÜ&#46; ]*[a-zäöüß]) ; (Bd.*|Jg.*|H.*|Nr.*|Vol.*|[0-9]*\.[0-9]*)$" format="${1}"/>
+				</data>
+				<data source="501-1.a">
+					<regexp match="^Aus: ([a-zA-Z äöüß&#45;]*: [a-zA-ZäöüßÄÖÜ&#46; ]*[a-zäöüß])$" format="${1}"/>
+				</data>
+				<data source="501-1.a">
+					<regexp match="^Aus: ([a-zA-Z äöüß&#45;]*: [a-zA-Z\. äöüßÄÖÜ]*)\. (Jg.|Vol.|Bd.|H.|Nr.)" format="${1}"/>
+				</data>
+				<data source="501-1.a">
+					<regexp match="^Aus: ([a-zA-ZäöüßÄÖÜ][a-zA-Z-äöüßÄÖÜ\. ]*[a-zA-Zäöüß\.])" format="${1}"/>
+				</data>
+			</choose>
+		</combine>
+		<combine name="@isPartNoteBnodeAus" value="_:isPartNoteBnodeAus">
+			<if>
+				<none>
+					<data source="599[-s][-1].a"/>
+					<data source="4[56789]1[-ab]1.a"/>
+				</none>
+			</if>
+			<data source="@chooseIsPartNoteAus"/>
+		</combine>
+		
+		<combine name="$[ns-lobid-vocab]isPartOf" value="${a}" flushWith="@isPartNoteBnodeAus">
+			<data source="@isPartNoteBnodeAus" name="a"/>
+		</combine>
+		<combine name="~rdf:subject" value="${a}" flushWith="@isPartNoteBnodeAus">
+			<data source="@isPartNoteBnodeAus" name="a"/>
+		</combine>
+		<combine name="$[ns-lobid-vocab]hasSuperordinate" value="_:hasSuperordinateNoteBnodeAus" flushWith="@isPartNoteBnodeAus">
+			<data source="@isPartNoteBnodeAus"/>
+		</combine>
+		<combine name="$[ns-lobid-vocab]numbering" value="${a}" flushWith="@isPartNoteBnodeAus">
+			<choose name="a" flushWith="@isPartNoteBnodeAus">
+				<data source="501-1.a">
+					<regexp match="^Aus.* [iI]n:.*" format=""/>
+				</data>
+				<data source="501-1.a">
+					<regexp match="((Bd.|Jg.|Vol.).*[0-9])" format="${1}"/>
+				</data>
+				<data source="501-1.a">
+					<regexp match="([0-9][0-9 \.]*[0-9])" format="${1}"/>
+				</data>
+				<data source="501-1.a">
+					<regexp match=" [;\.] ([0-9]*)$" format="${1}"/>
+				</data>
+			</choose> 
+		</combine>
+		<combine name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" value="${a}" flushWith="@isPartNoteBnodeAus">
+			<choose name="a" flushWith="@isPartNoteBnodeAus">
+				<data source="501-1.a">
+					<regexp match="^Aus.* [iI]n:.*" format=""/>
+				</data>
+				<data source="501-1.a" name="a">
+					<constant value="$[ns-lobid-vocab]IsPartOfRelation"/>
+				</data>
+			</choose>
+		</combine>
+		<call-macro name="setBackRdfSubject" field="@isPartNoteBnodeAus"/>
+
+		<combine name="~rdf:subject" value="_:hasSuperordinateNoteBnodeAus" flushWith="@isPartNoteBnodeAus">
+			<data source="@isPartNoteBnodeAus"/>
+		</combine>
+		<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="${a}" flushWith="@isPartNoteBnodeAus">
+			<data source="@chooseIsPartNoteAus" name="a"/>
+		</combine>
+		<call-macro name="setBackRdfSubject" field="@isPartNoteBnodeAus"/>
+		
+		
+		
 		<combine name="~rdf:subject" value="${a}">
 			<data source="025z[2].a" name="a">
 				<regexp match="(.*)" format="$[ns-zdb-services]${1}"/>
