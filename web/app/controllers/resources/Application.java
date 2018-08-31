@@ -756,7 +756,8 @@ public class Application extends Controller {
 	}
 
 	private static String queryParam(String currentParam, String term) {
-		if (currentParam.isEmpty())
+		if (currentParam.isEmpty()
+				|| (term.startsWith("http") && !currentParam.startsWith("http")))
 			return term;
 		else if (contains(currentParam, term)) {
 			String termRemoved = currentParam.replace(term, "")

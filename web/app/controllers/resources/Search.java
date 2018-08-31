@@ -175,6 +175,7 @@ public class Search {
 		if (!validate.isValid()) {
 			throw new IllegalArgumentException("Invalid query: " + query);
 		}
+		Logger.debug("Valid query: {}", query);
 	}
 
 	/**
