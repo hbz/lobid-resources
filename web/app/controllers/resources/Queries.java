@@ -289,7 +289,7 @@ public class Queries {
 	public static class AuthorQuery extends AbstractIndexQuery {
 		@Override
 		public List<String> fields() {
-			return Arrays.asList("contribution.agent.label");
+			return Arrays.asList("contribution.agent.id", "contribution.agent.label");
 		}
 
 		@Override
@@ -304,10 +304,12 @@ public class Queries {
 					Pattern.compile("[^(]+" + lifeDates).matcher(search);
 			if (lifeDatesMatcher.find()) {
 				query = createAuthorQuery(lifeDates, search, lifeDatesMatcher);
+			} else if (isAndQuery(search)) {
+				query = multiValueMatchQuery(search);
 			} else if (search.matches("(http://d-nb\\.info/gnd/)?\\d+.*")) {
 				final String term = search.startsWith("http") ? search
 						: "http://d-nb.info/gnd/" + search;
-				query = multiMatchQuery(term, "contribution.agent.id");
+				query = multiMatchQuery(term, fields().get(0));
 			} else {
 				query = nameMatchQuery(search);
 			}
@@ -319,14 +321,15 @@ public class Queries {
 			/* Search name in name field and birth in birth field: */
 			final BoolQueryBuilder birthQuery = QueryBuilders.boolQuery()
 					.must(nameMatchQuery(search.replaceAll(lifeDates, "").trim()))
-					.must(matchQuery(fields().get(1), matcher.group(1)));
+					.must(matchQuery("contribution.agent.dateOfBirth", matcher.group(1)));
 			return matcher.group(2).equals("") ? birthQuery :
 			/* If we have one, search death in death field: */
-					birthQuery.must(matchQuery(fields().get(2), matcher.group(2)));
+					birthQuery.must(
+							matchQuery("contribution.agent.dateOfDeath", matcher.group(2)));
 		}
 
 		private QueryBuilder nameMatchQuery(final String search) {
-			return multiMatchQuery(search, fields().get(0)).operator(Operator.AND);
+			return multiMatchQuery(search, fields().get(1)).operator(Operator.AND);
 		}
 	}
 
