@@ -12,6 +12,7 @@ import static play.test.Helpers.running;
 import static play.test.Helpers.testServer;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -116,6 +117,21 @@ public class IntegrationTests extends LocalIndexSetup {
 					.query(new Queries.Builder().q("hbzId:TT050409948").build()).build();
 			Long hits = index.totalHits();
 			assertThat(hits).isGreaterThan(0);
+		});
+	}
+
+	@Test
+	public void agentRequest() {
+		running(testServer(3333), () -> {
+			for (String s : Arrays.asList("Westfalen",
+					"http://d-nb.info/gnd/5265186-1", //
+					"Reulecke, Jürgen (1940-)", //
+					"Reiff, Johann J. (1793-1864)", //
+					"http://d-nb.info/gnd/5265186-1,http://d-nb.info/gnd/5265186-1,AND")) {
+				assertThat(new Search.Builder()
+						.query(new Queries.Builder().agent(s).build()).build().totalHits())
+								.as(s).isGreaterThanOrEqualTo(1);
+			}
 		});
 	}
 
