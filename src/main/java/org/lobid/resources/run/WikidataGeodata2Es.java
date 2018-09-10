@@ -69,7 +69,7 @@ public class WikidataGeodata2Es {
 				private static final long serialVersionUID = 12L;
 
 				{
-					put("99", "Q22865 Q262166 Q253019 Q1852178 Q15632166 Q2983893");
+					put("99", "Q22865 Q262166 Q253019 Q1852178 Q15632166 Q2983893 Q42744322 Q134626 Q448801 Q1548518 Q54935786");
 					put("97", "Q106658 Q5283531 Q1780389");
 					put("96", "Q829277");
 					put("36", "Q3146899 Q2072238");
