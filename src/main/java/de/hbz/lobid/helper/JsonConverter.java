@@ -101,7 +101,7 @@ public class JsonConverter {
 							.startsWith(rootNodePrefix))
 					.findFirst().get().getSubject().toString();
 		} catch (java.util.NoSuchElementException nsee) {
-			logger.warn("Ignore building resource, because no "
+			logger.error("Ignore building resource, because no "
 					+ predicateToIdentifyRootSubject + " found in " + g.toString());
 		}
 		return subject == null ? null : convert(subject, context, g);
