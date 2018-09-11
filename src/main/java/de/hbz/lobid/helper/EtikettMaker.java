@@ -166,8 +166,7 @@ public class EtikettMaker implements EtikettMakerInterface {
 					try {
 						e.name = getJsonName(uri);
 					} catch (Exception exc) {
-						e.label =
-								uriparts.length > 3 ? domainname + uriparts[3] : domainname;
+						e.label = uriparts[uriparts.length - 1];
 					}
 				}
 				logger.info("Fallback is:" + e.label);
