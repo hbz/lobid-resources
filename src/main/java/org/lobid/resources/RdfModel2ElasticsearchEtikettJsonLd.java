@@ -294,4 +294,10 @@ public final class RdfModel2ElasticsearchEtikettJsonLd
 		return etikettMaker.getContextLocation();
 	}
 
+	/**
+	 * @param contextLocation the location of the context
+	 */
+	public void setContextLocation(final String contextLocation) {
+		etikettMaker.setContextLocation(contextLocation);
+	}
 }

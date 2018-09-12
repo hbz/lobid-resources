@@ -66,7 +66,6 @@ public class MabXml2lobidJsonEs {
 		String morphFileName = args.length >= 8 ? MORPH_FN_PREFIX + args[7]
 				: MORPH_FN_PREFIX + "morph-hbz01-to-lobid.xml";
 		System.out.println("using morph: " + morphFileName);
-		MabXml2lobidJsonEs mabXml2lobidJsonEs = new MabXml2lobidJsonEs();
 		if (args.length >= 9)
 			jsonLdContext = args[8];
 		if (args.length >= 10)
@@ -74,10 +73,10 @@ public class MabXml2lobidJsonEs {
 					jsonLdContext);
 		else
 			model2json = new RdfModel2ElasticsearchEtikettJsonLd(
-					mabXml2lobidJsonEs.jsonLdContext);
+					MabXml2lobidJsonEs.jsonLdContext);
 		System.out.println("using jsonLdContext: " + model2json.getJsonLdContext());
-		System.out
-				.println("using jsonLdDirectory: " + model2json.getLabelsDirectoryName());
+		System.out.println(
+				"using jsonLdDirectory: " + model2json.getLabelsDirectoryName());
 		model2json.getLabelsDirectoryName();
 		if (args.length >= 11) {
 			model2json.setRootIdPredicate(args[10]);

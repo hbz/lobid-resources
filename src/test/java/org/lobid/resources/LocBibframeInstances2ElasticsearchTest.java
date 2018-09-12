@@ -34,7 +34,6 @@ import org.elasticsearch.search.SearchHit;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.lobid.resources.run.MabXml2lobidJsonEs;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -73,10 +72,17 @@ public final class LocBibframeInstances2ElasticsearchTest {
 	private static final String DIRECTORY_TO_TEST_JSON_FILES =
 			Hbz01MabXmlEtlNtriples2Filesystem.PATH_TO_TEST + "jsonld-loc/";
 	private static boolean testFailed = false;
+	private static final String DIRECTORY_TO_LOC_LABELS = "loc-bibframe-labels";
 	private final static Pattern ROOT_SUBJECT_PATTERN =
 			Pattern.compile(".*resources/instances/\\p{Alpha}.*");
 	private final static String INDEX_CONFIG_BIBFRAME =
 			"index-config-bibframe.json";
+	private final static String LOC_CONTEXT =
+			"http://lobid.org/resources/loc-context.jsonld";
+
+	private final static RdfModel2ElasticsearchEtikettJsonLd rdfModel2ElasticsearchEtikettJsonLd =
+			new RdfModel2ElasticsearchEtikettJsonLd(new File(DIRECTORY_TO_LOC_LABELS),
+					LOC_CONTEXT);
 
 	@BeforeClass
 	public static void setup() {
@@ -106,12 +112,13 @@ public final class LocBibframeInstances2ElasticsearchTest {
 		} catch (NodeValidationException e) {
 			e.printStackTrace();
 		}
+		rdfModel2ElasticsearchEtikettJsonLd
+				.setContextLocation("web/conf/context-loc.jsonld");
 		client = node.client();
 		client.admin().indices().prepareDelete("_all").execute().actionGet();
 		client.admin().cluster().prepareHealth().setWaitForYellowStatus().execute()
 				.actionGet();
-		etl(client, new RdfModel2ElasticsearchEtikettJsonLd(
-				MabXml2lobidJsonEs.jsonLdContext));
+		etl(client, rdfModel2ElasticsearchEtikettJsonLd);
 	}
 
 	/*
@@ -278,7 +285,7 @@ public final class LocBibframeInstances2ElasticsearchTest {
 			mapper.enable(SerializationFeature.INDENT_OUTPUT);
 			try {
 				map = mapper.readValue(jsonLd, Map.class);
-				map.put("@context", MabXml2lobidJsonEs.jsonLdContext);
+				map.put("@context", LOC_CONTEXT);
 				jsonLdWithoutContext = mapper.writeValueAsString(map);
 				filename = ((String) map.get("id")).replaceAll(".*/", "")
 						.replaceAll("#!$", "");
@@ -307,11 +314,16 @@ public final class LocBibframeInstances2ElasticsearchTest {
 		private static String toRdf(final String jsonLd) {
 			try {
 				LOG.trace("toRdf: " + jsonLd);
-				String jsonWithLocalContext = jsonLd.replaceFirst(
-						"@context\":\"http://lobid.org/resources/context.jsonld\"",
-						"@context\":\"file:/home/pc/git/lobid-resources/web/conf/context.jsonld\"");
-				// + new File(MabXml2lobidJsonEs.jsonLdContext).toURI().toString()
-				// + "\"");
+				String jsonWithLocalContext =
+						jsonLd
+								.replaceFirst(
+										"@context\" ?: ?\"" + LOC_CONTEXT
+												+ "\"",
+										"@context\":\""
+												+ new File(rdfModel2ElasticsearchEtikettJsonLd
+														.getContextLocation()).toURI().toString()
+												+ "\"");
+
 				final Object jsonObject = JSONUtils.fromString(jsonWithLocalContext);
 				final JenaTripleCallback callback = new JenaTripleCallback();
 				final Model model = (Model) JsonLdProcessor.toRDF(jsonObject, callback);
