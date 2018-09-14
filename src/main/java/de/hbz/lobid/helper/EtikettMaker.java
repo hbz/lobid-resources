@@ -169,7 +169,7 @@ public class EtikettMaker implements EtikettMakerInterface {
 						e.label = uriparts[uriparts.length - 1];
 					}
 				}
-				logger.info("Fallback is:" + e.label);
+				logger.debug("Fallback is:" + e.label);
 			}
 		}
 		if (e.label == null || e.label.isEmpty()) { // fallback name
