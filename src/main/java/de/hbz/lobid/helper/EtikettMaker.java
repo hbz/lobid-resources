@@ -150,13 +150,17 @@ public class EtikettMaker implements EtikettMakerInterface {
 			try {
 				e.name = getJsonName(uri);
 			} catch (Exception ex) { // fallback domainname
-				logger.debug(
-						"no json name available. Please provide a labels.json file with proper 'name' entry. Using domainname as fallback.");
+				logger.warn("no json name available for " + uri
+						+ ". Please provide a labels.json file with proper 'name' entry. Using domainname as fallback.");
 				String[] uriparts = uri.split("/");
 				String domainname =
 						uriparts[0] + "/" + uriparts[1] + "/" + uriparts[2] + "/";
-				e = pMap
-						.get(uriparts.length > 3 ? domainname + uriparts[3] : domainname);
+				if (uriparts.length > 5) { // bibframe workaround
+					e.setName(uriparts[5]);
+					e.setLabel(uriparts[5]);
+				} else
+					e = pMap
+							.get(uriparts.length > 3 ? domainname + uriparts[3] : domainname);
 				if (e == null) { // domainname may have a label
 					e = new Etikett(uri);
 					try {
@@ -166,6 +170,7 @@ public class EtikettMaker implements EtikettMakerInterface {
 								uriparts.length > 3 ? domainname + uriparts[3] : domainname;
 					}
 				}
+				logger.info("Fallback is:" + e.label);
 			}
 		}
 		if (e.label == null || e.label.isEmpty()) { // fallback name

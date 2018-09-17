@@ -127,7 +127,7 @@ public class ElasticsearchIndexer
 
 	@Override
 	public void onCloseStream() {
-		LOG.info("Closing ES index with name: " + indexName);
+		LOG.info("Finishing indexing of ES index '" + indexName + "' ...");
 		// remove old and unprotected indices
 		if (!aliasSuffix.equals("NOALIAS") && !updateNewestIndex
 				&& !aliasSuffix.toLowerCase().contains("test"))
@@ -144,7 +144,7 @@ public class ElasticsearchIndexer
 		settings.put("index.number_of_replicas", 1);
 		usrb.setSettings(settings);
 		usrb.execute().actionGet();
-		LOG.info("... closed ES index with name: " + indexName);
+		LOG.info("... finished indexing of ES index '" + indexName + "'");
 	}
 
 	@Override
