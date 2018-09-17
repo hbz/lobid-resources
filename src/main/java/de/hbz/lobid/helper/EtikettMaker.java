@@ -155,18 +155,14 @@ public class EtikettMaker implements EtikettMakerInterface {
 				String[] uriparts = uri.split("/");
 				String domainname =
 						uriparts[0] + "/" + uriparts[1] + "/" + uriparts[2] + "/";
-				if (uriparts.length > 5) { // bibframe workaround
-					e.setName(uriparts[5]);
-					e.setLabel(uriparts[5]);
-				} else
-					e = pMap
-							.get(uriparts.length > 3 ? domainname + uriparts[3] : domainname);
+				e = pMap
+						.get(uriparts.length > 3 ? domainname + uriparts[3] : domainname);
 				if (e == null) { // domainname may have a label
 					e = new Etikett(uri);
 					try {
 						e.name = getJsonName(uri);
 					} catch (Exception exc) {
-						e.label = uriparts[uriparts.length - 1];
+						e.name = uriparts[uriparts.length - 1];
 					}
 				}
 				logger.debug("Fallback is:" + e.label);
