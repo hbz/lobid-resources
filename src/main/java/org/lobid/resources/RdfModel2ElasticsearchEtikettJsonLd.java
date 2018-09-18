@@ -54,12 +54,13 @@ public final class RdfModel2ElasticsearchEtikettJsonLd
 	private static final String TYPE_ITEM = "item";
 	private static final String TYPE_RESOURCE = "resource";
 	private Object jsonLdContext;
-	private final Pattern INTERNAL_ID_PATTERN =
+	private Pattern internalIdPattern =
 			Pattern.compile("^" + LOBID_DOMAIN + ".*");
 	private String labelsDirectoryName = "labels";
 	private EtikettMakerInterface etikettMaker;
-	private String rootHbzIdPredicate = "http://purl.org/lobid/lv#hbzID";
-	private static final String PREDICATE_TO_IDENTIFY_ROOT_SUBJECT =
+	private String predicateAssociatedWithTheRootSubject =
+			"http://purl.org/lobid/lv#hbzID";
+	private static final String PREDICATE_TO_IDENTIFY_ROOT_SUBJECT_OF_ITEMS =
 			"http://www.w3.org/2007/05/powder-s#describedby";
 	JsonConverter jc;
 
@@ -95,6 +96,15 @@ public final class RdfModel2ElasticsearchEtikettJsonLd
 		labelsDirectoryName = fn.getPath();
 		LOG.info("use labels directory: " + labelsDirectoryName);
 		setup(jsonContextLd);
+	}
+
+	/**
+	 * Sets the pattern for identifiying the root node.
+	 *
+	 * @param pat the pattern identifying the root node.
+	 */
+	public void setIdPatternMainNode(Pattern pat) {
+		internalIdPattern = pat;
 	}
 
 	private void setup(final Object jsonLdContext1) {
@@ -135,7 +145,7 @@ public final class RdfModel2ElasticsearchEtikettJsonLd
 					// remove some properties from that item which clings to the main node
 					removeProperty(copyOfOriginalModel, subjectResource, "itemOf");
 					removeProperty(copyOfOriginalModel, subjectResource, "describedby");
-				} else if (mainNodeId == null && INTERNAL_ID_PATTERN
+				} else if (mainNodeId == null && internalIdPattern
 						.matcher(subjectResource.getURI().toString()).matches())
 					setMainNodeId(subjectResource);
 			}
@@ -169,9 +179,11 @@ public final class RdfModel2ElasticsearchEtikettJsonLd
 		StmtIterator stmtIt = subjectResource.listProperties();
 		while (stmtIt.hasNext()) {
 			Statement stmt = stmtIt.nextStatement();
-			// identifying the main node
-			if (stmt.getPredicate().toString().equals(rootHbzIdPredicate))
+			if (stmt.getPredicate().toString()
+					.equals(predicateAssociatedWithTheRootSubject)) {
 				mainNodeId = subjectResource.getURI().toString().replaceAll("#!$", "");
+				break;
+			}
 		}
 		return;
 	}
@@ -190,9 +202,9 @@ public final class RdfModel2ElasticsearchEtikettJsonLd
 		try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
 			jc = new JsonConverter(etikettMaker);
 			if (id.startsWith(LOBID_ITEM_URI_PREFIX)) {
-				jc.setRootIdPredicate(PREDICATE_TO_IDENTIFY_ROOT_SUBJECT);
+				jc.setRootIdPredicate(PREDICATE_TO_IDENTIFY_ROOT_SUBJECT_OF_ITEMS);
 			} else
-				jc.setRootIdPredicate(rootHbzIdPredicate);
+				jc.setRootIdPredicate(predicateAssociatedWithTheRootSubject);
 			RDFDataMgr.write(out, model, org.apache.jena.riot.RDFFormat.NTRIPLES);
 			Map<String, Object> jsonMap =
 					jc.convertLobidData(new ByteArrayInputStream(out.toByteArray()),
@@ -241,7 +253,7 @@ public final class RdfModel2ElasticsearchEtikettJsonLd
 	 *          specified in {@link #getRootIdPredicate()}
 	 */
 	public void setRootIdPredicate(final String rootId) {
-		this.rootHbzIdPredicate = rootId;
+		this.predicateAssociatedWithTheRootSubject = rootId;
 		jc.setRootIdPredicate(rootId);
 	}
 
@@ -253,7 +265,7 @@ public final class RdfModel2ElasticsearchEtikettJsonLd
 	 * 
 	 */
 	public String getRootIdPredicate() {
-		return this.rootHbzIdPredicate;
+		return this.predicateAssociatedWithTheRootSubject;
 	}
 
 	/**
@@ -282,4 +294,10 @@ public final class RdfModel2ElasticsearchEtikettJsonLd
 		return etikettMaker.getContextLocation();
 	}
 
+	/**
+	 * @param contextLocation the location of the context
+	 */
+	public void setContextLocation(final String contextLocation) {
+		etikettMaker.setContextLocation(contextLocation);
+	}
 }
