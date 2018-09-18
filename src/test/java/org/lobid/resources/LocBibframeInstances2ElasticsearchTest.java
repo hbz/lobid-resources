@@ -65,8 +65,7 @@ public final class LocBibframeInstances2ElasticsearchTest {
 			"test-loc-" + LocalDateTime.now().toLocalDate() + "-"
 					+ LocalDateTime.now().toLocalTime();
 	private static final String INPUT_FN_NTRIPLES =
-			Hbz01MabXmlEtlNtriples2Filesystem.PATH_TO_TEST
-					+ "loc_bib_instances_test.nt";
+			Hbz01MabXmlEtlNtriples2Filesystem.PATH_TO_TEST + "loc_bib_works_test.nt";
 	private static final String OUTPUT_FN_NTRIPLES =
 			INPUT_FN_NTRIPLES + ".output.nt";
 	private static final String DIRECTORY_TO_TEST_JSON_FILES =
@@ -74,7 +73,7 @@ public final class LocBibframeInstances2ElasticsearchTest {
 	private static boolean testFailed = false;
 	private static final String DIRECTORY_TO_LOC_LABELS = "loc-bibframe-labels";
 	private final static Pattern ROOT_SUBJECT_PATTERN =
-			Pattern.compile(".*resources/instances/\\p{Alpha}.*");
+			Pattern.compile(".*resources/works/\\p{Alpha}.*");
 	private final static String INDEX_CONFIG_BIBFRAME =
 			"index-config-bibframe.json";
 	private final static String LOC_CONTEXT =
@@ -133,7 +132,7 @@ public final class LocBibframeInstances2ElasticsearchTest {
 				"http://id.loc.gov/ontologies/bibframe/adminMetadata");
 		final FileOpener opener = new FileOpener();
 		final StringRecordSplitter srs =
-				new StringRecordSplitter(".*bibframe/Instance> .$");
+				new StringRecordSplitter(".*bibframe/Work> .$");
 		final Triples2RdfModel triple2model = new Triples2RdfModel();
 		triple2model.setInput(Hbz01MabXmlEtlNtriples2Filesystem.N_TRIPLE);
 		opener.setReceiver(srs).setReceiver(triple2model)
