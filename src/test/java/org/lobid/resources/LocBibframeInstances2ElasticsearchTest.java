@@ -15,7 +15,6 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.SortedSet;
 import java.util.TreeSet;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.apache.commons.io.FileUtils;
@@ -34,6 +33,7 @@ import org.elasticsearch.search.SearchHit;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.lobid.resources.run.LocBibframe2JsonEs;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -47,10 +47,10 @@ import com.hp.hpl.jena.rdf.model.Model;
 import de.hbz.lobid.helper.CompareJsonMaps;
 
 /**
- * Transform hbz01 Aleph Mab XML catalog data into lobid elasticsearch JSON-LD.
- * Query the index and test the data by transforming the data into one big
- * ntriple file (which is great to make diffs) and into several JSON-LD files
- * (reflecting the records residing in elasticsearch).
+ * Transform loc bibframe instances into JSON-LD and index that into
+ * elasticsearch. Query the index and test the data by transforming the data
+ * into one big ntriple file (which is great to make diffs) and into several
+ * JSON-LD files (reflecting the records residing in elasticsearch).
  * 
  * @author Pascal Christoph (dr0i)
  * 
@@ -71,17 +71,10 @@ public final class LocBibframeInstances2ElasticsearchTest {
 	private static final String DIRECTORY_TO_TEST_JSON_FILES =
 			Hbz01MabXmlEtlNtriples2Filesystem.PATH_TO_TEST + "jsonld-loc/";
 	private static boolean testFailed = false;
-	private static final String DIRECTORY_TO_LOC_LABELS = "loc-bibframe-labels";
-	private final static Pattern ROOT_SUBJECT_PATTERN =
-			Pattern.compile(".*resources/works/\\p{Alpha}.*");
-	private final static String INDEX_CONFIG_BIBFRAME =
-			"index-config-bibframe.json";
-	private final static String LOC_CONTEXT =
-			"http://lobid.org/resources/loc-context.jsonld";
-
 	private final static RdfModel2ElasticsearchEtikettJsonLd rdfModel2ElasticsearchEtikettJsonLd =
-			new RdfModel2ElasticsearchEtikettJsonLd(new File(DIRECTORY_TO_LOC_LABELS),
-					LOC_CONTEXT);
+			new RdfModel2ElasticsearchEtikettJsonLd(
+					new File(LocBibframe2JsonEs.DIRECTORY_TO_LOC_LABELS),
+					LocBibframe2JsonEs.LOC_CONTEXT);
 
 	@BeforeClass
 	public static void setup() {
@@ -127,12 +120,13 @@ public final class LocBibframeInstances2ElasticsearchTest {
 	 */
 	static void etl(final Client cl,
 			RdfModel2ElasticsearchEtikettJsonLd etikettJsonLdConverter) {
-		etikettJsonLdConverter.setIdPatternMainNode(ROOT_SUBJECT_PATTERN);
-		etikettJsonLdConverter.setRootIdPredicate(
-				"http://id.loc.gov/ontologies/bibframe/adminMetadata");
+		etikettJsonLdConverter
+				.setIdPatternMainNode(LocBibframe2JsonEs.ROOT_SUBJECT_PATTERN);
+		etikettJsonLdConverter
+				.setRootIdPredicate(LocBibframe2JsonEs.ROOT_ID_PREDICATE);
 		final FileOpener opener = new FileOpener();
 		final StringRecordSplitter srs =
-				new StringRecordSplitter(".*bibframe/Work> .$");
+				new StringRecordSplitter(LocBibframe2JsonEs.RECORD_SPLITTER_MARKER);
 		final Triples2RdfModel triple2model = new Triples2RdfModel();
 		triple2model.setInput(Hbz01MabXmlEtlNtriples2Filesystem.N_TRIPLE);
 		opener.setReceiver(srs).setReceiver(triple2model)
@@ -217,7 +211,7 @@ public final class LocBibframeInstances2ElasticsearchTest {
 		esIndexer.setIndexName(LOBID_RESOURCES);
 		esIndexer.setIndexAliasSuffix("");
 		esIndexer.setUpdateNewestIndex(false);
-		esIndexer.setIndexConfig(INDEX_CONFIG_BIBFRAME);
+		esIndexer.setIndexConfig(LocBibframe2JsonEs.INDEX_CONFIG_BIBFRAME);
 		esIndexer.lookupWikidata = false;
 		esIndexer.onSetReceiver();
 		return esIndexer;
@@ -284,7 +278,7 @@ public final class LocBibframeInstances2ElasticsearchTest {
 			mapper.enable(SerializationFeature.INDENT_OUTPUT);
 			try {
 				map = mapper.readValue(jsonLd, Map.class);
-				map.put("@context", LOC_CONTEXT);
+				map.put("@context", LocBibframe2JsonEs.LOC_CONTEXT);
 				jsonLdWithoutContext = mapper.writeValueAsString(map);
 				filename = ((String) map.get("id")).replaceAll(".*/", "")
 						.replaceAll("#!$", "");
@@ -316,7 +310,7 @@ public final class LocBibframeInstances2ElasticsearchTest {
 				String jsonWithLocalContext =
 						jsonLd
 								.replaceFirst(
-										"@context\" ?: ?\"" + LOC_CONTEXT
+										"@context\" ?: ?\"" + LocBibframe2JsonEs.LOC_CONTEXT
 												+ "\"",
 										"@context\":\""
 												+ new File(rdfModel2ElasticsearchEtikettJsonLd

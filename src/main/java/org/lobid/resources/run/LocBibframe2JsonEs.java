@@ -29,15 +29,16 @@ import com.hp.hpl.jena.rdf.model.Model;
  */
 @SuppressWarnings("javadoc")
 public class LocBibframe2JsonEs {
-	public static String jsonLdContext =
+	public final static String LOC_CONTEXT =
 			"http://lobid.org/resources/loc-context.jsonld";
-	private static final String DIRECTORY_TO_LOC_LABELS = "loc-bibframe-labels";
-	private final static Pattern ROOT_SUBJECT_PATTERN =
-			Pattern.compile(".*resources/instances/\\p{Alpha}.*");
-	private final static String INDEX_CONFIG_BIBFRAME =
+	public static final String DIRECTORY_TO_LOC_LABELS = "loc-bibframe-labels";
+	public final static Pattern ROOT_SUBJECT_PATTERN =
+			Pattern.compile(".*resources/works/\\p{Alpha}.*");
+	public final static String ROOT_ID_PREDICATE =
+			"http://id.loc.gov/ontologies/bibframe/adminMetadata";
+	public final static String INDEX_CONFIG_BIBFRAME =
 			"index-config-bibframe.json";
-	private final static String LOC_CONTEXT =
-			"http://lobid.org/resources/loc-context.jsonld";
+	public final static String RECORD_SPLITTER_MARKER = ".*bibframe/Work> .$";
 
 	private final static RdfModel2ElasticsearchEtikettJsonLd model2json =
 			new RdfModel2ElasticsearchEtikettJsonLd(new File(DIRECTORY_TO_LOC_LABELS),
@@ -70,8 +71,7 @@ public class LocBibframe2JsonEs {
 		System.out.println("using jsonLdContext: " + model2json.getJsonLdContext());
 		System.out.println(
 				"using jsonLdDirectory: " + model2json.getLabelsDirectoryName());
-		model2json.setRootIdPredicate(
-				"http://id.loc.gov/ontologies/bibframe/adminMetadata");
+		model2json.setRootIdPredicate(ROOT_ID_PREDICATE);
 		model2json.setIdPatternMainNode(ROOT_SUBJECT_PATTERN);
 		System.out
 				.println("using rootIdPredicate: " + model2json.getRootIdPredicate());
@@ -99,7 +99,7 @@ public class LocBibframe2JsonEs {
 		StreamBatchLogger batchLogger = new StreamBatchLogger();
 		batchLogger.setBatchSize(100000);
 		final StringRecordSplitter srs =
-				new StringRecordSplitter(".*bibframe/Instance> .$");
+				new StringRecordSplitter(RECORD_SPLITTER_MARKER);
 		ObjectBatchLogger<HashMap<String, String>> objectBatchLogger =
 				new ObjectBatchLogger<>();
 		objectBatchLogger.setBatchSize(500000);
