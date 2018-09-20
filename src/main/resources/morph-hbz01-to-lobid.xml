@@ -7407,17 +7407,6 @@
 		</combine>
 		<!-- geo enrichment nwbib 99 -->
 		<data source="@nwbib700_99" name="http://purl.org/dc/elements/1.1/coverage"/>
-		<!--some normalizing -->
-		<data source="@nwbib700_99" name="@nwbib700_99_id">
-			<replace pattern=" " with=""/>
-			<replace pattern="/" with=""/>
-			<replace pattern="\(.*\)" with=""/>
-			<replace pattern="&lt;.*&gt;" with=""/>
-			<replace pattern="" with=""/>
-			<replace pattern="-" with=""/>
-			<replace pattern="," with=""/>
-			<replace pattern="/" with=""/>
-		</data>
 		<combine name="@nwbibSpatialSubject" value="${a}">
 			<data source="700n[-1].a" name="a">
 				<regexp match="^([0-8][0-9]\b|91\b|96|97)\b" format="http://purl.org/lobid/nwbib-spatial#n${1}"/>
