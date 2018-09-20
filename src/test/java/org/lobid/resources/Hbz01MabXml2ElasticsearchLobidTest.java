@@ -111,6 +111,7 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 		WikidataGeodata2Es.esIndexer
 				.setIndexName(WikidataGeodata2Es.getIndexAlias());
 		WikidataGeodata2Es.setElasticsearchIndexer(client);
+		WikidataGeodata2Es.getQidTranformThemAndIndex2Es("Q599193");
 		WikidataGeodata2Es.filterWikidataEntitiesDump2EsGeodata(
 				"src/test/resources/wikidataEntities.json");
 		WikidataGeodata2Es.finish();

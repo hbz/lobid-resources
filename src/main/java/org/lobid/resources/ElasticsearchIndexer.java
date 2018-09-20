@@ -46,6 +46,7 @@ import org.elasticsearch.index.query.Operator;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.QueryStringQueryBuilder;
+import org.elasticsearch.index.search.MatchQuery.ZeroTermsQuery;
 import org.elasticsearch.rest.action.admin.indices.AliasesNotFoundException;
 import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.transport.client.PreBuiltTransportClient;
@@ -71,6 +72,7 @@ import com.google.gdata.util.common.io.CharStreams;
 public class ElasticsearchIndexer
 		extends DefaultObjectPipe<HashMap<String, String>, ObjectReceiver<Void>> {
 
+	private static final String IGNORE = "ignore";
 	private static final Logger LOG =
 			LogManager.getLogger(ElasticsearchIndexer.class);
 	private String hostname;
@@ -286,7 +288,8 @@ public class ElasticsearchIndexer
 									.type(MultiMatchQueryBuilder.Type.CROSS_FIELDS)
 									.operator(Operator.AND))
 							.must(new MultiMatchQueryBuilder(query.second)
-									.fields(WikidataGeodata2Es.TYPE));
+									.fields(WikidataGeodata2Es.TYPE)
+									.zeroTermsQuery(ZeroTermsQuery.ALL));
 					hits = client.prepareSearch(index).setQuery(queryBuilded).get()
 							.getHits();
 					JsonNode newSpatialNode;
