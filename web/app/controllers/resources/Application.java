@@ -64,7 +64,6 @@ import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
 import play.test.Helpers;
-import play.twirl.api.Html;
 import views.html.api;
 import views.html.dataset;
 import views.html.details;
@@ -192,9 +191,10 @@ public class Application extends Controller {
 		final String aggregations = aggs == null ? "" : aggs;
 		if (!aggregations.isEmpty() && !Search.SUPPORTED_AGGREGATIONS
 				.containsAll(Arrays.asList(aggregations.split(",")))) {
-			return Promise.promise(() -> badRequest(
+			return Promise.promise(() -> badRequest(views.html.error.render(q,
 					String.format("Unsupported aggregations: %s (supported: %s)",
-							aggregations, Search.SUPPORTED_AGGREGATIONS)));
+							aggregations, Search.SUPPORTED_AGGREGATIONS),
+					"Fehler")));
 		}
 
 		String responseFormat = Accept.formatFor(format, request().acceptedTypes());
@@ -222,8 +222,7 @@ public class Application extends Controller {
 						from, size, owner, t, sort, word, nested, responseFormat, index);
 		cacheOnRedeem(cacheId, result, ONE_HOUR);
 
-		return resultOrError(q, agent, name, subject, id, publisher, issued, medium,
-				from, size, owner, t, sort, word, result);
+		return resultOrError(q, result);
 	}
 
 	private static String createCacheId(final String format) {
@@ -238,22 +237,28 @@ public class Application extends Controller {
 	}
 
 	private static Promise<Result> resultOrError(final String q,
-			final String agent, final String name, final String subject,
-			final String id, final String publisher, final String issued,
-			final String medium, final int from, final int size, final String owner,
-			String t, String sort, String word, Promise<Result> result) {
-		return result.recover((Throwable throwable) -> {
-			Html html = query.render("[]", q, agent, name, subject, id, publisher,
-					issued, medium, from, size, 0L, owner, t, sort, word);
-			String message = "Could not query index: " + throwable.getMessage();
-			boolean badRequest = throwable instanceof IllegalArgumentException;
+			Promise<Result> result) {
+		return result.recover((Throwable t) -> {
+			String message = "Could not query index: " + t.getMessage()
+					+ (t.getCause() != null ? ", cause: " + t.getCause().getMessage()
+							: "");
+			boolean badRequest = t instanceof IllegalArgumentException;
 			if (badRequest) {
-				Logger.warn(message, throwable);
-				flashError(badRequest);
-				return badRequest(html);
+				Logger.error(message);
+				String header =
+						"Ungültige Suchanfrage. Maskieren Sie Sonderzeichen mit "
+								+ "<code>\\</code>. Siehe auch <a href=\""
+								+ "https://www.elastic.co/guide/en/elasticsearch/reference/2.4/"
+								+ "query-dsl-query-string-query.html#query-string-syntax\">"
+								+ "Dokumentation der unterstützten Suchsyntax</a>.";
+				return badRequest(views.html.error.render(q, message, header));
 			}
-			Logger.error(message, throwable);
-			return internalServerError(html);
+			Logger.error(message);
+			String header = "Es ist ein Fehler aufgetreten. "
+					+ "Bitte versuchen Sie es erneut oder kontaktieren Sie das "
+					+ "Entwicklerteam, falls das Problem fortbesteht "
+					+ "(siehe Link 'Feedback' oben rechts).";
+			return internalServerError(views.html.error.render(q, message, header));
 		});
 	}
 
@@ -525,23 +530,6 @@ public class Application extends Controller {
 		return promise;
 	}
 
-	private static void flashError(boolean badRequest) {
-		if (badRequest) {
-			flash("warning",
-					"Ungültige Suchanfrage. Maskieren Sie Sonderzeichen mit "
-							+ "<code>\\</code>. Siehe auch <a href=\""
-							+ "https://www.elastic.co/guide/en/elasticsearch/reference/2.4/"
-							+ "query-dsl-query-string-query.html#query-string-syntax\">"
-							+ "Dokumentation der unterstützten Suchsyntax</a>.");
-		} else {
-			flash("error",
-					"Es ist ein Fehler aufgetreten. "
-							+ "Bitte versuchen Sie es erneut oder kontaktieren Sie das "
-							+ "Entwicklerteam, falls das Problem fortbesteht "
-							+ "(siehe Link 'Feedback' oben rechts).");
-		}
-	}
-
 	private static void cacheOnRedeem(final String cacheId,
 			final Promise<Result> resultPromise, final int duration) {
 		resultPromise.onRedeem((Result result) -> {
@@ -550,8 +538,8 @@ public class Application extends Controller {
 		});
 	}
 
-	static Status responseFor(JsonNode responseJson,
-			String responseFormat) throws JsonProcessingException {
+	static Status responseFor(JsonNode responseJson, String responseFormat)
+			throws JsonProcessingException {
 		String content = "";
 		String contentType = "";
 		switch (responseFormat) {
