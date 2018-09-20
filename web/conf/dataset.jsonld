@@ -7,23 +7,27 @@
          "@id":"http://purl.org/dc/terms/accrualPeriodicity",
          "@type":"@id"
       },
-      "license":"http://purl.org/dc/terms/license",
-      "label":{
-         "@id":"http://www.w3.org/2000/01/rdf-schema#label",
-         "@container":"@language"
-      },
       "description":{
          "@container":"@language"
       },
-      "distribution": "http://www.w3.org/ns/dcat#distribution",
-      "Distribution":"http://www.w3.org/ns/dcat#Distribution",
-      "accessURL":"http://www.w3.org/ns/dcat#accessURL",
-      "mediaType":"http://www.w3.org/ns/dcat#mediaType"
+      "name":{
+         "@container":"@language"
+      },
+      "alternateName": {
+        "@container": "@language"
+      },
+      "Concept": "http://www.w3.org/2004/02/skos/core#Concept"
    },
    "id":"http://lobid.org/resources/dataset#!",
    "type":"Dataset",
-   "name":"lobid-resources",
-   "alternateName": "Der hbz-Verbundkatalog als Linked Open Data",
+   "name":{
+      "de":"lobid-resources",
+      "en":"lobid-resources"
+   },
+   "alternateName": {
+      "de":"Der hbz-Verbundkatalog als Linked Open Data",
+      "en":"The hbz union catalogue as Linked Open Data"
+   },
    "description":{
       "de":"<p class=\"lead\">Der Verbundkatalog des Hochschulbibliothekszentrums NRW (hbz) enthält die kooperativ erstellten Nachweise von Titel- und Bestandsdaten der Verbundbibliotheken in Nordrhein-Westfalen und Rheinland-Pfalz.</p><p>Daneben sind die Nordrhein-Westfälische Bibliographie und alle Zeitschriften der Zeitschriftendatenbank (ZDB) in den hbz-Verbundkatalog integriert. Die von den Verbundbibliotheken und ihren zugeordneten Einrichtungen aktiv eingebrachten Bestände sind Grundlage für die Online-Fernleihe. Der hbz-Verbundkatalog wird ergänzt um die Bestandsnachweise einer Vielzahl öffentlicher und anderer Bibliotheken, die ihre Bestände maschinell an das hbz liefern.</p><p>Der Verbundkatalog hat einen Umfang von etwa 20 Millionen Titeldatensätzen plus Bestandsinformationen.</p><p>Das hbz, einige Kölner Bibliotheken und das Landesbibliothekszentrum Rheinland-Pfalz starteten 2010 eine Open-Data-Initiative mit der ersten Freigabe von Katalogdaten in Deutschland. Mittlerweile wird der gesamte hbz-Verbundkatalog in dieser Oberfläche, als Programmierschnittstelle und in Form von Vollabzügen als Linked Open Data unter <a href=\"http://creativecommons.org/publicdomain/zero/1.0/\">CC0</a> bereitgestellt.</p>",
       "en":"<p>The North Rhine-Westphalian Library Service Centre's (hbz) union catalogue records approximately 20 Millioen bibliographic tiles plus holding information. It contains cooperatively created title and holdings information from libraries in North Rhine-Westphalia and Rhineland-Palatinate.</p><p>Besides that, the North Rhine-Westphalian Bibliography (NWBib) and all periodicals from the German Union Catalogue of Serials (ZDB) are included.</p><p>Cologne-based libraries and the Library Centre of Rhineland-Palatinate (LBZ) in cooperation with the hbz started an open data initiative in 2010 being the first top publish their catalog data under an open license. By now, the whole hbz union catalogue is published as full dumps and Linked Open Data via the lobid API under <a href=\"http://creativecommons.org/publicdomain/zero/1.0/\">CC0</a>."
@@ -36,14 +40,16 @@
    "spatial":[
       {
          "id":"http://www.wikidata.org/entity/Q1198",
-         "label":{
+         "type": "Place",
+         "name":{
             "de":"Nordrhein-Westfalen",
             "en":"North Rhine-Westphalia"
          }
       },
       {
          "id":"http://www.wikidata.org/entity/Q1200",
-         "label":{
+         "type": "Place",
+         "name":{
             "de":"Rheinland-Pfalz",
             "en":"Rhineland-Palatinate"
          }
@@ -53,7 +59,8 @@
    "contactPoint":"http://lobid.org/contact",
    "accrualPeriodicity":{
       "id":"http://purl.org/linked-data/sdmx/2009/code#freq-B",
-      "label":{
+      "type": "Concept",
+      "name":{
          "en":"Daily - business week",
          "de":"Täglich (werktags)"
       }
@@ -63,7 +70,8 @@
    ],
    "publisher":{
       "id":"http://lobid.org/organisations/DE-605#!",
-      "label":{
+      "type": "Organization",
+      "name":{
          "de":"Hochschulbibliothekszentrum des Landes Nordrhein-Westfalen",
          "en":"North Rhine-Westphalian Library Service"
       },
@@ -73,23 +81,27 @@
    },
    "isBasedOn": {
      "type": "Dataset",
-     "name": "Aleph-MAB2-XML-Export des hbz-Verbundkatalogs",
+     "name": {
+       "de": "Aleph-MAB2-XML-Export des hbz-Verbundkatalogs",
+       "en": "Aleph MAB2 XML export of hbz union catalogue"
+     },
      "url": "https://datahub.io/dataset/hbz_unioncatalog"
    },
    "distribution":[
       {
          "id":"http://lobid.org/resources/search",
-         "type":"Distribution",
-         "label": {
+         "type":"WebAPI",
+         "name": {
            "de": "lobid-resources-API",
            "en": "lobid-resources API"
          },
          "description": {
-         "en": "<p>The API gives access to machine-readable data (JSON-LD via HTTP). For documentation see <a href=\"http://lobid.org/resources/api\">http://lobid.org/resources/api</a>.</p>",
-         "de": "<p>Die API bietet Zugriff auf strukturierte Daten (JSON-LD via HTTP). Die Dokumentation befindet sich unter <a href=\"http://lobid.org/resources/api\">http://lobid.org/resources/api</a>.</p>"
+         "en": "<p>The API gives access to machine-readable data (JSON-LD via HTTP).</p>",
+         "de": "<p>Die API bietet Zugriff auf strukturierte Daten (JSON-LD via HTTP).</p>"
          },
-         "accessURL":"http://lobid.org/resources/search",
-         "mediaType":[
+         "url":"http://lobid.org/resources/search",
+         "documentation": "http://lobid.org/resources/api",
+         "encodingFormat":[
             "application/json",
             "application/ld+json"
          ],
