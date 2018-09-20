@@ -150,8 +150,8 @@ public class EtikettMaker implements EtikettMakerInterface {
 			try {
 				e.name = getJsonName(uri);
 			} catch (Exception ex) { // fallback domainname
-				logger.debug(
-						"no json name available. Please provide a labels.json file with proper 'name' entry. Using domainname as fallback.");
+				logger.debug("no json name available for " + uri
+						+ ". Please provide a labels.json file with proper 'name' entry. Using domainname as fallback.");
 				String[] uriparts = uri.split("/");
 				String domainname =
 						uriparts[0] + "/" + uriparts[1] + "/" + uriparts[2] + "/";
@@ -162,10 +162,10 @@ public class EtikettMaker implements EtikettMakerInterface {
 					try {
 						e.name = getJsonName(uri);
 					} catch (Exception exc) {
-						e.label =
-								uriparts.length > 3 ? domainname + uriparts[3] : domainname;
+						e.name = uriparts[uriparts.length - 1];
 					}
 				}
+				logger.debug("Fallback is:" + e.label);
 			}
 		}
 		if (e.label == null || e.label.isEmpty()) { // fallback name
@@ -188,7 +188,8 @@ public class EtikettMaker implements EtikettMakerInterface {
 		try {
 			JsonConverter.getObjectMapper().enable(SerializationFeature.INDENT_OUTPUT)
 					.writeValue(new File(getContextLocation()), context);
-			logger.info("... done writing context file.");
+			logger.info(
+					"... done writing context file to " + getContextLocation() + ".");
 		} catch (Exception e) {
 			logger.error("Error during writing context file! ", e);
 		}
@@ -306,6 +307,7 @@ public class EtikettMaker implements EtikettMakerInterface {
 	 * 
 	 * @param contextFname the filename of the jsonld-context
 	 */
+	@Override
 	public void setContextLocation(final String contextFname) {
 		contextLocation = contextFname;
 	}

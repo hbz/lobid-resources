@@ -77,4 +77,11 @@ public interface EtikettMakerInterface {
 	 */
 	public String getContextLocation();
 
+	/**
+	 * Sets the filename of the jsonld-context.
+	 * 
+	 * @param contextFname the filename of the jsonld-context
+	 */
+	public void setContextLocation(String contextFname);
+
 }
