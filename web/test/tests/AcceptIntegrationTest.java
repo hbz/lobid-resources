@@ -37,8 +37,11 @@ public class AcceptIntegrationTest extends LocalIndexSetup {
 		return Arrays.asList(new Object[][] {
 			// search, default format: JSON
 			{ fakeRequest(GET, "/resources/search?q=*"), /*->*/ "application/json" },
+			{ fakeRequest(GET, "/resources/search?q=*").header("Accept", "*/*"), /*->*/ "application/json" },
+			{ fakeRequest(GET, "/resources/search?q=*").header("Accept", "application/x-jsonlines"), /*->*/ "application/x-jsonlines" },
 			{ fakeRequest(GET, "/resources/search?q=*&format="), /*->*/ "application/json" },
 			{ fakeRequest(GET, "/resources/search?q=*&format=json"), /*->*/ "application/json" },
+			{ fakeRequest(GET, "/resources/search?q=*&format=jsonl"), /*->*/ "application/x-jsonlines" },
 			{ fakeRequest(GET, "/resources/search?q=*&format=whatever"), /*->*/ "application/json" },
 			{ fakeRequest(GET, "/resources/search?q=*").header("Accept", "text/plain"), /*->*/ "application/json" },
 			// search, others formats as query param:
