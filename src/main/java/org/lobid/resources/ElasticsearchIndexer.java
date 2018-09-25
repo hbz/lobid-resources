@@ -71,7 +71,6 @@ import com.google.gdata.util.common.io.CharStreams;
 public class ElasticsearchIndexer
 		extends DefaultObjectPipe<HashMap<String, String>, ObjectReceiver<Void>> {
 
-	private static final String IGNORE = "ignore";
 	private static final Logger LOG =
 			LogManager.getLogger(ElasticsearchIndexer.class);
 	private String hostname;
