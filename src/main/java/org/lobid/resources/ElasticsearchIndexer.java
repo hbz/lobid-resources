@@ -46,7 +46,6 @@ import org.elasticsearch.index.query.Operator;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.QueryStringQueryBuilder;
-import org.elasticsearch.index.search.MatchQuery.ZeroTermsQuery;
 import org.elasticsearch.rest.action.admin.indices.AliasesNotFoundException;
 import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.transport.client.PreBuiltTransportClient;
@@ -92,7 +91,7 @@ public class ElasticsearchIndexer
 	private static String indexConfig;
 	private static ObjectMapper mapper = new ObjectMapper();
 	/** Defines the threshold for wikidata lookups */
-	public static double MINIMUM_SCORE = 5.0;
+	public static double MINIMUM_SCORE = 1.0;
 	private HashMap<String, Object> settings = new HashMap<>();
 	/** Defines if the mabxml lookup should be done */
 	public boolean lookupMabxmlDeletion;
@@ -273,7 +272,7 @@ public class ElasticsearchIndexer
 			HashSet<String> wdIds = new HashSet<>();
 			for (int i = 0; i < coverage.length; i++) {
 				Pair<String, String> query = new Pair<>(
-						coverage[i].replaceAll("[^\\p{IsAlphabetic}]", " ").trim() + " ",
+						coverage[i].replaceAll("[^\\p{IsAlphabetic}]", " ").trim(),
 						WikidataGeodata2Es.NWBIB_LOCATION_CODES_2_WIKIDATA_ENTITIES
 								.getOrDefault(
 										coverage[i].replaceAll("[^\\p{Digit}]", " ").trim(), ""));
@@ -282,14 +281,18 @@ public class ElasticsearchIndexer
 						throw new Exception(
 								"Already lookuped with no good result, skipping");
 					SearchHits hits = null;
-					QueryBuilder queryBuilded = QueryBuilders.boolQuery()
-							.must(new MultiMatchQueryBuilder(query.first)
-									.fields(WikidataGeodata2Es.FIELD_BOOST)
-									.type(MultiMatchQueryBuilder.Type.CROSS_FIELDS)
-									.operator(Operator.AND))
-							.must(new MultiMatchQueryBuilder(query.second)
-									.fields(WikidataGeodata2Es.TYPE)
-									.zeroTermsQuery(ZeroTermsQuery.ALL));
+					QueryBuilder queryBuilded;
+					if (query.second.isEmpty())
+						queryBuilded = QueryBuilders.idsQuery()
+								.addIds(WikidataGeodata2Es.getQidMap().get(query.first));
+					else
+						queryBuilded = QueryBuilders.boolQuery()
+								.must(new MultiMatchQueryBuilder(query.first)
+										.fields(WikidataGeodata2Es.FIELD_BOOST)
+										.type(MultiMatchQueryBuilder.Type.CROSS_FIELDS)
+										.operator(Operator.AND))
+								.must(new MultiMatchQueryBuilder(query.second)
+										.fields(WikidataGeodata2Es.TYPE));
 					hits = client.prepareSearch(index).setQuery(queryBuilded).get()
 							.getHits();
 					JsonNode newSpatialNode;
