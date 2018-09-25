@@ -1,6 +1,8 @@
 package org.lobid.resources.run;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.nio.file.Files;
@@ -9,6 +11,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -48,18 +51,21 @@ public class WikidataGeodata2Es {
 
 	private static final String HTTP_WWW_WIKIDATA_ORG_ENTITY =
 			"http://www.wikidata.org/entity/";
-	private static final String JSON = "application/json";
+	private static final String JSON_ACCEPT_HEADER = "application/json";
 	public static ElasticsearchIndexer esIndexer = new ElasticsearchIndexer();
 	private static final String DATE =
 			new SimpleDateFormat("yyyyMMdd-HHmmss").format(new Date());
 	private static final Logger LOG =
 			LogManager.getLogger(WikidataGeodata2Es.class);
+	private static HashMap<String, String> qidMap = new HashMap<>();
+	private static BufferedReader lineReader;
 	/**
 	 * This is the root node of the geo data.
 	 */
 	public static final String SPATIAL = "spatial";
 	private static String indexAlias = "geo_nwbib";
 	private static boolean indexExists = false;
+	private static String qidCsvFn = "src/main/resources/string2wikidata.tsv";
 
 	/**
 	 * This maps the nwbib location codes to wikidata entities.
@@ -69,7 +75,8 @@ public class WikidataGeodata2Es {
 				private static final long serialVersionUID = 12L;
 
 				{
-					put("99", "Q22865 Q262166 Q253019 Q1852178 Q15632166 Q2983893 Q42744322 Q134626 Q448801 Q1548518 Q54935786");
+					put("99",
+							"Q22865 Q262166 Q253019 Q1852178 Q15632166 Q2983893 Q42744322 Q134626 Q448801 Q1548518 Q54935786");
 					put("97", "Q106658 Q5283531 Q1780389");
 					put("96", "Q829277");
 					put("36", "Q3146899 Q2072238");
@@ -126,11 +133,36 @@ public class WikidataGeodata2Es {
 		esIndexer.setIndexAliasSuffix(aliasSuffix);
 		setProductionIndexerConfigs(indexName);
 		LOG.info("Going to index");
+		loadQidMap();
+		qidMap.values().stream()
+				.forEach(value -> getQidTranformThemAndIndex2Es(value));
 		extractEntitiesFromSparqlQueryTranformThemAndIndex2Es((new String(
 				Files.readAllBytes(Paths.get(
 						"src/main/resources/getNwbibSubjectLocationsAsWikidataEntities.sparql")),
 				"UTF-8")).replaceAll("#.*\\n", ""));
+
 		esIndexer.onCloseStream();
+	}
+
+	private static void loadQidMap() {
+		LOG.info("going to load QID csv from " + qidCsvFn + "...");
+		String line = null;
+		try {
+			lineReader = new BufferedReader(new FileReader(qidCsvFn));
+			line = lineReader.readLine();
+			while (line != null) {
+				try {
+					String[] stringQidCsv = line.split("\t");
+					qidMap.put(stringQidCsv[0], stringQidCsv[1]);
+				} catch (Exception e) {
+					LOG.warn("Missing QID in " + line);
+				}
+				line = lineReader.readLine();
+			}
+		} catch (Exception e) {
+			LOG.warn(e.getMessage() + "\n" + line);
+		}
+		LOG.info("... loaded " + qidMap.size() + " entries from QID csv.");
 	}
 
 	static void setProductionIndexerConfigs(final String INDEX_NAME) {
@@ -178,10 +210,29 @@ public class WikidataGeodata2Es {
 			throws InterruptedException, ExecutionException, JsonParseException,
 			JsonMappingException, IOException {
 		Thread.sleep(500); // be nice throttle down
-		Response response = client.prepareGet(api).setHeader("Accept", JSON)
-				.setFollowRedirects(true).execute().get();
+		Response response =
+				client.prepareGet(api).setHeader("Accept", JSON_ACCEPT_HEADER)
+						.setFollowRedirects(true).execute().get();
 		return new ObjectMapper().readValue(response.getResponseBodyAsStream(),
 				JsonNode.class);
+	}
+
+	/**
+	 * Lookups a wikidata entity and, transform this to geo-nwbib-cache structure
+	 * and load into elasticsearch.
+	 * 
+	 * @param QID the wikidata Q-ID
+	 */
+	public static void getQidTranformThemAndIndex2Es(final String QID) {
+		LOG.info("Lookup QID: " + QID);
+		try (AsyncHttpClient client = new AsyncHttpClient()) {
+			JsonNode jnode =
+					toApiResponse(client, "http://www.wikidata.org/entity/" + QID);
+			stream(jnode).map(transform2lobidWikidata()) //
+					.forEach(index2Es());
+		} catch (Exception e) {
+			LOG.error("Can't get wikidata entities ", e);
+		}
 	}
 
 	/**
@@ -200,7 +251,6 @@ public class WikidataGeodata2Es {
 					return toApiResponse(client,
 							node.get("item").get("value").textValue());
 				} catch (InterruptedException | ExecutionException | IOException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				return null;
@@ -294,7 +344,11 @@ public class WikidataGeodata2Es {
 				if (!aliasesNode.isMissingNode())
 					root.set("aliases", aliasesNode);
 				ArrayNode type = mapper.createObjectNode().arrayNode();
-				id = node.with("entities").fieldNames().next();
+				try {
+					id = node.with("entities").fieldNames().next();
+				} catch (NoSuchElementException ex) {
+					id = node.findPath("id").asText();
+				}
 				spatial.put("id", HTTP_WWW_WIKIDATA_ORG_ENTITY + id);
 				spatial.put("label",
 						node.findPath("labels").findPath("de").findPath("value").asText());
@@ -374,6 +428,13 @@ public class WikidataGeodata2Es {
 			return;
 		}
 		WikidataGeodata2Es.indexAlias = indexAlias;
+	}
+
+	/**
+	 * @return HashMap of the string/Qid mapping
+	 */
+	public static HashMap<String, String> getQidMap() {
+		return qidMap;
 	}
 
 }

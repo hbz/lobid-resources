@@ -307,15 +307,12 @@ public final class LocBibframeInstances2ElasticsearchTest {
 		private static String toRdf(final String jsonLd) {
 			try {
 				LOG.trace("toRdf: " + jsonLd);
-				String jsonWithLocalContext =
-						jsonLd
-								.replaceFirst(
-										"@context\" ?: ?\"" + LocBibframe2JsonEs.LOC_CONTEXT
-												+ "\"",
-										"@context\":\""
-												+ new File(rdfModel2ElasticsearchEtikettJsonLd
-														.getContextLocation()).toURI().toString()
-												+ "\"");
+				String jsonWithLocalContext = jsonLd.replaceFirst(
+						"@context\" ?: ?\"" + LocBibframe2JsonEs.LOC_CONTEXT + "\"",
+						"@context\":\"" + new File(
+								rdfModel2ElasticsearchEtikettJsonLd.getContextLocation())
+										.toURI().toString()
+								+ "\"");
 
 				final Object jsonObject = JSONUtils.fromString(jsonWithLocalContext);
 				final JenaTripleCallback callback = new JenaTripleCallback();

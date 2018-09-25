@@ -111,6 +111,8 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 		WikidataGeodata2Es.esIndexer
 				.setIndexName(WikidataGeodata2Es.getIndexAlias());
 		WikidataGeodata2Es.setElasticsearchIndexer(client);
+		WikidataGeodata2Es.getQidMap().put("Münsterland", "Q1700");
+		WikidataGeodata2Es.getQidTranformThemAndIndex2Es("Q1700");
 		WikidataGeodata2Es.filterWikidataEntitiesDump2EsGeodata(
 				"src/test/resources/wikidataEntities.json");
 		WikidataGeodata2Es.finish();
@@ -125,7 +127,7 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 	 */
 	static void etl(final Client cl,
 			RdfModel2ElasticsearchEtikettJsonLd etikettJsonLdConverter) {
-		ElasticsearchIndexer.MINIMUM_SCORE = 1.4;
+		ElasticsearchIndexer.MINIMUM_SCORE = 1.0;
 		final FileOpener opener = new FileOpener();
 		final Triples2RdfModel triple2model = new Triples2RdfModel();
 		triple2model.setInput(Hbz01MabXmlEtlNtriples2Filesystem.N_TRIPLE);
@@ -289,6 +291,7 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 		}
 
 		/*
+		 * 
 		 * As the 'context' is just bloating the content the context is stripped
 		 * from it.
 		 */
