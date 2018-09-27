@@ -1925,6 +1925,23 @@
 				<sanitizeUrl></sanitizeUrl>
 			</data>
 		</combine>
+		<combine name="@MAB590sContainedInLabelWithSubseries" value="${a}, ${b}">
+      <data source="590-1.a" name="a"/>
+      <data source="592-1.a" name="b"/>
+    </combine>
+    <combine name="@MAB590sContainedInLabel" value="${a}" flushWith="@containedIn">
+      <choose name="a" flushWith="@containedIn">
+        <data source="@MAB590sContainedInLabelWithSubseries"/>
+        <data source="590-1.a"/>
+      </choose>
+    </combine>
+    <combine name="~rdf:subject" value="${a}" flushWith="@containedIn">
+        <data source="@containedIn" name="a"/>
+    </combine>
+    <combine name="http://www.w3.org/2000/01/rdf-schema#label" value="${a}" flushWith="@containedIn">
+      <data source="@MAB590sContainedInLabel" name="a"/>
+    </combine>
+    <call-macro name="setBackRdfSubject" field="@containedIn"/>
 		<!-- ####################### -->
 		<!-- ########## title -->
 		<!-- ####################### -->
@@ -7091,49 +7108,6 @@
 		<data source="599s[-1].a" name="@dctIsPartOfArticle">
 			<regexp match="(.*)" format="$[ns-zdb-services]${1}"/>
 		</data>
-		<combine name="@MAB590hasSuperordinateBnode" value="${a}">
-			<data source="59[06]-1.a" name="a">
-				<regexp match=".*" format="_:MAB590sHasSuperordinateBnode"/>
-			</data>
-		</combine>
-		<entity name="$[ns-lobid-vocab]isPartOf">
-			<combine name="$[ns-lobid-vocab]hasSuperordinate" value="${a}">
-				<choose name="a">
-					<data source="@dctIsPartOfHbzIdArticle"/>
-					<data source="@MAB590hasSuperordinateBnode"/>
-				</choose>
-			</combine>
-			<data source="596-1.a" name="$[ns-lobid-vocab]numbering"/>
-			<combine name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" value="${a}">
-				<data source="59[069]-1.a" name="a">
-					<constant value="$[ns-lobid-vocab]IsPartOfRelation"/>
-				</data>
-			</combine>
-		</entity>
-		<combine name="@MAB590sHasSuperordinateLabelWithSubseries" value="${a}, ${b}">
-			<data source="590-1.a" name="a"/>
-			<data source="592-1.a" name="b"/>
-		</combine>
-		<combine name="@MAB590sHasSuperordinateLabel" value="${a}">
-			<choose name="a">
-				<data source="@MAB590sHasSuperordinateLabelWithSubseries"/>
-				<data source="590-1.a"/>
-			</choose>
-		</combine>
-		<combine name="http://id.loc.gov/ontologies/bibframe/note" value="@MAB590sHasSuperordinateLabelWithSubseries: ${a}">
-			<data source="@MAB590sHasSuperordinateLabelWithSubseries" name="a"/>
-		</combine>
-		<combine name="~rdf:subject" value="${a}" flushWith="@MAB590sHasSuperordinateLabel">
-			<choose name="a" flushWith="@MAB590sHasSuperordinateLabel">
-				<data source="@dctIsPartOfHbzIdArticle"/>
-				<data source="@MAB590hasSuperordinateBnode"/>
-			</choose>
-		</combine>
-		<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="${a}"
-			flushWith="@MAB590sHasSuperordinateLabel">
-			<data source="@MAB590sHasSuperordinateLabel" name="a"/>
-		</combine>
-		<call-macro name="setBackRdfSubject" field="@MAB590sHasSuperordinateLabel"/>
 		<!-- create numbering of 4[56789]5 or part of 4[56789]1 -->
 		<call-macro name="createNumberingForHasSuperordinate" field="45"/>
 		<call-macro name="createNumberingForHasSuperordinate" field="46"/>
