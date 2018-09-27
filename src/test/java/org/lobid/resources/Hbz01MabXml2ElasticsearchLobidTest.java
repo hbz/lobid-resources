@@ -111,11 +111,8 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 		WikidataGeodata2Es.esIndexer
 				.setIndexName(WikidataGeodata2Es.getIndexAlias());
 		WikidataGeodata2Es.setElasticsearchIndexer(client);
-		WikidataGeodata2Es.getQidMap().put("Münsterland", "Q1700");
-		WikidataGeodata2Es.getQidTranformThemAndIndex2Es("Q1700");
 		WikidataGeodata2Es.filterWikidataEntitiesDump2EsGeodata(
 				"src/test/resources/wikidataEntities.json");
-		WikidataGeodata2Es.finish();
 		etl(client, new RdfModel2ElasticsearchEtikettJsonLd(
 				MabXml2lobidJsonEs.jsonLdContext));
 	}
@@ -138,6 +135,8 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 				.setReceiver(new PipeEncodeTriples()).setReceiver(triple2model)
 				.setReceiver(etikettJsonLdConverter)
 				.setReceiver(getElasticsearchIndexer(cl));
+		WikidataGeodata2Es.getQidTranformThemAndIndex2Es("Q1700");
+		WikidataGeodata2Es.finish();
 		opener.process(
 				new File(Hbz01MabXmlEtlNtriples2Filesystem.TEST_FILENAME_ALEPHXMLCLOBS)
 						.getAbsolutePath());
