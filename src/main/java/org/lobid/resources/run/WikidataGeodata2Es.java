@@ -144,7 +144,11 @@ public class WikidataGeodata2Es {
 		esIndexer.onCloseStream();
 	}
 
-	private static void loadQidMap() {
+	/**
+	 * Loads the manually created QID map.
+	 * 
+	 */
+	public static void loadQidMap() {
 		LOG.info("going to load QID csv from " + qidCsvFn + "...");
 		String line = null;
 		try {
@@ -153,7 +157,9 @@ public class WikidataGeodata2Es {
 			while (line != null) {
 				try {
 					String[] stringQidCsv = line.split("\t");
-					qidMap.put(stringQidCsv[0], stringQidCsv[1]);
+					qidMap.put(
+							stringQidCsv[0].replaceAll("[^\\p{IsAlphabetic}]", " ").trim(),
+							stringQidCsv[1]);
 				} catch (Exception e) {
 					LOG.warn("Missing QID in " + line);
 				}
@@ -196,7 +202,7 @@ public class WikidataGeodata2Es {
 	 */
 	public static void setElasticsearchIndexer(Client client) {
 		esIndexer.setElasticsearchClient(client);
-		esIndexer.setIndexAliasSuffix("-staging");
+		esIndexer.setIndexAliasSuffix("NOALIAS");
 		setElasticsearchIndexer();
 	}
 
