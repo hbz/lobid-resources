@@ -46,9 +46,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.github.jsonldjava.core.JsonLdError;
+import com.github.jsonldjava.core.JsonLdOptions;
 import com.github.jsonldjava.core.JsonLdProcessor;
-import com.github.jsonldjava.jena.JenaTripleCallback;
-import com.github.jsonldjava.utils.JSONUtils;
+import com.github.jsonldjava.utils.JsonUtils;
 import com.hp.hpl.jena.rdf.model.Model;
 
 import de.hbz.lobid.helper.CompareJsonMaps;
@@ -214,9 +214,9 @@ public final class Hbz01MabXmlDeletions2ElasticsearchTest {
 					.find(
 							Paths.get(Hbz01MabXmlEtlNtriples2Filesystem.PATH_TO_TEST
 									+ "/jsonld-deletions"),
-					100,
-					(name, t) -> name.toFile().getName()
-							.matches(".*" + fname + "\\.?(json)?(nt)?"))
+							100,
+							(name, t) -> name.toFile().getName()
+									.matches(".*" + fname + "\\.?(json)?(nt)?"))
 					.collect(Collectors.toList());
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -299,9 +299,9 @@ public final class Hbz01MabXmlDeletions2ElasticsearchTest {
 		private static String toRdf(final String jsonLd) {
 			try {
 				LOG.trace("toRdf: " + jsonLd);
-				final Object jsonObject = JSONUtils.fromString(jsonLd);
-				final JenaTripleCallback callback = new JenaTripleCallback();
-				final Model model = (Model) JsonLdProcessor.toRDF(jsonObject, callback);
+				final Object jsonObject = JsonUtils.fromString(jsonLd);
+				JsonLdOptions options = new JsonLdOptions();
+				final Model model = (Model) JsonLdProcessor.toRDF(jsonObject, options);
 				final StringWriter writer = new StringWriter();
 				model.write(writer, Hbz01MabXmlEtlNtriples2Filesystem.N_TRIPLE);
 				return writer.toString();

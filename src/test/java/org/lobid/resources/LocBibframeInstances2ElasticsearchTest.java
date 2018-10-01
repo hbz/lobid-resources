@@ -39,9 +39,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.github.jsonldjava.core.JsonLdError;
+import com.github.jsonldjava.core.JsonLdOptions;
 import com.github.jsonldjava.core.JsonLdProcessor;
-import com.github.jsonldjava.jena.JenaTripleCallback;
-import com.github.jsonldjava.utils.JSONUtils;
+import com.github.jsonldjava.utils.JsonUtils;
 import com.hp.hpl.jena.rdf.model.Model;
 
 import de.hbz.lobid.helper.CompareJsonMaps;
@@ -313,10 +313,9 @@ public final class LocBibframeInstances2ElasticsearchTest {
 								rdfModel2ElasticsearchEtikettJsonLd.getContextLocation())
 										.toURI().toString()
 								+ "\"");
-
-				final Object jsonObject = JSONUtils.fromString(jsonWithLocalContext);
-				final JenaTripleCallback callback = new JenaTripleCallback();
-				final Model model = (Model) JsonLdProcessor.toRDF(jsonObject, callback);
+				final Object jsonObject = JsonUtils.fromString(jsonWithLocalContext);
+				JsonLdOptions options = new JsonLdOptions();
+				final Model model = (Model) JsonLdProcessor.toRDF(jsonObject, options);
 				final StringWriter writer = new StringWriter();
 				model.write(writer, Hbz01MabXmlEtlNtriples2Filesystem.N_TRIPLE);
 				return writer.toString();

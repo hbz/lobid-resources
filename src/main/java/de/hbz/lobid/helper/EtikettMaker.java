@@ -186,7 +186,8 @@ public class EtikettMaker implements EtikettMakerInterface {
 	public void writeContext() {
 		logger.info("Writing context file ...");
 		try {
-			JsonConverter.getObjectMapper().enable(SerializationFeature.INDENT_OUTPUT)
+			ObjectMapper objectMapper = new ObjectMapper();
+			objectMapper.enable(SerializationFeature.INDENT_OUTPUT)
 					.writeValue(new File(getContextLocation()), context);
 			logger.info(
 					"... done writing context file to " + getContextLocation() + ".");
