@@ -178,11 +178,13 @@ public class ElasticsearchIndexer
 		LOG.info("Set index.refresh_interval to -1");
 		usrb.setSettings(settings);
 		usrb.execute().actionGet();
-		LOG.info("Start loading manually created Qid map ...");
-		WikidataGeodata2Es.loadQidMap();
-		LOG.info("Finished loading created Qid map loaded.");
-		LOG.info(
-				"Threshold minimum score for spatial enrichment: " + MINIMUM_SCORE);
+		if (lookupWikidata) {
+			LOG.info("Start loading manually created Qid map ...");
+			WikidataGeodata2Es.loadQidMap();
+			LOG.info("Finished loading created Qid map loaded.");
+			LOG.info(
+					"Threshold minimum score for spatial enrichment: " + MINIMUM_SCORE);
+		}
 	}
 
 	@Override
