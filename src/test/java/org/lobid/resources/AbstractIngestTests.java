@@ -9,6 +9,8 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Iterator;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -20,6 +22,11 @@ import org.apache.logging.log4j.Logger;
 import org.culturegraph.mf.morph.Metamorph;
 import org.culturegraph.mf.morph.MorphErrorHandler;
 import org.junit.Assert;
+
+import com.github.jsonldjava.core.JsonLdOptions;
+import com.github.jsonldjava.core.JsonLdProcessor;
+import com.github.jsonldjava.impl.NQuadTripleCallback;
+import com.github.jsonldjava.utils.JsonUtils;
 
 /**
  * Helper class for executing tests.
@@ -151,6 +158,26 @@ public abstract class AbstractIngestTests {
 				LOG.error(exception.getMessage(), exception);
 			}
 		});
+	}
+
+	public static String toRdf(final String jsonLd, String contextUrl,
+			String contextLocation) {
+		try {
+			LOG.trace("toRdf: " + jsonLd);
+			String context =
+					new String(Files.readAllBytes(Paths.get(contextLocation)));
+			String jsonWithLocalContext =
+					jsonLd.replaceFirst("\\{\"@context\":\"" + contextUrl + "\"",
+							context.substring(0, context.length() - 2));
+			final Object jsonObject = JsonUtils.fromString(jsonWithLocalContext);
+			NQuadTripleCallback nqtc = new NQuadTripleCallback();
+			JsonLdOptions options = new JsonLdOptions();
+			Object obj = JsonLdProcessor.toRDF(jsonObject, nqtc, options);
+			return obj.toString();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 }

@@ -2,15 +2,10 @@
  * Licensed under the Eclipse Public License 1.0 */
 package org.lobid.resources;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
-import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.transport.client.PreBuiltTransportClient;
 import org.junit.Test;
-import org.lobid.resources.run.MabXml2lobidJsonEs;
 
 /**
  * Makes use of {@link Hbz01MabXml2ElasticsearchLobidTest} to extract, transform
@@ -31,16 +26,16 @@ public final class Hbz01MabXml2ElasticsearchLobidTestOnline {
 				Settings.builder().put("cluster.name", CLUSTER_NAME).build();
 		this.tc = new PreBuiltTransportClient(settings);
 
-		try {
-			Hbz01MabXml2ElasticsearchLobidTest.etl(
-					tc.addTransportAddress(new InetSocketTransportAddress(
-							InetAddress.getByName(HOSTNAME), 9300)),
-					new RdfModel2ElasticsearchEtikettJsonLd(
-							MabXml2lobidJsonEs.jsonLdContext));
-		} catch (UnknownHostException e) {
-			e.printStackTrace();
-		}
-		Hbz01MabXml2ElasticsearchLobidTest
-				.getElasticsearchDocsAsNtriplesAndTestAndWrite();
+		// try {
+		// Hbz01MabXml2ElasticsearchLobidTest.etl(
+		// tc.addTransportAddress(new InetSocketTransportAddress(
+		// InetAddress.getByName(HOSTNAME), 9300)),
+		// new RdfModel2ElasticsearchEtikettJsonLd(
+		// MabXml2lobidJsonEs.jsonLdContext));
+		// } catch (UnknownHostException e) {
+		// e.printStackTrace();
+		// }
+		// Hbz01MabXml2ElasticsearchLobidTest
+		// .getElasticsearchDocsAsNtriplesAndTestAndWrite();
 	}
 }

@@ -5,7 +5,6 @@ package org.lobid.resources;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.StringWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -38,11 +37,6 @@ import org.lobid.resources.run.LocBibframe2JsonEs;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.github.jsonldjava.core.JsonLdError;
-import com.github.jsonldjava.core.JsonLdOptions;
-import com.github.jsonldjava.core.JsonLdProcessor;
-import com.github.jsonldjava.utils.JsonUtils;
-import com.hp.hpl.jena.rdf.model.Model;
 
 import de.hbz.lobid.helper.CompareJsonMaps;
 
@@ -250,7 +244,10 @@ public final class LocBibframeInstances2ElasticsearchTest {
 		private static String getAsNtriples() {
 			return Arrays.asList(getElasticsearchDocuments().getHits().getHits())
 					.parallelStream()
-					.map(hit -> toRdf(cleanseEndtime(hit.getSourceAsString())))
+					.map(hit -> AbstractIngestTests.toRdf(
+							cleanseEndtime(hit.getSourceAsString()),
+							LocBibframe2JsonEs.LOC_CONTEXT,
+							rdfModel2ElasticsearchEtikettJsonLd.getContextLocation()))
 					.collect(Collectors.joining());
 		}
 
@@ -302,27 +299,6 @@ public final class LocBibframeInstances2ElasticsearchTest {
 				LOG.error("Errored computing " + filename);
 				deleteTestFile(Paths.get(filename));
 			}
-		}
-
-		private static String toRdf(final String jsonLd) {
-			try {
-				LOG.trace("toRdf: " + jsonLd);
-				String jsonWithLocalContext = jsonLd.replaceFirst(
-						"@context\" ?: ?\"" + LocBibframe2JsonEs.LOC_CONTEXT + "\"",
-						"@context\":\"" + new File(
-								rdfModel2ElasticsearchEtikettJsonLd.getContextLocation())
-										.toURI().toString()
-								+ "\"");
-				final Object jsonObject = JsonUtils.fromString(jsonWithLocalContext);
-				JsonLdOptions options = new JsonLdOptions();
-				final Model model = (Model) JsonLdProcessor.toRDF(jsonObject, options);
-				final StringWriter writer = new StringWriter();
-				model.write(writer, Hbz01MabXmlEtlNtriples2Filesystem.N_TRIPLE);
-				return writer.toString();
-			} catch (IOException | JsonLdError e) {
-				e.printStackTrace();
-			}
-			return null;
 		}
 	}
 }

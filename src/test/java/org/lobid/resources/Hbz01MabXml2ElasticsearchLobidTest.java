@@ -5,7 +5,6 @@ package org.lobid.resources;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -45,12 +44,6 @@ import org.lobid.resources.run.WikidataGeodata2Es;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.github.jsonldjava.core.JsonLdError;
-import com.github.jsonldjava.core.JsonLdOptions;
-import com.github.jsonldjava.core.JsonLdProcessor;
-import com.github.jsonldjava.core.RDFDataset;
-import com.github.jsonldjava.impl.NQuadTripleCallback;
-import com.github.jsonldjava.utils.JsonUtils;
 
 import de.hbz.lobid.helper.CompareJsonMaps;
 
@@ -115,8 +108,7 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 		WikidataGeodata2Es.filterWikidataEntitiesDump2EsGeodata(
 				"src/test/resources/wikidataEntities.json");
 		WikidataGeodata2Es.finish();
-		etl(client, new RdfModel2ElasticsearchEtikettJsonLd(
-				MabXml2lobidJsonEs.jsonLdContext));
+		etl(client, new JsonLdItemSplitter2ElasticsearchJsonLd());
 	}
 
 	/*
@@ -125,17 +117,21 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 	 * json-ld, index that into elasticsearch.
 	 */
 	static void etl(final Client cl,
-			RdfModel2ElasticsearchEtikettJsonLd etikettJsonLdConverter) {
+			JsonLdItemSplitter2ElasticsearchJsonLd jsonLdItemSplitter2es) {
 		ElasticsearchIndexer.MINIMUM_SCORE = 1.4;
 		final FileOpener opener = new FileOpener();
-		final Triples2RdfModel triple2model = new Triples2RdfModel();
-		triple2model.setInput(Hbz01MabXmlEtlNtriples2Filesystem.N_TRIPLE);
-		opener.setReceiver(new TarReader()).setReceiver(new XmlDecoder())
+		JsonLdEtikett jsonLdEtikett = new JsonLdEtikett();
+		RdfGraphToJsonLd rdfGraphToJsonLd = new RdfGraphToJsonLd(mabXml2lobidJsonEs
+				.getRdfModel2ElasticsearchEtikettJsonLd().getContextLocation());
+		opener.setReceiver(new TarReader())//
+				.setReceiver(new XmlDecoder())//
 				.setReceiver(new AlephMabXmlHandler())
 				.setReceiver(
 						new Metamorph("src/main/resources/morph-hbz01-to-lobid.xml"))
-				.setReceiver(new PipeEncodeTriples()).setReceiver(triple2model)
-				.setReceiver(etikettJsonLdConverter)
+				.setReceiver(new PipeEncodeTriples())//
+				.setReceiver(rdfGraphToJsonLd)//
+				.setReceiver(jsonLdEtikett)//
+				.setReceiver(jsonLdItemSplitter2es)//
 				.setReceiver(getElasticsearchIndexer(cl));
 		opener.process(
 				new File(Hbz01MabXmlEtlNtriples2Filesystem.TEST_FILENAME_ALEPHXMLCLOBS)
@@ -273,7 +269,11 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 		private static String getAsNtriples() {
 			return Arrays.asList(getElasticsearchDocuments().getHits().getHits())
 					.parallelStream()
-					.map(hit -> toRdf(cleanseEndtime(hit.getSourceAsString())))
+					.map(hit -> AbstractIngestTests.toRdf(
+							cleanseEndtime(hit.getSourceAsString()),
+							"http://lobid.org/resources/context.jsonld",
+							mabXml2lobidJsonEs.getRdfModel2ElasticsearchEtikettJsonLd()
+									.getContextLocation()))
 					.collect(Collectors.joining());
 		}
 
@@ -331,32 +331,5 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 			}
 		}
 
-		private static String toRdf(final String jsonLd) {
-			try {
-				LOG.trace("toRdf: " + jsonLd);
-				String jsonWithLocalContext = jsonLd.replaceFirst(
-						"@context\":\"http://lobid.org/resources/context.jsonld\"",
-						"@context\":\"file://" + new File(mabXml2lobidJsonEs
-								.getRdfModel2ElasticsearchEtikettJsonLd().getContextLocation())
-										.getAbsolutePath()
-								+ "\"");
-				final Object jsonObject = JsonUtils.fromString(jsonWithLocalContext);
-				// JsonLdOptions options = new JsonLdOptions();
-				NQuadTripleCallback nqtc = new NQuadTripleCallback();
-				JsonLdOptions options = new JsonLdOptions();
-				URL url = new URL("file:/");
-				Object obj = JsonLdProcessor.toRDF(jsonObject, nqtc, options);
-				System.out.println(obj.toString() + url);
-				RDFDataset rdfdata = new RDFDataset();
-				Object obj1 = nqtc.call(rdfdata);
-				return obj1.toString();
-				// final StringWriter writer = new StringWriter();
-				// model.write(writer, Hbz01MabXmlEtlNtriples2Filesystem.N_TRIPLE);
-				// return writer.toString();
-			} catch (IOException | JsonLdError e) {
-				e.printStackTrace();
-			}
-			return null;
-		}
 	}
 }
