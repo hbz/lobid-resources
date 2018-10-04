@@ -1,3 +1,5 @@
+/* Copyright 2015-2018 hbz. Licensed under the EPL 2.0 */
+
 package org.lobid.resources.run;
 
 import java.io.File;

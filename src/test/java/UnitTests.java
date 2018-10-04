@@ -1,5 +1,4 @@
-
-/* Copyright 2016,2017 Pascal Christoph. Licensed under the Eclipse Public License 1.0 */
+/* Copyright 2016,2017 Pascal Christoph. Licensed under the EPL 2.0 */
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;

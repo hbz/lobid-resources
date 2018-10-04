@@ -1,4 +1,4 @@
-/* Copyright 2018 by hbz. Licensed under the GPLv2 */
+/* Copyright 2018 by hbz. Licensed under the EPL 2.0 */
 
 package controllers.resources;
 
