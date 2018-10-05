@@ -1,4 +1,4 @@
-/* Copyright 2013 Fabian Steeg. Licensed under the Eclipse Public License 1.0 */
+/* Copyright 2013 Fabian Steeg. Licensed under the EPL 2.0 */
 
 package org.lobid.resources;
 

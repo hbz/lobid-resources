@@ -1,3 +1,5 @@
+/* Copyright 2015-2018 hbz. Licensed under the EPL 2.0 */
+
 import java.io.File;
 
 import org.junit.Test;

@@ -1,5 +1,5 @@
-/* Copyright 2016  hbz, Pascal Christoph.
- * Licensed under the Eclipse Public License 1.0 */
+/* Copyright 2016 hbz, Pascal Christoph. Licensed under the EPL 2.0 */
+
 package org.lobid.resources.run;
 
 import java.io.File;

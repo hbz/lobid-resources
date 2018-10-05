@@ -1,5 +1,5 @@
-/* Copyright 2015  hbz, Pascal Christoph.
- * Licensed under the Eclipse Public License 1.0 */
+/* Copyright 2015 hbz, Pascal Christoph. Licensed under the EPL 2.0 */
+
 package de.hbz.lobid.helper;
 
 import java.io.File;

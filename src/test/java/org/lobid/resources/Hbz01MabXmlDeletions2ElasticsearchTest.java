@@ -1,5 +1,5 @@
-/* Copyright 2015,2016,2017  hbz, Pascal Christoph.
- * Licensed under the Eclipse Public License 1.0 */
+/* Copyright 2015-2017 hbz, Pascal Christoph. Licensed under the EPL 2.0 */
+
 package org.lobid.resources;
 
 import static org.elasticsearch.common.xcontent.XContentType.JSON;

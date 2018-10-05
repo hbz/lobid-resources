@@ -1,5 +1,4 @@
-
-/* Copyright 2017, hbz. Licensed under the Eclipse Public License 1.0 */
+/* Copyright 2017, hbz. Licensed under the EPL 2.0 */
 
 import java.net.InetAddress;
 import java.util.List;
