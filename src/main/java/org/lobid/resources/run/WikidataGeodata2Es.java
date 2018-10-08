@@ -131,7 +131,7 @@ public class WikidataGeodata2Es {
 		}
 		String aliasSuffix = System.getProperty("aliasSuffix", "");
 		LOG.info("Alias suffix configured:'" + aliasSuffix + "' ...");
-		LOG.info("... so the alias is: '" + indexAlias + aliasSuffix "'");
+		LOG.info("... so the alias is: '" + indexAlias + aliasSuffix + "'");
 		esIndexer.setIndexAliasSuffix(aliasSuffix);
 		setProductionIndexerConfigs(indexName);
 		LOG.info("Going to index");
