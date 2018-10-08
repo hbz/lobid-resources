@@ -33,7 +33,7 @@ import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
 import org.elasticsearch.action.admin.indices.settings.put.UpdateSettingsRequestBuilder;
 import org.elasticsearch.action.bulk.BulkRequestBuilder;
 import org.elasticsearch.action.bulk.BulkResponse;
-import org.elasticsearch.action.update.UpdateRequest;
+import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.IndicesAdminClient;
 import org.elasticsearch.client.Requests;
@@ -77,8 +77,8 @@ public class ElasticsearchIndexer
 	private String clustername;
 	private BulkRequestBuilder bulkRequest;
 	private InetSocketTransportAddress NODE;
+	private IndexRequest indexRequest;
 	private TransportClient tc;
-	private UpdateRequest updateRequest;
 	private Client client;
 	private int retries = 40;
 	// collect so many documents before bulk indexing them all
@@ -192,11 +192,11 @@ public class ElasticsearchIndexer
 		LOG.debug("Try to index " + json.get(Properties.ID.getName())
 				+ " in ES type " + json.get(Properties.TYPE.getName()) + " Source:"
 				+ json.get(Properties.GRAPH.getName()));
-		updateRequest = new UpdateRequest(indexName,
+		indexRequest = new IndexRequest(indexName,
 				json.get(Properties.TYPE.getName()), json.get(Properties.ID.getName()));
 		String jsonDoc = json.get(Properties.GRAPH.getName());
 		if (json.containsKey(Properties.PARENT.getName())) { // items
-			updateRequest.parent(json.get(Properties.PARENT.getName()));
+			indexRequest.parent(json.get(Properties.PARENT.getName()));
 		} else {
 			if (lookupWikidata) {
 				try {
@@ -214,9 +214,8 @@ public class ElasticsearchIndexer
 						enrichMabxmlDeletions(json.get(Properties.ID.getName()), jsonDoc);
 			}
 		}
-		updateRequest.doc(jsonDoc, JSON);
-		updateRequest.docAsUpsert(true);
-		bulkRequest.add(updateRequest);
+		indexRequest.source(jsonDoc, JSON);
+		bulkRequest.add(indexRequest);
 		docs++;
 		while (docs > bulkSize && retries > 0) {
 			try {
@@ -426,7 +425,7 @@ public class ElasticsearchIndexer
 				.isExists()) {
 			LOG.info("Going to CREATE new index " + indexName + " at cluster "
 					+ this.client.settings().get("cluster.name"));
-			adminClient.prepareCreate(indexName).setSource(config()).execute()
+			adminClient.prepareCreate(indexName).setSource(config(), JSON).execute()
 					.actionGet();
 			settings.put("index.number_of_replicas", 0);
 		} else
