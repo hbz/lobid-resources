@@ -131,7 +131,7 @@ public class WikidataGeodata2Es {
 		}
 		String aliasSuffix = System.getProperty("aliasSuffix", "");
 		LOG.info("Alias suffix configured:'" + aliasSuffix + "' ...");
-		LOG.info("... so the alias is: '" + indexAlias + "'");
+		LOG.info("... so the alias is: '" + indexAlias + aliasSuffix "'");
 		esIndexer.setIndexAliasSuffix(aliasSuffix);
 		setProductionIndexerConfigs(indexName);
 		LOG.info("Going to index");
@@ -426,15 +426,11 @@ public class WikidataGeodata2Es {
 	}
 
 	/**
-	 * Musn't have a '-' in it.
-	 * 
+	 * Sets an optional suffix to the elasticsearch index alias.
+	 *
 	 * @param indexAlias
 	 */
 	private static void setIndexAlias(String indexAlias) {
-		if (indexAlias.contains("-")) {
-			LOG.error("Index alias musn't have an '-' in it");
-			return;
-		}
 		WikidataGeodata2Es.indexAlias = indexAlias;
 	}
 

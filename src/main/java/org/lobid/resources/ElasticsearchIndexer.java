@@ -202,7 +202,7 @@ public class ElasticsearchIndexer
 				try {
 					ObjectNode node = mapper.readValue(
 							json.get(Properties.GRAPH.getName()), ObjectNode.class);
-					jsonDoc = enrich(WikidataGeodata2Es.getIndexAlias(), "coverage",
+					jsonDoc = enrich(WikidataGeodata2Es.getIndexAlias()+aliasSuffix, "coverage",
 							WikidataGeodata2Es.SPATIAL, node);
 				} catch (IOException e1) {
 					LOG.info(
@@ -371,9 +371,9 @@ public class ElasticsearchIndexer
 	}
 
 	/**
-	 * Sets the suffix of elasticsearch index alias suffix
+	 * Sets an optional suffix to the elasticsearch index alias.
 	 * 
-	 * @param aliasSuffix musn't have '-' in it
+	 * @param aliasSuffix
 	 */
 	public void setIndexAliasSuffix(String aliasSuffix) {
 		this.aliasSuffix = aliasSuffix;
