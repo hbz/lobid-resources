@@ -174,11 +174,12 @@ public class ElasticsearchIndexer
 		UpdateSettingsRequestBuilder usrb =
 				client.admin().indices().prepareUpdateSettings();
 		usrb.setIndices(indexName);
-		settings.put("index.refresh_interval", -1);
 		LOG.info("Set index.refresh_interval to -1");
 		usrb.setSettings(settings);
 		usrb.execute().actionGet();
 		if (lookupWikidata) {
+			LOG.info("Using wikidata geo_nwbib index with name:"
+					+ WikidataGeodata2Es.getIndexAlias() + aliasSuffix);
 			LOG.info("Start loading manually created Qid map ...");
 			WikidataGeodata2Es.loadQidMap();
 			LOG.info("Finished loading created Qid map loaded.");
@@ -202,8 +203,8 @@ public class ElasticsearchIndexer
 				try {
 					ObjectNode node = mapper.readValue(
 							json.get(Properties.GRAPH.getName()), ObjectNode.class);
-					jsonDoc = enrich(WikidataGeodata2Es.getIndexAlias()+aliasSuffix, "coverage",
-							WikidataGeodata2Es.SPATIAL, node);
+					jsonDoc = enrich(WikidataGeodata2Es.getIndexAlias() + aliasSuffix,
+							"coverage", WikidataGeodata2Es.SPATIAL, node);
 				} catch (IOException e1) {
 					LOG.info(
 							"Enrichment problem with" + json.get(Properties.ID.getName()),
