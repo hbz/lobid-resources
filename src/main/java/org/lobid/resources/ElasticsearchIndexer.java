@@ -173,10 +173,13 @@ public class ElasticsearchIndexer
 		} else
 			createIndex();
 		UpdateSettingsRequest request = new UpdateSettingsRequest(indexName);
-		LOG.info("index.refresh_interval to -1");
+		LOG.info("Set index.refresh_interval to -1");
 		settings.put("index.refresh_interval", "-1");
-		LOG.info("index.number_of_replicas to 0");
-		settings.put("index.number_of_replicas", 0);
+		if (!this.updateNewestIndex) {
+			LOG.info("Creating new index");
+			LOG.info("Set index.number_of_replicas to 0");
+			settings.put("index.number_of_replicas", 0);
+		}
 		request.settings(settings);
 		client.admin().indices().updateSettings(request).actionGet();
 		if (lookupWikidata) {
