@@ -214,7 +214,7 @@ public class ElasticsearchIndexer
 							json.get(Properties.GRAPH.getName()), ObjectNode.class);
 					jsonDoc = enrich(
 							WikidataGeodata2Es.getIndexAlias()
-									+ (aliasSuffix.equals("NOALIAS") ? " " : aliasSuffix),
+									+ (aliasSuffix.equals("NOALIAS") ? "" : aliasSuffix),
 							"coverage", WikidataGeodata2Es.SPATIAL, node);
 				} catch (IOException e1) {
 					LOG.info(
