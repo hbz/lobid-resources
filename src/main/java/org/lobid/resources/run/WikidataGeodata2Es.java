@@ -428,10 +428,10 @@ public class WikidataGeodata2Es {
 	/**
 	 * Sets an optional suffix to the elasticsearch index alias.
 	 *
-	 * @param indexAlias
+	 * @param INDEX_ALIAS the alias of this index
 	 */
-	private static void setIndexAlias(String indexAlias) {
-		WikidataGeodata2Es.indexAlias = indexAlias;
+	public static void setIndexAlias(final String INDEX_ALIAS) {
+		indexAlias = INDEX_ALIAS;
 	}
 
 	/**

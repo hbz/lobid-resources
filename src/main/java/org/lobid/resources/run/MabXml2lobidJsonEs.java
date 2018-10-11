@@ -41,7 +41,7 @@ public class MabXml2lobidJsonEs {
 
 	public static void main(String... args) {
 		String usage =
-				"<input path>%s<index name>%s<index alias suffix>%s<node>%s<cluster>%s<'update' (will take latest index), 'exact' (will take ->'index name' even when no timestamp is suffixed) , else create new index with actual timestamp>%s<optional: filename of index-config>%s<optional: filename of morph>%s<optional: jsonld-context-uri>%s";
+				"<input path>%s<index name>%s<index alias suffix ('NOALIAS' sets it empty)>%s<node>%s<cluster>%s<'update' (will take latest index), 'exact' (will take ->'index name' even when no timestamp is suffixed) , else create new index with actual timestamp>%s<optional: filename of index-config>%s<optional: filename of morph>%s<optional: jsonld-context-uri>%s";
 		String inputPath = args[0];
 		String indexName = args[1];
 		String date = new SimpleDateFormat("yyyyMMdd-HHmmss").format(new Date());

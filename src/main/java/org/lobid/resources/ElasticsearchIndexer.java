@@ -182,8 +182,10 @@ public class ElasticsearchIndexer
 		request.settings(settings);
 		client.admin().indices().updateSettings(request).actionGet();
 		if (lookupWikidata) {
+			WikidataGeodata2Es.setIndexAlias(WikidataGeodata2Es.getIndexAlias()
+					+ (aliasSuffix.equals("NOALIAS") ? "" : aliasSuffix));
 			LOG.info("Using wikidata geo_nwbib index with name:"
-					+ WikidataGeodata2Es.getIndexAlias() + aliasSuffix);
+					+ WikidataGeodata2Es.getIndexAlias());
 			LOG.info("Start loading manually created Qid map ...");
 			WikidataGeodata2Es.loadQidMap();
 			LOG.info("Finished loading created Qid map loaded.");
@@ -212,10 +214,8 @@ public class ElasticsearchIndexer
 				try {
 					ObjectNode node = mapper.readValue(
 							json.get(Properties.GRAPH.getName()), ObjectNode.class);
-					jsonDoc = enrich(
-							WikidataGeodata2Es.getIndexAlias()
-									+ (aliasSuffix.equals("NOALIAS") ? "" : aliasSuffix),
-							"coverage", WikidataGeodata2Es.SPATIAL, node);
+					jsonDoc = enrich(WikidataGeodata2Es.getIndexAlias(), "coverage",
+							WikidataGeodata2Es.SPATIAL, node);
 				} catch (IOException e1) {
 					LOG.info(
 							"Enrichment problem with" + json.get(Properties.ID.getName()),
