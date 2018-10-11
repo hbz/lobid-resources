@@ -30,6 +30,7 @@ import org.culturegraph.mf.framework.annotations.In;
 import org.culturegraph.mf.framework.annotations.Out;
 import org.elasticsearch.action.admin.cluster.state.ClusterStateRequest;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
+import org.elasticsearch.action.admin.indices.settings.put.UpdateSettingsRequest;
 import org.elasticsearch.action.admin.indices.settings.put.UpdateSettingsRequestBuilder;
 import org.elasticsearch.action.bulk.BulkRequestBuilder;
 import org.elasticsearch.action.bulk.BulkResponse;
@@ -152,7 +153,7 @@ public class ElasticsearchIndexer
 		if (client == null) {
 			LOG.info("clustername=" + this.clustername);
 			LOG.info("hostname=" + this.hostname);
-			Settings clientSettings = Settings.builder()
+			Settings nodeSettings = Settings.builder()
 					.put("cluster.name", this.clustername)
 					.put("client.transport.sniff", false)
 					.put("client.transport.ping_timeout", 120, TimeUnit.SECONDS).build();
@@ -162,7 +163,7 @@ public class ElasticsearchIndexer
 			} catch (UnknownHostException e) {
 				e.printStackTrace();
 			}
-			this.tc = new PreBuiltTransportClient(clientSettings);
+			this.tc = new PreBuiltTransportClient(nodeSettings);
 			this.client = this.tc.addTransportAddress(this.NODE);
 		}
 		bulkRequest = client.prepareBulk();
@@ -171,12 +172,13 @@ public class ElasticsearchIndexer
 				getNewestIndex();
 		} else
 			createIndex();
-		UpdateSettingsRequestBuilder usrb =
-				client.admin().indices().prepareUpdateSettings();
-		usrb.setIndices(indexName);
-		LOG.info("Set index.refresh_interval to -1");
-		usrb.setSettings(settings);
-		usrb.execute().actionGet();
+		UpdateSettingsRequest request = new UpdateSettingsRequest(indexName);
+		LOG.info("index.refresh_interval to -1");
+		settings.put("index.refresh_interval", "-1");
+		LOG.info("index.number_of_replicas to 0");
+		settings.put("index.number_of_replicas", 0);
+		request.settings(settings);
+		client.admin().indices().updateSettings(request).actionGet();
 		if (lookupWikidata) {
 			LOG.info("Using wikidata geo_nwbib index with name:"
 					+ WikidataGeodata2Es.getIndexAlias() + aliasSuffix);
