@@ -51,11 +51,8 @@ public class MabXml2lobidJsonEs {
 		String indexAliasSuffix = args[2];
 		String node = args[3];
 		String cluster = args[4];
+		String updateCreateExact = args[5];
 		boolean update = args[5].toLowerCase().equals("update");
-		System.out.println("It is specified:\n"
-				+ String.format(usage, ": " + inputPath + "\n", ": " + indexName + "\n",
-						": " + indexAliasSuffix + "\n", ": " + node + "\n", ": " + cluster,
-						": " + "\n" + update, " ", " ", " "));
 		if (args.length < 6) {
 			System.err.println("Usage: MabXml2lobidJsonEs"
 					+ String.format(usage, " ", " ", " ", " ", " ", " ", " ", " ", " "));
@@ -81,6 +78,12 @@ public class MabXml2lobidJsonEs {
 		if (args.length >= 11) {
 			model2json.setRootIdPredicate(args[10]);
 		}
+		System.out.println(
+				"It is specified:\n" + String.format(usage, ": " + inputPath + "\n",
+						": " + indexName + "\n", ": " + indexAliasSuffix + "\n",
+						": " + node + "\n", ": " + cluster + "\n",
+						": " + updateCreateExact + "\n", ": " + indexConfig + "\n",
+						": " + morphFileName + "\n", ": " + jsonLdContext));
 		System.out
 				.println("using rootIdPredicate: " + model2json.getRootIdPredicate());
 		DefaultObjectPipe<Model, ObjectReceiver<HashMap<String, String>>> jsonConverter =
