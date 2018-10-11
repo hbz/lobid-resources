@@ -36,7 +36,6 @@ import org.elasticsearch.action.bulk.BulkRequestBuilder;
 import org.elasticsearch.action.bulk.BulkResponse;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.client.Client;
-import org.elasticsearch.client.IndicesAdminClient;
 import org.elasticsearch.client.Requests;
 import org.elasticsearch.client.transport.NoNodeAvailableException;
 import org.elasticsearch.client.transport.TransportClient;
@@ -167,6 +166,11 @@ public class ElasticsearchIndexer
 			this.client = this.tc.addTransportAddress(this.NODE);
 		}
 		bulkRequest = client.prepareBulk();
+		if (!indexExists()) {
+			LOG.info("Creating new index");
+			LOG.info("Set index.number_of_replicas to 0");
+			settings.put("index.number_of_replicas", 0);
+		}
 		if (updateNewestIndex) {
 			if (indexName == null)
 				getNewestIndex();
@@ -175,11 +179,6 @@ public class ElasticsearchIndexer
 		UpdateSettingsRequest request = new UpdateSettingsRequest(indexName);
 		LOG.info("Set index.refresh_interval to -1");
 		settings.put("index.refresh_interval", "-1");
-		if (!this.updateNewestIndex) {
-			LOG.info("Creating new index");
-			LOG.info("Set index.number_of_replicas to 0");
-			settings.put("index.number_of_replicas", 0);
-		}
 		request.settings(settings);
 		client.admin().indices().updateSettings(request).actionGet();
 		if (lookupWikidata) {
@@ -191,6 +190,11 @@ public class ElasticsearchIndexer
 			LOG.info(
 					"Threshold minimum score for spatial enrichment: " + MINIMUM_SCORE);
 		}
+	}
+
+	private boolean indexExists() {
+		return client.admin().indices().prepareExists(indexName).execute()
+				.actionGet().isExists();
 	}
 
 	@Override
@@ -208,7 +212,9 @@ public class ElasticsearchIndexer
 				try {
 					ObjectNode node = mapper.readValue(
 							json.get(Properties.GRAPH.getName()), ObjectNode.class);
-					jsonDoc = enrich(WikidataGeodata2Es.getIndexAlias() + aliasSuffix,
+					jsonDoc = enrich(
+							WikidataGeodata2Es.getIndexAlias()
+									+ (aliasSuffix.equals("NOALIAS") ? " " : aliasSuffix),
 							"coverage", WikidataGeodata2Es.SPATIAL, node);
 				} catch (IOException e1) {
 					LOG.info(
@@ -426,13 +432,11 @@ public class ElasticsearchIndexer
 	}
 
 	private void createIndex() {
-		IndicesAdminClient adminClient = client.admin().indices();
-		if (!adminClient.prepareExists(indexName).execute().actionGet()
-				.isExists()) {
+		if (!indexExists()) {
 			LOG.info("Going to CREATE new index " + indexName + " at cluster "
 					+ this.client.settings().get("cluster.name"));
-			adminClient.prepareCreate(indexName).setSource(config(), JSON).execute()
-					.actionGet();
+			client.admin().indices().prepareCreate(indexName)
+					.setSource(config(), JSON).execute().actionGet();
 			settings.put("index.number_of_replicas", 0);
 		} else
 			LOG.info("Index already exists, going to UPDATE index " + indexName);
