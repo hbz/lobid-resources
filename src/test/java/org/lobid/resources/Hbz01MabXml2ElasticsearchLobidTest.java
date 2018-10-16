@@ -269,17 +269,19 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 		private static String getAsNtriples() {
 			return Arrays.asList(getElasticsearchDocuments().getHits().getHits())
 					.parallelStream()
-					.map(hit -> AbstractIngestTests.toRdf(
-							cleanseEndtime(hit.getSourceAsString()),
-							"http://lobid.org/resources/context.jsonld",
-							mabXml2lobidJsonEs.getRdfModel2ElasticsearchEtikettJsonLd()
-									.getContextLocation()))
+					.map(
+							hit -> AbstractIngestTests
+									.toRdf(cleanseEndtime(hit.getSourceAsString()),
+											"http://lobid.org/resources/context.jsonld",
+											mabXml2lobidJsonEs
+													.getRdfModel2ElasticsearchEtikettJsonLd()
+													.getContextLocation()))
 					.collect(Collectors.joining());
 		}
 
 		private static void getAsJson() {
 			for (SearchHit hit : getElasticsearchDocuments().getHits().getHits()) {
-				stripContextAndSaveAsFile(cleanseEndtime(hit.getSourceAsString()));
+				saveAsFile(cleanseEndtime(hit.getSourceAsString()));
 			}
 		}
 
@@ -293,17 +295,13 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 		 * As the 'context' is just bloating the content the context is stripped
 		 * from it.
 		 */
-		private static void stripContextAndSaveAsFile(final String jsonLd) {
-			String jsonLdWithoutContext = null;
+		private static void saveAsFile(final String jsonLd) {
 			Map<String, Object> map;
 			String filename = null;
 			ObjectMapper mapper = new ObjectMapper();
 			mapper.enable(SerializationFeature.INDENT_OUTPUT);
 			try {
 				map = mapper.readValue(jsonLd, Map.class);
-				map.put("@context", mabXml2lobidJsonEs
-						.getRdfModel2ElasticsearchEtikettJsonLd().getContextLocation());
-				jsonLdWithoutContext = mapper.writeValueAsString(map);
 				filename = ((String) map.get("id"))
 						.replaceAll(
 								RdfModel2ElasticsearchEtikettJsonLd.LOBID_DOMAIN + ".*/", "")
@@ -311,7 +309,7 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 				testFiles.remove(filename);
 				filename = DIRECTORY_TO_TEST_JSON_FILES + filename;
 				if (!new File(filename).exists())
-					writeFile(filename, jsonLdWithoutContext);
+					writeFile(filename, mapper.writeValueAsString(map));
 				else {
 					try (FileInputStream fis = new FileInputStream(filename)) {
 						Map<String, Object> jsonMap =
@@ -320,7 +318,7 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 								new ObjectMapper().convertValue(jsonMap, JsonNode.class),
 								new ObjectMapper().convertValue(map, JsonNode.class));
 						if (!same) {
-							writeFile(filename, jsonLdWithoutContext);
+							writeFile(filename, mapper.writeValueAsString(map));
 							testFailed = true;
 						}
 					}
@@ -330,6 +328,5 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 				deleteTestFile(Paths.get(filename));
 			}
 		}
-
 	}
 }

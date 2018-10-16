@@ -216,6 +216,7 @@ public class ElasticsearchIndexer
 		updateRequest.docAsUpsert(true);
 		bulkRequest.add(updateRequest);
 		docs++;
+
 		while (docs > bulkSize && retries > 0) {
 			try {
 				BulkResponse bulkResponse = bulkRequest.execute().actionGet();

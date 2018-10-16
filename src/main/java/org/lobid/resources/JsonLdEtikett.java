@@ -73,8 +73,8 @@ public final class JsonLdEtikett extends
 		if (jsonLdContext1.equals("default")) {
 			LOG.info("Adding json ld context to every document");
 			jsonLdContext = etikettMaker.getContext().get("@context");
-		} else if (jsonLdContext1.toString().substring(0, 4)
-				.equalsIgnoreCase("http")) {
+		} else
+			if (jsonLdContext1.toString().substring(0, 4).equalsIgnoreCase("http")) {
 			jsonLdContext = jsonLdContext1.toString();
 			LOG.info("Using context URI: " + jsonLdContext);
 		}
@@ -102,12 +102,15 @@ public final class JsonLdEtikett extends
 		Iterator<String> it = jsonMap.keySet().iterator();
 		boolean hasId = false;
 		boolean hasLabel = false;
+		String id = null;
 		while (it.hasNext()) {
 			String key = it.next();
 			if (key.equals("label")) {
 				hasLabel = true;
-			} else if (!hasLabel && key.equals("id"))
+			} else if (!hasLabel && key.equals("id")) {
 				hasId = true;
+				id = (String) jsonMap.get(key);
+			}
 			if (jsonMap.get(key) instanceof ArrayList) {
 				((ArrayList) jsonMap.get(key))//
 						.stream().filter(e -> (e instanceof LinkedHashMap))
@@ -117,7 +120,7 @@ public final class JsonLdEtikett extends
 			}
 		}
 		if (hasId && !(hasLabel)) {
-			jsonMap.put("label", "pchbz");
+			jsonMap.put("label", etikettMaker.getEtikett(id).label);
 		}
 		return jsonMap;
 	}

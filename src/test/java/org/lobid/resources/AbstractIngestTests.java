@@ -163,7 +163,9 @@ public abstract class AbstractIngestTests {
 	public static String toRdf(final String jsonLd, String contextUrl,
 			String contextLocation) {
 		try {
-			LOG.trace("toRdf: " + jsonLd);
+			LOG.info("toRdf: " + jsonLd);
+			if (jsonLd.contains("TT003059252"))
+				System.out.println("TT003059252");
 			String context =
 					new String(Files.readAllBytes(Paths.get(contextLocation)));
 			String jsonWithLocalContext =

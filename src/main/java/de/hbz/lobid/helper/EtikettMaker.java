@@ -153,10 +153,12 @@ public class EtikettMaker implements EtikettMakerInterface {
 				logger.debug("no json name available for " + uri
 						+ ". Please provide a labels.json file with proper 'name' entry. Using domainname as fallback.");
 				String[] uriparts = uri.split("/");
-				String domainname =
-						uriparts[0] + "/" + uriparts[1] + "/" + uriparts[2] + "/";
-				e = pMap
-						.get(uriparts.length > 3 ? domainname + uriparts[3] : domainname);
+				if (uriparts.length > 2) {
+					String domainname =
+							uriparts[0] + "/" + uriparts[1] + "/" + uriparts[2] + "/";
+					e = pMap
+							.get(uriparts.length > 3 ? domainname + uriparts[3] : domainname);
+				}
 				if (e == null) { // domainname may have a label
 					e = new Etikett(uri);
 					try {
