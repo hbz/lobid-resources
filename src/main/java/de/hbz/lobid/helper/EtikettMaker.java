@@ -233,7 +233,7 @@ public class EtikettMaker implements EtikettMakerInterface {
 			pmap = new HashMap<>();
 			pmap.put("@id", l.uri);
 			if (l.referenceType != null && !"String".equals(l.referenceType)) {
-				pmap.put("@type", l.referenceType);
+				pmap.put("type", l.referenceType);
 			}
 			if (l.container != null) {
 				pmap.put("@container", l.container);
