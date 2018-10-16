@@ -73,8 +73,8 @@ public final class JsonLdEtikett extends
 		if (jsonLdContext1.equals("default")) {
 			LOG.info("Adding json ld context to every document");
 			jsonLdContext = etikettMaker.getContext().get("@context");
-		} else if (jsonLdContext1.toString().substring(0, 4)
-				.equalsIgnoreCase("http")) {
+		} else
+			if (jsonLdContext1.toString().substring(0, 4).equalsIgnoreCase("http")) {
 			jsonLdContext = jsonLdContext1.toString();
 			LOG.info("Using context URI: " + jsonLdContext);
 		}

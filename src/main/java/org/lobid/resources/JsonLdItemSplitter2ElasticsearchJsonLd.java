@@ -14,8 +14,6 @@ import org.culturegraph.mf.framework.ObjectReceiver;
 import org.culturegraph.mf.framework.annotations.In;
 import org.culturegraph.mf.framework.annotations.Out;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.jsonldjava.utils.JsonUtils;
 
 /**
@@ -30,10 +28,8 @@ public final class JsonLdItemSplitter2ElasticsearchJsonLd extends
 	private static final Logger LOG =
 			LogManager.getLogger(JsonLdItemSplitter2ElasticsearchJsonLd.class);
 	// the items will have their own index type and ES parents
-	private static final String PROPERTY_TO_PARENT = "itemOf";
+	private static final String PARENT_OF_ITEM = "hbzId";
 	static String LOBID_DOMAIN = "http://lobid.org/";
-	// the sub node we want to create besides the main node
-	private static String LOBID_ITEM_URI_PREFIX = LOBID_DOMAIN + "items/";
 	private static final String TYPE_ITEM = "item";
 	private static final String TYPE_RESOURCE = "resource";
 
@@ -43,14 +39,17 @@ public final class JsonLdItemSplitter2ElasticsearchJsonLd extends
 	}
 
 	private void extractItemFromResourceModel(final Map<String, Object> jsonMap) {
+		final String mainId = jsonMap.get(PARENT_OF_ITEM).toString();
+		if (jsonMap.toString().contains("TT003059252"))
+			System.out.println("TT003059252");
 		@SuppressWarnings("unchecked")
 		ArrayList<Map<String, Object>> hm =
 				(ArrayList<Map<String, Object>>) jsonMap.get("hasItem");
 		if (hm != null) {
 			hm.forEach(i -> {
 				try {
-					getReceiver().process(addInternalProperties(i.get("id").toString(),
-							JsonUtils.toString(i)));
+					getReceiver().process(treatItemAndAddInternalProperties(
+							i.get("id").toString(), i, TYPE_ITEM, mainId));
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -60,39 +59,36 @@ public final class JsonLdItemSplitter2ElasticsearchJsonLd extends
 		}
 		jsonMap.remove("hasItem.itemOf");
 		try {
-			getReceiver().process(addInternalProperties(
-					jsonMap.get("hbzId").toString(), JsonUtils.toString(jsonMap)));
+			getReceiver().process(addInternalProperties(mainId, jsonMap,
+					TYPE_RESOURCE, new HashMap<>()));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+
+	}
+
+	private static HashMap<String, String> treatItemAndAddInternalProperties(
+			String id, final Map<String, Object> jsonMap, final String TYPE,
+			final String MAIN_ID) {
+		String idWithoutDomain =
+				id.replaceAll(LOBID_DOMAIN + ".*/", "").replaceFirst("#!$", "");
+		HashMap<String, String> jsonEsMap = new HashMap<>();
+		jsonMap.put("@context", "http://lobid.org/resources/context.jsonld");
+		jsonEsMap.put(ElasticsearchIndexer.Properties.PARENT.getName(), MAIN_ID);
+		return addInternalProperties(idWithoutDomain, jsonMap, TYPE, jsonEsMap);
 	}
 
 	private static HashMap<String, String> addInternalProperties(String id,
-			String json) {
-		String type = TYPE_RESOURCE;
-		String idWithoutDomain =
-				id.replaceAll(LOBID_DOMAIN + ".*/", "").replaceFirst("#!$", "");
-		HashMap<String, String> jsonMap = new HashMap<>();
-		if (id.startsWith(LOBID_ITEM_URI_PREFIX)) {
-			type = TYPE_ITEM;
-			try {
-				JsonNode node = new ObjectMapper().readValue(json, JsonNode.class);
-				final JsonNode parent = node.findPath(PROPERTY_TO_PARENT);
-				String p = parent.asText().replaceAll(LOBID_DOMAIN + ".*/", "")
-						.replaceFirst("#!$", "");
-				if (p.isEmpty()) {
-					LOG.warn("Item " + idWithoutDomain + " has no parent declared!");
-					jsonMap.put(ElasticsearchIndexer.Properties.PARENT.getName(),
-							"no_parent");
-				} else
-					jsonMap.put(ElasticsearchIndexer.Properties.PARENT.getName(), p);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			final Map<String, Object> jsonMap, final String TYPE,
+			HashMap<String, String> jsonEsMap) {
+		try {
+			jsonEsMap.put(ElasticsearchIndexer.Properties.GRAPH.getName(),
+					JsonUtils.toString(jsonMap));
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
-		jsonMap.put(ElasticsearchIndexer.Properties.GRAPH.getName(), json);
-		jsonMap.put(ElasticsearchIndexer.Properties.TYPE.getName(), type);
-		jsonMap.put(ElasticsearchIndexer.Properties.ID.getName(), idWithoutDomain);
-		return jsonMap;
+		jsonEsMap.put(ElasticsearchIndexer.Properties.TYPE.getName(), TYPE);
+		jsonEsMap.put(ElasticsearchIndexer.Properties.ID.getName(), id);
+		return jsonEsMap;
 	}
 }
