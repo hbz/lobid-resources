@@ -1009,8 +1009,8 @@
 			</combine>
 		</macro>
 		<macro name="setRelatorNonPerson">
-			<combine name="@relator$[field]" value="${a}" flushWith="$[field]?[12].4">
-				<choose name="a" flushWith="$[field]?[12].4">
+			<combine name="@relator$[field]" value="${a}" flushWith="$[field]?[12].9">
+				<choose name="a">
 					<data source="$[field]?[12].4">
 						<regexp match="^arr$" format="http://id.loc.gov/vocabulary/relators/arr"/>
 					</data>
