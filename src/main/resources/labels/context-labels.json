@@ -46,7 +46,6 @@
       "multilangLabel" : {}
    },
    {
-      "container" : "@set",
       "name" : "location",
       "uri" : "http://schema.org/location",
       "label" : "Ort",
@@ -58,7 +57,6 @@
       "uri" : "http://schema.org/publishedBy",
       "label" : "Veröffentlicht von",
       "referenceType" : "String",
-      "container" : "@set",
       "name" : "publishedBy"
    },
    {
@@ -66,24 +64,23 @@
       "label" : "Beginn",
       "uri" : "http://schema.org/startDate",
       "multilangLabel" : {},
-      "name" : "startDate",
-      "container" : "@set"
+      "name" : "startDate"
+
    },
    {
-      "container" : "@set",
       "name" : "endDate",
       "multilangLabel" : {},
       "label" : "Ende",
       "uri" : "http://schema.org/endDate",
       "referenceType" : "http://www.w3.org/2001/XMLSchema#gYear"
    },
-	 {
-			"name" : "endTime",
-			"multilangLabel" : {},
-			"label" : "Endzeitpunkt",
-			"uri" : "http://schema.org/endTime",
-			"referenceType" : "http://www.w3.org/2001/XMLSchema#dateTime"
-	 },
+   {
+      "name" : "endTime",
+      "multilangLabel" : {},
+      "label" : "Endzeitpunkt",
+      "uri" : "http://schema.org/endTime",
+      "referenceType" : "http://www.w3.org/2001/XMLSchema#dateTime"
+   },
    {
       "container" : "@set",
       "label" : "Lizenz",
@@ -103,8 +100,7 @@
       "referenceType" : "String",
       "label" : "Alternative Bezeichnung",
       "uri" : "http://www.w3.org/2004/02/skos/core#altLabel",
-      "name" : "altLabel",
-      "container" : "@set"
+      "name" : "altLabel"
    },
    {
       "name" : "longitudeAndLatitude",
@@ -148,7 +144,6 @@
       "name" : "successor",
       "container" : "@set",
       "multilangLabel" : {},
-
       "uri" : "http://rdaregistry.info/Elements/u/P60278",
       "label" : "Nachfolger"
    },
@@ -181,11 +176,9 @@
       "referenceType" : "http://www.w3.org/2001/XMLSchema#gYear",
       "label" : "Geboren am",
       "uri" : "http://d-nb.info/standards/elementset/gnd#dateOfBirth",
-      "name" : "dateOfBirth",
-      "container" : "@set"
+      "name" : "dateOfBirth"
    },
    {
-      "container" : "@set",
       "name" : "dateOfDeath",
       "multilangLabel" : {},
       "label" : "Gestorben am",
@@ -193,14 +186,12 @@
       "referenceType" : "http://www.w3.org/2001/XMLSchema#gYear"
    },
    {
-      "container" : "@set",
       "name" : "dateOfBirthAndDeath",
       "multilangLabel" : {},
       "label" : "Geburts- und Sterbedatum",
       "uri" : "http://d-nb.info/standards/elementset/gnd#dateOfBirthAndDeath"
    },
    {
-      "container" : "@set",
       "name" : "gndIdentifier",
       "multilangLabel" : {},
       "label" : "GND-Nummer",
@@ -340,7 +331,6 @@
       "uri" : "http://purl.org/dc/terms/modified",
       "referenceType" : "String",
       "multilangLabel" : {},
-      "container" : "@set",
       "name" : "dateModified"
    },
    {
@@ -356,11 +346,6 @@
       "container" : "@set",
       "uri" : "http://purl.org/dc/terms/spatial",
       "label" : "Ortsbezug",
-      "multilangLabel" : {}
-   },
-   {
-      "name" : "Location",
-      "uri" : "http://purl.org/dc/terms/Location",
       "multilangLabel" : {}
    },
    {
@@ -414,7 +399,6 @@
       "label" : "Inhaltsverzeichnis",
       "icon" : "fa fa-list",
       "uri" : "http://purl.org/dc/terms/tableOfContents",
-
       "multilangLabel" : {},
       "container" : "@set",
       "name" : "tableOfContents"
@@ -458,7 +442,6 @@
    {
       "name" : "fulltextOnline",
       "container" : "@set",
-
       "label" : "Online-Volltext",
       "uri" : "http://purl.org/lobid/lv#fulltextOnline",
       "multilangLabel" : {}
@@ -472,7 +455,6 @@
       "name" : "hbzId"
    },
    {
-      "container" : "@set",
       "name" : "numbering",
       "label" : "Nummer",
       "uri" : "http://purl.org/lobid/lv#numbering",
@@ -503,14 +485,6 @@
       "multilangLabel" : {}
    },
    {
-      "referenceType" : "String",
-      "uri" : "http://purl.org/lobid/lv#subjectOrder",
-      "label" : "subjectOrdered",
-      "multilangLabel" : {},
-      "name" : "subjectOrder",
-      "container" : "@list"
-   },
-   {
       "uri": "http://www.loc.gov/mads/rdf/v1#componentList",
       "label": "componentList",
       "name": "componentList",
@@ -538,7 +512,6 @@
    {
       "name" : "webPageArchived",
       "container" : "@set",
-
       "uri" : "http://purl.org/lobid/lv#webPageArchived",
       "label" : "Archivierte Webseite",
       "multilangLabel" : {}
@@ -549,14 +522,6 @@
       "label" : "ZdbID",
       "referenceType" : "String",
       "name" : "zdbId"
-   },
-   {
-      "referenceType" : "String",
-      "label" : "contributorOrder",
-      "uri" : "http://purl.org/lobid/lv#contributorOrder",
-      "multilangLabel" : {},
-      "name" : "contributorOrder",
-      "container" : "@set"
    },
    {
       "referenceType" : "String",
@@ -614,7 +579,6 @@
       "name" : "callNumber"
    },
    {
-
       "uri" : "http://purl.org/lobid/lv#inCollection",
       "label" : "In Sammlung",
       "multilangLabel" : {},
@@ -693,7 +657,6 @@
       "name" : "similar"
    },
    {
-
       "uri" : "http://www.w3.org/2000/01/rdf-schema#seeAlso",
       "label" : "Weitere Informationen",
       "multilangLabel" : {},

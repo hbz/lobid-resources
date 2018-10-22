@@ -2,23 +2,9 @@
  * Licensed under the Eclipse Public License 1.0 */
 package org.lobid.resources.run;
 
-import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.regex.Pattern;
-
-import org.culturegraph.mf.framework.DefaultObjectPipe;
-import org.culturegraph.mf.framework.ObjectReceiver;
-import org.culturegraph.mf.stream.pipe.ObjectBatchLogger;
-import org.culturegraph.mf.stream.pipe.StreamBatchLogger;
-import org.culturegraph.mf.stream.source.FileOpener;
-import org.lobid.resources.ElasticsearchIndexer;
-import org.lobid.resources.RdfModel2ElasticsearchEtikettJsonLd;
-import org.lobid.resources.StringRecordSplitter;
-import org.lobid.resources.Triples2RdfModel;
-
-import com.hp.hpl.jena.rdf.model.Model;
 
 /**
  * Transform loc bibframe instances into JSON-LD and index that into
@@ -39,10 +25,10 @@ public class LocBibframe2JsonEs {
 	public final static String INDEX_CONFIG_BIBFRAME =
 			"index-config-bibframe.json";
 	public final static String RECORD_SPLITTER_MARKER = ".*bibframe/Work> .$";
-
-	private final static RdfModel2ElasticsearchEtikettJsonLd model2json =
-			new RdfModel2ElasticsearchEtikettJsonLd(new File(DIRECTORY_TO_LOC_LABELS),
-					LOC_CONTEXT);
+	//
+	// private final static RdfModel2ElasticsearchEtikettJsonLd model2json =
+	// new RdfModel2ElasticsearchEtikettJsonLd(new File(DIRECTORY_TO_LOC_LABELS),
+	// LOC_CONTEXT);
 
 	public static void main(String... args) {
 		String usage =
@@ -66,46 +52,48 @@ public class LocBibframe2JsonEs {
 					+ String.format(usage, " ", " ", " ", " ", " ", " ", " ", " ", " "));
 			return;
 		}
-		String indexConfig = INDEX_CONFIG_BIBFRAME;
-		System.out.println("using indexConfig: " + indexConfig);
-		System.out.println("using jsonLdContext: " + model2json.getJsonLdContext());
-		System.out.println(
-				"using jsonLdDirectory: " + model2json.getLabelsDirectoryName());
-		model2json.setRootIdPredicate(ROOT_ID_PREDICATE);
-		model2json.setIdPatternMainNode(ROOT_SUBJECT_PATTERN);
-		System.out
-				.println("using rootIdPredicate: " + model2json.getRootIdPredicate());
-		DefaultObjectPipe<Model, ObjectReceiver<HashMap<String, String>>> jsonConverter =
-				model2json;
-		final FileOpener opener = new FileOpener();
-		if (inputPath.toLowerCase().endsWith("bz2")) {
-			opener.setCompression("BZIP2");
-		} else if (inputPath.toLowerCase().endsWith("gz"))
-			opener.setCompression("GZIP");
-		final Triples2RdfModel triple2model = new Triples2RdfModel();
-		triple2model.setInput("N-TRIPLE");
-		ElasticsearchIndexer esIndexer = new ElasticsearchIndexer();
-		esIndexer.setClustername(cluster);
-		esIndexer.setHostname(node);
-		esIndexer.setIndexName(indexName);
-		esIndexer.setIndexAliasSuffix(indexAliasSuffix);
-		esIndexer.setUpdateNewestIndex(update);
-		esIndexer.setIndexConfig(indexConfig);
-		esIndexer.lookupMabxmlDeletion = Boolean
-				.parseBoolean(System.getProperty("lookupMabxmlDeletion", "false"));
-		esIndexer.lookupMabxmlDeletion = false;
-		esIndexer.lookupWikidata = false;
-		esIndexer.onSetReceiver();
-		StreamBatchLogger batchLogger = new StreamBatchLogger();
-		batchLogger.setBatchSize(100000);
-		final StringRecordSplitter srs =
-				new StringRecordSplitter(RECORD_SPLITTER_MARKER);
-		ObjectBatchLogger<HashMap<String, String>> objectBatchLogger =
-				new ObjectBatchLogger<>();
-		objectBatchLogger.setBatchSize(500000);
-		opener.setReceiver(srs).setReceiver(triple2model).setReceiver(jsonConverter)
-				.setReceiver(objectBatchLogger).setReceiver(esIndexer);
-		opener.process(new File(inputPath).getAbsolutePath());
-		opener.closeStream();
+		// String indexConfig = INDEX_CONFIG_BIBFRAME;
+		// System.out.println("using indexConfig: " + indexConfig);
+		// System.out.println("using jsonLdContext: " +
+		// model2json.getJsonLdContext());
+		// System.out.println(
+		// "using jsonLdDirectory: " + model2json.getLabelsDirectoryName());
+		// model2json.setRootIdPredicate(ROOT_ID_PREDICATE);
+		// model2json.setIdPatternMainNode(ROOT_SUBJECT_PATTERN);
+		// System.out
+		// .println("using rootIdPredicate: " + model2json.getRootIdPredicate());
+		// DefaultObjectPipe<Model, ObjectReceiver<HashMap<String, String>>>
+		// jsonConverter =
+		// model2json;
+		// final FileOpener opener = new FileOpener();
+		// if (inputPath.toLowerCase().endsWith("bz2")) {
+		// opener.setCompression("BZIP2");
+		// } else if (inputPath.toLowerCase().endsWith("gz"))
+		// opener.setCompression("GZIP");
+		// final Triples2RdfModel triple2model = new Triples2RdfModel();
+		// triple2model.setInput("N-TRIPLE");
+		// ElasticsearchIndexer esIndexer = new ElasticsearchIndexer();
+		// esIndexer.setClustername(cluster);
+		// esIndexer.setHostname(node);
+		// esIndexer.setIndexName(indexName);
+		// esIndexer.setIndexAliasSuffix(indexAliasSuffix);
+		// esIndexer.setUpdateNewestIndex(update);
+		// esIndexer.setIndexConfig(indexConfig);
+		// esIndexer.lookupMabxmlDeletion = Boolean
+		// .parseBoolean(System.getProperty("lookupMabxmlDeletion", "false"));
+		// esIndexer.lookupMabxmlDeletion = false;
+		// esIndexer.lookupWikidata = false;
+		// esIndexer.onSetReceiver();
+		// StreamBatchLogger batchLogger = new StreamBatchLogger();
+		// batchLogger.setBatchSize(100000);
+		// final StringRecordSplitter srs =
+		// new StringRecordSplitter(RECORD_SPLITTER_MARKER);
+		// ObjectBatchLogger<HashMap<String, String>> objectBatchLogger =
+		// new ObjectBatchLogger<>();
+		// objectBatchLogger.setBatchSize(500000);
+		// opener.setReceiver(srs).setReceiver(triple2model).setReceiver(jsonConverter)
+		// .setReceiver(objectBatchLogger).setReceiver(esIndexer);
+		// opener.process(new File(inputPath).getAbsolutePath());
+		// opener.closeStream();
 	}
 }

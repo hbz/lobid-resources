@@ -7,8 +7,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 
-import org.culturegraph.mf.framework.DefaultObjectPipe;
-import org.culturegraph.mf.framework.ObjectReceiver;
 import org.culturegraph.mf.morph.Metamorph;
 import org.culturegraph.mf.stream.converter.xml.AlephMabXmlHandler;
 import org.culturegraph.mf.stream.converter.xml.XmlDecoder;
@@ -17,11 +15,10 @@ import org.culturegraph.mf.stream.pipe.StreamBatchLogger;
 import org.culturegraph.mf.stream.source.FileOpener;
 import org.culturegraph.mf.stream.source.TarReader;
 import org.lobid.resources.ElasticsearchIndexer;
+import org.lobid.resources.JsonLdEtikett;
+import org.lobid.resources.JsonLdItemSplitter2ElasticsearchJsonLd;
 import org.lobid.resources.PipeEncodeTriples;
-import org.lobid.resources.RdfModel2ElasticsearchEtikettJsonLd;
-import org.lobid.resources.Triples2RdfModel;
-
-import com.hp.hpl.jena.rdf.model.Model;
+import org.lobid.resources.RdfGraphToJsonLd;
 
 /**
  * Transform hbz01 Aleph Mab XML catalog data into lobid elasticsearch ready
@@ -33,11 +30,9 @@ import com.hp.hpl.jena.rdf.model.Model;
  */
 @SuppressWarnings("javadoc")
 public class MabXml2lobidJsonEs {
-	public static String jsonLdContext =
+	public static String jsonLdContextUri =
 			"http://lobid.org/resources/context.jsonld";
 	private static final String MORPH_FN_PREFIX = "src/main/resources/";
-	private static RdfModel2ElasticsearchEtikettJsonLd model2json =
-			new RdfModel2ElasticsearchEtikettJsonLd();
 
 	public static void main(String... args) {
 		String usage =
@@ -66,33 +61,37 @@ public class MabXml2lobidJsonEs {
 		String morphFileName = args.length >= 8 ? MORPH_FN_PREFIX + args[7]
 				: MORPH_FN_PREFIX + "morph-hbz01-to-lobid.xml";
 		System.out.println("using morph: " + morphFileName);
-		if (args.length >= 9)
-			jsonLdContext = args[8];
-		if (args.length >= 10)
-			model2json = new RdfModel2ElasticsearchEtikettJsonLd(new File(args[9]),
-					jsonLdContext);
-		else
-			model2json = new RdfModel2ElasticsearchEtikettJsonLd(
-					MabXml2lobidJsonEs.jsonLdContext);
-		System.out.println("using jsonLdContext: " + model2json.getJsonLdContext());
-		System.out.println(
-				"using jsonLdDirectory: " + model2json.getLabelsDirectoryName());
-		model2json.getLabelsDirectoryName();
-		if (args.length >= 11) {
-			model2json.setRootIdPredicate(args[10]);
+		String etikettLablesDirectory;
+		JsonLdEtikett jsonLdEtikett;
+
+		RdfGraphToJsonLd rdfGraphToJsonLd = new RdfGraphToJsonLd();
+		rdfGraphToJsonLd.setContextLocationFilname(
+				System.getProperty("contextFilename", "web/conf/context.jsonld"));
+		if (args.length >= 9) {
+			rdfGraphToJsonLd.setContextUri(args[8]);
 		}
+		if (args.length >= 10) {
+			etikettLablesDirectory = args[9];
+			jsonLdEtikett = new JsonLdEtikett(etikettLablesDirectory,
+					rdfGraphToJsonLd.getContextLocationFilename());
+		} else
+			jsonLdEtikett = new JsonLdEtikett();
+		System.out.println("using etikettLablesDirectory: "
+				+ JsonLdEtikett.getLabelsDirectoryName());
 		System.out
-				.println("using rootIdPredicate: " + model2json.getRootIdPredicate());
-		DefaultObjectPipe<Model, ObjectReceiver<HashMap<String, String>>> jsonConverter =
-				model2json;
+				.println("using jsonLdContext: " + rdfGraphToJsonLd.getContextUri());
+		if (args.length >= 11) {
+			System.out.println(
+					"using rootIdPredicate: NOT USED war:  model2json.getRootIdPredicate()");
+		}
+		final String KEY_TO_GET_MAIN_ID =
+				System.getProperty("keyToGetMainId", "hbzId");
 		// hbz catalog transformation
 		final FileOpener opener = new FileOpener();
 		if (inputPath.toLowerCase().endsWith("bz2")) {
 			opener.setCompression("BZIP2");
 		} else if (inputPath.toLowerCase().endsWith("gz"))
 			opener.setCompression("GZIP");
-		final Triples2RdfModel triple2model = new Triples2RdfModel();
-		triple2model.setInput("N-TRIPLE");
 		ElasticsearchIndexer esIndexer = new ElasticsearchIndexer();
 		esIndexer.setClustername(cluster);
 		esIndexer.setHostname(node);
@@ -117,17 +116,19 @@ public class MabXml2lobidJsonEs {
 		ObjectBatchLogger<HashMap<String, String>> objectBatchLogger =
 				new ObjectBatchLogger<>();
 		objectBatchLogger.setBatchSize(500000);
-		batchLogger.setReceiver(new PipeEncodeTriples()).setReceiver(triple2model)
-				.setReceiver(jsonConverter).setReceiver(objectBatchLogger)
+		opener.setReceiver(new TarReader())//
+				.setReceiver(new XmlDecoder())//
+				.setReceiver(new AlephMabXmlHandler())//
+				.setReceiver(new Metamorph(morphFileName))//
+				.setReceiver(batchLogger)//
+				.setReceiver(new PipeEncodeTriples())//
+				.setReceiver(rdfGraphToJsonLd)//
+				.setReceiver(jsonLdEtikett)//
+				.setReceiver(
+						new JsonLdItemSplitter2ElasticsearchJsonLd(KEY_TO_GET_MAIN_ID))//
+				.setReceiver(objectBatchLogger)//
 				.setReceiver(esIndexer);
-		opener.setReceiver(new TarReader()).setReceiver(new XmlDecoder())
-				.setReceiver(new AlephMabXmlHandler())
-				.setReceiver(new Metamorph(morphFileName)).setReceiver(batchLogger);
 		opener.process(new File(inputPath).getAbsolutePath());
 		opener.closeStream();
-	}
-
-	public RdfModel2ElasticsearchEtikettJsonLd getRdfModel2ElasticsearchEtikettJsonLd() {
-		return model2json;
 	}
 }

@@ -7,8 +7,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.culturegraph.mf.framework.DefaultObjectPipe;
 import org.culturegraph.mf.framework.ObjectReceiver;
 import org.culturegraph.mf.framework.annotations.In;
@@ -25,13 +23,19 @@ import com.github.jsonldjava.utils.JsonUtils;
 @Out(HashMap.class)
 public final class JsonLdItemSplitter2ElasticsearchJsonLd extends
 		DefaultObjectPipe<Map<String, Object>, ObjectReceiver<HashMap<String, String>>> {
-	private static final Logger LOG =
-			LogManager.getLogger(JsonLdItemSplitter2ElasticsearchJsonLd.class);
 	// the items will have their own index type and ES parents
-	private static final String PARENT_OF_ITEM = "hbzId";
+	private static String keyToGetMainId = "hbzId";
 	static String LOBID_DOMAIN = "http://lobid.org/";
 	private static final String TYPE_ITEM = "item";
 	private static final String TYPE_RESOURCE = "resource";
+
+	/**
+	 * @param KEY_TO_GET_MAIN_ID the json-key to get the main elasticsearch ID
+	 */
+	public JsonLdItemSplitter2ElasticsearchJsonLd(
+			final String KEY_TO_GET_MAIN_ID) {
+		keyToGetMainId = KEY_TO_GET_MAIN_ID;
+	}
 
 	@Override
 	public void process(final Map<String, Object> originModel) {
@@ -39,9 +43,7 @@ public final class JsonLdItemSplitter2ElasticsearchJsonLd extends
 	}
 
 	private void extractItemFromResourceModel(final Map<String, Object> jsonMap) {
-		final String mainId = jsonMap.get(PARENT_OF_ITEM).toString();
-		if (jsonMap.toString().contains("TT003059252"))
-			System.out.println("TT003059252");
+		final String mainId = jsonMap.get(keyToGetMainId).toString();
 		@SuppressWarnings("unchecked")
 		ArrayList<Map<String, Object>> hm =
 				(ArrayList<Map<String, Object>>) jsonMap.get("hasItem");
@@ -64,7 +66,6 @@ public final class JsonLdItemSplitter2ElasticsearchJsonLd extends
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
 	}
 
 	private static HashMap<String, String> treatItemAndAddInternalProperties(

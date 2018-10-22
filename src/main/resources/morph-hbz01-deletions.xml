@@ -18,6 +18,10 @@
 			<data source="@id" name="id"/>
 			<data source="@deleted"/>
 		</combine>
+		<combine name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" value="http://purl.org/dc/terms/BibliographicResource">
+			<data source="@id"/>
+			<data source="@deleted"/>
+		</combine>
 		<combine name="http://www.w3.org/2007/05/powder-s#describedby" value="${a}">
 			<data source="@describedbyId" name="a"/>
 			<data source="@deleted"/>
@@ -31,11 +35,11 @@
 			<data source="@describedbyId" name="a"/>
 			<data source="@deleted"/>
 		</combine>
-		    <combine name="$[ns-lobid-vocab]alephInternalSysnumber" value="${a}">
-      <data source="@id" name="a"/>
-      <data source="@describedbyId"/>
-      <data source="@deleted"/>
-    </combine>
+		<combine name="$[ns-lobid-vocab]alephInternalSysnumber" value="${a}">
+			<data source="@id" name="a"/>
+			<data source="@describedbyId"/>
+			<data source="@deleted"/>
+		</combine>
 		<combine name="http://purl.org/dc/terms/deleted" value="${a}">
 			<data source="@describedbyId" name="a">
 				<timestamp format="yyyyMMdd" timezone="Europe/Berlin"/>

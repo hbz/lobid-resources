@@ -38,7 +38,6 @@ import org.elasticsearch.search.SearchHit;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.lobid.resources.run.MabXml2lobidJsonEs;
 import org.lobid.resources.run.WikidataGeodata2Es;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -71,8 +70,7 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 			Hbz01MabXmlEtlNtriples2Filesystem.PATH_TO_TEST + "jsonld/";
 	private static HashSet<String> testFiles = new HashSet<>();
 	private static boolean testFailed = false;
-	private static MabXml2lobidJsonEs mabXml2lobidJsonEs =
-			new MabXml2lobidJsonEs();
+	private static RdfGraphToJsonLd rdfGraphToJsonLd;
 
 	@BeforeClass
 	public static void setup() {
@@ -108,7 +106,7 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 		WikidataGeodata2Es.filterWikidataEntitiesDump2EsGeodata(
 				"src/test/resources/wikidataEntities.json");
 		WikidataGeodata2Es.finish();
-		etl(client, new JsonLdItemSplitter2ElasticsearchJsonLd());
+		etl(client, new JsonLdItemSplitter2ElasticsearchJsonLd("hbzId"));
 	}
 
 	/*
@@ -121,8 +119,7 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 		ElasticsearchIndexer.MINIMUM_SCORE = 1.4;
 		final FileOpener opener = new FileOpener();
 		JsonLdEtikett jsonLdEtikett = new JsonLdEtikett();
-		RdfGraphToJsonLd rdfGraphToJsonLd = new RdfGraphToJsonLd(mabXml2lobidJsonEs
-				.getRdfModel2ElasticsearchEtikettJsonLd().getContextLocation());
+		rdfGraphToJsonLd = new RdfGraphToJsonLd();
 		opener.setReceiver(new TarReader())//
 				.setReceiver(new XmlDecoder())//
 				.setReceiver(new AlephMabXmlHandler())
@@ -269,13 +266,10 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 		private static String getAsNtriples() {
 			return Arrays.asList(getElasticsearchDocuments().getHits().getHits())
 					.parallelStream()
-					.map(
-							hit -> AbstractIngestTests
-									.toRdf(cleanseEndtime(hit.getSourceAsString()),
-											"http://lobid.org/resources/context.jsonld",
-											mabXml2lobidJsonEs
-													.getRdfModel2ElasticsearchEtikettJsonLd()
-													.getContextLocation()))
+					.map(hit -> AbstractIngestTests.toRdf(
+							cleanseEndtime(hit.getSourceAsString()),
+							"http://lobid.org/resources/context.jsonld",
+							rdfGraphToJsonLd.getContextLocationFilename()))
 					.collect(Collectors.joining());
 		}
 
@@ -303,9 +297,7 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 			try {
 				map = mapper.readValue(jsonLd, Map.class);
 				filename = ((String) map.get("id"))
-						.replaceAll(
-								RdfModel2ElasticsearchEtikettJsonLd.LOBID_DOMAIN + ".*/", "")
-						.replaceAll("#!$", "");
+						.replaceAll("http://lobid.org/" + ".*/", "").replaceAll("#!$", "");
 				testFiles.remove(filename);
 				filename = DIRECTORY_TO_TEST_JSON_FILES + filename;
 				if (!new File(filename).exists())

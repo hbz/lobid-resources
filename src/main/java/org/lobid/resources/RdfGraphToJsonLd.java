@@ -33,22 +33,18 @@ import com.google.common.collect.ImmutableMap;
 public class RdfGraphToJsonLd
 		extends DefaultObjectPipe<String, ObjectReceiver<Map<String, Object>>> {
 	Object context;
-	static private String contextFn;
+	private String rdfTypeToIdentifyRootId =
+			"http://purl.org/dc/terms/BibliographicResource";
 	private static final Logger LOG =
 			LogManager.getLogger(RdfGraphToJsonLd.class);
-	private final HashMap<String, String> frame = new HashMap<>(ImmutableMap.of(//
-			"@type", "http://purl.org/dc/terms/BibliographicResource", "@embed",
-			"@always"));
-
-	/**
-	 * @param contextFn the filename of the context
-	 */
-	public RdfGraphToJsonLd(String contextFn) {
-		RdfGraphToJsonLd.contextFn = contextFn;
-	}
+	private HashMap<String, String> frame;
+	private String contextFn = "web/conf/context.jsonld";
+	private String contextUri = "http://lobid.org/resources/context.jsonld";
 
 	@Override
 	public void onSetReceiver() {
+		frame = new HashMap<>(ImmutableMap.of(//
+				"@type", rdfTypeToIdentifyRootId, "@embed", "@always"));
 		try {
 			String contextStr = new String(Files.readAllBytes(Paths.get(contextFn)));
 			context = JsonUtils.fromString(contextStr);
@@ -72,10 +68,62 @@ public class RdfGraphToJsonLd
 			jsonObject = JsonLdProcessor.frame(jsonObject, frame, options);
 			Map<String, Object> jsonMap =
 					JsonLdProcessor.compact(jsonObject, context, options);
-			jsonMap.put("@context", "http://lobid.org/resources/context.jsonld");
+			jsonMap.put("@context", contextUri);
 			getReceiver().process(jsonMap);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	/**
+	 * Sets the context uri which substitutes the context in the json-ld documents
+	 * so that these documents are not so bloated.
+	 * 
+	 * @param CONTEXT_URI the uri of the context which appears in documents
+	 */
+	public void setContextUri(final String CONTEXT_URI) {
+		contextUri = CONTEXT_URI;
+	}
+
+	/**
+	 * Sets the context's location filename. The context is used to convert a json
+	 * document to json-ld.
+	 * 
+	 * @param FN the filename of the context which is used to produce the
+	 *          documents
+	 */
+	public void setContextLocationFilname(final String FN) {
+		contextFn = FN;
+	}
+
+	/**
+	 * Gets the context uri which substitutes the context in the json-ld documents
+	 * so that these documents are not so bloated.
+	 * 
+	 * @return the uri of the context which appears in documents
+	 */
+	public String getContextUri() {
+		return this.contextUri;
+	}
+
+	/**
+	 * Gets the context's location filename. The context is used to convert a json
+	 * document to json-ld.
+	 * 
+	 * @return the filename of the context which is used to produce the documents
+	 */
+	public String getContextLocationFilename() {
+		return this.contextFn;
+	}
+
+	/**
+	 * Sets the rdf:type to search for to identiofy the main root id of the
+	 * resource.
+	 * 
+	 * @param RDF_TYPE_TO_IDENTIFY_ROOT_ID the object of the rdf:type
+	 */
+	public void setRdfTypeToIdentifyRootId(
+			final String RDF_TYPE_TO_IDENTIFY_ROOT_ID) {
+		this.rdfTypeToIdentifyRootId = RDF_TYPE_TO_IDENTIFY_ROOT_ID;
 	}
 }

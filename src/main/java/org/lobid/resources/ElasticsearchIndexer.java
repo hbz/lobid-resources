@@ -208,14 +208,17 @@ public class ElasticsearchIndexer
 							e1);
 				}
 			} else if (lookupMabxmlDeletion) {
-				jsonDoc =
-						enrichMabxmlDeletions(json.get(Properties.ID.getName()), jsonDoc);
+				System.out.println("going to :" + json.get(Properties.ID.getName())
+						.replaceAll(".*/", "").replaceAll("#!", ""));
+				jsonDoc = enrichMabxmlDeletions(json.get(Properties.ID.getName())
+						.replaceAll(".*/", "").replaceAll("#!", ""), jsonDoc);
 			}
 		}
 		updateRequest.doc(jsonDoc, JSON);
 		updateRequest.docAsUpsert(true);
 		bulkRequest.add(updateRequest);
 		docs++;
+
 		while (docs > bulkSize && retries > 0) {
 			try {
 				BulkResponse bulkResponse = bulkRequest.execute().actionGet();
@@ -258,6 +261,7 @@ public class ElasticsearchIndexer
 		} catch (Exception e) {
 			LOG.warn(e.getMessage(), node);
 		}
+		System.out.println(ret);
 		return ret;
 	}
 
