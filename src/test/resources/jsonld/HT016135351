@@ -1,79 +1,33 @@
 {
-  "@context" : "web/conf/context.jsonld",
+  "type" : [ "BibliographicResource", "Book" ],
   "contribution" : [ {
+    "type" : [ "Contribution" ],
     "agent" : {
-      "gndIdentifier" : "186931808",
       "id" : "http://d-nb.info/gnd/186931808",
-      "label" : "Buchmann, Helmut",
-      "type" : [ "Person" ]
+      "type" : [ "Person" ],
+      "gndIdentifier" : "186931808",
+      "label" : "Buchmann, Helmut"
     },
     "role" : {
       "id" : "http://id.loc.gov/vocabulary/relators/pht",
       "label" : "Fotografie"
-    },
-    "type" : [ "Contribution" ]
+    }
   } ],
-  "coverage" : [ "Harsewinkel-Marienfeld | 99" ],
-  "describedBy" : {
-    "dateCreated" : "20091118",
-    "dateModified" : "20091210",
-    "id" : "http://lobid.org/resources/HT016135351",
-    "inDataset" : {
-      "id" : "http://lobid.org/resources/dataset#!",
-      "label" : "lobid-resources – Der hbz-Verbundkatalog als Linked Open Data"
-    },
-    "label" : "Webseite der hbz-Ressource HT016135351",
-    "license" : [ {
-      "id" : "http://creativecommons.org/publicdomain/zero/1.0",
-      "label" : "Creative Commons-Lizenz CC0 1.0 Universal"
-    } ],
-    "modifiedBy" : {
-      "id" : "http://lobid.org/organisations/DE-6#!",
-      "label" : "lobid Organisation"
-    },
-    "resultOf" : {
-      "endTime" : "0001-01-01T00:00:00",
-      "instrument" : {
-        "id" : "https://github.com/hbz/lobid-resources",
-        "label" : "Software lobid-resources",
-        "type" : [ "SoftwareApplication" ]
-      },
-      "object" : {
-        "id" : "http://lobid.org/hbz01/HT016135351",
-        "inDataset" : {
-          "id" : "https://datahub.io/dataset/hbz_unioncatalog",
-          "label" : "hbz_unioncatalog"
-        },
-        "label" : "hbz-Ressource HT016135351 im Exportformat MAB2-XML",
-        "type" : [ "DataFeedItem" ]
-      },
-      "type" : [ "CreateAction" ]
-    },
-    "sourceOrganization" : {
-      "id" : "http://lobid.org/organisations/DE-6#!",
-      "label" : "lobid Organisation"
-    },
-    "type" : [ "BibliographicDescription" ]
-  },
   "extent" : "32 gez. S. : überw. Ill.",
   "hasItem" : [ {
-    "callNumber" : "2C 8876",
+    "id" : "http://lobid.org/items/HT016135351:DE-6:2C%208876#!",
+    "type" : [ "Item" ],
     "heldBy" : {
       "id" : "http://lobid.org/organisations/DE-6",
       "label" : "lobid Organisation"
     },
-    "id" : "http://lobid.org/items/HT016135351:DE-6:2C%208876#!",
+    "note" : [ "00000001" ],
+    "callNumber" : "2C 8876",
     "label" : "2C 8876",
-    "note" : "00000001",
-    "type" : [ "Item" ]
+    "@context" : "http://lobid.org/resources/context.jsonld"
   } ],
-  "hbzId" : "HT016135351",
-  "id" : "http://lobid.org/resources/HT016135351#!",
-  "inCollection" : [ {
-    "id" : "http://lobid.org/resources/HT014176012#!",
-    "label" : "Nordrhein-Westfälische Bibliographie (NWBib)",
-    "type" : [ "Collection" ]
-  } ],
+  "responsibilityStatement" : [ "[Hemut Buchmann" ],
+  "coverage" : [ "Harsewinkel-Marienfeld | 99" ],
   "language" : [ {
     "id" : "http://id.loc.gov/vocabulary/iso639-2/deu",
     "label" : "Deutsch"
@@ -82,44 +36,91 @@
     "id" : "http://rdaregistry.info/termList/RDAproductionMethod/1010",
     "label" : "Print"
   } ],
-  "otherTitleInformation" : [ "Zeitzeuge und Kleinod in Harsewinkel" ],
-  "publication" : [ {
-    "location" : "Marienfeld",
-    "publishedBy" : "Selbstverl.",
-    "startDate" : "2006",
-    "type" : [ "PublicationEvent" ]
-  } ],
-  "responsibilityStatement" : [ "[Hemut Buchmann" ],
-  "sameAs" : [ {
-    "id" : "http://hub.culturegraph.org/resource/HBZ-HT016135351",
-    "label" : "Culturegraph Ressource"
-  } ],
   "subject" : [ {
+    "id" : "http://purl.org/lobid/nwbib#s708029",
+    "source" : {
+      "id" : "http://purl.org/lobid/nwbib",
+      "label" : "Sachsystematik der Nordrhein-Westfälischen Bibliographie"
+    },
+    "notation" : "708029",
+    "label" : "Sonstige Landwirtschaftliche Gebäude. Mühlen"
+  }, {
+    "type" : [ "ComplexSubject" ],
     "componentList" : [ {
-      "gndIdentifier" : "7684863-2",
       "id" : "http://d-nb.info/gnd/7684863-2",
-      "label" : "Lutter-Wassermühle Roberg, Harsewinkel",
+      "type" : [ "PlaceOrGeographicName" ],
+      "gndIdentifier" : "7684863-2",
       "source" : {
         "id" : "http://d-nb.info/gnd/7749153-1",
         "label" : "Gemeinsame Normdatei (GND)"
       },
-      "type" : [ "PlaceOrGeographicName" ]
+      "label" : "Lutter-Wassermühle Roberg, Harsewinkel"
     }, {
-      "label" : "Bildband",
-      "type" : [ "SubjectHeading" ]
+      "type" : [ "SubjectHeading" ],
+      "label" : "Bildband"
     } ],
-    "label" : "Lutter-Wassermühle Roberg, Harsewinkel | Bildband",
-    "type" : [ "ComplexSubject" ]
-  }, {
-    "id" : "http://purl.org/lobid/nwbib#s708029",
-    "label" : "Sonstige Landwirtschaftliche Gebäude. Mühlen",
-    "notation" : "708029",
-    "source" : {
-      "id" : "http://purl.org/lobid/nwbib",
-      "label" : "Sachsystematik der Nordrhein-Westfälischen Bibliographie"
-    }
+    "label" : "Lutter-Wassermühle Roberg, Harsewinkel | Bildband"
   } ],
-  "subjectAltLabel" : [ "Lutter-Wassermühle Roberg (Harsewinkel-Marienfeld)", "Mühle Roberg (Harsewinkel)", "Kornmühle Roberg (Harsewinkel)" ],
   "title" : "Lutter-Wassermühle Roberg",
-  "type" : [ "BibliographicResource", "Book" ]
+  "hbzId" : "HT016135351",
+  "inCollection" : [ {
+    "id" : "http://lobid.org/resources/HT014176012#!",
+    "type" : [ "Collection" ],
+    "label" : "Nordrhein-Westfälische Bibliographie (NWBib)"
+  } ],
+  "subjectAltLabel" : [ "Kornmühle Roberg (Harsewinkel)", "Lutter-Wassermühle Roberg (Harsewinkel-Marienfeld)", "Mühle Roberg (Harsewinkel)" ],
+  "otherTitleInformation" : [ "Zeitzeuge und Kleinod in Harsewinkel" ],
+  "publication" : [ {
+    "type" : [ "PublicationEvent" ],
+    "location" : "Marienfeld",
+    "publishedBy" : "Selbstverl.",
+    "startDate" : "2006"
+  } ],
+  "sameAs" : [ {
+    "id" : "http://hub.culturegraph.org/resource/HBZ-HT016135351",
+    "label" : "Culturegraph Ressource"
+  } ],
+  "describedBy" : {
+    "id" : "http://lobid.org/resources/HT016135351",
+    "type" : [ "BibliographicDescription" ],
+    "modifiedBy" : {
+      "id" : "http://lobid.org/organisations/DE-6#!",
+      "label" : "lobid Organisation"
+    },
+    "dateCreated" : "20091118",
+    "dateModified" : "20091210",
+    "inDataset" : {
+      "id" : "http://lobid.org/resources/dataset#!",
+      "label" : "lobid-resources – Der hbz-Verbundkatalog als Linked Open Data"
+    },
+    "resultOf" : {
+      "type" : [ "CreateAction" ],
+      "endTime" : "0001-01-01T00:00:00",
+      "instrument" : {
+        "id" : "https://github.com/hbz/lobid-resources",
+        "type" : [ "SoftwareApplication" ],
+        "label" : "Software lobid-resources"
+      },
+      "object" : {
+        "id" : "http://lobid.org/hbz01/HT016135351",
+        "type" : [ "DataFeedItem" ],
+        "inDataset" : {
+          "id" : "https://datahub.io/dataset/hbz_unioncatalog",
+          "label" : "hbz_unioncatalog"
+        },
+        "label" : "hbz-Ressource HT016135351 im Exportformat MAB2-XML"
+      }
+    },
+    "license" : [ {
+      "id" : "http://creativecommons.org/publicdomain/zero/1.0",
+      "label" : "Creative Commons-Lizenz CC0 1.0 Universal"
+    } ],
+    "sourceOrganization" : {
+      "id" : "http://lobid.org/organisations/DE-6#!",
+      "label" : "lobid Organisation"
+    },
+    "label" : "Webseite der hbz-Ressource HT016135351"
+  },
+  "@context" : "http://lobid.org/resources/context.jsonld",
+  "id" : "http://lobid.org/resources/HT016135351#!"
 }

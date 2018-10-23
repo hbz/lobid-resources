@@ -1,84 +1,31 @@
 {
-  "@context" : "web/conf/context.jsonld",
+  "type" : [ "EditedVolume", "Book", "BibliographicResource" ],
   "contribution" : [ {
+    "type" : [ "Contribution" ],
     "agent" : {
-      "label" : "Siekmann, Holger",
-      "type" : [ "Person" ]
+      "type" : [ "Person" ],
+      "label" : "Siekmann, Holger"
     },
     "role" : {
       "id" : "http://id.loc.gov/vocabulary/relators/cre",
       "label" : "Autor/in"
-    },
-    "type" : [ "Contribution" ]
+    }
   }, {
+    "type" : [ "Contribution" ],
     "agent" : {
-      "label" : "Irlenbusch, Lars",
-      "type" : [ "Person" ]
+      "type" : [ "Person" ],
+      "label" : "Irlenbusch, Lars"
     },
     "role" : {
       "id" : "http://id.loc.gov/vocabulary/relators/ctb",
       "label" : "Mitwirkende"
-    },
-    "type" : [ "Contribution" ]
+    }
   } ],
-  "describedBy" : {
-    "dateCreated" : "20120103",
-    "dateModified" : "20120309",
-    "id" : "http://lobid.org/resources/TT050409948",
-    "inDataset" : {
-      "id" : "http://lobid.org/resources/dataset#!",
-      "label" : "lobid-resources – Der hbz-Verbundkatalog als Linked Open Data"
-    },
-    "label" : "Webseite der hbz-Ressource TT050409948",
-    "license" : [ {
-      "id" : "http://creativecommons.org/publicdomain/zero/1.0",
-      "label" : "Creative Commons-Lizenz CC0 1.0 Universal"
-    } ],
-    "provider" : {
-      "id" : "http://lobid.org/organisations/DE-He213#!",
-      "label" : "lobid Organisation"
-    },
-    "resultOf" : {
-      "endTime" : "0001-01-01T00:00:00",
-      "instrument" : {
-        "id" : "https://github.com/hbz/lobid-resources",
-        "label" : "Software lobid-resources",
-        "type" : [ "SoftwareApplication" ]
-      },
-      "object" : {
-        "id" : "http://lobid.org/hbz01/TT050409948",
-        "inDataset" : {
-          "id" : "https://datahub.io/dataset/hbz_unioncatalog",
-          "label" : "hbz_unioncatalog"
-        },
-        "label" : "hbz-Ressource TT050409948 im Exportformat MAB2-XML",
-        "type" : [ "DataFeedItem" ]
-      },
-      "type" : [ "CreateAction" ]
-    },
-    "sourceOrganization" : {
-      "id" : "http://lobid.org/organisations/DE-He213#!",
-      "label" : "lobid Organisation"
-    },
-    "type" : [ "BibliographicDescription" ]
-  },
-  "doi" : [ "10.1007/978-3-642-20784-6" ],
-  "fulltextOnline" : [ {
-    "id" : "http://dx.doi.org/10.1007/978-3-642-20784-6",
-    "label" : "DOI-Link"
-  } ],
+  "responsibilityStatement" : [ "herausgegeben von Holger Siekmann, Lars Irlenbusch" ],
   "hasVersion" : [ {
     "id" : "http://dx.doi.org/10.1007/978-3-642-20784-6",
     "label" : "DOI-Link"
   } ],
-  "hbzId" : "TT050409948",
-  "id" : "http://lobid.org/resources/TT050409948#!",
-  "inCollection" : [ {
-    "id" : "http://lobid.org/organisations/ZDB-2-SMD#!",
-    "label" : "eResource package",
-    "type" : [ "Collection" ]
-  } ],
-  "isbn" : [ "9783642207846" ],
   "language" : [ {
     "id" : "http://id.loc.gov/vocabulary/iso639-2/deu",
     "label" : "Deutsch"
@@ -87,48 +34,101 @@
     "id" : "http://rdaregistry.info/termList/RDACarrierType/1018",
     "label" : "Online-Ressource"
   } ],
+  "subject" : [ {
+    "type" : [ "ComplexSubject" ],
+    "componentList" : [ {
+      "id" : "http://d-nb.info/gnd/4061694-0",
+      "type" : [ "SubjectHeading" ],
+      "gndIdentifier" : "4061694-0",
+      "source" : {
+        "id" : "http://d-nb.info/gnd/7749153-1",
+        "label" : "Gemeinsame Normdatei (GND)"
+      },
+      "label" : "Unfallchirurgie"
+    }, {
+      "id" : "http://d-nb.info/gnd/4227766-8",
+      "type" : [ "SubjectHeading" ],
+      "gndIdentifier" : "4227766-8",
+      "source" : {
+        "id" : "http://d-nb.info/gnd/7749153-1",
+        "label" : "Gemeinsame Normdatei (GND)"
+      },
+      "label" : "Operationsbericht"
+    }, {
+      "type" : [ "SubjectHeading" ],
+      "label" : "Aufsatzsammlung"
+    } ],
+    "label" : "Unfallchirurgie | Operationsbericht | Aufsatzsammlung"
+  } ],
+  "title" : "Operationsberichte Unfallchirurgie",
+  "fulltextOnline" : [ {
+    "id" : "http://dx.doi.org/10.1007/978-3-642-20784-6",
+    "label" : "DOI-Link"
+  } ],
+  "hbzId" : "TT050409948",
+  "inCollection" : [ {
+    "id" : "http://lobid.org/organisations/ZDB-2-SMD#!",
+    "type" : [ "Collection" ],
+    "label" : "eResource package"
+  } ],
+  "subjectAltLabel" : [ "Operation / Bericht" ],
+  "doi" : [ "10.1007/978-3-642-20784-6" ],
+  "isbn" : [ "9783642207846" ],
   "publication" : [ {
+    "type" : [ "PublicationEvent" ],
     "location" : "Berlin, Heidelberg",
     "publishedBy" : "Springer Berlin Heidelberg",
-    "startDate" : "2012",
-    "type" : [ "PublicationEvent" ]
-  } ],
-  "responsibilityStatement" : [ "herausgegeben von Holger Siekmann, Lars Irlenbusch" ],
-  "sameAs" : [ {
-    "id" : "http://hub.culturegraph.org/resource/HBZ-TT050409948",
-    "label" : "Culturegraph Ressource"
+    "startDate" : "2012"
   } ],
   "similar" : [ {
     "id" : "http://dx.doi.org/10.1007/978-3-642-20784-6",
     "label" : "DOI-Link"
   } ],
-  "subject" : [ {
-    "componentList" : [ {
-      "gndIdentifier" : "4061694-0",
-      "id" : "http://d-nb.info/gnd/4061694-0",
-      "label" : "Unfallchirurgie",
-      "source" : {
-        "id" : "http://d-nb.info/gnd/7749153-1",
-        "label" : "Gemeinsame Normdatei (GND)"
-      },
-      "type" : [ "SubjectHeading" ]
-    }, {
-      "gndIdentifier" : "4227766-8",
-      "id" : "http://d-nb.info/gnd/4227766-8",
-      "label" : "Operationsbericht",
-      "source" : {
-        "id" : "http://d-nb.info/gnd/7749153-1",
-        "label" : "Gemeinsame Normdatei (GND)"
-      },
-      "type" : [ "SubjectHeading" ]
-    }, {
-      "label" : "Aufsatzsammlung",
-      "type" : [ "SubjectHeading" ]
-    } ],
-    "label" : "Unfallchirurgie | Operationsbericht | Aufsatzsammlung",
-    "type" : [ "ComplexSubject" ]
+  "sameAs" : [ {
+    "id" : "http://hub.culturegraph.org/resource/HBZ-TT050409948",
+    "label" : "Culturegraph Ressource"
   } ],
-  "subjectAltLabel" : [ "Operation / Bericht" ],
-  "title" : "Operationsberichte Unfallchirurgie",
-  "type" : [ "BibliographicResource", "Book", "EditedVolume" ]
+  "describedBy" : {
+    "id" : "http://lobid.org/resources/TT050409948",
+    "type" : [ "BibliographicDescription" ],
+    "dateCreated" : "20120103",
+    "dateModified" : "20120309",
+    "inDataset" : {
+      "id" : "http://lobid.org/resources/dataset#!",
+      "label" : "lobid-resources – Der hbz-Verbundkatalog als Linked Open Data"
+    },
+    "resultOf" : {
+      "type" : [ "CreateAction" ],
+      "endTime" : "0001-01-01T00:00:00",
+      "instrument" : {
+        "id" : "https://github.com/hbz/lobid-resources",
+        "type" : [ "SoftwareApplication" ],
+        "label" : "Software lobid-resources"
+      },
+      "object" : {
+        "id" : "http://lobid.org/hbz01/TT050409948",
+        "type" : [ "DataFeedItem" ],
+        "inDataset" : {
+          "id" : "https://datahub.io/dataset/hbz_unioncatalog",
+          "label" : "hbz_unioncatalog"
+        },
+        "label" : "hbz-Ressource TT050409948 im Exportformat MAB2-XML"
+      }
+    },
+    "license" : [ {
+      "id" : "http://creativecommons.org/publicdomain/zero/1.0",
+      "label" : "Creative Commons-Lizenz CC0 1.0 Universal"
+    } ],
+    "provider" : {
+      "id" : "http://lobid.org/organisations/DE-He213#!",
+      "label" : "lobid Organisation"
+    },
+    "sourceOrganization" : {
+      "id" : "http://lobid.org/organisations/DE-He213#!",
+      "label" : "lobid Organisation"
+    },
+    "label" : "Webseite der hbz-Ressource TT050409948"
+  },
+  "@context" : "http://lobid.org/resources/context.jsonld",
+  "id" : "http://lobid.org/resources/TT050409948#!"
 }

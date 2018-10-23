@@ -1,9 +1,9 @@
 {
-  "@context" : "web/conf/context.jsonld",
+  "type" : [ "Thesis", "BibliographicResource", "Book" ],
   "contribution" : [ {
     "agent" : {
-      "gndIdentifier" : "1042242615",
       "id" : "http://d-nb.info/gnd/1042242615",
+      "gndIdentifier" : "1042242615",
       "label" : "Stahl, Dominik",
       "type" : [ "Person" ]
     },
@@ -13,80 +13,31 @@
     },
     "type" : [ "Contribution" ]
   } ],
-  "describedBy" : {
-    "dateCreated" : "20151002",
-    "id" : "http://lobid.org/resources/HT018770176",
-    "inDataset" : {
-      "id" : "http://lobid.org/resources/dataset#!",
-      "label" : "lobid-resources – Der hbz-Verbundkatalog als Linked Open Data"
-    },
-    "label" : "Webseite der hbz-Ressource HT018770176",
-    "license" : [ {
-      "id" : "http://creativecommons.org/publicdomain/zero/1.0",
-      "label" : "Creative Commons-Lizenz CC0 1.0 Universal"
-    } ],
-    "provider" : {
-      "id" : "http://lobid.org/organisations/DE-101#!",
-      "label" : "lobid Organisation"
-    },
-    "resultOf" : {
-      "endTime" : "0001-01-01T00:00:00",
-      "instrument" : {
-        "id" : "https://github.com/hbz/lobid-resources",
-        "label" : "Software lobid-resources",
-        "type" : [ "SoftwareApplication" ]
-      },
-      "object" : {
-        "id" : "http://lobid.org/hbz01/HT018770176",
-        "inDataset" : {
-          "id" : "https://datahub.io/dataset/hbz_unioncatalog",
-          "label" : "hbz_unioncatalog"
-        },
-        "label" : "hbz-Ressource HT018770176 im Exportformat MAB2-XML",
-        "type" : [ "DataFeedItem" ]
-      },
-      "type" : [ "CreateAction" ]
-    },
-    "sourceOrganization" : {
-      "id" : "http://lobid.org/organisations/DE-6-228#!",
-      "label" : "lobid Organisation"
-    },
-    "type" : [ "BibliographicDescription" ]
-  },
-  "edition" : [ "[1. Aufl.]" ],
   "extent" : "276 S.",
   "hasItem" : [ {
-    "note" : "00027001",
-    "callNumber" : "StrR XIV 23/246",
+    "note" : [ "00027001" ],
     "heldBy" : {
       "id" : "http://lobid.org/organisations/DE-6-228",
       "label" : "lobid Organisation"
     },
+    "callNumber" : "StrR XIV 23/246",
     "id" : "http://lobid.org/items/HT018770176:DE-6-228:StrR%20XIV%2023%2F246#!",
     "label" : "StrR XIV 23/246",
-    "type" : [ "Item" ]
+    "type" : [ "Item" ],
+    "@context" : "http://lobid.org/resources/context.jsonld"
   }, {
-    "note" : "00039000",
-    "callNumber" : "123/Y/3264",
+    "note" : [ "00039000" ],
     "heldBy" : {
       "id" : "http://lobid.org/organisations/DE-294-39",
       "label" : "lobid Organisation"
     },
+    "callNumber" : "123/Y/3264",
     "id" : "http://lobid.org/items/HT018770176:DE-294-39:123%2FY%2F3264#!",
     "label" : "123/Y/3264",
-    "type" : [ "Item" ]
+    "type" : [ "Item" ],
+    "@context" : "http://lobid.org/resources/context.jsonld"
   } ],
-  "hbzId" : "HT018770176",
-  "id" : "http://lobid.org/resources/HT018770176#!",
-  "isPartOf" : [ {
-    "hasSuperordinate" : [ {
-      "id" : "http://lobid.org/resources/HT001252640#!",
-      "label" : "Strafrechtliche Abhandlungen"
-    } ],
-    "numbering" : "Neue Folge, Band 264",
-    "type" : [ "IsPartOfRelation" ]
-  } ],
-  "isbn" : [ "9783428147335", "3428147332" ],
+  "responsibilityStatement" : [ "von Dominik Stahl" ],
   "language" : [ {
     "id" : "http://id.loc.gov/vocabulary/iso639-2/deu",
     "label" : "Deutsch"
@@ -95,27 +46,78 @@
     "id" : "http://rdaregistry.info/termList/RDAproductionMethod/1010",
     "label" : "Print"
   } ],
+  "tableOfContents" : [ {
+    "id" : "http://d-nb.info/1076583180/04",
+    "label" : "04"
+  } ],
+  "title" : "Strafzumessungstatsachen zwischen Verbrechenslehre und Straftheorie",
+  "hbzId" : "HT018770176",
+  "isPartOf" : [ {
+    "hasSuperordinate" : [ {
+      "id" : "http://lobid.org/resources/HT001252640#!",
+      "label" : "Strafrechtliche Abhandlungen"
+    } ],
+    "numbering" : "Neue Folge, Band 264",
+    "type" : [ "IsPartOfRelation" ]
+  } ],
+  "edition" : [ "[1. Aufl.]" ],
+  "isbn" : [ "9783428147335", "3428147332" ],
+  "thesisInformation" : [ "Albert-Ludwigs-Universität Freiburg, Dissertation, 2014/2015" ],
+  "otherTitleInformation" : [ "zugleich ein Beitrag zur Strafzumessungsrelevanz des Vor- und Nachtatverhaltens" ],
   "natureOfContent" : [ {
     "id" : "http://d-nb.info/gnd/4113937-9",
     "label" : "Hochschulschrift"
   } ],
-  "otherTitleInformation" : [ "zugleich ein Beitrag zur Strafzumessungsrelevanz des Vor- und Nachtatverhaltens" ],
   "publication" : [ {
     "publishedBy" : "Duncker & Humblot",
     "location" : "Berlin",
     "type" : [ "PublicationEvent" ],
     "startDate" : "2015"
   } ],
-  "responsibilityStatement" : [ "von Dominik Stahl" ],
   "sameAs" : [ {
     "id" : "http://hub.culturegraph.org/resource/HBZ-HT018770176",
     "label" : "Culturegraph Ressource"
   } ],
-  "tableOfContents" : [ {
-    "id" : "http://d-nb.info/1076583180/04",
-    "label" : "04"
-  } ],
-  "thesisInformation" : [ "Albert-Ludwigs-Universität Freiburg, Dissertation, 2014/2015" ],
-  "title" : "Strafzumessungstatsachen zwischen Verbrechenslehre und Straftheorie",
-  "type" : [ "BibliographicResource", "Book", "Thesis" ]
+  "describedBy" : {
+    "id" : "http://lobid.org/resources/HT018770176",
+    "type" : [ "BibliographicDescription" ],
+    "dateCreated" : "20151002",
+    "inDataset" : {
+      "id" : "http://lobid.org/resources/dataset#!",
+      "label" : "lobid-resources – Der hbz-Verbundkatalog als Linked Open Data"
+    },
+    "resultOf" : {
+      "type" : [ "CreateAction" ],
+      "endTime" : "0001-01-01T00:00:00",
+      "instrument" : {
+        "id" : "https://github.com/hbz/lobid-resources",
+        "type" : [ "SoftwareApplication" ],
+        "label" : "Software lobid-resources"
+      },
+      "object" : {
+        "id" : "http://lobid.org/hbz01/HT018770176",
+        "type" : [ "DataFeedItem" ],
+        "inDataset" : {
+          "id" : "https://datahub.io/dataset/hbz_unioncatalog",
+          "label" : "hbz_unioncatalog"
+        },
+        "label" : "hbz-Ressource HT018770176 im Exportformat MAB2-XML"
+      }
+    },
+    "license" : [ {
+      "id" : "http://creativecommons.org/publicdomain/zero/1.0",
+      "label" : "Creative Commons-Lizenz CC0 1.0 Universal"
+    } ],
+    "provider" : {
+      "id" : "http://lobid.org/organisations/DE-101#!",
+      "label" : "lobid Organisation"
+    },
+    "sourceOrganization" : {
+      "id" : "http://lobid.org/organisations/DE-6-228#!",
+      "label" : "lobid Organisation"
+    },
+    "label" : "Webseite der hbz-Ressource HT018770176"
+  },
+  "@context" : "http://lobid.org/resources/context.jsonld",
+  "id" : "http://lobid.org/resources/HT018770176#!"
 }

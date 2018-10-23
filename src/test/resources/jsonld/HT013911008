@@ -1,64 +1,18 @@
 {
-  "@context" : "web/conf/context.jsonld",
-  "describedBy" : {
-    "dateCreated" : "20040202",
-    "id" : "http://lobid.org/resources/HT013911008",
-    "inDataset" : {
-      "id" : "http://lobid.org/resources/dataset#!",
-      "label" : "lobid-resources – Der hbz-Verbundkatalog als Linked Open Data"
-    },
-    "label" : "Webseite der hbz-Ressource HT013911008",
-    "license" : [ {
-      "id" : "http://creativecommons.org/publicdomain/zero/1.0",
-      "label" : "Creative Commons-Lizenz CC0 1.0 Universal"
-    } ],
-    "resultOf" : {
-      "endTime" : "0001-01-01T00:00:00",
-      "instrument" : {
-        "id" : "https://github.com/hbz/lobid-resources",
-        "label" : "Software lobid-resources",
-        "type" : [ "SoftwareApplication" ]
-      },
-      "object" : {
-        "id" : "http://lobid.org/hbz01/HT013911008",
-        "inDataset" : {
-          "id" : "https://datahub.io/dataset/hbz_unioncatalog",
-          "label" : "hbz_unioncatalog"
-        },
-        "label" : "hbz-Ressource HT013911008 im Exportformat MAB2-XML",
-        "type" : [ "DataFeedItem" ]
-      },
-      "type" : [ "CreateAction" ]
-    },
-    "sourceOrganization" : {
-      "id" : "http://lobid.org/organisations/DE-361#!",
-      "label" : "lobid Organisation"
-    },
-    "type" : [ "BibliographicDescription" ]
-  },
+  "type" : [ "Miscellaneous", "BibliographicResource" ],
   "extent" : "1 CD-ROM ; 12 cm + 1 Beih. [6] S.",
   "hasItem" : [ {
-    "callNumber" : "CB088.87-4144798",
+    "id" : "http://lobid.org/items/HT013911008:DE-361:CB088.87-4144798#!",
+    "type" : [ "Item" ],
     "heldBy" : {
       "id" : "http://lobid.org/organisations/DE-361",
       "label" : "lobid Organisation"
     },
-    "id" : "http://lobid.org/items/HT013911008:DE-361:CB088.87-4144798#!",
+    "note" : [ "00000014" ],
+    "callNumber" : "CB088.87-4144798",
     "label" : "CB088.87-4144798",
-    "note" : "00000014",
-    "type" : [ "Item" ]
+    "@context" : "http://lobid.org/resources/context.jsonld"
   } ],
-  "hbzId" : "HT013911008",
-  "id" : "http://lobid.org/resources/HT013911008#!",
-  "isPartOf" : [ {
-    "hasSuperordinate" : [ {
-      "id" : "http://lobid.org/resources/HT013911051#!",
-      "label" : "Eutropia-CD"
-    } ],
-    "numbering" : "5",
-    "type" : [ "IsPartOfRelation" ]
-  } ],
-  "isbn" : [ "3936547041", "9783936547047" ],
   "language" : [ {
     "id" : "http://id.loc.gov/vocabulary/iso639-2/deu",
     "label" : "Deutsch"
@@ -73,34 +27,81 @@
     "id" : "http://rdaregistry.info/termList/RDAMediaType/1003",
     "label" : "Datenträger"
   } ],
+  "subject" : [ {
+    "type" : [ "ComplexSubject" ],
+    "componentList" : [ {
+      "id" : "http://d-nb.info/gnd/4050698-8",
+      "type" : [ "PlaceOrGeographicName" ],
+      "gndIdentifier" : "4050698-8",
+      "source" : {
+        "id" : "http://d-nb.info/gnd/7749153-1",
+        "label" : "Gemeinsame Normdatei (GND)"
+      },
+      "label" : "Rothenburg ob der Tauber"
+    }, {
+      "type" : [ "SubjectHeading" ],
+      "label" : "CD-ROM"
+    } ],
+    "label" : "Rothenburg ob der Tauber | CD-ROM"
+  } ],
+  "title" : "1000 Fotos aus Rothenburg ob der Tauber",
+  "hbzId" : "HT013911008",
+  "isPartOf" : [ {
+    "type" : [ "IsPartOfRelation" ],
+    "hasSuperordinate" : [ {
+      "id" : "http://lobid.org/resources/HT013911051#!",
+      "label" : "Eutropia-CD"
+    } ],
+    "numbering" : "5"
+  } ],
+  "subjectAltLabel" : [ "Rothenburg, Tauber", "Stadtmagistrat (Rothenburg, Tauber)", "Rothenburg ob der Tauber", "Rothenburg o.d.T." ],
+  "isbn" : [ "9783936547047", "3936547041" ],
   "publication" : [ {
+    "type" : [ "PublicationEvent" ],
     "location" : "Velbert",
     "publishedBy" : "Eutropia",
-    "startDate" : "2003",
-    "type" : [ "PublicationEvent" ]
+    "startDate" : "2003"
   } ],
   "sameAs" : [ {
     "id" : "http://hub.culturegraph.org/resource/HBZ-HT013911008",
     "label" : "Culturegraph Ressource"
   } ],
-  "subject" : [ {
-    "componentList" : [ {
-      "gndIdentifier" : "4050698-8",
-      "id" : "http://d-nb.info/gnd/4050698-8",
-      "label" : "Rothenburg ob der Tauber",
-      "source" : {
-        "id" : "http://d-nb.info/gnd/7749153-1",
-        "label" : "Gemeinsame Normdatei (GND)"
+  "describedBy" : {
+    "id" : "http://lobid.org/resources/HT013911008",
+    "type" : [ "BibliographicDescription" ],
+    "dateCreated" : "20040202",
+    "inDataset" : {
+      "id" : "http://lobid.org/resources/dataset#!",
+      "label" : "lobid-resources – Der hbz-Verbundkatalog als Linked Open Data"
+    },
+    "resultOf" : {
+      "type" : [ "CreateAction" ],
+      "endTime" : "0001-01-01T00:00:00",
+      "instrument" : {
+        "id" : "https://github.com/hbz/lobid-resources",
+        "type" : [ "SoftwareApplication" ],
+        "label" : "Software lobid-resources"
       },
-      "type" : [ "PlaceOrGeographicName" ]
-    }, {
-      "label" : "CD-ROM",
-      "type" : [ "SubjectHeading" ]
+      "object" : {
+        "id" : "http://lobid.org/hbz01/HT013911008",
+        "type" : [ "DataFeedItem" ],
+        "inDataset" : {
+          "id" : "https://datahub.io/dataset/hbz_unioncatalog",
+          "label" : "hbz_unioncatalog"
+        },
+        "label" : "hbz-Ressource HT013911008 im Exportformat MAB2-XML"
+      }
+    },
+    "license" : [ {
+      "id" : "http://creativecommons.org/publicdomain/zero/1.0",
+      "label" : "Creative Commons-Lizenz CC0 1.0 Universal"
     } ],
-    "label" : "Rothenburg ob der Tauber | CD-ROM",
-    "type" : [ "ComplexSubject" ]
-  } ],
-  "subjectAltLabel" : [ "Rothenburg ob der Tauber", "Stadtmagistrat (Rothenburg, Tauber)", "Rothenburg, Tauber", "Rothenburg o.d.T." ],
-  "title" : "1000 Fotos aus Rothenburg ob der Tauber",
-  "type" : [ "BibliographicResource", "Miscellaneous" ]
+    "sourceOrganization" : {
+      "id" : "http://lobid.org/organisations/DE-361#!",
+      "label" : "lobid Organisation"
+    },
+    "label" : "Webseite der hbz-Ressource HT013911008"
+  },
+  "@context" : "http://lobid.org/resources/context.jsonld",
+  "id" : "http://lobid.org/resources/HT013911008#!"
 }

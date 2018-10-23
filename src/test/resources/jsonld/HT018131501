@@ -1,68 +1,22 @@
 {
-  "@context" : "web/conf/context.jsonld",
-  "bibliographicCitation" : "Der Gießerjunge; 34 (2014),1, S. 14-15",
-  "containedIn" : [ {
-    "id" : "http://lobid.org/resources/HT007072426#!",
-    "label" : "<<Der>> Gießerjunge"
-  } ],
+  "type" : [ "Article", "BibliographicResource" ],
   "contribution" : [ {
+    "type" : [ "Contribution" ],
     "agent" : {
+      "id" : "http://d-nb.info/gnd/124348165",
+      "type" : [ "Person" ],
       "dateOfBirth" : "1924",
       "gndIdentifier" : "124348165",
-      "id" : "http://d-nb.info/gnd/124348165",
-      "label" : "Engelhardt, Manfred",
-      "type" : [ "Person" ]
+      "label" : "Engelhardt, Manfred"
     },
     "role" : {
       "id" : "http://id.loc.gov/vocabulary/relators/cre",
       "label" : "Autor/in"
-    },
-    "type" : [ "Contribution" ]
+    }
   } ],
+  "responsibilityStatement" : [ "Manfred Engelhardt" ],
   "coverage" : [ "Düsseldorf | 99" ],
-  "describedBy" : {
-    "dateCreated" : "20140115",
-    "id" : "http://lobid.org/resources/HT018131501",
-    "inDataset" : {
-      "id" : "http://lobid.org/resources/dataset#!",
-      "label" : "lobid-resources – Der hbz-Verbundkatalog als Linked Open Data"
-    },
-    "label" : "Webseite der hbz-Ressource HT018131501",
-    "license" : [ {
-      "id" : "http://creativecommons.org/publicdomain/zero/1.0",
-      "label" : "Creative Commons-Lizenz CC0 1.0 Universal"
-    } ],
-    "resultOf" : {
-      "endTime" : "0001-01-01T00:00:00",
-      "instrument" : {
-        "id" : "https://github.com/hbz/lobid-resources",
-        "label" : "Software lobid-resources",
-        "type" : [ "SoftwareApplication" ]
-      },
-      "object" : {
-        "id" : "http://lobid.org/hbz01/HT018131501",
-        "inDataset" : {
-          "id" : "https://datahub.io/dataset/hbz_unioncatalog",
-          "label" : "hbz_unioncatalog"
-        },
-        "label" : "hbz-Ressource HT018131501 im Exportformat MAB2-XML",
-        "type" : [ "DataFeedItem" ]
-      },
-      "type" : [ "CreateAction" ]
-    },
-    "sourceOrganization" : {
-      "id" : "http://lobid.org/organisations/DE-61#!",
-      "label" : "lobid Organisation"
-    },
-    "type" : [ "BibliographicDescription" ]
-  },
-  "hbzId" : "HT018131501",
-  "id" : "http://lobid.org/resources/HT018131501#!",
-  "inCollection" : [ {
-    "id" : "http://lobid.org/resources/HT014176012#!",
-    "label" : "Nordrhein-Westfälische Bibliographie (NWBib)",
-    "type" : [ "Collection" ]
-  } ],
+  "bibliographicCitation" : "Der Gießerjunge; 34 (2014),1, S. 14-15",
   "language" : [ {
     "id" : "http://id.loc.gov/vocabulary/iso639-2/deu",
     "label" : "Deutsch"
@@ -71,61 +25,107 @@
     "id" : "http://rdaregistry.info/termList/RDAproductionMethod/1010",
     "label" : "Print"
   } ],
-  "publication" : [ {
-    "location" : "Düsseldorf",
-    "startDate" : "2014",
-    "type" : [ "PublicationEvent" ]
+  "subject" : [ {
+    "id" : "http://purl.org/lobid/nwbib-spatial#n46",
+    "source" : {
+      "id" : "http://purl.org/lobid/nwbib-spatial",
+      "label" : "Raumsystematik der Nordrhein-Westfälischen Bibliographie"
+    },
+    "notation" : "46",
+    "label" : "Grafschaft, Herzogtum, Großherzogtum Berg"
+  }, {
+    "type" : [ "ComplexSubject" ],
+    "componentList" : [ {
+      "id" : "http://d-nb.info/gnd/4013255-9",
+      "type" : [ "PlaceOrGeographicName" ],
+      "gndIdentifier" : "4013255-9",
+      "source" : {
+        "id" : "http://d-nb.info/gnd/7749153-1",
+        "label" : "Gemeinsame Normdatei (GND)"
+      },
+      "label" : "Düsseldorf"
+    }, {
+      "id" : "http://d-nb.info/gnd/4137215-3",
+      "type" : [ "PlaceOrGeographicName" ],
+      "gndIdentifier" : "4137215-3",
+      "source" : {
+        "id" : "http://d-nb.info/gnd/7749153-1",
+        "label" : "Gemeinsame Normdatei (GND)"
+      },
+      "label" : "Staat Berg"
+    }, {
+      "type" : [ "SubjectHeading" ],
+      "label" : "Geschichte 1288-1815"
+    } ],
+    "label" : "Düsseldorf | Staat Berg | Geschichte 1288-1815 "
+  }, {
+    "id" : "http://purl.org/lobid/nwbib#s240000",
+    "source" : {
+      "id" : "http://purl.org/lobid/nwbib",
+      "label" : "Sachsystematik der Nordrhein-Westfälischen Bibliographie"
+    },
+    "notation" : "240000",
+    "label" : "Geschichte"
   } ],
-  "responsibilityStatement" : [ "Manfred Engelhardt" ],
+  "title" : "Düsseldorf und das bergische Territorium",
+  "containedIn" : [ {
+    "id" : "http://lobid.org/resources/HT007072426#!",
+    "label" : "<<Der>> Gießerjunge"
+  } ],
+  "hbzId" : "HT018131501",
+  "inCollection" : [ {
+    "id" : "http://lobid.org/resources/HT014176012#!",
+    "type" : [ "Collection" ],
+    "label" : "Nordrhein-Westfälische Bibliographie (NWBib)"
+  } ],
+  "subjectAltLabel" : [ "Düsseldorf. Hauptamt", "Stadt Düsseldorf", "Düsseldorf. Rat", "Stadtverwaltung (Düsseldorf)", "Duseerduofu", "Düsseldorf. Ratsversammlung", "Oberbürgermeister (Düsseldorf)", "Düsseldorf. Stadtverwaltung", "Stadtgemeinde Düsseldorf", "Großherzogthum Berg", "Presseamt (Düsseldorf)", "Großherzogtum Berg", "Düsseldorf. Presseamt", "Düsseldorf. Oberstadtdirektor", "Dyusserudorufu", "Grand Duché Berg", "Grafschaft Berg", "Düsseldorf. Oberbürgermeister", "Ducatus Montensis", "Stadtverordnetenversammlung (Düsseldorf)", "Düsseldorf. Stadtverordnetenversammlung", "Berg (Staat)", "Düsseldorf. Organisationsabteilung", "Hauptamt (Düsseldorf)", "Ratsversammlung (Düsseldorf)", "Herzogtum Berg", "Landeshauptstadt Düsseldorf", "Djussel'dorf", "Rat (Düsseldorf)", "Oberstadtdirektor (Düsseldorf)" ],
+  "publication" : [ {
+    "type" : [ "PublicationEvent" ],
+    "location" : "Düsseldorf",
+    "startDate" : "2014"
+  } ],
   "sameAs" : [ {
     "id" : "http://hub.culturegraph.org/resource/HBZ-HT018131501",
     "label" : "Culturegraph Ressource"
   } ],
-  "subject" : [ {
-    "componentList" : [ {
-      "gndIdentifier" : "4013255-9",
-      "id" : "http://d-nb.info/gnd/4013255-9",
-      "label" : "Düsseldorf",
-      "source" : {
-        "id" : "http://d-nb.info/gnd/7749153-1",
-        "label" : "Gemeinsame Normdatei (GND)"
+  "describedBy" : {
+    "id" : "http://lobid.org/resources/HT018131501",
+    "type" : [ "BibliographicDescription" ],
+    "dateCreated" : "20140115",
+    "inDataset" : {
+      "id" : "http://lobid.org/resources/dataset#!",
+      "label" : "lobid-resources – Der hbz-Verbundkatalog als Linked Open Data"
+    },
+    "resultOf" : {
+      "type" : [ "CreateAction" ],
+      "endTime" : "0001-01-01T00:00:00",
+      "instrument" : {
+        "id" : "https://github.com/hbz/lobid-resources",
+        "type" : [ "SoftwareApplication" ],
+        "label" : "Software lobid-resources"
       },
-      "type" : [ "PlaceOrGeographicName" ]
-    }, {
-      "gndIdentifier" : "4137215-3",
-      "id" : "http://d-nb.info/gnd/4137215-3",
-      "label" : "Staat Berg",
-      "source" : {
-        "id" : "http://d-nb.info/gnd/7749153-1",
-        "label" : "Gemeinsame Normdatei (GND)"
-      },
-      "type" : [ "PlaceOrGeographicName" ]
-    }, {
-      "label" : "Geschichte 1288-1815",
-      "type" : [ "SubjectHeading" ]
+      "object" : {
+        "id" : "http://lobid.org/hbz01/HT018131501",
+        "type" : [ "DataFeedItem" ],
+        "inDataset" : {
+          "id" : "https://datahub.io/dataset/hbz_unioncatalog",
+          "label" : "hbz_unioncatalog"
+        },
+        "label" : "hbz-Ressource HT018131501 im Exportformat MAB2-XML"
+      }
+    },
+    "license" : [ {
+      "id" : "http://creativecommons.org/publicdomain/zero/1.0",
+      "label" : "Creative Commons-Lizenz CC0 1.0 Universal"
     } ],
-    "label" : "Düsseldorf | Staat Berg | Geschichte 1288-1815 ",
-    "type" : [ "ComplexSubject" ]
-  }, {
-    "id" : "http://purl.org/lobid/nwbib-spatial#n46",
-    "label" : "Grafschaft, Herzogtum, Großherzogtum Berg",
-    "notation" : "46",
-    "source" : {
-      "id" : "http://purl.org/lobid/nwbib-spatial",
-      "label" : "Raumsystematik der Nordrhein-Westfälischen Bibliographie"
-    }
-  }, {
-    "id" : "http://purl.org/lobid/nwbib#s240000",
-    "label" : "Geschichte",
-    "notation" : "240000",
-    "source" : {
-      "id" : "http://purl.org/lobid/nwbib",
-      "label" : "Sachsystematik der Nordrhein-Westfälischen Bibliographie"
-    }
-  } ],
-  "subjectAltLabel" : [ "Großherzogtum Berg", "Hauptamt (Düsseldorf)", "Düsseldorf. Stadtverordnetenversammlung", "Herzogtum Berg", "Düsseldorf. Hauptamt", "Grafschaft Berg", "Presseamt (Düsseldorf)", "Landeshauptstadt Düsseldorf", "Ducatus Montensis", "Oberbürgermeister (Düsseldorf)", "Düsseldorf. Rat", "Großherzogthum Berg", "Stadtverwaltung (Düsseldorf)", "Djussel'dorf", "Düsseldorf. Stadtverwaltung", "Ratsversammlung (Düsseldorf)", "Düsseldorf. Oberbürgermeister", "Düsseldorf. Presseamt", "Düsseldorf. Oberstadtdirektor", "Düsseldorf. Ratsversammlung", "Grand Duché Berg", "Berg (Staat)", "Duseerduofu", "Dyusserudorufu", "Oberstadtdirektor (Düsseldorf)", "Stadtverordnetenversammlung (Düsseldorf)", "Stadtgemeinde Düsseldorf", "Rat (Düsseldorf)", "Düsseldorf. Organisationsabteilung", "Stadt Düsseldorf" ],
-  "title" : "Düsseldorf und das bergische Territorium",
-  "type" : [ "BibliographicResource", "Article" ],
+    "sourceOrganization" : {
+      "id" : "http://lobid.org/organisations/DE-61#!",
+      "label" : "lobid Organisation"
+    },
+    "label" : "Webseite der hbz-Ressource HT018131501"
+  },
+  "@context" : "http://lobid.org/resources/context.jsonld",
+  "id" : "http://lobid.org/resources/HT018131501#!",
   "spatial" : [ {
     "id" : "http://www.wikidata.org/entity/Q2758",
     "label" : "Mönchengladbach",

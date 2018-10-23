@@ -1,122 +1,74 @@
 {
-  "@context" : "web/conf/context.jsonld",
+  "type" : [ "Newspaper", "BibliographicResource" ],
   "contribution" : [ {
+    "type" : [ "Contribution" ],
     "agent" : {
-      "altLabel" : [ "Acción Católica Espan̄ola", "Katholische Aktion" ],
-      "gndIdentifier" : "219515-X",
       "id" : "http://d-nb.info/gnd/219515-X",
+      "type" : [ "CorporateBody" ],
+      "gndIdentifier" : "219515-X",
       "label" : "Acción Católica Española",
-      "type" : [ "CorporateBody" ]
+      "altLabel" : [ "Acción Católica Espan̄ola", "Katholische Aktion" ]
     },
     "role" : {
       "id" : "http://id.loc.gov/vocabulary/relators/ctb",
       "label" : "Mitwirkende"
-    },
-    "type" : [ "Contribution" ]
+    }
   } ],
-  "describedBy" : {
-    "dateCreated" : "19991120",
-    "dateModified" : "20130710",
-    "id" : "http://lobid.org/resources/HT006987933",
-    "inDataset" : {
-      "id" : "http://lobid.org/resources/dataset#!",
-      "label" : "lobid-resources – Der hbz-Verbundkatalog als Linked Open Data"
-    },
-    "label" : "Webseite der hbz-Ressource HT006987933",
-    "license" : [ {
-      "id" : "http://creativecommons.org/publicdomain/zero/1.0",
-      "label" : "Creative Commons-Lizenz CC0 1.0 Universal"
-    } ],
-    "modifiedBy" : {
-      "id" : "http://lobid.org/organisations/DE-9999#!",
-      "label" : "lobid Organisation"
-    },
-    "provider" : {
-      "id" : "http://lobid.org/organisations/DE-101#!",
-      "label" : "lobid Organisation"
-    },
-    "resultOf" : {
-      "endTime" : "0001-01-01T00:00:00",
-      "instrument" : {
-        "id" : "https://github.com/hbz/lobid-resources",
-        "label" : "Software lobid-resources",
-        "type" : [ "SoftwareApplication" ]
-      },
-      "object" : {
-        "id" : "http://lobid.org/hbz01/HT006987933",
-        "inDataset" : {
-          "id" : "https://datahub.io/dataset/hbz_unioncatalog",
-          "label" : "hbz_unioncatalog"
-        },
-        "label" : "hbz-Ressource HT006987933 im Exportformat MAB2-XML",
-        "type" : [ "DataFeedItem" ]
-      },
-      "type" : [ "CreateAction" ]
-    },
-    "sourceOrganization" : {
-      "id" : "http://lobid.org/organisations/DE-9001#!",
-      "label" : "lobid Organisation"
-    },
-    "type" : [ "BibliographicDescription" ]
-  },
   "hasItem" : [ {
-    "heldBy" : {
-      "id" : "http://lobid.org/organisations/DE-Kn28",
-      "label" : "lobid Organisation"
-    },
-    "id" : "http://lobid.org/items/HT006987933:DE-Kn28:#!",
-    "label" : "lobid Bestandsressource",
-    "note" : "LS",
-    "type" : [ "Item" ]
-  }, {
-    "callNumber" : "5 A",
-    "heldBy" : {
-      "id" : "http://lobid.org/organisations/DE-Kn28",
-      "label" : "lobid Organisation"
-    },
-    "id" : "http://lobid.org/items/HT006987933:DE-Kn28:5%20A#!",
-    "label" : "5 A",
-    "note" : "LS",
-    "type" : [ "Item" ]
-  }, {
-    "callNumber" : "Zd 0159",
-    "heldBy" : {
-      "id" : "http://lobid.org/organisations/DE-Kn28",
-      "label" : "lobid Organisation"
-    },
-    "id" : "http://lobid.org/items/HT006987933:DE-Kn28:Zd%200159#!",
-    "label" : "Zd 0159",
-    "note" : "MAG",
-    "type" : [ "Item" ]
-  }, {
-    "callNumber" : "Zd 159",
-    "heldBy" : {
-      "id" : "http://lobid.org/organisations/DE-Kn28",
-      "label" : "lobid Organisation"
-    },
     "id" : "http://lobid.org/items/HT006987933:DE-Kn28:Zd%20159#!",
-    "label" : "Zd 159",
-    "note" : "LS:",
-    "type" : [ "Item" ]
-  }, {
-    "callNumber" : "CDR 0638 (2005,Juli/2009,Juni)",
+    "type" : [ "Item" ],
     "heldBy" : {
       "id" : "http://lobid.org/organisations/DE-Kn28",
       "label" : "lobid Organisation"
     },
+    "note" : [ "LS:" ],
+    "callNumber" : "Zd 159",
+    "label" : "Zd 159",
+    "@context" : "http://lobid.org/resources/context.jsonld"
+  }, {
+    "id" : "http://lobid.org/items/HT006987933:DE-Kn28:#!",
+    "type" : [ "Item" ],
+    "heldBy" : {
+      "id" : "http://lobid.org/organisations/DE-Kn28",
+      "label" : "lobid Organisation"
+    },
+    "note" : [ "LS" ],
+    "label" : "lobid Bestandsressource",
+    "@context" : "http://lobid.org/resources/context.jsonld"
+  }, {
     "id" : "http://lobid.org/items/HT006987933:DE-Kn28:CDR%200638%20(2005,Juli%2F2009,Juni)#!",
+    "type" : [ "Item" ],
+    "heldBy" : {
+      "id" : "http://lobid.org/organisations/DE-Kn28",
+      "label" : "lobid Organisation"
+    },
+    "note" : [ "MAG" ],
+    "callNumber" : "CDR 0638 (2005,Juli/2009,Juni)",
     "label" : "CDR 0638 (2005,Juli/2009,Juni)",
-    "note" : "MAG",
-    "type" : [ "Item" ]
+    "@context" : "http://lobid.org/resources/context.jsonld"
+  }, {
+    "id" : "http://lobid.org/items/HT006987933:DE-Kn28:5%20A#!",
+    "type" : [ "Item" ],
+    "heldBy" : {
+      "id" : "http://lobid.org/organisations/DE-Kn28",
+      "label" : "lobid Organisation"
+    },
+    "note" : [ "LS" ],
+    "callNumber" : "5 A",
+    "label" : "5 A",
+    "@context" : "http://lobid.org/resources/context.jsonld"
+  }, {
+    "id" : "http://lobid.org/items/HT006987933:DE-Kn28:Zd%200159#!",
+    "type" : [ "Item" ],
+    "heldBy" : {
+      "id" : "http://lobid.org/organisations/DE-Kn28",
+      "label" : "lobid Organisation"
+    },
+    "note" : [ "MAG" ],
+    "callNumber" : "Zd 0159",
+    "label" : "Zd 0159",
+    "@context" : "http://lobid.org/resources/context.jsonld"
   } ],
-  "hbzId" : "HT006987933",
-  "id" : "http://lobid.org/resources/HT006987933#!",
-  "inCollection" : [ {
-    "id" : "http://lobid.org/resources/HT014846970#!",
-    "label" : "Zeitschriftendatenbank (ZDB)",
-    "type" : [ "Collection" ]
-  } ],
-  "issn" : [ "00129038" ],
   "language" : [ {
     "id" : "http://id.loc.gov/vocabulary/iso639-2/spa",
     "label" : "Spanisch"
@@ -125,40 +77,93 @@
     "id" : "http://rdaregistry.info/termList/RDAproductionMethod/1010",
     "label" : "Print"
   } ],
+  "subject" : [ {
+    "source" : {
+      "id" : "http://d-nb.info/gnd/4149423-4",
+      "label" : "Dewey-Dezimalklassifikation"
+    },
+    "label" : "Dokumentarische Medien, publizistische Medien, Unterrichtsmedien; Journalismus; Verlagswesen",
+    "notation" : "070"
+  }, {
+    "source" : {
+      "id" : "http://d-nb.info/gnd/4149423-4",
+      "label" : "Dewey-Dezimalklassifikation"
+    },
+    "label" : "Christentum",
+    "notation" : "230"
+  } ],
+  "title" : "Ecclesia",
+  "hbzId" : "HT006987933",
+  "inCollection" : [ {
+    "id" : "http://lobid.org/resources/HT014846970#!",
+    "type" : [ "Collection" ],
+    "label" : "Zeitschriftendatenbank (ZDB)"
+  } ],
+  "zdbId" : "626580-7",
+  "issn" : [ "00129038" ],
   "otherTitleInformation" : [ "órgano de la Dirección Central de la Acción Católica Española" ],
   "publication" : [ {
+    "type" : [ "PublicationEvent" ],
     "frequency" : [ {
       "id" : "http://marc21rdf.info/terms/continuingfre#w",
       "label" : "wöchentlich"
     } ],
+    "note" : [ "Periodizität: wöchentl." ],
     "location" : "Madrid",
-    "note" : "Periodizität: wöchentl.",
-    "startDate" : "1940",
-    "type" : [ "PublicationEvent" ]
+    "startDate" : "1940"
   } ],
   "sameAs" : [ {
-    "id" : "http://ld.zdb-services.de/resource/626580-7",
-    "label" : "ZDB-Ressource"
-  }, {
     "id" : "http://hub.culturegraph.org/resource/HBZ-HT006987933",
     "label" : "Culturegraph Ressource"
-  } ],
-  "subject" : [ {
-    "label" : "Christentum",
-    "notation" : "230",
-    "source" : {
-      "id" : "http://d-nb.info/gnd/4149423-4",
-      "label" : "Dewey-Dezimalklassifikation"
-    }
   }, {
-    "label" : "Dokumentarische Medien, publizistische Medien, Unterrichtsmedien; Journalismus; Verlagswesen",
-    "notation" : "070",
-    "source" : {
-      "id" : "http://d-nb.info/gnd/4149423-4",
-      "label" : "Dewey-Dezimalklassifikation"
-    }
+    "id" : "http://ld.zdb-services.de/resource/626580-7",
+    "label" : "ZDB-Ressource"
   } ],
-  "title" : "Ecclesia",
-  "type" : [ "BibliographicResource", "Newspaper" ],
-  "zdbId" : "626580-7"
+  "describedBy" : {
+    "id" : "http://lobid.org/resources/HT006987933",
+    "type" : [ "BibliographicDescription" ],
+    "modifiedBy" : {
+      "id" : "http://lobid.org/organisations/DE-9999#!",
+      "label" : "lobid Organisation"
+    },
+    "dateCreated" : "19991120",
+    "dateModified" : "20130710",
+    "inDataset" : {
+      "id" : "http://lobid.org/resources/dataset#!",
+      "label" : "lobid-resources – Der hbz-Verbundkatalog als Linked Open Data"
+    },
+    "resultOf" : {
+      "type" : [ "CreateAction" ],
+      "endTime" : "0001-01-01T00:00:00",
+      "instrument" : {
+        "id" : "https://github.com/hbz/lobid-resources",
+        "type" : [ "SoftwareApplication" ],
+        "label" : "Software lobid-resources"
+      },
+      "object" : {
+        "id" : "http://lobid.org/hbz01/HT006987933",
+        "type" : [ "DataFeedItem" ],
+        "inDataset" : {
+          "id" : "https://datahub.io/dataset/hbz_unioncatalog",
+          "label" : "hbz_unioncatalog"
+        },
+        "label" : "hbz-Ressource HT006987933 im Exportformat MAB2-XML"
+      }
+    },
+    "license" : [ {
+      "id" : "http://creativecommons.org/publicdomain/zero/1.0",
+      "label" : "Creative Commons-Lizenz CC0 1.0 Universal"
+    } ],
+    "provider" : {
+      "id" : "http://lobid.org/organisations/DE-101#!",
+      "label" : "lobid Organisation"
+    },
+    "sourceOrganization" : {
+      "id" : "http://lobid.org/organisations/DE-9001#!",
+      "label" : "lobid Organisation"
+    },
+    "label" : "Webseite der hbz-Ressource HT006987933"
+  },
+  "@context" : "http://lobid.org/resources/context.jsonld",
+  "id" : "http://lobid.org/resources/HT006987933#!"
 }

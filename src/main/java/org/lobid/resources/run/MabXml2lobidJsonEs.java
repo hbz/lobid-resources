@@ -67,6 +67,8 @@ public class MabXml2lobidJsonEs {
 		RdfGraphToJsonLd rdfGraphToJsonLd = new RdfGraphToJsonLd();
 		rdfGraphToJsonLd.setContextLocationFilname(
 				System.getProperty("contextFilename", "web/conf/context.jsonld"));
+		System.out.println(
+				"contextFilename:" + rdfGraphToJsonLd.getContextLocationFilename());
 		if (args.length >= 9) {
 			rdfGraphToJsonLd.setContextUri(args[8]);
 		}
@@ -79,13 +81,10 @@ public class MabXml2lobidJsonEs {
 		System.out.println("using etikettLablesDirectory: "
 				+ JsonLdEtikett.getLabelsDirectoryName());
 		System.out
-				.println("using jsonLdContext: " + rdfGraphToJsonLd.getContextUri());
-		if (args.length >= 11) {
-			System.out.println(
-					"using rootIdPredicate: NOT USED war:  model2json.getRootIdPredicate()");
-		}
+				.println("using jsonLdContextUri: " + rdfGraphToJsonLd.getContextUri());
 		final String KEY_TO_GET_MAIN_ID =
 				System.getProperty("keyToGetMainId", "hbzId");
+		System.out.println("using keyToGetMainId:" + KEY_TO_GET_MAIN_ID);
 		// hbz catalog transformation
 		final FileOpener opener = new FileOpener();
 		if (inputPath.toLowerCase().endsWith("bz2")) {

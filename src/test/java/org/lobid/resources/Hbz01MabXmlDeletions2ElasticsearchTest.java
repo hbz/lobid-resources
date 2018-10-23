@@ -106,11 +106,6 @@ public final class Hbz01MabXmlDeletions2ElasticsearchTest {
 		client = node.client();
 		client.admin().indices().prepareDelete("_all").execute().actionGet();
 		client.admin().cluster().prepareHealth().setWaitForYellowStatus().get();
-
-		// rdf2etikettJson = new RdfModel2ElasticsearchEtikettJsonLd(
-		// new File("deletion-labels"), JSONLD_CONTEXT);
-		// rdf2etikettJson
-		// .setRootIdPredicate("http://www.w3.org/2007/05/powder-s#describedby");
 		etl(client);
 	}
 

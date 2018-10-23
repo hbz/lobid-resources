@@ -1,119 +1,119 @@
 {
-  "@context" : "web/conf/context.jsonld",
+  "type" : [ "Book", "BibliographicResource" ],
   "contribution" : [ {
+    "type" : [ "Contribution" ],
     "agent" : {
-      "gndIdentifier" : "4018466-3",
       "id" : "http://d-nb.info/gnd/4018466-3",
-      "label" : "Freudenberg, Kreis Siegen-Wittgenstein",
+      "type" : [ "PlaceOrGeographicName" ],
+      "gndIdentifier" : "4018466-3",
       "source" : {
         "id" : "http://d-nb.info/gnd/7749153-1",
         "label" : "Gemeinsame Normdatei (GND)"
       },
-      "type" : [ "PlaceOrGeographicName" ]
+      "label" : "Freudenberg, Kreis Siegen-Wittgenstein"
     },
     "role" : {
       "id" : "http://id.loc.gov/vocabulary/relators/cre",
       "label" : "Autor/in"
-    },
-    "type" : [ "Contribution" ]
+    }
   } ],
-  "coverage" : [ "Freudenberg <Siegen-Wittgenstein> | 99" ],
-  "describedBy" : {
-    "dateCreated" : "19960513",
-    "dateModified" : "19960513",
-    "id" : "http://lobid.org/resources/BT000002852",
-    "inDataset" : {
-      "id" : "http://lobid.org/resources/dataset#!",
-      "label" : "lobid-resources – Der hbz-Verbundkatalog als Linked Open Data"
-    },
-    "label" : "Webseite der hbz-Ressource BT000002852",
-    "license" : [ {
-      "id" : "http://creativecommons.org/publicdomain/zero/1.0",
-      "label" : "Creative Commons-Lizenz CC0 1.0 Universal"
-    } ],
-    "modifiedBy" : {
-      "id" : "http://lobid.org/organisations/DE-6#!",
-      "label" : "lobid Organisation"
-    },
-    "resultOf" : {
-      "endTime" : "0001-01-01T00:00:00",
-      "instrument" : {
-        "id" : "https://github.com/hbz/lobid-resources",
-        "label" : "Software lobid-resources",
-        "type" : [ "SoftwareApplication" ]
-      },
-      "object" : {
-        "id" : "http://lobid.org/hbz01/BT000002852",
-        "inDataset" : {
-          "id" : "https://datahub.io/dataset/hbz_unioncatalog",
-          "label" : "hbz_unioncatalog"
-        },
-        "label" : "hbz-Ressource BT000002852 im Exportformat MAB2-XML",
-        "type" : [ "DataFeedItem" ]
-      },
-      "type" : [ "CreateAction" ]
-    },
-    "sourceOrganization" : {
-      "id" : "http://lobid.org/organisations/DE-6#!",
-      "label" : "lobid Organisation"
-    },
-    "type" : [ "BibliographicDescription" ]
-  },
   "extent" : "46 S. : Ill., Kt.",
-  "hbzId" : "BT000002852",
-  "id" : "http://lobid.org/resources/BT000002852#!",
-  "inCollection" : [ {
-    "id" : "http://lobid.org/resources/HT014176012#!",
-    "label" : "Nordrhein-Westfälische Bibliographie (NWBib)",
-    "type" : [ "Collection" ]
-  } ],
+  "responsibilityStatement" : [ "[Hrsg.: Stadt Freudenberg, Der Stadtdirektor]" ],
+  "coverage" : [ "Freudenberg <Siegen-Wittgenstein> | 99" ],
   "medium" : [ {
     "id" : "http://rdaregistry.info/termList/RDAproductionMethod/1010",
     "label" : "Print"
   } ],
+  "subject" : [ {
+    "type" : [ "ComplexSubject" ],
+    "componentList" : [ {
+      "id" : "http://d-nb.info/gnd/4018466-3",
+      "type" : [ "PlaceOrGeographicName" ],
+      "gndIdentifier" : "4018466-3",
+      "source" : {
+        "id" : "http://d-nb.info/gnd/7749153-1",
+        "label" : "Gemeinsame Normdatei (GND)"
+      },
+      "label" : "Freudenberg, Kreis Siegen-Wittgenstein"
+    }, {
+      "id" : "http://d-nb.info/gnd/4020517-4",
+      "type" : [ "SubjectHeading" ],
+      "gndIdentifier" : "4020517-4",
+      "source" : {
+        "id" : "http://d-nb.info/gnd/7749153-1",
+        "label" : "Gemeinsame Normdatei (GND)"
+      },
+      "label" : "Geschichte"
+    } ],
+    "label" : "Freudenberg, Kreis Siegen-Wittgenstein | Geschichte"
+  }, {
+    "id" : "http://purl.org/lobid/nwbib#s240000",
+    "source" : {
+      "id" : "http://purl.org/lobid/nwbib",
+      "label" : "Sachsystematik der Nordrhein-Westfälischen Bibliographie"
+    },
+    "notation" : "240000",
+    "label" : "Geschichte"
+  } ],
+  "title" : "Stadt Freudenberg",
+  "hbzId" : "BT000002852",
+  "inCollection" : [ {
+    "id" : "http://lobid.org/resources/HT014176012#!",
+    "type" : [ "Collection" ],
+    "label" : "Nordrhein-Westfälische Bibliographie (NWBib)"
+  } ],
+  "subjectAltLabel" : [ "Zeitgeschichte", "Freudenberg (Siegerland)", "Ortsgeschichte", "Stadt Freudenberg Südwestfalen", "Regionalgeschichte", "Freudenberg Siegen", "Landesgeschichte", "Stadt Freudenberg" ],
   "otherTitleInformation" : [ "wechselvolle Geschichte" ],
   "publication" : [ {
+    "type" : [ "PublicationEvent" ],
     "location" : "Freudenberg",
-    "startDate" : "1989",
-    "type" : [ "PublicationEvent" ]
+    "startDate" : "1989"
   } ],
-  "responsibilityStatement" : [ "[Hrsg.: Stadt Freudenberg, Der Stadtdirektor]" ],
   "sameAs" : [ {
     "id" : "http://hub.culturegraph.org/resource/HBZ-BT000002852",
     "label" : "Culturegraph Ressource"
   } ],
-  "subject" : [ {
-    "componentList" : [ {
-      "gndIdentifier" : "4018466-3",
-      "id" : "http://d-nb.info/gnd/4018466-3",
-      "label" : "Freudenberg, Kreis Siegen-Wittgenstein",
-      "source" : {
-        "id" : "http://d-nb.info/gnd/7749153-1",
-        "label" : "Gemeinsame Normdatei (GND)"
+  "describedBy" : {
+    "id" : "http://lobid.org/resources/BT000002852",
+    "type" : [ "BibliographicDescription" ],
+    "modifiedBy" : {
+      "id" : "http://lobid.org/organisations/DE-6#!",
+      "label" : "lobid Organisation"
+    },
+    "dateCreated" : "19960513",
+    "dateModified" : "19960513",
+    "inDataset" : {
+      "id" : "http://lobid.org/resources/dataset#!",
+      "label" : "lobid-resources – Der hbz-Verbundkatalog als Linked Open Data"
+    },
+    "resultOf" : {
+      "type" : [ "CreateAction" ],
+      "endTime" : "0001-01-01T00:00:00",
+      "instrument" : {
+        "id" : "https://github.com/hbz/lobid-resources",
+        "type" : [ "SoftwareApplication" ],
+        "label" : "Software lobid-resources"
       },
-      "type" : [ "PlaceOrGeographicName" ]
-    }, {
-      "gndIdentifier" : "4020517-4",
-      "id" : "http://d-nb.info/gnd/4020517-4",
-      "label" : "Geschichte",
-      "source" : {
-        "id" : "http://d-nb.info/gnd/7749153-1",
-        "label" : "Gemeinsame Normdatei (GND)"
-      },
-      "type" : [ "SubjectHeading" ]
+      "object" : {
+        "id" : "http://lobid.org/hbz01/BT000002852",
+        "type" : [ "DataFeedItem" ],
+        "inDataset" : {
+          "id" : "https://datahub.io/dataset/hbz_unioncatalog",
+          "label" : "hbz_unioncatalog"
+        },
+        "label" : "hbz-Ressource BT000002852 im Exportformat MAB2-XML"
+      }
+    },
+    "license" : [ {
+      "id" : "http://creativecommons.org/publicdomain/zero/1.0",
+      "label" : "Creative Commons-Lizenz CC0 1.0 Universal"
     } ],
-    "label" : "Freudenberg, Kreis Siegen-Wittgenstein | Geschichte",
-    "type" : [ "ComplexSubject" ]
-  }, {
-    "id" : "http://purl.org/lobid/nwbib#s240000",
-    "label" : "Geschichte",
-    "notation" : "240000",
-    "source" : {
-      "id" : "http://purl.org/lobid/nwbib",
-      "label" : "Sachsystematik der Nordrhein-Westfälischen Bibliographie"
-    }
-  } ],
-  "subjectAltLabel" : [ "Freudenberg Siegen", "Landesgeschichte", "Freudenberg (Siegerland)", "Ortsgeschichte", "Stadt Freudenberg", "Zeitgeschichte", "Stadt Freudenberg Südwestfalen", "Regionalgeschichte" ],
-  "title" : "Stadt Freudenberg",
-  "type" : [ "BibliographicResource", "Book" ]
+    "sourceOrganization" : {
+      "id" : "http://lobid.org/organisations/DE-6#!",
+      "label" : "lobid Organisation"
+    },
+    "label" : "Webseite der hbz-Ressource BT000002852"
+  },
+  "@context" : "http://lobid.org/resources/context.jsonld",
+  "id" : "http://lobid.org/resources/BT000002852#!"
 }

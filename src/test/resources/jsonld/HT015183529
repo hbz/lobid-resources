@@ -1,94 +1,49 @@
 {
-  "@context" : "web/conf/context.jsonld",
+  "type" : [ "Book", "BibliographicResource" ],
   "contribution" : [ {
+    "type" : [ "Contribution" ],
     "agent" : {
-      "altLabel" : [ "Scott-Fitzgerald, Francis", "Scott Fitzgerald, F.", "Fitzgerald, Francis S.", "Fitzgerald, F. Scott", "Fitzgerald, Scott F.", "Ficǆeralds, Skots Frānsiss", "Fitzgerald, Francis Scott Key", "Scott Fitzgerald, Francis", "Fitzgerald, Scott", "Fitzgerald, F. S." ],
+      "id" : "http://d-nb.info/gnd/118533592",
+      "type" : [ "Person" ],
       "dateOfBirth" : "1896",
       "dateOfDeath" : "1940",
       "gndIdentifier" : "118533592",
-      "id" : "http://d-nb.info/gnd/118533592",
       "label" : "Fitzgerald, Francis Scott",
-      "type" : [ "Person" ]
+      "altLabel" : [ "Fitzgerald, Scott", "Ficǆeralds, Skots Frānsiss", "Fitzgerald, F. Scott", "Fitzgerald, Scott F.", "Fitzgerald, Francis S.", "Scott Fitzgerald, Francis", "Scott Fitzgerald, F.", "Fitzgerald, F. S.", "Scott-Fitzgerald, Francis", "Fitzgerald, Francis Scott Key" ]
     },
     "role" : {
       "id" : "http://id.loc.gov/vocabulary/relators/cre",
       "label" : "Autor/in"
-    },
-    "type" : [ "Contribution" ]
+    }
   }, {
+    "type" : [ "Contribution" ],
     "agent" : {
-      "altLabel" : "Bruccoli, Matthew J.",
+      "id" : "http://d-nb.info/gnd/119468476",
+      "type" : [ "Person" ],
       "dateOfBirth" : "1931",
       "gndIdentifier" : "119468476",
-      "id" : "http://d-nb.info/gnd/119468476",
       "label" : "Bruccoli, Matthew Joseph",
-      "type" : [ "Person" ]
+      "altLabel" : "Bruccoli, Matthew J."
     },
     "role" : {
       "id" : "http://id.loc.gov/vocabulary/relators/edt",
       "label" : "Herausgeber/in"
-    },
-    "type" : [ "Contribution" ]
+    }
   } ],
-  "describedBy" : {
-    "dateCreated" : "20070618",
-    "id" : "http://lobid.org/resources/HT015183529",
-    "inDataset" : {
-      "id" : "http://lobid.org/resources/dataset#!",
-      "label" : "lobid-resources – Der hbz-Verbundkatalog als Linked Open Data"
-    },
-    "label" : "Webseite der hbz-Ressource HT015183529",
-    "license" : [ {
-      "id" : "http://creativecommons.org/publicdomain/zero/1.0",
-      "label" : "Creative Commons-Lizenz CC0 1.0 Universal"
-    } ],
-    "resultOf" : {
-      "endTime" : "0001-01-01T00:00:00",
-      "instrument" : {
-        "id" : "https://github.com/hbz/lobid-resources",
-        "label" : "Software lobid-resources",
-        "type" : [ "SoftwareApplication" ]
-      },
-      "object" : {
-        "id" : "http://lobid.org/hbz01/HT015183529",
-        "inDataset" : {
-          "id" : "https://datahub.io/dataset/hbz_unioncatalog",
-          "label" : "hbz_unioncatalog"
-        },
-        "label" : "hbz-Ressource HT015183529 im Exportformat MAB2-XML",
-        "type" : [ "DataFeedItem" ]
-      },
-      "type" : [ "CreateAction" ]
-    },
-    "sourceOrganization" : {
-      "id" : "http://lobid.org/organisations/DE-5#!",
-      "label" : "lobid Organisation"
-    },
-    "type" : [ "BibliographicDescription" ]
-  },
-  "edition" : [ "12. print." ],
   "extent" : "LV, 225 S. : Kt.",
   "hasItem" : [ {
-    "callNumber" : "2007/4575",
+    "id" : "http://lobid.org/items/HT015183529:DE-5:2007%2F4575#!",
+    "type" : [ "Item" ],
     "heldBy" : {
       "id" : "http://lobid.org/organisations/DE-5",
       "label" : "lobid Organisation"
     },
-    "id" : "http://lobid.org/items/HT015183529:DE-5:2007%2F4575#!",
+    "note" : [ "00000010" ],
+    "callNumber" : "2007/4575",
     "label" : "2007/4575",
-    "note" : "00000010",
-    "type" : [ "Item" ]
+    "@context" : "http://lobid.org/resources/context.jsonld"
   } ],
-  "hbzId" : "HT015183529",
-  "id" : "http://lobid.org/resources/HT015183529#!",
-  "isPartOf" : [ {
-    "hasSuperordinate" : [ {
-      "id" : "http://lobid.org/resources/HT004984061#!",
-      "label" : "The Cambridge edition of the works of F. Scott Fitzgerald"
-    } ],
-    "type" : [ "IsPartOfRelation" ]
-  } ],
-  "isbn" : [ "0521402301", "9780521402309" ],
+  "responsibilityStatement" : [ "F. Scott Fitzgerald. Ed. by Matthew J. Bruccoli" ],
   "language" : [ {
     "id" : "http://id.loc.gov/vocabulary/iso639-2/eng",
     "label" : "Englisch"
@@ -97,17 +52,63 @@
     "id" : "http://rdaregistry.info/termList/RDAproductionMethod/1010",
     "label" : "Print"
   } ],
+  "title" : "The great Gatsby",
+  "hbzId" : "HT015183529",
+  "isPartOf" : [ {
+    "type" : [ "IsPartOfRelation" ],
+    "hasSuperordinate" : [ {
+      "id" : "http://lobid.org/resources/HT004984061#!",
+      "label" : "The Cambridge edition of the works of F. Scott Fitzgerald"
+    } ]
+  } ],
+  "edition" : [ "12. print." ],
+  "isbn" : [ "0521402301", "9780521402309" ],
   "publication" : [ {
+    "type" : [ "PublicationEvent" ],
     "location" : "Cambridge [u.a.]",
     "publishedBy" : "Cambridge Univ. Press",
-    "startDate" : "2006",
-    "type" : [ "PublicationEvent" ]
+    "startDate" : "2006"
   } ],
-  "responsibilityStatement" : [ "F. Scott Fitzgerald. Ed. by Matthew J. Bruccoli" ],
   "sameAs" : [ {
     "id" : "http://hub.culturegraph.org/resource/HBZ-HT015183529",
     "label" : "Culturegraph Ressource"
   } ],
-  "title" : "The great Gatsby",
-  "type" : [ "BibliographicResource", "Book" ]
+  "describedBy" : {
+    "id" : "http://lobid.org/resources/HT015183529",
+    "type" : [ "BibliographicDescription" ],
+    "dateCreated" : "20070618",
+    "inDataset" : {
+      "id" : "http://lobid.org/resources/dataset#!",
+      "label" : "lobid-resources – Der hbz-Verbundkatalog als Linked Open Data"
+    },
+    "resultOf" : {
+      "type" : [ "CreateAction" ],
+      "endTime" : "0001-01-01T00:00:00",
+      "instrument" : {
+        "id" : "https://github.com/hbz/lobid-resources",
+        "type" : [ "SoftwareApplication" ],
+        "label" : "Software lobid-resources"
+      },
+      "object" : {
+        "id" : "http://lobid.org/hbz01/HT015183529",
+        "type" : [ "DataFeedItem" ],
+        "inDataset" : {
+          "id" : "https://datahub.io/dataset/hbz_unioncatalog",
+          "label" : "hbz_unioncatalog"
+        },
+        "label" : "hbz-Ressource HT015183529 im Exportformat MAB2-XML"
+      }
+    },
+    "license" : [ {
+      "id" : "http://creativecommons.org/publicdomain/zero/1.0",
+      "label" : "Creative Commons-Lizenz CC0 1.0 Universal"
+    } ],
+    "sourceOrganization" : {
+      "id" : "http://lobid.org/organisations/DE-5#!",
+      "label" : "lobid Organisation"
+    },
+    "label" : "Webseite der hbz-Ressource HT015183529"
+  },
+  "@context" : "http://lobid.org/resources/context.jsonld",
+  "id" : "http://lobid.org/resources/HT015183529#!"
 }

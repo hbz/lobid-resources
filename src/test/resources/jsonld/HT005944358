@@ -1,79 +1,34 @@
 {
-  "@context" : "web/conf/context.jsonld",
-  "alternativeTitle" : [ "ZrP" ],
+  "type" : [ "Book", "PublicationIssue", "BibliographicResource" ],
   "contribution" : [ {
+    "type" : [ "Contribution" ],
     "agent" : {
-      "altLabel" : [ "Gröber-Hofer, ...", "Groeber, Max Gustav", "Groeber, Gustav", "Gröber, G." ],
+      "id" : "http://d-nb.info/gnd/119126796",
+      "type" : [ "Person" ],
       "dateOfBirth" : "1844",
       "dateOfDeath" : "1911",
       "gndIdentifier" : "119126796",
-      "id" : "http://d-nb.info/gnd/119126796",
       "label" : "Gröber, Gustav",
-      "type" : [ "Person" ]
+      "altLabel" : [ "Gröber, G.", "Groeber, Max Gustav", "Groeber, Gustav", "Gröber-Hofer, ..." ]
     },
     "role" : {
       "id" : "http://id.loc.gov/vocabulary/relators/ant",
       "label" : "Basiert auf einem Werk von"
-    },
-    "type" : [ "Contribution" ]
+    }
   } ],
-  "describedBy" : {
-    "dateCreated" : "19931226",
-    "id" : "http://lobid.org/resources/HT005944358",
-    "inDataset" : {
-      "id" : "http://lobid.org/resources/dataset#!",
-      "label" : "lobid-resources – Der hbz-Verbundkatalog als Linked Open Data"
-    },
-    "label" : "Webseite der hbz-Ressource HT005944358",
-    "license" : [ {
-      "id" : "http://creativecommons.org/publicdomain/zero/1.0",
-      "label" : "Creative Commons-Lizenz CC0 1.0 Universal"
-    } ],
-    "resultOf" : {
-      "endTime" : "0001-01-01T00:00:00",
-      "instrument" : {
-        "id" : "https://github.com/hbz/lobid-resources",
-        "label" : "Software lobid-resources",
-        "type" : [ "SoftwareApplication" ]
-      },
-      "object" : {
-        "id" : "http://lobid.org/hbz01/HT005944358",
-        "inDataset" : {
-          "id" : "https://datahub.io/dataset/hbz_unioncatalog",
-          "label" : "hbz_unioncatalog"
-        },
-        "label" : "hbz-Ressource HT005944358 im Exportformat MAB2-XML",
-        "type" : [ "DataFeedItem" ]
-      },
-      "type" : [ "CreateAction" ]
-    },
-    "sourceOrganization" : {
-      "id" : "http://lobid.org/organisations/DE-361#!",
-      "label" : "lobid Organisation"
-    },
-    "type" : [ "BibliographicDescription" ]
-  },
   "hasItem" : [ {
-    "callNumber" : "NA000 Z540[95",
+    "id" : "http://lobid.org/items/HT005944358:DE-361:NA000%20Z540%5B95#!",
+    "type" : [ "Item" ],
     "heldBy" : {
       "id" : "http://lobid.org/organisations/DE-361",
       "label" : "lobid Organisation"
     },
-    "id" : "http://lobid.org/items/HT005944358:DE-361:NA000%20Z540%5B95#!",
+    "note" : [ "00000015" ],
+    "callNumber" : "NA000 Z540[95",
     "label" : "NA000 Z540[95",
-    "note" : "00000015",
-    "type" : [ "Item" ]
+    "@context" : "http://lobid.org/resources/context.jsonld"
   } ],
-  "hbzId" : "HT005944358",
-  "id" : "http://lobid.org/resources/HT005944358#!",
-  "isPartOf" : [ {
-    "hasSuperordinate" : [ {
-      "id" : "http://lobid.org/resources/HT005077038#!",
-      "label" : "lobid Ressource"
-    } ],
-    "numbering" : "95 (1979)",
-    "type" : [ "IsPartOfRelation" ]
-  } ],
+  "alternativeTitle" : [ "ZrP" ],
   "language" : [ {
     "id" : "http://id.loc.gov/vocabulary/iso639-2/deu",
     "label" : "Deutsch"
@@ -82,95 +37,144 @@
     "id" : "http://purl.org/lobid/lv#Miscellaneous",
     "label" : "Miscellaneous"
   } ],
+  "subject" : [ {
+    "type" : [ "ComplexSubject" ],
+    "componentList" : [ {
+      "id" : "http://d-nb.info/gnd/4115788-6",
+      "type" : [ "SubjectHeading" ],
+      "gndIdentifier" : "4115788-6",
+      "source" : {
+        "id" : "http://d-nb.info/gnd/7749153-1",
+        "label" : "Gemeinsame Normdatei (GND)"
+      },
+      "label" : "Romanische Sprachen"
+    }, {
+      "id" : "_:b4",
+      "type" : [ "SubjectHeading" ],
+      "label" : "Zeitschrift"
+    } ],
+    "label" : "Romanische Sprachen | Zeitschrift"
+  }, {
+    "source" : {
+      "id" : "http://d-nb.info/gnd/4149423-4",
+      "label" : "Dewey-Dezimalklassifikation"
+    },
+    "label" : "Französische Literatur und Literaturen verwandter romanischer Sprachen",
+    "notation" : "840"
+  }, {
+    "type" : [ "ComplexSubject" ],
+    "componentList" : [ {
+      "id" : "http://d-nb.info/gnd/4050484-0",
+      "type" : [ "SubjectHeading" ],
+      "gndIdentifier" : "4050484-0",
+      "source" : {
+        "id" : "http://d-nb.info/gnd/7749153-1",
+        "label" : "Gemeinsame Normdatei (GND)"
+      },
+      "label" : "Romanistik"
+    }, {
+      "id" : "_:b4",
+      "type" : [ "SubjectHeading" ],
+      "label" : "Zeitschrift"
+    } ],
+    "label" : "Romanistik | Zeitschrift"
+  }, {
+    "type" : [ "ComplexSubject" ],
+    "componentList" : [ {
+      "id" : "http://d-nb.info/gnd/4115788-6",
+      "type" : [ "SubjectHeading" ],
+      "gndIdentifier" : "4115788-6",
+      "source" : {
+        "id" : "http://d-nb.info/gnd/7749153-1",
+        "label" : "Gemeinsame Normdatei (GND)"
+      },
+      "label" : "Romanische Sprachen"
+    }, {
+      "id" : "http://d-nb.info/gnd/4035964-5",
+      "type" : [ "SubjectHeading" ],
+      "gndIdentifier" : "4035964-5",
+      "source" : {
+        "id" : "http://d-nb.info/gnd/7749153-1",
+        "label" : "Gemeinsame Normdatei (GND)"
+      },
+      "label" : "Literatur"
+    }, {
+      "id" : "_:b4",
+      "type" : [ "SubjectHeading" ],
+      "label" : "Zeitschrift"
+    } ],
+    "label" : "Romanische Sprachen | Literatur | Zeitschrift"
+  }, {
+    "source" : {
+      "id" : "http://d-nb.info/gnd/4149423-4",
+      "label" : "Dewey-Dezimalklassifikation"
+    },
+    "label" : "Literaturen in spanischer, portugiesischer, galicischer Sprache",
+    "notation" : "860"
+  }, {
+    "source" : {
+      "id" : "http://d-nb.info/gnd/4149423-4",
+      "label" : "Dewey-Dezimalklassifikation"
+    },
+    "label" : "Literaturen in italienischer, dalmatischer, rumänischer, rätoromanischer, sardischer, korsischer Sprache",
+    "notation" : "850"
+  } ],
+  "title" : "Zeitschrift für romanische Philologie, 95 (1979)",
+  "hbzId" : "HT005944358",
+  "isPartOf" : [ {
+    "type" : [ "IsPartOfRelation" ],
+    "hasSuperordinate" : [ {
+      "id" : "http://lobid.org/resources/HT005077038#!",
+      "label" : "lobid Ressource"
+    } ],
+    "numbering" : "95 (1979)"
+  } ],
+  "subjectAltLabel" : [ "Belletristik", "Romanische Philologie", "Schöne Literatur", "Romanisch (Sprachfamilie)", "Sprachkunst", "Dichtung", "Wortkunst" ],
   "publication" : [ {
-    "location" : [ "Berlin [u.a.]", "Halle", "Tübingen" ],
-    "publishedBy" : [ "Neomarius", "de Gruyter", "Niemeyer" ],
-    "type" : [ "PublicationEvent" ]
+    "type" : [ "PublicationEvent" ],
+    "location" : [ "Tübingen", "Halle", "Berlin [u.a.]" ],
+    "publishedBy" : [ "Neomarius", "Niemeyer", "de Gruyter" ]
   } ],
   "sameAs" : [ {
     "id" : "http://hub.culturegraph.org/resource/HBZ-HT005944358",
     "label" : "Culturegraph Ressource"
   } ],
-  "subject" : [ {
-    "label" : "Französische Literatur und Literaturen verwandter romanischer Sprachen",
-    "notation" : "840",
-    "source" : {
-      "id" : "http://d-nb.info/gnd/4149423-4",
-      "label" : "Dewey-Dezimalklassifikation"
-    }
-  }, {
-    "componentList" : [ {
-      "gndIdentifier" : "4115788-6",
-      "id" : "http://d-nb.info/gnd/4115788-6",
-      "label" : "Romanische Sprachen",
-      "source" : {
-        "id" : "http://d-nb.info/gnd/7749153-1",
-        "label" : "Gemeinsame Normdatei (GND)"
+  "describedBy" : {
+    "id" : "http://lobid.org/resources/HT005944358",
+    "type" : [ "BibliographicDescription" ],
+    "dateCreated" : "19931226",
+    "inDataset" : {
+      "id" : "http://lobid.org/resources/dataset#!",
+      "label" : "lobid-resources – Der hbz-Verbundkatalog als Linked Open Data"
+    },
+    "resultOf" : {
+      "type" : [ "CreateAction" ],
+      "endTime" : "0001-01-01T00:00:00",
+      "instrument" : {
+        "id" : "https://github.com/hbz/lobid-resources",
+        "type" : [ "SoftwareApplication" ],
+        "label" : "Software lobid-resources"
       },
-      "type" : [ "SubjectHeading" ]
-    }, {
-      "label" : "Zeitschrift",
-      "type" : [ "SubjectHeading" ]
+      "object" : {
+        "id" : "http://lobid.org/hbz01/HT005944358",
+        "type" : [ "DataFeedItem" ],
+        "inDataset" : {
+          "id" : "https://datahub.io/dataset/hbz_unioncatalog",
+          "label" : "hbz_unioncatalog"
+        },
+        "label" : "hbz-Ressource HT005944358 im Exportformat MAB2-XML"
+      }
+    },
+    "license" : [ {
+      "id" : "http://creativecommons.org/publicdomain/zero/1.0",
+      "label" : "Creative Commons-Lizenz CC0 1.0 Universal"
     } ],
-    "label" : "Romanische Sprachen | Zeitschrift",
-    "type" : [ "ComplexSubject" ]
-  }, {
-    "componentList" : [ {
-      "gndIdentifier" : "4050484-0",
-      "id" : "http://d-nb.info/gnd/4050484-0",
-      "label" : "Romanistik",
-      "source" : {
-        "id" : "http://d-nb.info/gnd/7749153-1",
-        "label" : "Gemeinsame Normdatei (GND)"
-      },
-      "type" : [ "SubjectHeading" ]
-    }, {
-      "label" : "Zeitschrift",
-      "type" : [ "SubjectHeading" ]
-    } ],
-    "label" : "Romanistik | Zeitschrift",
-    "type" : [ "ComplexSubject" ]
-  }, {
-    "label" : "Literaturen in italienischer, dalmatischer, rumänischer, rätoromanischer, sardischer, korsischer Sprache",
-    "notation" : "850",
-    "source" : {
-      "id" : "http://d-nb.info/gnd/4149423-4",
-      "label" : "Dewey-Dezimalklassifikation"
-    }
-  }, {
-    "label" : "Literaturen in spanischer, portugiesischer, galicischer Sprache",
-    "notation" : "860",
-    "source" : {
-      "id" : "http://d-nb.info/gnd/4149423-4",
-      "label" : "Dewey-Dezimalklassifikation"
-    }
-  }, {
-    "componentList" : [ {
-      "gndIdentifier" : "4115788-6",
-      "id" : "http://d-nb.info/gnd/4115788-6",
-      "label" : "Romanische Sprachen",
-      "source" : {
-        "id" : "http://d-nb.info/gnd/7749153-1",
-        "label" : "Gemeinsame Normdatei (GND)"
-      },
-      "type" : [ "SubjectHeading" ]
-    }, {
-      "gndIdentifier" : "4035964-5",
-      "id" : "http://d-nb.info/gnd/4035964-5",
-      "label" : "Literatur",
-      "source" : {
-        "id" : "http://d-nb.info/gnd/7749153-1",
-        "label" : "Gemeinsame Normdatei (GND)"
-      },
-      "type" : [ "SubjectHeading" ]
-    }, {
-      "label" : "Zeitschrift",
-      "type" : [ "SubjectHeading" ]
-    } ],
-    "label" : "Romanische Sprachen | Literatur | Zeitschrift",
-    "type" : [ "ComplexSubject" ]
-  } ],
-  "subjectAltLabel" : [ "Romanische Philologie", "Schöne Literatur", "Dichtung", "Sprachkunst", "Romanisch (Sprachfamilie)", "Wortkunst", "Belletristik" ],
-  "title" : "Zeitschrift für romanische Philologie, 95 (1979)",
-  "type" : [ "PublicationIssue", "BibliographicResource", "Book" ]
+    "sourceOrganization" : {
+      "id" : "http://lobid.org/organisations/DE-361#!",
+      "label" : "lobid Organisation"
+    },
+    "label" : "Webseite der hbz-Ressource HT005944358"
+  },
+  "@context" : "http://lobid.org/resources/context.jsonld",
+  "id" : "http://lobid.org/resources/HT005944358#!"
 }

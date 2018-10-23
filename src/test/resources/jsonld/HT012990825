@@ -1,87 +1,20 @@
 {
-  "@context" : "web/conf/context.jsonld",
-  "describedBy" : {
-    "dateCreated" : "20000530",
-    "dateModified" : "20171013",
-    "id" : "http://lobid.org/resources/HT012990825",
-    "inDataset" : {
-      "id" : "http://lobid.org/resources/dataset#!",
-      "label" : "lobid-resources – Der hbz-Verbundkatalog als Linked Open Data"
-    },
-    "label" : "Webseite der hbz-Ressource HT012990825",
-    "license" : [ {
-      "id" : "http://creativecommons.org/publicdomain/zero/1.0",
-      "label" : "Creative Commons-Lizenz CC0 1.0 Universal"
-    } ],
-    "modifiedBy" : {
-      "id" : "http://lobid.org/organisations/DE-9999#!",
-      "label" : "lobid Organisation"
-    },
-    "provider" : {
-      "id" : "http://lobid.org/organisations/DE-101#!",
-      "label" : "lobid Organisation"
-    },
-    "resultOf" : {
-      "endTime" : "0001-01-01T00:00:00",
-      "instrument" : {
-        "id" : "https://github.com/hbz/lobid-resources",
-        "label" : "Software lobid-resources",
-        "type" : [ "SoftwareApplication" ]
-      },
-      "object" : {
-        "id" : "http://lobid.org/hbz01/HT012990825",
-        "inDataset" : {
-          "id" : "https://datahub.io/dataset/hbz_unioncatalog",
-          "label" : "hbz_unioncatalog"
-        },
-        "label" : "hbz-Ressource HT012990825 im Exportformat MAB2-XML",
-        "type" : [ "DataFeedItem" ]
-      },
-      "type" : [ "CreateAction" ]
-    },
-    "sourceOrganization" : {
-      "id" : "http://lobid.org/organisations/DE-6999#!",
-      "label" : "lobid Organisation"
-    },
-    "type" : [ "BibliographicDescription" ]
-  },
-  "fulltextOnline" : [ {
-    "id" : "http://www.bibliothek.uni-regensburg.de/ezeit/?2014924",
-    "label" : "?2014924"
-  } ],
+  "type" : [ "BibliographicResource", "Periodical" ],
   "hasItem" : [ {
+    "id" : "http://lobid.org/items/HT012990825:DE-Bm3-2:#!",
+    "type" : [ "Item" ],
     "heldBy" : {
       "id" : "http://lobid.org/organisations/DE-Bm3-2",
       "label" : "lobid Organisation"
     },
-    "id" : "http://lobid.org/items/HT012990825:DE-Bm3-2:#!",
+    "note" : [ "Siehe: http://link.springer.com/journal/10502" ],
     "label" : "lobid Bestandsressource",
-    "note" : "Siehe: http://link.springer.com/journal/10502",
-    "type" : [ "Item" ]
+    "@context" : "http://lobid.org/resources/context.jsonld"
   } ],
   "hasVersion" : [ {
     "id" : "http://link.springer.com/journal/10502",
     "label" : "10502"
   } ],
-  "hbzId" : "HT012990825",
-  "id" : "http://lobid.org/resources/HT012990825#!",
-  "inCollection" : [ {
-    "id" : "http://lobid.org/organisations/ZDB-2-COE#!",
-    "label" : "eResource package",
-    "type" : [ "Collection" ]
-  }, {
-    "id" : "http://lobid.org/resources/HT016356466#!",
-    "label" : "Elektronische Zeitschriftenbibliothek (EZB)"
-  }, {
-    "id" : "http://lobid.org/organisations/ZDB-1-SOJ#!",
-    "label" : "eResource package",
-    "type" : [ "Collection" ]
-  }, {
-    "id" : "http://lobid.org/resources/HT014846970#!",
-    "label" : "Zeitschriftendatenbank (ZDB)",
-    "type" : [ "Collection" ]
-  } ],
-  "issn" : [ "15737519" ],
   "language" : [ {
     "id" : "http://id.loc.gov/vocabulary/iso639-2/eng",
     "label" : "Englisch"
@@ -90,15 +23,47 @@
     "id" : "http://rdaregistry.info/termList/RDACarrierType/1018",
     "label" : "Online-Ressource"
   } ],
-  "otherTitleInformation" : [ "international journal on recorded information" ],
+  "subject" : [ {
+    "source" : {
+      "id" : "http://d-nb.info/gnd/4149423-4",
+      "label" : "Dewey-Dezimalklassifikation"
+    },
+    "label" : "Geschichte, Geografie und Hilfswissenschaften",
+    "notation" : "900"
+  } ],
+  "title" : "Archival science",
+  "fulltextOnline" : [ {
+    "id" : "http://www.bibliothek.uni-regensburg.de/ezeit/?2014924",
+    "label" : "?2014924"
+  } ],
+  "hbzId" : "HT012990825",
+  "inCollection" : [ {
+    "id" : "http://lobid.org/organisations/ZDB-1-SOJ#!",
+    "type" : [ "Collection" ],
+    "label" : "eResource package"
+  }, {
+    "id" : "http://lobid.org/resources/HT016356466#!",
+    "label" : "Elektronische Zeitschriftenbibliothek (EZB)"
+  }, {
+    "id" : "http://lobid.org/organisations/ZDB-2-COE#!",
+    "type" : [ "Collection" ],
+    "label" : "eResource package"
+  }, {
+    "id" : "http://lobid.org/resources/HT014846970#!",
+    "type" : [ "Collection" ],
+    "label" : "Zeitschriftendatenbank (ZDB)"
+  } ],
+  "zdbId" : "2014924-4",
+  "issn" : [ "15737519" ],
   "predecessor" : [ {
     "label" : "Archives and Museum Informatics"
   } ],
+  "otherTitleInformation" : [ "international journal on recorded information" ],
   "publication" : [ {
+    "type" : [ "PublicationEvent" ],
     "location" : "Dordrecht [u.a.]",
     "publishedBy" : [ "Kluwer", "Springer Science + Business Media B.V", "Proquest" ],
-    "startDate" : "2001",
-    "type" : [ "PublicationEvent" ]
+    "startDate" : "2001"
   } ],
   "sameAs" : [ {
     "id" : "http://hub.culturegraph.org/resource/HBZ-HT012990825",
@@ -107,15 +72,51 @@
     "id" : "http://ld.zdb-services.de/resource/2014924-4",
     "label" : "ZDB-Ressource"
   } ],
-  "subject" : [ {
-    "label" : "Geschichte, Geografie und Hilfswissenschaften",
-    "notation" : "900",
-    "source" : {
-      "id" : "http://d-nb.info/gnd/4149423-4",
-      "label" : "Dewey-Dezimalklassifikation"
-    }
-  } ],
-  "title" : "Archival science",
-  "type" : [ "BibliographicResource", "Periodical" ],
-  "zdbId" : "2014924-4"
+  "describedBy" : {
+    "id" : "http://lobid.org/resources/HT012990825",
+    "type" : [ "BibliographicDescription" ],
+    "modifiedBy" : {
+      "id" : "http://lobid.org/organisations/DE-9999#!",
+      "label" : "lobid Organisation"
+    },
+    "dateCreated" : "20000530",
+    "dateModified" : "20171013",
+    "inDataset" : {
+      "id" : "http://lobid.org/resources/dataset#!",
+      "label" : "lobid-resources – Der hbz-Verbundkatalog als Linked Open Data"
+    },
+    "resultOf" : {
+      "type" : [ "CreateAction" ],
+      "endTime" : "0001-01-01T00:00:00",
+      "instrument" : {
+        "id" : "https://github.com/hbz/lobid-resources",
+        "type" : [ "SoftwareApplication" ],
+        "label" : "Software lobid-resources"
+      },
+      "object" : {
+        "id" : "http://lobid.org/hbz01/HT012990825",
+        "type" : [ "DataFeedItem" ],
+        "inDataset" : {
+          "id" : "https://datahub.io/dataset/hbz_unioncatalog",
+          "label" : "hbz_unioncatalog"
+        },
+        "label" : "hbz-Ressource HT012990825 im Exportformat MAB2-XML"
+      }
+    },
+    "license" : [ {
+      "id" : "http://creativecommons.org/publicdomain/zero/1.0",
+      "label" : "Creative Commons-Lizenz CC0 1.0 Universal"
+    } ],
+    "provider" : {
+      "id" : "http://lobid.org/organisations/DE-101#!",
+      "label" : "lobid Organisation"
+    },
+    "sourceOrganization" : {
+      "id" : "http://lobid.org/organisations/DE-6999#!",
+      "label" : "lobid Organisation"
+    },
+    "label" : "Webseite der hbz-Ressource HT012990825"
+  },
+  "@context" : "http://lobid.org/resources/context.jsonld",
+  "id" : "http://lobid.org/resources/HT012990825#!"
 }

@@ -1,68 +1,23 @@
 {
-  "@context" : "web/conf/context.jsonld",
+  "type" : [ "BibliographicResource", "Book" ],
   "contribution" : [ {
+    "type" : [ "Contribution" ],
     "agent" : {
-      "altLabel" : [ "Steck, Odil", "Steck, O. H.", "Steck, Odil H." ],
+      "id" : "http://d-nb.info/gnd/119057603",
+      "type" : [ "Person" ],
       "dateOfBirth" : "1935",
       "dateOfDeath" : "2001",
       "gndIdentifier" : "119057603",
-      "id" : "http://d-nb.info/gnd/119057603",
       "label" : "Steck, Odil Hannes",
-      "type" : [ "Person" ]
+      "altLabel" : [ "Steck, Odil", "Steck, O. H.", "Steck, Odil H." ]
     },
     "role" : {
       "id" : "http://id.loc.gov/vocabulary/relators/cre",
       "label" : "Autor/in"
-    },
-    "type" : [ "Contribution" ]
+    }
   } ],
-  "describedBy" : {
-    "dateCreated" : "19980422",
-    "id" : "http://lobid.org/resources/HT008359420",
-    "inDataset" : {
-      "id" : "http://lobid.org/resources/dataset#!",
-      "label" : "lobid-resources – Der hbz-Verbundkatalog als Linked Open Data"
-    },
-    "label" : "Webseite der hbz-Ressource HT008359420",
-    "license" : [ {
-      "id" : "http://creativecommons.org/publicdomain/zero/1.0",
-      "label" : "Creative Commons-Lizenz CC0 1.0 Universal"
-    } ],
-    "resultOf" : {
-      "endTime" : "0001-01-01T00:00:00",
-      "instrument" : {
-        "id" : "https://github.com/hbz/lobid-resources",
-        "label" : "Software lobid-resources",
-        "type" : [ "SoftwareApplication" ]
-      },
-      "object" : {
-        "id" : "http://lobid.org/hbz01/HT008359420",
-        "inDataset" : {
-          "id" : "https://datahub.io/dataset/hbz_unioncatalog",
-          "label" : "hbz_unioncatalog"
-        },
-        "label" : "hbz-Ressource HT008359420 im Exportformat MAB2-XML",
-        "type" : [ "DataFeedItem" ]
-      },
-      "type" : [ "CreateAction" ]
-    },
-    "sourceOrganization" : {
-      "id" : "http://lobid.org/organisations/DE-292#!",
-      "label" : "lobid Organisation"
-    },
-    "type" : [ "BibliographicDescription" ]
-  },
   "extent" : "83 S.",
-  "hbzId" : "HT008359420",
-  "id" : "http://lobid.org/resources/HT008359420#!",
-  "isPartOf" : [ {
-    "hasSuperordinate" : [ {
-      "id" : "http://lobid.org/resources/HT008359395#!",
-      "label" : "lobid Ressource"
-    } ],
-    "numbering" : "2",
-    "type" : [ "IsPartOfRelation" ]
-  } ],
+  "responsibilityStatement" : [ "Odil Hannes Steck" ],
   "language" : [ {
     "id" : "http://id.loc.gov/vocabulary/iso639-2/deu",
     "label" : "Deutsch"
@@ -71,66 +26,111 @@
     "id" : "http://purl.org/lobid/lv#Miscellaneous",
     "label" : "Miscellaneous"
   } ],
+  "subject" : [ {
+    "type" : [ "ComplexSubject" ],
+    "componentList" : [ {
+      "id" : "http://d-nb.info/gnd/4028593-5",
+      "type" : [ "Work" ],
+      "gndIdentifier" : "4028593-5",
+      "source" : {
+        "id" : "http://d-nb.info/gnd/7749153-1",
+        "label" : "Gemeinsame Normdatei (GND)"
+      },
+      "label" : "Bibel. Jesaja"
+    }, {
+      "id" : "http://d-nb.info/gnd/4049716-1",
+      "type" : [ "SubjectHeading" ],
+      "gndIdentifier" : "4049716-1",
+      "source" : {
+        "id" : "http://d-nb.info/gnd/7749153-1",
+        "label" : "Gemeinsame Normdatei (GND)"
+      },
+      "label" : "Rezeption"
+    }, {
+      "id" : "http://d-nb.info/gnd/4539193-2",
+      "type" : [ "Work" ],
+      "gndIdentifier" : "4539193-2",
+      "source" : {
+        "id" : "http://d-nb.info/gnd/7749153-1",
+        "label" : "Gemeinsame Normdatei (GND)"
+      },
+      "label" : "Qumrantexte: Jesajarolle"
+    } ],
+    "label" : "Bibel. Jesaja | Rezeption | Qumrantexte: Jesajarolle"
+  }, {
+    "type" : [ "ComplexSubject" ],
+    "componentList" : [ {
+      "id" : "http://d-nb.info/gnd/4539193-2",
+      "type" : [ "Work" ],
+      "gndIdentifier" : "4539193-2",
+      "source" : {
+        "id" : "http://d-nb.info/gnd/7749153-1",
+        "label" : "Gemeinsame Normdatei (GND)"
+      },
+      "label" : "Qumrantexte: Jesajarolle"
+    }, {
+      "type" : [ "SubjectHeading" ],
+      "label" : "Quelle"
+    } ],
+    "label" : "Qumrantexte: Jesajarolle | Quelle"
+  } ],
+  "title" : "Die erste Jesajarolle von Qumran (1QIs a), 2: Textheft",
+  "hbzId" : "HT008359420",
+  "isPartOf" : [ {
+    "type" : [ "IsPartOfRelation" ],
+    "hasSuperordinate" : [ {
+      "id" : "http://lobid.org/resources/HT008359395#!",
+      "label" : "lobid Ressource"
+    } ],
+    "numbering" : "2"
+  } ],
+  "subjectAltLabel" : [ "Jerusalem / 1QIsª", "Fortwirken", "Aneignung (Rezeption)", "Nachwirkung (Rezeption)", "Nachleben", "Wirkungsgeschichte" ],
   "publication" : [ {
+    "type" : [ "PublicationEvent" ],
     "location" : "Stuttgart",
     "publishedBy" : "Verl. Kath. Bibelwerk",
-    "startDate" : "1998",
-    "type" : [ "PublicationEvent" ]
+    "startDate" : "1998"
   } ],
-  "responsibilityStatement" : [ "Odil Hannes Steck" ],
   "sameAs" : [ {
     "id" : "http://hub.culturegraph.org/resource/HBZ-HT008359420",
     "label" : "Culturegraph Ressource"
   } ],
-  "subject" : [ {
-    "componentList" : [ {
-      "gndIdentifier" : "4028593-5",
-      "id" : "http://d-nb.info/gnd/4028593-5",
-      "label" : "Bibel. Jesaja",
-      "source" : {
-        "id" : "http://d-nb.info/gnd/7749153-1",
-        "label" : "Gemeinsame Normdatei (GND)"
+  "describedBy" : {
+    "id" : "http://lobid.org/resources/HT008359420",
+    "type" : [ "BibliographicDescription" ],
+    "dateCreated" : "19980422",
+    "inDataset" : {
+      "id" : "http://lobid.org/resources/dataset#!",
+      "label" : "lobid-resources – Der hbz-Verbundkatalog als Linked Open Data"
+    },
+    "resultOf" : {
+      "type" : [ "CreateAction" ],
+      "endTime" : "0001-01-01T00:00:00",
+      "instrument" : {
+        "id" : "https://github.com/hbz/lobid-resources",
+        "type" : [ "SoftwareApplication" ],
+        "label" : "Software lobid-resources"
       },
-      "type" : [ "Work" ]
-    }, {
-      "gndIdentifier" : "4049716-1",
-      "id" : "http://d-nb.info/gnd/4049716-1",
-      "label" : "Rezeption",
-      "source" : {
-        "id" : "http://d-nb.info/gnd/7749153-1",
-        "label" : "Gemeinsame Normdatei (GND)"
-      },
-      "type" : [ "SubjectHeading" ]
-    }, {
-      "gndIdentifier" : "4539193-2",
-      "id" : "http://d-nb.info/gnd/4539193-2",
-      "label" : "Qumrantexte: Jesajarolle",
-      "source" : {
-        "id" : "http://d-nb.info/gnd/7749153-1",
-        "label" : "Gemeinsame Normdatei (GND)"
-      },
-      "type" : [ "Work" ]
+      "object" : {
+        "id" : "http://lobid.org/hbz01/HT008359420",
+        "type" : [ "DataFeedItem" ],
+        "inDataset" : {
+          "id" : "https://datahub.io/dataset/hbz_unioncatalog",
+          "label" : "hbz_unioncatalog"
+        },
+        "label" : "hbz-Ressource HT008359420 im Exportformat MAB2-XML"
+      }
+    },
+    "license" : [ {
+      "id" : "http://creativecommons.org/publicdomain/zero/1.0",
+      "label" : "Creative Commons-Lizenz CC0 1.0 Universal"
     } ],
-    "label" : "Bibel. Jesaja | Rezeption | Qumrantexte: Jesajarolle",
-    "type" : [ "ComplexSubject" ]
-  }, {
-    "componentList" : [ {
-      "gndIdentifier" : "4539193-2",
-      "id" : "http://d-nb.info/gnd/4539193-2",
-      "label" : "Qumrantexte: Jesajarolle",
-      "source" : {
-        "id" : "http://d-nb.info/gnd/7749153-1",
-        "label" : "Gemeinsame Normdatei (GND)"
-      },
-      "type" : [ "Work" ]
-    }, {
-      "label" : "Quelle",
-      "type" : [ "SubjectHeading" ]
-    } ],
-    "label" : "Qumrantexte: Jesajarolle | Quelle",
-    "type" : [ "ComplexSubject" ]
-  } ],
-  "subjectAltLabel" : [ "Wirkungsgeschichte", "Nachleben", "Fortwirken", "Nachwirkung (Rezeption)", "Jerusalem / 1QIsª", "Aneignung (Rezeption)" ],
-  "title" : "Die erste Jesajarolle von Qumran (1QIs a), 2: Textheft",
-  "type" : [ "BibliographicResource", "Book" ]
+    "sourceOrganization" : {
+      "id" : "http://lobid.org/organisations/DE-292#!",
+      "label" : "lobid Organisation"
+    },
+    "label" : "Webseite der hbz-Ressource HT008359420"
+  },
+  "@context" : "http://lobid.org/resources/context.jsonld",
+  "id" : "http://lobid.org/resources/HT008359420#!"
 }

@@ -1,43 +1,126 @@
 {
-  "@context" : "web/conf/context.jsonld",
+  "type" : [ "Book", "BibliographicResource" ],
   "contribution" : [ {
+    "type" : [ "Contribution" ],
     "agent" : {
-      "altLabel" : [ "Lietzmann, Johannes", "Lietzmann, Iohannes", "Lietzmann, D. Hans", "Lietzmann, H." ],
+      "id" : "http://d-nb.info/gnd/118572865",
+      "type" : [ "Person" ],
       "dateOfBirth" : "1875",
       "dateOfDeath" : "1942",
       "gndIdentifier" : "118572865",
-      "id" : "http://d-nb.info/gnd/118572865",
       "label" : "Lietzmann, Hans",
-      "type" : [ "Person" ]
+      "altLabel" : [ "Lietzmann, D. Hans", "Lietzmann, Iohannes", "Lietzmann, Johannes", "Lietzmann, H." ]
     },
     "role" : {
       "id" : "http://id.loc.gov/vocabulary/relators/ctb",
       "label" : "Mitwirkende"
-    },
-    "type" : [ "Contribution" ]
+    }
   }, {
+    "type" : [ "Contribution" ],
     "agent" : {
-      "altLabel" : [ "Apollinarios, von Laodicea", "Pseudo-Athanasius", "Apolinaris, Laodicenus", "Apollinaris, Alexander", "Apollinarios", "Apolinarius, Laodicenus", "Apolinarius, von Laodicea" ],
+      "id" : "http://d-nb.info/gnd/171952448",
+      "type" : [ "Person" ],
       "dateOfBirthAndDeath" : "ca. 310-390 n.Chr.",
       "gndIdentifier" : "171952448",
-      "id" : "http://d-nb.info/gnd/171952448",
       "label" : "Apollinaris, Laodicensis",
-      "type" : [ "Person" ]
+      "altLabel" : [ "Apollinaris, Alexander", "Apolinarius, von Laodicea", "Apolinarius, Laodicenus", "Pseudo-Athanasius", "Apollinarios, von Laodicea", "Apolinaris, Laodicenus", "Apollinarios" ]
     },
     "role" : {
       "id" : "http://id.loc.gov/vocabulary/relators/ctb",
       "label" : "Mitwirkende"
+    }
+  } ],
+  "extent" : "XVI, 323 S.",
+  "hasItem" : [ {
+    "id" : "http://lobid.org/items/TT002001274:DE-Kn28:Dc%204364#!",
+    "type" : [ "Item" ],
+    "heldBy" : {
+      "id" : "http://lobid.org/organisations/DE-Kn28",
+      "label" : "lobid Organisation"
     },
-    "type" : [ "Contribution" ]
+    "note" : [ "MAG" ],
+    "callNumber" : "Dc 4364",
+    "label" : "Dc 4364",
+    "@context" : "http://lobid.org/resources/context.jsonld"
+  } ],
+  "responsibilityStatement" : [ "von Hans Lietzmann" ],
+  "language" : [ {
+    "id" : "http://id.loc.gov/vocabulary/iso639-2/lat",
+    "label" : "Latein"
+  }, {
+    "id" : "http://id.loc.gov/vocabulary/iso639-2/ell",
+    "label" : "Neugriechisch"
+  }, {
+    "id" : "http://id.loc.gov/vocabulary/iso639-2/deu",
+    "label" : "Deutsch"
+  } ],
+  "medium" : [ {
+    "id" : "http://rdaregistry.info/termList/RDAproductionMethod/1010",
+    "label" : "Print"
+  } ],
+  "subject" : [ {
+    "type" : [ "ComplexSubject" ],
+    "componentList" : [ {
+      "id" : "http://d-nb.info/gnd/118649817",
+      "type" : [ "Person" ],
+      "dateOfBirth" : "0310",
+      "dateOfDeath" : "0390",
+      "gndIdentifier" : "118649817",
+      "source" : {
+        "id" : "http://d-nb.info/gnd/7749153-1",
+        "label" : "Gemeinsame Normdatei (GND)"
+      },
+      "label" : "Apollinaris, Laodicensis"
+    } ],
+    "label" : "Apollinaris, Laodicensis"
+  } ],
+  "title" : "Apollinaris von Laodicea und seine Schule, 1",
+  "hbzId" : "TT002001274",
+  "isPartOf" : [ {
+    "type" : [ "IsPartOfRelation" ],
+    "hasSuperordinate" : [ {
+      "id" : "http://lobid.org/resources/HT001375579#!",
+      "label" : "lobid Ressource"
+    } ],
+    "numbering" : "1"
+  } ],
+  "subjectAltLabel" : [ "di Laodicea (310-390)", "de Laodicée (310-390)", "von Laodikeia (310-390)", "Scriptor Ecclesiasticus (310-390)", "Laodicenus (310-390)", "Haereticus (310-390)", "von Laodicea (310-390)", "Theologus (310-390)", "Laodicensis (310-390)", "Apollinaris, Alexander (310-390)", "Lehrer der Rhetorik (310-390)" ],
+  "publication" : [ {
+    "type" : [ "PublicationEvent" ],
+    "location" : "Tübingen",
+    "publishedBy" : "Mohr",
+    "startDate" : "1904"
+  } ],
+  "sameAs" : [ {
+    "id" : "http://hub.culturegraph.org/resource/HBZ-TT002001274",
+    "label" : "Culturegraph Ressource"
   } ],
   "describedBy" : {
-    "dateCreated" : "20060512",
     "id" : "http://lobid.org/resources/TT002001274",
+    "type" : [ "BibliographicDescription" ],
+    "dateCreated" : "20060512",
     "inDataset" : {
       "id" : "http://lobid.org/resources/dataset#!",
       "label" : "lobid-resources – Der hbz-Verbundkatalog als Linked Open Data"
     },
-    "label" : "Webseite der hbz-Ressource TT002001274",
+    "resultOf" : {
+      "type" : [ "CreateAction" ],
+      "endTime" : "0001-01-01T00:00:00",
+      "instrument" : {
+        "id" : "https://github.com/hbz/lobid-resources",
+        "type" : [ "SoftwareApplication" ],
+        "label" : "Software lobid-resources"
+      },
+      "object" : {
+        "id" : "http://lobid.org/hbz01/TT002001274",
+        "type" : [ "DataFeedItem" ],
+        "inDataset" : {
+          "id" : "https://datahub.io/dataset/hbz_unioncatalog",
+          "label" : "hbz_unioncatalog"
+        },
+        "label" : "hbz-Ressource TT002001274 im Exportformat MAB2-XML"
+      }
+    },
     "license" : [ {
       "id" : "http://creativecommons.org/publicdomain/zero/1.0",
       "label" : "Creative Commons-Lizenz CC0 1.0 Universal"
@@ -46,94 +129,12 @@
       "id" : "http://lobid.org/organisations/DE-Kn28#!",
       "label" : "lobid Organisation"
     },
-    "resultOf" : {
-      "endTime" : "0001-01-01T00:00:00",
-      "instrument" : {
-        "id" : "https://github.com/hbz/lobid-resources",
-        "label" : "Software lobid-resources",
-        "type" : [ "SoftwareApplication" ]
-      },
-      "object" : {
-        "id" : "http://lobid.org/hbz01/TT002001274",
-        "inDataset" : {
-          "id" : "https://datahub.io/dataset/hbz_unioncatalog",
-          "label" : "hbz_unioncatalog"
-        },
-        "label" : "hbz-Ressource TT002001274 im Exportformat MAB2-XML",
-        "type" : [ "DataFeedItem" ]
-      },
-      "type" : [ "CreateAction" ]
-    },
     "sourceOrganization" : {
       "id" : "http://lobid.org/organisations/DE-Kn28#!",
       "label" : "lobid Organisation"
     },
-    "type" : [ "BibliographicDescription" ]
+    "label" : "Webseite der hbz-Ressource TT002001274"
   },
-  "extent" : "XVI, 323 S.",
-  "hasItem" : [ {
-    "callNumber" : "Dc 4364",
-    "heldBy" : {
-      "id" : "http://lobid.org/organisations/DE-Kn28",
-      "label" : "lobid Organisation"
-    },
-    "id" : "http://lobid.org/items/TT002001274:DE-Kn28:Dc%204364#!",
-    "label" : "Dc 4364",
-    "note" : "MAG",
-    "type" : [ "Item" ]
-  } ],
-  "hbzId" : "TT002001274",
-  "id" : "http://lobid.org/resources/TT002001274#!",
-  "isPartOf" : [ {
-    "hasSuperordinate" : [ {
-      "id" : "http://lobid.org/resources/HT001375579#!",
-      "label" : "lobid Ressource"
-    } ],
-    "numbering" : "1",
-    "type" : [ "IsPartOfRelation" ]
-  } ],
-  "language" : [ {
-    "id" : "http://id.loc.gov/vocabulary/iso639-2/deu",
-    "label" : "Deutsch"
-  }, {
-    "id" : "http://id.loc.gov/vocabulary/iso639-2/ell",
-    "label" : "Neugriechisch"
-  }, {
-    "id" : "http://id.loc.gov/vocabulary/iso639-2/lat",
-    "label" : "Latein"
-  } ],
-  "medium" : [ {
-    "id" : "http://rdaregistry.info/termList/RDAproductionMethod/1010",
-    "label" : "Print"
-  } ],
-  "publication" : [ {
-    "location" : "Tübingen",
-    "publishedBy" : "Mohr",
-    "startDate" : "1904",
-    "type" : [ "PublicationEvent" ]
-  } ],
-  "responsibilityStatement" : [ "von Hans Lietzmann" ],
-  "sameAs" : [ {
-    "id" : "http://hub.culturegraph.org/resource/HBZ-TT002001274",
-    "label" : "Culturegraph Ressource"
-  } ],
-  "subject" : [ {
-    "componentList" : [ {
-      "dateOfBirth" : "0310",
-      "dateOfDeath" : "0390",
-      "gndIdentifier" : "118649817",
-      "id" : "http://d-nb.info/gnd/118649817",
-      "label" : "Apollinaris, Laodicensis",
-      "source" : {
-        "id" : "http://d-nb.info/gnd/7749153-1",
-        "label" : "Gemeinsame Normdatei (GND)"
-      },
-      "type" : [ "Person" ]
-    } ],
-    "label" : "Apollinaris, Laodicensis",
-    "type" : [ "ComplexSubject" ]
-  } ],
-  "subjectAltLabel" : [ "Theologus (310-390)", "von Laodikeia (310-390)", "Apollinaris, Alexander (310-390)", "Laodicensis (310-390)", "Lehrer der Rhetorik (310-390)", "Haereticus (310-390)", "de Laodicée (310-390)", "Laodicenus (310-390)", "Scriptor Ecclesiasticus (310-390)", "di Laodicea (310-390)", "von Laodicea (310-390)" ],
-  "title" : "Apollinaris von Laodicea und seine Schule, 1",
-  "type" : [ "BibliographicResource", "Book" ]
+  "@context" : "http://lobid.org/resources/context.jsonld",
+  "id" : "http://lobid.org/resources/TT002001274#!"
 }

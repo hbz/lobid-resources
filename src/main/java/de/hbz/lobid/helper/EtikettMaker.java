@@ -244,7 +244,6 @@ public class EtikettMaker implements EtikettMakerInterface {
 			cmap.put(l.name, pmap);
 		}
 		cmap.put(ID, "@id");
-		cmap.put(TYPE, "@type");
 		Map<String, Object> contextObject = new HashMap<>();
 		contextObject.put("@context", cmap);
 		return contextObject;

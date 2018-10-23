@@ -1,77 +1,24 @@
 {
-  "@context" : "web/conf/context.jsonld",
-  "bibliographicCitation" : "K.West; 2006,1, S. 12-14 : Ill.",
-  "containedIn" : [ {
-    "id" : "http://lobid.org/resources/HT013878511#!",
-    "label" : "K.West"
-  } ],
+  "type" : [ "BibliographicResource", "Article" ],
   "contribution" : [ {
+    "type" : [ "Contribution" ],
     "agent" : {
-      "gndIdentifier" : "137538766",
       "id" : "http://d-nb.info/gnd/137538766",
-      "label" : "Hoff, Hans",
-      "type" : [ "Person" ]
+      "type" : [ "Person" ],
+      "gndIdentifier" : "137538766",
+      "label" : "Hoff, Hans"
     },
     "role" : {
       "id" : "http://id.loc.gov/vocabulary/relators/cre",
       "label" : "Autor/in"
-    },
-    "type" : [ "Contribution" ]
+    }
   } ],
+  "responsibilityStatement" : [ "Text: Hans Hoff" ],
   "coverage" : [ "Bielefeld | 99" ],
-  "describedBy" : {
-    "dateCreated" : "20150813",
-    "id" : "http://lobid.org/resources/HT018726005",
-    "inDataset" : {
-      "id" : "http://lobid.org/resources/dataset#!",
-      "label" : "lobid-resources – Der hbz-Verbundkatalog als Linked Open Data"
-    },
-    "label" : "Webseite der hbz-Ressource HT018726005",
-    "license" : [ {
-      "id" : "http://creativecommons.org/publicdomain/zero/1.0",
-      "label" : "Creative Commons-Lizenz CC0 1.0 Universal"
-    } ],
-    "resultOf" : {
-      "endTime" : "0001-01-01T00:00:00",
-      "instrument" : {
-        "id" : "https://github.com/hbz/lobid-resources",
-        "label" : "Software lobid-resources",
-        "type" : [ "SoftwareApplication" ]
-      },
-      "object" : {
-        "id" : "http://lobid.org/hbz01/HT018726005",
-        "inDataset" : {
-          "id" : "https://datahub.io/dataset/hbz_unioncatalog",
-          "label" : "hbz_unioncatalog"
-        },
-        "label" : "hbz-Ressource HT018726005 im Exportformat MAB2-XML",
-        "type" : [ "DataFeedItem" ]
-      },
-      "type" : [ "CreateAction" ]
-    },
-    "sourceOrganization" : {
-      "id" : "http://lobid.org/organisations/DE-61#!",
-      "label" : "lobid Organisation"
-    },
-    "type" : [ "BibliographicDescription" ]
-  },
-  "fulltextOnline" : [ {
-    "id" : "http://www.bibliothek.uni-regensburg.de/ezeit/?2655603",
-    "label" : "?2655603"
-  } ],
+  "bibliographicCitation" : "K.West; 2006,1, S. 12-14 : Ill.",
   "hasVersion" : [ {
     "id" : "http://www.bibliothek.uni-regensburg.de/ezeit/?2655603",
     "label" : "?2655603"
-  } ],
-  "hbzId" : "HT018726005",
-  "id" : "http://lobid.org/resources/HT018726005#!",
-  "inCollection" : [ {
-    "id" : "http://lobid.org/resources/HT014176012#!",
-    "label" : "Nordrhein-Westfälische Bibliographie (NWBib)",
-    "type" : [ "Collection" ]
-  }, {
-    "id" : "http://lobid.org/resources/HT016356466#!",
-    "label" : "Elektronische Zeitschriftenbibliothek (EZB)"
   } ],
   "language" : [ {
     "id" : "http://id.loc.gov/vocabulary/iso639-2/deu",
@@ -81,40 +28,93 @@
     "id" : "http://rdaregistry.info/termList/RDAproductionMethod/1010",
     "label" : "Print"
   } ],
-  "otherTitleInformation" : [ "die Parallelwelten des Ingolf Lück" ],
-  "publication" : [ {
-    "location" : "Essen",
-    "startDate" : "2006",
-    "type" : [ "PublicationEvent" ]
-  } ],
-  "responsibilityStatement" : [ "Text: Hans Hoff" ],
-  "sameAs" : [ {
-    "id" : "http://hub.culturegraph.org/resource/HBZ-HT018726005",
-    "label" : "Culturegraph Ressource"
-  } ],
   "subject" : [ {
-    "id" : "http://purl.org/lobid/nwbib#s802080",
-    "label" : "Schauspieler",
-    "notation" : "802080",
-    "source" : {
-      "id" : "http://purl.org/lobid/nwbib",
-      "label" : "Sachsystematik der Nordrhein-Westfälischen Bibliographie"
-    }
-  }, {
+    "type" : [ "ComplexSubject" ],
     "componentList" : [ {
+      "id" : "http://d-nb.info/gnd/128989459",
+      "type" : [ "Person" ],
       "dateOfBirth" : "1958",
       "gndIdentifier" : "128989459",
-      "id" : "http://d-nb.info/gnd/128989459",
-      "label" : "Lück, Ingolf",
       "source" : {
         "id" : "http://d-nb.info/gnd/7749153-1",
         "label" : "Gemeinsame Normdatei (GND)"
       },
-      "type" : [ "Person" ]
+      "label" : "Lück, Ingolf"
     } ],
-    "label" : "Lück, Ingolf",
-    "type" : [ "ComplexSubject" ]
+    "label" : "Lück, Ingolf"
+  }, {
+    "id" : "http://purl.org/lobid/nwbib#s802080",
+    "source" : {
+      "id" : "http://purl.org/lobid/nwbib",
+      "label" : "Sachsystematik der Nordrhein-Westfälischen Bibliographie"
+    },
+    "notation" : "802080",
+    "label" : "Schauspieler"
   } ],
   "title" : "Eine Marke sucht ihren Platz",
-  "type" : [ "BibliographicResource", "Article" ]
+  "containedIn" : [ {
+    "id" : "http://lobid.org/resources/HT013878511#!",
+    "label" : "K.West"
+  } ],
+  "fulltextOnline" : [ {
+    "id" : "http://www.bibliothek.uni-regensburg.de/ezeit/?2655603",
+    "label" : "?2655603"
+  } ],
+  "hbzId" : "HT018726005",
+  "inCollection" : [ {
+    "id" : "http://lobid.org/resources/HT014176012#!",
+    "type" : [ "Collection" ],
+    "label" : "Nordrhein-Westfälische Bibliographie (NWBib)"
+  }, {
+    "id" : "http://lobid.org/resources/HT016356466#!",
+    "label" : "Elektronische Zeitschriftenbibliothek (EZB)"
+  } ],
+  "otherTitleInformation" : [ "die Parallelwelten des Ingolf Lück" ],
+  "publication" : [ {
+    "type" : [ "PublicationEvent" ],
+    "location" : "Essen",
+    "startDate" : "2006"
+  } ],
+  "sameAs" : [ {
+    "id" : "http://hub.culturegraph.org/resource/HBZ-HT018726005",
+    "label" : "Culturegraph Ressource"
+  } ],
+  "describedBy" : {
+    "id" : "http://lobid.org/resources/HT018726005",
+    "type" : [ "BibliographicDescription" ],
+    "dateCreated" : "20150813",
+    "inDataset" : {
+      "id" : "http://lobid.org/resources/dataset#!",
+      "label" : "lobid-resources – Der hbz-Verbundkatalog als Linked Open Data"
+    },
+    "resultOf" : {
+      "type" : [ "CreateAction" ],
+      "endTime" : "0001-01-01T00:00:00",
+      "instrument" : {
+        "id" : "https://github.com/hbz/lobid-resources",
+        "type" : [ "SoftwareApplication" ],
+        "label" : "Software lobid-resources"
+      },
+      "object" : {
+        "id" : "http://lobid.org/hbz01/HT018726005",
+        "type" : [ "DataFeedItem" ],
+        "inDataset" : {
+          "id" : "https://datahub.io/dataset/hbz_unioncatalog",
+          "label" : "hbz_unioncatalog"
+        },
+        "label" : "hbz-Ressource HT018726005 im Exportformat MAB2-XML"
+      }
+    },
+    "license" : [ {
+      "id" : "http://creativecommons.org/publicdomain/zero/1.0",
+      "label" : "Creative Commons-Lizenz CC0 1.0 Universal"
+    } ],
+    "sourceOrganization" : {
+      "id" : "http://lobid.org/organisations/DE-61#!",
+      "label" : "lobid Organisation"
+    },
+    "label" : "Webseite der hbz-Ressource HT018726005"
+  },
+  "@context" : "http://lobid.org/resources/context.jsonld",
+  "id" : "http://lobid.org/resources/HT018726005#!"
 }
