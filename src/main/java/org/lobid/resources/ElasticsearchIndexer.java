@@ -208,8 +208,6 @@ public class ElasticsearchIndexer
 							e1);
 				}
 			} else if (lookupMabxmlDeletion) {
-				System.out.println("going to :" + json.get(Properties.ID.getName())
-						.replaceAll(".*/", "").replaceAll("#!", ""));
 				jsonDoc = enrichMabxmlDeletions(json.get(Properties.ID.getName())
 						.replaceAll(".*/", "").replaceAll("#!", ""), jsonDoc);
 			}
