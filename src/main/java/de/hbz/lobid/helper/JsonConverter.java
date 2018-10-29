@@ -324,7 +324,7 @@ public class JsonConverter {
 			createObject(uri, newObject);
 		}
 		if (newObject.isEmpty())
-			throw JsonMappingException.from(null, "Json object is empty");
+			throw new JsonMappingException(null, "Json object is empty");
 		return newObject;
 	}
 
