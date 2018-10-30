@@ -217,7 +217,7 @@ public class WikidataGeodata2Es {
 	private static JsonNode toApiResponseGet(final AsyncHttpClient CLIENT,
 			final String API) throws InterruptedException, ExecutionException,
 					JsonParseException, JsonMappingException, IOException {
-		Thread.sleep(500); // be nice throttle down
+		Thread.sleep(200); // be nice throttle down
 		Response response =
 				CLIENT.prepareGet(API).setHeader("Accept", JSON_ACCEPT_HEADER)
 						.setFollowRedirects(true).execute().get();
@@ -231,7 +231,6 @@ public class WikidataGeodata2Es {
 					JsonMappingException, IOException {
 		LOG.info("SPARQL-URL=" + URL);
 		LOG.info("SPARQL-query=" + QUERY);
-		Thread.sleep(50000); // be nice throttle down
 		Response response = CLIENT.preparePost(URL).addFormParam("query", QUERY)
 				.setHeader("Accept", JSON_ACCEPT_HEADER).setFollowRedirects(true)
 				.execute().get();
@@ -269,7 +268,7 @@ public class WikidataGeodata2Es {
 		try (AsyncHttpClient client = new AsyncHttpClient()) {
 			JsonNode jnode =
 					toApiResponsePost(client, QUERY.substring(0, QUERY.indexOf("\n")),
-							"query=" + QUERY.replaceFirst(".*\n", ""));
+							QUERY.replaceFirst(".*\n", ""));
 			stream(jnode.get("results").get("bindings")).map(node -> {
 				try {
 					return toApiResponseGet(client,

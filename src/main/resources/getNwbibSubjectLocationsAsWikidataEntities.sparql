@@ -1,10 +1,10 @@
 https://query.wikidata.org/sparql
 # Get areas in North Rhine-Westphalia with German labels
-SELECT DISTINCT 
-?item 
-?itemLabel 
-WHERE {
-  { 
+ SELECT DISTINCT
+ ?item
+ ?itemLabel
+ WHERE {
+  {
        { ?item wdt:P131* wd:Q1198 . }
     UNION
        { ?item p:P131 [ ps:P131 wd:Q1198 ] }
@@ -44,5 +44,7 @@ WHERE {
    UNION
       { ?item p:P31 [ps:P31 wd:Q1780389 ] } # Kommunalverband der besonderen Art (derzeit nur "Städteregion Aachen")
   }
+  FILTER (?item != wd:Q1787449 && ?item != wd:Q16500124 && ?item != wd:Q1465811 && ?item != wd:Q1787449
+        && ?item != wd:Q16832627 && ?item != wd:Q1113210 && ?item != wd:Q19288281 && ?item != wd:Q1662807 ) # Herausfiltern von Altkreisen, die namensidentisch sind mit Neukreisen
   SERVICE wikibase:label {  bd:serviceParam wikibase:language "de" }
 }
