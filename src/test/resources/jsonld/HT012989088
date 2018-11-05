@@ -1,88 +1,19 @@
 {
-  "@context" : "web/conf/context.jsonld",
-  "describedBy" : {
-    "dateCreated" : "20000515",
-    "dateModified" : "20170329",
-    "id" : "http://lobid.org/resources/HT012989088",
-    "inDataset" : {
-      "id" : "http://lobid.org/resources/dataset#!",
-      "label" : "lobid-resources – Der hbz-Verbundkatalog als Linked Open Data"
-    },
-    "label" : "Webseite der hbz-Ressource HT012989088",
-    "license" : [ {
-      "id" : "http://creativecommons.org/publicdomain/zero/1.0",
-      "label" : "Creative Commons-Lizenz CC0 1.0 Universal"
-    } ],
-    "modifiedBy" : {
-      "id" : "http://lobid.org/organisations/DE-6999#!",
-      "label" : "lobid Organisation"
-    },
-    "provider" : {
-      "id" : "http://lobid.org/organisations/DE-101#!",
-      "label" : "lobid Organisation"
-    },
-    "resultOf" : {
-      "endTime" : "0001-01-01T00:00:00",
-      "instrument" : {
-        "id" : "https://github.com/hbz/lobid-resources",
-        "label" : "Software lobid-resources",
-        "type" : [ "SoftwareApplication" ]
-      },
-      "object" : {
-        "id" : "http://lobid.org/hbz01/HT012989088",
-        "inDataset" : {
-          "id" : "https://datahub.io/dataset/hbz_unioncatalog",
-          "label" : "hbz_unioncatalog"
-        },
-        "label" : "hbz-Ressource HT012989088 im Exportformat MAB2-XML",
-        "type" : [ "DataFeedItem" ]
-      },
-      "type" : [ "CreateAction" ]
-    },
-    "sourceOrganization" : {
-      "id" : "http://lobid.org/organisations/DE-355#!",
-      "label" : "lobid Organisation"
-    },
-    "type" : [ "BibliographicDescription" ]
-  },
-  "fulltextOnline" : [ {
-    "id" : "http://www.bibliothek.uni-regensburg.de/ezeit/?2013112",
-    "label" : "?2013112"
-  } ],
+  "type" : [ "BibliographicResource", "Periodical" ],
   "hasItem" : [ {
+    "id" : "http://lobid.org/items/HT012989088:DE-743:#!",
+    "type" : [ "Item" ],
     "heldBy" : {
       "id" : "http://lobid.org/organisations/DE-743",
       "label" : "lobid Organisation"
     },
-    "id" : "http://lobid.org/items/HT012989088:DE-743:#!",
     "label" : "lobid Bestandsressource",
-    "type" : [ "Item" ]
+    "@context" : "http://lobid.org/resources/context.jsonld"
   } ],
   "hasVersion" : [ {
     "id" : "http://gso.gbv.de/DB=5.85/PPNSET?PPN=24428153X",
     "label" : "PPNSET?PPN=24428153X"
   } ],
-  "hbzId" : "HT012989088",
-  "id" : "http://lobid.org/resources/HT012989088#!",
-  "inCollection" : [ {
-    "id" : "http://lobid.org/resources/HT016356466#!",
-    "label" : "Elektronische Zeitschriftenbibliothek (EZB)"
-  }, {
-    "id" : "http://lobid.org/organisations/ZDB-1-KLU#!",
-    "label" : "eResource package",
-    "type" : [ "Collection" ]
-  }, {
-    "id" : "http://lobid.org/resources/HT014846970#!",
-    "label" : "Zeitschriftendatenbank (ZDB)",
-    "type" : [ "Collection" ]
-  } ],
-  "isPartOf" : [ {
-    "hasSuperordinate" : [ {
-      "label" : "Kluwer law international journals"
-    } ],
-    "type" : [ "IsPartOfRelation" ]
-  } ],
-  "issn" : [ "18758363" ],
   "language" : [ {
     "id" : "http://id.loc.gov/vocabulary/iso639-2/deu",
     "label" : "Deutsch"
@@ -91,15 +22,95 @@
     "id" : "http://rdaregistry.info/termList/RDACarrierType/1018",
     "label" : "Online-Ressource"
   } ],
-  "publication" : [ {
-    "location" : "Dordrecht [u.a.]",
-    "publishedBy" : "Kluwer",
-    "startDate" : "1992",
-    "type" : [ "PublicationEvent" ]
-  } ],
   "related" : [ {
     "id" : "http://lobid.org/resources/HT006442892#!",
     "label" : "EC tax review"
+  } ],
+  "subject" : [ {
+    "source" : {
+      "id" : "http://d-nb.info/gnd/4149423-4",
+      "label" : "Dewey-Dezimalklassifikation"
+    },
+    "label" : "Recht",
+    "notation" : "340"
+  }, {
+    "type" : [ "ComplexSubject" ],
+    "componentList" : [ {
+      "id" : "http://d-nb.info/gnd/35439-9",
+      "type" : [ "CorporateBody" ],
+      "gndIdentifier" : "35439-9",
+      "source" : {
+        "id" : "http://d-nb.info/gnd/7749153-1",
+        "label" : "Gemeinsame Normdatei (GND)"
+      },
+      "label" : "Europäische Gemeinschaften"
+    }, {
+      "id" : "http://d-nb.info/gnd/4057399-0",
+      "type" : [ "SubjectHeading" ],
+      "gndIdentifier" : "4057399-0",
+      "source" : {
+        "id" : "http://d-nb.info/gnd/7749153-1",
+        "label" : "Gemeinsame Normdatei (GND)"
+      },
+      "label" : "Steuer"
+    }, {
+      "id" : "http://d-nb.info/gnd/4067488-5",
+      "type" : [ "SubjectHeading" ],
+      "gndIdentifier" : "4067488-5",
+      "source" : {
+        "id" : "http://d-nb.info/gnd/7749153-1",
+        "label" : "Gemeinsame Normdatei (GND)"
+      },
+      "label" : "Zeitschrift"
+    } ],
+    "label" : "Europäische Gemeinschaften | Steuer | Zeitschrift"
+  }, {
+    "source" : {
+      "id" : "http://d-nb.info/gnd/4149423-4",
+      "label" : "Dewey-Dezimalklassifikation"
+    },
+    "label" : "Wirtschaft",
+    "notation" : "330"
+  }, {
+    "source" : {
+      "id" : "http://d-nb.info/gnd/4149423-4",
+      "label" : "Dewey-Dezimalklassifikation"
+    },
+    "label" : "Management und unterstützende Tätigkeiten",
+    "notation" : "650"
+  } ],
+  "title" : "EC tax review",
+  "fulltextOnline" : [ {
+    "id" : "http://www.bibliothek.uni-regensburg.de/ezeit/?2013112",
+    "label" : "?2013112"
+  } ],
+  "hbzId" : "HT012989088",
+  "inCollection" : [ {
+    "id" : "http://lobid.org/resources/HT016356466#!",
+    "label" : "Elektronische Zeitschriftenbibliothek (EZB)"
+  }, {
+    "id" : "http://lobid.org/organisations/ZDB-1-KLU#!",
+    "type" : [ "Collection" ],
+    "label" : "eResource package"
+  }, {
+    "id" : "http://lobid.org/resources/HT014846970#!",
+    "type" : [ "Collection" ],
+    "label" : "Zeitschriftendatenbank (ZDB)"
+  } ],
+  "isPartOf" : [ {
+    "type" : [ "IsPartOfRelation" ],
+    "hasSuperordinate" : [ {
+      "label" : "Kluwer law international journals"
+    } ]
+  } ],
+  "subjectAltLabel" : [ "Comunità Europea", "Comunidades Europeias", "European Communities", "EC", "Periodikum", "Communauté Européenne", "Comunidades Europeas", "Europese Gemeenschappen", "EG", "Comunidad Europea", "Europaeiske Faellesskaber", "European Community", "Avrupa Toplukları", "Steuerwesen", "Comunità Europee", "Communitates Europaeae", "Eurōpaïkē Koinotēs", "Wspólnoty Europejskie", "Avrupa Topluluğu", "Zeitschriften", "Besteuerung", "CE", "Communautés Européennes", "EF" ],
+  "zdbId" : "2013112-4",
+  "issn" : [ "18758363" ],
+  "publication" : [ {
+    "type" : [ "PublicationEvent" ],
+    "location" : "Dordrecht [u.a.]",
+    "publishedBy" : "Kluwer",
+    "startDate" : "1992"
   } ],
   "sameAs" : [ {
     "id" : "http://hub.culturegraph.org/resource/HBZ-HT012989088",
@@ -108,61 +119,51 @@
     "id" : "http://ld.zdb-services.de/resource/2013112-4",
     "label" : "ZDB-Ressource"
   } ],
-  "subject" : [ {
-    "label" : "Wirtschaft",
-    "notation" : "330",
-    "source" : {
-      "id" : "http://d-nb.info/gnd/4149423-4",
-      "label" : "Dewey-Dezimalklassifikation"
-    }
-  }, {
-    "label" : "Recht",
-    "notation" : "340",
-    "source" : {
-      "id" : "http://d-nb.info/gnd/4149423-4",
-      "label" : "Dewey-Dezimalklassifikation"
-    }
-  }, {
-    "componentList" : [ {
-      "gndIdentifier" : "35439-9",
-      "id" : "http://d-nb.info/gnd/35439-9",
-      "label" : "Europäische Gemeinschaften",
-      "source" : {
-        "id" : "http://d-nb.info/gnd/7749153-1",
-        "label" : "Gemeinsame Normdatei (GND)"
+  "describedBy" : {
+    "id" : "http://lobid.org/resources/HT012989088",
+    "type" : [ "BibliographicDescription" ],
+    "modifiedBy" : {
+      "id" : "http://lobid.org/organisations/DE-6999#!",
+      "label" : "lobid Organisation"
+    },
+    "dateCreated" : "20000515",
+    "dateModified" : "20170329",
+    "inDataset" : {
+      "id" : "http://lobid.org/resources/dataset#!",
+      "label" : "lobid-resources – Der hbz-Verbundkatalog als Linked Open Data"
+    },
+    "resultOf" : {
+      "type" : [ "CreateAction" ],
+      "endTime" : "0001-01-01T00:00:00",
+      "instrument" : {
+        "id" : "https://github.com/hbz/lobid-resources",
+        "type" : [ "SoftwareApplication" ],
+        "label" : "Software lobid-resources"
       },
-      "type" : [ "CorporateBody" ]
-    }, {
-      "gndIdentifier" : "4057399-0",
-      "id" : "http://d-nb.info/gnd/4057399-0",
-      "label" : "Steuer",
-      "source" : {
-        "id" : "http://d-nb.info/gnd/7749153-1",
-        "label" : "Gemeinsame Normdatei (GND)"
-      },
-      "type" : [ "SubjectHeading" ]
-    }, {
-      "gndIdentifier" : "4067488-5",
-      "id" : "http://d-nb.info/gnd/4067488-5",
-      "label" : "Zeitschrift",
-      "source" : {
-        "id" : "http://d-nb.info/gnd/7749153-1",
-        "label" : "Gemeinsame Normdatei (GND)"
-      },
-      "type" : [ "SubjectHeading" ]
+      "object" : {
+        "id" : "http://lobid.org/hbz01/HT012989088",
+        "type" : [ "DataFeedItem" ],
+        "inDataset" : {
+          "id" : "https://datahub.io/dataset/hbz_unioncatalog",
+          "label" : "hbz_unioncatalog"
+        },
+        "label" : "hbz-Ressource HT012989088 im Exportformat MAB2-XML"
+      }
+    },
+    "license" : [ {
+      "id" : "http://creativecommons.org/publicdomain/zero/1.0",
+      "label" : "Creative Commons-Lizenz CC0 1.0 Universal"
     } ],
-    "label" : "Europäische Gemeinschaften | Steuer | Zeitschrift",
-    "type" : [ "ComplexSubject" ]
-  }, {
-    "label" : "Management und unterstützende Tätigkeiten",
-    "notation" : "650",
-    "source" : {
-      "id" : "http://d-nb.info/gnd/4149423-4",
-      "label" : "Dewey-Dezimalklassifikation"
-    }
-  } ],
-  "subjectAltLabel" : [ "Communitates Europaeae", "Steuerwesen", "EF", "CE", "EG", "Zeitschriften", "Avrupa Topluluğu", "Communauté Européenne", "Communautés Européennes", "European Community", "Avrupa Toplukları", "Comunidades Europeias", "Eurōpaïkē Koinotēs", "Wspólnoty Europejskie", "Comunidades Europeas", "Europese Gemeenschappen", "Comunidad Europea", "Periodikum", "Besteuerung", "Comunità Europea", "European Communities", "Europaeiske Faellesskaber", "Comunità Europee", "EC" ],
-  "title" : "EC tax review",
-  "type" : [ "BibliographicResource", "Periodical" ],
-  "zdbId" : "2013112-4"
+    "provider" : {
+      "id" : "http://lobid.org/organisations/DE-101#!",
+      "label" : "lobid Organisation"
+    },
+    "sourceOrganization" : {
+      "id" : "http://lobid.org/organisations/DE-355#!",
+      "label" : "lobid Organisation"
+    },
+    "label" : "Webseite der hbz-Ressource HT012989088"
+  },
+  "@context" : "http://lobid.org/resources/context.jsonld",
+  "id" : "http://lobid.org/resources/HT012989088#!"
 }

@@ -1,72 +1,21 @@
 {
-  "@context" : "web/conf/context.jsonld",
-  "bibliographicCitation" : "Nachrichten aus der Netter Geschichte; 2 (2011), S. 18-35 : Ill.",
-  "containedIn" : [ {
-    "id" : "http://lobid.org/resources/HT016593925#!",
-    "label" : "Nachrichten aus der Netter Geschichte"
-  } ],
+  "type" : [ "BibliographicResource", "Article" ],
   "contribution" : [ {
+    "type" : [ "Contribution" ],
     "agent" : {
-      "gndIdentifier" : "118018868",
       "id" : "http://d-nb.info/gnd/118018868",
-      "label" : "Treckmann, Friedhelm",
-      "type" : [ "Person" ]
+      "type" : [ "Person" ],
+      "gndIdentifier" : "118018868",
+      "label" : "Treckmann, Friedhelm"
     },
     "role" : {
       "id" : "http://id.loc.gov/vocabulary/relators/cre",
       "label" : "Autor/in"
-    },
-    "type" : [ "Contribution" ]
+    }
   } ],
+  "responsibilityStatement" : [ "[Friedhelm Treckmann]" ],
   "coverage" : [ "Dortmund-Nette | 99" ],
-  "describedBy" : {
-    "dateCreated" : "20121129",
-    "dateModified" : "20121203",
-    "id" : "http://lobid.org/resources/HT017472134",
-    "inDataset" : {
-      "id" : "http://lobid.org/resources/dataset#!",
-      "label" : "lobid-resources – Der hbz-Verbundkatalog als Linked Open Data"
-    },
-    "label" : "Webseite der hbz-Ressource HT017472134",
-    "license" : [ {
-      "id" : "http://creativecommons.org/publicdomain/zero/1.0",
-      "label" : "Creative Commons-Lizenz CC0 1.0 Universal"
-    } ],
-    "modifiedBy" : {
-      "id" : "http://lobid.org/organisations/DE-6#!",
-      "label" : "lobid Organisation"
-    },
-    "resultOf" : {
-      "endTime" : "0001-01-01T00:00:00",
-      "instrument" : {
-        "id" : "https://github.com/hbz/lobid-resources",
-        "label" : "Software lobid-resources",
-        "type" : [ "SoftwareApplication" ]
-      },
-      "object" : {
-        "id" : "http://lobid.org/hbz01/HT017472134",
-        "inDataset" : {
-          "id" : "https://datahub.io/dataset/hbz_unioncatalog",
-          "label" : "hbz_unioncatalog"
-        },
-        "label" : "hbz-Ressource HT017472134 im Exportformat MAB2-XML",
-        "type" : [ "DataFeedItem" ]
-      },
-      "type" : [ "CreateAction" ]
-    },
-    "sourceOrganization" : {
-      "id" : "http://lobid.org/organisations/DE-6#!",
-      "label" : "lobid Organisation"
-    },
-    "type" : [ "BibliographicDescription" ]
-  },
-  "hbzId" : "HT017472134",
-  "id" : "http://lobid.org/resources/HT017472134#!",
-  "inCollection" : [ {
-    "id" : "http://lobid.org/resources/HT014176012#!",
-    "label" : "Nordrhein-Westfälische Bibliographie (NWBib)",
-    "type" : [ "Collection" ]
-  } ],
+  "bibliographicCitation" : "Nachrichten aus der Netter Geschichte; 2 (2011), S. 18-35 : Ill.",
   "language" : [ {
     "id" : "http://id.loc.gov/vocabulary/iso639-2/deu",
     "label" : "Deutsch"
@@ -75,61 +24,114 @@
     "id" : "http://rdaregistry.info/termList/RDAproductionMethod/1010",
     "label" : "Print"
   } ],
-  "publication" : [ {
-    "location" : "Dortmund",
-    "startDate" : "2011",
-    "type" : [ "PublicationEvent" ]
+  "subject" : [ {
+    "type" : [ "ComplexSubject" ],
+    "componentList" : [ {
+      "id" : "http://d-nb.info/gnd/102851445X",
+      "type" : [ "Family" ],
+      "gndIdentifier" : "102851445X",
+      "source" : {
+        "id" : "http://d-nb.info/gnd/7749153-1",
+        "label" : "Gemeinsame Normdatei (GND)"
+      },
+      "label" : "Dorhoff, Familie"
+    }, {
+      "id" : "_:b1",
+      "type" : [ "SubjectHeading" ],
+      "label" : "Geschichte"
+    } ],
+    "label" : "Dorhoff, Familie | Geschichte"
+  }, {
+    "type" : [ "ComplexSubject" ],
+    "componentList" : [ {
+      "id" : "http://d-nb.info/gnd/102851445X",
+      "type" : [ "Family" ],
+      "gndIdentifier" : "102851445X",
+      "source" : {
+        "id" : "http://d-nb.info/gnd/7749153-1",
+        "label" : "Gemeinsame Normdatei (GND)"
+      },
+      "label" : "Dorhoff, Familie"
+    }, {
+      "id" : "_:b1",
+      "type" : [ "SubjectHeading" ],
+      "label" : "Geschichte"
+    }, {
+      "type" : [ "SubjectHeading" ],
+      "label" : "Quelle"
+    } ],
+    "label" : "Dorhoff, Familie | Geschichte | Quelle"
+  }, {
+    "id" : "http://purl.org/lobid/nwbib#s207020",
+    "source" : {
+      "id" : "http://purl.org/lobid/nwbib",
+      "label" : "Sachsystematik der Nordrhein-Westfälischen Bibliographie"
+    },
+    "notation" : "207020",
+    "label" : "Einzelne Familien"
   } ],
-  "responsibilityStatement" : [ "[Friedhelm Treckmann]" ],
+  "title" : "Der Name Dorhoff in Urkunden im Wandel der Zeiten",
+  "containedIn" : [ {
+    "id" : "http://lobid.org/resources/HT016593925#!",
+    "label" : "Nachrichten aus der Netter Geschichte"
+  } ],
+  "hbzId" : "HT017472134",
+  "inCollection" : [ {
+    "id" : "http://lobid.org/resources/HT014176012#!",
+    "type" : [ "Collection" ],
+    "label" : "Nordrhein-Westfälische Bibliographie (NWBib)"
+  } ],
+  "subjectAltLabel" : [ "Familie (Familie)" ],
+  "publication" : [ {
+    "type" : [ "PublicationEvent" ],
+    "location" : "Dortmund",
+    "startDate" : "2011"
+  } ],
   "sameAs" : [ {
     "id" : "http://hub.culturegraph.org/resource/HBZ-HT017472134",
     "label" : "Culturegraph Ressource"
   } ],
-  "subject" : [ {
-    "componentList" : [ {
-      "gndIdentifier" : "102851445X",
-      "id" : "http://d-nb.info/gnd/102851445X",
-      "label" : "Dorhoff, Familie",
-      "source" : {
-        "id" : "http://d-nb.info/gnd/7749153-1",
-        "label" : "Gemeinsame Normdatei (GND)"
+  "describedBy" : {
+    "id" : "http://lobid.org/resources/HT017472134",
+    "type" : [ "BibliographicDescription" ],
+    "modifiedBy" : {
+      "id" : "http://lobid.org/organisations/DE-6#!",
+      "label" : "lobid Organisation"
+    },
+    "dateCreated" : "20121129",
+    "dateModified" : "20121203",
+    "inDataset" : {
+      "id" : "http://lobid.org/resources/dataset#!",
+      "label" : "lobid-resources – Der hbz-Verbundkatalog als Linked Open Data"
+    },
+    "resultOf" : {
+      "type" : [ "CreateAction" ],
+      "endTime" : "0001-01-01T00:00:00",
+      "instrument" : {
+        "id" : "https://github.com/hbz/lobid-resources",
+        "type" : [ "SoftwareApplication" ],
+        "label" : "Software lobid-resources"
       },
-      "type" : [ "Family" ]
-    }, {
-      "label" : "Geschichte",
-      "type" : [ "SubjectHeading" ]
+      "object" : {
+        "id" : "http://lobid.org/hbz01/HT017472134",
+        "type" : [ "DataFeedItem" ],
+        "inDataset" : {
+          "id" : "https://datahub.io/dataset/hbz_unioncatalog",
+          "label" : "hbz_unioncatalog"
+        },
+        "label" : "hbz-Ressource HT017472134 im Exportformat MAB2-XML"
+      }
+    },
+    "license" : [ {
+      "id" : "http://creativecommons.org/publicdomain/zero/1.0",
+      "label" : "Creative Commons-Lizenz CC0 1.0 Universal"
     } ],
-    "label" : "Dorhoff, Familie | Geschichte",
-    "type" : [ "ComplexSubject" ]
-  }, {
-    "componentList" : [ {
-      "gndIdentifier" : "102851445X",
-      "id" : "http://d-nb.info/gnd/102851445X",
-      "label" : "Dorhoff, Familie",
-      "source" : {
-        "id" : "http://d-nb.info/gnd/7749153-1",
-        "label" : "Gemeinsame Normdatei (GND)"
-      },
-      "type" : [ "Family" ]
-    }, {
-      "label" : "Geschichte",
-      "type" : [ "SubjectHeading" ]
-    }, {
-      "label" : "Quelle",
-      "type" : [ "SubjectHeading" ]
-    } ],
-    "label" : "Dorhoff, Familie | Geschichte | Quelle",
-    "type" : [ "ComplexSubject" ]
-  }, {
-    "id" : "http://purl.org/lobid/nwbib#s207020",
-    "label" : "Einzelne Familien",
-    "notation" : "207020",
-    "source" : {
-      "id" : "http://purl.org/lobid/nwbib",
-      "label" : "Sachsystematik der Nordrhein-Westfälischen Bibliographie"
-    }
-  } ],
-  "subjectAltLabel" : [ "Familie (Familie)" ],
-  "title" : "Der Name Dorhoff in Urkunden im Wandel der Zeiten",
-  "type" : [ "BibliographicResource", "Article" ]
+    "sourceOrganization" : {
+      "id" : "http://lobid.org/organisations/DE-6#!",
+      "label" : "lobid Organisation"
+    },
+    "label" : "Webseite der hbz-Ressource HT017472134"
+  },
+  "@context" : "http://lobid.org/resources/context.jsonld",
+  "id" : "http://lobid.org/resources/HT017472134#!"
 }

@@ -1,79 +1,33 @@
 {
-  "@context" : "web/conf/context.jsonld",
+  "type" : [ "Book", "BibliographicResource" ],
   "contribution" : [ {
+    "type" : [ "Contribution" ],
     "agent" : {
-      "altLabel" : "König, R.",
-      "gndIdentifier" : "111614597",
       "id" : "http://d-nb.info/gnd/111614597",
+      "type" : [ "Person" ],
+      "gndIdentifier" : "111614597",
       "label" : "König, Ralf",
-      "type" : [ "Person" ]
+      "altLabel" : "König, R."
     },
     "role" : {
       "id" : "http://id.loc.gov/vocabulary/relators/cre",
       "label" : "Autor/in"
-    },
-    "type" : [ "Contribution" ]
+    }
   } ],
-  "describedBy" : {
-    "dateCreated" : "20080220",
-    "id" : "http://lobid.org/resources/HT015440386",
-    "inDataset" : {
-      "id" : "http://lobid.org/resources/dataset#!",
-      "label" : "lobid-resources – Der hbz-Verbundkatalog als Linked Open Data"
-    },
-    "label" : "Webseite der hbz-Ressource HT015440386",
-    "license" : [ {
-      "id" : "http://creativecommons.org/publicdomain/zero/1.0",
-      "label" : "Creative Commons-Lizenz CC0 1.0 Universal"
-    } ],
-    "resultOf" : {
-      "endTime" : "0001-01-01T00:00:00",
-      "instrument" : {
-        "id" : "https://github.com/hbz/lobid-resources",
-        "label" : "Software lobid-resources",
-        "type" : [ "SoftwareApplication" ]
-      },
-      "object" : {
-        "id" : "http://lobid.org/hbz01/HT015440386",
-        "inDataset" : {
-          "id" : "https://datahub.io/dataset/hbz_unioncatalog",
-          "label" : "hbz_unioncatalog"
-        },
-        "label" : "hbz-Ressource HT015440386 im Exportformat MAB2-XML",
-        "type" : [ "DataFeedItem" ]
-      },
-      "type" : [ "CreateAction" ]
-    },
-    "sourceOrganization" : {
-      "id" : "http://lobid.org/organisations/DE-385#!",
-      "label" : "lobid Organisation"
-    },
-    "type" : [ "BibliographicDescription" ]
-  },
-  "edition" : [ "Orig.-Ausg., 31. - 40. Tsd." ],
   "extent" : "181, VIII S.",
   "hasItem" : [ {
-    "callNumber" : "C/ld487",
+    "id" : "http://lobid.org/items/HT015440386:DE-385-AN:C%2Fld487#!",
+    "type" : [ "Item" ],
     "heldBy" : {
       "id" : "http://lobid.org/organisations/DE-385-AN",
       "label" : "lobid Organisation"
     },
-    "id" : "http://lobid.org/items/HT015440386:DE-385-AN:C%2Fld487#!",
+    "note" : [ "912" ],
+    "callNumber" : "C/ld487",
     "label" : "C/ld487",
-    "note" : "912",
-    "type" : [ "Item" ]
+    "@context" : "http://lobid.org/resources/context.jsonld"
   } ],
-  "hbzId" : "HT015440386",
-  "id" : "http://lobid.org/resources/HT015440386#!",
-  "isPartOf" : [ {
-    "hasSuperordinate" : [ {
-      "id" : "http://lobid.org/resources/HT002091108#!",
-      "label" : "rororo"
-    } ],
-    "numbering" : "22392",
-    "type" : [ "IsPartOfRelation" ]
-  } ],
-  "isbn" : [ "3499223929", "9783499223921" ],
+  "responsibilityStatement" : [ "Ralf König" ],
   "language" : [ {
     "id" : "http://id.loc.gov/vocabulary/iso639-2/deu",
     "label" : "Deutsch"
@@ -82,68 +36,115 @@
     "id" : "http://rdaregistry.info/termList/RDAproductionMethod/1010",
     "label" : "Print"
   } ],
+  "subject" : [ {
+    "id" : "http://purl.org/lobid/nwbib-spatial#n01",
+    "source" : {
+      "id" : "http://purl.org/lobid/nwbib-spatial",
+      "label" : "Raumsystematik der Nordrhein-Westfälischen Bibliographie"
+    },
+    "notation" : "01",
+    "label" : "Nordrhein-Westfalen"
+  }, {
+    "type" : [ "ComplexSubject" ],
+    "componentList" : [ {
+      "id" : "http://d-nb.info/gnd/119411970",
+      "type" : [ "Person" ],
+      "dateOfBirth" : "1960",
+      "gndIdentifier" : "119411970",
+      "source" : {
+        "id" : "http://d-nb.info/gnd/7749153-1",
+        "label" : "Gemeinsame Normdatei (GND)"
+      },
+      "label" : "König, Ralf"
+    }, {
+      "id" : "http://d-nb.info/gnd/4010427-8",
+      "type" : [ "SubjectHeading" ],
+      "gndIdentifier" : "4010427-8",
+      "source" : {
+        "id" : "http://d-nb.info/gnd/7749153-1",
+        "label" : "Gemeinsame Normdatei (GND)"
+      },
+      "label" : "Comic"
+    }, {
+      "id" : "http://d-nb.info/gnd/4145395-5",
+      "type" : [ "SubjectHeading" ],
+      "gndIdentifier" : "4145395-5",
+      "source" : {
+        "id" : "http://d-nb.info/gnd/7749153-1",
+        "label" : "Gemeinsame Normdatei (GND)"
+      },
+      "label" : "Bildband"
+    } ],
+    "label" : "König, Ralf | Comic | Bildband"
+  }, {
+    "id" : "http://purl.org/lobid/nwbib#s841070",
+    "source" : {
+      "id" : "http://purl.org/lobid/nwbib",
+      "label" : "Sachsystematik der Nordrhein-Westfälischen Bibliographie"
+    },
+    "notation" : "841070",
+    "label" : "Künstler"
+  } ],
+  "title" : "Jago",
+  "hbzId" : "HT015440386",
+  "isPartOf" : [ {
+    "type" : [ "IsPartOfRelation" ],
+    "hasSuperordinate" : [ {
+      "id" : "http://lobid.org/resources/HT002091108#!",
+      "label" : "rororo"
+    } ],
+    "numbering" : "22392"
+  } ],
+  "subjectAltLabel" : [ "Comic Strip", "Bilder (Formschlagwort)", "Illustrationswerk", "Abbildungen (Formschlagwort)", "Bildmaterial (Formschlagwort)", "Ansichtspostkarte (Formschlagwort)", "Fotographien-Bildband", "Konig, Ralf (1960-)", "Bildatlas", "Kēnigs, Ralfs (1960-)", "Comics", "Bande Dessinée", "Bildsammlung", "King, Ralph (1960-)", "Comicstrip", "Abbildungswerk", "Ansichten (Formschlagwort)", "Photographien-Bildband", "Bildbände", "Comic Strips", "Bilddokumente" ],
+  "edition" : [ "Orig.-Ausg., 31. - 40. Tsd." ],
+  "isbn" : [ "3499223929", "9783499223921" ],
   "otherTitleInformation" : [ "Comic ; [nach Motiven aus den Dramen Othello, Macbeth, Romeo & Julia und Ein Sommernachtstraum von William Shakespeare]" ],
   "publication" : [ {
+    "type" : [ "PublicationEvent" ],
     "location" : "Reinbek bei Hamburg",
     "publishedBy" : "Rowohlt-Taschenbuch-Verl.",
-    "startDate" : "1998",
-    "type" : [ "PublicationEvent" ]
+    "startDate" : "1998"
   } ],
-  "responsibilityStatement" : [ "Ralf König" ],
   "sameAs" : [ {
     "id" : "http://hub.culturegraph.org/resource/HBZ-HT015440386",
     "label" : "Culturegraph Ressource"
   } ],
-  "subject" : [ {
-    "componentList" : [ {
-      "dateOfBirth" : "1960",
-      "gndIdentifier" : "119411970",
-      "id" : "http://d-nb.info/gnd/119411970",
-      "label" : "König, Ralf",
-      "source" : {
-        "id" : "http://d-nb.info/gnd/7749153-1",
-        "label" : "Gemeinsame Normdatei (GND)"
+  "describedBy" : {
+    "id" : "http://lobid.org/resources/HT015440386",
+    "type" : [ "BibliographicDescription" ],
+    "dateCreated" : "20080220",
+    "inDataset" : {
+      "id" : "http://lobid.org/resources/dataset#!",
+      "label" : "lobid-resources – Der hbz-Verbundkatalog als Linked Open Data"
+    },
+    "resultOf" : {
+      "type" : [ "CreateAction" ],
+      "endTime" : "0001-01-01T00:00:00",
+      "instrument" : {
+        "id" : "https://github.com/hbz/lobid-resources",
+        "type" : [ "SoftwareApplication" ],
+        "label" : "Software lobid-resources"
       },
-      "type" : [ "Person" ]
-    }, {
-      "gndIdentifier" : "4010427-8",
-      "id" : "http://d-nb.info/gnd/4010427-8",
-      "label" : "Comic",
-      "source" : {
-        "id" : "http://d-nb.info/gnd/7749153-1",
-        "label" : "Gemeinsame Normdatei (GND)"
-      },
-      "type" : [ "SubjectHeading" ]
-    }, {
-      "gndIdentifier" : "4145395-5",
-      "id" : "http://d-nb.info/gnd/4145395-5",
-      "label" : "Bildband",
-      "source" : {
-        "id" : "http://d-nb.info/gnd/7749153-1",
-        "label" : "Gemeinsame Normdatei (GND)"
-      },
-      "type" : [ "SubjectHeading" ]
+      "object" : {
+        "id" : "http://lobid.org/hbz01/HT015440386",
+        "type" : [ "DataFeedItem" ],
+        "inDataset" : {
+          "id" : "https://datahub.io/dataset/hbz_unioncatalog",
+          "label" : "hbz_unioncatalog"
+        },
+        "label" : "hbz-Ressource HT015440386 im Exportformat MAB2-XML"
+      }
+    },
+    "license" : [ {
+      "id" : "http://creativecommons.org/publicdomain/zero/1.0",
+      "label" : "Creative Commons-Lizenz CC0 1.0 Universal"
     } ],
-    "label" : "König, Ralf | Comic | Bildband",
-    "type" : [ "ComplexSubject" ]
-  }, {
-    "id" : "http://purl.org/lobid/nwbib#s841070",
-    "label" : "Künstler",
-    "notation" : "841070",
-    "source" : {
-      "id" : "http://purl.org/lobid/nwbib",
-      "label" : "Sachsystematik der Nordrhein-Westfälischen Bibliographie"
-    }
-  }, {
-    "id" : "http://purl.org/lobid/nwbib-spatial#n01",
-    "label" : "Nordrhein-Westfalen",
-    "notation" : "01",
-    "source" : {
-      "id" : "http://purl.org/lobid/nwbib-spatial",
-      "label" : "Raumsystematik der Nordrhein-Westfälischen Bibliographie"
-    }
-  } ],
-  "subjectAltLabel" : [ "Ansichtspostkarte (Formschlagwort)", "Konig, Ralf (1960-)", "Bildmaterial (Formschlagwort)", "Abbildungswerk", "Bildsammlung", "Illustrationswerk", "Bilddokumente", "Kēnigs, Ralfs (1960-)", "Photographien-Bildband", "Comic Strip", "Abbildungen (Formschlagwort)", "Bilder (Formschlagwort)", "Comicstrip", "Fotographien-Bildband", "Comic Strips", "King, Ralph (1960-)", "Ansichten (Formschlagwort)", "Bande Dessinée", "Comics", "Bildbände", "Bildatlas" ],
-  "title" : "Jago",
-  "type" : [ "BibliographicResource", "Book" ]
+    "sourceOrganization" : {
+      "id" : "http://lobid.org/organisations/DE-385#!",
+      "label" : "lobid Organisation"
+    },
+    "label" : "Webseite der hbz-Ressource HT015440386"
+  },
+  "@context" : "http://lobid.org/resources/context.jsonld",
+  "id" : "http://lobid.org/resources/HT015440386#!"
 }

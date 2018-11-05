@@ -1,90 +1,33 @@
 {
-  "@context" : "web/conf/context.jsonld",
+  "type" : [ "Thesis", "Book", "BibliographicResource" ],
   "contribution" : [ {
+    "type" : [ "Contribution" ],
     "agent" : {
+      "id" : "http://d-nb.info/gnd/1028627270",
+      "type" : [ "Person" ],
       "dateOfBirth" : "1985",
       "gndIdentifier" : "1028627270",
-      "id" : "http://d-nb.info/gnd/1028627270",
-      "label" : "Fett, Anna Laura",
-      "type" : [ "Person" ]
+      "label" : "Fett, Anna Laura"
     },
     "role" : {
       "id" : "http://id.loc.gov/vocabulary/relators/cre",
       "label" : "Autor/in"
-    },
-    "type" : [ "Contribution" ]
+    }
   } ],
-  "describedBy" : {
-    "dateCreated" : "20121206",
-    "dateModified" : "20150227",
-    "id" : "http://lobid.org/resources/HT017480009",
-    "inDataset" : {
-      "id" : "http://lobid.org/resources/dataset#!",
-      "label" : "lobid-resources – Der hbz-Verbundkatalog als Linked Open Data"
-    },
-    "label" : "Webseite der hbz-Ressource HT017480009",
-    "license" : [ {
-      "id" : "http://creativecommons.org/publicdomain/zero/1.0",
-      "label" : "Creative Commons-Lizenz CC0 1.0 Universal"
-    } ],
-    "modifiedBy" : {
-      "id" : "http://lobid.org/organisations/DE-38M#!",
-      "label" : "lobid Organisation"
-    },
-    "resultOf" : {
-      "endTime" : "0001-01-01T00:00:00",
-      "instrument" : {
-        "id" : "https://github.com/hbz/lobid-resources",
-        "label" : "Software lobid-resources",
-        "type" : [ "SoftwareApplication" ]
-      },
-      "object" : {
-        "id" : "http://lobid.org/hbz01/HT017480009",
-        "inDataset" : {
-          "id" : "https://datahub.io/dataset/hbz_unioncatalog",
-          "label" : "hbz_unioncatalog"
-        },
-        "label" : "hbz-Ressource HT017480009 im Exportformat MAB2-XML",
-        "type" : [ "DataFeedItem" ]
-      },
-      "type" : [ "CreateAction" ]
-    },
-    "sourceOrganization" : {
-      "id" : "http://lobid.org/organisations/DE-38M#!",
-      "label" : "lobid Organisation"
-    },
-    "type" : [ "BibliographicDescription" ]
-  },
-  "doi" : [ "10.4126/38m-004826540" ],
   "extent" : "59 S. : Ill.",
-  "fulltextOnline" : [ {
-    "id" : "http://dx.doi.org/10.4126/38m-004826540",
-    "label" : "DOI-Link"
-  }, {
-    "id" : "http://digitool.hbz-nrw.de:1801/webclient/DeliveryManager?pid=4826540&custom_att_2=simple_viewer",
-    "label" : "Digitool"
-  }, {
-    "id" : "http://nbn-resolving.de/urn:nbn:de:hbz:38m-0000006293",
-    "label" : "URN-Link"
-  } ],
   "hasItem" : [ {
-    "callNumber" : "Elektronische Publikation",
+    "id" : "http://lobid.org/items/HT017480009:DE-38M:Elektronische%20Publikation#!",
+    "type" : [ "Item" ],
     "heldBy" : {
       "id" : "http://lobid.org/organisations/DE-38M",
       "label" : "lobid Organisation"
     },
-    "id" : "http://lobid.org/items/HT017480009:DE-38M:Elektronische%20Publikation#!",
+    "note" : [ "00000099" ],
+    "callNumber" : "Elektronische Publikation",
     "label" : "Elektronische Publikation",
-    "note" : "00000099",
-    "type" : [ "Item" ]
+    "@context" : "http://lobid.org/resources/context.jsonld"
   } ],
-  "hbzId" : "HT017480009",
-  "id" : "http://lobid.org/resources/HT017480009#!",
-  "inCollection" : [ {
-    "id" : "http://repository.publisso.de",
-    "label" : "Fachrepositorium Lebenswissenschaften",
-    "type" : [ "Collection" ]
-  } ],
+  "responsibilityStatement" : [ "vorgelegt von Anna Laura Fett" ],
   "language" : [ {
     "id" : "http://id.loc.gov/vocabulary/iso639-2/eng",
     "label" : "Englisch"
@@ -93,18 +36,41 @@
     "id" : "http://rdaregistry.info/termList/RDACarrierType/1018",
     "label" : "Online-Ressource"
   } ],
-  "publication" : [ {
-    "startDate" : "2012",
-    "type" : [ "PublicationEvent" ]
-  } ],
   "related" : [ {
     "id" : "http://lobid.org/resources/HT017501799#!",
     "label" : "Fett, Anna Laura: Immunohistochemical localization of complement regulatory proteins in the human retina"
   } ],
-  "responsibilityStatement" : [ "vorgelegt von Anna Laura Fett" ],
-  "sameAs" : [ {
-    "id" : "http://hub.culturegraph.org/resource/HBZ-HT017480009",
-    "label" : "Culturegraph Ressource"
+  "subject" : [ {
+    "source" : {
+      "id" : "http://d-nb.info/gnd/4149423-4",
+      "label" : "Dewey-Dezimalklassifikation"
+    },
+    "label" : "Medizin und Gesundheit",
+    "notation" : "610"
+  } ],
+  "title" : "Immunohistochemical localization of complement regulatory proteins in the human retina",
+  "fulltextOnline" : [ {
+    "id" : "http://digitool.hbz-nrw.de:1801/webclient/DeliveryManager?pid=4826540&custom_att_2=simple_viewer",
+    "label" : "Digitool"
+  }, {
+    "id" : "http://nbn-resolving.de/urn:nbn:de:hbz:38m-0000006293",
+    "label" : "URN-Link"
+  }, {
+    "id" : "http://dx.doi.org/10.4126/38m-004826540",
+    "label" : "DOI-Link"
+  } ],
+  "hbzId" : "HT017480009",
+  "inCollection" : [ {
+    "id" : "http://repository.publisso.de",
+    "type" : [ "Collection" ],
+    "label" : "Fachrepositorium Lebenswissenschaften"
+  } ],
+  "urn" : [ "urn:nbn:de:hbz:38m-0000006293" ],
+  "doi" : [ "10.4126/38m-004826540" ],
+  "thesisInformation" : [ "Köln, Univ., Diss., 2012" ],
+  "publication" : [ {
+    "type" : [ "PublicationEvent" ],
+    "startDate" : "2012"
   } ],
   "similar" : [ {
     "id" : "http://dx.doi.org/10.4126/38m-004826540",
@@ -113,16 +79,51 @@
     "id" : "http://nbn-resolving.de/urn:nbn:de:hbz:38m-0000006293",
     "label" : "URN-Link"
   } ],
-  "subject" : [ {
-    "label" : "Medizin und Gesundheit",
-    "notation" : "610",
-    "source" : {
-      "id" : "http://d-nb.info/gnd/4149423-4",
-      "label" : "Dewey-Dezimalklassifikation"
-    }
+  "sameAs" : [ {
+    "id" : "http://hub.culturegraph.org/resource/HBZ-HT017480009",
+    "label" : "Culturegraph Ressource"
   } ],
-  "thesisInformation" : [ "Köln, Univ., Diss., 2012" ],
-  "title" : "Immunohistochemical localization of complement regulatory proteins in the human retina",
-  "type" : [ "BibliographicResource", "Book", "Thesis" ],
-  "urn" : [ "urn:nbn:de:hbz:38m-0000006293" ]
+  "describedBy" : {
+    "id" : "http://lobid.org/resources/HT017480009",
+    "type" : [ "BibliographicDescription" ],
+    "modifiedBy" : {
+      "id" : "http://lobid.org/organisations/DE-38M#!",
+      "label" : "lobid Organisation"
+    },
+    "dateCreated" : "20121206",
+    "dateModified" : "20150227",
+    "inDataset" : {
+      "id" : "http://lobid.org/resources/dataset#!",
+      "label" : "lobid-resources – Der hbz-Verbundkatalog als Linked Open Data"
+    },
+    "resultOf" : {
+      "type" : [ "CreateAction" ],
+      "endTime" : "0001-01-01T00:00:00",
+      "instrument" : {
+        "id" : "https://github.com/hbz/lobid-resources",
+        "type" : [ "SoftwareApplication" ],
+        "label" : "Software lobid-resources"
+      },
+      "object" : {
+        "id" : "http://lobid.org/hbz01/HT017480009",
+        "type" : [ "DataFeedItem" ],
+        "inDataset" : {
+          "id" : "https://datahub.io/dataset/hbz_unioncatalog",
+          "label" : "hbz_unioncatalog"
+        },
+        "label" : "hbz-Ressource HT017480009 im Exportformat MAB2-XML"
+      }
+    },
+    "license" : [ {
+      "id" : "http://creativecommons.org/publicdomain/zero/1.0",
+      "label" : "Creative Commons-Lizenz CC0 1.0 Universal"
+    } ],
+    "sourceOrganization" : {
+      "id" : "http://lobid.org/organisations/DE-38M#!",
+      "label" : "lobid Organisation"
+    },
+    "label" : "Webseite der hbz-Ressource HT017480009"
+  },
+  "@context" : "http://lobid.org/resources/context.jsonld",
+  "id" : "http://lobid.org/resources/HT017480009#!"
 }

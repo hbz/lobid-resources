@@ -1,73 +1,31 @@
 {
-  "@context" : "web/conf/context.jsonld",
+  "type" : [ "BibliographicResource", "Book" ],
   "contribution" : [ {
+    "type" : [ "Contribution" ],
     "agent" : {
-      "gndIdentifier" : "2037247-4",
       "id" : "http://d-nb.info/gnd/2037247-4",
-      "label" : "Main-Kinzig-Kreis",
-      "type" : [ "PlaceOrGeographicName" ]
+      "type" : [ "PlaceOrGeographicName" ],
+      "gndIdentifier" : "2037247-4",
+      "label" : "Main-Kinzig-Kreis"
     },
     "role" : {
       "id" : "http://id.loc.gov/vocabulary/relators/cre",
       "label" : "Autor/in"
-    },
-    "type" : [ "Contribution" ]
+    }
   } ],
-  "describedBy" : {
-    "dateCreated" : "20010111",
-    "dateModified" : "20010312",
-    "id" : "http://lobid.org/resources/HT012895751",
-    "inDataset" : {
-      "id" : "http://lobid.org/resources/dataset#!",
-      "label" : "lobid-resources – Der hbz-Verbundkatalog als Linked Open Data"
-    },
-    "label" : "Webseite der hbz-Ressource HT012895751",
-    "license" : [ {
-      "id" : "http://creativecommons.org/publicdomain/zero/1.0",
-      "label" : "Creative Commons-Lizenz CC0 1.0 Universal"
-    } ],
-    "modifiedBy" : {
-      "id" : "http://lobid.org/organisations/DE-929#!",
-      "label" : "lobid Organisation"
-    },
-    "resultOf" : {
-      "endTime" : "0001-01-01T00:00:00",
-      "instrument" : {
-        "id" : "https://github.com/hbz/lobid-resources",
-        "label" : "Software lobid-resources",
-        "type" : [ "SoftwareApplication" ]
-      },
-      "object" : {
-        "id" : "http://lobid.org/hbz01/HT012895751",
-        "inDataset" : {
-          "id" : "https://datahub.io/dataset/hbz_unioncatalog",
-          "label" : "hbz_unioncatalog"
-        },
-        "label" : "hbz-Ressource HT012895751 im Exportformat MAB2-XML",
-        "type" : [ "DataFeedItem" ]
-      },
-      "type" : [ "CreateAction" ]
-    },
-    "sourceOrganization" : {
-      "id" : "http://lobid.org/organisations/DE-929#!",
-      "label" : "lobid Organisation"
-    },
-    "type" : [ "BibliographicDescription" ]
-  },
   "extent" : "76 S. : zahlr. Ill.",
   "hasItem" : [ {
-    "callNumber" : "C2001A/13",
+    "id" : "http://lobid.org/items/HT012895751:DE-929:C2001A%2F13#!",
+    "type" : [ "Item" ],
     "heldBy" : {
       "id" : "http://lobid.org/organisations/DE-929",
       "label" : "lobid Organisation"
     },
-    "id" : "http://lobid.org/items/HT012895751:DE-929:C2001A%2F13#!",
+    "note" : [ "00000000" ],
+    "callNumber" : "C2001A/13",
     "label" : "C2001A/13",
-    "note" : "00000000",
-    "type" : [ "Item" ]
+    "@context" : "http://lobid.org/resources/context.jsonld"
   } ],
-  "hbzId" : "HT012895751",
-  "id" : "http://lobid.org/resources/HT012895751#!",
   "language" : [ {
     "id" : "http://id.loc.gov/vocabulary/iso639-2/deu",
     "label" : "Deutsch"
@@ -76,57 +34,100 @@
     "id" : "http://rdaregistry.info/termList/RDAproductionMethod/1010",
     "label" : "Print"
   } ],
+  "subject" : [ {
+    "id" : "https://w3id.org/lobid/rpb2#n710",
+    "source" : {
+      "id" : "https://w3id.org/lobid/rpb2",
+      "label" : "RPB-Sachgruppen und Zusätze"
+    },
+    "notation" : "710",
+    "label" : "Geographie"
+  }, {
+    "type" : [ "ComplexSubject" ],
+    "componentList" : [ {
+      "id" : "http://d-nb.info/gnd/4037117-7",
+      "type" : [ "PlaceOrGeographicName" ],
+      "gndIdentifier" : "4037117-7",
+      "source" : {
+        "id" : "http://d-nb.info/gnd/7749153-1",
+        "label" : "Gemeinsame Normdatei (GND)"
+      },
+      "label" : "Main-Kinzig-Kreis"
+    }, {
+      "id" : "http://d-nb.info/gnd/4127794-6",
+      "type" : [ "SubjectHeading" ],
+      "gndIdentifier" : "4127794-6",
+      "source" : {
+        "id" : "http://d-nb.info/gnd/7749153-1",
+        "label" : "Gemeinsame Normdatei (GND)"
+      },
+      "label" : "Heimatkunde"
+    } ],
+    "label" : "Main-Kinzig-Kreis | Heimatkunde"
+  }, {
+    "id" : "https://w3id.org/lobid/rpb2#n140",
+    "source" : {
+      "id" : "https://w3id.org/lobid/rpb2",
+      "label" : "RPB-Sachgruppen und Zusätze"
+    },
+    "notation" : "140",
+    "label" : "Pflichtexemplar Region Koblenz"
+  } ],
+  "title" : "Mainz-Kinzig-Kreis",
+  "hbzId" : "HT012895751",
+  "subjectAltLabel" : [ "Heimatforschung", "Heimatgeschichte" ],
   "otherTitleInformation" : [ "Informationen für Bürger, Neubürger & Gäste" ],
   "publication" : [ {
+    "type" : [ "PublicationEvent" ],
     "location" : "Bad Kreuznach",
     "publishedBy" : "FORM-Medien-Verl.-Ges.",
-    "startDate" : "2000",
-    "type" : [ "PublicationEvent" ]
+    "startDate" : "2000"
   } ],
   "sameAs" : [ {
     "id" : "http://hub.culturegraph.org/resource/HBZ-HT012895751",
     "label" : "Culturegraph Ressource"
   } ],
-  "subject" : [ {
-    "id" : "https://w3id.org/lobid/rpb2#n710",
-    "label" : "Geographie",
-    "notation" : "710",
-    "source" : {
-      "id" : "https://w3id.org/lobid/rpb2",
-      "label" : "RPB-Sachgruppen und Zusätze"
-    }
-  }, {
-    "componentList" : [ {
-      "gndIdentifier" : "4037117-7",
-      "id" : "http://d-nb.info/gnd/4037117-7",
-      "label" : "Main-Kinzig-Kreis",
-      "source" : {
-        "id" : "http://d-nb.info/gnd/7749153-1",
-        "label" : "Gemeinsame Normdatei (GND)"
+  "describedBy" : {
+    "id" : "http://lobid.org/resources/HT012895751",
+    "type" : [ "BibliographicDescription" ],
+    "modifiedBy" : {
+      "id" : "http://lobid.org/organisations/DE-929#!",
+      "label" : "lobid Organisation"
+    },
+    "dateCreated" : "20010111",
+    "dateModified" : "20010312",
+    "inDataset" : {
+      "id" : "http://lobid.org/resources/dataset#!",
+      "label" : "lobid-resources – Der hbz-Verbundkatalog als Linked Open Data"
+    },
+    "resultOf" : {
+      "type" : [ "CreateAction" ],
+      "endTime" : "0001-01-01T00:00:00",
+      "instrument" : {
+        "id" : "https://github.com/hbz/lobid-resources",
+        "type" : [ "SoftwareApplication" ],
+        "label" : "Software lobid-resources"
       },
-      "type" : [ "PlaceOrGeographicName" ]
-    }, {
-      "gndIdentifier" : "4127794-6",
-      "id" : "http://d-nb.info/gnd/4127794-6",
-      "label" : "Heimatkunde",
-      "source" : {
-        "id" : "http://d-nb.info/gnd/7749153-1",
-        "label" : "Gemeinsame Normdatei (GND)"
-      },
-      "type" : [ "SubjectHeading" ]
+      "object" : {
+        "id" : "http://lobid.org/hbz01/HT012895751",
+        "type" : [ "DataFeedItem" ],
+        "inDataset" : {
+          "id" : "https://datahub.io/dataset/hbz_unioncatalog",
+          "label" : "hbz_unioncatalog"
+        },
+        "label" : "hbz-Ressource HT012895751 im Exportformat MAB2-XML"
+      }
+    },
+    "license" : [ {
+      "id" : "http://creativecommons.org/publicdomain/zero/1.0",
+      "label" : "Creative Commons-Lizenz CC0 1.0 Universal"
     } ],
-    "label" : "Main-Kinzig-Kreis | Heimatkunde",
-    "type" : [ "ComplexSubject" ]
-  }, {
-    "id" : "https://w3id.org/lobid/rpb2#n140",
-    "label" : "Pflichtexemplar Region Koblenz",
-    "notation" : "140",
-    "source" : {
-      "id" : "https://w3id.org/lobid/rpb2",
-      "label" : "RPB-Sachgruppen und Zusätze"
-    }
-  } ],
-  "subjectAltLabel" : [ "Heimatgeschichte", "Heimatforschung" ],
-  "title" : "Mainz-Kinzig-Kreis",
-  "type" : [ "BibliographicResource", "Book" ]
+    "sourceOrganization" : {
+      "id" : "http://lobid.org/organisations/DE-929#!",
+      "label" : "lobid Organisation"
+    },
+    "label" : "Webseite der hbz-Ressource HT012895751"
+  },
+  "@context" : "http://lobid.org/resources/context.jsonld",
+  "id" : "http://lobid.org/resources/HT012895751#!"
 }

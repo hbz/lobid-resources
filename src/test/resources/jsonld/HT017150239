@@ -1,72 +1,21 @@
 {
-  "@context" : "web/conf/context.jsonld",
-  "bibliographicCitation" : "Westfalen; 88. 2010 (2012), S. 175-179",
-  "containedIn" : [ {
-    "id" : "http://lobid.org/resources/HT001374559#!",
-    "label" : "Westfalen"
-  } ],
+  "type" : [ "BibliographicResource", "Article" ],
   "contribution" : [ {
+    "type" : [ "Contribution" ],
     "agent" : {
-      "gndIdentifier" : "109537335",
       "id" : "http://d-nb.info/gnd/109537335",
-      "label" : "Borgmann, Richard",
-      "type" : [ "Person" ]
+      "type" : [ "Person" ],
+      "gndIdentifier" : "109537335",
+      "label" : "Borgmann, Richard"
     },
     "role" : {
       "id" : "http://id.loc.gov/vocabulary/relators/cre",
       "label" : "Autor/in"
-    },
-    "type" : [ "Contribution" ]
+    }
   } ],
+  "responsibilityStatement" : [ "Borgmann, Richard" ],
   "coverage" : [ "Münster <Westfalen> | 99" ],
-  "describedBy" : {
-    "dateCreated" : "20120228",
-    "dateModified" : "20120229",
-    "id" : "http://lobid.org/resources/HT017150239",
-    "inDataset" : {
-      "id" : "http://lobid.org/resources/dataset#!",
-      "label" : "lobid-resources – Der hbz-Verbundkatalog als Linked Open Data"
-    },
-    "label" : "Webseite der hbz-Ressource HT017150239",
-    "license" : [ {
-      "id" : "http://creativecommons.org/publicdomain/zero/1.0",
-      "label" : "Creative Commons-Lizenz CC0 1.0 Universal"
-    } ],
-    "modifiedBy" : {
-      "id" : "http://lobid.org/organisations/DE-6#!",
-      "label" : "lobid Organisation"
-    },
-    "resultOf" : {
-      "endTime" : "0001-01-01T00:00:00",
-      "instrument" : {
-        "id" : "https://github.com/hbz/lobid-resources",
-        "label" : "Software lobid-resources",
-        "type" : [ "SoftwareApplication" ]
-      },
-      "object" : {
-        "id" : "http://lobid.org/hbz01/HT017150239",
-        "inDataset" : {
-          "id" : "https://datahub.io/dataset/hbz_unioncatalog",
-          "label" : "hbz_unioncatalog"
-        },
-        "label" : "hbz-Ressource HT017150239 im Exportformat MAB2-XML",
-        "type" : [ "DataFeedItem" ]
-      },
-      "type" : [ "CreateAction" ]
-    },
-    "sourceOrganization" : {
-      "id" : "http://lobid.org/organisations/DE-6#!",
-      "label" : "lobid Organisation"
-    },
-    "type" : [ "BibliographicDescription" ]
-  },
-  "hbzId" : "HT017150239",
-  "id" : "http://lobid.org/resources/HT017150239#!",
-  "inCollection" : [ {
-    "id" : "http://lobid.org/resources/HT014176012#!",
-    "label" : "Nordrhein-Westfälische Bibliographie (NWBib)",
-    "type" : [ "Collection" ]
-  } ],
+  "bibliographicCitation" : "Westfalen; 88. 2010 (2012), S. 175-179",
   "language" : [ {
     "id" : "http://id.loc.gov/vocabulary/iso639-2/deu",
     "label" : "Deutsch"
@@ -75,47 +24,98 @@
     "id" : "http://rdaregistry.info/termList/RDAproductionMethod/1010",
     "label" : "Print"
   } ],
-  "publication" : [ {
-    "location" : "Münster",
-    "startDate" : "2012",
-    "type" : [ "PublicationEvent" ]
-  } ],
-  "responsibilityStatement" : [ "Borgmann, Richard" ],
-  "sameAs" : [ {
-    "id" : "http://hub.culturegraph.org/resource/HBZ-HT017150239",
-    "label" : "Culturegraph Ressource"
-  } ],
   "subject" : [ {
+    "type" : [ "ComplexSubject" ],
     "componentList" : [ {
-      "gndIdentifier" : "7856688-5",
       "id" : "http://d-nb.info/gnd/7856688-5",
-      "label" : "Westfalen-Lippe. Amt für Denkmalpflege in Westfalen, Fachbereich Praktische Denkmalpflege und Baukultur",
+      "type" : [ "CorporateBody" ],
+      "gndIdentifier" : "7856688-5",
       "source" : {
         "id" : "http://d-nb.info/gnd/7749153-1",
         "label" : "Gemeinsame Normdatei (GND)"
       },
-      "type" : [ "CorporateBody" ]
+      "label" : "Westfalen-Lippe. Amt für Denkmalpflege in Westfalen, Fachbereich Praktische Denkmalpflege und Baukultur"
     } ],
-    "label" : "Westfalen-Lippe, Amt für Denkmalpflege in Westfalen, Fachbereich Praktische Denkmalpflege und Baukultur",
-    "type" : [ "ComplexSubject" ]
-  }, {
-    "id" : "http://purl.org/lobid/nwbib#s844200",
-    "label" : "Denkmalpflege. Denkmalschutz",
-    "notation" : "844200",
-    "source" : {
-      "id" : "http://purl.org/lobid/nwbib",
-      "label" : "Sachsystematik der Nordrhein-Westfälischen Bibliographie"
-    }
+    "label" : "Westfalen-Lippe, Amt für Denkmalpflege in Westfalen, Fachbereich Praktische Denkmalpflege und Baukultur"
   }, {
     "id" : "http://purl.org/lobid/nwbib-spatial#n05",
-    "label" : "Westfalen",
-    "notation" : "05",
     "source" : {
       "id" : "http://purl.org/lobid/nwbib-spatial",
       "label" : "Raumsystematik der Nordrhein-Westfälischen Bibliographie"
-    }
+    },
+    "notation" : "05",
+    "label" : "Westfalen"
+  }, {
+    "id" : "http://purl.org/lobid/nwbib#s844200",
+    "source" : {
+      "id" : "http://purl.org/lobid/nwbib",
+      "label" : "Sachsystematik der Nordrhein-Westfälischen Bibliographie"
+    },
+    "notation" : "844200",
+    "label" : "Denkmalpflege. Denkmalschutz"
   } ],
-  "subjectAltLabel" : [ "Westfalen-Lippe. Fachbereich Praktische Denkmalpflege", "Münster (Westf) / Fachbereich Praktische Denkmalpflege und Baukultur" ],
   "title" : "Situationsbericht Fachbereich Praktische Denkmalpflege",
-  "type" : [ "BibliographicResource", "Article" ]
+  "containedIn" : [ {
+    "id" : "http://lobid.org/resources/HT001374559#!",
+    "label" : "Westfalen"
+  } ],
+  "hbzId" : "HT017150239",
+  "inCollection" : [ {
+    "id" : "http://lobid.org/resources/HT014176012#!",
+    "type" : [ "Collection" ],
+    "label" : "Nordrhein-Westfälische Bibliographie (NWBib)"
+  } ],
+  "subjectAltLabel" : [ "Münster (Westf) / Fachbereich Praktische Denkmalpflege und Baukultur", "Westfalen-Lippe. Fachbereich Praktische Denkmalpflege" ],
+  "publication" : [ {
+    "type" : [ "PublicationEvent" ],
+    "location" : "Münster",
+    "startDate" : "2012"
+  } ],
+  "sameAs" : [ {
+    "id" : "http://hub.culturegraph.org/resource/HBZ-HT017150239",
+    "label" : "Culturegraph Ressource"
+  } ],
+  "describedBy" : {
+    "id" : "http://lobid.org/resources/HT017150239",
+    "type" : [ "BibliographicDescription" ],
+    "modifiedBy" : {
+      "id" : "http://lobid.org/organisations/DE-6#!",
+      "label" : "lobid Organisation"
+    },
+    "dateCreated" : "20120228",
+    "dateModified" : "20120229",
+    "inDataset" : {
+      "id" : "http://lobid.org/resources/dataset#!",
+      "label" : "lobid-resources – Der hbz-Verbundkatalog als Linked Open Data"
+    },
+    "resultOf" : {
+      "type" : [ "CreateAction" ],
+      "endTime" : "0001-01-01T00:00:00",
+      "instrument" : {
+        "id" : "https://github.com/hbz/lobid-resources",
+        "type" : [ "SoftwareApplication" ],
+        "label" : "Software lobid-resources"
+      },
+      "object" : {
+        "id" : "http://lobid.org/hbz01/HT017150239",
+        "type" : [ "DataFeedItem" ],
+        "inDataset" : {
+          "id" : "https://datahub.io/dataset/hbz_unioncatalog",
+          "label" : "hbz_unioncatalog"
+        },
+        "label" : "hbz-Ressource HT017150239 im Exportformat MAB2-XML"
+      }
+    },
+    "license" : [ {
+      "id" : "http://creativecommons.org/publicdomain/zero/1.0",
+      "label" : "Creative Commons-Lizenz CC0 1.0 Universal"
+    } ],
+    "sourceOrganization" : {
+      "id" : "http://lobid.org/organisations/DE-6#!",
+      "label" : "lobid Organisation"
+    },
+    "label" : "Webseite der hbz-Ressource HT017150239"
+  },
+  "@context" : "http://lobid.org/resources/context.jsonld",
+  "id" : "http://lobid.org/resources/HT017150239#!"
 }

@@ -40,11 +40,16 @@ public class RdfGraphToJsonLd
 	private HashMap<String, String> frame;
 	private String contextFn = "web/conf/context.jsonld";
 	private String contextUri = "http://lobid.org/resources/context.jsonld";
+	NQuadRDFParser rdfParser = new NQuadRDFParser();
+	JsonLdOptions options = new JsonLdOptions();
 
 	@Override
 	public void onSetReceiver() {
 		frame = new HashMap<>(ImmutableMap.of(//
 				"@type", rdfTypeToIdentifyRootId, "@embed", "@always"));
+		options.setCompactArrays(true);
+		options.setPruneBlankNodeIdentifiers(true);
+		options.setProcessingMode(JsonLdOptions.JSON_LD_1_1);
 		try {
 			String contextStr = new String(Files.readAllBytes(Paths.get(contextFn)));
 			context = JsonUtils.fromString(contextStr);
@@ -60,10 +65,6 @@ public class RdfGraphToJsonLd
 		if (ntriples.isEmpty())
 			return;
 		try {
-			NQuadRDFParser rdfParser = new NQuadRDFParser();
-			JsonLdOptions options = new JsonLdOptions();
-			options.setCompactArrays(true);
-			options.setPruneBlankNodeIdentifiers(true);
 			Object jsonObject = JsonLdProcessor.fromRDF(ntriples, options, rdfParser);
 			jsonObject = JsonLdProcessor.frame(jsonObject, frame, options);
 			Map<String, Object> jsonMap =

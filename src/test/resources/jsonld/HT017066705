@@ -1,172 +1,173 @@
 {
-  "@context" : "web/conf/context.jsonld",
-  "alternativeTitle" : [ "Hundert Jahre Trauth" ],
+  "type" : [ "Image", "BibliographicResource" ],
   "contribution" : [ {
+    "type" : [ "Contribution" ],
     "agent" : {
-      "altLabel" : [ "Trauth & Söhne", "Eugen Trauth und Söhne", "Süßwarenfirma Eugen Trauth & Söhne" ],
-      "gndIdentifier" : "16332939-4",
       "id" : "http://d-nb.info/gnd/16332939-4",
+      "type" : [ "CorporateBody" ],
+      "gndIdentifier" : "16332939-4",
       "label" : "Eugen Trauth & Söhne",
-      "type" : [ "CorporateBody" ]
+      "altLabel" : [ "Süßwarenfirma Eugen Trauth & Söhne", "Eugen Trauth und Söhne", "Trauth & Söhne" ]
     },
     "role" : {
       "id" : "http://id.loc.gov/vocabulary/relators/ctb",
       "label" : "Mitwirkende"
-    },
-    "type" : [ "Contribution" ]
+    }
   } ],
-  "describedBy" : {
-    "dateCreated" : "20111209",
-    "dateModified" : "20120106",
-    "id" : "http://lobid.org/resources/HT017066705",
-    "inDataset" : {
-      "id" : "http://lobid.org/resources/dataset#!",
-      "label" : "lobid-resources – Der hbz-Verbundkatalog als Linked Open Data"
-    },
-    "label" : "Webseite der hbz-Ressource HT017066705",
-    "license" : [ {
-      "id" : "http://creativecommons.org/publicdomain/zero/1.0",
-      "label" : "Creative Commons-Lizenz CC0 1.0 Universal"
-    } ],
-    "modifiedBy" : {
-      "id" : "http://lobid.org/organisations/DE-107#!",
-      "label" : "lobid Organisation"
-    },
-    "resultOf" : {
-      "endTime" : "0001-01-01T00:00:00",
-      "instrument" : {
-        "id" : "https://github.com/hbz/lobid-resources",
-        "label" : "Software lobid-resources",
-        "type" : [ "SoftwareApplication" ]
-      },
-      "object" : {
-        "id" : "http://lobid.org/hbz01/HT017066705",
-        "inDataset" : {
-          "id" : "https://datahub.io/dataset/hbz_unioncatalog",
-          "label" : "hbz_unioncatalog"
-        },
-        "label" : "hbz-Ressource HT017066705 im Exportformat MAB2-XML",
-        "type" : [ "DataFeedItem" ]
-      },
-      "type" : [ "CreateAction" ]
-    },
-    "sourceOrganization" : {
-      "id" : "http://lobid.org/organisations/DE-107#!",
-      "label" : "lobid Organisation"
-    },
-    "type" : [ "BibliographicDescription" ]
-  },
   "extent" : "1 DVD-Video",
   "hasItem" : [ {
-    "callNumber" : "DVD 886",
+    "id" : "http://lobid.org/items/HT017066705:DE-107:DVD%20886#!",
+    "type" : [ "Item" ],
     "heldBy" : {
       "id" : "http://lobid.org/organisations/DE-107",
       "label" : "lobid Organisation"
     },
-    "id" : "http://lobid.org/items/HT017066705:DE-107:DVD%20886#!",
+    "note" : [ "00001000" ],
+    "callNumber" : "DVD 886",
     "label" : "DVD 886",
-    "note" : "00001000",
-    "type" : [ "Item" ]
+    "@context" : "http://lobid.org/resources/context.jsonld"
   } ],
-  "hbzId" : "HT017066705",
-  "id" : "http://lobid.org/resources/HT017066705#!",
+  "note" : [ "Imagefilm" ],
+  "alternativeTitle" : [ "Hundert Jahre Trauth" ],
   "language" : [ {
     "id" : "http://id.loc.gov/vocabulary/iso639-2/deu",
     "label" : "Deutsch"
   } ],
   "medium" : [ {
-    "id" : "http://purl.org/ontology/bibo/AudioVisualDocument",
-    "label" : "Audio-Visuell"
-  }, {
     "id" : "http://rdaregistry.info/termList/RDAMediaType/1008",
     "label" : "Video"
+  }, {
+    "id" : "http://purl.org/ontology/bibo/AudioVisualDocument",
+    "label" : "Audio-Visuell"
   }, {
     "id" : "http://rdaregistry.info/termList/RDAMediaType/1003",
     "label" : "Datenträger"
   } ],
-  "note" : [ "Imagefilm" ],
+  "subject" : [ {
+    "id" : "https://w3id.org/lobid/rpb2#n650",
+    "source" : {
+      "id" : "https://w3id.org/lobid/rpb2",
+      "label" : "RPB-Sachgruppen und Zusätze"
+    },
+    "notation" : "650",
+    "label" : "Wirtschaft und Arbeit"
+  }, {
+    "id" : "https://w3id.org/lobid/rpb2#n970",
+    "source" : {
+      "id" : "https://w3id.org/lobid/rpb2",
+      "label" : "RPB-Sachgruppen und Zusätze"
+    },
+    "notation" : "970",
+    "label" : "Hausw., Hotel- und Gaststättengewerbe"
+  }, {
+    "id" : "https://w3id.org/lobid/rpb2#n141",
+    "source" : {
+      "id" : "https://w3id.org/lobid/rpb2",
+      "label" : "RPB-Sachgruppen und Zusätze"
+    },
+    "notation" : "141",
+    "label" : "Pflichtexemplar Pfalz"
+  }, {
+    "id" : "https://w3id.org/lobid/rpb2#n131",
+    "source" : {
+      "id" : "https://w3id.org/lobid/rpb2",
+      "label" : "RPB-Sachgruppen und Zusätze"
+    },
+    "notation" : "131",
+    "label" : "Landeskunde Pfalz"
+  }, {
+    "type" : [ "ComplexSubject" ],
+    "componentList" : [ {
+      "id" : "http://d-nb.info/gnd/4362856-4",
+      "type" : [ "PlaceOrGeographicName" ],
+      "gndIdentifier" : "4362856-4",
+      "source" : {
+        "id" : "http://d-nb.info/gnd/7749153-1",
+        "label" : "Gemeinsame Normdatei (GND)"
+      },
+      "label" : "Herxheim bei Landau (Pfalz)"
+    }, {
+      "id" : "http://d-nb.info/gnd/4507427-6",
+      "type" : [ "SubjectHeading" ],
+      "gndIdentifier" : "4507427-6",
+      "source" : {
+        "id" : "http://d-nb.info/gnd/7749153-1",
+        "label" : "Gemeinsame Normdatei (GND)"
+      },
+      "label" : "Schokoladenindustrie"
+    }, {
+      "id" : "http://d-nb.info/gnd/4076388-2",
+      "type" : [ "SubjectHeading" ],
+      "gndIdentifier" : "4076388-2",
+      "source" : {
+        "id" : "http://d-nb.info/gnd/7749153-1",
+        "label" : "Gemeinsame Normdatei (GND)"
+      },
+      "label" : "Proteine"
+    }, {
+      "type" : [ "SubjectHeading" ],
+      "label" : "Geschichte 1911-2011"
+    }, {
+      "type" : [ "SubjectHeading" ],
+      "label" : "DVD-Video"
+    } ],
+    "label" : "Herxheim bei Landau (Pfalz) | Schokoladenindustrie | Proteine | Geschichte 1911-2011 | DVD-Video"
+  } ],
+  "title" : "100 Jahre Trauth",
+  "hbzId" : "HT017066705",
+  "subjectAltLabel" : [ "Eiweiss", "Herxheim b. Landau", "Herxheim", "Schokoladeindustrie", "Herxheim (Landau in der Pfalz)", "Schokolade / Süßwarenindustrie", "Protein", "Schokolade / Industrie", "Herxheim b. Landau, Pfalz" ],
   "otherTitleInformation" : [ "Schokoküsse aus Herxheim" ],
   "publication" : [ {
+    "type" : [ "PublicationEvent" ],
     "location" : "Landau",
     "publishedBy" : "Calimedia",
-    "startDate" : "2011",
-    "type" : [ "PublicationEvent" ]
+    "startDate" : "2011"
   } ],
   "sameAs" : [ {
     "id" : "http://hub.culturegraph.org/resource/HBZ-HT017066705",
     "label" : "Culturegraph Ressource"
   } ],
-  "subject" : [ {
-    "id" : "https://w3id.org/lobid/rpb2#n970",
-    "label" : "Hausw., Hotel- und Gaststättengewerbe",
-    "notation" : "970",
-    "source" : {
-      "id" : "https://w3id.org/lobid/rpb2",
-      "label" : "RPB-Sachgruppen und Zusätze"
-    }
-  }, {
-    "componentList" : [ {
-      "gndIdentifier" : "4362856-4",
-      "id" : "http://d-nb.info/gnd/4362856-4",
-      "label" : "Herxheim bei Landau (Pfalz)",
-      "source" : {
-        "id" : "http://d-nb.info/gnd/7749153-1",
-        "label" : "Gemeinsame Normdatei (GND)"
+  "describedBy" : {
+    "id" : "http://lobid.org/resources/HT017066705",
+    "type" : [ "BibliographicDescription" ],
+    "modifiedBy" : {
+      "id" : "http://lobid.org/organisations/DE-107#!",
+      "label" : "lobid Organisation"
+    },
+    "dateCreated" : "20111209",
+    "dateModified" : "20120106",
+    "inDataset" : {
+      "id" : "http://lobid.org/resources/dataset#!",
+      "label" : "lobid-resources – Der hbz-Verbundkatalog als Linked Open Data"
+    },
+    "resultOf" : {
+      "type" : [ "CreateAction" ],
+      "endTime" : "0001-01-01T00:00:00",
+      "instrument" : {
+        "id" : "https://github.com/hbz/lobid-resources",
+        "type" : [ "SoftwareApplication" ],
+        "label" : "Software lobid-resources"
       },
-      "type" : [ "PlaceOrGeographicName" ]
-    }, {
-      "gndIdentifier" : "4507427-6",
-      "id" : "http://d-nb.info/gnd/4507427-6",
-      "label" : "Schokoladenindustrie",
-      "source" : {
-        "id" : "http://d-nb.info/gnd/7749153-1",
-        "label" : "Gemeinsame Normdatei (GND)"
-      },
-      "type" : [ "SubjectHeading" ]
-    }, {
-      "gndIdentifier" : "4076388-2",
-      "id" : "http://d-nb.info/gnd/4076388-2",
-      "label" : "Proteine",
-      "source" : {
-        "id" : "http://d-nb.info/gnd/7749153-1",
-        "label" : "Gemeinsame Normdatei (GND)"
-      },
-      "type" : [ "SubjectHeading" ]
-    }, {
-      "label" : "Geschichte 1911-2011",
-      "type" : [ "SubjectHeading" ]
-    }, {
-      "label" : "DVD-Video",
-      "type" : [ "SubjectHeading" ]
+      "object" : {
+        "id" : "http://lobid.org/hbz01/HT017066705",
+        "type" : [ "DataFeedItem" ],
+        "inDataset" : {
+          "id" : "https://datahub.io/dataset/hbz_unioncatalog",
+          "label" : "hbz_unioncatalog"
+        },
+        "label" : "hbz-Ressource HT017066705 im Exportformat MAB2-XML"
+      }
+    },
+    "license" : [ {
+      "id" : "http://creativecommons.org/publicdomain/zero/1.0",
+      "label" : "Creative Commons-Lizenz CC0 1.0 Universal"
     } ],
-    "label" : "Herxheim bei Landau (Pfalz) | Schokoladenindustrie | Proteine | Geschichte 1911-2011 | DVD-Video",
-    "type" : [ "ComplexSubject" ]
-  }, {
-    "id" : "https://w3id.org/lobid/rpb2#n131",
-    "label" : "Landeskunde Pfalz",
-    "notation" : "131",
-    "source" : {
-      "id" : "https://w3id.org/lobid/rpb2",
-      "label" : "RPB-Sachgruppen und Zusätze"
-    }
-  }, {
-    "id" : "https://w3id.org/lobid/rpb2#n141",
-    "label" : "Pflichtexemplar Pfalz",
-    "notation" : "141",
-    "source" : {
-      "id" : "https://w3id.org/lobid/rpb2",
-      "label" : "RPB-Sachgruppen und Zusätze"
-    }
-  }, {
-    "id" : "https://w3id.org/lobid/rpb2#n650",
-    "label" : "Wirtschaft und Arbeit",
-    "notation" : "650",
-    "source" : {
-      "id" : "https://w3id.org/lobid/rpb2",
-      "label" : "RPB-Sachgruppen und Zusätze"
-    }
-  } ],
-  "subjectAltLabel" : [ "Eiweiss", "Herxheim (Landau in der Pfalz)", "Schokoladeindustrie", "Herxheim", "Herxheim b. Landau", "Herxheim b. Landau, Pfalz", "Protein", "Schokolade / Industrie", "Schokolade / Süßwarenindustrie" ],
-  "title" : "100 Jahre Trauth",
-  "type" : [ "BibliographicResource", "Image" ]
+    "sourceOrganization" : {
+      "id" : "http://lobid.org/organisations/DE-107#!",
+      "label" : "lobid Organisation"
+    },
+    "label" : "Webseite der hbz-Ressource HT017066705"
+  },
+  "@context" : "http://lobid.org/resources/context.jsonld",
+  "id" : "http://lobid.org/resources/HT017066705#!"
 }

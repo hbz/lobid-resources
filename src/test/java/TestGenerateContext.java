@@ -26,6 +26,6 @@ public class TestGenerateContext {
 		em = new EtikettMaker(new File(Thread.currentThread()
 				.getContextClassLoader().getResource("loc-bibframe-labels").getFile()));
 		em.setContextLocation("web/conf/context-loc.jsonld");
-		em.writeContext();
+		// em.writeContext();
 	}
 }
