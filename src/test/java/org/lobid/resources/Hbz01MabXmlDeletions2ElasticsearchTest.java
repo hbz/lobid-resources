@@ -115,7 +115,8 @@ public final class Hbz01MabXmlDeletions2ElasticsearchTest {
 	 * json-ld, index that into elasticsearch.
 	 */
 	public static void etl(final Client cl) {
-		RdfGraphToJsonLd rdfGraphToJsonLd = new RdfGraphToJsonLd();
+		RdfGraphToJsonLd rdfGraphToJsonLd =
+				new RdfGraphToJsonLd(JSONLD_CONTEXT_URI);
 		rdfGraphToJsonLd
 				.setContextLocationFilname("web/conf/context-deletion.jsonld");
 		rdfGraphToJsonLd.setContextUri(JSONLD_CONTEXT_URI);

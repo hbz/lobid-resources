@@ -46,15 +46,16 @@ public final class JsonLdEtikett extends
 	 * Takes a filename which could be a directory to create the context jsonld
 	 * out of labels.
 	 * 
-	 * @param FN the name of the labels firectory or file
+	 * @param LABELS_DIRECTORY_FILENAME the name of the labels firectory or file
 	 * @param CONTEXT_LOCATION_FILENAME the filename of the to be produced and to
 	 *          be stored context
 	 */
-	public JsonLdEtikett(final String FN,
+	public JsonLdEtikett(final String LABELS_DIRECTORY_FILENAME,
 			final String CONTEXT_LOCATION_FILENAME) {
-		labelsDirectoryName = FN;
-		etikettMaker = new EtikettMaker(new File(Thread.currentThread()
-				.getContextClassLoader().getResource(FN).getFile()));
+		labelsDirectoryName = LABELS_DIRECTORY_FILENAME;
+		etikettMaker =
+				new EtikettMaker(new File(Thread.currentThread().getContextClassLoader()
+						.getResource(LABELS_DIRECTORY_FILENAME).getFile()));
 		etikettMaker.setContextLocation(CONTEXT_LOCATION_FILENAME);
 		etikettMaker.writeContext();
 	}
@@ -109,4 +110,12 @@ public final class JsonLdEtikett extends
 		return labelsDirectoryName;
 	}
 
+	/**
+	 * Gets the filename of the context.
+	 * 
+	 * @return the filename to the context
+	 */
+	public String getContextName() {
+		return etikettMaker.getContextLocation();
+	}
 }

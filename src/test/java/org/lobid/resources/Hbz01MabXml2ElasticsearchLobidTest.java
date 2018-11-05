@@ -38,6 +38,7 @@ import org.elasticsearch.search.SearchHit;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.lobid.resources.run.MabXml2lobidJsonEs;
 import org.lobid.resources.run.WikidataGeodata2Es;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -119,7 +120,7 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 		ElasticsearchIndexer.MINIMUM_SCORE = 1.4;
 		final FileOpener opener = new FileOpener();
 		JsonLdEtikett jsonLdEtikett = new JsonLdEtikett();
-		rdfGraphToJsonLd = new RdfGraphToJsonLd();
+		rdfGraphToJsonLd = new RdfGraphToJsonLd(MabXml2lobidJsonEs.CONTEXT_URI);
 		opener.setReceiver(new TarReader())//
 				.setReceiver(new XmlDecoder())//
 				.setReceiver(new AlephMabXmlHandler())

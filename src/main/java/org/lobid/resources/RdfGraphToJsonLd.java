@@ -39,9 +39,18 @@ public class RdfGraphToJsonLd
 			LogManager.getLogger(RdfGraphToJsonLd.class);
 	private HashMap<String, String> frame;
 	private String contextFn = "web/conf/context.jsonld";
-	private String contextUri = "http://lobid.org/resources/context.jsonld";
+	private String contextUri;
 	NQuadRDFParser rdfParser = new NQuadRDFParser();
 	JsonLdOptions options = new JsonLdOptions();
+
+	/**
+	 * Every context-object will be substituted by this URL.
+	 * 
+	 * @param CONTEXT_URI the context URI
+	 */
+	public RdfGraphToJsonLd(final String CONTEXT_URI) {
+		this.contextUri = CONTEXT_URI;
+	}
 
 	@Override
 	public void onSetReceiver() {

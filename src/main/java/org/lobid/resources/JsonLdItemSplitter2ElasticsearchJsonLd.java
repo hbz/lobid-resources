@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.culturegraph.mf.framework.DefaultObjectPipe;
 import org.culturegraph.mf.framework.ObjectReceiver;
@@ -28,6 +29,7 @@ public final class JsonLdItemSplitter2ElasticsearchJsonLd extends
 	static String LOBID_DOMAIN = "http://lobid.org/";
 	private static final String TYPE_ITEM = "item";
 	private static final String TYPE_RESOURCE = "resource";
+	private static AtomicInteger idCnt = new AtomicInteger(0);
 
 	/**
 	 * @param KEY_TO_GET_MAIN_ID the json-key to get the main elasticsearch ID
@@ -43,7 +45,9 @@ public final class JsonLdItemSplitter2ElasticsearchJsonLd extends
 	}
 
 	private void extractItemFromResourceModel(final Map<String, Object> jsonMap) {
-		final String mainId = jsonMap.get(keyToGetMainId).toString();
+		final String mainId = jsonMap.get(keyToGetMainId) != null
+				? jsonMap.get(keyToGetMainId).toString()
+				: String.valueOf(idCnt.incrementAndGet());
 		@SuppressWarnings("unchecked")
 		ArrayList<Map<String, Object>> hm =
 				(ArrayList<Map<String, Object>>) jsonMap.get("hasItem");

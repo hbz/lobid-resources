@@ -33,6 +33,8 @@ public class MabXml2lobidJsonEs {
 	public static String jsonLdContextUri =
 			"http://lobid.org/resources/context.jsonld";
 	private static final String MORPH_FN_PREFIX = "src/main/resources/";
+	public static final String CONTEXT_URI =
+			"http://lobid.org/resources/context.jsonld";
 
 	public static void main(String... args) {
 		String usage =
@@ -64,7 +66,7 @@ public class MabXml2lobidJsonEs {
 		String etikettLablesDirectory;
 		JsonLdEtikett jsonLdEtikett;
 
-		RdfGraphToJsonLd rdfGraphToJsonLd = new RdfGraphToJsonLd();
+		RdfGraphToJsonLd rdfGraphToJsonLd = new RdfGraphToJsonLd(CONTEXT_URI);
 		rdfGraphToJsonLd.setContextLocationFilname(
 				System.getProperty("contextFilename", "web/conf/context.jsonld"));
 		System.out.println(
