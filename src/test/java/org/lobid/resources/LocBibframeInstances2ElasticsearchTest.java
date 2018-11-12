@@ -1,4 +1,4 @@
-/*Copyright 2015,2016,2017 hbz,Pascal Christoph.*Licensed under the Eclipse Public License 1.0*/package org.lobid.resources;
+/*Copyright 2018 hbz,Pascal Christoph.*Licensed under the Eclipse Public License 1.0*/package org.lobid.resources;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -39,10 +39,10 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import de.hbz.lobid.helper.CompareJsonMaps;
 
 /***
- * Transform loc bibframe instances into JSON-LD and index that
- * into*elasticsearch.Query the index and test the data by transforming the
- * data*into one big ntriple file(which is great to make diffs)and into
- * several*JSON-LD files(reflecting the records residing in elasticsearch).**
+ * Transform loc bibframe instances into JSON-LD and index that into
+ * elasticsearch.Query the index and test the data by transforming the data into
+ * one big ntriple file(which is great to make diffs)and into several* JSON-LD
+ * files(reflecting the records residing in elasticsearch).
  * 
  * @author Pascal Christoph(dr0i)
  **/
@@ -65,24 +65,22 @@ public final class LocBibframeInstances2ElasticsearchTest {
 
 	private static RdfGraphToJsonLd rdfGraphToJsonLd =
 			new RdfGraphToJsonLd(LocBibframe2JsonEs.LOC_CONTEXT);
-	// private static JsonLdEtikett jsonLdEtikett =
-	// new JsonLdEtikett(LocBibframe2JsonEs.DIRECTORY_TO_LOC_LABELS,
-	// "web/conf/context-loc.jsonld");
 	private static JsonLdItemSplitter2ElasticsearchJsonLd jsonLdItemSplitter2ElasticsearchJsonLd =
 			new JsonLdItemSplitter2ElasticsearchJsonLd("");
 
 	@BeforeClass
 	public static void setup() {
 		try {
-			// if (System.getProperty("generateTestData", "false").equals("true")) {
-			LOG.info(
-					"You set generateTestData=true. Thus, first going to remove all test files residing in "
-							+ "the test directory. The build will be mostly 'succesful' and you sould check the changes "
-							+ "by oing a 'git diff' on your own.");
-			Files.walk(Paths.get(DIRECTORY_TO_TEST_JSON_FILES))
-					.filter(Files::isRegularFile).map(Path::toFile).forEach(File::delete);
+			if (System.getProperty("generateTestData", "false").equals("true")) {
+				LOG.info(
+						"You set generateTestData=true. Thus, first going to remove all test files residing in "
+								+ "the test directory. The build will be mostly 'succesful' and you sould check the changes "
+								+ "by oing a 'git diff' on your own.");
+				Files.walk(Paths.get(DIRECTORY_TO_TEST_JSON_FILES))
+						.filter(Files::isRegularFile).map(Path::toFile)
+						.forEach(File::delete);
 
-			// }
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -121,7 +119,6 @@ public final class LocBibframeInstances2ElasticsearchTest {
 		triple2model.setInput(Hbz01MabXmlEtlNtriples2Filesystem.N_TRIPLE);
 		opener.setReceiver(srs)//
 				.setReceiver(rdfGraphToJsonLd)//
-				// .setReceiver(jsonLdEtikett)//
 				.setReceiver(jsonLdItemSplitter2ElasticsearchJsonLd)//
 				.setReceiver(getElasticsearchIndexer(cl));
 		opener.process(INPUT_FN_NTRIPLES);

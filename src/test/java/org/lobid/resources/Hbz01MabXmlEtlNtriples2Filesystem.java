@@ -26,7 +26,7 @@ import org.junit.Test;
  * 
  */
 public final class Hbz01MabXmlEtlNtriples2Filesystem {
-	static final String N_TRIPLE = "N-TRIPLE";
+	public static final String N_TRIPLE = "N-TRIPLE";
 	static final String PATH_TO_TEST = "src/test/resources/";
 	static final String TEST_FILENAME_ALEPHXMLCLOBS =
 			PATH_TO_TEST + "hbz01XmlClobs.tar.bz2";

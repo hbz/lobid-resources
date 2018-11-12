@@ -1,7 +1,6 @@
 /* Copyright 2018 Pascal Christoph, hbz. Licensed under the Eclipse Public License 2.0 */
 package org.lobid.resources;
 
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.HashMap;
@@ -62,7 +61,7 @@ public class RdfGraphToJsonLd
 		try {
 			String contextStr = new String(Files.readAllBytes(Paths.get(contextFn)));
 			context = JsonUtils.fromString(contextStr);
-		} catch (IOException e) {
+		} catch (Exception e) {
 			LOG.error("Couldn't load context at '" + contextFn
 					+ "'. Please set context file location properly via constructor."
 					+ e.getLocalizedMessage());
