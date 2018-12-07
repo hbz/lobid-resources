@@ -32,6 +32,7 @@ import com.google.common.base.Joiner;
 
 import controllers.resources.Queries;
 import controllers.resources.Search;
+import play.libs.Json;
 import play.mvc.Http;
 import play.mvc.Result;
 import play.test.Helpers;
@@ -200,4 +201,18 @@ public class IntegrationTests extends LocalIndexSetup {
 			assertThat(result.header("Access-Control-Allow-Origin")).isEqualTo("*");
 		});
 	}
+
+	@Test
+	public void jsonRequestNoInternalUrl() {
+		running(fakeApplication(), () -> {
+			Result result =
+					route(fakeRequest(GET, "/resources/search?q=*&format=json"));
+			assertThat(result).isNotNull();
+			assertThat(result.contentType()).isEqualTo("application/json");
+			JsonNode json = Json.parse(Helpers.contentAsString(result));
+			assertThat(json.get("id").toString()).contains("lobid.org");
+			assertThat(json.get("@context").toString()).contains("lobid.org");
+		});
+	}
+
 }
