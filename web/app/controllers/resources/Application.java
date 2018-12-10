@@ -347,7 +347,7 @@ public class Application extends Controller {
 
 	private static JsonNode withQueryMetadata(JsonNode json, Search index) {
 		ObjectNode result = Json.newObject();
-		String host = "http://" + request().host();
+		String host = CONFIG.getString("host");
 		result.put("@context", host + routes.Application.context());
 		result.put("id", host + request().uri());
 		result.put("totalItems", index.getTotal());
