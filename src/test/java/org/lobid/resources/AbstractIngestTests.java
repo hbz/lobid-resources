@@ -41,6 +41,8 @@ public abstract class AbstractIngestTests {
 			LogManager.getLogger(AbstractIngestTests.class);
 
 	protected Metamorph metamorph;
+	private static NQuadTripleCallback nqtc = new NQuadTripleCallback();
+	private static JsonLdOptions options = new JsonLdOptions();
 
 	@SuppressWarnings("resource")
 	private static Stream<String> fileToStream(final File file) {
@@ -163,15 +165,14 @@ public abstract class AbstractIngestTests {
 	public static String toRdf(final String jsonLd, String contextUrl,
 			String contextLocation) {
 		try {
-			LOG.info("toRdf: " + jsonLd);
+			LOG.debug("toRdf: " + jsonLd);
 			String context =
 					new String(Files.readAllBytes(Paths.get(contextLocation)));
 			String jsonWithLocalContext =
-					jsonLd.replaceFirst("\\{\"@context\":\"" + contextUrl + "\"",
-							context.substring(0, context.length() - 2));
-			final Object jsonObject = JsonUtils.fromString(jsonWithLocalContext);
-			NQuadTripleCallback nqtc = new NQuadTripleCallback();
-			JsonLdOptions options = new JsonLdOptions();
+					jsonLd.replaceFirst("\"@context\":\"" + contextUrl + "\"",
+							context.substring(1, context.length() - 2));
+			LOG.debug("with-context: " + jsonWithLocalContext);
+			Object jsonObject = JsonUtils.fromString(jsonWithLocalContext);
 			Object obj = JsonLdProcessor.toRDF(jsonObject, nqtc, options);
 			return obj.toString();
 		} catch (Exception e) {
