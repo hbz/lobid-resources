@@ -170,7 +170,7 @@
 			</choose>
 		</macro>
 		<macro name="setContributorCorporateBodyBnode">
-			<combine name="@contributorCorporateBodyBnode$[field]" value="_:${a}">
+			<combine name="@contributorCorporateBodyBnode$[field]" value="_:$[field]${a}">
 				<data source="@contributorCorporateBodyLabel$[field]" name="a">
 					<replace pattern="&gt;" with=""/>
 					<replace pattern="&lt;" with=""/>
@@ -7449,7 +7449,6 @@
 			<data source="@rpbLabel" name="a"/>
 		</combine>
 		<call-macro name="addTypeCollection" field="@rpbLabel"/>
-		<call-macro name="setBackRdfSubject" field="700l[-1].a"/>
 		<combine name="http://purl.org/dc/terms/subject" value="${a}">
 			<data source="700l[-1].a" name="a">
 				<regexp match="(^rpbr.*)" format="_:rpbr${1}"/>
