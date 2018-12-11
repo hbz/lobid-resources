@@ -16,4 +16,4 @@ TEST_FILE="loc-works_ca100k.nt.gz"
 
 # index test resources:
 cd $PROJECT_ROOT
-mvn exec:java -Dexec.mainClass="org.lobid.resources.run.LocBibframe2JsonEs" -Dexec.args="$WORKING_DIR/$TEST_FILE loc-smalltest NOALIAS weywot4.hbz-nrw.de weywot create"
+mvn exec:java -Dexec.mainClass="org.lobid.resources.run.LocBibframe2JsonEs" -Dexec.args="$WORKING_DIR/$TEST_FILE loc-smalltest NOALIAS 193.30.112.84 lobid-lab create"
