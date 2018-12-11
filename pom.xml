@@ -10,7 +10,7 @@
 		<target.jdk>1.8</target.jdk>
 		<junit.version>4.8.2</junit.version>
 		<logback.version>0.9.30</logback.version>
-		<slf4j.version>1.6.2</slf4j.version>
+		<slf4j.version>1.7.25</slf4j.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -26,6 +26,10 @@
 			<exclusion> 
 				<groupId>log4j</groupId>
 				<artifactId>log4j</artifactId>
+			</exclusion>
+			<exclusion> 
+				<groupId>org.apache.httpcomponents</groupId>
+				<artifactId>httpclient</artifactId>
 			</exclusion>
 		</exclusions>
 		</dependency>
@@ -77,12 +81,12 @@
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-core</artifactId>
-			<version>2.6.3</version>
+			<version>2.9.7</version>
 		</dependency>
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
-			<version>2.6.3</version>
+			<version>2.9.7</version>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
