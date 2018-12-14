@@ -1136,7 +1136,7 @@
 			</combine>
 		</macro>
 		<macro name="setFirstContributionBnodeOfEntityField">
-			<combine name="@contributionBnode$[field]first" value="_:${a}${b}">
+			<combine name="@contributionBnode$[field]first" value="_:$[field]${a}${b}">
 				<data source="@agentId$[field]" name="a"/>
 				<choose name="b">
 					<data source="@relator$[field]concat">
@@ -1157,7 +1157,7 @@
 			</combine>
 		</macro>
 		<macro name="setSecondContributionBnodeOfEntityField">
-			<combine name="@contributionBnode$[field]second" value="_:${a}${b}">
+			<combine name="@contributionBnode$[field]second" value="_:$[field]${a}${b}">
 				<data source="@agentId$[field]" name="a"/>
 				<choose name="b">
 					<data source="@relator$[field]concat" name="b">
@@ -1172,7 +1172,7 @@
 			</combine>
 		</macro>
 		<macro name="setLastContributionBnodeOfEntityField">
-			<combine name="@contributionBnode$[field]last" value="_:${a}${b}">
+			<combine name="@contributionBnode$[field]last" value="_:$[field]${a}${b}">
 				<data source="@agentId$[field]" name="a"/>
 				<choose name="b">
 					<data source="@relator$[field]concat" name="b">
