@@ -102,7 +102,7 @@
 			</combine>
 		</macro>
 		<macro name="setBnodeCreatorPersonLabel">
-			<combine name="@bnodeCreatorPersonLabel$[field]" value="_:${a}">
+			<combine name="@bnodeCreatorPersonLabel$[field]" value="_:$[field]${a}">
 				<if>
 					<none>
 						<data source="@GNDPersonId$[field]"/>
@@ -115,7 +115,7 @@
 			</combine>
 		</macro>
 		<macro name="setBnodeContributorPersonLabel">
-			<combine name="@bnodeContributorPersonLabel$[field]" value="_:${a}">
+			<combine name="@bnodeContributorPersonLabel$[field]" value="_:$[field]${a}">
 				<if>
 					<none>
 						<data source="@GNDPersonId$[field]"/>
@@ -190,7 +190,7 @@
 					source="@creatorCorporateBodyLabelPA$[field]|@nameOfCreatingCorporateBodyG$[field]|@preferredNameConcatEventE$[field]">
 					<replace pattern="&gt;" with=""/>
 					<replace pattern="&lt;" with=""/>
-					<regexp match="(.*)" format="_:${1}"/>
+					<regexp match="(.*)" format="_:$[field]${1}"/>
 				</data>
 			</choose>
 		</macro>
@@ -345,7 +345,7 @@
 			<data source="@nwbibComplexSubjectRswkLabel$[field]" name="@nwbibComplexSubjectRswkId$[field]">
 				<replace pattern="&gt;" with=""/>
 				<replace pattern="&lt;" with=""/>
-				<regexp match="(.*)" format="_:${1}"/>
+				<regexp match="(.*)" format="_:$[field]${1}"/>
 			</data>
 		</macro>
 		<macro name="setNwbibRdfSubject">
@@ -493,7 +493,7 @@
 					<data source="$[field]-$[indicator2].[acfghkpstkz-]" name="a">
 						<replace pattern="&gt;" with=""/>
 						<replace pattern="&lt;" with=""/>
-						<regexp match="(.*)" format="_:${1}"/>
+						<regexp match="(.*)" format="_:$[field]-$[indicator2].${1}"/>
 					</data>
 				</choose>
 			</combine>
@@ -1342,19 +1342,19 @@
 	</macros>
 	<rules>
 		<!-- subject as bnodes and their two properties (label & type ) -->
-		<combine name="@subjectLabel" value="${a}" reset="true" sameEntity="true">
+ 		<combine name="@subjectLabel" value="${a}" reset="true" sameEntity="true">
 			<data source="@rdfTypeSubject">
 				<regexp match="^http"/>
 			</data>
 			<data source="9[01234][27]-[-12].[aefghpstz-]" name="a"/>
-		</combine>
+		</combine> 
 		<combine value="_:${a}" name="@subjectLabelBnode">
 			<data source="@subjectLabel" name="a">
 				<replace pattern="&gt;" with=""/>
 				<replace pattern="&lt;" with=""/>
 			</data>
 		</combine>
-		<data source="@subjectLabelBnode" name="~rdf:subject"/>
+		<data source="@complexSubjectRswkId9[01234][27]-[12]" name="~rdf:subject"/>
 		<combine name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" value="${a}"
 			reset="true" sameEntity="true">
 			<data source="@rdfTypeSubject" name="a">
