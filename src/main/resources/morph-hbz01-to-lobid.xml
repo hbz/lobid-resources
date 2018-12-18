@@ -354,22 +354,6 @@
 				<data source="@nwbibComplexSubjectRswkId$[field]" name="subject"/>
 			</combine>
 		</macro>
-		<macro name="nwbibSubjectRswkIdSetRdfSubject">
-			<combine name="~rdf:subject" value="_:$[field]_${subject}" flushWith="@nwbibComplexSubjectRswkId$[field]"
-				reset="true">
-				<data source="@nwbibComplexSubjectRswkId$[field]" name="subject"/>
-			</combine>
-		</macro>
-		<macro name="nwbibSubjectRswkIdSetType">
-			<data name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" source="@nwbibComplexSubjectRswkId$[field]">
-				<constant value="http://www.loc.gov/mads/rdf/v1#ComplexSubject"/>
-			</data>
-		</macro>
-		<macro name="nwbibSetComplexSubjectRswkId">
-			<entity name="~rdf:list@complexSubjectRswkId$[field]1" flushWith="@nwbibComplexSubjectRswkId$[field]">
-				<data name="http://www.loc.gov/mads/rdf/v1#componentList" source="@nwbibComplexSubjectRswkId$[field]"/>
-			</entity>
-		</macro>
 		<macro name="nwbibSetLobidSubject">
 			<combine name="~rdf:subject" value="$[ns-lobid-resource]${subject}#!">
 				<data source="@nwbibComplexSubjectRswkId$[field]"/>
@@ -523,9 +507,9 @@
 			</data>
 		</macro>
 		<macro name="complexSubjectRswkId">
-			<entity name="~rdf:list@concatComplexSubjectRswkId$[field]$[indicator2]"
+			<entity name="~rdf:list@concatComplexSubjectRswkId-$[field]$[indicator2]"
 				flushWith="@concatComplexSubjectRswkId$[field]-$[indicator2]">
-				<data name="http://www.loc.gov/mads/rdf/v1#componentList" source="@complexSubjectRswkId$[field]-$[indicator2]"/>
+				<data name="http://www.loc.gov/mads/rdf/v1#componentList" source="@complexSubjectRswkId$[field]-$[indicator2]|@nwbibComplexSubjectRswkId$[field]"/>
 			</entity>
 		</macro>
 		<macro name="setRdfSubjectComplexSubjectRswkId">
@@ -1348,6 +1332,7 @@
 			</data>
 			<data source="9[01234][27]-[-12].[aefghpstz-]" name="a"/>
 		</combine> 
+		<!-- pchbz -->
 		<combine value="_:${a}" name="@subjectLabelBnode">
 			<data source="@subjectLabel" name="a">
 				<replace pattern="&gt;" with=""/>
@@ -6358,14 +6343,6 @@
 		<combine name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" value="http://d-nb.info/standards/elementset/gnd#Work">
 			<data source="@preferredNameForTheWork"/>
 		</combine>
-		<!-- default, generic type -->
-		<combine name="@preferredNameForTheSubjectHeading" value="${a}" sameEntity="true">
-			<data source="9[01234][27]-[-12].[szf]"/>
-			<data source="@preferredName" name="a"/>
-		</combine>
-		<combine name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" value="http://d-nb.info/standards/elementset/gnd#SubjectHeading">
-			<data source="@preferredNameForTheSubjectHeading"/>
-		</combine>
 		<combine name="@preferredNameForThePlaceOrGeographicName" value="${a}"
 			sameEntity="true">
 			<data source="@subjectLinks"/>
@@ -6498,21 +6475,20 @@
 		<call-macro name="nwbibComplexSubjectRswkLabel" field="902"/>
 		<call-macro name="makeNwbibComplexSubjectId" field="902"/>
 		<call-macro name="setNwbibRdfSubject" field="902"/>
+ 		<combine name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" value="http://d-nb.info/standards/elementset/gnd#SubjectHeading" >
+			<data source="@nwbibComplexSubjectRswkLabel902"/>
+		</combine> 
 		<data source="@nwbibComplexSubjectRswkLabel902" name="http://www.w3.org/2000/01/rdf-schema#label"/>
-		<data source="@nwbibComplexSubjectRswkLabel902" name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type">
-			<constant value="http://d-nb.info/standards/elementset/gnd#SubjectHeading"/>
-		</data>
 		<call-macro name="nwbibSetLobidSubject" field="902"/>
-		<call-macro name="nwbibSubjectRswkIdSetRdfSubject" field="902"/>
-		<call-macro name="nwbibSubjectRswkIdSetType" field="902"/>
-		<call-macro name="nwbibSetComplexSubjectRswkId" field="902"/>
-		<call-macro name="nwbibSetLobidSubject" field="902"/> <!-- important to keep right order -->
+ 		<call-macro name="nwbibSetLobidSubject" field="902"/> <!-- important to keep right order -->
 		<call-macro name="subjectRswkId" field="902" indicator2="1"/>
 		<call-macro name="setConcatComplexSubjectRswkId" field="902-1"/>
 		<call-macro name="subjectRswkIdSetDctSubject" field="902" indicator2="1"/>
 		<call-macro name="subjectRswkIdSetRdfSubject" field="902" indicator2="1"/>
 		<call-macro name="subjectRswkIdSetType" field="902" indicator2="1"/>
 		<call-macro name="complexSubjectRswkId" field="902" indicator2="1"/>
+<!--  		<call-macro name="nwbibComplexSubjectRswkId" field="902" indicator2="1"/>
+ --> <!-- HT004381366 -->
 		<!-- superordinate subject -->
 		<call-macro name="subjectRswkId" field="902" indicator2="2"/>
 		<call-macro name="setConcatComplexSubjectRswkId" field="902-2"/>
@@ -6520,28 +6496,22 @@
 		<call-macro name="subjectRswkIdSetRdfSubject" field="902" indicator2="2"/>
 		<call-macro name="subjectRswkIdSetType" field="902" indicator2="2"/>
 		<call-macro name="complexSubjectRswkId" field="902" indicator2="2"/>
-
 		<call-macro name="setRdfSubjectComplexSubjectRswkId" field="902-1"/>
 		<call-macro name="setSubjectChainInLabel" field="902-1"/>
 		<call-macro name="setBackRdfSubject" field="@concatComplexSubjectRswkId902-1"/>
-
 		<call-macro name="setRdfSubjectComplexSubjectRswkId" field="902-2"/>
 		<call-macro name="setSubjectChainInLabel" field="902-2"/>
 		<call-macro name="setBackRdfSubject" field="@concatComplexSubjectRswkId902-2"/>
-
 
 		<call-macro name="doubledPreferredNameSubjectChain" field="907"/>
 		<call-macro name="nwbibComplexSubjectRswkLabel" field="907"/>
 		<call-macro name="makeNwbibComplexSubjectId" field="907"/>
 		<call-macro name="setNwbibRdfSubject" field="907"/>
+		 <combine name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" value="http://d-nb.info/standards/elementset/gnd#SubjectHeading" >
+			<data source="@nwbibComplexSubjectRswkLabel907"/>
+		</combine>  
 		<data source="@nwbibComplexSubjectRswkLabel907" name="http://www.w3.org/2000/01/rdf-schema#label"/>
-		<data source="@nwbibComplexSubjectRswkLabel907" name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type">
-			<constant value="http://d-nb.info/standards/elementset/gnd#SubjectHeading"/>
-		</data>
 		<call-macro name="nwbibSetLobidSubject" field="907"/>
-		<call-macro name="nwbibSubjectRswkIdSetRdfSubject" field="907"/>
-		<call-macro name="nwbibSubjectRswkIdSetType" field="907"/>
-		<call-macro name="nwbibSetComplexSubjectRswkId" field="907"/>
 		<call-macro name="nwbibSetLobidSubject" field="907"/>  <!-- important to keep right order -->
 		<call-macro name="subjectRswkId" field="907" indicator2="1"/>
 		<call-macro name="setConcatComplexSubjectRswkId" field="907-1"/>
@@ -6549,15 +6519,14 @@
 		<call-macro name="subjectRswkIdSetRdfSubject" field="907" indicator2="1"/>
 		<call-macro name="subjectRswkIdSetType" field="907" indicator2="1"/>
 		<call-macro name="complexSubjectRswkId" field="907" indicator2="1"/>
-		<!-- superordinate subject -->
+<!-- 		<call-macro name="nwbibComplexSubjectRswkId" field="902" indicator2="1"/>
+ -->		<!-- superordinate subject -->
 		<call-macro name="subjectRswkId" field="907" indicator2="2"/>
 		<call-macro name="setConcatComplexSubjectRswkId" field="907-2"/>
 		<call-macro name="subjectRswkIdSetDctSubject" field="907" indicator2="2"/>
 		<call-macro name="subjectRswkIdSetRdfSubject" field="907" indicator2="2"/>
 		<call-macro name="subjectRswkIdSetType" field="907" indicator2="2"/>
 		<call-macro name="complexSubjectRswkId" field="907" indicator2="2"/>
-
-
 		<call-macro name="setRdfSubjectComplexSubjectRswkId" field="907-1"/>
 		<call-macro name="setSubjectChainInLabel" field="907-1"/>
 		<call-macro name="setBackRdfSubject" field="@concatComplexSubjectRswkId907-1"/>
@@ -6565,19 +6534,15 @@
 		<call-macro name="setSubjectChainInLabel" field="907-2"/>
 		<call-macro name="setBackRdfSubject" field="@concatComplexSubjectRswkId907-2"/>
 
-
 		<call-macro name="doubledPreferredNameSubjectChain" field="912"/>
 		<call-macro name="nwbibComplexSubjectRswkLabel" field="912"/>
 		<call-macro name="makeNwbibComplexSubjectId" field="912"/>
 		<call-macro name="setNwbibRdfSubject" field="912"/>
 		<data source="@nwbibComplexSubjectRswkLabel912" name="http://www.w3.org/2000/01/rdf-schema#label"/>
-		<data source="@nwbibComplexSubjectRswkLabel912" name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type">
-			<constant value="http://d-nb.info/standards/elementset/gnd#SubjectHeading"/>
-		</data>
+		<combine name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" value="http://d-nb.info/standards/elementset/gnd#SubjectHeading" >
+			<data source="@nwbibComplexSubjectRswkLabel912"/>
+		</combine>
 		<call-macro name="nwbibSetLobidSubject" field="912"/>
-		<call-macro name="nwbibSubjectRswkIdSetRdfSubject" field="912"/>
-		<call-macro name="nwbibSubjectRswkIdSetType" field="912"/>
-		<call-macro name="nwbibSetComplexSubjectRswkId" field="912"/>
 		<call-macro name="nwbibSetLobidSubject" field="912"/>  <!-- important to keep right order -->
 		<call-macro name="subjectRswkId" field="912" indicator2="1"/>
 		<call-macro name="setConcatComplexSubjectRswkId" field="912-1"/>
@@ -6592,7 +6557,6 @@
 		<call-macro name="subjectRswkIdSetRdfSubject" field="912" indicator2="2"/>
 		<call-macro name="subjectRswkIdSetType" field="912" indicator2="2"/>
 		<call-macro name="complexSubjectRswkId" field="912" indicator2="2"/>
-
 		<call-macro name="setRdfSubjectComplexSubjectRswkId" field="912-1"/>
 		<call-macro name="setSubjectChainInLabel" field="912-1"/>
 		<call-macro name="setBackRdfSubject" field="@concatComplexSubjectRswkId912-1"/>
@@ -6600,19 +6564,15 @@
 		<call-macro name="setSubjectChainInLabel" field="912-2"/>
 		<call-macro name="setBackRdfSubject" field="@concatComplexSubjectRswkId912-2"/>
 
-
 		<call-macro name="doubledPreferredNameSubjectChain" field="917"/>
 		<call-macro name="nwbibComplexSubjectRswkLabel" field="917"/>
 		<call-macro name="makeNwbibComplexSubjectId" field="917"/>
 		<call-macro name="setNwbibRdfSubject" field="917"/>
 		<data source="@nwbibComplexSubjectRswkLabel917" name="http://www.w3.org/2000/01/rdf-schema#label"/>
-		<data source="@nwbibComplexSubjectRswkLabel917" name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type">
-			<constant value="http://d-nb.info/standards/elementset/gnd#SubjectHeading"/>
-		</data>
+		<combine name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" value="http://d-nb.info/standards/elementset/gnd#SubjectHeading" >
+			<data source="@nwbibComplexSubjectRswkLabel917"/>
+		</combine>
 		<call-macro name="nwbibSetLobidSubject" field="917"/>
-		<call-macro name="nwbibSubjectRswkIdSetRdfSubject" field="917"/>
-		<call-macro name="nwbibSubjectRswkIdSetType" field="917"/>
-		<call-macro name="nwbibSetComplexSubjectRswkId" field="917"/>
 		<call-macro name="nwbibSetLobidSubject" field="917"/>  <!-- important to keep right order -->
 		<call-macro name="subjectRswkId" field="917" indicator2="1"/>
 		<call-macro name="setConcatComplexSubjectRswkId" field="917-1"/>
@@ -6627,7 +6587,6 @@
 		<call-macro name="subjectRswkIdSetRdfSubject" field="917" indicator2="2"/>
 		<call-macro name="subjectRswkIdSetType" field="917" indicator2="2"/>
 		<call-macro name="complexSubjectRswkId" field="917" indicator2="2"/>
-
 		<call-macro name="setRdfSubjectComplexSubjectRswkId" field="917-1"/>
 		<call-macro name="setSubjectChainInLabel" field="917-1"/>
 		<call-macro name="setBackRdfSubject" field="@concatComplexSubjectRswkId917-1"/>
@@ -6635,19 +6594,15 @@
 		<call-macro name="setSubjectChainInLabel" field="917-2"/>
 		<call-macro name="setBackRdfSubject" field="@concatComplexSubjectRswkId917-2"/>
 
-
 		<call-macro name="doubledPreferredNameSubjectChain" field="922"/>
 		<call-macro name="nwbibComplexSubjectRswkLabel" field="922"/>
 		<call-macro name="makeNwbibComplexSubjectId" field="922"/>
 		<call-macro name="setNwbibRdfSubject" field="922"/>
 		<data source="@nwbibComplexSubjectRswkLabel922" name="http://www.w3.org/2000/01/rdf-schema#label"/>
-		<data source="@nwbibComplexSubjectRswkLabel922" name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type">
-			<constant value="http://d-nb.info/standards/elementset/gnd#SubjectHeading"/>
-		</data>
+		<combine name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" value="http://d-nb.info/standards/elementset/gnd#SubjectHeading" >
+			<data source="@nwbibComplexSubjectRswkLabel922"/>
+		</combine>
 		<call-macro name="nwbibSetLobidSubject" field="922"/>
-		<call-macro name="nwbibSubjectRswkIdSetRdfSubject" field="922"/>
-		<call-macro name="nwbibSubjectRswkIdSetType" field="922"/>
-		<call-macro name="nwbibSetComplexSubjectRswkId" field="922"/>
 		<call-macro name="nwbibSetLobidSubject" field="922"/>  <!-- important to keep right order -->
 		<call-macro name="subjectRswkId" field="922" indicator2="1"/>
 		<call-macro name="setConcatComplexSubjectRswkId" field="922-1"/>
@@ -6662,7 +6617,6 @@
 		<call-macro name="subjectRswkIdSetRdfSubject" field="922" indicator2="2"/>
 		<call-macro name="subjectRswkIdSetType" field="922" indicator2="2"/>
 		<call-macro name="complexSubjectRswkId" field="922" indicator2="2"/>
-
 		<call-macro name="setRdfSubjectComplexSubjectRswkId" field="922-1"/>
 		<call-macro name="setSubjectChainInLabel" field="922-1"/>
 		<call-macro name="setBackRdfSubject" field="@concatComplexSubjectRswkId922-1"/>
@@ -6670,19 +6624,15 @@
 		<call-macro name="setSubjectChainInLabel" field="922-2"/>
 		<call-macro name="setBackRdfSubject" field="@concatComplexSubjectRswkId922-2"/>
 
-
 		<call-macro name="doubledPreferredNameSubjectChain" field="927"/>
 		<call-macro name="nwbibComplexSubjectRswkLabel" field="927"/>
 		<call-macro name="makeNwbibComplexSubjectId" field="927"/>
 		<call-macro name="setNwbibRdfSubject" field="927"/>
 		<data source="@nwbibComplexSubjectRswkLabel927" name="http://www.w3.org/2000/01/rdf-schema#label"/>
-		<data source="@nwbibComplexSubjectRswkLabel927" name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type">
-			<constant value="http://d-nb.info/standards/elementset/gnd#SubjectHeading"/>
-		</data>
+		<combine name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" value="http://d-nb.info/standards/elementset/gnd#SubjectHeading" >
+			<data source="@nwbibComplexSubjectRswkLabel927"/>
+		</combine>
 		<call-macro name="nwbibSetLobidSubject" field="927"/>
-		<call-macro name="nwbibSubjectRswkIdSetRdfSubject" field="927"/>
-		<call-macro name="nwbibSubjectRswkIdSetType" field="927"/>
-		<call-macro name="nwbibSetComplexSubjectRswkId" field="927"/>
 		<call-macro name="nwbibSetLobidSubject" field="927"/>  <!-- important to keep right order -->
 		<call-macro name="subjectRswkId" field="927" indicator2="1"/>
 		<call-macro name="setConcatComplexSubjectRswkId" field="927-1"/>
@@ -6697,7 +6647,6 @@
 		<call-macro name="subjectRswkIdSetRdfSubject" field="927" indicator2="2"/>
 		<call-macro name="subjectRswkIdSetType" field="927" indicator2="2"/>
 		<call-macro name="complexSubjectRswkId" field="927" indicator2="2"/>
-
 		<call-macro name="setRdfSubjectComplexSubjectRswkId" field="927-1"/>
 		<call-macro name="setSubjectChainInLabel" field="927-1"/>
 		<call-macro name="setBackRdfSubject" field="@concatComplexSubjectRswkId927-1"/>
@@ -6705,19 +6654,15 @@
 		<call-macro name="setSubjectChainInLabel" field="927-2"/>
 		<call-macro name="setBackRdfSubject" field="@concatComplexSubjectRswkId927-2"/>
 
-
 		<call-macro name="doubledPreferredNameSubjectChain" field="932"/>
 		<call-macro name="nwbibComplexSubjectRswkLabel" field="932"/>
 		<call-macro name="makeNwbibComplexSubjectId" field="932"/>
 		<call-macro name="setNwbibRdfSubject" field="932"/>
 		<data source="@nwbibComplexSubjectRswkLabel932" name="http://www.w3.org/2000/01/rdf-schema#label"/>
-		<data source="@nwbibComplexSubjectRswkLabel932" name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type">
-			<constant value="http://d-nb.info/standards/elementset/gnd#SubjectHeading"/>
-		</data>
+		<combine name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" value="http://d-nb.info/standards/elementset/gnd#SubjectHeading" >
+			<data source="@nwbibComplexSubjectRswkLabel932"/>
+		</combine>
 		<call-macro name="nwbibSetLobidSubject" field="932"/>
-		<call-macro name="nwbibSubjectRswkIdSetRdfSubject" field="932"/>
-		<call-macro name="nwbibSubjectRswkIdSetType" field="932"/>
-		<call-macro name="nwbibSetComplexSubjectRswkId" field="932"/>
 		<call-macro name="nwbibSetLobidSubject" field="932"/> <!-- important to keep right order -->
 		<call-macro name="subjectRswkId" field="932" indicator2="1"/>
 		<call-macro name="setConcatComplexSubjectRswkId" field="932-1"/>
@@ -6732,7 +6677,6 @@
 		<call-macro name="subjectRswkIdSetRdfSubject" field="932" indicator2="2"/>
 		<call-macro name="subjectRswkIdSetType" field="932" indicator2="2"/>
 		<call-macro name="complexSubjectRswkId" field="932" indicator2="2"/>
-
 		<call-macro name="setRdfSubjectComplexSubjectRswkId" field="932-1"/>
 		<call-macro name="setSubjectChainInLabel" field="932-1"/>
 		<call-macro name="setBackRdfSubject" field="@concatComplexSubjectRswkId932-1"/>
@@ -6740,19 +6684,15 @@
 		<call-macro name="setSubjectChainInLabel" field="932-2"/>
 		<call-macro name="setBackRdfSubject" field="@concatComplexSubjectRswkId932-2"/>
 
-
 		<call-macro name="doubledPreferredNameSubjectChain" field="937"/>
 		<call-macro name="nwbibComplexSubjectRswkLabel" field="937"/>
 		<call-macro name="makeNwbibComplexSubjectId" field="937"/>
 		<call-macro name="setNwbibRdfSubject" field="937"/>
 		<data source="@nwbibComplexSubjectRswkLabel937" name="http://www.w3.org/2000/01/rdf-schema#label"/>
-		<data source="@nwbibComplexSubjectRswkLabel937" name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type">
-			<constant value="http://d-nb.info/standards/elementset/gnd#SubjectHeading"/>
-		</data>
+		<combine name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" value="http://d-nb.info/standards/elementset/gnd#SubjectHeading" >
+			<data source="@nwbibComplexSubjectRswkLabel937"/>
+		</combine>
 		<call-macro name="nwbibSetLobidSubject" field="937"/>
-		<call-macro name="nwbibSubjectRswkIdSetRdfSubject" field="937"/>
-		<call-macro name="nwbibSubjectRswkIdSetType" field="937"/>
-		<call-macro name="nwbibSetComplexSubjectRswkId" field="937"/>
 		<call-macro name="nwbibSetLobidSubject" field="937"/> <!-- important to keep right order -->
 		<call-macro name="subjectRswkId" field="937" indicator2="1"/>
 		<call-macro name="setConcatComplexSubjectRswkId" field="937-1"/>
@@ -6767,7 +6707,6 @@
 		<call-macro name="subjectRswkIdSetRdfSubject" field="937" indicator2="2"/>
 		<call-macro name="subjectRswkIdSetType" field="937" indicator2="2"/>
 		<call-macro name="complexSubjectRswkId" field="937" indicator2="2"/>
-
 		<call-macro name="setRdfSubjectComplexSubjectRswkId" field="937-1"/>
 		<call-macro name="setSubjectChainInLabel" field="937-1"/>
 		<call-macro name="setBackRdfSubject" field="@concatComplexSubjectRswkId937-1"/>
@@ -6775,19 +6714,15 @@
 		<call-macro name="setSubjectChainInLabel" field="937-2"/>
 		<call-macro name="setBackRdfSubject" field="@concatComplexSubjectRswkId937-2"/>
 
-
 		<call-macro name="doubledPreferredNameSubjectChain" field="942"/>
 		<call-macro name="nwbibComplexSubjectRswkLabel" field="942"/>
 		<call-macro name="makeNwbibComplexSubjectId" field="942"/>
 		<call-macro name="setNwbibRdfSubject" field="942"/>
 		<data source="@nwbibComplexSubjectRswkLabel942" name="http://www.w3.org/2000/01/rdf-schema#label"/>
-		<data source="@nwbibComplexSubjectRswkLabel942" name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type">
-			<constant value="http://d-nb.info/standards/elementset/gnd#SubjectHeading"/>
-		</data>
+		<combine name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" value="http://d-nb.info/standards/elementset/gnd#SubjectHeading" >
+			<data source="@nwbibComplexSubjectRswkLabel942"/>
+		</combine>
 		<call-macro name="nwbibSetLobidSubject" field="942"/>
-		<call-macro name="nwbibSubjectRswkIdSetRdfSubject" field="942"/>
-		<call-macro name="nwbibSubjectRswkIdSetType" field="942"/>
-		<call-macro name="nwbibSetComplexSubjectRswkId" field="942"/>
 		<call-macro name="nwbibSetLobidSubject" field="942"/>  <!-- important to keep right order -->
 		<call-macro name="subjectRswkId" field="942" indicator2="1"/>
 		<call-macro name="setConcatComplexSubjectRswkId" field="942-1"/>
@@ -6802,7 +6737,6 @@
 		<call-macro name="subjectRswkIdSetRdfSubject" field="942" indicator2="2"/>
 		<call-macro name="subjectRswkIdSetType" field="942" indicator2="2"/>
 		<call-macro name="complexSubjectRswkId" field="942" indicator2="2"/>
-
 		<call-macro name="setRdfSubjectComplexSubjectRswkId" field="942-1"/>
 		<call-macro name="setSubjectChainInLabel" field="942-1"/>
 		<call-macro name="setBackRdfSubject" field="@concatComplexSubjectRswkId942-1"/>
@@ -6810,19 +6744,15 @@
 		<call-macro name="setSubjectChainInLabel" field="942-2"/>
 		<call-macro name="setBackRdfSubject" field="@concatComplexSubjectRswkId942-2"/>
 
-
 		<call-macro name="doubledPreferredNameSubjectChain" field="947"/>
 		<call-macro name="nwbibComplexSubjectRswkLabel" field="947"/>
 		<call-macro name="makeNwbibComplexSubjectId" field="947"/>
 		<call-macro name="setNwbibRdfSubject" field="947"/>
 		<data source="@nwbibComplexSubjectRswkLabel947" name="http://www.w3.org/2000/01/rdf-schema#label"/>
-		<data source="@nwbibComplexSubjectRswkLabel947" name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type">
-			<constant value="http://d-nb.info/standards/elementset/gnd#SubjectHeading"/>
-		</data>
+		<combine name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" value="http://d-nb.info/standards/elementset/gnd#SubjectHeading" >
+			<data source="@nwbibComplexSubjectRswkLabel947"/>
+		</combine>
 		<call-macro name="nwbibSetLobidSubject" field="947"/>
-		<call-macro name="nwbibSubjectRswkIdSetRdfSubject" field="947"/>
-		<call-macro name="nwbibSubjectRswkIdSetType" field="947"/>
-		<call-macro name="nwbibSetComplexSubjectRswkId" field="947"/>
 		<call-macro name="nwbibSetLobidSubject" field="947"/> <!-- important to keep right order -->
 		<call-macro name="subjectRswkId" field="947" indicator2="1"/>
 		<call-macro name="setConcatComplexSubjectRswkId" field="947-1"/>
@@ -6837,7 +6767,6 @@
 		<call-macro name="subjectRswkIdSetRdfSubject" field="947" indicator2="2"/>
 		<call-macro name="subjectRswkIdSetType" field="947" indicator2="2"/>
 		<call-macro name="complexSubjectRswkId" field="947" indicator2="2"/>
-
 		<call-macro name="setRdfSubjectComplexSubjectRswkId" field="947-1"/>
 		<call-macro name="setSubjectChainInLabel" field="947-1"/>
 		<call-macro name="setBackRdfSubject" field="@concatComplexSubjectRswkId947-1"/>
@@ -6850,9 +6779,8 @@
 			<data source="@complexSubjectRswkId9[01234][27]-[-12]|@subjectLinks" name="a"/>
 		</combine>
 		<combine name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" value="${a}"
-			flushWith="@complexSubjectRswkId9[01234][27]-[-12]|@subjectLinks" sameEntity="true">
-			<choose name="a" sameEntity="true"
-				flushWith="@complexSubjectRswkId9[01234][27]-[-12]|@subjectLinks">
+			flushWith="@subjectLinks" sameEntity="true" reset="true">
+			<choose name="a" sameEntity="true" flushWith="@subjectLinks">
 				<data source="9[01234][27]-[-12].t">
 					<regexp match=".*" format=""/>
 				</data>
@@ -6862,9 +6790,11 @@
 				<data source="9[01234][27]-[-12].p">
 					<regexp match=".*" format="http://d-nb.info/standards/elementset/gnd#Person"/>
 				</data>
+				<data source="9[01234][27]-[-12].?">
+          			<regexp match=".*" format="http://d-nb.info/standards/elementset/gnd#SubjectHeading"/>
+       			</data>
 			</choose>
 		</combine>
-
 		<combine name="~rdf:subject" value="$[ns-lobid-resource]${subject}#!"
 			flushWith="@concatComplexSubjectRswkId9[01234][27]@nwbibComplexSubjectRswkId9[01234][27]">
 			<data source="@concatComplexSubjectRswkId9[01234][27]|@nwbibComplexSubjectRswkId9[01234][27]"/>
@@ -6881,7 +6811,6 @@
 		<call-macro name="dctSubject" field="937"/>
 		<call-macro name="dctSubject" field="942"/>
 		<call-macro name="dctSubject" field="947"/>
-
 		<combine name="http://purl.org/dc/terms/subject" value="_:710${a}" flushWith="710[-abcdfz][123].a">
 			<data source="710[-abcdfz][123].a" name="a">
 				<regexp match="^(?!http).*$"/>
