@@ -1,5 +1,4 @@
 /* Copyright 2015-2017 hbz, Pascal Christoph. Licensed under the EPL 2.0 */
-
 package org.lobid.resources;
 
 import static org.elasticsearch.common.xcontent.XContentType.JSON;
@@ -46,21 +45,21 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.github.jsonldjava.core.JsonLdError;
+import com.github.jsonldjava.core.JsonLdOptions;
 import com.github.jsonldjava.core.JsonLdProcessor;
-import com.github.jsonldjava.jena.JenaTripleCallback;
-import com.github.jsonldjava.utils.JSONUtils;
+import com.github.jsonldjava.utils.JsonUtils;
 import com.hp.hpl.jena.rdf.model.Model;
 
 import de.hbz.lobid.helper.CompareJsonMaps;
 
-/**
- * Transform hbz01 Aleph Mab XML catalog deletions into lobid elasticsearch
- * JSON-LD. Query the index and test the data by transforming the data into
- * several JSON-LD files (reflecting the records residing in elasticsearch).
+/***
+ * Transform hbz01 Aleph Mab XML catalog deletions into lobid
+ * elasticsearch*JSON-LD.Query the index and test the data by transforming the
+ * data into*several JSON-LD files(reflecting the records residing in
+ * elasticsearch).**
  * 
- * @author Pascal Christoph (dr0i)
- * 
- */
+ * @author Pascal Christoph(dr0i)
+ **/
 @SuppressWarnings("javadoc")
 public final class Hbz01MabXmlDeletions2ElasticsearchTest {
 	private static Node node;
@@ -74,17 +73,18 @@ public final class Hbz01MabXmlDeletions2ElasticsearchTest {
 			Hbz01MabXmlEtlNtriples2Filesystem.PATH_TO_TEST + "jsonld-deletions/";
 	static HashSet<String> testFiles = new HashSet<>();
 	static boolean testFailed = false;
-	private static RdfModel2ElasticsearchEtikettJsonLd rdf2etikettJson;
-	private static final String JSONLD_CONTEXT =
+	private static final String JSONLD_CONTEXT_URI =
 			"http://lobid.org/resources/context-deletions.jsonld";
 	private static UpdateRequest updateRequest;
 	private static BulkRequestBuilder bulkRequest;
+	private static final String RDF_TYPE_TO_IDENTIFY_ROOT_ID =
+			"http://purl.org/dc/terms/BibliographicResource";
 
 	@BeforeClass
 	public static void setup() {
 		LOG.info("Testing deletion ...");
 		try {
-			if (System.getProperty("generateTestData", "false").equals("true")) {
+			if (System.getProperty("generateTestData", "true").equals("true")) {
 				Files.walk(Paths.get(DIRECTORY_TO_TEST_JSON_FILES))
 						.filter(Files::isRegularFile)
 						.forEach(fname -> testFiles.add(fname.getFileName().toString()));
@@ -107,17 +107,48 @@ public final class Hbz01MabXmlDeletions2ElasticsearchTest {
 		client = node.client();
 		client.admin().indices().prepareDelete("_all").execute().actionGet();
 		client.admin().cluster().prepareHealth().setWaitForYellowStatus().get();
-		rdf2etikettJson = new RdfModel2ElasticsearchEtikettJsonLd(
-				new File("deletion-labels"), JSONLD_CONTEXT);
-		rdf2etikettJson
-				.setRootIdPredicate("http://www.w3.org/2007/05/powder-s#describedby");
 		etl(client);
+	}
+
+	/*
+	 * ETL stands for extract, transform, load. Extract data from AlephmabXml
+	 * clobs, transform into lobid ntriples, transform that into elasticsearch
+	 * json-ld, index that into elasticsearch.
+	 */
+	public static void etl(final Client cl) {
+		RdfGraphToJsonLd rdfGraphToJsonLd =
+				new RdfGraphToJsonLd(JSONLD_CONTEXT_URI);
+		rdfGraphToJsonLd
+				.setContextLocationFilname("web/conf/context-deletion.jsonld");
+		rdfGraphToJsonLd.setContextUri(JSONLD_CONTEXT_URI);
+		rdfGraphToJsonLd.setRdfTypeToIdentifyRootId(RDF_TYPE_TO_IDENTIFY_ROOT_ID);
+		JsonLdEtikett jsonLdEtikett = new JsonLdEtikett("deletion-labels",
+				"web/conf/context-deletion.jsonld");
+		JsonLdItemSplitter2ElasticsearchJsonLd jsonLdItemSplitter2es =
+				new JsonLdItemSplitter2ElasticsearchJsonLd("id");
+		final FileOpener opener = new FileOpener();
+		indexHbz01AlephInternalId(client.admin().indices());
+		opener.setReceiver(new TarReader())//
+				.setReceiver(new XmlDecoder())//
+				.setReceiver(new AlephMabXmlHandler())//
+				.setReceiver(
+						new Metamorph("src/main/resources/morph-hbz01-deletions.xml"))
+				.setReceiver(new PipeEncodeTriples())//
+				.setReceiver(rdfGraphToJsonLd)//
+				.setReceiver(jsonLdEtikett)//
+				.setReceiver(jsonLdItemSplitter2es)
+				.setReceiver(getElasticsearchIndexer(cl));
+		opener.process(
+				new File(Hbz01MabXmlEtlNtriples2Filesystem.TEST_FILENAME_ALEPHXMLCLOBS)
+						.getAbsolutePath());
+		opener.closeStream();
+		client.admin().indices().prepareRefresh().get();
 	}
 
 	/*
 	 * Creates and indexes a document which is needed for a lookup to get the
 	 * HT-id.
-	 * 
+	 *
 	 */
 	private static void indexHbz01AlephInternalId(IndicesAdminClient iac) {
 		iac.prepareCreate("hbz01").execute().actionGet();
@@ -130,29 +161,6 @@ public final class Hbz01MabXmlDeletions2ElasticsearchTest {
 		bulkRequest.execute().actionGet();
 		client.admin().indices().prepareRefresh("hbz01").get();
 		return;
-	}
-
-	/*
-	 * ETL stands for extract, transform, load. Extract data from AlephmabXml
-	 * clobs, transform into lobid ntriples, transform that into elasticsearch
-	 * json-ld, index that into elasticsearch.
-	 */
-	public static void etl(final Client cl) {
-		final FileOpener opener = new FileOpener();
-		final Triples2RdfModel triple2model = new Triples2RdfModel();
-		triple2model.setInput(Hbz01MabXmlEtlNtriples2Filesystem.N_TRIPLE);
-		opener.setReceiver(new TarReader()).setReceiver(new XmlDecoder())
-				.setReceiver(new AlephMabXmlHandler())
-				.setReceiver(
-						new Metamorph("src/main/resources/morph-hbz01-deletions.xml"))
-				.setReceiver(new PipeEncodeTriples()).setReceiver(triple2model)
-				.setReceiver(rdf2etikettJson).setReceiver(getElasticsearchIndexer(cl));
-		indexHbz01AlephInternalId(client.admin().indices());
-		opener.process(
-				new File(Hbz01MabXmlEtlNtriples2Filesystem.TEST_FILENAME_ALEPHXMLCLOBS)
-						.getAbsolutePath());
-		opener.closeStream();
-		client.admin().indices().prepareRefresh().get();
 	}
 
 	@SuppressWarnings("static-method")
@@ -267,12 +275,10 @@ public final class Hbz01MabXmlDeletions2ElasticsearchTest {
 					"\"deleted\":\"test-dummy\"");
 			try {
 				map = mapper.readValue(jsonLd2, Map.class);
-				map.put("@context", JSONLD_CONTEXT);
+				map.put("@context", JSONLD_CONTEXT_URI);
 				jsonLdWithoutContext = mapper.writeValueAsString(map);
 				filename = ((String) map.get("id"))
-						.replaceAll(
-								RdfModel2ElasticsearchEtikettJsonLd.LOBID_DOMAIN + ".*/", "")
-						.replaceAll("#!$", "");
+						.replaceAll("http://lobid.org/" + ".*/", "").replaceAll("#!$", "");
 				testFiles.remove(filename);
 				filename = DIRECTORY_TO_TEST_JSON_FILES + filename;
 				if (!new File(filename).exists())
@@ -299,9 +305,9 @@ public final class Hbz01MabXmlDeletions2ElasticsearchTest {
 		private static String toRdf(final String jsonLd) {
 			try {
 				LOG.trace("toRdf: " + jsonLd);
-				final Object jsonObject = JSONUtils.fromString(jsonLd);
-				final JenaTripleCallback callback = new JenaTripleCallback();
-				final Model model = (Model) JsonLdProcessor.toRDF(jsonObject, callback);
+				final Object jsonObject = JsonUtils.fromString(jsonLd);
+				JsonLdOptions options = new JsonLdOptions();
+				final Model model = (Model) JsonLdProcessor.toRDF(jsonObject, options);
 				final StringWriter writer = new StringWriter();
 				model.write(writer, Hbz01MabXmlEtlNtriples2Filesystem.N_TRIPLE);
 				return writer.toString();

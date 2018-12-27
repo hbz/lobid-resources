@@ -1,75 +1,29 @@
 {
-  "@context" : "web/conf/context.jsonld",
+  "type" : [ "PublicationIssue", "Report", "BibliographicResource", "Book" ],
   "contribution" : [ {
+    "type" : [ "Contribution" ],
     "agent" : {
-      "altLabel" : [ "BBG", "Bergbau-BG" ],
-      "gndIdentifier" : "2005827-5",
       "id" : "http://d-nb.info/gnd/2005827-5",
+      "type" : [ "CorporateBody" ],
+      "gndIdentifier" : "2005827-5",
       "label" : "Bergbau-Berufsgenossenschaft",
-      "type" : [ "CorporateBody" ]
+      "altLabel" : [ "BBG", "Bergbau-BG" ]
     },
     "role" : {
       "id" : "http://id.loc.gov/vocabulary/relators/cre",
       "label" : "Autor/in"
-    },
-    "type" : [ "Contribution" ]
+    }
   } ],
-  "describedBy" : {
-    "dateCreated" : "19901130",
-    "id" : "http://lobid.org/resources/HT003654516",
-    "inDataset" : {
-      "id" : "http://lobid.org/resources/dataset#!",
-      "label" : "lobid-resources – Der hbz-Verbundkatalog als Linked Open Data"
-    },
-    "label" : "Webseite der hbz-Ressource HT003654516",
-    "license" : [ {
-      "id" : "http://creativecommons.org/publicdomain/zero/1.0",
-      "label" : "Creative Commons-Lizenz CC0 1.0 Universal"
-    } ],
-    "resultOf" : {
-      "endTime" : "0001-01-01T00:00:00",
-      "instrument" : {
-        "id" : "https://github.com/hbz/lobid-resources",
-        "label" : "Software lobid-resources",
-        "type" : [ "SoftwareApplication" ]
-      },
-      "object" : {
-        "id" : "http://lobid.org/hbz01/HT003654516",
-        "inDataset" : {
-          "id" : "https://datahub.io/dataset/hbz_unioncatalog",
-          "label" : "hbz_unioncatalog"
-        },
-        "label" : "hbz-Ressource HT003654516 im Exportformat MAB2-XML",
-        "type" : [ "DataFeedItem" ]
-      },
-      "type" : [ "CreateAction" ]
-    },
-    "sourceOrganization" : {
-      "id" : "http://lobid.org/organisations/DE-294#!",
-      "label" : "lobid Organisation"
-    },
-    "type" : [ "BibliographicDescription" ]
-  },
   "hasItem" : [ {
-    "callNumber" : "ZRC458-1988/89",
+    "id" : "http://lobid.org/items/HT003654516:DE-294:ZRC458-1988%2F89#!",
+    "type" : [ "Item" ],
     "heldBy" : {
       "id" : "http://lobid.org/organisations/DE-294",
       "label" : "lobid Organisation"
     },
-    "id" : "http://lobid.org/items/HT003654516:DE-294:ZRC458-1988%2F89#!",
-    "label" : "ZRC458-1988/89",
     "note" : "00000023",
-    "type" : [ "Item" ]
-  } ],
-  "hbzId" : "HT003654516",
-  "id" : "http://lobid.org/resources/HT003654516#!",
-  "isPartOf" : [ {
-    "hasSuperordinate" : [ {
-      "id" : "http://lobid.org/resources/HT002152208#!",
-      "label" : "lobid Ressource"
-    } ],
-    "numbering" : "1989 ([1990])",
-    "type" : [ "IsPartOfRelation" ]
+    "callNumber" : "ZRC458-1988/89",
+    "label" : "ZRC458-1988/89"
   } ],
   "language" : [ {
     "id" : "http://id.loc.gov/vocabulary/iso639-2/deu",
@@ -79,65 +33,111 @@
     "id" : "http://purl.org/lobid/lv#Miscellaneous",
     "label" : "Miscellaneous"
   } ],
-  "oclcNumber" : [ "224546401", "84927101" ],
+  "subject" : [ {
+    "source" : {
+      "id" : "http://d-nb.info/gnd/4149423-4",
+      "label" : "Dewey-Dezimalklassifikation"
+    },
+    "label" : "Chemische Verfahrenstechnik und verwandte Technologien",
+    "notation" : "660"
+  }, {
+    "source" : {
+      "id" : "http://d-nb.info/gnd/4149423-4",
+      "label" : "Dewey-Dezimalklassifikation"
+    },
+    "label" : "Wirtschaft",
+    "notation" : "330"
+  }, {
+    "source" : {
+      "id" : "http://d-nb.info/gnd/4149423-4",
+      "label" : "Dewey-Dezimalklassifikation"
+    },
+    "label" : "Ingenieurwissenschaften und zugeordnete Tätigkeiten",
+    "notation" : "620"
+  }, {
+    "type" : [ "ComplexSubject" ],
+    "componentList" : [ {
+      "id" : "http://d-nb.info/gnd/4128022-2",
+      "type" : [ "SubjectHeading" ],
+      "gndIdentifier" : "4128022-2",
+      "source" : {
+        "id" : "http://d-nb.info/gnd/7749153-1",
+        "label" : "Gemeinsame Normdatei (GND)"
+      },
+      "label" : "Bericht"
+    } ],
+    "label" : "Bericht"
+  }, {
+    "source" : {
+      "id" : "http://d-nb.info/gnd/4149423-4",
+      "label" : "Dewey-Dezimalklassifikation"
+    },
+    "label" : "Soziale Probleme und Sozialdienste; Verbände",
+    "notation" : "360"
+  } ],
+  "title" : "Jahresbericht ..., 1989 ([1990])",
+  "hbzId" : "HT003654516",
+  "isPartOf" : [ {
+    "type" : [ "IsPartOfRelation" ],
+    "hasSuperordinate" : [ {
+      "id" : "http://lobid.org/resources/HT002152208#!",
+      "label" : "lobid Ressource"
+    } ],
+    "numbering" : "1989 ([1990])"
+  } ],
+  "subjectAltLabel" : [ "Berichtswesen", "Tätigkeitsbericht (Formschlagwort)", "Jahresbericht (Formschlagwort)", "Berichte" ],
+  "oclcNumber" : [ "84927101", "224546401" ],
   "publication" : [ {
+    "type" : [ "PublicationEvent" ],
     "location" : "Bochum",
-    "publishedBy" : "Bergbau-Berufsgenossenschaft",
-    "type" : [ "PublicationEvent" ]
+    "publishedBy" : "Bergbau-Berufsgenossenschaft"
   } ],
   "sameAs" : [ {
-    "id" : "http://worldcat.org/oclc/84927101",
-    "label" : "84927101"
-  }, {
     "id" : "http://worldcat.org/oclc/224546401",
     "label" : "224546401"
   }, {
     "id" : "http://hub.culturegraph.org/resource/HBZ-HT003654516",
     "label" : "Culturegraph Ressource"
+  }, {
+    "id" : "http://worldcat.org/oclc/84927101",
+    "label" : "84927101"
   } ],
-  "subject" : [ {
-    "label" : "Soziale Probleme und Sozialdienste; Verbände",
-    "notation" : "360",
-    "source" : {
-      "id" : "http://d-nb.info/gnd/4149423-4",
-      "label" : "Dewey-Dezimalklassifikation"
-    }
-  }, {
-    "label" : "Wirtschaft",
-    "notation" : "330",
-    "source" : {
-      "id" : "http://d-nb.info/gnd/4149423-4",
-      "label" : "Dewey-Dezimalklassifikation"
-    }
-  }, {
-    "label" : "Ingenieurwissenschaften und zugeordnete Tätigkeiten",
-    "notation" : "620",
-    "source" : {
-      "id" : "http://d-nb.info/gnd/4149423-4",
-      "label" : "Dewey-Dezimalklassifikation"
-    }
-  }, {
-    "componentList" : [ {
-      "gndIdentifier" : "4128022-2",
-      "id" : "http://d-nb.info/gnd/4128022-2",
-      "label" : "Bericht",
-      "source" : {
-        "id" : "http://d-nb.info/gnd/7749153-1",
-        "label" : "Gemeinsame Normdatei (GND)"
+  "describedBy" : {
+    "id" : "http://lobid.org/resources/HT003654516",
+    "type" : [ "BibliographicDescription" ],
+    "dateCreated" : "19901130",
+    "inDataset" : {
+      "id" : "http://lobid.org/resources/dataset#!",
+      "label" : "lobid-resources – Der hbz-Verbundkatalog als Linked Open Data"
+    },
+    "resultOf" : {
+      "type" : [ "CreateAction" ],
+      "endTime" : "0001-01-01T00:00:00",
+      "instrument" : {
+        "id" : "https://github.com/hbz/lobid-resources",
+        "type" : [ "SoftwareApplication" ],
+        "label" : "Software lobid-resources"
       },
-      "type" : [ "SubjectHeading" ]
+      "object" : {
+        "id" : "http://lobid.org/hbz01/HT003654516",
+        "type" : [ "DataFeedItem" ],
+        "inDataset" : {
+          "id" : "https://datahub.io/dataset/hbz_unioncatalog",
+          "label" : "hbz_unioncatalog"
+        },
+        "label" : "hbz-Ressource HT003654516 im Exportformat MAB2-XML"
+      }
+    },
+    "license" : [ {
+      "id" : "http://creativecommons.org/publicdomain/zero/1.0",
+      "label" : "Creative Commons-Lizenz CC0 1.0 Universal"
     } ],
-    "label" : "Bericht",
-    "type" : [ "ComplexSubject" ]
-  }, {
-    "label" : "Chemische Verfahrenstechnik und verwandte Technologien",
-    "notation" : "660",
-    "source" : {
-      "id" : "http://d-nb.info/gnd/4149423-4",
-      "label" : "Dewey-Dezimalklassifikation"
-    }
-  } ],
-  "subjectAltLabel" : [ "Tätigkeitsbericht (Formschlagwort)", "Berichte", "Berichtswesen", "Jahresbericht (Formschlagwort)" ],
-  "title" : "Jahresbericht ..., 1989 ([1990])",
-  "type" : [ "PublicationIssue", "BibliographicResource", "Report", "Book" ]
+    "sourceOrganization" : {
+      "id" : "http://lobid.org/organisations/DE-294#!",
+      "label" : "lobid Organisation"
+    },
+    "label" : "Webseite der hbz-Ressource HT003654516"
+  },
+  "@context" : "http://lobid.org/resources/context.jsonld",
+  "id" : "http://lobid.org/resources/HT003654516#!"
 }

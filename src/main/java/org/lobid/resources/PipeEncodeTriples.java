@@ -147,12 +147,12 @@ public class PipeEncodeTriples extends AbstractGraphPipeEncoder {
 		RDFNode node =
 				isUri ? model.createProperty(value) : model.createLiteral(value);
 		if (!hashMapOfTreeMapOfRDFList.containsKey(name)
-				|| hashMapOfTreeMapOfRDFList.get(name).get(rdfListNr) == null) {
+				|| !hashMapOfTreeMapOfRDFList.get(name).containsKey(rdfListNr)) {
 			treeMapOfRDFList = new TreeMap<>();
 			treeMapOfRDFList.put(rdfListNr, model.createList(new RDFNode[] { node }));
 			hashMapOfTreeMapOfRDFList.put(name, treeMapOfRDFList);
 			addToResources(prop, name);
-		} else if (hashMapOfTreeMapOfRDFList.get(name).get(rdfListNr) != null) {
+		} else if (hashMapOfTreeMapOfRDFList.get(name).containsKey(rdfListNr)) {
 			hashMapOfTreeMapOfRDFList.get(name).get(rdfListNr).add(node);
 			addToResources(prop, name);
 		}
@@ -182,8 +182,8 @@ public class PipeEncodeTriples extends AbstractGraphPipeEncoder {
 	public void startEntity(String name) {
 		if (name.startsWith(LIST_NAME)) {
 			isRdfList = true;
-			rdfListNr = name.matches(".*[0-9]{2}$")
-					? Integer.valueOf(name.substring(name.length() - 2)) : 0;
+			rdfListNr = name.matches(".*[0-9]{3}$")
+					? Integer.valueOf(name.substring(name.length() - 3)) : 0;
 		} else
 			enterBnode(makeBnode(name));
 	}

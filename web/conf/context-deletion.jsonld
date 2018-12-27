@@ -1,18 +1,24 @@
 {
   "@context" : {
+    "BibliographicResource" : {
+      "@id" : "http://purl.org/dc/terms/BibliographicResource"
+    },
     "deleted" : {
       "@id" : "http://purl.org/dc/terms/deleted"
     },
     "describedBy" : {
-      "@type" : "@id",
-      "@id" : "http://www.w3.org/2007/05/powder-s#describedby"
+      "@id" : "http://www.w3.org/2007/05/powder-s#describedby",
+      "type" : "@id"
     },
     "id" : "@id",
     "label" : {
       "@id" : "http://www.w3.org/2000/01/rdf-schema#label",
       "@container" : "@set"
     },
-    "type" : "@type",
+    "type" : {
+      "@id" : "@type",
+      "@container" : "@set"
+    },
     "alephInternalSysnumber" : {
       "@id" : "http://purl.org/lobid/lv#alephInternalSysnumber"
     }

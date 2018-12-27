@@ -1,83 +1,33 @@
 {
-  "@context" : "web/conf/context.jsonld",
+  "type" : [ "Book", "BibliographicResource" ],
   "contribution" : [ {
+    "type" : [ "Contribution" ],
     "agent" : {
+      "id" : "http://d-nb.info/gnd/103140301",
+      "type" : [ "Person" ],
       "dateOfBirth" : "1811",
       "dateOfDeath" : "1884",
       "gndIdentifier" : "103140301",
-      "id" : "http://d-nb.info/gnd/103140301",
-      "label" : "Bisping, August",
-      "type" : [ "Person" ]
+      "label" : "Bisping, August"
     },
     "role" : {
       "id" : "http://id.loc.gov/vocabulary/relators/cre",
       "label" : "Autor/in"
-    },
-    "type" : [ "Contribution" ]
+    }
   } ],
-  "describedBy" : {
-    "dateCreated" : "20060512",
-    "id" : "http://lobid.org/resources/TT002001222",
-    "inDataset" : {
-      "id" : "http://lobid.org/resources/dataset#!",
-      "label" : "lobid-resources – Der hbz-Verbundkatalog als Linked Open Data"
-    },
-    "label" : "Webseite der hbz-Ressource TT002001222",
-    "license" : [ {
-      "id" : "http://creativecommons.org/publicdomain/zero/1.0",
-      "label" : "Creative Commons-Lizenz CC0 1.0 Universal"
-    } ],
-    "provider" : {
-      "id" : "http://lobid.org/organisations/DE-Kn28#!",
-      "label" : "lobid Organisation"
-    },
-    "resultOf" : {
-      "endTime" : "0001-01-01T00:00:00",
-      "instrument" : {
-        "id" : "https://github.com/hbz/lobid-resources",
-        "label" : "Software lobid-resources",
-        "type" : [ "SoftwareApplication" ]
-      },
-      "object" : {
-        "id" : "http://lobid.org/hbz01/TT002001222",
-        "inDataset" : {
-          "id" : "https://datahub.io/dataset/hbz_unioncatalog",
-          "label" : "hbz_unioncatalog"
-        },
-        "label" : "hbz-Ressource TT002001222 im Exportformat MAB2-XML",
-        "type" : [ "DataFeedItem" ]
-      },
-      "type" : [ "CreateAction" ]
-    },
-    "sourceOrganization" : {
-      "id" : "http://lobid.org/organisations/DE-Kn28#!",
-      "label" : "lobid Organisation"
-    },
-    "type" : [ "BibliographicDescription" ]
-  },
-  "edition" : [ "2. verb. und verm. Aufl." ],
   "extent" : "346 S.",
   "hasItem" : [ {
-    "callNumber" : "Cb 1192",
+    "id" : "http://lobid.org/items/TT002001222:DE-Kn28:Cb%201192#!",
+    "type" : [ "Item" ],
     "heldBy" : {
       "id" : "http://lobid.org/organisations/DE-Kn28",
       "label" : "lobid Organisation"
     },
-    "id" : "http://lobid.org/items/TT002001222:DE-Kn28:Cb%201192#!",
-    "label" : "Cb 1192",
     "note" : "MAG",
-    "type" : [ "Item" ]
+    "callNumber" : "Cb 1192",
+    "label" : "Cb 1192"
   } ],
-  "hbzId" : "TT002001222",
-  "id" : "http://lobid.org/resources/TT002001222#!",
-  "isPartOf" : [ {
-    "hasSuperordinate" : [ {
-      "id" : "http://lobid.org/resources/HT001232431#!",
-      "label" : "Exegetisches Handbuch zum Neuen Testament / von Aug. Bisping"
-    } ],
-    "numbering" : "Bd. 7, Abt. 1",
-    "type" : [ "IsPartOfRelation" ]
-  } ],
+  "responsibilityStatement" : [ "von Aug. Bisping" ],
   "language" : [ {
     "id" : "http://id.loc.gov/vocabulary/iso639-2/deu",
     "label" : "Deutsch"
@@ -86,76 +36,126 @@
     "id" : "http://rdaregistry.info/termList/RDAproductionMethod/1010",
     "label" : "Print"
   } ],
+  "subject" : [ {
+    "type" : [ "ComplexSubject" ],
+    "componentList" : [ {
+      "id" : "http://d-nb.info/gnd/4075937-4",
+      "type" : [ "Work" ],
+      "gndIdentifier" : "4075937-4",
+      "source" : {
+        "id" : "http://d-nb.info/gnd/7749153-1",
+        "label" : "Gemeinsame Normdatei (GND)"
+      },
+      "label" : "Bibel. Pastoralbriefe"
+    }, {
+      "type" : [ "SubjectHeading" ],
+      "label" : "Kommentar"
+    } ],
+    "label" : "Bibel. Pastoralbriefe | Kommentar"
+  }, {
+    "type" : [ "ComplexSubject" ],
+    "componentList" : [ {
+      "id" : "http://d-nb.info/gnd/118641549",
+      "type" : [ "Person" ],
+      "gndIdentifier" : "118641549",
+      "source" : {
+        "id" : "http://d-nb.info/gnd/7749153-1",
+        "label" : "Gemeinsame Normdatei (GND)"
+      },
+      "label" : "Paulus, Apostel, Heiliger"
+    }, {
+      "id" : "http://d-nb.info/gnd/4075941-6",
+      "type" : [ "Work" ],
+      "gndIdentifier" : "4075941-6",
+      "source" : {
+        "id" : "http://d-nb.info/gnd/7749153-1",
+        "label" : "Gemeinsame Normdatei (GND)"
+      },
+      "label" : "Bibel. 1.-2. Thessalonicherbrief"
+    }, {
+      "type" : [ "SubjectHeading" ],
+      "label" : "Kommentar"
+    } ],
+    "label" : "Paulus, Apostel, Heiliger | Bibel. 1.-2. Thessalonicherbrief | Kommentar"
+  }, {
+    "type" : [ "ComplexSubject" ],
+    "componentList" : [ {
+      "id" : "http://d-nb.info/gnd/4075950-7",
+      "type" : [ "Work" ],
+      "gndIdentifier" : "4075950-7",
+      "source" : {
+        "id" : "http://d-nb.info/gnd/7749153-1",
+        "label" : "Gemeinsame Normdatei (GND)"
+      },
+      "label" : "Bibel. Philemonbrief"
+    }, {
+      "type" : [ "SubjectHeading" ],
+      "label" : "Kommentar"
+    } ],
+    "label" : "Bibel. Philemonbrief | Kommentar"
+  } ],
+  "title" : "Erklärung der beiden Briefe an die Thessalonicher, der drei Pastoralbriefe und des Briefes an Philemon",
+  "hbzId" : "TT002001222",
+  "isPartOf" : [ {
+    "type" : [ "IsPartOfRelation" ],
+    "hasSuperordinate" : [ {
+      "id" : "http://lobid.org/resources/HT001232431#!",
+      "label" : "Exegetisches Handbuch zum Neuen Testament / von Aug. Bisping"
+    } ],
+    "numbering" : "Bd. 7, Abt. 1"
+  } ],
+  "subjectAltLabel" : [ "Divus, Apostel, Heiliger (Divus, Apostel, Heiliger)", "von Tarsus (von Tarsus)", "Apostel, Heiliger (Apostel, Heiliger)", "Apostle, Saint (Apostle, Saint)", "Apostolus, Sanctus (Apostolus, Sanctus)", "von Tarsus, Apostel, Heiliger (von Tarsus, Apostel, Heiliger)", "von Tarsos, Apostel, Heiliger (von Tarsos, Apostel, Heiliger)", "Theologe, Apostel, Heiliger (Theologe, Apostel, Heiliger)", "Apostolus, Heiliger (Apostolus, Heiliger)", "Apôtre, Saint (Apôtre, Saint)", "Saulus", "Sardensis, Apostel, Heiliger (Sardensis, Apostel, Heiliger)", "di Tarso, Apostel, Heiliger (di Tarso, Apostel, Heiliger)", "Apostolus (Apostolus)", "Paulus" ],
+  "edition" : [ "2. verb. und verm. Aufl." ],
   "publication" : [ {
+    "type" : [ "PublicationEvent" ],
     "location" : "Münster",
     "publishedBy" : "Aschendorff",
-    "startDate" : "1865",
-    "type" : [ "PublicationEvent" ]
+    "startDate" : "1865"
   } ],
-  "responsibilityStatement" : [ "von Aug. Bisping" ],
   "sameAs" : [ {
     "id" : "http://hub.culturegraph.org/resource/HBZ-TT002001222",
     "label" : "Culturegraph Ressource"
   } ],
-  "subject" : [ {
-    "componentList" : [ {
-      "gndIdentifier" : "4075937-4",
-      "id" : "http://d-nb.info/gnd/4075937-4",
-      "label" : "Bibel. Pastoralbriefe",
-      "source" : {
-        "id" : "http://d-nb.info/gnd/7749153-1",
-        "label" : "Gemeinsame Normdatei (GND)"
+  "describedBy" : {
+    "id" : "http://lobid.org/resources/TT002001222",
+    "type" : [ "BibliographicDescription" ],
+    "dateCreated" : "20060512",
+    "inDataset" : {
+      "id" : "http://lobid.org/resources/dataset#!",
+      "label" : "lobid-resources – Der hbz-Verbundkatalog als Linked Open Data"
+    },
+    "resultOf" : {
+      "type" : [ "CreateAction" ],
+      "endTime" : "0001-01-01T00:00:00",
+      "instrument" : {
+        "id" : "https://github.com/hbz/lobid-resources",
+        "type" : [ "SoftwareApplication" ],
+        "label" : "Software lobid-resources"
       },
-      "type" : [ "Work" ]
-    }, {
-      "label" : "Kommentar",
-      "type" : [ "SubjectHeading" ]
+      "object" : {
+        "id" : "http://lobid.org/hbz01/TT002001222",
+        "type" : [ "DataFeedItem" ],
+        "inDataset" : {
+          "id" : "https://datahub.io/dataset/hbz_unioncatalog",
+          "label" : "hbz_unioncatalog"
+        },
+        "label" : "hbz-Ressource TT002001222 im Exportformat MAB2-XML"
+      }
+    },
+    "license" : [ {
+      "id" : "http://creativecommons.org/publicdomain/zero/1.0",
+      "label" : "Creative Commons-Lizenz CC0 1.0 Universal"
     } ],
-    "label" : "Bibel. Pastoralbriefe | Kommentar",
-    "type" : [ "ComplexSubject" ]
-  }, {
-    "componentList" : [ {
-      "gndIdentifier" : "118641549",
-      "id" : "http://d-nb.info/gnd/118641549",
-      "label" : "Paulus, Apostel, Heiliger",
-      "source" : {
-        "id" : "http://d-nb.info/gnd/7749153-1",
-        "label" : "Gemeinsame Normdatei (GND)"
-      },
-      "type" : [ "Person" ]
-    }, {
-      "gndIdentifier" : "4075941-6",
-      "id" : "http://d-nb.info/gnd/4075941-6",
-      "label" : "Bibel. 1.-2. Thessalonicherbrief",
-      "source" : {
-        "id" : "http://d-nb.info/gnd/7749153-1",
-        "label" : "Gemeinsame Normdatei (GND)"
-      },
-      "type" : [ "Work" ]
-    }, {
-      "label" : "Kommentar",
-      "type" : [ "SubjectHeading" ]
-    } ],
-    "label" : "Paulus, Apostel, Heiliger | Bibel. 1.-2. Thessalonicherbrief | Kommentar",
-    "type" : [ "ComplexSubject" ]
-  }, {
-    "componentList" : [ {
-      "gndIdentifier" : "4075950-7",
-      "id" : "http://d-nb.info/gnd/4075950-7",
-      "label" : "Bibel. Philemonbrief",
-      "source" : {
-        "id" : "http://d-nb.info/gnd/7749153-1",
-        "label" : "Gemeinsame Normdatei (GND)"
-      },
-      "type" : [ "Work" ]
-    }, {
-      "label" : "Kommentar",
-      "type" : [ "SubjectHeading" ]
-    } ],
-    "label" : "Bibel. Philemonbrief | Kommentar",
-    "type" : [ "ComplexSubject" ]
-  } ],
-  "subjectAltLabel" : [ "von Tarsus (von Tarsus)", "Divus, Apostel, Heiliger (Divus, Apostel, Heiliger)", "von Tarsos, Apostel, Heiliger (von Tarsos, Apostel, Heiliger)", "von Tarsus, Apostel, Heiliger (von Tarsus, Apostel, Heiliger)", "Saulus", "Apostel, Heiliger (Apostel, Heiliger)", "di Tarso, Apostel, Heiliger (di Tarso, Apostel, Heiliger)", "Apostolus, Heiliger (Apostolus, Heiliger)", "Apôtre, Saint (Apôtre, Saint)", "Apostolus (Apostolus)", "Apostolus, Sanctus (Apostolus, Sanctus)", "Paulus", "Theologe, Apostel, Heiliger (Theologe, Apostel, Heiliger)", "Sardensis, Apostel, Heiliger (Sardensis, Apostel, Heiliger)", "Apostle, Saint (Apostle, Saint)" ],
-  "title" : "Erklärung der beiden Briefe an die Thessalonicher, der drei Pastoralbriefe und des Briefes an Philemon",
-  "type" : [ "BibliographicResource", "Book" ]
+    "provider" : {
+      "id" : "http://lobid.org/organisations/DE-Kn28#!",
+      "label" : "lobid Organisation"
+    },
+    "sourceOrganization" : {
+      "id" : "http://lobid.org/organisations/DE-Kn28#!",
+      "label" : "lobid Organisation"
+    },
+    "label" : "Webseite der hbz-Ressource TT002001222"
+  },
+  "@context" : "http://lobid.org/resources/context.jsonld",
+  "id" : "http://lobid.org/resources/TT002001222#!"
 }

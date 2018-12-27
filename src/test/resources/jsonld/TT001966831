@@ -1,79 +1,29 @@
 {
-  "@context" : "web/conf/context.jsonld",
+  "type" : [ "Book", "BibliographicResource", "PublicationIssue" ],
   "contribution" : [ {
+    "type" : [ "Contribution" ],
     "agent" : {
-      "altLabel" : [ "Acción Católica Espan̄ola", "Katholische Aktion" ],
-      "gndIdentifier" : "219515-X",
       "id" : "http://d-nb.info/gnd/219515-X",
+      "type" : [ "CorporateBody" ],
+      "gndIdentifier" : "219515-X",
       "label" : "Acción Católica Española",
-      "type" : [ "CorporateBody" ]
+      "altLabel" : [ "Acción Católica Espan̄ola", "Katholische Aktion" ]
     },
     "role" : {
       "id" : "http://id.loc.gov/vocabulary/relators/ctb",
       "label" : "Mitwirkende"
-    },
-    "type" : [ "Contribution" ]
+    }
   } ],
-  "describedBy" : {
-    "dateCreated" : "20060512",
-    "id" : "http://lobid.org/resources/TT001966831",
-    "inDataset" : {
-      "id" : "http://lobid.org/resources/dataset#!",
-      "label" : "lobid-resources – Der hbz-Verbundkatalog als Linked Open Data"
-    },
-    "label" : "Webseite der hbz-Ressource TT001966831",
-    "license" : [ {
-      "id" : "http://creativecommons.org/publicdomain/zero/1.0",
-      "label" : "Creative Commons-Lizenz CC0 1.0 Universal"
-    } ],
-    "provider" : {
-      "id" : "http://lobid.org/organisations/DE-Kn28#!",
-      "label" : "lobid Organisation"
-    },
-    "resultOf" : {
-      "endTime" : "0001-01-01T00:00:00",
-      "instrument" : {
-        "id" : "https://github.com/hbz/lobid-resources",
-        "label" : "Software lobid-resources",
-        "type" : [ "SoftwareApplication" ]
-      },
-      "object" : {
-        "id" : "http://lobid.org/hbz01/TT001966831",
-        "inDataset" : {
-          "id" : "https://datahub.io/dataset/hbz_unioncatalog",
-          "label" : "hbz_unioncatalog"
-        },
-        "label" : "hbz-Ressource TT001966831 im Exportformat MAB2-XML",
-        "type" : [ "DataFeedItem" ]
-      },
-      "type" : [ "CreateAction" ]
-    },
-    "sourceOrganization" : {
-      "id" : "http://lobid.org/organisations/DE-Kn28#!",
-      "label" : "lobid Organisation"
-    },
-    "type" : [ "BibliographicDescription" ]
-  },
   "hasItem" : [ {
-    "callNumber" : "Zd 0159 (1999,2)",
+    "id" : "http://lobid.org/items/TT001966831:DE-Kn28:Zd%200159%20(1999,2)#!",
+    "type" : [ "Item" ],
     "heldBy" : {
       "id" : "http://lobid.org/organisations/DE-Kn28",
       "label" : "lobid Organisation"
     },
-    "id" : "http://lobid.org/items/TT001966831:DE-Kn28:Zd%200159%20(1999,2)#!",
-    "label" : "Zd 0159 (1999,2)",
     "note" : "MAG",
-    "type" : [ "Item" ]
-  } ],
-  "hbzId" : "TT001966831",
-  "id" : "http://lobid.org/resources/TT001966831#!",
-  "isPartOf" : [ {
-    "hasSuperordinate" : [ {
-      "id" : "http://lobid.org/resources/HT006987933#!",
-      "label" : "lobid Ressource"
-    } ],
-    "numbering" : "59,2. 1999 = 2952/2977",
-    "type" : [ "IsPartOfRelation" ]
+    "callNumber" : "Zd 0159 (1999,2)",
+    "label" : "Zd 0159 (1999,2)"
   } ],
   "language" : [ {
     "id" : "http://id.loc.gov/vocabulary/iso639-2/spa",
@@ -83,30 +33,80 @@
     "id" : "http://rdaregistry.info/termList/RDAproductionMethod/1010",
     "label" : "Print"
   } ],
+  "subject" : [ {
+    "source" : {
+      "id" : "http://d-nb.info/gnd/4149423-4",
+      "label" : "Dewey-Dezimalklassifikation"
+    },
+    "label" : "Christentum",
+    "notation" : "230"
+  }, {
+    "source" : {
+      "id" : "http://d-nb.info/gnd/4149423-4",
+      "label" : "Dewey-Dezimalklassifikation"
+    },
+    "label" : "Dokumentarische Medien, publizistische Medien, Unterrichtsmedien; Journalismus; Verlagswesen",
+    "notation" : "070"
+  } ],
+  "title" : "Ecclesia, 59,2. 1999 = 2952/2977",
+  "hbzId" : "TT001966831",
+  "isPartOf" : [ {
+    "type" : [ "IsPartOfRelation" ],
+    "hasSuperordinate" : [ {
+      "id" : "http://lobid.org/resources/HT006987933#!",
+      "label" : "lobid Ressource"
+    } ],
+    "numbering" : "59,2. 1999 = 2952/2977"
+  } ],
   "publication" : [ {
+    "type" : [ "PublicationEvent" ],
     "location" : "Madrid",
-    "startDate" : "1999",
-    "type" : [ "PublicationEvent" ]
+    "startDate" : "1999"
   } ],
   "sameAs" : [ {
     "id" : "http://hub.culturegraph.org/resource/HBZ-TT001966831",
     "label" : "Culturegraph Ressource"
   } ],
-  "subject" : [ {
-    "label" : "Christentum",
-    "notation" : "230",
-    "source" : {
-      "id" : "http://d-nb.info/gnd/4149423-4",
-      "label" : "Dewey-Dezimalklassifikation"
-    }
-  }, {
-    "label" : "Dokumentarische Medien, publizistische Medien, Unterrichtsmedien; Journalismus; Verlagswesen",
-    "notation" : "070",
-    "source" : {
-      "id" : "http://d-nb.info/gnd/4149423-4",
-      "label" : "Dewey-Dezimalklassifikation"
-    }
-  } ],
-  "title" : "Ecclesia, 59,2. 1999 = 2952/2977",
-  "type" : [ "PublicationIssue", "BibliographicResource", "Book" ]
+  "describedBy" : {
+    "id" : "http://lobid.org/resources/TT001966831",
+    "type" : [ "BibliographicDescription" ],
+    "dateCreated" : "20060512",
+    "inDataset" : {
+      "id" : "http://lobid.org/resources/dataset#!",
+      "label" : "lobid-resources – Der hbz-Verbundkatalog als Linked Open Data"
+    },
+    "resultOf" : {
+      "type" : [ "CreateAction" ],
+      "endTime" : "0001-01-01T00:00:00",
+      "instrument" : {
+        "id" : "https://github.com/hbz/lobid-resources",
+        "type" : [ "SoftwareApplication" ],
+        "label" : "Software lobid-resources"
+      },
+      "object" : {
+        "id" : "http://lobid.org/hbz01/TT001966831",
+        "type" : [ "DataFeedItem" ],
+        "inDataset" : {
+          "id" : "https://datahub.io/dataset/hbz_unioncatalog",
+          "label" : "hbz_unioncatalog"
+        },
+        "label" : "hbz-Ressource TT001966831 im Exportformat MAB2-XML"
+      }
+    },
+    "license" : [ {
+      "id" : "http://creativecommons.org/publicdomain/zero/1.0",
+      "label" : "Creative Commons-Lizenz CC0 1.0 Universal"
+    } ],
+    "provider" : {
+      "id" : "http://lobid.org/organisations/DE-Kn28#!",
+      "label" : "lobid Organisation"
+    },
+    "sourceOrganization" : {
+      "id" : "http://lobid.org/organisations/DE-Kn28#!",
+      "label" : "lobid Organisation"
+    },
+    "label" : "Webseite der hbz-Ressource TT001966831"
+  },
+  "@context" : "http://lobid.org/resources/context.jsonld",
+  "id" : "http://lobid.org/resources/TT001966831#!"
 }

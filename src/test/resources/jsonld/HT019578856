@@ -1,89 +1,41 @@
 {
-  "@context" : "web/conf/context.jsonld",
+  "type" : [ "MultiVolumeBook", "Book", "BibliographicResource" ],
   "contribution" : [ {
+    "type" : [ "Contribution" ],
     "agent" : {
-      "gndIdentifier" : "158215648",
       "id" : "http://d-nb.info/gnd/158215648",
-      "label" : "Berntsen, Maxine",
-      "type" : [ "Person" ]
+      "type" : [ "Person" ],
+      "gndIdentifier" : "158215648",
+      "label" : "Berntsen, Maxine"
     },
     "role" : {
       "id" : "http://id.loc.gov/vocabulary/relators/cre",
       "label" : "Autor/in"
-    },
-    "type" : [ "Contribution" ]
+    }
   }, {
+    "type" : [ "Contribution" ],
     "agent" : {
-      "altLabel" : "Jai Nimbkar",
-      "gndIdentifier" : "15821563X",
       "id" : "http://d-nb.info/gnd/15821563X",
+      "type" : [ "Person" ],
+      "gndIdentifier" : "15821563X",
       "label" : "Nimbkar, Jai",
-      "type" : [ "Person" ]
+      "altLabel" : "Jai Nimbkar"
     },
     "role" : {
       "id" : "http://id.loc.gov/vocabulary/relators/cre",
       "label" : "Autor/in"
-    },
-    "type" : [ "Contribution" ]
+    }
   } ],
-  "describedBy" : {
-    "dateCreated" : "20180131",
-    "dateModified" : "20180213",
-    "id" : "http://lobid.org/resources/HT019578856",
-    "inDataset" : {
-      "id" : "http://lobid.org/resources/dataset#!",
-      "label" : "lobid-resources – Der hbz-Verbundkatalog als Linked Open Data"
-    },
-    "label" : "Webseite der hbz-Ressource HT019578856",
-    "license" : [ {
-      "id" : "http://creativecommons.org/publicdomain/zero/1.0",
-      "label" : "Creative Commons-Lizenz CC0 1.0 Universal"
-    } ],
-    "modifiedBy" : {
-      "id" : "http://lobid.org/organisations/DE-5-141#!",
-      "label" : "lobid Organisation"
-    },
-    "resultOf" : {
-      "endTime" : "0001-01-01T00:00:00",
-      "instrument" : {
-        "id" : "https://github.com/hbz/lobid-resources",
-        "label" : "Software lobid-resources",
-        "type" : [ "SoftwareApplication" ]
-      },
-      "object" : {
-        "id" : "http://lobid.org/hbz01/HT019578856",
-        "inDataset" : {
-          "id" : "https://datahub.io/dataset/hbz_unioncatalog",
-          "label" : "hbz_unioncatalog"
-        },
-        "label" : "hbz-Ressource HT019578856 im Exportformat MAB2-XML",
-        "type" : [ "DataFeedItem" ]
-      },
-      "type" : [ "CreateAction" ]
-    },
-    "sourceOrganization" : {
-      "id" : "http://lobid.org/organisations/DE-5-141#!",
-      "label" : "lobid Organisation"
-    },
-    "type" : [ "BibliographicDescription" ]
-  },
   "hasItem" : [ {
+    "id" : "http://lobid.org/items/HT019578856:DE-5-141:#!",
+    "type" : [ "Item" ],
     "heldBy" : {
       "id" : "http://lobid.org/organisations/DE-5-141",
       "label" : "lobid Organisation"
     },
-    "id" : "http://lobid.org/items/HT019578856:DE-5-141:#!",
-    "label" : "lobid Bestandsressource",
-    "type" : [ "Item" ]
+    "label" : "lobid Bestandsressource"
   } ],
-  "hbzId" : "HT019578856",
-  "id" : "http://lobid.org/resources/HT019578856#!",
-  "isPartOf" : [ {
-    "hasSuperordinate" : [ {
-      "label" : "Marathi teaching materials / Berntsen, Maxine"
-    } ],
-    "type" : [ "IsPartOfRelation" ]
-  } ],
+  "responsibilityStatement" : [ "Maxine Berntsen ; Jai Nimbkar" ],
   "language" : [ {
     "id" : "http://id.loc.gov/vocabulary/iso639-2/eng",
     "label" : "Englisch"
@@ -92,24 +44,72 @@
     "id" : "http://rdaregistry.info/termList/RDAproductionMethod/1010",
     "label" : "Print"
   } ],
+  "subject" : [ {
+    "source" : {
+      "id" : "http://d-nb.info/gnd/4149423-4",
+      "label" : "Dewey-Dezimalklassifikation"
+    },
+    "notation" : "491.4682421"
+  } ],
+  "title" : "An intermediate Marathi reader",
+  "hbzId" : "HT019578856",
+  "isPartOf" : [ {
+    "type" : [ "IsPartOfRelation" ],
+    "hasSuperordinate" : [ {
+      "label" : "Marathi teaching materials / Berntsen, Maxine"
+    } ]
+  } ],
   "publication" : [ {
+    "type" : [ "PublicationEvent" ],
     "location" : "Philadelphia",
     "publishedBy" : "University of Pennsylvania, Department of South Asia Regional Studies",
-    "startDate" : "1975",
-    "type" : [ "PublicationEvent" ]
+    "startDate" : "1975"
   } ],
-  "responsibilityStatement" : [ "Maxine Berntsen ; Jai Nimbkar" ],
   "sameAs" : [ {
     "id" : "http://hub.culturegraph.org/resource/HBZ-HT019578856",
     "label" : "Culturegraph Ressource"
   } ],
-  "subject" : [ {
-    "notation" : "491.4682421",
-    "source" : {
-      "id" : "http://d-nb.info/gnd/4149423-4",
-      "label" : "Dewey-Dezimalklassifikation"
-    }
-  } ],
-  "title" : "An intermediate Marathi reader",
-  "type" : [ "BibliographicResource", "MultiVolumeBook", "Book" ]
+  "describedBy" : {
+    "id" : "http://lobid.org/resources/HT019578856",
+    "type" : [ "BibliographicDescription" ],
+    "modifiedBy" : {
+      "id" : "http://lobid.org/organisations/DE-5-141#!",
+      "label" : "lobid Organisation"
+    },
+    "dateCreated" : "20180131",
+    "dateModified" : "20180213",
+    "inDataset" : {
+      "id" : "http://lobid.org/resources/dataset#!",
+      "label" : "lobid-resources – Der hbz-Verbundkatalog als Linked Open Data"
+    },
+    "resultOf" : {
+      "type" : [ "CreateAction" ],
+      "endTime" : "0001-01-01T00:00:00",
+      "instrument" : {
+        "id" : "https://github.com/hbz/lobid-resources",
+        "type" : [ "SoftwareApplication" ],
+        "label" : "Software lobid-resources"
+      },
+      "object" : {
+        "id" : "http://lobid.org/hbz01/HT019578856",
+        "type" : [ "DataFeedItem" ],
+        "inDataset" : {
+          "id" : "https://datahub.io/dataset/hbz_unioncatalog",
+          "label" : "hbz_unioncatalog"
+        },
+        "label" : "hbz-Ressource HT019578856 im Exportformat MAB2-XML"
+      }
+    },
+    "license" : [ {
+      "id" : "http://creativecommons.org/publicdomain/zero/1.0",
+      "label" : "Creative Commons-Lizenz CC0 1.0 Universal"
+    } ],
+    "sourceOrganization" : {
+      "id" : "http://lobid.org/organisations/DE-5-141#!",
+      "label" : "lobid Organisation"
+    },
+    "label" : "Webseite der hbz-Ressource HT019578856"
+  },
+  "@context" : "http://lobid.org/resources/context.jsonld",
+  "id" : "http://lobid.org/resources/HT019578856#!"
 }

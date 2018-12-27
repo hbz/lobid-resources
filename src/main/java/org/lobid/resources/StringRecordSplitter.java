@@ -62,7 +62,7 @@ public final class StringRecordSplitter
 						getReceiver().process(record.toString());
 						record = new StringBuilder(4096 * 12);
 					}
-					record.append(line);
+					record.append("\n" + line);
 					line = lineReader.readLine();
 				}
 				// the last line isn't a record's starting marker, so emit that last

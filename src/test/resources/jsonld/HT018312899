@@ -1,67 +1,21 @@
 {
-  "@context" : "web/conf/context.jsonld",
-  "bibliographicCitation" : "Grabbe-Jahrbuch ...; 32. 2013 (2014), S. 80-95",
-  "containedIn" : [ {
-    "id" : "http://lobid.org/resources/HT002156174#!",
-    "label" : "Grabbe-Jahrbuch ..."
-  } ],
+  "type" : [ "Article", "BibliographicResource" ],
   "contribution" : [ {
+    "type" : [ "Contribution" ],
     "agent" : {
-      "gndIdentifier" : "1023391147",
       "id" : "http://d-nb.info/gnd/1023391147",
-      "label" : "Maes, Sientje",
-      "type" : [ "Person" ]
+      "type" : [ "Person" ],
+      "gndIdentifier" : "1023391147",
+      "label" : "Maes, Sientje"
     },
     "role" : {
       "id" : "http://id.loc.gov/vocabulary/relators/cre",
       "label" : "Autor/in"
-    },
-    "type" : [ "Contribution" ]
+    }
   } ],
+  "responsibilityStatement" : [ "Sientje Maes" ],
   "coverage" : [ "Detmold | 99" ],
-  "describedBy" : {
-    "dateCreated" : "20140702",
-    "id" : "http://lobid.org/resources/HT018312899",
-    "inDataset" : {
-      "id" : "http://lobid.org/resources/dataset#!",
-      "label" : "lobid-resources – Der hbz-Verbundkatalog als Linked Open Data"
-    },
-    "label" : "Webseite der hbz-Ressource HT018312899",
-    "license" : [ {
-      "id" : "http://creativecommons.org/publicdomain/zero/1.0",
-      "label" : "Creative Commons-Lizenz CC0 1.0 Universal"
-    } ],
-    "resultOf" : {
-      "endTime" : "0001-01-01T00:00:00",
-      "instrument" : {
-        "id" : "https://github.com/hbz/lobid-resources",
-        "label" : "Software lobid-resources",
-        "type" : [ "SoftwareApplication" ]
-      },
-      "object" : {
-        "id" : "http://lobid.org/hbz01/HT018312899",
-        "inDataset" : {
-          "id" : "https://datahub.io/dataset/hbz_unioncatalog",
-          "label" : "hbz_unioncatalog"
-        },
-        "label" : "hbz-Ressource HT018312899 im Exportformat MAB2-XML",
-        "type" : [ "DataFeedItem" ]
-      },
-      "type" : [ "CreateAction" ]
-    },
-    "sourceOrganization" : {
-      "id" : "http://lobid.org/organisations/DE-6#!",
-      "label" : "lobid Organisation"
-    },
-    "type" : [ "BibliographicDescription" ]
-  },
-  "hbzId" : "HT018312899",
-  "id" : "http://lobid.org/resources/HT018312899#!",
-  "inCollection" : [ {
-    "id" : "http://lobid.org/resources/HT014176012#!",
-    "label" : "Nordrhein-Westfälische Bibliographie (NWBib)",
-    "type" : [ "Collection" ]
-  } ],
+  "bibliographicCitation" : "Grabbe-Jahrbuch ...; 32. 2013 (2014), S. 80-95",
   "language" : [ {
     "id" : "http://id.loc.gov/vocabulary/iso639-2/deu",
     "label" : "Deutsch"
@@ -70,66 +24,112 @@
     "id" : "http://rdaregistry.info/termList/RDAproductionMethod/1010",
     "label" : "Print"
   } ],
+  "subject" : [ {
+    "id" : "http://purl.org/lobid/nwbib#s769030",
+    "source" : {
+      "id" : "http://purl.org/lobid/nwbib",
+      "label" : "Sachsystematik der Nordrhein-Westfälischen Bibliographie"
+    },
+    "notation" : "769030",
+    "label" : "Drama"
+  }, {
+    "id" : "http://purl.org/lobid/nwbib#s768030",
+    "source" : {
+      "id" : "http://purl.org/lobid/nwbib",
+      "label" : "Sachsystematik der Nordrhein-Westfälischen Bibliographie"
+    },
+    "notation" : "768030",
+    "label" : "Einzelne Autoren (Sekundärliteratur)"
+  }, {
+    "type" : [ "ComplexSubject" ],
+    "componentList" : [ {
+      "id" : "http://d-nb.info/gnd/7683386-0",
+      "type" : [ "Work" ],
+      "gndIdentifier" : "7683386-0",
+      "source" : {
+        "id" : "http://d-nb.info/gnd/7749153-1",
+        "label" : "Gemeinsame Normdatei (GND)"
+      },
+      "label" : "Grabbe, Christian Dietrich: Der Cid"
+    }, {
+      "id" : "http://d-nb.info/gnd/4124796-6",
+      "type" : [ "SubjectHeading" ],
+      "gndIdentifier" : "4124796-6",
+      "source" : {
+        "id" : "http://d-nb.info/gnd/7749153-1",
+        "label" : "Gemeinsame Normdatei (GND)"
+      },
+      "label" : "Dramaturgie"
+    }, {
+      "id" : "http://d-nb.info/gnd/4049716-1",
+      "type" : [ "SubjectHeading" ],
+      "gndIdentifier" : "4049716-1",
+      "source" : {
+        "id" : "http://d-nb.info/gnd/7749153-1",
+        "label" : "Gemeinsame Normdatei (GND)"
+      },
+      "label" : "Rezeption"
+    } ],
+    "label" : "Grabbe, Christian Dietrich: Der Cid | Dramaturgie | Rezeption  "
+  } ],
+  "title" : "Theatraler Exzess und ,gespielte‘ Sinnlosigkeit",
+  "containedIn" : [ {
+    "id" : "http://lobid.org/resources/HT002156174#!",
+    "label" : "Grabbe-Jahrbuch ..."
+  } ],
+  "hbzId" : "HT018312899",
+  "inCollection" : [ {
+    "id" : "http://lobid.org/resources/HT014176012#!",
+    "type" : [ "Collection" ],
+    "label" : "Nordrhein-Westfälische Bibliographie (NWBib)"
+  } ],
+  "subjectAltLabel" : [ "Aneignung (Rezeption)", "Nachwirkung (Rezeption)", "Fortwirken", "Nachleben", "Wirkungsgeschichte" ],
   "otherTitleInformation" : [ "der Cid als Zeit- und Gattungskritik" ],
   "publication" : [ {
+    "type" : [ "PublicationEvent" ],
     "location" : "Bielefeld",
-    "startDate" : "2014",
-    "type" : [ "PublicationEvent" ]
+    "startDate" : "2014"
   } ],
-  "responsibilityStatement" : [ "Sientje Maes" ],
   "sameAs" : [ {
     "id" : "http://hub.culturegraph.org/resource/HBZ-HT018312899",
     "label" : "Culturegraph Ressource"
   } ],
-  "subject" : [ {
-    "id" : "http://purl.org/lobid/nwbib#s769030",
-    "label" : "Drama",
-    "notation" : "769030",
-    "source" : {
-      "id" : "http://purl.org/lobid/nwbib",
-      "label" : "Sachsystematik der Nordrhein-Westfälischen Bibliographie"
-    }
-  }, {
-    "componentList" : [ {
-      "gndIdentifier" : "7683386-0",
-      "id" : "http://d-nb.info/gnd/7683386-0",
-      "label" : "Grabbe, Christian Dietrich: Der Cid",
-      "source" : {
-        "id" : "http://d-nb.info/gnd/7749153-1",
-        "label" : "Gemeinsame Normdatei (GND)"
+  "describedBy" : {
+    "id" : "http://lobid.org/resources/HT018312899",
+    "type" : [ "BibliographicDescription" ],
+    "dateCreated" : "20140702",
+    "inDataset" : {
+      "id" : "http://lobid.org/resources/dataset#!",
+      "label" : "lobid-resources – Der hbz-Verbundkatalog als Linked Open Data"
+    },
+    "resultOf" : {
+      "type" : [ "CreateAction" ],
+      "endTime" : "0001-01-01T00:00:00",
+      "instrument" : {
+        "id" : "https://github.com/hbz/lobid-resources",
+        "type" : [ "SoftwareApplication" ],
+        "label" : "Software lobid-resources"
       },
-      "type" : [ "Work" ]
-    }, {
-      "gndIdentifier" : "4124796-6",
-      "id" : "http://d-nb.info/gnd/4124796-6",
-      "label" : "Dramaturgie",
-      "source" : {
-        "id" : "http://d-nb.info/gnd/7749153-1",
-        "label" : "Gemeinsame Normdatei (GND)"
-      },
-      "type" : [ "SubjectHeading" ]
-    }, {
-      "gndIdentifier" : "4049716-1",
-      "id" : "http://d-nb.info/gnd/4049716-1",
-      "label" : "Rezeption",
-      "source" : {
-        "id" : "http://d-nb.info/gnd/7749153-1",
-        "label" : "Gemeinsame Normdatei (GND)"
-      },
-      "type" : [ "SubjectHeading" ]
+      "object" : {
+        "id" : "http://lobid.org/hbz01/HT018312899",
+        "type" : [ "DataFeedItem" ],
+        "inDataset" : {
+          "id" : "https://datahub.io/dataset/hbz_unioncatalog",
+          "label" : "hbz_unioncatalog"
+        },
+        "label" : "hbz-Ressource HT018312899 im Exportformat MAB2-XML"
+      }
+    },
+    "license" : [ {
+      "id" : "http://creativecommons.org/publicdomain/zero/1.0",
+      "label" : "Creative Commons-Lizenz CC0 1.0 Universal"
     } ],
-    "label" : "Grabbe, Christian Dietrich: Der Cid | Dramaturgie | Rezeption  ",
-    "type" : [ "ComplexSubject" ]
-  }, {
-    "id" : "http://purl.org/lobid/nwbib#s768030",
-    "label" : "Einzelne Autoren (Sekundärliteratur)",
-    "notation" : "768030",
-    "source" : {
-      "id" : "http://purl.org/lobid/nwbib",
-      "label" : "Sachsystematik der Nordrhein-Westfälischen Bibliographie"
-    }
-  } ],
-  "subjectAltLabel" : [ "Wirkungsgeschichte", "Nachleben", "Fortwirken", "Nachwirkung (Rezeption)", "Aneignung (Rezeption)" ],
-  "title" : "Theatraler Exzess und ,gespielte‘ Sinnlosigkeit",
-  "type" : [ "BibliographicResource", "Article" ]
+    "sourceOrganization" : {
+      "id" : "http://lobid.org/organisations/DE-6#!",
+      "label" : "lobid Organisation"
+    },
+    "label" : "Webseite der hbz-Ressource HT018312899"
+  },
+  "@context" : "http://lobid.org/resources/context.jsonld",
+  "id" : "http://lobid.org/resources/HT018312899#!"
 }

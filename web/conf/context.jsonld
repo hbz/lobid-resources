@@ -4,21 +4,22 @@
       "@id" : "http://id.loc.gov/ontologies/bibframe/extent"
     },
     "endDate" : {
-      "@type" : "http://www.w3.org/2001/XMLSchema#gYear",
       "@id" : "http://schema.org/endDate",
-      "@container" : "@set"
+      "type" : "http://www.w3.org/2001/XMLSchema#gYear"
+    },
+    "altLabel" : {
+      "@id" : "http://www.w3.org/2004/02/skos/core#altLabel"
     },
     "SecondaryPublicationEvent" : {
       "@id" : "http://purl.org/lobid/lv#SecondaryPublicationEvent"
     },
-    "altLabel" : {
-      "@id" : "http://www.w3.org/2004/02/skos/core#altLabel",
+    "type" : {
+      "@id" : "@type",
       "@container" : "@set"
     },
     "Image" : {
       "@id" : "http://purl.org/ontology/bibo/Image"
     },
-    "type" : "@type",
     "ReferenceSource" : {
       "@id" : "http://purl.org/ontology/bibo/ReferenceSource"
     },
@@ -32,15 +33,14 @@
       "@id" : "http://id.loc.gov/ontologies/bibframe/contribution",
       "@container" : "@list"
     },
+    "notation" : {
+      "@id" : "http://www.w3.org/2004/02/skos/core#notation"
+    },
     "Book" : {
       "@id" : "http://purl.org/ontology/bibo/Book"
     },
     "Combination" : {
       "@id" : "http://iflastandards.info/ns/isbd/terms/mediatype/T1008"
-    },
-    "notation" : {
-      "@id" : "http://www.w3.org/2004/02/skos/core#notation",
-      "@container" : "@set"
     },
     "Work" : {
       "@id" : "http://d-nb.info/standards/elementset/gnd#Work"
@@ -51,7 +51,6 @@
       "@container" : "@set"
     },
     "spatial" : {
-      "@type" : "@id",
       "@id" : "http://purl.org/dc/terms/spatial",
       "@container" : "@set"
     },
@@ -59,7 +58,6 @@
       "@id" : "http://purl.org/lobid/lv#hbzID"
     },
     "similar" : {
-      "@type" : "@id",
       "@id" : "http://umbel.org/umbel#isLike",
       "@container" : "@set"
     },
@@ -74,7 +72,6 @@
       "@container" : "@set"
     },
     "isPartOf" : {
-      "@type" : "@id",
       "@id" : "http://purl.org/lobid/lv#isPartOf",
       "@container" : "@set"
     },
@@ -92,12 +89,14 @@
       "@container" : "@set"
     },
     "supplement" : {
-      "@type" : "@id",
       "@id" : "http://id.loc.gov/ontologies/bibframe/supplement",
       "@container" : "@set"
     },
     "bibliographicCitation" : {
       "@id" : "http://purl.org/dc/terms/bibliographicCitation"
+    },
+    "dateOfBirthAndDeath" : {
+      "@id" : "http://d-nb.info/standards/elementset/gnd#dateOfBirthAndDeath"
     },
     "Map" : {
       "@id" : "http://purl.org/ontology/bibo/Map"
@@ -105,14 +104,9 @@
     "Person" : {
       "@id" : "http://d-nb.info/standards/elementset/gnd#Person"
     },
-    "dateOfBirthAndDeath" : {
-      "@id" : "http://d-nb.info/standards/elementset/gnd#dateOfBirthAndDeath",
-      "@container" : "@set"
-    },
     "startDate" : {
-      "@type" : "http://www.w3.org/2001/XMLSchema#gYear",
       "@id" : "http://schema.org/startDate",
-      "@container" : "@set"
+      "type" : "http://www.w3.org/2001/XMLSchema#gYear"
     },
     "object" : {
       "@id" : "http://schema.org/object"
@@ -125,52 +119,42 @@
       "@id" : "http://rdaregistry.info/Elements/w/P10065"
     },
     "successor" : {
-      "@type" : "@id",
       "@id" : "http://rdaregistry.info/Elements/u/P60278",
       "@container" : "@set"
     },
     "role" : {
-      "@type" : "@id",
       "@id" : "http://id.loc.gov/ontologies/bibframe/role"
-    },
-    "contributorOrder" : {
-      "@id" : "http://purl.org/lobid/lv#contributorOrder",
-      "@container" : "@set"
     },
     "longitudeAndLatitude" : {
       "@id" : "http://rdaregistry.info/Elements/u/P60345",
       "@container" : "@set"
     },
     "dateOfDeath" : {
-      "@type" : "http://www.w3.org/2001/XMLSchema#gYear",
       "@id" : "http://d-nb.info/standards/elementset/gnd#dateOfDeath",
-      "@container" : "@set"
+      "type" : "http://www.w3.org/2001/XMLSchema#gYear"
     },
     "Article" : {
       "@id" : "http://purl.org/ontology/bibo/Article"
     },
     "hasItem" : {
-      "@type" : "@id",
       "@id" : "http://id.loc.gov/ontologies/bibframe/hasItem",
       "@container" : "@set"
-    },
-    "Festschrift" : {
-      "@id" : "http://purl.org/lobid/lv#Festschrift"
     },
     "alternativeTitle" : {
       "@id" : "http://purl.org/dc/terms/alternative",
       "@container" : "@set"
     },
+    "Festschrift" : {
+      "@id" : "http://purl.org/lobid/lv#Festschrift"
+    },
     "lon" : {
       "@id" : "http://schema.org/longitude"
     },
     "predecessor" : {
-      "@type" : "@id",
       "@id" : "http://rdaregistry.info/Elements/u/P60261",
       "@container" : "@set"
     },
     "fulltextOnline" : {
-      "@type" : "@id",
       "@id" : "http://purl.org/lobid/lv#fulltextOnline",
       "@container" : "@set"
     },
@@ -178,36 +162,32 @@
       "@id" : "http://d-nb.info/standards/elementset/gnd#ConferenceOrEvent"
     },
     "geo" : {
-      "@type" : "@id",
       "@id" : "http://schema.org/geo"
     },
     "zdbId" : {
       "@id" : "http://purl.org/lobid/lv#zdbID"
     },
     "heldBy" : {
-      "@type" : "@id",
       "@id" : "http://id.loc.gov/ontologies/bibframe/heldBy"
     },
     "describedBy" : {
-      "@type" : "@id",
       "@id" : "http://www.w3.org/2007/05/powder-s#describedby"
     },
     "modifiedBy" : {
       "@id" : "http://open-services.net/ns/core#modifiedBy"
     },
+    "gndIdentifier" : {
+      "@id" : "http://d-nb.info/standards/elementset/gnd#gndIdentifier"
+    },
     "PublishedScore" : {
       "@id" : "http://purl.org/ontology/mo/PublishedScore"
-    },
-    "gndIdentifier" : {
-      "@id" : "http://d-nb.info/standards/elementset/gnd#gndIdentifier",
-      "@container" : "@set"
-    },
-    "PublicationIssue" : {
-      "@id" : "http://schema.org/PublicationIssue"
     },
     "oclcNumber" : {
       "@id" : "http://purl.org/ontology/bibo/oclcnum",
       "@container" : "@set"
+    },
+    "PublicationIssue" : {
+      "@id" : "http://schema.org/PublicationIssue"
     },
     "corporateBodyForTitle" : {
       "@id" : "http://rdaregistry.info/Elements/u/P60327",
@@ -217,9 +197,8 @@
       "@id" : "http://purl.org/lobid/lv#Schoolbook"
     },
     "dateOfBirth" : {
-      "@type" : "http://www.w3.org/2001/XMLSchema#gYear",
       "@id" : "http://d-nb.info/standards/elementset/gnd#dateOfBirth",
-      "@container" : "@set"
+      "type" : "http://www.w3.org/2001/XMLSchema#gYear"
     },
     "abstract" : {
       "@id" : "http://purl.org/dc/terms/abstract",
@@ -254,32 +233,28 @@
       "@container" : "@set"
     },
     "endTime" : {
-      "@type" : "http://www.w3.org/2001/XMLSchema#dateTime",
-      "@id" : "http://schema.org/endTime"
+      "@id" : "http://schema.org/endTime",
+      "type" : "http://www.w3.org/2001/XMLSchema#dateTime"
     },
     "Bibliography" : {
       "@id" : "http://purl.org/lobid/lv#Bibliography"
     },
     "publishedBy" : {
-      "@id" : "http://schema.org/publishedBy",
-      "@container" : "@set"
-    },
-    "Miscellaneous" : {
-      "@id" : "http://purl.org/lobid/lv#Miscellaneous"
+      "@id" : "http://schema.org/publishedBy"
     },
     "agent" : {
-      "@type" : "@id",
       "@id" : "http://id.loc.gov/ontologies/bibframe/agent"
     },
     "inDataset" : {
-      "@type" : "@id",
       "@id" : "http://purl.org/lobid/lv#inDataset"
+    },
+    "Miscellaneous" : {
+      "@id" : "http://purl.org/lobid/lv#Miscellaneous"
     },
     "ComplexSubject" : {
       "@id" : "http://www.loc.gov/mads/rdf/v1#ComplexSubject"
     },
     "subject" : {
-      "@type" : "@id",
       "@id" : "http://purl.org/dc/terms/subject",
       "@container" : "@set"
     },
@@ -292,17 +267,14 @@
       "@container" : "@list"
     },
     "language" : {
-      "@type" : "@id",
       "@id" : "http://purl.org/dc/terms/language",
       "@container" : "@set"
     },
     "inCollection" : {
-      "@type" : "@id",
       "@id" : "http://purl.org/lobid/lv#inCollection",
       "@container" : "@set"
     },
     "source" : {
-      "@type" : "@id",
       "@id" : "http://id.loc.gov/ontologies/bibframe/source"
     },
     "shortTitle" : {
@@ -321,7 +293,6 @@
       "@container" : "@set"
     },
     "containedIn" : {
-      "@type" : "@id",
       "@id" : "http://purl.org/lobid/lv#containedIn",
       "@container" : "@set"
     },
@@ -332,15 +303,9 @@
       "@id" : "http://schema.org/latitude"
     },
     "numbering" : {
-      "@id" : "http://purl.org/lobid/lv#numbering",
-      "@container" : "@set"
-    },
-    "subjectOrder" : {
-      "@id" : "http://purl.org/lobid/lv#subjectOrder",
-      "@container" : "@list"
+      "@id" : "http://purl.org/lobid/lv#numbering"
     },
     "primaryForm" : {
-      "@type" : "@id",
       "@id" : "http://purl.org/dc/terms/isFormatOf",
       "@container" : "@set"
     },
@@ -357,22 +322,21 @@
     "workNumbering" : {
       "@id" : "http://rdaregistry.info/Elements/w/P10079"
     },
-    "Thesis" : {
-      "@id" : "http://purl.org/ontology/bibo/Thesis"
-    },
     "exampleOfWork" : {
       "@id" : "http://purl.org/lobid/lv#exampleOfWork"
+    },
+    "Thesis" : {
+      "@id" : "http://purl.org/ontology/bibo/Thesis"
     },
     "ArchivedWebPage" : {
       "@id" : "http://purl.org/lobid/lv#ArchivedWebPage"
     },
-    "BibliographicResource" : {
-      "@id" : "http://purl.org/dc/terms/BibliographicResource"
-    },
     "license" : {
-      "@type" : "@id",
       "@id" : "http://schema.org/license",
       "@container" : "@set"
+    },
+    "BibliographicResource" : {
+      "@id" : "http://purl.org/dc/terms/BibliographicResource"
     },
     "musicalKey" : {
       "@id" : "http://rdaregistry.info/Elements/w/P10221"
@@ -381,7 +345,6 @@
       "@id" : "http://id.loc.gov/ontologies/bibframe/Collection"
     },
     "tableOfContents" : {
-      "@type" : "@id",
       "@id" : "http://purl.org/dc/terms/tableOfContents",
       "@container" : "@set"
     },
@@ -389,14 +352,12 @@
       "@id" : "http://d-nb.info/standards/elementset/gnd#SubjectHeading"
     },
     "note" : {
-      "@id" : "http://id.loc.gov/ontologies/bibframe/note",
-      "@container" : "@set"
+      "@id" : "http://id.loc.gov/ontologies/bibframe/note"
     },
     "SoftwareApplication" : {
       "@id" : "http://schema.org/SoftwareApplication"
     },
     "hasVersion" : {
-      "@type" : "@id",
       "@id" : "http://purl.org/dc/terms/hasVersion",
       "@container" : "@set"
     },
@@ -408,9 +369,6 @@
       "@id" : "http://www.w3.org/2001/XMLSchema#",
       "@container" : "@set"
     },
-    "DataFeedItem" : {
-      "@id" : "http://schema.org/DataFeedItem"
-    },
     "description" : {
       "@id" : "http://purl.org/dc/terms/description",
       "@container" : "@set"
@@ -419,14 +377,16 @@
       "@id" : "http://purl.org/ontology/bibo/edition",
       "@container" : "@set"
     },
-    "Standard" : {
-      "@id" : "http://purl.org/ontology/bibo/Standard"
+    "DataFeedItem" : {
+      "@id" : "http://schema.org/DataFeedItem"
     },
     "instrument" : {
       "@id" : "http://schema.org/instrument"
     },
+    "Standard" : {
+      "@id" : "http://purl.org/ontology/bibo/Standard"
+    },
     "medium" : {
-      "@type" : "@id",
       "@id" : "http://purl.org/dc/terms/medium",
       "@container" : "@set"
     },
@@ -438,16 +398,13 @@
       "@id" : "http://purl.org/dc/terms/title"
     },
     "seeAlso" : {
-      "@type" : "@id",
       "@id" : "http://www.w3.org/2000/01/rdf-schema#seeAlso",
       "@container" : "@set"
     },
     "dateCreated" : {
-      "@id" : "http://purl.org/dc/terms/created",
-      "@container" : "@set"
+      "@id" : "http://purl.org/dc/terms/created"
     },
     "related" : {
-      "@type" : "@id",
       "@id" : "http://purl.org/dc/terms/relation",
       "@container" : "@set"
     },
@@ -474,13 +431,11 @@
       "@id" : "http://purl.org/ontology/bibo/Report"
     },
     "webPageArchived" : {
-      "@type" : "@id",
       "@id" : "http://purl.org/lobid/lv#webPageArchived",
       "@container" : "@set"
     },
     "dateModified" : {
-      "@id" : "http://purl.org/dc/terms/modified",
-      "@container" : "@set"
+      "@id" : "http://purl.org/dc/terms/modified"
     },
     "label" : {
       "@id" : "http://www.w3.org/2000/01/rdf-schema#label"
@@ -488,40 +443,33 @@
     "EditedVolume" : {
       "@id" : "http://purl.org/lobid/lv#EditedVolume"
     },
-    "Series" : {
-      "@id" : "http://purl.org/ontology/bibo/Series"
-    },
     "hasSuperordinate" : {
-      "@type" : "@id",
       "@id" : "http://purl.org/lobid/lv#hasSuperordinate",
       "@container" : "@set"
+    },
+    "Series" : {
+      "@id" : "http://purl.org/ontology/bibo/Series"
     },
     "subjectAltLabel" : {
       "@id" : "http://purl.org/lobid/lv#subjectAltLabel",
       "@container" : "@set"
     },
     "itemOf" : {
-      "@type" : "@id",
       "@id" : "http://id.loc.gov/ontologies/bibframe/itemOf"
-    },
-    "PublicationEvent" : {
-      "@id" : "http://schema.org/PublicationEvent"
     },
     "sourceOrganization" : {
       "@id" : "http://schema.org/sourceOrganization"
     },
+    "PublicationEvent" : {
+      "@id" : "http://schema.org/PublicationEvent"
+    },
     "location" : {
-      "@id" : "http://schema.org/location",
-      "@container" : "@set"
+      "@id" : "http://schema.org/location"
     },
     "Contribution" : {
       "@id" : "http://id.loc.gov/ontologies/bibframe/Contribution"
     },
-    "Location" : {
-      "@id" : "http://purl.org/dc/terms/Location"
-    },
     "sameAs" : {
-      "@type" : "@id",
       "@id" : "http://www.w3.org/2002/07/owl#sameAs",
       "@container" : "@set"
     }

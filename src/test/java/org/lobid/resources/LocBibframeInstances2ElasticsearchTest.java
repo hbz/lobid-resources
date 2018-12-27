@@ -1,11 +1,9 @@
 /* Copyright 2015-2017 hbz, Pascal Christoph. Licensed under the EPL 2.0 */
-
 package org.lobid.resources;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.StringWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -38,23 +36,17 @@ import org.lobid.resources.run.LocBibframe2JsonEs;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.github.jsonldjava.core.JsonLdError;
-import com.github.jsonldjava.core.JsonLdProcessor;
-import com.github.jsonldjava.jena.JenaTripleCallback;
-import com.github.jsonldjava.utils.JSONUtils;
-import com.hp.hpl.jena.rdf.model.Model;
 
 import de.hbz.lobid.helper.CompareJsonMaps;
 
-/**
+/***
  * Transform loc bibframe instances into JSON-LD and index that into
- * elasticsearch. Query the index and test the data by transforming the data
- * into one big ntriple file (which is great to make diffs) and into several
- * JSON-LD files (reflecting the records residing in elasticsearch).
+ * elasticsearch.Query the index and test the data by transforming the data into
+ * one big ntriple file(which is great to make diffs)and into several* JSON-LD
+ * files(reflecting the records residing in elasticsearch).
  * 
- * @author Pascal Christoph (dr0i)
- * 
- */
+ * @author Pascal Christoph(dr0i)
+ **/
 @SuppressWarnings("javadoc")
 public final class LocBibframeInstances2ElasticsearchTest {
 	private static Node node;
@@ -71,10 +63,11 @@ public final class LocBibframeInstances2ElasticsearchTest {
 	private static final String DIRECTORY_TO_TEST_JSON_FILES =
 			Hbz01MabXmlEtlNtriples2Filesystem.PATH_TO_TEST + "jsonld-loc/";
 	private static boolean testFailed = false;
-	private final static RdfModel2ElasticsearchEtikettJsonLd rdfModel2ElasticsearchEtikettJsonLd =
-			new RdfModel2ElasticsearchEtikettJsonLd(
-					new File(LocBibframe2JsonEs.DIRECTORY_TO_LOC_LABELS),
-					LocBibframe2JsonEs.LOC_CONTEXT);
+
+	private static RdfGraphToJsonLd rdfGraphToJsonLd =
+			new RdfGraphToJsonLd(LocBibframe2JsonEs.LOC_CONTEXT);
+	private static JsonLdItemSplitter2ElasticsearchJsonLd jsonLdItemSplitter2ElasticsearchJsonLd =
+			new JsonLdItemSplitter2ElasticsearchJsonLd("");
 
 	@BeforeClass
 	public static void setup() {
@@ -104,13 +97,14 @@ public final class LocBibframeInstances2ElasticsearchTest {
 		} catch (NodeValidationException e) {
 			e.printStackTrace();
 		}
-		rdfModel2ElasticsearchEtikettJsonLd
-				.setContextLocation("web/conf/context-loc.jsonld");
+		rdfGraphToJsonLd.setContextLocationFilname("web/conf/context-loc.jsonld");
+		rdfGraphToJsonLd.setRdfTypeToIdentifyRootId(
+				"http://id.loc.gov/ontologies/bibframe/Work");
 		client = node.client();
 		client.admin().indices().prepareDelete("_all").execute().actionGet();
 		client.admin().cluster().prepareHealth().setWaitForYellowStatus().execute()
 				.actionGet();
-		etl(client, rdfModel2ElasticsearchEtikettJsonLd);
+		etl(client);
 	}
 
 	/*
@@ -118,19 +112,15 @@ public final class LocBibframeInstances2ElasticsearchTest {
 	 * clobs, transform into lobid ntriples, transform that into elasticsearch
 	 * json-ld, index that into elasticsearch.
 	 */
-	static void etl(final Client cl,
-			RdfModel2ElasticsearchEtikettJsonLd etikettJsonLdConverter) {
-		etikettJsonLdConverter
-				.setIdPatternMainNode(LocBibframe2JsonEs.ROOT_SUBJECT_PATTERN);
-		etikettJsonLdConverter
-				.setRootIdPredicate(LocBibframe2JsonEs.ROOT_ID_PREDICATE);
+	static void etl(final Client cl) {
 		final FileOpener opener = new FileOpener();
 		final StringRecordSplitter srs =
 				new StringRecordSplitter(LocBibframe2JsonEs.RECORD_SPLITTER_MARKER);
 		final Triples2RdfModel triple2model = new Triples2RdfModel();
 		triple2model.setInput(Hbz01MabXmlEtlNtriples2Filesystem.N_TRIPLE);
-		opener.setReceiver(srs).setReceiver(triple2model)
-				.setReceiver(etikettJsonLdConverter)
+		opener.setReceiver(srs)//
+				.setReceiver(rdfGraphToJsonLd)//
+				.setReceiver(jsonLdItemSplitter2ElasticsearchJsonLd)//
 				.setReceiver(getElasticsearchIndexer(cl));
 		opener.process(INPUT_FN_NTRIPLES);
 		opener.closeStream();
@@ -250,7 +240,10 @@ public final class LocBibframeInstances2ElasticsearchTest {
 		private static String getAsNtriples() {
 			return Arrays.asList(getElasticsearchDocuments().getHits().getHits())
 					.parallelStream()
-					.map(hit -> toRdf(cleanseEndtime(hit.getSourceAsString())))
+					.map(hit -> AbstractIngestTests.toRdf(
+							cleanseEndtime(hit.getSourceAsString()),
+							LocBibframe2JsonEs.LOC_CONTEXT,
+							rdfGraphToJsonLd.getContextLocationFilename()))
 					.collect(Collectors.joining());
 		}
 
@@ -302,28 +295,6 @@ public final class LocBibframeInstances2ElasticsearchTest {
 				LOG.error("Errored computing " + filename);
 				deleteTestFile(Paths.get(filename));
 			}
-		}
-
-		private static String toRdf(final String jsonLd) {
-			try {
-				LOG.trace("toRdf: " + jsonLd);
-				String jsonWithLocalContext = jsonLd.replaceFirst(
-						"@context\" ?: ?\"" + LocBibframe2JsonEs.LOC_CONTEXT + "\"",
-						"@context\":\"" + new File(
-								rdfModel2ElasticsearchEtikettJsonLd.getContextLocation())
-										.toURI().toString()
-								+ "\"");
-
-				final Object jsonObject = JSONUtils.fromString(jsonWithLocalContext);
-				final JenaTripleCallback callback = new JenaTripleCallback();
-				final Model model = (Model) JsonLdProcessor.toRDF(jsonObject, callback);
-				final StringWriter writer = new StringWriter();
-				model.write(writer, Hbz01MabXmlEtlNtriples2Filesystem.N_TRIPLE);
-				return writer.toString();
-			} catch (IOException | JsonLdError e) {
-				e.printStackTrace();
-			}
-			return null;
 		}
 	}
 }

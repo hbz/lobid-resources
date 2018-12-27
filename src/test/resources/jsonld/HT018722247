@@ -1,70 +1,27 @@
 {
-  "@context" : "web/conf/context.jsonld",
+  "type" : [ "Periodical", "BibliographicResource", "Statistics" ],
   "contribution" : [ {
+    "type" : [ "Contribution" ],
     "agent" : {
-      "altLabel" : "Progenerika",
-      "gndIdentifier" : "16090896-6",
       "id" : "http://d-nb.info/gnd/16090896-6",
+      "type" : [ "CorporateBody" ],
+      "gndIdentifier" : "16090896-6",
       "label" : "Pro Generika e.V.",
-      "type" : [ "CorporateBody" ]
+      "altLabel" : "Progenerika"
     },
     "role" : {
       "id" : "http://id.loc.gov/vocabulary/relators/cre",
       "label" : "Autor/in"
-    },
-    "type" : [ "Contribution" ]
+    }
   } ],
-  "describedBy" : {
-    "dateCreated" : "20150810",
-    "id" : "http://lobid.org/resources/HT018722247",
-    "inDataset" : {
-      "id" : "http://lobid.org/resources/dataset#!",
-      "label" : "lobid-resources – Der hbz-Verbundkatalog als Linked Open Data"
-    },
-    "label" : "Webseite der hbz-Ressource HT018722247",
-    "license" : [ {
-      "id" : "http://creativecommons.org/publicdomain/zero/1.0",
-      "label" : "Creative Commons-Lizenz CC0 1.0 Universal"
-    } ],
-    "resultOf" : {
-      "endTime" : "0001-01-01T00:00:00",
-      "instrument" : {
-        "id" : "https://github.com/hbz/lobid-resources",
-        "label" : "Software lobid-resources",
-        "type" : [ "SoftwareApplication" ]
-      },
-      "object" : {
-        "id" : "http://lobid.org/hbz01/HT018722247",
-        "inDataset" : {
-          "id" : "https://datahub.io/dataset/hbz_unioncatalog",
-          "label" : "hbz_unioncatalog"
-        },
-        "label" : "hbz-Ressource HT018722247 im Exportformat MAB2-XML",
-        "type" : [ "DataFeedItem" ]
-      },
-      "type" : [ "CreateAction" ]
-    },
-    "sourceOrganization" : {
-      "id" : "http://lobid.org/organisations/DE-38M#!",
-      "label" : "lobid Organisation"
-    },
-    "type" : [ "BibliographicDescription" ]
-  },
   "hasItem" : [ {
+    "id" : "http://lobid.org/items/HT018722247:DE-38M:#!",
+    "type" : [ "Item" ],
     "heldBy" : {
       "id" : "http://lobid.org/organisations/DE-38M",
       "label" : "lobid Organisation"
     },
-    "id" : "http://lobid.org/items/HT018722247:DE-38M:#!",
-    "label" : "lobid Bestandsressource",
-    "type" : [ "Item" ]
-  } ],
-  "hbzId" : "HT018722247",
-  "id" : "http://lobid.org/resources/HT018722247#!",
-  "inCollection" : [ {
-    "id" : "http://repository.publisso.de",
-    "label" : "Fachrepositorium Lebenswissenschaften",
-    "type" : [ "Collection" ]
+    "label" : "lobid Bestandsressource"
   } ],
   "language" : [ {
     "id" : "http://id.loc.gov/vocabulary/iso639-2/deu",
@@ -74,24 +31,67 @@
     "id" : "http://rdaregistry.info/termList/RDACarrierType/1018",
     "label" : "Online-Ressource"
   } ],
+  "subject" : [ {
+    "source" : {
+      "id" : "http://d-nb.info/gnd/4149423-4",
+      "label" : "Dewey-Dezimalklassifikation"
+    },
+    "label" : "Medizin und Gesundheit",
+    "notation" : "610"
+  } ],
+  "title" : "Marktdaten Pro Generika",
+  "hbzId" : "HT018722247",
+  "inCollection" : [ {
+    "id" : "http://repository.publisso.de",
+    "type" : [ "Collection" ],
+    "label" : "Fachrepositorium Lebenswissenschaften"
+  } ],
   "publication" : [ {
+    "type" : [ "PublicationEvent" ],
     "location" : "Berlin",
     "publishedBy" : "Pro Generika e.V.",
-    "startDate" : "2012",
-    "type" : [ "PublicationEvent" ]
+    "startDate" : "2012"
   } ],
   "sameAs" : [ {
     "id" : "http://hub.culturegraph.org/resource/HBZ-HT018722247",
     "label" : "Culturegraph Ressource"
   } ],
-  "subject" : [ {
-    "label" : "Medizin und Gesundheit",
-    "notation" : "610",
-    "source" : {
-      "id" : "http://d-nb.info/gnd/4149423-4",
-      "label" : "Dewey-Dezimalklassifikation"
-    }
-  } ],
-  "title" : "Marktdaten Pro Generika",
-  "type" : [ "BibliographicResource", "Periodical", "Statistics" ]
+  "describedBy" : {
+    "id" : "http://lobid.org/resources/HT018722247",
+    "type" : [ "BibliographicDescription" ],
+    "dateCreated" : "20150810",
+    "inDataset" : {
+      "id" : "http://lobid.org/resources/dataset#!",
+      "label" : "lobid-resources – Der hbz-Verbundkatalog als Linked Open Data"
+    },
+    "resultOf" : {
+      "type" : [ "CreateAction" ],
+      "endTime" : "0001-01-01T00:00:00",
+      "instrument" : {
+        "id" : "https://github.com/hbz/lobid-resources",
+        "type" : [ "SoftwareApplication" ],
+        "label" : "Software lobid-resources"
+      },
+      "object" : {
+        "id" : "http://lobid.org/hbz01/HT018722247",
+        "type" : [ "DataFeedItem" ],
+        "inDataset" : {
+          "id" : "https://datahub.io/dataset/hbz_unioncatalog",
+          "label" : "hbz_unioncatalog"
+        },
+        "label" : "hbz-Ressource HT018722247 im Exportformat MAB2-XML"
+      }
+    },
+    "license" : [ {
+      "id" : "http://creativecommons.org/publicdomain/zero/1.0",
+      "label" : "Creative Commons-Lizenz CC0 1.0 Universal"
+    } ],
+    "sourceOrganization" : {
+      "id" : "http://lobid.org/organisations/DE-38M#!",
+      "label" : "lobid Organisation"
+    },
+    "label" : "Webseite der hbz-Ressource HT018722247"
+  },
+  "@context" : "http://lobid.org/resources/context.jsonld",
+  "id" : "http://lobid.org/resources/HT018722247#!"
 }

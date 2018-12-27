@@ -9,6 +9,8 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Iterator;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -20,6 +22,11 @@ import org.apache.logging.log4j.Logger;
 import org.culturegraph.mf.morph.Metamorph;
 import org.culturegraph.mf.morph.MorphErrorHandler;
 import org.junit.Assert;
+
+import com.github.jsonldjava.core.JsonLdOptions;
+import com.github.jsonldjava.core.JsonLdProcessor;
+import com.github.jsonldjava.impl.NQuadTripleCallback;
+import com.github.jsonldjava.utils.JsonUtils;
 
 /**
  * Helper class for executing tests.
@@ -34,6 +41,8 @@ public abstract class AbstractIngestTests {
 			LogManager.getLogger(AbstractIngestTests.class);
 
 	protected Metamorph metamorph;
+	private static NQuadTripleCallback nqtc = new NQuadTripleCallback();
+	private static JsonLdOptions options = new JsonLdOptions();
 
 	@SuppressWarnings("resource")
 	private static Stream<String> fileToStream(final File file) {
@@ -151,6 +160,25 @@ public abstract class AbstractIngestTests {
 				LOG.error(exception.getMessage(), exception);
 			}
 		});
+	}
+
+	public static String toRdf(final String jsonLd, String contextUrl,
+			String contextLocation) {
+		try {
+			LOG.debug("toRdf: " + jsonLd);
+			String context =
+					new String(Files.readAllBytes(Paths.get(contextLocation)));
+			String jsonWithLocalContext =
+					jsonLd.replaceFirst("\"@context\":\"" + contextUrl + "\"",
+							context.substring(1, context.length() - 2));
+			LOG.debug("with-context: " + jsonWithLocalContext);
+			Object jsonObject = JsonUtils.fromString(jsonWithLocalContext);
+			Object obj = JsonLdProcessor.toRDF(jsonObject, nqtc, options);
+			return obj.toString();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 }

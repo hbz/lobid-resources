@@ -1,26 +1,73 @@
 {
-  "@context" : "web/conf/context.jsonld",
+  "type" : [ "Book", "BibliographicResource" ],
   "contribution" : [ {
+    "type" : [ "Contribution" ],
     "agent" : {
-      "gndIdentifier" : "104698489",
       "id" : "http://d-nb.info/gnd/104698489",
-      "label" : "Boskamp, Aloys Erich",
-      "type" : [ "Person" ]
+      "type" : [ "Person" ],
+      "gndIdentifier" : "104698489",
+      "label" : "Boskamp, Aloys Erich"
     },
     "role" : {
       "id" : "http://id.loc.gov/vocabulary/relators/ctb",
       "label" : "Mitwirkende"
+    }
+  } ],
+  "extent" : "S. 77",
+  "hasItem" : [ {
+    "id" : "http://lobid.org/items/TT002165019:DE-6-139a:G%20m%2038#!",
+    "type" : [ "Item" ],
+    "heldBy" : {
+      "id" : "http://lobid.org/organisations/DE-6-139a",
+      "label" : "lobid Organisation"
     },
-    "type" : [ "Contribution" ]
+    "note" : "00193001",
+    "callNumber" : "G m 38",
+    "label" : "G m 38"
+  } ],
+  "responsibilityStatement" : [ "Hrsg.: Stadt Paderborn. Verantwortl.: A. Erich Boskamp" ],
+  "medium" : [ {
+    "id" : "http://rdaregistry.info/termList/RDAproductionMethod/1010",
+    "label" : "Print"
+  } ],
+  "title" : "Bauen wir doch aufs neue das alte Haus",
+  "hbzId" : "TT002165019",
+  "otherTitleInformation" : [ "Jüdisches Schicksal in Paderborn" ],
+  "publication" : [ {
+    "type" : [ "PublicationEvent" ],
+    "location" : "Paderborn",
+    "startDate" : "1964"
+  } ],
+  "sameAs" : [ {
+    "id" : "http://hub.culturegraph.org/resource/HBZ-TT002165019",
+    "label" : "Culturegraph Ressource"
   } ],
   "describedBy" : {
-    "dateCreated" : "20060718",
     "id" : "http://lobid.org/resources/TT002165019",
+    "type" : [ "BibliographicDescription" ],
+    "dateCreated" : "20060718",
     "inDataset" : {
       "id" : "http://lobid.org/resources/dataset#!",
       "label" : "lobid-resources – Der hbz-Verbundkatalog als Linked Open Data"
     },
-    "label" : "Webseite der hbz-Ressource TT002165019",
+    "resultOf" : {
+      "type" : [ "CreateAction" ],
+      "endTime" : "0001-01-01T00:00:00",
+      "instrument" : {
+        "id" : "https://github.com/hbz/lobid-resources",
+        "type" : [ "SoftwareApplication" ],
+        "label" : "Software lobid-resources"
+      },
+      "object" : {
+        "id" : "http://lobid.org/hbz01/TT002165019",
+        "type" : [ "DataFeedItem" ],
+        "inDataset" : {
+          "id" : "https://datahub.io/dataset/hbz_unioncatalog",
+          "label" : "hbz_unioncatalog"
+        },
+        "label" : "hbz-Ressource TT002165019 im Exportformat MAB2-XML"
+      }
+    },
     "license" : [ {
       "id" : "http://creativecommons.org/publicdomain/zero/1.0",
       "label" : "Creative Commons-Lizenz CC0 1.0 Universal"
@@ -29,59 +76,12 @@
       "id" : "http://lobid.org/organisations/DE-6#!",
       "label" : "lobid Organisation"
     },
-    "resultOf" : {
-      "endTime" : "0001-01-01T00:00:00",
-      "instrument" : {
-        "id" : "https://github.com/hbz/lobid-resources",
-        "label" : "Software lobid-resources",
-        "type" : [ "SoftwareApplication" ]
-      },
-      "object" : {
-        "id" : "http://lobid.org/hbz01/TT002165019",
-        "inDataset" : {
-          "id" : "https://datahub.io/dataset/hbz_unioncatalog",
-          "label" : "hbz_unioncatalog"
-        },
-        "label" : "hbz-Ressource TT002165019 im Exportformat MAB2-XML",
-        "type" : [ "DataFeedItem" ]
-      },
-      "type" : [ "CreateAction" ]
-    },
     "sourceOrganization" : {
       "id" : "http://lobid.org/organisations/DE-6#!",
       "label" : "lobid Organisation"
     },
-    "type" : [ "BibliographicDescription" ]
+    "label" : "Webseite der hbz-Ressource TT002165019"
   },
-  "extent" : "S. 77",
-  "hasItem" : [ {
-    "callNumber" : "G m 38",
-    "heldBy" : {
-      "id" : "http://lobid.org/organisations/DE-6-139a",
-      "label" : "lobid Organisation"
-    },
-    "id" : "http://lobid.org/items/TT002165019:DE-6-139a:G%20m%2038#!",
-    "label" : "G m 38",
-    "note" : "00193001",
-    "type" : [ "Item" ]
-  } ],
-  "hbzId" : "TT002165019",
-  "id" : "http://lobid.org/resources/TT002165019#!",
-  "medium" : [ {
-    "id" : "http://rdaregistry.info/termList/RDAproductionMethod/1010",
-    "label" : "Print"
-  } ],
-  "otherTitleInformation" : [ "Jüdisches Schicksal in Paderborn" ],
-  "publication" : [ {
-    "location" : "Paderborn",
-    "startDate" : "1964",
-    "type" : [ "PublicationEvent" ]
-  } ],
-  "responsibilityStatement" : [ "Hrsg.: Stadt Paderborn. Verantwortl.: A. Erich Boskamp" ],
-  "sameAs" : [ {
-    "id" : "http://hub.culturegraph.org/resource/HBZ-TT002165019",
-    "label" : "Culturegraph Ressource"
-  } ],
-  "title" : "Bauen wir doch aufs neue das alte Haus",
-  "type" : [ "BibliographicResource", "Book" ]
+  "@context" : "http://lobid.org/resources/context.jsonld",
+  "id" : "http://lobid.org/resources/TT002165019#!"
 }

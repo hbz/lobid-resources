@@ -88,6 +88,7 @@ public class EtikettMaker implements EtikettMakerInterface {
 
 	private static InputStream[] getInputStreamArray(File labelFile) {
 		InputStream[] is = null;
+		logger.info("use labels directory: " + labelFile.getAbsolutePath());
 		try {
 			if (labelFile.isDirectory()) {
 				File farr[] = labelFile.listFiles();
@@ -138,10 +139,12 @@ public class EtikettMaker implements EtikettMakerInterface {
 				logger.debug("no json name available for " + uri
 						+ ". Please provide a labels.json file with proper 'name' entry. Using domainname as fallback.");
 				String[] uriparts = uri.split("/");
-				String domainname =
-						uriparts[0] + "/" + uriparts[1] + "/" + uriparts[2] + "/";
-				e = pMap
-						.get(uriparts.length > 3 ? domainname + uriparts[3] : domainname);
+				if (uriparts.length > 2) {
+					String domainname =
+							uriparts[0] + "/" + uriparts[1] + "/" + uriparts[2] + "/";
+					e = pMap
+							.get(uriparts.length > 3 ? domainname + uriparts[3] : domainname);
+				}
 				if (e == null) { // domainname may have a label
 					e = new Etikett(uri);
 					try {
@@ -171,7 +174,8 @@ public class EtikettMaker implements EtikettMakerInterface {
 	public void writeContext() {
 		logger.info("Writing context file ...");
 		try {
-			JsonConverter.getObjectMapper().enable(SerializationFeature.INDENT_OUTPUT)
+			ObjectMapper objectMapper = new ObjectMapper();
+			objectMapper.enable(SerializationFeature.INDENT_OUTPUT)
 					.writeValue(new File(getContextLocation()), context);
 			logger.info(
 					"... done writing context file to " + getContextLocation() + ".");
@@ -217,7 +221,7 @@ public class EtikettMaker implements EtikettMakerInterface {
 			pmap = new HashMap<>();
 			pmap.put("@id", l.uri);
 			if (l.referenceType != null && !"String".equals(l.referenceType)) {
-				pmap.put("@type", l.referenceType);
+				pmap.put("type", l.referenceType);
 			}
 			if (l.container != null) {
 				pmap.put("@container", l.container);
@@ -225,7 +229,6 @@ public class EtikettMaker implements EtikettMakerInterface {
 			cmap.put(l.name, pmap);
 		}
 		cmap.put(ID, "@id");
-		cmap.put(TYPE, "@type");
 		Map<String, Object> contextObject = new HashMap<>();
 		contextObject.put("@context", cmap);
 		return contextObject;

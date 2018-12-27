@@ -10,7 +10,6 @@ import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.transport.client.PreBuiltTransportClient;
 import org.junit.Test;
-import org.lobid.resources.run.MabXml2lobidJsonEs;
 
 /**
  * Makes use of {@link Hbz01MabXml2ElasticsearchLobidTest} to extract, transform
@@ -30,13 +29,11 @@ public final class Hbz01MabXml2ElasticsearchLobidTestOnline {
 		Settings settings =
 				Settings.builder().put("cluster.name", CLUSTER_NAME).build();
 		this.tc = new PreBuiltTransportClient(settings);
-
 		try {
 			Hbz01MabXml2ElasticsearchLobidTest.etl(
 					tc.addTransportAddress(new InetSocketTransportAddress(
 							InetAddress.getByName(HOSTNAME), 9300)),
-					new RdfModel2ElasticsearchEtikettJsonLd(
-							MabXml2lobidJsonEs.jsonLdContext));
+					new JsonLdItemSplitter2ElasticsearchJsonLd("hbzId"));
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		}

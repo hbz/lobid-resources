@@ -1,61 +1,15 @@
 {
-  "@context" : "web/conf/context.jsonld",
-  "describedBy" : {
-    "dateCreated" : "20070508",
-    "id" : "http://lobid.org/resources/HT015082724",
-    "inDataset" : {
-      "id" : "http://lobid.org/resources/dataset#!",
-      "label" : "lobid-resources – Der hbz-Verbundkatalog als Linked Open Data"
-    },
-    "label" : "Webseite der hbz-Ressource HT015082724",
-    "license" : [ {
-      "id" : "http://creativecommons.org/publicdomain/zero/1.0",
-      "label" : "Creative Commons-Lizenz CC0 1.0 Universal"
-    } ],
-    "resultOf" : {
-      "endTime" : "0001-01-01T00:00:00",
-      "instrument" : {
-        "id" : "https://github.com/hbz/lobid-resources",
-        "label" : "Software lobid-resources",
-        "type" : [ "SoftwareApplication" ]
-      },
-      "object" : {
-        "id" : "http://lobid.org/hbz01/HT015082724",
-        "inDataset" : {
-          "id" : "https://datahub.io/dataset/hbz_unioncatalog",
-          "label" : "hbz_unioncatalog"
-        },
-        "label" : "hbz-Ressource HT015082724 im Exportformat MAB2-XML",
-        "type" : [ "DataFeedItem" ]
-      },
-      "type" : [ "CreateAction" ]
-    },
-    "sourceOrganization" : {
-      "id" : "http://lobid.org/organisations/DE-361#!",
-      "label" : "lobid Organisation"
-    },
-    "type" : [ "BibliographicDescription" ]
-  },
+  "type" : [ "BibliographicResource", "Book", "PublicationIssue" ],
   "hasItem" : [ {
-    "callNumber" : "CA000 T340[119",
+    "id" : "http://lobid.org/items/HT015082724:DE-361:CA000%20T340%5B119#!",
+    "type" : [ "Item" ],
     "heldBy" : {
       "id" : "http://lobid.org/organisations/DE-361",
       "label" : "lobid Organisation"
     },
-    "id" : "http://lobid.org/items/HT015082724:DE-361:CA000%20T340%5B119#!",
-    "label" : "CA000 T340[119",
     "note" : "00000014",
-    "type" : [ "Item" ]
-  } ],
-  "hbzId" : "HT015082724",
-  "id" : "http://lobid.org/resources/HT015082724#!",
-  "isPartOf" : [ {
-    "hasSuperordinate" : [ {
-      "id" : "http://lobid.org/resources/HT001373475#!",
-      "label" : "lobid Ressource"
-    } ],
-    "numbering" : "119. 2006",
-    "type" : [ "IsPartOfRelation" ]
+    "callNumber" : "CA000 T340[119",
+    "label" : "CA000 T340[119"
   } ],
   "language" : [ {
     "id" : "http://id.loc.gov/vocabulary/iso639-2/nld",
@@ -65,44 +19,90 @@
     "id" : "http://rdaregistry.info/termList/RDAproductionMethod/1010",
     "label" : "Print"
   } ],
+  "subject" : [ {
+    "source" : {
+      "id" : "http://d-nb.info/gnd/4149423-4",
+      "label" : "Dewey-Dezimalklassifikation"
+    },
+    "label" : "Geschichte, Geografie und Hilfswissenschaften",
+    "notation" : "900"
+  }, {
+    "type" : [ "ComplexSubject" ],
+    "componentList" : [ {
+      "id" : "http://d-nb.info/gnd/4042203-3",
+      "type" : [ "PlaceOrGeographicName" ],
+      "gndIdentifier" : "4042203-3",
+      "source" : {
+        "id" : "http://d-nb.info/gnd/7749153-1",
+        "label" : "Gemeinsame Normdatei (GND)"
+      },
+      "label" : "Niederlande"
+    }, {
+      "type" : [ "SubjectHeading" ],
+      "label" : "Geschichte"
+    }, {
+      "type" : [ "SubjectHeading" ],
+      "label" : "Zeitschrift"
+    } ],
+    "label" : "Niederlande | Geschichte | Zeitschrift"
+  } ],
+  "title" : "Tijdschrift voor geschiedenis, 119. 2006",
+  "hbzId" : "HT015082724",
+  "isPartOf" : [ {
+    "type" : [ "IsPartOfRelation" ],
+    "hasSuperordinate" : [ {
+      "id" : "http://lobid.org/resources/HT001373475#!",
+      "label" : "lobid Ressource"
+    } ],
+    "numbering" : "119. 2006"
+  } ],
+  "subjectAltLabel" : [ "Vereinigte Niederlande", "Staat Holland", "Batavische Republik" ],
   "publication" : [ {
+    "type" : [ "PublicationEvent" ],
     "location" : "Assen",
     "publishedBy" : "Van Gorcum",
-    "startDate" : "2006",
-    "type" : [ "PublicationEvent" ]
+    "startDate" : "2006"
   } ],
   "sameAs" : [ {
     "id" : "http://hub.culturegraph.org/resource/HBZ-HT015082724",
     "label" : "Culturegraph Ressource"
   } ],
-  "subject" : [ {
-    "componentList" : [ {
-      "gndIdentifier" : "4042203-3",
-      "id" : "http://d-nb.info/gnd/4042203-3",
-      "label" : "Niederlande",
-      "source" : {
-        "id" : "http://d-nb.info/gnd/7749153-1",
-        "label" : "Gemeinsame Normdatei (GND)"
+  "describedBy" : {
+    "id" : "http://lobid.org/resources/HT015082724",
+    "type" : [ "BibliographicDescription" ],
+    "dateCreated" : "20070508",
+    "inDataset" : {
+      "id" : "http://lobid.org/resources/dataset#!",
+      "label" : "lobid-resources – Der hbz-Verbundkatalog als Linked Open Data"
+    },
+    "resultOf" : {
+      "type" : [ "CreateAction" ],
+      "endTime" : "0001-01-01T00:00:00",
+      "instrument" : {
+        "id" : "https://github.com/hbz/lobid-resources",
+        "type" : [ "SoftwareApplication" ],
+        "label" : "Software lobid-resources"
       },
-      "type" : [ "PlaceOrGeographicName" ]
-    }, {
-      "label" : "Geschichte",
-      "type" : [ "SubjectHeading" ]
-    }, {
-      "label" : "Zeitschrift",
-      "type" : [ "SubjectHeading" ]
+      "object" : {
+        "id" : "http://lobid.org/hbz01/HT015082724",
+        "type" : [ "DataFeedItem" ],
+        "inDataset" : {
+          "id" : "https://datahub.io/dataset/hbz_unioncatalog",
+          "label" : "hbz_unioncatalog"
+        },
+        "label" : "hbz-Ressource HT015082724 im Exportformat MAB2-XML"
+      }
+    },
+    "license" : [ {
+      "id" : "http://creativecommons.org/publicdomain/zero/1.0",
+      "label" : "Creative Commons-Lizenz CC0 1.0 Universal"
     } ],
-    "label" : "Niederlande | Geschichte | Zeitschrift",
-    "type" : [ "ComplexSubject" ]
-  }, {
-    "label" : "Geschichte, Geografie und Hilfswissenschaften",
-    "notation" : "900",
-    "source" : {
-      "id" : "http://d-nb.info/gnd/4149423-4",
-      "label" : "Dewey-Dezimalklassifikation"
-    }
-  } ],
-  "subjectAltLabel" : [ "Batavische Republik", "Vereinigte Niederlande", "Staat Holland" ],
-  "title" : "Tijdschrift voor geschiedenis, 119. 2006",
-  "type" : [ "PublicationIssue", "BibliographicResource", "Book" ]
+    "sourceOrganization" : {
+      "id" : "http://lobid.org/organisations/DE-361#!",
+      "label" : "lobid Organisation"
+    },
+    "label" : "Webseite der hbz-Ressource HT015082724"
+  },
+  "@context" : "http://lobid.org/resources/context.jsonld",
+  "id" : "http://lobid.org/resources/HT015082724#!"
 }

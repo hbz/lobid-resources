@@ -5,7 +5,6 @@ package org.lobid.resources;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.StringWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -45,11 +44,6 @@ import org.lobid.resources.run.WikidataGeodata2Es;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.github.jsonldjava.core.JsonLdError;
-import com.github.jsonldjava.core.JsonLdProcessor;
-import com.github.jsonldjava.jena.JenaTripleCallback;
-import com.github.jsonldjava.utils.JSONUtils;
-import com.hp.hpl.jena.rdf.model.Model;
 
 import de.hbz.lobid.helper.CompareJsonMaps;
 
@@ -77,8 +71,7 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 			Hbz01MabXmlEtlNtriples2Filesystem.PATH_TO_TEST + "jsonld/";
 	private static HashSet<String> testFiles = new HashSet<>();
 	private static boolean testFailed = false;
-	private static MabXml2lobidJsonEs mabXml2lobidJsonEs =
-			new MabXml2lobidJsonEs();
+	private static RdfGraphToJsonLd rdfGraphToJsonLd;
 
 	@BeforeClass
 	public static void setup() {
@@ -113,8 +106,8 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 		WikidataGeodata2Es.setElasticsearchIndexer(client);
 		WikidataGeodata2Es.filterWikidataEntitiesDump2EsGeodata(
 				"src/test/resources/wikidataEntities.json");
-		etl(client, new RdfModel2ElasticsearchEtikettJsonLd(
-				MabXml2lobidJsonEs.jsonLdContext));
+		WikidataGeodata2Es.finish();
+		etl(client, new JsonLdItemSplitter2ElasticsearchJsonLd("hbzId"));
 	}
 
 	/*
@@ -123,20 +116,21 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 	 * json-ld, index that into elasticsearch.
 	 */
 	static void etl(final Client cl,
-			RdfModel2ElasticsearchEtikettJsonLd etikettJsonLdConverter) {
-		ElasticsearchIndexer.MINIMUM_SCORE = 1.0;
+			JsonLdItemSplitter2ElasticsearchJsonLd jsonLdItemSplitter2es) {
+		ElasticsearchIndexer.MINIMUM_SCORE = 1.4;
 		final FileOpener opener = new FileOpener();
-		final Triples2RdfModel triple2model = new Triples2RdfModel();
-		triple2model.setInput(Hbz01MabXmlEtlNtriples2Filesystem.N_TRIPLE);
-		opener.setReceiver(new TarReader()).setReceiver(new XmlDecoder())
+		JsonLdEtikett jsonLdEtikett = new JsonLdEtikett();
+		rdfGraphToJsonLd = new RdfGraphToJsonLd(MabXml2lobidJsonEs.CONTEXT_URI);
+		opener.setReceiver(new TarReader())//
+				.setReceiver(new XmlDecoder())//
 				.setReceiver(new AlephMabXmlHandler())
 				.setReceiver(
 						new Metamorph("src/main/resources/morph-hbz01-to-lobid.xml"))
-				.setReceiver(new PipeEncodeTriples()).setReceiver(triple2model)
-				.setReceiver(etikettJsonLdConverter)
+				.setReceiver(new PipeEncodeTriples())//
+				.setReceiver(rdfGraphToJsonLd)//
+				.setReceiver(jsonLdEtikett)//
+				.setReceiver(jsonLdItemSplitter2es)//
 				.setReceiver(getElasticsearchIndexer(cl));
-		WikidataGeodata2Es.getQidTranformThemAndIndex2Es("Q1700");
-		WikidataGeodata2Es.finish();
 		opener.process(
 				new File(Hbz01MabXmlEtlNtriples2Filesystem.TEST_FILENAME_ALEPHXMLCLOBS)
 						.getAbsolutePath());
@@ -273,13 +267,16 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 		private static String getAsNtriples() {
 			return Arrays.asList(getElasticsearchDocuments().getHits().getHits())
 					.parallelStream()
-					.map(hit -> toRdf(cleanseEndtime(hit.getSourceAsString())))
+					.map(hit -> AbstractIngestTests.toRdf(
+							cleanseEndtime(hit.getSourceAsString()),
+							"http://lobid.org/resources/context.jsonld",
+							rdfGraphToJsonLd.getContextLocationFilename()))
 					.collect(Collectors.joining());
 		}
 
 		private static void getAsJson() {
 			for (SearchHit hit : getElasticsearchDocuments().getHits().getHits()) {
-				stripContextAndSaveAsFile(cleanseEndtime(hit.getSourceAsString()));
+				saveAsFile(cleanseEndtime(hit.getSourceAsString()));
 			}
 		}
 
@@ -290,29 +287,22 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 		}
 
 		/*
-		 * 
 		 * As the 'context' is just bloating the content the context is stripped
 		 * from it.
 		 */
-		private static void stripContextAndSaveAsFile(final String jsonLd) {
-			String jsonLdWithoutContext = null;
+		private static void saveAsFile(final String jsonLd) {
 			Map<String, Object> map;
 			String filename = null;
 			ObjectMapper mapper = new ObjectMapper();
 			mapper.enable(SerializationFeature.INDENT_OUTPUT);
 			try {
 				map = mapper.readValue(jsonLd, Map.class);
-				map.put("@context", mabXml2lobidJsonEs
-						.getRdfModel2ElasticsearchEtikettJsonLd().getContextLocation());
-				jsonLdWithoutContext = mapper.writeValueAsString(map);
 				filename = ((String) map.get("id"))
-						.replaceAll(
-								RdfModel2ElasticsearchEtikettJsonLd.LOBID_DOMAIN + ".*/", "")
-						.replaceAll("#!$", "");
+						.replaceAll("http://lobid.org/" + ".*/", "").replaceAll("#!$", "");
 				testFiles.remove(filename);
 				filename = DIRECTORY_TO_TEST_JSON_FILES + filename;
 				if (!new File(filename).exists())
-					writeFile(filename, jsonLdWithoutContext);
+					writeFile(filename, mapper.writeValueAsString(map));
 				else {
 					try (FileInputStream fis = new FileInputStream(filename)) {
 						Map<String, Object> jsonMap =
@@ -321,7 +311,7 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 								new ObjectMapper().convertValue(jsonMap, JsonNode.class),
 								new ObjectMapper().convertValue(map, JsonNode.class));
 						if (!same) {
-							writeFile(filename, jsonLdWithoutContext);
+							writeFile(filename, mapper.writeValueAsString(map));
 							testFailed = true;
 						}
 					}
@@ -330,27 +320,6 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 				LOG.error("Errored computing " + filename);
 				deleteTestFile(Paths.get(filename));
 			}
-		}
-
-		private static String toRdf(final String jsonLd) {
-			try {
-				LOG.trace("toRdf: " + jsonLd);
-				String jsonWithLocalContext = jsonLd.replaceFirst(
-						"@context\":\"http://lobid.org/resources/context.jsonld\"",
-						"@context\":\"" + new File(mabXml2lobidJsonEs
-								.getRdfModel2ElasticsearchEtikettJsonLd().getContextLocation())
-										.toURI().toString()
-								+ "\"");
-				final Object jsonObject = JSONUtils.fromString(jsonWithLocalContext);
-				final JenaTripleCallback callback = new JenaTripleCallback();
-				final Model model = (Model) JsonLdProcessor.toRDF(jsonObject, callback);
-				final StringWriter writer = new StringWriter();
-				model.write(writer, Hbz01MabXmlEtlNtriples2Filesystem.N_TRIPLE);
-				return writer.toString();
-			} catch (IOException | JsonLdError e) {
-				e.printStackTrace();
-			}
-			return null;
 		}
 	}
 }

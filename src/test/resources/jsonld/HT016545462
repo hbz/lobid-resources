@@ -1,53 +1,6 @@
 {
-  "@context" : "web/conf/context.jsonld",
+  "type" : [ "BibliographicResource", "Book" ],
   "coverage" : [ "Nordkirchen | 99" ],
-  "describedBy" : {
-    "dateCreated" : "20101012",
-    "id" : "http://lobid.org/resources/HT016545462",
-    "inDataset" : {
-      "id" : "http://lobid.org/resources/dataset#!",
-      "label" : "lobid-resources – Der hbz-Verbundkatalog als Linked Open Data"
-    },
-    "label" : "Webseite der hbz-Ressource HT016545462",
-    "license" : [ {
-      "id" : "http://creativecommons.org/publicdomain/zero/1.0",
-      "label" : "Creative Commons-Lizenz CC0 1.0 Universal"
-    } ],
-    "provider" : {
-      "id" : "http://lobid.org/organisations/DE-101#!",
-      "label" : "lobid Organisation"
-    },
-    "resultOf" : {
-      "endTime" : "0001-01-01T00:00:00",
-      "instrument" : {
-        "id" : "https://github.com/hbz/lobid-resources",
-        "label" : "Software lobid-resources",
-        "type" : [ "SoftwareApplication" ]
-      },
-      "object" : {
-        "id" : "http://lobid.org/hbz01/HT016545462",
-        "inDataset" : {
-          "id" : "https://datahub.io/dataset/hbz_unioncatalog",
-          "label" : "hbz_unioncatalog"
-        },
-        "label" : "hbz-Ressource HT016545462 im Exportformat MAB2-XML",
-        "type" : [ "DataFeedItem" ]
-      },
-      "type" : [ "CreateAction" ]
-    },
-    "sourceOrganization" : {
-      "id" : "http://lobid.org/organisations/DE-6#!",
-      "label" : "lobid Organisation"
-    },
-    "type" : [ "BibliographicDescription" ]
-  },
-  "hbzId" : "HT016545462",
-  "id" : "http://lobid.org/resources/HT016545462#!",
-  "inCollection" : [ {
-    "id" : "http://lobid.org/resources/HT014176012#!",
-    "label" : "Nordrhein-Westfälische Bibliographie (NWBib)",
-    "type" : [ "Collection" ]
-  } ],
   "language" : [ {
     "id" : "http://id.loc.gov/vocabulary/iso639-2/deu",
     "label" : "Deutsch"
@@ -56,70 +9,117 @@
     "id" : "http://rdaregistry.info/termList/RDAproductionMethod/1010",
     "label" : "Print"
   } ],
+  "subject" : [ {
+    "type" : [ "ComplexSubject" ],
+    "componentList" : [ {
+      "id" : "http://d-nb.info/gnd/4042552-6",
+      "type" : [ "PlaceOrGeographicName" ],
+      "gndIdentifier" : "4042552-6",
+      "source" : {
+        "id" : "http://d-nb.info/gnd/7749153-1",
+        "label" : "Gemeinsame Normdatei (GND)"
+      },
+      "label" : "Nordkirchen"
+    }, {
+      "id" : "http://d-nb.info/gnd/4156127-2",
+      "type" : [ "SubjectHeading" ],
+      "gndIdentifier" : "4156127-2",
+      "source" : {
+        "id" : "http://d-nb.info/gnd/7749153-1",
+        "label" : "Gemeinsame Normdatei (GND)"
+      },
+      "label" : "Gebäude"
+    }, {
+      "id" : "http://d-nb.info/gnd/4151183-9",
+      "type" : [ "SubjectHeading" ],
+      "gndIdentifier" : "4151183-9",
+      "source" : {
+        "id" : "http://d-nb.info/gnd/7749153-1",
+        "label" : "Gemeinsame Normdatei (GND)"
+      },
+      "label" : "Eigentümer"
+    }, {
+      "type" : [ "SubjectHeading" ],
+      "label" : "Geschichte 1805-2000"
+    }, {
+      "type" : [ "SubjectHeading" ],
+      "label" : "Verzeichnis"
+    } ],
+    "label" : "Nordkirchen | Gebäude | Eigentümer | Geschichte 1805-2000 | Verzeichnis  "
+  }, {
+    "id" : "http://purl.org/lobid/nwbib#s843060",
+    "source" : {
+      "id" : "http://purl.org/lobid/nwbib",
+      "label" : "Sachsystematik der Nordrhein-Westfälischen Bibliographie"
+    },
+    "notation" : "843060",
+    "label" : "Wohnhäuser"
+  }, {
+    "id" : "http://purl.org/lobid/nwbib#s503050",
+    "source" : {
+      "id" : "http://purl.org/lobid/nwbib",
+      "label" : "Sachsystematik der Nordrhein-Westfälischen Bibliographie"
+    },
+    "notation" : "503050",
+    "label" : "Einwohnerverzeichnisse"
+  } ],
+  "title" : "Verzeichnis der Gebäude und ihrer Eigentümer auf dem Gebiet der Altgemeinde Nordkirchen 1805, 1900, 1955 und 2000",
+  "hbzId" : "HT016545462",
+  "inCollection" : [ {
+    "id" : "http://lobid.org/resources/HT014176012#!",
+    "type" : [ "Collection" ],
+    "label" : "Nordrhein-Westfälische Bibliographie (NWBib)"
+  } ],
+  "subjectAltLabel" : [ "Haus (im weiteren Sinn)" ],
   "publication" : [ {
+    "type" : [ "PublicationEvent" ],
     "location" : "Nordkirchen",
-    "publishedBy" : "Heimatverein der Gemeinde Nordkirchen e. V:",
-    "type" : [ "PublicationEvent" ]
+    "publishedBy" : "Heimatverein der Gemeinde Nordkirchen e. V:"
   } ],
   "sameAs" : [ {
     "id" : "http://hub.culturegraph.org/resource/HBZ-HT016545462",
     "label" : "Culturegraph Ressource"
   } ],
-  "subject" : [ {
-    "componentList" : [ {
-      "gndIdentifier" : "4042552-6",
-      "id" : "http://d-nb.info/gnd/4042552-6",
-      "label" : "Nordkirchen",
-      "source" : {
-        "id" : "http://d-nb.info/gnd/7749153-1",
-        "label" : "Gemeinsame Normdatei (GND)"
+  "describedBy" : {
+    "id" : "http://lobid.org/resources/HT016545462",
+    "type" : [ "BibliographicDescription" ],
+    "dateCreated" : "20101012",
+    "inDataset" : {
+      "id" : "http://lobid.org/resources/dataset#!",
+      "label" : "lobid-resources – Der hbz-Verbundkatalog als Linked Open Data"
+    },
+    "resultOf" : {
+      "type" : [ "CreateAction" ],
+      "endTime" : "0001-01-01T00:00:00",
+      "instrument" : {
+        "id" : "https://github.com/hbz/lobid-resources",
+        "type" : [ "SoftwareApplication" ],
+        "label" : "Software lobid-resources"
       },
-      "type" : [ "PlaceOrGeographicName" ]
-    }, {
-      "gndIdentifier" : "4156127-2",
-      "id" : "http://d-nb.info/gnd/4156127-2",
-      "label" : "Gebäude",
-      "source" : {
-        "id" : "http://d-nb.info/gnd/7749153-1",
-        "label" : "Gemeinsame Normdatei (GND)"
-      },
-      "type" : [ "SubjectHeading" ]
-    }, {
-      "gndIdentifier" : "4151183-9",
-      "id" : "http://d-nb.info/gnd/4151183-9",
-      "label" : "Eigentümer",
-      "source" : {
-        "id" : "http://d-nb.info/gnd/7749153-1",
-        "label" : "Gemeinsame Normdatei (GND)"
-      },
-      "type" : [ "SubjectHeading" ]
-    }, {
-      "label" : "Geschichte 1805-2000",
-      "type" : [ "SubjectHeading" ]
-    }, {
-      "label" : "Verzeichnis",
-      "type" : [ "SubjectHeading" ]
+      "object" : {
+        "id" : "http://lobid.org/hbz01/HT016545462",
+        "type" : [ "DataFeedItem" ],
+        "inDataset" : {
+          "id" : "https://datahub.io/dataset/hbz_unioncatalog",
+          "label" : "hbz_unioncatalog"
+        },
+        "label" : "hbz-Ressource HT016545462 im Exportformat MAB2-XML"
+      }
+    },
+    "license" : [ {
+      "id" : "http://creativecommons.org/publicdomain/zero/1.0",
+      "label" : "Creative Commons-Lizenz CC0 1.0 Universal"
     } ],
-    "label" : "Nordkirchen | Gebäude | Eigentümer | Geschichte 1805-2000 | Verzeichnis  ",
-    "type" : [ "ComplexSubject" ]
-  }, {
-    "id" : "http://purl.org/lobid/nwbib#s503050",
-    "label" : "Einwohnerverzeichnisse",
-    "notation" : "503050",
-    "source" : {
-      "id" : "http://purl.org/lobid/nwbib",
-      "label" : "Sachsystematik der Nordrhein-Westfälischen Bibliographie"
-    }
-  }, {
-    "id" : "http://purl.org/lobid/nwbib#s843060",
-    "label" : "Wohnhäuser",
-    "notation" : "843060",
-    "source" : {
-      "id" : "http://purl.org/lobid/nwbib",
-      "label" : "Sachsystematik der Nordrhein-Westfälischen Bibliographie"
-    }
-  } ],
-  "subjectAltLabel" : [ "Haus (im weiteren Sinn)" ],
-  "title" : "Verzeichnis der Gebäude und ihrer Eigentümer auf dem Gebiet der Altgemeinde Nordkirchen 1805, 1900, 1955 und 2000",
-  "type" : [ "BibliographicResource", "Book" ]
+    "provider" : {
+      "id" : "http://lobid.org/organisations/DE-101#!",
+      "label" : "lobid Organisation"
+    },
+    "sourceOrganization" : {
+      "id" : "http://lobid.org/organisations/DE-6#!",
+      "label" : "lobid Organisation"
+    },
+    "label" : "Webseite der hbz-Ressource HT016545462"
+  },
+  "@context" : "http://lobid.org/resources/context.jsonld",
+  "id" : "http://lobid.org/resources/HT016545462#!"
 }
