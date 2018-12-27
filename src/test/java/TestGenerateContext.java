@@ -18,7 +18,7 @@ public class TestGenerateContext {
 		// resources
 		EtikettMaker em = new EtikettMaker(new File(Thread.currentThread()
 				.getContextClassLoader().getResource("labels").getFile()));
-		em.setContextLocation("web/conf/context.json");
+		em.setContextLocation("web/conf/context.jsonld");
 		em.writeContext();
 		// deletions index
 		em = new EtikettMaker(new File(Thread.currentThread()

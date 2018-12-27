@@ -61,6 +61,7 @@ public final class JsonLdItemSplitter2ElasticsearchJsonLd extends
 				}
 				i.remove("itemOf");
 				i.remove("describedBy");
+				i.remove("@context");
 			});
 		}
 		jsonMap.remove("hasItem.itemOf");
