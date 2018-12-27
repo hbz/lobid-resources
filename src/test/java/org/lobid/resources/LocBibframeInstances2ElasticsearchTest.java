@@ -1,4 +1,5 @@
-/*Copyright 2018 hbz,Pascal Christoph.*Licensed under the Eclipse Public License 1.0*/package org.lobid.resources;
+/* Copyright 2015-2017 hbz, Pascal Christoph. Licensed under the EPL 2.0 */
+package org.lobid.resources;
 
 import java.io.File;
 import java.io.FileInputStream;

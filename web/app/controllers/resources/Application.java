@@ -1,4 +1,4 @@
-/* Copyright 2014-2017 Fabian Steeg, hbz. Licensed under the GPLv2 */
+/* Copyright 2014-2017 Fabian Steeg, hbz. Licensed under the EPL 2.0 */
 
 package controllers.resources;
 
@@ -347,7 +347,7 @@ public class Application extends Controller {
 
 	private static JsonNode withQueryMetadata(JsonNode json, Search index) {
 		ObjectNode result = Json.newObject();
-		String host = "http://" + request().host();
+		String host = CONFIG.getString("host");
 		result.put("@context", host + routes.Application.context());
 		result.put("id", host + request().uri());
 		result.put("totalItems", index.getTotal());

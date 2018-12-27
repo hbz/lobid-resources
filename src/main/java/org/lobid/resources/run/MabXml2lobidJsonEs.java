@@ -1,5 +1,5 @@
-/* Copyright 2015,2018  hbz, Pascal Christoph.
- * Licensed under the Eclipse Public License 1.0 */
+/* Copyright 2015, 2018 hbz. Licensed under the EPL 2.0 */
+
 package org.lobid.resources.run;
 
 import java.io.File;
@@ -38,7 +38,7 @@ public class MabXml2lobidJsonEs {
 
 	public static void main(String... args) {
 		String usage =
-				"<input path>%s<index name>%s<index alias suffix>%s<node>%s<cluster>%s<'update' (will take latest index), 'exact' (will take ->'index name' even when no timestamp is suffixed) , else create new index with actual timestamp>%s<optional: filename of index-config>%s<optional: filename of morph>%s<optional: jsonld-context-uri>%s";
+				"<input path>%s<index name>%s<index alias suffix ('NOALIAS' sets it empty)>%s<node>%s<cluster>%s<'update' (will take latest index), 'exact' (will take ->'index name' even when no timestamp is suffixed) , else create new index with actual timestamp>%s<optional: filename of index-config>%s<optional: filename of morph>%s<optional: jsonld-context-uri>%s";
 		String inputPath = args[0];
 		String indexName = args[1];
 		String date = new SimpleDateFormat("yyyyMMdd-HHmmss").format(new Date());
@@ -48,11 +48,8 @@ public class MabXml2lobidJsonEs {
 		String indexAliasSuffix = args[2];
 		String node = args[3];
 		String cluster = args[4];
+		String updateCreateExact = args[5];
 		boolean update = args[5].toLowerCase().equals("update");
-		System.out.println("It is specified:\n"
-				+ String.format(usage, ": " + inputPath + "\n", ": " + indexName + "\n",
-						": " + indexAliasSuffix + "\n", ": " + node + "\n", ": " + cluster,
-						": " + "\n" + update, " ", " ", " "));
 		if (args.length < 6) {
 			System.err.println("Usage: MabXml2lobidJsonEs"
 					+ String.format(usage, " ", " ", " ", " ", " ", " ", " ", " ", " "));
@@ -82,6 +79,12 @@ public class MabXml2lobidJsonEs {
 			jsonLdEtikett = new JsonLdEtikett();
 		System.out.println("using etikettLablesDirectory: "
 				+ JsonLdEtikett.getLabelsDirectoryName());
+		System.out.println(
+				"It is specified:\n" + String.format(usage, ": " + inputPath + "\n",
+						": " + indexName + "\n", ": " + indexAliasSuffix + "\n",
+						": " + node + "\n", ": " + cluster + "\n",
+						": " + updateCreateExact + "\n", ": " + indexConfig + "\n",
+						": " + morphFileName));
 		System.out
 				.println("using jsonLdContextUri: " + rdfGraphToJsonLd.getContextUri());
 		final String KEY_TO_GET_MAIN_ID =

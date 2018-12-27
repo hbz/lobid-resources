@@ -1,22 +1,22 @@
-https://query.wikidata.org/sparql?query=
+https://query.wikidata.org/sparql
 # Get areas in North Rhine-Westphalia with German labels
-SELECT DISTINCT 
-?item 
-?itemLabel 
-WHERE {
-  { 
+ SELECT DISTINCT
+ ?item
+ ?itemLabel
+ WHERE {
+  {
        { ?item wdt:P131* wd:Q1198 . }
     UNION
        { ?item p:P131 [ ps:P131 wd:Q1198 ] }
        { ?item p:P31 [ ps:P31 wd:Q829277 ] . } # Regierungsbezirk in NRW
    UNION
-       { ?item p:P31 [ ps:P31 wd:Q106658 ] . } # Landkreis
+       { ?item p:P31 [ ps:P31 wd:Q106658 ] . } # Landkreis in Deutschland 
    UNION
        { ?item p:P31 [ ps:P31 wd:Q5283531 ] . } # Landkreis in Preußen
    UNION
-       { ?item p:P31 [ ps:P31 wd:Q262166 ] . } # Gemeinde
+       { ?item p:P31 [ ps:P31 wd:Q262166 ] . } # Gemeinde in Deutschland
    UNION
-       { ?item p:P31 [ ps:P31 wd:Q22865 ] . } # kreisfreie Stadt
+       { ?item p:P31 [ ps:P31 wd:Q22865 ] . } # kreisfreie Stadt in Deutschland
    UNION
        { ?item p:P31 [ ps:P31 wd:Q253019 ]. } # Ortsteil
    UNION
@@ -44,5 +44,8 @@ WHERE {
    UNION
       { ?item p:P31 [ps:P31 wd:Q1780389 ] } # Kommunalverband der besonderen Art (derzeit nur "Städteregion Aachen")
   }
+  FILTER (?item != wd:Q1787449 && ?item != wd:Q16500124 && ?item != wd:Q1465811 && ?item != wd:Q1787449
+        && ?item != wd:Q16832627 && ?item != wd:Q1113210 && ?item != wd:Q19288281 && ?item != wd:Q1662807
+         && ?item != wd:Q1351319 ) # Herausfiltern von Altkreisen, die namensidentisch sind mit Neukreisen
   SERVICE wikibase:label {  bd:serviceParam wikibase:language "de" }
 }

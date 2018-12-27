@@ -1,4 +1,4 @@
-/* Copyright 2013-015 Fabian Steeg, Pascal Christoph, hbz. Licensed under the Eclipse Public License 1.0 */
+/* Copyright 2013-2015 hbz. Licensed under the EPL 2.0 */
 
 package org.lobid.resources;
 
@@ -30,12 +30,12 @@ import org.culturegraph.mf.framework.annotations.In;
 import org.culturegraph.mf.framework.annotations.Out;
 import org.elasticsearch.action.admin.cluster.state.ClusterStateRequest;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
+import org.elasticsearch.action.admin.indices.settings.put.UpdateSettingsRequest;
 import org.elasticsearch.action.admin.indices.settings.put.UpdateSettingsRequestBuilder;
 import org.elasticsearch.action.bulk.BulkRequestBuilder;
 import org.elasticsearch.action.bulk.BulkResponse;
-import org.elasticsearch.action.update.UpdateRequest;
+import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.client.Client;
-import org.elasticsearch.client.IndicesAdminClient;
 import org.elasticsearch.client.Requests;
 import org.elasticsearch.client.transport.NoNodeAvailableException;
 import org.elasticsearch.client.transport.TransportClient;
@@ -77,8 +77,8 @@ public class ElasticsearchIndexer
 	private String clustername;
 	private BulkRequestBuilder bulkRequest;
 	private InetSocketTransportAddress NODE;
+	private IndexRequest indexRequest;
 	private TransportClient tc;
-	private UpdateRequest updateRequest;
 	private Client client;
 	private int retries = 40;
 	// collect so many documents before bulk indexing them all
@@ -152,7 +152,7 @@ public class ElasticsearchIndexer
 		if (client == null) {
 			LOG.info("clustername=" + this.clustername);
 			LOG.info("hostname=" + this.hostname);
-			Settings clientSettings = Settings.builder()
+			Settings nodeSettings = Settings.builder()
 					.put("cluster.name", this.clustername)
 					.put("client.transport.sniff", false)
 					.put("client.transport.ping_timeout", 120, TimeUnit.SECONDS).build();
@@ -162,27 +162,41 @@ public class ElasticsearchIndexer
 			} catch (UnknownHostException e) {
 				e.printStackTrace();
 			}
-			this.tc = new PreBuiltTransportClient(clientSettings);
+			this.tc = new PreBuiltTransportClient(nodeSettings);
 			this.client = this.tc.addTransportAddress(this.NODE);
 		}
 		bulkRequest = client.prepareBulk();
+		if (!indexExists()) {
+			LOG.info("Creating new index");
+			LOG.info("Set index.number_of_replicas to 0");
+			settings.put("index.number_of_replicas", 0);
+		}
 		if (updateNewestIndex) {
 			if (indexName == null)
 				getNewestIndex();
 		} else
 			createIndex();
-		UpdateSettingsRequestBuilder usrb =
-				client.admin().indices().prepareUpdateSettings();
-		usrb.setIndices(indexName);
-		settings.put("index.refresh_interval", -1);
+		UpdateSettingsRequest request = new UpdateSettingsRequest(indexName);
 		LOG.info("Set index.refresh_interval to -1");
-		usrb.setSettings(settings);
-		usrb.execute().actionGet();
-		LOG.info("Start loading manually created Qid map ...");
-		WikidataGeodata2Es.loadQidMap();
-		LOG.info("Finished loading created Qid map loaded.");
-		LOG.info(
-				"Threshold minimum score for spatial enrichment: " + MINIMUM_SCORE);
+		settings.put("index.refresh_interval", "-1");
+		request.settings(settings);
+		client.admin().indices().updateSettings(request).actionGet();
+		if (lookupWikidata) {
+			WikidataGeodata2Es.setIndexAlias(WikidataGeodata2Es.getIndexAlias()
+					+ (aliasSuffix.equals("NOALIAS") ? "" : aliasSuffix));
+			LOG.info("Using wikidata geo_nwbib index with name:"
+					+ WikidataGeodata2Es.getIndexAlias());
+			LOG.info("Start loading manually created Qid map ...");
+			WikidataGeodata2Es.loadQidMap();
+			LOG.info("Finished loading created Qid map loaded.");
+			LOG.info(
+					"Threshold minimum score for spatial enrichment: " + MINIMUM_SCORE);
+		}
+	}
+
+	private boolean indexExists() {
+		return client.admin().indices().prepareExists(indexName).execute()
+				.actionGet().isExists();
 	}
 
 	@Override
@@ -190,11 +204,11 @@ public class ElasticsearchIndexer
 		LOG.debug("Try to index " + json.get(Properties.ID.getName())
 				+ " in ES type " + json.get(Properties.TYPE.getName()) + " Source:"
 				+ json.get(Properties.GRAPH.getName()));
-		updateRequest = new UpdateRequest(indexName,
+		indexRequest = new IndexRequest(indexName,
 				json.get(Properties.TYPE.getName()), json.get(Properties.ID.getName()));
 		String jsonDoc = json.get(Properties.GRAPH.getName());
 		if (json.containsKey(Properties.PARENT.getName())) { // items
-			updateRequest.parent(json.get(Properties.PARENT.getName()));
+			indexRequest.parent(json.get(Properties.PARENT.getName()));
 		} else {
 			if (lookupWikidata) {
 				try {
@@ -212,9 +226,8 @@ public class ElasticsearchIndexer
 						.replaceAll(".*/", "").replaceAll("#!", ""), jsonDoc);
 			}
 		}
-		updateRequest.doc(jsonDoc, JSON);
-		updateRequest.docAsUpsert(true);
-		bulkRequest.add(updateRequest);
+		indexRequest.source(jsonDoc, JSON);
+		bulkRequest.add(indexRequest);
 		docs++;
 
 		while (docs > bulkSize && retries > 0) {
@@ -371,9 +384,9 @@ public class ElasticsearchIndexer
 	}
 
 	/**
-	 * Sets the suffix of elasticsearch index alias suffix
+	 * Sets an optional suffix to the elasticsearch index alias.
 	 * 
-	 * @param aliasSuffix musn't have '-' in it
+	 * @param aliasSuffix
 	 */
 	public void setIndexAliasSuffix(String aliasSuffix) {
 		this.aliasSuffix = aliasSuffix;
@@ -421,13 +434,11 @@ public class ElasticsearchIndexer
 	}
 
 	private void createIndex() {
-		IndicesAdminClient adminClient = client.admin().indices();
-		if (!adminClient.prepareExists(indexName).execute().actionGet()
-				.isExists()) {
+		if (!indexExists()) {
 			LOG.info("Going to CREATE new index " + indexName + " at cluster "
 					+ this.client.settings().get("cluster.name"));
-			adminClient.prepareCreate(indexName).setSource(config()).execute()
-					.actionGet();
+			client.admin().indices().prepareCreate(indexName)
+					.setSource(config(), JSON).execute().actionGet();
 			settings.put("index.number_of_replicas", 0);
 		} else
 			LOG.info("Index already exists, going to UPDATE index " + indexName);

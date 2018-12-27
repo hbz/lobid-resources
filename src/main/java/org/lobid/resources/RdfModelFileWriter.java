@@ -1,5 +1,4 @@
-/* Copyright 2013,2016 Pascal Christoph, hbz.
- * Licensed under the Eclipse Public License 1.0 */
+/* Copyright 2013,2016 Pascal Christoph, hbz. Licensed under the EPL 2.0 */
 
 package org.lobid.resources;
 

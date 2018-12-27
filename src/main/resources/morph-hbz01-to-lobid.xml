@@ -345,7 +345,7 @@
 			<data source="@nwbibComplexSubjectRswkLabel$[field]" name="@nwbibComplexSubjectRswkId$[field]">
 				<replace pattern="&gt;" with=""/>
 				<replace pattern="&lt;" with=""/>
-				<regexp match="(.*)" format="_:$[field]${1}pchbz"/>
+				<regexp match="(.*)" format="_:$[field]${1}"/>
 			</data>
 		</macro>
 		<macro name="setNwbibRdfSubject">
@@ -1015,7 +1015,13 @@
 						<regexp match="^his$" format="http://id.loc.gov/vocabulary/relators/his"/>
 					</data>
 					<data source="$[field]?[12].4" name="a">
+						<regexp match="^isb$" format="http://id.loc.gov/vocabulary/relators/isb"/>
+					</data>
+					<data source="$[field]?[12].4" name="a">
 						<regexp match="^orm$" format="http://id.loc.gov/vocabulary/relators/orm"/>
+					</data>
+					<data source="$[field]?[12].4" name="a">
+						<regexp match="^pat$" format="http://id.loc.gov/vocabulary/relators/pat"/>
 					</data>
 					<data source="$[field]?[12].4" name="a">
 						<regexp match="^rcp$" format="http://id.loc.gov/vocabulary/relators/rcp"/>

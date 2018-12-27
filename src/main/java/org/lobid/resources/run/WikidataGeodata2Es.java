@@ -1,3 +1,5 @@
+/* Copyright 2015-2018 hbz. Licensed under the EPL 2.0 */
+
 package org.lobid.resources.run;
 
 import java.io.BufferedReader;
@@ -129,7 +131,7 @@ public class WikidataGeodata2Es {
 		}
 		String aliasSuffix = System.getProperty("aliasSuffix", "");
 		LOG.info("Alias suffix configured:'" + aliasSuffix + "' ...");
-		LOG.info("... so the alias is: '" + indexAlias + "'");
+		LOG.info("... so the alias is: '" + indexAlias + aliasSuffix + "'");
 		esIndexer.setIndexAliasSuffix(aliasSuffix);
 		setProductionIndexerConfigs(indexName);
 		LOG.info("Going to index");
@@ -212,13 +214,26 @@ public class WikidataGeodata2Es {
 		esIndexer.onSetReceiver();
 	}
 
-	private static JsonNode toApiResponse(AsyncHttpClient client, String api)
-			throws InterruptedException, ExecutionException, JsonParseException,
-			JsonMappingException, IOException {
-		Thread.sleep(500); // be nice throttle down
+	private static JsonNode toApiResponseGet(final AsyncHttpClient CLIENT,
+			final String API) throws InterruptedException, ExecutionException,
+					JsonParseException, JsonMappingException, IOException {
+		Thread.sleep(200); // be nice throttle down
 		Response response =
-				client.prepareGet(api).setHeader("Accept", JSON_ACCEPT_HEADER)
+				CLIENT.prepareGet(API).setHeader("Accept", JSON_ACCEPT_HEADER)
 						.setFollowRedirects(true).execute().get();
+		return new ObjectMapper().readValue(response.getResponseBodyAsStream(),
+				JsonNode.class);
+	}
+
+	private static JsonNode toApiResponsePost(final AsyncHttpClient CLIENT,
+			final String URL, final String QUERY)
+					throws InterruptedException, ExecutionException, JsonParseException,
+					JsonMappingException, IOException {
+		LOG.info("SPARQL-URL=" + URL);
+		LOG.info("SPARQL-query=" + QUERY);
+		Response response = CLIENT.preparePost(URL).addFormParam("query", QUERY)
+				.setHeader("Accept", JSON_ACCEPT_HEADER).setFollowRedirects(true)
+				.execute().get();
 		return new ObjectMapper().readValue(response.getResponseBodyAsStream(),
 				JsonNode.class);
 	}
@@ -233,7 +248,7 @@ public class WikidataGeodata2Es {
 		LOG.info("Lookup QID: " + QID);
 		try (AsyncHttpClient client = new AsyncHttpClient()) {
 			JsonNode jnode =
-					toApiResponse(client, "http://www.wikidata.org/entity/" + QID);
+					toApiResponseGet(client, "http://www.wikidata.org/entity/" + QID);
 			stream(jnode).map(transform2lobidWikidata()) //
 					.forEach(index2Es());
 		} catch (Exception e) {
@@ -249,12 +264,14 @@ public class WikidataGeodata2Es {
 	 */
 	public static void extractEntitiesFromSparqlQueryTranformThemAndIndex2Es(
 			final String QUERY) {
-		LOG.info("Lookup SPARQL-query: " + QUERY);
+		LOG.info("Lookup SPARQL-query ...");
 		try (AsyncHttpClient client = new AsyncHttpClient()) {
-			JsonNode jnode = toApiResponse(client, QUERY);
+			JsonNode jnode =
+					toApiResponsePost(client, QUERY.substring(0, QUERY.indexOf("\n")),
+							QUERY.replaceFirst(".*\n", ""));
 			stream(jnode.get("results").get("bindings")).map(node -> {
 				try {
-					return toApiResponse(client,
+					return toApiResponseGet(client,
 							node.get("item").get("value").textValue());
 				} catch (InterruptedException | ExecutionException | IOException e) {
 					e.printStackTrace();
@@ -376,7 +393,7 @@ public class WikidataGeodata2Es {
 						locatedInNode = locatedInMapCache.get(locatedInId);
 					} else {
 						try (AsyncHttpClient client = new AsyncHttpClient()) {
-							JsonNode jnode = toApiResponse(client,
+							JsonNode jnode = toApiResponseGet(client,
 									HTTP_WWW_WIKIDATA_ORG_ENTITY + locatedInId);
 							String locatedInLabel = jnode.findPath("labels").findPath("de")
 									.findPath("value").asText();
@@ -424,16 +441,12 @@ public class WikidataGeodata2Es {
 	}
 
 	/**
-	 * Musn't have a '-' in it.
-	 * 
-	 * @param indexAlias
+	 * Sets an optional suffix to the elasticsearch index alias.
+	 *
+	 * @param INDEX_ALIAS the alias of this index
 	 */
-	private static void setIndexAlias(String indexAlias) {
-		if (indexAlias.contains("-")) {
-			LOG.error("Index alias musn't have an '-' in it");
-			return;
-		}
-		WikidataGeodata2Es.indexAlias = indexAlias;
+	public static void setIndexAlias(final String INDEX_ALIAS) {
+		indexAlias = INDEX_ALIAS;
 	}
 
 	/**
