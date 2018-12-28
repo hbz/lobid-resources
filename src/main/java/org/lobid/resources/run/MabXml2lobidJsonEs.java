@@ -79,12 +79,6 @@ public class MabXml2lobidJsonEs {
 			jsonLdEtikett = new JsonLdEtikett();
 		System.out.println("using etikettLablesDirectory: "
 				+ JsonLdEtikett.getLabelsDirectoryName());
-		System.out.println(
-				"It is specified:\n" + String.format(usage, ": " + inputPath + "\n",
-						": " + indexName + "\n", ": " + indexAliasSuffix + "\n",
-						": " + node + "\n", ": " + cluster + "\n",
-						": " + updateCreateExact + "\n", ": " + indexConfig + "\n",
-						": " + morphFileName));
 		System.out
 				.println("using jsonLdContextUri: " + rdfGraphToJsonLd.getContextUri());
 		final String KEY_TO_GET_MAIN_ID =
