@@ -2469,6 +2469,7 @@
 			flushWith="@relatedResourceId">
 			<data source="527[-xyz]1.a|775-1.t|776-1.t" name="a">
 				<replace pattern="&lt;|&gt;" with=""/>
+				<replace pattern="^http" with="Siehe: http"/>
 			</data>
 		</combine>
 		<combine name="~rdf:subject" value="$[ns-lobid-resource]${subject}#!" flushWith="@relatedResourceId">
@@ -5937,19 +5938,27 @@
 		</combine>
 		<combine name="http://www.w3.org/2004/02/skos/core#altLabel" value="${a}"
 			flushWith="@corporateBodyForTitleAgentBnode" reset="true">
-			<data source="342-1.a" name="a"/>
+			<data source="342-1.a" name="a">
+				<replace pattern="^http" with="Siehe: http"/>
+			</data>
 		</combine>
 		<combine name="http://www.w3.org/2004/02/skos/core#altLabel" value="${a}"
 			flushWith="@corporateBodyForTitleAgentBnode">
-			<data source="346-1.a" name="a"/>
+			<data source="346-1.a" name="a">
+				<replace pattern="^http" with="Siehe: http"/>
+			</data>
 		</combine>
 		<combine name="http://www.w3.org/2004/02/skos/core#altLabel" value="${a}"
 			flushWith="@corporateBodyForTitleAgentBnode">
-			<data source="350-1.a" name="a"/>
+			<data source="350-1.a" name="a">
+				<replace pattern="^http" with="Siehe: http"/>
+			</data>
 		</combine>
 		<combine name="http://www.w3.org/2004/02/skos/core#altLabel" value="${a}"
 			flushWith="@corporateBodyForTitleAgentBnode">
-			<data source="354-1.a" name="a"/>
+			<data source="354-1.a" name="a">
+				<replace pattern="^http" with="Siehe: http"/>
+			</data>
 		</combine>
 		<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="${a}">
 			<data source="@corporateBodyForTitle" name="a"/>
