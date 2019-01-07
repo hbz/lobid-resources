@@ -1273,13 +1273,17 @@
 		<macro name="setCreatorCorporateBodyLabelInAgent">
 			<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="${a}"
 				flushWith="@agentId$[field]">
-				<data source="$[field]-[-12].a" name="a"/>
+				<data source="$[field]-[-12].a" name="a">
+					<replace pattern="^http" with="Siehe: http"/>
+				</data>
 			</combine>
 		</macro>
 		<macro name="setContributorCorporateBodyLabelInAgent">
 			<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="${a}"
 				flushWith="@agentId$[field]">
-				<data source="@contributorCorporateBodyLabel$[field]" name="a"/>
+				<data source="@contributorCorporateBodyLabel$[field]" name="a">
+					<replace pattern="^http" with="Siehe: http"/>
+				</data>
 			</combine>
 		</macro>
 		<macro name="setTypeCorporateBodyInAgent">
@@ -1618,9 +1622,9 @@
 		<!-- ########## type -->
 		<!-- ####################### -->
 		<!-- Miscellaneous -->
-    <data source="051." name="@rdftype">
-      <regexp match="^.z" format="$[ns-lobid-vocab]Miscellaneous"/>
-    </data>
+		<data source="051." name="@rdftype">
+			<regexp match="^.z" format="$[ns-lobid-vocab]Miscellaneous"/>
+		</data>
 		<!-- amtliche Druckschrift -->
 		<data source="051." name="@rdftype">
 			<regexp match="^......[bfiklmorsu]" format="$[ns-lobid-vocab]OfficialPublication"/>
@@ -1862,8 +1866,8 @@
 						<regexp match="^.....t"/>
 					</data>
 					<data source="051.">
-            <regexp match="^.z"/>
-          </data>
+						<regexp match="^.z"/>
+					</data>
 					<data source="052.">
 						<regexp match="^[a-zA-Z]"/>
 					</data>
@@ -4140,7 +4144,9 @@
 		</combine>
 		<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="${t} (${f})"
 			flushWith="@contributorCorporateBodyId" sameEntity="true">
-			<data source="2?[02468][bcefp]1.t" name="t"/>
+			<data source="2?[02468][bcefp]1.t" name="t">
+				<replace pattern="^http" with="Siehe: http"/>
+			</data>
 			<data source="2?[02468][bcefp]1.f" name="f"/>
 		</combine>
 		<combine name="~rdf:subject" value="$[ns-lobid-resource]${id}#!" flushWith="@contributorCorporateBodyId"
@@ -5961,7 +5967,9 @@
 			</data>
 		</combine>
 		<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="${a}">
-			<data source="@corporateBodyForTitle" name="a"/>
+			<data source="@corporateBodyForTitle" name="a">
+				<replace pattern="^http" with="Siehe: http"/>
+			</data>
 		</combine>
 		<combine name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" value="${a}"
 			flushWith="@corporateBodyForTitleAgentBnode">
@@ -6417,6 +6425,7 @@
 		<data source="@preferredName" name="http://www.w3.org/2000/01/rdf-schema#label">
 			<replace pattern="&gt;&gt;" with=""/>
 			<replace pattern="&lt;&lt;" with=""/>
+			<replace pattern="^http" with="Siehe: http"/>
 		</data>
 		<!-- ########### -->
 		<!-- # set subject uri of resource anew -->
@@ -7505,7 +7514,9 @@
 		</combine>
 		<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="${t} (${f})"
 			flushWith="@creatorCorporateBodyId" sameEntity="true">
-			<data source="2?[02468][-a]1.t" name="t"/>
+			<data source="2?[02468][-a]1.t" name="t">
+				<replace pattern="^http" with="Siehe: http"/>
+			</data>
 			<data source="2?[02468][-a]1.f" name="f"/>
 		</combine>
 
