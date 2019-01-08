@@ -4059,22 +4059,22 @@
 				<data source="[12][0123456789][02468][-abcefmn][12].[pa9]"/>
 			</choose>
 		</combine>
-		<data source="2?[02468][-a][12].9" name="@creatorCorporateBodyId">
+		<data source="2?[024678][-a][12].9" name="@creatorCorporateBodyId">
 			<regexp match="\(DE-588\)(.*)" format="http://d-nb.info/gnd/${1}"/>
 			<sanitizeUrl></sanitizeUrl>
 		</data>
-		<data source="[29]?[02468][-a][12].k" name="@nameOfCreatingCorporateBodyK">
+		<data source="[29]?[024678][-a][12].k" name="@nameOfCreatingCorporateBodyK">
 			<replace pattern="&gt;&gt;" with=""/>
 			<replace pattern="&lt;&lt;" with=""/>
 		</data>
-		<data source="[29]?[02468][-a][12].h" name="@nameOfCreatingCorporateBodyH"/>
+		<data source="[29]?[024678][-a][12].h" name="@nameOfCreatingCorporateBodyH"/>
 		<combine name="@nameOfCreatingCorporateBodyKH" value="${k} (${h})" sameEntity="true">
 			<data source="@nameOfCreatingCorporateBodyK" name="k"/>
 			<data source="@nameOfCreatingCorporateBodyH" name="h"/>
 		</combine>
 		<combine name="@nameOfCreatingCorporateBodyB" value="${a}">
 			<concat delimiter=", " name="a" flushWith="@creatorCorporateBodyId|@subjectLinks">
-				<data source="[29]?[02468][-a][12].b"/>
+				<data source="[29]?[024678][-a][12].b"/>
 			</concat>
 		</combine>
 		<combine name="@nameOfCreatingCorporateBodyKB" value="${k}. ${b}">
