@@ -1,4 +1,4 @@
-/* Copyright 2014-2017 Fabian Steeg, hbz. Licensed under the EPL 2.0 */
+/* Copyright 2014-2019 Fabian Steeg, hbz. Licensed under the EPL 2.0 */
 
 package tests;
 
@@ -118,6 +118,34 @@ public class IntegrationTests extends LocalIndexSetup {
 					.query(new Queries.Builder().q("hbzId:TT050409948").build()).build();
 			Long hits = index.totalHits();
 			assertThat(hits).isGreaterThan(0);
+		});
+	}
+
+	@Test
+	public void sizeRequestOwnerFull() {
+		ownerTest("http://lobid.org/organisations/DE-260#!");
+	}
+
+	@Test
+	public void sizeRequestOwnerAbout() {
+		ownerTest("http://lobid.org/organisations/DE-260");
+	}
+
+	@Test
+	public void sizeRequestOwnerShort() {
+		ownerTest("DE-260");
+	}
+
+	@Test
+	public void sizeRequestOwnerShortMulti() {
+		ownerTest("DE-260,DE-290");
+	}
+
+	private static void ownerTest(String id) {
+		running(testServer(3333), () -> {
+			Search index = new Search.Builder()
+					.query(new Queries.Builder().owner(id).build()).build();
+			assertThat(index.totalHits()).isGreaterThan(0);
 		});
 	}
 
