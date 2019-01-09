@@ -1,4 +1,4 @@
-/* Copyright 2014-2017 Fabian Steeg, hbz. Licensed under the EPL 2.0 */
+/* Copyright 2014-2019 Fabian Steeg, hbz. Licensed under the EPL 2.0 */
 
 package controllers.resources;
 
@@ -46,8 +46,8 @@ import play.test.Helpers;
  */
 public class Lobid {
 
-	/** The lobid-organisations 2.0 beta root URL. */
-	static final String ORGS_BETA_ROOT = Application.CONFIG.getString("orgs.api");
+	/** The lobid-organisations root URL. */
+	static final String ORGS_ROOT = Application.CONFIG.getString("orgs.api");
 	/** Timeout for API calls in milliseconds. */
 	public static final int API_TIMEOUT = 50000;
 
@@ -96,7 +96,7 @@ public class Lobid {
 			return "Paket elektronischer Ressourcen: " + simpleId;
 		}
 		JsonNode org =
-				cachedJsonCall(id.startsWith("http") ? id : ORGS_BETA_ROOT + id);
+				cachedJsonCall(id.startsWith("http") ? id : ORGS_ROOT + id);
 		if (org.size() == 0) {
 			if (simpleId.split("-").length == 3) {
 				String superSigel = id.substring(0, id.lastIndexOf('-'));

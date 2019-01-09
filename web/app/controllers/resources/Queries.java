@@ -1,4 +1,4 @@
-/* Copyright 2018 Fabian Steeg, hbz. Licensed under the EPL 2.0 */
+/* Copyright 2018-2019 Fabian Steeg, hbz. Licensed under the EPL 2.0 */
 
 package controllers.resources;
 
@@ -27,7 +27,6 @@ import org.elasticsearch.index.query.Operator;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.QueryStringQueryBuilder;
-import org.elasticsearch.join.query.JoinQueryBuilders;
 
 import com.google.common.collect.ImmutableMap;
 
@@ -636,13 +635,15 @@ public class Queries {
 
 		@Override
 		public QueryBuilder build(String queryString) {
-			final String prefix = Lobid.ORGS_BETA_ROOT;
+			final String prefix = Lobid.ORGS_ROOT;
+			String suffix = "#!";
 			BoolQueryBuilder ownersQuery = QueryBuilders.boolQuery();
 			final String[] owners = queryString.split(",");
 			for (String o : owners) {
-				final String ownerId = prefix + o.replace(prefix, "");
-				ownersQuery = ownersQuery.should(JoinQueryBuilders.hasChildQuery("item",
-						matchQuery(Search.OWNER_ID_FIELD, ownerId), ScoreMode.None));
+				final String ownerId =
+						prefix + o.replace(prefix, "").replace(suffix, "") + suffix;
+				ownersQuery = ownersQuery
+						.should(QueryBuilders.matchQuery(Search.OWNER_ID_FIELD, ownerId));
 			}
 			return ownersQuery;
 		}

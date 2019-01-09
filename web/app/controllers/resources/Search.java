@@ -1,4 +1,4 @@
-/* Copyright 2015-2018 Fabian Steeg, hbz. Licensed under the EPL 2.0 */
+/* Copyright 2015-2019 Fabian Steeg, hbz. Licensed under the EPL 2.0 */
 
 package controllers.resources;
 
@@ -53,7 +53,8 @@ public class Search {
 	static final String TYPE_RESOURCE =
 			Application.CONFIG.getString("index.type.resource");
 
-	static final String OWNER_ID_FIELD = "heldBy.id";
+	static final String OWNER_ID_FIELD = "hasItem.heldBy.id";
+	private static final String OWNER_AGGREGATION_FIELD = "heldBy.id";
 	private static final String SPATIAL_LABEL_FIELD = "spatial.label.raw";
 	static final String SPATIAL_GEO_FIELD = "spatial.geo";
 	private static final String SUBJECT_ID_FIELD = "subject.id";
@@ -267,7 +268,7 @@ public class Search {
 						new ChildrenAggregationBuilder(Application.OWNER_AGGREGATION,
 								TYPE_ITEM)
 										.subAggregation(AggregationBuilders.terms(field)
-												.field(OWNER_ID_FIELD).size(size));
+												.field(OWNER_AGGREGATION_FIELD).size(size));
 				searchRequest.addAggregation(ownerAggregation);
 			} else if (field.equals(SPATIAL_GEO_FIELD)) {
 				searchRequest
