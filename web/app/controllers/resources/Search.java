@@ -57,6 +57,7 @@ public class Search {
 	private static final String OWNER_AGGREGATION_FIELD = "heldBy.id";
 	private static final String SPATIAL_LABEL_FIELD = "spatial.label.raw";
 	static final String SPATIAL_GEO_FIELD = "spatial.geo";
+	private static final String SPATIAL_ID_FIELD = "spatial.id";
 	private static final String SUBJECT_ID_FIELD = "subject.id";
 
 	private JsonNode result;
@@ -120,10 +121,10 @@ public class Search {
 	/**
 	 * The values supported for the `aggregations` query parameter.
 	 */
-	public static final List<String> SUPPORTED_AGGREGATIONS =
-			Arrays.asList(ISSUED_FIELD, SUBJECT_FIELD, TYPE_FIELD, MEDIUM_FIELD,
-					OWNER_AGGREGATION, AGENT_FIELD, SPATIAL_LABEL_FIELD,
-					SPATIAL_GEO_FIELD, SUBJECT_ID_FIELD, TOPIC_AGGREGATION);
+	public static final List<String> SUPPORTED_AGGREGATIONS = Arrays.asList(
+			ISSUED_FIELD, SUBJECT_FIELD, TYPE_FIELD, MEDIUM_FIELD, OWNER_AGGREGATION,
+			AGENT_FIELD, SPATIAL_LABEL_FIELD, SPATIAL_GEO_FIELD, SPATIAL_ID_FIELD,
+			SUBJECT_ID_FIELD, TOPIC_AGGREGATION);
 
 	/**
 	 * @return The number of result for this search
@@ -261,8 +262,10 @@ public class Search {
 	private static SearchRequestBuilder withAggregations(
 			final SearchRequestBuilder searchRequest, String... fields) {
 		Arrays.asList(fields).forEach(field -> {
-			int size = field.equals(TOPIC_AGGREGATION) ? 9999
-					: (field.equals(ISSUED_FIELD) ? 1000 : 100);
+			int size =
+					field.equals(TOPIC_AGGREGATION) || field.equals(SPATIAL_ID_FIELD)
+							? 9999
+							: (field.equals(ISSUED_FIELD) ? 1000 : 100);
 			if (field.equals(OWNER_AGGREGATION)) {
 				AggregationBuilder ownerAggregation =
 						new ChildrenAggregationBuilder(Application.OWNER_AGGREGATION,
