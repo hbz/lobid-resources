@@ -1,0 +1,42 @@
+@* Copyright 2014-2017 Fabian Steeg, hbz. Licensed under the EPL 2.0 *@
+
+@(id:String, doc: play.api.libs.json.JsValue, i: Int = -1, hits: Seq[String] = Seq())
+
+@import play.api.libs.json._
+@import views.TableRow
+@import controllers.resources.Lobid
+@import scala.collection.immutable.Map
+@import controllers.resources.Application
+
+@optional(doc: JsValue, key: String, sep: String, alt: String)=@{
+    val other = (doc \\ key)
+    if(!other.isEmpty){
+        sep + other(0).asOpt[String].getOrElse(other(0).as[Seq[JsValue]].map(_.as[String]).mkString("; "))
+    } else {alt}
+}
+
+<tr>
+  <td>
+  @if((doc\"type").asOpt[JsValue].isDefined) {
+    @defining((doc\"type").asOpt[Seq[String]].getOrElse(Seq((doc\"type").asOpt[String].get))){ v =>
+      <span title="@Html(Lobid.facetLabel(v,"type",""))" class="@Lobid.facetIcon(v,"type")"></span>
+    }
+  }<br/>
+  @if((doc\"medium").asOpt[Seq[Map[String,String]]].isDefined) {
+    @defining((doc\"medium").as[Seq[Map[String,String]]].map(_.get("id").get)){ v =>
+      <span title="@Html(Lobid.facetLabel(v,"medium.id",""))" class="@Lobid.facetIcon(v,"medium.id")"></span>
+    }
+  }
+  </td>
+  <td> <a href="@resources.routes.Application.resource(id)">
+    @optional(doc, "title", "", "<Kein Titel>")
+    @optional(doc, "otherTitleInformation", " | ", "")
+    @optional(doc, "edition", " | ", "")</a>
+  </td>
+  @defining((doc \ "PersonalName")) { contribs =>
+    <td style="text-align: right"> @((contribs(0) \ "personalName").asOpt[String].getOrElse(""))
+    @if(contribs.asOpt[Seq[JsValue]].getOrElse(Seq()).size>1){ et al.} </td>
+  }
+  <td style="text-align: right"> @optional(doc, "date", "", "").split("[,;]")(0) </td>
+  <td style="text-align: right"> @tags.star_button(id) </td>
+</tr>

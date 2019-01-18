@@ -60,6 +60,7 @@ import play.cache.Cached;
 import play.data.Form;
 import play.libs.F.Promise;
 import play.libs.Json;
+import play.libs.ws.WS;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
@@ -72,6 +73,7 @@ import views.html.index;
 import views.html.query;
 import views.html.rss;
 import views.html.stars;
+import views.html.query_hbzfix;
 
 /**
  * The main application controller.
@@ -225,6 +227,52 @@ public class Application extends Controller {
 		return resultOrError(q, result);
 	}
 
+	public static Promise<Result> hbzfixSearch(final String q, final String agent,
+			final String name, final String subject, final String id,
+			final String publisher, final String issued, final String medium,
+			final int from, final int size, final String owner, String t, String sort,
+			String word, String f, String aggs, String location, String nested,
+			String filter) {
+		// bulk -> jsonl, see https://github.com/hbz/lobid-resources/issues/861
+		final String format = f != null && f.equals("bulk") ? "jsonl" : f;
+
+		final String aggregations = aggs == null ? "" : aggs;
+		if (!aggregations.isEmpty() && !Search.SUPPORTED_AGGREGATIONS
+				.containsAll(Arrays.asList(aggregations.split(",")))) {
+			return Promise.promise(() -> badRequest(views.html.error.render(q,
+					String.format("Unsupported aggregations: %s (supported: %s)",
+							aggregations, Search.SUPPORTED_AGGREGATIONS),
+					"Fehler")));
+		}
+
+		String responseFormat = Accept.formatFor(format, request().acceptedTypes());
+		addResponseHeaders(responseFormat);
+
+		String cacheId = createCacheId(format);
+		@SuppressWarnings("unchecked")
+		Promise<Result> cachedResult = (Promise<Result>) Cache.get(cacheId);
+		if (cachedResult != null)
+			return cachedResult;
+
+		Logger.debug("Not cached: {}, will cache for one hour", cacheId);
+		QueryBuilder queryBuilder = new Queries.Builder().q(q).agent(agent)
+				.name(name).subject(subject).id(id).publisher(publisher).issued(issued)
+				.medium(medium).t(t).owner(owner).nested(nested).location(location)
+				.filter(filter).word(word).build();
+		String sortBy =
+				responseFormat.equals(Accept.Format.RSS.queryParamString) ? "newest"
+						: sort;
+		Search index = new Search.Builder().query(queryBuilder).from(from)
+				.size(size).sort(sortBy).aggs(aggregations).build();
+
+		Promise<Result> result =
+				createResultHbzfix(q, agent, name, subject, id, publisher, issued, medium,
+						from, size, owner, t, sort, word, nested, responseFormat, index);
+		cacheOnRedeem(cacheId, result, ONE_HOUR);
+
+		return resultOrError(q, result);
+	}
+
 	private static String createCacheId(final String format) {
 		String uuid = session("uuid");
 		if (uuid == null) {
@@ -296,6 +344,27 @@ public class Application extends Controller {
 												Accept.Format.JSON_LD.queryParamString);
 							}
 						});
+		return result;
+	}
+
+	private static Promise<Result> createResultHbzfix(final String q,
+			final String agent, final String name, final String subject,
+			final String id, final String publisher, final String issued,
+			final String medium, final int from, final int size, final String owner,
+			String t, String sort, String word, String nested, String responseFormat,
+			Search index) {
+		Promise<JsonNode> jsonPromise =
+				WS.url("http://indexdev.hbz-nrw.de/_es2/hbzfix/_search")
+						.setQueryParameter("q", q.isEmpty() ? "*" : q).get()
+						.map(response -> response.getStatus() == Http.Status.OK
+								? response.asJson()
+								: Json.newObject());
+		Promise<Result> result = jsonPromise.map(json -> {
+			String s = json.toString();
+			return ok(query_hbzfix.render(s, q, agent, name, subject, id, publisher,
+					issued, medium, from, size, json.get("hits").get("total").longValue(),
+					owner, t, sort, word));
+		});
 		return result;
 	}
 
