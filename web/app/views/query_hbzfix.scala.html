@@ -14,17 +14,17 @@
   <nav>
     <ul class="pagination">
       <li class="previous @if(from==0){disabled}">
-        <a href="@if(from==0){#} else {@resources.routes.Application.query(q,agent,name,subject,id,publisher,issued,medium,from-size,size,owner,t,sortParam,word=word)}">&larr;</a>
+        <a href="@if(from==0){#} else {@resources.routes.Application.hbzfixSearch(q,agent,name,subject,id,publisher,issued,medium,from-size,size,owner,t,sortParam,word=word)}">&larr;</a>
       </li>
       @defining((((from+1)/size)+1,(if(allHits%size==0) allHits/size else allHits/size+1).toInt)) { case (currentPage,lastPage) =>
           @defining(Math.min(Math.max(1,currentPage-4)+9,lastPage)) { toPage =>
               @for(i <- Math.max(1,toPage-9) to toPage){
-                  <li @if(currentPage==i){class="active"}><a href="@resources.routes.Application.query(q,agent,name,subject,id,publisher,issued,medium,(i*size)-size,size,owner,t,sortParam,word=word)">@i</a></li>
+                  <li @if(currentPage==i){class="active"}><a href="@resources.routes.Application.hbzfixSearch(q,agent,name,subject,id,publisher,issued,medium,(i*size)-size,size,owner,t,sortParam,word=word)">@i</a></li>
               }
           }
       }
       <li class="next @if(from+size >= allHits){disabled}">
-        <a href="@if(from+size >= allHits){#} else {@resources.routes.Application.query(q,agent,name,subject,id,publisher,issued,medium,from+size,size,owner,t,sortParam,word=word)}">&rarr;</a>
+        <a href="@if(from+size >= allHits){#} else {@resources.routes.Application.hbzfixSearch(q,agent,name,subject,id,publisher,issued,medium,from+size,size,owner,t,sortParam,word=word)}">&rarr;</a>
       </li>
     </ul>
   </nav>

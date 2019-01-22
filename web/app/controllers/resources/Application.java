@@ -287,12 +287,12 @@ public class Application extends Controller {
 	private static Promise<Result> resultOrError(final String q,
 			Promise<Result> result) {
 		return result.recover((Throwable t) -> {
-			String message = "Could not query index: " + t.getMessage()
-					+ (t.getCause() != null ? ", cause: " + t.getCause().getMessage()
-							: "");
+			String message =
+					"Could not query index: " + t.getMessage() + (t.getCause() != null
+							? ", cause: " + t.getCause().getMessage() : "");
+			Logger.error(message, t);
 			boolean badRequest = t instanceof IllegalArgumentException;
 			if (badRequest) {
-				Logger.error(message);
 				String header =
 						"Ungültige Suchanfrage. Maskieren Sie Sonderzeichen mit "
 								+ "<code>\\</code>. Siehe auch <a href=\""
@@ -301,7 +301,6 @@ public class Application extends Controller {
 								+ "Dokumentation der unterstützten Suchsyntax</a>.";
 				return badRequest(views.html.error.render(q, message, header));
 			}
-			Logger.error(message);
 			String header = "Es ist ein Fehler aufgetreten. "
 					+ "Bitte versuchen Sie es erneut oder kontaktieren Sie das "
 					+ "Entwicklerteam, falls das Problem fortbesteht "
@@ -355,15 +354,21 @@ public class Application extends Controller {
 			Search index) {
 		Promise<JsonNode> jsonPromise =
 				WS.url("http://indexdev.hbz-nrw.de/_es2/hbzfix/_search")
-						.setQueryParameter("q", q.isEmpty() ? "*" : q).get()
+						.setQueryParameter("q", q.isEmpty() ? "*" : q)
+						.setQueryParameter("size", size + "")
+						.setQueryParameter("from", from + "").get()
 						.map(response -> response.getStatus() == Http.Status.OK
-								? response.asJson()
-								: Json.newObject());
+								? response.asJson() : Json.newObject());
 		Promise<Result> result = jsonPromise.map(json -> {
 			String s = json.toString();
+			long longValue = 0L;
+			try {
+				longValue = json.get("hits").get("total").longValue();
+			} catch (Exception e) {
+				Logger.error("No hits in {}", json);
+			}
 			return ok(query_hbzfix.render(s, q, agent, name, subject, id, publisher,
-					issued, medium, from, size, json.get("hits").get("total").longValue(),
-					owner, t, sort, word));
+					issued, medium, from, size, longValue, owner, t, sort, word));
 		});
 		return result;
 	}

@@ -11,14 +11,14 @@
 @optional(doc: JsValue, key: String, sep: String, alt: String)=@{
     val other = (doc \\ key)
     if(!other.isEmpty){
-        sep + other(0).asOpt[String].getOrElse(other(0).as[Seq[JsValue]].map(_.as[String]).mkString("; "))
+        sep + other(0).asOpt[String].getOrElse(other(0).asOpt[Seq[JsValue]].getOrElse(Seq()).map(_.asOpt[String].getOrElse("--")).mkString("; "))
     } else {alt}
 }
 
 <tr>
   <td>
   @if((doc\"type").asOpt[JsValue].isDefined) {
-    @defining((doc\"type").asOpt[Seq[String]].getOrElse(Seq((doc\"type").asOpt[String].get))){ v =>
+    @defining((doc\"type").asOpt[Seq[String]].getOrElse(Seq((doc\"type").asOpt[String].getOrElse("--")))){ v =>
       <span title="@Html(Lobid.facetLabel(v,"type",""))" class="@Lobid.facetIcon(v,"type")"></span>
     }
   }<br/>
