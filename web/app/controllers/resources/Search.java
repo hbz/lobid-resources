@@ -263,9 +263,9 @@ public class Search {
 			final SearchRequestBuilder searchRequest, String... fields) {
 		Arrays.asList(fields).forEach(field -> {
 			int size =
-					field.equals(TOPIC_AGGREGATION) || field.equals(SPATIAL_ID_FIELD)
-							? 9999
-							: (field.equals(ISSUED_FIELD) ? 1000 : 100);
+					Arrays.asList(TOPIC_AGGREGATION, SPATIAL_ID_FIELD, SUBJECT_ID_FIELD)
+							.contains(field) ? 9999
+									: (field.equals(ISSUED_FIELD) ? 1000 : 100);
 			if (field.equals(OWNER_AGGREGATION)) {
 				AggregationBuilder ownerAggregation =
 						new ChildrenAggregationBuilder(Application.OWNER_AGGREGATION,
