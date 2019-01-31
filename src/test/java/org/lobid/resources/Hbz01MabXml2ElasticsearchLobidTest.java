@@ -117,7 +117,6 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 	 */
 	static void etl(final Client cl,
 			JsonLdItemSplitter2ElasticsearchJsonLd jsonLdItemSplitter2es) {
-		ElasticsearchIndexer.MINIMUM_SCORE = 1.4;
 		final FileOpener opener = new FileOpener();
 		JsonLdEtikett jsonLdEtikett = new JsonLdEtikett();
 		rdfGraphToJsonLd = new RdfGraphToJsonLd(MabXml2lobidJsonEs.CONTEXT_URI);
