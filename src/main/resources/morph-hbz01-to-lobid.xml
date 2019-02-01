@@ -6209,9 +6209,9 @@
 		<data source="@subjectLinks" name="http://id.loc.gov/ontologies/bibframe/source">
 			<constant value="http://d-nb.info/gnd/7749153-1"/><!--gnd -->
 		</data>
-		<combine name="@preferredNameHT" value="${h}: ${t}" sameEntity="true">
-			<data source="9[01234][27]??.h" name="h"/>
+		<combine name="@preferredNameTH" value="${t}: ${h}" sameEntity="true">
 			<data source="9[01234][27]??.t" name="t"/>
+			<data source="9[01234][27]??.h" name="h"/>
 		</combine>
 		<!-- subjects which aren't persons (and thus the date needn't be ignored) -->
 		<combine name="@preferredNameConcatSubject" value="${a}" sameEntity="true"
@@ -6419,7 +6419,7 @@
 			<data source="@nameOfSubjectCorporateBody"/>
 			<data source="@preferredNameConcatTitleWithNumberingSubject"/>
 			<data source="@preferredNameConcatTitleWithoutNumberingSubject"/>
-			<data source="@preferredNameHT"/>
+			<data source="@preferredNameTH"/>
 			<data source="@preferredNameConcatSubject"/>
 			<data source="9[01234][27]-[-12].t"/>
 		</choose>
