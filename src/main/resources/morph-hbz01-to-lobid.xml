@@ -4072,6 +4072,11 @@
 			<data source="@nameOfCreatingCorporateBodyK" name="k"/>
 			<data source="@nameOfCreatingCorporateBodyH" name="h"/>
 		</combine>
+		<data source="[29]?[024678][-a][12].t" name="@nameOfCreatingCorporateBodyT"/>
+		<combine name="@nameOfCreatingCorporateBodyKT" value="${k}: ${t}" sameEntity="true">
+			<data source="@nameOfCreatingCorporateBodyK" name="k"/>
+			<data source="@nameOfCreatingCorporateBodyT" name="t"/>
+		</combine>
 		<combine name="@nameOfCreatingCorporateBodyB" value="${a}">
 			<concat delimiter=", " name="a" flushWith="@creatorCorporateBodyId|@subjectLinks">
 				<data source="[29]?[024678][-a][12].b"/>
@@ -4101,6 +4106,7 @@
 				<data source="@nameOfCreatingCorporateBodyKHB"/>
 				<data source="@nameOfCreatingCorporateBodyKB"/>
 				<data source="@nameOfCreatingCorporateBodyKH"/>
+				<data source="@nameOfCreatingCorporateBodyKT"/>
 				<data source="@nameOfCreatingCorporateBodyK"/>
 			</choose>
 		</combine>
