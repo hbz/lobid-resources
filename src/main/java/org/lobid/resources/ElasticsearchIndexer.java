@@ -276,10 +276,7 @@ public class ElasticsearchIndexer
 		return ret;
 	}
 
-	String string2wikidataTsv;
-	QueryBuilder queryBuilded;
-
-	private String enrich(final String index, final String queryField,
+		private String enrich(final String index, final String queryField,
 			final String SPATIAL, ObjectNode node) {
 		Iterable<Entry<String, JsonNode>> iterable = () -> node.fields();
 		Optional<Entry<String, JsonNode>> o =
@@ -300,6 +297,8 @@ public class ElasticsearchIndexer
 						throw new Exception(
 								"Already lookuped with no good result, skipping");
 					SearchHits hits = null;
+					QueryBuilder queryBuilded;
+					String string2wikidataTsv;
 					if ((string2wikidataTsv =
 							WikidataGeodata2Es.getQidMap().get(query.first)) != null)
 						queryBuilded = QueryBuilders.idsQuery().addIds(string2wikidataTsv);
