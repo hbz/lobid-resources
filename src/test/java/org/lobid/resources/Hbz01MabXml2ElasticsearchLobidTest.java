@@ -22,9 +22,13 @@ import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.culturegraph.mf.morph.Metamorph;
+import org.culturegraph.mf.stream.converter.RecordReader;
 import org.culturegraph.mf.stream.converter.xml.AlephMabXmlHandler;
 import org.culturegraph.mf.stream.converter.xml.XmlDecoder;
+import org.culturegraph.mf.stream.pipe.ObjectPipeDecoupler;
+import org.culturegraph.mf.stream.pipe.ObjectTee;
 import org.culturegraph.mf.stream.source.FileOpener;
+import org.culturegraph.mf.stream.source.StringReader;
 import org.culturegraph.mf.stream.source.TarReader;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.Client;
@@ -59,7 +63,7 @@ import de.hbz.lobid.helper.CompareJsonMaps;
 @SuppressWarnings("javadoc")
 public final class Hbz01MabXml2ElasticsearchLobidTest {
 	private static Node node;
-	private static Client client;
+	static Client client;
 	private static final Logger LOG =
 			LogManager.getLogger(Hbz01MabXml2ElasticsearchLobidTest.class);
 	private static final String LOBID_RESOURCES =
@@ -107,7 +111,7 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 		WikidataGeodata2Es.filterWikidataEntitiesDump2EsGeodata(
 				"src/test/resources/wikidataEntities.json");
 		WikidataGeodata2Es.finish();
-		etl(client, new JsonLdItemSplitter2ElasticsearchJsonLd("hbzId"));
+		etl();
 	}
 
 	/*
@@ -115,26 +119,33 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 	 * clobs, transform into lobid ntriples, transform that into elasticsearch
 	 * json-ld, index that into elasticsearch.
 	 */
-	static void etl(final Client cl,
-			JsonLdItemSplitter2ElasticsearchJsonLd jsonLdItemSplitter2es) {
+	static void etl() {
 		final FileOpener opener = new FileOpener();
-		JsonLdEtikett jsonLdEtikett = new JsonLdEtikett();
 		rdfGraphToJsonLd = new RdfGraphToJsonLd(MabXml2lobidJsonEs.CONTEXT_URI);
-		opener.setReceiver(new TarReader())//
-				.setReceiver(new XmlDecoder())//
-				.setReceiver(new AlephMabXmlHandler())
-				.setReceiver(
-						new Metamorph("src/main/resources/morph-hbz01-to-lobid.xml"))
-				.setReceiver(new PipeEncodeTriples())//
-				.setReceiver(rdfGraphToJsonLd)//
-				.setReceiver(jsonLdEtikett)//
-				.setReceiver(jsonLdItemSplitter2es)//
-				.setReceiver(getElasticsearchIndexer(cl));
+		opener.setReceiver(new TarReader()).setReceiver(new RecordReader())
+				.setReceiver(new ObjectTee<String>())//
+				.addReceiver(receiverThread())//
+				.addReceiver(receiverThread());
 		opener.process(
 				new File(Hbz01MabXmlEtlNtriples2Filesystem.TEST_FILENAME_ALEPHXMLCLOBS)
 						.getAbsolutePath());
 		opener.closeStream();
 
+	}
+
+	private static ObjectDivider<String> receiverThread() {
+		ObjectPipeDecoupler<String> thread = new ObjectPipeDecoupler<>();
+		ObjectDivider<String> divider = new ObjectDivider<>();
+		divider.setReceiver(thread).setReceiver(new StringReader())
+				.setReceiver(new XmlDecoder()).setReceiver(new AlephMabXmlHandler())
+				.setReceiver(
+						new Metamorph("src/main/resources/morph-hbz01-to-lobid.xml"))
+				.setReceiver(new PipeEncodeTriples())//
+				.setReceiver(new RdfGraphToJsonLd(MabXml2lobidJsonEs.CONTEXT_URI))//
+				.setReceiver(new JsonLdEtikett())//
+				.setReceiver(new JsonLdItemSplitter2ElasticsearchJsonLd("hbzId"))//
+				.setReceiver(getElasticsearchIndexer(client));
+		return divider;
 	}
 
 	@SuppressWarnings("static-method")
