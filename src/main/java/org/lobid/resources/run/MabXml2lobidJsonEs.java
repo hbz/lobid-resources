@@ -12,16 +12,14 @@ import org.culturegraph.mf.stream.converter.RecordReader;
 import org.culturegraph.mf.stream.converter.xml.AlephMabXmlHandler;
 import org.culturegraph.mf.stream.converter.xml.XmlDecoder;
 import org.culturegraph.mf.stream.pipe.ObjectBatchLogger;
-import org.culturegraph.mf.stream.pipe.ObjectPipeDecoupler;
-import org.culturegraph.mf.stream.pipe.ObjectTee;
 import org.culturegraph.mf.stream.pipe.StreamBatchLogger;
 import org.culturegraph.mf.stream.source.FileOpener;
 import org.culturegraph.mf.stream.source.StringReader;
 import org.culturegraph.mf.stream.source.TarReader;
-import org.lobid.resources.ObjectDivider;
 import org.lobid.resources.ElasticsearchIndexer;
 import org.lobid.resources.JsonLdEtikett;
 import org.lobid.resources.JsonLdItemSplitter2ElasticsearchJsonLd;
+import org.lobid.resources.ObjectThreader;
 import org.lobid.resources.PipeEncodeTriples;
 import org.lobid.resources.RdfGraphToJsonLd;
 
@@ -98,7 +96,8 @@ public class MabXml2lobidJsonEs {
 				.parseBoolean(System.getProperty("lookupMabxmlDeletion", "false"));
 
 		opener.setReceiver(new TarReader()).setReceiver(new RecordReader())
-				.setReceiver(new ObjectTee<String>())//
+				.setReceiver(new ObjectThreader<String>())//
+				.addReceiver(receiverThread())//
 				.addReceiver(receiverThread())//
 				.addReceiver(receiverThread())//
 				.addReceiver(receiverThread())//
@@ -134,7 +133,7 @@ public class MabXml2lobidJsonEs {
 		return esIndexer;
 	}
 
-	private static ObjectDivider<String> receiverThread() {
+	private static StringReader receiverThread() {
 		StreamBatchLogger batchLogger = new StreamBatchLogger();
 		batchLogger.setBatchSize(100000);
 		JsonLdEtikett jsonLdEtikett;
@@ -151,10 +150,8 @@ public class MabXml2lobidJsonEs {
 		ObjectBatchLogger<HashMap<String, String>> objectBatchLogger =
 				new ObjectBatchLogger<>();
 		objectBatchLogger.setBatchSize(500000);
-		ObjectPipeDecoupler<String> thread = new ObjectPipeDecoupler<>();
-		ObjectDivider<String> divider = new ObjectDivider<>();
-		divider.setReceiver(thread).setReceiver(new StringReader())
-				.setReceiver(new XmlDecoder()).setReceiver(new AlephMabXmlHandler())
+		StringReader sr = new StringReader();
+		sr.setReceiver(new XmlDecoder()).setReceiver(new AlephMabXmlHandler())
 				.setReceiver(
 						new Metamorph("src/main/resources/morph-hbz01-to-lobid.xml"))
 				.setReceiver(batchLogger)//
@@ -165,6 +162,6 @@ public class MabXml2lobidJsonEs {
 						new JsonLdItemSplitter2ElasticsearchJsonLd(KEY_TO_GET_MAIN_ID))//
 				.setReceiver(objectBatchLogger)//
 				.setReceiver(getElasticsearchIndexer());
-		return divider;
+		return sr;
 	}
 }

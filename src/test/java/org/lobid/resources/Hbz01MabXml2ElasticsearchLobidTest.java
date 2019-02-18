@@ -25,8 +25,6 @@ import org.culturegraph.mf.morph.Metamorph;
 import org.culturegraph.mf.stream.converter.RecordReader;
 import org.culturegraph.mf.stream.converter.xml.AlephMabXmlHandler;
 import org.culturegraph.mf.stream.converter.xml.XmlDecoder;
-import org.culturegraph.mf.stream.pipe.ObjectPipeDecoupler;
-import org.culturegraph.mf.stream.pipe.ObjectTee;
 import org.culturegraph.mf.stream.source.FileOpener;
 import org.culturegraph.mf.stream.source.StringReader;
 import org.culturegraph.mf.stream.source.TarReader;
@@ -123,7 +121,7 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 		final FileOpener opener = new FileOpener();
 		rdfGraphToJsonLd = new RdfGraphToJsonLd(MabXml2lobidJsonEs.CONTEXT_URI);
 		opener.setReceiver(new TarReader()).setReceiver(new RecordReader())
-				.setReceiver(new ObjectTee<String>())//
+				.setReceiver(new ObjectThreader<String>())//
 				.addReceiver(receiverThread())//
 				.addReceiver(receiverThread());
 		opener.process(
@@ -133,11 +131,9 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 
 	}
 
-	private static ObjectDivider<String> receiverThread() {
-		ObjectPipeDecoupler<String> thread = new ObjectPipeDecoupler<>();
-		ObjectDivider<String> divider = new ObjectDivider<>();
-		divider.setReceiver(thread).setReceiver(new StringReader())
-				.setReceiver(new XmlDecoder()).setReceiver(new AlephMabXmlHandler())
+	private static StringReader receiverThread() {
+		StringReader sr = new StringReader();
+		sr.setReceiver(new XmlDecoder()).setReceiver(new AlephMabXmlHandler())
 				.setReceiver(
 						new Metamorph("src/main/resources/morph-hbz01-to-lobid.xml"))
 				.setReceiver(new PipeEncodeTriples())//
@@ -145,7 +141,7 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 				.setReceiver(new JsonLdEtikett())//
 				.setReceiver(new JsonLdItemSplitter2ElasticsearchJsonLd("hbzId"))//
 				.setReceiver(getElasticsearchIndexer(client));
-		return divider;
+		return sr;
 	}
 
 	@SuppressWarnings("static-method")
