@@ -182,8 +182,8 @@ public class ElasticsearchIndexer
 		request.settings(settings);
 		client.admin().indices().updateSettings(request).actionGet();
 		if (lookupWikidata) {
-			WikidataGeodata2Es.setIndexAlias(WikidataGeodata2Es.getIndexAlias()
-					+ (aliasSuffix.equals("NOALIAS") ? "" : aliasSuffix));
+			WikidataGeodata2Es.setIndexAliasSuffix(
+					aliasSuffix.equals("NOALIAS") ? "" : aliasSuffix);
 			LOG.info("Using wikidata geo_nwbib index with name:"
 					+ WikidataGeodata2Es.getIndexAlias());
 			LOG.info("Start loading manually created Qid map ...");
@@ -276,7 +276,7 @@ public class ElasticsearchIndexer
 		return ret;
 	}
 
-		private String enrich(final String index, final String queryField,
+	private String enrich(final String index, final String queryField,
 			final String SPATIAL, ObjectNode node) {
 		Iterable<Entry<String, JsonNode>> iterable = () -> node.fields();
 		Optional<Entry<String, JsonNode>> o =
