@@ -54,6 +54,7 @@ public class WikidataGeodata2Es {
 	private static final String HTTP_WWW_WIKIDATA_ORG_ENTITY =
 			"http://www.wikidata.org/entity/";
 	private static final String JSON_ACCEPT_HEADER = "application/json";
+	/** managing indexing */
 	public static ElasticsearchIndexer esIndexer = new ElasticsearchIndexer();
 	private static final String DATE =
 			new SimpleDateFormat("yyyyMMdd-HHmmss").format(new Date());
@@ -61,11 +62,10 @@ public class WikidataGeodata2Es {
 			LogManager.getLogger(WikidataGeodata2Es.class);
 	private static HashMap<String, String> qidMap = new HashMap<>();
 	private static BufferedReader lineReader;
-	/**
-	 * This is the root node of the geo data.
-	 */
+	/** This is the root node of the geo data. */
 	public static final String SPATIAL = "spatial";
-	private static String indexAlias = "geo_nwbib";
+	private final static String INDEX_ALIAS_PREFIX = "geo_nwbib";
+	private static String indexAliasSuffix = "";
 	private static boolean indexExists = false;
 	private static String qidCsvFn = "src/main/resources/string2wikidata.tsv";
 
@@ -118,7 +118,7 @@ public class WikidataGeodata2Es {
 	 */
 	public static void main(String... args)
 			throws UnsupportedEncodingException, IOException {
-		String indexName = indexAlias + "-" + DATE;
+		String indexName = INDEX_ALIAS_PREFIX + "-" + DATE;
 		if (!System.getProperty("indexName", "").isEmpty()) {
 			indexName = System.getProperty("indexName");
 		}
@@ -131,7 +131,7 @@ public class WikidataGeodata2Es {
 		}
 		String aliasSuffix = System.getProperty("aliasSuffix", "");
 		LOG.info("Alias suffix configured:'" + aliasSuffix + "' ...");
-		LOG.info("... so the alias is: '" + indexAlias + aliasSuffix + "'");
+		LOG.info("... so the alias is: '" + INDEX_ALIAS_PREFIX + aliasSuffix + "'");
 		esIndexer.setIndexAliasSuffix(aliasSuffix);
 		setProductionIndexerConfigs(indexName);
 		LOG.info("Going to index");
@@ -209,14 +209,13 @@ public class WikidataGeodata2Es {
 	}
 
 	private static void setElasticsearchIndexer() {
-		setIndexAlias(indexAlias);
 		esIndexer.setIndexConfig("index-config-wd-geodata.json");
 		esIndexer.onSetReceiver();
 	}
 
 	private static JsonNode toApiResponseGet(final AsyncHttpClient CLIENT,
 			final String API) throws InterruptedException, ExecutionException,
-					JsonParseException, JsonMappingException, IOException {
+			JsonParseException, JsonMappingException, IOException {
 		Thread.sleep(200); // be nice throttle down
 		Response response =
 				CLIENT.prepareGet(API).setHeader("Accept", JSON_ACCEPT_HEADER)
@@ -227,8 +226,8 @@ public class WikidataGeodata2Es {
 
 	private static JsonNode toApiResponsePost(final AsyncHttpClient CLIENT,
 			final String URL, final String QUERY)
-					throws InterruptedException, ExecutionException, JsonParseException,
-					JsonMappingException, IOException {
+			throws InterruptedException, ExecutionException, JsonParseException,
+			JsonMappingException, IOException {
 		LOG.info("SPARQL-URL=" + URL);
 		LOG.info("SPARQL-query=" + QUERY);
 		Response response = CLIENT.preparePost(URL).addFormParam("query", QUERY)
@@ -430,7 +429,14 @@ public class WikidataGeodata2Es {
 	 * @return the name of the alias of the index
 	 */
 	public static String getIndexAlias() {
-		return indexAlias;
+		return INDEX_ALIAS_PREFIX + indexAliasSuffix;
+	}
+
+	/**
+	 * @return the suffix of the name of the alias of the index
+	 */
+	public static String getIndexAliasSuffix() {
+		return indexAliasSuffix;
 	}
 
 	/**
@@ -443,10 +449,10 @@ public class WikidataGeodata2Es {
 	/**
 	 * Sets an optional suffix to the elasticsearch index alias.
 	 *
-	 * @param INDEX_ALIAS the alias of this index
+	 * @param INDEX_ALIAS_SUFFIX the suffix of the alias of this index
 	 */
-	public static void setIndexAlias(final String INDEX_ALIAS) {
-		indexAlias = INDEX_ALIAS;
+	public static void setIndexAliasSuffix(final String INDEX_ALIAS_SUFFIX) {
+		indexAliasSuffix = INDEX_ALIAS_SUFFIX;
 	}
 
 	/**
