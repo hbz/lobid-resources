@@ -47,7 +47,7 @@ public class ObjectThreader<T> extends DefaultTee<ObjectReceiver<T>>
 
 	@Override
 	public Tee<ObjectReceiver<T>> addReceiver(final ObjectReceiver<T> receiver) {
-		LOG.info("Adding thread " + getReceivers().size() + 1);
+		LOG.info("Adding thread " + (getReceivers().size() + 1));
 		ObjectPipeDecoupler<T> opd = new ObjectPipeDecoupler<>();
 		opd.setReceiver(receiver);
 		return super.addReceiver(opd);
