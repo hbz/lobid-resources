@@ -30,10 +30,10 @@ public final class Hbz01MabXml2ElasticsearchLobidTestOnline {
 				Settings.builder().put("cluster.name", CLUSTER_NAME).build();
 		this.tc = new PreBuiltTransportClient(settings);
 		try {
-			Hbz01MabXml2ElasticsearchLobidTest.etl(
+			Hbz01MabXml2ElasticsearchLobidTest.client =
 					tc.addTransportAddress(new InetSocketTransportAddress(
-							InetAddress.getByName(HOSTNAME), 9300)),
-					new JsonLdItemSplitter2ElasticsearchJsonLd("hbzId"));
+							InetAddress.getByName(HOSTNAME), 9300));
+			Hbz01MabXml2ElasticsearchLobidTest.etl();
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		}
