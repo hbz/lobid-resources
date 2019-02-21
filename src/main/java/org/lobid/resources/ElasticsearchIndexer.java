@@ -469,14 +469,37 @@ public class ElasticsearchIndexer
 				groupByIndexCollection(indexName);
 		for (String prefix : indices.keySet()) {
 			final SortedSet<String> indicesForPrefix = indices.get(prefix);
-			final String newIndex = indicesForPrefix.last();
+			final String newestIndex = indicesForPrefix.last();
 			final String newAlias = prefix + aliasSuffix;
-			LOG.info("Prefix " + prefix + ", newest index: " + newIndex);
-			removeOldAliases(indicesForPrefix, newAlias);
-			if (!indexName.equals(newAlias) && !newIndex.equals(newAlias))
-				createNewAlias(newIndex, newAlias);
+			LOG.info("Prefix " + prefix + ", newest index: " + newestIndex);
+			if (!newestIndex.equals(newAlias)) {
+				removeAlias(indicesForPrefix, newAlias);
+				createNewAlias(newestIndex, newAlias);
+			}
 			deleteOldIndices(indexName, indicesForPrefix);
 		}
+	}
+
+	/**
+	 * This adds the productive_prefix as alias to the newest index (which names
+	 * begins with productive_prefix) and adds the staging alias to the second
+	 * newest index name.
+	 * 
+	 * @param productive_prefix the productive alias (and also the prefix of the
+	 *          names of the indices)
+	 * @param staging the "-staging" alias
+	 */
+	public void swapProductionAndStagingAliases(final String productive_prefix,
+			final String staging) {
+		final SortedSet<String> indicesWithProductionPrefix =
+				groupByIndexCollection(productive_prefix).get(productive_prefix);
+		final String newestIndex = indicesWithProductionPrefix.last();
+		String secondNewestIndex = (String) indicesWithProductionPrefix
+				.toArray()[indicesWithProductionPrefix.size() - 2];
+		createNewAlias(newestIndex, productive_prefix);
+		createNewAlias(secondNewestIndex, staging);
+		removeAlias(newestIndex, staging);
+		removeAlias(secondNewestIndex, productive_prefix);
 	}
 
 	private SortedSetMultimap<String, String> groupByIndexCollection(
@@ -491,16 +514,25 @@ public class ElasticsearchIndexer
 		return indices;
 	}
 
-	private void removeOldAliases(final SortedSet<String> indicesForPrefix,
+	private void removeAlias(final String index, final String alias) {
+		try {
+			LOG.info("Deleting alias " + alias + " from index " + index + " ...");
+			client.admin().indices().prepareAliases().removeAlias(index, alias)
+					.execute().actionGet();
+			LOG.info("... deleted alias " + alias + " from index " + index);
+		} catch (AliasesNotFoundException e) {
+			LOG.info("... there was no alias " + alias + " set on index " + index);
+		}
+	}
+
+	private void removeAlias(final SortedSet<String> indicesForPrefix,
 			final String newAlias) {
 		try {
 			for (String name : indicesForPrefix) {
 				final Set<String> aliases = aliases(name);
 				for (String alias : aliases) {
 					if (alias.equals(newAlias)) {
-						LOG.info("Delete alias " + alias + " from index " + name);
-						client.admin().indices().prepareAliases().removeAlias(name, alias)
-								.execute().actionGet();
+						removeAlias(name, alias);
 					}
 				}
 			}
