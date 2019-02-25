@@ -481,25 +481,25 @@ public class ElasticsearchIndexer
 	}
 
 	/**
-	 * This adds the productive_prefix as alias to the newest index (which names
-	 * begins with productive_prefix) and adds the staging alias to the second
+	 * This adds the productive prefix as alias to the newest index (which names
+	 * begins with productive prefix) and adds the staging alias to the second
 	 * newest index name.
 	 * 
-	 * @param productive_prefix the productive alias (and also the prefix of the
+	 * @param productivePrefix the productive alias (and also the prefix of the
 	 *          names of the indices)
 	 * @param staging the "-staging" alias
 	 */
-	public void swapProductionAndStagingAliases(final String productive_prefix,
+	public void swapProductionAndStagingAliases(final String productivePrefix,
 			final String staging) {
 		final SortedSet<String> indicesWithProductionPrefix =
-				groupByIndexCollection(productive_prefix).get(productive_prefix);
+				groupByIndexCollection(productivePrefix).get(productivePrefix);
 		final String newestIndex = indicesWithProductionPrefix.last();
 		String secondNewestIndex = (String) indicesWithProductionPrefix
 				.toArray()[indicesWithProductionPrefix.size() - 2];
-		createNewAlias(newestIndex, productive_prefix);
+		createNewAlias(newestIndex, productivePrefix);
 		createNewAlias(secondNewestIndex, staging);
 		removeAlias(newestIndex, staging);
-		removeAlias(secondNewestIndex, productive_prefix);
+		removeAlias(secondNewestIndex, productivePrefix);
 	}
 
 	private SortedSetMultimap<String, String> groupByIndexCollection(
