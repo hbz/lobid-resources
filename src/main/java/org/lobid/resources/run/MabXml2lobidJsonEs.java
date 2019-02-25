@@ -151,10 +151,11 @@ public class MabXml2lobidJsonEs {
 				new ObjectBatchLogger<>();
 		objectBatchLogger.setBatchSize(500000);
 		StringReader sr = new StringReader();
+		final String MORPH = "src/main/resources/"
+				+ (lookupMabxmlDeletion ? "morph-hbz01-deletions.xml"
+						: "morph-hbz01-to-lobid.xml");
 		sr.setReceiver(new XmlDecoder()).setReceiver(new AlephMabXmlHandler())
-				.setReceiver(
-						new Metamorph("src/main/resources/morph-hbz01-to-lobid.xml"))
-				.setReceiver(batchLogger)//
+				.setReceiver(new Metamorph(MORPH)).setReceiver(batchLogger)//
 				.setReceiver(new PipeEncodeTriples())//
 				.setReceiver(new RdfGraphToJsonLd(MabXml2lobidJsonEs.CONTEXT_URI))//
 				.setReceiver(jsonLdEtikett)//

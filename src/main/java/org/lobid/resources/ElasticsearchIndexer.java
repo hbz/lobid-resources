@@ -258,11 +258,13 @@ public class ElasticsearchIndexer
 	 * Replace all aleph internal sysnumbers with lobid resources ids.
 	 */
 	private String enrichMabxmlDeletions(String alephId, String node) {
-		String ret = node;
-		QueryStringQueryBuilder query =
-				QueryBuilders.queryStringQuery("alephInternalSysnumber:" + alephId);
-		SearchHits hits = null;
+		String ret = null;
 		try {
+			JsonNode jnode = mapper.readTree(node);
+			QueryStringQueryBuilder query =
+					QueryBuilders.queryStringQuery("alephInternalSysnumber:"
+							+ jnode.findValue("alephInternalSysnumber"));
+			SearchHits hits = null;
 			hits = getElasticsearchClient().prepareSearch("hbz01").setQuery(query)
 					.get().getHits();
 			if (hits.getTotalHits() > 0) {
