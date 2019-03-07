@@ -2,7 +2,7 @@
 
 package org.lobid.resources;
 
-import org.culturegraph.mf.morph.functions.AbstractSimpleStatelessFunction;
+import org.metafacture.metamorph.api.helpers.AbstractSimpleStatelessFunction;
 
 import com.google.gdata.util.common.base.PercentEscaper;
 

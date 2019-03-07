@@ -19,9 +19,9 @@ import java.util.stream.Stream;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.culturegraph.mf.morph.Metamorph;
-import org.culturegraph.mf.morph.MorphErrorHandler;
 import org.junit.Assert;
+import org.metafacture.metamorph.Metamorph;
+import org.metafacture.metamorph.api.MorphErrorHandler;
 
 import com.github.jsonldjava.core.JsonLdOptions;
 import com.github.jsonldjava.core.JsonLdProcessor;

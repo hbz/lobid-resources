@@ -5,7 +5,7 @@ package org.lobid.resources;
 import org.apache.commons.validator.routines.UrlValidator;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.culturegraph.mf.morph.functions.AbstractSimpleStatelessFunction;
+import org.metafacture.metamorph.api.helpers.AbstractSimpleStatelessFunction;
 
 /**
  * Checks if a string is a valid absolute URL. If it is not, try to repair the

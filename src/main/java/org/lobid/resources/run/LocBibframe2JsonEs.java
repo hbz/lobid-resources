@@ -6,13 +6,13 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import org.culturegraph.mf.stream.pipe.ObjectBatchLogger;
-import org.culturegraph.mf.stream.source.FileOpener;
 import org.lobid.resources.ElasticsearchIndexer;
 import org.lobid.resources.JsonLdItemSplitter2ElasticsearchJsonLd;
 import org.lobid.resources.RdfGraphToJsonLd;
 import org.lobid.resources.StringRecordSplitter;
 import org.lobid.resources.Triples2RdfModel;
+import org.metafacture.io.FileOpener;
+import org.metafacture.monitoring.ObjectBatchLogger;
 
 /**
  * Transform loc bibframe ntriples into JSON-LD and index that into
@@ -38,7 +38,8 @@ public class LocBibframe2JsonEs {
 		String date = new SimpleDateFormat("yyyyMMdd-HHmmss").format(new Date());
 		indexName =
 				indexName.matches(".*-20.*") || args[5].toLowerCase().equals("exact")
-						? indexName : indexName + "-" + date;
+						? indexName
+						: indexName + "-" + date;
 		String indexAliasSuffix = args[2];
 		String node = args[3];
 		String cluster = args[4];

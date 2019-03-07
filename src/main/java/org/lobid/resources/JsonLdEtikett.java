@@ -11,10 +11,10 @@ import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.culturegraph.mf.framework.DefaultObjectPipe;
-import org.culturegraph.mf.framework.ObjectReceiver;
-import org.culturegraph.mf.framework.annotations.In;
-import org.culturegraph.mf.framework.annotations.Out;
+import org.metafacture.framework.ObjectReceiver;
+import org.metafacture.framework.annotations.In;
+import org.metafacture.framework.annotations.Out;
+import org.metafacture.framework.helpers.DefaultObjectPipe;
 
 import de.hbz.lobid.helper.EtikettMaker;
 

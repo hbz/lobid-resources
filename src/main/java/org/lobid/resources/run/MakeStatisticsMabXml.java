@@ -4,12 +4,12 @@ package org.lobid.resources.run;
 
 import java.io.File;
 
-import org.culturegraph.mf.morph.Metamorph;
-import org.culturegraph.mf.stream.converter.xml.AlephMabXmlHandler;
-import org.culturegraph.mf.stream.converter.xml.XmlDecoder;
-import org.culturegraph.mf.stream.source.FileOpener;
-import org.culturegraph.mf.stream.source.TarReader;
 import org.lobid.resources.Stats;
+import org.metafacture.biblio.AlephMabXmlHandler;
+import org.metafacture.io.FileOpener;
+import org.metafacture.io.TarReader;
+import org.metafacture.metamorph.Metamorph;
+import org.metafacture.xml.XmlDecoder;
 
 /**
  * Extract the different values of hbz01 Aleph Mab XML catalog data entries.
