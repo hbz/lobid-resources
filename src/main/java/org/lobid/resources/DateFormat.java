@@ -10,8 +10,8 @@ import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
 
-import org.culturegraph.mf.exceptions.MorphDefException;
-import org.culturegraph.mf.morph.functions.AbstractSimpleStatelessFunction;
+import org.metafacture.metamorph.MetamorphException;
+import org.metafacture.metamorph.api.helpers.AbstractSimpleStatelessFunction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -154,7 +154,7 @@ public class DateFormat extends AbstractSimpleStatelessFunction {
 				result = result.replaceAll("([0]{1,})([0-9]{1,})", "$2");
 			}
 		} catch (final IllegalArgumentException e) {
-			throw new MorphDefException("The date/time format is not supported.", e);
+			throw new MetamorphException("The date/time format is not supported.", e);
 		} catch (final Exception e) {
 			if (fallback != null) {
 				LOG.warn(
@@ -205,7 +205,8 @@ public class DateFormat extends AbstractSimpleStatelessFunction {
 
 	public final void setLanguage(final String language) {
 		if (!SUPPORTED_LANGUAGES.contains(language)) {
-			throw new MorphDefException("Language '" + language + "' not supported.");
+			throw new MetamorphException("Language '" + language + "' not supported.",
+					null);
 		}
 		this.outputLocale = new Locale(language);
 	}

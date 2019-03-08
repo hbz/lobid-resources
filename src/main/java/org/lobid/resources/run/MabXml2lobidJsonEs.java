@@ -7,21 +7,21 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 
-import org.culturegraph.mf.morph.Metamorph;
-import org.culturegraph.mf.stream.converter.RecordReader;
-import org.culturegraph.mf.stream.converter.xml.AlephMabXmlHandler;
-import org.culturegraph.mf.stream.converter.xml.XmlDecoder;
-import org.culturegraph.mf.stream.pipe.ObjectBatchLogger;
-import org.culturegraph.mf.stream.pipe.StreamBatchLogger;
-import org.culturegraph.mf.stream.source.FileOpener;
-import org.culturegraph.mf.stream.source.StringReader;
-import org.culturegraph.mf.stream.source.TarReader;
 import org.lobid.resources.ElasticsearchIndexer;
 import org.lobid.resources.JsonLdEtikett;
 import org.lobid.resources.JsonLdItemSplitter2ElasticsearchJsonLd;
-import org.lobid.resources.ObjectThreader;
 import org.lobid.resources.PipeEncodeTriples;
 import org.lobid.resources.RdfGraphToJsonLd;
+import org.metafacture.biblio.AlephMabXmlHandler;
+import org.metafacture.flowcontrol.ObjectThreader;
+import org.metafacture.io.FileOpener;
+import org.metafacture.io.RecordReader;
+import org.metafacture.io.TarReader;
+import org.metafacture.metamorph.Metamorph;
+import org.metafacture.monitoring.ObjectBatchLogger;
+import org.metafacture.monitoring.StreamBatchLogger;
+import org.metafacture.strings.StringReader;
+import org.metafacture.xml.XmlDecoder;
 
 /**
  * Transform hbz01 Aleph Mab XML catalog data into lobid elasticsearch ready

@@ -12,10 +12,10 @@ import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.culturegraph.mf.framework.StreamReceiver;
-import org.culturegraph.mf.framework.annotations.Description;
-import org.culturegraph.mf.framework.annotations.In;
-import org.culturegraph.mf.framework.annotations.Out;
+import org.metafacture.framework.StreamReceiver;
+import org.metafacture.framework.annotations.Description;
+import org.metafacture.framework.annotations.In;
+import org.metafacture.framework.annotations.Out;
 
 import com.hp.hpl.jena.graph.NodeFactory;
 import com.hp.hpl.jena.rdf.model.AnonId;
@@ -183,7 +183,8 @@ public class PipeEncodeTriples extends AbstractGraphPipeEncoder {
 		if (name.startsWith(LIST_NAME)) {
 			isRdfList = true;
 			rdfListNr = name.matches(".*[0-9]{3}$")
-					? Integer.valueOf(name.substring(name.length() - 3)) : 0;
+					? Integer.valueOf(name.substring(name.length() - 3))
+					: 0;
 		} else
 			enterBnode(makeBnode(name));
 	}

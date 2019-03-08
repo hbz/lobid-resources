@@ -14,11 +14,11 @@ import java.util.Map.Entry;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.culturegraph.mf.framework.DefaultStreamReceiver;
-import org.culturegraph.mf.framework.StreamReceiver;
-import org.culturegraph.mf.framework.annotations.Description;
-import org.culturegraph.mf.framework.annotations.In;
-import org.culturegraph.mf.framework.annotations.Out;
+import org.metafacture.framework.StreamReceiver;
+import org.metafacture.framework.annotations.Description;
+import org.metafacture.framework.annotations.In;
+import org.metafacture.framework.annotations.Out;
+import org.metafacture.framework.helpers.DefaultStreamReceiver;
 
 /**
  * Sums and sorts occurrences of a field. Facultatively also occurrences of the
@@ -106,7 +106,7 @@ public final class Stats extends DefaultStreamReceiver {
 	/**
 	 * Resets some temporary data.
 	 * 
-	 * @see org.culturegraph.mf.framework.DefaultStreamReceiver#startRecord(java.lang.
+	 * @see org.metafacture.framework.helpers.DefaultStreamReceiver#startRecord(java.lang.
 	 *      String)
 	 */
 	@Override
@@ -118,7 +118,7 @@ public final class Stats extends DefaultStreamReceiver {
 	 * Store processed records. Stores if a field appears at least once a time for
 	 * a record.
 	 * 
-	 * @see org.culturegraph.mf.framework.DefaultStreamReceiver#endRecord()
+	 * @see org.metafacture.framework.helpers.DefaultStreamReceiver#endRecord()
 	 */
 	@Override
 	public void endRecord() {
@@ -184,7 +184,8 @@ public final class Stats extends DefaultStreamReceiver {
 			});
 		}
 		return sb.length() > 1
-				? sb.replace(sb.length() - 1, sb.length() + 1, "|").toString() : "|";
+				? sb.replace(sb.length() - 1, sb.length() + 1, "|").toString()
+				: "|";
 	}
 
 	private static List<Entry<String, Integer>> sortedByValuesDescending(

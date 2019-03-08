@@ -4,9 +4,9 @@ package org.lobid.resources.run;
 
 import java.io.File;
 
-import org.culturegraph.mf.stream.source.FileOpener;
 import org.lobid.resources.ElasticsearchIndexer;
 import org.lobid.resources.RecordReaderEnhanced;
+import org.metafacture.io.FileOpener;
 
 /**
  * Indexes entityfacts into its own ES-Index.

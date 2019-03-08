@@ -17,12 +17,12 @@ import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.riot.RDFLanguages;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.culturegraph.mf.exceptions.MetafactureException;
-import org.culturegraph.mf.framework.DefaultObjectReceiver;
-import org.culturegraph.mf.framework.annotations.Description;
-import org.culturegraph.mf.framework.annotations.In;
-import org.culturegraph.mf.framework.annotations.Out;
-import org.culturegraph.mf.util.xml.FilenameExtractor;
+import org.metafacture.framework.MetafactureException;
+import org.metafacture.framework.annotations.Description;
+import org.metafacture.framework.annotations.In;
+import org.metafacture.framework.annotations.Out;
+import org.metafacture.framework.helpers.DefaultObjectReceiver;
+import org.metafacture.xml.FilenameExtractor;
 
 import com.hp.hpl.jena.rdf.model.Model;
 
@@ -126,7 +126,7 @@ public final class RdfModelFileWriter extends DefaultObjectReceiver<Model>
 				FilenameUtils.concat(directory + File.separator,
 						identifier + "." + filenameUtil.fileSuffix));
 		LOG.debug("Write to " + file);
-		filenameUtil.ensurePathExists(file);
+		filenameUtil.ensurePathExists(new File(file));
 
 		try (
 				final Writer writer = new OutputStreamWriter(new FileOutputStream(file),

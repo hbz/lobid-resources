@@ -20,11 +20,6 @@ import java.util.stream.Collectors;
 import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.culturegraph.mf.morph.Metamorph;
-import org.culturegraph.mf.stream.converter.xml.AlephMabXmlHandler;
-import org.culturegraph.mf.stream.converter.xml.XmlDecoder;
-import org.culturegraph.mf.stream.source.FileOpener;
-import org.culturegraph.mf.stream.source.TarReader;
 import org.elasticsearch.action.bulk.BulkRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.update.UpdateRequest;
@@ -40,6 +35,11 @@ import org.elasticsearch.search.SearchHit;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.metafacture.biblio.AlephMabXmlHandler;
+import org.metafacture.io.FileOpener;
+import org.metafacture.io.TarReader;
+import org.metafacture.metamorph.Metamorph;
+import org.metafacture.xml.XmlDecoder;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -222,9 +222,9 @@ public final class Hbz01MabXmlDeletions2ElasticsearchTest {
 					.find(
 							Paths.get(Hbz01MabXmlEtlNtriples2Filesystem.PATH_TO_TEST
 									+ "/jsonld-deletions"),
-					100,
-					(name, t) -> name.toFile().getName()
-							.matches(".*" + fname + "\\.?(json)?(nt)?"))
+							100,
+							(name, t) -> name.toFile().getName()
+									.matches(".*" + fname + "\\.?(json)?(nt)?"))
 					.collect(Collectors.toList());
 		} catch (IOException e) {
 			e.printStackTrace();

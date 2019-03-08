@@ -11,13 +11,13 @@ import java.util.stream.Stream;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.culturegraph.mf.morph.Metamorph;
-import org.culturegraph.mf.stream.converter.xml.AlephMabXmlHandler;
-import org.culturegraph.mf.stream.converter.xml.XmlDecoder;
-import org.culturegraph.mf.stream.source.FileOpener;
-import org.culturegraph.mf.stream.source.TarReader;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.metafacture.biblio.AlephMabXmlHandler;
+import org.metafacture.io.FileOpener;
+import org.metafacture.io.TarReader;
+import org.metafacture.metamorph.Metamorph;
+import org.metafacture.xml.XmlDecoder;
 
 /**
  * Transform hbz01 Aleph Mab XML catalog records into ntriples files.

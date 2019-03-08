@@ -8,10 +8,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.culturegraph.mf.framework.DefaultObjectPipe;
-import org.culturegraph.mf.framework.ObjectReceiver;
-import org.culturegraph.mf.framework.annotations.In;
-import org.culturegraph.mf.framework.annotations.Out;
+import org.metafacture.framework.ObjectReceiver;
+import org.metafacture.framework.annotations.In;
+import org.metafacture.framework.annotations.Out;
+import org.metafacture.framework.helpers.DefaultObjectPipe;
 
 import com.github.jsonldjava.utils.JsonUtils;
 
