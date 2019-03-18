@@ -2254,7 +2254,9 @@
 				<constant value="http://d-nb.info/standards/elementset/gnd#Work"/>
 			</data>
 			<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="${a}">
-				<data source="521-1.[at]" name="a"/>
+				<data source="521-1.[at]" name="a">
+				  <replace pattern="^http" with="Siehe: http"/>
+        </data>
 			</combine>
 		</entity>
 		<!-- ####################### -->
