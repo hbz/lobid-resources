@@ -85,8 +85,7 @@ public final class RecordReaderEnhanced
 			json.put(ElasticsearchIndexer.Properties.INDEX.getName(), INDEX);
 			json.put(ElasticsearchIndexer.Properties.TYPE.getName(), TYPE);
 			json.put(ElasticsearchIndexer.Properties.ID.getName(),
-					node.findValue("describedBy").findValue("@id").asText()
-							.replaceFirst("http://hub.culturegraph.org/entityfacts/", ""));
+					node.get("@id").asText().substring("http://d-nb.info/gnd/".length()));
 			json.put(ElasticsearchIndexer.Properties.GRAPH.getName(), jsonStr);
 		} catch (IOException e) {
 			e.printStackTrace();
