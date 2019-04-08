@@ -4,6 +4,8 @@ package org.lobid.resources.run;
 
 import java.net.InetAddress;
 import java.net.URL;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -19,7 +21,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
- * If a sanity check is succesful the index aliases
+ * If a sanity check is successful the index aliases
  * "[resources|geo_nwbib]-staging" are updated to "[resources|geo_nwbib]" and
  * vice versa. I.e. making the staging index productive and the productive index
  * to be stage. Before this is a
@@ -93,29 +95,40 @@ public class UpdateAliases {
 	}
 
 	private static void deletedCountTest() {
-		String creationDateResources = queryEsAndGetJNode("resources/_settings")
-				.findPath("provided_name").asText().split("-")[1];
 		String creationDateResourcesStaging =
 				queryEsAndGetJNode("resources-staging/_settings")
 						.findPath("provided_name").asText().split("-")[1];
-		int resourcesCount = queryEsAndGetJNode("resources/resource/_search?q=*")
-				.at("/hits/total").asInt();
-		int resourcesStagingCount =
+		final String creationDateResourcesStagingMinusOneWeek = LocalDate
+				.parse(creationDateResourcesStaging, DateTimeFormatter.BASIC_ISO_DATE)
+				.minusDays(7).format(DateTimeFormatter.BASIC_ISO_DATE);
+		System.out.println(creationDateResourcesStagingMinusOneWeek);
+		final int resourcesCount =
+				queryEsAndGetJNode("resources/resource/_search?q=*").at("/hits/total")
+						.asInt();
+		final int resourcesStagingCount =
 				queryEsAndGetJNode("resources-staging/resource/_search?q=*")
 						.at("/hits/total").asInt();
-		int differenceDocsCountStagingVsProduction =
+		final int differenceDocsCountStagingVsProduction =
 				resourcesCount - resourcesStagingCount;
-		LOG.info("Difference between production (" + resourcesCount
-				+ ") and staging:  (" + resourcesStagingCount + ") :"
-				+ differenceDocsCountStagingVsProduction);
-		JsonNode node = queryEsAndGetJNode(
-				"deletions/_search?q=describedBy.deleted%3A[" + creationDateResources
-						+ "+TO+" + creationDateResourcesStaging + "]");
+		LOG.info(
+				"Difference between the 'just created index minus one week (created at "
+						+ creationDateResourcesStagingMinusOneWeek
+						+ ")' and the 'just created index (" + creationDateResourcesStaging
+						+ ")':" + differenceDocsCountStagingVsProduction);
+		JsonNode node =
+				queryEsAndGetJNode("deletions/_search?q=describedBy.deleted%3A["
+						+ creationDateResourcesStagingMinusOneWeek + "+TO+"
+						+ creationDateResourcesStaging + "]");
 		int deletionsCount = node.at("/hits/total").asInt();
-		LOG.info("Amount of deletions between " + creationDateResources + " and "
-				+ creationDateResourcesStaging + ": " + deletionsCount);
+		LOG.info("Amount of deletions between "
+				+ creationDateResourcesStagingMinusOneWeek + " and "
+				+ creationDateResourcesStaging + " according to the 'deletion index': "
+				+ deletionsCount);
+		final int threePercentTolerance = (deletionsCount + 1) / 333;
 		LOG.info("Going to compare if " + differenceDocsCountStagingVsProduction
-				+ " equals " + deletionsCount);
-		Assert.assertTrue(differenceDocsCountStagingVsProduction == deletionsCount);
+				+ " is less or equals " + deletionsCount
+				+ " allowing a 0.3% tolerance (i.e. " + threePercentTolerance + ")");
+		Assert.assertTrue(deletionsCount
+				- differenceDocsCountStagingVsProduction < threePercentTolerance);
 	}
 }
