@@ -124,11 +124,11 @@ public class UpdateAliases {
 				+ creationDateResourcesStagingMinusOneWeek + " and "
 				+ creationDateResourcesStaging + " according to the 'deletion index': "
 				+ deletionsCount);
-		final int threePercentTolerance = (deletionsCount + 1) / 333;
+		final int tolerance = (deletionsCount + 1) / 333;
 		LOG.info("Going to compare if " + differenceDocsCountStagingVsProduction
 				+ " is less or equals " + deletionsCount
-				+ " allowing a 0.3% tolerance (i.e. " + threePercentTolerance + ")");
-		Assert.assertTrue(deletionsCount
-				- differenceDocsCountStagingVsProduction < threePercentTolerance);
+				+ " allowing a 0.3% tolerance (i.e. " + tolerance + ")");
+		Assert.assertTrue(
+				deletionsCount - differenceDocsCountStagingVsProduction < tolerance);
 	}
 }
