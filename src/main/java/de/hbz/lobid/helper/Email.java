@@ -29,13 +29,13 @@ public class Email {
 	 * 
 	 * @author Pascal Christoph (dr0i)
 	 * 
-	 * @param FROM_NAME the name before the "@" of an email
-	 * @param TO_EMAIL the complete email address of the receiver
-	 * @param SUBJECT the subject of the mail
-	 * @param MESSAGE the plain text message of the mail
+	 * @param fromName the name before the "@" of an email
+	 * @param toEmail the complete email address of the receiver
+	 * @param subject the subject of the mail
+	 * @param message the plain text message of the mail
 	 */
-	static public void sendEmail(final String FROM_NAME, final String TO_EMAIL,
-			final String SUBJECT, final String MESSAGE) {
+	static public void sendEmail(final String fromName, final String toEmail,
+			final String subject, final String message) {
 		Properties prop = new Properties();
 		prop.put("mail.smtp.auth", false);
 		prop.put("mail.smtp.starttls.enable", "false");
@@ -44,22 +44,22 @@ public class Email {
 
 		Session session = Session.getInstance(prop);
 
-		Message message = new MimeMessage(session);
+		Message msg = new MimeMessage(session);
 		try {
-			message.setFrom(new InternetAddress(
-					FROM_NAME + "@" + InetAddress.getLocalHost().getHostName()));
-			message.setRecipients(Message.RecipientType.TO,
-					InternetAddress.parse(TO_EMAIL));
-			message.setSubject(SUBJECT);
+			msg.setFrom(new InternetAddress(
+					fromName + "@" + InetAddress.getLocalHost().getHostName()));
+			msg.setRecipients(Message.RecipientType.TO,
+					InternetAddress.parse(toEmail));
+			msg.setSubject(subject);
 
 			MimeBodyPart mimeBodyPart = new MimeBodyPart();
-			mimeBodyPart.setContent(MESSAGE, "text/plain");
+			mimeBodyPart.setContent(message, "text/plain");
 			Multipart multipart = new MimeMultipart();
 			multipart.addBodyPart(mimeBodyPart);
 
-			message.setContent(multipart);
+			msg.setContent(multipart);
 
-			Transport.send(message);
+			Transport.send(msg);
 		} catch (MessagingException | UnknownHostException e) {
 			e.printStackTrace();
 		}
