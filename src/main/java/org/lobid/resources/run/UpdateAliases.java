@@ -61,8 +61,8 @@ public class UpdateAliases {
 			success = true;
 		} catch (Exception | AssertionError e) {
 			e.printStackTrace();
-			logMessage = "Alias switching failed!";
-			LOG.error("\n" + logMessage);
+			logMessage = "\nAlias switching failed!";
+			LOG.error(logMessage);
 			logMessages.append(logMessage);
 			success = false;
 		}
