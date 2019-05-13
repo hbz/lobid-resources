@@ -119,20 +119,20 @@ public class UpdateAliases {
 		final String creationDateResourcesStagingMinusOneWeek = LocalDate
 				.parse(creationDateResourcesStaging, DateTimeFormatter.BASIC_ISO_DATE)
 				.minusDays(7).format(DateTimeFormatter.BASIC_ISO_DATE);
-		final int resourcesCount =
+		final int totalHitsOldIndex =
 				queryEsAndGetJNode("resources/resource/_search?q=*").at("/hits/total")
 						.asInt();
-		final int resourcesStagingCount =
+		final int totalHitsNewIndex =
 				queryEsAndGetJNode("resources-staging/resource/_search?q=*")
 						.at("/hits/total").asInt();
-		final int differenceDocsCountStagingVsProduction =
-				resourcesCount - resourcesStagingCount;
+		final int differenceOfTotalHitsBetweenOldAndNew =
+				totalHitsOldIndex - totalHitsNewIndex;
 		logMessage =
 				"Difference between the 'just created index minus one week (aka 'production'), that should be created at "
 						+ creationDateResourcesStagingMinusOneWeek
 						+ ")' and the 'just created index (aka 'staging', created at"
 						+ creationDateResourcesStaging + "':"
-						+ differenceDocsCountStagingVsProduction;
+						+ differenceOfTotalHitsBetweenOldAndNew;
 		log(logMessage);
 		JsonNode node =
 				queryEsAndGetJNode("deletions/_search?q=describedBy.deleted%3A["
@@ -145,13 +145,12 @@ public class UpdateAliases {
 				+ deletionsCount);
 		log(logMessage);
 		final int tolerance = (deletionsCount + 1) / 333;
-		logMessage =
-				("Going to compare if " + differenceDocsCountStagingVsProduction
-						+ " is less or equals " + deletionsCount
-						+ " allowing a 0.3% tolerance (i.e. " + tolerance + ")");
+		logMessage = ("Going to compare if " + differenceOfTotalHitsBetweenOldAndNew
+				+ " is less or equals " + deletionsCount
+				+ " allowing a 0.3% tolerance (i.e. " + tolerance + ")");
 		log(logMessage);
 		Assert.assertTrue(
-				deletionsCount - differenceDocsCountStagingVsProduction < tolerance);
+				differenceOfTotalHitsBetweenOldAndNew - deletionsCount < tolerance);
 	}
 
 	private static void log(final String msg) {
