@@ -518,12 +518,13 @@ public class ElasticsearchIndexer
 
 	private void removeAlias(final String index, final String alias) {
 		try {
-			LOG.info("Deleting alias " + alias + " from index " + index + " ...");
+			LOG.info("Deleting alias '" + alias + "' from index '" + index + "' ...");
 			client.admin().indices().prepareAliases().removeAlias(index, alias)
 					.execute().actionGet();
-			LOG.info("... deleted alias " + alias + " from index " + index);
+			LOG.info("... deleted alias '" + alias + "' from index '" + index + "'");
 		} catch (AliasesNotFoundException e) {
-			LOG.info("... there was no alias " + alias + " set on index " + index);
+			LOG.info("... there was no alias '" + alias + "' set on index '" + index
+					+ "'");
 		}
 	}
 
