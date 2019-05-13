@@ -1365,8 +1365,9 @@
 		</combine>
 		<combine name="http://purl.org/dc/terms/subject" value="${a}"
 			flushWith="@nwbibSubject|@nwbibSpatialSubject|@rpb2Subject|@rpbSubject" reset="true">
-			<data source="@nwbibSubject|@nwbibSpatialSubject|@rpb2Subject|@rpbSubject" name="a"/>
+			<data source="@nwbibSubject|@rpb2Subject|@rpbSubject" name="a"/>
 		</combine>
+		<data source="@nwbibSpatialSubject" name="http://purl.org/dc/terms/spatial" />
 		<!-- ####################### -->
 		<!-- ####### Get subject uri of each record -->
 		<!-- ####################### -->
@@ -7568,6 +7569,9 @@
 				<regexp match="http://purl.org/lobid/nwbib-spatial#n(.*)$" format="${1}"/>
 			</data>
 		</combine>
+		<data source="@nwbibSpatialSubject" name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type">
+		    <constant value="http://www.w3.org/2004/02/skos/core#Concept"/>
+		</data>
 		<combine name="~rdf:subject" value="$[ns-lobid-resource]${id}#!" flushWith="@nwbibSpatialSubject">
 			<data source="@id" name="id"/>
 		</combine>
