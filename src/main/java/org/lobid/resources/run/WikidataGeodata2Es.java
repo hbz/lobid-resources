@@ -68,7 +68,7 @@ public class WikidataGeodata2Es {
 	private static String indexAliasSuffix = "";
 	private static boolean indexExists = false;
 	private final static String NWBIB_SPATIAL_PREFIX =
-			"http://purl.org/lobid/nwbib-spatial#";
+			"https://nwbib.de/spatial#";
 	private static String qidCsvFn = "src/main/resources/string2wikidata.tsv";
 
 	/**

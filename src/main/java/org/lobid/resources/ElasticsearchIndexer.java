@@ -319,6 +319,7 @@ public class ElasticsearchIndexer
 						ObjectNode newSpatialNode = mapper
 								.readValue(hits.getAt(0).getSourceAsString(), ObjectNode.class);
 						newSpatialNode.remove("locatedIn");
+						newSpatialNode.remove("aliases");
 						LOG.info(i + " 1.Hit Query=" + query + " score="
 								+ hits.getAt(0).getScore() + " source="
 								+ newSpatialNode.toString());
