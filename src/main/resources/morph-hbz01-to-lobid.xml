@@ -1365,8 +1365,9 @@
 		</combine>
 		<combine name="http://purl.org/dc/terms/subject" value="${a}"
 			flushWith="@nwbibSubject|@nwbibSpatialSubject|@rpb2Subject|@rpbSubject" reset="true">
-			<data source="@nwbibSubject|@nwbibSpatialSubject|@rpb2Subject|@rpbSubject" name="a"/>
+			<data source="@nwbibSubject|@rpb2Subject|@rpbSubject" name="a"/>
 		</combine>
+		<data source="@nwbibSpatialSubject" name="http://purl.org/dc/terms/spatial" />
 		<!-- ####################### -->
 		<!-- ####### Get subject uri of each record -->
 		<!-- ####################### -->
@@ -7323,7 +7324,7 @@
 		<call-macro name="addTypeCollection" field="078n[-1].a"/>
 		<call-macro name="setBackRdfSubject" field="078n[-1].a"/>
 		<data source="700n[-1].a" name="@nwbibSubject">
-			<regexp match="(\d{6})" format="http://purl.org/lobid/nwbib#s${1}"/>
+			<regexp match="(\d{6})" format="https://nwbib.de/subjects#N${1}"/>
 		</data>
 		<!-- ignore '99' in e.g. '700n|a 99|b Bonn', but take 'b' to lookup ID's ,see HT018131501 -->
 		<combine name="@nwbib700_99" value="${b} | ${a}" sameEntity="true">
@@ -7340,7 +7341,7 @@
 		<data source="@nwbib700_99" name="http://purl.org/dc/elements/1.1/coverage"/>
 		<combine name="@nwbibSpatialSubject" value="${a}">
 			<data source="700n[-1].a" name="a">
-				<regexp match="^([0-8][0-9]\b|91\b|96|97)\b" format="http://purl.org/lobid/nwbib-spatial#n${1}"/>
+				<regexp match="^([0-8][0-9]\b|91\b|96|97)\b" format="https://nwbib.de/spatial#N${1}"/>
 			</data>
 		</combine>
 		<!--edoweb -->
@@ -7503,10 +7504,10 @@
 		<!-- ####### sources of the subjects - for GND search 7749153-1 -->
 		<data source="@nwbibSubject|@nwbibSpatialSubject|@rpb2Subject|@rpbSubject" name="~rdf:subject"/>
 		<data source="@nwbibSubject" name="http://id.loc.gov/ontologies/bibframe/source">
-			<constant value="http://purl.org/lobid/nwbib"/> <!--nwbib -->
+			<constant value="https://nwbib.de/subjects"/> <!--nwbib -->
 		</data>
 		<data source="@nwbibSpatialSubject" name="http://id.loc.gov/ontologies/bibframe/source">
-			<constant value="http://purl.org/lobid/nwbib-spatial"/> <!--nwbib-spatial -->
+			<constant value="https://nwbib.de/spatial"/> <!--nwbib-spatial -->
 		</data>
 		<data source="@rpb2Subject" name="http://id.loc.gov/ontologies/bibframe/source">
 			<constant value="https://w3id.org/lobid/rpb2"/> <!--rpb2 -->
@@ -7553,7 +7554,7 @@
 		<combine name="http://www.w3.org/2004/02/skos/core#notation" value="${a}"
 			sameEntity="true">
 			<data source="@nwbibSubject" name="a">
-				<regexp match="http://purl.org/lobid/nwbib#s(\d{6})$" format="${1}"/>
+				<regexp match="https://nwbib.de/subjects#N(\d{6})$" format="${1}"/>
 			</data>
 		</combine>
 		<combine name="~rdf:subject" value="$[ns-lobid-resource]${id}#!" flushWith="@nwbibSubject">
@@ -7565,9 +7566,12 @@
 		<combine name="http://www.w3.org/2004/02/skos/core#notation" value="${a}"
 			sameEntity="true">
 			<data source="@nwbibSpatialSubject" name="a">
-				<regexp match="http://purl.org/lobid/nwbib-spatial#n(.*)$" format="${1}"/>
+				<regexp match="https://nwbib.de/spatial#N(.*)$" format="${1}"/>
 			</data>
 		</combine>
+		<data source="@nwbibSpatialSubject" name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type">
+		    <constant value="http://www.w3.org/2004/02/skos/core#Concept"/>
+		</data>
 		<combine name="~rdf:subject" value="$[ns-lobid-resource]${id}#!" flushWith="@nwbibSpatialSubject">
 			<data source="@id" name="id"/>
 		</combine>

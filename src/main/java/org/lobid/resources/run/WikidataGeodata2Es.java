@@ -63,10 +63,12 @@ public class WikidataGeodata2Es {
 	private static HashMap<String, String> qidMap = new HashMap<>();
 	private static BufferedReader lineReader;
 	/** This is the root node of the geo data. */
-	public static final String SPATIAL = "spatial";
-	private final static String INDEX_ALIAS_PREFIX = "geo_nwbib";
+	public static final String FOCUS = "focus";
+	private final static String INDEX_ALIAS_PREFIX = "geo_nwbib-neu";
 	private static String indexAliasSuffix = "";
 	private static boolean indexExists = false;
+	private final static String NWBIB_SPATIAL_PREFIX =
+			"https://nwbib.de/spatial#";
 	private static String qidCsvFn = "src/main/resources/string2wikidata.tsv";
 
 	/**
@@ -94,22 +96,23 @@ public class WikidataGeodata2Es {
 				private static final long serialVersionUID = 13L;
 
 				{
-					put(SPATIAL + ".label", 10.0f);
+					put("label", 10.0f);
 					put("locatedIn.value", 1.0f);
 					put("aliases.value", 2.0f);
-					put(SPATIAL + ".type", 4.0f);
+					put(FOCUS + ".type", 4.0f);
 				}
 			};
 	/**
 	 * This provides a boost map for type queries to be more precisely scored.
 	 */
-	public static HashMap<String, Float> TYPE = new HashMap<String, Float>() {
-		private static final long serialVersionUID = 14L;
+	public static HashMap<String, Float> TYPE_QUERY =
+			new HashMap<String, Float>() {
+				private static final long serialVersionUID = 14L;
 
-		{
-			put(SPATIAL + ".type", 4.0f);
-		}
-	};
+				{
+					put(FOCUS + ".type", 4.0f);
+				}
+			};
 
 	/**
 	 * @param args ignored
@@ -359,9 +362,9 @@ public class WikidataGeodata2Es {
 						.findPath("datavalue").findPath("value");
 				ObjectMapper mapper = new ObjectMapper();
 				root = mapper.createObjectNode();
-				ObjectNode spatial = mapper.createObjectNode();
+				ObjectNode focus = mapper.createObjectNode();
 				ObjectNode geo = mapper.createObjectNode();
-				root.set(SPATIAL, spatial);
+				root.set(FOCUS, focus);
 				JsonNode aliasesNode = node.findPath("aliases").findPath("de");
 				if (!aliasesNode.isMissingNode())
 					root.set("aliases", aliasesNode);
@@ -371,12 +374,14 @@ public class WikidataGeodata2Es {
 				} catch (NoSuchElementException ex) {
 					id = node.findPath("id").asText();
 				}
-				spatial.put("id", HTTP_WWW_WIKIDATA_ORG_ENTITY + id);
-				spatial.put("label",
+				focus.put("id", HTTP_WWW_WIKIDATA_ORG_ENTITY + id);
+				root.put("id", NWBIB_SPATIAL_PREFIX + id);
+				root.set("type", new ObjectMapper().createArrayNode().add("Concept"));
+				root.put("label",
 						node.findPath("labels").findPath("de").findPath("value").asText());
 				if (!geoNode.isMissingNode()
 						&& !geoNode.findPath("latitude").isMissingNode()) {
-					spatial.set("geo", geo);
+					focus.set("geo", geo);
 					geo.put("lat", geoNode.findPath("latitude").asDouble(0.0));
 					geo.put("lon", geoNode.findPath("longitude").asDouble(0.0));
 				} else {
@@ -410,7 +415,7 @@ public class WikidataGeodata2Es {
 							.forEach(e -> e.findValues("mainsnak")
 									.forEach(e1 -> type.add(HTTP_WWW_WIKIDATA_ORG_ENTITY
 											+ e1.findPath("datavalue").findPath("id").asText())));
-					spatial.set("type", type);
+					focus.set("type", type);
 				}
 				LOG.debug("Wikidata-Type extracted for type " + type.toString());
 			} catch (Exception e) {
