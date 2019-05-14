@@ -35,9 +35,9 @@ public class NestedQueryTests extends LocalIndexSetup {
 			{ "contribution:contribution.agent.label:SCHOLLE AND contribution.role.label:Autor", "", /*->*/ 0 },
 			// Normal query: return hits where query matches parent top-level doc:
 			{ "", "contribution.agent.label:SCHOLLE AND contribution.role.label:Autor", /*->*/ 1 },
-			// Same for 'subject' nested field:
-			{ "subject:subject.label:Westfalen AND subject.source.label:Raumsystematik", "", /*->*/ 1 },
-			{ "subject:subject.label:Westfalen AND subject.source.label:Sachsystematik", "", /*->*/ 0 },
+			// Same for 'spatial' nested field:
+			{ "spatial:spatial.label:Westfalen AND spatial.source.id:\"https://nwbib.de/spatial\"", "", /*->*/ 1 },
+			{ "spatial:spatial.label:Westfalen AND spatial.source.id:\"https://nwbib.de/subjects\",", "", /*->*/ 0 },
 			{ "", "subject.label:Westfalen AND subject.source.label:Sachsystematik", /*->*/ 1 },
 			// Same for 'subject.componentList' nested field:
 			{ "subject.componentList:subject.componentList.label:Freudenberg AND subject.componentList.type:PlaceOrGeographicName", 
