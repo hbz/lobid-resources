@@ -346,6 +346,11 @@ public class WikidataGeodata2Es {
 	}
 
 	private static HashMap<String, JsonNode> locatedInMapCache = new HashMap<>();
+	private static ArrayNode conceptNode =
+			new ObjectMapper().createArrayNode().add("Concept");
+	private static ObjectNode sourceNode = new ObjectMapper().createObjectNode()
+			.put("id", "https://nwbib.de/spatial")
+			.put("label", "Raumsystematik der Nordrhein-Westfälischen Bibliographie");
 
 	/**
 	 * Filters the geo data and aliases and labels, gets the superordinated
@@ -376,9 +381,10 @@ public class WikidataGeodata2Es {
 				}
 				focus.put("id", HTTP_WWW_WIKIDATA_ORG_ENTITY + id);
 				root.put("id", NWBIB_SPATIAL_PREFIX + id);
-				root.set("type", new ObjectMapper().createArrayNode().add("Concept"));
+				root.set("type", conceptNode);
 				root.put("label",
 						node.findPath("labels").findPath("de").findPath("value").asText());
+				root.set("source", sourceNode);
 				if (!geoNode.isMissingNode()
 						&& !geoNode.findPath("latitude").isMissingNode()) {
 					focus.set("geo", geo);
