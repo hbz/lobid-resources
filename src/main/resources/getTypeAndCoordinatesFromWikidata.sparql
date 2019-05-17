@@ -1,5 +1,5 @@
-https://query.wikidata.org/sparql
 # Get type and coordinates for hand-selected regions
+curl --header "Accept: text/csv"  -G 'https://query.wikidata.org/sparql' --data-urlencode query='
 SELECT DISTINCT
 ?item
 ?itemLabel
@@ -37,3 +37,4 @@ WHERE {
  SERVICE wikibase:label {  bd:serviceParam wikibase:language "de" }
 }
 GROUP BY  ?item ?itemLabel ?coordinates
+'
