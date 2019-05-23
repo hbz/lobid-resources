@@ -3,6 +3,8 @@ https://query.wikidata.org/sparql
  SELECT DISTINCT
  ?item
  ?itemLabel
+ (GROUP_CONCAT(DISTINCT ?type;separator=", ") AS ?types)
+ ?coordinates
  WHERE {
   {
        { ?item wdt:P131* wd:Q1198 . }
@@ -10,7 +12,7 @@ https://query.wikidata.org/sparql
        { ?item p:P131 [ ps:P131 wd:Q1198 ] }
        { ?item p:P31 [ ps:P31 wd:Q829277 ] . } # Regierungsbezirk in NRW
    UNION
-       { ?item p:P31 [ ps:P31 wd:Q106658 ] . } # Landkreis in Deutschland 
+       { ?item p:P31 [ ps:P31 wd:Q106658 ] . } # Landkreis in Deutschland
    UNION
        { ?item p:P31 [ ps:P31 wd:Q5283531 ] . } # Landkreis in Preußen
    UNION
@@ -43,9 +45,12 @@ https://query.wikidata.org/sparql
       { ?item p:P361 [ ps:P361 wd:Q1381014 ] } # Teil der ev. Kirche Westfalen
    UNION
       { ?item p:P31 [ps:P31 wd:Q1780389 ] } # Kommunalverband der besonderen Art (derzeit nur "Städteregion Aachen")
+   ?item p:P31 [ ps:P31 ?type ] .
+   OPTIONAL { ?item wdt:P625 ?coordinates . }
   }
   FILTER (?item != wd:Q1787449 && ?item != wd:Q16500124 && ?item != wd:Q1465811 && ?item != wd:Q1787449
         && ?item != wd:Q16832627 && ?item != wd:Q1113210 && ?item != wd:Q19288281 && ?item != wd:Q1662807
          && ?item != wd:Q1351319 ) # Herausfiltern von Altkreisen, die namensidentisch sind mit Neukreisen
   SERVICE wikibase:label {  bd:serviceParam wikibase:language "de" }
 }
+GROUP BY  ?item ?itemLabel ?coordinates
