@@ -133,8 +133,13 @@ public class ElasticsearchIndexer
 				&& !aliasSuffix.toLowerCase().contains("test"))
 			updateAliases();
 		// feed the rest of the bulk
-		if (bulkRequest.numberOfActions() != 0)
-			bulkRequest.execute().actionGet();
+		if (bulkRequest.numberOfActions() != 0) {
+			System.out.println(bulkRequest.toString());
+			BulkResponse bulkResponse = bulkRequest.execute().actionGet();
+			if (bulkResponse.hasFailures()) {
+				LOG.warn("Bulk insert failed: " + bulkResponse.buildFailureMessage());
+			}
+		}
 		client.admin().indices().prepareRefresh(indexName).get();
 		UpdateSettingsRequestBuilder usrb =
 				client.admin().indices().prepareUpdateSettings();
