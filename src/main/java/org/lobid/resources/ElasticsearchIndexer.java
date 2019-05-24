@@ -215,7 +215,7 @@ public class ElasticsearchIndexer
 					ObjectNode node = mapper.readValue(
 							json.get(Properties.GRAPH.getName()), ObjectNode.class);
 					jsonDoc = enrich(WikidataGeodata2Es.getIndexAlias(), "coverage",
-							WikidataGeodata2Es.SPATIAL, node);
+							"spatial", node);
 				} catch (IOException e1) {
 					LOG.info(
 							"Enrichment problem with" + json.get(Properties.ID.getName()),
@@ -286,7 +286,7 @@ public class ElasticsearchIndexer
 						.filter(k -> k.getKey().equals(queryField)).findFirst();
 		if (o.isPresent()) {
 			String[] coverage = o.get().getValue().toString().split("\",\"");
-			ArrayNode spatialNode = node.putArray(SPATIAL);
+			ArrayNode spatialNode = node.withArray(SPATIAL);
 			HashSet<String> wdIds = new HashSet<>();
 			for (int i = 0; i < coverage.length; i++) {
 				Pair<String, String> query = new Pair<>(
@@ -311,29 +311,28 @@ public class ElasticsearchIndexer
 										.type(MultiMatchQueryBuilder.Type.CROSS_FIELDS)
 										.operator(Operator.AND))
 								.must(new MultiMatchQueryBuilder(query.second)
-										.fields(WikidataGeodata2Es.TYPE));
+										.fields(WikidataGeodata2Es.TYPE_QUERY));
 					hits = client.prepareSearch(index).setQuery(queryBuilded).get()
 							.getHits();
-					JsonNode newSpatialNode;
+
 					if (hits.getTotalHits() > 0) {
-						ObjectNode source = mapper
+						ObjectNode newSpatialNode = mapper
 								.readValue(hits.getAt(0).getSourceAsString(), ObjectNode.class);
-						newSpatialNode = source.findPath(SPATIAL);
+						newSpatialNode.remove("locatedIn");
+						newSpatialNode.remove("aliases");
 						LOG.info(i + " 1.Hit Query=" + query + " score="
-								+ hits.getAt(0).getScore() + " source=" + source.toString());
+								+ hits.getAt(0).getScore() + " source="
+								+ newSpatialNode.toString());
 						if (hits.getAt(0).getScore() < MINIMUM_SCORE) {
 							unsuccessfullyLookup.add(query.first + query.second);
 							throw new Exception(
 									"Score " + hits.getAt(0).getScore() + " to low.");
 						}
-						if (newSpatialNode != null) {
-							String wdId = newSpatialNode.findPath("id").toString();
-							if (!wdIds.contains(wdId)) { // add entity only once
-								spatialNode.add(newSpatialNode);
-								wdIds.add(wdId);
-							}
-						} else
-							unsuccessfullyLookup.add(query.first + query.second);
+						String wdId = newSpatialNode.findPath("id").toString();
+						if (!wdIds.contains(wdId)) { // add entity only once
+							spatialNode.add(newSpatialNode);
+							wdIds.add(wdId);
+						}
 					} else
 						throw new Exception("No hit.");
 				} catch (Exception e) {

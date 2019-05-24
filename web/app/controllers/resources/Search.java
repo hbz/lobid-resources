@@ -56,7 +56,7 @@ public class Search {
 	static final String OWNER_ID_FIELD = "hasItem.heldBy.id";
 	private static final String OWNER_AGGREGATION_FIELD = "heldBy.id";
 	private static final String SPATIAL_LABEL_FIELD = "spatial.label.raw";
-	static final String SPATIAL_GEO_FIELD = "spatial.geo";
+	static final String SPATIAL_GEO_FIELD = "spatial.focus.geo";
 	private static final String SPATIAL_ID_FIELD = "spatial.id";
 	private static final String SUBJECT_ID_FIELD = "subject.id";
 
