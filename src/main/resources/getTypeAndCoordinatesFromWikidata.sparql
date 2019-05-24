@@ -1,5 +1,5 @@
-https://query.wikidata.org/sparql
 # Get type and coordinates for hand-selected regions
+curl --header "Accept: text/csv"  -G 'https://query.wikidata.org/sparql' --data-urlencode query='
 SELECT DISTINCT
 ?item
 ?itemLabel
@@ -30,10 +30,16 @@ WHERE {
     wd:Q56398251 wd:Q56373671 wd:Q56099483 wd:Q56397628 wd:Q56398585 wd:Q1573603
     wd:Q1573603 wd:Q884493 wd:Q884493 wd:Q1490832 wd:Q1490832 wd:Q1761685 wd:Q1318888
     wd:Q1503134 wd:Q883257 wd:Q769380 wd:Q769380 wd:Q769380 wd:Q11805 wd:Q11805
-    wd:Q11805 wd:Q11805 wd:Q1457938 wd:Q645030 } .
+    wd:Q11805 wd:Q11805 wd:Q1457938 wd:Q645030 wd:Q1198 wd:Q152243 wd:Q8614 wd:Q462011
+    wd:Q72931 wd:Q2036208 wd:Q4194 wd:Q580471 wd:Q881875 wd:Q151993 wd:Q153464
+    wd:Q445609 wd:Q152356 wd:Q1380992 wd:Q1381014 wd:Q1413205 wd:Q7904317 wd:Q836937
+    wd:Q641138 wd:Q249428 wd:Q152420 wd:Q708742 wd:Q698162 wd:Q657241 wd:Q649192
+    wd:Q650645 wd:Q697254 wd:Q514557 wd:Q700198 wd:Q573290 wd:Q14551680 wd:Q835382
+    wd:Q153943 wd:Q829718 } .
     ?item p:P31 [ ps:P31 ?type ] .
     OPTIONAL { ?item wdt:P625 ?coordinates . }
  }
  SERVICE wikibase:label {  bd:serviceParam wikibase:language "de" }
 }
 GROUP BY  ?item ?itemLabel ?coordinates
+'
