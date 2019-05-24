@@ -64,7 +64,7 @@ public class WikidataGeodata2Es {
 	private static BufferedReader lineReader;
 	/** This is the root node of the geo data. */
 	public static final String FOCUS = "focus";
-	private final static String INDEX_ALIAS_PREFIX = "geo_nwbib-neu";
+	private final static String INDEX_ALIAS_PREFIX = "geo_nwbib";
 	private static String indexAliasSuffix = "";
 	private static boolean indexExists = false;
 	private final static String NWBIB_SPATIAL_PREFIX =
