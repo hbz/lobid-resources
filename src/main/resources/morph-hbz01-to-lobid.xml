@@ -7275,9 +7275,6 @@
 			<data source="@chooseIsPartNoteAus" name="a"/>
 		</combine>
 		<call-macro name="setBackRdfSubject" field="@isPartNoteBnodeAus"/>
-
-
-
 		<combine name="~rdf:subject" value="${a}">
 			<data source="025z[2].a" name="a">
 				<regexp match="(.*)" format="$[ns-zdb-services]${1}"/>
@@ -7344,6 +7341,65 @@
 				<regexp match="^([0-8][0-9]\b|91\b|96|97)\b" format="https://nwbib.de/spatial#N${1}"/>
 			</data>
 		</combine>
+		<data source="700n[-1].a" name="@700uri">
+			<regexp match="^(https://nwbib.de/spatial.*) .*" format="${1}" />
+		</data>
+		<data source="@700uri" name="http://purl.org/dc/terms/spatial"/>
+		<data source="@700uri" name="~rdf:subject"/>
+		<data source="@700uri" name="http://www.w3.org/2004/02/skos/core#notation">
+			<lookup in="nwbib-spatial"/>
+			<regexp match=".*,(\d{2}),.*" format="${1}"/>
+		</data>
+		<data source="@700uri" name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type">
+			<constant value="http://www.w3.org/2004/02/skos/core#Concept" />
+		</data>
+		<data source="@700uri" name="http://id.loc.gov/ontologies/bibframe/source" >
+			<constant value="https://nwbib.de/spatial"/>
+		</data>
+		<combine name="@700uri2Qid" value="${a}" flushWith="@700uri">
+			 <choose name="a" flushWith="@700uri">
+				<data  source="@700uri" name="a">
+					<lookup in="nwbib-spatial"/>
+					<regexp match=".*,(http.*)" format="${1}"/>
+				</data> 
+				<data  source="@700uri" name="a">
+					<regexp match="https://nwbib.de/spatial#(.*)" format="http://www.wikidata.org/entity/${1}" />
+				</data>
+			</choose> 
+		</combine>
+		<data source="@700uri2Qid" name="http://www.w3.org/2000/01/rdf-schema#label">
+     		<lookup in="wd_itemLabelTypesCoordinates"/>
+      		<regexp match="(.*?),.*" format="${1}"/>
+     	</data>
+		<data source="@700uri2Qid" name="http://xmlns.com/foaf/0.1/focus" />	
+    <!-- build structure using tsv of wd_itemLabelTypesCoordinates -->
+		<data source="@700uri2Qid" name="~rdf:subject"/> 
+		<data source="@700uri2Qid" name="@wd_itemLabelTypesCoordinates">
+      		<lookup in="wd_itemLabelTypesCoordinates"/>
+   		 </data>
+   		 <data source="@wd_itemLabelTypesCoordinates" name="@wd_Types">
+     		<replace pattern="&quot;" with="" />
+     		<regexp match=".*,(http.*),Point.*" format="${1}"/>
+		 </data>
+	 	 <combine  name="@wd_Type" value="${a}" >
+      		<data source="@wd_Types" name="a" >
+        		<split delimiter=","/>
+     		</data>
+     	</combine>
+     	<combine name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" value="${a}"  reset="true" >
+        	<data source="@wd_Type" name="a">
+          	<replace pattern=" " with="" />
+        	</data>
+     	</combine>
+		<entity name="http://schema.org/geo" flushWith="@700uri2Qid" reset="true">
+		  <data source="@wd_itemLabelTypesCoordinates" name="http://schema.org/longitude">
+		   <regexp match=".*,Point\((.*) .*\)" format="${1}"/>
+		  </data>
+		  <data source="@wd_itemLabelTypesCoordinates" name="http://schema.org/latitude">
+     		  <regexp match=".*,Point\(.* (.*)\)" format="${1}"/>
+      		</data>
+		</entity>
+		<call-macro name="setBackRdfSubject" field="@700uri"/>
 		<!--edoweb -->
 		<combine name="@edowebURL" value="${a}">
 			<data source="655e1.u" name="a">
@@ -7614,5 +7670,7 @@
 		<filemap name="deweyLabels" files="deweyLabels.tsv"/>
 		<filemap name="sigel2isilMap" files="sigel2isilMap.csv"/>
 		<filemap name="iso639xToIso639-3-Map" files="iso639xToIso639-3-Map.tsv"/>
+		<filemap name="wd_itemLabelTypesCoordinates" files="wd_itemLabelTypesCoordinates.tsv"/>
+		<filemap name="nwbib-spatial" files="nwbib-spatial.tsv"/>
 	</maps>
 </metamorph>
