@@ -787,19 +787,48 @@
                "type" : "text"
             },
             "spatial" : {
+               "type" : "nested",
+               "include_in_parent" : true,
                "properties" : {
-                  "id" : { 
-                     "type" : "keyword"
+                  "focus" : {
+                      "properties" : {
+                          "id" : {
+                              "type" : "keyword"
+                          },
+                          "type" : {
+                              "index": "false",
+                              "type" : "keyword"
+                          },
+                          "geo" : {
+                              "type" : "geo_point"
+                          }
+                      }
                   },
-                  "type" : {
-                     "index": "false",
+                  "id" : {
                      "type" : "keyword"
-                  },
-                  "geo" : {
-                     "type" : "geo_point"
                   },
                   "label" : {
+                     "analyzer" : "german_analyzer",
                      "type" : "text"
+                  },
+                  "type" : {
+                     "index": false,
+                     "type": "text"
+                  },
+                  "source": {
+                      "properties": {
+                          "id" : {
+                              "type" : "keyword"
+                          },
+                          "label": {
+                              "index": false,
+                              "type": "text"
+                          }
+                      }
+                  },
+                  "notation": {
+                      "index": false,
+                      "type": "text"
                   }
                }
            }

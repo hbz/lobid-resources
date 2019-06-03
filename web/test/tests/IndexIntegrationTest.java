@@ -57,8 +57,8 @@ public class IndexIntegrationTest extends LocalIndexSetup {
 			{ "(title:Westfalen OR title:Münsterland) AND NOT contribution.agent.id:\"http\\://d-nb.info/gnd/2019209-5\"", /*->*/ 5 },
 			{ "subject.componentList.label:Westfalen", /*->*/ 11 },
 			{ "subject.componentList.label:Westfälen", /*->*/ 11 },
-			{ "subject.label:Westfalen", /*->*/ 15 },
-			{ "subject.label:Westfälen", /*->*/ 15 },
+			{ "spatial.label:Westfalen", /*->*/ 13 },
+			{ "spatial.label:Westfälen", /*->*/ 13 },
 			{ "subject.componentList.id:\"http\\://d-nb.info/gnd/4042570-8\"", /*->*/ 5 },
 			{ "subject.componentList.id:1113670827", /*->*/ 0 },
 			{ "subject.componentList.type:PlaceOrGeographicName", /*->*/ 33 },
@@ -79,7 +79,7 @@ public class IndexIntegrationTest extends LocalIndexSetup {
 			{ "publication.publishedBy:DÄG", /*->*/ 1 },
 			{ "hasItem.id:\"http\\://lobid.org/items/TT003059252\\:DE-5-58\\:9%2F041#\\!\"", /*->*/ 1 },
 			{ "hasItem.id:TT003059252\\:DE-5-58\\:9%2F041", /*->*/ 0 },
-			{ "coverage:99", /*->*/ 22}
+			{ "coverage:99", /*->*/ 21}
 		});
 	} // @formatter:on
 

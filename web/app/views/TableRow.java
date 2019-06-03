@@ -34,20 +34,13 @@ public enum TableRow {
 			List<String> vs = values;
 			if (doc.has("coverage")) { // see https://github.com/hbz/nwbib/issues/276
 				List<String> remove = Arrays.asList(//
-						"http://purl.org/lobid/nwbib-spatial#n10",
-						"http://purl.org/lobid/nwbib-spatial#n12",
-						"http://purl.org/lobid/nwbib-spatial#n14",
-						"http://purl.org/lobid/nwbib-spatial#n24",
-						"http://purl.org/lobid/nwbib-spatial#n28",
-						"http://purl.org/lobid/nwbib-spatial#n35",
-						"http://purl.org/lobid/nwbib-spatial#n36",
-						"http://purl.org/lobid/nwbib-spatial#n37",
-						"http://purl.org/lobid/nwbib-spatial#n52",
-						"http://purl.org/lobid/nwbib-spatial#n54",
-						"http://purl.org/lobid/nwbib-spatial#n72",
-						"http://purl.org/lobid/nwbib-spatial#n74",
-						"http://purl.org/lobid/nwbib-spatial#n96",
-						"http://purl.org/lobid/nwbib-spatial#n97");
+						"https://nwbib.de/spatial#N10", "https://nwbib.de/spatial#N12",
+						"https://nwbib.de/spatial#N14", "https://nwbib.de/spatial#N24",
+						"https://nwbib.de/spatial#N28", "https://nwbib.de/spatial#N35",
+						"https://nwbib.de/spatial#N36", "https://nwbib.de/spatial#N37",
+						"https://nwbib.de/spatial#N52", "https://nwbib.de/spatial#N54",
+						"https://nwbib.de/spatial#N72", "https://nwbib.de/spatial#N74",
+						"https://nwbib.de/spatial#N96", "https://nwbib.de/spatial#N97");
 				vs = vs.stream().filter(v -> !remove.contains(v))
 						.collect(Collectors.toList());
 			}

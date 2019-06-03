@@ -535,7 +535,7 @@ public class Queries {
 
 		@Override
 		public List<String> fields() {
-			return Arrays.asList("spatial.geo");
+			return Arrays.asList(Search.SPATIAL_GEO_FIELD);
 		}
 
 		@Override
