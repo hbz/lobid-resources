@@ -134,7 +134,6 @@ public class ElasticsearchIndexer
 			updateAliases();
 		// feed the rest of the bulk
 		if (bulkRequest.numberOfActions() != 0) {
-			System.out.println(bulkRequest.toString());
 			BulkResponse bulkResponse = bulkRequest.execute().actionGet();
 			if (bulkResponse.hasFailures()) {
 				LOG.warn("Bulk insert failed: " + bulkResponse.buildFailureMessage());
