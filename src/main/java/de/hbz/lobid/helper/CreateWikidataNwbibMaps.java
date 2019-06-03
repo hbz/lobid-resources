@@ -29,14 +29,14 @@ public class CreateWikidataNwbibMaps {
 			LogManager.getLogger(CreateWikidataNwbibMaps.class);
 	private static final String WARN =
 			"will not renew the map but going with the old one";
-	private static Model model = ModelFactory.createDefaultModel();
+	private static final Model MODEL = ModelFactory.createDefaultModel();
 	private static final Property FOCUS =
-			model.createProperty("http://xmlns.com/foaf/0.1/focus");
+			MODEL.createProperty("http://xmlns.com/foaf/0.1/focus");
 	private static final String SKOS = "http://www.w3.org/2004/02/skos/core#";
 	private static final Property PREFLABEL =
-			model.createProperty(SKOS + "prefLabel");
+			MODEL.createProperty(SKOS + "prefLabel");
 	private static final Property NOTATION =
-			model.createProperty(SKOS + "notation");
+			MODEL.createProperty(SKOS + "notation");
 	private static final File TEST_FN =
 			new File("src/main/resources/nwbib-spatial.tsv");
 
@@ -48,16 +48,18 @@ public class CreateWikidataNwbibMaps {
 	public static void main(String... args) {
 
 		try {
-			model.read(new InputStreamReader(new URL(
-					"https://github.com/hbz/lobid-vocabs/raw/master/nwbib/nwbib-spatial.ttl")
-							.openConnection().getInputStream(),
-					StandardCharsets.UTF_8), null, "TTL");
+			MODEL
+					.read(new InputStreamReader(
+							new URL(
+									"https://github.com/hbz/lobid-vocabs/raw/master/nwbib/nwbib-spatial.ttl")
+											.openConnection().getInputStream(),
+							StandardCharsets.UTF_8), null, "TTL");
 		} catch (IOException e) {
-			LOG.warn("Couldn't lookup nwbib-spatial.ttl," + WARN);
+			LOG.warn("Couldn't lookup nwbib-spatial.ttl," + WARN, e);
 			return;
 		}
 		StringBuilder sb = new StringBuilder();
-		ResIterator it = model.listSubjects();
+		ResIterator it = MODEL.listSubjects();
 		while (it.hasNext()) {
 			Resource res = it.next();
 			if (res.hasProperty(FOCUS))
@@ -74,7 +76,7 @@ public class CreateWikidataNwbibMaps {
 						StandardCharsets.UTF_8);
 				LOG.info("Success: created 'nwbib-spatial.tsv'");
 			} catch (IOException e) {
-				LOG.warn("Couldn't write file." + WARN);
+				LOG.warn("Couldn't write file." + WARN, e);
 			}
 		}
 	}
