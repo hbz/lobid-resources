@@ -79,7 +79,9 @@ public class IndexIntegrationTest extends LocalIndexSetup {
 			{ "publication.publishedBy:DÄG", /*->*/ 1 },
 			{ "hasItem.id:\"http\\://lobid.org/items/TT003059252\\:DE-5-58\\:9%2F041#\\!\"", /*->*/ 1 },
 			{ "hasItem.id:TT003059252\\:DE-5-58\\:9%2F041", /*->*/ 0 },
-			{ "coverage:99", /*->*/ 21}
+			{ "coverage:99", /*->*/ 21},
+			{ "isbn:3454128013", /*->*/ 1},
+			{ "isbn:345-4128-013", /*->*/ 1}
 		});
 	} // @formatter:on
 
