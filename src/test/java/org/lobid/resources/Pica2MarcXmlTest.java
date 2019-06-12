@@ -2,11 +2,10 @@
 package org.lobid.resources;
 
 import org.junit.Test;
-import org.metafacture.biblio.pica.PicaDecoder;
+import org.metafacture.biblio.pica.PicaPlainDecoder;
 import org.metafacture.formeta.FormetaEncoder;
 import org.metafacture.io.FileOpener;
-import org.metafacture.io.ObjectWriter;
-import org.metafacture.metamorph.Metamorph;
+import org.metafacture.monitoring.ObjectBatchLogger;
 
 /**
  * Transformation from pica tomarcxml.
@@ -26,11 +25,11 @@ public class Pica2MarcXmlTest {
 			final StringRecordSplitter srs = new StringRecordSplitter("^\\s*$");
 			fileOpener//
 					.setReceiver(srs)//
-					.setReceiver(new PicaDecoder())
-					.setReceiver(new Metamorph("src/test/resources/morph-sigel.xml"))//
-					.setReceiver(new FormetaEncoder())
-					.setReceiver(new ObjectWriter("stdout"));
+					.setReceiver(new PicaPlainDecoder())//
+					.setReceiver(new FormetaEncoder())//
+					.setReceiver(new ObjectBatchLogger());
 			fileOpener.process("src/test/resources/thkoeln-korpus_pica_small.txt");
+			fileOpener.closeStream();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

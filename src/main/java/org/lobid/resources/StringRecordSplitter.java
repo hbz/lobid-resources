@@ -58,11 +58,14 @@ public final class StringRecordSplitter
 				line = lineReader.readLine();
 				// read all lines of the file
 				while (line != null) {
-					if (line.matches(NEW_RECORD_MARKER)) {
+					if (line.length() < 3) {
 						getReceiver().process(record.toString());
 						record = new StringBuilder(4096 * 12);
-					}
-					record.append("\n" + line);
+						line = lineReader.readLine();
+						if (line != null)
+							record.append(line);
+					} else
+						record.append("\n" + line);
 					line = lineReader.readLine();
 				}
 				// the last line isn't a record's starting marker, so emit that last
@@ -70,6 +73,7 @@ public final class StringRecordSplitter
 				getReceiver().process(record.toString());
 			}
 		} catch (Exception e) {
+			e.printStackTrace();
 			LOG.warn(e.getMessage() + "\n" + line);
 		}
 	}
