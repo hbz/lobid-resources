@@ -92,7 +92,7 @@
                     </div>
                     <div class="col-md-10">
                      @allHits @if(!q.isEmpty && !labelRaw.isEmpty) {
-                      @defining("http://lobid.org/resources/" + q.substring(q.lastIndexOf("/")+1, q.length()-1)) { lobidUrl =>
+                      @defining("https://lobid.org/resources/" + q.substring(q.lastIndexOf("/")+1, q.length()-1)) { lobidUrl =>
                        @labelRaw in: <a href="@lobidUrl">@Html(Lobid.resourceLabel(lobidUrl))</a>}}else{Treffer}, 
                        zeige @(from+1) bis @(Math.min(from+hits.size,from+size)):
                     </div>

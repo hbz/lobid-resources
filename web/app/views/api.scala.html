@@ -18,7 +18,7 @@
 $('input.search-resources').autocomplete({
 	source : function(request, response) {
 		$.ajax({
-			url : "http://lobid.org/resources/search",
+			url : "https://lobid.org/resources/search",
 			dataType : "jsonp",
 			data : {
 				q : request.term,
@@ -65,11 +65,11 @@ $('input.search-resources').autocomplete({
 	<h2 id='content_types'>Inhaltstypen <small><a href='#content_types'><span class='glyphicon glyphicon-link'></span></a></small></h2>
 
 	<p>Standardmäßig liefert dieser Dienst strukturierte API-Antworten (als JSON):</p>
-	<p><code>curl http://lobid.org@resources.routes.Application.resource("HT018472857")</code></p>
+	<p><code>curl https://lobid.org@resources.routes.Application.resource("HT018472857")</code></p>
 	<p>Er unterstützt Content-Negotiation für JSON (application/json), JSON lines (application/x-jsonlines), RSS (application/rss+xml) und HTML (text/html):</p>
-	<p><code>curl --header "Accept: application/json" http://lobid.org@resources.routes.Application.query("kunst")</code></p>
-	<p><code>curl --header "Accept: application/rss+xml" http://lobid.org@resources.routes.Application.query("kunst")</code></p>
-	<p><code>curl --header "Accept: application/x-jsonlines" http://lobid.org@resources.routes.Application.query("kunst") > kunst.jsonl</code></p>
+	<p><code>curl --header "Accept: application/json" https://lobid.org@resources.routes.Application.query("kunst")</code></p>
+	<p><code>curl --header "Accept: application/rss+xml" https://lobid.org@resources.routes.Application.query("kunst")</code></p>
+	<p><code>curl --header "Accept: application/x-jsonlines" https://lobid.org@resources.routes.Application.query("kunst") > kunst.jsonl</code></p>
 	<p>Der Query-Parameter "format" (Werte: html,json,jsonl,rss) kann verwendet werden, um den Accept-Header aufzuheben, z.B. zur Anzeige von JSON im Browser:</p>
 	<p><a href='@resources.routes.Application.resource("HT018472857", format="json")'>@resources.routes.Application.resource("HT018472857", format="json")</a></p>
 	<p>Oder zum Abonnieren eines RSS-Feeds:</p>
@@ -77,7 +77,7 @@ $('input.search-resources').autocomplete({
 	<p>Der Wert des Format-Parameters kann für Einzeltreffer auch in URLs als Dateiendung verwendet werden:</p>
 	<p><a href='@resources.routes.Application.resourceDotFormat("HT018472857", format="json")'>@resources.routes.Application.resourceDotFormat("HT018472857", format="json")</a></p>
 	<p>Für größere Anfragen kann die Antwort als gzip komprimiert werden:</p>
-	<p><code>curl --header "Accept-Encoding: gzip" "http://lobid.org@resources.routes.Application.query("ehrenfeld", format="jsonl")" > ehrenfeld.gz</code></p>
+	<p><code>curl --header "Accept-Encoding: gzip" "https://lobid.org@resources.routes.Application.query("ehrenfeld", format="jsonl")" > ehrenfeld.gz</code></p>
 	<p>Einzeltreffer unterstützen zudem verschiedene RDF-Serialisierungen (siehe <a href='#jsonld'>Abschnitt zu JSON-LD</a>).</p>
 
 	<h2 id="auto-complete">Autovervollständigung <small><a href='#auto-complete'><span class='glyphicon glyphicon-link'></span></a></small></h2>
@@ -86,7 +86,7 @@ $('input.search-resources').autocomplete({
 	@desc("Mitwirkende vorschlagen: \"format=json:agent\"", resources.routes.Application.query("contribution.agent.label:Hein", format="json:agent"))
 	@desc("Schlagwort vorschlagen: \"format=json:subject\"", resources.routes.Application.query("subject.componentList.label:Pferd", format="json:subject"))
 	<p>Damit kann z.B. eine Autovervollständigung umgesetzt werden, bei der zur Suche an Stelle des gewählten Labels die entsprechende ID verwendet werden kann:</p>
-	<p><form method="GET" class="form-inline" action="/resources/search"> <!-- use full URL in your code, i.e. http://lobid.org/resources/search -->
+	<p><form method="GET" class="form-inline" action="/resources/search"> <!-- use full URL in your code, i.e. https://lobid.org/resources/search -->
 		<input type="text" class="search-resources" id="label" style="width:350px" placeholder="Suchbegriff für Vorschläge eingeben"/>
 		<input type="text" class="search-resources" name="q" id="id" style="width:350px" readonly placeholder="ID zu ausgewähltem Eintrag wird eingesetzt"/>
 		<button type="submit" class="btn">Suchen</button>
@@ -97,14 +97,14 @@ $('input.search-resources').autocomplete({
 
 	<h2 id='jsonld'>JSON-LD <small><a href='#jsonld'><span class='glyphicon glyphicon-link'></span></a></small></h2>
 
-	<p>JSON-API-Anfragen liefern <a href="http://json-ld.org/">JSON-LD</a>. Um damit zu experimentieren können sie das JSON-LD oder URLs im <a href="http://json-ld.org/playground/">JSON-LD Playground</a> einfügen.</p>
+	<p>JSON-API-Anfragen liefern <a href="https://json-ld.org/">JSON-LD</a>. Um damit zu experimentieren können sie das JSON-LD oder URLs im <a href="https://json-ld.org/playground/">JSON-LD Playground</a> einfügen.</p>
 	@desc("JSON-LD Context", resources.routes.Application.context)
 	<dt>RDF-Konvertierung</dt><dd>Mit einem JSON-LD-Prozessor können sie API-Antworten in andere RDF-Serialisierungen umwandeln, z.B. in N-Quads mit <a href="https://github.com/digitalbazaar/jsonld-cli">jsonld-cli</a>:</dd>
-	<p><code>jsonld format --nquads http://lobid.org@resources.routes.Application.resource("HT018472857")</code></p>
+	<p><code>jsonld format --nquads https://lobid.org@resources.routes.Application.resource("HT018472857")</code></p>
 	<p>Einzeltreffer können per <code>Accept</code> Header auch direkt als RDF/XML, Turtle oder N-Triples angefordert werden:</p>
-	<p><code>curl --header "Accept: application/rdf+xml" http://lobid.org@resources.routes.Application.resource("HT018472857")</code></p>
-	<p><code>curl --header "Accept: text/turtle" http://lobid.org@resources.routes.Application.resource("HT018472857")</code></p>
-	<p><code>curl --header "Accept: application/n-triples" http://lobid.org@resources.routes.Application.resource("HT018472857")</code></p>
+	<p><code>curl --header "Accept: application/rdf+xml" https://lobid.org@resources.routes.Application.resource("HT018472857")</code></p>
+	<p><code>curl --header "Accept: text/turtle" https://lobid.org@resources.routes.Application.resource("HT018472857")</code></p>
+	<p><code>curl --header "Accept: application/n-triples" https://lobid.org@resources.routes.Application.resource("HT018472857")</code></p>
 	<p>Dabei werden wie <a href='#content_types'>im Abschnitt zu Inhaltstypen beschrieben</a> neben dem Format-Parameter auch URLs mit Formatendungen unterstützt:
 	<p><a href='@resources.routes.Application.resourceDotFormat("HT018472857", format="rdf")'>@resources.routes.Application.resourceDotFormat("HT018472857", format="rdf")</a></p>
 	<p><a href='@resources.routes.Application.resourceDotFormat("HT018472857", format="ttl")'>@resources.routes.Application.resourceDotFormat("HT018472857", format="ttl")</a></p>
@@ -120,4 +120,4 @@ $('input.search-resources').autocomplete({
 	</dl>
 }
 <script src='https://hypothes.is/embed.js' async></script>
-<link rel="canonical" href="http://lobid.org/resources/api" />
+<link rel="canonical" href="https://lobid.org/resources/api" />
