@@ -8,6 +8,9 @@ ES_NODE=$5
 ES_CLUSTER_NAME=$6
 UPDATE_NEWEST_INDEX=$7
 
+exitCounter=0
+EXIT_COUNTER_MAX=24
+
 echo "You specified:
 $1 $2 $3 $4 $5 $6 $7"
 
@@ -45,15 +48,29 @@ function indexFile() {
 	mvn exec:java -Dexec.mainClass="org.lobid.resources.run.MabXml2lobidJsonEs" -Dexec.args="$1 $INDEX_NAME $INDEX_ALIAS_SUFFIX $ES_NODE $ES_CLUSTER_NAME $UPDATE_NEWEST_INDEX" -Dexec.cleanupDaemonThreads=false
 }
 
-git fetch
-indexFile $FILE
+function indexWhenGeoIndexOk() {
+	if [ $(curl weywot4.hbz-nrw.de:9200/geo_nwbib-staging/_search?q=* | jq .hits.total) -gt 8800 ]; then
+		indexFile $FILE
+		# optionally a file with a list of file names
+		if [ -n "$8" ]; then
+			echo "Taking your file $8 with the list into account ..."
+			for i in $(cat $8); do
+				indexFile $i
+			done
+		fi
+	else
+		if [ $exitCounter -eq "$EXIT_COUNTER_MAX" ]; then
+			exit
+		fi
+		exitCounter=$(($exitCounter+1))
+		echo "WARN: geo_nwbib-staging index too small, building it again"
+		mvn exec:java -Dexec.mainClass="org.lobid.resources.run.WikidataGeodata2Es" -DindexName=geo_nwbib-$DATE -Dupdate=false -DaliasSuffix="-staging" -Dexec.cleanupDaemonThreads=false
+		indexWhenGeoIndexOk
+		sleep 7200 # wait 2 hours before probably start all over again
+	fi
+}
 
-# optionally a file with a list of file names
-if [ -n "$8" ]; then
-	echo "Taking your file $8 with the list into account ..."
-	for i in $(cat $8); do
-		indexFile $i
-	done
-fi
+git fetch
+indexWhenGeoIndexOk
 
 exit 0
