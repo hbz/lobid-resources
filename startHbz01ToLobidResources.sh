@@ -7,12 +7,13 @@ INDEX_ALIAS_SUFFIX=$4
 ES_NODE=$5
 ES_CLUSTER_NAME=$6
 UPDATE_NEWEST_INDEX=$7
+UPDATE_LIST=$8
 
 exitCounter=0
 EXIT_COUNTER_MAX=24
 
 echo "You specified:
-$1 $2 $3 $4 $5 $6 $7"
+$1 $2 $3 $4 $5 $6 $7 $8"
 
 if [ $# -lt 7 ]
 	then
@@ -51,11 +52,13 @@ function indexFile() {
 function indexWhenGeoIndexOk() {
 	if [ $(curl weywot4.hbz-nrw.de:9200/geo_nwbib-staging/_search?q=* | jq .hits.total) -gt 8800 ]; then
 		indexFile $FILE
+		echo "wuerde full"
 		# optionally a file with a list of file names
-		if [ -n "$8" ]; then
-			echo "Taking your file $8 with the list into account ..."
-			for i in $(cat $8); do
+		if [ -n "$UPDATE_LIST" ]; then
+			echo "Taking your file $UPDATE_LIST with the list into account ..."
+			for i in $(cat $UPDATE_LIST); do
 				indexFile $i
+				echo "wuerde update"
 			done
 		fi
 	else
