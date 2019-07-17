@@ -116,9 +116,12 @@ public class UpdateAliases {
 		String creationDateResourcesStaging =
 				queryEsAndGetJNode("resources-staging/_settings")
 						.findPath("provided_name").asText().split("-")[1];
-		final String creationDateResourcesStagingMinusOneWeek = LocalDate
+		final String creationDateResourcesStagingMinus8Days = LocalDate
 				.parse(creationDateResourcesStaging, DateTimeFormatter.BASIC_ISO_DATE)
-				.minusDays(7).format(DateTimeFormatter.BASIC_ISO_DATE);
+				.minusDays(8).format(DateTimeFormatter.BASIC_ISO_DATE);
+		final String creationDateResourcesStagingMinusOneDay = LocalDate
+				.parse(creationDateResourcesStaging, DateTimeFormatter.BASIC_ISO_DATE)
+				.minusDays(1).format(DateTimeFormatter.BASIC_ISO_DATE);
 		final int totalHitsOldIndex =
 				queryEsAndGetJNode("resources/resource/_search?q=*").at("/hits/total")
 						.asInt();
@@ -129,19 +132,19 @@ public class UpdateAliases {
 				totalHitsOldIndex - totalHitsNewIndex;
 		logMessage =
 				"Difference between the 'just created index minus one week (aka 'production'), that should be created at "
-						+ creationDateResourcesStagingMinusOneWeek
-						+ ")' and the 'just created index (aka 'staging', created at"
+						+ creationDateResourcesStaging
+						+ ", but based on the fulldump of the day before)' and the 'just created index (aka 'staging' (also based on the dump made one day before), created at"
 						+ creationDateResourcesStaging + "':"
 						+ differenceOfTotalHitsBetweenOldAndNew;
 		log(logMessage);
 		JsonNode node =
 				queryEsAndGetJNode("deletions/_search?q=describedBy.deleted%3A["
-						+ creationDateResourcesStagingMinusOneWeek + "+TO+"
-						+ creationDateResourcesStaging + "]");
+						+ creationDateResourcesStagingMinus8Days + "+TO+"
+						+ creationDateResourcesStagingMinusOneDay + "]");
 		int deletionsCount = node.at("/hits/total").asInt();
 		logMessage = ("Amount of deletions between "
-				+ creationDateResourcesStagingMinusOneWeek + " and "
-				+ creationDateResourcesStaging + " according to the 'deletion index': "
+				+ creationDateResourcesStagingMinus8Days + " and "
+				+ creationDateResourcesStagingMinusOneDay + " according to the 'deletion index': "
 				+ deletionsCount);
 		log(logMessage);
 		final int tolerance = (deletionsCount + 1) / 333;
