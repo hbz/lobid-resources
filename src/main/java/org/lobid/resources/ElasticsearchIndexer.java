@@ -26,6 +26,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.elasticsearch.action.admin.cluster.state.ClusterStateRequest;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
+import org.elasticsearch.action.admin.indices.settings.get.GetSettingsResponse;
 import org.elasticsearch.action.admin.indices.settings.put.UpdateSettingsRequest;
 import org.elasticsearch.action.admin.indices.settings.put.UpdateSettingsRequestBuilder;
 import org.elasticsearch.action.bulk.BulkRequestBuilder;
@@ -51,6 +52,7 @@ import org.metafacture.framework.annotations.In;
 import org.metafacture.framework.annotations.Out;
 import org.metafacture.framework.helpers.DefaultObjectPipe;
 
+import com.carrotsearch.hppc.cursors.ObjectObjectCursor;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -98,6 +100,8 @@ public class ElasticsearchIndexer
 	public boolean lookupWikidata;
 	private static HashSet<String> unsuccessfullyLookup = new HashSet<>();
 	private static final LocalDateTime now = LocalDateTime.now();
+	private static final int REPLICA = 1;
+	private static final String REFRESH_INTERVALL = "30s";
 
 	/**
 	 * The date now. Handy to append to index-name to build multiple index' in
@@ -139,16 +143,35 @@ public class ElasticsearchIndexer
 				LOG.warn("Bulk insert failed: " + bulkResponse.buildFailureMessage());
 			}
 		}
-		client.admin().indices().prepareRefresh(indexName).get();
+		probablyUpdateSettings();
+		LOG.info("... finished indexing of ES index '" + indexName + "'");
+	}
+
+	private void probablyUpdateSettings() {
 		UpdateSettingsRequestBuilder usrb =
 				client.admin().indices().prepareUpdateSettings();
 		usrb.setIndices(indexName);
-		// refresh and set replicas to 1 and refresh intervall
-		settings.put("index.refresh_interval", "30s");
-		settings.put("index.number_of_replicas", 1);
-		usrb.setSettings(settings);
-		usrb.execute().actionGet();
-		LOG.info("... finished indexing of ES index '" + indexName + "'");
+		GetSettingsResponse response =
+				client.admin().indices().prepareGetSettings(indexName).get();
+		for (ObjectObjectCursor<String, Settings> cursor : response
+				.getIndexToSettings()) {
+			Settings settingsOfIndex = cursor.value;
+			Integer shards = settingsOfIndex.getAsInt("index.number_of_shards", null);
+			Integer replicas =
+					settingsOfIndex.getAsInt("index.number_of_replicas", null);
+			String refresh = settingsOfIndex.get("index.refresh_interval", null);
+			LOG.info("Get index '" + indexName + "', it has shards:" + shards
+					+ ", replicas:" + replicas + ", refresh intervall:" + refresh);
+			// set replicas to 1 and refresh intervall to 30s
+			if (!refresh.equals(REFRESH_INTERVALL) || !replicas.equals(REPLICA)) {
+				LOG.info("Set '" + indexName + "' to replicas:" + REPLICA
+						+ ", refresh intervall:" + REFRESH_INTERVALL);
+				settings.put("index.refresh_interval", REFRESH_INTERVALL);
+				settings.put("index.number_of_replicas", REPLICA);
+				usrb.setSettings(settings);
+				usrb.execute().actionGet();
+			}
+		}
 	}
 
 	@Override
@@ -181,6 +204,7 @@ public class ElasticsearchIndexer
 		} else
 			createIndex();
 		UpdateSettingsRequest request = new UpdateSettingsRequest(indexName);
+
 		LOG.info("Set index.refresh_interval to -1");
 		settings.put("index.refresh_interval", "-1");
 		request.settings(settings);
