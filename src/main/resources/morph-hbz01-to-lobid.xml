@@ -7552,9 +7552,28 @@
 		<!-- ####################### -->
 		<!-- ########## note -->
 		<!-- ####################### -->
-		<combine name="http://id.loc.gov/ontologies/bibframe/note" value="${a}">
-			<data source="501-1.a" name="a">
-				<replace pattern="^http" with="Siehe: http"/>
+		<combine name="@501-1.aConcatted" value="${a}" flushWith="record">
+			<concat delimiter="|" name="a">
+				<data source="501-1.a" >
+					<replace pattern="^http" with="Siehe: http"/>
+				</data>
+			</concat>
+		</combine>
+		<combine name="@501-1.apConcatted" value="${a}">	
+			<concat delimiter=": " name="a">
+				<data source="501-1.p" />
+				<data source="@501-1.aConcatted" />
+			</concat>
+			</combine>
+		<combine name="@501-1concatted" value="${a}" >
+			<choose >
+				<data source="@501-1.apConcatted" name="a" />
+				<data source="@501-1.aConcatted" name="a"/>
+			</choose>
+		</combine>
+		<combine name="http://id.loc.gov/ontologies/bibframe/note" value="${a}" >
+			<data source="@501-1concatted" name="a">
+				<split delimiter="\|"/>
 			</data>
 		</combine>
 		<!-- ####### sources of the subjects - for GND search 7749153-1 -->
