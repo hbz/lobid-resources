@@ -5,52 +5,15 @@ https://query.wikidata.org/sparql
  ?itemLabel
  (GROUP_CONCAT(DISTINCT ?type;separator=", ") AS ?types)
  ?coordinates
+ ?ags
+ ?ks
  WHERE {
   {
-       { ?item wdt:P131* wd:Q1198 . }
-    UNION
-       { ?item p:P131 [ ps:P131 wd:Q1198 ] }
-       { ?item p:P31 [ ps:P31 wd:Q829277 ] . } # Regierungsbezirk in NRW
-   UNION
-       { ?item p:P31 [ ps:P31 wd:Q106658 ] . } # Landkreis in Deutschland
-   UNION
-       { ?item p:P31 [ ps:P31 wd:Q5283531 ] . } # Landkreis in Preußen
-   UNION
-       { ?item p:P31 [ ps:P31 wd:Q262166 ] . } # Gemeinde in Deutschland
-   UNION
-       { ?item p:P31 [ ps:P31 wd:Q22865 ] . } # kreisfreie Stadt in Deutschland
-   UNION
-       { ?item p:P31 [ ps:P31 wd:Q253019 ]. } # Ortsteil
-   UNION
-       { ?item p:P31 [ ps:P31 wd:Q2983893 ]. } # Stadtteil
-   UNION
-       { ?item p:P31 [ ps:P31 wd:Q42744322 ]. } # Stadtgemeinde Deutschlands
-   UNION
-       { ?item p:P31 [ ps:P31 wd:Q134626 ]. } # Kreisstadt
-   UNION
-       { ?item p:P31 [ ps:P31 wd:Q448801 ]. } # Große Kreisstadt
-   UNION
-       { ?item p:P31 [ ps:P31 wd:Q1548518 ]. } # Große kreisangehörige Stadt
-   UNION
-        { ?item p:P31 [ ps:P31 wd:Q54935786 ]. } # Mittlere kreisangehörige Stadt
-   UNION
-       { ?item p:P31 [ ps:P31 wd:Q1852178 ] . } # Stadteil von Düsseldorf
-   UNION
-       { ?item p:P31 [ ps:P31 wd:Q15632166 ] . } # Stadtteil von Köln
-   UNION
-       { ?item wdt:P31/wdt:P279* wd:Q3146899 } # Diözese der katholischen Kirche
-   UNION
-      { ?item p:P361 [ps:P361 wd:Q1380992 ] } # Teil der ev. Kirche im Rheinland
-   UNION
-      { ?item p:P361 [ ps:P361 wd:Q1381014 ] } # Teil der ev. Kirche Westfalen
-   UNION
-      { ?item p:P31 [ps:P31 wd:Q1780389 ] } # Kommunalverband der besonderen Art (derzeit nur "Städteregion Aachen")
-   ?item p:P31 [ ps:P31 ?type ] .
+   ?item wdt:P6814 ?nwbibId .
    OPTIONAL { ?item wdt:P625 ?coordinates . }
+   OPTIONAL { ?item wdt:P439 ?ags }
+   OPTIONAL { ?item wdt:P440 ?ks }
   }
-  FILTER (?item != wd:Q1787449 && ?item != wd:Q16500124 && ?item != wd:Q1465811 && ?item != wd:Q1787449
-        && ?item != wd:Q16832627 && ?item != wd:Q1113210 && ?item != wd:Q19288281 && ?item != wd:Q1662807
-         && ?item != wd:Q1351319 && ?item != wd:Q44333791 ) # Herausfiltern von Altkreisen, die namensidentisch sind mit Neukreisen
   SERVICE wikibase:label {  bd:serviceParam wikibase:language "de" }
 }
-GROUP BY  ?item ?itemLabel ?coordinates
+GROUP BY  ?item ?itemLabel ?coordinates ?ags ?ks
