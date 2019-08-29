@@ -1,19 +1,7 @@
 https://query.wikidata.org/sparql
-# Get areas in North Rhine-Westphalia with German labels
+# Get items with P6814 (NWBib ID)
  SELECT DISTINCT
  ?item
- ?itemLabel
- (GROUP_CONCAT(DISTINCT ?type;separator=", ") AS ?types)
- ?coordinates
- ?ags
- ?ks
  WHERE {
-  {
    ?item wdt:P6814 ?nwbibId .
-   OPTIONAL { ?item wdt:P625 ?coordinates . }
-   OPTIONAL { ?item wdt:P439 ?ags }
-   OPTIONAL { ?item wdt:P440 ?ks }
-  }
-  SERVICE wikibase:label {  bd:serviceParam wikibase:language "de" }
 }
-GROUP BY  ?item ?itemLabel ?coordinates ?ags ?ks
