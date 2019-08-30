@@ -220,6 +220,7 @@ public class WikidataGeodata2Es {
 			final String API) throws InterruptedException, ExecutionException,
 			JsonParseException, JsonMappingException, IOException {
 		Thread.sleep(200); // be nice throttle down
+		LOG.info("Lookup QID: " + API);
 		Response response =
 				CLIENT.prepareGet(API).setHeader("Accept", JSON_ACCEPT_HEADER)
 						.setFollowRedirects(true).execute().get();
@@ -247,7 +248,6 @@ public class WikidataGeodata2Es {
 	 * @param QID the wikidata Q-ID
 	 */
 	public static void getQidTranformThemAndIndex2Es(final String QID) {
-		LOG.info("Lookup QID: " + QID);
 		try (AsyncHttpClient client = new AsyncHttpClient()) {
 			JsonNode jnode =
 					toApiResponseGet(client, "http://www.wikidata.org/entity/" + QID);
