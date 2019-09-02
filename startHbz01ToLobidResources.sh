@@ -52,13 +52,11 @@ function indexFile() {
 function indexWhenGeoIndexOk() {
 	if [ $(curl weywot4.hbz-nrw.de:9200/geo_nwbib-staging/_search?q=* | jq .hits.total) -gt 4400 ]; then
 		indexFile $FILE
-		echo "wuerde full"
 		# optionally a file with a list of file names
 		if [ -n "$UPDATE_LIST" ]; then
 			echo "Taking your file $UPDATE_LIST with the list into account ..."
 			for i in $(cat $UPDATE_LIST); do
 				indexFile $i
-				echo "wuerde update"
 			done
 		fi
 	else
