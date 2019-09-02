@@ -50,7 +50,7 @@ function indexFile() {
 }
 
 function indexWhenGeoIndexOk() {
-	if [ $(curl weywot4.hbz-nrw.de:9200/geo_nwbib-staging/_search?q=* | jq .hits.total) -gt 8800 ]; then
+	if [ $(curl weywot4.hbz-nrw.de:9200/geo_nwbib-staging/_search?q=* | jq .hits.total) -gt 4400 ]; then
 		indexFile $FILE
 		echo "wuerde full"
 		# optionally a file with a list of file names
