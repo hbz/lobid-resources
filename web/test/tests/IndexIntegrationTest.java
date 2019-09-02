@@ -61,7 +61,7 @@ public class IndexIntegrationTest extends LocalIndexSetup {
 			{ "spatial.label:Westfälen", /*->*/ 13 },
 			{ "subject.componentList.id:\"http\\://d-nb.info/gnd/4042570-8\"", /*->*/ 5 },
 			{ "subject.componentList.id:1113670827", /*->*/ 0 },
-			{ "subject.componentList.type:PlaceOrGeographicName", /*->*/ 33 },
+			{ "subject.componentList.type:PlaceOrGeographicName", /*->*/ 34 },
 			{ "publication.location:Berlin", /*->*/ 19 },
 			{ "subject.notation:914.3", /*->*/ 5 },
 			{ "subject.notation:914", /*->*/ 0 },
@@ -71,7 +71,7 @@ public class IndexIntegrationTest extends LocalIndexSetup {
 			{ "publication.startDate:1993", /*->*/ 3 },
 			{ "publication.location:Berlin AND publication.startDate:1993", /*->*/ 1 },
 			{ "publication.location:Berlin AND publication.startDate:[1992 TO 2017]", /*->*/ 14 },
-			{ "inCollection.id:\"http\\://lobid.org/resources/HT014176012#\\!\"", /*->*/ 41 },
+			{ "inCollection.id:\"http\\://lobid.org/resources/HT014176012#\\!\"", /*->*/ 43 },
 			{ "inCollection.id:NWBib", /*->*/ 0 },
 			{ "publication.publishedBy:Springer", /*->*/ 4 },
 			{ "publication.publishedBy:Spring", /*->*/ 4 },
@@ -79,7 +79,7 @@ public class IndexIntegrationTest extends LocalIndexSetup {
 			{ "publication.publishedBy:DÄG", /*->*/ 1 },
 			{ "hasItem.id:\"http\\://lobid.org/items/TT003059252\\:DE-5-58\\:9%2F041#\\!\"", /*->*/ 1 },
 			{ "hasItem.id:TT003059252\\:DE-5-58\\:9%2F041", /*->*/ 0 },
-			{ "coverage:99", /*->*/ 21},
+			{ "coverage:99", /*->*/ 22},
 			{ "isbn:3454128013", /*->*/ 1},
 			{ "isbn:345-4128-013", /*->*/ 1}
 		});
