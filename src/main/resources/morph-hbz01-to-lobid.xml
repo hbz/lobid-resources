@@ -7338,7 +7338,18 @@
 		<data source="@nwbib700_99" name="http://purl.org/dc/elements/1.1/coverage"/>
 		<combine name="@nwbibSpatialSubject" value="${a}">
 			<data source="700n[-1].a" name="a">
-				<regexp match="^([0-8][0-9]\b|91\b|96|97)\b" format="https://nwbib.de/spatial#N${1}"/>
+				<regexp match="^([0-2][0-9]|[4-8][0-9]|3[0-4]|91|96|97)\b" format="https://nwbib.de/spatial#N${1}"/>
+			</data>
+		</combine>
+		<combine name="@nwbibSpatialSubject" value="${a}" >
+			<if>
+				<none>
+					<data source="700n[-1].b" />
+				</none>
+			</if>
+			<!-- #1012 -->
+			<data source="700n[-1].a" name="a">
+				<regexp match="^(35|36|37)\b" format="https://nwbib.de/spatial#N${1}"/>
 			</data>
 		</combine>
 		<data source="700n[-1].a" name="@700uri">
