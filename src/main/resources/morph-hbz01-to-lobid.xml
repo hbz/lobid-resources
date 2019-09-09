@@ -7360,7 +7360,7 @@
 		<data source="@700uri" name="~rdf:subject"/>
 		<data source="@700uri" name="http://www.w3.org/2004/02/skos/core#notation">
 			<lookup in="nwbib-spatial"/>
-			<regexp match=".*,(\d{2}),.*" format="${1}"/>
+			<regexp match=".*\|(\d.*)\|.*" format="${1}"/>
 		</data>
 		<data source="@700uri" name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type">
 			<constant value="http://www.w3.org/2004/02/skos/core#Concept" />
@@ -7372,7 +7372,7 @@
 			 <choose name="a" flushWith="@700uri">
 				<data  source="@700uri" name="a">
 					<lookup in="nwbib-spatial"/>
-					<regexp match=".*,(http.*)" format="${1}"/>
+					<regexp match=".*\|(http.*)" format="${1}"/>
 				</data> 
 				<data  source="@700uri" name="a">
 					<regexp match="https://nwbib.de/spatial#(.*)" format="http://www.wikidata.org/entity/${1}" />
@@ -7403,6 +7403,10 @@
           	<replace pattern=" " with="" />
         	</data>
      	</combine>
+      <data source="@700uri2Qid" name="http://www.w3.org/2000/01/rdf-schema#label">
+        <lookup in="wd_itemLabelTypesCoordinates"/>
+        <regexp match="^(.*?)," format="${1}"/>
+      </data>
 		<entity name="http://schema.org/geo" flushWith="@700uri2Qid" reset="true">
 		  <data source="@wd_itemLabelTypesCoordinates" name="http://schema.org/longitude">
 		   <regexp match=".*,Point\((.*) .*\)" format="${1}"/>

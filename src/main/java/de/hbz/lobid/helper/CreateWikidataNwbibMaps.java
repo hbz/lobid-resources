@@ -24,7 +24,7 @@ import com.hp.hpl.jena.rdf.model.Resource;
  * @author Pascal Christoph (dr0i)
  *
  */
-public class CreateWikidataNwbibMaps {
+public final class CreateWikidataNwbibMaps {
 	private static final Logger LOG =
 			LogManager.getLogger(CreateWikidataNwbibMaps.class);
 	private static final String WARN =
@@ -64,9 +64,10 @@ public class CreateWikidataNwbibMaps {
 			Resource res = it.next();
 			if (res.hasProperty(FOCUS))
 				sb.append(res + "\t"
-						+ res.getProperty(PREFLABEL).getLiteral().getLexicalForm() + ","
-						+ res.getProperty(NOTATION).getLiteral().getLexicalForm() + ","
-						+ res.getProperty(FOCUS).getObject() + "\n");
+						+ res.getProperty(PREFLABEL).getLiteral().getLexicalForm() + "|"
+						+ (res.hasProperty(NOTATION)
+								? res.getProperty(NOTATION).getLiteral().getLexicalForm() : "")
+						+ "|" + res.getProperty(FOCUS).getObject() + "\n");
 		}
 		if (sb.length() < 3000) {
 			LOG.warn("nwbib-spatial.ttl not large enough." + WARN);
@@ -74,7 +75,8 @@ public class CreateWikidataNwbibMaps {
 			try {
 				FileUtils.writeStringToFile(TEST_FN, sb.toString(),
 						StandardCharsets.UTF_8);
-				LOG.info("Success: created 'nwbib-spatial.tsv'");
+				LOG.info(
+						"Success: created 'nwbib-spatial.tsv from skos file at lobid.org'");
 			} catch (IOException e) {
 				LOG.warn("Couldn't write file." + WARN, e);
 			}

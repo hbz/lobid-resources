@@ -35,6 +35,8 @@ import com.google.gdata.util.common.base.Pair;
 import com.ning.http.client.AsyncHttpClient;
 import com.ning.http.client.Response;
 
+import de.hbz.lobid.helper.CreateWikidataNwbibMaps;
+
 /**
  * Indexing wikidata geo data into our geo-enrichment service. Gets a set of
  * Wikidata Entities via a SPARQL query. These entities are looked up, mapped to
@@ -61,6 +63,7 @@ public class WikidataGeodata2Es {
 	private static final Logger LOG =
 			LogManager.getLogger(WikidataGeodata2Es.class);
 	private static HashMap<String, String> qidMap = new HashMap<>();
+	private static HashMap<String, String> notationMap = new HashMap<>();
 	private static BufferedReader lineReader;
 	/** This is the root node of the geo data. */
 	public static final String FOCUS = "focus";
@@ -69,8 +72,11 @@ public class WikidataGeodata2Es {
 	private static boolean indexExists = false;
 	private final static String NWBIB_SPATIAL_PREFIX =
 			"https://nwbib.de/spatial#";
-	private static String qidCsvFn = "src/main/resources/string2wikidata.tsv";
-
+	private final static String PATH_TO_RESOURCES = "src/main/resources/";
+	private final static String QID_CSV_FN =
+			PATH_TO_RESOURCES + "string2wikidata.tsv";
+	private final static String NOTATION_CSV_FN =
+			PATH_TO_RESOURCES + "nwbib-spatial.tsv";
 	/**
 	 * This maps the nwbib location codes to wikidata entities.
 	 */
@@ -121,6 +127,7 @@ public class WikidataGeodata2Es {
 	 */
 	public static void main(String... args)
 			throws UnsupportedEncodingException, IOException {
+		CreateWikidataNwbibMaps.main();
 		String indexName = INDEX_ALIAS_PREFIX + "-" + DATE;
 		if (!System.getProperty("indexName", "").isEmpty()) {
 			indexName = System.getProperty("indexName");
@@ -137,6 +144,7 @@ public class WikidataGeodata2Es {
 		LOG.info("... so the alias is: '" + INDEX_ALIAS_PREFIX + aliasSuffix + "'");
 		esIndexer.setIndexAliasSuffix(aliasSuffix);
 		setProductionIndexerConfigs(indexName);
+		loadNotationMap();
 		LOG.info("Going to index");
 		loadQidMap();
 		qidMap.values().stream()
@@ -151,13 +159,12 @@ public class WikidataGeodata2Es {
 
 	/**
 	 * Loads the manually created QID map.
-	 * 
 	 */
 	public static void loadQidMap() {
-		LOG.info("going to load QID csv from " + qidCsvFn + "...");
+		LOG.info("going to load QID csv from " + QID_CSV_FN + "...");
 		String line = null;
 		try {
-			lineReader = new BufferedReader(new FileReader(qidCsvFn));
+			lineReader = new BufferedReader(new FileReader(QID_CSV_FN));
 			line = lineReader.readLine();
 			while (line != null) {
 				try {
@@ -174,6 +181,35 @@ public class WikidataGeodata2Es {
 			LOG.warn(e.getMessage() + "\n" + line);
 		}
 		LOG.info("... loaded " + qidMap.size() + " entries from QID csv.");
+	}
+
+	/**
+	 * Loads the notations from nwbib-skos.
+	 */
+	public static void loadNotationMap() {
+		LOG.info("going to load 'notation' from " + NOTATION_CSV_FN + "...");
+		String line = null;
+		try {
+			lineReader = new BufferedReader(new FileReader(NOTATION_CSV_FN));
+			line = lineReader.readLine();
+			while (line != null) {
+				try {
+					String[] nwbibSpatialTsv = line.split("\\|");
+					if (!nwbibSpatialTsv[1].isEmpty())
+						notationMap.put(
+								nwbibSpatialTsv[0]
+										.replaceAll("https://nwbib.de/spatial#Q(.*)\t.*", "Q$1"),
+								nwbibSpatialTsv[1]);
+				} catch (Exception e) {
+					LOG.warn("Missing QID in " + line);
+				}
+				line = lineReader.readLine();
+			}
+		} catch (Exception e) {
+			LOG.warn(e.getMessage() + "\n" + line);
+		}
+		LOG.info("... loaded " + notationMap.size()
+				+ " entries with notations from nwbib-spatial.tsv.");
 	}
 
 	static void setProductionIndexerConfigs(final String INDEX_NAME) {
@@ -297,6 +333,7 @@ public class WikidataGeodata2Es {
 			final String FILE_NAME) {
 		LOG.info("Load wikidata json-dump: " + FILE_NAME);
 		JsonNode jnode = jsonFile2JsonNode(FILE_NAME);
+		loadNotationMap();
 		stream(jnode).map(transform2lobidWikidata()) //
 				.forEach(index2Es());
 	}
@@ -384,6 +421,8 @@ public class WikidataGeodata2Es {
 				root.set("type", conceptNode);
 				root.put("label",
 						node.findPath("labels").findPath("de").findPath("value").asText());
+				if (notationMap.containsKey(id))
+					root.put("notation", notationMap.get(id));
 				root.set("source", sourceNode);
 				if (!geoNode.isMissingNode()
 						&& !geoNode.findPath("latitude").isMissingNode()) {
