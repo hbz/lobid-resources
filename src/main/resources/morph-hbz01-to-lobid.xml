@@ -132,7 +132,7 @@
 				<data source="$[field]f1.p" name="a">
 					<regexp match=".*" format="http://id.loc.gov/vocabulary/relators/hnr"/>
 				</data>
-				<data source="$[field]e[1234].p" name="a">  <!-- see #150 -->
+				<data source="$[field]e[1234].p" name="a">	<!-- see #150 -->
 					<regexp match=".*" format="http://id.loc.gov/vocabulary/relators/prf"/>
 				</data>
 				<!-- default -->
@@ -2256,8 +2256,8 @@
 			</data>
 			<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="${a}">
 				<data source="521-1.[at]" name="a">
-				  <replace pattern="^http" with="Siehe: http"/>
-        </data>
+					<replace pattern="^http" with="Siehe: http"/>
+				</data>
 			</combine>
 		</entity>
 		<!-- ####################### -->
@@ -6556,7 +6556,7 @@
 		</combine>
 		<data source="@nwbibComplexSubjectRswkLabel907" name="http://www.w3.org/2000/01/rdf-schema#label"/>
 		<call-macro name="nwbibSetLobidSubject" field="907"/>
-		<call-macro name="nwbibSetLobidSubject" field="907"/>  <!-- important to keep right order -->
+		<call-macro name="nwbibSetLobidSubject" field="907"/>	<!-- important to keep right order -->
 		<call-macro name="subjectRswkId" field="907" indicator2="1"/>
 		<call-macro name="setConcatComplexSubjectRswkId" field="907-1"/>
 		<call-macro name="subjectRswkIdSetDctSubject" field="907" indicator2="1"/>
@@ -6582,7 +6582,7 @@
 		<call-macro name="setNwbibRdfSubject" field="912"/>
 		<data source="@nwbibComplexSubjectRswkLabel912" name="http://www.w3.org/2000/01/rdf-schema#label"/>
 		<call-macro name="nwbibSetLobidSubject" field="912"/>
-		<call-macro name="nwbibSetLobidSubject" field="912"/>  <!-- important to keep right order -->
+		<call-macro name="nwbibSetLobidSubject" field="912"/>	<!-- important to keep right order -->
 		<call-macro name="subjectRswkId" field="912" indicator2="1"/>
 		<call-macro name="setConcatComplexSubjectRswkId" field="912-1"/>
 		<call-macro name="subjectRswkIdSetDctSubject" field="912" indicator2="1"/>
@@ -6609,7 +6609,7 @@
 		<call-macro name="setNwbibRdfSubject" field="917"/>
 		<data source="@nwbibComplexSubjectRswkLabel917" name="http://www.w3.org/2000/01/rdf-schema#label"/>
 		<call-macro name="nwbibSetLobidSubject" field="917"/>
-		<call-macro name="nwbibSetLobidSubject" field="917"/>  <!-- important to keep right order -->
+		<call-macro name="nwbibSetLobidSubject" field="917"/>	<!-- important to keep right order -->
 		<call-macro name="subjectRswkId" field="917" indicator2="1"/>
 		<call-macro name="setConcatComplexSubjectRswkId" field="917-1"/>
 		<call-macro name="subjectRswkIdSetDctSubject" field="917" indicator2="1"/>
@@ -6636,7 +6636,7 @@
 		<call-macro name="setNwbibRdfSubject" field="922"/>
 		<data source="@nwbibComplexSubjectRswkLabel922" name="http://www.w3.org/2000/01/rdf-schema#label"/>
 		<call-macro name="nwbibSetLobidSubject" field="922"/>
-		<call-macro name="nwbibSetLobidSubject" field="922"/>  <!-- important to keep right order -->
+		<call-macro name="nwbibSetLobidSubject" field="922"/>	<!-- important to keep right order -->
 		<call-macro name="subjectRswkId" field="922" indicator2="1"/>
 		<call-macro name="setConcatComplexSubjectRswkId" field="922-1"/>
 		<call-macro name="subjectRswkIdSetDctSubject" field="922" indicator2="1"/>
@@ -6663,7 +6663,7 @@
 		<call-macro name="setNwbibRdfSubject" field="927"/>
 		<data source="@nwbibComplexSubjectRswkLabel927" name="http://www.w3.org/2000/01/rdf-schema#label"/>
 		<call-macro name="nwbibSetLobidSubject" field="927"/>
-		<call-macro name="nwbibSetLobidSubject" field="927"/>  <!-- important to keep right order -->
+		<call-macro name="nwbibSetLobidSubject" field="927"/>	<!-- important to keep right order -->
 		<call-macro name="subjectRswkId" field="927" indicator2="1"/>
 		<call-macro name="setConcatComplexSubjectRswkId" field="927-1"/>
 		<call-macro name="subjectRswkIdSetDctSubject" field="927" indicator2="1"/>
@@ -6744,7 +6744,7 @@
 		<call-macro name="setNwbibRdfSubject" field="942"/>
 		<data source="@nwbibComplexSubjectRswkLabel942" name="http://www.w3.org/2000/01/rdf-schema#label"/>
 		<call-macro name="nwbibSetLobidSubject" field="942"/>
-		<call-macro name="nwbibSetLobidSubject" field="942"/>  <!-- important to keep right order -->
+		<call-macro name="nwbibSetLobidSubject" field="942"/>	<!-- important to keep right order -->
 		<call-macro name="subjectRswkId" field="942" indicator2="1"/>
 		<call-macro name="setConcatComplexSubjectRswkId" field="942-1"/>
 		<call-macro name="subjectRswkIdSetDctSubject" field="942" indicator2="1"/>
@@ -7370,50 +7370,50 @@
 		</data>
 		<combine name="@700uri2Qid" value="${a}" flushWith="@700uri">
 			 <choose name="a" flushWith="@700uri">
-				<data  source="@700uri" name="a">
+				<data	source="@700uri" name="a">
 					<lookup in="nwbib-spatial"/>
 					<regexp match=".*\|(http.*)" format="${1}"/>
 				</data> 
-				<data  source="@700uri" name="a">
+				<data	source="@700uri" name="a">
 					<regexp match="https://nwbib.de/spatial#(.*)" format="http://www.wikidata.org/entity/${1}" />
 				</data>
 			</choose> 
 		</combine>
 		<data source="@700uri2Qid" name="http://www.w3.org/2000/01/rdf-schema#label">
-     		<lookup in="wd_itemLabelTypesCoordinates"/>
-      		<regexp match="(.*?),.*" format="${1}"/>
-     	</data>
+		 		<lookup in="wd_itemLabelTypesCoordinates"/>
+					<regexp match="(.*?),.*" format="${1}"/>
+		 	</data>
 		<data source="@700uri2Qid" name="http://xmlns.com/foaf/0.1/focus" />	
-    <!-- build structure using tsv of wd_itemLabelTypesCoordinates -->
+		<!-- build structure using tsv of wd_itemLabelTypesCoordinates -->
 		<data source="@700uri2Qid" name="~rdf:subject"/> 
 		<data source="@700uri2Qid" name="@wd_itemLabelTypesCoordinates">
-      		<lookup in="wd_itemLabelTypesCoordinates"/>
-   		 </data>
-   		 <data source="@wd_itemLabelTypesCoordinates" name="@wd_Types">
-     		<replace pattern="&quot;" with="" />
-     		<regexp match=".*,(http.*),Point.*" format="${1}"/>
-		 </data>
-	 	 <combine  name="@wd_Type" value="${a}" >
-      		<data source="@wd_Types" name="a" >
-        		<split delimiter=","/>
-     		</data>
-     	</combine>
-     	<combine name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" value="${a}"  reset="true" >
-        	<data source="@wd_Type" name="a">
-          	<replace pattern=" " with="" />
-        	</data>
-     	</combine>
-      <data source="@700uri2Qid" name="http://www.w3.org/2000/01/rdf-schema#label">
-        <lookup in="wd_itemLabelTypesCoordinates"/>
-        <regexp match="^(.*?)," format="${1}"/>
-      </data>
+			<lookup in="wd_itemLabelTypesCoordinates"/>
+		</data>
+		<data source="@wd_itemLabelTypesCoordinates" name="@wd_Types">
+			<replace pattern="&quot;" with="" />
+			<regexp match=".*,(http.*),Point.*" format="${1}"/>
+		</data>
+		<combine name="@wd_Type" value="${a}" >
+			<data source="@wd_Types" name="a" >
+				<split delimiter=","/>
+			</data>
+		</combine>
+		<combine name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" value="${a}" reset="true" >
+			<data source="@wd_Type" name="a">
+				<replace pattern=" " with="" />
+			</data>
+	 	</combine>
+		<data source="@700uri2Qid" name="http://www.w3.org/2000/01/rdf-schema#label">
+			<lookup in="wd_itemLabelTypesCoordinates"/>
+			<regexp match="^(.*?)," format="${1}"/>
+		</data>
 		<entity name="http://schema.org/geo" flushWith="@700uri2Qid" reset="true">
-		  <data source="@wd_itemLabelTypesCoordinates" name="http://schema.org/longitude">
-		   <regexp match=".*,Point\((.*) .*\)" format="${1}"/>
-		  </data>
-		  <data source="@wd_itemLabelTypesCoordinates" name="http://schema.org/latitude">
-     		  <regexp match=".*,Point\(.* (.*)\)" format="${1}"/>
-      		</data>
+			<data source="@wd_itemLabelTypesCoordinates" name="http://schema.org/longitude">
+			 <regexp match=".*,Point\((.*) .*\)" format="${1}"/>
+			</data>
+			<data source="@wd_itemLabelTypesCoordinates" name="http://schema.org/latitude">
+				<regexp match=".*,Point\(.* (.*)\)" format="${1}"/>
+			</data>
 		</entity>
 		<call-macro name="setBackRdfSubject" field="@700uri"/>
 		<!--edoweb -->
@@ -7661,7 +7661,7 @@
 			</data>
 		</combine>
 		<data source="@nwbibSpatialSubject" name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type">
-		    <constant value="http://www.w3.org/2004/02/skos/core#Concept"/>
+				<constant value="http://www.w3.org/2004/02/skos/core#Concept"/>
 		</data>
 		<combine name="~rdf:subject" value="$[ns-lobid-resource]${id}#!" flushWith="@nwbibSpatialSubject">
 			<data source="@id" name="id"/>
