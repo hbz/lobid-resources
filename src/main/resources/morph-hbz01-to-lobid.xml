@@ -420,6 +420,7 @@
 					<data source="@preferredNameConcatTitleWithoutNumberingSubject"/>
 					<concat delimiter="" name="a" flushWith="$[field_1]??|$[field_2]-2.a">
 						<data source="$[field_1]-2.[abfghknpskxz-]">
+							<regexp match="^(?!.*Karte$).*$"/>
 							<replace pattern="^" with=", "/>
 						</data>
 						<concat delimiter="" name="e" flushWith="$[field_1]??">
@@ -443,7 +444,7 @@
 							</data>
 						</concat>
 					</concat>
-				</choose>
+							</choose>
 			</combine>
 		</macro>
 		<macro name="subject-chain-perm1">
@@ -560,7 +561,14 @@
 					<data source="$[field]-[-12].t" name="a">
 						<constant value="http://d-nb.info/standards/elementset/gnd#Work"/>
 					</data>
-					<data source="$[field]-[-12].?" name="a">
+					<data source="$[field]-2.f" name="a">
+						<regexp match="^(?!.*Karte$).*$"/>
+						<constant value="http://d-nb.info/standards/elementset/gnd#SubjectHeading"/>
+					</data>
+					<data source="$[field]-2.[abghknpskxz-]" name="a">
+						<constant value="http://d-nb.info/standards/elementset/gnd#SubjectHeading"/>
+					</data>
+					<data source="$[field]-[-1].?" name="a">
 						<constant value="http://d-nb.info/standards/elementset/gnd#SubjectHeading"/>
 					</data>
 				</choose>
@@ -6477,7 +6485,7 @@
 		<call-macro name="subject-chain-name1" field_1="902" field_2="903"/>
 		<call-macro name="subject-chain-perm1" field="902"/>
 		<call-macro name="subject-chain-name2" field_1="902" field_2="903"/>
-		<call-macro name="subject-chain-perm2" field="902"/>
+    <call-macro name="subject-chain-perm2" field="902"/>
 		<call-macro name="subject-chain-name1" field_1="907" field_2="908"/>
 		<call-macro name="subject-chain-perm1" field="907"/>
 		<call-macro name="subject-chain-name2" field_1="907" field_2="908"/>
