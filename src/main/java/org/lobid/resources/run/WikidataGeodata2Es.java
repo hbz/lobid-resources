@@ -161,11 +161,15 @@ public class WikidataGeodata2Es {
 		LOG.info("going to load QID csv from " + QID_CSV_FN + "...");
 		try {
 			for (String line : Files.readAllLines(Paths.get(QID_CSV_FN))) {
-				if (!line.isEmpty()) {
-					String[] stringQidCsv = line.split("\t");
-					qidMap.put(
-							stringQidCsv[0].replaceAll("[^\\p{IsAlphabetic}]", " ").trim(),
-							stringQidCsv[1]);
+				try {
+					if (!line.isEmpty()) {
+						String[] stringQidCsv = line.split("\t");
+						qidMap.put(
+								stringQidCsv[0].replaceAll("[^\\p{IsAlphabetic}]", " ").trim(),
+								stringQidCsv[1]);
+					}
+				} catch (Exception e) {
+					LOG.warn("Problems parsing " + line);
 				}
 			}
 		} catch (IOException e) {
@@ -190,7 +194,7 @@ public class WikidataGeodata2Es {
 										.replaceAll("https://nwbib.de/spatial#Q(.*)\t.*", "Q$1"),
 								nwbibSpatialTsv[1]);
 				} catch (Exception e) {
-					LOG.warn("Missing QID in " + line);
+					LOG.warn("Problems parsing " + line);
 				}
 			}
 		} catch (Exception e) {
