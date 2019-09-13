@@ -2,9 +2,7 @@
 
 package org.lobid.resources.run;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.nio.file.Files;
@@ -64,7 +62,6 @@ public class WikidataGeodata2Es {
 			LogManager.getLogger(WikidataGeodata2Es.class);
 	private static HashMap<String, String> qidMap = new HashMap<>();
 	private static HashMap<String, String> notationMap = new HashMap<>();
-	private static BufferedReader lineReader;
 	/** This is the root node of the geo data. */
 	public static final String FOCUS = "focus";
 	private final static String INDEX_ALIAS_PREFIX = "geo_nwbib";
@@ -162,23 +159,18 @@ public class WikidataGeodata2Es {
 	 */
 	public static void loadQidMap() {
 		LOG.info("going to load QID csv from " + QID_CSV_FN + "...");
-		String line = null;
 		try {
-			lineReader = new BufferedReader(new FileReader(QID_CSV_FN));
-			line = lineReader.readLine();
-			while (line != null) {
-				try {
+			for (String line : Files.readAllLines(Paths.get(QID_CSV_FN))) {
+				if (!line.isEmpty()) {
 					String[] stringQidCsv = line.split("\t");
 					qidMap.put(
 							stringQidCsv[0].replaceAll("[^\\p{IsAlphabetic}]", " ").trim(),
 							stringQidCsv[1]);
-				} catch (Exception e) {
-					LOG.warn("Missing QID in " + line);
 				}
-				line = lineReader.readLine();
 			}
-		} catch (Exception e) {
-			LOG.warn(e.getMessage() + "\n" + line);
+		} catch (IOException e) {
+			LOG.error("Couldn't load " + QID_CSV_FN);
+			System.exit(1);
 		}
 		LOG.info("... loaded " + qidMap.size() + " entries from QID csv.");
 	}
@@ -188,11 +180,8 @@ public class WikidataGeodata2Es {
 	 */
 	public static void loadNotationMap() {
 		LOG.info("going to load 'notation' from " + NOTATION_CSV_FN + "...");
-		String line = null;
 		try {
-			lineReader = new BufferedReader(new FileReader(NOTATION_CSV_FN));
-			line = lineReader.readLine();
-			while (line != null) {
+			for (String line : Files.readAllLines(Paths.get(NOTATION_CSV_FN))) {
 				try {
 					String[] nwbibSpatialTsv = line.split("\\|");
 					if (!nwbibSpatialTsv[1].isEmpty())
@@ -203,10 +192,10 @@ public class WikidataGeodata2Es {
 				} catch (Exception e) {
 					LOG.warn("Missing QID in " + line);
 				}
-				line = lineReader.readLine();
 			}
 		} catch (Exception e) {
-			LOG.warn(e.getMessage() + "\n" + line);
+			LOG.error("Couldn't load " + NOTATION_CSV_FN);
+			System.exit(1);
 		}
 		LOG.info("... loaded " + notationMap.size()
 				+ " entries with notations from nwbib-spatial.tsv.");
