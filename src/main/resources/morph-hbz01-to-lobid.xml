@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<metamorph xmlns="http://www.culturegraph.org/metamorph" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	version="1">
+<metamorph xmlns="http://www.culturegraph.org/metamorph"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1">
 	<!-- Aleph MAB2 XML to RDF - a mapping of the hbz01 catalog to lobid-resources -->
 	<!-- beware: the sequence of the rules are semantically important! Don't change the order. -->
 	<!-- Aleph MAB differs from MAB in that: -->
@@ -158,7 +158,8 @@
 			</combine>
 		</macro>
 		<macro name="setCreatorPersonBnodeOrId">
-			<choose name="@creatorPersonBnodeOrId$[field]" flushWith="@GNDPersonId$[field]|@bnodeCreatorPersonLabel$[field]">
+			<choose name="@creatorPersonBnodeOrId$[field]"
+				flushWith="@GNDPersonId$[field]|@bnodeCreatorPersonLabel$[field]">
 				<data source="@GNDPersonId$[field]"/>
 				<data source="@bnodeCreatorPersonLabel$[field]"/>
 			</choose>
@@ -195,8 +196,7 @@
 			</choose>
 		</macro>
 		<macro name="setLabelMAB451-491ToId">
-			<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="${a}"
-				flushWith="$[field_1]">
+			<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="${a}" flushWith="$[field_1]">
 				<choose name="a" flushWith="$[field_1]">
 					<data source="$[field_2]" name="a">
 						<replace pattern="&lt;&lt;|&gt;&gt;|\[|\]" with=""/>
@@ -240,7 +240,8 @@
 						</data>
 					</combine>
 				</entity>
-				<combine name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" value="$[ns-lobid-vocab]IsPartOfRelation">
+				<combine name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type"
+					value="$[ns-lobid-vocab]IsPartOfRelation">
 					<if>
 						<none>
 							<data source="$[field_1]"/>
@@ -324,8 +325,7 @@
 		</macro>
 		<!-- nwbib speciality: doublette subfields => also subject chain -->
 		<macro name="doubledPreferredNameSubjectChain">
-			<combine name="@doubledPreferredNameSubjectChain$[field]" value="${a}"
-				flushWith="$[field]-1">
+			<combine name="@doubledPreferredNameSubjectChain$[field]" value="${a}" flushWith="$[field]-1">
 				<concat delimiter="@" name="a" flushWith="$[field]-1">
 					<data source="$[field]-1.a"/>
 				</concat>
@@ -350,10 +350,6 @@
 		</macro>
 		<macro name="setNwbibRdfSubject">
 			<combine name="~rdf:subject" value="${subject}">
-     <!--  <if><none><data source="@rdftypeMap" >
-        <regexp match="Map"/>
-      </data>
-        </none></if> -->
 				<data source="@nwbibComplexSubjectRswkLabel$[field]"/>
 				<data source="@nwbibComplexSubjectRswkId$[field]" name="subject"/>
 			</combine>
@@ -447,7 +443,7 @@
 							</data>
 						</concat>
 					</concat>
-							</choose>
+				</choose>
 			</combine>
 		</macro>
 		<macro name="subject-chain-perm1">
@@ -488,12 +484,11 @@
 		</macro>
 		<!-- superordinated -->
 		<macro name="subjectRswkIdSuperordinated">
-			<combine name="@complexSubjectRswkId$[field]-2" value="${a}"
-				flushWith="$[field]-2">
+			<combine name="@complexSubjectRswkId$[field]-2" value="${a}" flushWith="$[field]-2">
 				<choose name="a" flushWith="$[field]-2">
-        <data source="@rdftypeMap" >
-        <regexp match="Map" format="" />
-        </data>
+					<data source="@rdftypeMap">
+						<regexp match="Map" format=""/>
+					</data>
 					<data source="$[field]-2.9" name="a">
 						<regexp match="\(DE-588\)(.*)" format="http://d-nb.info/gnd/${1}"/>
 					</data>
@@ -505,7 +500,7 @@
 				</choose>
 			</combine>
 		</macro>
-		
+
 		<macro name="setConcatComplexSubjectRswkId">
 			<combine name="@concatComplexSubjectRswkId$[field]" value="_:${a}">
 				<concat delimiter="|" name="a">
@@ -514,12 +509,15 @@
 			</combine>
 		</macro>
 		<!-- ignore superordinated if bibo:Map  -->
-				<macro name="setConcatComplexSubjectRswkIdSuperordinated">
+		<macro name="setConcatComplexSubjectRswkIdSuperordinated">
 			<combine name="@concatComplexSubjectRswkId$[field]-2" value="_:${a}">
-      <if><none><data source="@rdftypeMap" >
-        <regexp match="Map"/>
-      </data>
-        </none></if>
+				<if>
+					<none>
+						<data source="@rdftypeMap">
+							<regexp match="Map"/>
+						</data>
+					</none>
+				</if>
 				<concat delimiter="|" name="a">
 					<data source="@complexSubjectRswkId$[field]-2"/>
 				</concat>
@@ -538,7 +536,8 @@
 			</combine>
 		</macro>
 		<macro name="subjectRswkIdSetType">
-			<data name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" source="@concatComplexSubjectRswkId$[field]-$[indicator2]">
+			<data name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type"
+				source="@concatComplexSubjectRswkId$[field]-$[indicator2]">
 				<constant value="http://www.loc.gov/mads/rdf/v1#ComplexSubject"/>
 			</data>
 		</macro>
@@ -573,12 +572,10 @@
 				</data>
 			</combine>
 		</macro>
-				<!-- subjects without ID -->
-		<!-- subjects without ID not superordinated-->
+		<!-- subjects without ID, not superordinated-->
 		<macro name="dctSubject">
-			<combine name="@rdfTypeSubject" value="${a}" flushWith="$[field]-[-1]" reset="true"
-				sameEntity="true">
-        <choose name="a" flushWith="$[field]-[-1]" sameEntity="true">
+			<combine name="@rdfTypeSubject" value="${a}" flushWith="$[field]-[-1]" reset="true" sameEntity="true">
+				<choose name="a" flushWith="$[field]-[-1]" sameEntity="true">
 					<data source="$[field]-[-1].9">
 						<regexp match="\(DE-588\)(.*)" format=""/> <!-- will be ignored -->
 					</data>
@@ -597,24 +594,19 @@
 					<data source="$[field]-[-1].t" name="a">
 						<constant value="http://d-nb.info/standards/elementset/gnd#Work"/>
 					</data>
-  				<data source="$[field]-[-1].?" name="a">
+					<data source="$[field]-[-1].?" name="a">
 						<constant value="http://d-nb.info/standards/elementset/gnd#SubjectHeading"/>
-					</data> 
+					</data>
 				</choose>
 			</combine>
 		</macro>
-		
 		 <!-- ignore superordinated subjects if this is of type Map -->
 		<macro name="dctSubjectSuperordinated">
-
-   			<combine name="@rdfTypeSubject" value="${a}" flushWith="$[field]-2" reset="true"
-				sameEntity="true">
-        <choose name="a" flushWith="$[field]-2" sameEntity="true">
-            
-                <data source="@rdftypeMap" >
-        <regexp match="Map" format="" />
-        </data>
-    
+			<combine name="@rdfTypeSubject" value="${a}" flushWith="$[field]-2" reset="true" sameEntity="true">
+				<choose name="a" flushWith="$[field]-2" sameEntity="true">
+					<data source="@rdftypeMap">
+						<regexp match="Map" format=""/>
+					</data>
 					<data source="$[field]-2.9">
 						<regexp match="\(DE-588\)(.*)" format=""/> <!-- will be ignored -->
 					</data>
@@ -633,9 +625,9 @@
 					<data source="$[field]-2.t" name="a">
 						<constant value="http://d-nb.info/standards/elementset/gnd#Work"/>
 					</data>
- 					 <data source="$[field]-2.?" name="a">
+					<data source="$[field]-2.?" name="a">
 						<constant value="http://d-nb.info/standards/elementset/gnd#SubjectHeading"/>
-					</data> 
+					</data>
 				</choose>
 			</combine>
 		</macro>
@@ -730,8 +722,7 @@
 			</combine>
 		</macro>
 		<macro name="nonYearLivingStatistics">
-			<combine name="$[ns-gnd]dateOfBirthAndDeath" value="${a}" sameEntity="true"
-				flushWith="$[gndId]">
+			<combine name="$[ns-gnd]dateOfBirthAndDeath" value="${a}" sameEntity="true" flushWith="$[gndId]">
 				<data source="$[field]" name="a">
 					<regexp match="^ca\..*|.*Jh\."/>
 				</data>
@@ -751,8 +742,7 @@
 			</combine>
 		</macro>
 		<macro name="setRSWKSubjectDateOfBirth">
-			<combine name="$[ns-gnd]dateOfBirth" value="${a}" flushWith="@$[field]Id"
-				sameEntity="true">
+			<combine name="$[ns-gnd]dateOfBirth" value="${a}" flushWith="@$[field]Id" sameEntity="true">
 				<choose name="a" flushWith="@$[field]Id" sameEntity="true">
 					<data source="$[field]-[-12].t">
 						<regexp match=".*" format=""/>
@@ -785,8 +775,7 @@
 			</combine>
 		</macro>
 		<macro name="setRSWKSubjectDateOfDeath">
-			<combine name="$[ns-gnd]dateOfDeath" value="${a}" flushWith="@$[field]Id"
-				sameEntity="true">
+			<combine name="$[ns-gnd]dateOfDeath" value="${a}" flushWith="@$[field]Id" sameEntity="true">
 				<choose name="a" flushWith="@$[field]Id" sameEntity="true">
 					<data source="$[field]-[-12].t">
 						<regexp match=".*" format=""/>
@@ -819,8 +808,7 @@
 			</combine>
 		</macro>
 		<macro name="setRSWKSubjectDateOfBirthAndDeath">
-			<combine name="$[ns-gnd]dateOfBirthAndDeath" value="${a}" flushWith="@$[field]Id"
-				sameEntity="true">
+			<combine name="$[ns-gnd]dateOfBirthAndDeath" value="${a}" flushWith="@$[field]Id" sameEntity="true">
 				<choose name="a" flushWith="@$[field]Id" sameEntity="true">
 					<data source="$[field]-[-12].t">
 						<regexp match=".*" format=""/>
@@ -887,7 +875,8 @@
 						<regexp match="^arr$" format="http://id.loc.gov/vocabulary/relators/arr"/>
 					</data>
 					<data source="$[field]?[12].[b4]" name="a">
-						<regexp match="[aA]rtist|Künstler|^\[art\]$|^art$" format="http://id.loc.gov/vocabulary/relators/art"/>
+						<regexp match="[aA]rtist|Künstler|^\[art\]$|^art$"
+							format="http://id.loc.gov/vocabulary/relators/art"/>
 					</data>
 					<data source="$[field]?[12].[b4]" name="a">
 						<regexp match="[vV]orw|^\[aui\]$|^aui$" format="http://id.loc.gov/vocabulary/relators/aui"/>
@@ -911,7 +900,8 @@
 						<regexp match="^com$" format="http://id.loc.gov/vocabulary/relators/com"/>
 					</data>
 					<data source="$[field]?[12].[b4]" name="a">
-						<regexp match="[bB]eitr|^\[ctb\]$|^ctb$|[mM]itarb" format="http://id.loc.gov/vocabulary/relators/ctb"/>
+						<regexp match="[bB]eitr|^\[ctb\]$|^ctb$|[mM]itarb"
+							format="http://id.loc.gov/vocabulary/relators/ctb"/>
 					</data>
 					<data source="$[field]?[12].4" name="a">
 						<regexp match="^cmm$" format="http://id.loc.gov/vocabulary/relators/cmm"/>
@@ -920,7 +910,8 @@
 						<regexp match="[kK]omp|^\[cmp\]$|^cmp$" format="http://id.loc.gov/vocabulary/relators/cmp"/>
 					</data>
 					<data source="$[field]?[12].[b4]" name="a">
-						<regexp match=".*[dD]ir|^\[cnd\]$|^cnd$|Chorleit" format="http://id.loc.gov/vocabulary/relators/cnd"/>
+						<regexp match=".*[dD]ir|^\[cnd\]$|^cnd$|Chorleit"
+							format="http://id.loc.gov/vocabulary/relators/cnd"/>
 					</data>
 					<data source="$[field]?[12].[b4]" name="a">
 						<regexp match="^\[cng\]$|^cng$" format="http://id.loc.gov/vocabulary/relators/cng"/>
@@ -953,7 +944,8 @@
 						<regexp match="[wW]idmun|^\[dte\]$|^dte$" format="http://id.loc.gov/vocabulary/relators/dte"/>
 					</data>
 					<data source="$[field]?[12].[b4]" name="a">
-						<regexp match="[hH]rsg|^\[edt\]$|^edt$|editor|Herausg|^[eE]d\.$" format="http://id.loc.gov/vocabulary/relators/edt"/>
+						<regexp match="[hH]rsg|^\[edt\]$|^edt$|editor|Herausg|^[eE]d\.$"
+							format="http://id.loc.gov/vocabulary/relators/edt"/>
 					</data>
 					<data source="$[field]?[12].[b4]" name="a">
 						<regexp match="[sS]techer|^\[egr\]$|^egr$" format="http://id.loc.gov/vocabulary/relators/egr"/>
@@ -962,7 +954,8 @@
 						<regexp match="^fmd$" format="http://id.loc.gov/vocabulary/relators/fmd"/>
 					</data>
 					<data source="$[field]?[12].[b4]" name="a">
-						<regexp match="^\[hnr\]$|^hnr$|Widmungsempfänger" format="http://id.loc.gov/vocabulary/relators/hnr"/>
+						<regexp match="^\[hnr\]$|^hnr$|Widmungsempfänger"
+							format="http://id.loc.gov/vocabulary/relators/hnr"/>
 					</data>
 					<data source="$[field]?[12].[b4]" name="a">
 						<regexp match="[iI]ll|[zZ]eichn" format="http://id.loc.gov/vocabulary/relators/ill"/>
@@ -1021,8 +1014,7 @@
 						<regexp match="[rR]ed" format="http://id.loc.gov/vocabulary/relators/red"/>
 					</data>
 					<data source="$[field]?[12].[b4]" name="a">
-						<regexp
-							match="[gG]esang|^sng$|^\[sng\]$|Alt|Bariton|Bass|Baß|Counterten|Mezzosopr|Sopr|Ten"
+						<regexp match="[gG]esang|^sng$|^\[sng\]$|Alt|Bariton|Bass|Baß|Counterten|Mezzosopr|Sopr|Ten"
 							format="http://id.loc.gov/vocabulary/relators/sng"/>
 					</data>
 					<data source="$[field]?[12].[b4]" name="a">
@@ -1153,12 +1145,10 @@
 				<data source="@agentId$[field]"/>
 				<choose name="a">
 					<data source="@relator$[field]concat">
-						<regexp match="^(http:\/\/id\.loc\.gov\/vocabulary\/relators\/[a-zA-Z]{3})\|"
-							format="${1}"/>
+						<regexp match="^(http:\/\/id\.loc\.gov\/vocabulary\/relators\/[a-zA-Z]{3})\|" format="${1}"/>
 					</data>
 					<data source="@relator$[field]concat">
-						<regexp match="^(http:\/\/purl\.org\/lobid\/lv#(StageDesign|ChoirTraining))\|"
-							format="${1}"/>
+						<regexp match="^(http:\/\/purl\.org\/lobid\/lv#(StageDesign|ChoirTraining))\|" format="${1}"/>
 					</data>
 					<data source="@relator$[field]concat" name="b">
 						<regexp match="^http:\/\/id\.loc\.gov\/vocabulary\/relators\/[a-zA-Z]{3}$"/>
@@ -1174,12 +1164,10 @@
 				<data source="@agentId$[field]"/>
 				<choose name="a">
 					<data source="@relator$[field]concat" name="a">
-						<regexp match="\|(http:\/\/id\.loc\.gov\/vocabulary\/relators\/[a-zA-Z]{3})\|"
-							format="${1}"/>
+						<regexp match="\|(http:\/\/id\.loc\.gov\/vocabulary\/relators\/[a-zA-Z]{3})\|" format="${1}"/>
 					</data>
 					<data source="@relator$[field]concat" name="a">
-						<regexp match="\|(http:\/\/purl\.org\/lobid\/lv#(StageDesign|ChoirTraining))\|"
-							format="${1}"/>
+						<regexp match="\|(http:\/\/purl\.org\/lobid\/lv#(StageDesign|ChoirTraining))\|" format="${1}"/>
 					</data>
 				</choose>
 			</combine>
@@ -1189,12 +1177,10 @@
 				<data source="@agentId$[field]"/>
 				<choose name="a">
 					<data source="@relator$[field]concat" name="a">
-						<regexp match="\|(http:\/\/id\.loc\.gov\/vocabulary\/relators\/[a-zA-Z]{3})$"
-							format="${1}"/>
+						<regexp match="\|(http:\/\/id\.loc\.gov\/vocabulary\/relators\/[a-zA-Z]{3})$" format="${1}"/>
 					</data>
 					<data source="@relator$[field]concat" name="a">
-						<regexp match="\|(http:\/\/purl\.org\/lobid\/lv#(StageDesign|ChoirTraining))\|"
-							format="${1}"/>
+						<regexp match="\|(http:\/\/purl\.org\/lobid\/lv#(StageDesign|ChoirTraining))\|" format="${1}"/>
 					</data>
 				</choose>
 			</combine>
@@ -1204,12 +1190,10 @@
 				<data source="@agentId$[field]" name="a"/>
 				<choose name="b">
 					<data source="@relator$[field]concat">
-						<regexp match="^(http:\/\/id\.loc\.gov\/vocabulary\/relators\/[a-zA-Z]{3})\|"
-							format="${1}"/>
+						<regexp match="^(http:\/\/id\.loc\.gov\/vocabulary\/relators\/[a-zA-Z]{3})\|" format="${1}"/>
 					</data>
 					<data source="@relator$[field]concat">
-						<regexp match="^(http:\/\/purl\.org\/lobid\/lv#(StageDesign|ChoirTraining))\|"
-							format="${1}"/>
+						<regexp match="^(http:\/\/purl\.org\/lobid\/lv#(StageDesign|ChoirTraining))\|" format="${1}"/>
 					</data>
 					<data source="@relator$[field]concat" name="b">
 						<regexp match="^http:\/\/id\.loc\.gov\/vocabulary\/relators\/[a-zA-Z]{3}$"/>
@@ -1225,12 +1209,10 @@
 				<data source="@agentId$[field]" name="a"/>
 				<choose name="b">
 					<data source="@relator$[field]concat" name="b">
-						<regexp match="\|(http:\/\/id\.loc\.gov\/vocabulary\/relators\/[a-zA-Z]{3})\|"
-							format="${1}"/>
+						<regexp match="\|(http:\/\/id\.loc\.gov\/vocabulary\/relators\/[a-zA-Z]{3})\|" format="${1}"/>
 					</data>
 					<data source="@relator$[field]concat">
-						<regexp match="\|(http:\/\/purl\.org\/lobid\/lv#(StageDesign|ChoirTraining))\|"
-							format="${1}"/>
+						<regexp match="\|(http:\/\/purl\.org\/lobid\/lv#(StageDesign|ChoirTraining))\|" format="${1}"/>
 					</data>
 				</choose>
 			</combine>
@@ -1240,12 +1222,10 @@
 				<data source="@agentId$[field]" name="a"/>
 				<choose name="b">
 					<data source="@relator$[field]concat" name="b">
-						<regexp match="\|(http:\/\/id\.loc\.gov\/vocabulary\/relators\/[a-zA-Z]{3})$"
-							format="${1}"/>
+						<regexp match="\|(http:\/\/id\.loc\.gov\/vocabulary\/relators\/[a-zA-Z]{3})$" format="${1}"/>
 					</data>
 					<data source="@relator$[field]concat">
-						<regexp match="\|(http:\/\/purl\.org\/lobid\/lv#(StageDesign|ChoirTraining))$"
-							format="${1}"/>
+						<regexp match="\|(http:\/\/purl\.org\/lobid\/lv#(StageDesign|ChoirTraining))$" format="${1}"/>
 					</data>
 				</choose>
 			</combine>
@@ -1277,8 +1257,7 @@
 		</macro>
 		<macro name="setSubjectContributionBnode">
 			<combine name="~rdf:subject" value="${a}"
-				flushWith="@relatorNode$[field]first|@relatorNode$[field]second|@relatorNode$[field]last"
-				sameEntity="true">
+				flushWith="@relatorNode$[field]first|@relatorNode$[field]second|@relatorNode$[field]last" sameEntity="true">
 				<data
 					source="@contributionBnode$[field]first|@contributionBnode$[field]second|@contributionBnode$[field]last"
 					name="a"/>
@@ -1303,8 +1282,7 @@
 			</combine>
 		</macro>
 		<macro name="setLabelForPersonAgent">
-			<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="${a}"
-				flushWith="@agentId$[field]">
+			<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="${a}" flushWith="@agentId$[field]">
 				<data source="@creatorPersonLabel$[field]|@contributorPersonLabel$[field]" name="a">
 					<replace pattern="^http" with="Siehe: http"/>
 				</data>
@@ -1344,16 +1322,14 @@
 			</combine>
 		</macro>
 		<macro name="setCreatorCorporateBodyLabelInAgent">
-			<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="${a}"
-				flushWith="@agentId$[field]">
+			<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="${a}" flushWith="@agentId$[field]">
 				<data source="$[field]-[-12].a" name="a">
 					<replace pattern="^http" with="Siehe: http"/>
 				</data>
 			</combine>
 		</macro>
 		<macro name="setContributorCorporateBodyLabelInAgent">
-			<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="${a}"
-				flushWith="@agentId$[field]">
+			<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="${a}" flushWith="@agentId$[field]">
 				<data source="@contributorCorporateBodyLabel$[field]" name="a">
 					<replace pattern="^http" with="Siehe: http"/>
 				</data>
@@ -1383,8 +1359,7 @@
 			</combine>
 		</macro>
 		<macro name="setNameOfCreatingCorporateBodyComposed">
-			<combine name="@nameOfCreatingCorporateBodyComposed$[field]$[subfield_1]"
-				value="${a}, ${b}">
+			<combine name="@nameOfCreatingCorporateBodyComposed$[field]$[subfield_1]" value="${a}, ${b}">
 				<data source="$[field][-a][12].$[subfield_1]" name="a"/>
 				<data source="$[field][-a][12].$[subfield_2]" name="b"/>
 			</combine>
@@ -1411,7 +1386,7 @@
 	<rules>
 		<!-- subject as bnodes and their two properties (label & type ) -->
 		<combine name="@subjectLabel" value="${a}" reset="true" sameEntity="true">
-      <data source="@rdfTypeSubject">
+			<data source="@rdfTypeSubject">
 				<regexp match="^http"/>
 			</data>
 			<data source="9[01234][27]-[-12].[aefghpstz-]" name="a"/>
@@ -1422,30 +1397,24 @@
 				<replace pattern="&lt;" with=""/>
 			</data>
 		</combine>
-
- <data source="@complexSubjectRswkId9[01234][27]-[12]" name="~rdf:subject"/>
-		<combine name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" value="${a}"
-			reset="true" sameEntity="true">
-<!-- <if><none><data source="@rdftypeMap" >
-        <regexp match="Map"/>
-      </data>
-    	   </none></if> -->
+		<data source="@complexSubjectRswkId9[01234][27]-[12]" name="~rdf:subject"/>
+		<combine name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" value="${a}" reset="true"
+			sameEntity="true">
 			<data source="@rdfTypeSubject" name="a">
 				<regexp match="^(http.*)"/>
 			</data>
 			<data source="@subjectLabelBnode"/>
 		</combine>
 		<data source="@subjectLabel" name="http://www.w3.org/2000/01/rdf-schema#label"/>
-
 		<combine name="~rdf:subject" value="$[ns-lobid-resource]${subject}#!" flushWith="@rdfTypeSubject">
-      <data source="@subjectLabelBnode"/>
+			<data source="@subjectLabelBnode"/>
 			<data source="@id" name="subject"/>
 		</combine>
 		<combine name="http://purl.org/dc/terms/subject" value="${a}"
 			flushWith="@nwbibSubject|@nwbibSpatialSubject|@rpb2Subject|@rpbSubject" reset="true">
 			<data source="@nwbibSubject|@rpb2Subject|@rpbSubject" name="a"/>
 		</combine>
-		<data source="@nwbibSpatialSubject" name="http://purl.org/dc/terms/spatial" />
+		<data source="@nwbibSpatialSubject" name="http://purl.org/dc/terms/spatial"/>
 		<!-- ####################### -->
 		<!-- ####### Get subject uri of each record -->
 		<!-- ####################### -->
@@ -1610,7 +1579,8 @@
 		<!-- electronic -->
 		<!-- looking for Blu-ray, Cartridge, CD, Diskette, DVD, Festplatte, HD-DVD, Kassette, USB -->
 		<data source="652a[-1].a" name="@medium">
-			<regexp match="^[BbCcDdHhFfKkUu][AaDdEeIiLlSsVv]" format="http://rdaregistry.info/termList/RDAMediaType/1003"/>
+			<regexp match="^[BbCcDdHhFfKkUu][AaDdEeIiLlSsVv]"
+				format="http://rdaregistry.info/termList/RDAMediaType/1003"/>
 		</data>
 		<data source="@medium" name="http://purl.org/dc/terms/medium"/>
 		<!-- manuscript -->
@@ -1785,7 +1755,7 @@
 		<data source="9[01234][27]-1.f" name="@rdftypeMap">
 			<regexp match="Altkarte|Karte|Stadtplan" format="$[ns-bibo]Map"/>
 		</data>
-    <data source="@rdftypeMap" name="@rdftype"/>
+		<data source="@rdftypeMap" name="@rdftype"/>
 		<!-- game -->
 		<data source="050." name="@rdftype">
 			<regexp match="^.........a" format="http://schema.org/Game"/>
@@ -1906,7 +1876,8 @@
 			<regexp match="^.s|^..s|^...s" format="http://purl.org/lobid/lv#Statistics"/>
 		</data>
 		<data source="052." name="@rdftype">
-			<regexp match="^.st|^..st|^...st|^....st|^.....st|^......st" format="http://purl.org/lobid/lv#Statistics"/>
+			<regexp match="^.st|^..st|^...st|^....st|^.....st|^......st"
+				format="http://purl.org/lobid/lv#Statistics"/>
 		</data>
 		<!-- thesis -->
 		<data source="051." name="@rdftype">
@@ -2020,8 +1991,7 @@
 		<combine name="~rdf:subject" value="${a}" flushWith="@containedIn">
 			<data source="@containedIn" name="a"/>
 		</combine>
-		<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="${a}"
-			flushWith="@containedIn">
+		<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="${a}" flushWith="@containedIn">
 			<data source="@MAB590sContainedInLabel" name="a"/>
 		</combine>
 		<call-macro name="setBackRdfSubject" field="@containedIn"/>
@@ -2217,8 +2187,7 @@
 			flushWith="@containsExampleOfWorkId303" sameEntity="true">
 			<data source="303t1.u"/>
 		</concat>
-		<combine name="@containsExampleOfWorkTitleWithNumbering" value="${t}, ${n} (${r})"
-			sameEntity="true">
+		<combine name="@containsExampleOfWorkTitleWithNumbering" value="${t}, ${n} (${r})" sameEntity="true">
 			<data source="303t1.t" name="t"/>
 			<data source="303t1.n" name="n"/>
 			<data source="303t1.r" name="r"/>
@@ -2234,8 +2203,7 @@
 			flushWith="@containsExampleOfWorkId303" sameEntity="true">
 			<data source="303t1.m"/>
 		</concat>
-		<combine name="@containsExampleOfWorkTitleWithInstrumentation2" value="${t}, ${m}"
-			sameEntity="true">
+		<combine name="@containsExampleOfWorkTitleWithInstrumentation2" value="${t}, ${m}" sameEntity="true">
 			<data source="@containsExampleOfWorkTitle" name="t">
 				<regexp match="^(.*)\. ([a-zA-Z].*)$" format="${1}. ${2}"/>
 			</data>
@@ -2248,14 +2216,13 @@
 			</data>
 			<data source="@concatContainsExampleOfWorkTitleInstrumentation" name="m"/>
 		</combine>
-		<combine name="@containsExampleOfWorkTitleWithNumberingAndInstrumentation"
-			value="${tnr}, ${m}" sameEntity="true">
+		<combine name="@containsExampleOfWorkTitleWithNumberingAndInstrumentation" value="${tnr}, ${m}"
+			sameEntity="true">
 			<data source="@containsExampleOfWorkTitleWithNumbering" name="tnr"/>
 			<data source="@containsExampleOfWorkInstumentation" name="m"/>
 		</combine>
 		<!-- add instrumentation for contained examples of work of MAB 303t -->
-		<combine name="@containsExampleOfWorkId303Instrumentation" value="${a}"
-			sameEntity="true">
+		<combine name="@containsExampleOfWorkId303Instrumentation" value="${a}" sameEntity="true">
 			<data source="303t1.m"/>
 			<data source="303t1.9" name="a">
 				<regexp match="\(DE-588\)(\d{8,9}[0-9X]|\d{7}-[0-9])" format="http://d-nb.info/gnd/${1}"/>
@@ -2282,7 +2249,8 @@
 				<regexp match=".*, (.*), .*" format="${1}"/>
 			</data>
 		</combine>
-		<combine name="~rdf:subject" value="$[ns-lobid-resource]${id}#!" flushWith="@containsExampleOfWorkId303Instrumentation">
+		<combine name="~rdf:subject" value="$[ns-lobid-resource]${id}#!"
+			flushWith="@containsExampleOfWorkId303Instrumentation">
 			<data source="@id" name="id"/>
 		</combine>
 		<!-- add rest for contained examples of work of MAB 303t -->
@@ -2292,7 +2260,8 @@
 		<combine name="~rdf:subject" value="${a}">
 			<data source="@containsExampleOfWorkId303" name="a"/>
 		</combine>
-		<combine name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" value="http://d-nb.info/standards/elementset/gnd#Work">
+		<combine name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type"
+			value="http://d-nb.info/standards/elementset/gnd#Work">
 			<data source="@containsExampleOfWorkId303"/>
 		</combine>
 		<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="${a}"
@@ -2319,7 +2288,8 @@
 			flushWith="@containsExampleOfWorkId303" sameEntity="true">
 			<data source="303t1.r" name="r"/>
 		</combine>
-		<combine name="~rdf:subject" value="$[ns-lobid-resource]${id}#!" flushWith="@containsExampleOfWorkId303">
+		<combine name="~rdf:subject" value="$[ns-lobid-resource]${id}#!"
+			flushWith="@containsExampleOfWorkId303">
 			<data source="303t1.t"/>
 			<data source="@id" name="id"/>
 		</combine>
@@ -2402,8 +2372,8 @@
 				<regexp match="\(DE-588\)(\d{8,9}[0-9X]|\d{7}-[0-9])" format="http://d-nb.info/gnd/${1}"/>
 			</data>
 		</combine>
-		<concat delimiter=", " name="@concatExampleOfWorkTitleInstrumentation" flushWith="@exampleOfWorkId303Instrumentation"
-			sameEntity="true">
+		<concat delimiter=", " name="@concatExampleOfWorkTitleInstrumentation"
+			flushWith="@exampleOfWorkId303Instrumentation" sameEntity="true">
 			<data source="303-1.m"/>
 		</concat>
 		<combine name="~rdf:subject" value="${a}">
@@ -2427,7 +2397,8 @@
 				<regexp match=".*, (.*), .*" format="${1}"/>
 			</data>
 		</combine>
-		<combine name="~rdf:subject" value="$[ns-lobid-resource]${id}#!" flushWith="@exampleOfWorkId303Instrumentation">
+		<combine name="~rdf:subject" value="$[ns-lobid-resource]${id}#!"
+			flushWith="@exampleOfWorkId303Instrumentation">
 			<data source="@id" name="id"/>
 		</combine>
 		<!-- add rest for examples of work -->
@@ -2442,31 +2413,29 @@
 			<data source="303-1.p" name="p"/>
 			<data source="303-1.d" name="d"/>
 		</combine>
-		<combine name="http://rdaregistry.info/Elements/w/P10079" value="${n}"
-			flushWith="@exampleOfWorkId" sameEntity="true">
+		<combine name="http://rdaregistry.info/Elements/w/P10079" value="${n}" flushWith="@exampleOfWorkId"
+			sameEntity="true">
 			<data source="303-1.n" name="n"/>
 		</combine>
-		<combine name="http://rdaregistry.info/Elements/w/P10221" value="${r}"
-			flushWith="@exampleOfWorkId" sameEntity="true">
+		<combine name="http://rdaregistry.info/Elements/w/P10221" value="${r}" flushWith="@exampleOfWorkId"
+			sameEntity="true">
 			<data source="303-1.r" name="r"/>
 		</combine>
-		<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="${a}"
-			flushWith="@exampleOfWorkId">
+		<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="${a}" flushWith="@exampleOfWorkId">
 			<choose name="a" flushWith="@exampleOfWorkId">
 				<data source="@exampleOfWork303titleWithSubtitleAndOccupation"/>
 				<data source="303-1.t"/>
 			</choose>
 		</combine>
-		<combine name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" value="http://d-nb.info/standards/elementset/gnd#Work"
-			flushWith="@exampleOfWorkId">
+		<combine name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type"
+			value="http://d-nb.info/standards/elementset/gnd#Work" flushWith="@exampleOfWorkId">
 			<data source="@exampleOfWorkId"/>
 		</combine>
 		<combine name="~rdf:subject" value="$[ns-lobid-resource]${id}#!" flushWith="@exampleOfWorkId">
 			<data source="@id" name="id"/>
 		</combine>
 		<!-- add examples of work if no id exists -->
-		<combine name="http://purl.org/lobid/lv#exampleOfWork" value="${a}"
-			flushWith="@exampleOfWorkBnode303">
+		<combine name="http://purl.org/lobid/lv#exampleOfWork" value="${a}" flushWith="@exampleOfWorkBnode303">
 			<data source="@exampleOfWorkBnode303" name="a"/>
 		</combine>
 		<combine name="~rdf:subject" value="${a}" flushWith="@exampleOfWorkBnode303">
@@ -2490,7 +2459,8 @@
 			<data source="@exampleOfWorkBnode303"/>
 			<data source="303-1.t" name="a"/>
 		</combine>
-		<combine name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" value="http://d-nb.info/standards/elementset/gnd#Work">
+		<combine name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type"
+			value="http://d-nb.info/standards/elementset/gnd#Work">
 			<data source="@exampleOfWorkBnode303"/>
 		</combine>
 		<combine name="~rdf:subject" value="$[ns-lobid-resource]${id}#!">
@@ -2505,12 +2475,11 @@
 		<combine name="~rdf:subject" value="_:exampleOfWorkBnode304" flushWith="304[-ab]1.a">
 			<data source="304[-ab]1.a"/>
 		</combine>
-		<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="${a}"
-			flushWith="304[-ab]1.[ab]">
+		<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="${a}" flushWith="304[-ab]1.[ab]">
 			<data source="304[-ab]1.a" name="a"/>
 		</combine>
-		<combine name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" value="http://d-nb.info/standards/elementset/gnd#Work"
-			flushWith="304[-ab]1.a">
+		<combine name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type"
+			value="http://d-nb.info/standards/elementset/gnd#Work" flushWith="304[-ab]1.a">
 			<data source="304[-ab]1.a"/>
 		</combine>
 		<combine name="~rdf:subject" value="$[ns-lobid-resource]${id}#!" flushWith="304[-ab]1.a">
@@ -2525,8 +2494,8 @@
 		<combine name="~rdf:subject" value="${a}" flushWith="444a1.u" sameEntity="true">
 			<data source="444a1.u" name="a"/>
 		</combine>
-		<combine name="http://id.loc.gov/ontologies/bibframe/note" value="${a}"
-			sameEntity="true" flushWith="444a1.u">
+		<combine name="http://id.loc.gov/ontologies/bibframe/note" value="${a}" sameEntity="true"
+			flushWith="444a1.u">
 			<data source="444a1.n" name="a"/>
 		</combine>
 		<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="${a}">
@@ -2551,8 +2520,7 @@
 		<combine name="~rdf:subject" value="${a}">
 			<data source="@relatedResourceId" name="a"/>
 		</combine>
-		<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="${a}"
-			flushWith="@relatedResourceId">
+		<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="${a}" flushWith="@relatedResourceId">
 			<data source="527[-xyz]1.a|775-1.t|776-1.t" name="a">
 				<replace pattern="&lt;|&gt;" with=""/>
 				<replace pattern="^http" with="Siehe: http"/>
@@ -2587,8 +2555,7 @@
 		<combine name="~rdf:subject" value="${a}" flushWith="@predecessorHbzId">
 			<data source="@predecessorHbzId" name="a"/>
 		</combine>
-		<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="${a}"
-			flushWith="@predecessorHbzId">
+		<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="${a}" flushWith="@predecessorHbzId">
 			<data source="@predecessorLabel" name="a">
 				<replace pattern="^http" with="Siehe: http"/>
 			</data>
@@ -2620,8 +2587,7 @@
 		<combine name="~rdf:subject" value="${a}" flushWith="@successorHbzId">
 			<data source="@successorHbzId" name="a"/>
 		</combine>
-		<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="${a}"
-			flushWith="@successorHbzId">
+		<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="${a}" flushWith="@successorHbzId">
 			<data source="@successorLabel" name="a">
 				<replace pattern="^http" with="Siehe: http"/>
 			</data>
@@ -2702,11 +2668,11 @@
 			<!-- ####################### -->
 			<choose name="http://id.loc.gov/ontologies/bibframe/frequency">
 				<data source="052.">
-					<regexp match="^........t|^.........t|^..........t" format="http://marc21rdf.info/terms/continuingfre#i"/>
+					<regexp match="^........t|^.........t|^..........t"
+						format="http://marc21rdf.info/terms/continuingfre#i"/>
 				</data>
 				<data source="052.">
-					<regexp
-						match="^........([dcwesmbqfaghz])|^.........([dcwesmbqfaghz])|^..........([dcwesmbqfaghz])"
+					<regexp match="^........([dcwesmbqfaghz])|^.........([dcwesmbqfaghz])|^..........([dcwesmbqfaghz])"
 						format="http://marc21rdf.info/terms/continuingfre#${1}"/>
 				</data>
 			</choose>
@@ -2727,7 +2693,8 @@
 				</if>
 				<data source="523[-a][-1].a" name="a"/>
 			</combine>
-			<data source="@publisher|@startDateFirstPublication|@placeOfPublication" name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type">
+			<data source="@publisher|@startDateFirstPublication|@placeOfPublication"
+				name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type">
 				<constant value="http://schema.org/PublicationEvent"/>
 			</data>
 		</entity>
@@ -2787,7 +2754,8 @@
 			flushWith="@natureOfContentGndId">
 			<data source="064[ac]1.a|064c2.a" name="a"/>
 		</combine>
-		<combine name="~rdf:subject" value="$[ns-lobid-resource]${subject}#!" flushWith="@natureOfContentGndId">
+		<combine name="~rdf:subject" value="$[ns-lobid-resource]${subject}#!"
+			flushWith="@natureOfContentGndId">
 			<data source="@id" name="subject"/>
 		</combine>
 		<!-- ####################### -->
@@ -2864,8 +2832,8 @@
 		<data source="088 ?.a" name="@sigel2isilMap">
 			<lookup in="sigel2isilMap"/>
 		</data>
-		<combine name="@itemId" value="http://lobid.org/items/${id}:${isil}:${signature}#!"
-			flushWith="088??" reset="false">
+		<combine name="@itemId" value="http://lobid.org/items/${id}:${isil}:${signature}#!" flushWith="088??"
+			reset="false">
 			<if>
 				<data source="@sigel2isilMap"/>
 			</if>
@@ -2892,14 +2860,13 @@
 			<data source="@itemId"/>
 			<data source="@sigel2isilMap" name="isil"/>
 		</combine>
-		<combine name="http://id.loc.gov/ontologies/bibframe/note" value="${a}"
-			sameEntity="true" flushWith="@itemId">
+		<combine name="http://id.loc.gov/ontologies/bibframe/note" value="${a}" sameEntity="true"
+			flushWith="@itemId">
 			<data source="088 ?.b" name="a">
 				<replace pattern="^http" with="Siehe: http"/>
 			</data>
 		</combine>
-		<combine name="http://id.loc.gov/ontologies/bibframe/note" value="${a}"
-			sameEntity="true">
+		<combine name="http://id.loc.gov/ontologies/bibframe/note" value="${a}" sameEntity="true">
 			<choose flushWith="@itemId" sameEntity="true">
 				<data source="088 ?.b" name="a">
 					<replace pattern="^http" with="Siehe: http"/>
@@ -2955,8 +2922,7 @@
 			<data source="@id" name="id"/>
 		</combine>
 		<call-macro name="setRdfSubjectDescribedBy" field="070a1.a"/>
-		<call-macro name="setProvenance" field_1="http://schema.org/provider"
-			field_2="070a1.a"/>
+		<call-macro name="setProvenance" field_1="http://schema.org/provider" field_2="070a1.a"/>
 		<!-- add statements for how data is transformed -->
 		<combine name="@processionBnode" value="_:${a}procession" flushWith="@id">
 			<data source="@id" name="a"/>
@@ -2978,20 +2944,19 @@
 		<combine name="http://purl.org/lobid/lv#resultOf" value="${a}" flushWith="@id">
 			<data source="@processionBnode" name="a"/>
 		</combine>
-		<combine name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" value="http://purl.org/lobid/lv#BibliographicDescription"
-			flushWith="@id">
+		<combine name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type"
+			value="http://purl.org/lobid/lv#BibliographicDescription" flushWith="@id">
 			<data source="@processionBnode" name="a"/>
 		</combine>
 		<combine name="http://purl.org/lobid/lv#inDataset" value="http://lobid.org/resources/dataset#!"
 			flushWith="@id">
 			<data source="@processionBnode"/>
 		</combine>
-		<combine name="~rdf:subject" value="http://lobid.org/resources/dataset#!"
-			flushWith="@id">
+		<combine name="~rdf:subject" value="http://lobid.org/resources/dataset#!" flushWith="@id">
 			<data source="@processionBnode"/>
 		</combine>
-		<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="lobid-resources – Der hbz-Verbundkatalog als Linked Open Data"
-			flushWith="@id">
+		<combine name="http://www.w3.org/2000/01/rdf-schema#label"
+			value="lobid-resources – Der hbz-Verbundkatalog als Linked Open Data" flushWith="@id">
 			<data source="@processionBnode"/>
 		</combine>
 		<combine name="~rdf:subject" value="${a}" flushWith="@id">
@@ -3024,16 +2989,15 @@
 			flushWith="@id">
 			<data source="@processionBnode"/>
 		</combine>
-		<combine name="~rdf:subject" value="https://github.com/hbz/lobid-resources"
-			flushWith="@id">
+		<combine name="~rdf:subject" value="https://github.com/hbz/lobid-resources" flushWith="@id">
 			<data source="@processionBnode"/>
 		</combine>
 		<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="Software lobid-resources"
 			flushWith="@id">
 			<data source="@processionBnode"/>
 		</combine>
-		<combine name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" value="http://schema.org/SoftwareApplication"
-			flushWith="@id">
+		<combine name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type"
+			value="http://schema.org/SoftwareApplication" flushWith="@id">
 			<data source="@processionBnode"/>
 		</combine>
 		<combine name="~rdf:subject" value="$[ns-lobid-resource]${id}#!">
@@ -3046,8 +3010,7 @@
 		<combine name="~rdf:subject" value="http://lobid.org/hbz01/${a}" flushWith="@id">
 			<data source="@id" name="a"/>
 		</combine>
-		<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="${a}"
-			flushWith="@id">
+		<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="${a}" flushWith="@id">
 			<data source="@resourceOriginLabel" name="a">
 				<replace pattern="^http" with="Siehe: http"/>
 			</data>
@@ -3064,8 +3027,7 @@
 		<!-- set subject uri of resource anew -->
 		<call-macro name="setBackRdfSubject" field="070a1.a"/>
 		<call-macro name="setRdfSubjectDescribedBy" field="070-1.a"/>
-		<call-macro name="setProvenance" field_1="http://schema.org/sourceOrganization"
-			field_2="070-1.a"/>
+		<call-macro name="setProvenance" field_1="http://schema.org/sourceOrganization" field_2="070-1.a"/>
 		<call-macro name="setBackRdfSubject" field="070-1.a"/>
 		<call-macro name="setRdfSubjectDescribedBy" field="070b1.a"/>
 		<call-macro name="setProvenance" field_1="http://open-services.net/ns/core#modifiedBy"
@@ -4169,8 +4131,7 @@
 			<data source="@nameOfCreatingCorporateBodyB" name="b"/>
 			<data source="@nameOfCreatingCorporateBodyK" name="k"/>
 		</combine>
-		<combine name="@nameOfCreatingCorporateBodyKHB" value="${k} (${h}). ${b}"
-			sameEntity="true">
+		<combine name="@nameOfCreatingCorporateBodyKHB" value="${k} (${h}). ${b}" sameEntity="true">
 			<data source="@nameOfCreatingCorporateBodyB" name="b"/>
 			<data source="@nameOfCreatingCorporateBodyH" name="h"/>
 			<data source="@nameOfCreatingCorporateBodyK" name="k"/>
@@ -4183,8 +4144,7 @@
 				<data source="@nameOfCreatingCorporateBodyK"/>
 			</choose>
 		</combine>
-		<combine name="@nameOfSubjectCorporateBody" value="${a}" sameEntity="true"
-			flushWith="@subjectLinks">
+		<combine name="@nameOfSubjectCorporateBody" value="${a}" sameEntity="true" flushWith="@subjectLinks">
 			<choose name="a" flushWith="@subjectLinks">
 				<data source="@nameOfCreatingCorporateBodyKHB"/>
 				<data source="@nameOfCreatingCorporateBodyKB"/>
@@ -4218,8 +4178,7 @@
 			<data source="@nameOfContributingCorporateBodyH" name="h"/>
 			<data source="@nameOfContributingCorporateBodyK" name="k"/>
 		</combine>
-		<combine name="@nameOfContributingCorporateBody" value="${a}"
-			flushWith="@contributorCorporateBodyId">
+		<combine name="@nameOfContributingCorporateBody" value="${a}" flushWith="@contributorCorporateBodyId">
 			<choose name="a" flushWith="@contributorCorporateBodyId">
 				<data source="@nameOfContributingCorporateBodyKHB"/>
 				<data source="@nameOfContributingCorporateBodyKB"/>
@@ -4240,26 +4199,23 @@
 			</data>
 			<data source="2?[02468][bcefp]1.f" name="f"/>
 		</combine>
-		<combine name="~rdf:subject" value="$[ns-lobid-resource]${id}#!" flushWith="@contributorCorporateBodyId"
-			sameEntity="true">
+		<combine name="~rdf:subject" value="$[ns-lobid-resource]${id}#!"
+			flushWith="@contributorCorporateBodyId" sameEntity="true">
 			<data source="@id" name="id"/>
 		</combine>
 		<data source="[29]??[-abcfep][12].e" name="@preferredNameConcatEventE"/>
-		<combine name="@preferredNameConcatEventEDC" value="${e} (${d} : ${c})"
-			sameEntity="true">
+		<combine name="@preferredNameConcatEventEDC" value="${e} (${d} : ${c})" sameEntity="true">
 			<data source="@preferredNameConcatEventE" name="e"/>
 			<data source="[29]??[-abcfep][12].d" name="d"/>
 			<data source="[29]??[-abcfep][12].c" name="c"/>
 		</combine>
-		<combine name="@preferredNameConcatEventENDC" value="${e} (${n} : ${d} : ${c})"
-			sameEntity="true">
+		<combine name="@preferredNameConcatEventENDC" value="${e} (${n} : ${d} : ${c})" sameEntity="true">
 			<data source="[29]??[-abcfep][12].n" name="n"/>
 			<data source="[29]??[-abcfep][12].e" name="e"/>
 			<data source="[29]??[-abcfep][12].d" name="d"/>
 			<data source="[29]??[-abcfep][12].c" name="c"/>
 		</combine>
-		<combine name="@preferredNameConcatEventEHDC" value="${e} (${h} : ${d} : ${c})"
-			sameEntity="true">
+		<combine name="@preferredNameConcatEventEHDC" value="${e} (${h} : ${d} : ${c})" sameEntity="true">
 			<data source="[29]??[-abcfep][12].e" name="e"/>
 			<data source="[29]??[-abcfep][12].h" name="h"/>
 			<data source="[29]??[-abcfep][12].d" name="d"/>
@@ -4370,234 +4326,159 @@
 		<data source="296[-aemn]1.[pa]" name="@creatorCorporateBodyLabelPA296"/>
 
 		<!-- KH -->
-		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="200"
-			subfield_1="k" subfield_2="h"/>
+		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="200" subfield_1="k" subfield_2="h"/>
 		<call-macro name="chooseNameOfCreatingCorporateBodyKH" field="200"/>
-		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="204"
-			subfield_1="k" subfield_2="h"/>
+		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="204" subfield_1="k" subfield_2="h"/>
 		<call-macro name="chooseNameOfCreatingCorporateBodyKH" field="204"/>
-		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="208"
-			subfield_1="k" subfield_2="h"/>
+		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="208" subfield_1="k" subfield_2="h"/>
 		<call-macro name="chooseNameOfCreatingCorporateBodyKH" field="208"/>
-		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="212"
-			subfield_1="k" subfield_2="h"/>
+		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="212" subfield_1="k" subfield_2="h"/>
 		<call-macro name="chooseNameOfCreatingCorporateBodyKH" field="212"/>
-		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="216"
-			subfield_1="k" subfield_2="h"/>
+		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="216" subfield_1="k" subfield_2="h"/>
 		<call-macro name="chooseNameOfCreatingCorporateBodyKH" field="216"/>
-		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="220"
-			subfield_1="k" subfield_2="h"/>
+		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="220" subfield_1="k" subfield_2="h"/>
 		<call-macro name="chooseNameOfCreatingCorporateBodyKH" field="220"/>
-		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="224"
-			subfield_1="k" subfield_2="h"/>
+		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="224" subfield_1="k" subfield_2="h"/>
 		<call-macro name="chooseNameOfCreatingCorporateBodyKH" field="224"/>
-		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="228"
-			subfield_1="k" subfield_2="h"/>
+		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="228" subfield_1="k" subfield_2="h"/>
 		<call-macro name="chooseNameOfCreatingCorporateBodyKH" field="228"/>
-		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="232"
-			subfield_1="k" subfield_2="h"/>
+		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="232" subfield_1="k" subfield_2="h"/>
 		<call-macro name="chooseNameOfCreatingCorporateBodyKH" field="232"/>
-		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="236"
-			subfield_1="k" subfield_2="h"/>
+		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="236" subfield_1="k" subfield_2="h"/>
 		<call-macro name="chooseNameOfCreatingCorporateBodyKH" field="236"/>
-		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="240"
-			subfield_1="k" subfield_2="h"/>
+		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="240" subfield_1="k" subfield_2="h"/>
 		<call-macro name="chooseNameOfCreatingCorporateBodyKH" field="240"/>
-		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="244"
-			subfield_1="k" subfield_2="h"/>
+		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="244" subfield_1="k" subfield_2="h"/>
 		<call-macro name="chooseNameOfCreatingCorporateBodyKH" field="244"/>
-		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="248"
-			subfield_1="k" subfield_2="h"/>
+		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="248" subfield_1="k" subfield_2="h"/>
 		<call-macro name="chooseNameOfCreatingCorporateBodyKH" field="248"/>
-		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="252"
-			subfield_1="k" subfield_2="h"/>
+		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="252" subfield_1="k" subfield_2="h"/>
 		<call-macro name="chooseNameOfCreatingCorporateBodyKH" field="252"/>
-		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="256"
-			subfield_1="k" subfield_2="h"/>
+		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="256" subfield_1="k" subfield_2="h"/>
 		<call-macro name="chooseNameOfCreatingCorporateBodyKH" field="256"/>
-		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="260"
-			subfield_1="k" subfield_2="h"/>
+		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="260" subfield_1="k" subfield_2="h"/>
 		<call-macro name="chooseNameOfCreatingCorporateBodyKH" field="260"/>
-		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="264"
-			subfield_1="k" subfield_2="h"/>
+		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="264" subfield_1="k" subfield_2="h"/>
 		<call-macro name="chooseNameOfCreatingCorporateBodyKH" field="264"/>
-		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="268"
-			subfield_1="k" subfield_2="h"/>
+		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="268" subfield_1="k" subfield_2="h"/>
 		<call-macro name="chooseNameOfCreatingCorporateBodyKH" field="268"/>
-		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="272"
-			subfield_1="k" subfield_2="h"/>
+		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="272" subfield_1="k" subfield_2="h"/>
 		<call-macro name="chooseNameOfCreatingCorporateBodyKH" field="272"/>
-		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="276"
-			subfield_1="k" subfield_2="h"/>
+		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="276" subfield_1="k" subfield_2="h"/>
 		<call-macro name="chooseNameOfCreatingCorporateBodyKH" field="276"/>
-		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="280"
-			subfield_1="k" subfield_2="h"/>
+		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="280" subfield_1="k" subfield_2="h"/>
 		<call-macro name="chooseNameOfCreatingCorporateBodyKH" field="280"/>
-		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="284"
-			subfield_1="k" subfield_2="h"/>
+		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="284" subfield_1="k" subfield_2="h"/>
 		<call-macro name="chooseNameOfCreatingCorporateBodyKH" field="284"/>
-		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="288"
-			subfield_1="k" subfield_2="h"/>
+		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="288" subfield_1="k" subfield_2="h"/>
 		<call-macro name="chooseNameOfCreatingCorporateBodyKH" field="288"/>
-		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="292"
-			subfield_1="k" subfield_2="h"/>
+		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="292" subfield_1="k" subfield_2="h"/>
 		<call-macro name="chooseNameOfCreatingCorporateBodyKH" field="292"/>
-		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="296"
-			subfield_1="k" subfield_2="h"/>
+		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="296" subfield_1="k" subfield_2="h"/>
 		<call-macro name="chooseNameOfCreatingCorporateBodyKH" field="296"/>
 
 		<!-- GH -->
-		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="200"
-			subfield_1="g" subfield_2="h"/>
+		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="200" subfield_1="g" subfield_2="h"/>
 		<call-macro name="chooseNameOfCreatingCorporateBodyGH" field="200"/>
-		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="204"
-			subfield_1="g" subfield_2="h"/>
+		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="204" subfield_1="g" subfield_2="h"/>
 		<call-macro name="chooseNameOfCreatingCorporateBodyGH" field="204"/>
-		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="208"
-			subfield_1="g" subfield_2="h"/>
+		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="208" subfield_1="g" subfield_2="h"/>
 		<call-macro name="chooseNameOfCreatingCorporateBodyGH" field="208"/>
-		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="212"
-			subfield_1="g" subfield_2="h"/>
+		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="212" subfield_1="g" subfield_2="h"/>
 		<call-macro name="chooseNameOfCreatingCorporateBodyGH" field="212"/>
-		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="216"
-			subfield_1="g" subfield_2="h"/>
+		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="216" subfield_1="g" subfield_2="h"/>
 		<call-macro name="chooseNameOfCreatingCorporateBodyGH" field="216"/>
-		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="220"
-			subfield_1="g" subfield_2="h"/>
+		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="220" subfield_1="g" subfield_2="h"/>
 		<call-macro name="chooseNameOfCreatingCorporateBodyGH" field="220"/>
-		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="224"
-			subfield_1="g" subfield_2="h"/>
+		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="224" subfield_1="g" subfield_2="h"/>
 		<call-macro name="chooseNameOfCreatingCorporateBodyGH" field="224"/>
-		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="228"
-			subfield_1="g" subfield_2="h"/>
+		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="228" subfield_1="g" subfield_2="h"/>
 		<call-macro name="chooseNameOfCreatingCorporateBodyGH" field="228"/>
-		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="232"
-			subfield_1="g" subfield_2="h"/>
+		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="232" subfield_1="g" subfield_2="h"/>
 		<call-macro name="chooseNameOfCreatingCorporateBodyGH" field="232"/>
-		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="236"
-			subfield_1="g" subfield_2="h"/>
+		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="236" subfield_1="g" subfield_2="h"/>
 		<call-macro name="chooseNameOfCreatingCorporateBodyGH" field="236"/>
-		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="240"
-			subfield_1="g" subfield_2="h"/>
+		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="240" subfield_1="g" subfield_2="h"/>
 		<call-macro name="chooseNameOfCreatingCorporateBodyGH" field="240"/>
-		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="244"
-			subfield_1="g" subfield_2="h"/>
+		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="244" subfield_1="g" subfield_2="h"/>
 		<call-macro name="chooseNameOfCreatingCorporateBodyGH" field="244"/>
-		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="248"
-			subfield_1="g" subfield_2="h"/>
+		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="248" subfield_1="g" subfield_2="h"/>
 		<call-macro name="chooseNameOfCreatingCorporateBodyGH" field="248"/>
-		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="252"
-			subfield_1="g" subfield_2="h"/>
+		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="252" subfield_1="g" subfield_2="h"/>
 		<call-macro name="chooseNameOfCreatingCorporateBodyGH" field="252"/>
-		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="256"
-			subfield_1="g" subfield_2="h"/>
+		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="256" subfield_1="g" subfield_2="h"/>
 		<call-macro name="chooseNameOfCreatingCorporateBodyGH" field="256"/>
-		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="260"
-			subfield_1="g" subfield_2="h"/>
+		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="260" subfield_1="g" subfield_2="h"/>
 		<call-macro name="chooseNameOfCreatingCorporateBodyGH" field="260"/>
-		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="264"
-			subfield_1="g" subfield_2="h"/>
+		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="264" subfield_1="g" subfield_2="h"/>
 		<call-macro name="chooseNameOfCreatingCorporateBodyGH" field="264"/>
-		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="268"
-			subfield_1="g" subfield_2="h"/>
+		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="268" subfield_1="g" subfield_2="h"/>
 		<call-macro name="chooseNameOfCreatingCorporateBodyGH" field="268"/>
-		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="272"
-			subfield_1="g" subfield_2="h"/>
+		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="272" subfield_1="g" subfield_2="h"/>
 		<call-macro name="chooseNameOfCreatingCorporateBodyGH" field="272"/>
-		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="276"
-			subfield_1="g" subfield_2="h"/>
+		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="276" subfield_1="g" subfield_2="h"/>
 		<call-macro name="chooseNameOfCreatingCorporateBodyGH" field="276"/>
-		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="280"
-			subfield_1="g" subfield_2="h"/>
+		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="280" subfield_1="g" subfield_2="h"/>
 		<call-macro name="chooseNameOfCreatingCorporateBodyGH" field="280"/>
-		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="284"
-			subfield_1="g" subfield_2="h"/>
+		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="284" subfield_1="g" subfield_2="h"/>
 		<call-macro name="chooseNameOfCreatingCorporateBodyGH" field="284"/>
-		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="288"
-			subfield_1="g" subfield_2="h"/>
+		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="288" subfield_1="g" subfield_2="h"/>
 		<call-macro name="chooseNameOfCreatingCorporateBodyGH" field="288"/>
-		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="292"
-			subfield_1="g" subfield_2="h"/>
+		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="292" subfield_1="g" subfield_2="h"/>
 		<call-macro name="chooseNameOfCreatingCorporateBodyGH" field="292"/>
-		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="296"
-			subfield_1="g" subfield_2="h"/>
+		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="296" subfield_1="g" subfield_2="h"/>
 		<call-macro name="chooseNameOfCreatingCorporateBodyGH" field="296"/>
 
 		<!-- ED, events -->
-		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="200"
-			subfield_1="e" subfield_2="d"/>
+		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="200" subfield_1="e" subfield_2="d"/>
 		<call-macro name="chooseNameOfCreatingCorporateBodyED" field="200"/>
-		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="204"
-			subfield_1="e" subfield_2="d"/>
+		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="204" subfield_1="e" subfield_2="d"/>
 		<call-macro name="chooseNameOfCreatingCorporateBodyED" field="204"/>
-		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="208"
-			subfield_1="e" subfield_2="d"/>
+		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="208" subfield_1="e" subfield_2="d"/>
 		<call-macro name="chooseNameOfCreatingCorporateBodyED" field="208"/>
-		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="212"
-			subfield_1="e" subfield_2="d"/>
+		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="212" subfield_1="e" subfield_2="d"/>
 		<call-macro name="chooseNameOfCreatingCorporateBodyED" field="212"/>
-		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="216"
-			subfield_1="e" subfield_2="d"/>
+		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="216" subfield_1="e" subfield_2="d"/>
 		<call-macro name="chooseNameOfCreatingCorporateBodyED" field="216"/>
-		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="220"
-			subfield_1="e" subfield_2="d"/>
+		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="220" subfield_1="e" subfield_2="d"/>
 		<call-macro name="chooseNameOfCreatingCorporateBodyED" field="220"/>
-		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="224"
-			subfield_1="e" subfield_2="d"/>
+		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="224" subfield_1="e" subfield_2="d"/>
 		<call-macro name="chooseNameOfCreatingCorporateBodyED" field="224"/>
-		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="228"
-			subfield_1="e" subfield_2="d"/>
+		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="228" subfield_1="e" subfield_2="d"/>
 		<call-macro name="chooseNameOfCreatingCorporateBodyED" field="228"/>
-		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="232"
-			subfield_1="e" subfield_2="d"/>
+		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="232" subfield_1="e" subfield_2="d"/>
 		<call-macro name="chooseNameOfCreatingCorporateBodyED" field="232"/>
-		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="236"
-			subfield_1="e" subfield_2="d"/>
+		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="236" subfield_1="e" subfield_2="d"/>
 		<call-macro name="chooseNameOfCreatingCorporateBodyED" field="236"/>
-		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="240"
-			subfield_1="e" subfield_2="d"/>
+		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="240" subfield_1="e" subfield_2="d"/>
 		<call-macro name="chooseNameOfCreatingCorporateBodyED" field="240"/>
-		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="244"
-			subfield_1="e" subfield_2="d"/>
+		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="244" subfield_1="e" subfield_2="d"/>
 		<call-macro name="chooseNameOfCreatingCorporateBodyED" field="244"/>
-		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="248"
-			subfield_1="e" subfield_2="d"/>
+		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="248" subfield_1="e" subfield_2="d"/>
 		<call-macro name="chooseNameOfCreatingCorporateBodyED" field="248"/>
-		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="252"
-			subfield_1="e" subfield_2="d"/>
+		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="252" subfield_1="e" subfield_2="d"/>
 		<call-macro name="chooseNameOfCreatingCorporateBodyED" field="252"/>
-		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="256"
-			subfield_1="e" subfield_2="d"/>
+		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="256" subfield_1="e" subfield_2="d"/>
 		<call-macro name="chooseNameOfCreatingCorporateBodyED" field="256"/>
-		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="260"
-			subfield_1="e" subfield_2="d"/>
+		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="260" subfield_1="e" subfield_2="d"/>
 		<call-macro name="chooseNameOfCreatingCorporateBodyED" field="260"/>
-		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="264"
-			subfield_1="e" subfield_2="d"/>
+		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="264" subfield_1="e" subfield_2="d"/>
 		<call-macro name="chooseNameOfCreatingCorporateBodyED" field="264"/>
-		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="268"
-			subfield_1="e" subfield_2="d"/>
+		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="268" subfield_1="e" subfield_2="d"/>
 		<call-macro name="chooseNameOfCreatingCorporateBodyED" field="268"/>
-		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="272"
-			subfield_1="e" subfield_2="d"/>
+		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="272" subfield_1="e" subfield_2="d"/>
 		<call-macro name="chooseNameOfCreatingCorporateBodyED" field="272"/>
-		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="276"
-			subfield_1="e" subfield_2="d"/>
+		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="276" subfield_1="e" subfield_2="d"/>
 		<call-macro name="chooseNameOfCreatingCorporateBodyED" field="276"/>
-		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="280"
-			subfield_1="e" subfield_2="d"/>
+		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="280" subfield_1="e" subfield_2="d"/>
 		<call-macro name="chooseNameOfCreatingCorporateBodyED" field="280"/>
-		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="284"
-			subfield_1="e" subfield_2="d"/>
+		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="284" subfield_1="e" subfield_2="d"/>
 		<call-macro name="chooseNameOfCreatingCorporateBodyED" field="284"/>
-		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="288"
-			subfield_1="e" subfield_2="d"/>
+		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="288" subfield_1="e" subfield_2="d"/>
 		<call-macro name="chooseNameOfCreatingCorporateBodyED" field="288"/>
-		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="292"
-			subfield_1="e" subfield_2="d"/>
+		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="292" subfield_1="e" subfield_2="d"/>
 		<call-macro name="chooseNameOfCreatingCorporateBodyED" field="292"/>
-		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="296"
-			subfield_1="e" subfield_2="d"/>
+		<call-macro name="setNameOfCreatingCorporateBodyComposed" field="296" subfield_1="e" subfield_2="d"/>
 		<call-macro name="chooseNameOfCreatingCorporateBodyED" field="296"/>
 
 		<call-macro name="setContributorCorporateBodyBnode" field="200"/>
@@ -4653,8 +4534,7 @@
 		<call-macro name="setContributorCorporateBodyBnodeOrId" field="296"/>
 
 		<call-macro name="setCreatorCorporateBodyBnodeOrId" field="200"/>
-		<data source="@creatorCorporateBodyBnodeOrId200|@contributorCorporateBodyBnodeOrId200"
-			name="@agentId200"/>
+		<data source="@creatorCorporateBodyBnodeOrId200|@contributorCorporateBodyBnodeOrId200" name="@agentId200"/>
 		<call-macro name="setRelatorNonPerson" field="200"/>
 		<call-macro name="chooseRelatorNotFrom200sRoleFields" field="200"/>
 		<call-macro name="setRelatorNotFrom200sRoleFields" field="200"/>
@@ -4686,8 +4566,7 @@
 
 
 		<call-macro name="setCreatorCorporateBodyBnodeOrId" field="204"/>
-		<data source="@contributorCorporateBodyBnodeOrId204|@creatorCorporateBodyBnodeOrId204"
-			name="@agentId204"/>
+		<data source="@contributorCorporateBodyBnodeOrId204|@creatorCorporateBodyBnodeOrId204" name="@agentId204"/>
 		<call-macro name="setRelatorNonPerson" field="204"/>
 		<call-macro name="chooseRelatorNotFrom200sRoleFields" field="204"/>
 		<call-macro name="setRelatorNotFrom200sRoleFields" field="204"/>
@@ -4719,8 +4598,7 @@
 
 
 		<call-macro name="setCreatorCorporateBodyBnodeOrId" field="208"/>
-		<data source="@contributorCorporateBodyBnodeOrId208|@creatorCorporateBodyBnodeOrId208"
-			name="@agentId208"/>
+		<data source="@contributorCorporateBodyBnodeOrId208|@creatorCorporateBodyBnodeOrId208" name="@agentId208"/>
 		<call-macro name="setRelatorNonPerson" field="208"/>
 		<call-macro name="chooseRelatorNotFrom200sRoleFields" field="208"/>
 		<call-macro name="setRelatorNotFrom200sRoleFields" field="208"/>
@@ -4751,8 +4629,7 @@
 
 
 		<call-macro name="setCreatorCorporateBodyBnodeOrId" field="212"/>
-		<data source="@contributorCorporateBodyBnodeOrId212|@creatorCorporateBodyBnodeOrId212"
-			name="@agentId212"/>
+		<data source="@contributorCorporateBodyBnodeOrId212|@creatorCorporateBodyBnodeOrId212" name="@agentId212"/>
 		<call-macro name="setRelatorNonPerson" field="212"/>
 		<call-macro name="chooseRelatorNotFrom200sRoleFields" field="212"/>
 		<call-macro name="setRelatorNotFrom200sRoleFields" field="212"/>
@@ -4783,8 +4660,7 @@
 
 
 		<call-macro name="setCreatorCorporateBodyBnodeOrId" field="216"/>
-		<data source="@contributorCorporateBodyBnodeOrId216|@creatorCorporateBodyBnodeOrId216"
-			name="@agentId216"/>
+		<data source="@contributorCorporateBodyBnodeOrId216|@creatorCorporateBodyBnodeOrId216" name="@agentId216"/>
 		<call-macro name="setRelatorNonPerson" field="216"/>
 		<call-macro name="chooseRelatorNotFrom200sRoleFields" field="216"/>
 		<call-macro name="setRelatorNotFrom200sRoleFields" field="216"/>
@@ -4815,8 +4691,7 @@
 
 
 		<call-macro name="setCreatorCorporateBodyBnodeOrId" field="220"/>
-		<data source="@contributorCorporateBodyBnodeOrId220|@creatorCorporateBodyBnodeOrId220"
-			name="@agentId220"/>
+		<data source="@contributorCorporateBodyBnodeOrId220|@creatorCorporateBodyBnodeOrId220" name="@agentId220"/>
 		<call-macro name="setRelatorNonPerson" field="220"/>
 		<call-macro name="chooseRelatorNotFrom200sRoleFields" field="220"/>
 		<call-macro name="setRelatorNotFrom200sRoleFields" field="220"/>
@@ -4847,8 +4722,7 @@
 
 
 		<call-macro name="setCreatorCorporateBodyBnodeOrId" field="224"/>
-		<data source="@contributorCorporateBodyBnodeOrId224|@creatorCorporateBodyBnodeOrId224"
-			name="@agentId224"/>
+		<data source="@contributorCorporateBodyBnodeOrId224|@creatorCorporateBodyBnodeOrId224" name="@agentId224"/>
 		<call-macro name="setRelatorNonPerson" field="224"/>
 		<call-macro name="chooseRelatorNotFrom200sRoleFields" field="224"/>
 		<call-macro name="setRelatorNotFrom200sRoleFields" field="224"/>
@@ -4879,8 +4753,7 @@
 
 
 		<call-macro name="setCreatorCorporateBodyBnodeOrId" field="228"/>
-		<data source="@contributorCorporateBodyBnodeOrId228|@creatorCorporateBodyBnodeOrId228"
-			name="@agentId228"/>
+		<data source="@contributorCorporateBodyBnodeOrId228|@creatorCorporateBodyBnodeOrId228" name="@agentId228"/>
 		<call-macro name="setRelatorNonPerson" field="228"/>
 		<call-macro name="chooseRelatorNotFrom200sRoleFields" field="228"/>
 		<call-macro name="setRelatorNotFrom200sRoleFields" field="228"/>
@@ -4911,8 +4784,7 @@
 
 
 		<call-macro name="setCreatorCorporateBodyBnodeOrId" field="232"/>
-		<data source="@contributorCorporateBodyBnodeOrId232|@creatorCorporateBodyBnodeOrId232"
-			name="@agentId232"/>
+		<data source="@contributorCorporateBodyBnodeOrId232|@creatorCorporateBodyBnodeOrId232" name="@agentId232"/>
 		<call-macro name="setRelatorNonPerson" field="232"/>
 		<call-macro name="chooseRelatorNotFrom200sRoleFields" field="232"/>
 		<call-macro name="setRelatorNotFrom200sRoleFields" field="232"/>
@@ -4943,8 +4815,7 @@
 
 
 		<call-macro name="setCreatorCorporateBodyBnodeOrId" field="236"/>
-		<data source="@contributorCorporateBodyBnodeOrId236|@creatorCorporateBodyBnodeOrId236"
-			name="@agentId236"/>
+		<data source="@contributorCorporateBodyBnodeOrId236|@creatorCorporateBodyBnodeOrId236" name="@agentId236"/>
 		<call-macro name="setRelatorNonPerson" field="236"/>
 		<call-macro name="chooseRelatorNotFrom200sRoleFields" field="236"/>
 		<call-macro name="setRelatorNotFrom200sRoleFields" field="236"/>
@@ -4975,8 +4846,7 @@
 
 
 		<call-macro name="setCreatorCorporateBodyBnodeOrId" field="240"/>
-		<data source="@contributorCorporateBodyBnodeOrId240|@creatorCorporateBodyBnodeOrId240"
-			name="@agentId240"/>
+		<data source="@contributorCorporateBodyBnodeOrId240|@creatorCorporateBodyBnodeOrId240" name="@agentId240"/>
 		<call-macro name="setRelatorNonPerson" field="240"/>
 		<call-macro name="chooseRelatorNotFrom200sRoleFields" field="240"/>
 		<call-macro name="setRelatorNotFrom200sRoleFields" field="240"/>
@@ -5007,8 +4877,7 @@
 
 
 		<call-macro name="setCreatorCorporateBodyBnodeOrId" field="244"/>
-		<data source="@contributorCorporateBodyBnodeOrId244|@creatorCorporateBodyBnodeOrId244"
-			name="@agentId244"/>
+		<data source="@contributorCorporateBodyBnodeOrId244|@creatorCorporateBodyBnodeOrId244" name="@agentId244"/>
 		<call-macro name="setRelatorNonPerson" field="244"/>
 		<call-macro name="chooseRelatorNotFrom200sRoleFields" field="244"/>
 		<call-macro name="setRelatorNotFrom200sRoleFields" field="244"/>
@@ -5039,8 +4908,7 @@
 
 
 		<call-macro name="setCreatorCorporateBodyBnodeOrId" field="248"/>
-		<data source="@contributorCorporateBodyBnodeOrId248|@creatorCorporateBodyBnodeOrId248"
-			name="@agentId248"/>
+		<data source="@contributorCorporateBodyBnodeOrId248|@creatorCorporateBodyBnodeOrId248" name="@agentId248"/>
 		<call-macro name="setRelatorNonPerson" field="248"/>
 		<call-macro name="chooseRelatorNotFrom200sRoleFields" field="248"/>
 		<call-macro name="setRelatorNotFrom200sRoleFields" field="248"/>
@@ -5071,8 +4939,7 @@
 
 
 		<call-macro name="setCreatorCorporateBodyBnodeOrId" field="252"/>
-		<data source="@contributorCorporateBodyBnodeOrId252|@creatorCorporateBodyBnodeOrId252"
-			name="@agentId252"/>
+		<data source="@contributorCorporateBodyBnodeOrId252|@creatorCorporateBodyBnodeOrId252" name="@agentId252"/>
 		<call-macro name="setRelatorNonPerson" field="252"/>
 		<call-macro name="chooseRelatorNotFrom200sRoleFields" field="252"/>
 		<call-macro name="setRelatorNotFrom200sRoleFields" field="252"/>
@@ -5103,8 +4970,7 @@
 
 
 		<call-macro name="setCreatorCorporateBodyBnodeOrId" field="256"/>
-		<data source="@contributorCorporateBodyBnodeOrId256|@creatorCorporateBodyBnodeOrId256"
-			name="@agentId256"/>
+		<data source="@contributorCorporateBodyBnodeOrId256|@creatorCorporateBodyBnodeOrId256" name="@agentId256"/>
 		<call-macro name="setRelatorNonPerson" field="256"/>
 		<call-macro name="chooseRelatorNotFrom200sRoleFields" field="256"/>
 		<call-macro name="setRelatorNotFrom200sRoleFields" field="256"/>
@@ -5135,8 +5001,7 @@
 
 
 		<call-macro name="setCreatorCorporateBodyBnodeOrId" field="260"/>
-		<data source="@contributorCorporateBodyBnodeOrId260|@creatorCorporateBodyBnodeOrId260"
-			name="@agentId260"/>
+		<data source="@contributorCorporateBodyBnodeOrId260|@creatorCorporateBodyBnodeOrId260" name="@agentId260"/>
 		<call-macro name="setRelatorNonPerson" field="260"/>
 		<call-macro name="chooseRelatorNotFrom200sRoleFields" field="260"/>
 		<call-macro name="setRelatorNotFrom200sRoleFields" field="260"/>
@@ -5167,8 +5032,7 @@
 
 
 		<call-macro name="setCreatorCorporateBodyBnodeOrId" field="264"/>
-		<data source="@contributorCorporateBodyBnodeOrId264|@creatorCorporateBodyBnodeOrId264"
-			name="@agentId264"/>
+		<data source="@contributorCorporateBodyBnodeOrId264|@creatorCorporateBodyBnodeOrId264" name="@agentId264"/>
 		<call-macro name="setRelatorNonPerson" field="264"/>
 		<call-macro name="chooseRelatorNotFrom200sRoleFields" field="264"/>
 		<call-macro name="setRelatorNotFrom200sRoleFields" field="264"/>
@@ -5199,8 +5063,7 @@
 
 
 		<call-macro name="setCreatorCorporateBodyBnodeOrId" field="268"/>
-		<data source="@contributorCorporateBodyBnodeOrId268|@creatorCorporateBodyBnodeOrId268"
-			name="@agentId268"/>
+		<data source="@contributorCorporateBodyBnodeOrId268|@creatorCorporateBodyBnodeOrId268" name="@agentId268"/>
 		<call-macro name="setRelatorNonPerson" field="268"/>
 		<call-macro name="chooseRelatorNotFrom200sRoleFields" field="268"/>
 		<call-macro name="setRelatorNotFrom200sRoleFields" field="268"/>
@@ -5231,8 +5094,7 @@
 
 
 		<call-macro name="setCreatorCorporateBodyBnodeOrId" field="272"/>
-		<data source="@contributorCorporateBodyBnodeOrId272|@creatorCorporateBodyBnodeOrId272"
-			name="@agentId272"/>
+		<data source="@contributorCorporateBodyBnodeOrId272|@creatorCorporateBodyBnodeOrId272" name="@agentId272"/>
 		<call-macro name="setRelatorNonPerson" field="272"/>
 		<call-macro name="chooseRelatorNotFrom200sRoleFields" field="272"/>
 		<call-macro name="setRelatorNotFrom200sRoleFields" field="272"/>
@@ -5263,8 +5125,7 @@
 
 
 		<call-macro name="setCreatorCorporateBodyBnodeOrId" field="276"/>
-		<data source="@contributorCorporateBodyBnodeOrId276|@creatorCorporateBodyBnodeOrId276"
-			name="@agentId276"/>
+		<data source="@contributorCorporateBodyBnodeOrId276|@creatorCorporateBodyBnodeOrId276" name="@agentId276"/>
 		<call-macro name="setRelatorNonPerson" field="276"/>
 		<call-macro name="chooseRelatorNotFrom200sRoleFields" field="276"/>
 		<call-macro name="setRelatorNotFrom200sRoleFields" field="276"/>
@@ -5295,8 +5156,7 @@
 
 
 		<call-macro name="setCreatorCorporateBodyBnodeOrId" field="280"/>
-		<data source="@contributorCorporateBodyBnodeOrId280|@creatorCorporateBodyBnodeOrId280"
-			name="@agentId280"/>
+		<data source="@contributorCorporateBodyBnodeOrId280|@creatorCorporateBodyBnodeOrId280" name="@agentId280"/>
 		<call-macro name="setRelatorNonPerson" field="280"/>
 		<call-macro name="chooseRelatorNotFrom200sRoleFields" field="280"/>
 		<call-macro name="setRelatorNotFrom200sRoleFields" field="280"/>
@@ -5327,8 +5187,7 @@
 
 
 		<call-macro name="setCreatorCorporateBodyBnodeOrId" field="284"/>
-		<data source="@contributorCorporateBodyBnodeOrId284|@creatorCorporateBodyBnodeOrId284"
-			name="@agentId284"/>
+		<data source="@contributorCorporateBodyBnodeOrId284|@creatorCorporateBodyBnodeOrId284" name="@agentId284"/>
 		<call-macro name="setRelatorNonPerson" field="284"/>
 		<call-macro name="chooseRelatorNotFrom200sRoleFields" field="284"/>
 		<call-macro name="setRelatorNotFrom200sRoleFields" field="284"/>
@@ -5359,8 +5218,7 @@
 
 
 		<call-macro name="setCreatorCorporateBodyBnodeOrId" field="288"/>
-		<data source="@contributorCorporateBodyBnodeOrId288|@creatorCorporateBodyBnodeOrId288"
-			name="@agentId288"/>
+		<data source="@contributorCorporateBodyBnodeOrId288|@creatorCorporateBodyBnodeOrId288" name="@agentId288"/>
 		<call-macro name="setRelatorNonPerson" field="288"/>
 		<call-macro name="chooseRelatorNotFrom200sRoleFields" field="288"/>
 		<call-macro name="setRelatorNotFrom200sRoleFields" field="288"/>
@@ -5391,8 +5249,7 @@
 
 
 		<call-macro name="setCreatorCorporateBodyBnodeOrId" field="292"/>
-		<data source="@contributorCorporateBodyBnodeOrId292|@creatorCorporateBodyBnodeOrId292"
-			name="@agentId292"/>
+		<data source="@contributorCorporateBodyBnodeOrId292|@creatorCorporateBodyBnodeOrId292" name="@agentId292"/>
 		<call-macro name="setRelatorNonPerson" field="292"/>
 		<call-macro name="chooseRelatorNotFrom200sRoleFields" field="292"/>
 		<call-macro name="setRelatorNotFrom200sRoleFields" field="292"/>
@@ -5423,8 +5280,7 @@
 
 
 		<call-macro name="setCreatorCorporateBodyBnodeOrId" field="296"/>
-		<data source="@contributorCorporateBodyBnodeOrId296|@creatorCorporateBodyBnodeOrId296"
-			name="@agentId296"/>
+		<data source="@contributorCorporateBodyBnodeOrId296|@creatorCorporateBodyBnodeOrId296" name="@agentId296"/>
 		<call-macro name="setRelatorNonPerson" field="296"/>
 		<call-macro name="chooseRelatorNotFrom200sRoleFields" field="296"/>
 		<call-macro name="setRelatorNotFrom200sRoleFields" field="296"/>
@@ -5983,8 +5839,8 @@
 			<data source="@id" name="id"/>
 		</combine>
 		<entity name="~rdf:list" reset="true" sameEntity="true">
-			<combine name="http://id.loc.gov/ontologies/bibframe/contribution" value="${a}"
-				sameEntity="true" reset="true">
+			<combine name="http://id.loc.gov/ontologies/bibframe/contribution" value="${a}" sameEntity="true"
+				reset="true">
 				<data
 					source="@contributionBnode[12][0123456789][02468]first|@contributionBnode[12][0123456789][02468]second|@contributionBnode[12][0123456789][02468]last"
 					name="a"/>
@@ -6018,16 +5874,15 @@
 			flushWith="@corporateBodyForTitleAgentBnode">
 			<data source="@corporateBodyForTitleAgentBnode" name="a"/>
 		</combine>
-		<combine name="~rdf:subject" value="${a}" sameEntity="true"
-			flushWith="@corporateBodyForTitleBnode">
+		<combine name="~rdf:subject" value="${a}" sameEntity="true" flushWith="@corporateBodyForTitleBnode">
 			<data source="@corporateBodyForTitleBnode" name="a"/>
 		</combine>
-		<combine name="http://id.loc.gov/ontologies/bibframe/role" value="http://id.loc.gov/vocabulary/relators/cre"
-			flushWith="@corporateBodyForTitleBnode">
+		<combine name="http://id.loc.gov/ontologies/bibframe/role"
+			value="http://id.loc.gov/vocabulary/relators/cre" flushWith="@corporateBodyForTitleBnode">
 			<data source="34[26]-1.a|35[04]-1.a"/>
 		</combine>
-		<combine name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" value="http://id.loc.gov/ontologies/bibframe/Contribution"
-			flushWith="@corporateBodyForTitleBnode">
+		<combine name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type"
+			value="http://id.loc.gov/ontologies/bibframe/Contribution" flushWith="@corporateBodyForTitleBnode">
 			<data source="34[26]-1.a|35[04]-1.a"/>
 		</combine>
 		<combine name="~rdf:subject" value="${a}" flushWith="@corporateBodyForTitleAgentBnode">
@@ -6081,8 +5936,7 @@
 		<!-- ################ koerperschaften and persons -->
 		<!-- ####################### -->
 		<!-- contributors with roles @TODO many roles needs tests -->
-		<data
-			source="1[02468][048]?[12].[b4]|1[13579][26]?[12].[b4]|2[02468][048]?[12].4|2[13579][26]?[12].4"
+		<data source="1[02468][048]?[12].[b4]|1[13579][26]?[12].[b4]|2[02468][048]?[12].4|2[13579][26]?[12].4"
 			name="@marcrelName"/>
 		<!-- id of contributor (which is not a creator) -->
 		<data source="1??[bcefp][1234].9" name="@contributorPersonId">
@@ -6127,21 +5981,21 @@
 		<combine name="~rdf:subject" value="${a}" flushWith="@deweyBnode" sameEntity="true">
 			<data source="@deweyBnode" name="a"/>
 		</combine>
-		<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="${a}"
-			sameEntity="true" flushWith="@deweyBnode">
+		<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="${a}" sameEntity="true"
+			flushWith="@deweyBnode">
 			<data source="@deweyBnode" name="a">
 				<regexp match="_:(.*)" format="${1}"/>
 				<lookup in="deweyLabels"/>
 			</data>
 		</combine>
-		<combine name="http://www.w3.org/2004/02/skos/core#notation" value="${a}"
-			sameEntity="true" flushWith="@deweyBnode">
+		<combine name="http://www.w3.org/2004/02/skos/core#notation" value="${a}" sameEntity="true"
+			flushWith="@deweyBnode">
 			<data source="@deweyBnode" name="a">
 				<regexp match="_:(.*)" format="${1}"/>
 			</data>
 		</combine>
-		<combine name="http://id.loc.gov/ontologies/bibframe/source" value="${a}"
-			sameEntity="true" flushWith="@deweyBnode">
+		<combine name="http://id.loc.gov/ontologies/bibframe/source" value="${a}" sameEntity="true"
+			flushWith="@deweyBnode">
 			<data source="@deweyBnode" name="a">
 				<regexp match=".*" format="http://d-nb.info/gnd/4149423-4"/>
 			</data>
@@ -6154,16 +6008,16 @@
 		<combine name="@dewey705a" value="${a}" flushWith="705a1.a">
 			<data source="705a1.a" name="a"/>
 		</combine>
-		<combine name="http://purl.org/dc/terms/subject" value="_:${a}deweyBnode"
-			flushWith="@dewey705a" sameEntity="true" reset="true">
-			<data source="@dewey705a" name="a"/>
-		</combine>
-		<combine name="~rdf:subject" value="_:${a}deweyBnode" flushWith="@dewey705a"
+		<combine name="http://purl.org/dc/terms/subject" value="_:${a}deweyBnode" flushWith="@dewey705a"
 			sameEntity="true" reset="true">
 			<data source="@dewey705a" name="a"/>
 		</combine>
-		<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="${a}"
-			flushWith="@dewey705a" sameEntity="true" reset="true">
+		<combine name="~rdf:subject" value="_:${a}deweyBnode" flushWith="@dewey705a" sameEntity="true"
+			reset="true">
+			<data source="@dewey705a" name="a"/>
+		</combine>
+		<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="${a}" flushWith="@dewey705a"
+			sameEntity="true" reset="true">
 			<choose name="a" flushWith="@dewey705a" sameEntity="true" reset="true">
 				<data source="@dewey705a" name="a">
 					<lookup in="deweyLabels"/>
@@ -6174,12 +6028,12 @@
 				</data>
 			</choose>
 		</combine>
-		<combine name="http://www.w3.org/2004/02/skos/core#notation" value="${a}"
-			flushWith="@dewey705a" sameEntity="true" reset="true">
+		<combine name="http://www.w3.org/2004/02/skos/core#notation" value="${a}" flushWith="@dewey705a"
+			sameEntity="true" reset="true">
 			<data source="@dewey705a" name="a"/>
 		</combine>
-		<combine name="http://id.loc.gov/ontologies/bibframe/source" value="${a}"
-			flushWith="@dewey705a" sameEntity="true">
+		<combine name="http://id.loc.gov/ontologies/bibframe/source" value="${a}" flushWith="@dewey705a"
+			sameEntity="true">
 			<data source="@dewey705a" name="a">
 				<constant value="http://d-nb.info/gnd/4149423-4"/>
 			</data>
@@ -6300,10 +6154,8 @@
 		<combine name="@preferredNameConcatSubject" value="${a}" sameEntity="true"
 			flushWith="@creatorCorporateBodyId|@contributorCorporateBodyId|@subjectNotAPerson">
 			<concat delimiter=", " name="a"
-				flushWith="@subjectNotAPerson|@creatorCorporateBodyId|@contributorCorporateBodyId"
-				sameEntity="true">
-				<data
-					source="1????.[cghknpsz]|[29]??[-abcdfep][12-].[bcdghknsxz]|8[012]?[-mn][-12].[cghknpsz]"/>
+				flushWith="@subjectNotAPerson|@creatorCorporateBodyId|@contributorCorporateBodyId" sameEntity="true">
+				<data source="1????.[cghknpsz]|[29]??[-abcdfep][12-].[bcdghknsxz]|8[012]?[-mn][-12].[cghknpsz]"/>
 			</concat>
 		</combine>
 		<!-- START contributor/creator -->
@@ -6313,11 +6165,11 @@
 				<replace pattern="&gt;&gt;" with=""/>
 				<replace pattern="&lt;&lt;" with=""/>
 			</data>
-			<data
-				source="@GNDPersonId|@contributorPersonId|@bnodeCreatorPersonLabel|@bnodeContributorPersonLabel"/>
+			<data source="@GNDPersonId|@contributorPersonId|@bnodeCreatorPersonLabel|@bnodeContributorPersonLabel"/>
 		</combine>
-		<combine name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" value="http://d-nb.info/standards/elementset/gnd#Family"
-			flushWith="@subjectLinks" sameEntity="true" reset="true">
+		<combine name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type"
+			value="http://d-nb.info/standards/elementset/gnd#Family" flushWith="@subjectLinks" sameEntity="true"
+			reset="true">
 			<data source="9[01234][27]-[-12].c">
 				<regexp match="Familie"/>
 			</data>
@@ -6462,19 +6314,18 @@
 			<data source="@preferredNameSemicolon"/>
 			<data source="9[01234][27]-[-12].t"/>
 		</choose>
-		<combine name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" value="http://d-nb.info/standards/elementset/gnd#Work">
+		<combine name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type"
+			value="http://d-nb.info/standards/elementset/gnd#Work">
 			<data source="@preferredNameForTheWork"/>
 		</combine>
-		<combine name="@preferredNameForThePlaceOrGeographicName" value="${a}"
-			sameEntity="true">
+		<combine name="@preferredNameForThePlaceOrGeographicName" value="${a}" sameEntity="true">
 			<data source="@subjectLinks"/>
 			<data source="9[01234][27]-[-12].g"/>
 			<data source="@preferredNameConcatSubject" name="a"/>
 		</combine>
 		<combine name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" value="${a}"
 			flushWith="@subjectLinks|@contributorCorporateBodyBnodeOrId" sameEntity="true">
-			<choose name="a"
-				flushWith="@subjectLinks|@creatorCorporateBodyId|@contributorCorporateBodyBnodeOrId"
+			<choose name="a" flushWith="@subjectLinks|@creatorCorporateBodyId|@contributorCorporateBodyBnodeOrId"
 				sameEntity="true">
 				<data source="@preferredNameConcatEventE">
 					<constant value="$[ns-gnd]ConferenceOrEvent"/>
@@ -6482,8 +6333,7 @@
 				<data source="@preferredNameForThePlaceOrGeographicName|@nameOfCreatingCorporateBodyG">
 					<constant value="$[ns-gnd]PlaceOrGeographicName"/>
 				</data>
-				<data
-					source="9[01234][27]-[-12].k|@creatorCorporateBodyId|@contributorCorporateBodyBnodeOrId">
+				<data source="9[01234][27]-[-12].k|@creatorCorporateBodyId|@contributorCorporateBodyBnodeOrId">
 					<constant value="$[ns-gnd]CorporateBody"/>
 				</data>
 			</choose>
@@ -6556,7 +6406,7 @@
 		<call-macro name="subject-chain-name1" field_1="902" field_2="903"/>
 		<call-macro name="subject-chain-perm1" field="902"/>
 		<call-macro name="subject-chain-name2" field_1="902" field_2="903"/>
-    <call-macro name="subject-chain-perm2" field="902"/>
+		<call-macro name="subject-chain-perm2" field="902"/>
 		<call-macro name="subject-chain-name1" field_1="907" field_2="908"/>
 		<call-macro name="subject-chain-perm1" field="907"/>
 		<call-macro name="subject-chain-name2" field_1="907" field_2="908"/>
@@ -6598,8 +6448,9 @@
 		<call-macro name="nwbibComplexSubjectRswkLabel" field="902"/>
 		<call-macro name="makeNwbibComplexSubjectId" field="902"/>
 		<call-macro name="setNwbibRdfSubject" field="902"/>
-	<combine name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" value="http://d-nb.info/standards/elementset/gnd#SubjectHeading"
-			flushWith="@nwbibComplexSubjectRswkLabel902" sameEntity="true">
+		<combine name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type"
+			value="http://d-nb.info/standards/elementset/gnd#SubjectHeading" flushWith="@nwbibComplexSubjectRswkLabel902"
+			sameEntity="true">
 			<data source="@nwbibComplexSubjectRswkId902"/>
 		</combine>
 		<data source="@nwbibComplexSubjectRswkLabel902" name="http://www.w3.org/2000/01/rdf-schema#label"/>
@@ -6612,7 +6463,7 @@
 		<call-macro name="subjectRswkIdSetType" field="902" indicator2="1"/>
 		<call-macro name="complexSubjectRswkId" field="902" indicator2="1"/>
 		<!-- superordinate subject -->
-		<call-macro name="subjectRswkIdSuperordinated" field="902" />
+		<call-macro name="subjectRswkIdSuperordinated" field="902"/>
 		<call-macro name="setConcatComplexSubjectRswkIdSuperordinated" field="902"/>
 		<call-macro name="subjectRswkIdSetDctSubject" field="902" indicator2="2"/>
 		<call-macro name="subjectRswkIdSetRdfSubject" field="902" indicator2="2"/>
@@ -6629,10 +6480,10 @@
 		<call-macro name="nwbibComplexSubjectRswkLabel" field="907"/>
 		<call-macro name="makeNwbibComplexSubjectId" field="907"/>
 		<call-macro name="setNwbibRdfSubject" field="907"/>
-		<combine name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" value="http://d-nb.info/standards/elementset/gnd#SubjectHeading"
-			flushWith="@nwbibComplexSubjectRswkLabel907">
+		<combine name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type"
+			value="http://d-nb.info/standards/elementset/gnd#SubjectHeading" flushWith="@nwbibComplexSubjectRswkLabel907">
 			<data source="@nwbibComplexSubjectRswkId907"/>
-		</combine> 
+		</combine>
 		<data source="@nwbibComplexSubjectRswkLabel907" name="http://www.w3.org/2000/01/rdf-schema#label"/>
 		<call-macro name="nwbibSetLobidSubject" field="907"/>
 		<call-macro name="nwbibSetLobidSubject" field="907"/>	<!-- important to keep right order -->
@@ -6642,7 +6493,7 @@
 		<call-macro name="subjectRswkIdSetRdfSubject" field="907" indicator2="1"/>
 		<call-macro name="subjectRswkIdSetType" field="907" indicator2="1"/>
 		<call-macro name="complexSubjectRswkId" field="907" indicator2="1"/>
-		<call-macro name="subjectRswkIdSuperordinated" field="907" />
+		<call-macro name="subjectRswkIdSuperordinated" field="907"/>
 		<call-macro name="setConcatComplexSubjectRswkId" field="907-2"/>
 		<call-macro name="subjectRswkIdSetDctSubject" field="907" indicator2="2"/>
 		<call-macro name="subjectRswkIdSetRdfSubject" field="907" indicator2="2"/>
@@ -6669,7 +6520,7 @@
 		<call-macro name="subjectRswkIdSetType" field="912" indicator2="1"/>
 		<call-macro name="complexSubjectRswkId" field="912" indicator2="1"/>
 		<!-- superordinate subject -->
-		<call-macro name="subjectRswkIdSuperordinated" field="912" />
+		<call-macro name="subjectRswkIdSuperordinated" field="912"/>
 		<call-macro name="setConcatComplexSubjectRswkIdSuperordinated" field="912"/>
 		<call-macro name="subjectRswkIdSetDctSubject" field="912" indicator2="2"/>
 		<call-macro name="subjectRswkIdSetRdfSubject" field="912" indicator2="2"/>
@@ -6723,7 +6574,7 @@
 		<call-macro name="subjectRswkIdSetType" field="922" indicator2="1"/>
 		<call-macro name="complexSubjectRswkId" field="922" indicator2="1"/>
 		<!-- superordinate subject -->
-		<call-macro name="subjectRswkIdSuperordinated" field="922" />
+		<call-macro name="subjectRswkIdSuperordinated" field="922"/>
 		<call-macro name="setConcatComplexSubjectRswkIdSuperordinated" field="922"/>
 		<call-macro name="subjectRswkIdSetDctSubject" field="922" indicator2="2"/>
 		<call-macro name="subjectRswkIdSetRdfSubject" field="922" indicator2="2"/>
@@ -6804,7 +6655,7 @@
 		<call-macro name="subjectRswkIdSetType" field="937" indicator2="1"/>
 		<call-macro name="complexSubjectRswkId" field="937" indicator2="1"/>
 		<!-- superordinate subject -->
-		<call-macro name="subjectRswkIdSuperordinated" field="937" />
+		<call-macro name="subjectRswkIdSuperordinated" field="937"/>
 		<call-macro name="setConcatComplexSubjectRswkIdSuperordinated" field="937"/>
 		<call-macro name="subjectRswkIdSetDctSubject" field="937" indicator2="2"/>
 		<call-macro name="subjectRswkIdSetRdfSubject" field="937" indicator2="2"/>
@@ -6831,7 +6682,7 @@
 		<call-macro name="subjectRswkIdSetType" field="942" indicator2="1"/>
 		<call-macro name="complexSubjectRswkId" field="942" indicator2="1"/>
 		<!-- superordinate subject -->
-		<call-macro name="subjectRswkIdSuperordinated" field="942" />
+		<call-macro name="subjectRswkIdSuperordinated" field="942"/>
 		<call-macro name="setConcatComplexSubjectRswkIdSuperordinated" field="942"/>
 		<call-macro name="subjectRswkIdSetDctSubject" field="942" indicator2="2"/>
 		<call-macro name="subjectRswkIdSetRdfSubject" field="942" indicator2="2"/>
@@ -6858,7 +6709,7 @@
 		<call-macro name="subjectRswkIdSetType" field="947" indicator2="1"/>
 		<call-macro name="complexSubjectRswkId" field="947" indicator2="1"/>
 		<!-- superordinate subject -->
-		<call-macro name="subjectRswkIdSuperordinated" field="947" />
+		<call-macro name="subjectRswkIdSuperordinated" field="947"/>
 		<call-macro name="setConcatComplexSubjectRswkIdSuperordinated" field="947"/>
 		<call-macro name="subjectRswkIdSetDctSubject" field="947" indicator2="2"/>
 		<call-macro name="subjectRswkIdSetRdfSubject" field="947" indicator2="2"/>
@@ -6875,8 +6726,8 @@
 		<combine name="~rdf:subject" value="${a}" sameEntity="true">
 			<data source="@complexSubjectRswkId9[01234][27]-[-12]|@subjectLinks" name="a"/>
 		</combine>
-		<combine name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" value="${a}"
-			flushWith="@subjectLinks" sameEntity="true" reset="true">
+		<combine name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" value="${a}" flushWith="@subjectLinks"
+			sameEntity="true" reset="true">
 			<choose name="a" sameEntity="true" flushWith="@subjectLinks">
 				<data source="9[01234][27]-[-12].e">
 					<constant value="http://d-nb.info/standards/elementset/gnd#ConferenceOrEvent"/>
@@ -6899,9 +6750,9 @@
 				<data source="9[01234][27]-[-12].t">
 					<constant value="http://d-nb.info/standards/elementset/gnd#Work"/>
 				</data>
-  			<data source="9[01234][27]-[-12].?">
+				<data source="9[01234][27]-[-12].?">
 					<constant value="http://d-nb.info/standards/elementset/gnd#SubjectHeading"/>
-				</data> 
+				</data>
 			</choose>
 		</combine>
 		<combine name="~rdf:subject" value="$[ns-lobid-resource]${subject}#!"
@@ -7043,8 +6894,7 @@
 			</data>
 		</combine>
 		<!-- rdf:seeAlso if 655 AND first three letter "Zusätzliche Angaben" -->
-		<combine name="http://www.w3.org/2000/01/rdf-schema#seeAlso" value="${seeAlsoUri}"
-			sameEntity="true">
+		<combine name="http://www.w3.org/2000/01/rdf-schema#seeAlso" value="${seeAlsoUri}" sameEntity="true">
 			<data source="655[-eu][ -1].[x3]">
 				<regexp match="^[zZ][uU][sS]"/>
 			</data>
@@ -7056,8 +6906,7 @@
 				<regexp match="(.*)dx.doi.org(.*)"/>
 			</data>
 		</combine>
-		<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="DOI-Link"
-			sameEntity="true">
+		<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="DOI-Link" sameEntity="true">
 			<data source="@fulltextOnlineUri">
 				<regexp match="dx.doi.org"/>
 			</data>
@@ -7071,8 +6920,7 @@
 				<regexp match=".*nbn-resolving.de\/urn.*"/>
 			</data>
 		</combine>
-		<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="URN-Link"
-			sameEntity="true">
+		<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="URN-Link" sameEntity="true">
 			<data source="@fulltextOnlineUri">
 				<regexp match="nbn-resolving.de\/urn"/>
 			</data>
@@ -7124,8 +6972,7 @@
 				</data>
 			</choose>
 		</combine>
-		<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="${a}"
-			flushWith="@supplement">
+		<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="${a}" flushWith="@supplement">
 			<data source="529z1.a" name="a">
 				<replace pattern="&lt;" with=""/>
 				<replace pattern="&gt;" with=""/>
@@ -7163,38 +7010,38 @@
 		<call-macro name="createNumberingForHasSuperordinate" field="48"/>
 		<call-macro name="createNumberingForHasSuperordinate" field="49"/>
 		<!-- isPartOf without id and with numbering -->
-		<call-macro name="createEntityForHasSuperordinateWithoutIdWithNumbering"
-			field_1="453[-abr][-12].a" field_2="451[-ab]1.a" numbering="45"/>
-		<call-macro name="createEntityForHasSuperordinateWithoutIdWithNumbering"
-			field_1="463[-abr][-12].a" field_2="461[-ab]1.a" numbering="46"/>
-		<call-macro name="createEntityForHasSuperordinateWithoutIdWithNumbering"
-			field_1="473[-abr][-12].a" field_2="471[-ab]1.a" numbering="47"/>
-		<call-macro name="createEntityForHasSuperordinateWithoutIdWithNumbering"
-			field_1="483[-abr][-12].a" field_2="481[-ab]1.a" numbering="48"/>
-		<call-macro name="createEntityForHasSuperordinateWithoutIdWithNumbering"
-			field_1="493[-abr][-12].a" field_2="491[-ab]1.a" numbering="49"/>
+		<call-macro name="createEntityForHasSuperordinateWithoutIdWithNumbering" field_1="453[-abr][-12].a"
+			field_2="451[-ab]1.a" numbering="45"/>
+		<call-macro name="createEntityForHasSuperordinateWithoutIdWithNumbering" field_1="463[-abr][-12].a"
+			field_2="461[-ab]1.a" numbering="46"/>
+		<call-macro name="createEntityForHasSuperordinateWithoutIdWithNumbering" field_1="473[-abr][-12].a"
+			field_2="471[-ab]1.a" numbering="47"/>
+		<call-macro name="createEntityForHasSuperordinateWithoutIdWithNumbering" field_1="483[-abr][-12].a"
+			field_2="481[-ab]1.a" numbering="48"/>
+		<call-macro name="createEntityForHasSuperordinateWithoutIdWithNumbering" field_1="493[-abr][-12].a"
+			field_2="491[-ab]1.a" numbering="49"/>
 		<!-- isPartOf without both id and numbering -->
-		<call-macro name="createEntityForHasSuperordinateWithoutIdAndNumbering"
-			field_1="453[-abr][-12].a" field_2="451[-ab]1.a"/>
-		<call-macro name="createEntityForHasSuperordinateWithoutIdAndNumbering"
-			field_1="463[-abr][-12].a" field_2="461[-ab]1.a"/>
-		<call-macro name="createEntityForHasSuperordinateWithoutIdAndNumbering"
-			field_1="473[-abr][-12].a" field_2="471[-ab]1.a"/>
-		<call-macro name="createEntityForHasSuperordinateWithoutIdAndNumbering"
-			field_1="483[-abr][-12].a" field_2="481[-ab]1.a"/>
-		<call-macro name="createEntityForHasSuperordinateWithoutIdAndNumbering"
-			field_1="493[-abr][-12].a" field_2="491[-ab]1.a"/>
+		<call-macro name="createEntityForHasSuperordinateWithoutIdAndNumbering" field_1="453[-abr][-12].a"
+			field_2="451[-ab]1.a"/>
+		<call-macro name="createEntityForHasSuperordinateWithoutIdAndNumbering" field_1="463[-abr][-12].a"
+			field_2="461[-ab]1.a"/>
+		<call-macro name="createEntityForHasSuperordinateWithoutIdAndNumbering" field_1="473[-abr][-12].a"
+			field_2="471[-ab]1.a"/>
+		<call-macro name="createEntityForHasSuperordinateWithoutIdAndNumbering" field_1="483[-abr][-12].a"
+			field_2="481[-ab]1.a"/>
+		<call-macro name="createEntityForHasSuperordinateWithoutIdAndNumbering" field_1="493[-abr][-12].a"
+			field_2="491[-ab]1.a"/>
 		<!-- isPartOf with id and without numbering -->
-		<call-macro name="createEntityForHasSuperordinateWithIdAndWithoutNumbering"
-			field_1="451[-ab]1.a" field_3="453[-ab]1.a" field_5="455[-ab]1.a"/>
-		<call-macro name="createEntityForHasSuperordinateWithIdAndWithoutNumbering"
-			field_1="461[-ab]1.a" field_3="463[-ab]1.a" field_5="465[-ab]1.a"/>
-		<call-macro name="createEntityForHasSuperordinateWithIdAndWithoutNumbering"
-			field_1="471[-ab]1.a" field_3="473[-ab]1.a" field_5="475[-ab]1.a"/>
-		<call-macro name="createEntityForHasSuperordinateWithIdAndWithoutNumbering"
-			field_1="481[-ab]1.a" field_3="483[-ab]1.a" field_5="485[-ab]1.a"/>
-		<call-macro name="createEntityForHasSuperordinateWithIdAndWithoutNumbering"
-			field_1="491[-ab]1.a" field_3="493[-ab]1.a" field_5="495[-ab]1.a"/>
+		<call-macro name="createEntityForHasSuperordinateWithIdAndWithoutNumbering" field_1="451[-ab]1.a"
+			field_3="453[-ab]1.a" field_5="455[-ab]1.a"/>
+		<call-macro name="createEntityForHasSuperordinateWithIdAndWithoutNumbering" field_1="461[-ab]1.a"
+			field_3="463[-ab]1.a" field_5="465[-ab]1.a"/>
+		<call-macro name="createEntityForHasSuperordinateWithIdAndWithoutNumbering" field_1="471[-ab]1.a"
+			field_3="473[-ab]1.a" field_5="475[-ab]1.a"/>
+		<call-macro name="createEntityForHasSuperordinateWithIdAndWithoutNumbering" field_1="481[-ab]1.a"
+			field_3="483[-ab]1.a" field_5="485[-ab]1.a"/>
+		<call-macro name="createEntityForHasSuperordinateWithIdAndWithoutNumbering" field_1="491[-ab]1.a"
+			field_3="493[-ab]1.a" field_5="495[-ab]1.a"/>
 		<!-- isPartOf with both id and numbering -->
 		<call-macro name="createEntityForHasSuperordinateWithIdAndNumbering" field_3="453[-ab]1.a"
 			numbering="45"/>
@@ -7210,8 +7057,7 @@
 		<combine name="@chooseIsPartNoteIn" value="${a}">
 			<choose name="a">
 				<data source="501-1.a">
-					<regexp
-						match="^[iI]n: ([a-zA-Zäöüß ]*[a-zA-Zäöüß&quot;ÄÖÜ&#44;&#45;])\. (Bd.*|Vol.*|Nr.*)$"
+					<regexp match="^[iI]n: ([a-zA-Zäöüß ]*[a-zA-Zäöüß&quot;ÄÖÜ&#44;&#45;])\. (Bd.*|Vol.*|Nr.*)$"
 						format="${1}"/>
 				</data>
 				<data source="501-1.a">
@@ -7260,8 +7106,7 @@
 		<combine name="~rdf:subject" value="_:hasSuperordinateNoteBnodeIn" flushWith="@isPartNoteBnodeIn">
 			<data source="@isPartNoteBnodeIn"/>
 		</combine>
-		<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="${a}"
-			flushWith="@isPartNoteBnodeIn">
+		<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="${a}" flushWith="@isPartNoteBnodeIn">
 			<data source="@chooseIsPartNoteIn" name="a"/>
 		</combine>
 		<call-macro name="setBackRdfSubject" field="@isPartNoteBnodeIn"/>
@@ -7273,8 +7118,7 @@
 					<regexp match="^Aus.* [iI]n:.*" format=""/>
 				</data>
 				<data source="501-1.a">
-					<regexp match="^Aus: ([a-zA-Z äöüß&#45;]*): (Jg.|Vol.|Bd.|H.|Nr.|[0-9]*\.[0-9]*)"
-						format="${1}"/>
+					<regexp match="^Aus: ([a-zA-Z äöüß&#45;]*): (Jg.|Vol.|Bd.|H.|Nr.|[0-9]*\.[0-9]*)" format="${1}"/>
 				</data>
 				<data source="501-1.a">
 					<regexp
@@ -7282,12 +7126,10 @@
 						format="${1}"/>
 				</data>
 				<data source="501-1.a">
-					<regexp match="^Aus: ([a-zA-Zäöüß&#45;]*, [a-zA-Zäöüß-]*: .*)\. (Jg.|Vol.|Bd.|H.|Nr.)"
-						format="${1}"/>
+					<regexp match="^Aus: ([a-zA-Zäöüß&#45;]*, [a-zA-Zäöüß-]*: .*)\. (Jg.|Vol.|Bd.|H.|Nr.)" format="${1}"/>
 				</data>
 				<data source="501-1.a">
-					<regexp match="^Aus: ([a-zA-Zäöüß&#45;]*, [a-zA-Zäöüß-]*: .*[a-zA-ZäöüßÄÖÜ])$"
-						format="${1}"/>
+					<regexp match="^Aus: ([a-zA-Zäöüß&#45;]*, [a-zA-Zäöüß-]*: .*[a-zA-ZäöüßÄÖÜ])$" format="${1}"/>
 				</data>
 				<data source="501-1.a">
 					<regexp
@@ -7295,16 +7137,14 @@
 						format="${1}"/>
 				</data>
 				<data source="501-1.a">
-					<regexp match="^Aus: ([a-zA-Z äöüß&#45;]*: [a-zA-ZäöüßÄÖÜ&#46; ]*[a-zäöüß])$"
-						format="${1}"/>
+					<regexp match="^Aus: ([a-zA-Z äöüß&#45;]*: [a-zA-ZäöüßÄÖÜ&#46; ]*[a-zäöüß])$" format="${1}"/>
 				</data>
 				<data source="501-1.a">
 					<regexp match="^Aus: ([a-zA-Z äöüß&#45;]*: [a-zA-Z\. äöüßÄÖÜ]*)\. (Jg.|Vol.|Bd.|H.|Nr.)"
 						format="${1}"/>
 				</data>
 				<data source="501-1.a">
-					<regexp match="^Aus: ([a-zA-ZäöüßÄÖÜ][a-zA-Z-äöüßÄÖÜ\. ]*[a-zA-Zäöüß\.])"
-						format="${1}"/>
+					<regexp match="^Aus: ([a-zA-ZäöüßÄÖÜ][a-zA-Z-äöüßÄÖÜ\. ]*[a-zA-Zäöüß\.])" format="${1}"/>
 				</data>
 			</choose>
 		</combine>
@@ -7383,8 +7223,7 @@
 		</combine>
 		<!-- set labels for ids from MAB 450s fields -->
 		<call-macro name="setRdfSubject" field="4[56789]3[-ab]1.a"/>
-		<call-macro name="setLabelMAB451-491ToId" field_1="4[56789]3[-ab]1.a"
-			field_2="4[56789]1[-ab]1.a"/>
+		<call-macro name="setLabelMAB451-491ToId" field_1="4[56789]3[-ab]1.a" field_2="4[56789]1[-ab]1.a"/>
 		<call-macro name="setBackRdfSubject" field="4[56789]3[-ab]1.a"/>
 		<!-- ####################### -->
 		<!-- ########## classification -->
@@ -7431,10 +7270,10 @@
 				<regexp match="^([0-2][0-9]|[4-8][0-9]|3[0-4]|91|96|97)\b" format="https://nwbib.de/spatial#N${1}"/>
 			</data>
 		</combine>
-		<combine name="@nwbibSpatialSubject" value="${a}" >
+		<combine name="@nwbibSpatialSubject" value="${a}">
 			<if>
 				<none>
-					<data source="700n[-1].b" />
+					<data source="700n[-1].b"/>
 				</none>
 			</if>
 			<!-- #1012 -->
@@ -7443,7 +7282,7 @@
 			</data>
 		</combine>
 		<data source="700n[-1].a" name="@700uri">
-			<regexp match="^(https://nwbib.de/spatial.*) .*" format="${1}" />
+			<regexp match="^(https://nwbib.de/spatial.*) .*" format="${1}"/>
 		</data>
 		<data source="@700uri" name="http://purl.org/dc/terms/spatial"/>
 		<data source="@700uri" name="~rdf:subject"/>
@@ -7452,53 +7291,53 @@
 			<regexp match=".*\|(\d.*)\|.*" format="${1}"/>
 		</data>
 		<data source="@700uri" name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type">
-			<constant value="http://www.w3.org/2004/02/skos/core#Concept" />
+			<constant value="http://www.w3.org/2004/02/skos/core#Concept"/>
 		</data>
-		<data source="@700uri" name="http://id.loc.gov/ontologies/bibframe/source" >
+		<data source="@700uri" name="http://id.loc.gov/ontologies/bibframe/source">
 			<constant value="https://nwbib.de/spatial"/>
 		</data>
 		<combine name="@700uri2Qid" value="${a}" flushWith="@700uri">
-			 <choose name="a" flushWith="@700uri">
-				<data	source="@700uri" name="a">
+			<choose name="a" flushWith="@700uri">
+				<data source="@700uri" name="a">
 					<lookup in="nwbib-spatial"/>
 					<regexp match=".*\|(http.*)" format="${1}"/>
-				</data> 
-				<data	source="@700uri" name="a">
-					<regexp match="https://nwbib.de/spatial#(.*)" format="http://www.wikidata.org/entity/${1}" />
 				</data>
-			</choose> 
+				<data source="@700uri" name="a">
+					<regexp match="https://nwbib.de/spatial#(.*)" format="http://www.wikidata.org/entity/${1}"/>
+				</data>
+			</choose>
 		</combine>
 		<data source="@700uri2Qid" name="http://www.w3.org/2000/01/rdf-schema#label">
-		 		<lookup in="wd_itemLabelTypesCoordinates"/>
-					<regexp match="(.*?),.*" format="${1}"/>
-		 	</data>
-		<data source="@700uri2Qid" name="http://xmlns.com/foaf/0.1/focus" />	
+			<lookup in="wd_itemLabelTypesCoordinates"/>
+			<regexp match="(.*?),.*" format="${1}"/>
+		</data>
+		<data source="@700uri2Qid" name="http://xmlns.com/foaf/0.1/focus"/>	
 		<!-- build structure using tsv of wd_itemLabelTypesCoordinates -->
-		<data source="@700uri2Qid" name="~rdf:subject"/> 
+		<data source="@700uri2Qid" name="~rdf:subject"/>
 		<data source="@700uri2Qid" name="@wd_itemLabelTypesCoordinates">
 			<lookup in="wd_itemLabelTypesCoordinates"/>
 		</data>
 		<data source="@wd_itemLabelTypesCoordinates" name="@wd_Types">
-			<replace pattern="&quot;" with="" />
+			<replace pattern="&quot;" with=""/>
 			<regexp match=".*,(http.*),Point.*" format="${1}"/>
 		</data>
-		<combine name="@wd_Type" value="${a}" >
-			<data source="@wd_Types" name="a" >
+		<combine name="@wd_Type" value="${a}">
+			<data source="@wd_Types" name="a">
 				<split delimiter=","/>
 			</data>
 		</combine>
-		<combine name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" value="${a}" reset="true" >
+		<combine name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" value="${a}" reset="true">
 			<data source="@wd_Type" name="a">
-				<replace pattern=" " with="" />
+				<replace pattern=" " with=""/>
 			</data>
-	 	</combine>
+		</combine>
 		<data source="@700uri2Qid" name="http://www.w3.org/2000/01/rdf-schema#label">
 			<lookup in="wd_itemLabelTypesCoordinates"/>
 			<regexp match="^(.*?)," format="${1}"/>
 		</data>
 		<entity name="http://schema.org/geo" flushWith="@700uri2Qid" reset="true">
 			<data source="@wd_itemLabelTypesCoordinates" name="http://schema.org/longitude">
-			 <regexp match=".*,Point\((.*) .*\)" format="${1}"/>
+				<regexp match=".*,Point\((.*) .*\)" format="${1}"/>
 			</data>
 			<data source="@wd_itemLabelTypesCoordinates" name="http://schema.org/latitude">
 				<regexp match=".*,Point\(.* (.*)\)" format="${1}"/>
@@ -7596,7 +7435,8 @@
 			</data>
 		</combine>
 		<data source="655e1.u" name="@ezbLabel">
-			<regexp match="http://www.bibliothek.uni-regensburg.de/ezeit.*" format="Elektronische Zeitschriftenbibliothek (EZB)"/>
+			<regexp match="http://www.bibliothek.uni-regensburg.de/ezeit.*"
+				format="Elektronische Zeitschriftenbibliothek (EZB)"/>
 		</data>
 		<combine name="http://purl.org/lobid/lv#inCollection" value="${a}" flushWith="@ezbLabel">
 			<data source="@ezbSubject" name="a"/>
@@ -7604,8 +7444,7 @@
 		<combine name="~rdf:subject" value="${a}" flushWith="@ezbLabel">
 			<data source="@ezbSubject" name="a"/>
 		</combine>
-		<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="${a}"
-			flushWith="@ezbLabel">
+		<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="${a}" flushWith="@ezbLabel">
 			<data source="@ezbLabel" name="a"/>
 		</combine>
 		<combine name="~rdf:subject" value="$[ns-lobid-resource]${id}#!" flushWith="@ezbLabel">
@@ -7659,24 +7498,24 @@
 		<!-- ####################### -->
 		<combine name="@501-1.aConcatted" value="${a}" flushWith="record">
 			<concat delimiter="|" name="a">
-				<data source="501-1.a" >
+				<data source="501-1.a">
 					<replace pattern="^http" with="Siehe: http"/>
 				</data>
 			</concat>
 		</combine>
-		<combine name="@501-1.apConcatted" value="${a}">	
+		<combine name="@501-1.apConcatted" value="${a}">
 			<concat delimiter=": " name="a">
-				<data source="501-1.p" />
-				<data source="@501-1.aConcatted" />
+				<data source="501-1.p"/>
+				<data source="@501-1.aConcatted"/>
 			</concat>
-			</combine>
-		<combine name="@501-1concatted" value="${a}" >
-			<choose >
-				<data source="@501-1.apConcatted" name="a" />
+		</combine>
+		<combine name="@501-1concatted" value="${a}">
+			<choose>
+				<data source="@501-1.apConcatted" name="a"/>
 				<data source="@501-1.aConcatted" name="a"/>
 			</choose>
 		</combine>
-		<combine name="http://id.loc.gov/ontologies/bibframe/note" value="${a}" >
+		<combine name="http://id.loc.gov/ontologies/bibframe/note" value="${a}">
 			<data source="@501-1concatted" name="a">
 				<split delimiter="\|"/>
 			</data>
@@ -7731,8 +7570,7 @@
 		<combine name="~rdf:subject" value="${a}" sameEntity="true">
 			<data source="@nwbibSubject" name="a"/>
 		</combine>
-		<combine name="http://www.w3.org/2004/02/skos/core#notation" value="${a}"
-			sameEntity="true">
+		<combine name="http://www.w3.org/2004/02/skos/core#notation" value="${a}" sameEntity="true">
 			<data source="@nwbibSubject" name="a">
 				<regexp match="https://nwbib.de/subjects#N(\d{6})$" format="${1}"/>
 			</data>
@@ -7743,14 +7581,13 @@
 		<combine name="~rdf:subject" value="${a}" sameEntity="true">
 			<data source="@nwbibSpatialSubject" name="a"/>
 		</combine>
-		<combine name="http://www.w3.org/2004/02/skos/core#notation" value="${a}"
-			sameEntity="true">
+		<combine name="http://www.w3.org/2004/02/skos/core#notation" value="${a}" sameEntity="true">
 			<data source="@nwbibSpatialSubject" name="a">
 				<regexp match="https://nwbib.de/spatial#N(.*)$" format="${1}"/>
 			</data>
 		</combine>
 		<data source="@nwbibSpatialSubject" name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type">
-				<constant value="http://www.w3.org/2004/02/skos/core#Concept"/>
+			<constant value="http://www.w3.org/2004/02/skos/core#Concept"/>
 		</data>
 		<combine name="~rdf:subject" value="$[ns-lobid-resource]${id}#!" flushWith="@nwbibSpatialSubject">
 			<data source="@id" name="id"/>
@@ -7758,8 +7595,7 @@
 		<combine name="~rdf:subject" value="${a}" sameEntity="true">
 			<data source="@rpbSubject" name="a"/>
 		</combine>
-		<combine name="http://www.w3.org/2004/02/skos/core#notation" value="${a}"
-			sameEntity="true">
+		<combine name="http://www.w3.org/2004/02/skos/core#notation" value="${a}" sameEntity="true">
 			<data source="@rpbSubject" name="a">
 				<regexp match="http://purl.org/lobid/rpb#n(\d{6})$" format="${1}"/>
 			</data>
@@ -7771,8 +7607,7 @@
 		<combine name="~rdf:subject" value="${a}" sameEntity="true">
 			<data source="@rpb2Subject" name="a"/>
 		</combine>
-		<combine name="http://www.w3.org/2004/02/skos/core#notation" value="${a}"
-			sameEntity="true">
+		<combine name="http://www.w3.org/2004/02/skos/core#notation" value="${a}" sameEntity="true">
 			<data source="@rpb2Subject" name="a">
 				<regexp match="https://w3id.org/lobid/rpb2#n(\d{3})$" format="${1}"/>
 			</data>
