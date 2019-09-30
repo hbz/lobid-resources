@@ -43,9 +43,6 @@ You may give as 8th parameter a file containing a list of filenames. These will 
 fi
 
 function indexFile() {
-	git checkout $BRANCH
-	git pull origin $BRANCH
-	mvn clean assembly:assembly -DdescriptorId=jar-with-dependencies -DskipTests=true -DskipIntegrationTests
 	mvn exec:java -Dexec.mainClass="org.lobid.resources.run.MabXml2lobidJsonEs" -Dexec.args="$1 $INDEX_NAME $INDEX_ALIAS_SUFFIX $ES_NODE $ES_CLUSTER_NAME $UPDATE_NEWEST_INDEX" -Dexec.cleanupDaemonThreads=false
 }
 
@@ -71,7 +68,11 @@ function indexWhenGeoIndexOk() {
 	fi
 }
 
+# do this only once:
 git fetch
+git checkout $BRANCH
+git pull origin $BRANCH
+mvn clean assembly:assembly -DdescriptorId=jar-with-dependencies -DskipTests=true -DskipIntegrationTests
 indexWhenGeoIndexOk
 
 exit 0
