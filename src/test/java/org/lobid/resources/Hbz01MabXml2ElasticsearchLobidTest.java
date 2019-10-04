@@ -79,7 +79,7 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 	@BeforeClass
 	public static void setup() {
 		try {
-			if (System.getProperty("generateTestData", "true").equals("true")) {
+			if (System.getProperty("generateTestData", "false").equals("true")) {
 				Files.walk(Paths.get(DIRECTORY_TO_TEST_JSON_FILES))
 						.filter(Files::isRegularFile)
 						.forEach(fname -> testFiles.add(fname.getFileName().toString()));
