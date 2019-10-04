@@ -79,7 +79,7 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 	@BeforeClass
 	public static void setup() {
 		try {
-			if (System.getProperty("generateTestData", "false").equals("true")) {
+			if (System.getProperty("generateTestData", "true").equals("true")) {
 				Files.walk(Paths.get(DIRECTORY_TO_TEST_JSON_FILES))
 						.filter(Files::isRegularFile)
 						.forEach(fname -> testFiles.add(fname.getFileName().toString()));
@@ -128,7 +128,11 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 		opener.process(
 				new File(Hbz01MabXmlEtlNtriples2Filesystem.TEST_FILENAME_ALEPHXMLCLOBS)
 						.getAbsolutePath());
-		opener.closeStream();
+		try {
+			opener.closeStream();
+		} catch (Exception e) {
+			// ignore, see #1030
+		}
 
 	}
 
