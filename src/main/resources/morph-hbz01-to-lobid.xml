@@ -7284,6 +7284,15 @@
 		<data source="700n[-1].a" name="@700uri">
 			<regexp match="^(https://nwbib.de/spatial.*) .*" format="${1}"/>
 		</data>
+		<combine name="@700uri" value="${a}">
+			<if >
+				<data source="@nwbibSpatialSubject">
+					<lookup in="nwbib-spatial"/>
+					<regexp match=".*http.*"/>
+				</data>
+			</if>
+			<data source="@nwbibSpatialSubject" name="a"/>
+		</combine>
 		<data source="@700uri" name="http://purl.org/dc/terms/spatial"/>
 		<data source="@700uri" name="~rdf:subject"/>
 		<data source="@700uri" name="http://www.w3.org/2004/02/skos/core#notation">
