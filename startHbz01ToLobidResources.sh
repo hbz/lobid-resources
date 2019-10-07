@@ -10,7 +10,7 @@ UPDATE_NEWEST_INDEX=$7
 UPDATE_LIST=$8
 
 exitCounter=0
-EXIT_COUNTER_MAX=24
+EXIT_COUNTER_MAX=4
 
 echo "You specified:
 $1 $2 $3 $4 $5 $6 $7 $8"
@@ -47,6 +47,7 @@ function indexFile() {
 }
 
 function indexWhenGeoIndexOk() {
+	DATE=$(date "+%Y%m%d-%H%M")
 	if [ $(curl weywot4.hbz-nrw.de:9200/geo_nwbib-staging/_search?q=* | jq .hits.total) -gt 4400 ]; then
 		indexFile $FILE
 		# optionally a file with a list of file names
@@ -63,8 +64,8 @@ function indexWhenGeoIndexOk() {
 		exitCounter=$(($exitCounter+1))
 		echo "WARN: geo_nwbib-staging index too small, building it again"
 		mvn exec:java -Dexec.mainClass="org.lobid.resources.run.WikidataGeodata2Es" -DindexName=geo_nwbib-$DATE -Dupdate=false -DaliasSuffix="-staging" -Dexec.cleanupDaemonThreads=false
+		sleep $((900 * $exitCounter * $exitCounter * $exitCounter)) # progressively wait before probably start all over again
 		indexWhenGeoIndexOk
-		sleep 7200 # wait 2 hours before probably start all over again
 	fi
 }
 
