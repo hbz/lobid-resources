@@ -130,8 +130,8 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 						.getAbsolutePath());
 		try {
 			opener.closeStream();
-		} catch (Exception e) {
-			// ignore, see #1030
+		} catch (NullPointerException e) {
+			// ignore, see https://github.com/hbz/lobid-resources/issues/1030
 		}
 
 	}
