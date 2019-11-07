@@ -7252,6 +7252,12 @@
 		<data source="700n[-1].a" name="@nwbibSubject">
 			<regexp match="(\d{6})" format="https://nwbib.de/subjects#N${1}"/>
 		</data>
+		<data source="700n[-1].0" name="@nwbibSubject">
+			<regexp match="https://nwbib.de/subjects.*"/>
+		</data>
+		<data source="700n[-1].0" name="@nwbibSpatialSubject">
+			<regexp match="https://nwbib.de/spatial.*"/>
+		</data>
 		<!-- ignore '99' in e.g. '700n|a 99|b Bonn', but take 'b' to lookup ID's ,see HT018131501 -->
 		<combine name="@nwbib700_99" value="${b} | ${a}" sameEntity="true">
 			<data source="700n[-1].a" name="a">
@@ -7284,7 +7290,7 @@
 		<data source="700n[-1].a" name="@700uri">
 			<regexp match="^(https://nwbib.de/spatial.*) .*" format="${1}"/>
 		</data>
-		<combine name="@700uri" value="${a}">
+		<combine name="@700uri" value="${a}" flushWith="@nwbibSpatialSubject">
 			<if >
 				<data source="@nwbibSpatialSubject">
 					<lookup in="nwbib-spatial"/>
