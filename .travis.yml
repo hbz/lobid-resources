@@ -3,8 +3,6 @@ jdk: openjdk8
 dist: trusty
 env:
   - ACTIVATOR_VERSION=1.3.10
-before_install:
-  - sh install-dependencies.sh
 install:
   - mvn clean install -e -q --settings settings.xml
 before_script:
