@@ -7269,11 +7269,21 @@
 				<replace pattern="&lt;&lt;" with=""/>
 			</data>
 		</combine>
+		<combine name="@nwbib700_91-only" value="${a}">
+			<if>
+				<none>
+					<data source="700n[-1].b"/>
+				</none>
+			</if>
+			<data source="700n[-1].a" name="a">
+				<regexp match="^91"/>
+			</data>
+		</combine>
 		<!-- geo enrichment nwbib 99 -->
-		<data source="@nwbib700_99" name="http://purl.org/dc/elements/1.1/coverage"/>
+		<data source="@nwbib700_99|@nwbib700_91-only" name="http://purl.org/dc/elements/1.1/coverage"/>
 		<combine name="@nwbibSpatialSubject" value="${a}">
 			<data source="700n[-1].a" name="a">
-				<regexp match="^([0-2][0-9]|[4-8][0-9]|3[0-4]|91|96|97)\b" format="https://nwbib.de/spatial#N${1}"/>
+				<regexp match="^([0-2][0-9]|[4-8][0-9]|3[0-4]|96|97)\b" format="https://nwbib.de/spatial#N${1}"/>
 			</data>
 		</combine>
 		<combine name="@nwbibSpatialSubject" value="${a}">
@@ -7291,7 +7301,7 @@
 			<regexp match="^(https://nwbib.de/spatial.*) .*" format="${1}"/>
 		</data>
 		<combine name="@700uri" value="${a}" flushWith="@nwbibSpatialSubject">
-			<if >
+			<if>
 				<data source="@nwbibSpatialSubject">
 					<lookup in="nwbib-spatial"/>
 					<regexp match=".*http.*"/>
