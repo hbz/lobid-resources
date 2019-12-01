@@ -37,6 +37,7 @@ import org.elasticsearch.client.transport.NoNodeAvailableException;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
+import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.MultiMatchQueryBuilder;
 import org.elasticsearch.index.query.Operator;
 import org.elasticsearch.index.query.QueryBuilder;
@@ -293,6 +294,8 @@ public class ElasticsearchIndexer
 			ArrayNode spatialNode = node.withArray(SPATIAL);
 			HashSet<String> wdIds = new HashSet<>();
 			for (int i = 0; i < coverage.length; i++) {
+				if (coverage[i].contains("Sitz:"))
+					coverage[i] = coverage[i].replaceFirst("\\(Sitz:.*", "");
 				Pair<String, String> query = new Pair<>(
 						coverage[i].replaceAll("[^\\p{IsAlphabetic}]", " ").trim(),
 						WikidataGeodata2Es.NWBIB_LOCATION_CODES_2_WIKIDATA_ENTITIES
@@ -313,12 +316,13 @@ public class ElasticsearchIndexer
 								.must(new MultiMatchQueryBuilder(query.first)
 										.fields(WikidataGeodata2Es.FIELD_BOOST)
 										.type(MultiMatchQueryBuilder.Type.CROSS_FIELDS)
-										.operator(Operator.AND))
+										.operator(Operator.AND));
+					if (query.second != "")
+						queryBuilded = ((BoolQueryBuilder) queryBuilded)
 								.must(new MultiMatchQueryBuilder(query.second)
 										.fields(WikidataGeodata2Es.TYPE_QUERY));
 					hits = client.prepareSearch(index).setQuery(queryBuilded).get()
 							.getHits();
-
 					if (hits.getTotalHits() > 0) {
 						ObjectNode newSpatialNode = mapper
 								.readValue(hits.getAt(0).getSourceAsString(), ObjectNode.class);
