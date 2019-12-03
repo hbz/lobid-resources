@@ -317,7 +317,7 @@ public class ElasticsearchIndexer
 										.fields(WikidataGeodata2Es.FIELD_BOOST)
 										.type(MultiMatchQueryBuilder.Type.CROSS_FIELDS)
 										.operator(Operator.AND));
-					if (query.second != "")
+					if (!query.second.isEmpty())
 						queryBuilded = ((BoolQueryBuilder) queryBuilded)
 								.must(new MultiMatchQueryBuilder(query.second)
 										.fields(WikidataGeodata2Es.TYPE_QUERY));
