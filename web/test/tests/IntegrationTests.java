@@ -153,10 +153,10 @@ public class IntegrationTests extends LocalIndexSetup {
 	public void agentRequest() {
 		running(testServer(3333), () -> {
 			for (String s : Arrays.asList("Westfalen",
-					"http://d-nb.info/gnd/5265186-1", //
+					"https://d-nb.info/gnd/5265186-1", //
 					"Reulecke, Jürgen (1940-)", //
 					"Reiff, Johann J. (1793-1864)", //
-					"http://d-nb.info/gnd/5265186-1,http://d-nb.info/gnd/5265186-1,AND")) {
+					"https://d-nb.info/gnd/5265186-1,https://d-nb.info/gnd/5265186-1,AND")) {
 				assertThat(new Search.Builder()
 						.query(new Queries.Builder().agent(s).build()).build().totalHits())
 								.as(s).isGreaterThanOrEqualTo(1);

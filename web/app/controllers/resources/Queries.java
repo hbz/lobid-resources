@@ -305,9 +305,9 @@ public class Queries {
 				query = createAuthorQuery(lifeDates, search, lifeDatesMatcher);
 			} else if (isAndQuery(search)) {
 				query = multiValueMatchQuery(search);
-			} else if (search.matches("(http://d-nb\\.info/gnd/)?\\d+.*")) {
+			} else if (search.matches("(https://d-nb\\.info/gnd/)?\\d+.*")) {
 				final String term = search.startsWith("http") ? search
-						: "http://d-nb.info/gnd/" + search;
+						: "https://d-nb.info/gnd/" + search;
 				query = multiMatchQuery(term, fields().get(0));
 			} else {
 				query = nameMatchQuery(search);
@@ -356,7 +356,7 @@ public class Queries {
 				String qTrimmed = q.trim();
 				if (qTrimmed.startsWith("http") || qTrimmed.matches("[\\d\\-X]+")) {
 					final String query = qTrimmed.startsWith("http") ? qTrimmed
-							: "http://d-nb.info/gnd/" + qTrimmed;
+							: "https://d-nb.info/gnd/" + qTrimmed;
 					final MatchQueryBuilder subjectIdQuery =
 							matchQuery(!query.contains("d-nb.info/gnd") ? "subject.id"
 									: "subject.componentList.id", query.trim())
