@@ -222,7 +222,7 @@ public class Lobid {
 
 	/**
 	 * @param queryValues The value string of the query, e.g. <br/>
-	 *          `"Eisenbahnlinie,http://d-nb.info/gnd/4129465-8"`
+	 *          `"Eisenbahnlinie,https://d-nb.info/gnd/4129465-8"`
 	 * @return The given string, without URIs, e.g.`"Eisenbahnlinie"`
 	 */
 	public static String withoutUris(String queryValues) {
@@ -326,7 +326,7 @@ public class Lobid {
 	}
 
 	private static boolean isGnd(String term) {
-		return term.startsWith("http://d-nb.info/gnd");
+		return term.startsWith("https://d-nb.info/gnd");
 	}
 
 	/**
