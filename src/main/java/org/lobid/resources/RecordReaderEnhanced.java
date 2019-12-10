@@ -84,8 +84,8 @@ public final class RecordReaderEnhanced
 			ObjectNode node = mapper.readValue(jsonStr, ObjectNode.class);
 			json.put(ElasticsearchIndexer.Properties.INDEX.getName(), INDEX);
 			json.put(ElasticsearchIndexer.Properties.TYPE.getName(), TYPE);
-			json.put(ElasticsearchIndexer.Properties.ID.getName(),
-					node.get("@id").asText().substring("http://d-nb.info/gnd/".length()));
+			json.put(ElasticsearchIndexer.Properties.ID.getName(), node.get("@id")
+					.asText().substring("https://d-nb.info/gnd/".length()));
 			json.put(ElasticsearchIndexer.Properties.GRAPH.getName(), jsonStr);
 		} catch (IOException e) {
 			e.printStackTrace();
