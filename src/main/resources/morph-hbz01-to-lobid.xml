@@ -6812,7 +6812,7 @@
 		<!-- ##########fulltext, toc, seeAlso -->
 		<!-- ####################### -->
 		<!-- fulltext online , if 655 AND 334 exists with "[eE][lL]"ektro.. -->
-		<combine name="@fulltextOnline" value="${link}">
+		<combine name="@fulltextOnlineUri" value="${link}">
 			<data source="334-[12].a">
 				<regexp match="^[eEcC][lLoO]"/>
 			</data>
@@ -6829,6 +6829,15 @@
 				<regexp match="[Ii][Nn][Hh][aA][lL][tT][sS][vV]"/>
 			</data>
 			<data source="@linkUri" name="a"/>
+		</combine>
+		<combine name="@fulltextOnlineUri" value="${a}" sameEntity="true">
+		  <data source="655e[ -1].x">
+        <regexp match="Verlag|Agentur"/>
+      </data>
+      <data source="655e[ -1].z">
+        <regexp match="kostenfrei"/>
+      </data>
+      <data source="@linkUri" name="a"/>
 		</combine>
 		<!--first three chars of "Resolving System" or "Volltext" or "EZB" or "Archivierte Online 
 			Ressource " or "Online-Ausgabe" <=> @fulltextOnlineUri> -->
