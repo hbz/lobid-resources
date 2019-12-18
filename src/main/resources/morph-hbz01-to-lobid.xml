@@ -6811,13 +6811,6 @@
 		<!-- ####################### -->
 		<!-- ##########fulltext, toc, seeAlso -->
 		<!-- ####################### -->
-		<!-- fulltext online , if 655 AND 334 exists with "[eE][lL]"ektro.. -->
-		<combine name="@fulltextOnlineUri" value="${link}">
-			<data source="334-[12].a">
-				<regexp match="^[eEcC][lLoO]"/>
-			</data>
-			<data source="@linkUri" name="link"/>
-		</combine>
 		<combine name="@linkForDescription" value="${a}" sameEntity="true">
 			<data source="655e[ -1].[x3]">
 				<regexp match="[Ii][Nn][Hh][aA][lL][tT][sS][tT]"/>
