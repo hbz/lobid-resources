@@ -81,7 +81,13 @@ public class IndexIntegrationTest extends LocalIndexSetup {
 			{ "hasItem.id:TT003059252\\:DE-5-58\\:9%2F041", /*->*/ 0 },
 			{ "coverage:99", /*->*/ 24},
 			{ "isbn:3454128013", /*->*/ 1},
-			{ "isbn:345-4128-013", /*->*/ 1}
+			{ "isbn:345-4128-013", /*->*/ 1},
+			{ "\"Studies in social and political theory\"", /*->*/ 1},
+			{ "(+Studies +in +social +and +political +theory)", /*->*/ 1},
+			{ "\"Zeitzeuge und Kleinod in Harsewinkel\"", /*->*/ 1},
+			{ "(+Zeitzeuge +und +Kleinod +in +Harsewinkel)", /*->*/ 1},
+			{ "\"Mülheim an der Ruhr\"", /*->*/ 1},
+			{ "(+Mülheim +an +der +Ruhr)", /*->*/ 1}
 		});
 	} // @formatter:on
 
