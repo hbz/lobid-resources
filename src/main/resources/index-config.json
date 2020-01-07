@@ -1,858 +1,112 @@
 {
+   "mappings" : {
+      "_default_" : {
+         "_all" : {
+            "analyzer" : "german_analyzer"
+         }
+      },
+      "resource" : {
+         "_all" : {
+            "analyzer" : "german_analyzer"
+         },
+         "dynamic" : true,
+         "properties" : {
+            "hbzId" : {
+               "index" : true,
+               "type" : "text"
+            },
+            "spatial" : {
+               "type" : "nested",
+               "properties" : {
+                  "700n-b" : {
+                     "index" : "true",
+                     "type" : "text",
+                     "fielddata" : "true"
+                  },
+                  "700n1a" : {
+                     "index" : "true",
+                     "type" : "text",
+                     "fielddata" : "true"
+                  },
+                  "700n-a" : {
+                     "index" : "true",
+                     "type" : "text",
+                     "fielddata" : "true"
+                  },
+                  "700n1b" : {
+                     "type" : "text",
+                     "index" : "true",
+                     "fielddata" : "true"
+                  }
+               },
+               "include_in_parent" : true
+            }
+         },
+         "date_detection" : "false"
+      }
+   },
    "settings" : {
       "index" : {
-         "number_of_shards" : 3,
          "analysis" : {
+            "filter" : {
+               "snowball" : {
+                  "type" : "snowball",
+                  "language" : "German2"
+               },
+               "ngram" : {
+                  "type" : "edgeNGram",
+                  "max_gram" : 40,
+                  "min_gram" : 1
+               }
+            },
+            "char_filter" : {
+               "remove-hyphens" : {
+                  "pattern" : "-",
+                  "type" : "pattern_replace",
+                  "replacement" : ""
+               }
+            },
             "analyzer" : {
-               "german_analyzer" : {
-                  "filter" : [
-                     "lowercase",
-                     "stop",
-                     "snowball"
-                  ],
-                  "tokenizer" : "standard",
-                  "type" : "custom"
-               },
-               "german_analyzer_unstemmed" : {
-                  "filter" : [
-                     "lowercase",
-                     "german_normalization"
-                  ],
-                  "tokenizer" : "standard",
-                  "type" : "custom"
-               },
-               "id_analyzer" : {
-                  "tokenizer" : "keyword",
-                  "filter" : [
-                     "lowercase"
-                  ]
+               "hyphen_analyzer" : {
+                  "char_filter" : "remove-hyphens",
+                  "tokenizer" : "standard"
                },
                "ngram_analyzer" : {
+                  "tokenizer" : "letter",
                   "filter" : [
                      "lowercase",
                      "stop",
                      "ngram",
                      "snowball"
                   ],
-                  "tokenizer" : "letter",
                   "type" : "custom"
                },
-               "hyphen_analyzer": {
-                  "tokenizer": "standard",
-                  "char_filter": "remove-hyphens"
-               }
-            },
-            "filter" : {
-               "ngram" : {
-                  "min_gram" : 1,
-                  "type" : "edgeNGram",
-                  "max_gram" : 40
+               "german_analyzer" : {
+                  "tokenizer" : "standard",
+                  "filter" : [
+                     "lowercase",
+                     "stop",
+                     "snowball"
+                  ],
+                  "type" : "custom"
                },
-               "snowball" : {
-                  "type" : "snowball",
-                  "language" : "German2"
-               }
-            },
-            "char_filter": {
-               "remove-hyphens": {
-                 "type": "pattern_replace",
-                 "pattern": "-",
-                 "replacement": ""
+               "id_analyzer" : {
+                  "filter" : [
+                     "lowercase"
+                  ],
+                  "tokenizer" : "keyword"
+               },
+               "german_analyzer_unstemmed" : {
+                  "type" : "custom",
+                  "filter" : [
+                     "lowercase",
+                     "german_normalization"
+                  ],
+                  "tokenizer" : "standard"
                }
             }
-         }
+         },
+         "number_of_shards" : 3
       }
-   },
-   "mappings" : {
-      "item" : {
-         "date_detection" : "false",
-         "properties" : {
-            "describedBy" : {
-               "properties" : {
-                  "id" : {
-                     "index" : "false",
-                     "type" : "keyword"
-                  },
-                  "label" : {
-                     "type" : "text",
-                     "index": "false"
-                  }
-               }
-            },
-            "type" : {
-               "type" : "keyword"
-            },
-            "itemOf" : {
-               "properties" : {
-                  "label" : {
-                     "index": "false",
-                     "type" : "text"
-                  },
-                  "id" : {
-                     "type" : "keyword",
-                     "index": "false"
-                  }
-               }
-            },
-            "id" : {
-               "type" : "keyword"
-            },
-            "heldBy" : {
-               "properties" : {
-                  "label" : {
-                     "index": "false",
-                     "type" : "text"
-                  },
-                  "id" : {
-                     "type" : "keyword"
-                  }
-               }
-            },
-            "note" : {
-               "index": "false",
-               "type" : "text"
-            },
-            "callNumber" : {
-               "type" : "keyword"
-            }
-         },
-         "_parent" : {
-            "type" : "resource"
-         },
-         "_routing" : {
-            "required" : true
-         },
-         "_all" : {
-            "analyzer" : "german_analyzer"
-         }
-      },
-      "resource" : {
-         "dynamic": false,
-         "properties" : {
-            "inCollection": {
-                "properties": {
-                  "id": {
-                     "type" : "keyword"
-                  },
-                  "label": {
-                    "type": "text",
-                    "index": "false"
-                  },
-                  "type": {
-                    "type": "text",
-                    "index": "false"
-                  }
-                }
-            },
-            "containedIn" : {
-               "properties" : {
-                  "id" : {
-                     "type" : "keyword"
-                  },
-                  "label" : {
-                     "type" : "text",
-                     "index": "false"
-                  }
-               }
-            },
-            "alternativeTitle" : {
-               "analyzer" : "german_analyzer",
-               "type" : "text"
-            },
-            "responsibilityStatement": {
-               "type": "text"
-            },
-            "natureOfContent" : {
-               "properties" : {
-                  "id" : {
-                     "type" : "keyword"
-                  },
-                  "label" : {
-                     "type" : "text"
-                  }
-               }
-            },
-            "successor" : {
-               "properties" : {
-                  "id" : {
-                     "type" : "keyword"
-                  },
-                  "label" : {
-                     "type" : "text"
-                  }
-               }
-            },
-            "predecessor" : {
-               "properties" : {
-                  "id" : {
-                     "type" : "keyword"
-                  },
-                  "label" : {
-                     "type" : "text"
-                  }
-               }
-            },
-            "related" : {
-               "properties" : {
-                  "id" : {
-                     "type" : "keyword"
-                  },
-                  "label" : {
-                     "index" : "false",
-                     "type" : "text"
-                  }
-               }
-            },
-            "supplement" : {
-               "properties" : {
-                  "id" : {
-                     "type" : "keyword"
-                  },
-                  "label" : {
-                     "type" : "text",
-                     "index": "false"
-                  }
-               }
-            },
-            "issued" : {
-               "type" : "text"
-            },
-            "license" : {
-               "properties" : {
-                  "id" : {
-                     "type" : "keyword"
-                  },
-                  "label" : {
-                     "index" : "false",
-                     "type" : "text"
-                  }
-               }
-            },
-            "publication" : {
-               "properties" : {
-                  "location" : {
-                     "type" : "text",
-                     "analyzer" : "german_analyzer"
-                  },
-                  "endDate" : {
-                     "type": "date",
-                     "format": "yyyy"
-                  },
-                  "frequency" : {
-                     "properties" : {
-                        "id" : {
-                           "type" : "keyword"
-                        },
-                        "label" : {
-                           "index" : "false",
-                           "type" : "text"
-                        }
-                     }
-                  },
-                  "publishedBy" : {
-                     "type" : "text",
-                     "search_analyzer" : "german_analyzer",
-                     "analyzer" : "ngram_analyzer"
-                  },
-                  "type" : {
-                     "type" : "keyword"
-                  },
-                  "startDate" : {
-                     "type": "date",
-                     "format": "yyyy"
-                  }
-               }
-            },
-            "language" : {
-               "properties" : {
-                  "label" : {
-                     "type" : "text"
-                  },
-                  "id" : {
-                     "type" : "keyword"
-                  }
-               }
-            },
-            "contributorLabel" : {
-               "type" : "text",
-               "analyzer" : "id_analyzer"
-            },
-            "hbzId" : {
-               "analyzer" : "id_analyzer",
-               "type" : "text"
-            },
-            "subjectAltLabel": {
-               "type": "text",
-               "analyzer" : "german_analyzer",
-               "fields": {
-                    "unstemmed": {
-                        "type": "text",
-                        "analyzer" : "german_analyzer_unstemmed"
-                    }
-                }
-            },
-            "sameAs" : {
-               "properties" : {
-                  "label" : {
-                     "type" : "text"
-                  },
-                  "id" : {
-                     "type" : "text"
-                  }
-               }
-            },
-            "shortTitle" : {
-               "analyzer" : "german_analyzer",
-               "type" : "text"
-            },
-            "dateOfBirthAndDeath": {
-               "type": "text",
-               "index": "false"
-            },
-            "primaryForm": {
-               "properties" : {
-                  "label" : {
-                     "index" : "false",
-                     "type" : "text"
-                  },
-                  "id" : {
-                     "type" : "keyword"
-                  }
-                }
-            },
-            "hasItem" : {
-               "properties" : {
-                  "type" : {
-                     "index" : "false",
-                     "type" : "keyword"
-                  },
-                  "id" : {
-                     "type" : "keyword"
-                  },
-                  "heldBy" : {
-                     "properties" : {
-                        "label" : {
-                           "type" : "text",
-                           "index" : "false"
-                        },
-                        "id" : {
-                           "type" : "keyword"
-                        }
-                     }
-                  },
-                  "note" : {
-                     "type" : "text",
-                     "index" : "false"
-                  },
-                  "callNumber" : {
-                     "type" : "keyword"
-                  }
-               }
-            },
-            "titleKeyword" : {
-               "type" : "text",
-               "analyzer" : "german_analyzer"
-            },
-            "label" : {
-               "type" : "text"
-            },
-            "containsExampleOfWork" : {
-               "properties" : {
-                  "id" : {
-                     "type" : "keyword"
-                  },
-                  "label" : {
-                     "type" : "text"
-                  },
-                  "type" : {
-                     "type" : "text",
-                     "index" : "false"
-                  },
-                  "creatorOfWork" : {
-                     "type" : "text"
-                  }
-               }
-            },
-            "exampleOfWork" : {
-               "properties" : {
-                  "id" : {
-                     "type" : "keyword"
-                  },
-                  "label" : {
-                     "type" : "text"
-                  },
-                  "type" : {
-                     "type" : "text",
-                     "index" : "false"
-                  },
-                  "creatorOfWork" : {
-                     "type" : "text"
-                  }
-               }
-            },
-            "contribution" : {
-               "type" : "nested",
-               "include_in_parent" : "true",
-               "properties" : {
-                  "agent" : {
-                     "properties" : {
-                        "type" : {
-                           "type" : "keyword"
-                        },
-                        "label" : {
-                           "type" : "text",
-                           "analyzer" : "german_analyzer"
-                        },
-                        "dateOfDeath" : {
-                           "type" : "text"
-                        },
-                        "altLabel" : {
-                           "type" : "text",
-                           "analyzer" : "german_analyzer"
-                        },
-                        "dateOfBirth" : {
-                           "type" : "text"
-                        },
-                        "dateOfBirthAndDeath" : {
-                           "type" : "text"
-                        },
-                        "id" : {
-                           "type" : "keyword"
-                        }
-                     }
-                  },
-                  "role" : {
-                     "properties" : {
-                        "id" : {
-                           "type" : "keyword"
-                        },
-                        "label" : {
-                           "type" : "text"
-                        }
-                     }
-                  },
-                  "type" : {
-                     "index" : "false",
-                     "type" : "keyword"
-                  }
-               }
-            },
-            "title" : {
-               "type" : "text",
-               "analyzer" : "german_analyzer"
-            },
-            "titleOfSubSeries" : {
-               "type" : "text",
-               "analyzer" : "german_analyzer"
-            },
-            "medium" : {
-               "properties" : {
-                  "id" : {
-                     "type" : "keyword"
-                  },
-                  "label" : {
-                     "type" : "text"
-                  }
-               }
-            },
-            "subject": {
-               "type" : "nested",
-               "include_in_parent" : "true",
-               "properties": {
-                  "componentList": {
-                     "type" : "nested",
-                     "include_in_parent" : "true",
-                     "properties": {
-                        "id": {
-                           "type" : "keyword"
-                        },
-                        "dateOfBirthAndDeath" : {
-                           "type" : "text"
-                        },
-                        "dateOfBirth" : {
-                           "type" : "text"
-                        },
-                        "dateOfDeath" : {
-                           "type" : "text"
-                        },
-                        "label": {
-                           "type": "text",
-                           "analyzer" : "german_analyzer",
-                           "fields": {
-                              "raw": {
-                                 "type": "keyword"
-                              },
-                              "unstemmed": {
-                                 "type": "text",
-                                 "analyzer" : "german_analyzer_unstemmed"
-                              }
-                           }
-                        },
-                        "source": {
-                           "properties": {
-                              "id": {
-                                 "type": "keyword"
-                              },
-                              "label": {
-                                 "type": "text"
-                              }
-                           }
-                        },
-                        "type": {
-                           "type": "keyword"
-                        }
-                     }
-                  },
-                  "id": {
-                     "type": "keyword"
-                  },
-                  "label": {
-                     "type": "text",
-                     "analyzer" : "german_analyzer",
-                     "fields": {
-                        "raw": {
-                           "type": "keyword"
-                        }
-                      }
-                  },
-                  "notation": {
-                     "type": "keyword"
-                  },
-                  "source": {
-                     "properties": {
-                        "id": {
-                            "type": "keyword"
-                         },
-                         "label": {
-                            "type": "text"
-                         }
-                     }
-                  },
-                  "type": {
-                     "type": "keyword"
-                  }
-               }
-            },
-            "corporateBodyForTitle" : {
-               "type" : "text"
-            },
-            "abstract" : {
-               "type" : "text",
-               "analyzer" : "german_analyzer"
-            },
-            "id" : {
-               "type" : "keyword"
-            },
-            "inSeries" : {
-               "properties" : {
-                  "numbering" : {
-                     "type" : "text"
-                  },
-                  "type" : {
-                     "analyzer" : "id_analyzer",
-                     "type" : "text"
-                  },
-                  "series" : {
-                     "properties" : {
-                        "label" : {
-                           "type" : "text"
-                        },
-                        "id" : {
-                           "type" : "keyword"
-                        }
-                     }
-                  }
-               }
-            },
-            "urn" : {
-               "analyzer" : "id_analyzer",
-               "type" : "text"
-            },
-            "hasSupplement" : {
-               "properties" : {
-                  "label" : {
-                     "type" : "text"
-                  },
-                  "id" : {
-                     "type" : "keyword"
-                  }
-               }
-            },
-            "altLabel" : {
-               "type" : "text"
-            },
-            "similar" : {
-               "properties" : {
-                  "id" : {
-                     "type" : "keyword"
-                  },
-                  "label" : {
-                     "index" : "false",
-                     "type" : "text"
-                  }
-               }
-            },
-            "edition" : {
-               "type" : "text"
-            },
-            "fulltextOnline" : {
-               "properties" : {
-                  "label" : {
-                     "type" : "text"
-                  },
-                  "id" : {
-                     "index" : "false",
-                     "type" : "keyword"
-                  }
-               }
-            },
-            "coverage" : {
-               "type" : "text"
-            },
-            "isPartOf" : {
-               "properties" : {
-                  "hasSuperordinate": {
-                     "properties": {
-                        "id": {
-                          "type": "keyword"
-                        },
-                        "label": {
-                          "index" : "false",
-                          "type": "text"
-                        }
-                     }
-                  },
-                  "numbering": {
-                     "type": "text"
-                  },
-                 "type": {
-                     "index" : "false",
-                     "type": "text"
-                  }
-               }
-            },
-            "itemOf" : {
-               "properties" : {
-                  "label" : {
-                     "index": "false",
-                     "type" : "text"
-                  },
-                  "id" : {
-                     "type" : "keyword",
-                     "index": "false"
-                  }
-               }
-            },
-            "doi" : {
-               "analyzer" : "id_analyzer",
-               "type" : "text"
-            },
-            "bibliographicCitation" : {
-               "type" : "text"
-            },
-            "webPageArchived" : {
-               "properties" : {
-                  "label" : {
-                     "index" : "false",
-                     "type" : "text"
-                  },
-                  "id" : {
-                     "type" : "keyword"
-                  }
-               }
-            },
-            "hasVersion" : {
-               "properties" : {
-                  "id" : {
-                     "index" : "false",
-                     "type" : "keyword"
-                  },
-                  "label" : {
-                     "type" : "text"
-                  }
-               }
-            },
-            "issn" : {
-               "analyzer" : "hyphen_analyzer",
-               "type" : "text"
-            },
-            "otherTitleInformation" : {
-               "analyzer" : "german_analyzer",
-               "type" : "text"
-            },
-            "type" : {
-               "type" : "keyword"
-            },
-            "zdbId" : {
-               "analyzer" : "id_analyzer",
-               "type" : "text"
-            },
-            "note" : {
-               "index" : "false",
-               "type" : "text"
-            },
-            "ismn" : {
-               "type" : "text"
-            },
-            "thesisInformation" : {
-               "type" : "text"
-            },
-            "longitudeAndLatitude" : {
-               "type" : "text",
-               "analyzer" : "id_analyzer"
-            },
-            "describedBy" : {
-               "properties" : {
-                  "dateCreated" : {
-                     "type": "date",
-                     "format": "yyyyMMdd"
-                  },
-                  "id" : {
-                     "index" :"false",
-                     "type" : "keyword"
-                  },
-                  "dateModified" : {
-                     "type": "date",
-                     "format": "yyyyMMdd"
-                  },
-                  "label" : {
-                     "type" : "text",
-                     "index": "false"
-                  },
-                  "modifiedBy" : {
-                     "properties" : {
-                        "id" : {
-                           "type" : "keyword"
-                        },
-                        "label": {
-                           "index" : "false",
-                           "type" : "keyword"
-                        }
-                     }
-                  },
-                  "resultOf" : {
-                     "properties" : {
-                        "endTime" : {
-                           "index" : "false",
-                           "type" : "keyword"
-                        },
-                        "instrument" : {
-                           "properties" : {
-                              "id" : {
-                                 "index" : "false",
-                                 "type" : "keyword"
-                              },
-                              "label" : {
-                                 "index" : "false",
-                                 "type" : "text"
-                              }
-                           }
-                        },
-                        "object" : {
-                           "properties" : {
-                              "id" : {
-                                 "index" : "false",
-                                 "type" : "keyword"
-                              },
-                              "label" : {
-                                 "index" : "false",
-                                 "type" : "text"
-                              }
-                           }
-                        },
-                        "type" : {
-                           "index" : "false",
-                           "type" : "keyword"
-                        }
-                     }
-                  },
-                  "sourceOrganization" : {
-                     "properties" : {
-                        "id" : {
-                           "type" : "keyword"
-                        },
-                        "label": {
-                           "index" : "false",
-                           "type" : "keyword"
-                        }
-                     }
-                  },
-                  "provider" : {
-                     "properties" : {
-                        "id" : {
-                           "type" : "keyword"
-                        },
-                        "label": {
-                           "index" : "false",
-                           "type" : "keyword"
-                        }
-                     }
-                  }
-               }
-            },
-            "isbn" : {
-               "type" : "text",
-               "analyzer" : "hyphen_analyzer"
-            },
-            "oclcNumber" : {
-               "type" : "text"
-            },
-            "spatial" : {
-               "type" : "nested",
-               "include_in_parent" : true,
-               "properties" : {
-                  "focus" : {
-                      "properties" : {
-                          "id" : {
-                              "type" : "keyword"
-                          },
-                          "type" : {
-                              "index": "false",
-                              "type" : "keyword"
-                          },
-                          "geo" : {
-                              "type" : "geo_point"
-                          }
-                      }
-                  },
-                  "id" : {
-                     "type" : "keyword"
-                  },
-                  "label" : {
-                     "analyzer" : "german_analyzer",
-                     "type" : "text"
-                  },
-                  "type" : {
-                     "index": false,
-                     "type": "text"
-                  },
-                  "source": {
-                      "properties": {
-                          "id" : {
-                              "type" : "keyword"
-                          },
-                          "label": {
-                              "index": false,
-                              "type": "text"
-                          }
-                      }
-                  },
-                  "notation": {
-                      "index": true,
-                      "type": "text"
-                  }
-               }
-           }
-         },
-         "date_detection" : "false",
-          "_all" : {
-            "analyzer" : "german_analyzer"
-         }
-      },
-      "_default_" : {
-       "_all" : {
-          "analyzer" : "german_analyzer"
-       }
-    }
    }
 }
