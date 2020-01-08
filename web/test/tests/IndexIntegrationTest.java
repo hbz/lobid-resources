@@ -6,8 +6,9 @@ import static org.fest.assertions.Assertions.assertThat;
 import static play.test.Helpers.fakeApplication;
 import static play.test.Helpers.running;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,7 +32,7 @@ public class IndexIntegrationTest extends LocalIndexSetup {
 	@Parameters(name = "{0}")
 	public static Collection<Object[]> data() {
 		// @formatter:off
-		return Arrays.asList(new Object[][] {
+		return queries(new Object[][] {
 			{ "title:der", /*->*/ 25 },
 			{ "title:Westfalen", /*->*/ 5 },
 			{ "contribution.agent.label:Westfalen", /*->*/ 9 },
@@ -91,13 +92,23 @@ public class IndexIntegrationTest extends LocalIndexSetup {
 		});
 	} // @formatter:on
 
+	private static List<Object[]> queries(Object[][] objects) {
+		List<Object[]> result = new ArrayList<>();
+		for (Object[] testCase : objects) {
+			String s = (String) testCase[0];
+			Integer hits = (Integer) testCase[1];
+			result.add(new Object[] { new Queries.Builder().q(s), /*->*/ hits });
+			result.add(new Object[] { new Queries.Builder().word(s), /*->*/ hits });
+		}
+		return result;
+	}
+
 	private int expectedResultCount;
 	private Search index;
 
-	public IndexIntegrationTest(String queryString, int resultCount) {
+	public IndexIntegrationTest(Queries.Builder query, int resultCount) {
 		this.expectedResultCount = resultCount;
-		this.index = new Search.Builder()
-				.query(new Queries.Builder().q(queryString).build()).build();
+		this.index = new Search.Builder().query(query.build()).build();
 	}
 
 	@Test
