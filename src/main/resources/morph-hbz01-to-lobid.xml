@@ -18,25 +18,48 @@
 		<data source="001-[-1].a" name="@id"/>
 		<combine name="~rdf:subject" value="$[ns-lobid-resource]${id}#!">
 			<data source="@id" name="id"/>
-			<data source="700n[1-].?"/>
+			<data source="700n[-1].[ab]"/>
 		</combine>
 		<combine name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" value="${a}">
-			<data source="700n[1-].?"/>
+			<data source="700n[-1].[ab]"/>
 			<data source="@id" name="a">
 				<regexp match=".*" format="http://purl.org/dc/terms/BibliographicResource"/>
 		</data>
 		</combine>
 		<combine name="$[ns-lobid-vocab]hbzID" value="${a}">
-			<data source="700n[1-].?"/>
+			<data source="700n[-1].[ab]"/>
 			<data source="@id" name="a"/>
 		</combine>
+
+		<data source="078n1.a" name="http://078n1a"/>
+
 		<entity name="http://purl.org/dc/terms/spatial" reset="true" sameEntity="true" flushWith="700n-.b">
 			<data source="700n-.a" name="http://700n-a"/>
 			<data source="700n-.b" name="http://700n-b"/>
 		</entity>
+		<entity name="http://purl.org/dc/terms/spatial" reset="true">
+			<if>
+				<none>
+					<data source="700n-.b"/>
+				</none>
+			</if>
+			<data source="700n-.a" name="http://700n-a"/>
+		</entity>
+
 		<entity name="http://purl.org/dc/terms/spatial" reset="true" sameEntity="true" flushWith="700n1.b">
 			<data source="700n1.a" name="http://700n1a"/>
 			<data source="700n1.b" name="http://700n1b"/>
 		</entity>
+		<entity name="http://purl.org/dc/terms/spatial" reset="true">
+			<if>
+				<none>
+					<data source="700n1.b"/>
+				</none>
+			</if>
+			<data source="700n1.a" name="http://700n1a"/>
+		</entity>
+
+
+
 	</rules>
 </metamorph>
