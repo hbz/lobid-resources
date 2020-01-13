@@ -9,7 +9,7 @@
 @import controllers.resources.Application
 
 @optional(doc: JsValue, key: String, sep: String, alt: String)=@{
-    val other = (doc \\ key)
+    val other = (doc \\ key )
     if(!other.isEmpty){
         sep + other(0).asOpt[String].getOrElse(other(0).as[Seq[JsValue]].map(_.as[String]).mkString("; "))
     } else {alt}
@@ -28,10 +28,11 @@
     }
   }
   </td>
-  <td> <a href="@resources.routes.Application.resource(id)">
-    @optional(doc, "title", "", "<Kein Titel>")
-    @optional(doc, "otherTitleInformation", " | ", "")
-    @optional(doc, "edition", " | ", "")</a>
+  <td> <a href="@resources.routes.Application.resource(id,"json")">
+    @optional(doc, "700n1b", "", "<Kein 700n1b>")
+    @optional(doc, "700n1a", " | ", "")
+    @optional(doc, "700n-b", "", "")
+    @optional(doc, "700n-a", " | ", "")</a>
   </td>
   @defining((doc \ "contribution")) { contribs =>
     <td style="text-align: right"> @((contribs(0) \ "agent" \ "label").asOpt[String].getOrElse(""))

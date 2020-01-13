@@ -1,7 +1,6 @@
 @* Copyright 2015-2018 Fabian Steeg, hbz. Licensed under the EPL 2.0 *@
 
 @(q:String, agent:String, name:String, subject:String, id:String, publisher:String, issued:String, medium: String, owner: String, t: String, sortParam: String, word: String, from: Int, size: Int)
-
 @import controllers.resources.Application
 @import helper._
 
@@ -27,9 +26,6 @@
 
 @facets(facet: String, field: String, current: String, addClass:String = "", allLabel:String = "Alle")={
   <div class="@addClass" id="@field.hashCode.abs-facet">
-      <script>
-        $("#@(Application.ISSUED_FIELD.hashCode.abs)-facet").hide();
-      </script>
       <h5 id="@field.hashCode.abs-header">
         @facetToggle("facets-ul-" + field.hashCode.abs.toString){@facet}
         <span id="@field.hashCode.abs-label">
@@ -56,7 +52,7 @@
             });
           }
           $.ajax({
-            url: '/resources/facets?q=@urlEncode(q)&agent=@urlEncode(agent)&name=@urlEncode(name)&subject=@urlEncode(subject)&publisher=@urlEncode(publisher)&issued=@urlEncode(issued)&medium=@urlEncode(medium)&from=0&size=@size&owner=@urlEncode(owner)&t=@urlEncode(t)&field=@urlEncode(field)&sort=@urlEncode(sortParam)&word=@urlEncode(word)',
+            url: '/resources/facets?q=@urlEncode(q)&agent=&name=&subject=@urlEncode(subject)&publisher=&issued=&medium=&from=0&size=@size&owner=&t=&field=@urlEncode(field)&sort=&word=',
             success: function(data, textStatus, jqXHR) {
               var lis = data.split("</li>");
               lis = lis.slice(0, lis.length-1);
@@ -104,34 +100,17 @@
           <li id="facets-loading-@field.hashCode.abs"><a href="#">Lade @facet...</a></li>
       </ul>
   </div>
+
 }
 
 @facetLabel(current: String, label: String, activeCountId: String = "", currentCount: String = "") = {
   @if(!current.isEmpty){
      <span class="badge" id="facet-filter"><span id="@activeCountId">@currentCount</span> @label</span>
-     <a href="@resources.routes.Application.query(q,if(agent==current) "" else agent,name,if (urisOnly(subject)==current) "" else subject,id,publisher,if(issued==current) "" else issued,if (medium==current) "" else medium,from,size,if (owner==current) "" else owner,if (t==current) "" else t,sortParam,word=word).toString" title="Filter entfernen"><span class="octicon octicon-x"></span></a> 
+     <a href="@resources.routes.Application.query(q,if(agent==current) "" else agent,name,current,id,publisher,if(issued==current) "" else issued,if (medium==current) "" else medium,from,size,if (owner==current) "" else owner,if (t==current) "" else t,sortParam,word=word).toString" title="Filter entfernen"><span class="octicon octicon-x"></span></a> 
    }
-}
-
-@urisOnly(s: String)=@{
-	s.split(",").filter(_.startsWith("http")).mkString(",")
 }
 
 <div class="col-md-3 hide-in-print" style="font-size: small">
   <p class="lead"> Ergebnisse eingrenzen: </p>
-  <h5>@facetToggle("issued-facet-all"){Erscheinungsjahr} @facetLabel(issued, issued)</h5>
-  <div id="issued-facet-all" style="display:none">
-  <p>
-  <div class="row facet"><div class="col-md-12">@facets("Erscheinungsjahre", Application.ISSUED_FIELD, issued, "dropup")</div></div>
-  <div class="row facet"><div class="col-md-12"><canvas id="issued-chart"></canvas></div></div>
-  <div id="slider-range"></div>
-  <input type="text" id="issued-range" readonly value="Lade Erscheinungsjahre...">
-  <div id="issued-div"> <a id="issued-link" style="display:none" href="@resources.routes.Application.query(q,agent,name,subject,id,publisher,issued,medium,from,size,owner,t,sortParam,word=word)">Anwenden</a> </div>
-  </div>
-  <p/>
-  <div class="row facet"><div class="col-md-12">@facets("Mitwirkende", Application.AGENT_FIELD, agent, "dropup")</div></div>
-  <div class="row facet"><div class="col-md-12">@facets("Schlagwörter", Application.SUBJECT_FIELD, if(!urisOnly(subject).isEmpty) urisOnly(subject) else "", "dropup")</div></div>
-  <div class="row facet"><div class="col-md-12">@facets("Medientypen", Application.MEDIUM_FIELD, medium, "dropup")</div></div>
-  <div class="row facet"><div class="col-md-12">@facets("Publikationstypen", Application.TYPE_FIELD, t, "dropup")</div></div>
-  <div class="row facet"><div class="col-md-12">@facets("Bestand in Bibliotheken", Application.OWNER_AGGREGATION, owner, "dropup")</div></div>
+  <div class="row facet"><div class="col-md-12">@facets("spatial.700n1b", "spatial.700n1b", "", "dropup")</div></div>
 </div>

@@ -189,13 +189,6 @@ public class Application extends Controller {
 		final String format = f != null && f.equals("bulk") ? "jsonl" : f;
 
 		final String aggregations = aggs == null ? "" : aggs;
-		if (!aggregations.isEmpty() && !Search.SUPPORTED_AGGREGATIONS
-				.containsAll(Arrays.asList(aggregations.split(",")))) {
-			return Promise.promise(() -> badRequest(views.html.error.render(q,
-					String.format("Unsupported aggregations: %s (supported: %s)",
-							aggregations, Search.SUPPORTED_AGGREGATIONS),
-					"Fehler")));
-		}
 
 		String responseFormat = Accept.formatFor(format, request().acceptedTypes());
 		addResponseHeaders(responseFormat);
