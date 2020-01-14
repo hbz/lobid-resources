@@ -61,7 +61,7 @@
               }
               var ul = $("#facets-ul-@field.hashCode.abs");
               var c = 0;
-              var step = 5;
+              var step = @(size/2+5);
                for(i = 0; i < lis.length; i++){
                  if(i % step == 0 || lis.length-i < step){
                    var divId = c + "more-@field.hashCode.abs";
@@ -111,6 +111,6 @@
 }
 
 <div class="col-md-3 hide-in-print" style="font-size: small">
-  <p class="lead"> Ergebnisse eingrenzen: </p>
+  <div class="row facet"><div class="col-md-12">@facets("spatial.700n1a", "spatial.700n1a", "", "dropup")</div></div>
   <div class="row facet"><div class="col-md-12">@facets("spatial.700n1b", "spatial.700n1b", "", "dropup")</div></div>
 </div>

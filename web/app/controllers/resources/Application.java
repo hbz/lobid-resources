@@ -679,12 +679,7 @@ public class Application extends Controller {
 					ownerQuery, typeQuery, sort(sort, subjectQuery), word, null, field,
 					locationQuery, nested, filter).url();
 
-			String result = String.format("<li " + (current ? "class=\"active\"" : "")
-					+ "><a class=\"%s-facet-link\" href='%s'>"
-					+ "<input onclick=\"location.href='%s'\" class=\"facet-checkbox\" "
-					+ "type=\"checkbox\" %s>&nbsp;%s</input>" + "</a></li>",
-					Math.abs(field.hashCode()), routeUrl, routeUrl,
-					current ? "checked" : "", fullLabel);
+			String result = String.format("<li>%s</li>", fullLabel);
 
 			return result;
 		};
