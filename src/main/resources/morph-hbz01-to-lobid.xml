@@ -638,6 +638,7 @@
 				<choose name="a" flushWith="$[field]??">
 					<data source="@preferredNameConcatEventENDC"/>
 					<data source="@preferredNameConcatEventEDC"/>
+					<data source="@preferredNameConcatEventEC"/>
 					<data source="@altLabelEC"/>
 					<concat delimiter=", " name="a" sameEntity="true" flushWith="$[field][-abcefmn][12].c">
 						<data source="$[field][-abcefmn][12].p"/>
@@ -4204,6 +4205,10 @@
 			<data source="@id" name="id"/>
 		</combine>
 		<data source="[29]??[-abcfep][12].e" name="@preferredNameConcatEventE"/>
+		    <combine name="@preferredNameConcatEventEC" value="${e} (${c})" sameEntity="true">
+      <data source="@preferredNameConcatEventE" name="e"/>
+      <data source="[29]??[-abcfep][12].c" name="c"/>
+    </combine>
 		<combine name="@preferredNameConcatEventEDC" value="${e} (${d} : ${c})" sameEntity="true">
 			<data source="@preferredNameConcatEventE" name="e"/>
 			<data source="[29]??[-abcfep][12].d" name="d"/>
@@ -6343,6 +6348,7 @@
 			<data source="@preferredNameConcatEventENDC"/>
 			<data source="@preferredNameConcatEventEHDC"/>
 			<data source="@preferredNameConcatEventEDC"/>
+			<data source="@preferredNameConcatEventEC"/>
 			<data source="@preferredNameConcatEventE"/>
 			<data source="@nameOfCreatingCorporateBody"/>
 			<data source="@nameOfContributingCorporateBody"/>
