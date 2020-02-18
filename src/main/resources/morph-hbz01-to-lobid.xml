@@ -1398,7 +1398,6 @@
 				<replace pattern="&lt;" with=""/>
 			</data>
 		</combine>
-		<data source="@complexSubjectRswkId9[01234][27]-[12]" name="~rdf:subject"/>
 		<combine name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" value="${a}" reset="true"
 			sameEntity="true">
 			<data source="@rdfTypeSubject" name="a">
@@ -4128,7 +4127,7 @@
 				<data source="[29]?[024678][-a][12].b"/>
 			</concat>
 		</combine>
-		<combine name="@nameOfCreatingCorporateBodyKB" value="${k}. ${b}">
+		<combine name="@nameOfCreatingCorporateBodyKB" value="${k}. ${b}" sameEntity="true">
 			<data source="@nameOfCreatingCorporateBodyB" name="b"/>
 			<data source="@nameOfCreatingCorporateBodyK" name="k"/>
 		</combine>
