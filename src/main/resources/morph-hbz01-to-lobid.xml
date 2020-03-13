@@ -7265,6 +7265,14 @@
 				<regexp match=".*" format="$[ns-lobid-resource]HT014176012#!"/>
 			</data>
 		</combine>
+		<data source="078e[-1].a" name="@078e1aNotZDB">
+			<regexp match="^[^Z][^D][^B].*" />
+		</data>
+		<combine name="http://purl.org/lobid/lv#inCollection" value="https://lobid.org/collections#${a}">
+			<data source="@078e1aNotZDB" name="a">
+				<regexp match="(.*)" format="${1}" />
+			</data>
+		</combine>
 		<combine name="~rdf:subject" value="${a}" sameEntity="true">
 			<data source="078n[-1].a" name="a">
 				<regexp match=".*" format="$[ns-lobid-resource]HT014176012#!"/>
