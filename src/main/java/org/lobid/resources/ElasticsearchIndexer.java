@@ -22,6 +22,15 @@ import java.util.SortedSet;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.StreamSupport;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.common.collect.SortedSetMultimap;
+import com.google.common.collect.TreeMultimap;
+import com.google.gdata.util.common.base.Pair;
+import com.google.gdata.util.common.io.CharStreams;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.elasticsearch.action.admin.cluster.state.ClusterStateRequest;
@@ -51,15 +60,6 @@ import org.metafacture.framework.ObjectReceiver;
 import org.metafacture.framework.annotations.In;
 import org.metafacture.framework.annotations.Out;
 import org.metafacture.framework.helpers.DefaultObjectPipe;
-
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.common.collect.SortedSetMultimap;
-import com.google.common.collect.TreeMultimap;
-import com.google.gdata.util.common.base.Pair;
-import com.google.gdata.util.common.io.CharStreams;
 
 /**
  * Index JSON into elasticsearch.
@@ -311,16 +311,17 @@ public class ElasticsearchIndexer
 					if ((string2wikidataTsv =
 							WikidataGeodata2Es.getQidMap().get(query.first)) != null)
 						queryBuilded = QueryBuilders.idsQuery().addIds(string2wikidataTsv);
-					else
+					else {
 						queryBuilded = QueryBuilders.boolQuery()
 								.must(new MultiMatchQueryBuilder(query.first)
 										.fields(WikidataGeodata2Es.FIELD_BOOST)
 										.type(MultiMatchQueryBuilder.Type.CROSS_FIELDS)
 										.operator(Operator.AND));
-					if (!query.second.isEmpty())
-						queryBuilded = ((BoolQueryBuilder) queryBuilded)
-								.must(new MultiMatchQueryBuilder(query.second)
-										.fields(WikidataGeodata2Es.TYPE_QUERY));
+					    if (!query.second.isEmpty())
+						    queryBuilded = ((BoolQueryBuilder) queryBuilded)
+							    	.must(new MultiMatchQueryBuilder(query.second)
+											.fields(WikidataGeodata2Es.TYPE_QUERY));
+					}
 					hits = client.prepareSearch(index).setQuery(queryBuilded).get()
 							.getHits();
 					if (hits.getTotalHits() > 0) {
