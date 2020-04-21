@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metamorph xmlns="http://www.culturegraph.org/metamorph" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	version="1">
+	<!-- Aleph MAB2 XML to RDF - a mapping of the hbz01 catalog to lobid-resources -->
+	<!-- beware: the sequence of the rules are semantically important! Don't change the order. -->
+	<!-- Aleph MAB differs from MAB in that: -->
+	<!-- an indicator2 exists -->
+	<!-- most fields have a subfield 'a' -->
+	<!-- => structure of alehp MAB: $field$indicator1$indicator2$subfield -->
+	<!-- Filters all rda catalogued entries -->
+	<rules>
+		<!-- ####################### -->
+		<!-- ####### Get subject uri of each rda record -->
+		<!-- ####################### -->
+			<entity name="hbzId[]" flushWith="record" >
+				<data source="035??.a" name="id">
+					<regexp match="^\(DE-605\)(.*)" format="${1}"/>
+				</data>
+			</entity>
+			<data source="084??.a" name="rvk"/>
+	</rules>
+</metamorph>
