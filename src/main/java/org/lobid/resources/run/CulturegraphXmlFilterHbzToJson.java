@@ -11,11 +11,11 @@ import org.metafacture.io.FileOpener;
 import org.metafacture.io.ObjectWriter;
 import org.metafacture.json.JsonEncoder;
 import org.metafacture.mangling.LiteralToObject;
+import org.metafacture.metamorph.Filter;
 import org.metafacture.metamorph.Metamorph;
 import org.metafacture.strings.StringReader;
 import org.metafacture.xml.XmlDecoder;
 import org.metafacture.xml.XmlElementSplitter;
-
 
 /**
  * Filter resources with hbz holdings from culturegraph marcxml, tranform it
@@ -47,6 +47,8 @@ public final class CulturegraphXmlFilterHbzToJson {
 	private static StringReader receiverThread() {
 		final StringReader sr = new StringReader();
 		sr.setReceiver(new XmlDecoder()).setReceiver(new MarcXmlHandler())
+				.setReceiver(new Filter(
+						new Metamorph("src/main/resources/morph-cg-to-es.xml")))
 				.setReceiver(
 						new Metamorph("src/main/resources/morph-cg-to-es.xml"))
 				.setReceiver(new JsonEncoder())

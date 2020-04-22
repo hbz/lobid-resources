@@ -12,11 +12,15 @@
 		<!-- ####################### -->
 		<!-- ####### Get subject uri of each rda record -->
 		<!-- ####################### -->
-			<entity name="hbzId[]" flushWith="record" >
+			<combine name="@hbzId" value="${id}">
 				<data source="035??.a" name="id">
 					<regexp match="^\(DE-605\)(.*)" format="${1}"/>
 				</data>
-			</entity>
-			<data source="084??.a" name="rvk"/>
+			</combine>
+			<combine name="rvk" value="${rvk}" >
+				<data source="084??.a" name="rvk"/>
+				<data source="@hbzId"/>
+			</combine>
+			<data source="@hbzId" name="id" />
 	</rules>
 </metamorph>
