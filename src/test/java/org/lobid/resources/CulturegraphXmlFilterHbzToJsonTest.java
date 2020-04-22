@@ -18,6 +18,7 @@ import org.metafacture.io.FileOpener;
 import org.metafacture.io.ObjectWriter;
 import org.metafacture.json.JsonEncoder;
 import org.metafacture.mangling.LiteralToObject;
+import org.metafacture.metamorph.Filter;
 import org.metafacture.metamorph.Metamorph;
 import org.metafacture.strings.StringReader;
 import org.metafacture.xml.XmlDecoder;
@@ -76,8 +77,9 @@ public final class CulturegraphXmlFilterHbzToJsonTest {
 	private static StringReader receiverThread() {
 		final StringReader sr = new StringReader();
 		sr.setReceiver(new XmlDecoder()).setReceiver(new MarcXmlHandler())
-				.setReceiver(
-						new Metamorph("src/main/resources/morph-cg-to-es.xml"))
+				.setReceiver(new Filter(
+						new Metamorph("src/main/resources/morph-cg-to-es.xml")))
+						.setReceiver(new Metamorph("src/main/resources/morph-cg-to-es.xml"))
 				.setReceiver(new JsonEncoder())
 				.setReceiver(new JsonToElasticsearchBulk("rvk", "cg"))
 				.setReceiver(new ObjectWriter<>(JSON_TEST_FILE));
