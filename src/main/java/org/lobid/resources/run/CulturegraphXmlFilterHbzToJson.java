@@ -25,18 +25,26 @@ import org.metafacture.xml.XmlElementSplitter;
  **/
 @SuppressWarnings("javadoc")
 public final class CulturegraphXmlFilterHbzToJson {
-	private static final String JSON_FILE = "bulk.ndjson";
+	private static final String ELASTICSEARCH_INDEX_NAME = "cg";
+	private static String JSON_FILE="bulk.ndjson";
+	private static final String XML_SPLITTER_ELEMENT = "record";
+	private static final String XML_SPLITTER_TOP_ELEMENT = "marc:collection";
 
 	public static void main(String... args) {
+		String XML_INPUT_FILE =new File(args[0]).getAbsolutePath();
+	
+		if (args.length >1) JSON_FILE=args[1];
+
 		final FileOpener opener = new FileOpener();
 		opener.setReceiver(new XmlDecoder())
-				.setReceiver(
-						new XmlElementSplitter("marc:collection", "record")) //
+				.setReceiver(new XmlElementSplitter(XML_SPLITTER_TOP_ELEMENT,
+						XML_SPLITTER_ELEMENT)) //
 				.setReceiver(new LiteralToObject())
 				.setReceiver(new ObjectThreader<String>())//
 				.addReceiver(receiverThread()); // one thread for it's working
-												// on one file atm
-		opener.process(new File(args[0]).getAbsolutePath());
+												// on one file
+		opener.process(
+				new File(XML_INPUT_FILE).getAbsolutePath());
 		try {
 			opener.closeStream();
 		} catch (final NullPointerException e) {
@@ -47,12 +55,13 @@ public final class CulturegraphXmlFilterHbzToJson {
 	private static StringReader receiverThread() {
 		final StringReader sr = new StringReader();
 		sr.setReceiver(new XmlDecoder()).setReceiver(new MarcXmlHandler())
-				.setReceiver(new Filter(
+				.setReceiver(new Filter( // prevents empty records
 						new Metamorph("src/main/resources/morph-cg-to-es.xml")))
 				.setReceiver(
 						new Metamorph("src/main/resources/morph-cg-to-es.xml"))
 				.setReceiver(new JsonEncoder())
-				.setReceiver(new JsonToElasticsearchBulk("rvk", "cg"))
+				.setReceiver(new JsonToElasticsearchBulk("rvk",
+						ELASTICSEARCH_INDEX_NAME))
 				.setReceiver(new ObjectWriter<>(JSON_FILE));
 		return sr;
 	}
