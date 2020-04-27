@@ -30,18 +30,7 @@ import org.elasticsearch.transport.Netty4Plugin;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.metafacture.biblio.marc21.MarcXmlHandler;
-import org.metafacture.elasticsearch.JsonToElasticsearchBulk;
-import org.metafacture.flowcontrol.ObjectThreader;
-import org.metafacture.io.FileOpener;
-import org.metafacture.io.ObjectWriter;
-import org.metafacture.json.JsonEncoder;
-import org.metafacture.mangling.LiteralToObject;
-import org.metafacture.metamorph.Filter;
-import org.metafacture.metamorph.Metamorph;
-import org.metafacture.strings.StringReader;
-import org.metafacture.xml.XmlDecoder;
-import org.metafacture.xml.XmlElementSplitter;
+import org.lobid.resources.run.CulturegraphXmlFilterHbzToJson;
 
 /**
  * Test of filtering resources with hbz holdings from culturegraph marcxml,
@@ -54,25 +43,23 @@ import org.metafacture.xml.XmlElementSplitter;
 public final class CulturegraphXmlFilterHbzToJsonTest {
 
 	private static final Logger LOG =
-	LogManager.getLogger(CulturegraphXmlFilterHbzToJsonTest.class);
+			LogManager.getLogger(CulturegraphXmlFilterHbzToJsonTest.class);
 
 	private static final String PATH_TO_TEST = "src/test/resources/";
 	private static final String JSON_OUTPUT_FILE =
-	PATH_TO_TEST + "jsonld-cg/bulk.ndjson";
+			PATH_TO_TEST + "jsonld-cg/bulk.ndjson";
+
 	private static final String XML_INPUT_FILE =
-	"/aggregate_auslieferung_20191212.small.marcxml";
-
-	private static final String XML_SPLITTER_ELEMENT = "record";
-	private static final String XML_SPLITTER_TOP_ELEMENT = "marc:collection";
-
+			"/aggregate_auslieferung_20191212.small.marcxml";
 	private static PluginConfigurableNode node;
 	private static Client client;
 	private static final int ELASTICSEARCH_HTTP_PORT = 19200;
-	private static final String ELASTICSEARCH_INDEX_NAME = "cg";
+
 	private static final String ELASTICSEARCH_BULK_URI =
-	"http://localhost:" + ELASTICSEARCH_HTTP_PORT + "/_bulk";
+			"http://localhost:" + ELASTICSEARCH_HTTP_PORT + "/_bulk";
 	private static final String ELASTICSEARCH_TEST_NODE_NAME = "testNodeCgRvk";
-	
+	// classToTest = new CulturegraphXmlFilterHbzToJson();
+
 	private static final Collection<Class<? extends Plugin>> plugins =
 			Arrays.asList(Netty4Plugin.class);
 
@@ -93,7 +80,8 @@ public final class CulturegraphXmlFilterHbzToJsonTest {
 		}
 
 		node = new PluginConfigurableNode(Settings.builder()
-				.put(Node.NODE_NAME_SETTING.getKey(), ELASTICSEARCH_TEST_NODE_NAME)
+				.put(Node.NODE_NAME_SETTING.getKey(),
+						ELASTICSEARCH_TEST_NODE_NAME)
 				.put(NetworkModule.TRANSPORT_TYPE_KEY,
 						NetworkModule.LOCAL_TRANSPORT)
 				.put("http.enabled", "true").put("path.home", "tmp")
@@ -122,35 +110,8 @@ public final class CulturegraphXmlFilterHbzToJsonTest {
 	 * Extract and transform
 	 */
 	private static void etl() {
-		final FileOpener opener = new FileOpener();
-		opener.setReceiver(new XmlDecoder())
-				.setReceiver(new XmlElementSplitter(XML_SPLITTER_TOP_ELEMENT,
-						XML_SPLITTER_ELEMENT)) //
-				.setReceiver(new LiteralToObject())
-				.setReceiver(new ObjectThreader<String>())//
-				.addReceiver(receiverThread()); // one thread for it's working
-												// on one file
-		opener.process(
-				new File(PATH_TO_TEST + XML_INPUT_FILE).getAbsolutePath());
-		try {
-			opener.closeStream();
-		} catch (final NullPointerException e) {
-			// ignore, see https://github.com/hbz/lobid-resources/issues/1030
-		}
-	}
-
-	private static StringReader receiverThread() {
-		final StringReader sr = new StringReader();
-		sr.setReceiver(new XmlDecoder()).setReceiver(new MarcXmlHandler())
-				.setReceiver(new Filter( // prevents empty records
-						new Metamorph("src/main/resources/morph-cg-to-es.xml")))
-				.setReceiver(
-						new Metamorph("src/main/resources/morph-cg-to-es.xml"))
-				.setReceiver(new JsonEncoder())
-				.setReceiver(new JsonToElasticsearchBulk("rvk",
-						ELASTICSEARCH_INDEX_NAME))
-				.setReceiver(new ObjectWriter<>(JSON_OUTPUT_FILE));
-		return sr;
+		CulturegraphXmlFilterHbzToJson.main(PATH_TO_TEST + XML_INPUT_FILE,
+				JSON_OUTPUT_FILE);
 	}
 
 	@SuppressWarnings("static-method")
@@ -163,6 +124,7 @@ public final class CulturegraphXmlFilterHbzToJsonTest {
 		}
 	}
 
+	// TODO: create and use metafacture modul "http-writer"
 	private static void ingest() throws IOException {
 		File jsonFile = new File(JSON_OUTPUT_FILE);
 		HttpEntity entity = new FileEntity(jsonFile);
