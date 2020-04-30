@@ -46,7 +46,7 @@ public final class CulturegraphXmlFilterHbzToJsonTest {
 			LogManager.getLogger(CulturegraphXmlFilterHbzToJsonTest.class);
 
 	private static final String PATH_TO_TEST = "src/test/resources/";
-	private static final String JSON_OUTPUT_FILE =
+	public static final String JSON_OUTPUT_FILE =
 			PATH_TO_TEST + "jsonld-cg/bulk.ndjson";
 
 	private static final String XML_INPUT_FILE =
