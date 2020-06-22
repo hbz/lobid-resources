@@ -14,13 +14,13 @@ HITS=1
 FROM_INITIAL="00000101"
 TO_INITIAL="19800101"
 
-curl --header "Accept-Encoding: gzip" "http://lobid.org/resources/search?q=describedBy.dateCreated:[$FROM_INITIAL%20TO%20$TO_INITIAL]&format=bulk" > $FROM_INITIAL-$TO_INITIAL.jsonl.gz
+curl --globoff --header "Accept-Encoding: gzip" "http://lobid.org/resources/search?q=describedBy.dateCreated:[$FROM_INITIAL%20TO%20$TO_INITIAL]&format=bulk" > $FROM_INITIAL-$TO_INITIAL.jsonl.gz
 
 while [ $HITS != 0 ] ; do
 	TO=$(expr $FROM + $INC )
-	HITS=$(curl "http://lobid.org/resources/search?q=describedBy.dateCreated:[$FROM%20TO%20$TO]&size=1"|jq .totalItems)
+	HITS=$(curl --globoff "http://lobid.org/resources/search?q=describedBy.dateCreated:[$FROM%20TO%20$TO]&size=1"|jq .totalItems)
 	echo "getting $FROM to $TO with total items: $HITS"
-	curl --header "Accept-Encoding: gzip" "http://lobid.org/resources/search?q=describedBy.dateCreated:[$FROM%20TO%20$TO]&format=bulk" > $FROM-$TO.jsonl.gz
+	curl --globoff --header "Accept-Encoding: gzip" "http://lobid.org/resources/search?q=describedBy.dateCreated:[$FROM%20TO%20$TO]&format=bulk" > $FROM-$TO.jsonl.gz
 	GOT_HITS=$(zcat $FROM-$TO.jsonl.gz |wc -l)
 	echo "Got hits ($GOT_HITS), expected ($HITS)"
 	if [ $HITS != $GOT_HITS ]; then	
