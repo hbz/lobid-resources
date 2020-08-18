@@ -82,8 +82,8 @@ $('input.search-resources').autocomplete({
 
 	<h2 id='bulk_downloads'>Bulk-Downloads <small><a href='#bulk_downloads'><span class='glyphicon glyphicon-link'></span></a></small></h2>
 
-	<p>Bulk-Downloads können im Format JSON lines (format=jsonl) bezogen werden:</p>
-	<p><code>curl "https://lobid.org@java.net.URLDecoder.decode(resources.routes.Application.query("contribution.agent.label:Melville", format="jsonl").toString)" > melville.jsonl</code></p>
+	<p>Bulk-Downloads können im Format JSON lines (Accept: application/x-jsonlines oder format=jsonl) bezogen werden:</p>
+	<p><code>curl --header "Accept: application/x-jsonlines" "https://lobid.org@java.net.URLDecoder.decode(resources.routes.Application.query("contribution.agent.label:Melville").toString)" > melville.jsonl</code></p>
 	<p>Für größere Anfragen kann die Antwort als gzip komprimiert werden:</p>
 	<p><code>curl --header "Accept-Encoding: gzip" "https://lobid.org@java.net.URLDecoder.decode(resources.routes.Application.query("contribution.agent.label:Melville", format="jsonl").toString)" > melville.jsonl.gz</code></p>
 	<p>Siehe auch diesen Abschnitt zu <a href="https://blog.lobid.org/2018/07/02/lobid-update.html#bulk-downloads">Bulk-Downloads in unserem Blog</a>.</p>
