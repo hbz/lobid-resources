@@ -67,19 +67,25 @@ $('input.search-resources').autocomplete({
 
 	<p>Standardmäßig liefert dieser Dienst strukturierte API-Antworten (als JSON):</p>
 	<p><code>curl https://lobid.org@resources.routes.Application.resource("HT018472857")</code></p>
-	<p>Er unterstützt Content-Negotiation für JSON (application/json), JSON lines (application/x-jsonlines), RSS (application/rss+xml) und HTML (text/html):</p>
+	<p>Er unterstützt Content-Negotiation für JSON (application/json), RSS (application/rss+xml) und HTML (text/html):</p>
 	<p><code>curl --header "Accept: application/json" https://lobid.org@resources.routes.Application.query("kunst")</code></p>
 	<p><code>curl --header "Accept: application/rss+xml" https://lobid.org@resources.routes.Application.query("kunst")</code></p>
-	<p><code>curl --header "Accept: application/x-jsonlines" https://lobid.org@resources.routes.Application.query("kunst") > kunst.jsonl</code></p>
-	<p>Der Query-Parameter "format" (Werte: html,json,jsonl,rss) kann verwendet werden, um den Accept-Header aufzuheben, z.B. zur Anzeige von JSON im Browser:</p>
+	<p>Der Query-Parameter "format" (Werte: html,json,rss) kann verwendet werden, um den Accept-Header aufzuheben, z.B. zur Anzeige von JSON im Browser:</p>
 	<p><a href='@resources.routes.Application.resource("HT018472857", format="json")'>@resources.routes.Application.resource("HT018472857", format="json")</a></p>
 	<p>Oder zum Abonnieren eines RSS-Feeds:</p>
 	<p><a href='@resources.routes.Application.query("kunst", format="rss")'>@resources.routes.Application.query("kunst", format="rss")</a></p>
 	<p>Der Wert des Format-Parameters kann für Einzeltreffer auch in URLs als Dateiendung verwendet werden:</p>
 	<p><a href='@resources.routes.Application.resourceDotFormat("HT018472857", format="json")'>@resources.routes.Application.resourceDotFormat("HT018472857", format="json")</a></p>
-	<p>Für größere Anfragen kann die Antwort als gzip komprimiert werden:</p>
-	<p><code>curl --header "Accept-Encoding: gzip" "https://lobid.org@resources.routes.Application.query("ehrenfeld", format="jsonl")" > ehrenfeld.gz</code></p>
 	<p>Einzeltreffer unterstützen zudem verschiedene RDF-Serialisierungen (siehe <a href='#jsonld'>Abschnitt zu JSON-LD</a>).</p>
+
+
+	<h2 id='bulk_downloads'>Bulk-Downloads <small><a href='#bulk_downloads'><span class='glyphicon glyphicon-link'></span></a></small></h2>
+
+	<p>Bulk-Downloads können im Format JSON lines (Accept: application/x-jsonlines oder format=jsonl) bezogen werden:</p>
+	<p><code>curl --header "Accept: application/x-jsonlines" "https://lobid.org@java.net.URLDecoder.decode(resources.routes.Application.query("contribution.agent.label:Melville").toString)" > melville.jsonl</code></p>
+	<p>Für größere Anfragen kann die Antwort als gzip komprimiert werden:</p>
+	<p><code>curl --header "Accept-Encoding: gzip" "https://lobid.org@java.net.URLDecoder.decode(resources.routes.Application.query("contribution.agent.label:Melville", format="jsonl").toString)" > melville.jsonl.gz</code></p>
+	<p>Siehe auch diesen Abschnitt zu <a href="https://blog.lobid.org/2018/07/02/lobid-update.html#bulk-downloads">Bulk-Downloads in unserem Blog</a>.</p>
 
 	<h2 id="auto-complete">Autovervollständigung <small><a href='#auto-complete'><span class='glyphicon glyphicon-link'></span></a></small></h2>
 	<p>Die API unterstützt ein spezielles Antwortformat mit Vorschlägen zur Vervollständigung aus einem angegebenen Feld:</p>
