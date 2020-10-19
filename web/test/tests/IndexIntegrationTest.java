@@ -88,7 +88,8 @@ public class IndexIntegrationTest extends LocalIndexSetup {
 			{ "\"Zeitzeuge und Kleinod in Harsewinkel\"", /*->*/ 1},
 			{ "(+Zeitzeuge +und +Kleinod +in +Harsewinkel)", /*->*/ 1},
 			{ "\"Mülheim an der Ruhr\"", /*->*/ 1},
-			{ "(+Mülheim +an +der +Ruhr)", /*->*/ 1}
+			{ "(+Mülheim +an +der +Ruhr)", /*->*/ 1},
+			{ "\"Amtliche Publikation\"", /*->*/ 3}
 		});
 	} // @formatter:on
 

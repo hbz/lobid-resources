@@ -609,6 +609,7 @@ public class Queries {
 			fields.add("subject.label");
 			fields.add("subject.componentList.label");
 			fields.add("subjectAltLabel");
+			fields.add("natureOfContent.label");
 			return fields;
 		}
 
