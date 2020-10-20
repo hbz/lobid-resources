@@ -1,0 +1,46 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "lobid-resources",
+  "description": "This is a generic JSON schema for validating a JSON document against the lobid-resources data model",
+  "type": "object",
+  "properties": {
+    "@context": {
+      "$ref": "context.json"
+    },
+    "id": {
+      "$ref": "id.json"
+    },
+    "type": {
+      "$ref": "type.json"
+    },
+    "contribution": {
+      "$ref": "contribution.json"
+    },
+    "extent": {
+      "title": "Extent",
+      "type": "string"
+    },
+    "hasItem": {
+      "$ref": "hasItem.json"
+    },
+    "note": {
+      "title": "Note",
+      "type": "string"
+    },
+    "responsibilityStatement": {
+      "title": "Responsibility Statement",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "description": {
+      "$ref": "description.json"
+    }
+  },
+  "required": [
+    "@context",
+    "id",
+    "type"
+  ]
+}
