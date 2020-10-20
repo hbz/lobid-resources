@@ -31,13 +31,13 @@
  }
 
 @sort(param: String, label: String)={
-<li @if(sortParam==param){class="active"}>
+<li role="tab" @if(sortParam==param){class="active" aria-selected="true"} else {aria-selected="false" tabindex="-1" aria-controls="@label"}>
   <a href="@resources.routes.Application.query(q,agent,name,subject,id,publisher,issued,medium,from,size,owner,t,param,word=word)">@label</a>
 </li>
 }
 
 @pageLink(num: Int)={
-<li @if(size==num){class="active"}>
+<li role="tab" @if(size==num){class="active" aria-selected="true"} else {aria-selected="false" tabindex="-1" aria-controls="@num"}>
   <a href="@resources.routes.Application.query(q,agent,name,subject,id,publisher,issued,medium,from,num,owner,t,sortParam,word=word)">@num</a>
 </li>
 }
