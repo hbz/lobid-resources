@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rules xmlns="http://www.culturegraph.org/metamorph">
+
+  <!-- 6xx -->
+  <entity name="RSWK[]" flushWith="record">
+    <entity name="" flushWith="600??|6[15][01]??|648??" sameEntity="true">
+      <if>
+        <all flushWith="600??|6[15][01]??|648??" sameEntity="true">
+          <data source="600??.2|6[15][01]??.2|648??.2">
+            <regexp match="^(gnd|swd)$" />
+          </data>
+        </all>
+      </if>
+      <data name="subjectTopicName" source="650??.a">
+        <occurrence only="1" sameEntity="true" />
+        <replace pattern="\.?$" with="" />
+      </data>
+      <data name="subjectGeoName" source="6[105]0??.z|6[15]1??.z|651??.a">
+        <occurrence only="1" sameEntity="true" />
+        <replace pattern="\.?$" with="" />
+      </data>
+      <data name="subjectChronological" source="6[105]0??.y|6[15]1??.y||648??.a">
+        <occurrence only="1" sameEntity="true" />
+        <replace pattern="\.?$" with="" />
+      </data>
+      <data name="subjectConference" source="611??.a">
+        <occurrence only="1" sameEntity="true" />
+        <replace pattern="\.?$" with="" />
+      </data>
+      <data name="subjectCorporateBodyName" source="610??.a">
+        <occurrence only="1" sameEntity="true" />
+        <replace pattern="\.?$" with="" />
+      </data>
+      <data name="subjectCorporateBodySubUnit" source="610??.b">
+        <occurrence only="1" sameEntity="true" />
+        <replace pattern="\.?$" with="" />
+      </data>
+      <data name="subjectDate" source="600??.d|611??.d">
+        <occurrence only="1" sameEntity="true" />
+        <replace pattern="\s?[:.]?$" with="" />
+      </data>
+      <data name="subjectGenre" source="6[105]0??.v|6[15]1??.v">
+        <occurrence only="1" sameEntity="true" />
+        <replace pattern="\.?$" with="" />
+      </data>
+      <data name="subjectNumbering" source="61[01]??.n">
+        <occurrence only="1" sameEntity="true" />
+        <replace pattern="^[(]|\s?[);:]?$" with="" />
+      </data>
+      <data name="subjectPersonName" source="600??.a">
+        <occurrence only="1" sameEntity="true" />
+        <replace pattern="[,.]?$" with="" />
+      </data>
+      <data name="subjectTitleName" source="6[01]0??.t|611??.t">
+        <occurrence only="1" sameEntity="true" />
+        <replace pattern="\.?$" with="" />
+      </data>
+      <data name="subjectUnit" source="61[10]??.p" >
+        <occurrence only="1" sameEntity="true" />
+        <replace pattern="\.?$" with="" />
+      </data>
+      <data name="subjectNameAddendum" source="600??.c">
+        <occurrence only="1" sameEntity="true" />
+        <replace pattern="^[(]|[.)]?$" with="" />
+      </data>
+      <data name="subjectGeoAddendum" source="61[01]??.c">
+        <occurrence only="1" sameEntity="true" />
+        <replace pattern="^[(]|[.)]?$" with="" />
+      </data>
+
+      <entity name="subjectIdentifier[]" flushWith="600??|6[15][01]??|648??" sameEntity="true">
+        <data name="" source="600??.0|6[15][01]??.0|648??.0" />
+      </entity>
+      <entity name="identifierGND[]" flushWith="600??|6[15][01]??|648??" sameEntity="true">
+        <data name="" source="600??.0|6[15][01]??.0|648??.0">
+          <regexp match="(?&lt;=\(DE-588\)).*$" />
+        </data>
+      </entity>
+    </entity>
+  </entity>
+</rules>

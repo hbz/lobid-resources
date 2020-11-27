@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<macros xmlns="http://www.culturegraph.org/metamorph">
+
+  <macro name="regex-del-punctuation-end">
+    <data source="$[dsource]" name="$[dname]">
+      <replace pattern="^[©]|\s?[,.:;/=]?$" with="" />
+    </data>
+  </macro>
+
+  <macro name="personName">
+    <data name="$[dname]" source="$[field][013] .a">
+      <replace pattern="(?&lt;!\p{Upper})\.$|[,]$" with="" />
+    </data>
+  </macro>
+
+  <macro name="personNumbering">
+    <data name="$[name]" source="$[field][013] .b">
+      <replace pattern="[,]$" with="" />
+    </data>
+  </macro>
+
+  <macro name="personTitle">
+    <entity name="$[name][]" flushWith="$[field][013] " sameEntity="true">
+      <data name="" source="$[field][013] .c">
+        <replace pattern="[,]$" with="" />
+      </data>
+    </entity>
+  </macro>
+
+  <macro name="personBio">
+    <data name="$[name]" source="$[field][013] .d">
+      <replace pattern="[.]$" with="" />
+    </data>
+  </macro>
+
+  <macro name="personRole">
+    <entity name="$[name][]" flushWith="$[field][013] " sameEntity="true">
+      <data name="" source="$[field][013] .e">
+        <compose prefix="[" postfix="]" />
+      </data>
+    </entity>
+  </macro>
+
+  <macro name="personIdentifier">
+    <entity name="$[dname][]" flushWith="$[field][013] " sameEntity="true">
+      <data name="" source="$[field][013] .0">
+        <regexp match="^\(DE-588\).*$"/>
+      </data>
+    </entity>
+  </macro>
+
+  <macro name="identifierGND">
+    <entity name="$[name][]" flushWith="$[field][0123] " sameEntity="true">
+      <data name="" source="$[field][0123] .0">
+        <regexp match="(?&lt;=\(DE-588\)).*$" />
+      </data>
+    </entity>
+  </macro>
+
+  <macro name="static-filter">
+    <combine name="$[dname]" value="${value}" sameEntity="true">
+      <if>
+        <data source="$[filter]">
+          <equals string="$[value]" />
+        </data>
+      </if>
+      <data name="value" source="$[source]" />
+    </combine>
+  </macro>
+
+	<macro name="dynamic-filter">
+		    <combine name="$[dname]" value="${value}" sameEntity="true">
+      <if>
+				<equalsFilter name="" value="" flushWith="$[value]" reset="true"> <!--flushIncomplete="false" pchbz todo-->
+          <data source="$[filter]" />
+          <data source="$[value]" />
+        </equalsFilter>
+      </if>
+      <data name="value" source="$[source]" />
+    </combine>
+  </macro>
+
+  <macro name="alma-mms-to-isil">
+    <data name="$[dname]" source="$[source]">
+      <regexp match="....$" />
+      <lookup in="alma-institution-code-to-isil" />
+    </data>
+  </macro>
+
+  <macro name="simplify-date">
+    <data name="$[dname]" source="$[dsource]">
+      <replace pattern="-" with="" />
+			<replace pattern=" .*" with="" />
+			<replace pattern="c|©|\s?|,|.|:|;|/|=" with="" />
+			<regexp match="\d{4}" />
+    </data>
+  </macro>
+
+</macros>
