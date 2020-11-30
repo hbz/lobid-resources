@@ -688,9 +688,9 @@ public class Application extends Controller {
 
 			String result = String.format("<li " + (current ? "class=\"active\"" : "")
 					+ "><a class=\"%s-facet-link\" href='%s'>"
-					+ "<input onclick=\"location.href='%s'\" class=\"facet-checkbox\" "
-					+ "type=\"checkbox\" %s>&nbsp;%s</input>" + "</a></li>",
-					Math.abs(field.hashCode()), routeUrl, routeUrl,
+					+ "<label for=\"%s\"><input id=\"%s\" onclick=\"location.href='%s'\" class=\"facet-checkbox\" "
+					+ "type=\"checkbox\" %s>&nbsp;%s</input></label>" + "</a></li>",
+					Math.abs(field.hashCode()), routeUrl, routeUrl, routeUrl, routeUrl,
 					current ? "checked" : "", fullLabel);
 
 			return result;
