@@ -17,6 +17,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import com.google.common.io.CharStreams;
+
 import org.elasticsearch.action.admin.indices.refresh.RefreshRequest;
 import org.elasticsearch.action.bulk.BulkItemResponse;
 import org.elasticsearch.action.bulk.BulkRequestBuilder;
@@ -30,8 +32,6 @@ import org.elasticsearch.common.xcontent.XContentType;
 import org.elasticsearch.env.Environment;
 import org.elasticsearch.node.Node;
 import org.elasticsearch.node.NodeValidationException;
-
-import com.google.common.io.CharStreams;
 
 import play.Logger;
 import play.libs.Json;
@@ -47,6 +47,7 @@ public class LocalIndex {
 	private static final String TEST_CONFIG =
 			"../src/main/resources/index-config.json";
 	private static final String TEST_DATA = "../src/test/resources/jsonld";
+	private static final String TEST_DATA_ITEMS = TEST_DATA + "/items";
 
 	private Node node;
 	private Client client;
@@ -72,9 +73,9 @@ public class LocalIndex {
 		client.admin().indices().prepareDelete("_all").execute().actionGet();
 		client.admin().cluster().prepareHealth().setWaitForYellowStatus().execute()
 				.actionGet();
-		File sampleDataRoot = new File(TEST_DATA);
 		BulkRequestBuilder bulkRequest = client.prepareBulk();
-		readTestData(sampleDataRoot, bulkRequest);
+		readTestData(new File(TEST_DATA), bulkRequest);
+		readTestData(new File(TEST_DATA_ITEMS), bulkRequest);
 		final List<BulkItemResponse> failed = new ArrayList<>();
 		if (bulkRequest.numberOfActions() > 0)
 			runBulkRequest(bulkRequest, failed);
@@ -101,7 +102,7 @@ public class LocalIndex {
 
 	private void readTestData(File sampleDataRoot,
 			BulkRequestBuilder bulkRequest) {
-		Arrays.asList(sampleDataRoot.listFiles()).forEach((file) -> {
+		Arrays.asList(sampleDataRoot.listFiles(f -> f.getAbsolutePath().endsWith("json"))).forEach((file) -> {
 			try {
 				String data = Files
 						.readAllLines(Paths.get(file.getAbsolutePath()),
@@ -109,7 +110,7 @@ public class LocalIndex {
 						.stream().map(String::trim).collect(Collectors.joining());
 				boolean isItem = file.getName().contains(":");
 				String type = isItem ? "item" : "resource";
-				String id = file.getName();
+				String id = file.getName().replaceFirst("\\.json$", "");
 				String parent = isItem
 						? "http://lobid.org/resources/" + file.getName().split(":")[0] : "";
 				final Map<String, Object> map =

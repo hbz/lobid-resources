@@ -311,8 +311,10 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 				filename = ((String) map.get("id"))
 						.replaceAll("http://lobid.org/" + ".*/", "").replaceAll("#!$", "");
 				testFiles.remove(filename);
-				filename = DIRECTORY_TO_TEST_JSON_FILES + filename;
-				if (!new File(filename).exists())
+				if (filename.contains(":"))
+				filename="items/"+filename;
+				filename = DIRECTORY_TO_TEST_JSON_FILES + filename+".json";
+				if (!new File(filename).exists()) 
 					writeFile(filename, mapper.writeValueAsString(map));
 				else {
 					try (FileInputStream fis = new FileInputStream(filename)) {
