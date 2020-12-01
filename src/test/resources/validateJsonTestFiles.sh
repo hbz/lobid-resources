@@ -2,9 +2,15 @@
 # Description: Tests generated JSON files against schemas
 # Prerequisites: install 'ajv':$  npm install -g ajv-cli
 
+# old transformation of Aleph data, known to be often invalid:
+# DIRECTORY_OF_JSON_TO_VALIDATE="jsonld/"
+# new transformation of Alma data:
+DIRECTORY_OF_JSON_TO_VALIDATE="alma/"
+
+
 for version in "draft"; do
 	echo "Testing version: $version"
-	ajv test -s ../schemas/resource.json -r "../schemas/*.json" -d "../resources/jsonld/*.json" --valid
+	ajv test -s schemas/resource.json -r "schemas/*.json" -d "${DIRECTORY_OF_JSON_TO_VALIDATE}/*.json" --valid
 done
 
 if [ $? -eq 0 ]
