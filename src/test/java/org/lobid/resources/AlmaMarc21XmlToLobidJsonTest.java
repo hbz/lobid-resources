@@ -8,7 +8,6 @@ import static org.junit.Assert.fail;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.PrintStream;
-import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.HashMap;
 
@@ -105,7 +104,7 @@ public final class AlmaMarc21XmlToLobidJsonTest {
             opener.closeStream();
             if (!GENERATE_TESTDATA) {
               String actualJson = null;
-              actualJson = baos.toString(StandardCharsets.UTF_8);
+              actualJson = baos.toString();
               LOG.debug(actualJson);
               // don't test the dynamically created "endTime", e.g:
               // "endTime":"2020-11-30T10:03:42",
