@@ -42,19 +42,21 @@
   </macro>
 
   <macro name="personIdentifier">
-    <entity name="$[dname][]" flushWith="$[field][013] " sameEntity="true">
-      <data name="" source="$[field][013] .0">
-        <regexp match="^\(DE-588\).*$"/>
+      <data name="$[dname]" source="$[field][013] .0">
+        <regexp match="(?&lt;=\(DE-588\)).*$"/>
       </data>
-    </entity>
   </macro>
 
-  <macro name="identifierGND">
-    <entity name="$[name][]" flushWith="$[field][0123] " sameEntity="true">
-      <data name="" source="$[field][0123] .0">
+  <macro name="gndIdentifier">
+      <data name="$[name]" source="$[field][0123] .0">
         <regexp match="(?&lt;=\(DE-588\)).*$" />
       </data>
-    </entity>
+  </macro>
+
+  <macro name="gndIdentifierId">
+      <data name="id" source="$[field][0123] .0">
+				<regexp match="(?&lt;=\(DE-588\))(.*)$" format="https://d-nb.info/gnd/${1}" />
+      </data>
   </macro>
 
   <macro name="static-filter">

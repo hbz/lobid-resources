@@ -139,13 +139,14 @@
           <constant value="Contribution"/>
         </data>
 			</entity>
-			<entity name="agent" flushWith="100[013] " reset="true">
-				<call-macro name="personIdentifier" dname="id"    field="100" />
-					<!--<call-macro name="identifierGND" dname="id"    field="100" />
+			<entity name="agent" flushWith="100[013] " sameEntity="true" reset="true">
+				<call-macro name="gndIdentifier"  field="100" />
+				<call-macro name="gndIdentifierId"  field="100" />
+				<!--
       <call-macro name="personTitle"      field="100" />
       <call-macro name="personBio"        field="100" />
       <call-macro name="personRole"       field="100" />
-      <call-macro name="identifierGND"    field="100" />
+      <call-macro name="gndIdentifier"    field="100" />
 						-->
 				<call-macro name="personName"       dname="label" field="100" />
         <entity name="type[]" reset="true">
@@ -171,7 +172,8 @@
         </data>
       </entity>
       <entity name="agent" flushWith="700[013] " reset="true">
-        <call-macro name="personIdentifier" dname="id"    field="700" />
+        <call-macro name="personIdentifier" dname="gndIdentifier"    field="700" />
+        <call-macro name="gndIdentifierId"    field="700" />
         <call-macro name="personName"       dname="label" field="700" />
         <entity name="type[]" reset="true">
           <data name="" source="700[013] .a">
@@ -189,7 +191,7 @@
           <regexp match="^([Aa]ut|[Cc]re)" format="http://id.loc.gov/vocabulary/relators/cre"/>
 				</data>
 				<data name="label" source="700[013] .[4e]">
-          <regexp match="^([Aa]ut|[Cc]re)" format="http://id.loc.gov/vocabulary/relators/cre"/>
+					<regexp match="^([Aa]ut|[Cc]re)" format="Autor/in"/>
 				</data>
 			</entity>
 			<entity name="role" reset="true">
@@ -214,9 +216,11 @@
 				</data>
 			</entity>
 			<entity name="agent" flushWith="[17]10[012] " reset="true">
-				<data name="id" source="[17]10[012] .0">
-					<regexp match="^\(DE-588\).*$"/>
-				</data>
+				<combine name="id" value="${a}">
+					<data name="a" source="[17]10[012] .0">
+						<regexp match="^\(DE-588\)(.*)$" format="https://d-nb.info/gnd/$1"/>
+					</data>
+				</combine>
 				<data name="label" source="[17]10[012] .a">
 				  <replace pattern="\.$" with=""/>
 				</data>
@@ -300,7 +304,7 @@
           <replace pattern="\.$" with="" />
         </data>
       </entity>
-            <call-macro name="identifierGND" field="[17]10" />
+            <call-macro name="gndIdentifier" field="[17]10" />
     </entity>
 	</entity> todo-->
 
@@ -329,7 +333,7 @@
         <regexp match="^\(DE-588\).*$" />
       </data>
     </entity>
-    <call-macro name="identifierGND" field="111" />
+    <call-macro name="gndIdentifier" field="111" />
   </entity>
 	</entity>
 
