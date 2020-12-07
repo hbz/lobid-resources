@@ -43,7 +43,7 @@ public final class AlmaMarc21XmlToLobidJsonTest {
       System.getProperty("generateTestData", "false").equals("true");
   private static final PrintStream ORIG_OUT = System.out;
   private static final Logger LOG =
-      LogManager.getLogger(Hbz01MabXmlEtlNtriples2Filesystem.class);
+      LogManager.getLogger(AlmaMarc21XmlToLobidJsonTest.class);
 
   /**
    * Sets necessary morph variables.
