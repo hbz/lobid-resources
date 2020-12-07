@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <rules xmlns="http://www.culturegraph.org/metamorph">
   <entity name="hasItem[]" flushWith="record">
-    <entity name="" reset="true" sameEntity="true" flushWith="@isiliz">
-			<combine name="id" value="https://dummy.hbz.de/${a}_pchbz_todo_brauchen_wir_das">
-				<data name="a" source="@isiliz"/>
+    <entity name="" reset="true" sameEntity="true">
+			<combine name="id" value="https://lobid.org/item/${i}">
+				<data name="i" source="MBD  .i"/>
 			</combine>
       <entity name="type[]" sameEntity="true">
         <data name="" source="@isiliz">
