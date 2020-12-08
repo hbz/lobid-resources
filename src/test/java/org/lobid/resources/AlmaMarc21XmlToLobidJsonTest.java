@@ -39,7 +39,7 @@ public final class AlmaMarc21XmlToLobidJsonTest {
   private static final File DIRECTORY = new File("src/test/resources/alma/");
   private static final String XML = "xml";
   final HashMap<String, String> morphVariables = new HashMap<>();
-  private static final boolean GENERATE_TESTDATA =
+  private static  boolean GENERATE_TESTDATA =
       System.getProperty("generateTestData", "false").equals("true");
   private static final PrintStream ORIG_OUT = System.out;
   private static final Logger LOG =
@@ -80,13 +80,7 @@ public final class AlmaMarc21XmlToLobidJsonTest {
           final String filenameJson =
               file.getAbsolutePath().replaceAll("\\." + XML, "\\.json");
           try {
-            JsonNode expectedJsonNode = mapper.readTree(new File(filenameJson));
-            Object expectedJsonObject =
-                mapper.readValue(expectedJsonNode.toString(), Object.class);
-            String expectedJson = mapper.writerWithDefaultPrettyPrinter()
-                .writeValueAsString(expectedJsonObject);
             FileOpener opener = new FileOpener();
-
             opener.setReceiver(new XmlDecoder())
                 .setReceiver(new MarcXmlHandler())
                 .setReceiver(new Metamorph(MORPH, morphVariables))
@@ -103,6 +97,11 @@ public final class AlmaMarc21XmlToLobidJsonTest {
             opener.process(file.getAbsolutePath());
             opener.closeStream();
             if (!GENERATE_TESTDATA) {
+              JsonNode expectedJsonNode = mapper.readTree(new File(filenameJson));
+              Object expectedJsonObject =
+                  mapper.readValue(expectedJsonNode.toString(), Object.class);
+              String expectedJson = mapper.writerWithDefaultPrettyPrinter()
+                  .writeValueAsString(expectedJsonObject);
               String actualJson = null;
               actualJson = baos.toString();
               LOG.debug(actualJson);
