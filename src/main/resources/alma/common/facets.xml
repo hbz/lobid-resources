@@ -88,7 +88,6 @@
   <data source="008" name="@008Pos34">
     <substring start="34" end="35" />
   </data>
-
   <data source="@LeaderPos06" name="@type">
     <lookup in="typeLeader06" />
   </data>
@@ -109,7 +108,7 @@
     <if>
       <all>
         <data source="@LeaderPos06">
-          <equals string="a" />
+          <regexp match="[am]" />
         </data>
         <data source="@LeaderPos07">
           <regexp match="[bis]" />
@@ -964,11 +963,11 @@
     </if>
     <data source="001" />
   </combine>
-  <combine name="@facet_type" value="Series">
+  <combine name="@facet_type" value="Periodical">
     <if>
       <any>
         <data source="@LeaderPos07">
-          <equals string="c" />
+          <regexp match="[cs]" />
         </data>
         <all>
           <data source="@type">
