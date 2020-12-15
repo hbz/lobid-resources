@@ -1,0 +1,726 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rules xmlns="http://www.culturegraph.org/metamorph">
+
+  <!-- 0xx -->
+	<!--  <choose name="@_isil">
+    <data source="@isil" />
+    <data source="001">
+      <constant value="$[isil]" />
+    </data>
+	</choose>-->
+  <combine name="@id" value="${id}">
+		<choose name="id">
+	    <data name="id" source="035  .a" >
+				<regexp match="\(DE-605\)(.*)" format="${1}"/>
+			</data>
+			<data name="id" source="001">
+				<regexp match="(.*)" format="ALMA${1}"/>
+			</data>
+		</choose>
+  </combine>
+  <data name="@uid" source="@id" />
+  <data name="hbzId" source="009" />
+  <data name="id" source="@id" >
+		<regexp match="(.*)" format="http://lobid.org/resources/${1}#!"/>
+	</data>
+
+		<!--  <data name="collection_pchbz_eher_zu_item" source="@_isil" />-->
+		<!--
+  <combine name="@date1" value="${date1}">
+    <if>
+      <all>
+        <data source="@type">
+          <equals string="CR" />
+        </data>
+        <data source="008">
+          <substring start="6" end="7" />
+          <not-equals string="n" />
+        </data>
+      </all>
+    </if>
+    <data name="date1" source="008">
+      <substring start="07" end="11" />
+    </data>
+  </combine>
+  <entity name="DateFirst">
+    <data name="date" source="@date1">
+      <regexp match="^[0-9]+$" />
+    </data>
+  </entity>
+  <combine name="@date2" value="${date2}">
+    <if>
+      <all>
+        <data source="@type">
+          <equals string="CR" />
+        </data>
+        <data source="008">
+          <substring start="6" end="7" />
+          <regexp match="[^cn]" />
+        </data>
+      </all>
+    </if>
+    <data name="date2" source="008">
+      <substring start="11" end="15" />
+    </data>
+  </combine>
+  <entity name="DateLast">
+    <data name="date" source="@date2">
+      <regexp match="^[0-9]+$" />
+    </data>
+  </entity>
+		-->
+  <data name="@language_source_all" source="008">
+    <substring start="35" end="38" />
+  </data>
+  <data name="@language_source_all" source="041[ 01] .[adj]" />
+  <data name="@language_source" source="@language_source_all">
+    <unique />
+  </data>
+  <data name="@language_long" source="@language_source">
+    <lookup in="ISO639-2-to-GND" />
+  </data>
+  <entity name="language[]" flushWith="record">
+    <entity name="" flushWith="@language_source" reset="true">
+      <data name="id" source="@language_source" >
+				<regexp match="(.*)" format="http://id.loc.gov/vocabulary/iso639-2/${1}"/>
+			</data>
+      <data name="label" source="@language_long" />
+    </entity>
+  </entity>
+
+  <entity name="IdentifierZDB[]" flushWith="record">
+    <entity name="" flushWith="0167 " sameEntity="true">
+      <if>
+        <any flushWith="0167 ">
+          <none flushWith="0167 " sameEntity="true">
+            <data source="0167 .2" />
+          </none>
+          <data source="0167 .2">
+            <equals string="DE-600" />
+          </data>
+        </any>
+      </if>
+      <data name="identifierZDB" source="0167 .a" >
+       <!-- <java class="hbz.limetrans.metamorph.ZDB" /> -->
+      </data>
+    </entity>
+  </entity>
+
+  <entity name="isbn[]" flushWith="record">
+        <if>
+          <data source="020  .a" />
+        </if>
+        <data name="" source="020  .a" />
+        <data name="" source="020  .c" />
+        <data name="" source="020  .q">
+          <replace pattern="^\(|\s?[):;,]\s?$" with="" />
+        </data>
+  </entity>
+  <entity name="issn[]" flushWith="record">
+		<data name="" source="022? .a">
+			<replace pattern="-" with="" />
+		</data>
+  </entity>
+
+  <entity name="IdentifierDOI[]" flushWith="record">
+      <if>
+        <data source="0247?.2">
+          <equals string="doi" />
+        </data>
+      </if>
+      <data name="" source="0247?.a" />
+  </entity>
+
+	<entity name="contribution[]" flushWith="record">
+<!-- 100[013]-->
+		<entity name="" flushWith="100[013] " sameEntity="true">
+			<entity name="type[]" reset="true">
+        <data name="" source="100[013] ">
+          <constant value="Contribution"/>
+        </data>
+			</entity>
+			<entity name="agent" flushWith="100[013] " sameEntity="true" reset="true">
+				<call-macro name="gndIdentifier"  field="100" />
+				<call-macro name="gndIdentifierId"  field="100" />
+				<!--
+      <call-macro name="personTitle"      field="100" />
+      <call-macro name="personBio"        field="100" />
+      <call-macro name="personRole"       field="100" />
+      <call-macro name="gndIdentifier"    field="100" />
+						-->
+				<call-macro name="personName"       dname="label" field="100" />
+        <entity name="type[]" reset="true">
+          <data name="" source="100[013] .a">
+            <constant value="Person"/>
+          </data>
+        </entity>
+      </entity>
+			<entity name="role" reset="true">
+				<data name="id" source="100[013] .[4e]">
+					<regexp match="^([Aa]ut|[Cc]re)" format="http://id.loc.gov/vocabulary/relators/cre"/>
+         </data>
+        <data name="label" source="100[013] .[4e]">
+					<regexp match="^([Aa]ut|[Cc]re)" format="Autor/in"/>
+        </data>
+      </entity>
+		</entity>
+<!--700[013] -->
+    <entity name="" flushWith="700[013] " sameEntity="true">
+      <entity name="type[]" reset="true">
+        <data name="" source="700[013] ">
+          <constant value="Contribution"/>
+        </data>
+      </entity>
+      <entity name="agent" flushWith="700[013] " reset="true">
+        <call-macro name="personIdentifier" dname="gndIdentifier"    field="700" />
+        <call-macro name="gndIdentifierId"    field="700" />
+        <call-macro name="personName"       dname="label" field="700" />
+        <entity name="type[]" reset="true">
+          <data name="" source="700[013] .a">
+            <constant value="Person"/>
+          </data>
+        </entity>
+			</entity>
+			<entity name="role" reset="true">
+				<if>
+					<data name="id" source="700[013] .[4e]">
+					 <regexp match="^([Aa]ut|[Cc]re)"/>
+					</data>
+				</if>
+        <data name="id" source="700[013] .[4e]">
+          <regexp match="^([Aa]ut|[Cc]re)" format="http://id.loc.gov/vocabulary/relators/cre"/>
+				</data>
+				<data name="label" source="700[013] .[4e]">
+					<regexp match="^([Aa]ut|[Cc]re)" format="Autor/in"/>
+				</data>
+			</entity>
+			<entity name="role" reset="true">
+				<if>
+				  <data name="id" source="700[013] .[4e]">
+					   <regexp match="^oth"/>
+					</data>
+				</if>
+        <data name="id" source="700[013] .[4e]">
+          <regexp match="^oth" format="http://id.loc.gov/vocabulary/relators/oth"/>
+        </data>
+        <data name="label" source="700[013] .[4e]">
+          <regexp match="^oth" format="Sonstiges"/>
+        </data>
+			</entity>
+    </entity>
+<!-- [17]10[012] -->
+    <entity name="" flushWith="[17]10[012] " sameEntity="true">
+			<entity name="type[]" reset="true">
+				<data name="" source="[17]10[012] ">
+					<constant value="Contribution"/>
+				</data>
+			</entity>
+			<entity name="agent" flushWith="[17]10[012] " reset="true">
+				<combine name="id" value="${a}">
+					<data name="a" source="[17]10[012] .0">
+						<regexp match="^\(DE-588\)(.*)$" format="https://d-nb.info/gnd/$1"/>
+					</data>
+				</combine>
+				<data name="label" source="[17]10[012] .a">
+				  <replace pattern="\.$" with=""/>
+				</data>
+				<entity name="type[]" reset="true">
+					<data name="" source="[17]10[012] .a">
+						<constant value="CorporateBody"/>
+					</data>
+				</entity>
+			</entity>
+			<entity name="role" reset="true">
+				<data name="id" source="[17]10[012] .a">
+					<constant value="http://id.loc.gov/vocabulary/relators/ctb"/>
+				</data>
+				<data name="label" source="[17]10[012] .a">
+					<constant value="Mitwirkende"/>
+				</data>
+			</entity>
+		</entity>
+
+
+<!-- 245 -->
+    <entity name="" flushWith="245[01]?.c" sameEntity="true">
+      <entity name="type[]" reset="true">
+        <data name="" source="245[01]?.c">
+          <constant value="Contribution"/>
+        </data>
+      </entity>
+      <entity name="agent" flushWith="245[01]?.c" reset="true">
+        <data name="id" source="245[01]?.0">
+          <regexp match="^\(DE-588\).*$"/>
+        </data>
+        <data name="label" source="245[01]?.c">
+          <replace pattern="\.$" with=""/>
+        </data>
+        <entity name="type[]" reset="true">
+          <data name="" source="245[01]?.c">
+            <constant value="Person"/>
+          </data>
+        </entity>
+      </entity>
+      <entity name="role" reset="true">
+        <data name="id" source="245[01]?.c">
+          <constant value="http://id.loc.gov/vocabulary/relators/cre"/>
+        </data>
+        <data name="label" source="245[01]?.c">
+          <constant value="Autor/in"/>
+        </data>
+      </entity>
+    </entity>
+
+
+
+
+		<!--
+		<entity name="" flushWith="245[01]?.c" sameEntity="true" >
+				<entity name="agent">
+				 <data name="type" source="245[01]?.c">
+						<constant value="Person" />
+					</data>
+					<data name="label" source="245[01]?.c">
+						<replace pattern="[.]$" with="" />
+					</data>
+				</entity>
+				<data name="type" source="245[01]?.c">
+					<constant value="Contribution" />
+				</data>
+				<entity name="role">
+					<data name="id" source="245[01]?.c">
+					 <constant value="http://id.loc.gov/vocabulary/relators/cre" />
+				 </data>
+				 <data name="label" source="245[01]?.c">
+          <constant value="Autor/in" />
+        </data>
+				</entity>
+			</entity>
+		-->
+
+
+		<!--  <entity name="todo_corporateBodyNameUnit[]" flushWith="[17]10[012] " sameEntity="true">
+        <data name="" source="[17]10[012] .b">
+          <replace pattern="\.$" with="" />
+        </data>
+      </entity>
+            <call-macro name="gndIdentifier" field="[17]10" />
+    </entity>
+	</entity> todo-->
+
+  <entity name="Conference" flushWith="record">
+    <data name="conferenceName" source="111[012] .a">
+      <replace pattern="[.,]$" with="" />
+    </data>
+    <data name="conferencePlace" source="111[012] .c">
+      <replace pattern="\(|\)?[;.,]?$" with="" />
+      <occurrence only="1" />
+    </data>
+    <data name="conferenceDate" source="111[012] .d">
+      <replace pattern="\(|\)?[,]?$|\s?:$" with="" />
+    </data>
+    <concat name="conferenceUnit" delimiter=". ">
+      <data source="111[012] .e">
+        <replace pattern="[,.]$" with="" />
+      </data>
+    </concat>
+    <data name="corporateBodyNameeNumber" source="111[012] .n"><!-- [sic] -->
+      <replace pattern="\(|\)?[,]?$|\s?[;:]$" with="" />
+      <occurrence only="1" />
+    </data>
+    <entity name="conferenceIdentifier[]" flushWith="111[012] " sameEntity="true">
+      <data name="" source="111[012] .0">
+        <regexp match="^\(DE-588\).*$" />
+      </data>
+    </entity>
+    <call-macro name="gndIdentifier" field="111" />
+  </entity>
+	</entity>
+
+	<!-- 2xx -->
+	<!--
+  <entity name="TitleUniform">
+    <data name="titleUniform" source="240??.a">
+      <replace pattern="\.?$" with="" />
+    </data>
+  </entity>
+	-->
+      <call-macro name="regex-del-punctuation-end" dsource="245??.a" dname="title" />
+      <data name="title" source="245??.p">
+        <occurrence only="1" />
+        <replace pattern="\s?\.?\s?$" with="" />
+      </data>
+
+  <entity name="otherTitleInformation[]">
+    <data name="" source="245??.b">
+      <occurrence only="1" />
+      <replace pattern="\s?[./]\s?$" with="" />
+    </data>
+	</entity>
+
+	<!--
+  <entity name="VolumeDesignation">
+    <data name="volumeDesignation" source="245??.n">
+      <occurrence only="1" />
+      <replace pattern="\s?[,./:=]?\s?$" with="" />
+    </data>
+  </entity>
+	-->
+
+    <entity name="edition[]" flushWith="record">
+      <data name="" source="250  .a">
+        <replace pattern="\s?[=/]$" with="" />
+      </data>
+    </entity>
+
+  <entity name="publication[]">
+		<entity name="" flushWith="record">
+      <call-macro name="simplify-date" dsource="260[ 23] .c|264[ 23][ 1].c" dname="startDate" />
+			<entity name="type[]">
+			<data name="" source="260[ 23] .c|264[ 23][ 1].c">
+				<constant value="PublicationEvent"/>
+			</data>
+			</entity>
+			      <call-macro name="regex-del-punctuation-end" dsource="260[ 23] .a|264[ 23][ 1].a" dname="location" />
+			      <call-macro name="regex-del-punctuation-end" dsource="260[ 23] .b|264[ 23][ 1].b" dname="publishedBy" />
+		</entity>
+  </entity>
+
+  <!-- 300 -->
+  <data name="@300a1" source="300  .a">
+    <occurrence only="1" />
+    <replace pattern="\s?[:;+\(]?$" with="" />
+  </data>
+  <data name="@300a2" source="300  .a">
+    <occurrence only="2" />
+    <replace pattern="\s?[:;+\)]?$" with="" />
+  </data>
+  <data name="@300b" source="300  .b">
+    <replace pattern="\s?[:;+\(]?$" with="" />
+  </data>
+  <data name="@300c1" source="300  .c">
+    <occurrence only="1" />
+    <replace pattern="\.?\s?[+\(]?$" with="" />
+  </data>
+  <data name="@300c2" source="300  .c">
+    <occurrence only="2" />
+    <replace pattern="\.?\s?[:;+\)]?$" with="" />
+  </data>
+  <data name="@300e" source="300  .e">
+    <replace pattern="\.?\s?\(?$" with="" />
+  </data>
+
+  <combine name="@300a2_punct" value="${a2})">
+    <if>
+      <all>
+        <data source="@300a2" />
+        <none>
+          <data source="@300c2" />
+        </none>
+      </all>
+    </if>
+    <data name="a2" source="@300a2" />
+  </combine>
+  <combine name="@300a2_punct" value="${a2} ; ">
+    <if>
+      <all>
+        <data source="@300a2" />
+        <data source="@300c2" />
+      </all>
+    </if>
+    <data name="a2" source="@300a2" />
+  </combine>
+  <combine name="@300b_punct" value=" : ${b}">
+    <if>
+      <all>
+        <data source="@300b" />
+        <data source="@300a1" />
+      </all>
+    </if>
+    <data name="b" source="@300b" />
+  </combine>
+  <combine name="@300c1_punct" value=" ; ${c1}">
+    <if>
+      <all>
+        <data source="@300c1" />
+        <data source="@300a1|@300b" />
+      </all>
+    </if>
+    <data name="c1" source="@300c1" />
+  </combine>
+  <combine name="@300c2_punct" value="${c2})">
+    <data name="c2" source="@300c2" />
+  </combine>
+  <combine name="@300e_punct" value=" ; ${e}">
+    <if>
+      <all>
+        <data source="300  .e" />
+        <data source="@300[ac]1|@300b" />
+        <none>
+          <data source="@300[ac]2" />
+        </none>
+      </all>
+    </if>
+    <data name="e" source="@300e" />
+  </combine>
+  <combine name="@300e_punct" value=" ; ${e} (">
+    <if>
+      <all>
+        <data source="300  .e" />
+        <data source="@300[ac]1|@300b" />
+        <data source="@300[ac]2" />
+      </all>
+    </if>
+    <data name="e" source="@300e" />
+  </combine>
+
+    <combine name="extent" value="${a1}${b}${c1}${e}${a2}${c2}">
+      <choose name="a1">
+        <data source="@300a1" />
+        <data source="300*">
+          <constant value="" />
+        </data>
+      </choose>
+      <choose name="b">
+        <data source="@300b_punct" />
+        <data source="@300b" />
+        <data source="300*">
+          <constant value="" />
+        </data>
+      </choose>
+      <choose name="c1">
+        <data source="@300c1_punct" />
+        <data source="@300c1" />
+        <data source="300*">
+          <constant value="" />
+        </data>
+      </choose>
+      <choose name="e">
+        <data source="@300e_punct" />
+        <data source="@300e" />
+        <data source="300*">
+          <constant value="" />
+        </data>
+      </choose>
+      <choose name="a2">
+        <data source="@300a2_punct" />
+        <data source="300*">
+          <constant value="" />
+        </data>
+      </choose>
+      <choose name="c2">
+        <data source="@300c2_punct" />
+        <data source="300*">
+          <constant value="" />
+        </data>
+      </choose>
+    </combine>
+  <!-- END 300 -->
+
+		<!-- 301-399 -->
+		<!--
+  <entity name="ChronologyAndEnumeration">
+    <concat name="value" delimiter=" ; ">
+      <data source="3620 .a" />
+    </concat>
+  </entity>
+		-->
+
+	<!-- 4xx -->
+
+	<!--		
+  <entity name="TitleSuper[]" flushWith="record">
+    <if>
+      <none flushWith="record">
+        <data source="830??" />
+      </none>
+    </if>
+    <entity name="" flushWith="490[01] " sameEntity="true" >
+      <entity name="titleSuper[]" flushWith="490[01] " sameEntity="true">
+        <call-macro name="regex-del-punctuation-end" dsource="490[01] .a" dname="" />
+      </entity>
+    </entity>
+  </entity>
+
+  <entity name="TitleSuperVolumeDesignation[]" flushWith="record">
+    <if>
+      <none flushWith="record">
+        <data source="830??" />
+      </none>
+    </if>
+    <entity name="" flushWith="490[01] " sameEntity="true">
+      <entity name="volumeDesignation[]" flushWith="490[01] " sameEntity="true">
+        <call-macro name="regex-del-punctuation-end" dsource="490[01] .v" dname="" />
+      </entity>
+    </entity>
+  </entity>
+	-->
+
+
+  <!-- 5xx -->
+  <data name="note" source="500  .a" />
+  <entity name="abstract[]" flushWith="record">
+    <data name="" source="520[ 13] .[ab]" />
+  </entity>
+
+  <!-- 6xx -->
+	<!--
+  <entity name="DescriptionOfRelatedEditions[]" flushWith="record">
+    <entity name="" flushWith="77[356]??|580  " sameEntity="true">
+      <concat name="description" delimiter=": " flushWith="77[356]??">
+        <data source="77[356]??.a">
+          <replace pattern="[.:]?$" with="" />
+        </data>
+        <data source="77[356]??.t">
+          <replace pattern="\.?$" with="" />
+        </data>
+      </concat>
+      <data name="description" source="580  .a" />
+      <data name="prefix" source="77[356]??.i">
+        <replace pattern=":?$" with="" />
+      </data>
+      <entity name="note[]" flushWith="77[356]??" sameEntity="true">
+        <data name="" source="77[356]??.n" />
+      </entity>
+    </entity>
+  </entity>
+
+  <entity name="IdentifierISBNParallel[]" flushWith="record">
+    <entity name="" flushWith="77[356]??" sameEntity="true">
+      <entity name="identifierISBN[]" flushWith="77[356]??" sameEntity="true">
+        <data name="" source="77[356]??.z" />
+      </entity>
+    </entity>
+  </entity>
+
+  <entity name="DescriptionOfFormerEditionsOrVolumes[]" flushWith="record">
+    <entity name="" flushWith="7800[01234567]" sameEntity="true">
+      <choose name="prefix" flushWith="7800[01234567].t" sameEntity="true">
+        <data source="7800[0123567].i" />
+        <data source="78000.t">
+          <constant value="Fortsetzung von" />
+        </data>
+        <data source="78001.t">
+          <constant value="Teilweise Fortsetzung von" />
+        </data>
+        <data source="78002.t">
+          <constant value="Ersatz von" />
+        </data>
+        <data source="78003.t">
+          <constant value="Teilweise Ersatz von" />
+        </data>
+        <data source="78004.t">
+          <constant value="Vereinigung von" />
+        </data>
+        <data source="78005.t">
+          <constant value="Darin aufgegangen" />
+        </data>
+        <data source="78006.t">
+          <constant value="Teilweise darin aufgegangen" />
+        </data>
+        <data source="78007.t">
+          <constant value="Abgespalten von" />
+        </data>
+      </choose>
+      <concat name="description" delimiter=": " flushWith="7800[01234567]">
+        <data source="7800[01234567].a" />
+        <data source="7800[01234567].t" />
+      </concat>
+      <data name="note" source="7800[01234567].n" />
+    </entity>
+  </entity>
+
+  <entity name="DescriptionOfContinuingEditionsOrVolumes[]" flushWith="record">
+    <entity name="" flushWith="7850[012345678]" sameEntity="true">
+      <choose name="prefix" flushWith="7850[012345678].t" sameEntity="true">
+        <data source="7850[012345678].i" />
+        <data source="7850[078].t">
+          <constant value="Fortgesetzt von" />
+        </data>
+        <data source="78501.t">
+          <constant value="Teilweise fortgesetzt von" />
+        </data>
+        <data source="78502.t">
+          <constant value="Ersetzt durch" />
+        </data>
+        <data source="78503.t">
+          <constant value="Teilweise ersetzt durch" />
+        </data>
+        <data source="78504.t">
+          <constant value="Aufgegangen in" />
+        </data>
+        <data source="78505.t">
+          <constant value="Teilweise aufgegangen in" />
+        </data>
+        <data source="78506.t">
+          <constant value="Gesplittet in" />
+        </data>
+      </choose>
+      <concat name="description" delimiter=": " flushWith="7850[012345678]">
+        <data source="7850[012345678].a" />
+        <data source="7850[012345678].t" />
+      </concat>
+      <data name="note" source="7850[012345678].n" />
+    </entity>
+  </entity>
+	-->
+
+<!-- 8xx -->
+	<!--		
+  <entity name="TitleSuper[]" flushWith="record">
+    <entity name="" flushWith="830 ?" sameEntity="true">
+      <entity name="titleSuper[]" flushWith="830 ?" sameEntity="true">
+        <call-macro name="regex-del-punctuation-end" dsource="830 ?.a" dname="" />
+      </entity>
+    </entity>
+  </entity>
+
+  <entity name="TitleSuperVolumeDesignation[]" flushWith="record">
+    <entity name="" flushWith="830 ?" sameEntity="true">
+      <entity name="volumeDesignation[]" flushWith="830 ?" sameEntity="true">
+        <call-macro name="regex-del-punctuation-end" dsource="830 ?.v" dname="" />
+      </entity>
+    </entity>
+		</entity>
+	-->
+
+  <entity name="hasVersion[]" flushWith="record">
+    <entity name="" flushWith="856??" sameEntity="true">
+      <if>
+        <any flushWith="856??">
+          <none flushWith="856??" sameEntity="true">
+            <data source="856??.M" />
+          </none>
+          <data source="856??.M">
+            <equals string="$[member]" />
+          </data>
+        </any>
+      </if>
+      <data name="id" source="856??.u">
+        <occurrence only="1" sameEntity="true" />
+        <unique />
+      </data>
+      <data name="label" source="856??.z">
+        <occurrence only="1" sameEntity="true" />
+      </data>
+    </entity>
+  </entity>
+
+	<entity name="related[]" flushWith="record">
+		<entity name="" flushWith="856??" sameEntity="true">
+       <if>
+        <any flushWith="856??">
+          <none flushWith="856??" sameEntity="true">
+            <data source="856??.M" />
+          </none>
+          <data source="856??.M">
+            <equals string="$[member]" />
+          </data>
+        </any>
+      </if>
+      <data name="id" source="856??.3" />
+		</entity>
+  </entity>
+
+
+</rules>

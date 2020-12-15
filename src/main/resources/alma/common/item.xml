@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rules xmlns="http://www.culturegraph.org/metamorph">
+  <entity name="hasItem[]" flushWith="record">
+    <entity name="" reset="true" sameEntity="true">
+			<combine name="id" value="https://lobid.org/item/${i}">
+				<data name="i" source="MBD  .i"/>
+			</combine>
+      <entity name="type[]" sameEntity="true">
+        <data name="" source="@isiliz">
+          <constant value="Item"/>
+        </data>
+      </entity>
+      <entity name="heldBy" sameEntity="true">
+        <combine name="id" value="http://lobid.org/organisations/${a}#!">
+          <data name="a" source="@isiliz"/>
+        </combine>
+        <data name="label" source="@isiliz">
+          <constant value="lobid Organisation"/>
+        </data>
+      </entity>
+    </entity>
+  </entity>
+</rules>
