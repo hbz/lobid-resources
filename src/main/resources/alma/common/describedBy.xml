@@ -82,9 +82,14 @@
 			</entity>
 		</entity>
 		<entity name="sourceOrganization">
-			<data name="id" source="MNG  .g">
-				<regexp match="(.*)" format="http://lobid.org/organisations/${1}_todo"/>
-			</data>
+			<choose>
+				<data name="id" source="040  .a">
+					<regexp match="(.*)" format="http://lobid.org/organisations/${1}"/>
+				</data>
+				<data name="id" source="MNG  .g">
+					<regexp match="(.*)" format="http://lobid.org/organisations/${1}"/>
+				</data>
+			</choose>
 			<data name="label" source="MNG  .g">
 				<constant value="lobid Organisation"/>
 			</data>
