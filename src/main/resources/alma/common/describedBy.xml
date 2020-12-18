@@ -86,6 +86,19 @@
 				<data name="id" source="040  .a">
 					<regexp match="(.*)" format="http://lobid.org/organisations/DE-${1}#!"/>
 				</data>
+				<data name="id" source="MNG  .a">
+					<regexp match="(.*)" format="http://lobid.org/organisations/DE-${1}#!"/>
+				</data>
+			</choose>
+			<data name="label" source="MNG  .g">
+				<constant value="lobid Organisation"/>
+			</data>
+		</entity>
+		<entity name="provider">
+			<choose>
+				<data name="id" source="040  .c">
+					<regexp match="(.*)" format="http://lobid.org/organisations/DE-${1}#!"/>
+				</data>
 				<data name="id" source="MNG  .g">
 					<regexp match="(.*)" format="http://lobid.org/organisations/DE-${1}#!"/>
 				</data>
@@ -107,8 +120,5 @@
 				<constant value="lobid Organisation"/>
 			</data>
 		</entity>
-
-
-
   </entity>
 </rules>
