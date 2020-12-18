@@ -82,38 +82,26 @@
 			</entity>
 		</entity>
 		<entity name="sourceOrganization">
-			<choose>
-				<data name="id" source="040  .a">
-					<regexp match="(.*)" format="http://lobid.org/organisations/DE-${1}#!"/>
-				</data>
-				<data name="id" source="MNG  .a">
-					<regexp match="(.*)" format="http://lobid.org/organisations/DE-${1}#!"/>
-				</data>
-			</choose>
-			<data name="label" source="MNG  .g">
+			<data name="id" source="040  .a">
+				<regexp match="(.*)" format="http://lobid.org/organisations/DE-${1}#!"/>
+			</data>
+			<data name="label" source="040  .a">
 				<constant value="lobid Organisation"/>
 			</data>
 		</entity>
 		<entity name="provider">
-			<choose>
-				<data name="id" source="040  .c">
-					<regexp match="(.*)" format="http://lobid.org/organisations/DE-${1}#!"/>
-				</data>
-			</choose>
-			<data name="label" source="MNG  .g">
+			<data name="id" source="040  .c">
+				<regexp match="(.*)" format="http://lobid.org/organisations/DE-${1}#!"/>
+			</data>
+			<data name="label" source="040  .c">
 				<constant value="lobid Organisation"/>
 			</data>
 		</entity>
 		<entity name="modifiedBy">
-			<choose>
-				<data name="id" source="040  .d">
-					<regexp match="(.*)" format="http://lobid.org/organisations/DE-${1}#!"/>
-				</data>
-				<data name="id" source="MNG  .c">
-					<regexp match="(.*)" format="http://lobid.org/organisations/DE-${1}#!"/>
-				</data>
-			</choose>
-			<data name="label" source="MNG  .g">
+			<data name="id" source="040  .d">
+				<regexp match="(.*)" format="http://lobid.org/organisations/DE-${1}#!"/>
+			</data>
+			<data name="label" source="040  .d">
 				<constant value="lobid Organisation"/>
 			</data>
 		</entity>
