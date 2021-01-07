@@ -4,6 +4,7 @@ dist: trusty
 env:
   - ACTIVATOR_VERSION=1.3.10
 install:
+  - bash install-dependencies.sh
   - mvn clean install -e -q --settings settings.xml
 before_script:
   - cd web
