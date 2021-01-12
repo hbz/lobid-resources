@@ -116,9 +116,9 @@ public class UpdateAliases {
 		String creationDateResourcesStaging =
 				queryEsAndGetJNode("resources-staging/_settings")
 						.findPath("provided_name").asText().split("-")[1];
-		final String creationDateResourcesStagingMinus8Days = LocalDate
+		final String creationDateResourcesStagingMinus7Days = LocalDate
 				.parse(creationDateResourcesStaging, DateTimeFormatter.BASIC_ISO_DATE)
-				.minusDays(8).format(DateTimeFormatter.BASIC_ISO_DATE);
+				.minusDays(7).format(DateTimeFormatter.BASIC_ISO_DATE);
 		final String creationDateResourcesStagingMinusOneDay = LocalDate
 				.parse(creationDateResourcesStaging, DateTimeFormatter.BASIC_ISO_DATE)
 				.minusDays(1).format(DateTimeFormatter.BASIC_ISO_DATE);
@@ -131,29 +131,32 @@ public class UpdateAliases {
 		final int differenceOfTotalHitsBetweenOldAndNew =
 				totalHitsOldIndex - totalHitsNewIndex;
 		logMessage =
-				"Difference between the 'just created index minus one week (aka 'production'), that should be created at "
-						+ creationDateResourcesStaging
-						+ ", but based on the fulldump of the day before)' and the 'just created index (aka 'staging' (also based on the dump made one day before), created at"
-						+ creationDateResourcesStaging + "':"
+				"* it is expected that the _production-index_ has more resources because it had only got updates but no deletions - while the new _staging-index_ has deletions reflected in the newly basedump.\n\nDifference between the 'production-index' (based on the fulldump 8 days "
+						+ "before plus the updates since then) and the just created 'stage-index' "
+						+ "(created at " + creationDateResourcesStaging
+						+ ", based on yesterdays fulldump plus yesterdays update):"
 						+ differenceOfTotalHitsBetweenOldAndNew;
 		log(logMessage);
+		String queryDeletions="deletions/_search?q=describedBy.deleted%3A["
+			+ creationDateResourcesStagingMinus7Days + "+TO+"
+			+ creationDateResourcesStagingMinusOneDay + "]";
 		JsonNode node =
-				queryEsAndGetJNode("deletions/_search?q=describedBy.deleted%3A["
-						+ creationDateResourcesStagingMinus8Days + "+TO+"
-						+ creationDateResourcesStagingMinusOneDay + "]");
+				queryEsAndGetJNode(queryDeletions);
 		int deletionsCount = node.at("/hits/total").asInt();
 		logMessage = ("Amount of deletions between "
-				+ creationDateResourcesStagingMinus8Days + " and "
+				+ creationDateResourcesStagingMinus7Days + " and "
 				+ creationDateResourcesStagingMinusOneDay + " according to the 'deletion index': "
 				+ deletionsCount);
 		log(logMessage);
-		final int tolerance = (deletionsCount + 1) / 333;
-		logMessage = ("Going to compare if " + differenceOfTotalHitsBetweenOldAndNew
-				+ " is less or equals " + deletionsCount
-				+ " allowing a 0.3% tolerance (i.e. " + tolerance + ")");
+		log("(Deletions query: https://lobid.org/resources/_" + queryDeletions + ")");
+		final int tolerance = (deletionsCount + 1) / 50;
+		int actualTolerance = Math.abs(differenceOfTotalHitsBetweenOldAndNew - deletionsCount);
+		logMessage = ("Going to compare if the absolute value of (" + differenceOfTotalHitsBetweenOldAndNew
+				+ " - " + deletionsCount
+				+ " = " + actualTolerance + ") is lesser than 2% tolerance (i.e. " + tolerance + ")");
 		log(logMessage);
 		Assert.assertTrue(
-				differenceOfTotalHitsBetweenOldAndNew - deletionsCount < tolerance);
+				Math.abs(differenceOfTotalHitsBetweenOldAndNew - deletionsCount) < tolerance);
 	}
 
 	private static void log(final String msg) {
