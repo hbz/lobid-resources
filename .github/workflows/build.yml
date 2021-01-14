@@ -13,8 +13,15 @@ jobs:
       with:
         java-version: 1.8
     - name: Install metafacture-core snapshot
-      run: git clone https://github.com/metafacture/metafacture-core.git; cd metafacture-core ; ./gradlew install; cd ..
+      run: |
+        git clone https://github.com/metafacture/metafacture-core.git
+        cd metafacture-core
+        ./gradlew install
     - name: Build with Maven
       run: mvn --batch-mode --update-snapshots verify
     - name: Build with play
-      run: cd web; wget http://downloads.typesafe.com/typesafe-activator/${{env.ACTIVATOR_VERSION}}/typesafe-activator-${ACTIVATOR_VERSION}-minimal.zip ;unzip typesafe-activator-${{env.ACTIVATOR_VERSION}}-minimal.zip ; ./activator-${{env.ACTIVATOR_VERSION}}-minimal/bin/activator compile ; ./activator-${{env.ACTIVATOR_VERSION}}-minimal/bin/activator test
+      run: |
+        cd web
+        wget http://downloads.typesafe.com/typesafe-activator/${{env.ACTIVATOR_VERSION}}/typesafe-activator-${ACTIVATOR_VERSION}-minimal.zip ;unzip typesafe-activator-${{env.ACTIVATOR_VERSION}}-minimal.zip
+        ./activator-${{env.ACTIVATOR_VERSION}}-minimal/bin/activator compile
+        ./activator-${{env.ACTIVATOR_VERSION}}-minimal/bin/activator test
