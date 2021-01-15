@@ -22,6 +22,7 @@ jobs:
     - name: Build with play
       run: |
         cd web
-        wget http://downloads.typesafe.com/typesafe-activator/${{env.ACTIVATOR_VERSION}}/typesafe-activator-${ACTIVATOR_VERSION}-minimal.zip ;unzip typesafe-activator-${{env.ACTIVATOR_VERSION}}-minimal.zip
+        wget http://downloads.typesafe.com/typesafe-activator/${{env.ACTIVATOR_VERSION}}/typesafe-activator-${{env.ACTIVATOR_VERSION}}-minimal.zip
+        unzip typesafe-activator-${{env.ACTIVATOR_VERSION}}-minimal.zip
         ./activator-${{env.ACTIVATOR_VERSION}}-minimal/bin/activator compile
         ./activator-${{env.ACTIVATOR_VERSION}}-minimal/bin/activator test
