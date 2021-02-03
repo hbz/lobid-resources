@@ -763,5 +763,47 @@
 		</entity>
   </entity>
 
-
+<!-- TODO: inCollection: missing edoweb, rpb, publisso, also type-element -->
+	<entity name="inCollection[]" flushWith="record">
+    <!-- ZDB -->
+		<entity name="">
+      <data name="label" source="@idzdb">
+        <constant value="Zeitschriftendatenbank (ZDB)" />
+      </data>
+      <data name="id" source="@idzdb">
+        <constant value="$[ns-lobid-resource]HT014846970#!" />
+      </data>
+		</entity>
+    <!-- EZB -->
+    <entity name="">
+      <data name="label" source="85640.x">
+        <equals string="EZB" />
+        <constant value="Elektronische Zeitschriftenbibliothek (EZB)" />
+      </data>
+      <data name="id" source="85640.x">
+        <equals string="EZB" />
+        <constant value="$[ns-lobid-resource]HT016356466#!" />
+      </data>
+		</entity>
+    <!-- nwbib -->
+    <entity name="">
+      <data name="label" source="084  .2">
+        <equals string="nwbib" />
+        <constant value="Nordrhein-Westfälische Bibliographie (NWBib)" />
+      </data>
+      <data name="id" source="084  .2">
+        <equals string="EZB" />
+        <constant value="$[ns-lobid-resource]HT014176012#!" />
+      </data>
+		</entity>
+    <!-- eResource package -->
+    <entity name="">
+    	<data source="912  .a" name="id">
+				<regexp match="(ZDB-[0-9]{1,6}-[a-zA-Z|0-9]*).*" format="$[ns-lobid-organisation]${1}#!"/>
+			</data>
+    	<data source="912  .a" name="label">
+        <regexp match="(ZDB-[0-9]{1,6}-[a-zA-Z|0-9]*).*" format="eResource package" />
+      </data>
+		</entity>
+  </entity>
 </rules>
