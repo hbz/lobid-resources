@@ -24,6 +24,7 @@
 		<regexp match="(.*)" format="http://lobid.org/resources/${1}#!"/>
 	</data>
 
+
 		<!--  <data name="collection_pchbz_eher_zu_item" source="@_isil" />-->
 		<!--
   <combine name="@date1" value="${date1}">
@@ -129,6 +130,46 @@
         </data>
       </if>
       <data name="" source="0247?.a" />
+  </entity>
+
+  <data name="@oclcNumber" source="035  .a" >
+    <regexp match="\(OCoLC\)(.*)" format="${1}"/>
+  </data>
+
+  <data name="oclcNumber" source="@oclcNumber" />
+
+  <data name="@zdbId" source="035  .a" >
+    <regexp match="\(DE-600\)(.*)" format="${1}"/>
+  </data> 
+
+  <data name="zdbId" source="@zdbId" />
+
+  <entity name="sameAs[]" flushWith="record">
+    <entity name="">
+      <data name="id" source="@id">
+        <!-- doesnot exclude id with ALMA, perhapse need to do that -->
+        <compose  prefix="http://hub.culturegraph.org/resource/HBZ-">
+      </data>
+      <data name="label" source="@id">
+        <constant  value="Culturegraph Ressource">
+      </data>
+    </entity>
+    <entity name="">
+      <data name="id" source="@oclcNumber">
+        <compose  prefix="http://worldcat.org/oclc/">
+      </data>
+      <data name="label" source="@oclcNumber">
+        <constant  value="OCLC Ressource">
+      </data>
+    </entity>
+    <entity name="">
+      <data name="id" source="@zdbId">
+        <compose  prefix="http://ld.zdb-services.de/resource/">
+      </data>
+      <data name="label" source="@zdbId">
+        <constant  value="ZDB-Ressource">
+      </data>
+    </entity>
   </entity>
 
 	<entity name="contribution[]" flushWith="record">
