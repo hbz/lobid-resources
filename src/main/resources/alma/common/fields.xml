@@ -148,26 +148,26 @@
     <entity name="">
       <data name="id" source="@id">
         <!-- doesnot exclude id with ALMA, perhapse need to do that -->
-        <compose  prefix="http://hub.culturegraph.org/resource/HBZ-">
+        <compose  prefix="http://hub.culturegraph.org/resource/HBZ-" />
       </data>
       <data name="label" source="@id">
-        <constant  value="Culturegraph Ressource">
+        <constant  value="Culturegraph Ressource" />
       </data>
     </entity>
     <entity name="">
       <data name="id" source="@oclcNumber">
-        <compose  prefix="http://worldcat.org/oclc/">
+        <compose  prefix="http://worldcat.org/oclc/" />
       </data>
       <data name="label" source="@oclcNumber">
-        <constant  value="OCLC Ressource">
+        <constant  value="OCLC Ressource" />
       </data>
     </entity>
     <entity name="">
       <data name="id" source="@zdbId">
-        <compose  prefix="http://ld.zdb-services.de/resource/">
+        <compose  prefix="http://ld.zdb-services.de/resource/" />
       </data>
       <data name="label" source="@zdbId">
-        <constant  value="ZDB-Ressource">
+        <constant  value="ZDB-Ressource" />
       </data>
     </entity>
   </entity>
@@ -727,10 +727,11 @@
 
   <entity name="fulltextOnline[]" flushWith="record">
   <!-- ZDB -->
-  <entity name="">
-    <!--     <data name="label" source="85642.z" /> -->
-    <data name="id" source="85642.u" />
-  </entity>
+    <entity name="">
+      <!--     <data name="label" source="85642.z" /> -->
+      <data name="id" source="85642.u" />
+    </entity>
+   </entity>
 
   <entity name="hasVersion[]" flushWith="record">
     <entity name="" flushWith="856??" sameEntity="true">
