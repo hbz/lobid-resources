@@ -751,5 +751,68 @@
     </entity>
   </entity>
 
+  <!-- TODO: inCollection: missing edoweb, rpb, publisso, also type-element -->
+  <entity name="inCollection[]" flushWith="record">
+    <!-- ZDB -->
+    <entity name="" sameEntity="true" reset="true">
+      <data name="label" source="@zdbId">
+        <constant value="Zeitschriftendatenbank (ZDB)" />
+      </data>
+      <data name="id" source="@zdbId">
+        <constant value="http://www.lobid.org/resources/HT014846970#!" />
+      </data>
+      <entity name="type[]" sameEntity="true">
+        <data name="" source="@zdbId">
+          <constant value="Collection"/>
+        </data>
+      </entity>
+    </entity>
+    <!-- EZB -->
+    <entity name="" sameEntity="true" reset="true">
+      <data name="label" source="85640.x">
+        <equals string="EZB" />
+        <constant value="Elektronische Zeitschriftenbibliothek (EZB)" />
+      </data>
+      <data name="id" source="85640.x">
+        <equals string="EZB" />
+        <constant value="http://www.lobid.org/resources/HT016356466#!" />
+      </data>
+      <entity name="type[]" sameEntity="true">
+        <data name="" source="85640.x">
+          <constant value="Collection"/>
+        </data>
+      </entity>
+    </entity>
+    <!-- nwbib -->
+    <entity name="" sameEntity="true" reset="true">
+      <data name="label" source="084  .2">
+        <equals string="nwbib" />
+        <constant value="Nordrhein-Westfälische Bibliographie (NWBib)" />
+      </data>
+      <data name="id" source="084  .2">
+        <equals string="EZB" />
+        <constant value="http://www.lobid.org/resources/HT014176012#!" />
+      </data>
+      <entity name="type[]" sameEntity="true">
+        <data name="" source="084  .2">
+          <constant value="Collection"/>
+        </data>
+      </entity>
+    </entity>
+    <!-- eResource package -->
+    <entity name="" sameEntity="true" reset="true">
+      <data source="912  .a" name="id">
+        <regexp match="(ZDB-[0-9]{1,6}-[a-zA-Z|0-9]*).*" format="http://www.lobid.org/organisations/${1}#!"/>
+      </data>
+      <data source="912  .a" name="label">
+        <regexp match="(ZDB-[0-9]{1,6}-[a-zA-Z|0-9]*).*" format="eResource package" />
+      </data>
+      <entity name="type[]" sameEntity="true" reset="true">
+        <data name="" source="912  .a">
+          <constant value="Collection"/>
+        </data>
+      </entity>
+    </entity>
+  </entity>
 
 </rules>
