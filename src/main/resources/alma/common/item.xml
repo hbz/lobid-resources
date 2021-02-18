@@ -2,19 +2,47 @@
 <rules xmlns="http://www.culturegraph.org/metamorph">
   <entity name="hasItem[]" flushWith="record">
     <entity name="" reset="true" sameEntity="true">
-			<combine name="id" value="https://lobid.org/item/${i}">
-				<data name="i" source="MBD  .i"/>
-			</combine>
+      <combine name="id" value="https://lobid.org/item/${i}">
+        <data name="i" source="MBD  .i"/>
+      </combine>
       <entity name="type[]" sameEntity="true">
         <data name="" source="@isiliz">
           <constant value="Item"/>
         </data>
       </entity>
+      <data name="label" source="@isiliz">
+          <constant value="lobid Bestandsressource"/>
+      </data>
       <entity name="heldBy" sameEntity="true">
         <combine name="id" value="http://lobid.org/organisations/${a}#!">
           <data name="a" source="@isiliz"/>
         </combine>
         <data name="label" source="@isiliz">
+          <constant value="lobid Organisation"/>
+        </data>
+      </entity>
+    </entity>
+    <entity name="" reset="true" sameEntity="true">
+      <combine name="id" value="https://lobid.org/item/${i}">
+        <data name="i" source="POR  .a"/>
+      </combine>
+      <entity name="type[]" sameEntity="true">
+        <data name="" source="POR  .a">
+          <constant value="Item"/>
+        </data>
+      </entity>
+      <data name="label" source="POR  .a">
+          <constant value="Portfolio"/>
+      </data>
+      <data name="electronicLocator" source="POR  .D" />
+      <data name="sublocation" source="POR  .d" />
+      <entity name="heldBy" sameEntity="true">
+        <data name="id" source="POR  .a">
+          <regexp match=".*(\d{4})$" format="${1}"/>
+          <lookup in="alma-institution-code-to-isil" />
+          <compose prefix="http://lobid.org/organisations/" postfix="#!"/>
+        </data>
+        <data name="label" source="POR  .a">
           <constant value="lobid Organisation"/>
         </data>
       </entity>
