@@ -7512,7 +7512,7 @@
 		<!-- ####################### -->
 		<combine name="@epackageDescriptionLink" value="${a}" reset="true">
 			<data source="078e1.a" name="a">
-				<regexp match="(ZDB-[0-9]{1,6}-[a-zA-Z|0-9]*).*" format="$[ns-lobid-organisation]${1}#!"/>
+				<regexp match="(ZDB-[0-9]{1,6}-[a-zA-Z|0-9\\-]*).*" format="$[ns-lobid-organisation]${1}#!"/>
 			</data>
 		</combine>
 		<combine name="http://purl.org/lobid/lv#inCollection" value="${a}" reset="true">
