@@ -46,7 +46,7 @@ public final class AlmaMarc21XmlToLobidJsonTest {
   private static final String MORPH = "src/main/resources/alma/alma.xml";
   private static final File DIRECTORY = new File("src/test/resources/alma/");
   private static final String BIG_ALMA_XML_FILE =
-      DIRECTORY + "/HT012734833_etAl.xml.tar.bz2";
+      DIRECTORY + "/almaMarcXmlTestFiles.xml.tar.bz2";
   private static final String XML = "xml";
   final HashMap<String, String> morphVariables = new HashMap<>();
   private static boolean GENERATE_TESTDATA =
@@ -91,7 +91,7 @@ public final class AlmaMarc21XmlToLobidJsonTest {
     final StringFilter stringFilter = new StringFilter(pattern);
     XmlFilenameWriter xmlFilenameWriter = new XmlFilenameWriter();
     xmlFilenameWriter
-        .setProperty("/record/datafield[@tag='035']/subfield[@code='a']");
+        .setProperty("/collection/record/datafield[@tag='035']/subfield[@code='a']");
     xmlFilenameWriter.setTarget("src/test/resources/alma/");
     StreamBatchLogger logger = new StreamBatchLogger();
     logger.setBatchSize(10);
