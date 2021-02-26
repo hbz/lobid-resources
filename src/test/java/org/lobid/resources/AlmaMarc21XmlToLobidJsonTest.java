@@ -55,7 +55,7 @@ public final class AlmaMarc21XmlToLobidJsonTest {
   private static final Logger LOG =
       LogManager.getLogger(AlmaMarc21XmlToLobidJsonTest.class);
   private static final String PATTERN_TO_IDENTIFY_XML_RECORDS =
-      "HT005207972|HT012734833|KUR00770801|HT016709661|portfolio";
+      ".*";
 
   /**
    * Sets necessary morph variables.
@@ -91,7 +91,7 @@ public final class AlmaMarc21XmlToLobidJsonTest {
     final StringFilter stringFilter = new StringFilter(pattern);
     XmlFilenameWriter xmlFilenameWriter = new XmlFilenameWriter();
     xmlFilenameWriter
-        .setProperty("/collection/record/datafield[@tag='035']/subfield[@code='a']");
+        .setProperty("/record/datafield[@tag='035']/subfield[@code='a']");
     xmlFilenameWriter.setTarget("src/test/resources/alma/");
     StreamBatchLogger logger = new StreamBatchLogger();
     logger.setBatchSize(10);
