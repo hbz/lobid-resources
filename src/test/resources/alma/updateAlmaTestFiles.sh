@@ -13,6 +13,8 @@
 
 TEST_FILE="almaMarcXmlTestFiles"
 
+tar xfj almaMarcXmlTestFiles.xml.tar.bz2
+
 function getAlmaXmlAndAppendItToArchive() {
 	hbzId=$1
 	echo "getting Alma Xml for $hbzId ..."
@@ -21,6 +23,7 @@ function getAlmaXmlAndAppendItToArchive() {
 	# get AlmaMarcXml
 	curl --silent $almaXmlUrl | xmllint --format - | grep -v '<?xml version="1.0"?>' > $hbzId.xml
 	cat $hbzId.xml >> $TEST_FILE
+	rm $hbzId.xml
 }
 
 function appendClosingColletionTagToArchive() {
@@ -44,3 +47,5 @@ case $1 in
 		appendClosingColletionTagToArchive
 esac
 tar cfj almaMarcXmlTestFiles.xml.tar.bz2 $TEST_FILE
+cd ../../../../
+mvn failsafe:integration-test -Dit.test=AlmaMarc21XmlToLobidJsonTest
