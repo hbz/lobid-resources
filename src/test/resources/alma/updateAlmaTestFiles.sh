@@ -1,22 +1,46 @@
 #!/bin/bash
-# author: dr0i
-# date: 2021-02-23
+# Author: dr0i
+# Date: 2021-02-23
+# Description:
+# Updates the test files by getting the Alma Xml source(s) and creating an archive.
+# This archive is used by the AlmaMarc21XmlToLobidJsonTest to create the json files.
+#
+# Parameters: {all , $hbzId}
+# If parameter is 'all' all the test files found in the filesystem will be updated.
+# If parameter is a hbzId this hbz Id is lookuped and appended to the archive.
+#
+# Example: "bash updateAlmaTestFiles.sh HT017664407"
 
-# lists all json test files, get the hbz id from their names, lookup
-# to get the marc xml sources and builds a new test file archive
+TEST_FILE="almaMarcXmlTestFiles"
 
-# set head of xml file
-echo '<?xml version="1.0" encoding="UTF-8"?>
-<collection>' > almaMarcXmlTestFiles
-
-# get all JSON test files; filter names from then
-for hbzId in $(ls *.json|cut -d '/' -f2|cut -d '.' -f1 ); do
-	echo $hbzId
+function getAlmaXmlAndAppendItToArchive() {
+	hbzId=$1
+	echo "getting Alma Xml for $hbzId ..."
 	# lookup and filter alma url
 	almaXmlUrl=$(curl https://indexes.devel.digibib.net/export/$hbzId |jq .|grep -A2 -B2 '"type": "alma"'|grep url|cut -d '"' -f4)
 	# get AlmaMarcXml
 	curl --silent $almaXmlUrl | xmllint --format - | grep -v '<?xml version="1.0"?>' > $hbzId.xml
-	cat $hbzId.xml >> almaMarcXmlTestFiles
-done
-echo "</collection>" >> almaMarcXmlTestFiles
-tar cfj almaMarcXmlTestFiles.xml.tar.bz2 almaMarcXmlTestFiles
+	cat $hbzId.xml >> $TEST_FILE
+}
+
+function appendClosingColletionTagToArchive() {
+	echo "</collection>" >> $TEST_FILE
+}
+
+case $1 in
+	all)
+		# set head of xml file
+		echo '<?xml version="1.0" encoding="UTF-8"?>
+<collection>' > $TEST_FILE
+		# get all JSON test files; filter names from then
+		for hbzId in $(ls *.json|cut -d '/' -f2|cut -d '.' -f1 ); do
+			getAlmaXmlAndAppendItToArchive $hbzId
+		done
+		appendClosingColletionTagToArchive
+	;;
+	*)
+		sed -i '$d' almaMarcXmlTestFiles
+		getAlmaXmlAndAppendItToArchive $1
+		appendClosingColletionTagToArchive
+esac
+tar cfj almaMarcXmlTestFiles.xml.tar.bz2 $TEST_FILE
