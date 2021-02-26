@@ -803,10 +803,10 @@
     <!-- eResource package -->
     <entity name="" sameEntity="true" reset="true">
       <data source="912  .a" name="id">
-        <regexp match="(ZDB-[0-9]{1,6}-[a-zA-Z|0-9]*).*" format="http://lobid.org/organisations/${1}#!"/>
+        <regexp match="(ZDB-[0-9]{1,6}-[a-zA-Z|0-9\\-]*).*" format="http://lobid.org/organisations/${1}#!"/>
       </data>
       <data source="912  .a" name="label">
-        <regexp match="(ZDB-[0-9]{1,6}-[a-zA-Z|0-9]*).*" format="eResource package" />
+        <regexp match="(ZDB-[0-9]{1,6}-[a-zA-Z|0-9\\-]*).*" format="eResource package" />
       </data>
       <entity name="type[]" sameEntity="true" reset="true">
         <data name="" source="912  .a">
@@ -815,5 +815,4 @@
       </entity>
     </entity>
   </entity>
-
 </rules>
