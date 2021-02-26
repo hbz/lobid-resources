@@ -16,7 +16,7 @@ TEST_FILE="almaMarcXmlTestFiles"
 tar xfj almaMarcXmlTestFiles.xml.tar.bz2
 
 function getAlmaXmlAndAppendItToArchive() {
-	hbzId=$1
+	hbzIdOriginal=$1
 	echo "getting Alma Xml for $hbzId ..."
 	# lookup and filter alma url
 	almaXmlUrl=$(curl https://indexes.devel.digibib.net/export/$hbzId |jq .|grep -A2 -B2 '"type": "alma"'|grep url|cut -d '"' -f4)
@@ -24,6 +24,7 @@ function getAlmaXmlAndAppendItToArchive() {
 	curl --silent $almaXmlUrl | xmllint --format - | grep -v '<?xml version="1.0"?>' > $hbzId.xml
 	cat $hbzId.xml >> $TEST_FILE
 	rm $hbzId.xml
+	rm $hbzId.json
 }
 
 function appendClosingColletionTagToArchive() {
