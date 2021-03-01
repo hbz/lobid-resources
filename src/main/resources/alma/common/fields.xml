@@ -19,7 +19,9 @@
     </choose>
   </combine>
   <data name="@uid" source="@id" />
-  <data name="hbzId" source="009" />
+  <data name="hbzId" source="035  .a">
+    <regexp match="\(DE-605\)(.*)" format="${1}"/>
+  </data>
   <data name="id" source="@id">
     <regexp match="(.*)" format="http://lobid.org/resources/${1}#!"/>
   </data>
@@ -128,12 +130,11 @@
 
   <entity name="sameAs[]" flushWith="record">
     <entity name="">
-      <data name="id" source="009">
-        <!-- doesnot exclude id with ALMA, perhapse need to do that -->
-        <compose prefix="http://hub.culturegraph.org/resource/HBZ-"/>
+      <data name="id" source="035  .a">
+        <regexp match="\(DE-605\)(.*)" format="http://hub.culturegraph.org/resource/HBZ-${1}"/>
       </data>
-      <data name="label" source="009">
-        <constant value="Culturegraph Ressource"/>
+      <data name="label" source="035  .a">
+        <regexp match="\(DE-605\)(.*)" format="Culturegraph Ressource"/>
       </data>
     </entity>
     <entity name="">
