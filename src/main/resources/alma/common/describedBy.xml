@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <rules xmlns="http://www.culturegraph.org/metamorph">
-  <!-- 7xx -->
-  <entity name="describedBy" flushWith="record">
+	<!-- 7xx -->
+	<entity name="describedBy" flushWith="record">
 		<data name="id" source="@id">
 			<regexp match="(.*)" format="http://lobid.org/resources/${1}"/>
 		</data>
@@ -15,7 +15,7 @@
 		</entity>
 		<call-macro name="simplify-date" dname="dateCreated" dsource="MNG  .b"/>
 		<call-macro name="simplify-date" dname="dateModified" dsource="MNG  .d"/>
-		<entity name="inDataset" >
+		<entity name="inDataset">
 			<data name="id" source="@id">
 				<constant value="http://lobid.org/resources/dataset#!"/>
 			</data>
@@ -97,13 +97,17 @@
 				<constant value="lobid Organisation"/>
 			</data>
 		</entity>
-		<entity name="modifiedBy">
+		<entity name="modifiedBy" sameEntity="true" reset="true">
 			<data name="id" source="040  .d">
-				<regexp match="(.*)" format="http://lobid.org/organisations/DE-${1}#!"/>
+				<blacklist>
+					<entry name="9999" />
+					<entry name="0001" />
+				</blacklist>
+				<regexp match="(DE-)?(.*)" format="http://lobid.org/organisations/DE-${2}#!"/>
 			</data>
 			<data name="label" source="040  .d">
 				<constant value="lobid Organisation"/>
 			</data>
 		</entity>
-  </entity>
+	</entity>
 </rules>
