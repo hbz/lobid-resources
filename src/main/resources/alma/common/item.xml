@@ -37,12 +37,18 @@
       <data name="electronicLocator" source="POR  .D" />
       <data name="sublocation" source="POR  .d" />
       <entity name="heldBy" sameEntity="true">
-        <data name="id" source="POR  .a">
-          <regexp match=".*(\d{4})$" format="${1}"/>
-          <lookup in="alma-institution-code-to-isil" />
-          <compose prefix="http://lobid.org/organisations/" postfix="#!"/>
-        </data>
-        <data name="label" source="POR  .a">
+        <choose flushWith="POR  .w">
+          <data name="id" source="POR  .A">
+            <lookup in="alma-iz-code-to-isil" />
+            <compose prefix="http://lobid.org/organisations/" postfix="#!"/>
+          </data>
+          <data name="id" source="POR  .a">
+            <regexp match=".*(\d{4})$" format="${1}"/>
+            <lookup in="alma-institution-code-to-isil" />
+            <compose prefix="http://lobid.org/organisations/" postfix="#!"/>
+          </data>
+        </choose>
+        <data name="label" source="POR  .w">
           <constant value="lobid Organisation"/>
         </data>
       </entity>
