@@ -2,7 +2,6 @@
 
 package org.lobid.resources.run;
 
-import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -24,11 +23,13 @@ import org.metafacture.xml.XmlDecoder;
 import org.metafacture.xml.XmlElementSplitter;
 
 /**
- * Transform hbz Alma Marc XML catalog data into lobid elasticsearch ready
+ * Transform hbz Alma Marc XML catalog data into lobid elasticsearch
  * JSON-LD and index that into elasticsearch.
- * 
+ *
+ * Input path of data can be an uncompressed file, tar archive or BGZF.
+ *
  * @author Pascal Christoph (dr0i)
- * 
+ *
  */
 @SuppressWarnings("javadoc")
 public class AlmaMarcXml2lobidJsonEs {
@@ -39,7 +40,7 @@ public class AlmaMarcXml2lobidJsonEs {
   private static String indexName;
   private static boolean updateDonotCreateIndex;
   private static String indexConfig;
-  final static HashMap<String, String> morphVariables = new HashMap<>();
+  private static final HashMap<String, String> morphVariables = new HashMap<>();
 
   public static void main(String... args) {
 
@@ -70,7 +71,7 @@ public class AlmaMarcXml2lobidJsonEs {
     System.out.println("using morph: " + morphFileName);
     // hbz catalog transformation
     final FileOpener opener = new FileOpener();
-        // used when loading a BGZF file
+    // used when loading a BGZF file
     opener.setDecompressConcatenated(true);
     morphVariables.put("isil", "DE-632");
     morphVariables.put("member", "DE-605");
@@ -85,31 +86,32 @@ public class AlmaMarcXml2lobidJsonEs {
     System.out.println("using etikettLablesDirectory: "
         + JsonLdEtikett.getLabelsDirectoryName());
 
-if (inputPath.toLowerCase().endsWith("bz2") || inputPath.toLowerCase().endsWith("gz")) {
+    if (inputPath.toLowerCase().endsWith("tar.bz2")
+        || inputPath.toLowerCase().endsWith("tar.gz")) {
       System.out.println("recognised as tar archive");
-      
       opener.setReceiver(new TarReader())//
-        .setReceiver(new XmlDecoder())//
-        .setReceiver(xmlElementSplitter)//
-        .setReceiver(new LiteralToObject())//
-        .setReceiver(new ObjectThreader<String>())//
-        .addReceiver(receiverThread())//
-        .addReceiver(receiverThread())//
-        .addReceiver(receiverThread())//
-        .addReceiver(receiverThread())//
-        .addReceiver(receiverThread())//
-        .addReceiver(receiverThread());//
-    } else { // BGZF
-        opener.setReceiver(new XmlDecoder())//
-        .setReceiver(xmlElementSplitter)//
-        .setReceiver(new LiteralToObject())//
-        .setReceiver(new ObjectThreader<String>())//
-        .addReceiver(receiverThread())//
-        .addReceiver(receiverThread())//
-        .addReceiver(receiverThread())//
-        .addReceiver(receiverThread())//
-        .addReceiver(receiverThread())//
-        .addReceiver(receiverThread());//
+          .setReceiver(new XmlDecoder())//
+          .setReceiver(xmlElementSplitter)//
+          .setReceiver(new LiteralToObject())//
+          .setReceiver(new ObjectThreader<String>())//
+          .addReceiver(receiverThread())//
+          .addReceiver(receiverThread())//
+          .addReceiver(receiverThread())//
+          .addReceiver(receiverThread())//
+          .addReceiver(receiverThread())//
+          .addReceiver(receiverThread());
+    } else {
+      System.out.println("recognised as BGZF");
+      opener.setReceiver(new XmlDecoder())//
+          .setReceiver(xmlElementSplitter)//
+          .setReceiver(new LiteralToObject())//
+          .setReceiver(new ObjectThreader<String>())//
+          .addReceiver(receiverThread())//
+          .addReceiver(receiverThread())//
+          .addReceiver(receiverThread())//
+          .addReceiver(receiverThread())//
+          .addReceiver(receiverThread())//
+          .addReceiver(receiverThread());
     }
 
     try {
