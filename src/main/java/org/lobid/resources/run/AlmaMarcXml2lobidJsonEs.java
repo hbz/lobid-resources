@@ -66,16 +66,16 @@ public class AlmaMarcXml2lobidJsonEs {
     System.out.println("using indexName: " + indexName);
     System.out.println("using indexConfig: " + indexConfig);
     String morphFileName = args.length >= 8 ? MORPH_FN_PREFIX + args[7]
-        : MORPH_FN_PREFIX + "alma/alma.xml";
+        : MORPH_FN_PREFIX + "/alma.xml";
     System.out.println("using morph: " + morphFileName);
 
     // hbz catalog transformation
     final FileOpener opener = new FileOpener();
-    if (inputPath.toLowerCase().endsWith("bz2")) {
-      opener.setCompression("BZIP2");
-    } else if (inputPath.toLowerCase().endsWith("gz"))
-      opener.setCompression("GZIP");
-
+    //if (inputPath.toLowerCase().endsWith("bz2")) {
+    //  opener.setCompression("BZIP2");
+    //} else if (inputPath.toLowerCase().endsWith("gz"))
+    //  opener.setCompression("GZIP");
+opener.setDecompressConcatenated(true);
     morphVariables.put("isil", "DE-632");
     morphVariables.put("member", "DE-605");
     morphVariables.put("catalogid", "DE-605");
@@ -89,9 +89,10 @@ public class AlmaMarcXml2lobidJsonEs {
     System.out.println("using etikettLablesDirectory: "
         + JsonLdEtikett.getLabelsDirectoryName());
 
-    opener.setReceiver(new TarReader()).setReceiver(new XmlDecoder())//
+    opener.setReceiver(new XmlDecoder())//
         .setReceiver(xmlElementSplitter)//
         .setReceiver(new LiteralToObject())//
+//				.setReceiver(new org.metafacture.io.ObjectStdoutWriter());
         .setReceiver(new ObjectThreader<String>())//
         .addReceiver(receiverThread())//
         .addReceiver(receiverThread())//
@@ -99,9 +100,8 @@ public class AlmaMarcXml2lobidJsonEs {
         .addReceiver(receiverThread())//
         .addReceiver(receiverThread())//
         .addReceiver(receiverThread());//
-
     try {
-      opener.process(new File(inputPath).getAbsolutePath());
+      opener.process(inputPath);
       opener.closeStream();
     } catch (Exception e) {
       e.printStackTrace();
