@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rules xmlns="http://www.culturegraph.org/metamorph">
+
+  <entity name="contribution[]" flushWith="record">
+    <!-- 100[013]-->
+    <entity name="" flushWith="100[013] " sameEntity="true">
+      <entity name="type[]" reset="true">
+        <data name="" source="100[013] ">
+          <constant value="Contribution"/>
+        </data>
+      </entity>
+      <entity name="agent" flushWith="100[013] " sameEntity="true" reset="true">
+        <call-macro name="gndIdentifier" field="100" />
+        <call-macro name="gndIdentifierId" field="100" />
+        <!--
+      <call-macro name="personTitle"      field="100" />
+      <call-macro name="personBio"        field="100" />
+      <call-macro name="personRole"       field="100" />
+      <call-macro name="gndIdentifier"    field="100" />
+						-->
+        <call-macro name="personName" dname="label" field="100" />
+        <entity name="type[]" reset="true">
+          <data name="" source="100[013] .a">
+            <constant value="Person"/>
+          </data>
+        </entity>
+      </entity>
+      <entity name="role" reset="true">
+        <data name="id" source="100[013] .[4e]">
+          <regexp match="^([Aa]ut|[Cc]re)" format="http://id.loc.gov/vocabulary/relators/cre"/>
+        </data>
+        <data name="label" source="100[013] .[4e]">
+          <regexp match="^([Aa]ut|[Cc]re)" format="Autor/in"/>
+        </data>
+      </entity>
+    </entity>
+
+    <!--700[013] -->
+    <entity name="" flushWith="700[013] " sameEntity="true">
+      <entity name="type[]" reset="true">
+        <data name="" source="700[013] ">
+          <constant value="Contribution"/>
+        </data>
+      </entity>
+      <entity name="agent" flushWith="700[013] " reset="true">
+        <call-macro name="personIdentifier" dname="gndIdentifier" field="700" />
+        <call-macro name="gndIdentifierId" field="700" />
+        <call-macro name="personName" dname="label" field="700" />
+        <entity name="type[]" reset="true">
+          <data name="" source="700[013] .a">
+            <constant value="Person"/>
+          </data>
+        </entity>
+      </entity>
+      <entity name="role" reset="true">
+        <if>
+          <data name="id" source="700[013] .[4e]">
+            <regexp match="^([Aa]ut|[Cc]re)"/>
+          </data>
+        </if>
+        <data name="id" source="700[013] .[4e]">
+          <regexp match="^([Aa]ut|[Cc]re)" format="http://id.loc.gov/vocabulary/relators/cre"/>
+        </data>
+        <data name="label" source="700[013] .[4e]">
+          <regexp match="^([Aa]ut|[Cc]re)" format="Autor/in"/>
+        </data>
+      </entity>
+      <entity name="role" reset="true">
+        <if>
+          <data name="id" source="700[013] .[4e]">
+            <regexp match="^oth"/>
+          </data>
+        </if>
+        <data name="id" source="700[013] .[4e]">
+          <regexp match="^oth" format="http://id.loc.gov/vocabulary/relators/oth"/>
+        </data>
+        <data name="label" source="700[013] .[4e]">
+          <regexp match="^oth" format="Sonstiges"/>
+        </data>
+      </entity>
+    </entity>
+
+    <!-- [17]10[012] -->
+    <entity name="" flushWith="[17]10[012] " sameEntity="true">
+      <entity name="type[]" reset="true">
+        <data name="" source="[17]10[012] ">
+          <constant value="Contribution"/>
+        </data>
+      </entity>
+      <entity name="agent" flushWith="[17]10[012] " reset="true">
+        <combine name="id" value="${a}">
+          <data name="a" source="[17]10[012] .0">
+            <regexp match="^\(DE-588\)(.*)$" format="https://d-nb.info/gnd/$1"/>
+          </data>
+        </combine>
+        <data name="label" source="[17]10[012] .a">
+          <replace pattern="\.$" with=""/>
+        </data>
+        <entity name="type[]" reset="true">
+          <data name="" source="[17]10[012] .a">
+            <constant value="CorporateBody"/>
+          </data>
+        </entity>
+      </entity>
+      <entity name="role" reset="true">
+        <data name="id" source="[17]10[012] .a">
+          <constant value="http://id.loc.gov/vocabulary/relators/ctb"/>
+        </data>
+        <data name="label" source="[17]10[012] .a">
+          <constant value="Mitwirkende"/>
+        </data>
+      </entity>
+    </entity>
+
+    <!-- 245 -->
+    <entity name="" flushWith="245[01]?.c" sameEntity="true">
+      <entity name="type[]" reset="true">
+        <data name="" source="245[01]?.c">
+          <constant value="Contribution"/>
+        </data>
+      </entity>
+      <entity name="agent" flushWith="245[01]?.c" reset="true">
+        <data name="id" source="245[01]?.0">
+          <regexp match="^\(DE-588\).*$"/>
+        </data>
+        <data name="label" source="245[01]?.c">
+          <replace pattern="\.$" with=""/>
+        </data>
+        <entity name="type[]" reset="true">
+          <data name="" source="245[01]?.c">
+            <constant value="Person"/>
+          </data>
+        </entity>
+      </entity>
+      <entity name="role" reset="true">
+        <data name="id" source="245[01]?.c">
+          <constant value="http://id.loc.gov/vocabulary/relators/cre"/>
+        </data>
+        <data name="label" source="245[01]?.c">
+          <constant value="Autor/in"/>
+        </data>
+      </entity>
+    </entity>
+ <!--
+		<entity name="" flushWith="245[01]?.c" sameEntity="true" >
+				<entity name="agent">
+				 <data name="type" source="245[01]?.c">
+						<constant value="Person" />
+					</data>
+					<data name="label" source="245[01]?.c">
+						<replace pattern="[.]$" with="" />
+					</data>
+				</entity>
+				<data name="type" source="245[01]?.c">
+					<constant value="Contribution" />
+				</data>
+				<entity name="role">
+					<data name="id" source="245[01]?.c">
+					 <constant value="http://id.loc.gov/vocabulary/relators/cre" />
+				 </data>
+				 <data name="label" source="245[01]?.c">
+          <constant value="Autor/in" />
+        </data>
+				</entity>
+			</entity>
+		-->
+
+
+    <!--  <entity name="todo_corporateBodyNameUnit[]" flushWith="[17]10[012] " sameEntity="true">
+        <data name="" source="[17]10[012] .b">
+          <replace pattern="\.$" with="" />
+        </data>
+      </entity>
+            <call-macro name="gndIdentifier" field="[17]10" />
+    </entity>
+<todo-->
+
+    <entity name="Conference" flushWith="record">
+      <data name="conferenceName" source="111[012] .a">
+        <replace pattern="[.,]$" with="" />
+      </data>
+      <data name="conferencePlace" source="111[012] .c">
+        <replace pattern="\(|\)?[;.,]?$" with="" />
+        <occurrence only="1" />
+      </data>
+      <data name="conferenceDate" source="111[012] .d">
+        <replace pattern="\(|\)?[,]?$|\s?:$" with="" />
+      </data>
+      <concat name="conferenceUnit" delimiter=". ">
+        <data source="111[012] .e">
+          <replace pattern="[,.]$" with="" />
+        </data>
+      </concat>
+      <data name="corporateBodyNameeNumber" source="111[012] .n">
+        <!-- [sic] -->
+        <replace pattern="\(|\)?[,]?$|\s?[;:]$" with="" />
+        <occurrence only="1" />
+      </data>
+      <entity name="conferenceIdentifier[]" flushWith="111[012] " sameEntity="true">
+        <data name="" source="111[012] .0">
+          <regexp match="^\(DE-588\).*$" />
+        </data>
+      </entity>
+      <call-macro name="gndIdentifier" field="111" />
+    </entity>
+  </entity>
+</rules>
