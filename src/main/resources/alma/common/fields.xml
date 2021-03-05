@@ -92,13 +92,8 @@
   </entity>
 
   <entity name="isbn[]" flushWith="record">
-    <if>
-      <data source="020  .a" />
-    </if>
-    <data name="" source="020  .a" />
-    <data name="" source="020  .c" />
-    <data name="" source="020  .q">
-      <replace pattern="^\(|\s?[):;,]\s?$" with="" />
+    <data name="" source="020  .a">
+      <unique />
     </data>
   </entity>
   <entity name="issn[]" flushWith="record">
