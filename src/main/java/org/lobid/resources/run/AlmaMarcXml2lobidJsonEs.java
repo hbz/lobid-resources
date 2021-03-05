@@ -68,14 +68,10 @@ public class AlmaMarcXml2lobidJsonEs {
     String morphFileName = args.length >= 8 ? MORPH_FN_PREFIX + args[7]
         : MORPH_FN_PREFIX + "/alma.xml";
     System.out.println("using morph: " + morphFileName);
-
     // hbz catalog transformation
     final FileOpener opener = new FileOpener();
-    //if (inputPath.toLowerCase().endsWith("bz2")) {
-    //  opener.setCompression("BZIP2");
-    //} else if (inputPath.toLowerCase().endsWith("gz"))
-    //  opener.setCompression("GZIP");
-opener.setDecompressConcatenated(true);
+        // used when loading a BGZF file
+    opener.setDecompressConcatenated(true);
     morphVariables.put("isil", "DE-632");
     morphVariables.put("member", "DE-605");
     morphVariables.put("catalogid", "DE-605");
@@ -89,10 +85,13 @@ opener.setDecompressConcatenated(true);
     System.out.println("using etikettLablesDirectory: "
         + JsonLdEtikett.getLabelsDirectoryName());
 
-    opener.setReceiver(new XmlDecoder())//
+if (inputPath.toLowerCase().endsWith("bz2") || inputPath.toLowerCase().endsWith("gz")) {
+      System.out.println("recognised as tar archive");
+      
+      opener.setReceiver(new TarReader())//
+        .setReceiver(new XmlDecoder())//
         .setReceiver(xmlElementSplitter)//
         .setReceiver(new LiteralToObject())//
-//				.setReceiver(new org.metafacture.io.ObjectStdoutWriter());
         .setReceiver(new ObjectThreader<String>())//
         .addReceiver(receiverThread())//
         .addReceiver(receiverThread())//
@@ -100,6 +99,19 @@ opener.setDecompressConcatenated(true);
         .addReceiver(receiverThread())//
         .addReceiver(receiverThread())//
         .addReceiver(receiverThread());//
+    } else { // BGZF
+        opener.setReceiver(new XmlDecoder())//
+        .setReceiver(xmlElementSplitter)//
+        .setReceiver(new LiteralToObject())//
+        .setReceiver(new ObjectThreader<String>())//
+        .addReceiver(receiverThread())//
+        .addReceiver(receiverThread())//
+        .addReceiver(receiverThread())//
+        .addReceiver(receiverThread())//
+        .addReceiver(receiverThread())//
+        .addReceiver(receiverThread());//
+    }
+
     try {
       opener.process(inputPath);
       opener.closeStream();
