@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rules xmlns="http://www.culturegraph.org/metamorph">
+  <combine name="onlyAlma" value="yes">
+    <if>
+      <all>
+        <any>
+          <all>
+            <data source="MBD  .M">
+              <not-equals string="m" />
+            </data>
+            <data source="ITM" />
+          </all>
+          <data source="leader">
+            <regex match="^.{5}[^n]" />
+          </data>
+        </any>
+        <any>
+          <data source="MBD  .M" />
+          <data source="POR  .M" />
+          <data source="POR  .A" />
+        </any>
+      </all>
+    </if>
+    <data source="001" />
+  </combine>
+</rules>
