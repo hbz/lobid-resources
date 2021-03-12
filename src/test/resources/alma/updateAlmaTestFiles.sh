@@ -5,9 +5,10 @@
 # Updates the test files by getting the Alma Xml source(s) and creating an archive.
 # This archive is used by the AlmaMarc21XmlToLobidJsonTest to create the json files.
 #
-# Parameters: {all , $hbzId}
+# Parameters: {all , $hbzId, $almaId}
 # If parameter is 'all' all the test files found in the filesystem will be updated.
 # If parameter is a hbzId this hbz Id is lookuped and appended to the archive.
+# If parameter is a almaId this alma Id is lookuped and appended to the archive.
 #
 # Example: "bash updateAlmaTestFiles.sh HT017664407"
 
@@ -17,9 +18,13 @@ tar xfj almaMarcXmlTestFiles.xml.tar.bz2
 
 function getAlmaXmlAndAppendItToArchive() {
 	hbzId=$1
+	almaXmlUrl="curl https://indexes.devel.digibib.net/export/$hbzId"
 	echo "getting Alma Xml for $hbzId ..."
-	# lookup and filter alma url
-	almaXmlUrl=$(curl https://indexes.devel.digibib.net/export/$hbzId |jq .|grep -A2 -B2 '"type": "alma"'|grep url|cut -d '"' -f4)
+	# if it's a hbzId, we have to lookup the almaId first
+	if [[ $hbzId =~ ^[A-Z] ]]; then
+		# lookup and filter alma url
+		almaXmlUrl=$(curl $almaXmlUrl |jq .|grep -A2 -B2 '"type": "alma"'|grep url|cut -d '"' -f4)
+	fi
 	# get AlmaMarcXml
 	curl --silent $almaXmlUrl | xmllint --format - | grep -v '<?xml version="1.0"?>' > $hbzId.xml
 	cat $hbzId.xml >> $TEST_FILE
