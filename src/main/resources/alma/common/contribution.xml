@@ -2,14 +2,14 @@
 <rules xmlns="http://www.culturegraph.org/metamorph">
 
   <entity name="contribution[]" flushWith="record">
-    <!-- 100[013]-->
-    <entity name="" flushWith="100[013] " sameEntity="true">
+    <!-- 100[01]-->
+    <entity name="" flushWith="100[01] " sameEntity="true">
       <entity name="type[]" reset="true">
-        <data name="" source="100[013] ">
+        <data name="" source="100[01] ">
           <constant value="Contribution"/>
         </data>
       </entity>
-      <entity name="agent" flushWith="100[013] " sameEntity="true" reset="true">
+      <entity name="agent" flushWith="100[01] " sameEntity="true" reset="true">
         <call-macro name="gndIdentifier" field="100" />
         <call-macro name="gndIdentifierId" field="100" />
         <!--
@@ -20,60 +20,60 @@
 						-->
         <call-macro name="personName" dname="label" field="100" />
         <entity name="type[]" reset="true">
-          <data name="" source="100[013] .a">
+          <data name="" source="100[01] .a">
             <constant value="Person"/>
           </data>
         </entity>
       </entity>
       <entity name="role" reset="true">
-        <data name="id" source="100[013] .[4e]">
+        <data name="id" source="100[01] .[4e]">
           <regexp match="^([Aa]ut|[Cc]re)" format="http://id.loc.gov/vocabulary/relators/cre"/>
         </data>
-        <data name="label" source="100[013] .[4e]">
+        <data name="label" source="100[01] .[4e]">
           <regexp match="^([Aa]ut|[Cc]re)" format="Autor/in"/>
         </data>
       </entity>
     </entity>
-    <!--700[013] -->
-    <entity name="" flushWith="700[013] " sameEntity="true">
+    <!--700[01] -->
+    <entity name="" flushWith="700[01] " sameEntity="true">
       <entity name="type[]" reset="true">
-        <data name="" source="700[013] ">
+        <data name="" source="700[01] ">
           <constant value="Contribution"/>
         </data>
       </entity>
-      <entity name="agent" flushWith="700[013] " reset="true">
+      <entity name="agent" flushWith="700[01] " reset="true">
         <call-macro name="personIdentifier" dname="gndIdentifier" field="700" />
         <call-macro name="gndIdentifierId" field="700" />
         <call-macro name="personName" dname="label" field="700" />
         <entity name="type[]" reset="true">
-          <data name="" source="700[013] .a">
+          <data name="" source="700[01] .a">
             <constant value="Person"/>
           </data>
         </entity>
       </entity>
       <entity name="role" reset="true">
         <if>
-          <data name="id" source="700[013] .[4e]">
+          <data name="id" source="700[01] .[4e]">
             <regexp match="^([Aa]ut|[Cc]re)"/>
           </data>
         </if>
-        <data name="id" source="700[013] .[4e]">
+        <data name="id" source="700[01] .[4e]">
           <regexp match="^([Aa]ut|[Cc]re)" format="http://id.loc.gov/vocabulary/relators/cre"/>
         </data>
-        <data name="label" source="700[013] .[4e]">
+        <data name="label" source="700[01] .[4e]">
           <regexp match="^([Aa]ut|[Cc]re)" format="Autor/in"/>
         </data>
       </entity>
       <entity name="role" reset="true">
         <if>
-          <data name="id" source="700[013] .[4e]">
+          <data name="id" source="700[01] .[4e]">
             <regexp match="^oth"/>
           </data>
         </if>
-        <data name="id" source="700[013] .[4e]">
+        <data name="id" source="700[01] .[4e]">
           <regexp match="^oth" format="http://id.loc.gov/vocabulary/relators/oth"/>
         </data>
-        <data name="label" source="700[013] .[4e]">
+        <data name="label" source="700[01] .[4e]">
           <regexp match="^oth" format="Sonstiges"/>
         </data>
       </entity>
