@@ -34,7 +34,6 @@
         </data>
       </entity>
     </entity>
-
     <!--700[013] -->
     <entity name="" flushWith="700[013] " sameEntity="true">
       <entity name="type[]" reset="true">
@@ -79,7 +78,6 @@
         </data>
       </entity>
     </entity>
-
     <!-- [17]10[012] -->
     <entity name="" flushWith="[17]10[012] " sameEntity="true">
       <entity name="type[]" reset="true">
@@ -111,60 +109,6 @@
         </data>
       </entity>
     </entity>
-
-    <!-- 245 -->
-    <entity name="" flushWith="245[01]?.c" sameEntity="true">
-      <entity name="type[]" reset="true">
-        <data name="" source="245[01]?.c">
-          <constant value="Contribution"/>
-        </data>
-      </entity>
-      <entity name="agent" flushWith="245[01]?.c" reset="true">
-        <data name="id" source="245[01]?.0">
-          <regexp match="^\(DE-588\).*$"/>
-        </data>
-        <data name="label" source="245[01]?.c">
-          <replace pattern="\.$" with=""/>
-        </data>
-        <entity name="type[]" reset="true">
-          <data name="" source="245[01]?.c">
-            <constant value="Person"/>
-          </data>
-        </entity>
-      </entity>
-      <entity name="role" reset="true">
-        <data name="id" source="245[01]?.c">
-          <constant value="http://id.loc.gov/vocabulary/relators/cre"/>
-        </data>
-        <data name="label" source="245[01]?.c">
-          <constant value="Autor/in"/>
-        </data>
-      </entity>
-    </entity>
- <!--
-		<entity name="" flushWith="245[01]?.c" sameEntity="true" >
-				<entity name="agent">
-				 <data name="type" source="245[01]?.c">
-						<constant value="Person" />
-					</data>
-					<data name="label" source="245[01]?.c">
-						<replace pattern="[.]$" with="" />
-					</data>
-				</entity>
-				<data name="type" source="245[01]?.c">
-					<constant value="Contribution" />
-				</data>
-				<entity name="role">
-					<data name="id" source="245[01]?.c">
-					 <constant value="http://id.loc.gov/vocabulary/relators/cre" />
-				 </data>
-				 <data name="label" source="245[01]?.c">
-          <constant value="Autor/in" />
-        </data>
-				</entity>
-			</entity>
-		-->
-
 
     <!--  <entity name="todo_corporateBodyNameUnit[]" flushWith="[17]10[012] " sameEntity="true">
         <data name="" source="[17]10[012] .b">
@@ -204,4 +148,5 @@
       <call-macro name="gndIdentifier" field="111" />
     </entity>
   </entity>
+  
 </rules>
