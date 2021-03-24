@@ -88,7 +88,7 @@
       <entity name="agent" flushWith="[17]10[012] " reset="true">
         <combine name="id" value="${a}">
           <data name="a" source="[17]10[012] .0">
-            <regexp match="^\(DE-588\)(.*)$" format="https://d-nb.info/gnd/$1"/>
+            <regexp match="^\(DE-588\)(.*)$" format="https://d-nb.info/gnd/${1}"/>
           </data>
         </combine>
         <data name="label" source="[17]10[012] .a">
