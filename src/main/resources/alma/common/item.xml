@@ -30,6 +30,38 @@
         <data name="b" source="ITM  .x"/>
       </combine>      
     </entity>
+    <!-- HOL if no ITM -->
+    <entity name="" reset="true" sameEntity="true">
+      <!--TODO: Introduce filter that allows the entity to have separate objects. sameEntity="true" is the roadblock at the moment but we need it. 
+      <if>
+          <none>
+            <data source="ITM  .a">
+              <buffer flushWith="HOL .8" />
+            </data>
+          </none>
+      </if> -->
+      <combine name="id" value="https://lobid.org/item/${i}">
+        <data name="i" source="HOL  .8"/>
+      </combine>
+      <entity name="type[]" sameEntity="true">
+        <data name="" source="HOL  .8">
+          <constant value="Item"/>
+        </data>
+      </entity>
+      <data name="label" source="HOL  .8">
+        <constant value="lobid Bestandsressource"/>
+      </data>
+      <entity name="heldBy" sameEntity="true">
+        <data name="id" source="HOL  .8">
+          <regexp match=".*(\d{4})$" format="${1}"/>
+          <lookup in="alma-institution-code-to-isil" />
+          <compose prefix="http://lobid.org/organisations/" postfix="#!"/>
+        </data>
+        <data name="label" source="HOL  .8">
+          <constant value="lobid Organisation"/>
+        </data>
+      </entity>  
+    </entity>
     <!-- POR -->
     <entity name="" reset="true" sameEntity="true">
       <combine name="id" value="https://lobid.org/item/${i}">
