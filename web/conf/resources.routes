@@ -26,6 +26,7 @@ GET    /items/:id.$format<html|json|rdf|ttl|nt> controllers.resources.Applicatio
 GET    /resources/:id                   controllers.resources.Application.resource(id, format ?= null)
 GET    /items/:id                       controllers.resources.Application.item(id, format ?= null)
 GET    /resources/deletions/search      controllers.resources.Deletions.query(q?="",size:Int?=15)
+POST   /resources/webhook/update-alma   controllers.resources.Webhook.updateAlma(token?="")
 
 # Map static resources from the /public folder to the /assets URL path
 GET    /resources/assets/*file          controllers.Assets.at(path="/public", file)

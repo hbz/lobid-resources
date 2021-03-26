@@ -23,8 +23,8 @@ import org.metafacture.xml.XmlDecoder;
 import org.metafacture.xml.XmlElementSplitter;
 
 /**
- * Transform hbz Alma Marc XML catalog data into lobid elasticsearch
- * JSON-LD and index that into elasticsearch.
+ * Transform hbz Alma Marc XML catalog data into lobid elasticsearch JSON-LD and
+ * index that into elasticsearch.
  *
  * Input path of data can be an uncompressed file, tar archive or BGZF.
  *
@@ -33,13 +33,13 @@ import org.metafacture.xml.XmlElementSplitter;
  */
 @SuppressWarnings("javadoc")
 public class AlmaMarcXml2lobidJsonEs {
-  private static final String MORPH_FN_PREFIX = "src/main/resources/alma/";
   private static String indexAliasSuffix;
   private static String node;
   private static String cluster;
   private static String indexName;
   private static boolean updateDonotCreateIndex;
-  private static String indexConfig;
+  private static String morphFileName = "src/main/resources/alma/alma.xml";
+  private static final String INDEXCONFIG = "index-config.json";
   private static final HashMap<String, String> morphVariables = new HashMap<>();
 
   public static void main(String... args) {
@@ -63,11 +63,9 @@ public class AlmaMarcXml2lobidJsonEs {
           + String.format(usage, " ", " ", " ", " ", " ", " ", " ", " ", " "));
       return;
     }
-    indexConfig = args.length >= 7 ? args[6] : "index-config.json";
     System.out.println("using indexName: " + indexName);
-    System.out.println("using indexConfig: " + indexConfig);
-    String morphFileName = args.length >= 8 ? MORPH_FN_PREFIX + args[7]
-        : MORPH_FN_PREFIX + "/alma.xml";
+    System.out.println("using indexConfig: " + INDEXCONFIG);
+    morphFileName = args.length >= 6 ? args[6] : morphFileName;
     System.out.println("using morph: " + morphFileName);
     // hbz catalog transformation
     final FileOpener opener = new FileOpener();
@@ -129,7 +127,7 @@ public class AlmaMarcXml2lobidJsonEs {
     esIndexer.setIndexName(indexName);
     esIndexer.setIndexAliasSuffix(indexAliasSuffix);
     esIndexer.setUpdateNewestIndex(updateDonotCreateIndex);
-    esIndexer.setIndexConfig(indexConfig);
+    esIndexer.setIndexConfig(INDEXCONFIG);
     esIndexer.onSetReceiver();
     return esIndexer;
   }
@@ -143,7 +141,6 @@ public class AlmaMarcXml2lobidJsonEs {
     ObjectBatchLogger<HashMap<String, String>> objectBatchLogger =
         new ObjectBatchLogger<>();
     objectBatchLogger.setBatchSize(500000);
-    final String MORPH = MORPH_FN_PREFIX + "/alma.xml";
     MarcXmlHandler marcXmlHandler = new MarcXmlHandler();
     marcXmlHandler.setNamespace(null);
     JsonEncoder jsonEncoder = new JsonEncoder();
@@ -151,7 +148,7 @@ public class AlmaMarcXml2lobidJsonEs {
 
     sr.setReceiver(new XmlDecoder())//
         .setReceiver(marcXmlHandler)//
-        .setReceiver(new Metamorph(MORPH, morphVariables))
+        .setReceiver(new Metamorph(morphFileName, morphVariables))
         .setReceiver(batchLogger)//
         .setReceiver(jsonEncoder)//
         .setReceiver(new JsonToElasticsearchBulkMap(KEY_TO_GET_MAIN_ID,

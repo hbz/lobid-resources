@@ -12,6 +12,7 @@ import org.elasticsearch.transport.client.PreBuiltTransportClient;
 
 import controllers.resources.LocalIndex;
 import controllers.resources.Search;
+import controllers.resources.Webhook;
 import play.Application;
 import play.GlobalSettings;
 import play.Logger;
@@ -50,6 +51,8 @@ public class Global extends GlobalSettings {
 			TransportClient c = new PreBuiltTransportClient(settings);
 			addHosts(c);
 			client = c;
+			Webhook.clusterHost = CLUSTER_HOSTS.get(0);
+			Webhook.clusterName = CLUSTER_NAME;
 		}
 		if (client != null) {
 			Search.elasticsearchClient = client;
