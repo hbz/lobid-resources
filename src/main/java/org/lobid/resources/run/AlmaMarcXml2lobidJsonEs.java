@@ -112,12 +112,9 @@ public class AlmaMarcXml2lobidJsonEs {
           .addReceiver(receiverThread());
     }
 
-    try {
-      opener.process(inputPath);
-      opener.closeStream();
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
+    opener.process(inputPath);
+    opener.closeStream();
+
   }
 
   private static ElasticsearchIndexer getElasticsearchIndexer() {
