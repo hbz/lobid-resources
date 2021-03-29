@@ -57,7 +57,7 @@ public class Webhook extends Controller {
       sendMail("update", false, e.toString());
       return internalServerError("ETL of update failed:" +e.toString());
     }
-    sendMail("update", true, "");
+    sendMail("update", true, ". Updated index with name "+ INDEX_NAME);
     return ok("... finished ETL update!");
   }
 
