@@ -44,7 +44,7 @@ public class Webhook extends Controller {
    */
   public static Result updateAlma(final String token) {
     if (!token.equals(TOKEN)) {
-      sendMail("update", false, "wrong token");
+      sendMail("update", false, token + " is the wrong token");
       return forbidden("Wrong token. Declining to etl update.");
     }
     try {
@@ -70,7 +70,7 @@ public class Webhook extends Controller {
    */
   public static Result basedumpAlma(final String token) {
     if (!token.equals(TOKEN)) {
-      sendMail("basedump", false, "wrong token");
+      sendMail("basedump", false, token + " is the wrong token");
       return forbidden("Wrong token. Declining to etl basedump.");
     }
     try {
