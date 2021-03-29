@@ -88,7 +88,11 @@ public class Webhook extends Controller {
   }
 
   private static void sendMail(final String kind, final boolean success, final String message) {
-     Email.sendEmail("hduser", EMAIL, "Webhook ETL of " + kind + " " + (success ? "success :)" : "fails :("), message);
+    try {
+    Email.sendEmail("hduser", EMAIL, "Webhook ETL of " + kind + " " + (success ? "success :)" : "fails :("), message);
+    } catch (Exception e) {
+      Logger.error("Couldn't send email", e.toString());
+    }
   }
 
 }
