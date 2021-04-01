@@ -1,8 +1,11 @@
 name := "lobid-resources-web"
 
-version := "0.2.0-SNAPSHOT"
+version := "0.2.1-SNAPSHOT"
 
 scalaVersion := "2.11.11"
+
+// used by the webhook listener invoking the ETL
+unmanagedResourceDirectories in Compile += baseDirectory.value / "../src/main/resources/alma"
 
 libraryDependencies ++= Seq(
   cache,
@@ -23,6 +26,10 @@ libraryDependencies ++= Seq(
   "org.apache.logging.log4j" % "log4j-1.2-api" % "2.9.1",
   "org.easytesting" % "fest-assert" % "1.4" % "test"
 )
+
+resolvers += "Local Maven Repository" at Path.userHome.asFile.toURI.toURL + ".m2/repository"
+
+libraryDependencies += "org.lobid" % "lobid-resources" % "0.4-SNAPSHOT" changing()
 
 lazy val root = (project in file(".")).enablePlugins(PlayJava)
 
