@@ -65,7 +65,7 @@ public class AlmaMarcXml2lobidJsonEs {
     }
     System.out.println("using indexName: " + indexName);
     System.out.println("using indexConfig: " + INDEXCONFIG);
-    morphFileName = args.length >= 6 ? args[6] : morphFileName;
+    morphFileName = args.length > 6 ? args[6] : morphFileName;
     System.out.println("using morph: " + morphFileName);
     // hbz catalog transformation
     final FileOpener opener = new FileOpener();
