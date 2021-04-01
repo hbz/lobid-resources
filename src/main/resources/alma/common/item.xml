@@ -2,7 +2,7 @@
 <rules xmlns="http://www.culturegraph.org/metamorph">
   <entity name="hasItem[]" flushWith="record">
     <!-- ITM -->
-    <entity name="" reset="true" sameEntity="true">
+    <entity name="" reset="true" sameEntity="true" flushWith="ITM  .w">
       <combine name="id" value="https://lobid.org/item/${i}">
         <data name="i" source="ITM  .a"/>
       </combine>
@@ -25,10 +25,10 @@
         </data>
       </entity>
       <data name="callNumber" source="ITM  .c" />
-      <combine name="currentLocation" value="${a} / ${b}">
+      <combine name="currentLocation" value="${a} / ${b}" sameEntity="true">
         <data name="a" source="ITM  .w"/>
         <data name="b" source="ITM  .x"/>
-      </combine>      
+      </combine>
     </entity>
     <!-- POR -->
     <entity name="" reset="true" sameEntity="true">
