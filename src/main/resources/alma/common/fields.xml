@@ -91,11 +91,20 @@
     </entity>
   </entity>
 
+  <data source="020  .a" name="@cleanIsbn">
+    <isbn to="clean"/>
+    <unique />
+  </data>
+
   <entity name="isbn[]" flushWith="record">
-    <data name="" source="020  .a">
-      <unique />
+    <data name="" source="@cleanIsbn">
+      <isbn to="isbn10"/>
+    </data>
+    <data name="" source="@cleanIsbn">
+      <isbn to="isbn13"/>
     </data>
   </entity>
+
   <entity name="issn[]" flushWith="record">
     <data name="" source="022? .a">
       <replace pattern="-" with="" />
