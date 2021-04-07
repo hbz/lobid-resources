@@ -97,9 +97,10 @@
   </data>
 
   <entity name="isbn[]" flushWith="record">
-    <data name="" source="@cleanIsbn"/>
     <data name="" source="@cleanIsbn">
-      <regexp match="^\d{10}$"/>
+      <isbn to="isbn10"/>
+    </data>
+    <data name="" source="@cleanIsbn">
       <isbn to="isbn13"/>
     </data>
   </entity>
