@@ -32,14 +32,14 @@
     </entity>
     <!-- HOL if no ITM -->
     <entity name="" reset="true" sameEntity="true">
-      <!--TODO: Introduce filter that allows the entity to have separate objects. sameEntity="true" is the roadblock at the moment but we need it. 
+			<!--TODO: Introduce filter that allows the entity to have separate objects. sameEntity="true" is the roadblock at the moment but we need it. -->
       <if>
-          <none>
+          <none flushWith="record">
             <data source="ITM  .a">
               <buffer flushWith="HOL .8" />
             </data>
           </none>
-      </if> -->
+      </if>
       <combine name="id" value="https://lobid.org/item/${i}">
         <data name="i" source="HOL  .8"/>
       </combine>
