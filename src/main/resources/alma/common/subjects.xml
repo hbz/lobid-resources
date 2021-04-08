@@ -1,6 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <rules xmlns="http://www.culturegraph.org/metamorph">
 
+
+  <entity name="subject[]" flushWith="record">
+    <!-- GST - Topical Term -->
+    <entity name="" sameEntity="true" reset="true">
+      <data name="type" source="GST  ">
+        <constant value="ComplexSubject"/>
+      </data>
+      <data name="label" source="GST  .a">
+        <unique/>
+      </data>
+      <entity name="componentList" sameEntity="true" reset="true">
+          <data name="type" source="GST  ">
+            <constant value="SubjectHeading"/>
+          </data>
+      </entity>
+    </entity>
+  </entity>
+
+
   <!-- 6xx -->
   <!-- At the moment RSWK does not seem to be used.
      <entity name="RSWK[]" flushWith="record">
