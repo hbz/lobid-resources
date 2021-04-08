@@ -31,13 +31,8 @@
       </combine>
     </entity>
     <!-- HOL if no ITM -->
-    <entity name="" reset="true">
+    <entity name="@HOL" reset="true">
 			<!--TODO: Introduce filter that allows the entity to have separate objects. sameEntity="true" is the roadblock at the moment but we need it. -->
-      <if>
-          <none flushWith="record">
-            <data source="ITM  .a" />
-          </none>
-      </if>
       <combine name="id" value="https://lobid.org/item/${i}" reset="true" sameEntity="true">
         <data name="i" source="HOL  .8"/>
       </combine>
@@ -60,6 +55,7 @@
         </data>
       </entity>  
     </entity>
+    <data name="HOL" source="@HOL" />
     <!-- POR -->
     <!-- POR  .a but no POR  .A -->
     <entity name="" reset="true" sameEntity="true">
