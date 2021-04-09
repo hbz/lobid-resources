@@ -3,22 +3,178 @@
 
 
   <entity name="subject[]" flushWith="record">
-    <!-- GST - Topical Term -->
-    <entity name="" sameEntity="true" reset="true">
-      <data name="type" source="GST  ">
+    <!-- RWSK Schlagwortfolgen 1 - 10 -->
+    <!-- 1 -->
+    <entity name="" flushWith="record">
+      <data name="type" source="68900">
         <constant value="ComplexSubject"/>
       </data>
-      <data name="label" source="GST  .a">
-        <unique/>
-      </data>
-      <entity name="componentList" sameEntity="true" reset="true">
-          <data name="type" source="GST  ">
-            <constant value="SubjectHeading"/>
+      <entity name="componentList[]" flushWith="record">
+        <entity name="" sameEntity="true" reset="true" flushWith="6890?">
+          <data name="type" source="6890?.D">
+            <lookup in="rwsk-indicator" />
           </data>
+          <data name="label" source="6890?.a" />
+          <data name="id" source="6890?.0">
+            <regexp match="\(DE-588\)(.*)" format="http://d-nb.info/gnd/${1}"/>
+          </data>
+        </entity>
+      </entity>
+    </entity>
+    <!-- 2 -->
+    <entity name="" flushWith="record">
+      <data name="type" source="68910">
+        <constant value="ComplexSubject"/>
+      </data>
+      <entity name="componentList[]" flushWith="record">
+        <entity name="" sameEntity="true" reset="true" flushWith="6891?">
+          <data name="type" source="6891?.D">
+            <lookup in="rwsk-indicator" />
+          </data>
+          <data name="label" source="6891?.a" />
+          <data name="id" source="6891?.0">
+            <regexp match="\(DE-588\)(.*)" format="http://d-nb.info/gnd/${1}"/>
+          </data>
+        </entity>
+      </entity>
+    </entity>
+    <!-- 3 -->
+    <entity name="" flushWith="record">
+      <data name="type" source="68920">
+        <constant value="ComplexSubject"/>
+      </data>
+      <entity name="componentList[]" flushWith="record">
+        <entity name="" sameEntity="true" reset="true" flushWith="6892?">
+          <data name="type" source="6892?.D">
+            <lookup in="rwsk-indicator" />
+          </data>
+          <data name="label" source="6892?.a" />
+          <data name="id" source="6892?.0">
+            <regexp match="\(DE-588\)(.*)" format="http://d-nb.info/gnd/${1}"/>
+          </data>
+        </entity>
+      </entity>
+    </entity>
+    <!-- 4 -->
+    <entity name="" flushWith="record">
+      <data name="type" source="68930">
+        <constant value="ComplexSubject"/>
+      </data>
+      <entity name="componentList[]" flushWith="record">
+        <entity name="" sameEntity="true" reset="true" flushWith="6893?">
+          <data name="type" source="6893?.D">
+            <lookup in="rwsk-indicator" />
+          </data>
+          <data name="label" source="6893?.a" />
+          <data name="id" source="6893?.0">
+            <regexp match="\(DE-588\)(.*)" format="http://d-nb.info/gnd/${1}"/>
+          </data>
+        </entity>
+      </entity>
+    </entity>
+        <!-- 5 -->
+    <entity name="" flushWith="record">
+      <data name="type" source="68940">
+        <constant value="ComplexSubject"/>
+      </data>
+      <entity name="componentList[]" flushWith="record">
+        <entity name="" sameEntity="true" reset="true" flushWith="6894?">
+          <data name="type" source="6894?.D">
+            <lookup in="rwsk-indicator" />
+          </data>
+          <data name="label" source="6894?.a" />
+          <data name="id" source="6894?.0">
+            <regexp match="\(DE-588\)(.*)" format="http://d-nb.info/gnd/${1}"/>
+          </data>
+        </entity>
+      </entity>
+    </entity>
+        <!-- 6 -->
+    <entity name="" flushWith="record">
+      <data name="type" source="68950">
+        <constant value="ComplexSubject"/>
+      </data>
+      <entity name="componentList[]" flushWith="record">
+        <entity name="" sameEntity="true" reset="true" flushWith="6895?">
+          <data name="type" source="6895?.D">
+            <lookup in="rwsk-indicator" />
+          </data>
+          <data name="label" source="6895?.a" />
+          <data name="id" source="6895?.0">
+            <regexp match="\(DE-588\)(.*)" format="http://d-nb.info/gnd/${1}"/>
+          </data>
+        </entity>
+      </entity>
+    </entity>
+        <!-- 7 -->
+    <entity name="" flushWith="record">
+      <data name="type" source="68960">
+        <constant value="ComplexSubject"/>
+      </data>
+      <entity name="componentList[]" flushWith="record">
+        <entity name="" sameEntity="true" reset="true" flushWith="6896?">
+          <data name="type" source="6896?.D">
+            <lookup in="rwsk-indicator" />
+          </data>
+          <data name="label" source="6896?.a" />
+          <data name="id" source="6896?.0">
+            <regexp match="\(DE-588\)(.*)" format="http://d-nb.info/gnd/${1}"/>
+          </data>
+        </entity>
+      </entity>
+    </entity>
+            <!-- 8 -->
+    <entity name="" flushWith="record">
+      <data name="type" source="68970">
+        <constant value="ComplexSubject"/>
+      </data>
+      <entity name="componentList[]" flushWith="record">
+        <entity name="" sameEntity="true" reset="true" flushWith="6897?">
+          <data name="type" source="6897?.D">
+            <lookup in="rwsk-indicator" />
+          </data>
+          <data name="label" source="6897?.a" />
+          <data name="id" source="6897?.0">
+            <regexp match="\(DE-588\)(.*)" format="http://d-nb.info/gnd/${1}"/>
+          </data>
+        </entity>
+      </entity>
+    </entity>
+            <!-- 9 -->
+    <entity name="" flushWith="record">
+      <data name="type" source="68980">
+        <constant value="ComplexSubject"/>
+      </data>
+      <entity name="componentList[]" flushWith="record">
+        <entity name="" sameEntity="true" reset="true" flushWith="6898?">
+          <data name="type" source="6898?.D">
+            <lookup in="rwsk-indicator" />
+          </data>
+          <data name="label" source="6898?.a" />
+          <data name="id" source="6898?.0">
+            <regexp match="\(DE-588\)(.*)" format="http://d-nb.info/gnd/${1}"/>
+          </data>
+        </entity>
+      </entity>
+    </entity>
+                <!-- 10 -->
+    <entity name="" flushWith="record">
+      <data name="type" source="68990">
+        <constant value="ComplexSubject"/>
+      </data>
+      <entity name="componentList[]" flushWith="record">
+        <entity name="" sameEntity="true" reset="true" flushWith="6899?">
+          <data name="type" source="6899?.D">
+            <lookup in="rwsk-indicator" />
+          </data>
+          <data name="label" source="6899?.a" />
+          <data name="id" source="6899?.0">
+            <regexp match="\(DE-588\)(.*)" format="http://d-nb.info/gnd/${1}"/>
+          </data>
+        </entity>
       </entity>
     </entity>
   </entity>
-
 
   <!-- 6xx -->
   <!-- At the moment RSWK does not seem to be used.
