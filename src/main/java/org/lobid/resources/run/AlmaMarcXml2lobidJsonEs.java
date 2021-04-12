@@ -6,6 +6,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.lobid.resources.ElasticsearchIndexer;
 import org.lobid.resources.JsonLdEtikett;
 import org.lobid.resources.JsonToElasticsearchBulkMap;
@@ -21,6 +23,8 @@ import org.metafacture.monitoring.StreamBatchLogger;
 import org.metafacture.strings.StringReader;
 import org.metafacture.xml.XmlDecoder;
 import org.metafacture.xml.XmlElementSplitter;
+
+import de.hbz.lobid.helper.Email;
 
 /**
  * Transform hbz Alma Marc XML catalog data into lobid elasticsearch JSON-LD and
@@ -41,6 +45,10 @@ public class AlmaMarcXml2lobidJsonEs {
   private static String morphFileName = "src/main/resources/alma/alma.xml";
   private static final String INDEXCONFIG = "index-config.json";
   private static final HashMap<String, String> morphVariables = new HashMap<>();
+  private static String email = "localhost";
+  private static String kind = "";
+  private static final Logger LOG =
+      LogManager.getLogger(AlmaMarcXml2lobidJsonEs.class);
 
   public static void main(String... args) {
 
@@ -111,10 +119,18 @@ public class AlmaMarcXml2lobidJsonEs {
           .addReceiver(receiverThread())//
           .addReceiver(receiverThread());
     }
-
-    opener.process(inputPath);
-    opener.closeStream();
-
+    String message = "";
+    boolean success = false;
+    try {
+      opener.process(inputPath);
+      opener.closeStream();
+      success = true;
+    } catch (Exception e) {
+      e.printStackTrace();
+      message = e.toString();
+      success = false;
+    }
+    sendMail(kind, success, message);
   }
 
   private static ElasticsearchIndexer getElasticsearchIndexer() {
@@ -153,5 +169,23 @@ public class AlmaMarcXml2lobidJsonEs {
         .setReceiver(getElasticsearchIndexer());
 
     return sr;
+  }
+
+  public static void setEmail(final String EMAIL) {
+    email = EMAIL;
+  }
+
+  public static void setKindOfEtl(final String KIND) {
+    kind = KIND;
+  }
+
+  private static void sendMail(final String KIND, final boolean SUCCESS,
+      final String MESSAGE) {
+    try {
+      Email.sendEmail("hduser", email, "Webhook ETL of " + KIND + " "
+          + (SUCCESS ? "success :)" : "fails :("), MESSAGE);
+    } catch (Exception e) {
+      LOG.error("Couldn't send email", e.toString());
+    }
   }
 }

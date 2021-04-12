@@ -51,16 +51,11 @@ public class Webhook extends Controller {
     if (!GIVEN_TOKEN.equals(TOKEN)) {
       return wrongToken(KIND, GIVEN_TOKEN);
     }
-    try {
-      Logger.info(String.format(msgStartEtl, KIND));
-      AlmaMarcXml2lobidJsonEs.main(FILENAME_UPDATE, INDEX_NAME,
-      INDEX_UPDATE_ALIAS_SUFFIX, clusterHost, clusterName, UPDATE_NEWEST_INDEX,
-          MORPH_FILENAME);
-    } catch (Exception e) {
-        return etlFailed(KIND, e.toString());
-    }
+    Logger.info(String.format(msgStartEtl, KIND));
+    AlmaMarcXml2lobidJsonEs.main(FILENAME_UPDATE, INDEX_NAME,INDEX_UPDATE_ALIAS_SUFFIX,
+     clusterHost, clusterName, UPDATE_NEWEST_INDEX, MORPH_FILENAME);
     sendMail(KIND, true, "Updated index '"+ INDEX_NAME + "'");
-    return ok("... finished ETL " + KIND);
+    return ok("... started ETL " + KIND);
   }
 
  /**
