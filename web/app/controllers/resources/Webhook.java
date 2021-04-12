@@ -37,7 +37,7 @@ public class Webhook extends Controller {
   public static String clusterName = null;
   private static String msgWrongToken = "'%s' is the wrong token. Declining to ETL %s.";
   private static String msgStartEtl = "Starting ETL of '%s'...";
-  private static String msgEtlFailed = "ETL of '%s' failed: %s";
+  private static final String MSG_ALREADY_RUNNING ="An ETL is already running. Only one at a time is allowed. Please try again later.";
 
   /**
    * Triggers ETL of updates.
@@ -48,13 +48,21 @@ public class Webhook extends Controller {
    */
   public static Result updateAlma(final String GIVEN_TOKEN) {
     final String KIND="update";
+    AlmaMarcXml2lobidJsonEs.setKindOfEtl(KIND);
+    AlmaMarcXml2lobidJsonEs.setEmail(EMAIL);
     if (!GIVEN_TOKEN.equals(TOKEN)) {
       return wrongToken(KIND, GIVEN_TOKEN);
     }
+    if (AlmaMarcXml2lobidJsonEs.threadAlreadyStarted) {
+      sendMail(KIND, false, "Couldn't update index '"+ INDEX_NAME + " because an ETL process is already running. Try again later!");
+      return internalServerError(MSG_ALREADY_RUNNING);
+    }
     Logger.info(String.format(msgStartEtl, KIND));
+    AlmaMarcXml2lobidJsonEs.setKindOfEtl(KIND);
+    AlmaMarcXml2lobidJsonEs.setEmail(EMAIL);
     AlmaMarcXml2lobidJsonEs.main(FILENAME_UPDATE, INDEX_NAME,INDEX_UPDATE_ALIAS_SUFFIX,
-     clusterHost, clusterName, UPDATE_NEWEST_INDEX, MORPH_FILENAME);
-    sendMail(KIND, true, "Updated index '"+ INDEX_NAME + "'");
+      clusterHost, clusterName, UPDATE_NEWEST_INDEX, MORPH_FILENAME);
+    sendMail(KIND, true, "Going to update index '"+ INDEX_NAME + "'");
     return ok("... started ETL " + KIND);
   }
 
@@ -70,16 +78,18 @@ public class Webhook extends Controller {
     if (!GIVEN_TOKEN.equals(TOKEN)) {
       return wrongToken(KIND, GIVEN_TOKEN);
     }
-    try {
-      Logger.info(String.format(msgStartEtl, KIND));
-      AlmaMarcXml2lobidJsonEs.main(FILENAME_BASEDUMP, CREATE_INDEX_NAME,
-      INDEX_BASEDUMP_ALIAS_SUFFIX, clusterHost, clusterName, CREATE_INDEX,
-          MORPH_FILENAME);
-    } catch (Exception e) {
-        return etlFailed(KIND, e.toString());
+    if (AlmaMarcXml2lobidJsonEs.threadAlreadyStarted){
+      sendMail(KIND, false, "Couldn't created new index with name "+ CREATE_INDEX_NAME + " because an ETL process is already running. Try again later!");
+      return internalServerError(MSG_ALREADY_RUNNING);
     }
-    sendMail(KIND, true, "Created new index with name "+ CREATE_INDEX_NAME + " , adding " + INDEX_BASEDUMP_ALIAS_SUFFIX +" to alias of index");
-    return ok("... finished ETL " + KIND);
+    Logger.info(String.format(msgStartEtl, KIND));
+    AlmaMarcXml2lobidJsonEs.setKindOfEtl(KIND);
+    AlmaMarcXml2lobidJsonEs.setEmail(EMAIL);
+    AlmaMarcXml2lobidJsonEs.main(FILENAME_BASEDUMP, CREATE_INDEX_NAME,
+    INDEX_BASEDUMP_ALIAS_SUFFIX, clusterHost, clusterName, CREATE_INDEX,
+      MORPH_FILENAME);
+    sendMail(KIND, true, "Going to created new index with name "+ CREATE_INDEX_NAME + " , adding " + INDEX_BASEDUMP_ALIAS_SUFFIX +" to alias of index");
+    return ok("... started ETL " + KIND);
   }
 
   private static Result wrongToken (final String KIND, final String TOKEN) {
@@ -89,16 +99,9 @@ public class Webhook extends Controller {
     return forbidden(msg);
   }
 
-  private static Result etlFailed (final String KIND, final String ERROR) {
-    String msg = String.format(msgEtlFailed, KIND, ERROR);
-    Logger.error(msg);
-    sendMail(KIND, false, msg);
-    return internalServerError(msg);
-  }
-
   private static void sendMail(final String KIND, final boolean SUCCESS, final String MESSAGE) {
     try {
-      Email.sendEmail("hduser", EMAIL, "Webhook ETL of " + KIND + " " + (SUCCESS ? "success :)" : "fails :("), MESSAGE);
+      Email.sendEmail("hduser", EMAIL, "Webhook ETL of " + KIND + " triggered:"  + (SUCCESS ? "success :)" : "fails :("), MESSAGE);
     } catch (Exception e) {
         Logger.error("Couldn't send email", e.toString());
     }
