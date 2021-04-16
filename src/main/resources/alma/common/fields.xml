@@ -202,16 +202,20 @@
     </data>
   </entity>
 
-  <entity name="publication[]">
-    <entity name="" flushWith="record">
-      <call-macro name="simplify-date" dsource="260[ 23] .c|264[ 23][ 1].c" dname="startDate" />
-      <entity name="type[]">
+  <entity name="publication[]" flushWith="record">
+    <entity name="" flushWith="260[ 23] |264[ 23][ 1]" reset="true" sameEntity="true">
+      <data source="260[ 23] .c|264[ 23][ 1].c" name="publicationHistory" />
+      <entity name="type[]" reset="true" sameEntity="true">
         <data name="" source="260[ 23] .c|264[ 23][ 1].c">
           <constant value="PublicationEvent"/>
         </data>
       </entity>
       <call-macro name="regex-del-punctuation-end" dsource="260[ 23] .a|264[ 23][ 1].a" dname="location" />
-      <call-macro name="regex-del-punctuation-end" dsource="260[ 23] .b|264[ 23][ 1].b" dname="publishedBy" />
+      <concat delimiter=". " name="publishedBy" flushWith="260[ 23] |264[ 23][ 1]" reset="true" sameEntity="true">
+        <data source="260[ 23] .b|264[ 23][ 1].b" >
+          <replace pattern="^[©]|\s?[,.:;/=]?$" with="" />
+        </data>
+      </concat>
     </entity>
   </entity>
 
