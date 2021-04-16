@@ -1,8 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <rules xmlns="http://www.culturegraph.org/metamorph">
-
-
   <entity name="subject[]" flushWith="record">
+    <!-- 650 Topical Term -->
+    <entity name="" flushWith="650??" sameEntity="true" reset="true">
+      <entity name="type[]" sameEntity="true" reset="true">
+        <data source="650??.a">
+          <constant value="Concept"/>
+        </data>
+      </entity>
+      <entity name="source" sameEntity="true" reset="true" flushWith="650??" >
+        <data source="650?0.a" name="label">
+          <constant value="Library of Congress Subject Headings"/>
+        </data>
+        <data source="650?0.a" name="id">
+          <constant value="https://id.loc.gov/authorities/subjects.html"/>
+        </data>
+        <data source="650?4.a" name="label">
+          <constant value="Freie Verschlagwortung"/>
+        </data>
+        <data source="650?4.a" name="id">
+          <constant value="https://www.wikidata.org/wiki/Q47524318"/>
+        </data>
+      </entity>
+      <data name="label" source="650??.a" />
+    </entity>
     <!-- DDC Dewey 082 -->
       <entity name="" flushWith="0820 |08200">
       <data name="notation" source="0820 .a|08200.a" />
@@ -19,7 +40,7 @@
         <data name="version" source="0820 .2|08200.2" />
       </entity>
     </entity>
-    <!-- RSWK Schlagwortfolgen fka: Schlagwortketten 1 - 10 -->
+    <!-- 689 RSWK Schlagwortfolgen fka: Schlagwortketten 1 - 10 -->
     <!-- 1 -->
     <entity name="" flushWith="record">
       <data name="type" source="68900">
