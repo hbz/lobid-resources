@@ -963,32 +963,6 @@
     </if>
     <data source="001" />
   </combine>
-  <combine name="@facet_type" value="Periodical">
-    <if>
-      <any>
-        <data source="@LeaderPos07">
-          <regexp match="[cs]" />
-        </data>
-        <all>
-          <data source="@type">
-            <equals string="CR" />
-          </data>
-          <data source="@008Pos21">
-            <equals string="m" />
-          </data>
-        </all>
-        <all>
-          <data source="@006Pos00">
-            <equals string="s" />
-          </data>
-          <data source="@006Pos04">
-            <equals string="m" />
-          </data>
-        </all>
-      </any>
-    </if>
-    <data source="001" />
-  </combine>
   <!-- <combine name="@facet_type" value="Schulbuch">
   </combine> -->
   <combine name="@facet_type" value="Miscellaneous">
@@ -1089,6 +1063,25 @@
   <combine name="@facet_type" value="Periodical">
     <if>
       <any>
+       <data source="@LeaderPos07">
+          <regexp match="[cs]" />
+        </data>
+        <all>
+          <data source="@type">
+            <equals string="CR" />
+          </data>
+          <data source="@008Pos21">
+            <equals string="m" />
+          </data>
+        </all>
+        <all>
+          <data source="@006Pos00">
+            <equals string="s" />
+          </data>
+          <data source="@006Pos04">
+            <equals string="m" />
+          </data>
+        </all>
         <all>
           <data source="@type">
             <equals string="CR" />
