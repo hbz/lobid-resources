@@ -1,127 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <rules xmlns="http://www.culturegraph.org/metamorph">
   <entity name="hasItem[]" flushWith="record">
-    <!-- ITM -->
-    <entity name="" reset="true" sameEntity="true" flushWith="ITM  ">
-      <combine name="id" value="https://lobid.org/item/${i}">
-        <data name="i" source="ITM  .a"/>
-      </combine>
-      <entity name="type[]" sameEntity="true">
-        <data name="" source="ITM  .a">
-          <constant value="Item"/>
-        </data>
-      </entity>
-      <data name="label" source="ITM  .a">
-        <constant value="lobid Bestandsressource"/>
-      </data>
-      <entity name="heldBy" sameEntity="true">
-        <data name="id" source="ITM  .a">
-          <regexp match=".*(\d{4})$" format="${1}"/>
-          <lookup in="alma-institution-code-to-isil" />
-          <compose prefix="http://lobid.org/organisations/" postfix="#!"/>
-        </data>
-        <data name="label" source="ITM  .a">
-          <constant value="lobid Organisation"/>
-        </data>
-      </entity>
-      <data name="callNumber" source="ITM  .c" />
-      <combine name="currentLocation" value="${a} / ${b}" sameEntity="true">
-        <data name="a" source="ITM  .w"/>
-        <data name="b" source="ITM  .x"/>
-      </combine>
-    </entity>
-    <!-- POR -->
-    <!-- POR  .a but no POR  .A -->
     <entity name="" reset="true" sameEntity="true">
-      <if>
-        <data name="id" source="POR  .a">
-          <regexp match=".*(\d{4})$" format="${1}"/>
-          <lookup in="alma-institution-code-to-isil" />
-          <not-equals string="DE-605" />
-        </data>
-      </if>
       <combine name="id" value="https://lobid.org/item/${i}">
-        <data name="i" source="POR  .a"/>
+        <data name="i" source="MBD  .i"/>
       </combine>
-      <entity name="type[]" sameEntity="true">
-        <data name="" source="POR  .a">
-          <constant value="Item"/>
-        </data>
-      </entity>
-      <data name="label" source="POR  .a">
-        <constant value="Portfolio"/>
-      </data>
-      <data name="electronicLocator" source="POR  .D" />
-      <data name="sublocation" source="POR  .d" />
       <entity name="heldBy" sameEntity="true">
-        <data name="id" source="POR  .a">
+        <data name="id" source="MBD  .i">
           <regexp match=".*(\d{4})$" format="${1}"/>
           <lookup in="alma-institution-code-to-isil" />
           <compose prefix="http://lobid.org/organisations/" postfix="#!"/>
         </data>
-        <data name="label" source="POR  .w">
-          <constant value="lobid Organisation"/>
-        </data>
-      </entity>
-    </entity>
-    <!-- POR  .a = NZ => hasItem for each POR  .A -->
-    <entity name="" reset="true" flushWith="POR  .A" sameEntity="true">
-      <combine name="id" value="https://lobid.org/item/${i}" flushWith="POR  .A">
-        <data name="i" source="POR  .a"/>
-      </combine>
-      <entity name="type[]" sameEntity="true" reset="true">
-        <data name="" source="POR  .A">
-          <constant value="Item"/>
-        </data>
-      </entity>
-      <data name="label" source="POR  .A">
-        <constant value="Portfolio"/>
-      </data>
-      <!--<data name="electronicLocator" source="POR  .D" />
-    <data name="sublocation" source="POR  .d" />-->
-      <entity name="heldBy" sameEntity="true" reset="true">
-        <data name="id" source="POR  .A">
-          <lookup in="alma-iz-code-to-isil" />
-          <compose prefix="http://lobid.org/organisations/" postfix="#!"/>
-        </data>
-        <data name="label" source="POR  .A">
+        <data name="label" source="MBD  .i">
           <constant value="lobid Organisation"/>
         </data>
       </entity>
     </entity>
   </entity>
-
-  <entity name="hasItem[]" flushWith="record">
-    <if>
-     <none>
-      <data source="ITM  " />
-     </none>
-    </if>
-    <!-- HOL if no ITM -->
-    <entity name="" reset="true">
-			<!--TODO: Introduce filter that allows the entity to have separate objects. sameEntity="true" is the roadblock at the moment but we need it. -->
-      <combine name="id" value="https://lobid.org/item/${i}" reset="true" sameEntity="true">
-        <data name="i" source="HOL  .8"/>
-      </combine>
-      <entity name="type[]" reset="true" sameEntity="true">
-        <data name="" source="HOL  .8">
-          <constant value="Item"/>
-        </data>
-      </entity>
-      <data name="label" source="HOL  .8">
-        <constant value="lobid Bestandsressource"/>
-      </data>
-      <entity name="heldBy" reset="true" sameEntity="true">
-        <data name="id" source="HOL  .8">
-          <regexp match=".*(\d{4})$" format="${1}"/>
-          <lookup in="alma-institution-code-to-isil" />
-          <compose prefix="http://lobid.org/organisations/" postfix="#!"/>
-        </data>
-        <data name="label" source="HOL  .8">
-          <constant value="lobid Organisation"/>
-        </data>
-      </entity>  
-    </entity>
- </entity>
-
 </rules>
