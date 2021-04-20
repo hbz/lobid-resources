@@ -58,11 +58,11 @@ public class AlmaMarcXml2lobidJsonEs {
     AlmaMarcXml2lobidJsonEs.threadAlreadyStarted = true;
     new Thread("AlmaMarcXml2lobidJsonEs") {
       public void run() {
-        System.out.println("Running thread: " + getName());
+        LOG.info("Running thread: " + getName());
         String usage =
             "<input path>%s<index name>%s<index alias suffix ('NOALIAS' sets it empty)>%s<node>%s<cluster>%s<'update' (will take latest index), 'exact' (will take ->'index name' even when no timestamp is suffixed) , else create new index with actual timestamp>%s<optional: filename of a list of files which shall be ETLed>%s<optional: filename of morph>%s";
         String inputPath = args[0];
-        System.out.println("inputFile=" + inputPath);
+        LOG.info("inputFile=" + inputPath);
         indexName = args[1];
         String date =
             new SimpleDateFormat("yyyyMMdd-HHmmss").format(new Date());
@@ -78,10 +78,10 @@ public class AlmaMarcXml2lobidJsonEs {
               .format(usage, " ", " ", " ", " ", " ", " ", " ", " ", " "));
           return;
         }
-        System.out.println("using indexName: " + indexName);
-        System.out.println("using indexConfig: " + INDEXCONFIG);
+        LOG.info("using indexName: " + indexName);
+        LOG.info("using indexConfig: " + INDEXCONFIG);
         morphFileName = args.length > 6 ? args[6] : morphFileName;
-        System.out.println("using morph: " + morphFileName);
+        LOG.info("using morph: " + morphFileName);
         // hbz catalog transformation
         final FileOpener opener = new FileOpener();
         // used when loading a BGZF file
@@ -95,13 +95,13 @@ public class AlmaMarcXml2lobidJsonEs {
 
         final String KEY_TO_GET_MAIN_ID =
             System.getProperty("keyToGetMainId", "almaIdMMS");
-        System.out.println("using keyToGetMainId:" + KEY_TO_GET_MAIN_ID);
-        System.out.println("using etikettLablesDirectory: "
+        LOG.info("using keyToGetMainId:" + KEY_TO_GET_MAIN_ID);
+        LOG.info("using etikettLablesDirectory: "
             + JsonLdEtikett.getLabelsDirectoryName());
 
         if (inputPath.toLowerCase().endsWith("tar.bz2")
             || inputPath.toLowerCase().endsWith("tar.gz")) {
-          System.out.println("recognised as tar archive");
+          LOG.info("recognised as tar archive");
           opener.setReceiver(new TarReader())//
               .setReceiver(new XmlDecoder())//
               .setReceiver(xmlElementSplitter)//
@@ -114,7 +114,7 @@ public class AlmaMarcXml2lobidJsonEs {
               .addReceiver(receiverThread())//
               .addReceiver(receiverThread());
         } else {
-          System.out.println("recognised as BGZF");
+          LOG.info("recognised as BGZF");
           opener.setReceiver(new XmlDecoder())//
               .setReceiver(xmlElementSplitter)//
               .setReceiver(new LiteralToObject())//
@@ -135,12 +135,13 @@ public class AlmaMarcXml2lobidJsonEs {
 
         } catch (Exception e) {
           e.printStackTrace();
+          LOG.error("ETL fails: "+ e.getMessage(), e);
           message = e.toString();
           success = false;
         }
         sendMail(kind, success, message);
         AlmaMarcXml2lobidJsonEs.threadAlreadyStarted = false;
-        System.out.println(
+        LOG.info(
             "Setting 'AlmaMarcXml2lobidJsonEs.threadAlreadyStarted = false'");
       }
     }.start();
@@ -164,7 +165,7 @@ public class AlmaMarcXml2lobidJsonEs {
     batchLogger.setBatchSize(100000);
     final String KEY_TO_GET_MAIN_ID =
         System.getProperty("keyToGetMainId", "almaIdMMS"); // pchbz hbzId
-    System.out.println("using keyToGetMainId:" + KEY_TO_GET_MAIN_ID);
+    LOG.info("using keyToGetMainId:" + KEY_TO_GET_MAIN_ID);
     ObjectBatchLogger<HashMap<String, String>> objectBatchLogger =
         new ObjectBatchLogger<>();
     objectBatchLogger.setBatchSize(500000);
@@ -199,7 +200,7 @@ public class AlmaMarcXml2lobidJsonEs {
       Email.sendEmail("hduser", email, "Webhook ETL of " + KIND + " "
           + (SUCCESS ? "success :)" : "fails :("), MESSAGE);
     } catch (Exception e) {
-      LOG.error("Couldn't send email", e.toString());
+      LOG.error("Couldn't send email" + e.getMessage(), e);
     }
   }
 
