@@ -43,8 +43,8 @@ public class Webhook extends Controller {
    * Triggers ETL of updates.
    * 
    * @param token the token to authorize updating
-   * @return 200 ok or 403 forbidden response (depending on token) or 500 in
-   *         case of internal server error
+   * @return "200 ok" or "403 forbidden" (depending on token) or "423 locked"
+   *         in case of an already triggered process that was not yet finished
    */
   public static Result updateAlma(final String GIVEN_TOKEN) {
     final String KIND="update";
@@ -55,7 +55,7 @@ public class Webhook extends Controller {
     }
     if (AlmaMarcXml2lobidJsonEs.threadAlreadyStarted) {
       sendMail(KIND, false, "Couldn't update index '"+ INDEX_NAME + " because an ETL process is already running. Try again later!");
-      return internalServerError(MSG_ALREADY_RUNNING);
+      return status(423, MSG_ALREADY_RUNNING);
     }
     Logger.info(String.format(msgStartEtl, KIND));
     AlmaMarcXml2lobidJsonEs.setKindOfEtl(KIND);
@@ -70,8 +70,8 @@ public class Webhook extends Controller {
    * Triggers ETL of basedump.
    * 
    * @param token the token to authorize updating
-   * @return 200 ok or 403 forbidden response (depending on token) or 500 in
-   *         case of internal server error
+   * @return "200 ok" or "403 forbidden" (depending on token) or "423 locked"
+   *         in case of an already triggered process that was not yet finished
    */
   public static Result basedumpAlma(final String GIVEN_TOKEN) {
     final String KIND="basedump";
@@ -80,7 +80,7 @@ public class Webhook extends Controller {
     }
     if (AlmaMarcXml2lobidJsonEs.threadAlreadyStarted){
       sendMail(KIND, false, "Couldn't created new index with name "+ CREATE_INDEX_NAME + " because an ETL process is already running. Try again later!");
-      return internalServerError(MSG_ALREADY_RUNNING);
+      return status(423, MSG_ALREADY_RUNNING);
     }
     Logger.info(String.format(msgStartEtl, KIND));
     AlmaMarcXml2lobidJsonEs.setKindOfEtl(KIND);
