@@ -1,5 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <rules xmlns="http://www.culturegraph.org/metamorph">
+  <entity name="MBD[]" flushWith="record">
+    <entity name="" reset="true" sameEntity="true">
+      <combine name="id" value="https://lobid.org/item/${i}">
+        <data name="i" source="MBD  .i"/>
+      </combine>
+      <entity name="heldBy" sameEntity="true">
+        <data name="id" source="MBD  .i">
+          <regexp match=".*(\d{4})$" format="${1}"/>
+          <lookup in="alma-institution-code-to-isil" />
+          <compose prefix="http://lobid.org/organisations/" postfix="#!"/>
+        </data>
+        <data name="label" source="MBD  .i">
+          <constant value="lobid Organisation"/>
+        </data>
+      </entity>
+    </entity>
+  </entity>
   <entity name="hasItem[]" flushWith="record">
     <!-- ITM -->
     <entity name="" reset="true" sameEntity="true" flushWith="ITM  ">
@@ -93,13 +110,13 @@
 
   <entity name="hasItem[]" flushWith="record">
     <if>
-     <none>
-      <data source="ITM  " />
-     </none>
+      <none>
+        <data source="ITM  " />
+      </none>
     </if>
     <!-- HOL if no ITM -->
     <entity name="" reset="true">
-			<!--TODO: Introduce filter that allows the entity to have separate objects. sameEntity="true" is the roadblock at the moment but we need it. -->
+      <!--TODO: Introduce filter that allows the entity to have separate objects. sameEntity="true" is the roadblock at the moment but we need it. -->
       <combine name="id" value="https://lobid.org/item/${i}" reset="true" sameEntity="true">
         <data name="i" source="HOL  .8"/>
       </combine>
@@ -120,8 +137,7 @@
         <data name="label" source="HOL  .8">
           <constant value="lobid Organisation"/>
         </data>
-      </entity>  
+      </entity>
     </entity>
- </entity>
-
+  </entity>
 </rules>
