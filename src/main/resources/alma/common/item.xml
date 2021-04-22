@@ -124,4 +124,40 @@
     </entity>
  </entity>
 
+   <entity name="hasItem[]" flushWith="record">
+    <if>
+     <none>
+      <data source="ITM  " />
+      <data source="POR  " />
+      <data source="HOL  " />         
+     </none>
+    </if>
+    <entity name="" reset="true" sameEntity="true">
+      <if> 
+        <none sameEntity="true" reset="true" flushWith="MBD  ">
+          <data name="id" source="MBD  .M">
+            <equals string= "49HBZ_NETWORK" />
+          </data>     
+        </none>
+      </if>
+      <combine name="id" value="https://lobid.org/item/${i}">
+        <data name="i" source="MBD  .i"/>
+      </combine>
+      <entity name="type[]" sameEntity="true">
+        <data name="" source="MBD  .i">
+          <constant value="Item"/>
+        </data>
+      </entity>
+      <entity name="heldBy" sameEntity="true" reset="true">
+        <data name="id" source="MBD  .M">
+          <lookup in="alma-iz-code-to-isil" />
+          <compose prefix="http://lobid.org/organisations/" postfix="#!"/>
+        </data>
+        <data name="label" source="MBD  .M">
+          <constant value="lobid Organisation"/>
+        </data>
+      </entity>
+    </entity>
+  </entity>
+
 </rules>
