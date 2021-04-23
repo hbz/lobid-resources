@@ -160,7 +160,7 @@
       </data>
     </entity>
   </entity>
- 
+
   <!-- 2xx -->
   <!--
   <entity name="TitleUniform">
@@ -409,6 +409,27 @@
   </entity>
 
   <!-- 6xx -->
+
+  <!-- 7xx -->
+  <entity name="isPartOf[]" flushWith="record">
+    <entity name="" sameEntity="true" reset="true">
+      <data source="773??.w" name="type">
+        <constant value="IsPartOfRelation" />
+      </data>
+      <entity name="hasSuperordinate[]" >
+        <entity name="" >
+          <data name="id" source="773??.w">
+            <regexp match="\(DE-605\)(.*)" format="${1}"/>
+          </data>
+          <data source="773??.w" name="label">
+            <constant value="lobid Ressource" />
+          </data>
+        </entity>
+      </entity>
+      <data source="773??.q" name="numbering" />
+    </entity>
+  </entity>
+
   <!--
   <entity name="DescriptionOfRelatedEditions[]" flushWith="record">
     <entity name="" flushWith="77[356]??|580  " sameEntity="true">
