@@ -170,10 +170,6 @@
   </entity>
 	-->
   <call-macro name="regex-del-punctuation-end" dsource="245??.a" dname="@title" />
-  <data name="@title" source="245??.p">
-    <occurrence only="1" />
-    <replace pattern="\s?\.?\s?$" with="" />
-  </data>
   <data name="title" source="@title">
     <!-- Delete not sorting signs in title -->
     <replace pattern="&gt;" with=""/>
@@ -186,6 +182,13 @@
       <replace pattern="\s?[./]\s?$" with="" />
     </data>
   </entity>
+
+  <data name="titleOfSubSeries" source="245??.p">
+    <occurrence only="1" />
+    <replace pattern="\s?\.?\s?$" with="" />
+    <replace pattern="&gt;" with=""/>
+    <replace pattern="&lt;" with=""/>
+  </data>
 
   <!--
   <entity name="VolumeDesignation">
