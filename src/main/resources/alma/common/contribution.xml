@@ -21,7 +21,7 @@
       <call-macro name="personBio"        field="100" />
       <call-macro name="personRole"       field="100" />
       <call-macro name="gndIdentifier"    field="100" />
-						-->
+            -->
         <call-macro name="personName" dname="label" field="100" />
         <entity name="type[]" reset="true">
           <data name="" source="100[01] .a">
@@ -95,9 +95,15 @@
             <regexp match="^\(DE-588\)(.*)$" format="https://d-nb.info/gnd/${1}"/>
           </data>
         </combine>
-        <data name="label" source="[17]10[012] .a">
-          <replace pattern="\.$" with=""/>
-        </data>
+        <combine name="label" value="${a}${b}" flushWith="[17]10[012] ">
+          <data name="a" source="[17]10[012] .a">
+            <replace pattern="\.$" with=""/>
+          </data>
+          <data name="b" source="[17]10[012] .b">
+            <replace pattern="\.$" with=""/>
+            <compose prefix=". " />
+          </data>
+        </combine>
         <entity name="type[]" reset="true">
           <data name="" source="[17]10[012] .a">
             <constant value="CorporateBody"/>
