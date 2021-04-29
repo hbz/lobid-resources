@@ -55,7 +55,7 @@
       </entity>
       <call-macro name="regex-del-punctuation-end" dsource="260[ 23] .a|264[ 23][ 1].a" dname="location" />
       <concat delimiter=". " name="publishedBy" flushWith="260[ 23] |264[ 23][ 1]" reset="true" sameEntity="true">
-        <data source="260[ 23] .b|264[ 23][ 1].b" >
+        <data source="260[ 23] .b|264[ 23][ 1].b">
           <replace pattern="^[©]|\s?[,.:;/=]?$" with="" />
         </data>
       </concat>
@@ -63,9 +63,9 @@
   </entity>
 
   <entity name="alternativeTitle[]" flushWith="record">
-      <data source="246?[ 345678].a">
-        <replace pattern="\.$" with="" />
-      </data>
+    <data source="246?[ 345678].a">
+      <replace pattern="\.$" with="" />
+    </data>
   </entity>
 
 </rules>
