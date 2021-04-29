@@ -54,7 +54,7 @@
           <regexp match=".*(\d{4})$" />
         </data>
       </combine>
-      <entity name="type[]" sameEntity="true" reset="true" >
+      <entity name="type[]" sameEntity="true" reset="true">
         <data name="" source="H52  .8">
           <regexp match=".*(\d{4})$" />
           <constant value="H52"/>
@@ -64,7 +64,7 @@
         <regexp match=".*(\d{4})$" />
         <constant value="lobid Bestandsressource"/>
       </data>
-      <entity name="heldBy" sameEntity="true" reset="true" >
+      <entity name="heldBy" sameEntity="true" reset="true">
         <data name="id" source="H52  .8">
           <regexp match=".*(\d{4})$" format="${1}"/>
           <lookup in="alma-institution-code-to-isil" />
@@ -76,7 +76,7 @@
         </data>
       </entity>
       <data name="callNumber" source="H52  .h" />
-      <combine name="currentLocation" value="${a} / ${b}" sameEntity="true" reset="true" >
+      <combine name="currentLocation" value="${a} / ${b}" sameEntity="true" reset="true">
         <data name="a" source="H52  .b"/>
         <data name="b" source="H52  .c"/>
       </combine>
