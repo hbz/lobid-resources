@@ -4,7 +4,6 @@
   <xi:include href="maps.xml"/>
   <rules xmlns="http://www.culturegraph.org/metamorph">
     <call-macro name="static-filter" dname="@portfolio" source="POR  .a" filter="POR  .M" value="$[member]"/>
-    <!--   <call-macro name="static-filter" dname="@mmsiz" source="MBD  .i" filter="MBD  .M" value="$[member]"/>-->
     <call-macro name="alma-mms-to-isil" dname="@isil" source="001"/>
     <call-macro name="alma-mms-to-isil" dname="@isiliz" source="MBD  .i"/>
     <combine name="@uid" value="(${isil})${id}">
@@ -19,15 +18,7 @@
       <constant value="http://lobid.org/resources/context.jsonld"/>
     </data>
     <data name="@uid" source="981  .a"/>
-    <!-- SISIS CATKey -->
-    <!--    <entity name="DateFirst">
-      <call-macro name="dynamic-filter" dname="date" source="POC  .b" filter="@portfolio" value="POC  .a"/>
-    </entity>
-    <entity name="DateLast">
-      <call-macro name="dynamic-filter" dname="date" source="POC  .c" filter="@portfolio" value="POC  .a"/>
-		</entity>-->
     <data name="almaIdMMS" source="001"/>
-    <!-- <data name="almaIdMMSIZ" source="@mmsiz"/> -->
     <data name="almaIdPID" source="@portfolio"/>
   </rules>
   <xi:include href="common/titleRelatedFields.xml"/>
