@@ -105,7 +105,10 @@
           <constant value="lobid Organisation"/>
         </data>
       </entity>
-      <data name="callNumber" source="ITM  .c" />
+      <choose name="callNumber" sameEntity="true" flushWith="ITM  ">
+        <data source="ITM  .c" />
+        <data source="ITM  .n" />
+      </choose>
       <combine name="currentLocation" value="${a} / ${b}" sameEntity="true">
         <data name="a" source="ITM  .w"/>
         <data name="b" source="ITM  .x"/>
