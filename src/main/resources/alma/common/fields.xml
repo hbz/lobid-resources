@@ -351,12 +351,12 @@
 
   <!-- 7xx -->
   <entity name="isPartOf[]" flushWith="record">
-    <entity name="" sameEntity="true" reset="true">
+    <entity name="" sameEntity="true" reset="true" flushWith="773??">
       <data source="773??.w" name="type">
         <constant value="IsPartOfRelation" />
       </data>
-      <entity name="hasSuperordinate[]">
-        <entity name="">
+      <entity name="hasSuperordinate[]" sameEntity="true" reset="true">
+        <entity name="" sameEntity="true" reset="true">
           <data name="id" source="773??.w">
             <regexp match="\(DE-605\)(.*)" format="${1}"/>
           </data>
@@ -366,6 +366,28 @@
         </entity>
       </entity>
       <data source="773??.q" name="numbering" />
+    </entity>
+    <entity name="" sameEntity="true" reset="true" flushWith="830??">
+      <!-- Check for duplicates in local fields. -->
+      <if>
+        <data source="830??.w">
+          <unique/>
+        </data>
+      </if>
+      <data source="830??.w" name="type">
+        <constant value="IsPartOfRelation" />
+      </data>
+      <entity name="hasSuperordinate[]" sameEntity="true" reset="true">
+        <entity name="" sameEntity="true" reset="true">
+          <data name="id" source="830??.w">
+            <regexp match="\(DE-605\)(.*)" format="${1}"/>
+          </data>
+          <data source="830??.w" name="label">
+            <constant value="lobid Ressource" />
+          </data>
+        </entity>
+      </entity>
+      <data source="830??.v" name="numbering" />
     </entity>
   </entity>
 
