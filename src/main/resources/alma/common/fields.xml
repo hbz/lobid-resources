@@ -489,6 +489,23 @@
 		</entity>
 	-->
 
+  <entity name="tableOfContents[]" flushWith="record">
+    <entity name="" sameEntity="true" reset="true">
+      <if>
+        <all flushWith="8564?" sameEntity="true" reset="true">
+          <data source="8564?.3">
+            <regexp match="^[Ii][Nn][Hh][aA][lL][tT][sS][vV]"/>
+          </data>
+          <data source="8564?.u">
+            <unique />
+          </data>
+        </all>
+      </if>
+      <data name="id" source="8564?.u" />
+      <data name="label" source="8564?.3" />
+    </entity>
+  </entity>
+
   <entity name="hasVersion[]" flushWith="record">
     <entity name="" flushWith="856??" sameEntity="true">
       <if>
