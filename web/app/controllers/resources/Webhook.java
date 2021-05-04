@@ -48,8 +48,6 @@ public class Webhook extends Controller {
    */
   public static Result updateAlma(final String GIVEN_TOKEN) {
     final String KIND="update";
-    AlmaMarcXml2lobidJsonEs.setKindOfEtl(KIND);
-    AlmaMarcXml2lobidJsonEs.setEmail(EMAIL);
     if (!GIVEN_TOKEN.equals(TOKEN)) {
       return wrongToken(KIND, GIVEN_TOKEN);
     }
