@@ -1,5 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <rules xmlns="http://www.culturegraph.org/metamorph">
+
+  <!-- 655 Form/Genre keyword transformed as natureOfContent   -->
+  <entity name="natureOfContent[]" flushWith="record">
+    <entity name="" flushWith="655 7" sameEntity="true" reset="true">
+      <data name="label" source="655??.a" />
+      <data name="id" source="655??.0">
+        <regexp match="\(DE-588\)(.*)" format="http://d-nb.info/gnd/${1}"/>
+      </data>
+    </entity>
+  </entity>
+
   <entity name="subject[]" flushWith="record">
     <!-- 650 Topical Term -->
     <entity name="" flushWith="650??" sameEntity="true" reset="true">
