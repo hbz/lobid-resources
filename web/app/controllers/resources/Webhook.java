@@ -32,17 +32,12 @@ public class Webhook extends Controller {
   private static final String INDEX_BASEDUMP_ALIAS_SUFFIX = "-staging";
   private static final String UPDATE_NEWEST_INDEX = "exact";
   private static final String CREATE_INDEX = "create";
-  private static final String CREATE_INDEX_NAME_OF_BASEDUMP =
-      INDEX_NAME_OF_BASEDUMP + "-" + LocalDateTime.now()
-          .format(DateTimeFormatter.ofPattern("yyyyMMdd-kkmm"));
   private static final String MSG_ETL_PROCESS_IS_ALREADY_RUNNING =
       " because an ETL process is already running. Try again later!";
   private static final String MSG_UPDATE_ALREADY_RUNNING =
       "Couldn't update index '" + INDEX_NAME_OF_UPDATE
           + MSG_ETL_PROCESS_IS_ALREADY_RUNNING;
-  private static final String MSG_CREATE_INDEX_ALREADY_RUNNING =
-      "Couldn't created new index with name " + CREATE_INDEX_NAME_OF_BASEDUMP
-          + MSG_ETL_PROCESS_IS_ALREADY_RUNNING;
+
   private static final String MORPH_FILENAME = "alma.xml";
   // If null, create default values from Global settings
   public static String clusterHost = null;
@@ -90,6 +85,12 @@ public class Webhook extends Controller {
     if (!GIVEN_TOKEN.equals(TOKEN)) {
       return wrongToken(KIND, GIVEN_TOKEN);
     }
+    final String CREATE_INDEX_NAME_OF_BASEDUMP =
+        INDEX_NAME_OF_BASEDUMP + "-" + LocalDateTime.now()
+            .format(DateTimeFormatter.ofPattern("yyyyMMdd-kkmm"));
+    final String MSG_CREATE_INDEX_ALREADY_RUNNING =
+        "Couldn't created new index with name " + CREATE_INDEX_NAME_OF_BASEDUMP
+            + MSG_ETL_PROCESS_IS_ALREADY_RUNNING;
     if (AlmaMarcXml2lobidJsonEs.threadAlreadyStarted) {
       sendMail(KIND, false, MSG_CREATE_INDEX_ALREADY_RUNNING);
       return status(423, MSG_CREATE_INDEX_ALREADY_RUNNING);
