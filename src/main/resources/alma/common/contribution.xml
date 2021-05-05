@@ -82,12 +82,10 @@
           </data>
         </entity>
       </entity>
-      <entity name="role" reset="true">
-        <data name="id" source="[17]10[012] .a">
-          <constant value="http://id.loc.gov/vocabulary/relators/ctb"/>
-        </data>
-        <data name="label" source="[17]10[012] .a">
-          <constant value="Mitwirkende"/>
+      <entity name="role" reset="true" sameEntity="true" flushWith="[17]10[012] ">
+        <data name="label" source="[17]10[012] .e" />
+        <data name="id" source="[17]10[012] .4">
+          <compose prefix="http://id.loc.gov/vocabulary/relators/"/>
         </data>
       </entity>
     </entity>
