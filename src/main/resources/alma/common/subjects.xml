@@ -1,6 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <rules xmlns="http://www.culturegraph.org/metamorph">
   <entity name="subject[]" flushWith="record">
+    <!-- 610 CorporateBody -->
+    <entity name="" flushWith="610??" sameEntity="true" reset="true">
+      <entity name="type[]" sameEntity="true" reset="true">
+        <data source="610??.a">
+          <constant value="Concept"/>
+        </data>
+      </entity>
+      <entity name="source" sameEntity="true" reset="true" flushWith="610??">
+        <data source="610?0.a" name="label">
+          <constant value="Library of Congress Subject Headings"/>
+        </data>
+        <data source="610?0.a" name="id">
+          <constant value="https://id.loc.gov/authorities/subjects.html"/>
+        </data>
+        <data source="610?4.a" name="label">
+          <constant value="Freie Verschlagwortung"/>
+        </data>
+        <data source="610?4.a" name="id">
+          <constant value="https://www.wikidata.org/wiki/Q47524318"/>
+        </data>
+      </entity>
+      <data name="label" source="610??.a" />
+    </entity>
+
     <!-- 650 Topical Term -->
     <entity name="" flushWith="650??" sameEntity="true" reset="true">
       <entity name="type[]" sameEntity="true" reset="true">
