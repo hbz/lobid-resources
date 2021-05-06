@@ -5,10 +5,13 @@ package controllers.resources;
 import play.mvc.Controller;
 import play.mvc.Result;
 import org.lobid.resources.run.AlmaMarcXml2lobidJsonEs;
+import org.lobid.resources.run.SwitchEsAlmaAlias;
+
 import play.Logger;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import de.hbz.lobid.helper.Email;
+import java.net.UnknownHostException;
 
 /**
  * Simple webhook listener starting update/basedump process for the Alma ETL.
@@ -22,6 +25,10 @@ public class Webhook extends Controller {
       Application.CONFIG.getString("webhook.alma.basedump.filename");
   private static final String INDEX_NAME_OF_BASEDUMP =
       Application.CONFIG.getString("webhook.alma.basedump.indexname");
+  private static final String BASEDUMP_SWITCH_MINDOCS =
+      Application.CONFIG.getString("webhook.alma.basedump.switch.minDocs");
+  private static final String BASEDUMP_SWITCH_MINSIZE =
+      Application.CONFIG.getString("webhook.alma.basedump.switch.minSize");
   private static final String INDEX_NAME_OF_UPDATE =
       Application.CONFIG.getString("webhook.alma.update.indexname");
   private static final String TOKEN =
@@ -109,8 +116,40 @@ public class Webhook extends Controller {
     return ok("... started ETL " + KIND);
   }
 
-  private static Result wrongToken(final String KIND, final String TOKEN) {
-    String msg = String.format(msgWrongToken, TOKEN, KIND);
+  /**
+   * Triggers ETL of updates.
+   * 
+   * @param GIVEN_TOKEN the token to authorize updating
+   * @return "200 ok" or "403 forbidden" (depending on token) or "423 locked" in
+   *         case of an already triggered process that was not yet finished
+   */
+  public static Result switchEsAlias(final String GIVEN_TOKEN) {
+    final String ALIAS1 = INDEX_NAME_OF_BASEDUMP;
+    final String ALIAS2 = INDEX_NAME_OF_BASEDUMP + INDEX_BASEDUMP_ALIAS_SUFFIX;
+
+    final String MSG = "switch alias '" + ALIAS1 + "' with '" + ALIAS2 + "'";
+    if (!GIVEN_TOKEN.equals(TOKEN)) {
+      return wrongToken(MSG, GIVEN_TOKEN);
+    }
+    Logger.info(MSG);
+    boolean success = false;
+    try {
+      success = SwitchEsAlmaAlias.switchAlias(ALIAS1, ALIAS2, clusterHost,
+          BASEDUMP_SWITCH_MINDOCS, BASEDUMP_SWITCH_MINSIZE);
+    } catch (UnknownHostException e) {
+      Logger.error("Couldn't switch alias", e.toString());
+      success = false;
+    }
+    if (success) {
+      sendMail("switching aliases", true, "Going to " + MSG);
+      return ok("succeeded to '" + MSG + "'");
+    } else
+      return internalServerError("failed to '" + MSG + "'");
+  }
+
+  private static Result wrongToken(final String KIND,
+      final String GIVEN_TOKEN) {
+    String msg = String.format(msgWrongToken, GIVEN_TOKEN, KIND);
     Logger.error(msg);
     sendMail(KIND, false, msg);
     return forbidden(msg);
