@@ -282,13 +282,11 @@
         <constant value="IsPartOfRelation" />
       </data>
       <entity name="hasSuperordinate[]" sameEntity="true" reset="true">
-        <entity name="" sameEntity="true" reset="true">
+        <entity name="" sameEntity="true" reset="true" flushWith="773??">
           <data name="id" source="773??.w">
-            <regexp match="\(DE-605\)(.*)" format="${1}"/>
+            <regexp match="\(DE-605\)(.*)" format="http://lobid.org/resources/${1}#!"/>
           </data>
-          <data source="773??.w" name="label">
-            <constant value="lobid Ressource" />
-          </data>
+          <data source="773??.t" name="label" />
         </entity>
       </entity>
       <data source="773??.q" name="numbering" />
@@ -304,13 +302,11 @@
         <constant value="IsPartOfRelation" />
       </data>
       <entity name="hasSuperordinate[]" sameEntity="true" reset="true">
-        <entity name="" sameEntity="true" reset="true">
+        <entity name="" sameEntity="true" reset="true" flushWith="830??">
           <data name="id" source="830??.w">
-            <regexp match="\(DE-605\)(.*)" format="${1}"/>
+            <regexp match="\(DE-605\)(.*)" format="http://lobid.org/resources/${1}#!"/>
           </data>
-          <data source="830??.w" name="label">
-            <constant value="lobid Ressource" />
-          </data>
+          <data source="830??.a" name="label" />
         </entity>
       </entity>
       <data source="830??.v" name="numbering" />
@@ -334,7 +330,7 @@
       <data name="label" source="8564?.3" />
     </entity>
   </entity>
-<!--
+  <!--
   <entity name="hasVersion[]" flushWith="record">
     <entity name="" flushWith="856??" sameEntity="true">
       <if>
