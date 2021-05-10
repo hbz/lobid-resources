@@ -96,7 +96,7 @@ public final class SwitchEsAlmaAlias {
       final String MINSIZE) throws IOException {
     long sizeInBytes = queryEsAndGetJNode(ES_NODE, ALIAS2 + "/_stats")
         .at("/_all/primaries/store/size_in_bytes").asLong();
-    Assert.assertTrue(sizeInBytes > Integer.valueOf(MINSIZE));
+    Assert.assertTrue(sizeInBytes > Long.valueOf(MINSIZE));
   }
 
   private static JsonNode queryEsAndGetJNode(final String ES_NODE,
