@@ -1,0 +1,400 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rules xmlns="http://www.culturegraph.org/metamorph">
+
+  <!-- 655 Form/Genre keyword transformed as natureOfContent   -->
+  <entity name="natureOfContent[]" flushWith="record">
+    <entity name="" flushWith="655 7" sameEntity="true" reset="true">
+      <data name="label" source="655??.a" />
+      <data name="id" source="655??.0">
+        <regexp match="\(DE-588\)(.*)" format="http://d-nb.info/gnd/${1}"/>
+      </data>
+    </entity>
+  </entity>
+
+  <entity name="subject[]" flushWith="record">
+    <!-- 650 Topical Term -->
+    <entity name="" flushWith="650??" sameEntity="true" reset="true">
+      <entity name="type[]" sameEntity="true" reset="true">
+        <data source="650??.a">
+          <constant value="Concept"/>
+        </data>
+      </entity>
+      <entity name="source" sameEntity="true" reset="true" flushWith="650??">
+        <data source="650?0.a" name="label">
+          <constant value="Library of Congress Subject Headings"/>
+        </data>
+        <data source="650?0.a" name="id">
+          <constant value="https://id.loc.gov/authorities/subjects.html"/>
+        </data>
+        <data source="650?4.a" name="label">
+          <constant value="Freie Verschlagwortung"/>
+        </data>
+        <data source="650?4.a" name="id">
+          <constant value="https://www.wikidata.org/wiki/Q47524318"/>
+        </data>
+      </entity>
+      <data name="label" source="650??.a" />
+    </entity>
+    <!-- DDC Dewey 082 -->
+    <entity name="" flushWith="0820 |08200">
+      <data name="notation" source="0820 .a|08200.a" />
+      <data name="label" source="0820 .a|08200.a">
+        <lookup in="deweyLabels"/>
+      </data>
+      <entity name="source" sameEntity="true" reset="true" flushWith="0820 |08200">
+        <data name="id" source="0820 .a|08200.a">
+          <constant value="http://d-nb.info/gnd/4149423-4"/>
+        </data>
+        <data name="label" source="0820 .a|08200.a">
+          <constant value="Dewey-Dezimalklassifikation"/>
+        </data>
+        <data name="version" source="0820 .2|08200.2" />
+      </entity>
+    </entity>
+    <!-- local subjects 982 -->
+    <entity name="" flushWith="982  " sameEntity="true" reset="true">
+      <if>
+        <data source="982  .[ab]" />
+      </if>
+      <data name="label" source="982  .[ab]" />
+      <entity name="source" sameEntity="true" reset="true" flushWith="982  ">
+        <data name="id" source="982  .M">
+          <lookup in="alma-iz-code-to-isil" />
+          <compose prefix="http://lobid.org/organisations/" postfix="#!"/>
+        </data>
+        <data name="label" source="982  .M">
+          <lookup in="alma-iz-code-to-isil" />
+          <compose prefix="Freie Verschlagwortung durch "/>
+        </data>
+      </entity>
+    </entity>
+    <!-- 689 RSWK Schlagwortfolgen fka: Schlagwortketten 1 - 10 -->
+    <!-- 1 -->
+    <entity name="" flushWith="record">
+      <entity name="type[]" sameEntity="true" reset="true">
+        <data name="" source="68900">
+          <constant value="ComplexSubject"/>
+        </data>
+      </entity>
+      <entity name="componentList[]" flushWith="record">
+        <entity name="" sameEntity="true" reset="true" flushWith="6890?">
+          <entity name="type[]" sameEntity="true" reset="true">
+            <data source="6890?.D">
+              <lookup in="rswk-indicator" />
+            </data>
+          </entity>
+          <data name="label" source="6890?.a" />
+          <data name="id" source="6890?.0">
+            <regexp match="\(DE-588\)(.*)" format="http://d-nb.info/gnd/${1}"/>
+          </data>
+          <entity name="source" sameEntity="true" reset="true">
+            <data name="id" source="6890?.0">
+              <regexp match="\(DE-588\)(.*)" format="https://d-nb.info/gnd/7749153-1"/>
+            </data>
+            <data name="label" source="6890?.0">
+              <regexp match="\(DE-588\)(.*)" format="Gemeinsame Normdatei (GND)"/>
+            </data>
+          </entity>
+          <data name="gndIdentifier" source="6890?.0">
+            <regexp match="\(DE-588\)(.*)" format="${1}"/>
+          </data>
+        </entity>
+      </entity>
+    </entity>
+    <!-- 2 -->
+    <entity name="" flushWith="record">
+      <entity name="type[]" sameEntity="true" reset="true">
+        <data source="68910">
+          <constant value="ComplexSubject"/>
+        </data>
+      </entity>
+      <entity name="componentList[]" flushWith="record">
+        <entity name="" sameEntity="true" reset="true" flushWith="6891?">
+          <entity name="type[]" sameEntity="true" reset="true">
+            <data source="6891?.D">
+              <lookup in="rswk-indicator" />
+            </data>
+          </entity>
+          <data name="label" source="6891?.a" />
+          <data name="id" source="6891?.0">
+            <regexp match="\(DE-588\)(.*)" format="http://d-nb.info/gnd/${1}"/>
+          </data>
+          <entity name="source" sameEntity="true" reset="true">
+            <data name="id" source="6891?.0">
+              <regexp match="\(DE-588\)(.*)" format="https://d-nb.info/gnd/7749153-1"/>
+            </data>
+            <data name="label" source="6891?.0">
+              <regexp match="\(DE-588\)(.*)" format="Gemeinsame Normdatei (GND)"/>
+            </data>
+          </entity>
+          <data name="gndIdentifier" source="6891?.0">
+            <regexp match="\(DE-588\)(.*)" format="${1}"/>
+          </data>
+        </entity>
+      </entity>
+    </entity>
+    <!-- 3 -->
+    <entity name="" flushWith="record">
+      <entity name="type[]" sameEntity="true" reset="true">
+        <data source="68920">
+          <constant value="ComplexSubject"/>
+        </data>
+      </entity>
+      <entity name="componentList[]" flushWith="record">
+        <entity name="" sameEntity="true" reset="true" flushWith="6892?">
+          <entity name="type[]" sameEntity="true" reset="true">
+            <data source="6892?.D">
+              <lookup in="rswk-indicator" />
+            </data>
+          </entity>
+          <data name="label" source="6892?.a" />
+          <data name="id" source="6892?.0">
+            <regexp match="\(DE-588\)(.*)" format="http://d-nb.info/gnd/${1}"/>
+          </data>
+          <entity name="source" sameEntity="true" reset="true">
+            <data name="id" source="6892?.0">
+              <regexp match="\(DE-588\)(.*)" format="https://d-nb.info/gnd/7749153-1"/>
+            </data>
+            <data name="label" source="6892?.0">
+              <regexp match="\(DE-588\)(.*)" format="Gemeinsame Normdatei (GND)"/>
+            </data>
+          </entity>
+          <data name="gndIdentifier" source="6892?.0">
+            <regexp match="\(DE-588\)(.*)" format="${1}"/>
+          </data>
+        </entity>
+      </entity>
+    </entity>
+    <!-- 4 -->
+    <entity name="" flushWith="record">
+      <entity name="type[]" sameEntity="true" reset="true">
+        <data source="68930">
+          <constant value="ComplexSubject"/>
+        </data>
+      </entity>
+      <entity name="componentList[]" flushWith="record">
+        <entity name="" sameEntity="true" reset="true" flushWith="6893?">
+          <entity name="type[]" sameEntity="true" reset="true">
+            <data source="6893?.D">
+              <lookup in="rswk-indicator" />
+            </data>
+          </entity>
+          <data name="label" source="6893?.a" />
+          <data name="id" source="6893?.0">
+            <regexp match="\(DE-588\)(.*)" format="http://d-nb.info/gnd/${1}"/>
+          </data>
+          <entity name="source" sameEntity="true" reset="true">
+            <data name="id" source="6893?.0">
+              <regexp match="\(DE-588\)(.*)" format="https://d-nb.info/gnd/7749153-1"/>
+            </data>
+            <data name="label" source="6893?.0">
+              <regexp match="\(DE-588\)(.*)" format="Gemeinsame Normdatei (GND)"/>
+            </data>
+          </entity>
+          <data name="gndIdentifier" source="6893?.0">
+            <regexp match="\(DE-588\)(.*)" format="${1}"/>
+          </data>
+        </entity>
+      </entity>
+    </entity>
+    <!-- 5 -->
+    <entity name="" flushWith="record">
+      <entity name="type[]" sameEntity="true" reset="true">
+        <data source="68940">
+          <constant value="ComplexSubject"/>
+        </data>
+      </entity>
+      <entity name="componentList[]" flushWith="record">
+        <entity name="" sameEntity="true" reset="true" flushWith="6894?">
+          <entity name="type[]" sameEntity="true" reset="true">
+            <data source="6894?.D">
+              <lookup in="rswk-indicator" />
+            </data>
+          </entity>
+          <data name="label" source="6894?.a" />
+          <data name="id" source="6894?.0">
+            <regexp match="\(DE-588\)(.*)" format="http://d-nb.info/gnd/${1}"/>
+          </data>
+          <entity name="source" sameEntity="true" reset="true">
+            <data name="id" source="6894?.0">
+              <regexp match="\(DE-588\)(.*)" format="https://d-nb.info/gnd/7749153-1"/>
+            </data>
+            <data name="label" source="6894?.0">
+              <regexp match="\(DE-588\)(.*)" format="Gemeinsame Normdatei (GND)"/>
+            </data>
+          </entity>
+          <data name="gndIdentifier" source="6894?.0">
+            <regexp match="\(DE-588\)(.*)" format="${1}"/>
+          </data>
+        </entity>
+      </entity>
+    </entity>
+    <!-- 6 -->
+    <entity name="" flushWith="record">
+      <entity name="type[]" sameEntity="true" reset="true">
+        <data source="68950">
+          <constant value="ComplexSubject"/>
+        </data>
+      </entity>
+      <entity name="componentList[]" flushWith="record">
+        <entity name="" sameEntity="true" reset="true" flushWith="6895?">
+          <entity name="type[]" sameEntity="true" reset="true">
+            <data source="6895?.D">
+              <lookup in="rswk-indicator" />
+            </data>
+          </entity>
+          <data name="label" source="6895?.a" />
+          <data name="id" source="6895?.0">
+            <regexp match="\(DE-588\)(.*)" format="http://d-nb.info/gnd/${1}"/>
+          </data>
+          <entity name="source" sameEntity="true" reset="true">
+            <data name="id" source="6895?.0">
+              <regexp match="\(DE-588\)(.*)" format="https://d-nb.info/gnd/7749153-1"/>
+            </data>
+            <data name="label" source="6895?.0">
+              <regexp match="\(DE-588\)(.*)" format="Gemeinsame Normdatei (GND)"/>
+            </data>
+          </entity>
+          <data name="gndIdentifier" source="6895?.0">
+            <regexp match="\(DE-588\)(.*)" format="${1}"/>
+          </data>
+        </entity>
+      </entity>
+    </entity>
+    <!-- 7 -->
+    <entity name="" flushWith="record">
+      <entity name="type[]" sameEntity="true" reset="true">
+        <data source="68960">
+          <constant value="ComplexSubject"/>
+        </data>
+      </entity>
+      <entity name="componentList[]" flushWith="record">
+        <entity name="" sameEntity="true" reset="true" flushWith="6896?">
+          <entity name="type[]" sameEntity="true" reset="true">
+            <data source="6896?.D">
+              <lookup in="rswk-indicator" />
+            </data>
+          </entity>
+          <data name="label" source="6896?.a" />
+          <data name="id" source="6896?.0">
+            <regexp match="\(DE-588\)(.*)" format="http://d-nb.info/gnd/${1}"/>
+          </data>
+          <entity name="source" sameEntity="true" reset="true">
+            <data name="id" source="6896?.0">
+              <regexp match="\(DE-588\)(.*)" format="https://d-nb.info/gnd/7749153-1"/>
+            </data>
+            <data name="label" source="6896?.0">
+              <regexp match="\(DE-588\)(.*)" format="Gemeinsame Normdatei (GND)"/>
+            </data>
+          </entity>
+          <data name="gndIdentifier" source="6896?.0">
+            <regexp match="\(DE-588\)(.*)" format="${1}"/>
+          </data>
+        </entity>
+      </entity>
+    </entity>
+    <!-- 8 -->
+    <entity name="" flushWith="record">
+      <entity name="type[]" sameEntity="true" reset="true">
+        <data source="68970">
+          <constant value="ComplexSubject"/>
+        </data>
+      </entity>
+      <entity name="componentList[]" flushWith="record">
+        <entity name="" sameEntity="true" reset="true" flushWith="6897?">
+          <entity name="type[]" sameEntity="true" reset="true">
+            <data source="6897?.D">
+              <lookup in="rswk-indicator" />
+            </data>
+          </entity>
+          <data name="label" source="6897?.a" />
+          <data name="id" source="6897?.0">
+            <regexp match="\(DE-588\)(.*)" format="http://d-nb.info/gnd/${1}"/>
+          </data>
+          <entity name="source" sameEntity="true" reset="true">
+            <data name="id" source="6897?.0">
+              <regexp match="\(DE-588\)(.*)" format="https://d-nb.info/gnd/7749153-1"/>
+            </data>
+            <data name="label" source="6897?.0">
+              <regexp match="\(DE-588\)(.*)" format="Gemeinsame Normdatei (GND)"/>
+            </data>
+          </entity>
+          <data name="gndIdentifier" source="6897?.0">
+            <regexp match="\(DE-588\)(.*)" format="${1}"/>
+          </data>
+        </entity>
+      </entity>
+    </entity>
+    <!-- 9 -->
+    <entity name="" flushWith="record">
+      <entity name="type[]" sameEntity="true" reset="true">
+        <data source="68980">
+          <constant value="ComplexSubject"/>
+        </data>
+      </entity>
+      <entity name="componentList[]" flushWith="record">
+        <entity name="" sameEntity="true" reset="true" flushWith="6898?">
+          <entity name="type[]" sameEntity="true" reset="true">
+            <data source="6898?.D">
+              <lookup in="rswk-indicator" />
+            </data>
+          </entity>
+          <data name="label" source="6898?.a" />
+          <data name="id" source="6898?.0">
+            <regexp match="\(DE-588\)(.*)" format="http://d-nb.info/gnd/${1}"/>
+          </data>
+          <entity name="source" sameEntity="true" reset="true">
+            <data name="id" source="6898?.0">
+              <regexp match="\(DE-588\)(.*)" format="https://d-nb.info/gnd/7749153-1"/>
+            </data>
+            <data name="label" source="6898?.0">
+              <regexp match="\(DE-588\)(.*)" format="Gemeinsame Normdatei (GND)"/>
+            </data>
+          </entity>
+          <data name="gndIdentifier" source="6898?.0">
+            <regexp match="\(DE-588\)(.*)" format="${1}"/>
+          </data>
+        </entity>
+      </entity>
+    </entity>
+    <!-- 10 -->
+    <entity name="" flushWith="record">
+      <entity name="type[]" sameEntity="true" reset="true">
+        <data source="68990">
+          <constant value="ComplexSubject"/>
+        </data>
+      </entity>
+      <entity name="componentList[]" flushWith="record">
+        <entity name="" sameEntity="true" reset="true" flushWith="6899?">
+          <entity name="type[]" sameEntity="true" reset="true">
+            <data source="6899?.D">
+              <lookup in="rswk-indicator" />
+            </data>
+          </entity>
+          <data name="label" source="6899?.a" />
+          <data name="id" source="6899?.0">
+            <regexp match="\(DE-588\)(.*)" format="http://d-nb.info/gnd/${1}"/>
+          </data>
+          <entity name="source" sameEntity="true" reset="true">
+            <data name="id" source="6899?.0">
+              <regexp match="\(DE-588\)(.*)" format="https://d-nb.info/gnd/7749153-1"/>
+            </data>
+            <data name="label" source="6899?.0">
+              <regexp match="\(DE-588\)(.*)" format="Gemeinsame Normdatei (GND)"/>
+            </data>
+          </entity>
+          <data name="gndIdentifier" source="6899?.0">
+            <regexp match="\(DE-588\)(.*)" format="${1}"/>
+          </data>
+        </entity>
+      </entity>
+    </entity>
+  </entity>
+
+  <entity name="subjectAltLabel[]" flushWith="record">
+    <data source="GST  .a|GST  .g|GPN1 .a|GGN  .a">
+      <unique />
+    </data>
+  </entity>
+
+</rules>

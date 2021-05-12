@@ -42,21 +42,21 @@
   </macro>
 
   <macro name="personIdentifier">
-      <data name="$[dname]" source="$[field][013] .0">
-        <regexp match="(?&lt;=\(DE-588\)).*$"/>
-      </data>
+    <data name="$[dname]" source="$[field][013] .0">
+      <regexp match="(?&lt;=\(DE-588\)).*$"/>
+    </data>
   </macro>
 
   <macro name="gndIdentifier">
-      <data name="$[name]" source="$[field][0123] .0">
-        <regexp match="(?&lt;=\(DE-588\)).*$" />
-      </data>
+    <data name="$[name]" source="$[field][0123] .0">
+      <regexp match="(?&lt;=\(DE-588\)).*$" />
+    </data>
   </macro>
 
   <macro name="gndIdentifierId">
-      <data name="id" source="$[field][0123] .0">
-				<regexp match="(?&lt;=\(DE-588\))(.*)$" format="https://d-nb.info/gnd/${1}" />
-      </data>
+    <data name="id" source="$[field][0123] .0">
+      <regexp match="(?&lt;=\(DE-588\))(.*)$" format="https://d-nb.info/gnd/${1}" />
+    </data>
   </macro>
 
   <macro name="static-filter">
@@ -70,10 +70,11 @@
     </combine>
   </macro>
 
-	<macro name="dynamic-filter">
-		    <combine name="$[dname]" value="${value}" sameEntity="true">
+  <macro name="dynamic-filter">
+    <combine name="$[dname]" value="${value}" sameEntity="true">
       <if>
-				<equalsFilter name="" value="" flushWith="$[value]" reset="true"> <!--flushIncomplete="false" pchbz todo-->
+        <equalsFilter name="" value="" flushWith="$[value]" reset="true">
+          <!--flushIncomplete="false" pchbz todo-->
           <data source="$[filter]" />
           <data source="$[value]" />
         </equalsFilter>
@@ -92,9 +93,9 @@
   <macro name="simplify-date">
     <data name="$[dname]" source="$[dsource]">
       <replace pattern="-" with="" />
-			<replace pattern=" .*" with="" />
-			<replace pattern="c|©|\s?|,|.|:|;|/|=" with="" />
-			<regexp match="\d{8}|\d{4}" />
+      <replace pattern=" .*" with="" />
+      <replace pattern="c|©|\s?|,|.|:|;|/|=" with="" />
+      <regexp match="\d{8}|\d{4}" />
     </data>
   </macro>
 

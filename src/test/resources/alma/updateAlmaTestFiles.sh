@@ -18,10 +18,10 @@ tar xfj almaMarcXmlTestFiles.xml.tar.bz2
 
 function getAlmaXmlAndAppendItToArchive() {
 	hbzId=$1
-	almaXmlUrl="curl https://indexes.devel.digibib.net/export/$hbzId"
+	almaXmlUrl="https://indexes.devel.digibib.net/export/$hbzId"
 	echo "getting Alma Xml for $hbzId ..."
 	# if it's a hbzId, we have to lookup the almaId first
-	if [[ $hbzId =~ ^[A-Z] ]]; then
+	if [[ $hbzId =~ ^[A-Z\(] ]]; then
 		# lookup and filter alma url
 		almaXmlUrl=$(curl $almaXmlUrl |jq .|grep -A2 -B2 '"type": "alma"'|grep url|cut -d '"' -f4)
 	fi

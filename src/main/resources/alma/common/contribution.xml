@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <rules xmlns="http://www.culturegraph.org/metamorph">
 
+  <entity name="responsibilityStatement[]" flushWith="245??.c">
+    <data name="" source="245??.c" />
+  </entity>
+
   <entity name="contribution[]" flushWith="record">
     <!-- 100[01]-->
     <entity name="" flushWith="100[01] " sameEntity="true">
@@ -12,12 +16,6 @@
       <entity name="agent" flushWith="100[01] " sameEntity="true" reset="true">
         <call-macro name="gndIdentifier" field="100" />
         <call-macro name="gndIdentifierId" field="100" />
-        <!--
-      <call-macro name="personTitle"      field="100" />
-      <call-macro name="personBio"        field="100" />
-      <call-macro name="personRole"       field="100" />
-      <call-macro name="gndIdentifier"    field="100" />
-						-->
         <call-macro name="personName" dname="label" field="100" />
         <entity name="type[]" reset="true">
           <data name="" source="100[01] .a">
@@ -91,9 +89,15 @@
             <regexp match="^\(DE-588\)(.*)$" format="https://d-nb.info/gnd/${1}"/>
           </data>
         </combine>
-        <data name="label" source="[17]10[012] .a">
-          <replace pattern="\.$" with=""/>
-        </data>
+        <combine name="label" value="${a}${b}" flushWith="[17]10[012] ">
+          <data name="a" source="[17]10[012] .a">
+            <replace pattern="\.$" with=""/>
+          </data>
+          <data name="b" source="[17]10[012] .b">
+            <replace pattern="\.$" with=""/>
+            <compose prefix=". " />
+          </data>
+        </combine>
         <entity name="type[]" reset="true">
           <data name="" source="[17]10[012] .a">
             <constant value="CorporateBody"/>
@@ -109,15 +113,6 @@
         </data>
       </entity>
     </entity>
-
-    <!--  <entity name="todo_corporateBodyNameUnit[]" flushWith="[17]10[012] " sameEntity="true">
-        <data name="" source="[17]10[012] .b">
-          <replace pattern="\.$" with="" />
-        </data>
-      </entity>
-            <call-macro name="gndIdentifier" field="[17]10" />
-    </entity>
-<todo-->
 
     <entity name="Conference" flushWith="record">
       <data name="conferenceName" source="111[012] .a">

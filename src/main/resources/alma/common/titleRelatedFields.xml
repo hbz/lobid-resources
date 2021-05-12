@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rules xmlns="http://www.culturegraph.org/metamorph">
+
+  <!-- 2xx -->
+
+  <call-macro name="regex-del-punctuation-end" dsource="245??.a" dname="@title" />
+  <data name="title" source="@title">
+    <!-- Delete not sorting signs in title -->
+    <replace pattern="&gt;" with=""/>
+    <replace pattern="&lt;" with=""/>
+  </data>
+
+  <entity name="otherTitleInformation[]">
+    <data name="" source="245??.b">
+      <occurrence only="1" />
+      <replace pattern="\s?[./]\s?$" with="" />
+    </data>
+  </entity>
+
+  <data name="titleOfSubSeries" source="245??.p">
+    <occurrence only="1" />
+    <replace pattern="\s?\.?\s?$" with="" />
+    <replace pattern="&gt;" with=""/>
+    <replace pattern="&lt;" with=""/>
+  </data>
+
+  <entity name="edition[]" flushWith="record">
+    <data name="" source="250  .a">
+      <replace pattern="\s?[=/]$" with="" />
+    </data>
+  </entity>
+
+  <entity name="publication[]" flushWith="record">
+    <entity name="" flushWith="260[ 23] |264[ 23][ 1]" reset="true" sameEntity="true">
+      <data source="260[ 23] .c|264[ 23][ 1].c" name="publicationHistory" />
+      <entity name="type[]" reset="true" sameEntity="true">
+        <data name="" source="260[ 23] .c|264[ 23][ 1].c">
+          <constant value="PublicationEvent"/>
+        </data>
+      </entity>
+      <call-macro name="regex-del-punctuation-end" dsource="260[ 23] .a|264[ 23][ 1].a" dname="location" />
+      <concat delimiter=". " name="publishedBy" flushWith="260[ 23] |264[ 23][ 1]" reset="true" sameEntity="true">
+        <data source="260[ 23] .b|264[ 23][ 1].b">
+          <replace pattern="^[©]|\s?[,.:;/=]?$" with="" />
+        </data>
+      </concat>
+    </entity>
+  </entity>
+
+  <entity name="alternativeTitle[]" flushWith="record">
+    <data source="246?[ 345678].a">
+      <replace pattern="\.$" with="" />
+    </data>
+  </entity>
+
+</rules>
