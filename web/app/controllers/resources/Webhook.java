@@ -82,6 +82,7 @@ public class Webhook extends Controller {
     }
     Logger.info(String.format(msgStartEtl, KIND));
     AlmaMarcXml2lobidJsonEs.setKindOfEtl(KIND);
+    AlmaMarcXml2lobidJsonEs.setSwitchAliasAfterETL(false);
     AlmaMarcXml2lobidJsonEs.main(FILENAME_UPDATE, INDEX_NAME_OF_UPDATE,
         INDEX_UPDATE_ALIAS_SUFFIX, clusterHost, clusterName,
         UPDATE_NEWEST_INDEX, MORPH_FILENAME);
