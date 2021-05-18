@@ -4,9 +4,14 @@
     <!-- 610 CorporateBody -->
     <entity name="" flushWith="610??" sameEntity="true" reset="true">
       <entity name="type[]" sameEntity="true" reset="true">
-        <data source="610??.a">
-          <constant value="Concept"/>
-        </data>
+        <choose sameEntity="true" reset="true" flushWith="610??.a">
+          <data source="610?0.a">
+            <constant value="Concept"/>
+          </data>
+          <data source="610?4.a">
+            <constant value="Keyword"/>
+          </data>
+        </choose>
       </entity>
       <entity name="source" sameEntity="true" reset="true" flushWith="610??">
         <data source="610?0.a" name="label">
@@ -28,9 +33,14 @@
     <!-- 650 Topical Term -->
     <entity name="" flushWith="650??" sameEntity="true" reset="true">
       <entity name="type[]" sameEntity="true" reset="true">
-        <data source="650??.a">
-          <constant value="Concept"/>
-        </data>
+        <choose sameEntity="true" reset="true" flushWith="650??.a">
+          <data source="650?0.a">
+            <constant value="Concept"/>
+          </data>
+          <data source="650?4.a">
+            <constant value="Keyword"/>
+          </data>
+        </choose>
       </entity>
       <entity name="source" sameEntity="true" reset="true" flushWith="650??">
         <data source="650?0.a" name="label">
