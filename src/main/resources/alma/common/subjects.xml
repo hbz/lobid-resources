@@ -65,6 +65,25 @@
       </entity>
       <data name="label" source="650??.a" />
     </entity>
+
+    <!-- 653  Index Term-Uncontrolled (but hbz says Stichwörter) -->
+    <entity name="" flushWith="653??" sameEntity="true" reset="true">
+      <entity name="type[]" sameEntity="true" reset="true" flushWith="650??">
+        <data source="653??.a">
+          <constant value="keyword"/>
+        </data>
+      </entity>
+      <entity name="source" sameEntity="true" reset="true" flushWith="653??">
+        <data source="653??.a" name="label">
+          <constant value="Freie Verschlagwortung"/>
+        </data>
+        <data source="653??.a" name="id">
+          <constant value="https://www.wikidata.org/wiki/Q47524318"/>
+        </data>
+      </entity>
+      <data name="label" source="653??.a" />
+    </entity>
+
     <!-- DDC Dewey 082 -->
     <entity name="" flushWith="0820 |08200">
       <data name="notation" source="0820 .a|08200.a" />
@@ -81,6 +100,7 @@
         <data name="version" source="0820 .2|08200.2" />
       </entity>
     </entity>
+
     <!-- local subjects 982 -->
     <entity name="" flushWith="982  " sameEntity="true" reset="true">
       <if>
