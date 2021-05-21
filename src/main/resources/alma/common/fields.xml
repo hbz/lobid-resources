@@ -282,13 +282,11 @@
         <constant value="IsPartOfRelation" />
       </data>
       <entity name="hasSuperordinate[]" sameEntity="true" reset="true">
-        <entity name="" sameEntity="true" reset="true">
+        <entity name="" sameEntity="true" reset="true" flushWith="773??">
           <data name="id" source="773??.w">
-            <regexp match="\(DE-605\)(.*)" format="${1}"/>
+            <regexp match="\(DE-605\)(.*)" format="http://lobid.org/resources/${1}#!"/>
           </data>
-          <data source="773??.w" name="label">
-            <constant value="lobid Ressource" />
-          </data>
+          <data source="773??.t" name="label" />
         </entity>
       </entity>
       <data source="773??.q" name="numbering" />
@@ -304,13 +302,11 @@
         <constant value="IsPartOfRelation" />
       </data>
       <entity name="hasSuperordinate[]" sameEntity="true" reset="true">
-        <entity name="" sameEntity="true" reset="true">
+        <entity name="" sameEntity="true" reset="true" flushWith="830??">
           <data name="id" source="830??.w">
-            <regexp match="\(DE-605\)(.*)" format="${1}"/>
+            <regexp match="\(DE-605\)(.*)" format="http://lobid.org/resources/${1}#!"/>
           </data>
-          <data source="830??.w" name="label">
-            <constant value="lobid Ressource" />
-          </data>
+          <data source="830??.a" name="label" />
         </entity>
       </entity>
       <data source="830??.v" name="numbering" />
@@ -334,7 +330,7 @@
       <data name="label" source="8564?.3" />
     </entity>
   </entity>
-<!--
+  <!--
   <entity name="hasVersion[]" flushWith="record">
     <entity name="" flushWith="856??" sameEntity="true">
       <if>
@@ -355,23 +351,47 @@
         <occurrence only="1" sameEntity="true" />
       </data>
     </entity>
-  </entity>
+  </entity> -->
 
   <entity name="related[]" flushWith="record">
-    <entity name="" flushWith="856??" sameEntity="true">
+    <entity name="" flushWith="775??|776??" sameEntity="true">
       <if>
-        <any flushWith="856??">
-          <none flushWith="856??" sameEntity="true">
-            <data source="856??.M" />
-          </none>
-          <data source="856??.M">
-            <equals string="$[member]" />
+        <any>
+          <data source="775??.z|776??.z">
+            <unique />
+          </data>
+          <data source="775??.w|776??.w">
+            <unique />
+          </data>
+          <data source="775??.t|776??.t">
+            <unique />
           </data>
         </any>
       </if>
-      <data name="id" source="856??.3" />
+      <data name="id" source="775??.w|776??.w">
+        <regexp match="\(DE-605\)(.*)" format="http://lobid.org/resources/${1}#!"/>
+      </data>
+      <concat name="note" delimiter=" " sameEntity="true" flushWith="775??|776??">
+        <data source="775??.i|776??.i" />
+        <data source="775??.n|776??.n" />
+      </concat>
+      <data name="label" source="775??.t|776??.t" />
+      <entity name="isbn[]" sameEntity="true">
+        <data name="" source="775??.z|776??.z">
+          <isbn to="clean"/>
+          <isbn to="isbn10"/>
+          <unique />
+        </data>
+        <data name="" source="775??.z|776??.z">
+          <isbn to="clean"/>
+          <isbn to="isbn13"/>
+          <unique />
+        </data>
+      </entity>
+      <data name="issn" source="775??.x|776??.x" />
     </entity>
-</entity> -->
+  </entity>
+
   <!-- TODO: inCollection: missing edoweb, rpb, publisso, also type-element -->
   <entity name="inCollection[]" flushWith="record">
     <!-- ZDB -->

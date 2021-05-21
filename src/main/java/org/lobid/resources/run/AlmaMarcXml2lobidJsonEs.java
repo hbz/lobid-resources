@@ -2,6 +2,7 @@
 
 package org.lobid.resources.run;
 
+import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -9,7 +10,7 @@ import java.util.HashMap;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.lobid.resources.ElasticsearchIndexer;
-import org.lobid.resources.JsonLdEtikett;
+import org.lobid.resources.EtikettJson;
 import org.lobid.resources.JsonToElasticsearchBulkMap;
 import org.metafacture.biblio.marc21.MarcXmlHandler;
 import org.metafacture.flowcontrol.ObjectThreader;
@@ -47,9 +48,17 @@ public class AlmaMarcXml2lobidJsonEs {
   private static final HashMap<String, String> morphVariables = new HashMap<>();
   private static String email = "localhost";
   private static String kind = "";
+  private static boolean switchAutomatically = false;
   private static final Logger LOG =
       LogManager.getLogger(AlmaMarcXml2lobidJsonEs.class);
   public static boolean threadAlreadyStarted = false;
+  private static String switchAlias1;
+  private static String switchAlias2;
+  private static String switchMinDocs;
+  private static String switchMinSize;
+  private static String switchClusterHost;
+  public static final String MSG_SUCCESS = "success :) ";
+  public static final String MSG_FAIL = "fail :() ";
 
   public static void main(String... args) {
     if (threadAlreadyStarted) {
@@ -58,30 +67,31 @@ public class AlmaMarcXml2lobidJsonEs {
     AlmaMarcXml2lobidJsonEs.threadAlreadyStarted = true;
     new Thread("AlmaMarcXml2lobidJsonEs") {
       public void run() {
-        LOG.info("Running thread: " + getName());
+        LOG.info("Running thread: %s", getName());
         String usage =
             "<input path>%s<index name>%s<index alias suffix ('NOALIAS' sets it empty)>%s<node>%s<cluster>%s<'update' (will take latest index), 'exact' (will take ->'index name' even when no timestamp is suffixed) , else create new index with actual timestamp>%s<optional: filename of a list of files which shall be ETLed>%s<optional: filename of morph>%s";
         String inputPath = args[0];
-        LOG.info("inputFile=" + inputPath);
+        LOG.info("inputFile=%s", inputPath);
         indexName = args[1];
         String date =
             new SimpleDateFormat("yyyyMMdd-HHmmss").format(new Date());
-        indexName = indexName.matches(".*-20.*")
-            || args[5].toLowerCase().equals("exact") ? indexName
+        indexName =
+            indexName.matches(".*-20.*") || args[5].equalsIgnoreCase("exact")
+                ? indexName
                 : indexName + "-" + date;
         indexAliasSuffix = args[2];
         node = args[3];
         cluster = args[4];
-        updateDonotCreateIndex = args[5].toLowerCase().equals("update");
+        updateDonotCreateIndex = args[5].equalsIgnoreCase("update");
         if (args.length < 6) {
           System.err.println("Usage: AlmaMarcXml2lobidJsonEs" + String
               .format(usage, " ", " ", " ", " ", " ", " ", " ", " ", " "));
           return;
         }
-        LOG.info("using indexName: " + indexName);
+        LOG.info("using indexName: %s", indexName);
         LOG.info("using indexConfig: " + INDEXCONFIG);
         morphFileName = args.length > 6 ? args[6] : morphFileName;
-        LOG.info("using morph: " + morphFileName);
+        LOG.info("using morph: %s", morphFileName);
         // hbz catalog transformation
         final FileOpener opener = new FileOpener();
         // used when loading a BGZF file
@@ -95,10 +105,7 @@ public class AlmaMarcXml2lobidJsonEs {
 
         final String KEY_TO_GET_MAIN_ID =
             System.getProperty("keyToGetMainId", "almaIdMMS");
-        LOG.info("using keyToGetMainId:" + KEY_TO_GET_MAIN_ID);
-        LOG.info("using etikettLablesDirectory: "
-            + JsonLdEtikett.getLabelsDirectoryName());
-
+        LOG.info("using keyToGetMainId:%s", KEY_TO_GET_MAIN_ID);
         if (inputPath.toLowerCase().endsWith("tar.bz2")
             || inputPath.toLowerCase().endsWith("tar.gz")) {
           LOG.info("recognised as tar archive");
@@ -132,14 +139,18 @@ public class AlmaMarcXml2lobidJsonEs {
           opener.process(inputPath);
           opener.closeStream();
           success = true;
-
+          message = "ETL succeeded, index name: " + indexName;
         } catch (Exception e) {
           e.printStackTrace();
-          LOG.error("ETL fails: "+ e.getMessage(), e);
+          LOG.error("ETL fails: %s %s", e.getMessage(), e.toString());
           message = e.toString();
           success = false;
         }
         sendMail(kind, success, message);
+        if (switchAutomatically) {
+          switchAlias();
+        }
+
         AlmaMarcXml2lobidJsonEs.threadAlreadyStarted = false;
         LOG.info(
             "Setting 'AlmaMarcXml2lobidJsonEs.threadAlreadyStarted = false'");
@@ -165,12 +176,16 @@ public class AlmaMarcXml2lobidJsonEs {
     batchLogger.setBatchSize(100000);
     final String KEY_TO_GET_MAIN_ID =
         System.getProperty("keyToGetMainId", "almaIdMMS"); // pchbz hbzId
-    LOG.info("using keyToGetMainId:" + KEY_TO_GET_MAIN_ID);
+    LOG.info("using keyToGetMainId: %s", KEY_TO_GET_MAIN_ID);
     ObjectBatchLogger<HashMap<String, String>> objectBatchLogger =
         new ObjectBatchLogger<>();
     objectBatchLogger.setBatchSize(500000);
     MarcXmlHandler marcXmlHandler = new MarcXmlHandler();
     marcXmlHandler.setNamespace(null);
+    EtikettJson jsonEtikettJsonLd = new EtikettJson();
+    jsonEtikettJsonLd.setLabelsDirectoryName("labels");
+    jsonEtikettJsonLd.setFilenameOfContext("web/conf/context.jsonld");
+    jsonEtikettJsonLd.setGenerateContext(true);
     JsonEncoder jsonEncoder = new JsonEncoder();
     StringReader sr = new StringReader();
 
@@ -179,6 +194,7 @@ public class AlmaMarcXml2lobidJsonEs {
         .setReceiver(new Metamorph(morphFileName, morphVariables))
         .setReceiver(batchLogger)//
         .setReceiver(jsonEncoder)//
+        .setReceiver(jsonEtikettJsonLd)//
         .setReceiver(new JsonToElasticsearchBulkMap(KEY_TO_GET_MAIN_ID,
             "resource", "lobid-almaresources"))//
         .setReceiver(getElasticsearchIndexer());
@@ -194,13 +210,52 @@ public class AlmaMarcXml2lobidJsonEs {
     kind = KIND;
   }
 
-  private static void sendMail(final String KIND, final boolean SUCCESS,
+  public static void setSwitchAliasAfterETL(final Boolean SWITCH) {
+    switchAutomatically = SWITCH;
+  }
+
+  public static void setSwitchVariables(final String ALIAS1,
+      final String ALIAS2, final String CLUSTER_HOST,
+      final String BASEDUMP_SWITCH_MINDOCS,
+      final String BASEDUMP_SWITCH_MINSIZE) {
+    switchAlias1 = ALIAS1;
+    switchAlias2 = ALIAS2;
+    switchClusterHost = CLUSTER_HOST;
+    switchMinDocs = BASEDUMP_SWITCH_MINDOCS;
+    switchMinSize = BASEDUMP_SWITCH_MINSIZE;
+  }
+
+  public static boolean switchAlias() {
+    boolean success = false;
+    String msg = "Switch alias " + switchAlias1 + " with " + switchAlias2 + ".";
+    try {
+      success = SwitchEsAlmaAlias.switchAlias(switchAlias1, switchAlias2,
+          switchClusterHost, switchMinDocs, switchMinSize);
+    } catch (UnknownHostException e) {
+      msg = msg + "Couldn't switch alias." + e.toString();
+      LOG.error(msg);
+    }
+    if (success) {
+      msg = AlmaMarcXml2lobidJsonEs.MSG_SUCCESS + msg;
+      LOG.info(msg);
+    } else {
+      msg = AlmaMarcXml2lobidJsonEs.MSG_FAIL + msg;
+      LOG.error(msg);
+    }
+    sendMail("Switching alias", success, msg);
+    return success;
+  }
+
+  public static void sendMail(final String KIND, final boolean SUCCESS,
       final String MESSAGE) {
     try {
-      Email.sendEmail("hduser", email, "Webhook ETL of " + KIND + " "
-          + (SUCCESS ? "success :)" : "fails :("), MESSAGE);
+      Email.sendEmail("hduser", email,
+          "Webhook '" + KIND + "'' " + (SUCCESS ? "success :)" : "fails :("),
+          MESSAGE);
     } catch (Exception e) {
-      LOG.error("Couldn't send email" + e.getMessage(), e);
+      LOG.error(
+          String.format("Couldn't send email to %s: %s", email, e.getMessage()),
+          e);
     }
   }
 
