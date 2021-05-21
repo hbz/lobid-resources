@@ -9,6 +9,16 @@
         <regexp match="\(DE-588\)(.*)" format="http://d-nb.info/gnd/${1}"/>
       </data>
     </entity>
+    <entity name="" flushWith="689??" sameEntity="true" reset="true">
+      <if>
+        <data source="689??.A">
+          <equals string="f" />
+        </data>
+      </if>
+      <data name="label" source="689??.a" >
+        <unique />
+      </data>
+    </entity>
   </entity>
 
   <entity name="subject[]" flushWith="record">
