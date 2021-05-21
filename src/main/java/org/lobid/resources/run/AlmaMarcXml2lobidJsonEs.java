@@ -10,7 +10,7 @@ import java.util.HashMap;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.lobid.resources.ElasticsearchIndexer;
-import org.lobid.resources.JsonLdEtikett;
+import org.lobid.resources.EtikettJson;
 import org.lobid.resources.JsonToElasticsearchBulkMap;
 import org.metafacture.biblio.marc21.MarcXmlHandler;
 import org.metafacture.flowcontrol.ObjectThreader;
@@ -106,9 +106,6 @@ public class AlmaMarcXml2lobidJsonEs {
         final String KEY_TO_GET_MAIN_ID =
             System.getProperty("keyToGetMainId", "almaIdMMS");
         LOG.info("using keyToGetMainId:%s", KEY_TO_GET_MAIN_ID);
-        LOG.info("using etikettLablesDirectory: %s",
-            JsonLdEtikett.getLabelsDirectoryName());
-
         if (inputPath.toLowerCase().endsWith("tar.bz2")
             || inputPath.toLowerCase().endsWith("tar.gz")) {
           LOG.info("recognised as tar archive");
@@ -185,6 +182,10 @@ public class AlmaMarcXml2lobidJsonEs {
     objectBatchLogger.setBatchSize(500000);
     MarcXmlHandler marcXmlHandler = new MarcXmlHandler();
     marcXmlHandler.setNamespace(null);
+    EtikettJson jsonEtikettJsonLd = new EtikettJson();
+    jsonEtikettJsonLd.setLabelsDirectoryName("labels");
+    jsonEtikettJsonLd.setFilenameOfContext("web/conf/context.jsonld");
+    jsonEtikettJsonLd.setGenerateContext(true);
     JsonEncoder jsonEncoder = new JsonEncoder();
     StringReader sr = new StringReader();
 
@@ -193,6 +194,7 @@ public class AlmaMarcXml2lobidJsonEs {
         .setReceiver(new Metamorph(morphFileName, morphVariables))
         .setReceiver(batchLogger)//
         .setReceiver(jsonEncoder)//
+        .setReceiver(jsonEtikettJsonLd)//
         .setReceiver(new JsonToElasticsearchBulkMap(KEY_TO_GET_MAIN_ID,
             "resource", "lobid-almaresources"))//
         .setReceiver(getElasticsearchIndexer());

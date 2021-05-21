@@ -54,8 +54,7 @@ public final class AlmaMarc21XmlToLobidJsonTest {
   private static final PrintStream ORIG_OUT = System.out;
   private static final Logger LOG =
       LogManager.getLogger(AlmaMarc21XmlToLobidJsonTest.class);
-  private static final String PATTERN_TO_IDENTIFY_XML_RECORDS =
-      ".*";
+  private static final String PATTERN_TO_IDENTIFY_XML_RECORDS = ".*";
 
   /**
    * Sets necessary morph variables.
@@ -67,7 +66,7 @@ public final class AlmaMarc21XmlToLobidJsonTest {
     morphVariables.put("catalogid", "DE-605");
     GENERATE_TESTDATA = true;
     if (GENERATE_TESTDATA) {
-     extractXmlTestRecords(PATTERN_TO_IDENTIFY_XML_RECORDS);
+      extractXmlTestRecords(PATTERN_TO_IDENTIFY_XML_RECORDS);
     }
   }
 
@@ -103,8 +102,7 @@ public final class AlmaMarc21XmlToLobidJsonTest {
         .setReceiver(xmlElementSplitter) //
         .setReceiver(logger) //
         .setReceiver(new LiteralToObject()) //
-        .setReceiver(stringFilter)
-        .setReceiver(new StringReader()) //
+        .setReceiver(stringFilter).setReceiver(new StringReader()) //
         .setReceiver(new XmlDecoder()) //
         .setReceiver(xmlElementSplitter_1) //
         .setReceiver(xmlFilenameWriter);
@@ -135,27 +133,29 @@ public final class AlmaMarc21XmlToLobidJsonTest {
   public void transformFiles() {
     Arrays.asList(DIRECTORY.listFiles(f -> f.getAbsolutePath().endsWith(XML)))
         .forEach(file -> {
-           MarcXmlHandler marcXmlHandler = new MarcXmlHandler();
-           marcXmlHandler.setNamespace(null);
-          JsonEncoder jsonEncoder = new JsonEncoder();
-          jsonEncoder.setPrettyPrinting(true);
+          MarcXmlHandler marcXmlHandler = new MarcXmlHandler();
+          marcXmlHandler.setNamespace(null);
+          EtikettJson jsonEtikettJsonLd = new EtikettJson();
+          jsonEtikettJsonLd.setLabelsDirectoryName("labels");
+          jsonEtikettJsonLd.setFilenameOfContext("web/conf/context.jsonld");
+          jsonEtikettJsonLd.setGenerateContext(true);
+
           ObjectMapper mapper = new ObjectMapper();
           final String filenameJson =
               file.getAbsolutePath().replaceAll("\\." + XML, "\\.json");
           try {
             FileOpener opener = new FileOpener();
-            opener.setReceiver(new XmlDecoder())
-                .setReceiver(marcXmlHandler)
+            opener.setReceiver(new XmlDecoder()).setReceiver(marcXmlHandler)
                 .setReceiver(new Metamorph(MORPH, morphVariables))
-                .setReceiver(jsonEncoder);
+                .setReceiver(new JsonEncoder()).setReceiver(jsonEtikettJsonLd);
 
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             PrintStream ps = new PrintStream(baos);
             System.setOut(ps);
             if (GENERATE_TESTDATA) {
-              jsonEncoder.setReceiver(new ObjectWriter<>(filenameJson));
+              jsonEtikettJsonLd.setReceiver(new ObjectWriter<>(filenameJson));
             } else {
-              jsonEncoder.setReceiver(new ObjectStdoutWriter<String>());
+              jsonEtikettJsonLd.setReceiver(new ObjectStdoutWriter<String>());
             }
             opener.process(file.getAbsolutePath());
             opener.closeStream();
