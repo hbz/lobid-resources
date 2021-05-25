@@ -1,8 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <rules xmlns="http://www.culturegraph.org/metamorph">
 
-  <entity name="missingSubjects[]" flushWith="record">
-    <entity name="" flushWith="600??" sameEntity="true" reset="true">
+
+
+
+  <!-- 655 Form/Genre keyword transformed as natureOfContent   -->
+  <entity name="natureOfContent[]" flushWith="record">
+    <entity name="" flushWith="655 7" sameEntity="true" reset="true">
+      <data name="label" source="655??.a" />
+      <data name="id" source="655??.0">
+        <regexp match="\(DE-588\)(.*)" format="http://d-nb.info/gnd/${1}"/>
+      </data>
+    </entity>
+    <entity name="" flushWith="689??" sameEntity="true" reset="true">
+      <if>
+        <data source="689??.A">
+          <equals string="f" />
+        </data>
+      </if>
+      <data name="label" source="689??.a">
+        <unique />
+      </data>
+    </entity>
+  </entity>
+
+  <entity name="subject[]" flushWith="record">
+      <entity name="" flushWith="600??" sameEntity="true" reset="true">
       <entity name="type[]" sameEntity="true" reset="true" flushWith="600??">
         <data source="600??.a">
           <constant value="600"/>
@@ -79,30 +102,7 @@
         </data>
       </entity>
     </entity>
-  </entity>
-
-
-  <!-- 655 Form/Genre keyword transformed as natureOfContent   -->
-  <entity name="natureOfContent[]" flushWith="record">
-    <entity name="" flushWith="655 7" sameEntity="true" reset="true">
-      <data name="label" source="655??.a" />
-      <data name="id" source="655??.0">
-        <regexp match="\(DE-588\)(.*)" format="http://d-nb.info/gnd/${1}"/>
-      </data>
-    </entity>
-    <entity name="" flushWith="689??" sameEntity="true" reset="true">
-      <if>
-        <data source="689??.A">
-          <equals string="f" />
-        </data>
-      </if>
-      <data name="label" source="689??.a">
-        <unique />
-      </data>
-    </entity>
-  </entity>
-
-  <entity name="subject[]" flushWith="record">
+    
     <!-- 610 CorporateBody -->
     <entity name="" flushWith="610??" sameEntity="true" reset="true">
       <entity name="type[]" sameEntity="true" reset="true" flushWith="610??">
