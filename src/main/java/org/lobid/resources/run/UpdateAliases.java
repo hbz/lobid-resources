@@ -156,15 +156,17 @@ public class UpdateAliases {
     log("(Deletions query: https://lobid.org/resources/_" + queryDeletions
         + ")");
     final int tolerance = (deletionsCount + 1) / 50;
+    // actualTolerance must be >= 0 to be successful. I.e. there are more or equal
+    // documents in the new index than in the old one
     int actualTolerance =
-        Math.abs(differenceOfTotalHitsBetweenOldAndNew - deletionsCount);
-    logMessage = ("Going to compare if the absolute value of ("
-        + differenceOfTotalHitsBetweenOldAndNew + " - " + deletionsCount + " = "
-        + actualTolerance + ") is lesser than 2% tolerance (i.e. " + tolerance
-        + ")");
+        differenceOfTotalHitsBetweenOldAndNew + deletionsCount;
+    logMessage = ("Going to compare if ("
+        + differenceOfTotalHitsBetweenOldAndNew + " + " + deletionsCount + " = "
+        + actualTolerance + ") minus 2% tolerance (i.e. " + tolerance
+        + ") is greater than 0");
     log(logMessage);
-    Assert.assertTrue(Math.abs(
-        differenceOfTotalHitsBetweenOldAndNew - deletionsCount) < tolerance);
+    Assert.assertTrue(
+        differenceOfTotalHitsBetweenOldAndNew + deletionsCount - tolerance >= 0);
   }
 
   private static void log(final String msg) {

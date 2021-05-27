@@ -62,11 +62,8 @@
         </data>
       </entity>
       <entity name="agent" flushWith="[17]10[012] " reset="true">
-        <combine name="id" value="${a}">
-          <data name="a" source="[17]10[012] .0">
-            <regexp match="^\(DE-588\)(.*)$" format="https://d-nb.info/gnd/${1}"/>
-          </data>
-        </combine>
+        <call-macro name="gndIdentifier" field="[17]10" />
+        <call-macro name="gndIdentifierId" field="[17]10" />
         <combine name="label" value="${a}${b}" flushWith="[17]10[012] ">
           <data name="a" source="[17]10[012] .a">
             <replace pattern="\.$" with=""/>
