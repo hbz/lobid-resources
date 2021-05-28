@@ -101,13 +101,13 @@
 
   <macro name="subjectConcept">
     <entity name="" flushWith="$[field]??" sameEntity="true" reset="true">
-      <entity name="type[]" sameEntity="true" reset="true"  flushWith="$[field]??">
-        <data source="$[field]?0.a">
+      <entity name="type[]" sameEntity="true" reset="true" flushWith="$[field]??">
+        <data source="$[field]?[07].a">
           <constant value="Concept"/>
         </data>
         <data source="$[field]?4.a">
           <constant value="Keyword"/>
-        </data>        
+        </data>
       </entity>
       <entity name="source" sameEntity="true" reset="true" flushWith="$[field]??">
         <data source="$[field]?0.a" name="label">
@@ -122,8 +122,20 @@
         <data source="$[field]?4.a" name="id">
           <constant value="https://www.wikidata.org/wiki/Q47524318"/>
         </data>
+        <data name="id" source="$[field]??.0">
+          <regexp match="\(DE-588\)(.*)" format="https://d-nb.info/gnd/7749153-1"/>
+        </data>
+        <data name="label" source="$[field]??.0">
+          <regexp match="\(DE-588\)(.*)" format="Gemeinsame Normdatei (GND)"/>
+        </data>
       </entity>
+      <data name="id" source="$[field]??.0">
+        <regexp match="\(DE-588\)(.*)" format="http://d-nb.info/gnd/${1}"/>
+      </data>
       <data name="label" source="$[field]??.a" />
+      <data name="gndIdentifier" source="$[field]??.0">
+        <regexp match="\(DE-588\)(.*)" format="${1}"/>
+      </data>
     </entity>
   </macro>
 
