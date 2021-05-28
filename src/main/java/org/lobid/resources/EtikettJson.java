@@ -40,8 +40,14 @@ public final class EtikettJson
 
   @Override
   public void onSetReceiver() {
-    etikettMaker = new EtikettMaker(new File(Thread.currentThread()
-        .getContextClassLoader().getResource(labelsDirectoryName).getFile()));
+    File file = null;
+    if (labelsDirectoryName.startsWith("..")) {
+      file = new File(labelsDirectoryName);
+    } else {
+      file = new File(Thread.currentThread().getContextClassLoader()
+          .getResource(labelsDirectoryName).getFile());
+    }
+    etikettMaker = new EtikettMaker(file);
     if (generateContext) {
       etikettMaker.setContextLocation(contextFilenameLocation);
       etikettMaker.writeContext();
