@@ -1,4 +1,4 @@
-/* Copyright 2020 hbz, Pascal Christoph. Licensed under the EPL 2.0*/
+/* Copyright 2020-2021 hbz, Pascal Christoph. Licensed under the EPL 2.0*/
 
 package org.lobid.resources;
 
@@ -72,10 +72,11 @@ public final class AlmaMarc21XmlToLobidJsonTest {
 
   /**
    * Splits xml and extracts records hit by a pattern. Needs 50 secs for 100.000
-   * resources in a 44_MB_XML.tar.gz. It's 100 times faster than Filter(morph).
-   * This method helps to update the Marc-Xml test files by identifying the
-   * records, determining the name of the file using an xpath to get the value
-   * from `035 .a` and writes this into the test directory.
+   * resources in a 44_MB_XML.tar.gz. It's 100 times faster than Filter(morph)
+   * if the pattern matches early (eg. "001"). This method helps to update the
+   * Marc-Xml test files by identifying the records, determining the name of the
+   * file using an xpath to get the value from `035 .a` and writes this into the
+   * test directory.
    *
    * The files are not pretty printed but untouched, though.
    *
@@ -106,7 +107,6 @@ public final class AlmaMarc21XmlToLobidJsonTest {
         .setReceiver(new XmlDecoder()) //
         .setReceiver(xmlElementSplitter_1) //
         .setReceiver(xmlFilenameWriter);
-
     opener.process(BIG_ALMA_XML_FILE);
     opener.closeStream();
     long endTime = System.currentTimeMillis();
@@ -131,25 +131,26 @@ public final class AlmaMarc21XmlToLobidJsonTest {
    */
   @Test
   public void transformFiles() {
+    FileOpener opener = new FileOpener();
+    MarcXmlHandler marcXmlHandler = new MarcXmlHandler();
+    marcXmlHandler.setNamespace(null);
+    EtikettJson etikettJson = new EtikettJson();
+    etikettJson.setLabelsDirectoryName("labels");
+    etikettJson.setFilenameOfContext("web/conf/context.jsonld");
+    etikettJson.setGenerateContext(true);
+    etikettJson.setPretty(true);
     Arrays.asList(DIRECTORY.listFiles(f -> f.getAbsolutePath().endsWith(XML)))
         .forEach(file -> {
-          MarcXmlHandler marcXmlHandler = new MarcXmlHandler();
-          marcXmlHandler.setNamespace(null);
-          EtikettJson etikettJson = new EtikettJson();
-          etikettJson.setLabelsDirectoryName("labels");
-          etikettJson.setFilenameOfContext("web/conf/context.jsonld");
-          etikettJson.setGenerateContext(true);
-          etikettJson.setPretty(true);
-
           ObjectMapper mapper = new ObjectMapper();
+          opener.resetStream();
           final String filenameJson =
               file.getAbsolutePath().replaceAll("\\." + XML, "\\.json");
           try {
-            FileOpener opener = new FileOpener();
-            opener.setReceiver(new XmlDecoder()).setReceiver(marcXmlHandler)
-                .setReceiver(new Metamorph(MORPH, morphVariables))
-                .setReceiver(new JsonEncoder()).setReceiver(etikettJson);
-
+            opener.setReceiver(new XmlDecoder())//
+                .setReceiver(marcXmlHandler)//
+                .setReceiver(new Metamorph(MORPH, morphVariables))//
+                .setReceiver(new JsonEncoder())//
+                .setReceiver(etikettJson);
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             PrintStream ps = new PrintStream(baos);
             System.setOut(ps);

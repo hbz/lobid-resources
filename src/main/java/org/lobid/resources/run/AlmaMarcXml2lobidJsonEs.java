@@ -59,6 +59,7 @@ public class AlmaMarcXml2lobidJsonEs {
   private static String switchClusterHost;
   public static final String MSG_SUCCESS = "success :) ";
   public static final String MSG_FAIL = "fail :() ";
+  static String keyToGetMainId;
 
   public static void main(String... args) {
     if (threadAlreadyStarted) {
@@ -67,11 +68,11 @@ public class AlmaMarcXml2lobidJsonEs {
     AlmaMarcXml2lobidJsonEs.threadAlreadyStarted = true;
     new Thread("AlmaMarcXml2lobidJsonEs") {
       public void run() {
-        LOG.info("Running thread: %s", getName());
+        LOG.info(String.format("Running thread: %s", getName()));
         String usage =
             "<input path>%s<index name>%s<index alias suffix ('NOALIAS' sets it empty)>%s<node>%s<cluster>%s<'update' (will take latest index), 'exact' (will take ->'index name' even when no timestamp is suffixed) , else create new index with actual timestamp>%s<optional: filename of a list of files which shall be ETLed>%s<optional: filename of morph>%s";
         String inputPath = args[0];
-        LOG.info("inputFile=%s", inputPath);
+        LOG.info(String.format("inputFile=%s", inputPath));
         indexName = args[1];
         String date =
             new SimpleDateFormat("yyyyMMdd-HHmmss").format(new Date());
@@ -88,10 +89,10 @@ public class AlmaMarcXml2lobidJsonEs {
               .format(usage, " ", " ", " ", " ", " ", " ", " ", " ", " "));
           return;
         }
-        LOG.info("using indexName: %s", indexName);
+        LOG.info(String.format("using indexName: %s", indexName));
         LOG.info("using indexConfig: " + INDEXCONFIG);
         morphFileName = args.length > 6 ? args[6] : morphFileName;
-        LOG.info("using morph: %s", morphFileName);
+        LOG.info(String.format("using morph: %s", morphFileName));
         // hbz catalog transformation
         final FileOpener opener = new FileOpener();
         // used when loading a BGZF file
@@ -102,10 +103,8 @@ public class AlmaMarcXml2lobidJsonEs {
 
         XmlElementSplitter xmlElementSplitter = new XmlElementSplitter();
         xmlElementSplitter.setElementName("record");
-
-        final String KEY_TO_GET_MAIN_ID =
-            System.getProperty("keyToGetMainId", "almaIdMMS");
-        LOG.info("using keyToGetMainId:%s", KEY_TO_GET_MAIN_ID);
+        keyToGetMainId = System.getProperty("keyToGetMainId", "almaIdMMS");
+        LOG.info(String.format("using keyToGetMainId:%s", keyToGetMainId));
         if (inputPath.toLowerCase().endsWith("tar.bz2")
             || inputPath.toLowerCase().endsWith("tar.gz")) {
           LOG.info("recognised as tar archive");
@@ -142,7 +141,8 @@ public class AlmaMarcXml2lobidJsonEs {
           message = "ETL succeeded, index name: " + indexName;
         } catch (Exception e) {
           e.printStackTrace();
-          LOG.error("ETL fails: %s %s", e.getMessage(), e.toString());
+          LOG.error(
+              String.format("ETL fails: %s %s", e.getMessage(), e.toString()));
           message = e.toString();
           success = false;
         }
@@ -174,17 +174,14 @@ public class AlmaMarcXml2lobidJsonEs {
   private static StringReader receiverThread() {
     StreamBatchLogger batchLogger = new StreamBatchLogger();
     batchLogger.setBatchSize(100000);
-    final String KEY_TO_GET_MAIN_ID =
-        System.getProperty("keyToGetMainId", "almaIdMMS"); // pchbz hbzId
-    LOG.info("using keyToGetMainId: %s", KEY_TO_GET_MAIN_ID);
     ObjectBatchLogger<HashMap<String, String>> objectBatchLogger =
         new ObjectBatchLogger<>();
     objectBatchLogger.setBatchSize(500000);
     MarcXmlHandler marcXmlHandler = new MarcXmlHandler();
     marcXmlHandler.setNamespace(null);
     EtikettJson etikettJson = new EtikettJson();
-    etikettJson.setLabelsDirectoryName("labels");
-    etikettJson.setFilenameOfContext("web/conf/context.jsonld");
+    etikettJson.setLabelsDirectoryName("../src/main/resources/labels");
+    etikettJson.setFilenameOfContext("conf/context.jsonld");
     etikettJson.setGenerateContext(true);
     JsonEncoder jsonEncoder = new JsonEncoder();
     StringReader sr = new StringReader();
@@ -195,8 +192,8 @@ public class AlmaMarcXml2lobidJsonEs {
         .setReceiver(batchLogger)//
         .setReceiver(jsonEncoder)//
         .setReceiver(etikettJson)//
-        .setReceiver(new JsonToElasticsearchBulkMap(KEY_TO_GET_MAIN_ID,
-            "ignored", "ignored"))//
+        .setReceiver(new JsonToElasticsearchBulkMap(keyToGetMainId, "ignored",
+            "ignored"))//
         .setReceiver(getElasticsearchIndexer());
 
     return sr;
