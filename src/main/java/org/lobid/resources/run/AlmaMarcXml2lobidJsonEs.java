@@ -196,7 +196,7 @@ public class AlmaMarcXml2lobidJsonEs {
         .setReceiver(jsonEncoder)//
         .setReceiver(jsonEtikettJsonLd)//
         .setReceiver(new JsonToElasticsearchBulkMap(KEY_TO_GET_MAIN_ID,
-            "resource", "lobid-almaresources"))//
+            "ignored", "ignored"))//
         .setReceiver(getElasticsearchIndexer());
 
     return sr;

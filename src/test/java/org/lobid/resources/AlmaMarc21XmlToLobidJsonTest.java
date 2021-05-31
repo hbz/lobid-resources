@@ -139,6 +139,7 @@ public final class AlmaMarc21XmlToLobidJsonTest {
           jsonEtikettJsonLd.setLabelsDirectoryName("labels");
           jsonEtikettJsonLd.setFilenameOfContext("web/conf/context.jsonld");
           jsonEtikettJsonLd.setGenerateContext(true);
+          jsonEtikettJsonLd.setPretty(true);
 
           ObjectMapper mapper = new ObjectMapper();
           final String filenameJson =
