@@ -182,10 +182,10 @@ public class AlmaMarcXml2lobidJsonEs {
     objectBatchLogger.setBatchSize(500000);
     MarcXmlHandler marcXmlHandler = new MarcXmlHandler();
     marcXmlHandler.setNamespace(null);
-    EtikettJson jsonEtikettJsonLd = new EtikettJson();
-    jsonEtikettJsonLd.setLabelsDirectoryName("labels");
-    jsonEtikettJsonLd.setFilenameOfContext("web/conf/context.jsonld");
-    jsonEtikettJsonLd.setGenerateContext(true);
+    EtikettJson etikettJson = new EtikettJson();
+    etikettJson.setLabelsDirectoryName("labels");
+    etikettJson.setFilenameOfContext("web/conf/context.jsonld");
+    etikettJson.setGenerateContext(true);
     JsonEncoder jsonEncoder = new JsonEncoder();
     StringReader sr = new StringReader();
 
@@ -194,7 +194,7 @@ public class AlmaMarcXml2lobidJsonEs {
         .setReceiver(new Metamorph(morphFileName, morphVariables))
         .setReceiver(batchLogger)//
         .setReceiver(jsonEncoder)//
-        .setReceiver(jsonEtikettJsonLd)//
+        .setReceiver(etikettJson)//
         .setReceiver(new JsonToElasticsearchBulkMap(KEY_TO_GET_MAIN_ID,
             "ignored", "ignored"))//
         .setReceiver(getElasticsearchIndexer());
