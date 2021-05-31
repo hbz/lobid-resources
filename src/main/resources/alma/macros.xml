@@ -101,6 +101,22 @@
 
   <macro name="subjectConcept">
     <entity name="" flushWith="$[field]??" sameEntity="true" reset="true">
+      <if>
+        <any flushWith="$[field]??">
+          <!-- Unique for subjects with ID   -->
+          <data name="id" source="$[field]??.0">
+            <unique/>
+          </data>
+          <!-- Unique for LCSH   -->
+          <data source="$[field]?0.a" name="label">
+            <unique/>
+          </data>
+          <!-- Unique for uncontrolled index terms   -->
+          <data source="$[field]?4.a" name="label">
+            <unique/>
+          </data>
+        </any>
+      </if>
       <entity name="type[]" sameEntity="true" reset="true" flushWith="$[field]??">
         <data source="$[field]?[07].a">
           <constant value="Concept"/>
