@@ -192,7 +192,7 @@ public class AlmaMarcXml2lobidJsonEs {
         .setReceiver(batchLogger)//
         .setReceiver(jsonEncoder)//
         .setReceiver(etikettJson)//
-        .setReceiver(new JsonToElasticsearchBulkMap(keyToGetMainId, "ignored",
+        .setReceiver(new JsonToElasticsearchBulkMap(keyToGetMainId, "resources",
             "ignored"))//
         .setReceiver(getElasticsearchIndexer());
 
