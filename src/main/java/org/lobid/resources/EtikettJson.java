@@ -37,6 +37,7 @@ public final class EtikettJson
   private String contextFilenameLocation;
   private boolean generateContext = false;
   private EtikettMaker etikettMaker;
+  private boolean pretty = false;
 
   @Override
   public void onSetReceiver() {
@@ -78,7 +79,9 @@ public final class EtikettJson
     Object rootId = jsonMap.remove("id");
     getAllJsonNodes(jsonMap);
     jsonMap.put("id", rootId);
-    return JsonUtils.toPrettyString(jsonMap);
+
+    return pretty ? JsonUtils.toPrettyString(jsonMap)
+        : JsonUtils.toString(jsonMap);
   }
 
   @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -135,4 +138,13 @@ public final class EtikettJson
     generateContext = GENERATE_CONTEXT;
   }
 
+  /**
+   * Result pretty json or jsonl (json in one line). Defaults to jsonl.
+   * 
+   * @param PRETTY if true pretty json is generated
+   * 
+   */
+  public void setPretty(final boolean PRETTY) {
+    pretty = PRETTY;
+  }
 }

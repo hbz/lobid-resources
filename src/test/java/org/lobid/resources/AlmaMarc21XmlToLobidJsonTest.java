@@ -134,13 +134,14 @@ public final class AlmaMarc21XmlToLobidJsonTest {
     FileOpener opener = new FileOpener();
     MarcXmlHandler marcXmlHandler = new MarcXmlHandler();
     marcXmlHandler.setNamespace(null);
-    ObjectMapper mapper = new ObjectMapper();
-    EtikettJson jsonEtikettJsonLd = new EtikettJson();
-    jsonEtikettJsonLd.setLabelsDirectoryName("labels");
-    jsonEtikettJsonLd.setFilenameOfContext("web/conf/context.jsonld");
-    jsonEtikettJsonLd.setGenerateContext(true);
+    EtikettJson etikettJson = new EtikettJson();
+    etikettJson.setLabelsDirectoryName("labels");
+    etikettJson.setFilenameOfContext("web/conf/context.jsonld");
+    etikettJson.setGenerateContext(true);
+    etikettJson.setPretty(true);
     Arrays.asList(DIRECTORY.listFiles(f -> f.getAbsolutePath().endsWith(XML)))
         .forEach(file -> {
+          ObjectMapper mapper = new ObjectMapper();
           opener.resetStream();
           final String filenameJson =
               file.getAbsolutePath().replaceAll("\\." + XML, "\\.json");
@@ -149,14 +150,14 @@ public final class AlmaMarc21XmlToLobidJsonTest {
                 .setReceiver(marcXmlHandler)//
                 .setReceiver(new Metamorph(MORPH, morphVariables))//
                 .setReceiver(new JsonEncoder())//
-                .setReceiver(jsonEtikettJsonLd);
+                .setReceiver(etikettJson);
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             PrintStream ps = new PrintStream(baos);
             System.setOut(ps);
             if (GENERATE_TESTDATA) {
-              jsonEtikettJsonLd.setReceiver(new ObjectWriter<>(filenameJson));
+              etikettJson.setReceiver(new ObjectWriter<>(filenameJson));
             } else {
-              jsonEtikettJsonLd.setReceiver(new ObjectStdoutWriter<String>());
+              etikettJson.setReceiver(new ObjectStdoutWriter<String>());
             }
             opener.process(file.getAbsolutePath());
             opener.closeStream();
