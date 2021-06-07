@@ -159,14 +159,14 @@ public class UpdateAliases {
     // actualTolerance must be >= 0 to be successful. I.e. there are more or equal
     // documents in the new index than in the old one
     int actualTolerance =
-        differenceOfTotalHitsBetweenOldAndNew + deletionsCount;
+        differenceOfTotalHitsBetweenOldAndNew - deletionsCount;
     logMessage = ("Going to compare if ("
-        + differenceOfTotalHitsBetweenOldAndNew + " + " + deletionsCount + " = "
+        + differenceOfTotalHitsBetweenOldAndNew + " - " + deletionsCount + " = "
         + actualTolerance + ") minus 2% tolerance (i.e. " + tolerance
         + ") is greater than 0");
     log(logMessage);
     Assert.assertTrue(
-        differenceOfTotalHitsBetweenOldAndNew + deletionsCount - tolerance >= 0);
+        actualTolerance - tolerance >= 0);
   }
 
   private static void log(final String msg) {
