@@ -54,7 +54,8 @@ public final class AlmaMarc21XmlToLobidJsonTest {
   private static final PrintStream ORIG_OUT = System.out;
   private static final Logger LOG =
       LogManager.getLogger(AlmaMarc21XmlToLobidJsonTest.class);
-  private static final String PATTERN_TO_IDENTIFY_XML_RECORDS = ".*";
+  // try patterns like e.g."662", NOT".*662" (which just would slow down)
+  private static final String PATTERN_TO_IDENTIFY_XML_RECORDS = "";
 
   /**
    * Sets necessary morph variables.
@@ -76,10 +77,8 @@ public final class AlmaMarc21XmlToLobidJsonTest {
    * if the pattern matches early (eg. "001"). This method helps to update the
    * Marc-Xml test files by identifying the records, determining the name of the
    * file using an xpath to get the value from `035 .a` and writes this into the
-   * test directory.
-   *
-   * The files are not pretty printed but untouched, though.
-   *
+   * test directory. *
+   * 
    * @param pattern the pattern which is searched for to identify xml records
    */
   public static void extractXmlTestRecords(final String pattern) {
@@ -98,17 +97,33 @@ public final class AlmaMarc21XmlToLobidJsonTest {
     FileOpener opener = new FileOpener();
     SimpleXmlEncoder simpleXmlEncoder = new SimpleXmlEncoder();
     simpleXmlEncoder.setSeparateRoots(true);
-    opener.setReceiver(new TarReader()) //
-        .setReceiver(new XmlDecoder()) //
-        .setReceiver(xmlElementSplitter) //
-        .setReceiver(logger) //
-        .setReceiver(new LiteralToObject()) //
-        .setReceiver(stringFilter).setReceiver(new StringReader()) //
-        .setReceiver(new XmlDecoder()) //
-        .setReceiver(xmlElementSplitter_1) //
-        .setReceiver(xmlFilenameWriter);
+    if (BIG_ALMA_XML_FILE.toLowerCase().endsWith("tar.bz2")
+        || BIG_ALMA_XML_FILE.toLowerCase().endsWith("tar.gz")) {
+      LOG.info("recognised as tar archive");
+      opener.setReceiver(new TarReader()) //
+          .setReceiver(new XmlDecoder()) //
+          .setReceiver(xmlElementSplitter) //
+          .setReceiver(logger) //
+          .setReceiver(new LiteralToObject()) //
+          .setReceiver(stringFilter).setReceiver(new StringReader()) //
+          .setReceiver(new XmlDecoder()) //
+          .setReceiver(xmlElementSplitter_1) //
+          .setReceiver(xmlFilenameWriter);
+    } else {
+      LOG.info("recognised as BGZF");
+      opener.setDecompressConcatenated(true);
+      opener.setReceiver(new XmlDecoder())//
+          .setReceiver(xmlElementSplitter) //
+          .setReceiver(logger) //
+          .setReceiver(new LiteralToObject()) //
+          .setReceiver(stringFilter).setReceiver(new StringReader()) //
+          .setReceiver(new XmlDecoder()) //
+          .setReceiver(xmlElementSplitter_1) //
+          .setReceiver(xmlFilenameWriter);
+    }
     opener.process(BIG_ALMA_XML_FILE);
     opener.closeStream();
+
     long endTime = System.currentTimeMillis();
     LOG.info("Time needed:" + (endTime - startTime) / 1000);
   }
@@ -131,18 +146,17 @@ public final class AlmaMarc21XmlToLobidJsonTest {
    */
   @Test
   public void transformFiles() {
-    FileOpener opener = new FileOpener();
-    MarcXmlHandler marcXmlHandler = new MarcXmlHandler();
-    marcXmlHandler.setNamespace(null);
-    EtikettJson etikettJson = new EtikettJson();
-    etikettJson.setLabelsDirectoryName("labels");
-    etikettJson.setFilenameOfContext("web/conf/context.jsonld");
-    etikettJson.setGenerateContext(true);
-    etikettJson.setPretty(true);
     Arrays.asList(DIRECTORY.listFiles(f -> f.getAbsolutePath().endsWith(XML)))
         .forEach(file -> {
           ObjectMapper mapper = new ObjectMapper();
-          opener.resetStream();
+          FileOpener opener = new FileOpener();
+          MarcXmlHandler marcXmlHandler = new MarcXmlHandler();
+          marcXmlHandler.setNamespace(null);
+          EtikettJson etikettJson = new EtikettJson();
+          etikettJson.setLabelsDirectoryName("labels");
+          etikettJson.setFilenameOfContext("web/conf/context.jsonld");
+          etikettJson.setGenerateContext(true);
+          etikettJson.setPretty(true);
           final String filenameJson =
               file.getAbsolutePath().replaceAll("\\." + XML, "\\.json");
           try {
