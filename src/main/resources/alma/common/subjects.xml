@@ -23,58 +23,10 @@
 
   <entity name="subject[]" flushWith="record">
     <!-- 610 CorporateBody -->
-    <entity name="" flushWith="610??" sameEntity="true" reset="true">
-      <entity name="type[]" sameEntity="true" reset="true"  flushWith="610??">
-        <data source="610?0.a">
-          <constant value="Concept"/>
-        </data>
-        <data source="610?4.a">
-          <constant value="Keyword"/>
-        </data>        
-      </entity>
-      <entity name="source" sameEntity="true" reset="true" flushWith="610??">
-        <data source="610?0.a" name="label">
-          <constant value="Library of Congress Subject Headings"/>
-        </data>
-        <data source="610?0.a" name="id">
-          <constant value="https://id.loc.gov/authorities/subjects.html"/>
-        </data>
-        <data source="610?4.a" name="label">
-          <constant value="Freie Verschlagwortung"/>
-        </data>
-        <data source="610?4.a" name="id">
-          <constant value="https://www.wikidata.org/wiki/Q47524318"/>
-        </data>
-      </entity>
-      <data name="label" source="610??.a" />
-    </entity>
+    <call-macro name="subjectConcept" field="610" />
 
     <!-- 650 Topical Term -->
-    <entity name="" flushWith="650??" sameEntity="true" reset="true">
-      <entity name="type[]" sameEntity="true" reset="true" flushWith="650??">
-        <data source="650?0.a">
-          <constant value="Concept"/>
-        </data>
-        <data source="650?4.a">
-          <constant value="keyword"/>
-        </data>
-      </entity>
-      <entity name="source" sameEntity="true" reset="true" flushWith="650??">
-        <data source="650?0.a" name="label">
-          <constant value="Library of Congress Subject Headings"/>
-        </data>
-        <data source="650?0.a" name="id">
-          <constant value="https://id.loc.gov/authorities/subjects.html"/>
-        </data>
-        <data source="650?4.a" name="label">
-          <constant value="Freie Verschlagwortung"/>
-        </data>
-        <data source="650?4.a" name="id">
-          <constant value="https://www.wikidata.org/wiki/Q47524318"/>
-        </data>
-      </entity>
-      <data name="label" source="650??.a" />
-    </entity>
+    <call-macro name="subjectConcept" field="650" />
 
     <!-- 653  Index Term-Uncontrolled (but hbz says Stichwörter) -->
     <entity name="" flushWith="653??" sameEntity="true" reset="true">
