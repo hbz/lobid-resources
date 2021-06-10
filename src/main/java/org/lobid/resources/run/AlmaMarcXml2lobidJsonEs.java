@@ -103,7 +103,7 @@ public class AlmaMarcXml2lobidJsonEs {
 
         XmlElementSplitter xmlElementSplitter = new XmlElementSplitter();
         xmlElementSplitter.setElementName("record");
-        keyToGetMainId = System.getProperty("keyToGetMainId", "almaIdMMS");
+        keyToGetMainId = System.getProperty("keyToGetMainId", "almaMmsId");
         LOG.info(String.format("using keyToGetMainId:%s", keyToGetMainId));
         if (inputPath.toLowerCase().endsWith("tar.bz2")
             || inputPath.toLowerCase().endsWith("tar.gz")) {

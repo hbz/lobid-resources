@@ -40,7 +40,7 @@ You may give as 8th parameter a file containing a list of filenames. These will 
 fi
 
 function indexFile() {
-	mvn exec:java -DkeyToGetMainId=almaIdMMS -Dexec.mainClass="org.lobid.resources.run.AlmaMarcXml2lobidJsonEs" -Dexec.args="$1 $INDEX_NAME $INDEX_ALIAS_SUFFIX $ES_NODE $ES_CLUSTER_NAME $UPDATE_NEWEST_INDEX" -Dexec.cleanupDaemonThreads=false
+	mvn exec:java -DkeyToGetMainId=almaMmsId -Dexec.mainClass="org.lobid.resources.run.AlmaMarcXml2lobidJsonEs" -Dexec.args="$1 $INDEX_NAME $INDEX_ALIAS_SUFFIX $ES_NODE $ES_CLUSTER_NAME $UPDATE_NEWEST_INDEX" -Dexec.cleanupDaemonThreads=false
 }
 
 function index() {
