@@ -35,8 +35,8 @@ public class Webhook extends Controller {
   private static String token;
   private static String indexUpdateAliasSufix = "NOALIAS";
   private static String indexBasedumpAliasSuffix = "-staging";
-  private static String alias1 = indexNameOfBasedump;
-  private static String alias2 = indexNameOfBasedump + indexBasedumpAliasSuffix;
+  private static String alias1;
+  private static String alias2;
   private static final String UPDATE_NEWEST_INDEX = "exact";
   private static final String CREATE_INDEX = "create";
   private static final String MSG_ETL_PROCESS_IS_ALREADY_RUNNING =
@@ -102,6 +102,8 @@ public class Webhook extends Controller {
         config.getString("webhook.alma.basedump.switch.minSize");
     indexNameOfUpdate = config.getString("webhook.alma.update.indexname");
     token = config.getString("webhook.alma.token");
+    alias1 = indexNameOfBasedump;
+    alias2 = indexNameOfBasedump + indexBasedumpAliasSuffix;
   }
 
   /**
