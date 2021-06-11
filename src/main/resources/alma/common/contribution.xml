@@ -29,6 +29,7 @@
         </data>
       </entity>
     </entity>
+    
     <!--700[01] -->
     <entity name="" flushWith="700[01] " sameEntity="true">
       <entity name="type[]" reset="true">
@@ -78,12 +79,9 @@
           </data>
         </entity>
       </entity>
-      <entity name="role" reset="true">
-        <data name="id" source="[17]10[012] .a">
-          <constant value="http://id.loc.gov/vocabulary/relators/ctb"/>
-        </data>
-        <data name="label" source="[17]10[012] .a">
-          <constant value="Mitwirkende"/>
+      <entity name="role" reset="true" sameEntity="true" flushWith="[17]10[012] ">
+        <data name="id" source="[17]10[012] .4">
+          <compose prefix="http://id.loc.gov/vocabulary/relators/"/>
         </data>
       </entity>
     </entity>
