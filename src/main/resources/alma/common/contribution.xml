@@ -23,12 +23,9 @@
           </data>
         </entity>
       </entity>
-      <entity name="role" reset="true">
-        <data name="id" source="100[01] .[4e]">
-          <regexp match="^([Aa]ut|[Cc]re)" format="http://id.loc.gov/vocabulary/relators/cre"/>
-        </data>
-        <data name="label" source="100[01] .[4e]">
-          <regexp match="^([Aa]ut|[Cc]re)" format="Autor/in"/>
+      <entity name="role" reset="true" sameEntity="true" flushWith="100[01] ">
+        <data name="id" source="100[01] .4">
+          <compose prefix="http://id.loc.gov/vocabulary/relators/"/>
         </data>
       </entity>
     </entity>
@@ -49,33 +46,13 @@
           </data>
         </entity>
       </entity>
-      <entity name="role" reset="true">
-        <if>
-          <data name="id" source="700[01] .[4e]">
-            <regexp match="^([Aa]ut|[Cc]re)"/>
-          </data>
-        </if>
-        <data name="id" source="700[01] .[4e]">
-          <regexp match="^([Aa]ut|[Cc]re)" format="http://id.loc.gov/vocabulary/relators/cre"/>
-        </data>
-        <data name="label" source="700[01] .[4e]">
-          <regexp match="^([Aa]ut|[Cc]re)" format="Autor/in"/>
-        </data>
-      </entity>
-      <entity name="role" reset="true">
-        <if>
-          <data name="id" source="700[01] .[4e]">
-            <regexp match="^oth"/>
-          </data>
-        </if>
-        <data name="id" source="700[01] .[4e]">
-          <regexp match="^oth" format="http://id.loc.gov/vocabulary/relators/oth"/>
-        </data>
-        <data name="label" source="700[01] .[4e]">
-          <regexp match="^oth" format="Sonstiges"/>
+      <entity name="role" reset="true" sameEntity="true" flushWith="700[01] ">
+        <data name="id" source="700[01] .4">
+          <compose prefix="http://id.loc.gov/vocabulary/relators/"/>
         </data>
       </entity>
     </entity>
+
     <!-- 110|710[012] -->
     <entity name="" flushWith="[17]10[012] " sameEntity="true">
       <entity name="type[]" reset="true">
@@ -111,6 +88,7 @@
       </entity>
     </entity>
 
+    <!-- 111 -->
     <entity name="Conference" flushWith="record">
       <data name="conferenceName" source="111[012] .a">
         <replace pattern="[.,]$" with="" />
