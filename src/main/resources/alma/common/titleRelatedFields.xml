@@ -33,6 +33,13 @@
   <entity name="publication[]" flushWith="record">
     <entity name="" flushWith="260[ 23] |264[ 23][ 1]" reset="true" sameEntity="true">
       <data source="260[ 23] .c|264[ 23][ 1].c" name="publicationHistory" />
+      <data source="260[ 23] .c|264[ 23][ 1].c" name="startDate">
+        <replace pattern="[\[|\]|ca. |c ]" with=""/>
+        <regexp match="^(\d{4}).*" format="${1}"/>
+      </data>
+      <data source="260[ 23] .c|264[ 23][ 1].c" name="endDate">
+        <regexp match=".*-(\d{4})$" format="${1}"/>
+      </data>
       <entity name="type[]" reset="true" sameEntity="true">
         <data name="" source="260[ 23] .c|264[ 23][ 1].c">
           <constant value="PublicationEvent"/>
