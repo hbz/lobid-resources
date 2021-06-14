@@ -97,29 +97,23 @@ public final class AlmaMarc21XmlToLobidJsonTest {
     FileOpener opener = new FileOpener();
     SimpleXmlEncoder simpleXmlEncoder = new SimpleXmlEncoder();
     simpleXmlEncoder.setSeparateRoots(true);
+    XmlDecoder xmlDecoder = new XmlDecoder(); //
+    xmlDecoder.setReceiver(xmlElementSplitter) //
+        .setReceiver(logger) //
+        .setReceiver(new LiteralToObject()) //
+        .setReceiver(stringFilter)//
+        .setReceiver(new StringReader()) //
+        .setReceiver(new XmlDecoder()) //
+        .setReceiver(xmlElementSplitter_1) //
+        .setReceiver(xmlFilenameWriter);
     if (BIG_ALMA_XML_FILE.toLowerCase().endsWith("tar.bz2")
         || BIG_ALMA_XML_FILE.toLowerCase().endsWith("tar.gz")) {
       LOG.info("recognised as tar archive");
-      opener.setReceiver(new TarReader()) //
-          .setReceiver(new XmlDecoder()) //
-          .setReceiver(xmlElementSplitter) //
-          .setReceiver(logger) //
-          .setReceiver(new LiteralToObject()) //
-          .setReceiver(stringFilter).setReceiver(new StringReader()) //
-          .setReceiver(new XmlDecoder()) //
-          .setReceiver(xmlElementSplitter_1) //
-          .setReceiver(xmlFilenameWriter);
+      opener.setReceiver(new TarReader()).setReceiver(xmlDecoder);
     } else {
       LOG.info("recognised as BGZF");
       opener.setDecompressConcatenated(true);
-      opener.setReceiver(new XmlDecoder())//
-          .setReceiver(xmlElementSplitter) //
-          .setReceiver(logger) //
-          .setReceiver(new LiteralToObject()) //
-          .setReceiver(stringFilter).setReceiver(new StringReader()) //
-          .setReceiver(new XmlDecoder()) //
-          .setReceiver(xmlElementSplitter_1) //
-          .setReceiver(xmlFilenameWriter);
+      opener.setReceiver(xmlDecoder);
     }
     opener.process(BIG_ALMA_XML_FILE);
     opener.closeStream();
