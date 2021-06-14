@@ -8,6 +8,11 @@
   <entity name="contribution[]" flushWith="record">
     <!-- 100[01]-->
     <entity name="" flushWith="100[01] " sameEntity="true">
+      <if>
+        <none flushWith="100[01] " sameEntity="true">
+          <data name="" source="100[01] .M" />
+        </none>
+      </if>
       <entity name="type[]" reset="true">
         <data name="" source="100[01] ">
           <constant value="Contribution"/>
