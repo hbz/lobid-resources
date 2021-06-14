@@ -65,6 +65,7 @@ public final class AlmaMarc21XmlToLobidJsonTest {
     morphVariables.put("isil", "DE-632");
     morphVariables.put("member", "DE-605");
     morphVariables.put("catalogid", "DE-605");
+    morphVariables.put("createEndTime", "0"); // 0 <=> false
     GENERATE_TESTDATA = true;
     if (GENERATE_TESTDATA) {
       extractXmlTestRecords(PATTERN_TO_IDENTIFY_XML_RECORDS);
@@ -97,6 +98,7 @@ public final class AlmaMarc21XmlToLobidJsonTest {
     FileOpener opener = new FileOpener();
     SimpleXmlEncoder simpleXmlEncoder = new SimpleXmlEncoder();
     simpleXmlEncoder.setSeparateRoots(true);
+
     XmlDecoder xmlDecoder = new XmlDecoder(); //
     xmlDecoder.setReceiver(xmlElementSplitter) //
         .setReceiver(logger) //
@@ -106,6 +108,7 @@ public final class AlmaMarc21XmlToLobidJsonTest {
         .setReceiver(new XmlDecoder()) //
         .setReceiver(xmlElementSplitter_1) //
         .setReceiver(xmlFilenameWriter);
+
     if (BIG_ALMA_XML_FILE.toLowerCase().endsWith("tar.bz2")
         || BIG_ALMA_XML_FILE.toLowerCase().endsWith("tar.gz")) {
       LOG.info("recognised as tar archive");
@@ -151,6 +154,7 @@ public final class AlmaMarc21XmlToLobidJsonTest {
           etikettJson.setFilenameOfContext("web/conf/context.jsonld");
           etikettJson.setGenerateContext(true);
           etikettJson.setPretty(true);
+
           final String filenameJson =
               file.getAbsolutePath().replaceAll("\\." + XML, "\\.json");
           try {
@@ -179,11 +183,7 @@ public final class AlmaMarc21XmlToLobidJsonTest {
               String actualJson = null;
               actualJson = baos.toString();
               LOG.debug(actualJson);
-              // don't test the dynamically created "endTime", e.g:
-              // "endTime":"2020-11-30T10:03:42",
-              assertEquals(expectedJson.replaceFirst("endTime.{25}", ""),
-                  actualJson.substring(0, actualJson.length() - 1)
-                      .replaceFirst("endTime.{25}", ""));
+              assertEquals(expectedJson, actualJson);
             }
           } catch (Exception e) {
             e.printStackTrace();
