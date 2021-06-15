@@ -4,18 +4,25 @@
   <!-- 655 Form/Genre keyword transformed as natureOfContent   -->
   <entity name="natureOfContent[]" flushWith="record">
     <entity name="" flushWith="655 7" sameEntity="true" reset="true">
+      <if>
+        <data name="label" source="655??.a">
+          <unique />
+        </data>
+      </if>
       <data name="label" source="655??.a" />
       <data name="id" source="655??.0">
         <regexp match="\(DE-588\)(.*)" format="http://d-nb.info/gnd/${1}"/>
       </data>
     </entity>
+    <!-- 698 Formatschlagwort   -->
     <entity name="" flushWith="689??" sameEntity="true" reset="true">
       <if>
         <data source="689??.A">
           <equals string="f" />
         </data>
       </if>
-      <data name="label" source="689??.a" >
+      <!-- deduplicate, if the string exists already in 655 but is intended to morph 689 Formatschlagwort   -->
+      <data name="label" source="689??.a|655??.a">
         <unique />
       </data>
     </entity>
@@ -68,10 +75,10 @@
       <if>
         <data source="982  .[ab]" />
       </if>
-      <entity name="type[]" sameEntity="true" reset="true"  flushWith="982  .[ab]">
+      <entity name="type[]" sameEntity="true" reset="true" flushWith="982  .[ab]">
         <data source="982  .[ab]">
           <constant value="Keyword"/>
-        </data>        
+        </data>
       </entity>
       <data name="label" source="982  .[ab]" />
       <entity name="source" sameEntity="true" reset="true" flushWith="982  ">
