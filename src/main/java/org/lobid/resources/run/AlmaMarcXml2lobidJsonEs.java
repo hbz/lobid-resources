@@ -100,6 +100,7 @@ public class AlmaMarcXml2lobidJsonEs {
         morphVariables.put("isil", "DE-632");
         morphVariables.put("member", "DE-605");
         morphVariables.put("catalogid", "DE-605");
+        morphVariables.put("createEndTime", "1"); // 1 <=> true
 
         XmlElementSplitter xmlElementSplitter = new XmlElementSplitter();
         xmlElementSplitter.setElementName("record");

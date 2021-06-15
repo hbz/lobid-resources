@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <rules xmlns="http://www.culturegraph.org/metamorph">
 
+	<data name="@createTime" source="@id">
+		<constant value="$[createEndTime]"/>
+	</data>
+
 	<entity name="describedBy" flushWith="record">
 		<data name="id" source="@id">
 			<regexp match="(.*)" format="http://lobid.org/resources/${1}"/>
@@ -29,9 +33,16 @@
 					<constant value="CreateAction"/>
 				</data>
 			</entity>
-			<data name="endTime" source="@id">
-				<timestamp format="yyyy-MM-dd'T'HH:mm:ss" timezone="Europe/Berlin"/>
-			</data>
+			<combine name="endTime" value="${a}">
+				<choose name="a">
+					<data source="@createTime" name="a">
+						<regexp match="0" format="dummy"/>
+					</data>
+					<data name="a" source="@id">
+						<timestamp format="yyyy-MM-dd'T'HH:mm:ss" timezone="Europe/Berlin"/>
+					</data>
+				</choose>
+			</combine>
 			<entity name="instrument">
 				<data name="id" source="@id">
 					<constant value="https://github.com/hbz/lobid-resources"/>
