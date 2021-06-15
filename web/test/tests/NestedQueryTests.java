@@ -30,7 +30,7 @@ public class NestedQueryTests extends LocalIndexSetup {
 		// @formatter:off
 		return Arrays.asList(new Object[][] {
 			// Nested query: only return hits where query matches 1 nested pseudo-doc:
-			{ "contribution:contribution.agent.label:SCHOLLE AND contribution.role.label:Mitwirkende", "", /*->*/ 1 },
+			{ "contribution:contribution.agent.label:SCHOLLE AND contribution.role.label:Beitragende", "", /*->*/ 1 },
 			// Nested query: don't match if query parts match different nested docs:
 			{ "contribution:contribution.agent.label:SCHOLLE AND contribution.role.label:Autor", "", /*->*/ 0 },
 			// Normal query: return hits where query matches parent top-level doc:

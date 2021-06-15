@@ -141,10 +141,10 @@
 					<regexp match=".*" format="http://id.loc.gov/vocabulary/relators/ctb"/>
 				</data>
 				<data source="$[field][-amn][12].9">
-					<regexp match=".*" format="http://id.loc.gov/vocabulary/relators/cre"/>
+					<regexp match=".*" format="http://id.loc.gov/vocabulary/relators/aut"/>
 				</data>
 				<data source="$[field][-aemn][12].[pa]">
-					<regexp match=".*" format="http://id.loc.gov/vocabulary/relators/cre"/>
+					<regexp match=".*" format="http://id.loc.gov/vocabulary/relators/aut"/>
 				</data>
 			</choose>
 		</macro>
@@ -866,7 +866,7 @@
 						<regexp match="[dD]ars|^\[act\]$|^act$" format="http://id.loc.gov/vocabulary/relators/act"/>
 					</data>
 					<data source="$[field]?[12].4" name="a">
-						<regexp match="^\[aut\]$|^(aut)$" format="http://id.loc.gov/vocabulary/relators/cre"/>
+						<regexp match="^\[aut\]$|^(aut)$" format="http://id.loc.gov/vocabulary/relators/aut"/>
 					</data>
 					<data source="$[field]?[12].[b4]" name="a">
 						<regexp match="[nN]ach|^\[aft\]$|^aft$" format="http://id.loc.gov/vocabulary/relators/aft"/>
@@ -923,7 +923,10 @@
 						<regexp match="[sS]ammler|^\[col\]$|^col$" format="http://id.loc.gov/vocabulary/relators/col"/>
 					</data>
 					<data source="$[field]?[12].[b4]" name="a">
-						<regexp match="author|Verfasser|^cre$|^\[cre\]$" format="http://id.loc.gov/vocabulary/relators/cre"/>
+						<regexp match="aut|author|Verfasser" format="http://id.loc.gov/vocabulary/relators/aut"/>
+					</data>
+					<data source="$[field]?[12].[b4]" name="a">
+						<regexp match="^cre$|^\[cre\]$" format="http://id.loc.gov/vocabulary/relators/cre"/>
 					</data>
 					<data source="$[field]?[12].4" name="a">
 						<regexp match="^cst$" format="http://id.loc.gov/vocabulary/relators/cst"/>
@@ -1047,7 +1050,7 @@
 					<regexp match=".*" format="http://id.loc.gov/vocabulary/relators/ctb"/>
 				</data>
 				<data source="$[field][-a][12].?">
-					<regexp match=".*" format="http://id.loc.gov/vocabulary/relators/cre"/>
+					<regexp match=".*" format="http://id.loc.gov/vocabulary/relators/aut"/>
 				</data>
 			</choose>
 		</macro>
@@ -5897,7 +5900,7 @@
 			<data source="@corporateBodyForTitleBnode" name="a"/>
 		</combine>
 		<combine name="http://id.loc.gov/ontologies/bibframe/role"
-			value="http://id.loc.gov/vocabulary/relators/cre" flushWith="@corporateBodyForTitleBnode">
+			value="http://id.loc.gov/vocabulary/relators/aut" flushWith="@corporateBodyForTitleBnode">
 			<data source="34[26]-1.a|35[04]-1.a"/>
 		</combine>
 		<combine name="http://www.w3.org/1999/02/22-rdf-syntax-ns#type"
