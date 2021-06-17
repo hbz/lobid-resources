@@ -155,5 +155,38 @@
     </entity>
   </macro>
 
+  <macro name="schlagwortfolge">
+    <entity name="" flushWith="record">
+      <entity name="type[]" sameEntity="true" reset="true">
+        <data name="" source="$[field]0">
+          <constant value="ComplexSubject"/>
+        </data>
+      </entity>
+      <entity name="componentList[]" flushWith="record">
+        <entity name="" sameEntity="true" reset="true" flushWith="$[field]?">
+          <entity name="type[]" sameEntity="true" reset="true">
+            <data source="$[field]?.D">
+              <lookup in="rswk-indicator" />
+            </data>
+          </entity>
+          <data name="label" source="$[field]?.a" />
+          <data name="id" source="$[field]?.0">
+            <regexp match="\(DE-588\)(.*)" format="http://d-nb.info/gnd/${1}"/>
+          </data>
+          <entity name="source" sameEntity="true" reset="true">
+            <data name="id" source="$[field]?.0">
+              <regexp match="\(DE-588\)(.*)" format="https://d-nb.info/gnd/7749153-1"/>
+            </data>
+            <data name="label" source="$[field]?.0">
+              <regexp match="\(DE-588\)(.*)" format="Gemeinsame Normdatei (GND)"/>
+            </data>
+          </entity>
+          <data name="gndIdentifier" source="$[field]?.0">
+            <regexp match="\(DE-588\)(.*)" format="${1}"/>
+          </data>
+        </entity>
+      </entity>
+    </entity>
+  </macro>
 
 </macros>
