@@ -162,6 +162,9 @@
           <constant value="ComplexSubject"/>
         </data>
       </entity>
+      <concat name="label" delimiter=" | ">
+        <data source="$[field]?.a" />
+      </concat>
       <entity name="componentList[]" flushWith="record">
         <entity name="" sameEntity="true" reset="true" flushWith="$[field]?">
           <entity name="type[]" sameEntity="true" reset="true">
