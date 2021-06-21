@@ -3,23 +3,10 @@
 
   <!-- 0xx -->
 
-  <combine name="@id" value="${id}">
-    <choose name="id">
-      <data name="id" source="035  .a">
-        <regexp match="\(DE-605\)(.*)" format="${1}"/>
-      </data>
-      <data name="id" source="001">
-        <regexp match="(.*)" format="ALMA${1}"/>
-      </data>
-    </choose>
-  </combine>
-  <data name="@uid" source="@id" />
   <data name="hbzId" source="035  .a">
     <regexp match="\(DE-605\)(.*)" format="${1}"/>
   </data>
-  <data name="id" source="@id">
-    <regexp match="(.*)" format="http://lobid.org/resources/${1}#!"/>
-  </data>
+
 
   <data name="@language_source_all" source="008">
     <substring start="35" end="38" />
