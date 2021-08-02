@@ -93,7 +93,6 @@ public class LocBibframe2JsonEs {
 		esIndexer.setUpdateNewestIndex(update);
 		esIndexer.setIndexConfig(indexConfig);
 		esIndexer.lookupMabxmlDeletion = false;
-		esIndexer.lookupWikidata = false;
 		esIndexer.onSetReceiver();
 		return esIndexer;
 	}

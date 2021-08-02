@@ -36,7 +36,6 @@ public final class Entityfacts2Es {
 		esIndexer.setUpdateNewestIndex(false);
 		esIndexer.setIndexConfig("index-config-entityfacts.json");
 		esIndexer.lookupMabxmlDeletion = false;
-		esIndexer.lookupWikidata = false;
 		esIndexer.onSetReceiver();
 		opener.setReceiver(rre).setReceiver(esIndexer);
 		opener.process(new File(inputPath).getAbsolutePath());

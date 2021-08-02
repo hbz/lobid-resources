@@ -30,8 +30,8 @@ import de.hbz.lobid.helper.Email;
  * Useful after a complete ETL to switch the 'staging' index with the alias of
  * production. Makes the staging index productive (if it's the newer one) and
  * the productive index aliased to 'staging'. If a sanity check is successful
- * the index aliases "[resources|geo_nwbib]-staging" are updated to
- * "[resources|geo_nwbib]" and vice versa. Also writes an email using
+ * the index aliases "[resources]-staging" are updated to
+ * "[resources]" and vice versa. Also writes an email using
  * {@link de.hbz.lobid.helper.Email} to write an email to the address given by
  * the java system property 'emailTo'.
  * 
@@ -62,8 +62,6 @@ public class UpdateAliases {
       esIndexer.setElasticsearchClient(client);
       esIndexer.swapProductionAndStagingAliases("resources",
           "resources-staging");
-      esIndexer.swapProductionAndStagingAliases("geo_nwbib",
-          "geo_nwbib-staging");
       success = true;
     } catch (Exception | AssertionError e) {
       e.printStackTrace();

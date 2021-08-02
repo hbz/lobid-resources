@@ -122,14 +122,7 @@ public class MabXml2lobidJsonEs {
 		esIndexer.lookupMabxmlDeletion = lookupMabxmlDeletion;
 		System.out
 				.println("lookupMabxmlDeletion: " + esIndexer.lookupMabxmlDeletion);
-		esIndexer.lookupWikidata =
-				Boolean.parseBoolean(esIndexer.lookupMabxmlDeletion ? "false"
-						: System.getProperty("lookupWikidata", "true"));
-		System.out.println("lookupWikidata: " + esIndexer.lookupWikidata);
-		if (esIndexer.lookupMabxmlDeletion)
-			esIndexer.lookupWikidata = false;
 		esIndexer.onSetReceiver();
-		WikidataGeodata2Es.storeIfIndexExists(esIndexer.getElasticsearchClient());
 		return esIndexer;
 	}
 
