@@ -33,17 +33,17 @@ public class IndexIntegrationTest extends LocalIndexSetup {
 	public static Collection<Object[]> data() {
 		// @formatter:off
 		return queries(new Object[][] {
-			{ "title:der", /*->*/ 26 },
+			{ "title:der", /*->*/ 25 },
 			{ "title:Westfalen", /*->*/ 5 },
-			{ "contribution.agent.label:Westfalen", /*->*/ 10 },
-			{ "contribution.agent.label:Westfälen", /*->*/ 10 },
+			{ "contribution.agent.label:Westfalen", /*->*/ 8 },
+			{ "contribution.agent.label:Westfälen", /*->*/ 8 },
 			{ "contribution.agent.id:\"https\\://d-nb.info/gnd/5265186-1\"", /*->*/ 1 },
 			{ "contribution.agent.id:5265186-1", /*->*/ 0 },
 			{ "contribution.agent.id:\"5265186-1\"", /*->*/ 0 },
 			{ "title:Westfalen AND contribution.agent.label:Westfalen", /*->*/ 3 },
 			{ "title:Westfalen OR title:Münsterland", /*->*/ 6 },
 			{ "title:Westfalen OR title:Munsterland", /*->*/ 6 },
-			{ "(title:Westfalen OR title:Münsterland) AND contribution.agent.id:\"https\\://d-nb.info/gnd/2019209-5\"", /*->*/ 1 },
+			{ "(title:Westfalen OR title:Münsterland) AND contribution.agent.id:\"https\\://d-nb.info/gnd/137082479\"", /*->*/ 1 },
 			{ "subject.componentList.label:Münsterland", /*->*/ 2 },
 			{ "subject.componentList.label:Muensterland", /*->*/ 2 },
 			{ "subject.componentList.label:Munsterland", /*->*/ 2 },
@@ -54,17 +54,16 @@ public class IndexIntegrationTest extends LocalIndexSetup {
 			{ "subjectAltLabel:Sudwestfalen", /*->*/ 1 },
 			{ "subjectAltLabel:Südwestfale", /*->*/ 1 },
 			{ "subjectAltLabel.unstemmed:Südwestfale", /*->*/ 0 },
-			{ "subject.componentList.id:\"https\\://d-nb.info/gnd/4042570-8\"", /*->*/ 5 },
-			{ "(title:Westfalen OR title:Münsterland) AND NOT contribution.agent.id:\"https\\://d-nb.info/gnd/2019209-5\"", /*->*/ 5 },
-			{ "subject.componentList.label:Westfalen", /*->*/ 11 },
-			{ "subject.componentList.label:Westfälen", /*->*/ 11 },
-			{ "spatial.label:Westfalen", /*->*/ 14 },
-			{ "spatial.label:Westfälen", /*->*/ 14 },
-			{ "subject.componentList.id:\"https\\://d-nb.info/gnd/4042570-8\"", /*->*/ 5 },
+			{ "subject.componentList.id:\"https\\://d-nb.info/gnd/4042570-8\"", /*->*/ 6 },
+			{ "(title:Westfalen OR title:Münsterland) AND NOT contribution.agent.id:\"https\\://d-nb.info/gnd/2019209-5\"", /*->*/ 6 },
+			{ "subject.componentList.label:Westfalen", /*->*/ 12 },
+			{ "subject.componentList.label:Westfälen", /*->*/ 12 },
+			{ "spatial.label:Westfalen", /*->*/ 13 },
+			{ "spatial.label:Westfälen", /*->*/ 13 },
 			{ "subject.componentList.id:1113670827", /*->*/ 0 },
 			{ "subject.componentList.type:PlaceOrGeographicName", /*->*/ 37 },
 			{ "publication.location:Berlin", /*->*/ 19 },
-			{ "subject.notation:914.3", /*->*/ 5 },
+			{ "subject.notation:914.3", /*->*/ 4 },
 			{ "subject.notation:914", /*->*/ 0 },
 			{ "subject.notation:914*", /*->*/ 5 },
 			{ "publication.location:Köln", /*->*/ 12 },
@@ -72,7 +71,7 @@ public class IndexIntegrationTest extends LocalIndexSetup {
 			{ "publication.startDate:1993", /*->*/ 3 },
 			{ "publication.location:Berlin AND publication.startDate:1993", /*->*/ 1 },
 			{ "publication.location:Berlin AND publication.startDate:[1992 TO 2017]", /*->*/ 14 },
-			{ "inCollection.id:\"http\\://lobid.org/resources/HT014176012#\\!\"", /*->*/ 51 },
+			{ "inCollection.id:\"http\\://lobid.org/resources/HT014176012#\\!\"", /*->*/ 52 },
 			{ "inCollection.id:NWBib", /*->*/ 0 },
 			{ "publication.publishedBy:Springer", /*->*/ 4 },
 			{ "publication.publishedBy:Spring", /*->*/ 4 },
@@ -80,7 +79,6 @@ public class IndexIntegrationTest extends LocalIndexSetup {
 			{ "publication.publishedBy:DÄG", /*->*/ 1 },
 			{ "hasItem.id:\"http\\://lobid.org/items/TT003059252\\:DE-5-58\\:9%2F041#\\!\"", /*->*/ 1 },
 			{ "hasItem.id:TT003059252\\:DE-5-58\\:9%2F041", /*->*/ 0 },
-			{ "coverage:99", /*->*/ 24},
 			{ "isbn:3454128013", /*->*/ 1},
 			{ "isbn:345-4128-013", /*->*/ 1},
 			{ "\"Studies in social and political theory\"", /*->*/ 1},
@@ -97,6 +95,7 @@ public class IndexIntegrationTest extends LocalIndexSetup {
 		List<Object[]> result = new ArrayList<>();
 		for (Object[] testCase : objects) {
 			String s = (String) testCase[0];
+Logger.info("pchbz: {}", s);
 			Integer hits = (Integer) testCase[1];
 			result.add(new Object[] { new Queries.Builder().q(s), /*->*/ hits });
 			result.add(new Object[] { new Queries.Builder().word(s), /*->*/ hits });

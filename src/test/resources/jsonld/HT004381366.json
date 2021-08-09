@@ -3,10 +3,14 @@
   "contribution" : [ {
     "type" : [ "Contribution" ],
     "agent" : {
-      "id" : "https://d-nb.info/gnd/2019209-5",
+      "id" : "https://d-nb.info/gnd/4040613-1",
       "type" : [ "PlaceOrGeographicName" ],
-      "label" : "Regierungsbezirk Münster, Westfalen",
-      "gndIdentifier" : "2019209-5"
+      "source" : {
+        "id" : "https://d-nb.info/gnd/7749153-1",
+        "label" : "Gemeinsame Normdatei (GND)"
+      },
+      "label" : "Regierungsbezirk Münster",
+      "gndIdentifier" : "4040613-1"
     },
     "role" : {
       "id" : "http://id.loc.gov/vocabulary/relators/aut",
@@ -25,16 +29,6 @@
     "callNumber" : "Sep. 10.04.01/55,5",
     "label" : "Sep. 10.04.01/55,5"
   }, {
-    "id" : "http://lobid.org/items/HT004381366:DE-6-210:Boe%2070%20-%20%5B2%5D#!",
-    "type" : [ "Item" ],
-    "heldBy" : {
-      "id" : "http://lobid.org/organisations/DE-6-210#!",
-      "label" : "lobid Organisation"
-    },
-    "note" : [ "00066001" ],
-    "callNumber" : "Boe 70 - [2]",
-    "label" : "Boe 70 - [2]"
-  }, {
     "id" : "http://lobid.org/items/HT004381366:DE-6:2C%20583-2#!",
     "type" : [ "Item" ],
     "heldBy" : {
@@ -51,11 +45,20 @@
       "id" : "http://lobid.org/organisations/DE-6-A#!",
       "label" : "lobid Organisation"
     },
-    "note" : [ "00001043" ],
+    "note" : [ "00001044" ],
     "callNumber" : "MG 23990/1-1",
     "label" : "MG 23990/1-1"
+  }, {
+    "id" : "http://lobid.org/items/HT004381366:DE-6-210:Boe%2070%20-%20%5B2%5D#!",
+    "type" : [ "Item" ],
+    "heldBy" : {
+      "id" : "http://lobid.org/organisations/DE-6-210#!",
+      "label" : "lobid Organisation"
+    },
+    "note" : [ "00066001" ],
+    "callNumber" : "Boe 70 - [2]",
+    "label" : "Boe 70 - [2]"
   } ],
-  "coverage" : [ "Münsterland | 10" ],
   "language" : [ {
     "id" : "http://id.loc.gov/vocabulary/iso639-2/deu",
     "label" : "Deutsch"
@@ -65,48 +68,45 @@
     "label" : "Miscellaneous"
   } ],
   "spatial" : [ {
-    "id" : "https://nwbib.de/spatial#N10",
+    "id" : "https://nwbib.de/spatial#Q1700",
     "type" : [ "Concept" ],
     "source" : {
       "id" : "https://nwbib.de/spatial",
       "label" : "Raumsystematik der Nordrhein-Westfälischen Bibliographie"
     },
-    "label" : "Westfälische Bucht",
-    "notation" : "10",
+    "label" : "Münsterland",
     "focus" : {
-      "id" : "http://www.wikidata.org/entity/Q462011",
-      "type" : [ "http://www.wikidata.org/entity/Q107425" ],
+      "id" : "http://www.wikidata.org/entity/Q1700",
+      "type" : [ "http://www.wikidata.org/entity/Q82794" ],
       "geo" : {
         "lat" : "51.96294444",
         "lon" : "7.62869444"
       },
-      "label" : "Westfälische Bucht"
-    }
-  }, {
-    "focus" : {
-      "id" : "http://www.wikidata.org/entity/Q1700",
-      "geo" : {
-        "lat" : 51.96294444,
-        "lon" : 7.62869444
-      },
-      "type" : [ "http://www.wikidata.org/entity/Q82794" ]
-    },
-    "id" : "https://nwbib.de/spatial#Q1700",
-    "type" : [ "Concept" ],
-    "label" : "Münsterland",
-    "source" : {
-      "id" : "https://nwbib.de/spatial",
-      "label" : "Raumsystematik der Nordrhein-Westfälischen Bibliographie"
+      "label" : "Münsterland"
     }
   } ],
   "subject" : [ {
-    "id" : "https://nwbib.de/subjects#N572030",
-    "source" : {
-      "id" : "https://nwbib.de/subjects",
-      "label" : "Sachsystematik der Nordrhein-Westfälischen Bibliographie"
-    },
-    "notation" : "572030",
-    "label" : "Regionalplanung"
+    "type" : [ "ComplexSubject" ],
+    "componentList" : [ {
+      "id" : "https://d-nb.info/gnd/4040613-1",
+      "type" : [ "PlaceOrGeographicName" ],
+      "source" : {
+        "id" : "https://d-nb.info/gnd/7749153-1",
+        "label" : "Gemeinsame Normdatei (GND)"
+      },
+      "label" : "Regierungsbezirk Münster",
+      "gndIdentifier" : "4040613-1"
+    }, {
+      "id" : "https://d-nb.info/gnd/4034268-2",
+      "type" : [ "SubjectHeading" ],
+      "source" : {
+        "id" : "https://d-nb.info/gnd/7749153-1",
+        "label" : "Gemeinsame Normdatei (GND)"
+      },
+      "label" : "Landesplanung",
+      "gndIdentifier" : "4034268-2"
+    } ],
+    "label" : "Regierungsbezirk Münster | Landesplanung"
   }, {
     "type" : [ "ComplexSubject" ],
     "componentList" : [ {
@@ -130,27 +130,13 @@
     } ],
     "label" : "Münsterland | Regionalplan "
   }, {
-    "type" : [ "ComplexSubject" ],
-    "componentList" : [ {
-      "id" : "https://d-nb.info/gnd/4040613-1",
-      "type" : [ "PlaceOrGeographicName" ],
-      "source" : {
-        "id" : "https://d-nb.info/gnd/7749153-1",
-        "label" : "Gemeinsame Normdatei (GND)"
-      },
-      "label" : "Bezirk Münster (Westf)",
-      "gndIdentifier" : "4040613-1"
-    }, {
-      "id" : "https://d-nb.info/gnd/4034268-2",
-      "type" : [ "SubjectHeading" ],
-      "source" : {
-        "id" : "https://d-nb.info/gnd/7749153-1",
-        "label" : "Gemeinsame Normdatei (GND)"
-      },
-      "label" : "Landesplanung",
-      "gndIdentifier" : "4034268-2"
-    } ],
-    "label" : "Bezirk Münster (Westf) | Landesplanung"
+    "id" : "https://nwbib.de/subjects#N572030",
+    "source" : {
+      "id" : "https://nwbib.de/subjects",
+      "label" : "Sachsystematik der Nordrhein-Westfälischen Bibliographie"
+    },
+    "notation" : "572030",
+    "label" : "Regionalplanung"
   } ],
   "title" : "Gebietsentwicklungsplan, Tezemu: Teilabschnitt Zentrales Münsterland",
   "hbzId" : "HT004381366",
@@ -167,7 +153,8 @@
     } ],
     "numbering" : "Tezemu"
   } ],
-  "subjectAltLabel" : [ "Münster (Westf) (Bezirk)", "Gebietsplanung", "Regionalentwicklungsplan", "Handwerkskammerbezirk Münster (Westf)", "Gebietsentwicklungsplan", "Landesentwicklungsplanung", "Regionaler Raumordnungsplan", "Regierungsbezirk Münster" ],
+  "subjectAltLabel" : [ "Regierungsbezirk Münster / Schulabteilung", "Regierungsbezirk Münster / Bezirkstag", "Regierungsbezirk Münster / Dezernat 45 3", "Regierungsbezirk Münster / Lehrerfortbildung", "Regierungsbezirk Münster / Lehrer-Fort- und -Weiterbildung", "Gebietsplanung", "Regionaler Raumordnungsplan", "Regionalentwicklungsplan", "Landesentwicklungsplanung", "Regierungsbezirk Münster / Bezirksregierung", "Gebietsentwicklungsplan", "Regierungsbezirk Münster / Regierungspräsident", "Regierungsbezirk Münster / Königliche Regierung", "Regierungsbezirk Münster / Dezernat 45", "Bezirk Münster (Westf)", "Regierungsbezirk Münster / Dezernat 61", "Regierungsbezirk Münster / Regierung", "Bezirksregierung Münster" ],
+  "oclcNumber" : [ "75089247", "1070360154" ],
   "publication" : [ {
     "type" : [ "PublicationEvent" ],
     "location" : "Münster",
@@ -177,6 +164,12 @@
   "sameAs" : [ {
     "id" : "http://hub.culturegraph.org/resource/HBZ-HT004381366",
     "label" : "Culturegraph Ressource"
+  }, {
+    "id" : "http://worldcat.org/oclc/1070360154",
+    "label" : "1070360154"
+  }, {
+    "id" : "http://worldcat.org/oclc/75089247",
+    "label" : "75089247"
   } ],
   "describedBy" : {
     "id" : "http://lobid.org/resources/HT004381366",
