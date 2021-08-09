@@ -202,7 +202,6 @@ public final class LocBibframeInstances2ElasticsearchTest {
 		esIndexer.setIndexAliasSuffix("");
 		esIndexer.setUpdateNewestIndex(false);
 		esIndexer.setIndexConfig(LocBibframe2JsonEs.INDEX_CONFIG_BIBFRAME);
-		esIndexer.lookupWikidata = false;
 		esIndexer.onSetReceiver();
 		return esIndexer;
 	}

@@ -34,7 +34,6 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.lobid.resources.run.MabXml2lobidJsonEs;
-import org.lobid.resources.run.WikidataGeodata2Es;
 import org.metafacture.biblio.AlephMabXmlHandler;
 import org.metafacture.flowcontrol.ObjectThreader;
 import org.metafacture.io.FileOpener;
@@ -103,13 +102,6 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 		client.admin().indices().prepareDelete("_all").execute().actionGet();
 		client.admin().cluster().prepareHealth().setWaitForYellowStatus().execute()
 				.actionGet();
-		// load wikidata geo coordinates into es
-		WikidataGeodata2Es.esIndexer
-				.setIndexName(WikidataGeodata2Es.getIndexAlias());
-		WikidataGeodata2Es.setElasticsearchIndexer(client);
-		WikidataGeodata2Es.filterWikidataEntitiesDump2EsGeodata(
-				"src/test/resources/wikidataEntities.json");
-		WikidataGeodata2Es.finish();
 		etl();
 	}
 
@@ -220,7 +212,6 @@ public final class Hbz01MabXml2ElasticsearchLobidTest {
 		esIndexer.setIndexAliasSuffix("");
 		esIndexer.setUpdateNewestIndex(false);
 		esIndexer.setIndexConfig("index-config.json");
-		esIndexer.lookupWikidata = true;
 		esIndexer.onSetReceiver();
 		return esIndexer;
 	}
