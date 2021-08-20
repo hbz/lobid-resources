@@ -20,8 +20,10 @@
   }, {
     "type" : [ "Contribution" ],
     "agent" : {
+      "id" : "https://d-nb.info/gnd/159865794",
       "type" : [ "Person" ],
-      "label" : "Adenauer, Konrad"
+      "label" : "Adenauer, Konrad",
+      "gndIdentifier" : "159865794"
     },
     "role" : {
       "id" : "http://id.loc.gov/vocabulary/relators/ctb",
@@ -51,6 +53,7 @@
     "label" : "2005/1952"
   } ],
   "responsibilityStatement" : [ "[Textbeitr. Konrad Adenauer ...]" ],
+  "coverage" : [ "Bad Honnef | 99", "Köln | 99" ],
   "language" : [ {
     "id" : "http://id.loc.gov/vocabulary/iso639-2/deu",
     "label" : "Deutsch"
@@ -58,43 +61,6 @@
   "medium" : [ {
     "id" : "http://rdaregistry.info/termList/RDAproductionMethod/1010",
     "label" : "Print"
-  } ],
-  "spatial" : [ {
-    "id" : "https://nwbib.de/spatial#Q365",
-    "type" : [ "Concept" ],
-    "source" : {
-      "id" : "https://nwbib.de/spatial",
-      "label" : "Raumsystematik der Nordrhein-Westfälischen Bibliographie"
-    },
-    "label" : "Köln",
-    "notation" : "05315",
-    "focus" : {
-      "id" : "http://www.wikidata.org/entity/Q365",
-      "type" : [ "http://www.wikidata.org/entity/Q22865", "http://www.wikidata.org/entity/Q2202509", "http://www.wikidata.org/entity/Q200250", "http://www.wikidata.org/entity/Q1549591", "http://www.wikidata.org/entity/Q707813" ],
-      "geo" : {
-        "lat" : "50.942222222",
-        "lon" : "6.957777777"
-      },
-      "label" : "Köln"
-    }
-  }, {
-    "id" : "https://nwbib.de/spatial#Q12434",
-    "type" : [ "Concept" ],
-    "source" : {
-      "id" : "https://nwbib.de/spatial",
-      "label" : "Raumsystematik der Nordrhein-Westfälischen Bibliographie"
-    },
-    "label" : "Bad Honnef",
-    "notation" : "05382008",
-    "focus" : {
-      "id" : "http://www.wikidata.org/entity/Q12434",
-      "type" : [ "http://www.wikidata.org/entity/Q42744322", "http://www.wikidata.org/entity/Q54935786" ],
-      "geo" : {
-        "lat" : "50.645",
-        "lon" : "7.226944444"
-      },
-      "label" : "Bad Honnef"
-    }
   } ],
   "subject" : [ {
     "id" : "https://w3id.org/lobid/rpb2#n130",
@@ -149,8 +115,11 @@
       },
       "label" : "Plastik",
       "gndIdentifier" : "4046277-8"
+    }, {
+      "type" : [ "SubjectHeading" ],
+      "label" : "Bildband"
     } ],
-    "label" : "Reinarz, Titus | Plastik"
+    "label" : "Reinarz, Titus | Plastik | Bildband"
   } ],
   "title" : "Titus Reinarz",
   "hbzId" : "HT014319164",
@@ -160,12 +129,7 @@
     "label" : "Nordrhein-Westfälische Bibliographie (NWBib)"
   } ],
   "subjectAltLabel" : [ "Skulpturen", "Bildwerk", "Bildhauerkunst", "Plastiken", "Skulptur" ],
-  "oclcNumber" : [ "1068981905" ],
   "otherTitleInformation" : [ "Bildhauer" ],
-  "natureOfContent" : [ {
-    "id" : "https://d-nb.info/gnd/4145395-5",
-    "label" : "Bildband"
-  } ],
   "publication" : [ {
     "type" : [ "PublicationEvent" ],
     "location" : "Sinzig",
@@ -173,9 +137,6 @@
     "startDate" : "1998"
   } ],
   "sameAs" : [ {
-    "id" : "http://worldcat.org/oclc/1068981905",
-    "label" : "1068981905"
-  }, {
     "id" : "http://hub.culturegraph.org/resource/HBZ-HT014319164",
     "label" : "Culturegraph Ressource"
   } ],
@@ -221,5 +182,23 @@
     "label" : "Webseite der hbz-Ressource HT014319164"
   },
   "@context" : "http://lobid.org/resources/context.jsonld",
-  "id" : "http://lobid.org/resources/HT014319164#!"
+  "id" : "http://lobid.org/resources/HT014319164#!",
+  "spatial" : [ {
+    "focus" : {
+      "id" : "http://www.wikidata.org/entity/Q365",
+      "geo" : {
+        "lat" : 50.942222222222,
+        "lon" : 6.9577777777778
+      },
+      "type" : [ "http://www.wikidata.org/entity/Q1549591", "http://www.wikidata.org/entity/Q515", "http://www.wikidata.org/entity/Q707813", "http://www.wikidata.org/entity/Q1637706", "http://www.wikidata.org/entity/Q22865", "http://www.wikidata.org/entity/Q200250", "http://www.wikidata.org/entity/Q2202509" ]
+    },
+    "id" : "https://nwbib.de/spatial#Q365",
+    "type" : [ "Concept" ],
+    "label" : "Köln",
+    "notation" : "05315",
+    "source" : {
+      "id" : "https://nwbib.de/spatial",
+      "label" : "Raumsystematik der Nordrhein-Westfälischen Bibliographie"
+    }
+  } ]
 }

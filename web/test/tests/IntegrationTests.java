@@ -123,22 +123,22 @@ public class IntegrationTests extends LocalIndexSetup {
 
 	@Test
 	public void sizeRequestOwnerFull() {
-		ownerTest("http://lobid.org/organisations/DE-290#!");
+		ownerTest("http://lobid.org/organisations/DE-260#!");
 	}
 
 	@Test
 	public void sizeRequestOwnerAbout() {
-		ownerTest("http://lobid.org/organisations/DE-290");
+		ownerTest("http://lobid.org/organisations/DE-260");
 	}
 
 	@Test
 	public void sizeRequestOwnerShort() {
-		ownerTest("DE-290");
+		ownerTest("DE-260");
 	}
 
 	@Test
 	public void sizeRequestOwnerShortMulti() {
-		ownerTest("DE-294,DE-290");
+		ownerTest("DE-260,DE-290");
 	}
 
 	private static void ownerTest(String id) {
