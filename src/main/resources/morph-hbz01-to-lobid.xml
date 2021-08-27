@@ -2525,12 +2525,19 @@
 		<combine name="~rdf:subject" value="${a}">
 			<data source="@relatedResourceId" name="a"/>
 		</combine>
-		<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="${a}" flushWith="@relatedResourceId">
-			<data source="527[-xyz]1.a|775-1.t|776-1.t" name="a">
+		<combine name="http://www.w3.org/2000/01/rdf-schema#label" value="${author}${title}" flushWith="@relatedResourceId">
+			<data source="527[-xyz]1.a|775-1.t|776-1.t" name="title">
 				<replace pattern="&lt;|&gt;" with=""/>
 				<replace pattern="^http" with="Siehe: http"/>
 			</data>
+				<data source="776-1.a" name="author">
+					<regexp match="(.*)" format="${1}: "/>
+				</data>
 		</combine>
+		<combine name="http://id.loc.gov/ontologies/bibframe/note" value="${a}" flushWith="@relatedResourceId">
+			<data source="776-1.n" name="a"/>
+		</combine>
+
 		<combine name="~rdf:subject" value="$[ns-lobid-resource]${subject}#!" flushWith="@relatedResourceId">
 			<data source="@id" name="subject"/>
 		</combine>
