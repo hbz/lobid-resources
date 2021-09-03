@@ -442,5 +442,28 @@
         </data>
       </entity>
     </entity>
+    <!-- E-Book and digital copy selections (inofficial) -->
+    <entity name="" sameEntity="true" reset="true">
+      <data source="962  .e" name="id">
+        <regexp match="^[^Z][^D][^B].*" />
+        <regexp match="(.*)" format="https://lobid.org/collections#${1}"/>
+      </data>
+      <entity name="type[]" sameEntity="true" reset="true">
+        <data name="" source="962  .e">
+          <constant value="Collection"/>
+        </data>
+      </entity>
+    </entity>
+    <!-- 960 selections (inofficial) -->
+    <entity name="" sameEntity="true" reset="true">
+      <data source="9601 .?" name="id">
+        <regexp match="(.*)" format="https://lobid.org/collections#${1}"/>
+      </data>
+      <entity name="type[]" sameEntity="true" reset="true">
+        <data name="" source="9601 .?">
+          <constant value="Collection"/>
+        </data>
+      </entity>
+    </entity>
   </entity>
 </rules>
