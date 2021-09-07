@@ -1,99 +1,87 @@
 {
-  "type" : [ "Newspaper", "BibliographicResource" ],
-  "supplement" : [ {
-    "id" : "http://ld.zdb-services.de/resource/2739019-6",
-    "label" : "Pommersche Bilderpost"
-  } ],
-  "alternativeTitle" : [ "Zanower neueste Nachrichten", "Kösliner allgemeine Zeitung" ],
-  "language" : [ {
-    "id" : "http://id.loc.gov/vocabulary/iso639-2/deu",
-    "label" : "Deutsch"
-  } ],
-  "medium" : [ {
-    "id" : "http://rdaregistry.info/termList/RDAproductionMethod/1010",
-    "label" : "Print"
-  } ],
-  "subject" : [ {
-    "source" : {
-      "id" : "https://d-nb.info/gnd/4149423-4",
-      "label" : "Dewey-Dezimalklassifikation"
-    },
-    "label" : "Dokumentarische Medien, publizistische Medien, Unterrichtsmedien; Journalismus; Verlagswesen",
-    "notation" : "070"
-  } ],
-  "title" : "Pommersche Morgenpost",
+  "@context" : "http://lobid.org/resources/context.jsonld",
+  "almaMmsId" : "990189304690206441",
   "hbzId" : "HT017028573",
-  "inCollection" : [ {
-    "id" : "http://lobid.org/resources/HT014846970#!",
-    "type" : [ "Collection" ],
-    "label" : "Zeitschriftendatenbank (ZDB)"
-  } ],
-  "zdbId" : "2635665-X",
+  "title" : "Pommersche Morgenpost",
   "otherTitleInformation" : [ "Kösliner allgemeine Zeitung" ],
+  "zdbId" : "2635665-X",
   "publication" : [ {
-    "type" : [ "PublicationEvent" ],
-    "frequency" : [ {
-      "id" : "http://marc21rdf.info/terms/continuingfre#d",
-      "label" : "täglich"
-    } ],
-    "note" : [ "Periodizität: tägl." ],
-    "publicationHistory" : "1924,1(22.Nov.) - 1925,298(29.Okt.) nachgewiesen",
-    "endDate" : "1925",
     "location" : "Köslin",
-    "startDate" : "1924"
+    "publicationHistory" : "1924-1925",
+    "startDate" : "1924",
+    "endDate" : "1925",
+    "type" : [ "PublicationEvent" ],
+    "publishedBy" : "[s.n.]"
   } ],
-  "sameAs" : [ {
-    "id" : "http://ld.zdb-services.de/resource/2635665-X",
-    "label" : "ZDB-Ressource"
-  }, {
-    "id" : "http://hub.culturegraph.org/resource/HBZ-HT017028573",
-    "label" : "Culturegraph Ressource"
-  } ],
-  "describedBy" : {
-    "id" : "http://lobid.org/resources/HT017028573",
-    "type" : [ "BibliographicDescription" ],
-    "modifiedBy" : {
-      "id" : "http://lobid.org/organisations/DE-9999#!",
+  "alternativeTitle" : [ "Kösliner allgemeine Zeitung", "Zanower neueste Nachrichten" ],
+  "hasItem" : [ {
+    "heldBy" : {
+      "id" : "http://lobid.org/organisations/DE-605#!",
       "label" : "lobid Organisation"
     },
-    "dateCreated" : "20111103",
-    "dateModified" : "20140813",
+    "id" : "https://lobid.org/item/990189304690206441",
+    "type" : [ "MBD" ],
+    "label" : "990189304690206441"
+  } ],
+  "type" : [ "Periodical", "BibliographicResource" ],
+  "language" : [ {
+    "label" : "Deutsch",
+    "id" : "http://id.loc.gov/vocabulary/iso639-2/ger"
+  } ],
+  "sameAs" : [ {
+    "id" : "http://hub.culturegraph.org/resource/HBZ-HT017028573",
+    "label" : "Culturegraph Ressource"
+  }, {
+    "id" : "http://ld.zdb-services.de/resource/2635665-X",
+    "label" : "ZDB-Ressource"
+  } ],
+  "note" : [ "Zusatz anfangs auch: Zanower neueste Nachrichten" ],
+  "inCollection" : [ {
+    "label" : "Zeitschriftendatenbank (ZDB)",
+    "id" : "http://lobid.org/resources/HT014846970#!",
+    "type" : [ "Collection" ]
+  } ],
+  "describedBy" : {
+    "id" : "http://lobid.org/resources/990189304690206441",
+    "label" : "Webseite der hbz-Ressource 990189304690206441",
+    "type" : [ "BibliographicDescription" ],
     "inDataset" : {
       "id" : "http://lobid.org/resources/dataset#!",
       "label" : "lobid-resources – Der hbz-Verbundkatalog als Linked Open Data"
     },
+    "license" : [ {
+      "id" : "http://creativecommons.org/publicdomain/zero/1.0",
+      "label" : "Creative Commons-Lizenz CC0 1.0 Universal"
+    } ],
+    "sourceOrganization" : {
+      "id" : "http://lobid.org/organisations/DE-0009#!",
+      "label" : "lobid Organisation"
+    },
+    "provider" : {
+      "id" : "http://lobid.org/organisations/DE-DNB#!",
+      "label" : "lobid Organisation"
+    },
+    "dateModified" : "20210812",
+    "dateCreated" : "20210405",
     "resultOf" : {
       "type" : [ "CreateAction" ],
-      "endTime" : "0001-01-01T00:00:00",
       "instrument" : {
         "id" : "https://github.com/hbz/lobid-resources",
         "type" : [ "SoftwareApplication" ],
         "label" : "Software lobid-resources"
       },
       "object" : {
-        "id" : "http://lobid.org/hbz01/HT017028573",
+        "id" : "http://lobid.org/hbz01/990189304690206441",
         "type" : [ "DataFeedItem" ],
+        "label" : "hbz-Ressource 990189304690206441 im Exportformat MARC21 XML",
         "inDataset" : {
           "id" : "https://datahub.io/dataset/hbz_unioncatalog",
           "label" : "hbz_unioncatalog"
-        },
-        "label" : "hbz-Ressource HT017028573 im Exportformat MAB2-XML"
-      }
-    },
-    "license" : [ {
-      "id" : "http://creativecommons.org/publicdomain/zero/1.0",
-      "label" : "Creative Commons-Lizenz CC0 1.0 Universal"
-    } ],
-    "provider" : {
-      "id" : "http://lobid.org/organisations/DE-101#!",
-      "label" : "lobid Organisation"
-    },
-    "sourceOrganization" : {
-      "id" : "http://lobid.org/organisations/DE-9#!",
-      "label" : "lobid Organisation"
-    },
-    "label" : "Webseite der hbz-Ressource HT017028573"
+        }
+      },
+      "endTime" : "dummy"
+    }
   },
-  "@context" : "http://lobid.org/resources/context.jsonld",
-  "id" : "http://lobid.org/resources/HT017028573#!"
+  "subjectAltLabel" : [ "Köslin", "Cossalin", "Cöslin", "Cößlin" ],
+  "id" : "http://lobid.org/resources/990189304690206441#!"
 }
