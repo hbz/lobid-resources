@@ -10,7 +10,7 @@ DIRECTORY_OF_JSON_TO_VALIDATE="alma/"
 
 for version in "draft"; do
 	echo "Testing version: $version"
-	ajv test -s schemas/resource.json -r "schemas/*.json" -d "${DIRECTORY_OF_JSON_TO_VALIDATE}/*.json" --valid 2>&1
+	ajv test -s ./src/test/resources/schemas/resource.json -r "./src/test/resources/schemas/*.json" -d "${DIRECTORY_OF_JSON_TO_VALIDATE}/*.json" --valid 2>&1
 done
 
 if [ $? -eq 0 ]
