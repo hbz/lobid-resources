@@ -4,11 +4,17 @@
   <!-- 2xx -->
 
   <call-macro name="regex-del-punctuation-end" dsource="245??.a" dname="@title" />
-  <data name="title" source="@title">
-    <!-- Delete not sorting signs in title -->
-    <replace pattern="&gt;" with=""/>
-    <replace pattern="&lt;" with=""/>
-  </data>
+
+  <combine name="title" value="${maintitle}${subtitle}" flushWith="record">
+    <data name="maintitle" source="@title">
+     <!-- Delete not sorting signs in title -->
+     <replace pattern="&gt;" with=""/>
+     <replace pattern="&lt;" with=""/>
+    </data>
+    <data name="subtitle" source="@titleOfSubSeries">
+      <regexp match="(.*)" format=", ${1}"/>
+    </data>
+  </combine>
 
   <entity name="otherTitleInformation[]">
     <data name="" source="245??.b">
@@ -17,12 +23,23 @@
     </data>
   </entity>
 
-  <data name="titleOfSubSeries" source="245??.p">
-    <occurrence only="1" />
-    <replace pattern="\s?\.?\s?$" with="" />
-    <replace pattern="&gt;" with=""/>
-    <replace pattern="&lt;" with=""/>
-  </data>
+  <concat delimiter=". " name="@titleOfSubSeries_n" flushWith="245??.p">
+    <data name="n" source="245??.n"/>
+  </concat>
+
+  <combine name="@titleOfSubSeries" value="${n}${p}" sameEntity="true" flushWith="245??">
+    <data name="p" source="245??.p">
+      <occurrence only="1"/>
+      <replace pattern="\s?\.?\s?$" with=""/>
+      <replace pattern="&gt;" with=""/>
+      <replace pattern="&lt;" with=""/>
+    </data>
+    <data name="n" source="@titleOfSubSeries_n">
+      <regexp match="(.*)" format="${1}: "/>
+    </data>
+  </combine>
+
+  <data name="titleOfSubSeries" source="@titleOfSubSeries" />
 
   <entity name="edition[]" flushWith="record">
     <data name="" source="250  .a">

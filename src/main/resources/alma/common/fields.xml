@@ -264,16 +264,16 @@
 
   <!-- 7xx -->
   <entity name="isPartOf[]" flushWith="record">
-    <entity name="" sameEntity="true" reset="true" flushWith="773??">
-      <data source="773??.w" name="type">
+    <entity name="" sameEntity="true" reset="true" flushWith="773??|490??">
+      <data source="773??.w|490??.a" name="type">
         <constant value="IsPartOfRelation" />
       </data>
       <entity name="hasSuperordinate[]" sameEntity="true" reset="true">
-        <entity name="" sameEntity="true" reset="true" flushWith="773??">
+        <entity name="" sameEntity="true" reset="true" flushWith="773??|490??">
           <data name="id" source="773??.w">
             <regexp match="\(DE-605\)(.*)" format="http://lobid.org/resources/${1}#!"/>
           </data>
-          <data source="773??.t" name="label" />
+          <data source="773??.t|490??.a" name="label" />
         </entity>
       </entity>
       <data source="773??.q" name="numbering" />
