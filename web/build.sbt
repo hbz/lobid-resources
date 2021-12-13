@@ -21,9 +21,9 @@ libraryDependencies ++= Seq(
   "com.github.jsonld-java" % "jsonld-java-jena" % "0.4.1",
   "org.apache.jena" % "jena-arq" % "2.9.3",
   "com.google.gdata" % "core" % "1.47.1" exclude ("com.google.guava", "guava"),
-  "org.apache.logging.log4j" % "log4j-core" % "2.9.1",
-  "org.apache.logging.log4j" % "log4j-api" % "2.9.1",
-  "org.apache.logging.log4j" % "log4j-1.2-api" % "2.9.1",
+  "org.apache.logging.log4j" % "log4j-core" % "2.15.0",
+  "org.apache.logging.log4j" % "log4j-api" % "2.15.0",
+  "org.apache.logging.log4j" % "log4j-1.2-api" % "2.15.0",
   "org.easytesting" % "fest-assert" % "1.4" % "test"
 )
 
