@@ -61,37 +61,37 @@ public final class RdfModelFileWriter extends DefaultObjectReceiver<Model>
 
 	@Override
 	public String getEncoding() {
-		return filenameUtil.encoding;
+		return filenameUtil.getEncoding();
 	}
 
 	@Override
 	public void setEncoding(final String encoding) {
-		filenameUtil.encoding = encoding;
+		filenameUtil.setEncoding(encoding);
 	}
 
 	@Override
 	public void setTarget(final String target) {
-		filenameUtil.target = target;
+		filenameUtil.setTarget(target);
 	}
 
 	@Override
 	public void setProperty(final String property) {
-		filenameUtil.property = property;
+		filenameUtil.setProperty(property);
 	}
 
 	@Override
 	public void setFileSuffix(final String fileSuffix) {
-		filenameUtil.fileSuffix = fileSuffix;
+		filenameUtil.setFileSuffix(fileSuffix);
 	}
 
 	@Override
 	public void setStartIndex(final int startIndex) {
-		filenameUtil.startIndex = startIndex;
+		filenameUtil.setStartIndex(startIndex);
 	}
 
 	@Override
 	public void setEndIndex(final int endIndex) {
-		filenameUtil.endIndex = endIndex;
+		filenameUtil.setEndIndex(endIndex);
 	}
 
 	/**
@@ -108,7 +108,7 @@ public final class RdfModelFileWriter extends DefaultObjectReceiver<Model>
 		String identifier = null;
 		try {
 			identifier = model
-					.listObjectsOfProperty(model.createProperty(filenameUtil.property))
+					.listObjectsOfProperty(model.createProperty(filenameUtil.getProperty()))
 					.next().toString();
 			LOG.debug("Going to store identifier=" + identifier);
 		} catch (NoSuchElementException e) {
@@ -118,19 +118,19 @@ public final class RdfModelFileWriter extends DefaultObjectReceiver<Model>
 		}
 
 		String directory = identifier;
-		if (directory.length() >= filenameUtil.endIndex) {
+		if (directory.length() >= filenameUtil.getEndIndex()) {
 			directory =
-					directory.substring(filenameUtil.startIndex, filenameUtil.endIndex);
+					directory.substring(filenameUtil.getStartIndex(), filenameUtil.getEndIndex());
 		}
-		final String file = FilenameUtils.concat(filenameUtil.target,
+		final String file = FilenameUtils.concat(filenameUtil.getTarget(),
 				FilenameUtils.concat(directory + File.separator,
-						identifier + "." + filenameUtil.fileSuffix));
+						identifier + "." + filenameUtil.getFileSuffix()));
 		LOG.debug("Write to " + file);
 		filenameUtil.ensurePathExists(new File(file));
 
 		try (
 				final Writer writer = new OutputStreamWriter(new FileOutputStream(file),
-						filenameUtil.encoding)) {
+						filenameUtil.getEncoding())) {
 			final StringWriter tripleWriter = new StringWriter();
 			RDFDataMgr.write(tripleWriter, model, this.serialization);
 			IOUtils.write(tripleWriter.toString(), writer);
