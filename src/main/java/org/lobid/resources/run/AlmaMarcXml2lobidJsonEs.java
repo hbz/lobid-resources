@@ -49,8 +49,8 @@ public class AlmaMarcXml2lobidJsonEs {
   private static String morphFileName = "src/main/resources/alma/alma.xml";
   private static final String INDEXCONFIG = "index-config.json";
   private static final HashMap<String, String> morphVariables = new HashMap<>();
-  private static String emailInfo = "localhost";
-  private static String emailError = "localhost";
+  private static String mailtoInfo = "localhost";
+  private static String mailtoError = "localhost";
   private static String kind = "";
   private static boolean switchAutomatically = false;
   private static final Logger LOG =
@@ -206,10 +206,10 @@ public class AlmaMarcXml2lobidJsonEs {
   }
 
   public static void setMailtoInfo(final String EMAIL) {
-    emailInfo = EMAIL;
+    mailtoInfo = EMAIL;
   }
   public static void setMailtoError(final String EMAIL) {
-    emailError = EMAIL;
+    mailtoError = EMAIL;
   }
 
   public static void setKindOfEtl(final String KIND) {
@@ -254,14 +254,14 @@ public class AlmaMarcXml2lobidJsonEs {
 
   public static void sendMail(final String KIND, final boolean SUCCESS,
       final String MESSAGE) {
-    String mailTo = (SUCCESS ? emailInfo : emailError);
+    String mailto = (SUCCESS ? mailtoInfo : mailtoError);
     try {
-      Email.sendEmail("hduser", mailTo ,
+      Email.sendEmail("sol", mailto ,
           "Webhook '" + KIND + "'' " + (SUCCESS ? "success :)" : "fails :("),
           MESSAGE);
     } catch (Exception e) {
       LOG.error(
-          String.format("Couldn't send email to %s: %s", mailTo, e.getMessage()),
+          String.format("Couldn't send email to %s: %s", mailto, e.getMessage()),
           e);
     }
   }
