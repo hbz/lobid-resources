@@ -25,8 +25,7 @@ import org.lobid.resources.ElasticsearchIndexer;
  * production. Makes the staging index productive (if it's the newer one) and
  * the productive index aliased to 'staging'. If a sanity check is successful
  * the index alias "almaresources-staging" is switched to the alias name
- * "almaresources" and vice versa. Also writes an email using
- * {@link de.hbz.lobid.helper.Email}.
+ * "almaresources" and vice versa.
  * 
  * @author Pascal Christoph (dr0i)
  *

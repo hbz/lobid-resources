@@ -28,7 +28,7 @@ import play.Logger;
  */
 public class Global extends GlobalSettings {
 
-  /** The cluster hosts as configred in resources.conf */
+  /** The cluster hosts as configured in resources.conf */
   private static final List<String> CLUSTER_HOSTS =
       controllers.resources.Application.CONFIG.getList("index.cluster.hosts")
           .stream().map(v -> v.unwrapped().toString())
@@ -37,8 +37,10 @@ public class Global extends GlobalSettings {
       controllers.resources.Application.CONFIG.getInt("index.cluster.port");
   private static final String CLUSTER_NAME =
       controllers.resources.Application.CONFIG.getString("index.cluster.name");
-  private static final String EMAIL =
-      controllers.resources.Application.CONFIG.getString("webhook.email");
+  private static final String MAILTO_INFO =
+      controllers.resources.Application.CONFIG.getString("webhook.mailtoInfo");
+  private static final String MAILTO_ERROR =
+          controllers.resources.Application.CONFIG.getString("webhook.mailtoError");
   private LocalIndex localIndex = null;
   private Client client = null;
 
@@ -56,7 +58,8 @@ public class Global extends GlobalSettings {
       client = c;
       Webhook.clusterHost = CLUSTER_HOSTS.get(0);
       Webhook.clusterName = CLUSTER_NAME;
-      AlmaMarcXml2lobidJsonEs.setEmail(EMAIL);
+      AlmaMarcXml2lobidJsonEs.setMailtoInfo(MAILTO_INFO);
+      AlmaMarcXml2lobidJsonEs.setMailtoError(MAILTO_ERROR);
     }
     if (client != null) {
       Search.elasticsearchClient = client;

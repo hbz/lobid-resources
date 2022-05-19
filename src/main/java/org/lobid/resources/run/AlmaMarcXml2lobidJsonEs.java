@@ -33,11 +33,14 @@ import de.hbz.lobid.helper.Email;
  *
  * Input path of data can be an uncompressed file, tar archive or BGZF.
  *
+ * Also writes an email using {@link de.hbz.lobid.helper.Email}.
+ *
  * @author Pascal Christoph (dr0i)
  *
  */
 @SuppressWarnings("javadoc")
 public class AlmaMarcXml2lobidJsonEs {
+  public static final String MSG_THREAD_ALREADY_STARTED = "Setting 'AlmaMarcXml2lobidJsonEs.threadAlreadyStarted =";
   private static String indexAliasSuffix;
   private static String node;
   private static String cluster;
@@ -46,7 +49,8 @@ public class AlmaMarcXml2lobidJsonEs {
   private static String morphFileName = "src/main/resources/alma/alma.xml";
   private static final String INDEXCONFIG = "index-config.json";
   private static final HashMap<String, String> morphVariables = new HashMap<>();
-  private static String email = "localhost";
+  private static String emailInfo = "localhost";
+  private static String emailError = "localhost";
   private static String kind = "";
   private static boolean switchAutomatically = false;
   private static final Logger LOG =
@@ -66,6 +70,7 @@ public class AlmaMarcXml2lobidJsonEs {
       return;
     }
     AlmaMarcXml2lobidJsonEs.threadAlreadyStarted = true;
+    LOG.info(MSG_THREAD_ALREADY_STARTED + " true");
     new Thread("AlmaMarcXml2lobidJsonEs") {
       public void run() {
         LOG.info(String.format("Running thread: %s", getName()));
@@ -154,7 +159,7 @@ public class AlmaMarcXml2lobidJsonEs {
 
         AlmaMarcXml2lobidJsonEs.threadAlreadyStarted = false;
         LOG.info(
-            "Setting 'AlmaMarcXml2lobidJsonEs.threadAlreadyStarted = false'");
+                MSG_THREAD_ALREADY_STARTED + " false");
       }
     }.start();
 
@@ -200,8 +205,11 @@ public class AlmaMarcXml2lobidJsonEs {
     return sr;
   }
 
-  public static void setEmail(final String EMAIL) {
-    email = EMAIL;
+  public static void setMailtoInfo(final String EMAIL) {
+    emailInfo = EMAIL;
+  }
+  public static void setMailtoError(final String EMAIL) {
+    emailError = EMAIL;
   }
 
   public static void setKindOfEtl(final String KIND) {
@@ -246,13 +254,14 @@ public class AlmaMarcXml2lobidJsonEs {
 
   public static void sendMail(final String KIND, final boolean SUCCESS,
       final String MESSAGE) {
+    String mailTo = (SUCCESS ? emailInfo : emailError);
     try {
-      Email.sendEmail("hduser", email,
+      Email.sendEmail("hduser", mailTo ,
           "Webhook '" + KIND + "'' " + (SUCCESS ? "success :)" : "fails :("),
           MESSAGE);
     } catch (Exception e) {
       LOG.error(
-          String.format("Couldn't send email to %s: %s", email, e.getMessage()),
+          String.format("Couldn't send email to %s: %s", mailTo, e.getMessage()),
           e);
     }
   }

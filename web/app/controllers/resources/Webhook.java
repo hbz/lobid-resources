@@ -90,7 +90,7 @@ public class Webhook extends Controller {
 
   private static void reloadConfigs() {
     Config config = ConfigFactory.parseFile(new File(RESOURCES_CONF)).resolve();
-    Logger.info("reload configs:%s", RESOURCES_CONF);
+    Logger.info("reload configs:" + RESOURCES_CONF);
     filenameUpdate = config.getString("webhook.alma.update.filename");
     filenameBasedump = config.getString("webhook.alma.basedump.filename");
     indexNameOfBasedump = config.getString("webhook.alma.basedump.indexname");
