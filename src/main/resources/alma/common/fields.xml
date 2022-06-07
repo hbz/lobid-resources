@@ -271,7 +271,7 @@
       <entity name="hasSuperordinate[]" sameEntity="true" reset="true">
         <entity name="" sameEntity="true" reset="true" flushWith="773??|490??">
           <data name="id" source="773??.w">
-            <regexp match="\(DE-605\)(.*)" format="http://lobid.org/resources/${1}#!"/>
+            <regexp match="\(DE-605\)(.*)" format="https://lobid.org/resources/${1}#!"/>
           </data>
           <data source="773??.t|490??.a" name="label" />
         </entity>
@@ -291,7 +291,7 @@
       <entity name="hasSuperordinate[]" sameEntity="true" reset="true">
         <entity name="" sameEntity="true" reset="true" flushWith="830??">
           <data name="id" source="830??.w">
-            <regexp match="\(DE-605\)(.*)" format="http://lobid.org/resources/${1}#!"/>
+            <regexp match="\(DE-605\)(.*)" format="https://lobid.org/resources/${1}#!"/>
           </data>
           <data source="830??.a" name="label" />
         </entity>
@@ -359,7 +359,7 @@
         </any>
       </if>
       <data name="id" source="775??.w|776??.w">
-        <regexp match="\(DE-605\)(.*)" format="http://lobid.org/resources/${1}#!"/>
+        <regexp match="\(DE-605\)(.*)" format="https://lobid.org/resources/${1}#!"/>
       </data>
       <concat name="note" delimiter=" " sameEntity="true" flushWith="775??|776??">
         <data source="775??.i|776??.i" />
@@ -390,7 +390,7 @@
         <constant value="Zeitschriftendatenbank (ZDB)" />
       </data>
       <data name="id" source="@zdbId">
-        <constant value="http://lobid.org/resources/HT014846970#!" />
+        <constant value="https://lobid.org/resources/HT014846970#!" />
       </data>
       <entity name="type[]" sameEntity="true">
         <data name="" source="@zdbId">
@@ -406,7 +406,7 @@
       </data>
       <data name="id" source="85640.x">
         <equals string="EZB" />
-        <constant value="http://lobid.org/resources/HT016356466#!" />
+        <constant value="https://lobid.org/resources/HT016356466#!" />
       </data>
       <entity name="type[]" sameEntity="true">
         <data name="" source="85640.x">
@@ -423,7 +423,7 @@
       </data>
       <data name="id" source="084  .2">
         <equals string="nwbib" />
-        <constant value="http://lobid.org/resources/HT014176012#!" />
+        <constant value="https://lobid.org/resources/HT014176012#!" />
       </data>
       <entity name="type[]" sameEntity="true">
         <data name="" source="084  .2">
@@ -434,7 +434,7 @@
     <!-- eResource package -->
     <entity name="" sameEntity="true" reset="true">
       <data source="912  .a" name="id">
-        <regexp match="(ZDB-[0-9]{1,6}-[a-zA-Z|0-9\\-]*).*" format="http://lobid.org/organisations/${1}#!"/>
+        <regexp match="(ZDB-[0-9]{1,6}-[a-zA-Z|0-9\\-]*).*" format="https://lobid.org/organisations/${1}#!"/>
       </data>
       <data source="912  .a" name="label">
         <regexp match="(ZDB-[0-9]{1,6}-[a-zA-Z|0-9\\-]*).*" format="eResource package" />

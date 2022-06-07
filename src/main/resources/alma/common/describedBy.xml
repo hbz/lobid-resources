@@ -7,7 +7,7 @@
 
 	<entity name="describedBy" flushWith="record">
 		<data name="id" source="@almaMmsId">
-			<regexp match="(.*)" format="http://lobid.org/resources/${1}"/>
+			<regexp match="(.*)" format="https://lobid.org/resources/${1}"/>
 		</data>
 		<data name="label" source="@almaMmsId">
 			<regexp match="(.*)" format="Webseite der hbz-Ressource ${1}"/>
@@ -21,7 +21,7 @@
 		<call-macro name="simplify-date" dname="dateModified" dsource="MNG  .d"/>
 		<entity name="inDataset">
 			<data name="id" source="@almaMmsId">
-				<constant value="http://lobid.org/resources/dataset#!"/>
+				<constant value="https://lobid.org/resources/dataset#!"/>
 			</data>
 			<data name="label" source="@almaMmsId">
 				<constant value="lobid-resources – Der hbz-Verbundkatalog als Linked Open Data" />
@@ -59,7 +59,7 @@
 
 			<entity name="object">
 				<data name="id" source="@almaMmsId">
-					<regexp match="(.*)" format="http://lobid.org/hbz01/${1}"/>
+					<regexp match="(.*)" format="https://lobid.org/hbz01/${1}"/>
 				</data>
 				<entity name="type[]">
 					<data name="" source="@almaMmsId">
@@ -92,7 +92,7 @@
 		</entity>
 		<entity name="sourceOrganization">
 			<data name="id" source="040  .a">
-				<regexp match="(.*)" format="http://lobid.org/organisations/DE-${1}#!"/>
+				<regexp match="(.*)" format="https://lobid.org/organisations/DE-${1}#!"/>
 			</data>
 			<data name="label" source="040  .a">
 				<constant value="lobid Organisation"/>
@@ -100,7 +100,7 @@
 		</entity>
 		<entity name="provider">
 			<data name="id" source="040  .c">
-				<regexp match="(.*)" format="http://lobid.org/organisations/DE-${1}#!"/>
+				<regexp match="(.*)" format="https://lobid.org/organisations/DE-${1}#!"/>
 			</data>
 			<data name="label" source="040  .c">
 				<constant value="lobid Organisation"/>
@@ -112,7 +112,7 @@
 					<entry name="9999" />
 					<entry name="0001" />
 				</blacklist>
-				<regexp match="(DE-)?(.*)" format="http://lobid.org/organisations/DE-${2}#!"/>
+				<regexp match="(DE-)?(.*)" format="https://lobid.org/organisations/DE-${2}#!"/>
 			</data>
 			<data name="label" source="040  .d">
 				<constant value="lobid Organisation"/>
