@@ -21,7 +21,7 @@
   <entity name="language[]" flushWith="record">
     <entity name="" flushWith="@language_source" reset="true">
       <data name="id" source="@language_source">
-        <regexp match="(.*)" format="http://id.loc.gov/vocabulary/iso639-2/${1}"/>
+        <regexp match="(.*)" format="https://id.loc.gov/vocabulary/iso639-2/${1}"/>
       </data>
       <data name="label" source="@language_long" />
     </entity>
@@ -87,7 +87,7 @@
     </entity>
     <entity name="">
       <data name="id" source="@oclcNumber">
-        <compose prefix="http://worldcat.org/oclc/"/>
+        <compose prefix="https://worldcat.org/oclc/"/>
       </data>
       <data name="label" source="@oclcNumber">
         <constant value="OCLC Ressource"/>
@@ -95,7 +95,7 @@
     </entity>
     <entity name="">
       <data name="id" source="@zdbId">
-        <compose prefix="http://ld.zdb-services.de/resource/"/>
+        <compose prefix="https://ld.zdb-services.de/resource/"/>
       </data>
       <data name="label" source="@zdbId">
         <constant value="ZDB-Ressource"/>
