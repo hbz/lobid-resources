@@ -67,6 +67,7 @@ public class AlmaMarcXml2lobidJsonEs {
 
   public static void main(String... args) {
     if (threadAlreadyStarted) {
+      LOG.warn("Cannot start your task because a task is already running. Try again later!");
       return;
     }
     AlmaMarcXml2lobidJsonEs.threadAlreadyStarted = true;
