@@ -10,8 +10,7 @@ copy_field("001","almaMmsId")
 #    </data>
 #  </rules>
 
-copy_field("almaMmsId","id")
-replace_all("id", "(.*)", "https://lobid.org/resources/$1#!")
+paste("id", "~https://lobid.org/resources/", "001", "~#!")
 
 #    <data name="\@context" source="@almaMmsId">
 #      <constant value="https://lobid.org/resources/context.jsonld"/>
@@ -20,7 +19,6 @@ replace_all("id", "(.*)", "https://lobid.org/resources/$1#!")
 add_field("@context","https://lobid.org/resources/context.jsonld")
 
 
-#  TODO:   <xi:include href="common/titleRelatedFields.xml"/>
 #  TODO:   <xi:include href="common/item.xml"/>
 #  TODO:   <xi:include href="common/facets.xml"/>
 #  TODO:   <xi:include href="common/fields.xml"/>
@@ -29,4 +27,5 @@ add_field("@context","https://lobid.org/resources/context.jsonld")
 #  TODO:   <xi:include href="common/subjects.xml"/>
 # </metamorph>
 
-retain("id","almaMmsId","@context")
+vacuum()
+retain("id","almaMmsId","@context","title", "titleOfSubSeries","alternativeTitle[]","otherTitleInformation[]","edition[]","publication[]")
