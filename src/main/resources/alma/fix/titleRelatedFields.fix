@@ -20,3 +20,14 @@ copy_field("246?[ 345678].a","alternativeTitle[].$append")
 set_array("otherTitleInformation[]")
 copy_field("245??.b","otherTitleInformation[].$append")
 replace_all("otherTitleInformation[].*","\\s?[./]\\s?$","")
+
+
+#  <entity name="edition[]" flushWith="record">
+#    <data name="" source="250  .a">
+#      <replace pattern="\s?[=/]$" with="" />
+#    </data>
+#  </entity>
+
+set_array("edition[]")
+copy_field("250  .a","edition[].$append")
+replace_all("edition[].*","\\s?[./]\\s?$","")
