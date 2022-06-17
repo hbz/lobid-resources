@@ -1,0 +1,125 @@
+#   <entity name="responsibilityStatement[]" flushWith="245??.c">
+#     <data name="" source="245??.c" />
+#   </entity>
+
+# 245??.c (NR)
+set_array("responsibilityStatement[]")
+copy_field("245??.c", "responsibilityStatement[].$append")
+
+# 
+#   <entity name="contribution[]" flushWith="record">
+#     <!-- 100[01]-->
+#     <entity name="" flushWith="100[01] " sameEntity="true">
+#       <if>
+#         <none flushWith="100[01] " sameEntity="true">
+#           <data name="" source="100[01] .M" />
+#         </none>
+#       </if>
+#       <entity name="type[]" reset="true">
+#         <data name="" source="100[01] ">
+#           <constant value="Contribution"/>
+#         </data>
+#       </entity>
+#       <entity name="agent" flushWith="100[01] " sameEntity="true" reset="true">
+#         <call-macro name="gndIdentifier" field="100" />
+#         <call-macro name="gndIdentifierId" field="100" />
+#         <call-macro name="personName" dname="label" field="100" />
+#         <entity name="type[]" reset="true">
+#           <data name="" source="100[01] .a">
+#             <constant value="Person"/>
+#           </data>
+#         </entity>
+#       </entity>
+#       <entity name="role" reset="true" sameEntity="true" flushWith="100[01] ">
+#         <data name="id" source="100[01] .4">
+#           <compose prefix="http://id.loc.gov/vocabulary/relators/"/>
+#         </data>
+#       </entity>
+#     </entity>
+#     
+#     <!--700[01] -->
+#     <entity name="" flushWith="700[01] " sameEntity="true">
+#       <entity name="type[]" reset="true">
+#         <data name="" source="700[01] ">
+#           <constant value="Contribution"/>
+#         </data>
+#       </entity>
+#       <entity name="agent" flushWith="700[01] " reset="true">
+#         <call-macro name="personIdentifier" dname="gndIdentifier" field="700" />
+#         <call-macro name="gndIdentifierId" field="700" />
+#         <call-macro name="personName" dname="label" field="700" />
+#         <entity name="type[]" reset="true">
+#           <data name="" source="700[01] .a">
+#             <constant value="Person"/>
+#           </data>
+#         </entity>
+#       </entity>
+#       <entity name="role" reset="true" sameEntity="true" flushWith="700[01] ">
+#         <data name="id" source="700[01] .4">
+#           <compose prefix="http://id.loc.gov/vocabulary/relators/"/>
+#         </data>
+#       </entity>
+#     </entity>
+# 
+#     <!-- 110|710[012] -->
+#     <entity name="" flushWith="[17]10[012] " sameEntity="true">
+#       <entity name="type[]" reset="true">
+#         <data name="" source="[17]10[012] ">
+#           <constant value="Contribution"/>
+#         </data>
+#       </entity>
+#       <entity name="agent" flushWith="[17]10[012] " reset="true">
+#         <call-macro name="gndIdentifier" field="[17]10" />
+#         <call-macro name="gndIdentifierId" field="[17]10" />
+#         <combine name="label" value="${a}${b}" flushWith="[17]10[012] ">
+#           <data name="a" source="[17]10[012] .a">
+#             <replace pattern="\.$" with=""/>
+#           </data>
+#           <data name="b" source="[17]10[012] .b">
+#             <replace pattern="\.$" with=""/>
+#             <compose prefix=". " />
+#           </data>
+#         </combine>
+#         <entity name="type[]" reset="true">
+#           <data name="" source="[17]10[012] .a">
+#             <constant value="CorporateBody"/>
+#           </data>
+#         </entity>
+#       </entity>
+#       <entity name="role" reset="true" sameEntity="true" flushWith="[17]10[012] ">
+#         <data name="id" source="[17]10[012] .4">
+#           <compose prefix="http://id.loc.gov/vocabulary/relators/"/>
+#         </data>
+#       </entity>
+#     </entity>
+# 
+#     <!-- 111 -->
+#     <entity name="Conference" flushWith="record">
+#       <data name="conferenceName" source="111[012] .a">
+#         <replace pattern="[.,]$" with="" />
+#       </data>
+#       <data name="conferencePlace" source="111[012] .c">
+#         <replace pattern="\(|\)?[;.,]?$" with="" />
+#         <occurrence only="1" />
+#       </data>
+#       <data name="conferenceDate" source="111[012] .d">
+#         <replace pattern="\(|\)?[,]?$|\s?:$" with="" />
+#       </data>
+#       <concat name="conferenceUnit" delimiter=". ">
+#         <data source="111[012] .e">
+#           <replace pattern="[,.]$" with="" />
+#         </data>
+#       </concat>
+#       <data name="corporateBodyNameNumber" source="111[012] .n">
+#         <!-- [sic] -->
+#         <replace pattern="\(|\)?[,]?$|\s?[;:]$" with="" />
+#         <occurrence only="1" />
+#       </data>
+#       <entity name="conferenceIdentifier[]" flushWith="111[012] " sameEntity="true">
+#         <data name="" source="111[012] .0">
+#           <regexp match="^\(DE-588\).*$" />
+#         </data>
+#       </entity>
+#       <call-macro name="gndIdentifier" field="111" />
+#     </entity>
+#   </entity>
