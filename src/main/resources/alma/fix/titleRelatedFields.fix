@@ -1,0 +1,33 @@
+
+
+#  <entity name="alternativeTitle[]" flushWith="record">
+#    <data source="246?[ 345678].a">
+#      <replace pattern="\.$" with="" />
+#    </data>
+#  </entity>
+
+set_array("alternativeTitle[]")
+copy_field("246?[ 345678].a","alternativeTitle[].$append")
+
+#
+#  <entity name="otherTitleInformation[]">
+#    <data name="" source="245??.b">
+#      <occurrence only="1" />
+#      <replace pattern="\s?[./]\s?$" with="" />
+#    </data>
+#  </entity>
+
+set_array("otherTitleInformation[]")
+copy_field("245??.b","otherTitleInformation[].$append")
+replace_all("otherTitleInformation[].*","\\s?[./]\\s?$","")
+
+
+#  <entity name="edition[]" flushWith="record">
+#    <data name="" source="250  .a">
+#      <replace pattern="\s?[=/]$" with="" />
+#    </data>
+#  </entity>
+
+set_array("edition[]")
+copy_field("250  .a","edition[].$append")
+replace_all("edition[].*","\\s?[./]\\s?$","")

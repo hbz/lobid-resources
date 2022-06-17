@@ -1,0 +1,31 @@
+#  TODO: <xi:include href="macros.xml"/>
+#  TODO: <xi:include href="maps.xml"/>
+#    <data name="@almaMmsId" source="001"/>
+#    <data name="almaMmsId" source="@almaMmsId"/>
+
+copy_field("001","almaMmsId")
+
+#    <data name="id" source="@almaMmsId">
+#      <regexp match="(.*)" format="https://lobid.org/resources/${1}#!"/>
+#    </data>
+#  </rules>
+
+paste("id", "~https://lobid.org/resources/", "001", "~#!", join_char: "")
+
+#    <data name="\@context" source="@almaMmsId">
+#      <constant value="https://lobid.org/resources/context.jsonld"/>
+#    </data>
+
+add_field("@context","https://lobid.org/resources/context.jsonld")
+
+include ("./fix/titleRelatedFields.fix")
+#  TODO:   <xi:include href="common/item.xml"/>
+#  TODO:   <xi:include href="common/facets.xml"/>
+#  TODO:   <xi:include href="common/fields.xml"/>
+#  TODO:   <xi:include href="common/contribution.xml"/>
+#  TODO:   <xi:include href="common/describedBy.xml"/>
+#  TODO:   <xi:include href="common/subjects.xml"/>
+# </metamorph>
+
+vacuum()
+retain("id","almaMmsId","@context","title", "titleOfSubSeries","alternativeTitle[]","otherTitleInformation[]","edition[]","publication[]")
