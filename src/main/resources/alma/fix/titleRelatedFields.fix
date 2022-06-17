@@ -1,4 +1,69 @@
 
+#  <!-- 2xx -->
+
+# Variable @title
+#  <call-macro name="regex-del-punctuation-end" dsource="245??.a" dname="@title" />
+
+copy_field("245??.a","@title")
+replace_all("@title", "^[©]|\\s?[,.:;/=]?$", "")
+replace_all("@title", "<", "")
+replace_all("@title", ">", "")
+
+#  <concat delimiter=". " name="@titleOfSubSeries_n" flushWith="245??.p">
+#    <data name="n" source="245??.n"/>
+#  </concat>
+
+set_array("@titleOfSubSeries_n")
+do list(path:"245??.n", "var":"$i")
+  copy_field("$i","@titleOfSubSeries_n.$append")
+end
+join_field("@titleOfSubSeries_n", ". ")
+
+
+#  <combine name="@titleOfSubSeries" value="${n}${p}" sameEntity="true" flushWith="245??">
+#    <data name="p" source="245??.p">
+#      <occurrence only="1"/>
+#      <replace pattern="\s?\.?\s?$" with=""/>
+#      <replace pattern="&gt;" with=""/>
+#      <replace pattern="&lt;" with=""/>
+#    </data>
+#    <data name="n" source="@titleOfSubSeries_n">
+#      <regexp match="(.*)" format="${1}: "/>
+#    </data>
+#  </combine>
+
+do list(path:"245??.p", "var":"$i")
+  copy_field("$i","@titleOfSubSeries_p.$append")
+end
+replace_all("@titleOfSubSeries_p.*", "\\s?\\.?\\s?$", "")
+replace_all("@titleOfSubSeries_p.*", "<", "")
+replace_all("@titleOfSubSeries_p.*", ">", "")
+prepend("@titleOfSubSeries_p.1", ": ")
+
+paste("@titleOfSubSeries", "@titleOfSubSeries_n",  "@titleOfSubSeries_p.1", join_char: "")
+
+
+#  <data name="titleOfSubSeries" source="@titleOfSubSeries" />
+
+copy_field("@titleOfSubSeries", "titleOfSubSeries")
+vacuum()
+prepend("@titleOfSubSeries",", ")
+
+#  <combine name="title" value="${maintitle}${subtitle}" flushWith="record">
+#    <data name="maintitle" source="@title">
+# solved with "@title" variable
+#     <!-- Delete not sorting signs in title -->
+#     <replace pattern="&gt;" with=""/>
+#     <replace pattern="&lt;" with=""/>
+#    </data>
+#    <data name="subtitle" source="@titleOfSubSeries">
+#      <regexp match="(.*)" format=", ${1}"/>
+#    </data>
+#  </combine>
+
+paste("title","@title", "@titleOfSubSeries", join_char: "")
+
+
 
 #  <entity name="alternativeTitle[]" flushWith="record">
 #    <data source="246?[ 345678].a">
