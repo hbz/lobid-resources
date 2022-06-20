@@ -10,7 +10,8 @@ copy_field("245??.c", "responsibilityStatement[].$append")
 #   <entity name="contribution[]" flushWith="record">
 set_array("contribution[]")
 
-		
+# 100 and 700
+
 #     <!-- 100[01]-->
 #     <entity name="" flushWith="100[01] " sameEntity="true">
 #       <if>
@@ -18,38 +19,6 @@ set_array("contribution[]")
 #           <data name="" source="100[01] .M" />
 #         </none>
 #       </if>
-# I separate the cleaning from the copying since the cleaning needs to be done for evey element.
-
-do list(path:"100[01] |700[01] ", "var":"$i")
-	unless exists("$i.M")
-		set_hash("contribution[].$append.agent")
-			do list(path:"$i.0","var":"$j")
-				if all_match("$j", "^\\(DE-588\\).*$")
-			# GND identifier		
-					copy_field("$j","contribution[].$last.agent.gndIdentifier")
-			# GND Identifier id
-					copy_field("$j","contribution[].$last.agent.id")
-				end
-			end
-		# name	
-		copy_field("$i.a","contribution[].$last.agent.label")
-		# type
-		set_array("contribution[].$last.agent.type[]","Person")
-		# role
-		# TODO: There are sometimes multiple roles for one contributor/creator. 
-		# This is not handled yet. The whole contributor needs to be copied and added again.
-		if exists ("$i.4.1")
-			copy_field("$i.4.1","contribution[].$last.agent.role.id")
-		else
-			copy_field("$i.4","contribution[].$last.agent.role.id")
-		end
-	end
-end
-set_array("contribution[].*.type[]", "Contribution")
-replace_all("contribution[].*.agent.id","^\\(DE-588\\)(.*$)","https://d-nb.info/gnd/$1")
-replace_all("contribution[].*.agent.label","(?<!\\p{Upper})\\.$|[,]$","")
-prepend("contribution[].*.agent.role.id","http://id.loc.gov/vocabulary/relators/")
-
 #       <entity name="type[]" reset="true">
 #         <data name="" source="100[01] ">
 #           <constant value="Contribution"/>
@@ -95,6 +64,34 @@ prepend("contribution[].*.agent.role.id","http://id.loc.gov/vocabulary/relators/
 #         </data>
 #       </entity>
 #     </entity>
+# I separate the cleaning from the copying since the cleaning needs to be done for evey element.
+
+do list(path:"100[01] |700[01] ", "var":"$i")
+	unless exists("$i.M")
+		set_hash("contribution[].$append.agent")
+			do list(path:"$i.0","var":"$j")
+				if all_match("$j", "^\\(DE-588\\).*$")
+			# GND identifier		
+					copy_field("$j","contribution[].$last.agent.gndIdentifier")
+			# GND Identifier id
+					copy_field("$j","contribution[].$last.agent.id")
+				end
+			end
+		# name	
+		copy_field("$i.a","contribution[].$last.agent.label")
+		# type
+		set_array("contribution[].$last.agent.type[]","Person")
+		# role
+		# TODO: There are sometimes multiple roles for one contributor/creator. 
+		# This is not handled yet. The whole contributor needs to be copied and added again.
+		if exists ("$i.4.1")
+			copy_field("$i.4.1","contribution[].$last.agent.role.id")
+		else
+			copy_field("$i.4","contribution[].$last.agent.role.id")
+		end
+	end
+end
+
 # 
 #     <!-- 110|710[012] -->
 #     <entity name="" flushWith="[17]10[012] " sameEntity="true">
@@ -128,6 +125,44 @@ prepend("contribution[].*.agent.role.id","http://id.loc.gov/vocabulary/relators/
 #       </entity>
 #     </entity>
 # 
+
+do list(path:"110[012] |710[012] ", "var":"$i")
+	unless exists("$i.M")
+		set_hash("contribution[].$append.agent")
+			do list(path:"$i.0","var":"$j")
+				if all_match("$j", "^\\(DE-588\\).*$")
+			# GND identifier		
+					copy_field("$j","contribution[].$last.agent.gndIdentifier")
+			# GND Identifier id
+					copy_field("$j","contribution[].$last.agent.id")
+				end
+			end
+		# name	
+			paste("contribution[].$last.agent.label", "$i.a", "$i.b", join_char: ". ")		
+		# type
+		set_array("contribution[].$last.agent.type[]","CorporateBody")
+		# role
+		# TODO: There are sometimes multiple roles for one contributor/creator. 
+		# This is not handled yet. The whole contributor needs to be copied and added again.
+		if exists ("$i.4.1")
+			copy_field("$i.4.1","contribution[].$last.agent.role.id")
+		else
+			copy_field("$i.4","contribution[].$last.agent.role.id")
+		end
+	end
+end
+
+
+
+
+
+set_array("contribution[].*.type[]", "Contribution")
+replace_all("contribution[].*.agent.id","^\\(DE-588\\)(.*$)","https://d-nb.info/gnd/$1")
+replace_all("contribution[].*.agent.label","(?<!\\p{Upper})\\.$|[,]$","")
+prepend("contribution[].*.agent.role.id","http://id.loc.gov/vocabulary/relators/")
+
+
+
 #     <!-- 111 -->
 #     <entity name="Conference" flushWith="record">
 #       <data name="conferenceName" source="111[012] .a">
