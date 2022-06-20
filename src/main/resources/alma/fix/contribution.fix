@@ -192,4 +192,31 @@ prepend("contribution[].*.agent.role.id","http://id.loc.gov/vocabulary/relators/
 #       </entity>
 #       <call-macro name="gndIdentifier" field="111" />
 #     </entity>
+
+#     <!-- 111 --> Subfields c, d, e, n, 0 are all repeatable this could create errors.
+# TODO: Need test data.
+copy_field("111[012] .a", "conference.conferenceName")
+replace_all("conference.conferenceName", "[.,]$", "")
+if exists ("111[012] .c.1")
+	copy_field("111[012] .c.1", "conference.conferencePlace")
+else
+	copy_field("111[012] .c", "conference.conferencePlace")
+end
+replace_all("conference.conferencePlace", "\\(|\\)?[;.,]?$","") 
+copy_field("111[012] .d", "conference.conferenceDate")
+replace_all("conference.conferenceDate", "\\(|\\)?[,]?$|\\s?:$","") 
+copy_field("111[012] .e", "conference.conferenceUnit")
+replace_all("conference.conferenceUnit", "[.,]$", "")
+if exists ("111[012] .n.1")
+	copy_field("111[012] .n.1", "conference.corporateBodyNameNumber")
+else
+	copy_field("111[012] .n", "conference.corporateBodyNameNumber")
+end
+replace_all("conference.corporateBodyNameNumber", "\\(|\\)?[,]?$|\\s?[;:]$","")
+set_array("conference.conferenceIdentifier[]")
+if all_match("111[012] .0", "^\\(DE-588\\).*$")
+	copy_field("111[012] .0", "conference.conferenceIdentifier[].$append.id")	
+end
+replace_all("conference.conferenceIdentifier[].*.id","^\\(DE-588\\)(.*$)","https://d-nb.info/gnd/$1")
+
 #   </entity>
