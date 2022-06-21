@@ -27,6 +27,18 @@ set_array("describedBy.type[]", "BibliographicDescription")
 
 # 		<call-macro name="simplify-date" dname="dateCreated" dsource="MNG  .b"/>
 # 		<call-macro name="simplify-date" dname="dateModified" dsource="MNG  .d"/>
+copy_field("MNG  .b","describedBy.dateCreated")
+copy_field("MNG  .d","describedBy.dateModified")
+replace_all("describedBy.dateCreated|dateModified","-","")
+replace_all("describedBy.dateCreated|dateModified"," .*","")
+replace_all("describedBy.dateCreated|dateModified","c|©|\\s?|,|.|:|;|/|=","")
+unless any_match("describedBy.dateCreated","\\d{8}|\\d{4}")
+	remove_field("describedBy.dateCreated")
+end
+unless any_match("describedBy.dateModified","\\d{8}|\\d{4}")
+	remove_field("describedBy.dateModified")
+end
+
 # 		<entity name="inDataset">
 # 			<data name="id" source="@almaMmsId">
 # 				<constant value="http://lobid.org/resources/dataset#!"/>
