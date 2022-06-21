@@ -1,0 +1,124 @@
+# 	<data name="@createTime" source="@almaMmsId">
+# 		<constant value="$[createEndTime]"/>
+# 	</data>
+# 
+# 	<entity name="describedBy" flushWith="record">
+# 		<data name="id" source="@almaMmsId">
+# 			<regexp match="(.*)" format="http://lobid.org/resources/${1}"/>
+# 		</data>
+
+copy_field("almaMmsId", "describedBy.id")
+prepend("describedBy.id", "http://lobid.org/resources/")
+
+# 		<data name="label" source="@almaMmsId">
+# 			<regexp match="(.*)" format="Webseite der hbz-Ressource ${1}"/>
+# 		</data>
+# 		<entity name="type[]">
+# 			<data name="" source="@almaMmsId">
+# 				<constant value="BibliographicDescription"/>
+# 			</data>
+# 		</entity>
+# 		<call-macro name="simplify-date" dname="dateCreated" dsource="MNG  .b"/>
+# 		<call-macro name="simplify-date" dname="dateModified" dsource="MNG  .d"/>
+# 		<entity name="inDataset">
+# 			<data name="id" source="@almaMmsId">
+# 				<constant value="http://lobid.org/resources/dataset#!"/>
+# 			</data>
+# 			<data name="label" source="@almaMmsId">
+# 				<constant value="lobid-resources – Der hbz-Verbundkatalog als Linked Open Data" />
+# 			</data>
+# 		</entity>
+# 		<entity name="resultOf">
+# 			<entity name="type[]">
+# 				<data name="" source="@almaMmsId">
+# 					<constant value="CreateAction"/>
+# 				</data>
+# 			</entity>
+# 			<combine name="endTime" value="${a}">
+# 				<choose name="a">
+# 					<data source="@createTime" name="a">
+# 						<regexp match="0" format="0000-00-00T00:00:00"/>
+# 					</data>
+# 					<data name="a" source="@almaMmsId">
+# 						<timestamp format="yyyy-MM-dd'T'HH:mm:ss" timezone="Europe/Berlin"/>
+# 					</data>
+# 				</choose>
+# 			</combine>
+# 			<entity name="instrument">
+# 				<data name="id" source="@almaMmsId">
+# 					<constant value="https://github.com/hbz/lobid-resources"/>
+# 				</data>
+# 				<entity name="type[]">
+# 					<data name="" source="@almaMmsId">
+# 						<constant value="SoftwareApplication"/>
+# 					</data>
+# 				</entity>
+# 				<data name="label" source="@almaMmsId">
+# 					<constant value="Software lobid-resources"/>
+# 				</data>
+# 			</entity>
+# 
+# 			<entity name="object">
+# 				<data name="id" source="@almaMmsId">
+# 					<regexp match="(.*)" format="https://lobid.org/hbz01/${1}"/>
+# 				</data>
+# 				<entity name="type[]">
+# 					<data name="" source="@almaMmsId">
+# 						<constant value="DataFeedItem"/>
+# 					</data>
+# 				</entity>
+# 				<data name="label" source="@almaMmsId">
+# 					<regexp match="(.*)" format="hbz-Ressource ${1} im Exportformat MARC21 XML"/>
+# 				</data>
+# 				<entity name="inDataset">
+# 					<data name="id" source="@almaMmsId">
+# 						<constant value="https://datahub.io/dataset/hbz_unioncatalog"/>
+# 					</data>
+# 					<data name="label" source="@almaMmsId">
+# 						<constant value="hbz_unioncatalog"/>
+# 					</data>
+# 				</entity>
+# 			</entity>
+# 
+# 		</entity>
+# 		<entity name="license[]">
+# 			<entity name="">
+# 				<data name="id" source="@almaMmsId">
+# 					<constant value="http://creativecommons.org/publicdomain/zero/1.0"/>
+# 				</data>
+# 				<data name="label" source="@almaMmsId">
+# 					<constant value="Creative Commons-Lizenz CC0 1.0 Universal"/>
+# 				</data>
+# 			</entity>
+# 		</entity>
+# 		<entity name="sourceOrganization">
+# 			<data name="id" source="040  .a">
+# 				<regexp match="(.*)" format="http://lobid.org/organisations/DE-${1}#!"/>
+# 			</data>
+# 			<data name="label" source="040  .a">
+# 				<constant value="lobid Organisation"/>
+# 			</data>
+# 		</entity>
+# 		<entity name="provider">
+# 			<data name="id" source="040  .c">
+# 				<regexp match="(.*)" format="http://lobid.org/organisations/DE-${1}#!"/>
+# 			</data>
+# 			<data name="label" source="040  .c">
+# 				<constant value="lobid Organisation"/>
+# 			</data>
+# 		</entity>
+# 		<entity name="modifiedBy" sameEntity="true" reset="true">
+# 			<data name="id" source="040  .d">
+# 				<blacklist>
+# 					<entry name="9999" />
+# 					<entry name="0001" />
+# 				</blacklist>
+# 				<regexp match="(DE-)?(.*)" format="http://lobid.org/organisations/DE-${2}#!"/>
+# 			</data>
+# 			<data name="label" source="040  .d">
+# 				<constant value="lobid Organisation"/>
+# 			</data>
+# 		</entity>
+# 	</entity>
+# </rules>
+# 
