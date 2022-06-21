@@ -13,6 +13,10 @@ prepend("describedBy.id", "http://lobid.org/resources/")
 # 		<data name="label" source="@almaMmsId">
 # 			<regexp match="(.*)" format="Webseite der hbz-Ressource ${1}"/>
 # 		</data>
+
+copy_field("almaMmsId", "describedBy.label")
+prepend("describedBy.label", "Webseite der hbz-Ressource ")
+
 # 		<entity name="type[]">
 # 			<data name="" source="@almaMmsId">
 # 				<constant value="BibliographicDescription"/>
