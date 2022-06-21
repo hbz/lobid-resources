@@ -19,13 +19,27 @@ paste("id", "~https://lobid.org/resources/", "001", "~#!", join_char: "")
 add_field("@context","https://lobid.org/resources/context.jsonld")
 
 include ("./fix/titleRelatedFields.fix")
+include ("./fix/contribution.fix")
+
 #  TODO:   <xi:include href="common/item.xml"/>
 #  TODO:   <xi:include href="common/facets.xml"/>
 #  TODO:   <xi:include href="common/fields.xml"/>
-#  TODO:   <xi:include href="common/contribution.xml"/>
+
 #  TODO:   <xi:include href="common/describedBy.xml"/>
 #  TODO:   <xi:include href="common/subjects.xml"/>
 # </metamorph>
 
 vacuum()
-retain("id","almaMmsId","@context","title", "titleOfSubSeries","alternativeTitle[]","otherTitleInformation[]","edition[]","publication[]")
+retain(
+	"@context",
+	"almaMmsId",
+	"alternativeTitle[]",
+	"contribution[]",
+	"edition[]",
+	"id",
+	"otherTitleInformation[]",
+	"publication[]",
+	"responsibilityStatement[]",
+	"title",
+	"titleOfSubSeries"
+	)
