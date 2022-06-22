@@ -168,6 +168,15 @@ end
 # 				<constant value="lobid Organisation"/>
 # 			</data>
 # 		</entity>
+
+# TODO: It seems that there are a lot of organisations that are not in lobid, we should filter them out.
+copy_field("040  .c", "describedBy.provider.id")
+prepend("describedBy.provider.id", "http://lobid.org/organisations/DE-")
+append("describedBy.provider.id", "#!")
+if exists("describedBy.provider.id")
+	add_field("describedBy.provider.label","lobid Organisation")
+end
+
 # 		<entity name="modifiedBy" sameEntity="true" reset="true">
 # 			<data name="id" source="040  .d">
 # 				<blacklist>
