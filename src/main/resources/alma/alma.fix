@@ -21,10 +21,11 @@ add_field("@context","https://lobid.org/resources/context.jsonld")
 include ("./fix/titleRelatedFields.fix")
 include ("./fix/contribution.fix")
 include ("./fix/describedBy.fix")
+include ("./fix/fields.fix")
 
 #  TODO:   <xi:include href="common/item.xml"/>
 #  TODO:   <xi:include href="common/facets.xml"/>
-#  TODO:   <xi:include href="common/fields.xml"/>
+
 
 
 #  TODO:   <xi:include href="common/subjects.xml"/>
@@ -38,6 +39,7 @@ retain(
 	"describedBy",
 	"contribution[]",
 	"edition[]",
+	"hbzId",
 	"id",
 	"otherTitleInformation[]",
 	"publication[]",
