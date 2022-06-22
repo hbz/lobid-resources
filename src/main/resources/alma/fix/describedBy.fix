@@ -139,6 +139,10 @@ add_field("describedBy.inDataset.label", "hbz_unioncatalog")
 # 				</data>
 # 			</entity>
 # 		</entity>
+set_array("describedBy.license[]")
+add_field("describedBy.license[].$append.id","http://creativecommons.org/publicdomain/zero/1.0" )
+add_field("describedBy.license[].$last.label","Creative Commons-Lizenz CC0 1.0 Universal" )
+
 # 		<entity name="sourceOrganization">
 # 			<data name="id" source="040  .a">
 # 				<regexp match="(.*)" format="http://lobid.org/organisations/DE-${1}#!"/>
