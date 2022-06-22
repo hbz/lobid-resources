@@ -189,6 +189,24 @@ end
 # 				<constant value="lobid Organisation"/>
 # 			</data>
 # 		</entity>
+
+# TODO: It seems that there are a lot of organisations that are not in lobid, we should filter them out.
+# TODO: 040  .d is repeatable but lobid modifiedBy is only a simple object. How to deal with this?
+do list(path:"040  .d", "var":"$i")
+	unless exists("describedBy.modifiedBy.id")
+		unless any_match("$i", "9999|0001")
+			copy_field("$i", "describedBy.modifiedBy.id")
+		end
+	end
+end
+replace_all("describedBy.modifiedBy.id", "(DE-)?(.*)", "$2")
+prepend("describedBy.modifiedBy.id", "http://lobid.org/organisations/DE-")
+append("describedBy.modifiedBy.id", "#!")
+if exists("describedBy.modifiedBy.id")
+	add_field("describedBy.modifiedBy.label","lobid Organisation")
+end
+
+
 # 	</entity>
 # </rules>
 # 
