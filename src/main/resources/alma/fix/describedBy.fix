@@ -77,36 +77,55 @@ add_field("describedBy.resultOf.endTime","0000-00-00T00:00:00")
 # 				<data name="id" source="@almaMmsId">
 # 					<constant value="https://github.com/hbz/lobid-resources"/>
 # 				</data>
+add_field("describedBy.resultOf.instrument.id","https://github.com/hbz/lobid-resources")
+
 # 				<entity name="type[]">
 # 					<data name="" source="@almaMmsId">
 # 						<constant value="SoftwareApplication"/>
 # 					</data>
 # 				</entity>
+set_array("describedBy.resultOf.instrument.type[]", "SoftwareApplication")
+
 # 				<data name="label" source="@almaMmsId">
 # 					<constant value="Software lobid-resources"/>
 # 				</data>
 # 			</entity>
-# 
+add_field("describedBy.resultOf.instrument.label","Software lobid-resources")
+
 # 			<entity name="object">
 # 				<data name="id" source="@almaMmsId">
 # 					<regexp match="(.*)" format="https://lobid.org/hbz01/${1}"/>
 # 				</data>
+copy_field("almaMmsId","describedBy.resultOf.object.id")
+prepend("describedBy.resultOf.object.id","https://lobid.org/hbz01/")
+
+
 # 				<entity name="type[]">
 # 					<data name="" source="@almaMmsId">
 # 						<constant value="DataFeedItem"/>
 # 					</data>
 # 				</entity>
+set_array("describedBy.resultOf.object.type[]", "DataFeedItem")
+
 # 				<data name="label" source="@almaMmsId">
 # 					<regexp match="(.*)" format="hbz-Ressource ${1} im Exportformat MARC21 XML"/>
 # 				</data>
+copy_field("almaMmsId","describedBy.resultOf.object.label")
+prepend("describedBy.resultOf.object.label","hbz-Ressource ")
+append("describedBy.resultOf.object.label"," im Exportformat MARC21 XML")
+
 # 				<entity name="inDataset">
 # 					<data name="id" source="@almaMmsId">
 # 						<constant value="https://datahub.io/dataset/hbz_unioncatalog"/>
 # 					</data>
+add_field("describedBy.inDataset.id", "https://datahub.io/dataset/hbz_unioncatalog")
+
 # 					<data name="label" source="@almaMmsId">
 # 						<constant value="hbz_unioncatalog"/>
 # 					</data>
 # 				</entity>
+add_field("describedBy.inDataset.label", "hbz_unioncatalog")
+
 # 			</entity>
 # 
 # 		</entity>
