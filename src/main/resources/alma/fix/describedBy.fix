@@ -151,6 +151,15 @@ add_field("describedBy.license[].$last.label","Creative Commons-Lizenz CC0 1.0 U
 # 				<constant value="lobid Organisation"/>
 # 			</data>
 # 		</entity>
+
+# TODO: It seems that there are a lot of organisations that are not in lobid, we should filter them out.
+copy_field("040  .a", "describedBy.sourceOrganization.id")
+prepend("describedBy.sourceOrganization.id", "http://lobid.org/organisations/DE-")
+append("describedBy.sourceOrganization.id", "#!")
+if exists("describedBy.sourceOrganization.id")
+	add_field("describedBy.sourceOrganization.label","lobid Organisation")
+end
+
 # 		<entity name="provider">
 # 			<data name="id" source="040  .c">
 # 				<regexp match="(.*)" format="http://lobid.org/organisations/DE-${1}#!"/>
