@@ -17,13 +17,31 @@ replace_all("hbzId","\\(DE-605\\)(.*)","$1")
 #    <substring start="35" end="38" />
 #  </data>
 #  <data name="@language_source_all" source="041[ 01] .[adj]" />
+# TODO: Needs to be explained why this is double. Can only one of the elements be used?
+
+set_array("@language")
+copy_field("008", "@008-lang")
+substring("@008-lang", "35", "38")
+copy_field("008-lang", "@language.$append")
+copy_field("041[ 01] .[adj]", "@language.$append")
 #  <data name="@language_source" source="@language_source_all">
 #    <unique />
 #  </data>
+uniq("@language")
 #  <data name="@language_long" source="@language_source">
 #    <lookup in="ISO639-2-to-GND" />
 #  </data>
 #  <entity name="language[]" flushWith="record">
+set_array("language[]")
+do list(path:"@language", "var":"$i")
+  copy_field("$i", "language[].$append.id")
+  copy_field("$i", "language[].$last.label")
+end
+
+lookup("language[].*.label","ISO639-2-to-GND")
+prepend("language[].*.id", "http://id.loc.gov/vocabulary/iso639-2/")
+
+
 #    <entity name="" flushWith="@language_source" reset="true">
 #      <data name="id" source="@language_source">
 #        <regexp match="(.*)" format="http://id.loc.gov/vocabulary/iso639-2/${1}"/>
