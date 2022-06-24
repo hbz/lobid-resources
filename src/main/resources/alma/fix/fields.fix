@@ -181,6 +181,13 @@ end
 #        <constant value="OCLC Ressource"/>
 #      </data>
 #    </entity>
+
+do list(path: "oclcNumber", "var": "$i")
+  paste("sameAs[].$append.id","~http://worldcat.org/oclc/", "$i", join_char:"")
+  add_field("sameAs[].$last.label","OCLC Ressource")
+end
+
+
 #    <entity name="">
 #      <data name="id" source="@zdbId">
 #        <compose prefix="http://ld.zdb-services.de/resource/"/>
