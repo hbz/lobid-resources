@@ -54,7 +54,9 @@ prepend("language[].*.id", "http://id.loc.gov/vocabulary/iso639-2/")
 #    <isbn to="clean"/>
 #    <unique />
 #  </data>
-#
+
+
+# TODO: ISBN needs to be done if there is a supporting function in fix.
 #  <entity name="isbn[]" flushWith="record">
 #    <data name="" source="@cleanIsbn">
 #      <isbn to="isbn10"/>
@@ -66,11 +68,21 @@ prepend("language[].*.id", "http://id.loc.gov/vocabulary/iso639-2/")
 #    </data>
 #  </entity>
 #
+
+
 #  <entity name="issn[]" flushWith="record">
 #    <data name="" source="022? .a">
 #      <replace pattern="-" with="" />
 #    </data>
 #  </entity>
+
+# 022 (R) Subfield a (NR)
+set_array("issn[]")
+do list(path:"022? ", "var":"$i")
+  copy_field("$i.a", "issn[].$append")
+end
+replace_all("issn[].*", "-","")
+
 #
 #  <entity name="ismn[]" flushWith="record">
 #    <data name="" source="0242?.a">
