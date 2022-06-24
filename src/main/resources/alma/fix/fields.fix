@@ -150,6 +150,9 @@ replace_all("zdbId", "\\(DE-600\\)","")
 
 #
 #  <entity name="sameAs[]" flushWith="record">
+set_array("sameAs[]")
+
+
 #    <entity name="">
 #      <data name="id" source="035  .a">
 #        <regexp match="\(DE-605\)(.*)" format="http://hub.culturegraph.org/resource/HBZ-${1}"/>
@@ -158,6 +161,18 @@ replace_all("zdbId", "\\(DE-600\\)","")
 #        <regexp match="\(DE-605\)(.*)" format="Culturegraph Ressource"/>
 #      </data>
 #    </entity>
+
+
+# 035 (R) Subfield a (NR)
+do list(path:"035  ", "var":"$i")
+  if all_match("$i.a", "\\(DE-605\\)(.*)")
+    copy_field("$i.a", "sameAs[].$append.id")
+    replace_all("sameAs[].$last.id", "\\(DE-605\\)(.*)","http://hub.culturegraph.org/resource/HBZ-$1")
+    add_field("sameAs[].$last.label","Culturegraph Ressource")
+  end
+end
+
+
 #    <entity name="">
 #      <data name="id" source="@oclcNumber">
 #        <compose prefix="http://worldcat.org/oclc/"/>
