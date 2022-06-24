@@ -139,6 +139,15 @@ replace_all("oclcNumber", "\\(OCoLC\\)","")
 #  </data>
 #
 #  <data name="zdbId" source="@zdbId" />
+
+# 035 (R) Subfield a (NR)
+do list(path:"035  ", "var":"$i")
+  if all_match("$i.a", "\\(DE-600\\)(.*)")
+    copy_field("$i.a", "zdbId")
+  end
+end
+replace_all("zdbId", "\\(DE-600\\)","")
+
 #
 #  <entity name="sameAs[]" flushWith="record">
 #    <entity name="">
