@@ -197,6 +197,13 @@ end
 #      </data>
 #    </entity>
 #  </entity>
+
+do list(path: "zdbId", "var": "$i")
+  paste("sameAs[].$append.id","~http://ld.zdb-services.de/resource/", "$i", join_char:"")
+  add_field("sameAs[].$last.label","ZDB-Ressource")
+end
+
+
 #
 #  <!-- 3xx -->
 #
