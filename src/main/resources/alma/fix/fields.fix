@@ -207,6 +207,10 @@ end
 #
 #  <!-- 3xx -->
 #
+# 300 - Physical Description (R)
+# Old Morph MAB-> Extent was less complex: 		<data source="433[-abc][-1].[aq]|653-1.a" name="http://id.loc.gov/ontologies/bibframe/extent"/>
+# TODO: Figure out if we need the extent info as complex as the introx info.
+
 #  <data name="@300a1" source="300  .a">
 #    <occurrence only="1" />
 #    <replace pattern="\s?[:;+\(]?$" with="" />
@@ -353,6 +357,14 @@ end
 #      <unique />
 #    </data>
 #  </entity>
+
+# 500 - General Note (R) Subfield: a (NR)
+set_array("note[]")
+do list(path:"500  ", "var": "$i")
+  copy_field("$i.a", "note[].$append")
+end
+uniq("note[]")
+
 #
 #  <entity name="abstract[]" flushWith="record">
 #    <data name="" source="520[ 13] .[ab]" />
