@@ -124,6 +124,15 @@ replace_all("doi[[].*", "-","")
 #  </data>
 #
 #  <data name="oclcNumber" source="@oclcNumber" />
+
+# 035 (R) Subfield a (NR)
+do list(path:"035  ", "var":"$i")
+  if all_match("$i.a", "\\(OCoLC\\)(.*)")
+    copy_field("$i.a", "oclcNumber")
+  end
+end
+replace_all("oclcNumber", "\\(OCoLC\\)","")
+
 #
 #  <data name="@zdbId" source="035  .a">
 #    <regexp match="\(DE-600\)(.*)" format="${1}"/>
