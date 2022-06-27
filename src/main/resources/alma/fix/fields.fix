@@ -340,6 +340,8 @@ end
 #    </choose>
 #  </combine>
 #
+
+# TODO: This seems to be a relict of Introx.
 #  <!--  TODO: this used to be mapped as "publicationHistory". Check how to handle
 #
 #  <entity name="ChronologyAndEnumeration">
@@ -373,6 +375,14 @@ uniq("note[]")
 #  <entity name="thesisInformation[]" flushWith="record">
 #    <data name="" source="502??.a" />
 #  </entity>
+
+# 502 - Dissertation Note (R) Subfield: a (R)
+set_array("thesisInformation[]")
+do list(path:"502  ", "var": "$i")
+  copy_field("$i.a", "thesisInformation[].$append")
+end
+
+
 #
 #  <!-- 6xx -->
 #
