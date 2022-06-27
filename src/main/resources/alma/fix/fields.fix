@@ -380,23 +380,27 @@ do list(path:"520[ 13] ", "var": "$i")
   copy_field("$i.[ab]", "abstract[].$append")
 end
 
+
 #
 #  <entity name="thesisInformation[]" flushWith="record">
 #    <data name="" source="502??.a" />
 #  </entity>
 
 # 502 - Dissertation Note (R) Subfield: a (R)
+# TODO: Get testdata. 
 set_array("thesisInformation[]")
 do list(path:"502  ", "var": "$i")
   copy_field("$i.a", "thesisInformation[].$append")
 end
 
 
-#
+
 #  <!-- 6xx -->
-#
+
+
 #  <!-- 7xx -->
 #  <entity name="isPartOf[]" flushWith="record">
+set_array("isPartOf[]")
 #    <entity name="" sameEntity="true" reset="true" flushWith="773??|490??">
 #      <data source="773??.w|490??.a" name="type">
 #        <constant value="IsPartOfRelation" />
@@ -411,6 +415,24 @@ end
 #      </entity>
 #      <data source="773??.q" name="numbering" />
 #    </entity>
+
+# 773 - Host Item Entry (R) Subfield: w (NR) t (NR) q (NR)
+# TODO: Shouldnt type always be arrays
+do list(path: "773??", "var": "$i")
+  add_field("isPartOf[].$append.type", "IsPartOfRelation")
+  set_array("isPartOf[].$last.hasSuperordinate[]")
+  if all_match("$i.w", "\\(DE-605\\)(.*)")
+    copy_field("$i.w", "isPartOf[].$last.hasSuperordinate[].$append.id")
+    replace_all("isPartOf[].$last.hasSuperordinate[].$last.id", "^\\(DE-605\\)(.*)$", "http://lobid.org/resources/$1#!")
+  end
+  copy_field("$i.t", "isPartOf[].$last.hasSuperordinate[].$last.label")
+  copy_field("$i.q", "isPartOf[].$last.numbering")
+end
+
+# 490 - Series Statement (R) Subfield: a (R)
+
+
+
 #    <entity name="" sameEntity="true" reset="true" flushWith="830??">
 #      <!-- Check for duplicates in local fields. -->
 #      <if>
