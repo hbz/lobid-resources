@@ -511,7 +511,7 @@ do list(path: "8564?", "var":"$i")
   end
 end
 
-
+# TODO:
 #  <!--
 #  <entity name="hasVersion[]" flushWith="record">
 #    <entity name="" flushWith="856??" sameEntity="true">
@@ -535,6 +535,9 @@ end
 #    </entity>
 #  </entity> -->
 #
+
+
+
 #  <entity name="related[]" flushWith="record">
 #    <entity name="" flushWith="775??|776??" sameEntity="true">
 #      <if>
@@ -576,6 +579,30 @@ end
 #      <data name="issn" source="775??.x|776??.x" />
 #    </entity>
 #  </entity>
+
+# 775 - Other Edition Entry (R) Subfield: w (R), t (NR), i (R), n (R), x(NR), z (R)
+# 776 - Additional Physical Form Entry (R) Subfield: w (R), t (NR), i (R), n (R), x (NR), z (R)
+# TODO: Needs ISBN function for mapping ISBN in subfield Z!
+
+set_array("related[]")
+do list(path:"775??|776??", "var":"$i")
+  unless exists("$i.M")
+    add_field("related[].$append.test","")
+    if all_match("$i.w", "\\(DE-605\\)(.*)")
+      copy_field("$i.w", "related[].$last.id")
+      replace_all("related[].$last.id", "^\\(DE-605\\)(.*)$", "http://lobid.org/resources/$1#!")
+    end
+    paste("related[].$last.note","$i.i", "$i.n")
+    copy_field("$i.t", "related[].$last.label")
+    copy_field("$i.x", "related[].$last.issn")    
+  end
+end
+
+
+
+
+
+
 #
 #  <!-- TODO: inCollection: missing edoweb, rpb, publisso, also type-element -->
 #  <entity name="inCollection[]" flushWith="record">
