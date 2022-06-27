@@ -371,6 +371,15 @@ uniq("note[]")
 #  <entity name="abstract[]" flushWith="record">
 #    <data name="" source="520[ 13] .[ab]" />
 #  </entity>
+
+# 520 - Summary, Etc. (R) Subfield: a (NR) b (NR)
+# TODO: Check if 1. Indicator 1 (REVIEW) is really to count as abstract. Perhaps 2 (Scope and content) is a better fit.
+# TODO: Get testdata. 
+set_array("abstract[]")
+do list(path:"520[ 13] ", "var": "$i")
+  copy_field("$i.[ab]", "abstract[].$append")
+end
+
 #
 #  <entity name="thesisInformation[]" flushWith="record">
 #    <data name="" source="502??.a" />
