@@ -461,6 +461,20 @@ end
 #      <data source="830??.v" name="numbering" />
 #    </entity>
 #  </entity>
+
+do list(path: "830??", "var": "$i")
+  unless exists("$i.M")
+    add_field("isPartOf[].$append.type", "IsPartOfRelation")
+    set_array("isPartOf[].$last.hasSuperordinate[]")
+    if all_match("$i.w", "\\(DE-605\\)(.*)")
+      copy_field("$i.w", "isPartOf[].$last.hasSuperordinate[].$append.id")
+      replace_all("isPartOf[].$last.hasSuperordinate[].$last.id", "^\\(DE-605\\)(.*)$", "http://lobid.org/resources/$1#!")
+    end
+    copy_field("$i.a", "isPartOf[].$last.hasSuperordinate[].$last.label")
+    copy_field("$i.v", "isPartOf[].$last.numbering")
+  end
+end
+
 #
 #  <!-- 8xx -->
 #  <entity name="tableOfContents[]" flushWith="record">
