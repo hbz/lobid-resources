@@ -430,8 +430,15 @@ do list(path: "773??", "var": "$i")
 end
 
 # 490 - Series Statement (R) Subfield: a (R)
+# TODO: Shouldnt type always be arrays
+# 490 with 1. Indicator 1 has an identical entry in 830. So only 490 with 1. Indicator 0
 
-
+do list(path: "4900?", "var": "$i")
+  add_field("isPartOf[].$append.type", "IsPartOfRelation")
+  set_array("isPartOf[].$last.hasSuperordinate[]")
+  copy_field("$i.a", "isPartOf[].$last.hasSuperordinate[].$append.label")
+  copy_field("$i.v", "isPartOf[].$last.numbering")
+end
 
 #    <entity name="" sameEntity="true" reset="true" flushWith="830??">
 #      <!-- Check for duplicates in local fields. -->
