@@ -462,6 +462,9 @@ end
 #    </entity>
 #  </entity>
 
+# 830 - Series Added Entry-Uniform Title (R) Subfield: w (R), a (NR), v (NR)
+# Element can be repeatable with local entries they have subfield $M.
+
 do list(path: "830??", "var": "$i")
   unless exists("$i.M")
     add_field("isPartOf[].$append.type", "IsPartOfRelation")
@@ -493,6 +496,22 @@ end
 #      <data name="label" source="8564?.3" />
 #    </entity>
 #  </entity>
+
+# 856 - Electronic Location and Access (R) Subfield: u (R) 3 (NR) 
+# 1. Indicator: 4 = HTTP
+
+set_array("tableOfContents[]")
+
+do list(path: "8564?", "var":"$i")
+  unless exists("$i.M")
+    if all_match("$i.3", "^[Ii][Nn][Hh][aA][lL][tT][sS][vV].*")
+      copy_field("$i.3", "tableOfContents[].$append.label")
+      copy_field("$i.u", "tableOfContents[].$last.id")
+    end
+  end
+end
+
+
 #  <!--
 #  <entity name="hasVersion[]" flushWith="record">
 #    <entity name="" flushWith="856??" sameEntity="true">
