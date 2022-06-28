@@ -30,7 +30,7 @@ do list(path:"655 7", "var":"$i")
 end
 
 
-#     <!-- 698 Formatschlagwort   -->
+#     <!-- 689 Formatschlagwort   -->
 #     <entity name="" flushWith="689??" sameEntity="true" reset="true">
 #       <if>
 #         <data source="689??.A">
@@ -43,6 +43,16 @@ end
 #       </data>
 #     </entity>
 #   </entity>
+
+# 689 - not MARC standard element/DNB specific keywords (R) Subfields: A (seems NR)
+
+do list(path:"689??", "var":"$i")
+  if any_equal("$i.A","f")
+    # TODO: Deduplicate values.
+    copy_field("$i.a","natureOfContent[].$append.label")
+  end
+end
+
 # 
 #   <entity name="subject[]" flushWith="record">
 #     <!-- 610 CorporateBody -->
