@@ -753,5 +753,13 @@ end
 #</rules>
 #
 
+do list(path:"960??", "var":"$i")
+  do list(path:"$i.?", "var": "$j")
+      copy_field("$j", "inCollection[].$append.id")
+      replace_all("inCollection[].$last.id", "^(.*)$", "http://lobid.org/collections/$1#!")
+      # TODO: Do we need a label? https://github.com/hbz/lobid-resources/issues/1305#issuecomment-912312471, also labels seem wrong.
+  end
+end
+
 
 set_array("inCollection[].*.type[]","Collection")
