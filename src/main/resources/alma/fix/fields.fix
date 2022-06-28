@@ -715,8 +715,6 @@ do list(path:"912  ", "var":"$i")
 end
 
 
-set_array("inCollection[].*.type[]","Collection")
-
 #    <!-- E-Book and digital copy selections (inofficial) -->
 #    <entity name="" sameEntity="true" reset="true">
 #      <data source="962  .e" name="id">
@@ -729,6 +727,17 @@ set_array("inCollection[].*.type[]","Collection")
 #        </data>
 #      </entity>
 #    </entity>
+
+do list(path:"962  ", "var":"$i")
+  do list(path:"$i.e", "var": "$j")
+    unless any_match("$j", "^ZDB.*")
+      copy_field("$j", "inCollection[].$append.id")
+      replace_all("inCollection[].$last.id", "^(.*)$", "http://lobid.org/collections/$1#!")
+      # TODO: Do we need a label?
+    end
+  end
+end
+
 #    <!-- 960 selections (inofficial) -->
 #    <entity name="" sameEntity="true" reset="true">
 #      <data source="9601 .?" name="id">
@@ -743,3 +752,6 @@ set_array("inCollection[].*.type[]","Collection")
 #  </entity>
 #</rules>
 #
+
+
+set_array("inCollection[].*.type[]","Collection")
