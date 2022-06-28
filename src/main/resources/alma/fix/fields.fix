@@ -629,8 +629,6 @@ if exists("zdbId")
   add_field("inCollection[].$last.label", "Zeitschriftendatenbank (ZDB)")
 end
 
-set_array("inCollection[].*.type[]","Collection")
-
 
 #    <!-- EZB -->
 #    <entity name="" sameEntity="true" reset="true">
@@ -648,6 +646,19 @@ set_array("inCollection[].*.type[]","Collection")
 #        </data>
 #      </entity>
 #    </entity>
+
+# 856 - Electronic Location and Access (R) Subfield: $x - Nonpublic note (R)
+# TODO: Check if src/test/resources/alma-fix/(CKB)5280000000199164.xml is also an EZB titel even when it has no 865.
+do list(path:"85640", "var":"$i")
+  if any_equal("$i.x","EZB") # can test x and x.*
+    add_field("inCollection[].$append.id", "http://lobid.org/resources/HT016356466#!")
+    add_field("inCollection[].$last.label", "Elektronische Zeitschriftenbibliothek (EZB)")
+  end
+end
+
+set_array("inCollection[].*.type[]","Collection")
+
+
 #    <!-- nwbib -->
 #    <entity name="" sameEntity="true" reset="true">
 #      <data name="label" source="084  .2">
