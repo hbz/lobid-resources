@@ -606,6 +606,9 @@ end
 #
 #  <!-- TODO: inCollection: missing edoweb, rpb, publisso, also type-element -->
 #  <entity name="inCollection[]" flushWith="record">
+set_array("inCollection[]")
+
+
 #    <!-- ZDB -->
 #    <entity name="" sameEntity="true" reset="true">
 #      <data name="label" source="@zdbId">
@@ -620,6 +623,15 @@ end
 #        </data>
 #      </entity>
 #    </entity>
+
+if exists("zdbId")
+  add_field("inCollection[].$append.id", "http://lobid.org/resources/HT014846970#!")
+  add_field("inCollection[].$last.label", "Zeitschriftendatenbank (ZDB)")
+end
+
+set_array("inCollection[].*.type[]","Collection")
+
+
 #    <!-- EZB -->
 #    <entity name="" sameEntity="true" reset="true">
 #      <data name="label" source="85640.x">
