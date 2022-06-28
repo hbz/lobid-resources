@@ -688,7 +688,6 @@ do list(path:"084  ", "var":"$i")
 end
 
 
-set_array("inCollection[].*.type[]","Collection")
 
 #    <!-- eResource package -->
 #    <entity name="" sameEntity="true" reset="true">
@@ -704,6 +703,20 @@ set_array("inCollection[].*.type[]","Collection")
 #        </data>
 #      </entity>
 #    </entity>
+
+# 912 ## "(nur Präfix ZDB-, und "vd18")" no Information about repeatability
+
+do list(path:"912  ", "var":"$i")
+  if any_match("$i.a", "(ZDB-[0-9]{1,6}-[a-zA-Z|0-9\\-]*).*")
+    copy_field("$i.a", "inCollection[].$append.id")
+    replace_all("inCollection[].$last.id", "(ZDB-[0-9]{1,6}-[a-zA-Z|0-9\\-]*).*", "http://lobid.org/organisations/$1#!")
+    add_field("inCollection[].$last.label", "eResource package")
+  end
+end
+
+
+set_array("inCollection[].*.type[]","Collection")
+
 #    <!-- E-Book and digital copy selections (inofficial) -->
 #    <entity name="" sameEntity="true" reset="true">
 #      <data source="962  .e" name="id">
