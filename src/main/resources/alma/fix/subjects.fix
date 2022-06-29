@@ -140,6 +140,24 @@ do list(path:"610?4|650?4", "var":"$i")
   copy_field("$i.a","subject[].$last.label")
 end
 
+do list(path:"610?0|650?0", "var":"$i")
+      # TODO: Deduplicate values.
+      #          <data source="$[field]?4.a" name="label">
+      #            <unique/>
+      #          </data>
+  set_array("subject[].$append.type[]","Concept")
+#        <data source="$[field]?0.a" name="label">
+#          <constant value="Library of Congress Subject Headings"/>
+#        </data>
+#        <data source="$[field]?0.a" name="id">
+#          <constant value="https://id.loc.gov/authorities/subjects.html"/>
+#        </data>
+  add_field("subject[].$last.source.label","Library of Congress Subject Headings")
+  add_field("subject[].$last.source.id","https://id.loc.gov/authorities/subjects.html")
+  #      <data name="label" source="$[field]??.a" />
+  copy_field("$i.a","subject[].$last.label")
+end
+
 
 # 
 #     <!-- 650 Topical Term -->
@@ -162,6 +180,13 @@ end
 #       </entity>
 #       <data name="label" source="653??.a" />
 #     </entity>
+
+
+
+
+
+
+
 # 
 #     <!-- DDC Dewey 082 -->
 #     <entity name="" flushWith="0820 |08200">
