@@ -259,10 +259,6 @@ do list(path:"0820 |08200", "var":"$i")
   copy_field("$i.2","subject[].$last.version")
 end
 
-
-
-
-
 # 
 #     <!-- local subjects 982 -->
 #     <entity name="" flushWith="982  " sameEntity="true" reset="true">
@@ -285,6 +281,25 @@ end
 #           <compose prefix="Freie Verschlagwortung durch "/>
 #         </data>
 #       </entity>
+
+# local subjects 982
+
+do list(path:"982  ", "var":"$i")
+  if exists("$i.a|b")
+    set_array("subject[].$append.type[]","Keyword")
+    copy_field("$i.M","$i.@organisations")
+    lookup("$i.@organisations","alma-iz-code-to-isil")
+    paste("subject[].$last.source.id","~http://lobid.org/organisations/","$i.@organisations","~#!", join_char:"")
+    paste("subject[].$last.source.label","~Freie Verschlagwortung durch","$i.@organisations")    
+    copy_field("$i.a|b","subject[].$last.label")
+    copy_field("$i.2","subject[].$last.version")
+  end
+end
+
+
+
+
+
 #     </entity>
 #     <!-- 689 RSWK Schlagwortfolgen fka: Schlagwortketten 1 - 10 -->
 #     <!-- 1 -->
