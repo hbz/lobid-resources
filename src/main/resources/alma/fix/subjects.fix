@@ -159,6 +159,42 @@ do list(path:"610?0|650?0", "var":"$i")
 end
 
 
+#        <data name="id" source="$[field]??.0">
+#          <regexp match="\(DE-588\)(.*)" format="https://d-nb.info/gnd/7749153-1"/>
+#        </data>
+#        <data name="label" source="$[field]??.0">
+#          <regexp match="\(DE-588\)(.*)" format="Gemeinsame Normdatei (GND)"/>
+#        </data>
+
+do list(path:"610??|650??", "var":"$i")
+  if any_match("$i.0","^\\(DE-588\\)(.*)$")
+        # TODO: Deduplicate values.
+        #          <data source="$[field]?4.a" name="label">
+        #            <unique/>
+        #          </data>
+    set_array("subject[].$append.type[]","Concept")
+  #        <data source="$[field]?0.a" name="label">
+  #          <constant value="Library of Congress Subject Headings"/>
+  #        </data>
+  #        <data source="$[field]?0.a" name="id">
+  #          <constant value="https://id.loc.gov/authorities/subjects.html"/>
+  #        </data>
+    add_field("subject[].$last.source.label","Gemeinsame Normdatei (GND)")
+    add_field("subject[].$last.source.id","https://d-nb.info/gnd/7749153-1")
+    #      <data name="label" source="$[field]??.a" />
+    copy_field("$i.a","subject[].$last.label")
+    do list(path:"$i.0", "var":"$j")
+      if any_match("$j","^\\(DE-588\\)(.*)$")
+        copy_field("$j", "subject[].$last.id")
+        replace_all("subject[].$last.id","^\\(DE-588\\)(.*)$","http://d-nb.info/gnd/$1")
+        copy_field("$j", "subject[].$last.gndIdentifier")
+        replace_all("subject[].$last.gndIdentifier","^\\(DE-588\\)(.*)$","$1")      
+      end
+    end
+  end
+end
+
+
 # 
 #     <!-- 650 Topical Term -->
 #     <call-macro name="subjectConcept" field="650" />
