@@ -199,7 +199,8 @@ end
 
 
 
-# 
+#  ALMA: This (653) has been included above as keywors.
+
 #     <!-- 653  Index Term-Uncontrolled (but hbz says Stichwörter) -->
 #     <entity name="" flushWith="653??" sameEntity="true" reset="true">
 #       <entity name="type[]" sameEntity="true" reset="true" flushWith="650??">
@@ -241,6 +242,27 @@ end
 #         <data name="version" source="0820 .2|08200.2" />
 #       </entity>
 #     </entity>
+
+# 082 - Dewey Decimal Classification Number (R) Subfield: a (R), 2 (NR)
+
+do list(path:"0820 |08200", "var":"$i")
+  set_array("subject[].$append.type[]","Concept")
+  add_field("subject[].$last.source.label","Dewey-Dezimalklassifikation")
+  add_field("subject[].$last.source.id","http://d-nb.info/gnd/4149423-4")
+  do list(path:"$i.a", "var": "$j")
+    unless exists("subject[].$last.label")
+      copy_field("$i.a","subject[].$last.label")
+      # TODO: lookup(in:"deweyLabels") does not work yet due to hidden mapping file.
+      copy_field("$i.a","subject[].$last.notation")
+    end
+  end
+  copy_field("$i.2","subject[].$last.version")
+end
+
+
+
+
+
 # 
 #     <!-- local subjects 982 -->
 #     <entity name="" flushWith="982  " sameEntity="true" reset="true">
