@@ -61,6 +61,9 @@ set_array("subject[]")
 #     <!-- 610 CorporateBody -->
 #     <call-macro name="subjectConcept" field="610" />
 #  <macro name="subjectConcept">
+# 
+#     <!-- 650 Topical Term -->
+#     <call-macro name="subjectConcept" field="650" />
 #    <entity name="" flushWith="$[field]??" sameEntity="true" reset="true">
 #      <if>
 #        <any flushWith="$[field]??">
@@ -121,7 +124,7 @@ set_array("subject[]")
 # 610 - Subject Added Entry-Corporate Name (R) Subfield: a (NR)
 
 
-do list(path:"610?4|650?4", "var":"$i")
+do list(path:"610?4|650?4|653??", "var":"$i")
       # TODO: Deduplicate values.
       #          <data source="$[field]?4.a" name="label">
       #            <unique/>
@@ -195,9 +198,7 @@ do list(path:"610??|650??", "var":"$i")
 end
 
 
-# 
-#     <!-- 650 Topical Term -->
-#     <call-macro name="subjectConcept" field="650" />
+
 # 
 #     <!-- 653  Index Term-Uncontrolled (but hbz says Stichwörter) -->
 #     <entity name="" flushWith="653??" sameEntity="true" reset="true">
