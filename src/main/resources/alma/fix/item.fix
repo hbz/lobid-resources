@@ -59,6 +59,20 @@ end
 #         </data>
 #       </entity>
 #     </entity>
+
+do list(path:"HOL  ", "var": "$i")
+  copy_field("$i.8", "hasItem[].$append.id")
+  prepend("hasItem[].$last.id","https://lobid.org/item/")
+  add_field("hasItem[].$last.label", "lobid Bestandsressource")
+  set_array("hasItem[].$last.type[]", "HOL")
+  copy_field("$i.8", "hasItem[].$last.heldBy.id")
+  replace_all("hasItem[].$last.heldBy.id",".*(\\d{4})$","$1")
+  lookup("hasItem[].$last.heldBy.id", "alma-institution-code-to-isil")
+  prepend("hasItem[].$last.heldBy.id", "http://lobid.org/organisations/")
+  append("hasItem[].$last.heldBy.id","#!")
+end
+
+
 #     <!-- H52 -->
 #     <entity name="" reset="true" sameEntity="true">
 #       <combine name="id" value="https://lobid.org/item/${i}">
