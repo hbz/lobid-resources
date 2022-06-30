@@ -362,7 +362,6 @@ end
 #
 
 
-# TODO: add concatinated Schlagwortketten-label
 
 if exists("6890?")
   set_array("subject[].$append.type[]","ComplexSubject")
@@ -374,7 +373,8 @@ if exists("6890?")
       copy_field("$k","subject[].$last.componentList[].$last.type[].$append")
     end
     copy_field("$i.a","subject[].$last.componentList[].$last.label")
-      do list(path:"$i.0", "var": "$j")
+    copy_field("$i.a","subject[].$last.label.$append")
+    do list(path:"$i.0", "var": "$j")
       if any_match("$j","^\\(DE-588\\)(.*)$")
         add_field("subject[].$last.componentList[].$last.source.label","Gemeinsame Normdatei (GND)")
         add_field("subject[].$last.componentList[].$last.source.id","https://d-nb.info/gnd/7749153-1")
@@ -385,6 +385,7 @@ if exists("6890?")
       end
     end
   end
+  join_field("subject[].$last.label"," | ")
 end
 
 if exists("6891?")
@@ -397,7 +398,8 @@ if exists("6891?")
       copy_field("$k","subject[].$last.componentList[].$last.type[].$append")
     end
     copy_field("$i.a","subject[].$last.componentList[].$last.label")
-      do list(path:"$i.0", "var": "$j")
+    copy_field("$i.a","subject[].$last.label.$append")
+    do list(path:"$i.0", "var": "$j")
       if any_match("$j","^\\(DE-588\\)(.*)$")
         add_field("subject[].$last.componentList[].$last.source.label","Gemeinsame Normdatei (GND)")
         add_field("subject[].$last.componentList[].$last.source.id","https://d-nb.info/gnd/7749153-1")
@@ -408,6 +410,7 @@ if exists("6891?")
       end
     end
   end
+  join_field("subject[].$last.label"," | ")
 end
 
 if exists("6892?")
@@ -420,7 +423,8 @@ if exists("6892?")
       copy_field("$k","subject[].$last.componentList[].$last.type[].$append")
     end
     copy_field("$i.a","subject[].$last.componentList[].$last.label")
-      do list(path:"$i.0", "var": "$j")
+    copy_field("$i.a","subject[].$last.label.$append")
+    do list(path:"$i.0", "var": "$j")
       if any_match("$j","^\\(DE-588\\)(.*)$")
         add_field("subject[].$last.componentList[].$last.source.label","Gemeinsame Normdatei (GND)")
         add_field("subject[].$last.componentList[].$last.source.id","https://d-nb.info/gnd/7749153-1")
@@ -431,6 +435,7 @@ if exists("6892?")
       end
     end
   end
+  join_field("subject[].$last.label"," | ")
 end
 
 if exists("6893?")
@@ -443,7 +448,8 @@ if exists("6893?")
       copy_field("$k","subject[].$last.componentList[].$last.type[].$append")
     end
     copy_field("$i.a","subject[].$last.componentList[].$last.label")
-      do list(path:"$i.0", "var": "$j")
+    copy_field("$i.a","subject[].$last.label.$append")
+    do list(path:"$i.0", "var": "$j")
       if any_match("$j","^\\(DE-588\\)(.*)$")
         add_field("subject[].$last.componentList[].$last.source.label","Gemeinsame Normdatei (GND)")
         add_field("subject[].$last.componentList[].$last.source.id","https://d-nb.info/gnd/7749153-1")
@@ -454,6 +460,7 @@ if exists("6893?")
       end
     end
   end
+  join_field("subject[].$last.label"," | ")
 end
 
 if exists("6894?")
@@ -466,7 +473,8 @@ if exists("6894?")
       copy_field("$k","subject[].$last.componentList[].$last.type[].$append")
     end
     copy_field("$i.a","subject[].$last.componentList[].$last.label")
-      do list(path:"$i.0", "var": "$j")
+    copy_field("$i.a","subject[].$last.label.$append")
+    do list(path:"$i.0", "var": "$j")
       if any_match("$j","^\\(DE-588\\)(.*)$")
         add_field("subject[].$last.componentList[].$last.source.label","Gemeinsame Normdatei (GND)")
         add_field("subject[].$last.componentList[].$last.source.id","https://d-nb.info/gnd/7749153-1")
@@ -477,6 +485,7 @@ if exists("6894?")
       end
     end
   end
+  join_field("subject[].$last.label"," | ")
 end
 
 if exists("6895?")
@@ -489,7 +498,8 @@ if exists("6895?")
       copy_field("$k","subject[].$last.componentList[].$last.type[].$append")
     end
     copy_field("$i.a","subject[].$last.componentList[].$last.label")
-      do list(path:"$i.0", "var": "$j")
+    copy_field("$i.a","subject[].$last.label.$append")
+    do list(path:"$i.0", "var": "$j")
       if any_match("$j","^\\(DE-588\\)(.*)$")
         add_field("subject[].$last.componentList[].$last.source.label","Gemeinsame Normdatei (GND)")
         add_field("subject[].$last.componentList[].$last.source.id","https://d-nb.info/gnd/7749153-1")
@@ -500,6 +510,7 @@ if exists("6895?")
       end
     end
   end
+  join_field("subject[].$last.label"," | ")
 end
 
 if exists("6896?")
@@ -512,7 +523,8 @@ if exists("6896?")
       copy_field("$k","subject[].$last.componentList[].$last.type[].$append")
     end
     copy_field("$i.a","subject[].$last.componentList[].$last.label")
-      do list(path:"$i.0", "var": "$j")
+    copy_field("$i.a","subject[].$last.label.$append")
+    do list(path:"$i.0", "var": "$j")
       if any_match("$j","^\\(DE-588\\)(.*)$")
         add_field("subject[].$last.componentList[].$last.source.label","Gemeinsame Normdatei (GND)")
         add_field("subject[].$last.componentList[].$last.source.id","https://d-nb.info/gnd/7749153-1")
@@ -523,6 +535,7 @@ if exists("6896?")
       end
     end
   end
+  join_field("subject[].$last.label"," | ")
 end
 
 if exists("6897?")
@@ -535,7 +548,8 @@ if exists("6897?")
       copy_field("$k","subject[].$last.componentList[].$last.type[].$append")
     end
     copy_field("$i.a","subject[].$last.componentList[].$last.label")
-      do list(path:"$i.0", "var": "$j")
+    copy_field("$i.a","subject[].$last.label.$append")
+    do list(path:"$i.0", "var": "$j")
       if any_match("$j","^\\(DE-588\\)(.*)$")
         add_field("subject[].$last.componentList[].$last.source.label","Gemeinsame Normdatei (GND)")
         add_field("subject[].$last.componentList[].$last.source.id","https://d-nb.info/gnd/7749153-1")
@@ -546,6 +560,7 @@ if exists("6897?")
       end
     end
   end
+  join_field("subject[].$last.label"," | ")
 end
 
 if exists("6898?")
@@ -558,7 +573,8 @@ if exists("6898?")
       copy_field("$k","subject[].$last.componentList[].$last.type[].$append")
     end
     copy_field("$i.a","subject[].$last.componentList[].$last.label")
-      do list(path:"$i.0", "var": "$j")
+    copy_field("$i.a","subject[].$last.label.$append")
+    do list(path:"$i.0", "var": "$j")
       if any_match("$j","^\\(DE-588\\)(.*)$")
         add_field("subject[].$last.componentList[].$last.source.label","Gemeinsame Normdatei (GND)")
         add_field("subject[].$last.componentList[].$last.source.id","https://d-nb.info/gnd/7749153-1")
@@ -569,6 +585,7 @@ if exists("6898?")
       end
     end
   end
+  join_field("subject[].$last.label"," | ")
 end
 
 if exists("6899?")
@@ -581,7 +598,8 @@ if exists("6899?")
       copy_field("$k","subject[].$last.componentList[].$last.type[].$append")
     end
     copy_field("$i.a","subject[].$last.componentList[].$last.label")
-      do list(path:"$i.0", "var": "$j")
+    copy_field("$i.a","subject[].$last.label.$append")
+    do list(path:"$i.0", "var": "$j")
       if any_match("$j","^\\(DE-588\\)(.*)$")
         add_field("subject[].$last.componentList[].$last.source.label","Gemeinsame Normdatei (GND)")
         add_field("subject[].$last.componentList[].$last.source.id","https://d-nb.info/gnd/7749153-1")
@@ -592,6 +610,7 @@ if exists("6899?")
       end
     end
   end
+  join_field("subject[].$last.label"," | ")
 end
 
 # TODO: Find out why this does not work?
