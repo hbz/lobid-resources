@@ -159,6 +159,8 @@ end
 #       </combine>
 #     </entity>
 
+
+# TODO: Objects created from ITM seem to produce duplicates. Either we need something to differentiate these or deduplicate these.
 do list(path:"ITM  ", "var": "$i")
   copy_field("$i.a", "hasItem[].$append.id")
   prepend("hasItem[].$last.id","https://lobid.org/item/")
@@ -177,10 +179,7 @@ do list(path:"ITM  ", "var": "$i")
 end
 
 
-
-
-
-
+# TODO: POR
 #     <!-- POR -->
 #     <!-- POR  .a but no POR  .A -->
 #     <entity name="" reset="true" sameEntity="true">
@@ -215,6 +214,11 @@ end
 #         </data>
 #       </entity>
 #     </entity>
+
+
+
+
+
 #     <!-- POR  .a = NZ => hasItem for each POR  .A -->
 #     <entity name="" reset="true" flushWith="POR  .A" sameEntity="true">
 #       <combine name="id" value="https://lobid.org/item/${i}" flushWith="POR  .A">
