@@ -1,0 +1,212 @@
+#  <entity name="medium[]" flushWith="record">
+#    <entity name="" reset="true" flushWith="@facet_format">
+#      <data name="id" source="@facet_format"/>
+#      <combine name="label" value="Online-Ressource">
+#              <data source="@facet_format">
+#                <equals string="http://rdaregistry.info/termList/RDACarrierType/1018" />
+#              </data>
+#      </combine>
+#       <combine name="label" value="Datenträger">
+#              <data source="@facet_format">
+#                <equals string="http://rdaregistry.info/termList/RDAMediaType/1003" />
+#              </data>
+#      </combine>
+#    </entity>
+#  </entity>
+
+set_array("medium[]")
+
+
+#  <!--
+#    CF = Computer files
+#    MK = Music
+#    MP  = Map
+#    CR = Continuing Resources
+#    VM = Visual materials
+#    MX = Mixed materials
+#    BK  = Book
+#  -->
+# Leader/06 values
+# Value 	Field 008/18-34 configuration
+# a 	    Language material 	Books OR Continuing resources
+# c 	    Notated music 	Music
+# d 	    Manuscript notated music 	Music
+# e 	    Cartographic material 	Maps
+# f 	    Manuscript cartographic material 	Maps
+# g 	    Projected medium 	Visual materials
+# i 	    Nonmusical sound recording 	Music
+# j 	    Musical sound recording 	Music
+# k 	    Two-dimensional nonprojectable graphic 	Visual materials
+# m 	    Computer file 	Computer files
+# o 	    Kit 	Visual materials
+# p 	    Mixed material 	Mixed materials
+# r 	    Three dimensional artifact or naturally occurring object 	Visual materials
+# t 	    Manuscript language material 	Books
+
+# @LeaderPos06 - Type of record
+# @LeaderPos07 - Bibliographic level
+# set @leaderType-variable
+copy_field("leader","@leaderPos06-07")
+substring("@leaderPos06-07","6","7")
+if any_match("@leadertyp","a[acdm]|t.")
+  add_field("@leaderTyp","Book")
+  # TODO: Why is `m` not CF but CR sometimes.
+elsif any_match("@leadertyp","a[bis]|m[bis]")
+  add_field("@leaderTyp","Continuing Resources")
+elsif any_match("@leadertyp","m[^bis]")
+  add_field("@leaderTyp","Computer files")
+elsif any_match("@leadertyp","[cdij].")
+  add_field("@leaderTyp","Music")
+elsif any_match("@leadertyp","[ef].")  
+  add_field("@leaderTyp","Map")
+elsif any_match("@leadertyp","[gkor].")  
+  add_field("@leaderTyp","Visual materials")
+elsif any_match("@leadertyp","p.")  
+  add_field("@leaderTyp","Mixed materials")
+end
+
+paste("@leaderTyp+008","@leaderTyp","008")
+
+#  Medium: Audio
+if any_equal("@leaderTyp","Music")
+  add_field("medium[].$append.label","Audio") 
+elsif any_match("006", "^[ij]")
+  add_field("medium[].$append.label","Audio")
+elsif any_match("007", "^[s]")
+  add_field("medium[].$append.label","Audio")
+elsif any_match("@leaderTyp+008", "Computer files(.{26})h")  
+  add_field("medium[].$append.label","Audio")
+elsif any_match("006", "m(.{8})h") # Pos00+09
+  add_field("medium[].$append.label","Audio")
+elsif any_match("337  |338 .a", "audio|Audiodisk")
+  add_field("medium[].$append.label","Audio")
+elsif any_match("338  .b", "s")
+  add_field("medium[].$append.label","Audio")
+end
+
+#  Medium: Image
+if any_match("007", "^(r.|k[cdefhijklnpqrsuvz])")
+  add_field("medium[].$append.label","Image")
+elsif any_match("@leaderTyp+008", "Map(.{33|34})[jo]")  # Pos33|34
+  add_field("medium[].$append.label","Image")
+elsif any_match("@leaderTyp+008", "Visual materials(.{32})[dikln]")   # Pos33
+  add_field("medium[].$append.label","Image")
+elsif any_match("006", "^[gkor](.{15})[dikln]") # Pos00+16
+  add_field("medium[].$append.label","Image")
+elsif any_match("006", "^[ef](.{15|16})[jo]")  # Pos00+16|17
+  add_field("medium[].$append.label","Image")
+end
+
+#  Medium: computer/Datenträger
+if any_match("@leaderPos06-07", "^m")
+  add_field("medium[].$append.label","Datenträger")
+elsif any_match("006", "^m") 
+  add_field("medium[].$append.label","Datenträger")
+elsif any_match("007", "^c") 
+  add_field("medium[].$append.label","Datenträger")
+elsif any_match("@leaderTyp+008", "(Book|Music|Continuing Resources|Mixed materials)(.{23})[sq]")  # Pos23
+  add_field("medium[].$append.label","Datenträger")
+elsif any_match("@leaderTyp+008", "(Map|Visual materials)(.{29})[sq]")  # Pos29
+  add_field("medium[].$append.label","Datenträger")
+elsif any_match("006", "^[efgkor](.{11})[sq]") # Pos00+12
+  add_field("medium[].$append.label","Datenträger")
+elsif any_match("006", "^[acdijpst](.{5})[sq]") # Pos00+06
+  add_field("medium[].$append.label","Datenträger")
+elsif any_match("337  |338 .a", "^(Computermedien|computer|computermedien|informatique|Computerdisk|computer disc)$")
+  add_field("medium[].$append.label","Datenträger")
+elsif any_match("338  .b", "cd")
+  add_field("medium[].$append.label","Datenträger")
+end
+
+#  Medium: Online-Ressource
+if any_match("007", "^([gmv])")
+  add_field("medium[].$append.label","Online-Ressource")
+elsif any_match("@leaderTyp+008", "Visual materials(.{32})[fmstv]")   # Pos33
+  add_field("medium[].$append.label","Online-Ressource")
+elsif any_match("006", "^[gkor](.{15})[fmstv]") # Pos00+16
+  add_field("medium[].$append.label","Online-Ressource")
+elsif any_match("337  |338 .a", "^(Videodisk|videodisc|video)$")
+  add_field("medium[].$append.label","Online-Ressource")
+elsif any_match("337  .b", "v")
+  add_field("medium[].$append.label","Online-Ressource")
+elsif any_match("338  .b", "cd")
+  add_field("medium[].$append.label","Online-Ressource")
+end
+
+#  Medium: Print
+if any_match("@leaderPos06-07", "^[op]")
+  add_field("medium[].$append.label","Print")
+elsif any_match("006", "^[op]") 
+  add_field("medium[].$append.label","Print")
+elsif any_match("007", "^k[fjs]|^o|^t[ab]") 
+  add_field("medium[].$append.label","Print")
+elsif any_match("@leaderTyp+008", "(Book|Music|Continuing Resources|Mixed materials)(.{23})[dr]")  # Pos23
+  add_field("medium[].$append.label","Print")
+elsif any_match("@leaderTyp+008", "(Map|Visual materials)(.{29})[dr]")  # Pos29
+  add_field("medium[].$append.label","Print")
+elsif any_match("@leaderTyp+008", "(Visual materials)(.{33})b")  # Pos33
+  add_field("medium[].$append.label","Print")
+end
+
+#  Medium: Map
+if any_equal("@leaderTyp", "Map")
+  add_field("medium[].$append.label","Map")
+elsif any_match("006", "^[ef]") 
+  add_field("medium[].$append.label","Map")
+elsif any_match("007", "^[ad]") 
+  add_field("medium[].$append.label","Map")
+end
+
+#  Medium: Microform
+if any_match("007", "^h") 
+  add_field("medium[].$append.label","Microform")
+elsif any_match("@leaderTyp+008", "(Book|Music|Continuing Resources|Mixed materials)(.{23})[abc]")  # Pos23
+  add_field("medium[].$append.label","Microform")
+elsif any_match("@leaderTyp+008", "(Map|Visual materials)(.{29})[abc]")  # Pos29
+  add_field("medium[].$append.label","Microform")
+elsif any_match("@leaderTyp+008", "(Visual materials)(.{33})b")  # Pos33
+  add_field("medium[].$append.label","Microform")
+elsif any_match("006", "^[efgkor](.{11})[abc]") # Pos00+12
+  add_field("medium[].$append.label","Datenträger")
+elsif any_match("006", "^[acdijpst](.{5})[abc]") # Pos00+06
+  add_field("medium[].$append.label","Datenträger")
+elsif any_match("337  |338 .a", "^(Mikroform|microform|microfiche|microfilm roll)$")
+  add_field("medium[].$append.label","Online-Ressource")
+elsif any_match("337  .b", "h")
+  add_field("medium[].$append.label","Online-Ressource")
+elsif any_match("338  .b", "he|hj")
+  add_field("medium[].$append.label","Online-Ressource")
+end
+
+#  Medium: online resource
+
+
+@LeaderPos06 - Type of record
+@LeaderPos07 - Bibliographic level
+
+
+
+@facet_format/facet_type?
+Quelle= 
+@type + @008Pos21
+@type + @008Pos23
+@type + @008Pos24
+@type + @008Pos25
+@type + @008Pos26
+@type + @008Pos27
+@type + @008Pos28
+@type + @008Pos29
+@type + @008Pos30
+@type + @008Pos31
+@type + @008Pos33
+@type + @008Pos34
+
+
+
+
+#    <entity name="type[]" flushWith="record">
+#      <data name="" source="@facet_type" />
+#      <data name="" source="001" >
+#				<constant value="BibliographicResource" />
+#			</data>
+#    </entity>
