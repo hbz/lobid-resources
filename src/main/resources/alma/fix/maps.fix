@@ -27,6 +27,48 @@ put_map("alma-institution-code-to-isil",
   "6447": "DE-468" # /> <!-- Universitätsbibliothek Wuppertal -->
 )
 
+#  <!--
+#    CF = Computer files
+#    MK = Music
+#    MP  = Map
+#    CR = Continuing Resources
+#    VM = Visual materials
+#    MX = Mixed materials
+#    BK  = Book
+#  -->
+# Leader/06 values
+# Value 	Field 008/18-34 configuration
+# a 	    Language material 	Books OR Continuing resources
+# c 	    Notated music 	Music
+# d 	    Manuscript notated music 	Music
+# e 	    Cartographic material 	Maps
+# f 	    Manuscript cartographic material 	Maps
+# g 	    Projected medium 	Visual materials
+# i 	    Nonmusical sound recording 	Music
+# j 	    Musical sound recording 	Music
+# k 	    Two-dimensional nonprojectable graphic 	Visual materials
+# m 	    Computer file 	Computer files
+# o 	    Kit 	Visual materials
+# p 	    Mixed material 	Mixed materials
+# r 	    Three dimensional artifact or naturally occurring object 	Visual materials
+# t 	    Manuscript language material 	Books
+
+put_map("typeLeader06",
+    "m": "CF", 
+    "c": "Mu", 
+    "d": "Mu", 
+    "i": "Mu", 
+    "j": "Mu", 
+    "e": "MP" ,
+    "f": "MP" ,
+    "g": "VM", 
+    "k": "VM", 
+    "o": "VM", 
+    "r": "VM", 
+    "p": "MX", 
+    "t": "BK" 
+)
+
 # <!-- source of mapping: http://www.dnb.de/SharedDocs/Downloads/DE/DNB/standardisierung/inhaltserschliessung/sprachenCodesIso6392.pdf?__blob=publicationFile -->
 
 put_map("ISO639-2-to-GND",

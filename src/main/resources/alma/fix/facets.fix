@@ -1,0 +1,106 @@
+#  <entity name="medium[]" flushWith="record">
+#    <entity name="" reset="true" flushWith="@facet_format">
+#      <data name="id" source="@facet_format"/>
+#      <combine name="label" value="Online-Ressource">
+#              <data source="@facet_format">
+#                <equals string="http://rdaregistry.info/termList/RDACarrierType/1018" />
+#              </data>
+#      </combine>
+#       <combine name="label" value="Datenträger">
+#              <data source="@facet_format">
+#                <equals string="http://rdaregistry.info/termList/RDAMediaType/1003" />
+#              </data>
+#      </combine>
+#    </entity>
+#  </entity>
+
+set_array("medium[]")
+
+# set @leaderType-variable
+copy_field("leader","@leader06-07")
+substring("@leader06-07","6","7")
+if any_match("@leadertyp","a[acdm]|t.")
+  add_field("@leaderTyp","Book")
+elsif any_match("@leadertyp","a[bis]|m[bis]")
+  add_field("@leaderTyp","Continuing Resources")
+elsif any_match("@leadertyp","m[^bis]")
+  add_field("@leaderTyp","Computer files")
+elsif any_match("@leadertyp","[cdij].")
+  add_field("@leaderTyp","Music")
+elsif any_match("@leadertyp","[ef].")  
+  add_field("@leaderTyp","Map")
+elsif any_match("@leadertyp","[gkor].")  
+  add_field("@leaderTyp","Visual materials")
+elsif any_match("@leadertyp","p.")  
+  add_field("@leaderTyp","Mixed materials")
+end
+
+  
+  put_map("typeLeader06",
+    "m": "CF", 
+    "c": "Mu", 
+    "d": "Mu", 
+    "i": "Mu", 
+    "j": "Mu", 
+    "e": "MP" ,
+    "f": "MP" ,
+    "g": "VM", 
+    "k": "VM", 
+    "o": "VM", 
+    "r": "VM", 
+    "p": "MX", 
+    "t": "BK" 
+)
+
+
+
+@LeaderPos06 - Type of record
+@LeaderPos07 - Bibliographic level
+
+
+@type?
+@LeaderPos06
+@LeaderPos06+@LeaderPos07
+
+@type
+
+
+@facet_format/facet_type?
+Quelle= 
+@type + @008Pos21
+@type + @008Pos23
+@type + @008Pos24
+@type + @008Pos25
+@type + @008Pos26
+@type + @008Pos27
+@type + @008Pos28
+@type + @008Pos29
+@type + @008Pos30
+@type + @008Pos31
+@type + @008Pos33
+@type + @008Pos34
+@LeaderPos06 
+@007Pos00
+@007Pos00+@007Pos01
+@006Pos00
+@006Pos00+@006Pos04
+@006Pos00+@006Pos06
+@006Pos00+@006Pos07
+@006Pos00+@006Pos08
+@006Pos00+@006Pos09
+@006Pos00+@006Pos10
+@006Pos00+@006Pos11
+@006Pos00+@006Pos12
+@006Pos00+@006Pos13
+@006Pos00+@006Pos14
+@006Pos00+@006Pos16
+@006Pos00+@006Pos17
+
+
+
+#    <entity name="type[]" flushWith="record">
+#      <data name="" source="@facet_type" />
+#      <data name="" source="001" >
+#				<constant value="BibliographicResource" />
+#			</data>
+#    </entity>
