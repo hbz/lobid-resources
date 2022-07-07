@@ -1,0 +1,92 @@
+set_array("medium[]")
+
+# The type and medium transformation has to be completly remodeled since the transformation was not identical with
+# the old ALEPH Moprh Transformation.
+
+#  <!--
+#    CF = Computer files
+#    MK = Music
+#    MP  = Map
+#    CR = Continuing Resources
+#    VM = Visual materials
+#    MX = Mixed materials
+#    BK  = Book
+#  -->
+# Leader/06 values
+# Value 	Field 008/18-34 configuration
+# a 	    Language material 	Books OR Continuing resources
+# c 	    Notated music 	Music
+# d 	    Manuscript notated music 	Music
+# e 	    Cartographic material 	Maps
+# f 	    Manuscript cartographic material 	Maps
+# g 	    Projected medium 	Visual materials
+# i 	    Nonmusical sound recording 	Music
+# j 	    Musical sound recording 	Music
+# k 	    Two-dimensional nonprojectable graphic 	Visual materials
+# m 	    Computer file 	Computer files
+# o 	    Kit 	Visual materials
+# p 	    Mixed material 	Mixed materials
+# r 	    Three dimensional artifact or naturally occurring object 	Visual materials
+# t 	    Manuscript language material 	Books
+
+# @LeaderPos06 - Type of record
+# @LeaderPos07 - Bibliographic level
+# set @leaderType-variable
+copy_field("leader","@leaderPos06-07")
+substring("@leaderPos06-07","6","2")
+
+if any_match("@leaderPos06-07","a[acdm]|t.")
+  add_field("@leaderTyp","Book")
+  # TODO: Why is `m` not CF but CR sometimes.
+elsif any_match("@leaderPos06-07","a[bis]|m[bis]")
+  add_field("@leaderTyp","Continuing Resources")
+elsif any_match("@leaderPos06-07","m[^bis]")
+  add_field("@leaderTyp","Computer files")
+elsif any_match("@leaderPos06-07","[cdij].")
+  add_field("@leaderTyp","Music")
+elsif any_match("@leaderPos06-07","[ef].")  
+  add_field("@leaderTyp","Map")
+elsif any_match("@leaderPos06-07","[gkor].")  
+  add_field("@leaderTyp","Visual materials")
+elsif any_match("@leaderPos06-07","p.")  
+  add_field("@leaderTyp","Mixed materials")
+end
+
+paste("@leaderTyp+008","@leaderTyp","008", join_char:"")
+
+# medium (Mappings based on old ALEPH-morph, Introx Mapping and 050 Mapping from Verbund)
+# https://service-wiki.hbz-nrw.de/display/VDBE/ALT+-+Mapping+MAB2+-+MARC+21+-++Segmente+0---%2C+001+-+088+-+Kurzform
+
+# 337: https://service-wiki.hbz-nrw.de/pages/viewpage.action?pageId=510164996&preview=/510164996/510165005/F8_Liste_061_.txt
+# 338: Value list: https://service-wiki.hbz-nrw.de/pages/viewpage.action?pageId=510164996&preview=/510164996/510165006/F8_Liste_062_.txt
+
+# medium: "Audio-Dokument":	"http://purl.org/ontology/bibo/AudioDocument"
+
+if any_match("@leaderPos06-07","[ij].") 
+  add_field("medium[].$append.label","Audio-Dokument") 
+elsif any_match("006", "^[ij].*")
+  add_field("medium[].$append.label","Audio-Dokument")
+elsif any_match("007", "^[s].*")
+  add_field("medium[].$append.label","Audio-Dokument")
+elsif any_match("@leaderTyp+008", "Computer files(.{26})h.*")  
+  add_field("medium[].$append.label","Audio-Dokument")
+elsif any_match("006", "m(.{8})h.*") # Pos00+09
+  add_field("medium[].$append.label","Audio-Dokument")
+elsif any_match("337  ", "audio")
+  add_field("medium[].$append.label","Audio-Dokument")
+elsif any_match("338 .a", "Audiodisk|Audiokassette|Audiocartridge|Notenrolle|Phonographenzylinder|Tonbandspule|Sonstige Tonträger")
+  add_field("medium[].$append.label","Audio-Dokument")
+elsif any_match("338  .b", "s")
+  add_field("medium[].$append.label","Audio-Dokument")
+elsif any_match("245[10]0.h", "^[Tt][oO].*|Audio-CD")
+  add_field("medium[].$append.label","Audio-Dokument")
+elsif any_match("689??.a", "Hörbuch|Tonträger")
+  add_field("medium[].$append.label","Audio-Dokument")    
+end
+
+
+
+do list(path:"medium[]", "var": "$i")
+	copy_field("$i.label","$i.id")
+	lookup("$i.id","medium-id-to-label")
+end
