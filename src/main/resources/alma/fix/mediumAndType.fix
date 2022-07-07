@@ -84,7 +84,14 @@ elsif any_match("689??.a", "Hörbuch|Tonträger")
   add_field("medium[].$append.label","Audio-Dokument")    
 end
 
+# medium: "Audio-Kassette":	"http://id.loc.gov/vocabulary/carriers/ss"
 
+
+if any_match("007", "^ss.*")
+  add_field("medium[].$append.label","Audio-Kassette")
+elsif any_match("245[10]0.h", "Kompaktkassette|MC|Tonkassette")
+  add_field("medium[].$append.label","Audio-Dokument")
+end
 
 do list(path:"medium[]", "var": "$i")
 	copy_field("$i.label","$i.id")
