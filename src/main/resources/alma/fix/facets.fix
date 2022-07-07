@@ -47,36 +47,37 @@ set_array("medium[]")
 # @LeaderPos07 - Bibliographic level
 # set @leaderType-variable
 copy_field("leader","@leaderPos06-07")
-substring("@leaderPos06-07","6","7")
-if any_match("@leadertyp","a[acdm]|t.")
+substring("@leaderPos06-07","6","2")
+
+if any_match("@leaderPos06-07","a[acdm]|t.")
   add_field("@leaderTyp","Book")
   # TODO: Why is `m` not CF but CR sometimes.
-elsif any_match("@leadertyp","a[bis]|m[bis]")
+elsif any_match("@leaderPos06-07","a[bis]|m[bis]")
   add_field("@leaderTyp","Continuing Resources")
-elsif any_match("@leadertyp","m[^bis]")
+elsif any_match("@leaderPos06-07","m[^bis]")
   add_field("@leaderTyp","Computer files")
-elsif any_match("@leadertyp","[cdij].")
+elsif any_match("@leaderPos06-07","[cdij].")
   add_field("@leaderTyp","Music")
-elsif any_match("@leadertyp","[ef].")  
+elsif any_match("@leaderPos06-07","[ef].")  
   add_field("@leaderTyp","Map")
-elsif any_match("@leadertyp","[gkor].")  
+elsif any_match("@leaderPos06-07","[gkor].")  
   add_field("@leaderTyp","Visual materials")
-elsif any_match("@leadertyp","p.")  
+elsif any_match("@leaderPos06-07","p.")  
   add_field("@leaderTyp","Mixed materials")
 end
 
-paste("@leaderTyp+008","@leaderTyp","008")
+paste("@leaderTyp+008","@leaderTyp","008", join_char:"")
 
 #  Medium: Audio
-if any_equal("@leaderTyp","Music")
+if any_equal("@leaderPos06-07","[ij].") # TODO: This would include notated music which is not audio e.g. https://lobid.org/resources/990016782920206441#!
   add_field("medium[].$append.label","Audio") 
-elsif any_match("006", "^[ij]")
+elsif any_match("006", "^[ij].*")
   add_field("medium[].$append.label","Audio")
-elsif any_match("007", "^[s]")
+elsif any_match("007", "^[s].*")
   add_field("medium[].$append.label","Audio")
-elsif any_match("@leaderTyp+008", "Computer files(.{26})h")  
+elsif any_match("@leaderTyp+008", "Computer files(.{26})h.*")  
   add_field("medium[].$append.label","Audio")
-elsif any_match("006", "m(.{8})h") # Pos00+09
+elsif any_match("006", "m(.{8})h.*") # Pos00+09
   add_field("medium[].$append.label","Audio")
 elsif any_match("337  |338 .a", "audio|Audiodisk")
   add_field("medium[].$append.label","Audio")
@@ -85,32 +86,32 @@ elsif any_match("338  .b", "s")
 end
 
 #  Medium: Image
-if any_match("007", "^(r.|k[cdefhijklnpqrsuvz])")
+if any_match("007", "^(r.|k[cdefhijklnpqrsuvz]).*")
   add_field("medium[].$append.label","Image")
-elsif any_match("@leaderTyp+008", "Map(.{33|34})[jo]")  # Pos33|34
+elsif any_match("@leaderTyp+008", "Map(.{33}|.{34})[jo].*")  # Pos33|34
   add_field("medium[].$append.label","Image")
-elsif any_match("@leaderTyp+008", "Visual materials(.{32})[dikln]")   # Pos33
+elsif any_match("@leaderTyp+008", "Visual materials(.{32})[dikln].*")   # Pos33
   add_field("medium[].$append.label","Image")
-elsif any_match("006", "^[gkor](.{15})[dikln]") # Pos00+16
+elsif any_match("006", "^[gkor](.{15})[dikln].*") # Pos00+16
   add_field("medium[].$append.label","Image")
-elsif any_match("006", "^[ef](.{15|16})[jo]")  # Pos00+16|17
+elsif any_match("006", "^[ef](.{15}|.{16})[jo].*")  # Pos00+16|17
   add_field("medium[].$append.label","Image")
 end
 
 #  Medium: computer/Datenträger
-if any_match("@leaderPos06-07", "^m")
+if any_match("@leaderPos06-07", "^m.*")
   add_field("medium[].$append.label","Datenträger")
-elsif any_match("006", "^m") 
+elsif any_match("006", "^m.*") 
   add_field("medium[].$append.label","Datenträger")
-elsif any_match("007", "^c") 
+elsif any_match("007", "^c.*") 
   add_field("medium[].$append.label","Datenträger")
-elsif any_match("@leaderTyp+008", "(Book|Music|Continuing Resources|Mixed materials)(.{23})[sq]")  # Pos23
+elsif any_match("@leaderTyp+008", "(Book|Music|Continuing Resources|Mixed materials)(.{23})[sq].*")  # Pos23
   add_field("medium[].$append.label","Datenträger")
-elsif any_match("@leaderTyp+008", "(Map|Visual materials)(.{29})[sq]")  # Pos29
+elsif any_match("@leaderTyp+008", "(Map|Visual materials)(.{29})[sq].*")  # Pos29
   add_field("medium[].$append.label","Datenträger")
-elsif any_match("006", "^[efgkor](.{11})[sq]") # Pos00+12
+elsif any_match("006", "^[efgkor](.{11})[sq].*") # Pos00+12
   add_field("medium[].$append.label","Datenträger")
-elsif any_match("006", "^[acdijpst](.{5})[sq]") # Pos00+06
+elsif any_match("006", "^[acdijpst](.{5})[sq].*") # Pos00+06
   add_field("medium[].$append.label","Datenträger")
 elsif any_match("337  |338 .a", "^(Computermedien|computer|computermedien|informatique|Computerdisk|computer disc)$")
   add_field("medium[].$append.label","Datenträger")
@@ -118,33 +119,33 @@ elsif any_match("338  .b", "cd")
   add_field("medium[].$append.label","Datenträger")
 end
 
-#  Medium: Online-Ressource
+#  Medium: Video
 if any_match("007", "^([gmv])")
-  add_field("medium[].$append.label","Online-Ressource")
-elsif any_match("@leaderTyp+008", "Visual materials(.{32})[fmstv]")   # Pos33
-  add_field("medium[].$append.label","Online-Ressource")
-elsif any_match("006", "^[gkor](.{15})[fmstv]") # Pos00+16
-  add_field("medium[].$append.label","Online-Ressource")
+  add_field("medium[].$append.label","Video")
+elsif any_match("@leaderTyp+008", "Visual materials(.{32})[fmstv].*")   # Pos33
+  add_field("medium[].$append.label","Video")
+elsif any_match("006", "^[gkor](.{15})[fmstv].*") # Pos00+16
+  add_field("medium[].$append.label","Video")
 elsif any_match("337  |338 .a", "^(Videodisk|videodisc|video)$")
-  add_field("medium[].$append.label","Online-Ressource")
+  add_field("medium[].$append.label","Video")
 elsif any_match("337  .b", "v")
-  add_field("medium[].$append.label","Online-Ressource")
+  add_field("medium[].$append.label","Video")
 elsif any_match("338  .b", "cd")
-  add_field("medium[].$append.label","Online-Ressource")
+  add_field("medium[].$append.label","Video")
 end
 
 #  Medium: Print
-if any_match("@leaderPos06-07", "^[op]")
+if any_match("@leaderPos06-07", "^[op].*")
   add_field("medium[].$append.label","Print")
-elsif any_match("006", "^[op]") 
+elsif any_match("006", "^[op].*") 
   add_field("medium[].$append.label","Print")
-elsif any_match("007", "^k[fjs]|^o|^t[ab]") 
+elsif any_match("007", "(^k[fjs]|^o|^t[ab]).*") 
   add_field("medium[].$append.label","Print")
-elsif any_match("@leaderTyp+008", "(Book|Music|Continuing Resources|Mixed materials)(.{23})[dr]")  # Pos23
+elsif any_match("@leaderTyp+008", "(Book|Music|Continuing Resources|Mixed materials)(.{23})[dr].*")  # Pos23
   add_field("medium[].$append.label","Print")
-elsif any_match("@leaderTyp+008", "(Map|Visual materials)(.{29})[dr]")  # Pos29
+elsif any_match("@leaderTyp+008", "(Map|Visual materials)(.{29})[dr].*")  # Pos29
   add_field("medium[].$append.label","Print")
-elsif any_match("@leaderTyp+008", "(Visual materials)(.{33})b")  # Pos33
+elsif any_match("@leaderTyp+008", "(Visual materials)(.{33})b.*")  # Pos33
   add_field("medium[].$append.label","Print")
 end
 
@@ -160,46 +161,98 @@ end
 #  Medium: Microform
 if any_match("007", "^h") 
   add_field("medium[].$append.label","Microform")
-elsif any_match("@leaderTyp+008", "(Book|Music|Continuing Resources|Mixed materials)(.{23})[abc]")  # Pos23
+elsif any_match("@leaderTyp+008", "(Book|Music|Continuing Resources|Mixed materials)(.{23})[abc].*")  # Pos23
   add_field("medium[].$append.label","Microform")
-elsif any_match("@leaderTyp+008", "(Map|Visual materials)(.{29})[abc]")  # Pos29
+elsif any_match("@leaderTyp+008", "(Map|Visual materials)(.{29})[abc].*")  # Pos29
   add_field("medium[].$append.label","Microform")
-elsif any_match("@leaderTyp+008", "(Visual materials)(.{33})b")  # Pos33
+elsif any_match("@leaderTyp+008", "(Visual materials)(.{33})b.*")  # Pos33
   add_field("medium[].$append.label","Microform")
-elsif any_match("006", "^[efgkor](.{11})[abc]") # Pos00+12
-  add_field("medium[].$append.label","Datenträger")
-elsif any_match("006", "^[acdijpst](.{5})[abc]") # Pos00+06
-  add_field("medium[].$append.label","Datenträger")
+elsif any_match("006", "^[efgkor](.{11})[abc].*") # Pos00+12
+  add_field("medium[].$append.label","Microform")
+elsif any_match("006", "^[acdijpst](.{5})[abc].*") # Pos00+06
+  add_field("medium[].$append.label","Microform")
 elsif any_match("337  |338 .a", "^(Mikroform|microform|microfiche|microfilm roll)$")
-  add_field("medium[].$append.label","Online-Ressource")
+  add_field("medium[].$append.mediumlabel","Microform")
 elsif any_match("337  .b", "h")
-  add_field("medium[].$append.label","Online-Ressource")
+  add_field("medium[].$append.label","Microforme")
 elsif any_match("338  .b", "he|hj")
-  add_field("medium[].$append.label","Online-Ressource")
+  add_field("medium[].$append.label","Microform")
 end
 
 #  Medium: online resource
+if any_match("@leaderTyp+008", "(Book|Music|Computer files|Continuing Resources|Mixed materials)(.{23})[o].*")  # Pos23
+  add_field("medium[].$append.label","Online-Ressource")
+elsif any_match("@leaderTyp+008", "(Map|Visual materials)(.{29})[0].*")  # Pos29
+  add_field("medium[].$append.label","Online-Ressource")
+elsif any_match("006", "^[efgkor](.{11})[o].*") # Pos00+12
+  add_field("medium[].$append.label","Online-Ressource")
+elsif any_match("006", "^[acdijpst](.{5})[o].*") # Pos00+06
+  add_field("medium[].$append.label","Online-Ressource")
+elsif any_match("338 .a", "^(online bron|online resource|online-ressource|Online-Ressource|ressource en ligne)$")
+  add_field("medium[].$append.label","Online-Ressource")
+elsif any_match("338  .b", "cr")
+  add_field("medium[].$append.label","Online-Ressource")
+end
+
+#  Medium: Game
+if any_match("@leaderTyp+008", "(Computer files)(.{26})[g].*")  # Pos26
+  add_field("medium[].$append.label","Game")
+elsif any_match("@leaderTyp+008", "(Map)(.{33}|.{34})[pn].*")  # Pos33|34
+  add_field("medium[].$append.label","Game")
+elsif any_match("@leaderTyp+008", "(Visual materials)(.{33})g.*")  # Pos33
+  add_field("medium[].$append.label","Game")
+elsif any_match("006", "^[m](.{8})[g].*") # Pos00+09
+  add_field("medium[].$append.label","Game")
+elsif any_match("006", "^[gkor](.{15})[g].*") # Pos00+16
+  add_field("medium[].$append.label","Game")
+elsif any_match("006", "^[ef](.{14}|.{15})[p].*") # Pos00+15|16
+  add_field("medium[].$append.label","Game")
+end
 
 
-@LeaderPos06 - Type of record
-@LeaderPos07 - Bibliographic level
+
+#  Medium: Miscellaneous
+if any_match("007", "^tc.*") 
+  add_field("medium[].$append.label","Miscellaneous")
+elsif any_match("@leaderTyp+008", "(Book|Music|Continuing Resources|Mixed materials)(.{23})[f].*")  # Pos23
+  add_field("medium[].$append.label","Miscellaneous")
+elsif any_match("@leaderTyp+008", "(Map|Visual materials)(.{29})[f].*")  # Pos29
+  add_field("medium[].$append.label","Miscellaneous")
+elsif any_match("@leaderTyp+008", "(Visual materials)(.{33})p.*")  # Pos33
+  add_field("medium[].$append.label","Miscellaneous")
+elsif any_match("006", "^[efgkor](.{11})[f].*") # Pos00+12
+  add_field("medium[].$append.label","Miscellaneous")
+elsif any_match("006", "^[acdijpst](.{5})[f].*") # Pos00+06
+  add_field("medium[].$append.label","Miscellaneous")
+elsif any_match("006", "^[gkor](.{15})[p].*") # Pos00+16
+  add_field("medium[].$append.label","Miscellaneous")
+elsif any_match("338 .a", "^(Gegenstand|Karte)$") # TODO: Check if Karte is not map?
+  add_field("medium[].$append.label","Miscellaneous")
+elsif any_match("338  .b", "n[or]")
+  add_field("medium[].$append.label","Miscellaneous")
+end
 
 
 
-@facet_format/facet_type?
-Quelle= 
-@type + @008Pos21
-@type + @008Pos23
-@type + @008Pos24
-@type + @008Pos25
-@type + @008Pos26
-@type + @008Pos27
-@type + @008Pos28
-@type + @008Pos29
-@type + @008Pos30
-@type + @008Pos31
-@type + @008Pos33
-@type + @008Pos34
+# @LeaderPos06 - Type of record
+# @LeaderPos07 - Bibliographic level
+# 
+# 
+# 
+# @facet_format/facet_type?
+# Quelle= 
+# @type + @008Pos21
+# @type + @008Pos23
+# @type + @008Pos24
+# @type + @008Pos25
+# @type + @008Pos26
+# @type + @008Pos27
+# @type + @008Pos28
+# @type + @008Pos29
+# @type + @008Pos30
+# @type + @008Pos31
+# @type + @008Pos33
+# @type + @008Pos34
 
 
 
@@ -210,3 +263,40 @@ Quelle=
 #				<constant value="BibliographicResource" />
 #			</data>
 #    </entity>
+
+set_array("type[]")
+add_field("type[].$append", "BibliographicResource")
+
+# From schema list of set types:
+#             "enum": [
+#                 "BibliographicResource",
+#                 "ArchivalResource",
+#                 "ArchivedWebPage",
+#                 "Book",
+#                 "Collection",
+#                 "Periodical",
+#                 "Series",
+#                 "Newspaper",
+#                 "Journal",
+#                 "MultiVolumeBook",
+#                 "PublicationIssue",
+#                 "Article",
+#                 "Miscellaneous",
+#                 "Thesis",
+#                 "EditedVolume",
+#                 "Proceedings",
+#                 "Festschrift",
+#                 "Bibliography",
+#                 "OfficialPublication",
+#                 "ReferenceSource",
+#                 "Statistics",
+#                 "Legislation",
+#                 "PublishedScore",
+#                 "Schoolbook",
+#                 "Game",
+#                 "Biography",
+#                 "Report",
+#                 "Image",
+#                 "Map",
+#                 "Standard"
+#             ]
