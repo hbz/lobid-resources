@@ -184,6 +184,42 @@ elsif any_match("25[09]??.a", "Nachdruck|Reprint") # Element 250 and 259
   add_field("medium[].$append.label","Print")    
 end
 
+# medium:   "Datenträger":	"http://rdaregistry.info/termList/RDAMediaType/1003"
+
+# OLD ALEPH-Moprh:
+#		<data source="652a[-1].a" name="@medium">
+#			<regexp match="^[BbCcDdHhFfKkUu][AaDdEeIiLlSsVv]"
+#				format="http://rdaregistry.info/termList/RDAMediaType/1003"/>
+#		</data>
+#		<data source="@medium" name="http://purl.org/dc/terms/medium"/>
+
+if any_match("@leaderPos06-07", "^m.*")
+  add_field("medium[].$append.label","Datenträger")
+elsif any_match("006", "^m.*") 
+  add_field("medium[].$append.label","Datenträger")
+elsif any_match("007", "^c.*") 
+  add_field("medium[].$append.label","Datenträger")
+elsif any_match("@leaderTyp+008", "(Book|Music|Continuing Resources|Mixed materials)(.{23})[sq].*")  # Pos23
+  add_field("medium[].$append.label","Datenträger")
+elsif any_match("@leaderTyp+008", "(Map|Visual materials)(.{29})[sq].*")  # Pos29
+  add_field("medium[].$append.label","Datenträger")
+elsif any_match("006", "^[efgkor](.{11})[sq].*") # Pos00+12
+  add_field("medium[].$append.label","Datenträger")
+elsif any_match("006", "^[acdijpst](.{5})[sq].*") # Pos00+06
+  add_field("medium[].$append.label","Datenträger")
+elsif any_match("337  .a", "Computermedien")
+  add_field("medium[].$append.label","Datenträger")  
+elsif any_match("338 .a", ".*([Cc]omputer|[Cc]omputermedien|informatique|Computerdisk|computer disc|Magnetband|Speicherkarte).*")
+  add_field("medium[].$append.label","Datenträger")
+elsif any_match("338  .b", "c.")
+  add_field("medium[].$append.label","Datenträger")
+# From the old ALEPH-Morph #		<!-- looking for Blu-ray, Cartridge, CD, Diskette, DVD, Festplatte, HD-DVD, Kassette, USB -->  
+elsif any_match("340  .a", "^[BbCcDdHhFfKkUu][AaDdEeIiLlSsVv].*")
+  add_field("medium[].$append.label","Datenträger")
+elsif any_match("340  .*.a", "^[BbCcDdHhFfKkUu][AaDdEeIiLlSsVv].*")
+  add_field("medium[].$append.label","Datenträger")
+end    
+
 do list(path:"medium[]", "var": "$i")
 	copy_field("$i.label","$i.id")
 	lookup("$i.id","medium-id-to-label")
