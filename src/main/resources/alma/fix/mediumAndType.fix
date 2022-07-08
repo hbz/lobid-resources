@@ -138,6 +138,51 @@ elsif any_match("546  .a", ".*Braille.*")
   add_field("medium[].$append.label", "Print")
 end
 
+# medium:   "Print":	"http://rdaregistry.info/termList/RDAproductionMethod/1010"
+
+# Old ALEPH MORPH:
+#		<data source="050." name="@medium">
+#			<regexp match="^[abcd]" format="http://rdaregistry.info/termList/RDAproductionMethod/1010"/>
+#		</data>
+#		<data source="050." name="@medium">
+#			<regexp match="^.......a" format="http://rdaregistry.info/termList/RDAproductionMethod/1010"/>
+#		</data>
+#		<data source="334-[12].a" name="@medium">
+#			<regexp match="Plakat" format="http://rdaregistry.info/termList/RDAproductionMethod/1010"/>
+#		</data>
+#		<data source="40[03]-1.a" name="@medium">
+#			<regexp match="Nachdruck|Reprint" format="http://rdaregistry.info/termList/RDAproductionMethod/1010"/>
+#		</data>
+
+# TODO: Check if there are reaseons that kit and mixed materials are stated as Pint: https://service-wiki.hbz-nrw.de/display/DBI/Facettenwerte
+# I exlude them at the moment since they can be print but must not be print.
+# There should be some examples for mixed materials and kits.
+# Mediakombination was also set as print in ALEPH Morph: https://github.com/hbz/lobid-resources/blob/be3dde0ca3b3d3c51247ad8b930bc309f9e5b5b0/src/main/resources/morph-hbz01-to-lobid.xml#L1612
+# Also one cannot set Pos06 a (Language material) by default since: "Includes microforms and electronic resources that are basically textual in nature, whether they are reproductions from print or originally produced." 
+# https://www.loc.gov/marc/bibliographic/bdleader.html
+
+# if any_match("@leaderPos06-07", "^[op].*") 
+#  add_field("medium[].$append.label","Print")
+#if any_match("006", "^[op].*") 
+# add_field("medium[].$append.label","Print")
+
+if any_match("007", "(^k[fhjs]|^t[^c]).*") # TODO: I excluded ^o (Kit) and added all Pos01 for text except Braille.
+  add_field("medium[].$append.label","Print")
+elsif any_match("@leaderTyp+008", "(Book|Music|Continuing Resources|Mixed materials)(.{23})[dr].*")  # Pos23
+  add_field("medium[].$append.label","Print")
+elsif any_match("@leaderTyp+008", "(Map|Visual materials)(.{29})[dr].*")  # Pos29
+  add_field("medium[].$append.label","Print")
+# elsif any_match("@leaderTyp+008", "(Visual materials)(.{33})b.*")  # Pos33  TODO: I excluded Kit
+#  add_field("medium[].$append.label","Print")
+elsif any_match("006", "[acdpst]](.{5})[dr].*") # Pos00+06 Added Print for pos 006.
+  add_field("medium[].$append.label","Print")
+elsif any_match("006", "[efgkor]](.11)[dr].*") # Pos00+12 Added Print for pos 006.
+  add_field("medium[].$append.label","Print")
+elsif any_match("245[10]0.h", "Plakat")
+  add_field("medium[].$append.label","Print")
+elsif any_match("25[09]??.a", "Nachdruck|Reprint") # Element 250 and 259
+  add_field("medium[].$append.label","Print")    
+end
 
 do list(path:"medium[]", "var": "$i")
 	copy_field("$i.label","$i.id")
