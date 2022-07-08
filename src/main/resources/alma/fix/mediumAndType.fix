@@ -228,11 +228,43 @@ end
 #			<regexp match="^.a" format="http://purl.org/ontology/bibo/Manuscript"/>
 #		</data>
 
+
+
 if any_match("@leaderPos06-07", "^[dft].")
   add_field("medium[].$append.label","Manuskript")
 elsif any_match("006", "^[dft].*")
   add_field("medium[].$append.label","Manuskript")
 end
+
+# medium: "Mikroformat": "http://rdaregistry.info/termList/RDAMediaType/1002"
+
+
+if any_match("007", "^h.*") 
+  add_field("medium[].$append.label","Mikroformat")
+elsif any_match("@leaderTyp+008", "(Book|Music|Continuing Resources|Mixed materials)(.{23})[abc].*")  # Pos23
+  add_field("medium[].$append.label","Mikroformat")
+elsif any_match("@leaderTyp+008", "(Map|Visual materials)(.{29})[abc].*")  # Pos29
+  add_field("medium[].$append.label","Mikroformat")
+elsif any_match("006", "^[efgkor](.{11})[abc].*") # Pos00+12
+  add_field("medium[].$append.label","Mikroformat")
+elsif any_match("006", "^[acdijpst](.{5})[abc].*") # Pos00+06
+  add_field("medium[].$append.label","Mikroformat")
+elsif any_match("245[10]0.h", ".*Mikrofor.*")
+  add_field("medium[].$append.label","Mikroformat")
+elsif any_match("25[09]??.a", ".*Mikro.*") # Element 250 and 259
+  add_field("medium[].$append.label","Mikroformat")   
+elsif any_match("337  .a","Mikroform|microform")
+  add_field("medium[].$append.label","Mikroformat")
+elsif any_match("337  .b", "h")
+  add_field("medium[].$append.label","Mikroformat")
+elsif any_match("338 .a", ".*[Mm]ikro.*")
+  add_field("medium[].$append.label","Mikroformat")
+elsif any_match("338  .b", "he|hj") # TODO: More codes?
+  add_field("medium[].$append.label","Mikroformat")
+elsif any_match("689??.a", "Hörbuch|Tonträger")
+  add_field("medium[].$append.label","Mikroformat")
+end
+
 
 do list(path:"medium[]", "var": "$i")
 	copy_field("$i.label","$i.id")
