@@ -185,6 +185,7 @@ elsif any_match("25[09]??.a", "Nachdruck|Reprint") # Element 250 and 259
 end
 
 # medium:   "Datenträger":	"http://rdaregistry.info/termList/RDAMediaType/1003"
+# TODO: Check why so many Manuscripts are Print AND Manuscript.
 
 # OLD ALEPH-Moprh:
 #		<data source="652a[-1].a" name="@medium">
@@ -219,6 +220,19 @@ elsif any_match("340  .a", "^[BbCcDdHhFfKkUu][AaDdEeIiLlSsVv].*")
 elsif any_match("340  .*.a", "^[BbCcDdHhFfKkUu][AaDdEeIiLlSsVv].*")
   add_field("medium[].$append.label","Datenträger")
 end    
+
+# medium: "Manuskript":	"http://purl.org/ontology/bibo/Manuscript"
+
+# Old ALEPH-Moprh
+# <data source="050." name="@medium">
+#			<regexp match="^.a" format="http://purl.org/ontology/bibo/Manuscript"/>
+#		</data>
+
+if any_match("@leaderPos06-07", "^[dft].")
+  add_field("medium[].$append.label","Manuskript")
+elsif any_match("006", "^[dft].*")
+  add_field("medium[].$append.label","Manuskript")
+end
 
 do list(path:"medium[]", "var": "$i")
 	copy_field("$i.label","$i.id")
