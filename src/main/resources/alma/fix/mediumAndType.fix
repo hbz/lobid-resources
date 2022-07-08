@@ -126,7 +126,17 @@ elsif any_match("689??.a", "Hörbuch|Tonträger")
   add_field("medium[].$append.label","DVD-Video|Video[ck]assette")
   add_field("medium[].$append.label", "Audio-Visuell")    
 end
-    
+
+
+
+# medium: "Blindenschrift":	"http://purl.org/library/BrailleBook"
+if any_match("007", "^fb.*|^tc.*") # TODO: This does not always seems to fit. Had fu but u is for unkown. Added text Pos 01 b (Braille)
+  add_field("medium[].$append.label","Blindenschrift")
+  add_field("medium[].$append.label", "Print")
+elsif any_match("546  .a", ".*Braille.*")
+  add_field("medium[].$append.label","Blindenschrift")
+  add_field("medium[].$append.label", "Print")
+end
 
 
 do list(path:"medium[]", "var": "$i")
