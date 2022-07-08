@@ -265,6 +265,33 @@ elsif any_match("689??.a", "Hörbuch|Tonträger")
   add_field("medium[].$append.label","Mikroformat")
 end
 
+# medium: "Kombination":	"http://iflastandards.info/ns/isbd/terms/mediatype/T1008"
+
+#		<data source="050." name="@medium">
+#			<regexp match="^.......a" format="http://iflastandards.info/ns/isbd/terms/mediatype/T1008"/>
+#		</data>
+#		<data source="334-[-12].a" name="@medium">
+#			<regexp match="Medienkombination" format="http://iflastandards.info/ns/isbd/terms/mediatype/T1008"/>
+#		</data>
+#		<data source="9[01234][27]-[-1].f" name="@medium">
+#			<regexp match="Medienkombination" format="http://iflastandards.info/ns/isbd/terms/mediatype/T1008"/>
+#		</data>
+
+TODO: TT000166861 is in lobid ALEPH Kombination but not here. Need to check later.
+
+if any_match("@leaderPos06-07", "^[op].")
+  add_field("medium[].$append.label","Kombination")
+elsif any_match("006", "^[op].*") 
+  add_field("medium[].$append.label","Kombination")
+elsif any_match("007", "^o.*")
+  add_field("medium[].$append.label","Kombination")
+elsif any_match("245[10]0.h", ".*Medienkombination.*")
+  add_field("medium[].$append.label","Kombination")
+elsif any_match("689??.a", ".*Medienkombination.*")
+  add_field("medium[].$append.label","Kombination")
+end
+
+
 
 do list(path:"medium[]", "var": "$i")
 	copy_field("$i.label","$i.id")
