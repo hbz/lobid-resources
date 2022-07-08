@@ -85,13 +85,49 @@ elsif any_match("689??.a", "Hörbuch|Tonträger")
 end
 
 # medium: "Audio-Kassette":	"http://id.loc.gov/vocabulary/carriers/ss"
-
-
+# TODO: In the frontend the icon says Tonband which is more encompassing than "Kassette"
 if any_match("007", "^ss.*")
   add_field("medium[].$append.label","Audio-Kassette")
 elsif any_match("245[10]0.h", "Kompaktkassette|MC|Tonkassette")
   add_field("medium[].$append.label","Audio-Dokument")
 end
+
+# medium: "Audio-Visuell":	"http://purl.org/ontology/bibo/AudioVisualDocument" & "Video": "http://rdaregistry.info/termList/RDAMediaType/1008"
+
+
+if any_match("007", "^([gmv]).*")
+  add_field("medium[].$append.label","Video")
+  add_field("medium[].$append.label", "Audio-Visuell")
+elsif any_match("@leaderTyp+008", "Visual materials(.{32})[fmstv].*")   # Pos33 TODO: Check if s (Slide/Dia) and t(Transparency) are correct since both are not video specific.
+  add_field("medium[].$append.label","Video")
+  add_field("medium[].$append.label", "Audio-Visuell")
+elsif any_match("006", "^[gkor](.{15})[fmstv].*") # Pos00+16 Check if s (Slide/Dia) and t(Transparency) are correct since both are not video specific.
+  add_field("medium[].$append.label","Video")
+  add_field("medium[].$append.label", "Audio-Visuell")
+elsif any_match("245[10]0.h", "Bildtonträger")
+  add_field("medium[].$append.label","Video")
+  add_field("medium[].$append.label", "Audio-Visuell")
+elsif any_match("300  .a", ".*(DVD-Video|Video).*")
+  add_field("medium[].$append.label","Video")
+  add_field("medium[].$append.label", "Audio-Visuell")
+elsif any_match("337  .a", "video")
+  add_field("medium[].$append.label","Video")
+  add_field("medium[].$append.label", "Audio-Visuell")
+elsif any_match("337  .b", "v")
+  add_field("medium[].$append.label","Video")
+  add_field("medium[].$append.label", "Audio-Visuell")
+elsif any_match("338 .a", "^(Video).*|Sonstige Video-Datenträger$")
+  add_field("medium[].$append.label","Video")
+  add_field("medium[].$append.label", "Audio-Visuell")
+elsif any_match("338  .b", "vd")
+  add_field("medium[].$append.label","Video")
+  add_field("medium[].$append.label", "Audio-Visuell")
+elsif any_match("689??.a", "Hörbuch|Tonträger")
+  add_field("medium[].$append.label","DVD-Video|Video[ck]assette")
+  add_field("medium[].$append.label", "Audio-Visuell")    
+end
+    
+
 
 do list(path:"medium[]", "var": "$i")
 	copy_field("$i.label","$i.id")
