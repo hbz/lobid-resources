@@ -403,6 +403,7 @@ end
 # All metadata records have type: "BibliographicResource" 
 # Base for type list is schema: https://github.com/hbz/lobid-resources/blob/eb1cbfaf013b03aee49291d8b3a4d00aa046e333/src/test/resources/schemas/type.json
 
+# TODO Check 655 for possible mappings.
 
 set_array("type[]","BibliographicResource")
 
@@ -613,7 +614,55 @@ elsif any_match("655 7.a", "Biografie")
 elsif any_match("655 7.*.a", "Biografie")
     add_field("type[].$append","Biography")
 elsif any_match("689??.a", "Autobiographie|Biographie")
-  add_field("medium[].$append.label","Biography")
+  add_field("type[].$append","Biography")
 end
 
 # TODO: HT018860300 should also be tagged as Biography but it seems that 008 has no info for Biografie and is not transformed properly.
+
+# type: "EditedVolume"
+
+# 		<combine name="@rdftype" value="${a}">
+# 			<if>
+# 				<none>
+# 					<data source="052.">
+# 						<regexp
+# 							match="^........([dcwesmbqfaghtz])|^.........([dcwesmbqfaghtz])|^..........([dcwesmbqfaghtz])"/>
+# 					</data>
+# 					<data source="542[-ab][-1].[a]"/>
+# 				</none>
+# 			</if>
+# 			<choose name="a">
+# 				<data source="9[01234][27][-a][-1].f" name="a">
+# 					<regexp match="^Aufsatzsammlung" format="$[ns-lobid-vocab]EditedVolume"/>
+# 				</data>
+# 				<data source="9[01234][27][-a][-1].9" name="a">
+# 					<regexp match="4143413" format="$[ns-lobid-vocab]EditedVolume"/>
+# 				</data>
+# 			</choose>
+# 		</combine>
+# 
+# introx
+#     if exists("700??")
+#   unless exists("100??")
+#     add_field("@facet_type", "Sammelwerk")
+#     filter("@facet_type", "^Monographie$", invert: "true")
+#   end
+# end
+
+# taken from introx based on https://jira.hbz-nrw.de/browse/DOX-1405
+# This also results in 990123613330206441 which is a Tonkassete. Perhaps this needs a differentiation.
+
+if exists("700??")
+  unless exists("100??")
+    add_field("type[].$append", "EditedVolume")
+    filter("type[]", "^Monographie$", invert: "true")
+  end
+elsif any_match("689??.a", ".*Aufsatzsammlung.*")
+  add_field("type[].$append", "EditedVolume")
+elsif any_match("689??.*.a", ".*Aufsatzsammlung.*")
+  add_field("type[].$append", "EditedVolume")
+elsif any_match("689??.0", ".*4143413.*")
+  add_field("type[].$append", ".*EditedVolume.*")
+elsif any_match("689??.*.0", ".*4143413.*")
+  add_field("type[].$append", ".*EditedVolume.*")
+end
