@@ -133,6 +133,18 @@ end
 if any_match("007", "^fb.*|^tc.*") # TODO: This does not always seems to fit. Had fu but u is for unkown. Added text Pos 01 b (Braille)
   add_field("medium[].$append.label","Blindenschrift")
   add_field("medium[].$append.label", "Print")
+elsif any_match("@leaderTyp+008", "(Book|Music|Continuing Resources|Mixed materials)(.{23})[f].*")  # Pos23
+  add_field("medium[].$append.label","Blindenschrift")
+  add_field("medium[].$append.label", "Print")
+elsif any_match("@leaderTyp+008", "(Map|Visual materials)(.{29})[f].*")  # Pos29
+  add_field("medium[].$append.label","Blindenschrift")
+  add_field("medium[].$append.label", "Print")
+elsif any_match("006", "^[efgkor](.{11})[f].*") # Pos00+12
+  add_field("medium[].$append.label","Blindenschrift")
+  add_field("medium[].$append.label", "Print")
+elsif any_match("006", "^[acdijpst](.{5})[f].*") # Pos00+06
+  add_field("medium[].$append.label","Blindenschrift")
+  add_field("medium[].$append.label", "Print")
 elsif any_match("546  .a", ".*Braille.*")
   add_field("medium[].$append.label","Blindenschrift")
   add_field("medium[].$append.label", "Print")
@@ -357,9 +369,122 @@ elsif any_match("340  .*.a", "[Vv]inyl")
 end
 
 
+# medium: "Miscellaneous":	"http://purl.org/lobid/lv#Miscellaneous"
+# TODO: label always is german but "Miscellaneous" is not.
+
+#		<combine name="@medium" value="$[ns-lobid-vocab]Miscellaneous" flushWith="record">
+#			<if>
+#				<none>
+#					<data source="@medium">
+#						<regexp match=".*"/>
+#					</data>
+#				</none>
+#			</if>
+#			<data source="@id"/>
+#		</combine>
+#		<combine name="~rdf:subject" value="${a}" flushWith="@medium">
+#			<data source="@medium"/>
+#			<data source="@id" name="a">
+#				<regexp match="(.*)" format="$[ns-lobid-resource]${1}#!"/>
+#			</data>
+#		</combine>
+
+# Introx sets all Braille to "Miscellaneous". I move them to Braille. Also Introx sets specific stuff to "Sonstige". In old ALEPH-Morph this is a default value.
+# I will follow the old ALEPH-Moprh approach here.  
+# This will be done after the type definition.
+
 do list(path:"medium[]", "var": "$i")
 	copy_field("$i.label","$i.id")
 	lookup("$i.id","medium-id-to-label")
 end
-
 # TODO: Uniq array objects.
+
+# ----- type[] -----
+# All metadata records have type: "BibliographicResource" 
+# Base for type list is schema: https://github.com/hbz/lobid-resources/blob/eb1cbfaf013b03aee49291d8b3a4d00aa046e333/src/test/resources/schemas/type.json
+
+
+set_array("type[]","BibliographicResource")
+
+# From schema list of set types:
+#             "enum": [
+#                 "BibliographicResource", #
+#                 "ArchivalResource",
+#                 "ArchivedWebPage", #
+#                 "Book", #
+#                 "Collection",
+#                 "Periodical", #
+#                 "Series", #
+#                 "Newspaper", #
+#                 "Journal",
+#                 "MultiVolumeBook", #
+#                 "PublicationIssue", #
+#                 "Article", #
+#                 "Miscellaneous", #
+#                 "Thesis", #
+#                 "EditedVolume", #
+#                 "Proceedings", #
+#                 "Festschrift", #
+#                 "Bibliography", #
+#                 "OfficialPublication", #
+#                 "ReferenceSource", #
+#                 "Statistics", #
+#                 "Legislation", #
+#                 "PublishedScore", #
+#                 "Schoolbook", #
+#                 "Game", #
+#                 "Biography", #
+#                 "Report", #
+#                 "Image", #
+#                 "Map", #
+#                 "Standard" #
+#             ]
+
+# There seems to be a discrepancy between the values in the schema enum and in the aggregation.
+# Real data: http://lobid.org/resources/search?format=json&aggregations=type
+
+# type: "ArchivalResource"
+# TODO: This is part of  the schema but seems to be not really used.
+
+# type: "ArchivedWebPage"
+
+#		<data source="051." name="@archived">
+#			<regexp match="^.w" format="$[ns-lobid-vocab]ArchivedWebPage"/>
+#		</data>
+
+# TODO: There seems to be no mapping from 051.: .w to any MARC Values.
+# TODO: Check for that later.
+
+# type: "Article"
+
+#		<data source="051." name="@article">
+#			<regexp match="^.t|^..t|^...t|^.....t" format="$[ns-bibo]Article"/>
+#		</data>
+#		<data source="052." name="@article">
+#			<regexp match="^[af]|^.au|^...au|^.....au" format="$[ns-bibo]Article"/>
+#		</data>
+
+# if any_equal("@type__008Pos33", "B#e")
+#   add_field("@facet_type", "Aufsatz")
+# else
+#   if any_match("@006Pos00__006Pos16", "[at]#e")
+#     add_field("@facet_type", "Aufsatz")
+#   else
+#     if any_match("@type__008Pos24|@type__008Pos25|@type__008Pos26|@type__008Pos27", "(?:B|CR)#g")
+#       add_field("@facet_type", "Aufsatz")
+#     else
+#       if any_match("@006Pos00__006Pos07|@006Pos00__006Pos08|@006Pos00__006Pos09|@006Pos00__006Pos10", "[ast]#g")
+#         add_field("@facet_type", "Aufsatz")
+#       end
+#     end
+#   end
+# end
+
+# TODO: What is Aufsatz/Artikel inteded for only monograph, serial or continues ressource component?
+# TODO: There is no mapping for 052/1-6/6=au Aufsatz
+# TODO: What about leader07 a and b? https://www.loc.gov/marc/bibliographic/bdleader.html
+
+# TODO: Transformation needs to be added later.
+
+
+
