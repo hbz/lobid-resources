@@ -326,11 +326,40 @@ elsif any_match("340  .*.a", "Online-Ressource")
   add_field("medium[].$append.label","Online-Ressource")
 end
 
+# medium: "Schallplatte":	"http://purl.org/ontology/mo/Vinyl"
 
+#		<data source="050." name="@mediumAudio">
+#			<regexp match="^.....aj" format="http://purl.org/ontology/mo/Vinyl"/>
+#		</data>
+#		<data source="050." name="@mediumAudio">
+#			<regexp match="^.....aj" format="$[ns-bibo]AudioDocument"/>
+#		</data>
+#		<data source="334-[12].a" name="@mediumAudio">
+#			<regexp match="Schallplatte" format="http://purl.org/ontology/mo/Vinyl"/>
+#		</data>
+#		<data source="334-[12].a" name="@mediumAudio">
+#			<regexp match="Schallplatte" format="$[ns-bibo]AudioDocument"/>
+#		</data>
 
+# TODO: HBZ Mappiong 050 -> Marc sets to none specific medium type Leader,06=j+ 007,00=s + 007,01=z . How to proceed here?
+# TODO: What about Shellac?
+# TODO: In all the MARC specifics for SChallplatten seem poor.
+
+if any_match("300  .a", ".*Schallpl.*")
+  add_field("medium[].$append.label","Schallplatte")
+  add_field("medium[].$append.label","Audio-Dokument")   
+elsif any_match("340  .a", "[Vv]inyl")
+  add_field("medium[].$append.label","Schallplatte")
+  add_field("medium[].$append.label","Audio-Dokument")   
+elsif any_match("340  .*.a", "[Vv]inyl")
+  add_field("medium[].$append.label","Schallplatte")
+  add_field("medium[].$append.label","Audio-Dokument")   
+end
 
 
 do list(path:"medium[]", "var": "$i")
 	copy_field("$i.label","$i.id")
 	lookup("$i.id","medium-id-to-label")
 end
+
+# TODO: Uniq array objects.
