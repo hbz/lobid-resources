@@ -277,7 +277,7 @@ end
 #			<regexp match="Medienkombination" format="http://iflastandards.info/ns/isbd/terms/mediatype/T1008"/>
 #		</data>
 
-TODO: TT000166861 is in lobid ALEPH Kombination but not here. Need to check later.
+# TODO: TT000166861 is in lobid ALEPH Kombination but not here. Need to check later.
 
 if any_match("@leaderPos06-07", "^[op].")
   add_field("medium[].$append.label","Kombination")
@@ -290,6 +290,43 @@ elsif any_match("245[10]0.h", ".*Medienkombination.*")
 elsif any_match("689??.a", ".*Medienkombination.*")
   add_field("medium[].$append.label","Kombination")
 end
+
+# medium: "Online-Ressource": "http://rdaregistry.info/termList/RDACarrierType/1018"
+# 
+# 		<data source="050." name="@1018">
+# 			<regexp match="^........g" format="http://rdaregistry.info/termList/RDACarrierType/1018"/>
+# 		</data>
+# 		<data source="058." name="@1018">
+# 			<regexp match="^.r" format="http://rdaregistry.info/termList/RDACarrierType/1018"/>
+# 		</data>
+# 		<data source="652a[-1].a" name="@1018">
+# 			<regexp match="^[AaOo][rn]" format="http://rdaregistry.info/termList/RDACarrierType/1018"/>
+# 		</data>
+# 		<data source="@1018" name="@medium"/>
+# 
+# TODO: Old Morph also sets remote access as online ressource (050/8/1=g=Computerdatei(en) im Fernzugriff and 058.) Our ALMA-Transformation does not, how should we proceed.
+
+if any_match("@leaderTyp+008", "(Book|Music|Computer files|Continuing Resources|Mixed materials)(.{23})[o].*")  # Pos23
+  add_field("medium[].$append.label","Online-Ressource")
+elsif any_match("@leaderTyp+008", "(Map|Visual materials)(.{29})[o].*")  # Pos29
+  add_field("medium[].$append.label","Online-Ressource")
+elsif any_match("006", "^[efgkor](.{11})[o].*") # Pos00+12
+  add_field("medium[].$append.label","Online-Ressource")
+elsif any_match("006", "^[acdijpst](.{5})[o].*") # Pos00+06
+  add_field("medium[].$append.label","Online-Ressource")
+elsif any_match("300  ", ".*[Oo]nline.*") # Pos00+06
+  add_field("medium[].$append.label","Online-Ressource")  
+elsif any_match("338 .a", "^(.*([Oo]nline.*|online bron|online resource|online-ressource|Online-Ressource|ressource en ligne)$")
+  add_field("medium[].$append.label","Online-Ressource")
+elsif any_match("338  .b", "cr")
+  add_field("medium[].$append.label","Online-Ressource")
+elsif any_match("340  .a", "Online-Ressource")
+  add_field("medium[].$append.label","Online-Ressource")
+elsif any_match("340  .*.a", "Online-Ressource")
+  add_field("medium[].$append.label","Online-Ressource")
+end
+
+
 
 
 
