@@ -596,18 +596,24 @@ end
 #   end
 # end
 
-# if any_match("@leaderTyp+008", "Book(.{34})[abc].*")  # Pos34
-#   add_field("type[].$append","Biography")
-# elsif any_match("@leaderTyp+008", "Music(.{30}|.{31})[ab].*")  # Pos30-31
-#   add_field("type[].$append","Biography")
-# elsif any_match("@leaderTyp+008", "Continuing Resources(.{24}|.{25}|.{26}|.{27})h.*")  # Pos34
-#   add_field("type[].$append","Biography")
-# elsif any_match("006", "^[at](.{17})[abc].*") # Pos00+18
-#   add_field("type[].$append","Biography")
-# elsif any_match("006", "^[cdij](.{12}|.{13})[ab].*") # Pos00+13-14
-#   add_field("type[].$append","Biography")
-# elsif any_match("006", "^[s](.{6}|.{7}|.{8}|.{9})h.*") # Pos00+07-10
-#   add_field("type[].$append","Biography")
-# elsif any_match("689??.a", "Autobiographie|Biographie")
-#   add_field("medium[].$append.label","Biography")
-# end
+if any_match("@leaderTyp+008", "Book(.{34})[abc].*")  # Pos34
+  add_field("type[].$append","Biography")
+elsif any_match("@leaderTyp+008", "Music(.{30}|.{31})[ab].*")  # Pos30-31
+  add_field("type[].$append","Biography")
+elsif any_match("@leaderTyp+008", "(Book|Continuing Resources)(.{24}|.{25}|.{26}|.{27})h.*")  # Pos34 # Book has no h but internal mapping uses this.
+  add_field("type[].$append","Biography")
+elsif any_match("006", "^[at](.{17})[abc].*") # Pos00+18
+  add_field("type[].$append","Biography")
+elsif any_match("006", "^[cdij](.{12}|.{13})[ab].*") # Pos00+13-14
+  add_field("type[].$append","Biography")
+elsif any_match("006", "^[s](.{6}|.{7}|.{8}|.{9})h.*") # Pos00+07-10
+  add_field("type[].$append","Biography")
+elsif any_match("655 7.a", "Biografie")
+    add_field("type[].$append","Biography")
+elsif any_match("655 7.*.a", "Biografie")
+    add_field("type[].$append","Biography")
+elsif any_match("689??.a", "Autobiographie|Biographie")
+  add_field("medium[].$append.label","Biography")
+end
+
+# TODO: HT018860300 should also be tagged as Biography but it seems that 008 has no info for Biografie and is not transformed properly.
