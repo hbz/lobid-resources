@@ -558,3 +558,56 @@ elsif any_match("006", "^[ast](.{6}|.{7}|.{8}|.{9})[bknq].*") # Pos00+07-10
 elsif any_match("006", "^m(.{8})e.*") # Pos00+07-10
   add_field("type[].$append","Bibliography")
 end
+
+# type: "Biography"
+
+#		<!-- biography -->
+#		<data source="051." name="@rdftype">
+#			<regexp match="^.[h]|^..[h]|^...[h]" format="$[ns-lobid-vocab]Biography"/>
+#		</data>
+#		<data source="052." name="@rdftype">
+#			<regexp match="^.b[g]|^...b[g]|^.....b[g]" format="$[ns-lobid-vocab]Biography"/>
+#		</data>
+#		<data source="9[01234][27]-[-1].f" name="@rdftype">
+#			<regexp match="Autobiographie|Biographie" format="$[ns-lobid-vocab]Biography"/>
+#		</data>
+
+# if any_match("@type__008Pos34", "B#[abc]")
+#   add_field("@facet_type", "Biografie")
+# else
+#   if any_match("@006Pos00__006Pos17", "[at]#[abc]")
+#     add_field("@facet_type", "Biografie")
+#   else
+#     if any_match("@type__008Pos30|@type__008Pos31", "Mu#[ab]")
+#       add_field("@facet_type", "Biografie")
+#     else
+#       if any_match("@006Pos00__006Pos13|@006Pos00__006Pos14", "[cdij]#[ab]")
+#         add_field("@facet_type", "Biografie")
+#       else
+#         if any_equal("@type__008Pos24|@type__008Pos25|@type__008Pos26|@type__008Pos27", "CR#h")
+#           add_field("@facet_type", "Biografie")
+#         else
+#           if any_equal("@006Pos00__006Pos07|@006Pos00__006Pos08|@006Pos00__006Pos09|@006Pos00__006Pos10", "s#h")
+#             add_field("@facet_type", "Biografie")
+#           end
+#         end
+#       end
+#     end
+#   end
+# end
+
+# if any_match("@leaderTyp+008", "Book(.{34})[abc].*")  # Pos34
+#   add_field("type[].$append","Biography")
+# elsif any_match("@leaderTyp+008", "Music(.{30}|.{31})[ab].*")  # Pos30-31
+#   add_field("type[].$append","Biography")
+# elsif any_match("@leaderTyp+008", "Continuing Resources(.{24}|.{25}|.{26}|.{27})h.*")  # Pos34
+#   add_field("type[].$append","Biography")
+# elsif any_match("006", "^[at](.{17})[abc].*") # Pos00+18
+#   add_field("type[].$append","Biography")
+# elsif any_match("006", "^[cdij](.{12}|.{13})[ab].*") # Pos00+13-14
+#   add_field("type[].$append","Biography")
+# elsif any_match("006", "^[s](.{6}|.{7}|.{8}|.{9})h.*") # Pos00+07-10
+#   add_field("type[].$append","Biography")
+# elsif any_match("689??.a", "Autobiographie|Biographie")
+#   add_field("medium[].$append.label","Biography")
+# end
