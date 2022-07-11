@@ -487,4 +487,74 @@ set_array("type[]","BibliographicResource")
 # TODO: Transformation needs to be added later.
 
 
+# type: "Bibliography"
 
+# Introx:
+# if any_match("@type__008Pos24|@type__008Pos25|@type__008Pos26|@type__008Pos27", "(?:B|CR)#[bknq]")
+#   add_field("@facet_type", "Bibliografie")
+# else
+#   if any_match("@006Pos00__006Pos07|@006Pos00__006Pos08|@006Pos00__006Pos09|@006Pos00__006Pos10", "[ast]#[bknq]")
+#     add_field("@facet_type", "Bibliografie")
+#   else
+#     if any_equal("@type__008Pos26", "CF#e")
+#       add_field("@facet_type", "Bibliografie")
+#     else
+#       if any_equal("@006Pos00__006Pos09", "m#e")
+#         add_field("@facet_type", "Bibliografie")
+#       end
+#     end
+#   end
+# end
+
+#         <all>
+#           <data source="@type">
+#             <regexp match="^(B|CR)$" />
+#           </data>
+#           <data source="@008Pos2[4567]">
+#             <regexp match="[bknq]" />
+#           </data>
+#         </all>
+#         <all>
+#           <data source="@006Pos00">
+#             <regexp match="[ast]" />
+#           </data>
+#           <data source="@006Pos0[789]|@006Pos10">
+#             <regexp match="[bknq]" />
+#           </data>
+#         </all>
+#         <all>
+#           <data source="@type">
+#             <equals string="CF" />
+#           </data>
+#           <data source="@008Pos26">
+#             <equals string="e" />
+#           </data>
+#         </all>
+#         <all>
+#           <data source="@006Pos00">
+#             <equals string="m" />
+#           </data>
+#           <data source="@006Pos09">
+#             <equals string="e" />
+#           </data>
+#         </all>
+#       </any>
+#     </if>
+# 
+# Old alephmorph:
+#		<data source="051." name="@rdftype">
+#			<regexp match="^.[b]|^..[b]|^...[b]" format="$[ns-lobid-vocab]Bibliography"/>
+#		</data>
+#		<data source="052." name="@rdftype">
+#			<regexp match="^.b[i]|^...b[i]|^.....b[i]" format="$[ns-lobid-vocab]Bibliography"/>
+#		</data>
+
+if any_match("@leaderTyp+008", "(Book|Continuing Resources)(.{24}|.{25}|.{26}|.{27})[bknq].*")  # Pos24-27
+  add_field("type[].$append","Bibliography")
+elsif any_match("@leaderTyp+008", "Computer files(.{26})[e].*")  # Pos26
+  add_field("type[].$append","Bibliography")
+elsif any_match("006", "^[ast](.{6}|.{7}|.{8}|.{9})[bknq].*") # Pos00+07-10
+  add_field("type[].$append","Bibliography")
+elsif any_match("006", "^m(.{8})e.*") # Pos00+07-10
+  add_field("type[].$append","Bibliography")
+end
