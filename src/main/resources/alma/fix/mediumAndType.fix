@@ -888,3 +888,26 @@ if any_match("245[10]0.h", ".*Musikdruck.*")
 elsif exists("ismn[].1")
   add_field("type[].$append", "PublishedScore")
 end
+
+# type: "Newspaper"
+
+# <!-- newspaper -->
+# 		<data source="052." name="@rdftype">
+# 			<regexp match="^z|^.[ae]o|^...[ae]o|^.....[ae]o" format="$[ns-bibo]Newspaper"/>
+# 		</data>
+# 		<data source="052." name="@rdftype">
+# 			<regexp match="^z|^.[url]p|^...[url]p|^.....[url]p" format="$[ns-bibo]Newspaper"/>
+# 		</data>
+# 		<data source="9[01234][27]-[-1].f" name="@rdftype">
+# 			<regexp match="Zeitung" format="$[ns-bibo]Newspaper"/>
+# 		</data>
+
+if any_match("@leaderTyp+008", "(Continuing Resources)(.{21})n.*")  # Pos21
+  add_field("type[].$append","Newspaper")
+elsif any_match("006", "^s(.{3})n.*") # Pos00+04
+  add_field("type[].$append","Newspaper")
+elsif any_match("689??.a", ".*Zeitung.*")
+  add_field("type[].$append", "Newspaper")
+elsif any_match("689??.*.a", ".*Zeitung.*")
+  add_field("type[].$append", "Newspaper")
+end
