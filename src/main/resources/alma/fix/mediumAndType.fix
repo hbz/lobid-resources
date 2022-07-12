@@ -695,3 +695,51 @@ elsif any_match("otherTitleInformation[]", ".*Festschrift.*")
   add_field("type[].$append","Festschrift")
 end
 
+# type: "image"
+
+# <!-- picture -->
+# 		<data source="050." name="@rdftype">
+# 			<regexp match="^.....d" format="$[ns-bibo]Image"/>
+# 		</data>
+# 		<data source="334-[12].a" name="@rdftype">
+# 			<regexp match="^Bildli" format="$[ns-bibo]Image"/>
+# 		</data>
+
+# if any_equal("@007Pos00", "r")
+#   add_field("@facet_format", "Bild")
+# else
+#   if any_match("@007Pos00__007Pos01", "k#[cdefhijklnpqrsuvz]")
+#     add_field("@facet_format", "Bild")
+#   else
+#     if any_match("@type__008Pos33|@type__008Pos34", "M#[jo]")
+#       add_field("@facet_format", "Bild")
+#     else
+#       if any_match("@006Pos00__006Pos16|@006Pos00__006Pos17", "[ef]#[jo]")
+#         add_field("@facet_format", "Bild")
+#       else
+#         if any_match("@type__008Pos33", "VM#[dikln]")
+#           add_field("@facet_format", "Bild")
+#         else
+#           if any_match("@006Pos00__006Pos16", "[gkor]#[dikln]")
+#             add_field("@facet_format", "Bild")
+#           end
+#         end
+#       end
+#     end
+#   end
+# end
+
+
+if any_match("007", "^[kr].*") # r = Remote-Sensing Image and k = Nonprojected graphic
+  add_field("type[].$append", "Image")
+elsif any_match("245[10]0.h", ".*Bildli.*")
+  add_field("type[].$append", "Image")
+elsif any_match("@leaderTyp+008", "Map(.{33}|.{34})[jo].*")  # Pos33/34
+  add_field("type[].$append","Image")
+elsif any_match("@leaderTyp+008", "Visual materials(.{33})[dikln].*")  # Pos33
+  add_field("type[].$append","Image")
+elsif any_match("006", "^[ef](.15}|.{16})[jo].*") # Pos00+16/17
+  add_field("type[].$append","Image")
+elsif any_match("006", "^[gkor](.15})[dikln].*") # Pos00+16
+  add_field("type[].$append","Image")
+end
