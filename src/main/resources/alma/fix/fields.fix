@@ -90,12 +90,12 @@ replace_all("issn[].*", "-","")
 #    </data>
 #  </entity>
 
-# 024 (R) Subfield a (NR) 1. Indicator 2 = ISNM 
+# 024 (R) Subfield a (NR) 1. Indicator 2 = ISMN 
 set_array("ismn[]")
 do list(path:"0242?", "var":"$i")
   copy_field("$i.a", "ismn[].$append")
 end
-replace_all("ismn[[].*", "-","")
+replace_all("ismn[].*", "-","")
 
 
 #
