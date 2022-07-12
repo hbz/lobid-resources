@@ -831,3 +831,24 @@ elsif any_match("006", "^[gkor](.{15})[g].*") # Pos00+16
 elsif any_match("006", "^[ef](.{14}|.{15})[p].*") # Pos00+15|16
   add_field("type[].$append","Game")
 end
+
+# type: "Legislation"
+
+# <!-- legislation -->
+# 		<data source="051." name="@rdftype">
+# 			<regexp match="^.l|^..l|^...l" format="$[ns-lobid-vocab]Legislation"/>
+# 		</data>
+# 		<data source="052." name="@rdftype">
+# 			<regexp match="^.ag|^...ag|^.....ag" format="$[ns-lobid-vocab]Legislation"/>
+# 		</data>
+# 
+
+if any_match("@leaderTyp+008", "(Book|Continuing Resources)(.{24}|.{25}|.{26}|.{27})l.*")  # Pos24/25/26/27 # What about g (legal article)?
+  add_field("type[].$append","Legislation")
+elsif any_match("006", "^[ats](.{6}|.{7}|.{8}|.{9})l.*") # Pos00+07-10
+  add_field("type[].$append","Legislation")
+end
+
+# TODO: HT012338254 should be legislation too but 008 seems to be not set appropriately. Could add w - Law reports and digests ?
+
+
