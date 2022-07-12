@@ -862,3 +862,29 @@ end
 # TODO: The mapping https://service-wiki.hbz-nrw.de/display/VDBE/ALT+-+Mapping+MAB2+-+MARC+21+-++Segmente+0---%2C+001+-+088+-+Kurzform
 # suggests leader07 m but this only says Monograph or Item nothing about MultiVolume.
 # Need to find specific infos about that.
+
+# type: "PublishedScore" (Musikalia)
+
+#		<!-- music -->
+#		<data source="051." name="@rdftype">
+#			<regexp match="^.m|^..m|^...m" format="http://purl.org/ontology/mo/PublishedScore"/>
+#		</data>
+#		<data source="052." name="@rdftype">
+#			<regexp match="^.mu|^...mu|^.....mu" format="http://purl.org/ontology/mo/PublishedScore"/>
+#		</data>
+#		<data source="334-1.a" name="@rdftype">
+#			<regexp match="Musikdruck" format="http://purl.org/ontology/mo/PublishedScore"/>
+#		</data>
+#		<data source="541[-ab]?.?" name="@rdftype">
+#			<regexp match=".*" format="http://purl.org/ontology/mo/PublishedScore"/>
+#		</data>
+
+# also if it has ismn?
+# hbz mapping for 051. 0 m seems odd 008,18-19 ||? 052. none at all.
+
+
+if any_match("245[10]0.h", ".*Musikdruck.*")
+  add_field("type[].$append", "PublishedScore")
+elsif exists("ismn[].1")
+  add_field("type[].$append", "PublishedScore")
+end
