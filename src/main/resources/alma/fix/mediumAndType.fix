@@ -743,3 +743,43 @@ elsif any_match("006", "^[ef](.15}|.{16})[jo].*") # Pos00+16/17
 elsif any_match("006", "^[gkor](.15})[dikln].*") # Pos00+16
   add_field("type[].$append","Image")
 end
+
+# type: "Map"
+
+# Old Aleph morph:
+#		<!-- map -->
+#		<data source="050." name="@rdftypeMap">
+#			<regexp match="^..........a" format="$[ns-bibo]Map"/>
+#		</data>
+#		<data source="433[-c].a" name="@rdftypeMap">
+#			<regexp match="Kt.|Karte" format="$[ns-bibo]Map"/>
+#		</data>
+#		<data source="9[01234][27]-1.f" name="@rdftypeMap">
+#			<regexp match="Altkarte|Karte|Stadtplan" format="$[ns-bibo]Map"/>
+#		</data>
+#		<data source="@rdftypeMap" name="@rdftype"/>
+#
+
+# Introx:
+# if any_match("@LeaderPos06|@006Pos00", "[ef]")
+#   add_field("@facet_format", "Landkarte")
+# elsif any_match("@007Pos00", "[ad]")
+#   add_field("@facet_format", "Landkarte")
+# end
+
+
+if any_equal("@leaderTyp", "Map")
+  add_field("type[].$append","Map")
+elsif any_match("006", "^[ef].*") 
+  add_field("type[].$append","Map")
+elsif any_match("007", "^[ad].*") 
+  add_field("type[].$append","Map")
+elsif any_match("300  .a", ".*(Kt.|[kK]arte).*")
+  add_field("type[].$append","Map")
+elsif any_match("300  .*.a", ".*(Kt.|[kK]arte).*")
+  add_field("type[].$append","Map")
+elsif any_match("689??.a", ".*(Altkarte|Karte|Stadtplan).*")
+  add_field("type[].$append", "Map")
+elsif any_match("689??.*.a", ".*(Altkarte|Karte|Stadtplan).*")
+  add_field("type[].$append", "Map")
+end
