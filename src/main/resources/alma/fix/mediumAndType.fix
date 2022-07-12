@@ -911,3 +911,36 @@ elsif any_match("689??.a", ".*Zeitung.*")
 elsif any_match("689??.*.a", ".*Zeitung.*")
   add_field("type[].$append", "Newspaper")
 end
+
+# type: "Standard"
+
+# Old ALEPH Morph:
+# <!-- norm -->
+# 		<data source="051." name="@rdftype">
+# 			<regexp match="^.n|^..n|^...n" format="$[ns-bibo]Standard"/>
+# 		</data>
+# 		<data source="052." name="@rdftype">
+# 			<regexp match="^.no|^...no|^.....no" format="$[ns-bibo]Standard"/>
+# 		</data>
+# 		<data source="9[01234][27]-[-12].f" name="@rdftype">
+# 			<regexp match="Norm|Richtlinie" format="$[ns-bibo]Standard"/>
+# 		</data>
+
+# Introx: 
+# if any_match("@type__008Pos24|@type__008Pos25|@type__008Pos26|@type__008Pos27", "(?:B|CR)#u")
+#   add_field("@facet_type", "Norm")
+# else
+#   if any_match("@006Pos00__006Pos07|@006Pos00__006Pos08|@006Pos00__006Pos09|@006Pos00__006Pos10", "[ast]#u")
+#     add_field("@facet_type", "Norm")
+#   end
+# end
+
+if any_match("@leaderTyp+008", "(Book|Continuing Resources)(.{24}|.{25}|.{26}|.{27})u.*")  # Pos24-27
+  add_field("type[].$append","Standard")
+elsif any_match("006", "^[ast](.{6}|.{7}|.{8}|.{9})u.*") # Pos00+07-10
+  add_field("type[].$append","Standard")
+elsif any_match("689??.a", ".*(Norm|Richtlinie).*")
+  add_field("type[].$append", "Standard")
+elsif any_match("689??.*.a", ".*(Norm|Richtlinie).*")
+  add_field("type[].$append", "Standard")
+end
