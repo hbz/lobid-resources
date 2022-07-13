@@ -60,6 +60,8 @@ paste("@leaderTyp+008","@leaderTyp","008", join_char:"")
 # 337: https://service-wiki.hbz-nrw.de/pages/viewpage.action?pageId=510164996&preview=/510164996/510165005/F8_Liste_061_.txt
 # 338: Value list: https://service-wiki.hbz-nrw.de/pages/viewpage.action?pageId=510164996&preview=/510164996/510165006/F8_Liste_062_.txt
 
+# TODO: Check introx concerning possible mappings of 340 https://github.com/hbz/limetrans/blob/d2dff10e1b5cdf5699239a8f3474f8b652d582a3/src/main/resources/transformation/alma.fix#L629 
+
 # medium: "Audio-Dokument":	"http://purl.org/ontology/bibo/AudioDocument"
 
 if any_match("@leaderPos06-07","[ij].") 
@@ -1163,3 +1165,27 @@ elsif any_match("006", "^[ast](.{6}|.{7}|.{8}|.{9})s.*") # Pos00+07-10
 end
 
 # TODO: Check more for values in 655.
+
+
+# type: "Thesis"
+
+# <!-- thesis -->
+# 		<data source="051." name="@rdftype">
+# 			<regexp match="^.[uy]|^..[uy]|^...[uy]" format="$[ns-bibo]Thesis"/>
+# 		</data>
+# 		<data source="052." name="@rdftype">
+# 			<regexp match="^.sc|^...sc|^.....sc" format="$[ns-bibo]Thesis"/>
+# 		</data>
+# 		<data source="519-[12].?" name="@rdftype">
+# 			<regexp match=".*" format="$[ns-bibo]Thesis"/>
+# 		</data>
+
+# Old mapping also includes u = Universitätsschrift and not just y Dissertation. But both is set as m 
+# Introx is setting this to Hochschulschrift not to Thesis which is more inclusive and would be a more acceptable mapping I think.
+# We should decide what is better.
+
+if any_match("@leaderTyp+008", "(Book|Continuing Resources)(.{24}|.{25}|.{26}|.{27})m.*")  # Pos24-27
+  add_field("type[].$append","Thesis")
+elsif any_match("006", "^[ast](.{6}|.{7}|.{8}|.{9})m.*") # Pos00+07-10
+  add_field("type[].$append","Thesis")
+end
