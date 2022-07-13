@@ -32,6 +32,8 @@ join_field("@titleOfSubSeries_n", ". ")
 #    </data>
 #  </combine>
 
+set_array("@titleOfSubSeries_p")
+
 do list(path:"245??.p", "var":"$i")
   copy_field("$i","@titleOfSubSeries_p.$append")
 end
