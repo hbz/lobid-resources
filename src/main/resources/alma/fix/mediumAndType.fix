@@ -1000,3 +1000,26 @@ end
 # TODO: Check if content keywords 689?? should be no regexp.
 # TODO: Check if 689?? is repeatable or if every instance is singular due to indices.
 
+
+# type: "PublicationIssue"
+
+# <!-- issue and volume of periodical work -->
+# 		<combine name="@rdftype" value="${a}">
+# 			<data source="025z2.a"/>
+# 			<data source="089|090-1.a" name="a">
+# 				<regexp match=".*" format="http://schema.org/PublicationIssue"/>
+# 			</data>
+# 		</combine>
+
+# TODO: I do not understand this transformation.
+
+
+if exists("zdbId")
+  if exists("245??.n")
+    add_field("type[].$append", "PublicationIssue")
+  elsif exists("77308.q")
+    add_field("type[].$append", "PublicationIssue")
+  end
+end
+
+# TODO: HT003176544 transforms but is not PublicationIssue in lobid ALEPH.
