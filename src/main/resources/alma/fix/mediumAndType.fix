@@ -1057,3 +1057,31 @@ elsif any_match("689??.a", ".*(Bestimmungsbuch|Enzyklopädie|Werkverzeichnis|W[�
 elsif any_match("689??.*.a", ".*(Bestimmungsbuch|Enzyklopädie|Werkverzeichnis|W[ö|oe]rterbuch).*")
   add_field("type[].$append", "Standard")
 end
+
+
+# type: "Report"
+
+# <!-- report -->
+# 		<data source="051." name="@rdftype">
+# 			<regexp match="^.[r]|^..[r]|^...[r]" format="http://purl.org/ontology/bibo/Report"/>
+# 		</data>
+# 		<data source="9[01234][27]-[-12].9" name="@rdftype">
+# 			<regexp match="4128022-2" format="http://purl.org/ontology/bibo/Report"/>
+# 		</data>
+# 		<data source="9[01234][27]-[1].f" name="@rdftype">
+# 			<regexp match="Bericht|Erlebnisbericht|Forschungsbericht|Literaturbericht|Reisebericht"
+# 				format="http://purl.org/ontology/bibo/Report"/>
+# 		</data>
+
+# TODO: hbz ALMA-Mapping sets 051. r to 008 24-27 t but this is technical report isnt that to narrow.
+# The Mapping "Bericht|Erlebnisbericht|Forschungsbericht|Literaturbericht|Reisebericht" is broader.
+
+if any_match("@leaderTyp+008", "(Book|Continuing Resources)(.{24}|.{25}|.{26}|.{27})t.*")  # Pos24-27
+  add_field("type[].$append","Report")
+elsif any_match("006", "^[ast](.{6}|.{7}|.{8}|.{9})t.*") # Pos00+07-10
+  add_field("type[].$append","Report")
+elsif any_match("689??.a", ".*(Bericht|Erlebnisbericht|Forschungsbericht|Literaturbericht|Reisebericht).*")
+  add_field("type[].$append", "Report")
+elsif any_match("689??.*.a", ".*(Bericht|Erlebnisbericht|Forschungsbericht|Literaturbericht|Reisebericht).*")
+  add_field("type[].$append", "Report")
+end
