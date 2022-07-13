@@ -395,11 +395,6 @@ end
 # I will follow the old ALEPH-Moprh approach here.  
 # This will be done after the type definition.
 
-do list(path:"medium[]", "var": "$i")
-	copy_field("$i.label","$i.id")
-	lookup("$i.id","medium-id-to-label")
-end
-# TODO: Uniq array objects.
 
 # ----- type[] -----
 # All metadata records have type: "BibliographicResource" 
@@ -1268,4 +1263,21 @@ end
 if any_match("@leaderPos06-07", "^.[adm]") 
   add_field("type[].$append","Book")
 end
+
+
+# Set medium default to print if there is no medium and type "Book" exists.
+
+unless exists("medium[].1")
+  if any_equal("type[]", "Book")
+    add_field("medium[].$append.label", "Print")
+  end
+end
+
+# Add ids for medium[].
+
+do list(path:"medium[]", "var": "$i")
+	copy_field("$i.label","$i.id")
+	lookup("$i.id","medium-id-to-label")
+end
+# TODO: Uniq array objects.
 
