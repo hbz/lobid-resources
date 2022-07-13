@@ -1023,3 +1023,37 @@ if exists("zdbId")
 end
 
 # TODO: HT003176544 transforms but is not PublicationIssue in lobid ALEPH.
+
+
+# type:"ReferenceSource"
+
+# <!-- reference source -->
+# 		<data source="051." name="@rdftype">
+# 			<regexp match="^.[de]|^..[de]|^...[de]" format="$[ns-bibo]ReferenceSource"/>
+# 		</data>
+# 		<data source="052." name="@rdftype">
+# 			<regexp match="^.ez|^...ez|^.....ez" format="$[ns-bibo]ReferenceSource"/>
+# 		</data>
+# 		<data source="9[01234][27]-[-12].f" name="@rdftype">
+# 			<regexp match="Bestimmungsbuch|Enzyklopädie|Werkverzeichnis|W[ö|oe]rterbuch"
+# 				format="$[ns-bibo]ReferenceSource"/>
+# 		</data>
+
+# Introx:
+# if any_match("@type__008Pos24|@type__008Pos25|@type__008Pos26|@type__008Pos27", "(?:B|CR)#[der]")
+#   add_field("@facet_type", "Nachschlagewerk")
+# else
+#   if any_match("@006Pos00__006Pos07|@006Pos00__006Pos08|@006Pos00__006Pos09|@006Pos00__006Pos10", "[ast]#[der]")
+#     add_field("@facet_type", "Nachschlagewerk")
+#   end
+# end
+
+if any_match("@leaderTyp+008", "(Book|Continuing Resources)(.{24}|.{25}|.{26}|.{27})[der].*")  # Pos24-27
+  add_field("type[].$append","ReferenceSource")
+elsif any_match("006", "^[ast](.{6}|.{7}|.{8}|.{9})[der].*") # Pos00+07-10
+  add_field("type[].$append","ReferenceSource")
+elsif any_match("689??.a", ".*(Bestimmungsbuch|Enzyklopädie|Werkverzeichnis|W[ö|oe]rterbuch).*")
+  add_field("type[].$append", "Standard")
+elsif any_match("689??.*.a", ".*(Bestimmungsbuch|Enzyklopädie|Werkverzeichnis|W[ö|oe]rterbuch).*")
+  add_field("type[].$append", "Standard")
+end
