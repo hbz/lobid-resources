@@ -138,7 +138,6 @@ do list(path:"0247?", "var":"$i")
     copy_field("$i.a", "doi[].$append")
   end
 end
-replace_all("doi[[].*", "-","")
 
 #
 #  <data name="@oclcNumber" source="035  .a">
@@ -604,7 +603,7 @@ end
 
 # 775 - Other Edition Entry (R) Subfield: w (R), t (NR), i (R), n (R), x(NR), z (R)
 # 776 - Additional Physical Form Entry (R) Subfield: w (R), t (NR), i (R), n (R), x (NR), z (R)
-# TODO: Needs ISBN function for mapping ISBN in subfield Z!
+# TODO: Needs ISBN function for mapping ISBN in subfield Z! Need test ressource for that.
 
 set_array("related[]")
 do list(path:"775??|776??", "var":"$i")
@@ -617,6 +616,17 @@ do list(path:"775??|776??", "var":"$i")
     paste("related[].$last.note","$i.i", "$i.n")
     copy_field("$i.t", "related[].$last.label")
     copy_field("$i.x", "related[].$last.issn")    
+    copy_field("$i.z", "$i.ISBN13")
+    isbn("$i.isbn13", to: "clean")
+    if any_match("$i.isbn13", ".{13}")
+      copy_field("$i.isbn13", "$i.isbn10")
+      isbn("$i.isbn10", to:"isbn10")
+    elsif any_match("$i.isbn13", ".{10}")
+      copy_field("$i.isbn13", "$i.isbn10")
+      isbn("$i.isbn13", to:"isbn13")
+    end
+    set_array("related[].$last.isbn[]")
+    copy_field("$i.isbn13|isbn10", "related[].$last.isbn[].$append")
   end
 end
 
