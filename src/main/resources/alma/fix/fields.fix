@@ -49,11 +49,33 @@ prepend("language[].*.id", "http://id.loc.gov/vocabulary/iso639-2/")
 #      <data name="label" source="@language_long" />
 #    </entity>
 #  </entity>
+
+# TODO: Is this needed?
+
+
 #
 #  <data source="020  .a" name="@cleanIsbn">
 #    <isbn to="clean"/>
 #    <unique />
 #  </data>
+
+# 020 - International Standard Book Number (R) - $a (NR)
+set_array("isbn[]")
+
+do list(path:"020  ", "var": "$i")
+  copy_field("$i.a","$i.isbn13")
+  isbn("$i.isbn13", to: "clean")
+  if any_match("$i.isbn13", ".{13}")
+    copy_field("$i.isbn13", "$i.isbn10")
+    isbn("$i.isbn10", to:"isbn10")
+  elsif any_match("$i.isbn13", ".{10}")
+    copy_field("$i.isbn13", "$i.isbn10")
+    isbn("$i.isbn13", to:"isbn13")
+  end
+  copy_field("$i.isbn13|isbn10", "isbn[].$append")  
+end
+
+uniq("isbn[]")
 
 
 # TODO: ISBN needs to be done if there is a supporting function in fix.
