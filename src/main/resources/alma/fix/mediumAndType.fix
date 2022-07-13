@@ -973,3 +973,30 @@ elsif any_match("689??.*.a", ".*Zeitschrift.*")
 end
 
 # TODO: If mapping with 689?? keywords we should also integrate a control that A should be "f".
+
+# type: "Proceedings"
+
+# <!-- proceedings -->
+# 		<data source="051." name="@rdftype">
+# 			<regexp match="^.k|^..k|^...k" format="$[ns-bibo]Proceedings"/>
+# 		</data>
+# 		<data source="052." name="@rdftype">
+# 			<regexp match="^.ko|^...ko|^.....ko" format="$[ns-bibo]Proceedings"/>
+# 		</data>
+# 		<data source="9[01234][27]-[-1].f" name="@rdftype">
+# 			<regexp match="Kongress" format="$[ns-bibo]Proceedings"/>
+# 		</data>
+
+if any_match("@leaderTyp+008", "(Book|Continuing Resources)(.{29})1.*")  # Pos29
+  add_field("type[].$append","Proceedings")
+elsif any_match("006", "^[ast](.{11})1.*") # Pos00+04
+  add_field("type[].$append","Proceedings")
+elsif any_match("689??.a", "Kongress")
+  add_field("type[].$append", "Proceedings")
+elsif any_match("689??.*.a", "Kongress")
+  add_field("type[].$append", "Proceedings")
+end
+
+# TODO: Check if content keywords 689?? should be no regexp.
+# TODO: Check if 689?? is repeatable or if every instance is singular due to indices.
+
