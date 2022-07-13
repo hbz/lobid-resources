@@ -944,3 +944,32 @@ elsif any_match("689??.a", ".*(Norm|Richtlinie).*")
 elsif any_match("689??.*.a", ".*(Norm|Richtlinie).*")
   add_field("type[].$append", "Standard")
 end
+
+
+# type: "Periodical"
+
+# <!-- periodical -->
+# 		<data source="052." name="@rdftype">
+# 			<regexp match="^[jp].*|^.il.*|^...il.*|^.....il.*" format="$[ns-bibo]Periodical"/>
+# 		</data>
+# 		<data source="9[01234][27]-[-1].f" name="@rdftype">
+# 			<regexp match="Zeitschrift" format="$[ns-bibo]Periodical"/>
+# 		</data>
+
+# Introx has a very elaborate periodical system.
+
+# 052. il (Illustrierte) has no mapping.
+# This also includes Series not just Journals is that right? Leader Pos. 7s = serial.
+# If Continuing Resources 008 21 p = Periodical.
+
+if any_match("@leaderTyp+008", "(Continuing Resources)(.{21})p.*")  # Pos21
+  add_field("type[].$append","Periodical")
+elsif any_match("006", "^[s](.{3})p.*") # Pos00+04
+  add_field("type[].$append","Periodical")
+elsif any_match("689??.a", ".*Zeitschrift.*")
+  add_field("type[].$append", "Periodical")
+elsif any_match("689??.*.a", ".*Zeitschrift.*")
+  add_field("type[].$append", "Periodical")
+end
+
+# TODO: If mapping with 689?? keywords we should also integrate a control that A should be "f".
