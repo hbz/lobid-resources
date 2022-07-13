@@ -960,7 +960,7 @@ end
 
 # 052. il (Illustrierte) has no mapping.
 # This also includes Series not just Journals is that right? Leader Pos. 7s = serial.
-# If Continuing Resources 008 21 p = Periodical.
+# If Continuing Resources 008 21 p = Periodical. What about j = journal?
 
 if any_match("@leaderTyp+008", "(Continuing Resources)(.{21})p.*")  # Pos21
   add_field("type[].$append","Periodical")
@@ -1107,3 +1107,41 @@ elsif any_match("689??.a", ".*(Schulbuch).*")
 elsif any_match("689??.*.a", ".*(Schulbuch).*")
   add_field("type[].$append", "Schoolbook")
 end
+
+# type: "Series"
+
+# <!-- series -->
+# 		<combine name="@rdftype" value="${a}">
+# 			<if>
+# 				<none>
+# 					<data source="540[-ab][-1].[ab]"/>
+# 				</none>
+# 			</if>
+# 			<data source="052." name="a">
+# 				<regexp match="^r|^.se|^...se|^.....se" format="$[ns-bibo]Series"/>
+# 			</data>
+# 		</combine>
+# 		<data source="9[01234][2re7]-[1].f" name="@rdftype">
+# 			<regexp match="Schriftenreihe" format="$[ns-bibo]Series"/>
+# 		</data>
+
+# Not sure if there is an transformation for series in Introx.
+# I excluded the the filter if there is an isbn since 008 21 m is specific for monographic series.
+# TODO: Check why HT017894012 is not Series. It seems that it is Journal/Periodical.
+
+if any_match("@leaderTyp+008", "(Continuing Resources)(.{21})m.*")  # Pos21
+  add_field("type[].$append","Series")
+elsif any_match("006", "^[s](.{3})m.*") # Pos00+04
+  add_field("type[].$append","Series")
+elsif any_match("655??.a", ".*Monografische Reihe.*")
+  add_field("type[].$append", "Series")
+elsif any_match("655??.*.a", ".*Monografische Reihe.*")
+  add_field("type[].$append", "Series")
+elsif any_match("689??.a", ".*Schriftenreihe.*")
+  add_field("type[].$append", "Series")
+elsif any_match("689??.*.a", ".*Schriftenreihe.*")
+  add_field("type[].$append", "Series")
+end
+
+
+# TODO: Check more for values in 655.
