@@ -1085,3 +1085,25 @@ elsif any_match("689??.a", ".*(Bericht|Erlebnisbericht|Forschungsbericht|Literat
 elsif any_match("689??.*.a", ".*(Bericht|Erlebnisbericht|Forschungsbericht|Literaturbericht|Reisebericht).*")
   add_field("type[].$append", "Report")
 end
+
+# type: "Schoolbook"
+
+#		<!-- schoolbook -->
+#		<data source="051." name="@rdftype">
+#			<regexp match="^.x|^..x|^...x" format="$[ns-lobid-vocab]Schoolbook"/>
+#		</data>
+#		<data source="9[01234][27]-[1].f" name="@rdftype">
+#			<regexp match="Schulbuch" format="$[ns-lobid-vocab]Schoolbook"/>
+#		</data>
+
+# TODO:051. x mapping does not exist in hbz ALMA.
+
+if any_match("655??.a", ".*(Schulbuch).*")
+  add_field("type[].$append", "Schoolbook")
+elsif any_match("655??.*.a", ".*(Schulbuch).*")
+  add_field("type[].$append", "Schoolbook")
+elsif any_match("689??.a", ".*(Schulbuch).*")
+  add_field("type[].$append", "Schoolbook")
+elsif any_match("689??.*.a", ".*(Schulbuch).*")
+  add_field("type[].$append", "Schoolbook")
+end
