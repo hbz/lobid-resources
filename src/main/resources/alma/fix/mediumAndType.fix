@@ -1143,5 +1143,22 @@ elsif any_match("689??.*.a", ".*Schriftenreihe.*")
   add_field("type[].$append", "Series")
 end
 
+# type: "Statistics"
+
+# <!-- statistics -->
+# 		<data source="051." name="@rdftype">
+# 			<regexp match="^.s|^..s|^...s" format="http://purl.org/lobid/lv#Statistics"/>
+# 		</data>
+# 		<data source="052." name="@rdftype">
+# 			<regexp match="^.st|^..st|^...st|^....st|^.....st|^......st"
+# 				format="http://purl.org/lobid/lv#Statistics"/>
+# 		</data>
+
+
+if any_match("@leaderTyp+008", "(Book|Continuing Resources)(.{24}|.{25}|.{26}|.{27})s.*")  # Pos24-27
+  add_field("type[].$append","Statistics")
+elsif any_match("006", "^[ast](.{6}|.{7}|.{8}|.{9})s.*") # Pos00+07-10
+  add_field("type[].$append","Statistics")
+end
 
 # TODO: Check more for values in 655.
