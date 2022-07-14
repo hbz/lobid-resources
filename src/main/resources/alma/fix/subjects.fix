@@ -363,257 +363,49 @@ end
 #  </macro>
 #
 
-
-
-if exists("6890?")
-  set_array("subject[].$append.type[]","ComplexSubject")
-  set_array("subject[].$last.label")
+do put_macro("schlagwortfolge")
+  if exists("$[field]")
+    set_array("subject[].$append.type[]","ComplexSubject")
+    set_array("subject[].$last.label")
+    set_array("subject[].$last.componentList[]")  
   set_array("subject[].$last.componentList[]")  
-  do list(path:"6890?", "var":"$i")
-    set_array("subject[].$last.componentList[].$append.type[]")
-    do list(path: "$i.D", "var": "$k")
-      copy_field("$k","subject[].$last.componentList[].$last.type[].$append")
-    end
-    copy_field("$i.a","subject[].$last.componentList[].$last.label")
-    copy_field("$i.a","subject[].$last.label.$append")
-    do list(path:"$i.0", "var": "$j")
-      if any_match("$j","^\\(DE-588\\)(.*)$")
-        add_field("subject[].$last.componentList[].$last.source.label","Gemeinsame Normdatei (GND)")
-        add_field("subject[].$last.componentList[].$last.source.id","https://d-nb.info/gnd/7749153-1")
-        copy_field("$j", "subject[].$last.componentList[].$last.id")
-        replace_all("subject[].$last.componentList[].$last..id","^\\(DE-588\\)(.*)$","http://d-nb.info/gnd/$1")
-        copy_field("$j", "subject[].$last.componentList[].$last.gndIdentifier")
+    set_array("subject[].$last.componentList[]")  
+    do list(path:"$[field]", "var":"$i")
+      set_array("subject[].$last.componentList[].$append.type[]")
+      do list(path: "$i.D", "var": "$k")
+        copy_field("$k","subject[].$last.componentList[].$last.type[].$append")
+      end
+      copy_field("$i.a","subject[].$last.componentList[].$last.label")
+      copy_field("$i.a","subject[].$last.label.$append")
+      do list(path:"$i.0", "var": "$j")
+        if any_match("$j","^\\(DE-588\\)(.*)$")
+          add_field("subject[].$last.componentList[].$last.source.label","Gemeinsame Normdatei (GND)")
+          add_field("subject[].$last.componentList[].$last.source.id","https://d-nb.info/gnd/7749153-1")
+          copy_field("$j", "subject[].$last.componentList[].$last.id")
+          replace_all("subject[].$last.componentList[].$last..id","^\\(DE-588\\)(.*)$","http://d-nb.info/gnd/$1")
+          copy_field("$j", "subject[].$last.componentList[].$last.gndIdentifier")
+          replace_all("subject[].$last.componentList[].$last..gndIdentifier","^\\(DE-588\\)(.*)$","$1") 
         replace_all("subject[].$last.componentList[].$last..gndIdentifier","^\\(DE-588\\)(.*)$","$1") 
+          replace_all("subject[].$last.componentList[].$last..gndIdentifier","^\\(DE-588\\)(.*)$","$1") 
+        end
       end
     end
+    join_field("subject[].$last.label"," | ")
   end
-  join_field("subject[].$last.label"," | ")
 end
 
-if exists("6891?")
-  set_array("subject[].$append.type[]","ComplexSubject")
-  set_array("subject[].$last.label")
-  set_array("subject[].$last.componentList[]")  
-  do list(path:"6891?", "var":"$i")
-    set_array("subject[].$last.componentList[].$append.type[]")
-    do list(path: "$i.D", "var": "$k")
-      copy_field("$k","subject[].$last.componentList[].$last.type[].$append")
-    end
-    copy_field("$i.a","subject[].$last.componentList[].$last.label")
-    copy_field("$i.a","subject[].$last.label.$append")
-    do list(path:"$i.0", "var": "$j")
-      if any_match("$j","^\\(DE-588\\)(.*)$")
-        add_field("subject[].$last.componentList[].$last.source.label","Gemeinsame Normdatei (GND)")
-        add_field("subject[].$last.componentList[].$last.source.id","https://d-nb.info/gnd/7749153-1")
-        copy_field("$j", "subject[].$last.componentList[].$last.id")
-        replace_all("subject[].$last.componentList[].$last..id","^\\(DE-588\\)(.*)$","http://d-nb.info/gnd/$1")
-        copy_field("$j", "subject[].$last.componentList[].$last.gndIdentifier")
-        replace_all("subject[].$last.componentList[].$last..gndIdentifier","^\\(DE-588\\)(.*)$","$1") 
-      end
-    end
-  end
-  join_field("subject[].$last.label"," | ")
-end
+# 689 RSWK Schlagwortfolgen fka: Schlagwortketten 1 - 10
+call_macro("schlagwortfolge", field: "6890?")
+call_macro("schlagwortfolge", field: "6891?")
+call_macro("schlagwortfolge", field: "6892?")
+call_macro("schlagwortfolge", field: "6893?")
+call_macro("schlagwortfolge", field: "6894?")
+call_macro("schlagwortfolge", field: "6895?")
+call_macro("schlagwortfolge", field: "6896?")
+call_macro("schlagwortfolge", field: "6897?")
+call_macro("schlagwortfolge", field: "6898?")
+call_macro("schlagwortfolge", field: "6899?")
 
-if exists("6892?")
-  set_array("subject[].$append.type[]","ComplexSubject")
-  set_array("subject[].$last.label")
-  set_array("subject[].$last.componentList[]")  
-  do list(path:"6892?", "var":"$i")
-    set_array("subject[].$last.componentList[].$append.type[]")
-    do list(path: "$i.D", "var": "$k")
-      copy_field("$k","subject[].$last.componentList[].$last.type[].$append")
-    end
-    copy_field("$i.a","subject[].$last.componentList[].$last.label")
-    copy_field("$i.a","subject[].$last.label.$append")
-    do list(path:"$i.0", "var": "$j")
-      if any_match("$j","^\\(DE-588\\)(.*)$")
-        add_field("subject[].$last.componentList[].$last.source.label","Gemeinsame Normdatei (GND)")
-        add_field("subject[].$last.componentList[].$last.source.id","https://d-nb.info/gnd/7749153-1")
-        copy_field("$j", "subject[].$last.componentList[].$last.id")
-        replace_all("subject[].$last.componentList[].$last..id","^\\(DE-588\\)(.*)$","http://d-nb.info/gnd/$1")
-        copy_field("$j", "subject[].$last.componentList[].$last.gndIdentifier")
-        replace_all("subject[].$last.componentList[].$last..gndIdentifier","^\\(DE-588\\)(.*)$","$1") 
-      end
-    end
-  end
-  join_field("subject[].$last.label"," | ")
-end
-
-if exists("6893?")
-  set_array("subject[].$append.type[]","ComplexSubject")
-  set_array("subject[].$last.label")
-  set_array("subject[].$last.componentList[]")  
-  do list(path:"6893?", "var":"$i")
-    set_array("subject[].$last.componentList[].$append.type[]")
-    do list(path: "$i.D", "var": "$k")
-      copy_field("$k","subject[].$last.componentList[].$last.type[].$append")
-    end
-    copy_field("$i.a","subject[].$last.componentList[].$last.label")
-    copy_field("$i.a","subject[].$last.label.$append")
-    do list(path:"$i.0", "var": "$j")
-      if any_match("$j","^\\(DE-588\\)(.*)$")
-        add_field("subject[].$last.componentList[].$last.source.label","Gemeinsame Normdatei (GND)")
-        add_field("subject[].$last.componentList[].$last.source.id","https://d-nb.info/gnd/7749153-1")
-        copy_field("$j", "subject[].$last.componentList[].$last.id")
-        replace_all("subject[].$last.componentList[].$last..id","^\\(DE-588\\)(.*)$","http://d-nb.info/gnd/$1")
-        copy_field("$j", "subject[].$last.componentList[].$last.gndIdentifier")
-        replace_all("subject[].$last.componentList[].$last..gndIdentifier","^\\(DE-588\\)(.*)$","$1") 
-      end
-    end
-  end
-  join_field("subject[].$last.label"," | ")
-end
-
-if exists("6894?")
-  set_array("subject[].$append.type[]","ComplexSubject")
-  set_array("subject[].$last.label")
-  set_array("subject[].$last.componentList[]")  
-  do list(path:"6894?", "var":"$i")
-    set_array("subject[].$last.componentList[].$append.type[]")
-    do list(path: "$i.D", "var": "$k")
-      copy_field("$k","subject[].$last.componentList[].$last.type[].$append")
-    end
-    copy_field("$i.a","subject[].$last.componentList[].$last.label")
-    copy_field("$i.a","subject[].$last.label.$append")
-    do list(path:"$i.0", "var": "$j")
-      if any_match("$j","^\\(DE-588\\)(.*)$")
-        add_field("subject[].$last.componentList[].$last.source.label","Gemeinsame Normdatei (GND)")
-        add_field("subject[].$last.componentList[].$last.source.id","https://d-nb.info/gnd/7749153-1")
-        copy_field("$j", "subject[].$last.componentList[].$last.id")
-        replace_all("subject[].$last.componentList[].$last..id","^\\(DE-588\\)(.*)$","http://d-nb.info/gnd/$1")
-        copy_field("$j", "subject[].$last.componentList[].$last.gndIdentifier")
-        replace_all("subject[].$last.componentList[].$last..gndIdentifier","^\\(DE-588\\)(.*)$","$1") 
-      end
-    end
-  end
-  join_field("subject[].$last.label"," | ")
-end
-
-if exists("6895?")
-  set_array("subject[].$append.type[]","ComplexSubject")
-  set_array("subject[].$last.label")
-  set_array("subject[].$last.componentList[]")  
-  do list(path:"6895?", "var":"$i")
-    set_array("subject[].$last.componentList[].$append.type[]")
-    do list(path: "$i.D", "var": "$k")
-      copy_field("$k","subject[].$last.componentList[].$last.type[].$append")
-    end
-    copy_field("$i.a","subject[].$last.componentList[].$last.label")
-    copy_field("$i.a","subject[].$last.label.$append")
-    do list(path:"$i.0", "var": "$j")
-      if any_match("$j","^\\(DE-588\\)(.*)$")
-        add_field("subject[].$last.componentList[].$last.source.label","Gemeinsame Normdatei (GND)")
-        add_field("subject[].$last.componentList[].$last.source.id","https://d-nb.info/gnd/7749153-1")
-        copy_field("$j", "subject[].$last.componentList[].$last.id")
-        replace_all("subject[].$last.componentList[].$last..id","^\\(DE-588\\)(.*)$","http://d-nb.info/gnd/$1")
-        copy_field("$j", "subject[].$last.componentList[].$last.gndIdentifier")
-        replace_all("subject[].$last.componentList[].$last..gndIdentifier","^\\(DE-588\\)(.*)$","$1") 
-      end
-    end
-  end
-  join_field("subject[].$last.label"," | ")
-end
-
-if exists("6896?")
-  set_array("subject[].$append.type[]","ComplexSubject")
-  set_array("subject[].$last.label")
-  set_array("subject[].$last.componentList[]")  
-  do list(path:"6896?", "var":"$i")
-    set_array("subject[].$last.componentList[].$append.type[]")
-    do list(path: "$i.D", "var": "$k")
-      copy_field("$k","subject[].$last.componentList[].$last.type[].$append")
-    end
-    copy_field("$i.a","subject[].$last.componentList[].$last.label")
-    copy_field("$i.a","subject[].$last.label.$append")
-    do list(path:"$i.0", "var": "$j")
-      if any_match("$j","^\\(DE-588\\)(.*)$")
-        add_field("subject[].$last.componentList[].$last.source.label","Gemeinsame Normdatei (GND)")
-        add_field("subject[].$last.componentList[].$last.source.id","https://d-nb.info/gnd/7749153-1")
-        copy_field("$j", "subject[].$last.componentList[].$last.id")
-        replace_all("subject[].$last.componentList[].$last..id","^\\(DE-588\\)(.*)$","http://d-nb.info/gnd/$1")
-        copy_field("$j", "subject[].$last.componentList[].$last.gndIdentifier")
-        replace_all("subject[].$last.componentList[].$last..gndIdentifier","^\\(DE-588\\)(.*)$","$1") 
-      end
-    end
-  end
-  join_field("subject[].$last.label"," | ")
-end
-
-if exists("6897?")
-  set_array("subject[].$append.type[]","ComplexSubject")
-  set_array("subject[].$last.label")
-  set_array("subject[].$last.componentList[]")  
-  do list(path:"6897?", "var":"$i")
-    set_array("subject[].$last.componentList[].$append.type[]")
-    do list(path: "$i.D", "var": "$k")
-      copy_field("$k","subject[].$last.componentList[].$last.type[].$append")
-    end
-    copy_field("$i.a","subject[].$last.componentList[].$last.label")
-    copy_field("$i.a","subject[].$last.label.$append")
-    do list(path:"$i.0", "var": "$j")
-      if any_match("$j","^\\(DE-588\\)(.*)$")
-        add_field("subject[].$last.componentList[].$last.source.label","Gemeinsame Normdatei (GND)")
-        add_field("subject[].$last.componentList[].$last.source.id","https://d-nb.info/gnd/7749153-1")
-        copy_field("$j", "subject[].$last.componentList[].$last.id")
-        replace_all("subject[].$last.componentList[].$last..id","^\\(DE-588\\)(.*)$","http://d-nb.info/gnd/$1")
-        copy_field("$j", "subject[].$last.componentList[].$last.gndIdentifier")
-        replace_all("subject[].$last.componentList[].$last..gndIdentifier","^\\(DE-588\\)(.*)$","$1") 
-      end
-    end
-  end
-  join_field("subject[].$last.label"," | ")
-end
-
-if exists("6898?")
-  set_array("subject[].$append.type[]","ComplexSubject")
-  set_array("subject[].$last.label")
-  set_array("subject[].$last.componentList[]")  
-  do list(path:"6898?", "var":"$i")
-    set_array("subject[].$last.componentList[].$append.type[]")
-    do list(path: "$i.D", "var": "$k")
-      copy_field("$k","subject[].$last.componentList[].$last.type[].$append")
-    end
-    copy_field("$i.a","subject[].$last.componentList[].$last.label")
-    copy_field("$i.a","subject[].$last.label.$append")
-    do list(path:"$i.0", "var": "$j")
-      if any_match("$j","^\\(DE-588\\)(.*)$")
-        add_field("subject[].$last.componentList[].$last.source.label","Gemeinsame Normdatei (GND)")
-        add_field("subject[].$last.componentList[].$last.source.id","https://d-nb.info/gnd/7749153-1")
-        copy_field("$j", "subject[].$last.componentList[].$last.id")
-        replace_all("subject[].$last.componentList[].$last..id","^\\(DE-588\\)(.*)$","http://d-nb.info/gnd/$1")
-        copy_field("$j", "subject[].$last.componentList[].$last.gndIdentifier")
-        replace_all("subject[].$last.componentList[].$last..gndIdentifier","^\\(DE-588\\)(.*)$","$1") 
-      end
-    end
-  end
-  join_field("subject[].$last.label"," | ")
-end
-
-if exists("6899?")
-  set_array("subject[].$append.type[]","ComplexSubject")
-  set_array("subject[].$last.label")
-  set_array("subject[].$last.componentList[]")  
-  do list(path:"6899?", "var":"$i")
-    set_array("subject[].$last.componentList[].$append.type[]")
-    do list(path: "$i.D", "var": "$k")
-      copy_field("$k","subject[].$last.componentList[].$last.type[].$append")
-    end
-    copy_field("$i.a","subject[].$last.componentList[].$last.label")
-    copy_field("$i.a","subject[].$last.label.$append")
-    do list(path:"$i.0", "var": "$j")
-      if any_match("$j","^\\(DE-588\\)(.*)$")
-        add_field("subject[].$last.componentList[].$last.source.label","Gemeinsame Normdatei (GND)")
-        add_field("subject[].$last.componentList[].$last.source.id","https://d-nb.info/gnd/7749153-1")
-        copy_field("$j", "subject[].$last.componentList[].$last.id")
-        replace_all("subject[].$last.componentList[].$last..id","^\\(DE-588\\)(.*)$","http://d-nb.info/gnd/$1")
-        copy_field("$j", "subject[].$last.componentList[].$last.gndIdentifier")
-        replace_all("subject[].$last.componentList[].$last..gndIdentifier","^\\(DE-588\\)(.*)$","$1") 
-      end
-    end
-  end
-  join_field("subject[].$last.label"," | ")
-end
 
 lookup("subject[].*.componentList[].*.type[].*","rswk-indicator")
 
