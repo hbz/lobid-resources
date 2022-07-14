@@ -18,13 +18,14 @@ set_array("natureOfContent[]")
 # Ind: 2. 7= Source specified in subfield $2. 
 
 do list(path:"655 7", "var":"$i")
-  # TODO: Deduplicate values.
-  copy_field("$i.a","natureOfContent[].$append.label")
-  do list(path:"$i.0","var":"$j")
-    # This is only DNB, should we also check for other uris for keywords?
-    if any_match("$j","^\\(DE-588\\)(.*)$")
-      copy_field("$j","natureOfContent[].$last.id")
-      replace_all("natureOfContent[].$last.id", "^\\(DE-588\\)(.*)$", "http://d-nb.info/gnd/$1")     
+ unless in("$i.a","natureOfContent[].*.label")
+    copy_field("$i.a","natureOfContent[].$append.label")
+    do list(path:"$i.0","var":"$j")
+      # This is only DNB, should we also check for other uris for keywords?
+      if any_match("$j","^\\(DE-588\\)(.*)$")
+        copy_field("$j","natureOfContent[].$last.id")
+        replace_all("natureOfContent[].$last.id", "^\\(DE-588\\)(.*)$", "http://d-nb.info/gnd/$1")     
+      end
     end
   end
 end
@@ -47,9 +48,11 @@ end
 # 689 - not MARC standard element/DNB specific keywords (R) Subfields: A (seems NR)
 
 do list(path:"689??", "var":"$i")
-  if any_equal("$i.A","f")
-    # TODO: Deduplicate values.
-    copy_field("$i.a","natureOfContent[].$append.label")
+  unless in("$i.a","natureOfContent[].*.label")
+    if any_equal("$i.A","f")
+      # TODO: Deduplicate values.
+      copy_field("$i.a","natureOfContent[].$append.label")
+    end
   end
 end
 
