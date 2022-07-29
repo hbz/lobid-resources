@@ -24,7 +24,7 @@ import play.mvc.Result;
  */
 public class Webhook extends Controller {
   private static final String RESOURCES_CONF = "conf/resources.conf";
-  private static final String ETL_OF = "ETL of ";
+  private static final String ETL_OF = "Starting ETL of ";
   private static String filenameUpdate;
   private static String filenameBasedump;
   private static String indexNameOfBasedump;
