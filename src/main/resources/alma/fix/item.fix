@@ -215,8 +215,22 @@ end
 #       </entity>
 #     </entity>
 
-
-
+do list(path:"POR  ", "var": "$i")
+# entity for every POR  .a without POR  .A
+  unless any_match("$i.a",".*6441$") # filter out hbz
+    copy_field("$i.a", "hasItem[].$append.id")
+    prepend("hasItem[].$last.id","https://lobid.org/item/")
+    set_array("hasItem[].$last.type[]", "POR")
+    add_field("hasItem[].$last.label", "POR")
+    copy_field("$i.D", "hasItem[].$last.electronicLocator") 
+    copy_field("$i.d", "hasItem[].$last.sublocation")
+    copy_field("$i.a", "hasItem[].$last.heldBy.id")
+    replace_all("hasItem[].$last.heldBy.id",".*(\\d{4})$","$1")
+    lookup("hasItem[].$last.heldBy.id", "alma-institution-code-to-isil")
+    prepend("hasItem[].$last.heldBy.id", "http://lobid.org/organisations/")
+    append("hasItem[].$last.heldBy.id","#!")
+  end
+end
 
 
 #     <!-- POR  .a = NZ => hasItem for each POR  .A -->
