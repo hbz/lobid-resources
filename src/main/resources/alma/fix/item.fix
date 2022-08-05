@@ -230,6 +230,21 @@ do list(path:"POR  ", "var": "$i")
     prepend("hasItem[].$last.heldBy.id", "http://lobid.org/organisations/")
     append("hasItem[].$last.heldBy.id","#!")
   end
+  # entity for every POR  .A
+  if exists ("$i.A")
+    do list(path:"$i.A", "var": "$j")
+      copy_field("$i.a", "hasItem[].$append.id")
+      prepend("hasItem[].$last.id","https://lobid.org/item/")
+      set_array("hasItem[].$last.type[]", "POR")
+      add_field("hasItem[].$last.label", "POR")
+      copy_field("$i.D", "hasItem[].$last.electronicLocator") 
+      copy_field("$i.d", "hasItem[].$last.sublocation")
+      copy_field("$j", "hasItem[].$last.heldBy.id")
+      lookup("hasItem[].$last.heldBy.id", "alma-iz-code-to-isil")
+      prepend("hasItem[].$last.heldBy.id", "http://lobid.org/organisations/")
+      append("hasItem[].$last.heldBy.id","#!")
+    end
+  end
 end
 
 
