@@ -185,6 +185,7 @@ public final class AlmaMarc21XmlToLobidJsonMetafixTest {
                             assertEquals(expectedJson, actualJson);
                         }
                     } catch (Exception e) {
+                        LOG.error("Errored when transforming " + file.getAbsolutePath());
                         e.printStackTrace();
                         fail();
                     }

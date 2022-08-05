@@ -11,13 +11,14 @@ import org.junit.runners.Suite;
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-		org.lobid.resources.Hbz01MabXmlEtlNtriples2Filesystem.class,
-		org.lobid.resources.Hbz01MabXml2ElasticsearchLobidTest.class,
-		TestGenerateContext.class,
-		org.lobid.resources.Hbz01MabXmlDeletions2ElasticsearchTest.class,
+    org.lobid.resources.Hbz01MabXmlEtlNtriples2Filesystem.class,
+    org.lobid.resources.Hbz01MabXml2ElasticsearchLobidTest.class,
+    TestGenerateContext.class,
+    org.lobid.resources.Hbz01MabXmlDeletions2ElasticsearchTest.class,
     org.lobid.resources.LocBibframeInstances2ElasticsearchTest.class,
+    org.lobid.resources.AlmaMarc21XmlToLobidJsonMetafixTest.class,
     org.lobid.resources.AlmaMarc21XmlToLobidJsonTest.class })
 
 public final class UnitTests {
-	/* Suite class, groups tests via annotation above */
+    /* Suite class, groups tests via annotation above */
 }
