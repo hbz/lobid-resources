@@ -134,11 +134,11 @@ public class AlmaMarcXmlFix2lobidJsonEs {
               .setReceiver(xmlElementSplitter)//
               .setReceiver(new LiteralToObject())//
               .setReceiver(new ObjectThreader<String>())//
-              .addReceiver(receiverThread())//
-              .addReceiver(receiverThread())//
-              .addReceiver(receiverThread())//
-              .addReceiver(receiverThread())//
-              .addReceiver(receiverThread())//
+           //   .addReceiver(receiverThread())//
+           //   .addReceiver(receiverThread())//
+           //   .addReceiver(receiverThread())//
+           //   .addReceiver(receiverThread())//
+           //   .addReceiver(receiverThread())//
               .addReceiver(receiverThread());
         }
         String message = "";
