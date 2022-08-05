@@ -122,11 +122,11 @@ public class AlmaMarcXmlFix2lobidJsonEs {
               .setReceiver(xmlElementSplitter)//
               .setReceiver(new LiteralToObject())//
               .setReceiver(new ObjectThreader<String>())//
-              .addReceiver(receiverThread())//
-              .addReceiver(receiverThread())//
-              .addReceiver(receiverThread())//
-              .addReceiver(receiverThread())//
-              .addReceiver(receiverThread())//
+            //  .addReceiver(receiverThread())//
+            //  .addReceiver(receiverThread())//
+            //  .addReceiver(receiverThread())//
+            //  .addReceiver(receiverThread())//
+            //  .addReceiver(receiverThread())//
               .addReceiver(receiverThread());
         } else {
           LOG.info("recognised as BGZF");
@@ -189,7 +189,7 @@ public class AlmaMarcXmlFix2lobidJsonEs {
     MarcXmlHandler marcXmlHandler = new MarcXmlHandler();
     marcXmlHandler.setNamespace(null);
     EtikettJson etikettJson = new EtikettJson();
-    etikettJson.setLabelsDirectoryName("src/main/resources/labels");
+    etikettJson.setLabelsDirectoryName("labels");
     etikettJson.setFilenameOfContext("web/conf/context.jsonld");
     etikettJson.setGenerateContext(true);
     JsonEncoder jsonEncoder = new JsonEncoder();
