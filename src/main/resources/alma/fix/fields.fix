@@ -147,12 +147,14 @@ end
 #  <data name="oclcNumber" source="@oclcNumber" />
 
 # 035 (R) Subfield a (NR)
+set_array("oclcNumber[]")
+
 do list(path:"035  ", "var":"$i")
-  if all_match("$i.a", "\\(OCoLC\\)(.*)")
-    copy_field("$i.a", "oclcNumber")
-  end
+    if all_match("$i.a", "\\(OCoLC\\)(.*)")
+      copy_field("$i.a", "oclcNumber[].$append")
+    end
 end
-replace_all("oclcNumber", "\\(OCoLC\\)","")
+replace_all("oclcNumber[].*", "\\(OCoLC\\)","")
 
 #
 #  <data name="@zdbId" source="035  .a">
@@ -203,7 +205,7 @@ end
 #      </data>
 #    </entity>
 
-do list(path: "oclcNumber", "var": "$i")
+do list(path: "oclcNumber[]", "var": "$i")
   paste("sameAs[].$append.id","~http://worldcat.org/oclc/", "$i", join_char:"")
   add_field("sameAs[].$last.label","OCLC Ressource")
 end
