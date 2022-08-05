@@ -1,0 +1,1283 @@
+set_array("medium[]")
+
+# The type and medium transformation has to be completly remodeled since the transformation was not identical with
+# the old ALEPH Moprh Transformation.
+
+#  <!--
+#    CF = Computer files
+#    MK = Music
+#    MP  = Map
+#    CR = Continuing Resources
+#    VM = Visual materials
+#    MX = Mixed materials
+#    BK  = Book
+#  -->
+# Leader/06 values
+# Value 	Field 008/18-34 configuration
+# a 	    Language material 	Books OR Continuing resources
+# c 	    Notated music 	Music
+# d 	    Manuscript notated music 	Music
+# e 	    Cartographic material 	Maps
+# f 	    Manuscript cartographic material 	Maps
+# g 	    Projected medium 	Visual materials
+# i 	    Nonmusical sound recording 	Music
+# j 	    Musical sound recording 	Music
+# k 	    Two-dimensional nonprojectable graphic 	Visual materials
+# m 	    Computer file 	Computer files
+# o 	    Kit 	Visual materials
+# p 	    Mixed material 	Mixed materials
+# r 	    Three dimensional artifact or naturally occurring object 	Visual materials
+# t 	    Manuscript language material 	Books
+
+# @LeaderPos06 - Type of record
+# @LeaderPos07 - Bibliographic level
+# set @leaderType-variable
+copy_field("leader","@leaderPos06-07")
+substring("@leaderPos06-07","6","2")
+
+if any_match("@leaderPos06-07","a[acdm]|t.")
+  add_field("@leaderTyp","Book")
+  # TODO: Why is `m` not CF but CR sometimes.
+elsif any_match("@leaderPos06-07","a[bis]|m[bis]")
+  add_field("@leaderTyp","Continuing Resources")
+elsif any_match("@leaderPos06-07","m[^bis]")
+  add_field("@leaderTyp","Computer files")
+elsif any_match("@leaderPos06-07","[cdij].")
+  add_field("@leaderTyp","Music")
+elsif any_match("@leaderPos06-07","[ef].")  
+  add_field("@leaderTyp","Map")
+elsif any_match("@leaderPos06-07","[gkor].")  
+  add_field("@leaderTyp","Visual materials")
+elsif any_match("@leaderPos06-07","p.")  
+  add_field("@leaderTyp","Mixed materials")
+end
+
+paste("@leaderTyp+008","@leaderTyp","008", join_char:"")
+
+# medium (Mappings based on old ALEPH-morph, Introx Mapping and 050 Mapping from Verbund)
+# https://service-wiki.hbz-nrw.de/display/VDBE/ALT+-+Mapping+MAB2+-+MARC+21+-++Segmente+0---%2C+001+-+088+-+Kurzform
+
+# 337: https://service-wiki.hbz-nrw.de/pages/viewpage.action?pageId=510164996&preview=/510164996/510165005/F8_Liste_061_.txt
+# 338: Value list: https://service-wiki.hbz-nrw.de/pages/viewpage.action?pageId=510164996&preview=/510164996/510165006/F8_Liste_062_.txt
+
+# TODO: Check introx concerning possible mappings of 340 https://github.com/hbz/limetrans/blob/d2dff10e1b5cdf5699239a8f3474f8b652d582a3/src/main/resources/transformation/alma.fix#L629 
+
+# medium: "Audio-Dokument":	"http://purl.org/ontology/bibo/AudioDocument"
+
+if any_match("@leaderPos06-07","[ij].") 
+  add_field("medium[].$append.label","Audio-Dokument") 
+elsif any_match("006", "^[ij].*")
+  add_field("medium[].$append.label","Audio-Dokument")
+elsif any_match("007", "^[s].*")
+  add_field("medium[].$append.label","Audio-Dokument")
+elsif any_match("@leaderTyp+008", "Computer files(.{26})h.*")  
+  add_field("medium[].$append.label","Audio-Dokument")
+elsif any_match("006", "m(.{8})h.*") # Pos00+09
+  add_field("medium[].$append.label","Audio-Dokument")
+elsif any_match("337  ", "audio")
+  add_field("medium[].$append.label","Audio-Dokument")
+elsif any_match("338 .a", "Audiodisk|Audiokassette|Audiocartridge|Notenrolle|Phonographenzylinder|Tonbandspule|Sonstige Tonträger")
+  add_field("medium[].$append.label","Audio-Dokument")
+elsif any_match("338  .b", "s")
+  add_field("medium[].$append.label","Audio-Dokument")
+elsif any_match("245[10]0.h", "^[Tt][oO].*|Audio-CD")
+  add_field("medium[].$append.label","Audio-Dokument")
+elsif any_match("689??.a", "Hörbuch|Tonträger")
+  add_field("medium[].$append.label","Audio-Dokument")    
+end
+
+# medium: "Audio-Kassette":	"http://id.loc.gov/vocabulary/carriers/ss"
+# TODO: In the frontend the icon says Tonband which is more encompassing than "Kassette"
+if any_match("007", "^ss.*")
+  add_field("medium[].$append.label","Audio-Kassette")
+elsif any_match("245[10]0.h", "Kompaktkassette|MC|Tonkassette")
+  add_field("medium[].$append.label","Audio-Dokument")
+end
+
+# medium: "Audio-Visuell":	"http://purl.org/ontology/bibo/AudioVisualDocument" & "Video": "http://rdaregistry.info/termList/RDAMediaType/1008"
+
+
+if any_match("007", "^([gmv]).*")
+  add_field("medium[].$append.label","Video")
+  add_field("medium[].$append.label", "Audio-Visuell")
+elsif any_match("@leaderTyp+008", "Visual materials(.{32})[fmstv].*")   # Pos33 TODO: Check if s (Slide/Dia) and t(Transparency) are correct since both are not video specific.
+  add_field("medium[].$append.label","Video")
+  add_field("medium[].$append.label", "Audio-Visuell")
+elsif any_match("006", "^[gkor](.{15})[fmstv].*") # Pos00+16 Check if s (Slide/Dia) and t(Transparency) are correct since both are not video specific.
+  add_field("medium[].$append.label","Video")
+  add_field("medium[].$append.label", "Audio-Visuell")
+elsif any_match("245[10]0.h", "Bildtonträger")
+  add_field("medium[].$append.label","Video")
+  add_field("medium[].$append.label", "Audio-Visuell")
+elsif any_match("300  .a", ".*(DVD-Video|Video).*")
+  add_field("medium[].$append.label","Video")
+  add_field("medium[].$append.label", "Audio-Visuell")
+elsif any_match("337  .a", "video")
+  add_field("medium[].$append.label","Video")
+  add_field("medium[].$append.label", "Audio-Visuell")
+elsif any_match("337  .b", "v")
+  add_field("medium[].$append.label","Video")
+  add_field("medium[].$append.label", "Audio-Visuell")
+elsif any_match("338 .a", "^(Video).*|Sonstige Video-Datenträger$")
+  add_field("medium[].$append.label","Video")
+  add_field("medium[].$append.label", "Audio-Visuell")
+elsif any_match("338  .b", "vd")
+  add_field("medium[].$append.label","Video")
+  add_field("medium[].$append.label", "Audio-Visuell")
+elsif any_match("689??.a", "Hörbuch|Tonträger")
+  add_field("medium[].$append.label","DVD-Video|Video[ck]assette")
+  add_field("medium[].$append.label", "Audio-Visuell")    
+end
+
+
+
+# medium: "Blindenschrift":	"http://purl.org/library/BrailleBook"
+if any_match("007", "^fb.*|^tc.*") # TODO: This does not always seems to fit. Had fu but u is for unkown. Added text Pos 01 b (Braille)
+  add_field("medium[].$append.label","Blindenschrift")
+  add_field("medium[].$append.label", "Print")
+elsif any_match("@leaderTyp+008", "(Book|Music|Continuing Resources|Mixed materials)(.{23})[f].*")  # Pos23
+  add_field("medium[].$append.label","Blindenschrift")
+  add_field("medium[].$append.label", "Print")
+elsif any_match("@leaderTyp+008", "(Map|Visual materials)(.{29})[f].*")  # Pos29
+  add_field("medium[].$append.label","Blindenschrift")
+  add_field("medium[].$append.label", "Print")
+elsif any_match("006", "^[efgkor](.{11})[f].*") # Pos00+12
+  add_field("medium[].$append.label","Blindenschrift")
+  add_field("medium[].$append.label", "Print")
+elsif any_match("006", "^[acdijpst](.{5})[f].*") # Pos00+06
+  add_field("medium[].$append.label","Blindenschrift")
+  add_field("medium[].$append.label", "Print")
+elsif any_match("546  .a", ".*Braille.*")
+  add_field("medium[].$append.label","Blindenschrift")
+  add_field("medium[].$append.label", "Print")
+end
+
+# medium:   "Print":	"http://rdaregistry.info/termList/RDAproductionMethod/1010"
+
+# Old ALEPH MORPH:
+#		<data source="050." name="@medium">
+#			<regexp match="^[abcd]" format="http://rdaregistry.info/termList/RDAproductionMethod/1010"/>
+#		</data>
+#		<data source="050." name="@medium">
+#			<regexp match="^.......a" format="http://rdaregistry.info/termList/RDAproductionMethod/1010"/>
+#		</data>
+#		<data source="334-[12].a" name="@medium">
+#			<regexp match="Plakat" format="http://rdaregistry.info/termList/RDAproductionMethod/1010"/>
+#		</data>
+#		<data source="40[03]-1.a" name="@medium">
+#			<regexp match="Nachdruck|Reprint" format="http://rdaregistry.info/termList/RDAproductionMethod/1010"/>
+#		</data>
+
+# TODO: Check if there are reaseons that kit and mixed materials are stated as Pint: https://service-wiki.hbz-nrw.de/display/DBI/Facettenwerte
+# I exlude them at the moment since they can be print but must not be print.
+# There should be some examples for mixed materials and kits.
+# Mediakombination was also set as print in ALEPH Morph: https://github.com/hbz/lobid-resources/blob/be3dde0ca3b3d3c51247ad8b930bc309f9e5b5b0/src/main/resources/morph-hbz01-to-lobid.xml#L1612
+# Also one cannot set Pos06 a (Language material) by default since: "Includes microforms and electronic resources that are basically textual in nature, whether they are reproductions from print or originally produced." 
+# https://www.loc.gov/marc/bibliographic/bdleader.html
+
+# if any_match("@leaderPos06-07", "^[op].*") 
+#  add_field("medium[].$append.label","Print")
+#if any_match("006", "^[op].*") 
+# add_field("medium[].$append.label","Print")
+
+if any_match("007", "(^k[fhjs]|^t[^c]).*") # TODO: I excluded ^o (Kit) and added all Pos01 for text except Braille.
+  add_field("medium[].$append.label","Print")
+elsif any_match("@leaderTyp+008", "(Book|Music|Continuing Resources|Mixed materials)(.{23})[dr].*")  # Pos23
+  add_field("medium[].$append.label","Print")
+elsif any_match("@leaderTyp+008", "(Map|Visual materials)(.{29})[dr].*")  # Pos29
+  add_field("medium[].$append.label","Print")
+# elsif any_match("@leaderTyp+008", "(Visual materials)(.{33})b.*")  # Pos33  TODO: I excluded Kit
+#  add_field("medium[].$append.label","Print")
+elsif any_match("006", "[acdpst]](.{5})[dr].*") # Pos00+06 Added Print for pos 006.
+  add_field("medium[].$append.label","Print")
+elsif any_match("006", "[efgkor]](.11)[dr].*") # Pos00+12 Added Print for pos 006.
+  add_field("medium[].$append.label","Print")
+elsif any_match("245[10]0.h", "Plakat")
+  add_field("medium[].$append.label","Print")
+elsif any_match("25[09]??.a", "Nachdruck|Reprint") # Element 250 and 259
+  add_field("medium[].$append.label","Print")    
+end
+
+# medium:   "Datenträger":	"http://rdaregistry.info/termList/RDAMediaType/1003"
+# TODO: Check why so many Manuscripts are Print AND Manuscript.
+
+# OLD ALEPH-Moprh:
+#		<data source="652a[-1].a" name="@medium">
+#			<regexp match="^[BbCcDdHhFfKkUu][AaDdEeIiLlSsVv]"
+#				format="http://rdaregistry.info/termList/RDAMediaType/1003"/>
+#		</data>
+#		<data source="@medium" name="http://purl.org/dc/terms/medium"/>
+
+if any_match("@leaderPos06-07", "^m.*")
+  add_field("medium[].$append.label","Datenträger")
+elsif any_match("006", "^m.*") 
+  add_field("medium[].$append.label","Datenträger")
+elsif any_match("007", "^c.*") 
+  add_field("medium[].$append.label","Datenträger")
+elsif any_match("@leaderTyp+008", "(Book|Music|Continuing Resources|Mixed materials)(.{23})[sq].*")  # Pos23
+  add_field("medium[].$append.label","Datenträger")
+elsif any_match("@leaderTyp+008", "(Map|Visual materials)(.{29})[sq].*")  # Pos29
+  add_field("medium[].$append.label","Datenträger")
+elsif any_match("006", "^[efgkor](.{11})[sq].*") # Pos00+12
+  add_field("medium[].$append.label","Datenträger")
+elsif any_match("006", "^[acdijpst](.{5})[sq].*") # Pos00+06
+  add_field("medium[].$append.label","Datenträger")
+elsif any_match("337  .a", "Computermedien")
+  add_field("medium[].$append.label","Datenträger")  
+elsif any_match("338 .a", ".*([Cc]omputer|[Cc]omputermedien|informatique|Computerdisk|computer disc|Magnetband|Speicherkarte).*")
+  add_field("medium[].$append.label","Datenträger")
+elsif any_match("338  .b", "c.")
+  add_field("medium[].$append.label","Datenträger")
+# From the old ALEPH-Morph #		<!-- looking for Blu-ray, Cartridge, CD, Diskette, DVD, Festplatte, HD-DVD, Kassette, USB -->  
+elsif any_match("340  .a", "^[BbCcDdHhFfKkUu][AaDdEeIiLlSsVv].*")
+  add_field("medium[].$append.label","Datenträger")
+elsif any_match("340  .*.a", "^[BbCcDdHhFfKkUu][AaDdEeIiLlSsVv].*")
+  add_field("medium[].$append.label","Datenträger")
+end    
+
+# medium: "Manuskript":	"http://purl.org/ontology/bibo/Manuscript"
+
+# Old ALEPH-Moprh
+# <data source="050." name="@medium">
+#			<regexp match="^.a" format="http://purl.org/ontology/bibo/Manuscript"/>
+#		</data>
+
+
+
+if any_match("@leaderPos06-07", "^[dft].")
+  add_field("medium[].$append.label","Manuskript")
+elsif any_match("006", "^[dft].*")
+  add_field("medium[].$append.label","Manuskript")
+end
+
+# medium: "Mikroformat": "http://rdaregistry.info/termList/RDAMediaType/1002"
+
+
+if any_match("007", "^h.*") 
+  add_field("medium[].$append.label","Mikroformat")
+elsif any_match("@leaderTyp+008", "(Book|Music|Continuing Resources|Mixed materials)(.{23})[abc].*")  # Pos23
+  add_field("medium[].$append.label","Mikroformat")
+elsif any_match("@leaderTyp+008", "(Map|Visual materials)(.{29})[abc].*")  # Pos29
+  add_field("medium[].$append.label","Mikroformat")
+elsif any_match("006", "^[efgkor](.{11})[abc].*") # Pos00+12
+  add_field("medium[].$append.label","Mikroformat")
+elsif any_match("006", "^[acdijpst](.{5})[abc].*") # Pos00+06
+  add_field("medium[].$append.label","Mikroformat")
+elsif any_match("245[10]0.h", ".*Mikrofor.*")
+  add_field("medium[].$append.label","Mikroformat")
+elsif any_match("25[09]??.a", ".*Mikro.*") # Element 250 and 259
+  add_field("medium[].$append.label","Mikroformat")   
+elsif any_match("337  .a","Mikroform|microform")
+  add_field("medium[].$append.label","Mikroformat")
+elsif any_match("337  .b", "h")
+  add_field("medium[].$append.label","Mikroformat")
+elsif any_match("338 .a", ".*[Mm]ikro.*")
+  add_field("medium[].$append.label","Mikroformat")
+elsif any_match("338  .b", "he|hj") # TODO: More codes?
+  add_field("medium[].$append.label","Mikroformat")
+elsif any_match("689??.a", "Hörbuch|Tonträger")
+  add_field("medium[].$append.label","Mikroformat")
+end
+
+# medium: "Kombination":	"http://iflastandards.info/ns/isbd/terms/mediatype/T1008"
+
+#		<data source="050." name="@medium">
+#			<regexp match="^.......a" format="http://iflastandards.info/ns/isbd/terms/mediatype/T1008"/>
+#		</data>
+#		<data source="334-[-12].a" name="@medium">
+#			<regexp match="Medienkombination" format="http://iflastandards.info/ns/isbd/terms/mediatype/T1008"/>
+#		</data>
+#		<data source="9[01234][27]-[-1].f" name="@medium">
+#			<regexp match="Medienkombination" format="http://iflastandards.info/ns/isbd/terms/mediatype/T1008"/>
+#		</data>
+
+# TODO: TT000166861 is in lobid ALEPH Kombination but not here. Need to check later.
+
+if any_match("@leaderPos06-07", "^[op].")
+  add_field("medium[].$append.label","Kombination")
+elsif any_match("006", "^[op].*") 
+  add_field("medium[].$append.label","Kombination")
+elsif any_match("007", "^o.*")
+  add_field("medium[].$append.label","Kombination")
+elsif any_match("245[10]0.h", ".*Medienkombination.*")
+  add_field("medium[].$append.label","Kombination")
+elsif any_match("689??.a", ".*Medienkombination.*")
+  add_field("medium[].$append.label","Kombination")
+end
+
+# medium: "Online-Ressource": "http://rdaregistry.info/termList/RDACarrierType/1018"
+# 
+# 		<data source="050." name="@1018">
+# 			<regexp match="^........g" format="http://rdaregistry.info/termList/RDACarrierType/1018"/>
+# 		</data>
+# 		<data source="058." name="@1018">
+# 			<regexp match="^.r" format="http://rdaregistry.info/termList/RDACarrierType/1018"/>
+# 		</data>
+# 		<data source="652a[-1].a" name="@1018">
+# 			<regexp match="^[AaOo][rn]" format="http://rdaregistry.info/termList/RDACarrierType/1018"/>
+# 		</data>
+# 		<data source="@1018" name="@medium"/>
+# 
+# TODO: Old Morph also sets remote access as online ressource (050/8/1=g=Computerdatei(en) im Fernzugriff and 058.) Our ALMA-Transformation does not, how should we proceed.
+
+if any_match("@leaderTyp+008", "(Book|Music|Computer files|Continuing Resources|Mixed materials)(.{23})[o].*")  # Pos23
+  add_field("medium[].$append.label","Online-Ressource")
+elsif any_match("@leaderTyp+008", "(Map|Visual materials)(.{29})[o].*")  # Pos29
+  add_field("medium[].$append.label","Online-Ressource")
+elsif any_match("006", "^[efgkor](.{11})[o].*") # Pos00+12
+  add_field("medium[].$append.label","Online-Ressource")
+elsif any_match("006", "^[acdijpst](.{5})[o].*") # Pos00+06
+  add_field("medium[].$append.label","Online-Ressource")
+elsif any_match("300  ", ".*[Oo]nline.*") # Pos00+06
+  add_field("medium[].$append.label","Online-Ressource")  
+elsif any_match("338 .a", "^(.*([Oo]nline.*|online bron|online resource|online-ressource|Online-Ressource|ressource en ligne)$")
+  add_field("medium[].$append.label","Online-Ressource")
+elsif any_match("338  .b", "cr")
+  add_field("medium[].$append.label","Online-Ressource")
+elsif any_match("340  .a", "Online-Ressource")
+  add_field("medium[].$append.label","Online-Ressource")
+elsif any_match("340  .*.a", "Online-Ressource")
+  add_field("medium[].$append.label","Online-Ressource")
+end
+
+# medium: "Schallplatte":	"http://purl.org/ontology/mo/Vinyl"
+
+#		<data source="050." name="@mediumAudio">
+#			<regexp match="^.....aj" format="http://purl.org/ontology/mo/Vinyl"/>
+#		</data>
+#		<data source="050." name="@mediumAudio">
+#			<regexp match="^.....aj" format="$[ns-bibo]AudioDocument"/>
+#		</data>
+#		<data source="334-[12].a" name="@mediumAudio">
+#			<regexp match="Schallplatte" format="http://purl.org/ontology/mo/Vinyl"/>
+#		</data>
+#		<data source="334-[12].a" name="@mediumAudio">
+#			<regexp match="Schallplatte" format="$[ns-bibo]AudioDocument"/>
+#		</data>
+
+# TODO: HBZ Mappiong 050 -> Marc sets to none specific medium type Leader,06=j+ 007,00=s + 007,01=z . How to proceed here?
+# TODO: What about Shellac?
+# TODO: In all the MARC specifics for SChallplatten seem poor.
+
+if any_match("300  .a", ".*Schallpl.*")
+  add_field("medium[].$append.label","Schallplatte")
+  add_field("medium[].$append.label","Audio-Dokument")   
+elsif any_match("340  .a", "[Vv]inyl")
+  add_field("medium[].$append.label","Schallplatte")
+  add_field("medium[].$append.label","Audio-Dokument")   
+elsif any_match("340  .*.a", "[Vv]inyl")
+  add_field("medium[].$append.label","Schallplatte")
+  add_field("medium[].$append.label","Audio-Dokument")   
+end
+
+
+# medium: "Miscellaneous":	"http://purl.org/lobid/lv#Miscellaneous"
+# TODO: label always is german but "Miscellaneous" is not.
+
+#		<combine name="@medium" value="$[ns-lobid-vocab]Miscellaneous" flushWith="record">
+#			<if>
+#				<none>
+#					<data source="@medium">
+#						<regexp match=".*"/>
+#					</data>
+#				</none>
+#			</if>
+#			<data source="@id"/>
+#		</combine>
+#		<combine name="~rdf:subject" value="${a}" flushWith="@medium">
+#			<data source="@medium"/>
+#			<data source="@id" name="a">
+#				<regexp match="(.*)" format="$[ns-lobid-resource]${1}#!"/>
+#			</data>
+#		</combine>
+
+# Introx sets all Braille to "Miscellaneous". I move them to Braille. Also Introx sets specific stuff to "Sonstige". In old ALEPH-Morph this is a default value.
+# I will follow the old ALEPH-Moprh approach here.  
+# This will be done after the type definition.
+
+
+# ----- type[] -----
+# All metadata records have type: "BibliographicResource" 
+# Base for type list is schema: https://github.com/hbz/lobid-resources/blob/eb1cbfaf013b03aee49291d8b3a4d00aa046e333/src/test/resources/schemas/type.json
+
+# TODO Check 655 for possible mappings.
+
+set_array("type[]","BibliographicResource")
+
+# From schema list of set types:
+#             "enum": [
+#                 "BibliographicResource", #
+#                 "ArchivalResource",
+#                 "ArchivedWebPage", #
+#                 "Book", #
+#                 "Collection",
+#                 "Periodical", #
+#                 "Series", #
+#                 "Newspaper", #
+#                 "Journal",
+#                 "MultiVolumeBook", #
+#                 "PublicationIssue", #
+#                 "Article", #
+#                 "Miscellaneous", #
+#                 "Thesis", #
+#                 "EditedVolume", #
+#                 "Proceedings", #
+#                 "Festschrift", #
+#                 "Bibliography", #
+#                 "OfficialPublication", #
+#                 "ReferenceSource", #
+#                 "Statistics", #
+#                 "Legislation", #
+#                 "PublishedScore", #
+#                 "Schoolbook", #
+#                 "Game", #
+#                 "Biography", #
+#                 "Report", #
+#                 "Image", #
+#                 "Map", #
+#                 "Standard" #
+#             ]
+
+# There seems to be a discrepancy between the values in the schema enum and in the aggregation.
+# Real data: http://lobid.org/resources/search?format=json&aggregations=type
+
+# type: "ArchivalResource"
+# TODO: This is part of  the schema but seems to be not really used.
+
+# type: "ArchivedWebPage"
+
+#		<data source="051." name="@archived">
+#			<regexp match="^.w" format="$[ns-lobid-vocab]ArchivedWebPage"/>
+#		</data>
+
+# TODO: There seems to be no mapping from 051.: .w to any MARC Values.
+# TODO: Check for that later.
+
+# type: "Article"
+
+#		<data source="051." name="@article">
+#			<regexp match="^.t|^..t|^...t|^.....t" format="$[ns-bibo]Article"/>
+#		</data>
+#		<data source="052." name="@article">
+#			<regexp match="^[af]|^.au|^...au|^.....au" format="$[ns-bibo]Article"/>
+#		</data>
+
+# if any_equal("@type__008Pos33", "B#e")
+#   add_field("@facet_type", "Aufsatz")
+# else
+#   if any_match("@006Pos00__006Pos16", "[at]#e")
+#     add_field("@facet_type", "Aufsatz")
+#   else
+#     if any_match("@type__008Pos24|@type__008Pos25|@type__008Pos26|@type__008Pos27", "(?:B|CR)#g")
+#       add_field("@facet_type", "Aufsatz")
+#     else
+#       if any_match("@006Pos00__006Pos07|@006Pos00__006Pos08|@006Pos00__006Pos09|@006Pos00__006Pos10", "[ast]#g")
+#         add_field("@facet_type", "Aufsatz")
+#       end
+#     end
+#   end
+# end
+
+# TODO: What is Aufsatz/Artikel inteded for only monograph, serial or continues ressource component?
+# TODO: There is no mapping for 052/1-6/6=au Aufsatz
+# TODO: What about leader07 a and b? https://www.loc.gov/marc/bibliographic/bdleader.html
+
+# TODO: Transformation needs to be added later.
+
+
+# type: "Bibliography"
+
+# Introx:
+# if any_match("@type__008Pos24|@type__008Pos25|@type__008Pos26|@type__008Pos27", "(?:B|CR)#[bknq]")
+#   add_field("@facet_type", "Bibliografie")
+# else
+#   if any_match("@006Pos00__006Pos07|@006Pos00__006Pos08|@006Pos00__006Pos09|@006Pos00__006Pos10", "[ast]#[bknq]")
+#     add_field("@facet_type", "Bibliografie")
+#   else
+#     if any_equal("@type__008Pos26", "CF#e")
+#       add_field("@facet_type", "Bibliografie")
+#     else
+#       if any_equal("@006Pos00__006Pos09", "m#e")
+#         add_field("@facet_type", "Bibliografie")
+#       end
+#     end
+#   end
+# end
+
+#         <all>
+#           <data source="@type">
+#             <regexp match="^(B|CR)$" />
+#           </data>
+#           <data source="@008Pos2[4567]">
+#             <regexp match="[bknq]" />
+#           </data>
+#         </all>
+#         <all>
+#           <data source="@006Pos00">
+#             <regexp match="[ast]" />
+#           </data>
+#           <data source="@006Pos0[789]|@006Pos10">
+#             <regexp match="[bknq]" />
+#           </data>
+#         </all>
+#         <all>
+#           <data source="@type">
+#             <equals string="CF" />
+#           </data>
+#           <data source="@008Pos26">
+#             <equals string="e" />
+#           </data>
+#         </all>
+#         <all>
+#           <data source="@006Pos00">
+#             <equals string="m" />
+#           </data>
+#           <data source="@006Pos09">
+#             <equals string="e" />
+#           </data>
+#         </all>
+#       </any>
+#     </if>
+# 
+# Old alephmorph:
+#		<data source="051." name="@rdftype">
+#			<regexp match="^.[b]|^..[b]|^...[b]" format="$[ns-lobid-vocab]Bibliography"/>
+#		</data>
+#		<data source="052." name="@rdftype">
+#			<regexp match="^.b[i]|^...b[i]|^.....b[i]" format="$[ns-lobid-vocab]Bibliography"/>
+#		</data>
+
+if any_match("@leaderTyp+008", "(Book|Continuing Resources)(.{24}|.{25}|.{26}|.{27})[bknq].*")  # Pos24-27
+  add_field("type[].$append","Bibliography")
+elsif any_match("@leaderTyp+008", "Computer files(.{26})[e].*")  # Pos26
+  add_field("type[].$append","Bibliography")
+elsif any_match("006", "^[ast](.{6}|.{7}|.{8}|.{9})[bknq].*") # Pos00+07-10
+  add_field("type[].$append","Bibliography")
+elsif any_match("006", "^m(.{8})e.*") # Pos00+07-10
+  add_field("type[].$append","Bibliography")
+end
+
+# type: "Biography"
+
+#		<!-- biography -->
+#		<data source="051." name="@rdftype">
+#			<regexp match="^.[h]|^..[h]|^...[h]" format="$[ns-lobid-vocab]Biography"/>
+#		</data>
+#		<data source="052." name="@rdftype">
+#			<regexp match="^.b[g]|^...b[g]|^.....b[g]" format="$[ns-lobid-vocab]Biography"/>
+#		</data>
+#		<data source="9[01234][27]-[-1].f" name="@rdftype">
+#			<regexp match="Autobiographie|Biographie" format="$[ns-lobid-vocab]Biography"/>
+#		</data>
+
+# if any_match("@type__008Pos34", "B#[abc]")
+#   add_field("@facet_type", "Biografie")
+# else
+#   if any_match("@006Pos00__006Pos17", "[at]#[abc]")
+#     add_field("@facet_type", "Biografie")
+#   else
+#     if any_match("@type__008Pos30|@type__008Pos31", "Mu#[ab]")
+#       add_field("@facet_type", "Biografie")
+#     else
+#       if any_match("@006Pos00__006Pos13|@006Pos00__006Pos14", "[cdij]#[ab]")
+#         add_field("@facet_type", "Biografie")
+#       else
+#         if any_equal("@type__008Pos24|@type__008Pos25|@type__008Pos26|@type__008Pos27", "CR#h")
+#           add_field("@facet_type", "Biografie")
+#         else
+#           if any_equal("@006Pos00__006Pos07|@006Pos00__006Pos08|@006Pos00__006Pos09|@006Pos00__006Pos10", "s#h")
+#             add_field("@facet_type", "Biografie")
+#           end
+#         end
+#       end
+#     end
+#   end
+# end
+
+if any_match("@leaderTyp+008", "Book(.{34})[abc].*")  # Pos34
+  add_field("type[].$append","Biography")
+elsif any_match("@leaderTyp+008", "Music(.{30}|.{31})[ab].*")  # Pos30-31
+  add_field("type[].$append","Biography")
+elsif any_match("@leaderTyp+008", "(Book|Continuing Resources)(.{24}|.{25}|.{26}|.{27})h.*")  # Pos34 # Book has no h but internal mapping uses this.
+  add_field("type[].$append","Biography")
+elsif any_match("006", "^[at](.{17})[abc].*") # Pos00+18
+  add_field("type[].$append","Biography")
+elsif any_match("006", "^[cdij](.{12}|.{13})[ab].*") # Pos00+13-14
+  add_field("type[].$append","Biography")
+elsif any_match("006", "^[s](.{6}|.{7}|.{8}|.{9})h.*") # Pos00+07-10
+  add_field("type[].$append","Biography")
+elsif any_match("655 7.a", "Biografie")
+    add_field("type[].$append","Biography")
+elsif any_match("655 7.*.a", "Biografie")
+    add_field("type[].$append","Biography")
+elsif any_match("689??.a", "Autobiographie|Biographie")
+  add_field("type[].$append","Biography")
+end
+
+# TODO: HT018860300 should also be tagged as Biography but it seems that 008 has no info for Biografie and is not transformed properly.
+
+# type: "EditedVolume"
+
+# 		<combine name="@rdftype" value="${a}">
+# 			<if>
+# 				<none>
+# 					<data source="052.">
+# 						<regexp
+# 							match="^........([dcwesmbqfaghtz])|^.........([dcwesmbqfaghtz])|^..........([dcwesmbqfaghtz])"/>
+# 					</data>
+# 					<data source="542[-ab][-1].[a]"/>
+# 				</none>
+# 			</if>
+# 			<choose name="a">
+# 				<data source="9[01234][27][-a][-1].f" name="a">
+# 					<regexp match="^Aufsatzsammlung" format="$[ns-lobid-vocab]EditedVolume"/>
+# 				</data>
+# 				<data source="9[01234][27][-a][-1].9" name="a">
+# 					<regexp match="4143413" format="$[ns-lobid-vocab]EditedVolume"/>
+# 				</data>
+# 			</choose>
+# 		</combine>
+# 
+# introx
+#     if exists("700??")
+#   unless exists("100??")
+#     add_field("@facet_type", "Sammelwerk")
+#     filter("@facet_type", "^Monographie$", invert: "true")
+#   end
+# end
+
+# taken from introx based on https://jira.hbz-nrw.de/browse/DOX-1405
+# This also results in 990123613330206441 which is a Tonkassete. Perhaps this needs a differentiation.
+
+if exists("700??")
+  unless exists("100??")
+    add_field("type[].$append", "EditedVolume")
+    filter("type[]", "^Monographie$", invert: "true")
+  end
+elsif any_match("689??.a", ".*Aufsatzsammlung.*")
+  add_field("type[].$append", "EditedVolume")
+elsif any_match("689??.*.a", ".*Aufsatzsammlung.*")
+  add_field("type[].$append", "EditedVolume")
+elsif any_match("689??.0", ".*4143413.*")
+  add_field("type[].$append", "EditedVolume")
+elsif any_match("689??.*.0", ".*4143413.*")
+  add_field("type[].$append", "EditedVolume")
+end
+
+
+# type: "Festschrift"
+
+# Old ALEPH-MORPH:
+# <!-- festschrift -->
+# 		<data source="051." name="@rdftype">
+# 			<regexp match="^.f|^..f|^...f" format="$[ns-lobid-vocab]Festschrift"/>
+# 		</data>
+
+# Introx-Fix:
+# if any_equal("@type__008Pos30", "B#1")
+#   add_field("@facet_type", "Festschrift")
+# else
+#   if any_match("@006Pos00__006Pos13", "[at]#1")
+#     add_field("@facet_type", "Festschrift")
+#   end
+# end
+
+if any_match("@leaderTyp+008", "Book(.{30})1.*")  # Pos30
+  add_field("type[].$append","Festschrift")
+elsif any_match("006", "^[at](.{12})1.*") # Pos00+13
+  add_field("type[].$append","Festschrift")
+elsif any_match("title", ".*Festschrift.*") # often Festschrift is not stated as such in Control fields but in the title.
+  add_field("type[].$append","Festschrift")
+elsif any_match("otherTitleInformation[]", ".*Festschrift.*")
+  add_field("type[].$append","Festschrift")
+end
+
+# type: "image"
+
+# <!-- picture -->
+# 		<data source="050." name="@rdftype">
+# 			<regexp match="^.....d" format="$[ns-bibo]Image"/>
+# 		</data>
+# 		<data source="334-[12].a" name="@rdftype">
+# 			<regexp match="^Bildli" format="$[ns-bibo]Image"/>
+# 		</data>
+
+# if any_equal("@007Pos00", "r")
+#   add_field("@facet_format", "Bild")
+# else
+#   if any_match("@007Pos00__007Pos01", "k#[cdefhijklnpqrsuvz]")
+#     add_field("@facet_format", "Bild")
+#   else
+#     if any_match("@type__008Pos33|@type__008Pos34", "M#[jo]")
+#       add_field("@facet_format", "Bild")
+#     else
+#       if any_match("@006Pos00__006Pos16|@006Pos00__006Pos17", "[ef]#[jo]")
+#         add_field("@facet_format", "Bild")
+#       else
+#         if any_match("@type__008Pos33", "VM#[dikln]")
+#           add_field("@facet_format", "Bild")
+#         else
+#           if any_match("@006Pos00__006Pos16", "[gkor]#[dikln]")
+#             add_field("@facet_format", "Bild")
+#           end
+#         end
+#       end
+#     end
+#   end
+# end
+
+
+if any_match("007", "^[kr].*") # r = Remote-Sensing Image and k = Nonprojected graphic
+  add_field("type[].$append", "Image")
+elsif any_match("245[10]0.h", ".*Bildli.*")
+  add_field("type[].$append", "Image")
+elsif any_match("@leaderTyp+008", "Map(.{33}|.{34})[jo].*")  # Pos33/34
+  add_field("type[].$append","Image")
+elsif any_match("@leaderTyp+008", "Visual materials(.{33})[dikln].*")  # Pos33
+  add_field("type[].$append","Image")
+elsif any_match("006", "^[ef](.15}|.{16})[jo].*") # Pos00+16/17
+  add_field("type[].$append","Image")
+elsif any_match("006", "^[gkor](.15})[dikln].*") # Pos00+16
+  add_field("type[].$append","Image")
+end
+
+# type: "Map"
+# TODO: HT017559543 should be no map.
+
+# Old Aleph morph:
+#		<!-- map -->
+#		<data source="050." name="@rdftypeMap">
+#			<regexp match="^..........a" format="$[ns-bibo]Map"/>
+#		</data>
+#		<data source="433[-c].a" name="@rdftypeMap">
+#			<regexp match="Kt.|Karte" format="$[ns-bibo]Map"/>
+#		</data>
+#		<data source="9[01234][27]-1.f" name="@rdftypeMap">
+#			<regexp match="Altkarte|Karte|Stadtplan" format="$[ns-bibo]Map"/>
+#		</data>
+#		<data source="@rdftypeMap" name="@rdftype"/>
+#
+
+# Introx:
+# if any_match("@LeaderPos06|@006Pos00", "[ef]")
+#   add_field("@facet_format", "Landkarte")
+# elsif any_match("@007Pos00", "[ad]")
+#   add_field("@facet_format", "Landkarte")
+# end
+
+
+if any_equal("@leaderTyp", "Map")
+  add_field("type[].$append","Map")
+elsif any_match("006", "^[ef].*") 
+  add_field("type[].$append","Map")
+elsif any_match("007", "^[ad].*") 
+  add_field("type[].$append","Map")
+elsif any_match("300  .a", ".*(Kt.|[kK]arte).*")
+  add_field("type[].$append","Map")
+elsif any_match("300  .*.a", ".*(Kt.|[kK]arte).*")
+  add_field("type[].$append","Map")
+elsif any_match("689??.a", ".*(Altkarte|Karte|Stadtplan).*")
+  add_field("type[].$append", "Map")
+elsif any_match("689??.*.a", ".*(Altkarte|Karte|Stadtplan).*")
+  add_field("type[].$append", "Map")
+end
+
+# type: "Game"
+
+# <!-- game -->
+# 		<data source="050." name="@rdftype">
+# 			<regexp match="^.........a" format="http://schema.org/Game"/>
+# 		</data>
+
+# if any_equal("@006Pos00__006Pos09", "m#g")
+#   add_field("@facet_format", "Spiel")
+# else
+#   if any_equal("@type__008Pos26", "CF#g")
+#     add_field("@facet_format", "Spiel")
+#   else
+#     if any_match("@type__008Pos33|@type__008Pos34", "M#[pn]")
+#       add_field("@facet_format", "Spiel")
+#     else
+#       if any_match("@006Pos00__006Pos16|@006Pos00__006Pos17", "[ef]#[pn]")
+#         add_field("@facet_format", "Spiel")
+#       else
+#         if any_equal("@type__008Pos33", "VM#g")
+#           add_field("@facet_format", "Spiel")
+#         else
+#           if any_match("@006Pos00__006Pos16", "[gkor]#g")
+#             add_field("@facet_format", "Spiel")
+#           end
+#         end
+#       end
+#     end
+#   end
+# end
+
+
+
+if any_match("@leaderTyp+008", "(Computer files)(.{26})[g].*")  # Pos26
+  add_field("type[].$append","Game")
+elsif any_match("@leaderTyp+008", "(Map)(.{33}|.{34})[pn].*")  # Pos33|34
+  add_field("type[].$append","Game")
+elsif any_match("@leaderTyp+008", "(Visual materials)(.{33})g.*")  # Pos33
+  add_field("type[].$append","Game")
+elsif any_match("006", "^[m](.{8})[g].*") # Pos00+09
+  add_field("type[].$append","Game")
+elsif any_match("006", "^[gkor](.{15})[g].*") # Pos00+16
+  add_field("type[].$append","Game")
+elsif any_match("006", "^[ef](.{14}|.{15})[p].*") # Pos00+15|16
+  add_field("type[].$append","Game")
+end
+
+# type: "Legislation"
+
+# <!-- legislation -->
+# 		<data source="051." name="@rdftype">
+# 			<regexp match="^.l|^..l|^...l" format="$[ns-lobid-vocab]Legislation"/>
+# 		</data>
+# 		<data source="052." name="@rdftype">
+# 			<regexp match="^.ag|^...ag|^.....ag" format="$[ns-lobid-vocab]Legislation"/>
+# 		</data>
+# 
+
+if any_match("@leaderTyp+008", "(Book|Continuing Resources)(.{24}|.{25}|.{26}|.{27})l.*")  # Pos24/25/26/27 # What about g (legal article)?
+  add_field("type[].$append","Legislation")
+elsif any_match("006", "^[ats](.{6}|.{7}|.{8}|.{9})l.*") # Pos00+07-10
+  add_field("type[].$append","Legislation")
+end
+
+# TODO: HT012338254 should be legislation too but 008 seems to be not set appropriately. Could add w - Law reports and digests ?
+
+
+# type: "MultiVolumeBook"
+
+#		<!-- multi-volume book -->
+#		<data source="051." name="@rdftype">
+#			<regexp match="^[nt]" format="$[ns-bibo]MultiVolumeBook"/>
+#		</data>
+
+# TODO: The mapping https://service-wiki.hbz-nrw.de/display/VDBE/ALT+-+Mapping+MAB2+-+MARC+21+-++Segmente+0---%2C+001+-+088+-+Kurzform
+# suggests leader07 m but this only says Monograph or Item nothing about MultiVolume.
+# Need to find specific infos about that.
+
+# type: "PublishedScore" (Musikalia)
+
+#		<!-- music -->
+#		<data source="051." name="@rdftype">
+#			<regexp match="^.m|^..m|^...m" format="http://purl.org/ontology/mo/PublishedScore"/>
+#		</data>
+#		<data source="052." name="@rdftype">
+#			<regexp match="^.mu|^...mu|^.....mu" format="http://purl.org/ontology/mo/PublishedScore"/>
+#		</data>
+#		<data source="334-1.a" name="@rdftype">
+#			<regexp match="Musikdruck" format="http://purl.org/ontology/mo/PublishedScore"/>
+#		</data>
+#		<data source="541[-ab]?.?" name="@rdftype">
+#			<regexp match=".*" format="http://purl.org/ontology/mo/PublishedScore"/>
+#		</data>
+
+# also if it has ismn?
+# hbz mapping for 051. 0 m seems odd 008,18-19 ||? 052. none at all.
+
+
+if any_match("245[10]0.h", ".*Musikdruck.*")
+  add_field("type[].$append", "PublishedScore")
+elsif exists("ismn[].1")
+  add_field("type[].$append", "PublishedScore")
+end
+
+# type: "Newspaper"
+
+# <!-- newspaper -->
+# 		<data source="052." name="@rdftype">
+# 			<regexp match="^z|^.[ae]o|^...[ae]o|^.....[ae]o" format="$[ns-bibo]Newspaper"/>
+# 		</data>
+# 		<data source="052." name="@rdftype">
+# 			<regexp match="^z|^.[url]p|^...[url]p|^.....[url]p" format="$[ns-bibo]Newspaper"/>
+# 		</data>
+# 		<data source="9[01234][27]-[-1].f" name="@rdftype">
+# 			<regexp match="Zeitung" format="$[ns-bibo]Newspaper"/>
+# 		</data>
+
+if any_match("@leaderTyp+008", "(Continuing Resources)(.{21})n.*")  # Pos21
+  add_field("type[].$append","Newspaper")
+elsif any_match("006", "^s(.{3})n.*") # Pos00+04
+  add_field("type[].$append","Newspaper")
+elsif any_match("689??.a", ".*Zeitung.*")
+  add_field("type[].$append", "Newspaper")
+elsif any_match("689??.*.a", ".*Zeitung.*")
+  add_field("type[].$append", "Newspaper")
+end
+
+# type: "Standard"
+
+# Old ALEPH Morph:
+# <!-- norm -->
+# 		<data source="051." name="@rdftype">
+# 			<regexp match="^.n|^..n|^...n" format="$[ns-bibo]Standard"/>
+# 		</data>
+# 		<data source="052." name="@rdftype">
+# 			<regexp match="^.no|^...no|^.....no" format="$[ns-bibo]Standard"/>
+# 		</data>
+# 		<data source="9[01234][27]-[-12].f" name="@rdftype">
+# 			<regexp match="Norm|Richtlinie" format="$[ns-bibo]Standard"/>
+# 		</data>
+
+# Introx: 
+# if any_match("@type__008Pos24|@type__008Pos25|@type__008Pos26|@type__008Pos27", "(?:B|CR)#u")
+#   add_field("@facet_type", "Norm")
+# else
+#   if any_match("@006Pos00__006Pos07|@006Pos00__006Pos08|@006Pos00__006Pos09|@006Pos00__006Pos10", "[ast]#u")
+#     add_field("@facet_type", "Norm")
+#   end
+# end
+
+if any_match("@leaderTyp+008", "(Book|Continuing Resources)(.{24}|.{25}|.{26}|.{27})u.*")  # Pos24-27
+  add_field("type[].$append","Standard")
+elsif any_match("006", "^[ast](.{6}|.{7}|.{8}|.{9})u.*") # Pos00+07-10
+  add_field("type[].$append","Standard")
+elsif any_match("689??.a", ".*(Norm|Richtlinie).*")
+  add_field("type[].$append", "Standard")
+elsif any_match("689??.*.a", ".*(Norm|Richtlinie).*")
+  add_field("type[].$append", "Standard")
+end
+
+
+# type: "Periodical"
+
+# <!-- periodical -->
+# 		<data source="052." name="@rdftype">
+# 			<regexp match="^[jp].*|^.il.*|^...il.*|^.....il.*" format="$[ns-bibo]Periodical"/>
+# 		</data>
+# 		<data source="9[01234][27]-[-1].f" name="@rdftype">
+# 			<regexp match="Zeitschrift" format="$[ns-bibo]Periodical"/>
+# 		</data>
+
+# Introx has a very elaborate periodical system.
+
+# 052. il (Illustrierte) has no mapping.
+# This also includes Series not just Journals is that right? Leader Pos. 7s = serial.
+# If Continuing Resources 008 21 p = Periodical. What about j = journal?
+
+if any_match("@leaderTyp+008", "(Continuing Resources)(.{21})p.*")  # Pos21
+  add_field("type[].$append","Periodical")
+elsif any_match("006", "^[s](.{3})p.*") # Pos00+04
+  add_field("type[].$append","Periodical")
+elsif any_match("689??.a", ".*Zeitschrift.*")
+  add_field("type[].$append", "Periodical")
+elsif any_match("689??.*.a", ".*Zeitschrift.*")
+  add_field("type[].$append", "Periodical")
+end
+
+# TODO: If mapping with 689?? keywords we should also integrate a control that A should be "f".
+
+# type: "Proceedings"
+
+# <!-- proceedings -->
+# 		<data source="051." name="@rdftype">
+# 			<regexp match="^.k|^..k|^...k" format="$[ns-bibo]Proceedings"/>
+# 		</data>
+# 		<data source="052." name="@rdftype">
+# 			<regexp match="^.ko|^...ko|^.....ko" format="$[ns-bibo]Proceedings"/>
+# 		</data>
+# 		<data source="9[01234][27]-[-1].f" name="@rdftype">
+# 			<regexp match="Kongress" format="$[ns-bibo]Proceedings"/>
+# 		</data>
+
+if any_match("@leaderTyp+008", "(Book|Continuing Resources)(.{29})1.*")  # Pos29
+  add_field("type[].$append","Proceedings")
+elsif any_match("006", "^[ast](.{11})1.*") # Pos00+04
+  add_field("type[].$append","Proceedings")
+elsif any_match("689??.a", "Kongress")
+  add_field("type[].$append", "Proceedings")
+elsif any_match("689??.*.a", "Kongress")
+  add_field("type[].$append", "Proceedings")
+end
+
+# TODO: Check if content keywords 689?? should be no regexp.
+# TODO: Check if 689?? is repeatable or if every instance is singular due to indices.
+
+
+# type: "PublicationIssue"
+
+# <!-- issue and volume of periodical work -->
+# 		<combine name="@rdftype" value="${a}">
+# 			<data source="025z2.a"/>
+# 			<data source="089|090-1.a" name="a">
+# 				<regexp match=".*" format="http://schema.org/PublicationIssue"/>
+# 			</data>
+# 		</combine>
+
+# TODO: I do not understand this transformation.
+
+
+if exists("zdbId")
+  if exists("245??.n")
+    add_field("type[].$append", "PublicationIssue")
+  elsif exists("77308.q")
+    add_field("type[].$append", "PublicationIssue")
+  end
+end
+
+# TODO: HT003176544 transforms but is not PublicationIssue in lobid ALEPH.
+# TODO: Also check if PublicationIssue and Periodical as type are mutual exclusive.
+
+
+# type:"ReferenceSource"
+
+# <!-- reference source -->
+# 		<data source="051." name="@rdftype">
+# 			<regexp match="^.[de]|^..[de]|^...[de]" format="$[ns-bibo]ReferenceSource"/>
+# 		</data>
+# 		<data source="052." name="@rdftype">
+# 			<regexp match="^.ez|^...ez|^.....ez" format="$[ns-bibo]ReferenceSource"/>
+# 		</data>
+# 		<data source="9[01234][27]-[-12].f" name="@rdftype">
+# 			<regexp match="Bestimmungsbuch|Enzyklopädie|Werkverzeichnis|W[ö|oe]rterbuch"
+# 				format="$[ns-bibo]ReferenceSource"/>
+# 		</data>
+
+# Introx:
+# if any_match("@type__008Pos24|@type__008Pos25|@type__008Pos26|@type__008Pos27", "(?:B|CR)#[der]")
+#   add_field("@facet_type", "Nachschlagewerk")
+# else
+#   if any_match("@006Pos00__006Pos07|@006Pos00__006Pos08|@006Pos00__006Pos09|@006Pos00__006Pos10", "[ast]#[der]")
+#     add_field("@facet_type", "Nachschlagewerk")
+#   end
+# end
+
+if any_match("@leaderTyp+008", "(Book|Continuing Resources)(.{24}|.{25}|.{26}|.{27})[der].*")  # Pos24-27
+  add_field("type[].$append","ReferenceSource")
+elsif any_match("006", "^[ast](.{6}|.{7}|.{8}|.{9})[der].*") # Pos00+07-10
+  add_field("type[].$append","ReferenceSource")
+elsif any_match("689??.a", ".*(Bestimmungsbuch|Enzyklopädie|Werkverzeichnis|W[ö|oe]rterbuch).*")
+  add_field("type[].$append", "Standard")
+elsif any_match("689??.*.a", ".*(Bestimmungsbuch|Enzyklopädie|Werkverzeichnis|W[ö|oe]rterbuch).*")
+  add_field("type[].$append", "Standard")
+end
+
+
+# type: "Report"
+
+# <!-- report -->
+# 		<data source="051." name="@rdftype">
+# 			<regexp match="^.[r]|^..[r]|^...[r]" format="http://purl.org/ontology/bibo/Report"/>
+# 		</data>
+# 		<data source="9[01234][27]-[-12].9" name="@rdftype">
+# 			<regexp match="4128022-2" format="http://purl.org/ontology/bibo/Report"/>
+# 		</data>
+# 		<data source="9[01234][27]-[1].f" name="@rdftype">
+# 			<regexp match="Bericht|Erlebnisbericht|Forschungsbericht|Literaturbericht|Reisebericht"
+# 				format="http://purl.org/ontology/bibo/Report"/>
+# 		</data>
+
+# TODO: hbz ALMA-Mapping sets 051. r to 008 24-27 t but this is technical report isnt that to narrow.
+# The Mapping "Bericht|Erlebnisbericht|Forschungsbericht|Literaturbericht|Reisebericht" is broader.
+
+if any_match("@leaderTyp+008", "(Book|Continuing Resources)(.{24}|.{25}|.{26}|.{27})t.*")  # Pos24-27
+  add_field("type[].$append","Report")
+elsif any_match("006", "^[ast](.{6}|.{7}|.{8}|.{9})t.*") # Pos00+07-10
+  add_field("type[].$append","Report")
+elsif any_match("689??.a", ".*(Bericht|Erlebnisbericht|Forschungsbericht|Literaturbericht|Reisebericht).*")
+  add_field("type[].$append", "Report")
+elsif any_match("689??.*.a", ".*(Bericht|Erlebnisbericht|Forschungsbericht|Literaturbericht|Reisebericht).*")
+  add_field("type[].$append", "Report")
+end
+
+# type: "Schoolbook"
+
+#		<!-- schoolbook -->
+#		<data source="051." name="@rdftype">
+#			<regexp match="^.x|^..x|^...x" format="$[ns-lobid-vocab]Schoolbook"/>
+#		</data>
+#		<data source="9[01234][27]-[1].f" name="@rdftype">
+#			<regexp match="Schulbuch" format="$[ns-lobid-vocab]Schoolbook"/>
+#		</data>
+
+# TODO:051. x mapping does not exist in hbz ALMA.
+
+if any_match("655??.a", ".*(Schulbuch).*")
+  add_field("type[].$append", "Schoolbook")
+elsif any_match("655??.*.a", ".*(Schulbuch).*")
+  add_field("type[].$append", "Schoolbook")
+elsif any_match("689??.a", ".*(Schulbuch).*")
+  add_field("type[].$append", "Schoolbook")
+elsif any_match("689??.*.a", ".*(Schulbuch).*")
+  add_field("type[].$append", "Schoolbook")
+end
+
+# type: "Series"
+
+# <!-- series -->
+# 		<combine name="@rdftype" value="${a}">
+# 			<if>
+# 				<none>
+# 					<data source="540[-ab][-1].[ab]"/>
+# 				</none>
+# 			</if>
+# 			<data source="052." name="a">
+# 				<regexp match="^r|^.se|^...se|^.....se" format="$[ns-bibo]Series"/>
+# 			</data>
+# 		</combine>
+# 		<data source="9[01234][2re7]-[1].f" name="@rdftype">
+# 			<regexp match="Schriftenreihe" format="$[ns-bibo]Series"/>
+# 		</data>
+
+# Not sure if there is an transformation for series in Introx.
+# I excluded the the filter if there is an isbn since 008 21 m is specific for monographic series.
+# TODO: Check why HT017894012 is not Series. It seems that it is Journal/Periodical.
+
+if any_match("@leaderTyp+008", "(Continuing Resources)(.{21})m.*")  # Pos21
+  add_field("type[].$append","Series")
+elsif any_match("006", "^[s](.{3})m.*") # Pos00+04
+  add_field("type[].$append","Series")
+elsif any_match("655??.a", ".*Monografische Reihe.*")
+  add_field("type[].$append", "Series")
+elsif any_match("655??.*.a", ".*Monografische Reihe.*")
+  add_field("type[].$append", "Series")
+elsif any_match("689??.a", ".*Schriftenreihe.*")
+  add_field("type[].$append", "Series")
+elsif any_match("689??.*.a", ".*Schriftenreihe.*")
+  add_field("type[].$append", "Series")
+end
+
+# type: "Statistics"
+
+# <!-- statistics -->
+# 		<data source="051." name="@rdftype">
+# 			<regexp match="^.s|^..s|^...s" format="http://purl.org/lobid/lv#Statistics"/>
+# 		</data>
+# 		<data source="052." name="@rdftype">
+# 			<regexp match="^.st|^..st|^...st|^....st|^.....st|^......st"
+# 				format="http://purl.org/lobid/lv#Statistics"/>
+# 		</data>
+
+
+if any_match("@leaderTyp+008", "(Book|Continuing Resources)(.{24}|.{25}|.{26}|.{27})s.*")  # Pos24-27
+  add_field("type[].$append","Statistics")
+elsif any_match("006", "^[ast](.{6}|.{7}|.{8}|.{9})s.*") # Pos00+07-10
+  add_field("type[].$append","Statistics")
+end
+
+# TODO: Check more for values in 655.
+
+
+# type: "Thesis"
+
+# <!-- thesis -->
+# 		<data source="051." name="@rdftype">
+# 			<regexp match="^.[uy]|^..[uy]|^...[uy]" format="$[ns-bibo]Thesis"/>
+# 		</data>
+# 		<data source="052." name="@rdftype">
+# 			<regexp match="^.sc|^...sc|^.....sc" format="$[ns-bibo]Thesis"/>
+# 		</data>
+# 		<data source="519-[12].?" name="@rdftype">
+# 			<regexp match=".*" format="$[ns-bibo]Thesis"/>
+# 		</data>
+
+# Old mapping also includes u = Universitätsschrift and not just y Dissertation. But both is set as m 
+# Introx is setting this to Hochschulschrift not to Thesis which is more inclusive and would be a more acceptable mapping I think.
+# We should decide what is better.
+
+if any_match("@leaderTyp+008", "(Book|Continuing Resources)(.{24}|.{25}|.{26}|.{27})m.*")  # Pos24-27
+  add_field("type[].$append","Thesis")
+elsif any_match("006", "^[ast](.{6}|.{7}|.{8}|.{9})m.*") # Pos00+07-10
+  add_field("type[].$append","Thesis")
+end
+
+
+# type: "Book"
+
+# Old ALEPH Morph:
+# <!-- type is book (and also manifestation) if 050 begins with 'a' and 051 or 052 is missing 
+#			or 051 and 052 does not fulfill a certain pattern -->
+#		<combine name="@rdftype" value="$[ns-bibo]Book">
+#			<if>
+#				<none>
+#					<data source="@idzdb"/>
+#					<data source="050.">
+#						<regexp match="^.........a"/>
+#					</data>
+#					<data source="051.">
+#						<regexp match="^a"/>
+#					</data>
+#					<data source="051.">
+#						<regexp match="^.[mt]"/>
+#					</data>
+#					<data source="051.">
+#						<regexp match="^..[tm]"/>
+#					</data>
+#					<data source="051.">
+#						<regexp match="^...t"/>
+#					</data>
+#					<data source="051.">
+#						<regexp match="^....t"/>
+#					</data>
+#					<data source="051.">
+#						<regexp match="^.....t"/>
+#					</data>
+#					<data source="051.">
+#						<regexp match="^.z"/>
+#					</data>
+#					<data source="052.">
+#						<regexp match="^[a-zA-Z]"/>
+#					</data>
+#					<data source="089-[-1].a|090-[-1].a">
+#						<regexp match="Heft"/>
+#					</data>
+#					<data source="@matVideo"/>
+#					<data source="@mediumAudio"/>
+#					<data source="@archived"/>
+#				</none>
+#			</if>
+#			<choose>
+#				<data source="050.">
+#					<regexp match="^a"/>
+#				</data>
+#				<data source="051.">
+#					<regexp match="^m|^s|^.x|^..x|^...x|^....[fkls]"/>
+#				</data>
+#				<data source="062-1.a">
+#					<regexp match="Band"/>
+#				</data>
+#				<data source="089-[-1].a|090-[-1].a"/>
+#				<data source="9[01234][27]-[-1].f">
+#					<regexp
+#						match="Anthologie|Atlas|Auktionskatalog|Bildband|Bilderbuch|Jugendbuch|Jugendsachbuch|Kinderbuch|Kindersachbuch|Kochbuch|Lehrbuch|Lesebuch"/>
+#				</data>
+#			</choose>
+#		</combine>
+#
+# ALMA Moprh
+#  <combine name="@facet_type" value="Book">
+#    <if>
+#      <data source="@LeaderPos07">
+#        <regexp match="[adm]" />
+#      </data>
+#    </if>
+#    <data source="001" />
+#  </combine>
+
+# TODO: Check if we still need the complex transformation for book.
+  
+if any_match("@leaderPos06-07", "^.[adm]") 
+  add_field("type[].$append","Book")
+end
+
+
+# Set medium default to print if there is no medium and type "Book" exists.
+
+unless exists("medium[].1")
+  if any_equal("type[]", "Book")
+    add_field("medium[].$append.label", "Print")
+  end
+end
+
+# Add ids for medium[].
+
+do list(path:"medium[]", "var": "$i")
+	copy_field("$i.label","$i.id")
+	lookup("$i.id","medium-id-to-label")
+end
+# TODO: Uniq array objects.
+

@@ -1,0 +1,278 @@
+#   <entity name="hasItem[]" flushWith="record">
+set_array("hasItem[]")
+
+# 
+#     <!-- MBD -->
+#     <entity name="" reset="true" sameEntity="true" flushWith="MBD  ">
+# 
+#       <combine name="id" value="https://lobid.org/item/${i}">
+#         <data name="i" source="MBD  .i"/>
+#       </combine>
+#       <entity name="type[]" sameEntity="true">
+#         <data name="" source="MBD  .i">
+#           <constant value="MBD"/>
+#         </data>
+#       </entity>
+#       <entity name="heldBy" sameEntity="true" reset="true">
+#         <data name="id" source="MBD  .M">
+#           <lookup in="alma-iz-code-to-isil" />
+#           <compose prefix="http://lobid.org/organisations/" postfix="#!"/>
+#         </data>
+#         <data name="label" source="MBD  .M">
+#           <constant value="lobid Organisation"/>
+#         </data>
+#       </entity>
+#     </entity>
+
+do list(path:"MBD  ", "var": "$i")
+  copy_field("$i.i", "hasItem[].$append.id")
+  prepend("hasItem[].$last.id","https://lobid.org/item/")
+  set_array("hasItem[].$last.type[]", "MBD")
+  copy_field("$i.M", "hasItem[].$last.heldBy.id")
+  lookup("hasItem[].$last.heldBy.id", "alma-iz-code-to-isil")
+  prepend("hasItem[].$last.heldBy.id", "http://lobid.org/organisations/")
+  append("hasItem[].$last.heldBy.id","#!")
+end
+
+
+#     <!-- HOL -->
+#     <entity name="" reset="true" sameEntity="true">
+#       <combine name="id" value="https://lobid.org/item/${i}" reset="true" sameEntity="true">
+#         <data name="i" source="HOL  .8"/>
+#       </combine>
+#       <entity name="type[]" reset="true" sameEntity="true">
+#         <data name="" source="HOL  .8">
+#           <constant value="HOL"/>
+#         </data>
+#       </entity>
+#       <data name="label" source="HOL  .8">
+#         <constant value="lobid Bestandsressource"/>
+#       </data>
+#       <entity name="heldBy" reset="true" sameEntity="true">
+#         <data name="id" source="HOL  .8">
+#           <regexp match=".*(\d{4})$" format="${1}"/>
+#           <lookup in="alma-institution-code-to-isil" />
+#           <compose prefix="http://lobid.org/organisations/" postfix="#!"/>
+#         </data>
+#         <data name="label" source="HOL  .8">
+#           <constant value="lobid Organisation"/>
+#         </data>
+#       </entity>
+#     </entity>
+
+do list(path:"HOL  ", "var": "$i")
+  copy_field("$i.8", "hasItem[].$append.id")
+  prepend("hasItem[].$last.id","https://lobid.org/item/")
+  add_field("hasItem[].$last.label", "lobid Bestandsressource")
+  set_array("hasItem[].$last.type[]", "HOL")
+  copy_field("$i.8", "hasItem[].$last.heldBy.id")
+  replace_all("hasItem[].$last.heldBy.id",".*(\\d{4})$","$1")
+  lookup("hasItem[].$last.heldBy.id", "alma-institution-code-to-isil")
+  prepend("hasItem[].$last.heldBy.id", "http://lobid.org/organisations/")
+  append("hasItem[].$last.heldBy.id","#!")
+end
+
+
+#     <!-- H52 -->
+#     <entity name="" reset="true" sameEntity="true">
+#       <combine name="id" value="https://lobid.org/item/${i}">
+#         <data name="i" source="H52  .8">
+#           <regexp match=".*(\d{4})$" />
+#         </data>
+#       </combine>
+#       <entity name="type[]" sameEntity="true" reset="true">
+#         <data name="" source="H52  .8">
+#           <regexp match=".*(\d{4})$" />
+#           <constant value="H52"/>
+#         </data>
+#       </entity>
+#       <data name="label" source="H52  .8">
+#         <regexp match=".*(\d{4})$" />
+#         <constant value="lobid Bestandsressource"/>
+#       </data>
+#       <entity name="heldBy" sameEntity="true" reset="true">
+#         <data name="id" source="H52  .8">
+#           <regexp match=".*(\d{4})$" format="${1}"/>
+#           <lookup in="alma-institution-code-to-isil" />
+#           <compose prefix="http://lobid.org/organisations/" postfix="#!"/>
+#         </data>
+#         <data name="label" source="H52  .8">
+#           <regexp match=".*(\d{4})$" />
+#           <constant value="lobid Organisation"/>
+#         </data>
+#       </entity>
+#       <data name="callNumber" source="H52  .h" />
+#       <combine name="currentLocation" value="${a} / ${b}" sameEntity="true" reset="true">
+#         <data name="a" source="H52  .b"/>
+#         <data name="b" source="H52  .c"/>
+#       </combine>
+#     </entity>
+
+# TODO: The morph only took up H52 without indices, but what about 1. inidice 8 ("H528 ") and 2. indice 1 ("H5281")
+do list(path:"H52  ", "var": "$i")
+  if any_match("$i.8", ".*(\\d{4})$")
+    copy_field("$i.8", "hasItem[].$append.id")
+    prepend("hasItem[].$last.id","https://lobid.org/item/")
+    add_field("hasItem[].$last.label", "lobid Bestandsressource")
+    set_array("hasItem[].$last.type[]", "H52")
+    copy_field("$i.h", "hasItem[].$last.callNumber")
+    paste("hasItem[].$last.currentLocation", "$i.b", "~/", "$i.c")    
+    copy_field("$i.8", "hasItem[].$last.heldBy.id")
+    replace_all("hasItem[].$last.heldBy.id",".*(\\d{4})$","$1")
+    lookup("hasItem[].$last.heldBy.id", "alma-institution-code-to-isil")
+    prepend("hasItem[].$last.heldBy.id", "http://lobid.org/organisations/")
+    append("hasItem[].$last.heldBy.id","#!")
+  end
+end
+
+# 
+#     <!-- ITM -->
+#     <entity name="" reset="true" sameEntity="true" flushWith="ITM  ">
+#       <combine name="id" value="https://lobid.org/item/${i}">
+#         <data name="i" source="ITM  .a"/>
+#       </combine>
+#       <entity name="type[]" sameEntity="true">
+#         <data name="" source="ITM  .a">
+#           <constant value="ITM"/>
+#         </data>
+#       </entity>
+#       <data name="label" source="ITM  .a">
+#         <constant value="lobid Bestandsressource"/>
+#       </data>
+#       <entity name="heldBy" sameEntity="true">
+#         <data name="id" source="ITM  .a">
+#           <regexp match=".*(\d{4})$" format="${1}"/>
+#           <lookup in="alma-institution-code-to-isil" />
+#           <compose prefix="http://lobid.org/organisations/" postfix="#!"/>
+#         </data>
+#         <data name="label" source="ITM  .a">
+#           <constant value="lobid Organisation"/>
+#         </data>
+#       </entity>
+#       <choose name="callNumber" sameEntity="true" flushWith="ITM  ">
+#         <data source="ITM  .c" />
+#         <data source="ITM  .n" />
+#       </choose>
+#       <combine name="currentLocation" value="${a} / ${b}" sameEntity="true">
+#         <data name="a" source="ITM  .w"/>
+#         <data name="b" source="ITM  .x"/>
+#       </combine>
+#     </entity>
+
+
+# TODO: Objects created from ITM seem to produce duplicates. Either we need something to differentiate these or deduplicate these.
+do list(path:"ITM  ", "var": "$i")
+  copy_field("$i.a", "hasItem[].$append.id")
+  prepend("hasItem[].$last.id","https://lobid.org/item/")
+  add_field("hasItem[].$last.label", "lobid Bestandsressource")
+  set_array("hasItem[].$last.type[]", "ITM")
+  copy_field("$i.c", "hasItem[].$last.callNumber")
+  unless exists("hasItem[].$last.callNumber")
+    copy_field("$i.n", "hasItem[].$last.callNumber")
+  end
+  paste("hasItem[].$last.currentLocation", "$i.w", "~/", "$i.x")   
+  copy_field("$i.a", "hasItem[].$last.heldBy.id")
+  replace_all("hasItem[].$last.heldBy.id",".*(\\d{4})$","$1")
+  lookup("hasItem[].$last.heldBy.id", "alma-institution-code-to-isil")
+  prepend("hasItem[].$last.heldBy.id", "http://lobid.org/organisations/")
+  append("hasItem[].$last.heldBy.id","#!")
+end
+
+
+# TODO: POR
+#     <!-- POR -->
+#     <!-- POR  .a but no POR  .A -->
+#     <entity name="" reset="true" sameEntity="true">
+#       <if>
+#         <data name="id" source="POR  .a">
+#           <regexp match=".*(\d{4})$" format="${1}"/>
+#           <lookup in="alma-institution-code-to-isil" />
+#           <not-equals string="DE-605" />
+#         </data>
+#       </if>
+#       <combine name="id" value="https://lobid.org/item/${i}">
+#         <data name="i" source="POR  .a"/>
+#       </combine>
+#       <entity name="type[]" sameEntity="true">
+#         <data name="" source="POR  .a">
+#           <constant value="POR"/>
+#         </data>
+#       </entity>
+#       <data name="label" source="POR  .a">
+#         <constant value="Portfolio"/>
+#       </data>
+#       <data name="electronicLocator" source="POR  .D" />
+#       <data name="sublocation" source="POR  .d" />
+#       <entity name="heldBy" sameEntity="true">
+#         <data name="id" source="POR  .a">
+#           <regexp match=".*(\d{4})$" format="${1}"/>
+#           <lookup in="alma-institution-code-to-isil" />
+#           <compose prefix="http://lobid.org/organisations/" postfix="#!"/>
+#         </data>
+#         <data name="label" source="POR  .w">
+#           <constant value="lobid Organisation"/>
+#         </data>
+#       </entity>
+#     </entity>
+
+do list(path:"POR  ", "var": "$i")
+# entity for every POR  .a without POR  .A
+  unless any_match("$i.a",".*6441$") # filter out hbz
+    copy_field("$i.a", "hasItem[].$append.id")
+    prepend("hasItem[].$last.id","https://lobid.org/item/")
+    set_array("hasItem[].$last.type[]", "POR")
+    add_field("hasItem[].$last.label", "POR")
+    copy_field("$i.D", "hasItem[].$last.electronicLocator") 
+    copy_field("$i.d", "hasItem[].$last.sublocation")
+    copy_field("$i.a", "hasItem[].$last.heldBy.id")
+    replace_all("hasItem[].$last.heldBy.id",".*(\\d{4})$","$1")
+    lookup("hasItem[].$last.heldBy.id", "alma-institution-code-to-isil")
+    prepend("hasItem[].$last.heldBy.id", "http://lobid.org/organisations/")
+    append("hasItem[].$last.heldBy.id","#!")
+  end
+  # entity for every POR  .A
+  if exists ("$i.A")
+    do list(path:"$i.A", "var": "$j")
+      copy_field("$i.a", "hasItem[].$append.id")
+      prepend("hasItem[].$last.id","https://lobid.org/item/")
+      set_array("hasItem[].$last.type[]", "POR")
+      add_field("hasItem[].$last.label", "POR")
+      copy_field("$i.D", "hasItem[].$last.electronicLocator") 
+      copy_field("$i.d", "hasItem[].$last.sublocation")
+      copy_field("$j", "hasItem[].$last.heldBy.id")
+      lookup("hasItem[].$last.heldBy.id", "alma-iz-code-to-isil")
+      prepend("hasItem[].$last.heldBy.id", "http://lobid.org/organisations/")
+      append("hasItem[].$last.heldBy.id","#!")
+    end
+  end
+end
+
+
+#     <!-- POR  .a = NZ => hasItem for each POR  .A -->
+#     <entity name="" reset="true" flushWith="POR  .A" sameEntity="true">
+#       <combine name="id" value="https://lobid.org/item/${i}" flushWith="POR  .A">
+#         <data name="i" source="POR  .a"/>
+#       </combine>
+#       <entity name="type[]" sameEntity="true" reset="true">
+#         <data name="" source="POR  .A">
+#           <constant value="POR"/>
+#         </data>
+#       </entity>
+#       <data name="label" source="POR  .A">
+#         <constant value="Portfolio"/>
+#       </data>
+#       <!--<data name="electronicLocator" source="POR  .D" />
+#     <data name="sublocation" source="POR  .d" />-->
+#       <entity name="heldBy" sameEntity="true" reset="true">
+#         <data name="id" source="POR  .A">
+#           <lookup in="alma-iz-code-to-isil" />
+#           <compose prefix="http://lobid.org/organisations/" postfix="#!"/>
+#         </data>
+#         <data name="label" source="POR  .A">
+#           <constant value="lobid Organisation"/>
+#         </data>
+#       </entity>
+#     </entity>
+#   </entity>
+# 
+# </rules>
