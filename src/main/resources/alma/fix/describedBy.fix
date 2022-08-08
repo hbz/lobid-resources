@@ -27,6 +27,9 @@ set_array("describedBy.type[]", "BibliographicDescription")
 
 # 		<call-macro name="simplify-date" dname="dateCreated" dsource="MNG  .b"/>
 # 		<call-macro name="simplify-date" dname="dateModified" dsource="MNG  .d"/>
+
+# MNG is a ALMA-specific element
+
 copy_field("MNG  .b","describedBy.dateCreated")
 copy_field("MNG  .d","describedBy.dateModified")
 replace_all("describedBy.dateCreated|dateModified","-","")
@@ -153,6 +156,9 @@ add_field("describedBy.license[].$last.label","Creative Commons-Lizenz CC0 1.0 U
 # 		</entity>
 
 # TODO: It seems that there are a lot of organisations that are not in lobid, we should filter them out.
+
+# 040 - Cataloging Source (NR) - Subfield: $a (NR), $c (NR), $d (R)
+
 copy_field("040  .a", "describedBy.sourceOrganization.id")
 prepend("describedBy.sourceOrganization.id", "http://lobid.org/organisations/DE-")
 append("describedBy.sourceOrganization.id", "#!")

@@ -14,7 +14,7 @@ set_array("natureOfContent[]")
 #       </data>
 #     </entity>
 
-# 655 - Index Term-Genre/Form (R)  Subfield: a (NR), 0 (R)
+# 655 - Index Term-Genre/Form (R),  Subfield: $a (NR), $0 (R)
 # Ind: 2. 7= Source specified in subfield $2. 
 
 do list(path:"655 7", "var":"$i")
@@ -45,7 +45,7 @@ end
 #     </entity>
 #   </entity>
 
-# 689 - not MARC standard element/DNB specific keywords (R) Subfields: A (seems NR)
+# 689 - not MARC standard element/DNB specific keywords (R), Subfields: $A (seems NR)
 
 do list(path:"689??", "var":"$i")
   unless in("$i.a","natureOfContent[].*.label")
@@ -123,7 +123,9 @@ set_array("subject[]")
 
 # I change the approach from element oriented (all 630) to a subject/concept kind oriented approach (all LCSH, all GND, all keywords, etc.)
 
-# 610 - Subject Added Entry-Corporate Name (R) Subfield: a (NR)
+# 610 - Subject Added Entry-Corporate Name (R), Subfield: $a (NR)
+# 650 - Subject Added Entry-Topical Term (R),  Subfield: $a (NR)
+# 653 - Index Term-Uncontrolled (R),  !!! Subfield: $a (R) !!!! 
 
 
 do list(path:"610?4|650?4|653??", "var":"$i")
@@ -245,7 +247,7 @@ end
 #       </entity>
 #     </entity>
 
-# 082 - Dewey Decimal Classification Number (R) Subfield: a (R), 2 (NR)
+# 082 - Dewey Decimal Classification Number (R) - Subfield: $a (R), $2 (NR)
 
 do list(path:"0820 |08200", "var":"$i")
   set_array("subject[].$append.type[]","Concept")
@@ -284,7 +286,7 @@ end
 #         </data>
 #       </entity>
 
-# local subjects 982
+# local subjects 982 - no info on repeatability
 
 do list(path:"982  ", "var":"$i")
   if exists("$i.a|b")
@@ -363,6 +365,8 @@ end
 #  </macro>
 #
 
+# 689 RSWK Schlagwortfolgen fka: Schlagwortketten 1 - 10 - no info on repeatability
+
 do put_macro("schlagwortfolge")
   if exists("$[field]")
     set_array("subject[].$append.type[]","ComplexSubject")
@@ -418,3 +422,5 @@ copy_field("GST  .g","subjectAltLabel[].$append")
 copy_field("GPN1 .a","subjectAltLabel[].$append")
 copy_field("GGN  .a","subjectAltLabel[].$append")
 uniq("subjectAltLabel[]")
+
+# TODO: any way to add the labels to the matching subject ?

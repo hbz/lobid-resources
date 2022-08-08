@@ -2,7 +2,7 @@
 #     <data name="" source="245??.c" />
 #   </entity>
 
-# 245??.c (NR)
+# 245 - Title Statement (NR) - Subfield: $c (NR)
 set_array("responsibilityStatement[]")
 copy_field("245??.c", "responsibilityStatement[].$append")
 
@@ -66,6 +66,12 @@ set_array("contribution[]")
 #     </entity>
 # I separate the cleaning from the copying since the cleaning needs to be done for evey element.
 
+# 100 - Main Entry-Personal Name (NR)
+# 700 - Added Entry-Personal Name (R)
+# Subfields: $a (NR), $0 (R), $4 (R)
+# Subfield: $M is a local field and can create duplicates and is therefore ignored.
+
+
 do list(path:"100[01] |700[01] ", "var":"$i")
 	unless exists("$i.M")
 		set_hash("contribution[].$append.agent")
@@ -125,6 +131,12 @@ end
 #       </entity>
 #     </entity>
 # 
+
+# 110 - Main Entry-Corporate Name (NR)
+# 710 - Added Entry-Corporate Name (R)
+# Subfields: $a (NR), $0 (R), $4 (R)
+# Subfield: $M is a local field and can create duplicates and is therefore ignored.
+
 
 do list(path:"110[012] |710[012] ", "var":"$i")
 	unless exists("$i.M")

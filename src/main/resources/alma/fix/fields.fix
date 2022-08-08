@@ -4,6 +4,8 @@
 #    <regexp match="\(DE-605\)(.*)" format="${1}"/>
 #  </data>
 
+# 035 - System Control Number (R) - Subfield: $a (NR)
+
 do list(path: "035  ", "var":"$i")
   if any_match("$i.a", "\\(DE-605\\)(.*)")
     copy_field("$i.a", "hbzId")
@@ -18,6 +20,9 @@ replace_all("hbzId","\\(DE-605\\)(.*)","$1")
 #  </data>
 #  <data name="@language_source_all" source="041[ 01] .[adj]" />
 # TODO: Needs to be explained why this is double. Can only one of the elements be used?
+
+
+# 008 - Fixed-Length Data Elements-General Information (NR) - No subfields
 
 set_array("@language")
 copy_field("008", "@008-lang")
@@ -98,7 +103,7 @@ uniq("isbn[]")
 #    </data>
 #  </entity>
 
-# 022 (R) Subfield a (NR)
+# 022 - International Standard Serial Number (R) - Subfield $a (NR)
 set_array("issn[]")
 do list(path:"022? ", "var":"$i")
   copy_field("$i.a", "issn[].$append")
@@ -112,7 +117,7 @@ replace_all("issn[].*", "-","")
 #    </data>
 #  </entity>
 
-# 024 (R) Subfield a (NR) 1. Indicator 2 = ISMN 
+# 024 - Other Standard Identifier (R) - Subfield a (NR) 1. Indicator 2 = ISMN 
 set_array("ismn[]")
 do list(path:"0242?", "var":"$i")
   copy_field("$i.a", "ismn[].$append")
@@ -146,7 +151,7 @@ end
 #
 #  <data name="oclcNumber" source="@oclcNumber" />
 
-# 035 (R) Subfield a (NR)
+# 035 - System Control Number (R) - Subfield: $a (NR)
 set_array("oclcNumber[]")
 
 do list(path:"035  ", "var":"$i")
@@ -163,7 +168,7 @@ replace_all("oclcNumber[].*", "\\(OCoLC\\)","")
 #
 #  <data name="zdbId" source="@zdbId" />
 
-# 035 (R) Subfield a (NR)
+# 035 - System Control Number (R) - Subfield: $a (NR)
 do list(path:"035  ", "var":"$i")
   if all_match("$i.a", "\\(DE-600\\)(.*)")
     copy_field("$i.a", "zdbId")
@@ -186,7 +191,7 @@ set_array("sameAs[]")
 #    </entity>
 
 
-# 035 (R) Subfield a (NR)
+# 035 - System Control Number (R) - Subfield: $a (NR)
 do list(path:"035  ", "var":"$i")
   if all_match("$i.a", "\\(DE-605\\)(.*)")
     copy_field("$i.a", "sameAs[].$append.id")
@@ -383,7 +388,7 @@ end
 #    </data>
 #  </entity>
 
-# 500 - General Note (R) Subfield: a (NR)
+# 500 - General Note (R) Subfield: $a (NR)
 set_array("note[]")
 do list(path:"500  ", "var": "$i")
   copy_field("$i.a", "note[].$append")
@@ -395,7 +400,7 @@ uniq("note[]")
 #    <data name="" source="520[ 13] .[ab]" />
 #  </entity>
 
-# 520 - Summary, Etc. (R) Subfield: a (NR) b (NR)
+# 520 - Summary, Etc. (R) Subfield: $a (NR), $b (NR)
 # TODO: Check if 1. Indicator 1 (REVIEW) is really to count as abstract. Perhaps 2 (Scope and content) is a better fit.
 # TODO: Get testdata. 
 set_array("abstract[]")
@@ -409,7 +414,7 @@ end
 #    <data name="" source="502??.a" />
 #  </entity>
 
-# 502 - Dissertation Note (R) Subfield: a (R)
+# 502 - Dissertation Note (R) Subfield: $a (R)
 # TODO: Get testdata. 
 set_array("thesisInformation[]")
 do list(path:"502  ", "var": "$i")
@@ -439,7 +444,7 @@ set_array("isPartOf[]")
 #      <data source="773??.q" name="numbering" />
 #    </entity>
 
-# 773 - Host Item Entry (R) Subfield: w (NR) t (NR) q (NR)
+# 773 - Host Item Entry (R) Subfield: $w (NR), $t (NR), $q (NR)
 # TODO: Shouldnt type always be arrays
 do list(path: "773??", "var": "$i")
   add_field("isPartOf[].$append.type", "IsPartOfRelation")
@@ -452,7 +457,7 @@ do list(path: "773??", "var": "$i")
   copy_field("$i.q", "isPartOf[].$last.numbering")
 end
 
-# 490 - Series Statement (R) Subfield: a (R)
+# 490 - Series Statement (R) - Subfield: $a (R)
 # TODO: Shouldnt type always be arrays
 # 490 with 1. Indicator 1 has an identical entry in 830. So only 490 with 1. Indicator 0
 
@@ -485,7 +490,7 @@ end
 #    </entity>
 #  </entity>
 
-# 830 - Series Added Entry-Uniform Title (R) Subfield: w (R), a (NR), v (NR)
+# 830 - Series Added Entry-Uniform Title (R) - Subfield: $w (R), $a (NR), $v (NR)
 # Element can be repeatable with local entries they have subfield $M.
 
 do list(path: "830??", "var": "$i")
@@ -521,7 +526,7 @@ end
 #    </entity>
 #  </entity>
 
-# 856 - Electronic Location and Access (R) Subfield: u (R) 3 (NR) 
+# 856 - Electronic Location and Access (R) - Subfield: $u (R) $3 (NR) 
 # 1. Indicator: 4 = HTTP
 
 set_array("tableOfContents[]")
@@ -604,8 +609,8 @@ end
 #    </entity>
 #  </entity>
 
-# 775 - Other Edition Entry (R) Subfield: w (R), t (NR), i (R), n (R), x(NR), z (R)
-# 776 - Additional Physical Form Entry (R) Subfield: w (R), t (NR), i (R), n (R), x (NR), z (R)
+# 775 - Other Edition Entry (R) - Subfield: $w (R), $t (NR), $i (R), $n (R), $x(NR), $z (R)
+# 776 - Additional Physical Form Entry (R) -  Subfield: $w (R), $t (NR), $i (R), $n (R), $x (NR), $z (R)
 # TODO: Needs ISBN function for mapping ISBN in subfield Z! Need test ressource for that.
 
 set_array("related[]")
@@ -682,7 +687,7 @@ end
 #      </entity>
 #    </entity>
 
-# 856 - Electronic Location and Access (R) Subfield: $x - Nonpublic note (R)
+# 856 - Electronic Location and Access (R) - Subfield: $x - Nonpublic note (R)
 # TODO: Check if src/test/resources/alma-fix/(CKB)5280000000199164.xml is also an EZB titel even when it has no 865.
 do list(path:"85640", "var":"$i")
   if any_equal("$i.x","EZB") # can test x and x.*
@@ -763,6 +768,8 @@ end
 #      </entity>
 #    </entity>
 
+# 912 ## no Information about repeatability
+
 do list(path:"962  ", "var":"$i")
   do list(path:"$i.e", "var": "$j")
     unless any_match("$j", "^ZDB.*")
@@ -787,6 +794,8 @@ end
 #  </entity>
 #</rules>
 #
+
+# 960 ## no Information about repeatability
 
 do list(path:"960??", "var":"$i")
   do list(path:"$i.?", "var": "$j")
