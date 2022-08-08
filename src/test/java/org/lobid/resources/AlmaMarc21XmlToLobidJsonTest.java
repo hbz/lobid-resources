@@ -45,14 +45,14 @@ public final class AlmaMarc21XmlToLobidJsonTest {
     private static final String MORPH = "src/main/resources/alma/alma.xml";
     private static final File DIRECTORY = new File("src/test/resources/alma/");
     private static final String BIG_ALMA_XML_FILE =
-            DIRECTORY + "/almaMarcXmlTestFiles.xml.tar.bz2";
+        DIRECTORY + "/almaMarcXmlTestFiles.xml.tar.bz2";
     private static final String XML = "xml";
     final HashMap<String, String> morphVariables = new HashMap<>();
     private static boolean GENERATE_TESTDATA =
-            System.getProperty("generateTestData", "false").equals("true");
+        System.getProperty("generateTestData", "false").equals("true");
     private static final PrintStream ORIG_OUT = System.out;
     private static final Logger LOG =
-            LogManager.getLogger(AlmaMarc21XmlToLobidJsonTest.class);
+        LogManager.getLogger(AlmaMarc21XmlToLobidJsonTest.class);
     // try patterns like e.g."662", NOT".*662" (which just would slow down)
     private static final String PATTERN_TO_IDENTIFY_XML_RECORDS = "";
 
@@ -89,7 +89,7 @@ public final class AlmaMarc21XmlToLobidJsonTest {
         final StringFilter stringFilter = new StringFilter(pattern);
         XmlFilenameWriter xmlFilenameWriter = new XmlFilenameWriter();
         xmlFilenameWriter
-                .setProperty("/record/datafield[@tag='035']/subfield[@code='a']");
+            .setProperty("/record/datafield[@tag='035']/subfield[@code='a']");
         xmlFilenameWriter.setTarget("src/test/resources/alma/");
         StreamBatchLogger logger = new StreamBatchLogger();
         logger.setBatchSize(10);
@@ -99,16 +99,16 @@ public final class AlmaMarc21XmlToLobidJsonTest {
 
         XmlDecoder xmlDecoder = new XmlDecoder(); //
         xmlDecoder.setReceiver(xmlElementSplitter) //
-                .setReceiver(logger) //
-                .setReceiver(new LiteralToObject()) //
-                .setReceiver(stringFilter)//
-                .setReceiver(new StringReader()) //
-                .setReceiver(new XmlDecoder()) //
-                .setReceiver(xmlElementSplitter_1) //
-                .setReceiver(xmlFilenameWriter);
+            .setReceiver(logger) //
+            .setReceiver(new LiteralToObject()) //
+            .setReceiver(stringFilter)//
+            .setReceiver(new StringReader()) //
+            .setReceiver(new XmlDecoder()) //
+            .setReceiver(xmlElementSplitter_1) //
+            .setReceiver(xmlFilenameWriter);
 
         if (BIG_ALMA_XML_FILE.toLowerCase().endsWith("tar.bz2")
-                || BIG_ALMA_XML_FILE.toLowerCase().endsWith("tar.gz")) {
+            || BIG_ALMA_XML_FILE.toLowerCase().endsWith("tar.gz")) {
             LOG.info("recognised as tar archive");
             opener.setReceiver(new TarReader()).setReceiver(xmlDecoder);
         } else {
@@ -142,51 +142,51 @@ public final class AlmaMarc21XmlToLobidJsonTest {
     @Test
     public void transformFiles() {
         Arrays.asList(DIRECTORY.listFiles(f -> f.getAbsolutePath().endsWith(XML)))
-                .forEach(file -> {
-                    ObjectMapper mapper = new ObjectMapper();
-                    FileOpener opener = new FileOpener();
-                    MarcXmlHandler marcXmlHandler = new MarcXmlHandler();
-                    marcXmlHandler.setNamespace(null);
-                    EtikettJson etikettJson = new EtikettJson();
-                    etikettJson.setLabelsDirectoryName("labels");
-                    etikettJson.setFilenameOfContext("web/conf/context.jsonld");
-                    etikettJson.setGenerateContext(true);
-                    etikettJson.setPretty(true);
+            .forEach(file -> {
+                ObjectMapper mapper = new ObjectMapper();
+                FileOpener opener = new FileOpener();
+                MarcXmlHandler marcXmlHandler = new MarcXmlHandler();
+                marcXmlHandler.setNamespace(null);
+                EtikettJson etikettJson = new EtikettJson();
+                etikettJson.setLabelsDirectoryName("labels");
+                etikettJson.setFilenameOfContext("web/conf/context.jsonld");
+                etikettJson.setGenerateContext(true);
+                etikettJson.setPretty(true);
 
-                    final String filenameJson =
-                            file.getAbsolutePath().replaceAll("\\." + XML, "\\.json");
-                    try {
-                        opener.setReceiver(new XmlDecoder())//
-                                .setReceiver(marcXmlHandler)//
-                                .setReceiver(new Metamorph(MORPH, morphVariables))//
-                                .setReceiver(new JsonEncoder())//
-                                .setReceiver(etikettJson);
-                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                        PrintStream ps = new PrintStream(baos);
-                        System.setOut(ps);
-                        if (GENERATE_TESTDATA) {
-                            etikettJson.setReceiver(new ObjectWriter<>(filenameJson));
-                        } else {
-                            etikettJson.setReceiver(new ObjectStdoutWriter<String>());
-                        }
-                        opener.process(file.getAbsolutePath());
-                        opener.closeStream();
-                        if (!GENERATE_TESTDATA) {
-                            JsonNode expectedJsonNode =
-                                    mapper.readTree(new File(filenameJson));
-                            Object expectedJsonObject =
-                                    mapper.readValue(expectedJsonNode.toString(), Object.class);
-                            String expectedJson = mapper.writerWithDefaultPrettyPrinter()
-                                    .writeValueAsString(expectedJsonObject) + "\n";
-                            String actualJson = null;
-                            actualJson = baos.toString();
-                            LOG.debug(actualJson);
-                            assertEquals(expectedJson, actualJson);
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        fail();
+                final String filenameJson =
+                    file.getAbsolutePath().replaceAll("\\." + XML, "\\.json");
+                try {
+                    opener.setReceiver(new XmlDecoder())//
+                        .setReceiver(marcXmlHandler)//
+                        .setReceiver(new Metamorph(MORPH, morphVariables))//
+                        .setReceiver(new JsonEncoder())//
+                        .setReceiver(etikettJson);
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    PrintStream ps = new PrintStream(baos);
+                    System.setOut(ps);
+                    if (GENERATE_TESTDATA) {
+                        etikettJson.setReceiver(new ObjectWriter<>(filenameJson));
+                    } else {
+                        etikettJson.setReceiver(new ObjectStdoutWriter<String>());
                     }
-                });
+                    opener.process(file.getAbsolutePath());
+                    opener.closeStream();
+                    if (!GENERATE_TESTDATA) {
+                        JsonNode expectedJsonNode =
+                            mapper.readTree(new File(filenameJson));
+                        Object expectedJsonObject =
+                            mapper.readValue(expectedJsonNode.toString(), Object.class);
+                        String expectedJson = mapper.writerWithDefaultPrettyPrinter()
+                            .writeValueAsString(expectedJsonObject) + "\n";
+                        String actualJson = null;
+                        actualJson = baos.toString();
+                        LOG.debug(actualJson);
+                        assertEquals(expectedJson, actualJson);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    fail();
+                }
+            });
     }
 }
