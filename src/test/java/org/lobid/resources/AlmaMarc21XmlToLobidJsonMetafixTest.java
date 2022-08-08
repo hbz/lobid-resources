@@ -161,7 +161,7 @@ public final class AlmaMarc21XmlToLobidJsonMetafixTest {
                                 .setReceiver(marcXmlHandler)//
                                 .setReceiver(new Metafix(FIX, morphVariables))//
                                 .setReceiver(new JsonEncoder())//
-                               .setReceiver(etikettJson);
+                                .setReceiver(etikettJson);
                         ByteArrayOutputStream baos = new ByteArrayOutputStream();
                         PrintStream ps = new PrintStream(baos);
                         System.setOut(ps);
@@ -178,7 +178,7 @@ public final class AlmaMarc21XmlToLobidJsonMetafixTest {
                             Object expectedJsonObject =
                                     mapper.readValue(expectedJsonNode.toString(), Object.class);
                             String expectedJson = mapper.writerWithDefaultPrettyPrinter()
-                                    .writeValueAsString(expectedJsonObject);
+                                    .writeValueAsString(expectedJsonObject) + "\n";
                             String actualJson = null;
                             actualJson = baos.toString();
                             LOG.debug(actualJson);
