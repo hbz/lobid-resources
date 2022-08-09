@@ -21,9 +21,9 @@ import play.Logger;
 
 /**
  * Application global settings.
- * 
+ *
  * See https://www.playframework.com/documentation/2.4.x/JavaGlobal
- * 
+ *
  * @author Fabian Steeg (fsteeg)
  */
 public class Global extends GlobalSettings {
@@ -41,6 +41,8 @@ public class Global extends GlobalSettings {
       controllers.resources.Application.CONFIG.getString("webhook.mailtoInfo");
   private static final String MAILTO_ERROR =
           controllers.resources.Application.CONFIG.getString("webhook.mailtoError");
+  private static final String TRIGGER_WEBHOOK_URL = controllers.resources.Application.CONFIG.getString("webhook.triggerWebhook.url");
+  private static final String TRIGGER_WEBHOOK_DATA = controllers.resources.Application.CONFIG.getString("webhook.triggerWebhook.data");
   private LocalIndex localIndex = null;
   private Client client = null;
 
@@ -60,6 +62,8 @@ public class Global extends GlobalSettings {
       Webhook.clusterName = CLUSTER_NAME;
       AlmaMarcXml2lobidJsonEs.setMailtoInfo(MAILTO_INFO);
       AlmaMarcXml2lobidJsonEs.setMailtoError(MAILTO_ERROR);
+      Webhook.triggerWebhookUrl = TRIGGER_WEBHOOK_URL;
+      Webhook.triggerWebhookData= TRIGGER_WEBHOOK_DATA;
     }
     if (client != null) {
       Search.elasticsearchClient = client;
