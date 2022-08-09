@@ -65,19 +65,26 @@ prepend("language[].*.id", "http://id.loc.gov/vocabulary/iso639-2/")
 #  </data>
 
 # 020 - International Standard Book Number (R) - $a (NR)
+# source data sometimes provides repeated subfield $a even if this is not valid marc
+
+set_array("@isbn[]")
 set_array("isbn[]")
 
 do list(path:"020  ", "var": "$i")
-  copy_field("$i.a","$i.isbn13")
-  isbn("$i.isbn13", to: "clean")
-  if any_match("$i.isbn13", ".{13}")
-    copy_field("$i.isbn13", "$i.isbn10")
-    isbn("$i.isbn10", to:"isbn10")
-  elsif any_match("$i.isbn13", ".{10}")
-    copy_field("$i.isbn13", "$i.isbn10")
-    isbn("$i.isbn13", to:"isbn13")
+  do list(path:"$i.a", "var": "$j")
+    copy_field("$j","@isbn[].$append")
   end
-  copy_field("$i.isbn13|isbn10", "isbn[].$append")  
+end
+
+do list(path:"@isbn[]", "var": "$i")
+  isbn("$i", to: "clean")
+  copy_field("$i", "isbn[].$append")
+  copy_field("$i", "isbn[].$append")
+  if any_match("$i", ".{13}")
+    isbn("isbn[].$last", to:"isbn10")
+  elsif any_match("$i", ".{10}")
+    isbn("isbn[].$last", to:"isbn13")
+  end
 end
 
 uniq("isbn[]")
