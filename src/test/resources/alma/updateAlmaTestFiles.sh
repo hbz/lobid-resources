@@ -54,4 +54,4 @@ case $1 in
 esac
 tar cfj almaMarcXmlTestFiles.xml.tar.bz2 $TEST_FILE
 cd ../../../../
-mvn failsafe:integration-test -Dit.test=AlmaMarc21XmlToLobidJsonTest
+mvn -DgenerateTestData=true failsafe:integration-test -Dit.test=AlmaMarc21XmlToLobidJsonTest
