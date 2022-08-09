@@ -4,6 +4,8 @@
 # Variable @title
 #  <call-macro name="regex-del-punctuation-end" dsource="245??.a" dname="@title" />
 
+# 245 - Title Statement (NR) - Subfield: $a (NR), $b (NR), $n (R), $p (R)
+
 copy_field("245??.a","@title")
 replace_all("@title", "^[©]|\\s?[,.:;/=]?$", "")
 replace_all("@title", "<", "")
@@ -73,6 +75,8 @@ paste("title","@title", "@titleOfSubSeries", join_char: "")
 #    </data>
 #  </entity>
 
+# 246 - Varying Form of Title (R) - Subfields: $a (NR)
+
 set_array("alternativeTitle[]")
 copy_field("246?[ 345678].a","alternativeTitle[].$append")
 
@@ -94,6 +98,8 @@ replace_all("otherTitleInformation[].*","\\s?[./]\\s?$","")
 #      <replace pattern="\s?[=/]$" with="" />
 #    </data>
 #  </entity>
+
+# 250 - Edition Statement (R) - Subfields: $a (NR)
 
 set_array("edition[]")
 copy_field("250  .a","edition[].$append")
