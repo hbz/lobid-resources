@@ -454,7 +454,7 @@ set_array("isPartOf[]")
 # 773 - Host Item Entry (R) Subfield: $w (NR), $t (NR), $q (NR)
 # TODO: Shouldnt type always be arrays
 do list(path: "773??", "var": "$i")
-  add_field("isPartOf[].$append.type", "IsPartOfRelation")
+  set_array("isPartOf[].$append.type[]", "IsPartOfRelation")
   set_array("isPartOf[].$last.hasSuperordinate[]")
   add_field("isPartOf[].$last.hasSuperordinate[].$append.test", "")
   if all_match("$i.w", "\\(DE-605\\)(.*)")
@@ -470,7 +470,7 @@ end
 # 490 with 1. Indicator 1 has an identical entry in 830. So only 490 with 1. Indicator 0
 
 do list(path: "4900?", "var": "$i")
-  add_field("isPartOf[].$append.type", "IsPartOfRelation")
+  set_array("isPartOf[].$append.type[]", "IsPartOfRelation")
   set_array("isPartOf[].$last.hasSuperordinate[]")
   copy_field("$i.a", "isPartOf[].$last.hasSuperordinate[].$append.label")
   copy_field("$i.v", "isPartOf[].$last.numbering")
@@ -503,7 +503,7 @@ end
 
 do list(path: "830??", "var": "$i")
   unless exists("$i.M")
-    add_field("isPartOf[].$append.type", "IsPartOfRelation")
+    set_array("isPartOf[].$append.type[]", "IsPartOfRelation")
     set_array("isPartOf[].$last.hasSuperordinate[]")
     add_field("isPartOf[].$last.hasSuperordinate[].$append.test", "")
     if all_match("$i.w", "\\(DE-605\\)(.*)")
