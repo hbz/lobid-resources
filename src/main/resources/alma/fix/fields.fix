@@ -7,7 +7,7 @@
 # 035 - System Control Number (R) - Subfield: $a (NR)
 
 do list(path: "035  ", "var":"$i")
-  if any_match("$i.a", "\\(DE-605\\)(.*)")
+  if any_match("$i.a", "\\(DE-605\\)\\D\\D(.*)")
     copy_field("$i.a", "hbzId")
   end
 end
