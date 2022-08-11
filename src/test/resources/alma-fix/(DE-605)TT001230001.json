@@ -61,8 +61,8 @@
     "dateCreated" : "20210405",
     "dateModified" : "20220504",
     "inDataset" : {
-      "id" : "https://datahub.io/dataset/hbz_unioncatalog",
-      "label" : "hbz_unioncatalog"
+      "id" : "http://lobid.org/resources/dataset#!",
+      "label" : "lobid-resources – Der hbz-Verbundkatalog als Linked Open Data"
     },
     "resultOf" : {
       "type" : [ "CreateAction" ],
@@ -75,7 +75,11 @@
       "object" : {
         "id" : "https://lobid.org/hbz01/990141342350206441",
         "type" : [ "DataFeedItem" ],
-        "label" : "hbz-Ressource 990141342350206441 im Exportformat MARC21 XML"
+        "label" : "hbz-Ressource 990141342350206441 im Exportformat MARC21 XML",
+        "inDataset" : {
+          "id" : "https://datahub.io/dataset/hbz_unioncatalog",
+          "label" : "hbz_unioncatalog"
+        }
       }
     },
     "license" : [ {
@@ -110,7 +114,7 @@
   } ],
   "note" : [ "Vorlageform des Erscheinungsvermerks: Avgvstae Vindelicorvm ... Apud Ioannem Praetorium, Anno M.D.XCVI ... - Mikrofiche. München : Saur, 1991. Mikrofiche-Nr. F2001-F2003 : 23x", "VD16-F2826" ],
   "isPartOf" : [ {
-    "type" : "IsPartOfRelation",
+    "type" : [ "IsPartOfRelation" ],
     "hasSuperordinate" : [ {
       "id" : "http://lobid.org/resources/TT001197763#!",
       "label" : "[Bibliotheca Palatina"
@@ -120,7 +124,7 @@
   "subjectAltLabel" : [ "Magnus, Albertus", "Bolstadius, Albertus", "Bollstädt, Albert Graf <<von>>", "Bollstaedt, Albert Graf <<von>>" ],
   "hasItem" : [ {
     "id" : "https://lobid.org/item/990141342350206441",
-    "type" : [ "MBD" ],
+    "type" : [ "Item", "MBD" ],
     "heldBy" : {
       "id" : "http://lobid.org/organisations/DE-605#!",
       "label" : "lobid Organisation"

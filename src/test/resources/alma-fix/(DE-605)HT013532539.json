@@ -73,8 +73,8 @@
     "dateCreated" : "20210405",
     "dateModified" : "20220513",
     "inDataset" : {
-      "id" : "https://datahub.io/dataset/hbz_unioncatalog",
-      "label" : "hbz_unioncatalog"
+      "id" : "http://lobid.org/resources/dataset#!",
+      "label" : "lobid-resources – Der hbz-Verbundkatalog als Linked Open Data"
     },
     "resultOf" : {
       "type" : [ "CreateAction" ],
@@ -87,7 +87,11 @@
       "object" : {
         "id" : "https://lobid.org/hbz01/990118562160206441",
         "type" : [ "DataFeedItem" ],
-        "label" : "hbz-Ressource 990118562160206441 im Exportformat MARC21 XML"
+        "label" : "hbz-Ressource 990118562160206441 im Exportformat MARC21 XML",
+        "inDataset" : {
+          "id" : "https://datahub.io/dataset/hbz_unioncatalog",
+          "label" : "hbz_unioncatalog"
+        }
       }
     },
     "license" : [ {
@@ -109,7 +113,7 @@
     "label" : "Culturegraph Ressource"
   } ],
   "isPartOf" : [ {
-    "type" : "IsPartOfRelation",
+    "type" : [ "IsPartOfRelation" ],
     "hasSuperordinate" : [ {
       "id" : "http://lobid.org/resources/HT002878738#!",
       "label" : "lobid Ressource"
@@ -124,7 +128,7 @@
   "subjectAltLabel" : [ "Keln", "Keulen", "Cölln", "Groß-Köln", "Kūlūniyā", "Kerun", "Oppidum Ubiorum", "Ara Ubiorum", "Colonia Claudia Ara Agrippinensium", "CCAA", "Colonia Agrippina", "Colonia Agrippinensis", "Colonia", "Colonia Ubiorum", "Kölln am Rheine", "Stadt Köln", "Cöln", "Cöllen", "Cologne", "Colonia ad Rhenum", "Hansestadt Köln", "Gross-Köln", "Alemanha", "Alemania", "Allemagne", "Almanija", "Almāniyā", "Bondsrepubliek Duitsland", "BRD", "Bundesrepublik Deutschland", "Deutschland", "Federal Republic of Germany", "Förbundsrepubliken Tyskland", "Förbundsrepublikken Tyskland", "FRG", "Germany", "Németországi Szövetségi Kőztársaság", "Niemiecka Republika Federalna Niemiecka Republika Federalna", "NRF", "Repubblica Federale di Germania", "Republic of Germany", "República Federal da Alemanha", "República Federal de Alemania", "Republik Federasi Djerman", "Republika Federalna Niemiec", "République Fédérale d'Allemagne", "RFN", "Saksan Liittotasavalta", "Westdeutschland", "Deutsche Länder", "Heiliges Römisches Reich", "Rheinbund", "Deutscher Bund", "Norddeutscher Bund", "Deutsches Reich", "Ǧumhūrīyat Almāniyā al-Ittiḥādīya", "Niemcy", "République Fédérale d'Allemagne", "Germanija", "Federativnaja Respublika Germanija", "Deyizhi-Lianbang-Gongheguo" ],
   "hasItem" : [ {
     "id" : "https://lobid.org/item/990118562160206441",
-    "type" : [ "MBD" ],
+    "type" : [ "Item", "MBD" ],
     "heldBy" : {
       "id" : "http://lobid.org/organisations/DE-605#!",
       "label" : "lobid Organisation"
@@ -132,7 +136,7 @@
     "label" : "990118562160206441"
   }, {
     "id" : "https://lobid.org/item/990008774870206446",
-    "type" : [ "MBD" ],
+    "type" : [ "Item", "MBD" ],
     "heldBy" : {
       "id" : "http://lobid.org/organisations/DE-468#!",
       "label" : "lobid Organisation"
@@ -141,7 +145,7 @@
   }, {
     "id" : "https://lobid.org/item/22420787070006446",
     "label" : "lobid Bestandsressource",
-    "type" : [ "HOL" ],
+    "type" : [ "Item", "HOL" ],
     "heldBy" : {
       "id" : "http://lobid.org/organisations/DE-465#!",
       "label" : "lobid Organisation"
@@ -149,7 +153,7 @@
   }, {
     "id" : "https://lobid.org/item/23420787060006446",
     "label" : "lobid Bestandsressource",
-    "type" : [ "ITM" ],
+    "type" : [ "Item", "ITM" ],
     "callNumber" : "52B1_d",
     "currentLocation" : "D0001 / D98",
     "heldBy" : {

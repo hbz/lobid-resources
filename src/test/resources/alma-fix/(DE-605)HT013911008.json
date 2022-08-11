@@ -9,8 +9,8 @@
     "dateCreated" : "20210405",
     "dateModified" : "20210926",
     "inDataset" : {
-      "id" : "https://datahub.io/dataset/hbz_unioncatalog",
-      "label" : "hbz_unioncatalog"
+      "id" : "http://lobid.org/resources/dataset#!",
+      "label" : "lobid-resources – Der hbz-Verbundkatalog als Linked Open Data"
     },
     "resultOf" : {
       "type" : [ "CreateAction" ],
@@ -23,7 +23,11 @@
       "object" : {
         "id" : "https://lobid.org/hbz01/990124590390206441",
         "type" : [ "DataFeedItem" ],
-        "label" : "hbz-Ressource 990124590390206441 im Exportformat MARC21 XML"
+        "label" : "hbz-Ressource 990124590390206441 im Exportformat MARC21 XML",
+        "inDataset" : {
+          "id" : "https://datahub.io/dataset/hbz_unioncatalog",
+          "label" : "hbz_unioncatalog"
+        }
       }
     },
     "license" : [ {
@@ -50,7 +54,7 @@
     "label" : "OCLC Ressource"
   } ],
   "isPartOf" : [ {
-    "type" : "IsPartOfRelation",
+    "type" : [ "IsPartOfRelation" ],
     "hasSuperordinate" : [ {
       "id" : "http://lobid.org/resources/HT013911051#!",
       "label" : "Eutropia-CD"
@@ -78,7 +82,7 @@
   "subjectAltLabel" : [ "Rothenburg, Tauber", "Rothenburg o.d.T.", "Rothenburg o. Tbr.", "Rotenburg", "Reichsstadt Rothenburg ob der Tauber", "Reichsstadt Rothenburg o.d.T.", "Rothenburg", "Rotenburg ob der Tauber" ],
   "hasItem" : [ {
     "id" : "https://lobid.org/item/990124590390206441",
-    "type" : [ "MBD" ],
+    "type" : [ "Item", "MBD" ],
     "heldBy" : {
       "id" : "http://lobid.org/organisations/DE-605#!",
       "label" : "lobid Organisation"
@@ -86,7 +90,7 @@
     "label" : "990124590390206441"
   }, {
     "id" : "https://lobid.org/item/991000893309706442",
-    "type" : [ "MBD" ],
+    "type" : [ "Item", "MBD" ],
     "heldBy" : {
       "id" : "http://lobid.org/organisations/DE-361#!",
       "label" : "lobid Organisation"
@@ -95,7 +99,7 @@
   }, {
     "id" : "https://lobid.org/item/22240897820006442",
     "label" : "lobid Bestandsressource",
-    "type" : [ "HOL" ],
+    "type" : [ "Item", "HOL" ],
     "heldBy" : {
       "id" : "http://lobid.org/organisations/DE-361#!",
       "label" : "lobid Organisation"
@@ -103,7 +107,7 @@
   }, {
     "id" : "https://lobid.org/item/23240897810006442",
     "label" : "lobid Bestandsressource",
-    "type" : [ "ITM" ],
+    "type" : [ "Item", "ITM" ],
     "callNumber" : "CB088.87-4144798",
     "currentLocation" : "UB_BI / 14G_Sond",
     "heldBy" : {

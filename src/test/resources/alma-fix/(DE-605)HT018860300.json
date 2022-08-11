@@ -23,8 +23,8 @@
     "dateCreated" : "20210405",
     "dateModified" : "20220606",
     "inDataset" : {
-      "id" : "https://datahub.io/dataset/hbz_unioncatalog",
-      "label" : "hbz_unioncatalog"
+      "id" : "http://lobid.org/resources/dataset#!",
+      "label" : "lobid-resources – Der hbz-Verbundkatalog als Linked Open Data"
     },
     "resultOf" : {
       "type" : [ "CreateAction" ],
@@ -37,7 +37,11 @@
       "object" : {
         "id" : "https://lobid.org/hbz01/990210312460206441",
         "type" : [ "DataFeedItem" ],
-        "label" : "hbz-Ressource 990210312460206441 im Exportformat MARC21 XML"
+        "label" : "hbz-Ressource 990210312460206441 im Exportformat MARC21 XML",
+        "inDataset" : {
+          "id" : "https://datahub.io/dataset/hbz_unioncatalog",
+          "label" : "hbz_unioncatalog"
+        }
       }
     },
     "license" : [ {
@@ -67,7 +71,7 @@
     "label" : "OCLC Ressource"
   } ],
   "isPartOf" : [ {
-    "type" : "IsPartOfRelation",
+    "type" : [ "IsPartOfRelation" ],
     "hasSuperordinate" : [ {
       "id" : "http://lobid.org/resources/HT003264538#!",
       "label" : "Zeitschrift des Geschichtsvereins Mülheim a. d. Ruhr"
@@ -112,7 +116,7 @@
   "subjectAltLabel" : [ "Steegen, Gerrit <<ter>>", "Terstegen, Gerhard", "Ter Steegen, Gerrit", "TerSteegen, Gerrit", "Terstegen, G.", "Ter-Stegen, Gerhard", "Teerstegen, G.", "Zum Stegen, Gerhard", "Zum Stegen, Gerh.", "Stegen, Gerhard <<zum>>", "Mülheim, Ruhr", "Mülheim", "Mülheim a. d. Ruhr" ],
   "hasItem" : [ {
     "id" : "https://lobid.org/item/990210312460206441",
-    "type" : [ "MBD" ],
+    "type" : [ "Item", "MBD" ],
     "heldBy" : {
       "id" : "http://lobid.org/organisations/DE-605#!",
       "label" : "lobid Organisation"

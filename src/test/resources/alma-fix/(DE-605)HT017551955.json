@@ -23,8 +23,8 @@
     "dateCreated" : "20210406",
     "dateModified" : "20210409",
     "inDataset" : {
-      "id" : "https://datahub.io/dataset/hbz_unioncatalog",
-      "label" : "hbz_unioncatalog"
+      "id" : "http://lobid.org/resources/dataset#!",
+      "label" : "lobid-resources – Der hbz-Verbundkatalog als Linked Open Data"
     },
     "resultOf" : {
       "type" : [ "CreateAction" ],
@@ -37,7 +37,11 @@
       "object" : {
         "id" : "https://lobid.org/hbz01/990194668760206441",
         "type" : [ "DataFeedItem" ],
-        "label" : "hbz-Ressource 990194668760206441 im Exportformat MARC21 XML"
+        "label" : "hbz-Ressource 990194668760206441 im Exportformat MARC21 XML",
+        "inDataset" : {
+          "id" : "https://datahub.io/dataset/hbz_unioncatalog",
+          "label" : "hbz_unioncatalog"
+        }
       }
     },
     "license" : [ {
@@ -68,7 +72,7 @@
   } ],
   "note" : [ "heute Heumarkt 77, \"Gilden im Zims\"" ],
   "isPartOf" : [ {
-    "type" : "IsPartOfRelation",
+    "type" : [ "IsPartOfRelation" ],
     "hasSuperordinate" : [ {
       "id" : "http://lobid.org/resources/HT000765110#!",
       "label" : "Einzelbilder vom Niederrhein"
@@ -83,7 +87,7 @@
   "subjectAltLabel" : [ "Quedenfeld, Erwin", "Quedenfeldt, E.", "Quedenfeldt, Erwin Theodor" ],
   "hasItem" : [ {
     "id" : "https://lobid.org/item/990194668760206441",
-    "type" : [ "MBD" ],
+    "type" : [ "Item", "MBD" ],
     "heldBy" : {
       "id" : "http://lobid.org/organisations/DE-605#!",
       "label" : "lobid Organisation"
@@ -91,7 +95,7 @@
     "label" : "990194668760206441"
   }, {
     "id" : "https://lobid.org/item/990027937760206443",
-    "type" : [ "MBD" ],
+    "type" : [ "Item", "MBD" ],
     "heldBy" : {
       "id" : "http://lobid.org/organisations/DE-61#!",
       "label" : "lobid Organisation"
@@ -100,7 +104,7 @@
   }, {
     "id" : "https://lobid.org/item/22289523260006443",
     "label" : "lobid Bestandsressource",
-    "type" : [ "HOL" ],
+    "type" : [ "Item", "HOL" ],
     "heldBy" : {
       "id" : "http://lobid.org/organisations/DE-61#!",
       "label" : "lobid Organisation"
@@ -108,7 +112,7 @@
   }, {
     "id" : "https://lobid.org/item/23289523250006443",
     "label" : "lobid Bestandsressource",
-    "type" : [ "ITM" ],
+    "type" : [ "Item", "ITM" ],
     "callNumber" : "K347:501",
     "currentLocation" : "X0001 / 16",
     "heldBy" : {

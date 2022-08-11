@@ -11,8 +11,8 @@
     "type" : [ "BibliographicDescription" ],
     "dateCreated" : "20220711",
     "inDataset" : {
-      "id" : "https://datahub.io/dataset/hbz_unioncatalog",
-      "label" : "hbz_unioncatalog"
+      "id" : "http://lobid.org/resources/dataset#!",
+      "label" : "lobid-resources – Der hbz-Verbundkatalog als Linked Open Data"
     },
     "resultOf" : {
       "type" : [ "CreateAction" ],
@@ -25,7 +25,11 @@
       "object" : {
         "id" : "https://lobid.org/hbz01/991000688209706449",
         "type" : [ "DataFeedItem" ],
-        "label" : "hbz-Ressource 991000688209706449 im Exportformat MARC21 XML"
+        "label" : "hbz-Ressource 991000688209706449 im Exportformat MARC21 XML",
+        "inDataset" : {
+          "id" : "https://datahub.io/dataset/hbz_unioncatalog",
+          "label" : "hbz_unioncatalog"
+        }
       }
     },
     "license" : [ {
@@ -34,11 +38,11 @@
     } ]
   },
   "isPartOf" : [ {
-    "type" : "IsPartOfRelation"
+    "type" : [ "IsPartOfRelation" ]
   } ],
   "hasItem" : [ {
     "id" : "https://lobid.org/item/991000688209706449",
-    "type" : [ "MBD" ],
+    "type" : [ "Item", "MBD" ],
     "heldBy" : {
       "id" : "http://lobid.org/organisations/49HBZ_ULM#!",
       "label" : "lobid Organisation"
@@ -47,7 +51,7 @@
   }, {
     "id" : "https://lobid.org/item/22607591380006449",
     "label" : "lobid Bestandsressource",
-    "type" : [ "HOL" ],
+    "type" : [ "Item", "HOL" ],
     "heldBy" : {
       "id" : "http://lobid.org/organisations/6449#!",
       "label" : "lobid Organisation"
@@ -55,7 +59,7 @@
   }, {
     "id" : "https://lobid.org/item/23607591370006449",
     "label" : "lobid Bestandsressource",
-    "type" : [ "ITM" ],
+    "type" : [ "Item", "ITM" ],
     "callNumber" : "ZC 440-63",
     "currentLocation" : "ZB / ZB_GK",
     "heldBy" : {

@@ -48,8 +48,8 @@
     "dateCreated" : "20210405",
     "dateModified" : "20220215",
     "inDataset" : {
-      "id" : "https://datahub.io/dataset/hbz_unioncatalog",
-      "label" : "hbz_unioncatalog"
+      "id" : "http://lobid.org/resources/dataset#!",
+      "label" : "lobid-resources – Der hbz-Verbundkatalog als Linked Open Data"
     },
     "resultOf" : {
       "type" : [ "CreateAction" ],
@@ -62,7 +62,11 @@
       "object" : {
         "id" : "https://lobid.org/hbz01/990051552280206441",
         "type" : [ "DataFeedItem" ],
-        "label" : "hbz-Ressource 990051552280206441 im Exportformat MARC21 XML"
+        "label" : "hbz-Ressource 990051552280206441 im Exportformat MARC21 XML",
+        "inDataset" : {
+          "id" : "https://datahub.io/dataset/hbz_unioncatalog",
+          "label" : "hbz_unioncatalog"
+        }
       }
     },
     "license" : [ {
@@ -92,12 +96,12 @@
     "label" : "Culturegraph Ressource"
   } ],
   "isPartOf" : [ {
-    "type" : "IsPartOfRelation",
+    "type" : [ "IsPartOfRelation" ],
     "hasSuperordinate" : [ {
       "label" : "Les films du losange"
     } ]
   }, {
-    "type" : "IsPartOfRelation",
+    "type" : [ "IsPartOfRelation" ],
     "hasSuperordinate" : [ {
       "label" : "Collection libre échange"
     } ]
@@ -105,7 +109,7 @@
   "subjectAltLabel" : [ "Rohmer, Éric", "Scherer, Maurice Jean-Marie", "Scherer, Maurice", "Schérer, Jean-Marie Maurice", "Schérer, Maurice Henri Joseph", "Schérer, Henri Maurice Joseph", "Scherer, Henri Joseph", "Cordier, Gilbert", "Schérer, Maurice", "Salins, G. D. <<de>>", "Courtillon, J." ],
   "hasItem" : [ {
     "id" : "https://lobid.org/item/990051552280206441",
-    "type" : [ "MBD" ],
+    "type" : [ "Item", "MBD" ],
     "heldBy" : {
       "id" : "http://lobid.org/organisations/DE-605#!",
       "label" : "lobid Organisation"
