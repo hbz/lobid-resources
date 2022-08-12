@@ -74,7 +74,15 @@ set_array("contribution[]")
 do list(path:"100[01] ", "var":"$i")
   unless exists("$i.M")
     unless exists("$i.4")
-      add_field("$i.4","cre")
+      if any_match("type[]","ArchivedWebPage|Miscellaneous|Bibliography|Statistics|Legislation|PublishedScore|Game|Image|Map|Standard")
+        add_field("$i.4","cre")
+      elsif any_match("type[]","Periodical|Collection|Series|Newspaper|Journal|PublicationIssue|EditedVolume|Proceedings|Festschrift|ReferenceSource")
+        add_field("$i.4","edt")
+      elsif any_match("type[]","Book|MultiVolumeBook|Article|Thesis|OfficialPublication|Schoolbook|Biography|Report")
+        add_field("$i.4","aut")
+      else
+        add_field("$i.4","cre")
+      end
     end
     do list(path: "$i.4", "var":"$j")
       set_hash("contribution[].$append.agent")
@@ -103,7 +111,7 @@ end
 do list(path:"700[01] ", "var":"$i")
   unless exists("$i.M")
     unless exists("$i.4")
-      add_field("$i.4","cre")
+      add_field("$i.4","ctb")
     end
     do list(path: "$i.4", "var":"$j")
       set_hash("contribution[].$append.agent")
@@ -168,7 +176,15 @@ end
 do list(path:"110[012] ", "var":"$i")
   unless exists("$i.M")
     unless exists("$i.4")
-      add_field("$i.4","cre")
+      if any_match("type[]","ArchivedWebPage|Miscellaneous|Bibliography|Statistics|Legislation|PublishedScore|Game|Image|Map|Standard")
+        add_field("$i.4","cre")
+      elsif any_match("type[]","Periodical|Collection|Series|Newspaper|Journal|PublicationIssue|EditedVolume|Proceedings|Festschrift|ReferenceSource")
+        add_field("$i.4","edt")
+      elsif any_match("type[]","Book|MultiVolumeBook|Article|Thesis|OfficialPublication|Schoolbook|Biography|Report")
+        add_field("$i.4","aut")
+      else
+        add_field("$i.4","cre")
+      end
     end
     do list(path: "$i.4", "var":"$j")
       set_hash("contribution[].$append.agent")
@@ -198,7 +214,7 @@ end
 do list(path:"710[012] ", "var":"$i")
   unless exists("$i.M")
     unless exists("$i.4")
-      add_field("$i.4","cre")
+      add_field("$i.4","ctb")
     end
     do list(path: "$i.4", "var":"$j")
       set_hash("contribution[].$append.agent")
