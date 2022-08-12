@@ -73,29 +73,28 @@ set_array("contribution[]")
 
 
 do list(path:"100[01] |700[01] ", "var":"$i")
-	unless exists("$i.M")
-		set_hash("contribution[].$append.agent")
-			do list(path:"$i.0","var":"$j")
-				if all_match("$j", "^\\(DE-588\\).*$")
-			# GND identifier		
-					copy_field("$j","contribution[].$last.agent.gndIdentifier")
-			# GND Identifier id
-					copy_field("$j","contribution[].$last.agent.id")
-				end
-			end
-		# name	
-		copy_field("$i.a","contribution[].$last.agent.label")
-		# type
-		set_array("contribution[].$last.agent.type[]","Person")
-		# role
-		# TODO: There are sometimes multiple roles for one contributor/creator. 
-		# This is not handled yet. The whole contributor needs to be copied and added again.
-		if exists ("$i.4.1")
-			copy_field("$i.4.1","contribution[].$last.agent.role.id")
-		else
-			copy_field("$i.4","contribution[].$last.agent.role.id")
-		end
-	end
+  unless exists("$i.M")
+    unless exists("$i.4")
+      add_field("$i.4","cre")
+    end
+    do list(path: "$i.4", "var":"$j")
+      set_hash("contribution[].$append.agent")
+      do list(path:"$i.0","var":"$k")
+        if all_match("$k", "^\\(DE-588\\).*$")
+      # GND identifier    
+          paste("contribution[].$last.agent.gndIdentifier","$k")
+      # GND Identifier id
+          paste("contribution[].$last.agent.id","$k")
+        end
+      end
+      # name  
+      copy_field("$i.a","contribution[].$last.agent.label")
+      # type
+      set_array("contribution[].$last.agent.type[]","Person")
+      # role
+      copy_field("$j","contribution[].$last.agent.role.id")
+    end
+  end
 end
 
 # 
@@ -138,30 +137,30 @@ end
 # Subfield: $M is a local field and can create duplicates and is therefore ignored.
 
 
+
 do list(path:"110[012] |710[012] ", "var":"$i")
-	unless exists("$i.M")
-		set_hash("contribution[].$append.agent")
-			do list(path:"$i.0","var":"$j")
-				if all_match("$j", "^\\(DE-588\\).*$")
-			# GND identifier		
-					copy_field("$j","contribution[].$last.agent.gndIdentifier")
-			# GND Identifier id
-					copy_field("$j","contribution[].$last.agent.id")
-				end
-			end
-		# name	
-			paste("contribution[].$last.agent.label", "$i.a", "$i.b", join_char: ". ")		
-		# type
-		set_array("contribution[].$last.agent.type[]","CorporateBody")
-		# role
-		# TODO: There are sometimes multiple roles for one contributor/creator. 
-		# This is not handled yet. The whole contributor needs to be copied and added again.
-		if exists ("$i.4.1")
-			copy_field("$i.4.1","contribution[].$last.agent.role.id")
-		else
-			copy_field("$i.4","contribution[].$last.agent.role.id")
-		end
-	end
+  unless exists("$i.M")
+    unless exists("$i.4")
+      add_field("$i.4","cre")
+    end
+    do list(path: "$i.4", "var":"$j")
+      set_hash("contribution[].$append.agent")
+      do list(path:"$i.0","var":"$k")
+        if all_match("$k", "^\\(DE-588\\).*$")
+      # GND identifier    
+          paste("contribution[].$last.agent.gndIdentifier","$k")
+      # GND Identifier id
+          paste("contribution[].$last.agent.id","$k")
+        end
+      end
+      # name  
+        paste("contribution[].$last.agent.label", "$i.a", "$i.b", join_char: ". ")  
+      # type
+      set_array("contribution[].$last.agent.type[]","CorporateBody")
+      # role
+      copy_field("$j","contribution[].$last.agent.role.id")
+    end
+  end
 end
 
 
