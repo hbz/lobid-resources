@@ -67,35 +67,70 @@ set_array("contribution[]")
 # I separate the cleaning from the copying since the cleaning needs to be done for evey element.
 
 # 100 - Main Entry-Personal Name (NR)
-# 700 - Added Entry-Personal Name (R)
 # Subfields: $a (NR), $0 (R), $4 (R)
 # Subfield: $M is a local field and can create duplicates and is therefore ignored.
 
 
-do list(path:"100[01] |700[01] ", "var":"$i")
-	unless exists("$i.M")
-		set_hash("contribution[].$append.agent")
-			do list(path:"$i.0","var":"$j")
-				if all_match("$j", "^\\(DE-588\\).*$")
-			# GND identifier		
-					copy_field("$j","contribution[].$last.agent.gndIdentifier")
-			# GND Identifier id
-					copy_field("$j","contribution[].$last.agent.id")
-				end
-			end
-		# name	
-		copy_field("$i.a","contribution[].$last.agent.label")
-		# type
-		set_array("contribution[].$last.agent.type[]","Person")
-		# role
-		# TODO: There are sometimes multiple roles for one contributor/creator. 
-		# This is not handled yet. The whole contributor needs to be copied and added again.
-		if exists ("$i.4.1")
-			copy_field("$i.4.1","contribution[].$last.agent.role.id")
-		else
-			copy_field("$i.4","contribution[].$last.agent.role.id")
-		end
-	end
+do list(path:"100[01] ", "var":"$i")
+  unless exists("$i.M")
+    unless exists("$i.4")
+      if any_match("type[]","ArchivedWebPage|Miscellaneous|Bibliography|Statistics|Legislation|PublishedScore|Game|Image|Map|Standard")
+        add_field("$i.4","cre")
+      elsif any_match("type[]","Periodical|Collection|Series|Newspaper|Journal|PublicationIssue|EditedVolume|Proceedings|Festschrift|ReferenceSource")
+        add_field("$i.4","edt")
+      elsif any_match("type[]","Book|MultiVolumeBook|Article|Thesis|OfficialPublication|Schoolbook|Biography|Report")
+        add_field("$i.4","aut")
+      else
+        add_field("$i.4","cre")
+      end
+    end
+    do list(path: "$i.4", "var":"$j")
+      set_hash("contribution[].$append.agent")
+      do list(path:"$i.0","var":"$k")
+        if all_match("$k", "^\\(DE-588\\).*$")
+      # GND identifier    
+          paste("contribution[].$last.agent.gndIdentifier","$k")
+      # GND Identifier id
+          paste("contribution[].$last.agent.id","$k")
+        end
+      end
+      # name  
+      copy_field("$i.a","contribution[].$last.agent.label")
+      # type
+      set_array("contribution[].$last.agent.type[]","Person")
+      # role
+      copy_field("$j","contribution[].$last.agent.role.id")
+    end
+  end
+end
+
+# 700 - Added Entry-Personal Name (R)
+# Subfields: $a (NR), $0 (R), $4 (R)
+# Subfield: $M is a local field and can create duplicates and is therefore ignored.
+
+do list(path:"700[01] ", "var":"$i")
+  unless exists("$i.M")
+    unless exists("$i.4")
+      add_field("$i.4","ctb")
+    end
+    do list(path: "$i.4", "var":"$j")
+      set_hash("contribution[].$append.agent")
+      do list(path:"$i.0","var":"$k")
+        if all_match("$k", "^\\(DE-588\\).*$")
+      # GND identifier    
+          paste("contribution[].$last.agent.gndIdentifier","$k")
+      # GND Identifier id
+          paste("contribution[].$last.agent.id","$k")
+        end
+      end
+      # name  
+      copy_field("$i.a","contribution[].$last.agent.label")
+      # type
+      set_array("contribution[].$last.agent.type[]","Person")
+      # role
+      copy_field("$j","contribution[].$last.agent.role.id")
+    end
+  end
 end
 
 # 
@@ -133,39 +168,73 @@ end
 # 
 
 # 110 - Main Entry-Corporate Name (NR)
+# Subfields: $a (NR), $0 (R), $4 (R)
+# Subfield: $M is a local field and can create duplicates and is therefore ignored.
+
+
+
+do list(path:"110[012] ", "var":"$i")
+  unless exists("$i.M")
+    unless exists("$i.4")
+      if any_match("type[]","ArchivedWebPage|Miscellaneous|Bibliography|Statistics|Legislation|PublishedScore|Game|Image|Map|Standard")
+        add_field("$i.4","cre")
+      elsif any_match("type[]","Periodical|Collection|Series|Newspaper|Journal|PublicationIssue|EditedVolume|Proceedings|Festschrift|ReferenceSource")
+        add_field("$i.4","edt")
+      elsif any_match("type[]","Book|MultiVolumeBook|Article|Thesis|OfficialPublication|Schoolbook|Biography|Report")
+        add_field("$i.4","aut")
+      else
+        add_field("$i.4","cre")
+      end
+    end
+    do list(path: "$i.4", "var":"$j")
+      set_hash("contribution[].$append.agent")
+      do list(path:"$i.0","var":"$k")
+        if all_match("$k", "^\\(DE-588\\).*$")
+      # GND identifier    
+          paste("contribution[].$last.agent.gndIdentifier","$k")
+      # GND Identifier id
+          paste("contribution[].$last.agent.id","$k")
+        end
+      end
+      # name  
+        paste("contribution[].$last.agent.label", "$i.a", "$i.b", join_char: ". ")  
+      # type
+      set_array("contribution[].$last.agent.type[]","CorporateBody")
+      # role
+      copy_field("$j","contribution[].$last.agent.role.id")
+    end
+  end
+end
+
 # 710 - Added Entry-Corporate Name (R)
 # Subfields: $a (NR), $0 (R), $4 (R)
 # Subfield: $M is a local field and can create duplicates and is therefore ignored.
 
 
-do list(path:"110[012] |710[012] ", "var":"$i")
-	unless exists("$i.M")
-		set_hash("contribution[].$append.agent")
-			do list(path:"$i.0","var":"$j")
-				if all_match("$j", "^\\(DE-588\\).*$")
-			# GND identifier		
-					copy_field("$j","contribution[].$last.agent.gndIdentifier")
-			# GND Identifier id
-					copy_field("$j","contribution[].$last.agent.id")
-				end
-			end
-		# name	
-			paste("contribution[].$last.agent.label", "$i.a", "$i.b", join_char: ". ")		
-		# type
-		set_array("contribution[].$last.agent.type[]","CorporateBody")
-		# role
-		# TODO: There are sometimes multiple roles for one contributor/creator. 
-		# This is not handled yet. The whole contributor needs to be copied and added again.
-		if exists ("$i.4.1")
-			copy_field("$i.4.1","contribution[].$last.agent.role.id")
-		else
-			copy_field("$i.4","contribution[].$last.agent.role.id")
-		end
-	end
+do list(path:"710[012] ", "var":"$i")
+  unless exists("$i.M")
+    unless exists("$i.4")
+      add_field("$i.4","ctb")
+    end
+    do list(path: "$i.4", "var":"$j")
+      set_hash("contribution[].$append.agent")
+      do list(path:"$i.0","var":"$k")
+        if all_match("$k", "^\\(DE-588\\).*$")
+      # GND identifier    
+          paste("contribution[].$last.agent.gndIdentifier","$k")
+      # GND Identifier id
+          paste("contribution[].$last.agent.id","$k")
+        end
+      end
+      # name  
+        paste("contribution[].$last.agent.label", "$i.a", "$i.b", join_char: ". ")  
+      # type
+      set_array("contribution[].$last.agent.type[]","CorporateBody")
+      # role
+      copy_field("$j","contribution[].$last.agent.role.id")
+    end
+  end
 end
-
-
-
 
 
 set_array("contribution[].*.type[]", "Contribution")
