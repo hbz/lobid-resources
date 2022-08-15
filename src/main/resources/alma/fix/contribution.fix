@@ -99,7 +99,7 @@ do list(path:"100[01] ", "var":"$i")
       # type
       set_array("contribution[].$last.agent.type[]","Person")
       # role
-      copy_field("$j","contribution[].$last.agent.role.id")
+      copy_field("$j","contribution[].$last.role.id")
     end
   end
 end
@@ -128,7 +128,7 @@ do list(path:"700[01] ", "var":"$i")
       # type
       set_array("contribution[].$last.agent.type[]","Person")
       # role
-      copy_field("$j","contribution[].$last.agent.role.id")
+      copy_field("$j","contribution[].$last.role.id")
     end
   end
 end
@@ -201,7 +201,7 @@ do list(path:"110[012] ", "var":"$i")
       # type
       set_array("contribution[].$last.agent.type[]","CorporateBody")
       # role
-      copy_field("$j","contribution[].$last.agent.role.id")
+      copy_field("$j","contribution[].$last.role.id")
     end
   end
 end
@@ -231,7 +231,7 @@ do list(path:"710[012] ", "var":"$i")
       # type
       set_array("contribution[].$last.agent.type[]","CorporateBody")
       # role
-      copy_field("$j","contribution[].$last.agent.role.id")
+      copy_field("$j","contribution[].$last.role.id")
     end
   end
 end
@@ -240,6 +240,6 @@ end
 set_array("contribution[].*.type[]", "Contribution")
 replace_all("contribution[].*.agent.id","^\\(DE-588\\)(.*$)","https://d-nb.info/gnd/$1")
 replace_all("contribution[].*.agent.label","(?<!\\p{Upper})\\.$|[,]$","")
-prepend("contribution[].*.agent.role.id","http://id.loc.gov/vocabulary/relators/")
+prepend("contribution[].*.role.id","http://id.loc.gov/vocabulary/relators/")
 
 # Deleted the "conference"-Element TODO: specific conference Info needs to be added elsewhere.

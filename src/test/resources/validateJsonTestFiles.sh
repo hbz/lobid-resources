@@ -7,7 +7,7 @@
 # old transformation of Aleph data, known to be often invalid:
 # DIRECTORY_OF_JSON_TO_VALIDATE="jsonld/"
 # new transformation of Alma data:
-DIRECTORY_OF_JSON_TO_VALIDATE="alma/"
+DIRECTORY_OF_JSON_TO_VALIDATE="alma-fix/"
 
 
 for version in "draft"; do

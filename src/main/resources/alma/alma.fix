@@ -6,17 +6,17 @@ include ("./fix/maps.fix")
 copy_field("001","almaMmsId")
 
 #    <data name="id" source="@almaMmsId">
-#      <regexp match="(.*)" format="https://lobid.org/resources/${1}#!"/>
+#      <regexp match="(.*)" format="http://lobid.org/resources/${1}#!"/>
 #    </data>
 #  </rules>
 
-paste("id", "~https://lobid.org/resources/", "001", "~#!", join_char: "")
+paste("id", "~http://lobid.org/resources/", "001", "~#!", join_char: "")
 
 #    <data name="\@context" source="@almaMmsId">
 #      <constant value="https://lobid.org/resources/context.jsonld"/>
 #    </data>
 
-add_field("@context","https://lobid.org/resources/context.jsonld")
+add_field("@context","http://lobid.org/resources/context.jsonld")
 
 include ("./fix/titleRelatedFields.fix")
 include ("./fix/describedBy.fix")
@@ -29,38 +29,38 @@ include ("./fix/contribution.fix")
 
 vacuum()
 retain(
-	"@context",
-	"abstract[]",
-	"almaMmsId",
-	"alternativeTitle[]",
-	"describedBy",
-	"contribution[]",
-	"doi[]",
-	"edition[]",
-	"hasItem[]",
-	"hbzId",
-	"id",
-	"inCollection[]",
-	"isbn[]",
-	"issn[]",
-	"ismn[]",
-	"isPartOf[]",
-	"language[]",
-	"medium[]",
-	"natureOfContent[]",
-	"note[]",
-	"oclcNumber[]",
-	"otherTitleInformation[]",
-	"publication[]",
-	"related[]",
-	"responsibilityStatement[]",
-	"sameAs[]",
-	"subject[]",
-	"subjectAltLabel[]",
-	"tableOfContents[]",
-	"thesisInformation[]",
-	"title",
-	"titleOfSubSeries",
-	"type[]",
-	"zdbId"
-	)
+  "@context",
+  "abstract[]",
+  "almaMmsId",
+  "alternativeTitle[]",
+  "describedBy",
+  "contribution[]",
+  "doi[]",
+  "edition[]",
+  "hasItem[]",
+  "hbzId",
+  "id",
+  "inCollection[]",
+  "isbn[]",
+  "issn[]",
+  "ismn[]",
+  "isPartOf[]",
+  "language[]",
+  "medium[]",
+  "natureOfContent[]",
+  "note[]",
+  "oclcNumber[]",
+  "otherTitleInformation[]",
+  "publication[]",
+  "related[]",
+  "responsibilityStatement[]",
+  "sameAs[]",
+  "subject[]",
+  "subjectAltLabel[]",
+  "tableOfContents[]",
+  "thesisInformation[]",
+  "title",
+  "titleOfSubSeries",
+  "type[]",
+  "zdbId"
+  )

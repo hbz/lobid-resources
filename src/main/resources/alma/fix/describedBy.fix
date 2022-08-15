@@ -163,6 +163,7 @@ add_field("describedBy.license[].$last.label","Creative Commons-Lizenz CC0 1.0 U
 # 040 - Cataloging Source (NR) - Subfield: $a (NR), $c (NR), $d (R)
 
 copy_field("040  .a", "describedBy.sourceOrganization.id")
+replace_all("describedBy.sourceOrganization.id", " ", "")
 prepend("describedBy.sourceOrganization.id", "http://lobid.org/organisations/DE-")
 append("describedBy.sourceOrganization.id", "#!")
 if exists("describedBy.sourceOrganization.id")
@@ -180,6 +181,7 @@ end
 
 # TODO: It seems that there are a lot of organisations that are not in lobid, we should filter them out.
 copy_field("040  .c", "describedBy.provider.id")
+replace_all("describedBy.provider.id", " ", "")
 prepend("describedBy.provider.id", "http://lobid.org/organisations/DE-")
 append("describedBy.provider.id", "#!")
 if exists("describedBy.provider.id")
@@ -209,6 +211,7 @@ do list(path:"040  .d", "var":"$i")
 	end
 end
 replace_all("describedBy.modifiedBy.id", "(DE-)?(.*)", "$2")
+replace_all("describedBy.modifiedBy.id", " ", "")
 prepend("describedBy.modifiedBy.id", "http://lobid.org/organisations/DE-")
 append("describedBy.modifiedBy.id", "#!")
 if exists("describedBy.modifiedBy.id")
