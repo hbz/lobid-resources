@@ -26,6 +26,8 @@ import org.metafacture.xml.XmlDecoder;
 import org.metafacture.xml.XmlElementSplitter;
 
 import de.hbz.lobid.helper.Email;
+import de.hbz.lobid.helper.HttpPoster;
+import org.mortbay.log.Log;
 
 /**
  * Transform hbz Alma Marc XML catalog data into lobid elasticsearch JSON-LD and
@@ -51,6 +53,8 @@ public class AlmaMarcXml2lobidJsonEs {
   private static final HashMap<String, String> morphVariables = new HashMap<>();
   private static String mailtoInfo = "localhost";
   private static String mailtoError = "localhost";
+  private static String triggerWebhookUrl;
+  private static String triggerWebhookData;
   private static String kind = "";
   private static boolean switchAutomatically = false;
   private static final Logger LOG =
@@ -64,6 +68,7 @@ public class AlmaMarcXml2lobidJsonEs {
   public static final String MSG_SUCCESS = "success :) ";
   public static final String MSG_FAIL = "fail :() ";
   static String keyToGetMainId;
+  private static HttpPoster httpPoster =new HttpPoster();
 
   public static void main(String... args) {
     if (threadAlreadyStarted) {
@@ -146,6 +151,7 @@ public class AlmaMarcXml2lobidJsonEs {
           opener.closeStream();
           success = true;
           message = "ETL succeeded, index name: " + indexName;
+          notifyWebhook();
         } catch (Exception e) {
           e.printStackTrace();
           LOG.error(
@@ -212,6 +218,12 @@ public class AlmaMarcXml2lobidJsonEs {
   public static void setMailtoError(final String EMAIL) {
     mailtoError = EMAIL;
   }
+  public static void setTriggerWebhookUrl(final String url) {
+    triggerWebhookUrl = url;
+  }
+  public static void setTriggerWebhookData(final String data) {
+    triggerWebhookData = data;
+  }
 
   public static void setKindOfEtl(final String KIND) {
     kind = KIND;
@@ -267,4 +279,15 @@ public class AlmaMarcXml2lobidJsonEs {
     }
   }
 
+    private static void notifyWebhook() {
+    LOG.debug("Start notifying webhook ...");
+        httpPoster.setContentType("application/json");
+        try {
+            httpPoster.setUrl(triggerWebhookUrl);
+            httpPoster.processData(triggerWebhookData);
+        } catch (Exception e) {
+            LOG.error(String.format("Couldn't notify webhook listener at '%s' with data '%s': %s", triggerWebhookUrl, triggerWebhookData, e.getMessage()));
+        }
+
+    }
 }

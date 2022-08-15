@@ -55,6 +55,8 @@ public class Webhook extends Controller {
   private static String msgWrongToken =
       "'%s' is the wrong token. Declining to ETL %s.";
   private static String msgStartEtl = "Starting ETL of '%s'...";
+  public static String triggerWebhookUrl;
+  public static String triggerWebhookData;
 
   public Webhook() {
   }
@@ -104,6 +106,8 @@ public class Webhook extends Controller {
     token = config.getString("webhook.alma.token");
     alias1 = indexNameOfBasedump;
     alias2 = indexNameOfBasedump + indexBasedumpAliasSuffix;
+    AlmaMarcXml2lobidJsonEs.setTriggerWebhookUrl(triggerWebhookUrl);
+    AlmaMarcXml2lobidJsonEs.setTriggerWebhookData(triggerWebhookData);
   }
 
   /**
