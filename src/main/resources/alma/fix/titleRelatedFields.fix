@@ -104,3 +104,32 @@ replace_all("otherTitleInformation[].*","\\s?[./]\\s?$","")
 set_array("edition[]")
 copy_field("250  .a","edition[].$append")
 replace_all("edition[].*","\\s?[./]\\s?$","")
+
+# 260 - Publication, Distribution, etc. (Imprint) (R) - Subfield: $a (R), $b (R), $c (R)
+# 264 - Production, Publication, Distribution, Manufacture, and Copyright Notice (R) -  Subfield: $a (R), $b (R), $c  (R)
+
+set_array("publication[]")
+do list(path:"260[ 23] |264[ 23][ 1]", "var":"$i")
+  add_field("publication[].$append.test","")
+  paste("publication[].$last.publicationHistory", "$i.c")
+  replace_all("$i.c", "\\[|\\]|ca. |c ", "")
+  if any_match("$i.c",".*?(\\d{4}).*")  
+    paste("publication[].$last.startDate", "$i.c")
+  end
+  if any_match("$i.c",".*-(\\d{4})$")  
+    paste("publication[].$last.endDate", "$i.c")
+  end
+  # TODO is there a way to distinguish PublicationEvent and SecondaryPublicationEvent? 
+  set_array("publication[].$last.type[]","PublicationEvent")
+  set_array("publication[].$last.location[]")
+  copy_field("$i.a", "publication[].$last.location[].$append")
+  set_array("publication[].$last.publishedBy[]")
+  copy_field("$i.b", "publication[].$last.publishedBy[].$append")
+end
+
+replace_all("publication[].*.startDate", ".*?(\\d{4}).*", "$1")
+replace_all("publication[].*.endDate", ".*-(\\d{4})$", "$1")
+
+replace_all("publication[].*.location[].*", "^\\[|\\]$", "")
+
+replace_all("publication[].*.publishedBy[].*", "^[©]|\\s?[,.:;/=]?$", "")
