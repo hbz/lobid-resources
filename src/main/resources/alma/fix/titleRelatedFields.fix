@@ -112,12 +112,18 @@ set_array("publication[]")
 do list(path:"260[ 23] |264[ 23][ 1]", "var":"$i")
   add_field("publication[].$append.test","")
   paste("publication[].$last.publicationHistory", "$i.c")
-  replace_all("$i.c", "\\[|\\]|ca. |c ", "")
-  if any_match("$i.c",".*?(\\d{4}).*")  
-    paste("publication[].$last.startDate", "$i.c")
-  end
-  if any_match("$i.c",".*-(\\d{4})$")  
-    paste("publication[].$last.endDate", "$i.c")
+  do list(path: "$i.c", "var":"$j")
+    replace_all("$j", "\\[|\\]|ca. |c ", "")
+    unless exists("publication[].$last.startDate") 
+      if any_match("$j",".*?(\\d{4}).*")  
+        paste("publication[].$last.startDate", "$j")
+      end
+    end
+    unless exists("publication[].$last.endDate")     
+      if any_match("$j",".*-(\\d{4})$")  
+        paste("publication[].$last.endDate", "$j")
+      end
+    end
   end
   # TODO is there a way to distinguish PublicationEvent and SecondaryPublicationEvent? 
   set_array("publication[].$last.type[]","PublicationEvent")
