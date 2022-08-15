@@ -194,21 +194,22 @@ public class AlmaMarcXmlFix2lobidJsonEs {
     etikettJson.setGenerateContext(true);
     JsonEncoder jsonEncoder = new JsonEncoder();
     StringReader sr = new StringReader();
-
-    try  {
-    sr.setReceiver(new XmlDecoder())//
-        .setReceiver(marcXmlHandler)//
-        .setReceiver(new Metafix(fixFileName, fixVariables))
-        .setReceiver(batchLogger)//
-        .setReceiver(jsonEncoder)//
-        .setReceiver(etikettJson)//
-        .setReceiver(new JsonToElasticsearchBulkMap(keyToGetMainId, "resource",
-            "ignored"))//
-        .setReceiver(getElasticsearchIndexer());
+    try {
+      Metafix metafix = new Metafix(fixFileName, fixVariables);
+      LOG.info("Setting strictness to EXPRESSION => metafix will not break if a field makes trouble but rather logs warning");
+      metafix.setStrictness(Metafix.Strictness.EXPRESSION);
+      sr.setReceiver(new XmlDecoder())//
+          .setReceiver(marcXmlHandler)//
+          .setReceiver(metafix)
+          .setReceiver(batchLogger)//
+          .setReceiver(jsonEncoder)//
+          .setReceiver(etikettJson)//
+          .setReceiver(new JsonToElasticsearchBulkMap(keyToGetMainId, "resource",
+              "ignored"))//
+          .setReceiver(getElasticsearchIndexer());
     } catch (Exception e) {
-        e.printStackTrace();
+      e.printStackTrace();
     }
-
     return sr;
   }
 
