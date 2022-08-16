@@ -263,6 +263,24 @@ do list(path:"0820 |08200", "var":"$i")
   copy_field("$i.2","subject[].$last.version")
 end
 
+# 084 - Other Classification Number (R) - Subfield: $a (R), $2 (NR)
+
+do list(path:"084??", "var":"$i")
+  do list(path:"$i.0", "var":"$j")
+    if any_contain("$j","https://nwbib.de/subjects")
+      copy_field("$j", "subject[].$append.id")
+      copy_field("$i.a", "subject[].$last.label")
+      if any_match("$j", "https://nwbib.de/subjects#N(.*)$")
+        copy_field("$j", "subject[].$last.notation")
+        replace_all("subject[].$last.notation","https://nwbib.de/subjects#N(.*)$","$1")           
+      end
+      set_array("subject[].$last.type[]","Concept")
+      add_field("subject[].$last.source.id","https://nwbib.de/subjects")
+      add_field("subject[].$last.source.label","Sachsystematik der Nordrhein-Westfälischen Bibliographie")      
+    end
+  end
+end
+
 # 
 #     <!-- local subjects 982 -->
 #     <entity name="" flushWith="982  " sameEntity="true" reset="true">
