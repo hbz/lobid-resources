@@ -1,5 +1,19 @@
 #  <!-- 0xx -->
 #
+
+# 024 - Other Standard Identifier (R) Subfield: $a (NR) $2 (NR)
+# urn
+
+set_array("urn[]")
+
+do list(path: "0247?", "var": "$i")
+  if any_equal("$i.2","urn")
+      copy_field("$i.a","urn[].$append")
+  end
+end
+
+replace_all("urn[].*","^(nbn:de:.*\\d)$","urn:$1")
+
 #  <data name="hbzId" source="035  .a">
 #    <regexp match="\(DE-605\)(.*)" format="${1}"/>
 #  </data>
@@ -548,7 +562,8 @@ do list(path: "8564?", "var":"$i")
   end
 end
 
-# TODO:
+# TODO: hasVersion is outcommented since it needs some remodelling 
+# See https://github.com/hbz/lobid-resources/issues/1242
 #  <!--
 #  <entity name="hasVersion[]" flushWith="record">
 #    <entity name="" flushWith="856??" sameEntity="true">
