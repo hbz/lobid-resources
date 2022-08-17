@@ -800,6 +800,14 @@ do list(path:"85640", "var":"$i")
 end
 
 
+# TODO: AlephMorph checked for ellinet in "078r1.a" but publisso is also stated in the Link URI is that enough?
+do list(path:"85640", "var":"$i")
+  if any_match("$i.u","^.*publisso.*") # can test x and x.*
+    add_field("inCollection[].$append.id", "http://repository.publisso.de")
+    add_field("inCollection[].$last.label", "Fachrepositorium Lebenswissenschaften")
+  end
+end
+
 
 #    <!-- nwbib -->
 #    <entity name="" sameEntity="true" reset="true">
