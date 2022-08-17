@@ -448,6 +448,23 @@ end
 
 
 #  <!-- 7xx -->
+
+
+# 770 - Supplement/Special Issue Entry (R) - Subflied: $i (R), $t (NR), $w (R)
+
+set_array("supplement[]")
+
+do list(path:"77008", "var":"$i")
+  if any_match("$i.i", "Beil.*|Supp.*")
+    add_field("supplement[].$append.test","")
+    copy_field("$i.t","supplement[].$last.label")
+    copy_field("$i.w","supplement[].$last.id") 
+  end
+end
+
+replace_all("supplement[].*.id","^\\(DE-605\\)(.*)$","http://lobid.org/resources/$1#!")
+replace_all("supplement[].*.id","^\\(DE-600\\)(.*)$","http://ld.zdb-services.de/resource/$1#!")
+
 #  <entity name="isPartOf[]" flushWith="record">
 set_array("isPartOf[]")
 #    <entity name="" sameEntity="true" reset="true" flushWith="773??|490??">
