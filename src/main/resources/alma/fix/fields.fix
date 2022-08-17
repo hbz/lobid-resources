@@ -584,6 +584,39 @@ do list(path: "8564?", "var":"$i")
   end
 end
 
+set_array("fulltextOnline[]")
+
+do list(path: "8564?", "var":"$i")
+  unless exists("$i.M")
+    if all_equal("$i.z", "kostenfrei") # kostenfrei, added Digitalisierung not only Verlag or Agentur as filter
+      if all_match("$i.x", "Verlag|Agentur|Digitalisierung")
+        copy_field("$i.x", "fulltextOnline[].$append.label")
+        copy_field("$i.u", "fulltextOnline[].$last.id")
+      end
+    end
+    if all_match("$i.3", "^[vV][oO][lL].*") # Volltext
+      copy_field("$i.3", "fulltextOnline[].$append.label")
+      copy_field("$i.u", "fulltextOnline[].$last.id")
+    end
+    if all_match("$i.u", "^http:\\/\\/dx.doi.org\\/.*") # Volltext
+      copy_field("$i.u", "fulltextOnline[].$append.id")
+      add_field("fulltextOnline[].$last.label", "DOI-Link")
+    end
+    if all_match("$i.u", "^http:\\/\\/nbn-resolving.de\\/urn.*") # Volltext
+      copy_field("$i.u", "fulltextOnline[].$append.id")
+      add_field("fulltextOnline[].$last.label", "URN-Link")
+    end
+  end
+end
+
+# "fulltextOnline[]" needs to add:
+#		<combine name="@fulltextOnlineUri" value="${a}" sameEntity="true">
+#			<data source="655[-eu][ -1].[x3]">
+#				<regexp match="Archivierte Online|EZB|Online-Ausg|Resolving-System|Volltext"/>
+#			</data>
+#			<data source="@linkUri" name="a"/>
+#		</combine>
+
 # TODO: hasVersion is outcommented since it needs some remodelling 
 # See https://github.com/hbz/lobid-resources/issues/1242
 #  <!--
