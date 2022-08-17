@@ -566,9 +566,20 @@ set_array("description[]")
 
 do list(path: "8564?", "var":"$i")
   unless exists("$i.M")
-    if all_match("$i.3", "^[Ii][Nn][Hh][aA][lL][tT][sS][tT].*") # Zusätzliche Angaben
+    if all_match("$i.3", "^[Ii][Nn][Hh][aA][lL][tT][sS][tT].*") # Inhaltstext
       copy_field("$i.3", "description[].$append.label")
       copy_field("$i.u", "description[].$last.id")
+    end
+  end
+end
+
+set_array("seeAlso[]")
+
+do list(path: "8564?", "var":"$i")
+  unless exists("$i.M")
+    if all_match("$i.3", "^[zZ][uU][sS].*") # Zusätzliche Angaben
+      copy_field("$i.3", "seeAlso[].$append.label")
+      copy_field("$i.u", "seeAlso[].$last.id")
     end
   end
 end
