@@ -555,9 +555,20 @@ set_array("tableOfContents[]")
 
 do list(path: "8564?", "var":"$i")
   unless exists("$i.M")
-    if all_match("$i.3", "^[Ii][Nn][Hh][aA][lL][tT][sS][vV].*")
+    if all_match("$i.3", "^[Ii][Nn][Hh][aA][lL][tT][sS][vV].*") # Inhaltsverzeichnis
       copy_field("$i.3", "tableOfContents[].$append.label")
       copy_field("$i.u", "tableOfContents[].$last.id")
+    end
+  end
+end
+
+set_array("description[]")
+
+do list(path: "8564?", "var":"$i")
+  unless exists("$i.M")
+    if all_match("$i.3", "^[Ii][Nn][Hh][aA][lL][tT][sS][tT].*") # Zusätzliche Angaben
+      copy_field("$i.3", "description[].$append.label")
+      copy_field("$i.u", "description[].$last.id")
     end
   end
 end
