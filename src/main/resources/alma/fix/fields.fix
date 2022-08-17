@@ -792,6 +792,14 @@ do list(path:"85640", "var":"$i")
 end
 
 
+do list(path:"85640", "var":"$i")
+  if any_match("$i.u","^.*edoweb.*") # can test x and x.*
+    add_field("inCollection[].$append.id", "http://lobid.org/resources/HT016925914#!")
+    add_field("inCollection[].$last.label", "Edoweb Rheinland-Pfalz")
+  end
+end
+
+
 
 #    <!-- nwbib -->
 #    <entity name="" sameEntity="true" reset="true">
