@@ -424,3 +424,40 @@ copy_field("GGN  .a","subjectAltLabel[].$append")
 uniq("subjectAltLabel[]")
 
 # TODO: any way to add the labels to the matching subject ?
+
+# nwbib
+
+#  <datafield tag="084" ind1=" " ind2=" ">
+#    <subfield code="a">Westfalen</subfield>
+#    <subfield code="0">https://nwbib.de/spatial#N04</subfield>
+#    <subfield code="2">nwbib</subfield>
+#  </datafield>
+#  <datafield tag="084" ind1=" " ind2=" ">
+#    <subfield code="a">M&#252;nster</subfield>
+#    <subfield code="0">https://nwbib.de/spatial#Q2742</subfield>
+#    <subfield code="2">nwbib</subfield>
+#  </datafield>
+#  <datafield tag="084" ind1=" " ind2=" ">
+#    <subfield code="a">Denkmalpflege. Denkmalschutz</subfield>
+#    <subfield code="0">https://nwbib.de/subjects#N844200</subfield>
+#    <subfield code="2">nwbib</subfield>
+#  </datafield>
+
+set_array("spatial[]")
+
+do list(path:"084??", "var":"$i")
+  do list(path:"$i.0", "var":"$j")
+    if any_contain("$j","https://nwbib.de/spatial#")
+      copy_field("$j", "spatial[].$append.id")
+      copy_field("$i.a", "spatial[].$last.label")
+      if any_match("$j", "https://nwbib.de/spatial#N(.*)$")
+        copy_field("$j", "spatial[].$last.notation")              
+      end
+      set_array("spatial[].$last.type[]","Concept")
+      add_field("spatial[].$last.source.id","https://nwbib.de/spatial")
+      add_field("spatial[].$last.source.label","Raumsystematik der Nordrhein-Westfälischen Bibliographie")      
+    end
+  end
+end
+
+replace_all("spatial[].*.notation","https://nwbib.de/spatial#N(.*)$","$1")
