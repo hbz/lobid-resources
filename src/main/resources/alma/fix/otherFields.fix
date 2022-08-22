@@ -1,0 +1,244 @@
+#  <!-- 0xx -->
+#
+
+
+#
+#  <data name="@language_source_all" source="008">
+#    <substring start="35" end="38" />
+#  </data>
+#  <data name="@language_source_all" source="041[ 01] .[adj]" />
+# TODO: Needs to be explained why this is double. Can only one of the elements be used?
+
+
+# 008 - Fixed-Length Data Elements-General Information (NR) - No subfields
+
+set_array("@language")
+copy_field("008", "@008-lang")
+substring("@008-lang", "35", "38")
+copy_field("008-lang", "@language.$append")
+copy_field("041[ 01] .[adj]", "@language.$append")
+#  <data name="@language_source" source="@language_source_all">
+#    <unique />
+#  </data>
+uniq("@language")
+#  <data name="@language_long" source="@language_source">
+#    <lookup in="ISO639-2-to-GND" />
+#  </data>
+#  <entity name="language[]" flushWith="record">
+set_array("language[]")
+do list(path:"@language", "var":"$i")
+  copy_field("$i", "language[].$append.id")
+  copy_field("$i", "language[].$last.label")
+end
+
+lookup("language[].*.label","ISO639-2-to-GND")
+prepend("language[].*.id", "http://id.loc.gov/vocabulary/iso639-2/")
+
+
+#    <entity name="" flushWith="@language_source" reset="true">
+#      <data name="id" source="@language_source">
+#        <regexp match="(.*)" format="http://id.loc.gov/vocabulary/iso639-2/${1}"/>
+#      </data>
+#      <data name="label" source="@language_long" />
+#    </entity>
+#  </entity>
+
+# TODO: Is this needed?
+
+#
+#  <!-- 3xx -->
+#
+# 300 - Physical Description (R)
+# Old Morph MAB-> Extent was less complex: 		<data source="433[-abc][-1].[aq]|653-1.a" name="http://id.loc.gov/ontologies/bibframe/extent"/>
+# TODO: Figure out if we need the extent info as complex as the introx info.
+
+#  <data name="@300a1" source="300  .a">
+#    <occurrence only="1" />
+#    <replace pattern="\s?[:;+\(]?$" with="" />
+#  </data>
+#  <data name="@300a2" source="300  .a">
+#    <occurrence only="2" />
+#    <replace pattern="\s?[:;+\)]?$" with="" />
+#  </data>
+#  <data name="@300b" source="300  .b">
+#    <replace pattern="\s?[:;+\(]?$" with="" />
+#  </data>
+#  <data name="@300c1" source="300  .c">
+#    <occurrence only="1" />
+#    <replace pattern="\.?\s?[+\(]?$" with="" />
+#  </data>
+#  <data name="@300c2" source="300  .c">
+#    <occurrence only="2" />
+#    <replace pattern="\.?\s?[:;+\)]?$" with="" />
+#  </data>
+#  <data name="@300e" source="300  .e">
+#    <replace pattern="\.?\s?\(?$" with="" />
+#  </data>
+#
+#  <combine name="@300a2_punct" value="${a2})">
+#    <if>
+#      <all>
+#        <data source="@300a2" />
+#        <none>
+#          <data source="@300c2" />
+#        </none>
+#      </all>
+#    </if>
+#    <data name="a2" source="@300a2" />
+#  </combine>
+#  <combine name="@300a2_punct" value="${a2} ; ">
+#    <if>
+#      <all>
+#        <data source="@300a2" />
+#        <data source="@300c2" />
+#      </all>
+#    </if>
+#    <data name="a2" source="@300a2" />
+#  </combine>
+#  <combine name="@300b_punct" value=" : ${b}">
+#    <if>
+#      <all>
+#        <data source="@300b" />
+#        <data source="@300a1" />
+#      </all>
+#    </if>
+#    <data name="b" source="@300b" />
+#  </combine>
+#  <combine name="@300c1_punct" value=" ; ${c1}">
+#    <if>
+#      <all>
+#        <data source="@300c1" />
+#        <data source="@300a1|@300b" />
+#      </all>
+#    </if>
+#    <data name="c1" source="@300c1" />
+#  </combine>
+#  <combine name="@300c2_punct" value="${c2})">
+#    <data name="c2" source="@300c2" />
+#  </combine>
+#  <combine name="@300e_punct" value=" ; ${e}">
+#    <if>
+#      <all>
+#        <data source="300  .e" />
+#        <data source="@300[ac]1|@300b" />
+#        <none>
+#          <data source="@300[ac]2" />
+#        </none>
+#      </all>
+#    </if>
+#    <data name="e" source="@300e" />
+#  </combine>
+#  <combine name="@300e_punct" value=" ; ${e} (">
+#    <if>
+#      <all>
+#        <data source="300  .e" />
+#        <data source="@300[ac]1|@300b" />
+#        <data source="@300[ac]2" />
+#      </all>
+#    </if>
+#    <data name="e" source="@300e" />
+#  </combine>
+#
+#  <combine name="extent" value="${a1}${b}${c1}${e}${a2}${c2}">
+#    <choose name="a1">
+#      <data source="@300a1" />
+#      <data source="300*">
+#        <constant value="" />
+#      </data>
+#    </choose>
+#    <choose name="b">
+#      <data source="@300b_punct" />
+#      <data source="@300b" />
+#      <data source="300*">
+#        <constant value="" />
+#      </data>
+#    </choose>
+#    <choose name="c1">
+#      <data source="@300c1_punct" />
+#      <data source="@300c1" />
+#      <data source="300*">
+#        <constant value="" />
+#      </data>
+#    </choose>
+#    <choose name="e">
+#      <data source="@300e_punct" />
+#      <data source="@300e" />
+#      <data source="300*">
+#        <constant value="" />
+#      </data>
+#    </choose>
+#    <choose name="a2">
+#      <data source="@300a2_punct" />
+#      <data source="300*">
+#        <constant value="" />
+#      </data>
+#    </choose>
+#    <choose name="c2">
+#      <data source="@300c2_punct" />
+#      <data source="300*">
+#        <constant value="" />
+#      </data>
+#    </choose>
+#  </combine>
+#
+
+# TODO: This seems to be a relict of Introx.
+#  <!--  TODO: this used to be mapped as "publicationHistory". Check how to handle
+#
+#  <entity name="ChronologyAndEnumeration">
+#    <concat name="value" delimiter=" ; ">
+#      <data source="3620 .a" />
+#    </concat>
+#  </entity>
+#  -->
+#
+#  <!-- 4xx -->
+#
+#  <!-- 5xx -->
+#  <entity name="note[]" flushWith="record">
+#    <data name="" source="500  .a">
+#      <unique />
+#    </data>
+#  </entity>
+
+# 500 - General Note (R) Subfield: $a (NR)
+set_array("note[]")
+do list(path:"500  ", "var": "$i")
+  copy_field("$i.a", "note[].$append")
+end
+uniq("note[]")
+
+#
+#  <entity name="abstract[]" flushWith="record">
+#    <data name="" source="520[ 13] .[ab]" />
+#  </entity>
+
+# 520 - Summary, Etc. (R) Subfield: $a (NR), $b (NR)
+# TODO: Check if 1. Indicator 1 (REVIEW) is really to count as abstract. Perhaps 2 (Scope and content) is a better fit.
+# TODO: Get testdata. 
+set_array("abstract[]")
+do list(path:"520[ 13] ", "var": "$i")
+  copy_field("$i.[ab]", "abstract[].$append")
+end
+
+
+#
+#  <entity name="thesisInformation[]" flushWith="record">
+#    <data name="" source="502??.a" />
+#  </entity>
+
+# 502 - Dissertation Note (R) Subfield: $a (R)
+# TODO: Get testdata. 
+set_array("thesisInformation[]")
+do list(path:"502  ", "var": "$i")
+  copy_field("$i.a", "thesisInformation[].$append")
+end
+
+
+
+#  <!-- 6xx -->
+
+
+#  <!-- 7xx -->
+
+

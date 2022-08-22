@@ -1,0 +1,169 @@
+#    <data name="@almaMmsId" source="001"/>
+#    <data name="almaMmsId" source="@almaMmsId"/>
+
+copy_field("001","almaMmsId")
+
+#    <data name="id" source="@almaMmsId">
+#      <regexp match="(.*)" format="http://lobid.org/resources/${1}#!"/>
+#    </data>
+#  </rules>
+
+paste("id", "~http://lobid.org/resources/", "001", "~#!", join_char: "")
+
+#    <data name="\@context" source="@almaMmsId">
+#      <constant value="https://lobid.org/resources/context.jsonld"/>
+#    </data>
+
+
+# 024 - Other Standard Identifier (R) Subfield: $a (NR) $2 (NR)
+# urn
+
+set_array("urn[]")
+
+do list(path: "0247?", "var": "$i")
+  if any_equal("$i.2","urn")
+      copy_field("$i.a","urn[].$append")
+  end
+end
+
+replace_all("urn[].*","^(nbn:de:.*\\d)$","urn:$1")
+
+#  <data name="hbzId" source="035  .a">
+#    <regexp match="\(DE-605\)(.*)" format="${1}"/>
+#  </data>
+
+# 035 - System Control Number (R) - Subfield: $a (NR)
+
+do list(path: "035  ", "var":"$i")
+  if any_match("$i.a", "\\(DE-605\\)\\D\\D(.*)")
+    copy_field("$i.a", "hbzId")
+  end
+end
+
+replace_all("hbzId","\\(DE-605\\)(.*)","$1")
+
+#
+#  <data source="020  .a" name="@cleanIsbn">
+#    <isbn to="clean"/>
+#    <unique />
+#  </data>
+
+# 020 - International Standard Book Number (R) - $a (NR)
+# source data sometimes provides repeated subfield $a even if this is not valid marc
+
+set_array("@isbn[]")
+set_array("isbn[]")
+
+do list(path:"020  ", "var": "$i")
+  do list(path:"$i.a", "var": "$j")
+    copy_field("$j","@isbn[].$append")
+  end
+end
+
+do list(path:"@isbn[]", "var": "$i")
+  isbn("$i", to: "clean")
+  copy_field("$i", "isbn[].$append")
+  copy_field("$i", "isbn[].$append")
+  if any_match("$i", ".{13}")
+    isbn("isbn[].$last", to:"isbn10")
+  elsif any_match("$i", ".{10}")
+    isbn("isbn[].$last", to:"isbn13")
+  end
+end
+
+uniq("isbn[]")
+
+
+# TODO: ISBN needs to be done if there is a supporting function in fix.
+#  <entity name="isbn[]" flushWith="record">
+#    <data name="" source="@cleanIsbn">
+#      <isbn to="isbn10"/>
+#      <unique />
+#    </data>
+#    <data name="" source="@cleanIsbn">
+#      <isbn to="isbn13"/>
+#      <unique />
+#    </data>
+#  </entity>
+#
+
+
+#  <entity name="issn[]" flushWith="record">
+#    <data name="" source="022? .a">
+#      <replace pattern="-" with="" />
+#    </data>
+#  </entity>
+
+# 022 - International Standard Serial Number (R) - Subfield $a (NR)
+set_array("issn[]")
+do list(path:"022? ", "var":"$i")
+  copy_field("$i.a", "issn[].$append")
+end
+replace_all("issn[].*", "-","")
+
+#
+#  <entity name="ismn[]" flushWith="record">
+#    <data name="" source="0242?.a">
+#      <replace pattern="-" with="" />
+#    </data>
+#  </entity>
+
+# 024 - Other Standard Identifier (R) - Subfield a (NR) 1. Indicator 2 = ISMN 
+set_array("ismn[]")
+do list(path:"0242?", "var":"$i")
+  copy_field("$i.a", "ismn[].$append")
+end
+replace_all("ismn[].*", "-","")
+
+
+#
+#  <entity name="doi[]" flushWith="record">
+#    <if>
+#      <data source="0247?.2">
+#        <equals string="doi" />
+#      </data>
+#    </if>
+#    <data name="" source="0247?.a" />
+#  </entity>
+
+# TODO: Specify if DOI should be URI?
+# 024 (R) Subfield a (NR) 1. Indicator 7 = to defined Identifier 
+set_array("doi[]")
+do list(path:"0247?", "var":"$i")
+  if all_equal("$i.2","doi")
+    copy_field("$i.a", "doi[].$append")
+  end
+end
+
+#
+#  <data name="@oclcNumber" source="035  .a">
+#    <regexp match="\(OCoLC\)(.*)" format="${1}"/>
+#  </data>
+#
+#  <data name="oclcNumber" source="@oclcNumber" />
+
+# 035 - System Control Number (R) - Subfield: $a (NR)
+set_array("oclcNumber[]")
+
+do list(path:"035  ", "var":"$i")
+    if all_match("$i.a", "\\(OCoLC\\)(.*)")
+      copy_field("$i.a", "oclcNumber[].$append")
+    end
+end
+replace_all("oclcNumber[].*", "\\(OCoLC\\)","")
+
+#
+#  <data name="@zdbId" source="035  .a">
+#    <regexp match="\(DE-600\)(.*)" format="${1}"/>
+#  </data>
+#
+#  <data name="zdbId" source="@zdbId" />
+
+# 035 - System Control Number (R) - Subfield: $a (NR)
+do list(path:"035  ", "var":"$i")
+  if all_match("$i.a", "\\(DE-600\\)(.*)")
+    copy_field("$i.a", "zdbId")
+  end
+end
+replace_all("zdbId", "\\(DE-600\\)","")
+
