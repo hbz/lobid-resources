@@ -764,6 +764,18 @@ if exists("zdbId")
   add_field("inCollection[].$last.label", "Zeitschriftendatenbank (ZDB)")
 end
 
+# rpb
+# Checks rpb subjects are provided.
+
+do list(path:"084??", "var":"$i")
+  do once()
+    if any_equal("$i.2","rpb")
+      add_field("inCollection[].$append.id", "http://lobid.org/resources/HT013494180#!")
+      add_field("inCollection[].$last.label", "Rheinland-Pfälzische Bibliographie")
+    end
+  end
+end
+
 
 #    <!-- EZB -->
 #    <entity name="" sameEntity="true" reset="true">
@@ -791,6 +803,22 @@ do list(path:"85640", "var":"$i")
   end
 end
 
+
+do list(path:"85640", "var":"$i")
+  if any_match("$i.u","^.*edoweb.*") # can test x and x.*
+    add_field("inCollection[].$append.id", "http://lobid.org/resources/HT016925914#!")
+    add_field("inCollection[].$last.label", "Edoweb Rheinland-Pfalz")
+  end
+end
+
+
+# TODO: AlephMorph checked for ellinet in "078r1.a" but publisso is also stated in the Link URI is that enough?
+do list(path:"85640", "var":"$i")
+  if any_match("$i.u","^.*publisso.*") # can test x and x.*
+    add_field("inCollection[].$append.id", "http://repository.publisso.de")
+    add_field("inCollection[].$last.label", "Fachrepositorium Lebenswissenschaften")
+  end
+end
 
 
 #    <!-- nwbib -->
