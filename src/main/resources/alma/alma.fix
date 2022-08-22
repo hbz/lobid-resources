@@ -1,29 +1,18 @@
-include ("./fix/maps.fix")
-
-#    <data name="@almaMmsId" source="001"/>
-#    <data name="almaMmsId" source="@almaMmsId"/>
-
-copy_field("001","almaMmsId")
-
-#    <data name="id" source="@almaMmsId">
-#      <regexp match="(.*)" format="http://lobid.org/resources/${1}#!"/>
-#    </data>
-#  </rules>
-
-paste("id", "~http://lobid.org/resources/", "001", "~#!", join_char: "")
-
-#    <data name="\@context" source="@almaMmsId">
-#      <constant value="https://lobid.org/resources/context.jsonld"/>
-#    </data>
 
 add_field("@context","http://lobid.org/resources/context.jsonld")
 
+# Add maps 
+include ("./fix/maps.fix")
+include ("./fix/identifiers.fix")
 include ("./fix/titleRelatedFields.fix")
 include ("./fix/describedBy.fix")
-include ("./fix/fields.fix")
+# identifiers.fix is needed ahead of relatedRessourcesAndLinks.fix because of dependencies
+include ("./fix/relatedRessourcesAndLinks.fix")
+include ("./fix/otherFields.fix")
 include ("./fix/subjects.fix")
 include ("./fix/item.fix")
 include ("./fix/mediumAndType.fix")
+# mediumAndType.fix is needed ahead of contribution.fix because of dependencies
 include ("./fix/contribution.fix")
 
 
