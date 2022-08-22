@@ -110,25 +110,29 @@ end
 
 do list(path:"700[01] ", "var":"$i")
   unless exists("$i.M")
-    unless exists("$i.4")
-      add_field("$i.4","ctb")
-    end
-    do list(path: "$i.4", "var":"$j")
-      set_hash("contribution[].$append.agent")
-      do list(path:"$i.0","var":"$k")
-        if all_match("$k", "^\\(DE-588\\).*$")
-      # GND identifier    
-          paste("contribution[].$last.agent.gndIdentifier","$k")
-      # GND Identifier id
-          paste("contribution[].$last.agent.id","$k")
-        end
+    # in some cases (e.g. 99370763882706441) we have an invalid repeated subfield $a 
+    # since in the invalid record one cannot untangle the info easily (creates dublicate info and no roles) the fix scipts if the subfield $a is an array. 
+    unless exists("$i.a.1") 
+      unless exists("$i.4")
+        add_field("$i.4","ctb")
       end
-      # name  
-      copy_field("$i.a","contribution[].$last.agent.label")
-      # type
-      set_array("contribution[].$last.agent.type[]","Person")
-      # role
-      copy_field("$j","contribution[].$last.role.id")
+      do list(path: "$i.4", "var":"$j")
+        set_hash("contribution[].$append.agent")
+        do list(path:"$i.0","var":"$k")
+          if all_match("$k", "^\\(DE-588\\).*$")
+        # GND identifier    
+            paste("contribution[].$last.agent.gndIdentifier","$k")
+        # GND Identifier id
+            paste("contribution[].$last.agent.id","$k")
+          end
+        end
+        # name  
+        copy_field("$i.a","contribution[].$last.agent.label")
+        # type
+        set_array("contribution[].$last.agent.type[]","Person")
+        # role
+        copy_field("$j","contribution[].$last.role.id")
+      end
     end
   end
 end
