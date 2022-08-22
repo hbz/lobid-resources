@@ -237,6 +237,27 @@ end
 #			<data source="@linkUri" name="a"/>
 #		</combine>
 
+# primaryForm
+
+# 776 - Additional Physical Form Entry (R) - $i (R), $w (R)
+
+# TODO: is this not duplicate info with "related"?
+
+set_array("primaryForm[]")
+
+do list(path: "77608", "var":"$i")
+  if any_match ("$i.i", ".*eproduktion von.*")
+    add_field("primaryForm[].$append.test","")
+    if all_match("$i.w", "\\(DE-605\\)(.*)")
+      copy_field("$i.w", "primaryForm[].$last.id")
+      replace_all("primaryForm[].$last.id", "^\\(DE-605\\)(.*)$", "http://lobid.org/resources/$1#!")
+    end
+    copy_field("$i.w", "primaryForm[].$last.id")
+    paste("primaryForm[].$last.label", "$i.i", "$i.w")
+    replace_all("primaryForm[].$last.label", "\\(DE-605\\)", "")
+  end
+end
+
 # TODO: hasVersion is outcommented since it needs some remodelling 
 # See https://github.com/hbz/lobid-resources/issues/1242
 #  <!--
