@@ -61,7 +61,7 @@ do list(path:"77008", "var":"$i")
   if any_match("$i.i", "Beil.*|Supp.*")
     add_field("supplement[].$append.test","")
     copy_field("$i.t","supplement[].$last.label")
-    copy_field("$i.w","supplement[].$last.id") 
+    copy_field("$i.w","supplement[].$last.id")
   end
 end
 
@@ -149,6 +149,25 @@ do list(path: "830??", "var": "$i")
   end
 end
 
+# containedIn
+# TODO: What is the difference between containedIn and isPartOf?
+
+set_array("containedIn[]")
+
+# 773 - Host Item Entry (R)  - $w  (R)
+
+do list(path:"77308", "var":"$i")
+  do list(path:"$i.w", "var":"$j")
+    if any_match("$j","^\\(DE-(600|605)\\).*") # TODO: Some ressources have ALMA MMS IDs as relation idetifier e.g.: 991000688209706449 has $w 991021220959706449. How to deal with these?
+      copy_field("$j","containedIn[].$append.id")
+    end
+  end
+end
+
+
+replace_all("containedIn[].*.id", "^\\(DE-605\\)(.*)$", "http://lobid.org/resources/$1#!")
+replace_all("containedIn[].*.id", "^\\(DE-600\\)(.*)$", "http://ld.zdb-services.de/resource/$1")
+
 #
 #  <!-- 8xx -->
 #  <entity name="tableOfContents[]" flushWith="record">
@@ -168,7 +187,7 @@ end
 #    </entity>
 #  </entity>
 
-# 856 - Electronic Location and Access (R) - Subfield: $u (R) $3 (NR) 
+# 856 - Electronic Location and Access (R) - Subfield: $u (R) $3 (NR)
 # 1. Indicator: 4 = HTTP
 
 set_array("tableOfContents[]")
@@ -237,7 +256,7 @@ end
 #			<data source="@linkUri" name="a"/>
 #		</combine>
 
-# TODO: hasVersion is outcommented since it needs some remodelling 
+# TODO: hasVersion is outcommented since it needs some remodelling
 # See https://github.com/hbz/lobid-resources/issues/1242
 #  <!--
 #  <entity name="hasVersion[]" flushWith="record">
@@ -321,7 +340,7 @@ do list(path:"775??|776??", "var":"$i")
     end
     paste("related[].$last.note","$i.i", "$i.n")
     copy_field("$i.t", "related[].$last.label")
-    copy_field("$i.x", "related[].$last.issn")    
+    copy_field("$i.x", "related[].$last.issn")
     copy_field("$i.z", "$i.ISBN13")
     isbn("$i.isbn13", to: "clean")
     if any_match("$i.isbn13", ".{13}")
