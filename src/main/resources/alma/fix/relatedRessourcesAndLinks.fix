@@ -586,4 +586,23 @@ end
 
 set_array("inCollection[].*.type[]","Collection")
 
+set_array("similar[]")
+
+do list(path:"doi[]", "var":"$i")
+  copy_field("$i", "similar[].$append.id")
+  replace_all("similar[].$last.id", "^(.*)$","http://dx.doi.org/$1")
+end
+
+do list(path:"urn[]", "var":"$i")
+  copy_field("$i", "similar[].$append.id")
+  replace_all("similar[].$last.id", "^(.*)$","http://nbn-resolving.de/$1")
+end
+
+# TODO: is this needed too?
+# <entity name="http://umbel.org/umbel#isLike">
+# 		  <data source="776-1.z" name="$[ns-bibo]isbn" >
+# 		    <isbn to="clean"/>
+# 		  </data>
+# 		  <data source="776-1.i" name="http://id.loc.gov/ontologies/bibframe/note" />
+# 	  </entity>
 
