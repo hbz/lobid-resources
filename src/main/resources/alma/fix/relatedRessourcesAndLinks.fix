@@ -606,3 +606,39 @@ end
 # 		  <data source="776-1.i" name="http://id.loc.gov/ontologies/bibframe/note" />
 # 	  </entity>
 
+# predecessor
+
+# 780 - Preceding Entry (R) - Subfield: $t (NR), $w (R)
+
+set_array("predecessor[]")
+
+do list(path:"780??", "var":"$i")
+  add_field("predecessor[].$append.test","")
+  copy_field("$i.t", "predecessor[].$last.label")
+  do list(path:"$i.w", "var":"$j")
+    if all_match("$j", "\\(DE-605\\)(.*)")
+      copy_field("$j", "predecessor[].$last.id")
+      replace_all("predecessor[].$last.id", "^\\(DE-605\\)(.*)$", "http://lobid.org/resources/$1#!")
+    end
+  end
+end
+
+replace_all("predecessor[].*.label","Vorg. ---> ","")
+
+# succesor
+
+# 785 - Succeeding Entry (R) - Subfield: $t (NR), $w (R)
+
+set_array("succesor[]")
+
+do list(path:"785??", "var":"$i")
+  add_field("succesor[].$append.test","")
+  copy_field("$i.t", "succesor[].$last.label")
+  do list(path:"$i.w", "var":"$j")
+    if all_match("$j", "\\(DE-605\\)(.*)")
+      copy_field("$j", "succesor[].$last.id")
+      replace_all("succesor[].$last.id", "^\\(DE-605\\)(.*)$", "http://lobid.org/resources/$1#!")
+    end
+  end
+end
+
