@@ -215,7 +215,7 @@ uniq("note[]")
 
 # 520 - Summary, Etc. (R) Subfield: $a (NR), $b (NR)
 # TODO: Check if 1. Indicator 1 (REVIEW) is really to count as abstract. Perhaps 2 (Scope and content) is a better fit.
-# TODO: Get testdata. 
+# TODO: Get testdata.
 set_array("abstract[]")
 do list(path:"520[ 13] ", "var": "$i")
   copy_field("$i.[ab]", "abstract[].$append")
@@ -228,7 +228,7 @@ end
 #  </entity>
 
 # 502 - Dissertation Note (R) Subfield: $a (R)
-# TODO: Get testdata. 
+# TODO: Get testdata.
 set_array("thesisInformation[]")
 do list(path:"502  ", "var": "$i")
   copy_field("$i.a", "thesisInformation[].$append")
@@ -236,9 +236,36 @@ end
 
 
 
-#  <!-- 6xx -->
+#		<concat delimiter="; " name="http://purl.org/dc/terms/bibliographicCitation">
+#			<data source="59[0123568][-abcd][-12].a">
+#				<replace pattern="&gt;&gt;" with=""/>
+#				<replace pattern="&lt;&lt;" with=""/>
+#				<replace pattern="^http" with="Siehe: http"/>
+#			</data>
+#		</concat>
+#		<data source="525[-a][-1].a" name="http://purl.org/dc/terms/bibliographicCitation">
+#			<replace pattern="&gt;&gt;" with=""/>
+#			<replace pattern="&lt;&lt;" with=""/>
+#			<replace pattern="^http" with="Siehe: http"/>
+#		</data>
+
+# bibliographicCitation
+# TODO: This element seems to be not very informative due to the distributed and uncomplete information.
+# Also the element bibliographicCitation is confusing since it has a broader concept than the scope in lobid: only bibliographicInfo about issues/collection that an article belongs to.
+# Do we need a filter only for articles?
+
+set_array("bibliographicCitation")
 
 
-#  <!-- 7xx -->
+copy_field("77308.t","bibliographicCitation.$append")
+copy_field("77308.b","bibliographicCitation.$append")
+copy_field("77308.d","bibliographicCitation.$append")
+copy_field("77308.g","bibliographicCitation.$append")
+copy_field("77308.n","bibliographicCitation.$append")
+copy_field("77308.n","bibliographicCitation.$append")
+copy_field("501??.a","bibliographicCitation.$append")
 
+replace_all("bibliographicCitation.*","<<|>>","")
+replace_all("bibliographicCitation.*","^http","Siehe: http")
 
+join_field("bibliographicCitation", "; ")
