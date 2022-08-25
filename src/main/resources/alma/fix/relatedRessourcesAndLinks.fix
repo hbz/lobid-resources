@@ -61,12 +61,16 @@ do list(path:"77008", "var":"$i")
   if any_match("$i.i", "Beil.*|Supp.*")
     add_field("supplement[].$append.test","")
     copy_field("$i.t","supplement[].$last.label")
-    copy_field("$i.w","supplement[].$last.id") 
+    copy_field("$i.w","supplement[].$last.id")
   end
 end
 
 replace_all("supplement[].*.id","^\\(DE-605\\)(.*)$","http://lobid.org/resources/$1#!")
 replace_all("supplement[].*.id","^\\(DE-600\\)(.*)$","http://ld.zdb-services.de/resource/$1#!")
+
+# isPartOf
+# it describes the relation between a published ressource and its superordinate series or collection.
+# in contrast to containedIn it is a standalone publication
 
 #  <entity name="isPartOf[]" flushWith="record">
 set_array("isPartOf[]")
@@ -87,16 +91,19 @@ set_array("isPartOf[]")
 
 # 773 - Host Item Entry (R) Subfield: $w (NR), $t (NR), $q (NR)
 # TODO: Shouldnt type always be arrays
-do list(path: "773??", "var": "$i")
-  set_array("isPartOf[].$append.type[]", "IsPartOfRelation")
-  set_array("isPartOf[].$last.hasSuperordinate[]")
-  add_field("isPartOf[].$last.hasSuperordinate[].$append.test", "")
-  if all_match("$i.w", "\\(DE-605\\)(.*)")
-    copy_field("$i.w", "isPartOf[].$last.hasSuperordinate[].$append.id")
-    replace_all("isPartOf[].$last.hasSuperordinate[].$last.id", "^\\(DE-605\\)(.*)$", "http://lobid.org/resources/$1#!")
+
+unless any_match("leader", "^.{7}[ad].*")
+  do list(path: "773??", "var": "$i")
+    set_array("isPartOf[].$append.type[]", "IsPartOfRelation")
+    set_array("isPartOf[].$last.hasSuperordinate[]")
+    add_field("isPartOf[].$last.hasSuperordinate[].$append.test", "")
+    if all_match("$i.w", "\\(DE-605\\)(.*)")
+      copy_field("$i.w", "isPartOf[].$last.hasSuperordinate[].$append.id")
+      replace_all("isPartOf[].$last.hasSuperordinate[].$last.id", "^\\(DE-605\\)(.*)$", "http://lobid.org/resources/$1#!")
+    end
+    copy_field("$i.t", "isPartOf[].$last.hasSuperordinate[].$last.label")
+    copy_field("$i.q", "isPartOf[].$last.numbering")
   end
-  copy_field("$i.t", "isPartOf[].$last.hasSuperordinate[].$last.label")
-  copy_field("$i.q", "isPartOf[].$last.numbering")
 end
 
 # 490 - Series Statement (R) - Subfield: $a (R)
@@ -149,6 +156,26 @@ do list(path: "830??", "var": "$i")
   end
 end
 
+# containedIn
+# containedIn only states ressources that are not published by them self but as part of a host ressource.
+
+set_array("containedIn[]")
+
+# 773 - Host Item Entry (R)  - $w  (R)
+
+if any_match("leader", "^.{7}[ad].*")
+  do list(path:"77308", "var":"$i")
+    do list(path:"$i.w", "var":"$j")
+      if any_match("$j","^\\(DE-(600|605)\\).*") # TODO: Some ressources have ALMA MMS IDs as relation idetifier e.g.: 991000688209706449 has $w 991021220959706449. How to deal with these?
+        copy_field("$j","containedIn[].$append.id")
+      end
+    end
+  end
+end
+
+replace_all("containedIn[].*.id", "^\\(DE-605\\)(.*)$", "http://lobid.org/resources/$1#!")
+replace_all("containedIn[].*.id", "^\\(DE-600\\)(.*)$", "http://ld.zdb-services.de/resource/$1")
+
 #
 #  <!-- 8xx -->
 #  <entity name="tableOfContents[]" flushWith="record">
@@ -168,7 +195,7 @@ end
 #    </entity>
 #  </entity>
 
-# 856 - Electronic Location and Access (R) - Subfield: $u (R) $3 (NR) 
+# 856 - Electronic Location and Access (R) - Subfield: $u (R) $3 (NR)
 # 1. Indicator: 4 = HTTP
 
 set_array("tableOfContents[]")
@@ -237,7 +264,7 @@ end
 #			<data source="@linkUri" name="a"/>
 #		</combine>
 
-# TODO: hasVersion is outcommented since it needs some remodelling 
+# TODO: hasVersion is outcommented since it needs some remodelling
 # See https://github.com/hbz/lobid-resources/issues/1242
 #  <!--
 #  <entity name="hasVersion[]" flushWith="record">
@@ -321,7 +348,7 @@ do list(path:"775??|776??", "var":"$i")
     end
     paste("related[].$last.note","$i.i", "$i.n")
     copy_field("$i.t", "related[].$last.label")
-    copy_field("$i.x", "related[].$last.issn")    
+    copy_field("$i.x", "related[].$last.issn")
     copy_field("$i.z", "$i.ISBN13")
     isbn("$i.isbn13", to: "clean")
     if any_match("$i.isbn13", ".{13}")
