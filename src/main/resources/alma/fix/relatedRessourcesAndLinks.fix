@@ -61,7 +61,11 @@ do list(path:"77008", "var":"$i")
   if any_match("$i.i", "Beil.*|Supp.*")
     add_field("supplement[].$append.test","")
     copy_field("$i.t","supplement[].$last.label")
-    copy_field("$i.w","supplement[].$last.id")
+    do list(path:"$i.w","var": "$j")
+      if all_match("$j","^\\(DE-605\\)(.*)$|^\\(DE-600\\)(.*)$")
+        copy_field("$j","supplement[].$last.id")
+      end
+    end
   end
 end
 
