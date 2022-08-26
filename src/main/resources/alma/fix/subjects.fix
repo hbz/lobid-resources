@@ -1,21 +1,10 @@
 #   <!-- 655 Form/Genre keyword transformed as natureOfContent   -->
-#   <entity name="natureOfContent[]" flushWith="record">
+
 set_array("natureOfContent[]")
 
-#     <entity name="" flushWith="655 7" sameEntity="true" reset="true">
-#       <if>
-#         <data name="label" source="655??.a">
-#           <unique />
-#         </data>
-#       </if>
-#       <data name="label" source="655??.a" />
-#       <data name="id" source="655??.0">
-#         <regexp match="\(DE-588\)(.*)" format="http://d-nb.info/gnd/${1}"/>
-#       </data>
-#     </entity>
 
 # 655 - Index Term-Genre/Form (R),  Subfield: $a (NR), $0 (R)
-# Ind: 2. 7= Source specified in subfield $2. 
+# Ind: 2. 7= Source specified in subfield $2.
 
 do list(path:"655 7", "var":"$i")
  unless in("$i.a","natureOfContent[].*.label")
@@ -24,26 +13,11 @@ do list(path:"655 7", "var":"$i")
       # This is only DNB, should we also check for other uris for keywords?
       if any_match("$j","^\\(DE-588\\)(.*)$")
         copy_field("$j","natureOfContent[].$last.id")
-        replace_all("natureOfContent[].$last.id", "^\\(DE-588\\)(.*)$", "http://d-nb.info/gnd/$1")     
+        replace_all("natureOfContent[].$last.id", "^\\(DE-588\\)(.*)$", "http://d-nb.info/gnd/$1")
       end
     end
   end
 end
-
-
-#     <!-- 689 Formatschlagwort   -->
-#     <entity name="" flushWith="689??" sameEntity="true" reset="true">
-#       <if>
-#         <data source="689??.A">
-#           <equals string="f" />
-#         </data>
-#       </if>
-#       <!-- deduplicate, if the string exists already in 655 but is intended to morph 689 Formatschlagwort   -->
-#       <data name="label" source="689??.a|655??.a">
-#         <unique />
-#       </data>
-#     </entity>
-#   </entity>
 
 # 689 - not MARC standard element/DNB specific keywords (R), Subfields: $A (seems NR)
 
@@ -55,197 +29,51 @@ do list(path:"689??", "var":"$i")
   end
 end
 
-# 
-#   <entity name="subject[]" flushWith="record">
 set_array("subject[]")
 
-
-#     <!-- 610 CorporateBody -->
-#     <call-macro name="subjectConcept" field="610" />
-#  <macro name="subjectConcept">
-# 
-#     <!-- 650 Topical Term -->
-#     <call-macro name="subjectConcept" field="650" />
-#    <entity name="" flushWith="$[field]??" sameEntity="true" reset="true">
-#      <if>
-#        <any flushWith="$[field]??">
-#          <!-- Unique for subjects with ID   -->
-#          <data name="id" source="$[field]??.0">
-#            <unique/>
-#          </data>
-#          <!-- Unique for LCSH   -->
-#          <data source="$[field]?0.a" name="label">
-#            <unique/>
-#          </data>
-#          <!-- Unique for uncontrolled index terms   -->
-#          <data source="$[field]?4.a" name="label">
-#            <unique/>
-#          </data>
-#        </any>
-#      </if>
-#      <entity name="type[]" sameEntity="true" reset="true" flushWith="$[field]??">
-#        <data source="$[field]?[07].a">
-#          <constant value="Concept"/>
-#        </data>
-#        <data source="$[field]?4.a">
-#          <constant value="Keyword"/>
-#        </data>
-#      </entity>
-#      <entity name="source" sameEntity="true" reset="true" flushWith="$[field]??">
-#        <data source="$[field]?0.a" name="label">
-#          <constant value="Library of Congress Subject Headings"/>
-#        </data>
-#        <data source="$[field]?0.a" name="id">
-#          <constant value="https://id.loc.gov/authorities/subjects.html"/>
-#        </data>
-#        <data source="$[field]?4.a" name="label">
-#          <constant value="Freie Verschlagwortung"/>
-#        </data>
-#        <data source="$[field]?4.a" name="id">
-#          <constant value="https://www.wikidata.org/wiki/Q47524318"/>
-#        </data>
-#        <data name="id" source="$[field]??.0">
-#          <regexp match="\(DE-588\)(.*)" format="https://d-nb.info/gnd/7749153-1"/>
-#        </data>
-#        <data name="label" source="$[field]??.0">
-#          <regexp match="\(DE-588\)(.*)" format="Gemeinsame Normdatei (GND)"/>
-#        </data>
-#      </entity>
-#      <data name="id" source="$[field]??.0">
-#        <regexp match="\(DE-588\)(.*)" format="http://d-nb.info/gnd/${1}"/>
-#      </data>
-#      <data name="label" source="$[field]??.a" />
-#      <data name="gndIdentifier" source="$[field]??.0">
-#        <regexp match="\(DE-588\)(.*)" format="${1}"/>
-#      </data>
-#    </entity>
-#  </macro>
 
 # I change the approach from element oriented (all 630) to a subject/concept kind oriented approach (all LCSH, all GND, all keywords, etc.)
 
 # 610 - Subject Added Entry-Corporate Name (R), Subfield: $a (NR)
 # 650 - Subject Added Entry-Topical Term (R),  Subfield: $a (NR)
-# 653 - Index Term-Uncontrolled (R),  !!! Subfield: $a (R) !!!! 
+# 653 - Index Term-Uncontrolled (R),  !!! Subfield: $a (R) !!!!
 
 
 do list(path:"610?4|650?4|653??", "var":"$i")
       # TODO: Deduplicate values.
-      #          <data source="$[field]?4.a" name="label">
-      #            <unique/>
-      #          </data>
   set_array("subject[].$append.type[]","Keyword")
-  #      <entity name="source" sameEntity="true" reset="true" flushWith="$[field]??">
-  #        <data source="$[field]?4.a" name="label">
-#          <constant value="Freie Verschlagwortung"/>
-#        </data>
-#        <data source="$[field]?4.a" name="id">
-#          <constant value="https://www.wikidata.org/wiki/Q47524318"/>
-#        </data>
   add_field("subject[].$last.source.label","Freie Verschlagwortung")
   add_field("subject[].$last.source.id","https://www.wikidata.org/wiki/Q47524318")
-  #      <data name="label" source="$[field]??.a" />
   copy_field("$i.a","subject[].$last.label")
 end
 
 do list(path:"610?0|650?0", "var":"$i")
       # TODO: Deduplicate values.
-      #          <data source="$[field]?4.a" name="label">
-      #            <unique/>
-      #          </data>
   set_array("subject[].$append.type[]","Concept")
-#        <data source="$[field]?0.a" name="label">
-#          <constant value="Library of Congress Subject Headings"/>
-#        </data>
-#        <data source="$[field]?0.a" name="id">
-#          <constant value="https://id.loc.gov/authorities/subjects.html"/>
-#        </data>
   add_field("subject[].$last.source.label","Library of Congress Subject Headings")
   add_field("subject[].$last.source.id","https://id.loc.gov/authorities/subjects.html")
-  #      <data name="label" source="$[field]??.a" />
   copy_field("$i.a","subject[].$last.label")
 end
 
 
-#        <data name="id" source="$[field]??.0">
-#          <regexp match="\(DE-588\)(.*)" format="https://d-nb.info/gnd/7749153-1"/>
-#        </data>
-#        <data name="label" source="$[field]??.0">
-#          <regexp match="\(DE-588\)(.*)" format="Gemeinsame Normdatei (GND)"/>
-#        </data>
-
 do list(path:"610??|650??", "var":"$i")
   if any_match("$i.0","^\\(DE-588\\)(.*)$")
         # TODO: Deduplicate values.
-        #          <data source="$[field]?4.a" name="label">
-        #            <unique/>
-        #          </data>
     set_array("subject[].$append.type[]","Concept")
-  #        <data source="$[field]?0.a" name="label">
-  #          <constant value="Library of Congress Subject Headings"/>
-  #        </data>
-  #        <data source="$[field]?0.a" name="id">
-  #          <constant value="https://id.loc.gov/authorities/subjects.html"/>
-  #        </data>
     add_field("subject[].$last.source.label","Gemeinsame Normdatei (GND)")
     add_field("subject[].$last.source.id","https://d-nb.info/gnd/7749153-1")
-    #      <data name="label" source="$[field]??.a" />
     copy_field("$i.a","subject[].$last.label")
     do list(path:"$i.0", "var":"$j")
       if any_match("$j","^\\(DE-588\\)(.*)$")
         copy_field("$j", "subject[].$last.id")
         replace_all("subject[].$last.id","^\\(DE-588\\)(.*)$","http://d-nb.info/gnd/$1")
         copy_field("$j", "subject[].$last.gndIdentifier")
-        replace_all("subject[].$last.gndIdentifier","^\\(DE-588\\)(.*)$","$1")      
+        replace_all("subject[].$last.gndIdentifier","^\\(DE-588\\)(.*)$","$1")
       end
     end
   end
 end
 
-
-
-#  ALMA: This (653) has been included above as keywors.
-
-#     <!-- 653  Index Term-Uncontrolled (but hbz says Stichwörter) -->
-#     <entity name="" flushWith="653??" sameEntity="true" reset="true">
-#       <entity name="type[]" sameEntity="true" reset="true" flushWith="650??">
-#         <data source="653??.a">
-#           <constant value="keyword"/>
-#         </data>
-#       </entity>
-#       <entity name="source" sameEntity="true" reset="true" flushWith="653??">
-#         <data source="653??.a" name="label">
-#           <constant value="Freie Verschlagwortung"/>
-#         </data>
-#         <data source="653??.a" name="id">
-#           <constant value="https://www.wikidata.org/wiki/Q47524318"/>
-#         </data>
-#       </entity>
-#       <data name="label" source="653??.a" />
-#     </entity>
-
-
-
-
-
-
-
-# 
-#     <!-- DDC Dewey 082 -->
-#     <entity name="" flushWith="0820 |08200">
-#       <data name="notation" source="0820 .a|08200.a" />
-#       <data name="label" source="0820 .a|08200.a">
-#         <lookup in="deweyLabels"/>
-#       </data>
-#       <entity name="source" sameEntity="true" reset="true" flushWith="0820 |08200">
-#         <data name="id" source="0820 .a|08200.a">
-#           <constant value="http://d-nb.info/gnd/4149423-4"/>
-#         </data>
-#         <data name="label" source="0820 .a|08200.a">
-#           <constant value="Dewey-Dezimalklassifikation"/>
-#         </data>
-#         <data name="version" source="0820 .2|08200.2" />
-#       </entity>
-#     </entity>
 
 # 082 - Dewey Decimal Classification Number (R) - Subfield: $a (R), $2 (NR)
 
@@ -272,37 +100,14 @@ do list(path:"084??", "var":"$i")
       copy_field("$i.a", "subject[].$last.label")
       if any_match("$j", "https://nwbib.de/subjects#N(.*)$")
         copy_field("$j", "subject[].$last.notation")
-        replace_all("subject[].$last.notation","https://nwbib.de/subjects#N(.*)$","$1")           
+        replace_all("subject[].$last.notation","https://nwbib.de/subjects#N(.*)$","$1")
       end
       set_array("subject[].$last.type[]","Concept")
       add_field("subject[].$last.source.id","https://nwbib.de/subjects")
-      add_field("subject[].$last.source.label","Sachsystematik der Nordrhein-Westfälischen Bibliographie")      
+      add_field("subject[].$last.source.label","Sachsystematik der Nordrhein-Westfälischen Bibliographie")
     end
   end
 end
-
-# 
-#     <!-- local subjects 982 -->
-#     <entity name="" flushWith="982  " sameEntity="true" reset="true">
-#       <if>
-#         <data source="982  .[ab]" />
-#       </if>
-#       <entity name="type[]" sameEntity="true" reset="true" flushWith="982  .[ab]">
-#         <data source="982  .[ab]">
-#           <constant value="Keyword"/>
-#         </data>
-#       </entity>
-#       <data name="label" source="982  .[ab]" />
-#       <entity name="source" sameEntity="true" reset="true" flushWith="982  ">
-#         <data name="id" source="982  .M">
-#           <lookup in="alma-iz-code-to-isil" />
-#           <compose prefix="http://lobid.org/organisations/" postfix="#!"/>
-#         </data>
-#         <data name="label" source="982  .M">
-#           <lookup in="alma-iz-code-to-isil" />
-#           <compose prefix="Freie Verschlagwortung durch "/>
-#         </data>
-#       </entity>
 
 # local subjects 982 - no info on repeatability
 
@@ -312,76 +117,12 @@ do list(path:"982  ", "var":"$i")
     copy_field("$i.M","$i.@organisations")
     lookup("$i.@organisations","alma-iz-code-to-isil")
     paste("subject[].$last.source.id","~http://lobid.org/organisations/","$i.@organisations","~#!", join_char:"")
-    paste("subject[].$last.source.label","~Freie Verschlagwortung durch","$i.@organisations")    
+    paste("subject[].$last.source.label","~Freie Verschlagwortung durch","$i.@organisations")
     copy_field("$i.a|b","subject[].$last.label")
     copy_field("$i.2","subject[].$last.version")
   end
 end
 
-
-
-
-
-#     </entity>
-#     <!-- 689 RSWK Schlagwortfolgen fka: Schlagwortketten 1 - 10 -->
-#     <!-- 1 -->
-#     <call-macro name="schlagwortfolge" field="6890" />
-#     <!-- 2 -->
-#     <call-macro name="schlagwortfolge" field="6891" />
-#     <!-- 3 -->
-#     <call-macro name="schlagwortfolge" field="6892" />
-#     <!-- 4 -->
-#     <call-macro name="schlagwortfolge" field="6893" />
-#     <!-- 5 -->
-#     <call-macro name="schlagwortfolge" field="6894" />
-#     <!-- 6 -->
-#     <call-macro name="schlagwortfolge" field="6895" />
-#     <!-- 7 -->
-#     <call-macro name="schlagwortfolge" field="6896" />
-#     <!-- 8 -->
-#     <call-macro name="schlagwortfolge" field="6897" />
-#     <!-- 9 -->
-#     <call-macro name="schlagwortfolge" field="6898" />
-##     <!-- 10 -->
-##     <call-macro name="schlagwortfolge" field="6899" />
-##   </entity>
-# <macro name="schlagwortfolge">
-#    <entity name="" flushWith="record">
-#      <entity name="type[]" sameEntity="true" reset="true">
-#        <data name="" source="$[field]0">
-#          <constant value="ComplexSubject"/>
-#        </data>
-#      </entity>
-#      <concat name="label" delimiter=" | ">
-#        <data source="$[field]?.a" />
-#      </concat>
-#      <entity name="componentList[]" flushWith="record">
-#        <entity name="" sameEntity="true" reset="true" flushWith="$[field]?">
-#          <entity name="type[]" sameEntity="true" reset="true">
-#            <data source="$[field]?.D">
-#              <lookup in="rswk-indicator" />
-#            </data>
-#          </entity>
-#          <data name="label" source="$[field]?.a" />
-#          <data name="id" source="$[field]?.0">
-#            <regexp match="\(DE-588\)(.*)" format="http://d-nb.info/gnd/${1}"/>
-#          </data>
-#          <entity name="source" sameEntity="true" reset="true">
-#            <data name="id" source="$[field]?.0">
-#              <regexp match="\(DE-588\)(.*)" format="https://d-nb.info/gnd/7749153-1"/>
-#            </data>
-#            <data name="label" source="$[field]?.0">
-#              <regexp match="\(DE-588\)(.*)" format="Gemeinsame Normdatei (GND)"/>
-#            </data>
-#          </entity>
-#          <data name="gndIdentifier" source="$[field]?.0">
-#            <regexp match="\(DE-588\)(.*)" format="${1}"/>
-#          </data>
-#        </entity>
-#      </entity>
-#    </entity>
-#  </macro>
-#
 
 # 689 RSWK Schlagwortfolgen fka: Schlagwortketten 1 - 10 - no info on repeatability
 
@@ -389,7 +130,7 @@ do put_macro("schlagwortfolge")
   if exists("$[field]")
     set_array("subject[].$append.type[]","ComplexSubject")
     set_array("subject[].$last.label")
-    set_array("subject[].$last.componentList[]")   
+    set_array("subject[].$last.componentList[]")
     do list(path:"$[field]", "var":"$i")
       set_array("subject[].$last.componentList[].$append.type[]")
       do list(path: "$i.D", "var": "$k")
@@ -404,7 +145,7 @@ do put_macro("schlagwortfolge")
           copy_field("$j", "subject[].$last.componentList[].$last.id")
           replace_all("subject[].$last.componentList[].$last.id","^\\(DE-588\\)(.*)$","http://d-nb.info/gnd/$1")
           copy_field("$j", "subject[].$last.componentList[].$last.gndIdentifier")
-          replace_all("subject[].$last.componentList[].$last.gndIdentifier","^\\(DE-588\\)(.*)$","$1") 
+          replace_all("subject[].$last.componentList[].$last.gndIdentifier","^\\(DE-588\\)(.*)$","$1")
         end
       end
     end
@@ -427,12 +168,6 @@ call_macro("schlagwortfolge", field: "6899?")
 
 lookup("subject[].*.componentList[].*.type[].*","rswk-indicator")
 
-# 
-#   <entity name="subjectAltLabel[]" flushWith="record">
-#     <data source="GST  .a|GST  .g|GPN1 .a|GGN  .a">
-#       <unique />
-#     </data>
-#   </entity>
 
 set_array("subjectAltLabel[]")
 copy_field("GST  .a","subjectAltLabel[].$append")
@@ -445,22 +180,6 @@ uniq("subjectAltLabel[]")
 
 # nwbib
 
-#  <datafield tag="084" ind1=" " ind2=" ">
-#    <subfield code="a">Westfalen</subfield>
-#    <subfield code="0">https://nwbib.de/spatial#N04</subfield>
-#    <subfield code="2">nwbib</subfield>
-#  </datafield>
-#  <datafield tag="084" ind1=" " ind2=" ">
-#    <subfield code="a">M&#252;nster</subfield>
-#    <subfield code="0">https://nwbib.de/spatial#Q2742</subfield>
-#    <subfield code="2">nwbib</subfield>
-#  </datafield>
-#  <datafield tag="084" ind1=" " ind2=" ">
-#    <subfield code="a">Denkmalpflege. Denkmalschutz</subfield>
-#    <subfield code="0">https://nwbib.de/subjects#N844200</subfield>
-#    <subfield code="2">nwbib</subfield>
-#  </datafield>
-
 set_array("spatial[]")
 
 do list(path:"084??", "var":"$i")
@@ -469,11 +188,11 @@ do list(path:"084??", "var":"$i")
       copy_field("$j", "spatial[].$append.id")
       copy_field("$i.a", "spatial[].$last.label")
       if any_match("$j", "https://nwbib.de/spatial#N(.*)$")
-        copy_field("$j", "spatial[].$last.notation")              
+        copy_field("$j", "spatial[].$last.notation")
       end
       set_array("spatial[].$last.type[]","Concept")
       add_field("spatial[].$last.source.id","https://nwbib.de/spatial")
-      add_field("spatial[].$last.source.label","Raumsystematik der Nordrhein-Westfälischen Bibliographie")      
+      add_field("spatial[].$last.source.label","Raumsystematik der Nordrhein-Westfälischen Bibliographie")
     end
   end
 end

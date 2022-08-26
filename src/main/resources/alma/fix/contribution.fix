@@ -1,69 +1,12 @@
-#   <entity name="responsibilityStatement[]" flushWith="245??.c">
-#     <data name="" source="245??.c" />
-#   </entity>
 
 # 245 - Title Statement (NR) - Subfield: $c (NR)
 set_array("responsibilityStatement[]")
 copy_field("245??.c", "responsibilityStatement[].$append")
 
-# 
-#   <entity name="contribution[]" flushWith="record">
 set_array("contribution[]")
 
 # 100 and 700
 
-#     <!-- 100[01]-->
-#     <entity name="" flushWith="100[01] " sameEntity="true">
-#       <if>
-#         <none flushWith="100[01] " sameEntity="true">
-#           <data name="" source="100[01] .M" />
-#         </none>
-#       </if>
-#       <entity name="type[]" reset="true">
-#         <data name="" source="100[01] ">
-#           <constant value="Contribution"/>
-#         </data>
-#       </entity>
-#       <entity name="agent" flushWith="100[01] " sameEntity="true" reset="true">
-#         <call-macro name="gndIdentifier" field="100" />
-#         <call-macro name="gndIdentifierId" field="100" />
-#         <call-macro name="personName" dname="label" field="100" />
-#         <entity name="type[]" reset="true">
-#           <data name="" source="100[01] .a">
-#             <constant value="Person"/>
-#           </data>
-#         </entity>
-#       </entity>
-#       <entity name="role" reset="true" sameEntity="true" flushWith="100[01] ">
-#         <data name="id" source="100[01] .4">
-#           <compose prefix="http://id.loc.gov/vocabulary/relators/"/>
-#         </data>
-#       </entity>
-#     </entity>
-#     
-#     <!--700[01] -->
-#     <entity name="" flushWith="700[01] " sameEntity="true">
-#       <entity name="type[]" reset="true">
-#         <data name="" source="700[01] ">
-#           <constant value="Contribution"/>
-#         </data>
-#       </entity>
-#       <entity name="agent" flushWith="700[01] " reset="true">
-#         <call-macro name="personIdentifier" dname="gndIdentifier" field="700" />
-#         <call-macro name="gndIdentifierId" field="700" />
-#         <call-macro name="personName" dname="label" field="700" />
-#         <entity name="type[]" reset="true">
-#           <data name="" source="700[01] .a">
-#             <constant value="Person"/>
-#           </data>
-#         </entity>
-#       </entity>
-#       <entity name="role" reset="true" sameEntity="true" flushWith="700[01] ">
-#         <data name="id" source="700[01] .4">
-#           <compose prefix="http://id.loc.gov/vocabulary/relators/"/>
-#         </data>
-#       </entity>
-#     </entity>
 # I separate the cleaning from the copying since the cleaning needs to be done for evey element.
 
 # 100 - Main Entry-Personal Name (NR)
@@ -73,8 +16,8 @@ set_array("contribution[]")
 
 do list(path:"100[01] ", "var":"$i")
   unless exists("$i.M")
-    # in some cases (e.g. 99370763882706441) we have an invalid repeated subfield $a 
-    # since in the invalid record one cannot untangle the info easily (creates dublicate info and no roles) the fix scipts if the subfield $a is an array. 
+    # in some cases (e.g. 99370763882706441) we have an invalid repeated subfield $a
+    # since in the invalid record one cannot untangle the info easily (creates dublicate info and no roles) the fix scipts if the subfield $a is an array.
     unless exists("$i.a.1")
       unless exists("$i.4")
         if any_match("type[]","ArchivedWebPage|Miscellaneous|Bibliography|Statistics|Legislation|PublishedScore|Game|Image|Map|Standard")
@@ -91,13 +34,13 @@ do list(path:"100[01] ", "var":"$i")
         set_hash("contribution[].$append.agent")
         do list(path:"$i.0","var":"$k")
           if all_match("$k", "^\\(DE-588\\).*$")
-        # GND identifier    
+        # GND identifier
             paste("contribution[].$last.agent.gndIdentifier","$k")
         # GND Identifier id
             paste("contribution[].$last.agent.id","$k")
           end
         end
-        # name  
+        # name
         copy_field("$i.a","contribution[].$last.agent.label")
         # type
         set_array("contribution[].$last.agent.type[]","Person")
@@ -114,9 +57,9 @@ end
 
 do list(path:"700[01] ", "var":"$i")
   unless exists("$i.M")
-    # in some cases (e.g. 99370763882706441) we have an invalid repeated subfield $a 
-    # since in the invalid record one cannot untangle the info easily (creates dublicate info and no roles) the fix scipts if the subfield $a is an array. 
-    unless exists("$i.a.1") 
+    # in some cases (e.g. 99370763882706441) we have an invalid repeated subfield $a
+    # since in the invalid record one cannot untangle the info easily (creates dublicate info and no roles) the fix scipts if the subfield $a is an array.
+    unless exists("$i.a.1")
       unless exists("$i.4")
         add_field("$i.4","ctb")
       end
@@ -124,13 +67,13 @@ do list(path:"700[01] ", "var":"$i")
         set_hash("contribution[].$append.agent")
         do list(path:"$i.0","var":"$k")
           if all_match("$k", "^\\(DE-588\\).*$")
-        # GND identifier    
+        # GND identifier
             paste("contribution[].$last.agent.gndIdentifier","$k")
         # GND Identifier id
             paste("contribution[].$last.agent.id","$k")
           end
         end
-        # name  
+        # name
         copy_field("$i.a","contribution[].$last.agent.label")
         # type
         set_array("contribution[].$last.agent.type[]","Person")
@@ -141,40 +84,6 @@ do list(path:"700[01] ", "var":"$i")
   end
 end
 
-# 
-#     <!-- 110|710[012] -->
-#     <entity name="" flushWith="[17]10[012] " sameEntity="true">
-#       <entity name="type[]" reset="true">
-#         <data name="" source="[17]10[012] ">
-#           <constant value="Contribution"/>
-#         </data>
-#       </entity>
-#       <entity name="agent" flushWith="[17]10[012] " reset="true">
-#         <call-macro name="gndIdentifier" field="[17]10" />
-#         <call-macro name="gndIdentifierId" field="[17]10" />
-#         <combine name="label" value="${a}${b}" flushWith="[17]10[012] ">
-#           <data name="a" source="[17]10[012] .a">
-#             <replace pattern="\.$" with=""/>
-#           </data>
-#           <data name="b" source="[17]10[012] .b">
-#             <replace pattern="\.$" with=""/>
-#             <compose prefix=". " />
-#           </data>
-#         </combine>
-#         <entity name="type[]" reset="true">
-#           <data name="" source="[17]10[012] .a">
-#             <constant value="CorporateBody"/>
-#           </data>
-#         </entity>
-#       </entity>
-#       <entity name="role" reset="true" sameEntity="true" flushWith="[17]10[012] ">
-#         <data name="id" source="[17]10[012] .4">
-#           <compose prefix="http://id.loc.gov/vocabulary/relators/"/>
-#         </data>
-#       </entity>
-#     </entity>
-# 
-
 # 110 - Main Entry-Corporate Name (NR)
 # Subfields: $a (NR), $0 (R), $4 (R)
 # Subfield: $M is a local field and can create duplicates and is therefore ignored.
@@ -183,8 +92,8 @@ end
 
 do list(path:"110[012] ", "var":"$i")
   unless exists("$i.M")
-    # in some cases (e.g. 99370763882706441) we have an invalid repeated subfield $a 
-    # since in the invalid record one cannot untangle the info easily (creates dublicate info and no roles) the fix scipts if the subfield $a is an array. 
+    # in some cases (e.g. 99370763882706441) we have an invalid repeated subfield $a
+    # since in the invalid record one cannot untangle the info easily (creates dublicate info and no roles) the fix scipts if the subfield $a is an array.
     unless exists("$i.a.1")
       unless exists("$i.4")
         if any_match("type[]","ArchivedWebPage|Miscellaneous|Bibliography|Statistics|Legislation|PublishedScore|Game|Image|Map|Standard")
@@ -201,14 +110,14 @@ do list(path:"110[012] ", "var":"$i")
         set_hash("contribution[].$append.agent")
         do list(path:"$i.0","var":"$k")
           if all_match("$k", "^\\(DE-588\\).*$")
-        # GND identifier    
+        # GND identifier
             paste("contribution[].$last.agent.gndIdentifier","$k")
         # GND Identifier id
             paste("contribution[].$last.agent.id","$k")
           end
         end
-        # name  
-          paste("contribution[].$last.agent.label", "$i.a", "$i.b", join_char: ". ")  
+        # name
+          paste("contribution[].$last.agent.label", "$i.a", "$i.b", join_char: ". ")
         # type
         set_array("contribution[].$last.agent.type[]","CorporateBody")
         # role
@@ -225,8 +134,8 @@ end
 
 do list(path:"710[012] ", "var":"$i")
   unless exists("$i.M")
-    # in some cases (e.g. 99370763882706441) we have an invalid repeated subfield $a 
-    # since in the invalid record one cannot untangle the info easily (creates dublicate info and no roles) the fix scipts if the subfield $a is an array. 
+    # in some cases (e.g. 99370763882706441) we have an invalid repeated subfield $a
+    # since in the invalid record one cannot untangle the info easily (creates dublicate info and no roles) the fix scipts if the subfield $a is an array.
     unless exists("$i.a.1")
       unless exists("$i.4")
         add_field("$i.4","ctb")
@@ -235,14 +144,14 @@ do list(path:"710[012] ", "var":"$i")
         set_hash("contribution[].$append.agent")
         do list(path:"$i.0","var":"$k")
           if all_match("$k", "^\\(DE-588\\).*$")
-        # GND identifier    
+        # GND identifier
             paste("contribution[].$last.agent.gndIdentifier","$k")
         # GND Identifier id
             paste("contribution[].$last.agent.id","$k")
           end
         end
-        # name  
-          paste("contribution[].$last.agent.label", "$i.a", "$i.b", join_char: ". ")  
+        # name
+          paste("contribution[].$last.agent.label", "$i.a", "$i.b", join_char: ". ")
         # type
         set_array("contribution[].$last.agent.type[]","CorporateBody")
         # role
