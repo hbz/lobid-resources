@@ -425,7 +425,7 @@ end
 # Checks rpb subjects are provided.
 
 do list(path:"084??", "var":"$i")
-  do once()
+  do once("rpb")
     if any_equal("$i.2","rpb")
       add_field("inCollection[].$append.id", "http://lobid.org/resources/HT013494180#!")
       add_field("inCollection[].$last.label", "Rheinland-Pfälzische Bibliographie")
