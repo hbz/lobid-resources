@@ -2,18 +2,4298 @@
 add_field("@context","http://lobid.org/resources/context.jsonld")
 
 # Add maps
-include ("./fix/maps.fix")
-include ("./fix/identifiers.fix")
-include ("./fix/titleRelatedFields.fix")
-include ("./fix/describedBy.fix")
+put_map("alma-iz-code-to-isil",
+  "49HBZ_UBD": "DE-290",  # Universitätsbibliothek Dortmund -->
+  "49HBZ_BIE": "DE-361",  # Universitätsbibliothek Bielefeld -->
+  "49HBZ_DUE": "DE-61", # Universitäts- und Landesbibliothek Düsseldorf -->
+  "49HBZ_FHA": "DE-A96",  # Hochschulbibliothek der Fachhochschule Aachen -->
+  "49HBZ_WUP": "DE-468",  # Universitätsbibliothek Wuppertal -->
+  "49HBZ_UDE": "DE-468",  # Universitätsbibliothek Duisburg-Essen -->
+  "49HBZ_NETWORK": "DE-605"
+)
+
+put_map("rswk-indicator",
+  "p": "Person",
+  "b": "CorporateBody",
+  "f": "ConferenceOrEvent",
+  "u": "Work",
+  "g": "PlaceOrGeographicName",
+  "s": "SubjectHeading"
+)
+
+put_map("alma-institution-code-to-isil",
+  "6441": "DE-605",# /> <!-- hbz - Hochschulbibliothekszentrum des Landes Nordrhein-Westfalen -->
+  "6442": "DE-361", # /> <!-- Universitätsbibliothek Bielefeld -->
+  "6443": "DE-61", # >  <!-- Universitäts- und Landesbibliothek Düsseldorf -->
+  "6444": "DE-A96", # /> <!-- Hochschulbibliothek der Fachhochschule Aachen -->
+  "6445": "DE-290", # /> <!-- Universitätsbibliothek Dortmund -->
+  "6446": "DE-465", # /> <!-- Universitätsbibliothek Duisburg-Essen (DE-464 = Campus Duisburg, DE-465 = Campus Essen) -->
+  "6447": "DE-468" # /> <!-- Universitätsbibliothek Wuppertal -->
+)
+
+
+put_map("medium-id-to-label",
+  "Audio-Dokument":	"http://purl.org/ontology/bibo/AudioDocument",
+  "Audio-Kassette":	"http://id.loc.gov/vocabulary/carriers/ss",
+  "Audio-Visuell":	"http://purl.org/ontology/bibo/AudioVisualDocument",
+  "Blindenschrift":	"http://purl.org/library/BrailleBook",
+  "Print":	"http://rdaregistry.info/termList/RDAproductionMethod/1010",
+  "Datenträger":	"http://rdaregistry.info/termList/RDAMediaType/1003",
+  "Manuskript":	"http://purl.org/ontology/bibo/Manuscript",
+  "Mikroformat": "http://rdaregistry.info/termList/RDAMediaType/1002",
+  "Kombination":	"http://iflastandards.info/ns/isbd/terms/mediatype/T1008",
+  "Online-Ressource": "http://rdaregistry.info/termList/RDACarrierType/1018",
+  "Video":	"http://rdaregistry.info/termList/RDAMediaType/1008",
+  "Schallplatte":	"http://purl.org/ontology/mo/Vinyl",
+  "Miscellaneous":	"http://purl.org/lobid/lv#Miscellaneous" # TODO: Label is not german but the others are?
+)
+
+
+# <!-- source of mapping: http://www.dnb.de/SharedDocs/Downloads/DE/DNB/standardisierung/inhaltserschliessung/sprachenCodesIso6392.pdf?__blob=publicationFile -->
+
+put_map("ISO639-2-to-GND",
+  "aar": "Danakil-Sprache",
+  "abk": "Abchasisch",
+  "ace": "Aceh-Sprache",
+  "ach": "Acholi-Sprache",
+  "ada": "Adangme-Sprache",
+  "ady": "Adygisch",
+  "afa": "Hamitosemitische Sprachen",
+  "afh": "Afrihili",
+  "afr": "Afrikaans",
+  "ain": "Ainu-Sprache",
+  "aka": "Akan-Sprache",
+  "akk": "Akkadisch",
+  "alb": "Albanisch",
+  "ale": "Aleutisch",
+  "alg": "Algonkin-Sprachen",
+  "alt": "Altaisch",
+  "amh": "Amharisch",
+  "ang": "Altenglisch",
+  "anp": "Anga-Sprache",
+  "apa": "Apachen-Sprache",
+  "ara": "Arabisch",
+  "arc": "Aramäisch",
+  "arg": "Aragonesisch",
+  "arm": "Armenisch",
+  "arn": "Arauka-Sprachen",
+  "arp": "Arapaho-Sprache",
+  "art": "Kunstsprache",
+  "arw": "Arawak-Sprachen",
+  "asm": "Assamesisch",
+  "ast": "Asturisch",
+  "ath": "Athapaskische Sprachen",
+  "aus": "Australische Sprachen",
+  "ava": "Awarisch",
+  "ave": "Avestisch",
+  "awa": "Awadhī",
+  "aym": "Aymará-Sprache",
+  "aze": "Aserbeidschanisch",
+  "bad": "Banda-Sprache &lt;Ubangi-Sprachen&gt;",
+  "bai": "Bamileke-Sprache",
+  "bak": "Baschkirisch",
+  "bal": "Belutschisch",
+  "bam": "Bambara-Sprache",
+  "ban": "Balinesisch",
+  "baq": "Baskisch",
+  "bas": "Basaa-Sprache",
+  "bat": "Baltische Sprachen",
+  "bej": "Bedauye",
+  "bel": "Weißrussisch",
+  "bem": "Bemba-Sprache",
+  "ben": "Bengali",
+  "ber": "Berbersprachen",
+  "bho": "Bhojpurī",
+  "bih": "Bihari",
+  "bik": "Bikol-Sprache",
+  "bin": "Edo-Sprache",
+  "bis": "Beach-la-mar",
+  "bla": "Blackfoot-Sprache",
+  "bnt": "Bantusprachen",
+  "bos": "Bosnisch",
+  "bra": "Braj-Bhakha",
+  "bre": "Bretonisch",
+  "btk": "Batak-Sprache",
+  "bua": "Burjatisch",
+  "bug": "Bugi-Sprache",
+  "bul": "Bulgarisch",
+  "bur": "Birmanisch",
+  "byn": "Bilin-Sprache",
+  "cad": "Caddo-Sprachen",
+  "cai": "Indianersprachen, Zentralamerika",
+  "car": "Karibische Sprachen",
+  "cat": "Katalanisch",
+  "cau": "Kaukasische Sprachen",
+  "ceb": "Cebuano",
+  "cel": "Keltische Sprachen",
+  "cha": "Chamorro-Sprache",
+  "chb": "Chibcha-Sprachen",
+  "che": "Tschetschenisch",
+  "chg": "Tschagataisch",
+  "chi": "Chinesisch",
+  "chk": "Trukesisch",
+  "chm": "Tscheremissisch",
+  "chn": "Chinook-Jargon",
+  "cho": "Choctaw-Sprache",
+  "chp": "Chipewyan-Sprache",
+  "chr": "Cherokee-Sprache",
+  "chu": "Kirchenslawisch",
+  "chv": "Tschuwaschisch",
+  "chy": "Cheyenne-Sprache",
+  "cmc": "Cham-Sprachen",
+  "cop": "Koptisch",
+  "cor": "Kornisch",
+  "cos": "Korsisch",
+  "cpe": "Kreolisch-Englisch",
+  "cpf": "Kreolisch-Französisch",
+  "cpp": "Kreolisch-Portugiesisch",
+  "cre": "Cree-Sprache",
+  "crh": "Krimtatarisch",
+  "crp": "Kreolische Sprachen",
+  "csb": "Kaschubisch",
+  "cus": "Kuschitische Sprachen",
+  "cze": "Tschechisch",
+  "dak": "Dakota-Sprache",
+  "dan": "Dänisch",
+  "dar": "Darginisch",
+  "day": "Dajakisch",
+  "del": "Delaware-Sprache",
+  "den": "Slave-Sprache",
+  "dgr": "Dogrib-Sprache",
+  "din": "Dinka-Sprache",
+  "div": "Maledivisch",
+  "doi": "Dogrī",
+  "dra": "Drawidische Sprachen",
+  "dsb": "Niedersorbisch",
+  "dua": "Duala-Sprachen",
+  "dum": "Mittelniederländisch",
+  "dut": "Niederländisch",
+  "dyu": "Dyula-Sprache",
+  "dzo": "Dzongkha",
+  "efi": "Efik",
+  "egy": "Ägyptisch",
+  "eka": "Ekajuk",
+  "elx": "Elamisch",
+  "eng": "Englisch",
+  "enm": "Mittelenglisch",
+  "epo": "Esperanto",
+  "est": "Estnisch",
+  "ewe": "Ewe-Sprache",
+  "ewo": "Ewondo",
+  "fan": "Pangwe-Sprache",
+  "fao": "Färöisch",
+  "fat": "Fante-Sprache",
+  "fij": "Fidschi-Sprache",
+  "fil": "Pilipino",
+  "fin": "Finnisch",
+  "fiu": "Finnougrische Sprachen",
+  "fon": "Fon-Sprache",
+  "fre": "Französisch",
+  "frm": "Mittelfranzösisch",
+  "fro": "Altfranzösisch",
+  "frr": "Nordfriesisch",
+  "frs": "Ostfriesisch &lt;Friesisch&gt;",
+  "fry": "Friesisch",
+  "ful": "Ful",
+  "fur": "Friulisch",
+  "gaa": "Ga-Sprache",
+  "gay": "Gayo-Sprache",
+  "gba": "Gbaya-Sprache",
+  "gem": "Germanische Sprachen",
+  "geo": "Georgisch",
+  "ger": "Deutsch",
+  "gez": "Geez",
+  "gil": "Gilbertesisch",
+  "gla": "Gälisch-Schottisch",
+  "gle": "Irisch",
+  "glg": "Galicisch",
+  "glv": "Manx",
+  "gmh": "Mittelhochdeutsch",
+  "goh": "Althochdeutsch",
+  "gon": "Gondi-Sprache",
+  "gor": "Gorontalesisch",
+  "got": "Gotisch",
+  "grb": "Grebo-Sprache",
+  "grc": "Griechisch",
+  "gre": "Neugriechisch",
+  "grn": "Guaraní-Sprache",
+  "gsw": "Schweizerdeutsch",
+  "guj": "Gujarātī-Sprache",
+  "gwi": "Kutchin-Sprache",
+  "hai": "Haida-Sprache",
+  "hat": "Haïtien",
+  "hau": "Haussa-Sprache",
+  "haw": "Hawaiisch",
+  "heb": "Hebräisch",
+  "her": "Herero-Sprache",
+  "hil": "Hiligaynon-Sprache",
+  "him": "Himachali",
+  "hin": "Hindi",
+  "hit": "Hethitisch",
+  "hmn": "Miao-Sprachen",
+  "hmo": "Hiri-Motu",
+  "hrv": "Kroatisch",
+  "hsb": "Obersorbisch",
+  "hun": "Ungarisch",
+  "hup": "Hupa-Sprache",
+  "iba": "Iban-Sprache",
+  "ibo": "Ibo-Sprache",
+  "ice": "Isländisch",
+  "ido": "Ido",
+  "iii": "Lalo-Sprache",
+  "ijo": "Ijo-Sprache",
+  "iku": "Inuktitut",
+  "ile": "Interlingue",
+  "ilo": "Ilokano-Sprache",
+  "ina": "Interlingua",
+  "inc": "Indoarische Sprachen",
+  "ind": "Bahasa Indonesia",
+  "ine": "Indogermanische Sprachen",
+  "inh": "Inguschisch",
+  "ipk": "Inupik",
+  "ira": "Iranische Sprachen",
+  "iro": "Irokesische Sprachen",
+  "ita": "Italienisch",
+  "jav": "Javanisch",
+  "jbo": "Lojban",
+  "jpn": "Japanisch",
+  "jpr": "Jüdisch-Persisch",
+  "jrb": "Jüdisch-Arabisch",
+  "kaa": "Karakalpakisch",
+  "kab": "Kabylisch",
+  "kac": "Kachin-Sprache",
+  "kal": "Grönländisch",
+  "kam": "Kamba-Sprache",
+  "kan": "Kannada",
+  "kar": "Karenisch",
+  "kas": "Kaschmiri",
+  "kau": "Kanuri-Sprache",
+  "kaw": "Kawi",
+  "kaz": "Kasachisch",
+  "kbd": "Kabardinisch",
+  "kha": "Khasi-Sprache",
+  "khi": "Khoisan-Sprachen",
+  "khm": "Kambodschanisch",
+  "kho": "Sakisch",
+  "kik": "Kikuyu-Sprache",
+  "kin": "Rwanda-Sprache",
+  "kir": "Kirgisisch",
+  "kmb": "Kimbundu-Sprache",
+  "kok": "Konkani",
+  "kom": "Komi-Sprache",
+  "kon": "Kongo-Sprache",
+  "kor": "Koreanisch",
+  "kos": "Kosraeanisch",
+  "kpe": "Kpelle-Sprache",
+  "krc": "Karatschaiisch-Balkarisch",
+  "krl": "Karelisch",
+  "kro": "Kru-Sprachen",
+  "kru": "Oraon-Sprache",
+  "kua": "Kwanyama-Sprache",
+  "kum": "Kumükisch",
+  "kur": "Kurdisch",
+  "kut": "Kutenai-Sprache",
+  "lad": "Judenspanisch",
+  "lah": "Lahndā",
+  "lam": "Lamba-Sprache",
+  "lao": "Laotisch",
+  "lat": "Latein",
+  "lav": "Lettisch",
+  "lez": "Lesgisch",
+  "lim": "Limburgisch",
+  "lin": "Lingala",
+  "lit": "Litauisch",
+  "lol": "Mongo-Sprache",
+  "loz": "Rotse-Sprache",
+  "ltz": "Luxemburgisch",
+  "lua": "Luba-Lulua-Sprache",
+  "lub": "Luba-Katanga-Sprache",
+  "lug": "Ganda-Sprache",
+  "lui": "Luiseño-Sprache",
+  "lun": "Lunda-Sprache",
+  "luo": "Luo-Sprache",
+  "lus": "Lushai-Sprache",
+  "mac": "Makedonisch",
+  "mad": "Maduresisch",
+  "mag": "Magahī",
+  "mah": "Marschallesisch",
+  "mai": "Maithili",
+  "mak": "Makassarisch",
+  "mal": "Malayalam",
+  "man": "Malinke-Sprache",
+  "mao": "Maori-Sprache",
+  "map": "Austronesische Sprachen",
+  "mar": "Marathi",
+  "mas": "Massai-Sprache",
+  "may": "Malaiisch",
+  "mdf": "Mokscha-Sprache",
+  "mdr": "Mandaresisch",
+  "men": "Mende-Sprache",
+  "mga": "Mittelirisch",
+  "mic": "Micmac-Sprache",
+  "min": "Minangkabau-Sprache",
+#: <entry name="mis" value="Einzelne andere Sprachen", -->
+  "mkh": "Mon-Khmer-Sprachen",
+  "mlg": "Malagassi-Sprache",
+  "mlt": "Maltesisch",
+  "mnc": "Mandschurisch",
+  "mni": "Meithei-Sprache",
+  "mno": "Manobo-Sprache",
+  "moh": "Mohawk-Sprache",
+  "mon": "Mongolisch",
+  "mos": "Mossi-Sprache",
+#  <!-- <entry name="mul" value="Mehrere Sprachen",  -->
+  "mun": "Mundasprachen",
+  "mus": "Muskogisch",
+  "mwl": "Mirandesisch",
+  "mwr": "Mārwārī",
+  "myn": "Maya-Sprachen",
+  "myv": "Erza-Mordwinisch",
+  "nds": "Niederdeutsch",
+  "nep": "Nepali",
+  "new": "Newārī",
+  "nia": "Nias-Sprache",
+  "nic": "Nigerkordofanische Sprachen",
+  "niu": "Niue-Sprache",
+  "nno": "Nynorsk",
+  "nob": "Bokmål",
+  "nog": "Nogaisch",
+  "non": "Altnorwegisch",
+  "nor": "Norwegisch",
+  "nqo": "N'Ko",
+  "nso": "Pedi-Sprache",
+  "nub": "Nubische Sprachen",
+  "nwc": "Alt-Newārī",
+  "nya": "Nyanja-Sprache",
+  "nym": "Nyamwezi-Sprache",
+  "nyn": "Nkole-Sprache",
+  "nyo": "Nyoro-Sprache",
+  "nzi": "Nzima-Sprache",
+  "oci": "Okzitanisch",
+  "oji": "Ojibwa-Sprache",
+  "ori": "Oriya-Sprache",
+  "orm": "Ormo-Sprache",
+  "osa": "Osage-Sprache",
+  "oss": "Ossetisch",
+  "ota": "Osmanisch",
+  "oto": "Otomangue-Sprachen",
+  "paa": "Papuasprachen",
+  "pag": "Pangasinan-Sprache",
+  "pal": "Mittelpersisch",
+  "pam": "Pampanggan-Sprache",
+  "pan": "Pandschabi-Sprache",
+  "pap": "Papiamento",
+  "pau": "Palauisch",
+  "peo": "Altpersisch",
+  "per": "Persisch",
+  "phi": "Philippinen-Austronesisch",
+  "phn": "Phönikisch",
+  "pli": "Pāli",
+  "pol": "Polnisch",
+  "pon": "Ponapeanisch",
+  "por": "Portugiesisch",
+  "pra": "Prākrit",
+  "pro": "Altokzitanisch",
+  "pus": "Paschtu",
+  "que": "Quechua-Sprache",
+  "raj": "Rājasthānī",
+  "rap": "Osterinsel-Sprache",
+  "rar": "Rarotonganisch",
+  "roa": "Romanische Sprachen",
+  "roh": "Rätoromanisch",
+  "rom": "Romani",
+  "rum": "Rumänisch",
+  "run": "Rundi-Sprache",
+  "rup": "Aromunisch",
+  "rus": "Russisch",
+  "sad": "Sandawe-Sprache",
+  "sag": "Sango-Sprache",
+  "sah": "Jakutisch",
+  "sai": "Indianersprachen, Südamerika",
+  "sal": "Salish-Sprache",
+  "sam": "Samaritanisch",
+  "san": "Sanskrit",
+  "sas": "Sasak",
+  "sat": "Santālī",
+  "scn": "Sizilianisch",
+  "sco": "Schottisch",
+  "sel": "Selkupisch",
+  "sem": "Semitische Sprachen",
+  "sga": "Altirisch",
+  "sgn": "Zeichensprache",
+  "shn": "Schan-Sprache",
+  "sid": "Sidamo-Sprache",
+  "sin": "Singhalesisch",
+  "sio": "Sioux-Sprachen",
+  "sit": "Sinotibetische Sprachen",
+  "sla": "Slawische Sprachen",
+  "slo": "Slowakisch",
+  "slv": "Slowenisch",
+  "sma": "Südsaamisch",
+  "sme": "Nordsaamisch",
+  "smi": "Saamisch",
+  "smj": "Lulesaamisch",
+  "smn": "Inarisaamisch",
+  "smo": "Samoanisch",
+  "sms": "Skoltsaamisch",
+  "sna": "Schona-Sprache",
+  "snd": "Sindhi-Sprache",
+  "snk": "Soninke-Sprache",
+  "sog": "Sogdisch",
+  "som": "Somali",
+  "son": "Songhai-Sprache",
+  "sot": "Süd-Sotho-Sprache",
+  "spa": "Spanisch",
+  "srd": "Sardisch",
+  "srn": "Sranantongo",
+  "srp": "Serbisch",
+  "srr": "Serer-Sprache",
+  "ssa": "Nilosaharanische Sprachen",
+  "ssw": "Swasi-Sprache",
+  "suk": "Sukuma-Sprache",
+  "sun": "Sundanesisch",
+  "sus": "Susu",
+  "sux": "Sumerisch",
+  "swa": "Swahili",
+  "swe": "Schwedisch",
+  "syc": "Syrisch",
+  "syr": "Neuostaramäisch",
+  "tah": "Tahitisch",
+  "tai": "Thaisprachen",
+  "tam": "Tamil",
+  "tat": "Tatarisch",
+  "tel": "Telugu-Sprache",
+  "tem": "Temne-Sprache",
+  "ter": "Tereno-Sprache",
+  "tet": "Tetun-Sprache",
+  "tgk": "Tadschikisch",
+  "tgl": "Tagalog",
+  "tha": "Thailändisch",
+  "tib": "Tibetisch",
+  "tig": "Tigre-Sprache",
+  "tir": "Tigrinja-Sprache",
+  "tiv": "Tiv-Sprache",
+  "tkl": "Tokelauanisch",
+  "tlh": "Klingonisch",
+  "tli": "Tlingit-Sprache",
+  "tmh": "Tamaschek",
+  "tog": "Tonga &lt;Bantusprache, Sambia&gt;",
+  "ton": "Tongaisch",
+  "tpi": "Neumelanesisch",
+  "tsi": "Tsimshian-Sprache",
+  "tsn": "Tswana-Sprache",
+  "tso": "Tsonga-Sprache",
+  "tuk": "Turkmenisch",
+  "tum": "Tumbuka-Sprache",
+  "tup": "Tupi-Sprache",
+  "tur": "Türkisch",
+  "tut": "Altaische Sprachen",
+  "tvl": "Elliceanisch",
+  "twi": "Twi-Sprache",
+  "tyv": "Tuwinisch",
+  "udm": "Udmurtisch",
+  "uga": "Ugaritisch",
+  "uig": "Uigurisch",
+  "ukr": "Ukrainisch",
+  "umb": "Mbundu-Sprache",
+  "urd": "Urdu",
+  "uzb": "Usbekisch",
+  "vai": "Vai-Sprache",
+  "ven": "Venda-Sprache",
+  "vie": "Vietnamesisch",
+  "vol": "Volapük",
+  "vot": "Wotisch",
+  "wak": "Wakash-Sprachen",
+  "wal": "Walamo-Sprache",
+  "war": "Waray",
+  "was": "Washo-Sprache",
+  "wel": "Kymrisch",
+  "wen": "Sorbisch",
+  "wln": "Wallonisch",
+  "wol": "Wolof-Sprache",
+  "xal": "Kalmückisch",
+  "xho": "Xhosa-Sprache",
+  "yao": "Yao-Sprache &lt;Bantusprache&gt;",
+  "yap": "Yapesisch",
+  "yid": "Jiddisch",
+  "yor": "Yoruba-Sprache",
+  "ypk": "Yupik-Sprache",
+  "zap": "Zapotekisch",
+  "zbl": "Bliss-Symbol",
+  "zen": "Zenaga",
+  "zha": "Zhuang",
+  "znd": "Zande-Sprachen",
+  "zul": "Zulu-Sprache",
+  "zun": "Zuñi-Sprache",
+#  <!-- <entry name="zxx" value="Kein linguistischer Inhalt", -->
+  "zza": "Zazaki"
+)
+
+#    <data name="@almaMmsId" source="001"/>
+#    <data name="almaMmsId" source="@almaMmsId"/>
+
+copy_field("001","almaMmsId")
+
+#    <data name="id" source="@almaMmsId">
+#      <regexp match="(.*)" format="http://lobid.org/resources/${1}#!"/>
+#    </data>
+#  </rules>
+
+paste("id", "~http://lobid.org/resources/", "001", "~#!", join_char: "")
+
+#    <data name="\@context" source="@almaMmsId">
+#      <constant value="https://lobid.org/resources/context.jsonld"/>
+#    </data>
+
+
+# 024 - Other Standard Identifier (R) Subfield: $a (NR) $2 (NR)
+# urn
+
+set_array("urn[]")
+
+do list(path: "0247?", "var": "$i")
+  if any_equal("$i.2","urn")
+      copy_field("$i.a","urn[].$append")
+  end
+end
+
+replace_all("urn[].*","^(nbn:de:.*\\d)$","urn:$1")
+
+#  <data name="hbzId" source="035  .a">
+#    <regexp match="\(DE-605\)(.*)" format="${1}"/>
+#  </data>
+
+# 035 - System Control Number (R) - Subfield: $a (NR)
+
+do list(path: "035  ", "var":"$i")
+  if any_match("$i.a", "\\(DE-605\\)\\D\\D(.*)")
+    copy_field("$i.a", "hbzId")
+  end
+end
+
+replace_all("hbzId","\\(DE-605\\)(.*)","$1")
+
+#
+#  <data source="020  .a" name="@cleanIsbn">
+#    <isbn to="clean"/>
+#    <unique />
+#  </data>
+
+# 020 - International Standard Book Number (R) - $a (NR)
+# source data sometimes provides repeated subfield $a even if this is not valid marc
+
+set_array("@isbn[]")
+set_array("isbn[]")
+
+do list(path:"020  ", "var": "$i")
+  do list(path:"$i.a", "var": "$j")
+    copy_field("$j","@isbn[].$append")
+  end
+end
+
+do list(path:"@isbn[]", "var": "$i")
+  isbn("$i", to: "clean")
+  copy_field("$i", "isbn[].$append")
+  copy_field("$i", "isbn[].$append")
+  if any_match("$i", ".{13}")
+    isbn("isbn[].$last", to:"isbn10")
+  elsif any_match("$i", ".{10}")
+    isbn("isbn[].$last", to:"isbn13")
+  end
+end
+
+uniq("isbn[]")
+
+
+# TODO: ISBN needs to be done if there is a supporting function in fix.
+#  <entity name="isbn[]" flushWith="record">
+#    <data name="" source="@cleanIsbn">
+#      <isbn to="isbn10"/>
+#      <unique />
+#    </data>
+#    <data name="" source="@cleanIsbn">
+#      <isbn to="isbn13"/>
+#      <unique />
+#    </data>
+#  </entity>
+#
+
+
+#  <entity name="issn[]" flushWith="record">
+#    <data name="" source="022? .a">
+#      <replace pattern="-" with="" />
+#    </data>
+#  </entity>
+
+# 022 - International Standard Serial Number (R) - Subfield $a (NR)
+set_array("issn[]")
+do list(path:"022? ", "var":"$i")
+  copy_field("$i.a", "issn[].$append")
+end
+replace_all("issn[].*", "-","")
+
+#
+#  <entity name="ismn[]" flushWith="record">
+#    <data name="" source="0242?.a">
+#      <replace pattern="-" with="" />
+#    </data>
+#  </entity>
+
+# 024 - Other Standard Identifier (R) - Subfield a (NR) 1. Indicator 2 = ISMN
+set_array("ismn[]")
+do list(path:"0242?", "var":"$i")
+  copy_field("$i.a", "ismn[].$append")
+end
+replace_all("ismn[].*", "-","")
+
+
+#
+#  <entity name="doi[]" flushWith="record">
+#    <if>
+#      <data source="0247?.2">
+#        <equals string="doi" />
+#      </data>
+#    </if>
+#    <data name="" source="0247?.a" />
+#  </entity>
+
+# TODO: Specify if DOI should be URI?
+# 024 (R) Subfield a (NR) 1. Indicator 7 = to defined Identifier
+set_array("doi[]")
+do list(path:"0247?", "var":"$i")
+  if all_equal("$i.2","doi")
+    copy_field("$i.a", "doi[].$append")
+  end
+end
+
+#
+#  <data name="@oclcNumber" source="035  .a">
+#    <regexp match="\(OCoLC\)(.*)" format="${1}"/>
+#  </data>
+#
+#  <data name="oclcNumber" source="@oclcNumber" />
+
+# 035 - System Control Number (R) - Subfield: $a (NR)
+set_array("oclcNumber[]")
+
+do list(path:"035  ", "var":"$i")
+    if all_match("$i.a", "\\(OCoLC\\)(.*)")
+      copy_field("$i.a", "oclcNumber[].$append")
+    end
+end
+replace_all("oclcNumber[].*", "\\(OCoLC\\)","")
+
+#
+#  <data name="@zdbId" source="035  .a">
+#    <regexp match="\(DE-600\)(.*)" format="${1}"/>
+#  </data>
+#
+#  <data name="zdbId" source="@zdbId" />
+
+# 035 - System Control Number (R) - Subfield: $a (NR)
+do list(path:"035  ", "var":"$i")
+  if all_match("$i.a", "\\(DE-600\\)(.*)")
+    copy_field("$i.a", "zdbId")
+  end
+end
+replace_all("zdbId", "\\(DE-600\\)","")
+
+
+#  <!-- 2xx -->
+
+# Variable @title
+#  <call-macro name="regex-del-punctuation-end" dsource="245??.a" dname="@title" />
+
+# 245 - Title Statement (NR) - Subfield: $a (NR), $b (NR), $n (R), $p (R)
+
+copy_field("245??.a","@title")
+replace_all("@title", "^[©]|\\s?[,.:;/=]?$", "")
+replace_all("@title", "<", "")
+replace_all("@title", ">", "")
+
+#  <concat delimiter=". " name="@titleOfSubSeries_n" flushWith="245??.p">
+#    <data name="n" source="245??.n"/>
+#  </concat>
+
+set_array("@titleOfSubSeries_n")
+do list(path:"245??.n", "var":"$i")
+  copy_field("$i","@titleOfSubSeries_n.$append")
+end
+join_field("@titleOfSubSeries_n", ". ")
+
+
+#  <combine name="@titleOfSubSeries" value="${n}${p}" sameEntity="true" flushWith="245??">
+#    <data name="p" source="245??.p">
+#      <occurrence only="1"/>
+#      <replace pattern="\s?\.?\s?$" with=""/>
+#      <replace pattern="&gt;" with=""/>
+#      <replace pattern="&lt;" with=""/>
+#    </data>
+#    <data name="n" source="@titleOfSubSeries_n">
+#      <regexp match="(.*)" format="${1}: "/>
+#    </data>
+#  </combine>
+
+set_array("@titleOfSubSeries_p")
+
+do list(path:"245??.p", "var":"$i")
+  copy_field("$i","@titleOfSubSeries_p.$append")
+end
+replace_all("@titleOfSubSeries_p.*", "\\s?\\.?\\s?$", "")
+replace_all("@titleOfSubSeries_p.*", "<", "")
+replace_all("@titleOfSubSeries_p.*", ">", "")
+prepend("@titleOfSubSeries_p.1", ": ")
+
+paste("@titleOfSubSeries", "@titleOfSubSeries_n",  "@titleOfSubSeries_p.1", join_char: "")
+
+
+#  <data name="titleOfSubSeries" source="@titleOfSubSeries" />
+
+copy_field("@titleOfSubSeries", "titleOfSubSeries")
+vacuum()
+prepend("@titleOfSubSeries",", ")
+
+#  <combine name="title" value="${maintitle}${subtitle}" flushWith="record">
+#    <data name="maintitle" source="@title">
+# solved with "@title" variable
+#     <!-- Delete not sorting signs in title -->
+#     <replace pattern="&gt;" with=""/>
+#     <replace pattern="&lt;" with=""/>
+#    </data>
+#    <data name="subtitle" source="@titleOfSubSeries">
+#      <regexp match="(.*)" format=", ${1}"/>
+#    </data>
+#  </combine>
+
+paste("title","@title", "@titleOfSubSeries", join_char: "")
+
+
+
+#  <entity name="alternativeTitle[]" flushWith="record">
+#    <data source="246?[ 345678].a">
+#      <replace pattern="\.$" with="" />
+#    </data>
+#  </entity>
+
+# 246 - Varying Form of Title (R) - Subfields: $a (NR)
+
+set_array("alternativeTitle[]")
+copy_field("246?[ 345678].a","alternativeTitle[].$append")
+
+#
+#  <entity name="otherTitleInformation[]">
+#    <data name="" source="245??.b">
+#      <occurrence only="1" />
+#      <replace pattern="\s?[./]\s?$" with="" />
+#    </data>
+#  </entity>
+
+set_array("otherTitleInformation[]")
+copy_field("245??.b","otherTitleInformation[].$append")
+replace_all("otherTitleInformation[].*","\\s?[./]\\s?$","")
+
+
+#  <entity name="edition[]" flushWith="record">
+#    <data name="" source="250  .a">
+#      <replace pattern="\s?[=/]$" with="" />
+#    </data>
+#  </entity>
+
+# 250 - Edition Statement (R) - Subfields: $a (NR)
+
+set_array("edition[]")
+copy_field("250  .a","edition[].$append")
+replace_all("edition[].*","\\s?[./]\\s?$","")
+
+# 260 - Publication, Distribution, etc. (Imprint) (R) - Subfield: $a (R), $b (R), $c (R)
+# 264 - Production, Publication, Distribution, Manufacture, and Copyright Notice (R) -  Subfield: $a (R), $b (R), $c  (R)
+
+set_array("publication[]")
+do list(path:"260[ 23] |264[ 23][ 1]", "var":"$i")
+  add_field("publication[].$append.test","")
+  paste("publication[].$last.publicationHistory", "$i.c")
+  do list(path: "$i.c", "var":"$j")
+    replace_all("$j", "\\[|\\]|ca. |c ", "")
+    unless exists("publication[].$last.startDate")
+      if any_match("$j",".*?(\\d{4}).*")
+        paste("publication[].$last.startDate", "$j")
+      end
+    end
+    unless exists("publication[].$last.endDate")
+      if any_match("$j",".*-(\\d{4})$")
+        paste("publication[].$last.endDate", "$j")
+      end
+    end
+  end
+  # TODO is there a way to distinguish PublicationEvent and SecondaryPublicationEvent?
+  set_array("publication[].$last.type[]","PublicationEvent")
+  set_array("publication[].$last.location[]")
+  copy_field("$i.a", "publication[].$last.location[].$append")
+  set_array("publication[].$last.publishedBy[]")
+  copy_field("$i.b", "publication[].$last.publishedBy[].$append")
+end
+
+replace_all("publication[].*.startDate", ".*?(\\d{4}).*", "$1")
+replace_all("publication[].*.endDate", ".*-(\\d{4})$", "$1")
+
+replace_all("publication[].*.location[].*", "^\\[|\\]$", "")
+
+replace_all("publication[].*.publishedBy[].*", "^[©]|\\s?[,.:;/=]?$", "")
+
+# 	<data name="@createTime" source="@almaMmsId">
+# 		<constant value="$[createEndTime]"/>
+# 	</data>
+#
+# 	<entity name="describedBy" flushWith="record">
+# 		<data name="id" source="@almaMmsId">
+# 			<regexp match="(.*)" format="http://lobid.org/resources/${1}"/>
+# 		</data>
+
+copy_field("almaMmsId", "describedBy.id")
+prepend("describedBy.id", "http://lobid.org/resources/")
+
+# 		<data name="label" source="@almaMmsId">
+# 			<regexp match="(.*)" format="Webseite der hbz-Ressource ${1}"/>
+# 		</data>
+
+copy_field("almaMmsId", "describedBy.label")
+prepend("describedBy.label", "Webseite der hbz-Ressource ")
+
+# 		<entity name="type[]">
+# 			<data name="" source="@almaMmsId">
+# 				<constant value="BibliographicDescription"/>
+# 			</data>
+# 		</entity>
+
+set_array("describedBy.type[]", "BibliographicDescription")
+
+# 		<call-macro name="simplify-date" dname="dateCreated" dsource="MNG  .b"/>
+# 		<call-macro name="simplify-date" dname="dateModified" dsource="MNG  .d"/>
+
+# MNG is a ALMA-specific element
+
+copy_field("MNG  .b","describedBy.dateCreated")
+copy_field("MNG  .d","describedBy.dateModified")
+replace_all("describedBy.dateCreated","-","")
+replace_all("describedBy.dateCreated"," .*","")
+replace_all("describedBy.dateCreated","c|©|\\s?|,|.|:|;|/|=","")
+replace_all("describedBy.dateModified","-","")
+replace_all("describedBy.dateModified"," .*","")
+replace_all("describedBy.dateModified","c|©|\\s?|,|.|:|;|/|=","")
+unless any_match("describedBy.dateCreated","\\d{8}|\\d{4}")
+	remove_field("describedBy.dateCreated")
+end
+unless any_match("describedBy.dateModified","\\d{8}|\\d{4}")
+	remove_field("describedBy.dateModified")
+end
+
+# 		<entity name="inDataset">
+# 			<data name="id" source="@almaMmsId">
+# 				<constant value="http://lobid.org/resources/dataset#!"/>
+# 			</data>
+add_field("describedBy.inDataset.id","http://lobid.org/resources/dataset#!")
+
+# 			<data name="label" source="@almaMmsId">
+# 				<constant value="lobid-resources – Der hbz-Verbundkatalog als Linked Open Data" />
+# 			</data>
+add_field("describedBy.inDataset.label","lobid-resources – Der hbz-Verbundkatalog als Linked Open Data")
+
+# 		</entity>
+# 		<entity name="resultOf">
+# 			<entity name="type[]">
+# 				<data name="" source="@almaMmsId">
+# 					<constant value="CreateAction"/>
+# 				</data>
+# 			</entity>
+set_array("describedBy.resultOf.type[]", "CreateAction")
+
+# 			<combine name="endTime" value="${a}">
+# 				<choose name="a">
+# 					<data source="@createTime" name="a">
+# 						<regexp match="0" format="0000-00-00T00:00:00"/>
+# 					</data>
+# 					<data name="a" source="@almaMmsId">
+# 						<timestamp format="yyyy-MM-dd'T'HH:mm:ss" timezone="Europe/Berlin"/>
+# 					</data>
+# 				</choose>
+# 			</combine>
+add_field("describedBy.resultOf.endTime","0000-00-00T00:00:00")
+# TODO: Add timestamp at the moment not supported by FIX.
+
+
+# 			<entity name="instrument">
+# 				<data name="id" source="@almaMmsId">
+# 					<constant value="https://github.com/hbz/lobid-resources"/>
+# 				</data>
+add_field("describedBy.resultOf.instrument.id","https://github.com/hbz/lobid-resources")
+
+# 				<entity name="type[]">
+# 					<data name="" source="@almaMmsId">
+# 						<constant value="SoftwareApplication"/>
+# 					</data>
+# 				</entity>
+set_array("describedBy.resultOf.instrument.type[]", "SoftwareApplication")
+
+# 				<data name="label" source="@almaMmsId">
+# 					<constant value="Software lobid-resources"/>
+# 				</data>
+# 			</entity>
+add_field("describedBy.resultOf.instrument.label","Software lobid-resources")
+
+# 			<entity name="object">
+# 				<data name="id" source="@almaMmsId">
+# 					<regexp match="(.*)" format="https://lobid.org/hbz01/${1}"/>
+# 				</data>
+copy_field("almaMmsId","describedBy.resultOf.object.id")
+prepend("describedBy.resultOf.object.id","https://lobid.org/hbz01/")
+
+
+# 				<entity name="type[]">
+# 					<data name="" source="@almaMmsId">
+# 						<constant value="DataFeedItem"/>
+# 					</data>
+# 				</entity>
+set_array("describedBy.resultOf.object.type[]", "DataFeedItem")
+
+# 				<data name="label" source="@almaMmsId">
+# 					<regexp match="(.*)" format="hbz-Ressource ${1} im Exportformat MARC21 XML"/>
+# 				</data>
+copy_field("almaMmsId","describedBy.resultOf.object.label")
+prepend("describedBy.resultOf.object.label","hbz-Ressource ")
+append("describedBy.resultOf.object.label"," im Exportformat MARC21 XML")
+
+# 				<entity name="inDataset">
+# 					<data name="id" source="@almaMmsId">
+# 						<constant value="https://datahub.io/dataset/hbz_unioncatalog"/>
+# 					</data>
+add_field("describedBy.resultOf.object.inDataset.id", "https://datahub.io/dataset/hbz_unioncatalog")
+
+# 					<data name="label" source="@almaMmsId">
+# 						<constant value="hbz_unioncatalog"/>
+# 					</data>
+# 				</entity>
+add_field("describedBy.resultOf.object.inDataset.label", "hbz_unioncatalog")
+
+# 			</entity>
+#
+# 		</entity>
+# 		<entity name="license[]">
+# 			<entity name="">
+# 				<data name="id" source="@almaMmsId">
+# 					<constant value="http://creativecommons.org/publicdomain/zero/1.0"/>
+# 				</data>
+# 				<data name="label" source="@almaMmsId">
+# 					<constant value="Creative Commons-Lizenz CC0 1.0 Universal"/>
+# 				</data>
+# 			</entity>
+# 		</entity>
+set_array("describedBy.license[]")
+add_field("describedBy.license[].$append.id","http://creativecommons.org/publicdomain/zero/1.0" )
+add_field("describedBy.license[].$last.label","Creative Commons-Lizenz CC0 1.0 Universal" )
+
+# 		<entity name="sourceOrganization">
+# 			<data name="id" source="040  .a">
+# 				<regexp match="(.*)" format="http://lobid.org/organisations/DE-${1}#!"/>
+# 			</data>
+# 			<data name="label" source="040  .a">
+# 				<constant value="lobid Organisation"/>
+# 			</data>
+# 		</entity>
+
+# TODO: It seems that there are a lot of organisations that are not in lobid, we should filter them out.
+
+# 040 - Cataloging Source (NR) - Subfield: $a (NR), $c (NR), $d (R)
+
+copy_field("040  .a", "describedBy.sourceOrganization.id")
+replace_all("describedBy.sourceOrganization.id", " ", "")
+prepend("describedBy.sourceOrganization.id", "http://lobid.org/organisations/DE-")
+append("describedBy.sourceOrganization.id", "#!")
+if exists("describedBy.sourceOrganization.id")
+	add_field("describedBy.sourceOrganization.label","lobid Organisation")
+end
+
+# 		<entity name="provider">
+# 			<data name="id" source="040  .c">
+# 				<regexp match="(.*)" format="http://lobid.org/organisations/DE-${1}#!"/>
+# 			</data>
+# 			<data name="label" source="040  .c">
+# 				<constant value="lobid Organisation"/>
+# 			</data>
+# 		</entity>
+
+# TODO: It seems that there are a lot of organisations that are not in lobid, we should filter them out.
+copy_field("040  .c", "describedBy.provider.id")
+replace_all("describedBy.provider.id", " ", "")
+prepend("describedBy.provider.id", "http://lobid.org/organisations/DE-")
+append("describedBy.provider.id", "#!")
+if exists("describedBy.provider.id")
+	add_field("describedBy.provider.label","lobid Organisation")
+end
+
+# 		<entity name="modifiedBy" sameEntity="true" reset="true">
+# 			<data name="id" source="040  .d">
+# 				<blacklist>
+# 					<entry name="9999" />
+# 					<entry name="0001" />
+# 				</blacklist>
+# 				<regexp match="(DE-)?(.*)" format="http://lobid.org/organisations/DE-${2}#!"/>
+# 			</data>
+# 			<data name="label" source="040  .d">
+# 				<constant value="lobid Organisation"/>
+# 			</data>
+# 		</entity>
+
+# TODO: It seems that there are a lot of organisations that are not in lobid, we should filter them out.
+# TODO: 040  .d is repeatable but lobid modifiedBy is only a simple object. How to deal with this?
+do list(path:"040  .d", "var":"$i")
+	unless exists("describedBy.modifiedBy.id")
+		unless any_match("$i", "9999|0001")
+			copy_field("$i", "describedBy.modifiedBy.id")
+		end
+	end
+end
+replace_all("describedBy.modifiedBy.id", "(DE-)?(.*)", "$2")
+replace_all("describedBy.modifiedBy.id", " ", "")
+prepend("describedBy.modifiedBy.id", "http://lobid.org/organisations/DE-")
+append("describedBy.modifiedBy.id", "#!")
+if exists("describedBy.modifiedBy.id")
+	add_field("describedBy.modifiedBy.label","lobid Organisation")
+end
+
+
+# 	</entity>
+# </rules>
+#
 # identifiers.fix is needed ahead of relatedRessourcesAndLinks.fix because of dependencies
-include ("./fix/relatedRessourcesAndLinks.fix")
-include ("./fix/otherFields.fix")
-include ("./fix/subjects.fix")
-include ("./fix/item.fix")
-include ("./fix/mediumAndType.fix")
+#
+#  <entity name="sameAs[]" flushWith="record">
+set_array("sameAs[]")
+
+
+#    <entity name="">
+#      <data name="id" source="035  .a">
+#        <regexp match="\(DE-605\)(.*)" format="http://hub.culturegraph.org/resource/HBZ-${1}"/>
+#      </data>
+#      <data name="label" source="035  .a">
+#        <regexp match="\(DE-605\)(.*)" format="Culturegraph Ressource"/>
+#      </data>
+#    </entity>
+
+
+# 035 - System Control Number (R) - Subfield: $a (NR)
+do list(path:"035  ", "var":"$i")
+  if all_match("$i.a", "\\(DE-605\\)(.*)")
+    copy_field("$i.a", "sameAs[].$append.id")
+    replace_all("sameAs[].$last.id", "\\(DE-605\\)(.*)","http://hub.culturegraph.org/resource/HBZ-$1")
+    add_field("sameAs[].$last.label","Culturegraph Ressource")
+  end
+end
+
+
+#    <entity name="">
+#      <data name="id" source="@oclcNumber">
+#        <compose prefix="http://worldcat.org/oclc/"/>
+#      </data>
+#      <data name="label" source="@oclcNumber">
+#        <constant value="OCLC Ressource"/>
+#      </data>
+#    </entity>
+
+do list(path: "oclcNumber[]", "var": "$i")
+  paste("sameAs[].$append.id","~http://worldcat.org/oclc/", "$i", join_char:"")
+  add_field("sameAs[].$last.label","OCLC Ressource")
+end
+
+
+#    <entity name="">
+#      <data name="id" source="@zdbId">
+#        <compose prefix="http://ld.zdb-services.de/resource/"/>
+#      </data>
+#      <data name="label" source="@zdbId">
+#        <constant value="ZDB-Ressource"/>
+#      </data>
+#    </entity>
+#  </entity>
+
+do list(path: "zdbId", "var": "$i")
+  paste("sameAs[].$append.id","~http://ld.zdb-services.de/resource/", "$i", join_char:"")
+  add_field("sameAs[].$last.label","ZDB-Ressource")
+end
+
+# 770 - Supplement/Special Issue Entry (R) - Subflied: $i (R), $t (NR), $w (R)
+
+set_array("supplement[]")
+
+do list(path:"77008", "var":"$i")
+  if any_match("$i.i", "Beil.*|Supp.*")
+    add_field("supplement[].$append.test","")
+    copy_field("$i.t","supplement[].$last.label")
+    do list(path:"$i.w","var": "$j")
+      if all_match("$j","^\\(DE-605\\)(.*)$|^\\(DE-600\\)(.*)$")
+        copy_field("$j","supplement[].$last.id")
+      end
+    end
+  end
+end
+
+replace_all("supplement[].*.id","^\\(DE-605\\)(.*)$","http://lobid.org/resources/$1#!")
+replace_all("supplement[].*.id","^\\(DE-600\\)(.*)$","http://ld.zdb-services.de/resource/$1#!")
+
+# isPartOf
+# it describes the relation between a published ressource and its superordinate series or collection.
+# in contrast to containedIn it is a standalone publication
+
+#  <entity name="isPartOf[]" flushWith="record">
+set_array("isPartOf[]")
+#    <entity name="" sameEntity="true" reset="true" flushWith="773??|490??">
+#      <data source="773??.w|490??.a" name="type">
+#        <constant value="IsPartOfRelation" />
+#      </data>
+#      <entity name="hasSuperordinate[]" sameEntity="true" reset="true">
+#        <entity name="" sameEntity="true" reset="true" flushWith="773??|490??">
+#          <data name="id" source="773??.w">
+#            <regexp match="\(DE-605\)(.*)" format="http://lobid.org/resources/${1}#!"/>
+#          </data>
+#          <data source="773??.t|490??.a" name="label" />
+#        </entity>
+#      </entity>
+#      <data source="773??.q" name="numbering" />
+#    </entity>
+
+# 773 - Host Item Entry (R) Subfield: $w (NR), $t (NR), $q (NR)
+# TODO: Shouldnt type always be arrays
+
+unless any_match("leader", "^.{7}[ad].*")
+  do list(path: "773??", "var": "$i")
+    set_array("isPartOf[].$append.type[]", "IsPartOfRelation")
+    set_array("isPartOf[].$last.hasSuperordinate[]")
+    add_field("isPartOf[].$last.hasSuperordinate[].$append.test", "")
+    if all_match("$i.w", "\\(DE-605\\)(.*)")
+      copy_field("$i.w", "isPartOf[].$last.hasSuperordinate[].$append.id")
+      replace_all("isPartOf[].$last.hasSuperordinate[].$last.id", "^\\(DE-605\\)(.*)$", "http://lobid.org/resources/$1#!")
+    end
+    copy_field("$i.t", "isPartOf[].$last.hasSuperordinate[].$last.label")
+    copy_field("$i.q", "isPartOf[].$last.numbering")
+  end
+end
+
+# 490 - Series Statement (R) - Subfield: $a (R)
+# TODO: Shouldnt type always be arrays
+# 490 with 1. Indicator 1 has an identical entry in 830. So only 490 with 1. Indicator 0
+
+do list(path: "4900?", "var": "$i")
+  set_array("isPartOf[].$append.type[]", "IsPartOfRelation")
+  set_array("isPartOf[].$last.hasSuperordinate[]")
+  copy_field("$i.a", "isPartOf[].$last.hasSuperordinate[].$append.label")
+  copy_field("$i.v", "isPartOf[].$last.numbering")
+end
+
+#    <entity name="" sameEntity="true" reset="true" flushWith="830??">
+#      <!-- Check for duplicates in local fields. -->
+#      <if>
+#        <data source="830??.w">
+#          <unique/>
+#        </data>
+#      </if>
+#      <data source="830??.w" name="type">
+#        <constant value="IsPartOfRelation" />
+#      </data>
+#      <entity name="hasSuperordinate[]" sameEntity="true" reset="true">
+#        <entity name="" sameEntity="true" reset="true" flushWith="830??">
+#          <data name="id" source="830??.w">
+#            <regexp match="\(DE-605\)(.*)" format="http://lobid.org/resources/${1}#!"/>
+#          </data>
+#          <data source="830??.a" name="label" />
+#        </entity>
+#      </entity>
+#      <data source="830??.v" name="numbering" />
+#    </entity>
+#  </entity>
+
+# 830 - Series Added Entry-Uniform Title (R) - Subfield: $w (R), $a (NR), $v (NR)
+# Element can be repeatable with local entries they have subfield $M.
+
+do list(path: "830??", "var": "$i")
+  unless exists("$i.M")
+    set_array("isPartOf[].$append.type[]", "IsPartOfRelation")
+    set_array("isPartOf[].$last.hasSuperordinate[]")
+    add_field("isPartOf[].$last.hasSuperordinate[].$append.test", "")
+    if all_match("$i.w", "\\(DE-605\\)(.*)")
+      copy_field("$i.w", "isPartOf[].$last.hasSuperordinate[].$last.id")
+      replace_all("isPartOf[].$last.hasSuperordinate[].$last.id", "^\\(DE-605\\)(.*)$", "http://lobid.org/resources/$1#!")
+    end
+    copy_field("$i.a", "isPartOf[].$last.hasSuperordinate[].$last.label")
+    copy_field("$i.v", "isPartOf[].$last.numbering")
+  end
+end
+
+# containedIn
+# containedIn only states ressources that are not published by them self but as part of a host ressource.
+
+set_array("containedIn[]")
+
+# 773 - Host Item Entry (R)  - $w  (R)
+
+if any_match("leader", "^.{7}[ad].*")
+  do list(path:"77308", "var":"$i")
+    do list(path:"$i.w", "var":"$j")
+      if any_match("$j","^\\(DE-(600|605)\\).*") # TODO: Some ressources have ALMA MMS IDs as relation idetifier e.g.: 991000688209706449 has $w 991021220959706449. How to deal with these?
+        copy_field("$j","containedIn[].$append.id")
+      end
+    end
+  end
+end
+
+replace_all("containedIn[].*.id", "^\\(DE-605\\)(.*)$", "http://lobid.org/resources/$1#!")
+replace_all("containedIn[].*.id", "^\\(DE-600\\)(.*)$", "http://ld.zdb-services.de/resource/$1")
+
+
+# primaryForm
+
+# 776 - Additional Physical Form Entry (R) - $i (R), $w (R)
+
+# TODO: is this not duplicate info with "related"?
+
+set_array("primaryForm[]")
+
+do list(path: "77608", "var":"$i")
+  if any_match ("$i.i", ".*eproduktion von.*")
+    add_field("primaryForm[].$append.test","")
+    if all_match("$i.w", "\\(DE-605\\)(.*)")
+      copy_field("$i.w", "primaryForm[].$last.id")
+      replace_all("primaryForm[].$last.id", "^\\(DE-605\\)(.*)$", "http://lobid.org/resources/$1#!")
+    end
+    copy_field("$i.w", "primaryForm[].$last.id")
+    paste("primaryForm[].$last.label", "$i.i", "$i.w")
+    replace_all("primaryForm[].$last.label", "\\(DE-605\\)", "")
+  end
+end
+
+
+#
+#  <!-- 8xx -->
+#  <entity name="tableOfContents[]" flushWith="record">
+#    <entity name="" sameEntity="true" reset="true">
+#      <if>
+#        <all flushWith="8564?" sameEntity="true" reset="true">
+#          <data source="8564?.3">
+#            <regexp match="^[Ii][Nn][Hh][aA][lL][tT][sS][vV]"/>
+#          </data>
+#          <data source="8564?.u">
+#            <unique />
+#          </data>
+#        </all>
+#      </if>
+#      <data name="id" source="8564?.u" />
+#      <data name="label" source="8564?.3" />
+#    </entity>
+#  </entity>
+
+# 856 - Electronic Location and Access (R) - Subfield: $u (R) $3 (NR)
+# 1. Indicator: 4 = HTTP
+
+set_array("tableOfContents[]")
+
+do list(path: "8564?", "var":"$i")
+  unless exists("$i.M")
+    if all_match("$i.3", "^[Ii][Nn][Hh][aA][lL][tT][sS][vV].*") # Inhaltsverzeichnis
+      copy_field("$i.3", "tableOfContents[].$append.label")
+      copy_field("$i.u", "tableOfContents[].$last.id")
+    end
+  end
+end
+
+set_array("description[]")
+
+do list(path: "8564?", "var":"$i")
+  unless exists("$i.M")
+    if all_match("$i.3", "^[Ii][Nn][Hh][aA][lL][tT][sS][tT].*") # Inhaltstext
+      copy_field("$i.3", "description[].$append.label")
+      copy_field("$i.u", "description[].$last.id")
+    end
+  end
+end
+
+set_array("seeAlso[]")
+
+do list(path: "8564?", "var":"$i")
+  unless exists("$i.M")
+    if all_match("$i.3", "^[zZ][uU][sS].*") # Zusätzliche Angaben
+      copy_field("$i.3", "seeAlso[].$append.label")
+      copy_field("$i.u", "seeAlso[].$last.id")
+    end
+  end
+end
+
+set_array("fulltextOnline[]")
+
+do list(path: "8564?", "var":"$i")
+  unless exists("$i.M")
+    if all_equal("$i.z", "kostenfrei") # kostenfrei, added Digitalisierung not only Verlag or Agentur as filter
+      if all_match("$i.x", "Verlag|Agentur|Digitalisierung")
+        copy_field("$i.x", "fulltextOnline[].$append.label")
+        copy_field("$i.u", "fulltextOnline[].$last.id")
+      end
+    end
+    if all_match("$i.3", "^[vV][oO][lL].*") # Volltext
+      copy_field("$i.3", "fulltextOnline[].$append.label")
+      copy_field("$i.u", "fulltextOnline[].$last.id")
+    end
+    if all_match("$i.u", "^http:\\/\\/dx.doi.org\\/.*") # Volltext
+      copy_field("$i.u", "fulltextOnline[].$append.id")
+      add_field("fulltextOnline[].$last.label", "DOI-Link")
+    end
+    if all_match("$i.u", "^http:\\/\\/nbn-resolving.de\\/urn.*") # Volltext
+      copy_field("$i.u", "fulltextOnline[].$append.id")
+      add_field("fulltextOnline[].$last.label", "URN-Link")
+    end
+  end
+end
+
+# "fulltextOnline[]" needs to add:
+#		<combine name="@fulltextOnlineUri" value="${a}" sameEntity="true">
+#			<data source="655[-eu][ -1].[x3]">
+#				<regexp match="Archivierte Online|EZB|Online-Ausg|Resolving-System|Volltext"/>
+#			</data>
+#			<data source="@linkUri" name="a"/>
+#		</combine>
+
+# TODO: hasVersion is outcommented since it needs some remodelling
+# See https://github.com/hbz/lobid-resources/issues/1242
+#  <!--
+#  <entity name="hasVersion[]" flushWith="record">
+#    <entity name="" flushWith="856??" sameEntity="true">
+#      <if>
+#        <any flushWith="856??">
+#          <none flushWith="856??" sameEntity="true">
+#            <data source="856??.M" />
+#          </none>
+#          <data source="856??.M">
+#            <equals string="$[member]" />
+#          </data>
+#        </any>
+#      </if>
+#      <data name="id" source="856??.u">
+#        <occurrence only="1" sameEntity="true" />
+#        <unique />
+#      </data>
+#      <data name="label" source="856??.z">
+#        <occurrence only="1" sameEntity="true" />
+#      </data>
+#    </entity>
+#  </entity> -->
+#
+
+
+
+#  <entity name="related[]" flushWith="record">
+#    <entity name="" flushWith="775??|776??" sameEntity="true">
+#      <if>
+#        <any>
+#          <data source="775??.z|776??.z">
+#            <unique />
+#          </data>
+#          <data source="775??.w|776??.w">
+#            <unique />
+#          </data>
+#          <data source="775??.t|776??.t">
+#            <unique />
+#          </data>
+#          <data source="775??.x|776??.x">
+#            <unique />
+#          </data>
+#        </any>
+#      </if>
+#      <data name="id" source="775??.w|776??.w">
+#        <regexp match="\(DE-605\)(.*)" format="http://lobid.org/resources/${1}#!"/>
+#      </data>
+#      <concat name="note" delimiter=" " sameEntity="true" flushWith="775??|776??">
+#        <data source="775??.i|776??.i" />
+#        <data source="775??.n|776??.n" />
+#      </concat>
+#      <data name="label" source="775??.t|776??.t" />
+#      <entity name="isbn[]" sameEntity="true">
+#        <data name="" source="775??.z|776??.z">
+#          <isbn to="clean"/>
+#          <isbn to="isbn10"/>
+#          <unique />
+#        </data>
+#        <data name="" source="775??.z|776??.z">
+#          <isbn to="clean"/>
+#          <isbn to="isbn13"/>
+#          <unique />
+#        </data>
+#      </entity>
+#      <data name="issn" source="775??.x|776??.x" />
+#    </entity>
+#  </entity>
+
+# 775 - Other Edition Entry (R) - Subfield: $w (R), $t (NR), $i (R), $n (R), $x(NR), $z (R)
+# 776 - Additional Physical Form Entry (R) -  Subfield: $w (R), $t (NR), $i (R), $n (R), $x (NR), $z (R)
+# TODO: Needs ISBN function for mapping ISBN in subfield Z! Need test ressource for that.
+
+set_array("related[]")
+do list(path:"775??|776??", "var":"$i")
+  unless exists("$i.M")
+    add_field("related[].$append.test","")
+    if all_match("$i.w", "\\(DE-605\\)(.*)")
+      copy_field("$i.w", "related[].$last.id")
+      replace_all("related[].$last.id", "^\\(DE-605\\)(.*)$", "http://lobid.org/resources/$1#!")
+    end
+    paste("related[].$last.note","$i.i", "$i.n")
+    copy_field("$i.t", "related[].$last.label")
+    copy_field("$i.x", "related[].$last.issn")
+    copy_field("$i.z", "$i.ISBN13")
+    isbn("$i.isbn13", to: "clean")
+    if any_match("$i.isbn13", ".{13}")
+      copy_field("$i.isbn13", "$i.isbn10")
+      isbn("$i.isbn10", to:"isbn10")
+    elsif any_match("$i.isbn13", ".{10}")
+      copy_field("$i.isbn13", "$i.isbn10")
+      isbn("$i.isbn13", to:"isbn13")
+    end
+    set_array("related[].$last.isbn[]")
+    copy_field("$i.isbn13|isbn10", "related[].$last.isbn[].$append")
+  end
+end
+
+
+
+
+
+
+#
+#  <!-- TODO: inCollection: missing edoweb, rpb, publisso, also type-element -->
+#  <entity name="inCollection[]" flushWith="record">
+set_array("inCollection[]")
+
+
+#    <!-- ZDB -->
+#    <entity name="" sameEntity="true" reset="true">
+#      <data name="label" source="@zdbId">
+#        <constant value="Zeitschriftendatenbank (ZDB)" />
+#      </data>
+#      <data name="id" source="@zdbId">
+#        <constant value="http://lobid.org/resources/HT014846970#!" />
+#      </data>
+#      <entity name="type[]" sameEntity="true">
+#        <data name="" source="@zdbId">
+#          <constant value="Collection"/>
+#        </data>
+#      </entity>
+#    </entity>
+
+if exists("zdbId")
+  add_field("inCollection[].$append.id", "http://lobid.org/resources/HT014846970#!")
+  add_field("inCollection[].$last.label", "Zeitschriftendatenbank (ZDB)")
+end
+
+# rpb
+# Checks rpb subjects are provided.
+
+do list(path:"084??", "var":"$i")
+  do once()
+    if any_equal("$i.2","rpb")
+      add_field("inCollection[].$append.id", "http://lobid.org/resources/HT013494180#!")
+      add_field("inCollection[].$last.label", "Rheinland-Pfälzische Bibliographie")
+    end
+  end
+end
+
+
+#    <!-- EZB -->
+#    <entity name="" sameEntity="true" reset="true">
+#      <data name="label" source="85640.x">
+#        <equals string="EZB" />
+#        <constant value="Elektronische Zeitschriftenbibliothek (EZB)" />
+#      </data>
+#      <data name="id" source="85640.x">
+#        <equals string="EZB" />
+#        <constant value="http://lobid.org/resources/HT016356466#!" />
+#      </data>
+#      <entity name="type[]" sameEntity="true">
+#        <data name="" source="85640.x">
+#          <constant value="Collection"/>
+#        </data>
+#      </entity>
+#    </entity>
+
+# 856 - Electronic Location and Access (R) - Subfield: $x - Nonpublic note (R)
+# TODO: Check if src/test/resources/alma-fix/(CKB)5280000000199164.xml is also an EZB titel even when it has no 865.
+do list(path:"85640", "var":"$i")
+  if any_equal("$i.x","EZB") # can test x and x.*
+    add_field("inCollection[].$append.id", "http://lobid.org/resources/HT016356466#!")
+    add_field("inCollection[].$last.label", "Elektronische Zeitschriftenbibliothek (EZB)")
+  end
+end
+
+
+do list(path:"85640", "var":"$i")
+  if any_match("$i.u","^.*edoweb.*") # can test x and x.*
+    add_field("inCollection[].$append.id", "http://lobid.org/resources/HT016925914#!")
+    add_field("inCollection[].$last.label", "Edoweb Rheinland-Pfalz")
+  end
+end
+
+
+# TODO: AlephMorph checked for ellinet in "078r1.a" but publisso is also stated in the Link URI is that enough?
+do list(path:"85640", "var":"$i")
+  if any_match("$i.u","^.*publisso.*") # can test x and x.*
+    add_field("inCollection[].$append.id", "http://repository.publisso.de")
+    add_field("inCollection[].$last.label", "Fachrepositorium Lebenswissenschaften")
+  end
+end
+
+
+#    <!-- nwbib -->
+#    <entity name="" sameEntity="true" reset="true">
+#      <data name="label" source="084  .2">
+#        <equals string="nwbib" />
+#        <constant value="Nordrhein-Westfälische Bibliographie (NWBib)" />
+#        <unique />
+#      </data>
+#      <data name="id" source="084  .2">
+#        <equals string="nwbib" />
+#        <constant value="http://lobid.org/resources/HT014176012#!" />
+#      </data>
+#      <entity name="type[]" sameEntity="true">
+#        <data name="" source="084  .2">
+#          <constant value="Collection"/>
+#        </data>
+#      </entity>
+#    </entity>
+
+# 084 - Other Classification Number (R), Subfield: $2 (NR)
+
+do list(path:"084  ", "var":"$i")
+  if any_equal("$i.2","nwbib")
+    unless any_equal("inCollection[].*.id","http://lobid.org/resources/HT014176012#!")
+      add_field("inCollection[].$append.id", "http://lobid.org/resources/HT014176012#!")
+      add_field("inCollection[].$last.label", "Nordrhein-Westfälische Bibliographie (NWBib)")
+    end
+  end
+end
+
+
+
+#    <!-- eResource package -->
+#    <entity name="" sameEntity="true" reset="true">
+#      <data source="912  .a" name="id">
+#        <regexp match="(ZDB-[0-9]{1,6}-[a-zA-Z|0-9\\-]*).*" format="http://lobid.org/organisations/${1}#!"/>
+#      </data>
+#      <data source="912  .a" name="label">
+#        <regexp match="(ZDB-[0-9]{1,6}-[a-zA-Z|0-9\\-]*).*" format="eResource package" />
+#      </data>
+#      <entity name="type[]" sameEntity="true" reset="true">
+#        <data name="" source="912  .a">
+#          <constant value="Collection"/>
+#        </data>
+#      </entity>
+#    </entity>
+
+# 912 ## "(nur Präfix ZDB-, und "vd18")" no Information about repeatability
+
+do list(path:"912  ", "var":"$i")
+  if any_match("$i.a", "(ZDB-[0-9]{1,6}-[a-zA-Z|0-9\\-]*).*")
+    copy_field("$i.a", "inCollection[].$append.id")
+    replace_all("inCollection[].$last.id", "(ZDB-[0-9]{1,6}-[a-zA-Z|0-9\\-]*).*", "http://lobid.org/organisations/$1#!")
+    add_field("inCollection[].$last.label", "eResource package")
+  end
+end
+
+
+#    <!-- E-Book and digital copy selections (inofficial) -->
+#    <entity name="" sameEntity="true" reset="true">
+#      <data source="962  .e" name="id">
+#        <regexp match="^[^Z][^D][^B].*" />
+#        <regexp match="(.*)" format="https://lobid.org/collections#${1}"/>
+#      </data>
+#      <entity name="type[]" sameEntity="true" reset="true">
+#        <data name="" source="962  .e">
+#          <constant value="Collection"/>
+#        </data>
+#      </entity>
+#    </entity>
+
+# 912 ## no Information about repeatability
+
+do list(path:"962  ", "var":"$i")
+  do list(path:"$i.e", "var": "$j")
+    unless any_match("$j", "^ZDB.*")
+      copy_field("$j", "inCollection[].$append.id")
+      replace_all("inCollection[].$last.id", "^(.*)$", "http://lobid.org/collections/$1#!")
+      # TODO: Do we need a label?
+    end
+  end
+end
+
+#    <!-- 960 selections (inofficial) -->
+#    <entity name="" sameEntity="true" reset="true">
+#      <data source="9601 .?" name="id">
+#        <regexp match="(.*)" format="https://lobid.org/collections#${1}"/>
+#      </data>
+#      <entity name="type[]" sameEntity="true" reset="true">
+#        <data name="" source="9601 .?">
+#          <constant value="Collection"/>
+#        </data>
+#      </entity>
+#    </entity>
+#  </entity>
+#</rules>
+#
+
+# 960 ## no Information about repeatability
+# TODO: This needs further inspection if we need a collection fr all subfields: https://service-wiki.hbz-nrw.de/display/VDBE/960+-+Selektionskennzeichen+NZ
+# Values from r can be invalid.
+
+# do list(path:"960??", "var":"$i")
+#   do list(path:"$i.?", "var": "$j")
+#       copy_field("$j", "inCollection[].$append.id")
+#       replace_all("inCollection[].$last.id", "^(.*)$", "http://lobid.org/collections/$1#!")
+#       # TODO: Do we need a label? https://github.com/hbz/lobid-resources/issues/1305#issuecomment-912312471, also labels seem wrong.
+#   end
+# end
+
+
+set_array("inCollection[].*.type[]","Collection")
+
+set_array("similar[]")
+
+do list(path:"doi[]", "var":"$i")
+  copy_field("$i", "similar[].$append.id")
+  replace_all("similar[].$last.id", "^(.*)$","http://dx.doi.org/$1")
+end
+
+do list(path:"urn[]", "var":"$i")
+  copy_field("$i", "similar[].$append.id")
+  replace_all("similar[].$last.id", "^(.*)$","http://nbn-resolving.de/$1")
+end
+
+# TODO: is this needed too?
+# <entity name="http://umbel.org/umbel#isLike">
+# 		  <data source="776-1.z" name="$[ns-bibo]isbn" >
+# 		    <isbn to="clean"/>
+# 		  </data>
+# 		  <data source="776-1.i" name="http://id.loc.gov/ontologies/bibframe/note" />
+# 	  </entity>
+
+# predecessor
+
+# 780 - Preceding Entry (R) - Subfield: $t (NR), $w (R)
+
+set_array("predecessor[]")
+
+do list(path:"780??", "var":"$i")
+  add_field("predecessor[].$append.test","")
+  copy_field("$i.t", "predecessor[].$last.label")
+  do list(path:"$i.w", "var":"$j")
+    if all_match("$j", "\\(DE-605\\)(.*)")
+      copy_field("$j", "predecessor[].$last.id")
+      replace_all("predecessor[].$last.id", "^\\(DE-605\\)(.*)$", "http://lobid.org/resources/$1#!")
+    end
+  end
+end
+
+replace_all("predecessor[].*.label","Vorg. ---> ","")
+
+# succesor
+
+# 785 - Succeeding Entry (R) - Subfield: $t (NR), $w (R)
+
+set_array("succesor[]")
+
+do list(path:"785??", "var":"$i")
+  add_field("succesor[].$append.test","")
+  copy_field("$i.t", "succesor[].$last.label")
+  do list(path:"$i.w", "var":"$j")
+    if all_match("$j", "\\(DE-605\\)(.*)")
+      copy_field("$j", "succesor[].$last.id")
+      replace_all("succesor[].$last.id", "^\\(DE-605\\)(.*)$", "http://lobid.org/resources/$1#!")
+    end
+  end
+end
+
+
+#  <!-- 0xx -->
+#
+
+
+#
+#  <data name="@language_source_all" source="008">
+#    <substring start="35" end="38" />
+#  </data>
+#  <data name="@language_source_all" source="041[ 01] .[adj]" />
+# TODO: Needs to be explained why this is double. Can only one of the elements be used?
+
+
+# 008 - Fixed-Length Data Elements-General Information (NR) - No subfields
+
+set_array("@language")
+copy_field("008", "@008-lang")
+substring("@008-lang", "35", "38")
+copy_field("008-lang", "@language.$append")
+copy_field("041[ 01] .[adj]", "@language.$append")
+#  <data name="@language_source" source="@language_source_all">
+#    <unique />
+#  </data>
+uniq("@language")
+#  <data name="@language_long" source="@language_source">
+#    <lookup in="ISO639-2-to-GND" />
+#  </data>
+#  <entity name="language[]" flushWith="record">
+set_array("language[]")
+do list(path:"@language", "var":"$i")
+  copy_field("$i", "language[].$append.id")
+  copy_field("$i", "language[].$last.label")
+end
+
+lookup("language[].*.label","ISO639-2-to-GND")
+prepend("language[].*.id", "http://id.loc.gov/vocabulary/iso639-2/")
+
+
+#    <entity name="" flushWith="@language_source" reset="true">
+#      <data name="id" source="@language_source">
+#        <regexp match="(.*)" format="http://id.loc.gov/vocabulary/iso639-2/${1}"/>
+#      </data>
+#      <data name="label" source="@language_long" />
+#    </entity>
+#  </entity>
+
+# TODO: Is this needed?
+
+#
+#  <!-- 3xx -->
+#
+# 300 - Physical Description (R)
+# Old Morph MAB-> Extent was less complex: 		<data source="433[-abc][-1].[aq]|653-1.a" name="http://id.loc.gov/ontologies/bibframe/extent"/>
+# TODO: Figure out if we need the extent info as complex as the introx info.
+
+#  <data name="@300a1" source="300  .a">
+#    <occurrence only="1" />
+#    <replace pattern="\s?[:;+\(]?$" with="" />
+#  </data>
+#  <data name="@300a2" source="300  .a">
+#    <occurrence only="2" />
+#    <replace pattern="\s?[:;+\)]?$" with="" />
+#  </data>
+#  <data name="@300b" source="300  .b">
+#    <replace pattern="\s?[:;+\(]?$" with="" />
+#  </data>
+#  <data name="@300c1" source="300  .c">
+#    <occurrence only="1" />
+#    <replace pattern="\.?\s?[+\(]?$" with="" />
+#  </data>
+#  <data name="@300c2" source="300  .c">
+#    <occurrence only="2" />
+#    <replace pattern="\.?\s?[:;+\)]?$" with="" />
+#  </data>
+#  <data name="@300e" source="300  .e">
+#    <replace pattern="\.?\s?\(?$" with="" />
+#  </data>
+#
+#  <combine name="@300a2_punct" value="${a2})">
+#    <if>
+#      <all>
+#        <data source="@300a2" />
+#        <none>
+#          <data source="@300c2" />
+#        </none>
+#      </all>
+#    </if>
+#    <data name="a2" source="@300a2" />
+#  </combine>
+#  <combine name="@300a2_punct" value="${a2} ; ">
+#    <if>
+#      <all>
+#        <data source="@300a2" />
+#        <data source="@300c2" />
+#      </all>
+#    </if>
+#    <data name="a2" source="@300a2" />
+#  </combine>
+#  <combine name="@300b_punct" value=" : ${b}">
+#    <if>
+#      <all>
+#        <data source="@300b" />
+#        <data source="@300a1" />
+#      </all>
+#    </if>
+#    <data name="b" source="@300b" />
+#  </combine>
+#  <combine name="@300c1_punct" value=" ; ${c1}">
+#    <if>
+#      <all>
+#        <data source="@300c1" />
+#        <data source="@300a1|@300b" />
+#      </all>
+#    </if>
+#    <data name="c1" source="@300c1" />
+#  </combine>
+#  <combine name="@300c2_punct" value="${c2})">
+#    <data name="c2" source="@300c2" />
+#  </combine>
+#  <combine name="@300e_punct" value=" ; ${e}">
+#    <if>
+#      <all>
+#        <data source="300  .e" />
+#        <data source="@300[ac]1|@300b" />
+#        <none>
+#          <data source="@300[ac]2" />
+#        </none>
+#      </all>
+#    </if>
+#    <data name="e" source="@300e" />
+#  </combine>
+#  <combine name="@300e_punct" value=" ; ${e} (">
+#    <if>
+#      <all>
+#        <data source="300  .e" />
+#        <data source="@300[ac]1|@300b" />
+#        <data source="@300[ac]2" />
+#      </all>
+#    </if>
+#    <data name="e" source="@300e" />
+#  </combine>
+#
+#  <combine name="extent" value="${a1}${b}${c1}${e}${a2}${c2}">
+#    <choose name="a1">
+#      <data source="@300a1" />
+#      <data source="300*">
+#        <constant value="" />
+#      </data>
+#    </choose>
+#    <choose name="b">
+#      <data source="@300b_punct" />
+#      <data source="@300b" />
+#      <data source="300*">
+#        <constant value="" />
+#      </data>
+#    </choose>
+#    <choose name="c1">
+#      <data source="@300c1_punct" />
+#      <data source="@300c1" />
+#      <data source="300*">
+#        <constant value="" />
+#      </data>
+#    </choose>
+#    <choose name="e">
+#      <data source="@300e_punct" />
+#      <data source="@300e" />
+#      <data source="300*">
+#        <constant value="" />
+#      </data>
+#    </choose>
+#    <choose name="a2">
+#      <data source="@300a2_punct" />
+#      <data source="300*">
+#        <constant value="" />
+#      </data>
+#    </choose>
+#    <choose name="c2">
+#      <data source="@300c2_punct" />
+#      <data source="300*">
+#        <constant value="" />
+#      </data>
+#    </choose>
+#  </combine>
+#
+
+# TODO: This seems to be a relict of Introx.
+#  <!--  TODO: this used to be mapped as "publicationHistory". Check how to handle
+#
+#  <entity name="ChronologyAndEnumeration">
+#    <concat name="value" delimiter=" ; ">
+#      <data source="3620 .a" />
+#    </concat>
+#  </entity>
+#  -->
+#
+#  <!-- 4xx -->
+#
+#  <!-- 5xx -->
+#  <entity name="note[]" flushWith="record">
+#    <data name="" source="500  .a">
+#      <unique />
+#    </data>
+#  </entity>
+
+# 500 - General Note (R) Subfield: $a (NR)
+set_array("note[]")
+do list(path:"500  ", "var": "$i")
+  copy_field("$i.a", "note[].$append")
+end
+uniq("note[]")
+
+#
+#  <entity name="abstract[]" flushWith="record">
+#    <data name="" source="520[ 13] .[ab]" />
+#  </entity>
+
+# 520 - Summary, Etc. (R) Subfield: $a (NR), $b (NR)
+# TODO: Check if 1. Indicator 1 (REVIEW) is really to count as abstract. Perhaps 2 (Scope and content) is a better fit.
+# TODO: Get testdata.
+set_array("abstract[]")
+do list(path:"520[ 13] ", "var": "$i")
+  copy_field("$i.[ab]", "abstract[].$append")
+end
+
+
+#
+#  <entity name="thesisInformation[]" flushWith="record">
+#    <data name="" source="502??.a" />
+#  </entity>
+
+# 502 - Dissertation Note (R) Subfield: $a (R)
+# TODO: Get testdata.
+set_array("thesisInformation[]")
+do list(path:"502  ", "var": "$i")
+  copy_field("$i.a", "thesisInformation[].$append")
+end
+
+
+
+#		<concat delimiter="; " name="http://purl.org/dc/terms/bibliographicCitation">
+#			<data source="59[0123568][-abcd][-12].a">
+#				<replace pattern="&gt;&gt;" with=""/>
+#				<replace pattern="&lt;&lt;" with=""/>
+#				<replace pattern="^http" with="Siehe: http"/>
+#			</data>
+#		</concat>
+#		<data source="525[-a][-1].a" name="http://purl.org/dc/terms/bibliographicCitation">
+#			<replace pattern="&gt;&gt;" with=""/>
+#			<replace pattern="&lt;&lt;" with=""/>
+#			<replace pattern="^http" with="Siehe: http"/>
+#		</data>
+
+# bibliographicCitation
+# TODO: This element seems to be not very informative due to the distributed and uncomplete information.
+# Also the element bibliographicCitation is confusing since it has a broader concept than the scope in lobid: only bibliographicInfo about issues/collection that an article belongs to.
+# Do we need a filter only for articles?
+
+set_array("bibliographicCitation")
+
+
+copy_field("77308.t","bibliographicCitation.$append")
+copy_field("77308.b","bibliographicCitation.$append")
+copy_field("77308.d","bibliographicCitation.$append")
+copy_field("77308.g","bibliographicCitation.$append")
+copy_field("77308.n","bibliographicCitation.$append")
+copy_field("77308.n","bibliographicCitation.$append")
+copy_field("501??.a","bibliographicCitation.$append")
+
+replace_all("bibliographicCitation.*","<<|>>","")
+replace_all("bibliographicCitation.*","^http","Siehe: http")
+
+join_field("bibliographicCitation", "; ")
+
+#   <!-- 655 Form/Genre keyword transformed as natureOfContent   -->
+#   <entity name="natureOfContent[]" flushWith="record">
+set_array("natureOfContent[]")
+
+#     <entity name="" flushWith="655 7" sameEntity="true" reset="true">
+#       <if>
+#         <data name="label" source="655??.a">
+#           <unique />
+#         </data>
+#       </if>
+#       <data name="label" source="655??.a" />
+#       <data name="id" source="655??.0">
+#         <regexp match="\(DE-588\)(.*)" format="http://d-nb.info/gnd/${1}"/>
+#       </data>
+#     </entity>
+
+# 655 - Index Term-Genre/Form (R),  Subfield: $a (NR), $0 (R)
+# Ind: 2. 7= Source specified in subfield $2.
+
+do list(path:"655 7", "var":"$i")
+ unless in("$i.a","natureOfContent[].*.label")
+    copy_field("$i.a","natureOfContent[].$append.label")
+    do list(path:"$i.0","var":"$j")
+      # This is only DNB, should we also check for other uris for keywords?
+      if any_match("$j","^\\(DE-588\\)(.*)$")
+        copy_field("$j","natureOfContent[].$last.id")
+        replace_all("natureOfContent[].$last.id", "^\\(DE-588\\)(.*)$", "http://d-nb.info/gnd/$1")
+      end
+    end
+  end
+end
+
+
+#     <!-- 689 Formatschlagwort   -->
+#     <entity name="" flushWith="689??" sameEntity="true" reset="true">
+#       <if>
+#         <data source="689??.A">
+#           <equals string="f" />
+#         </data>
+#       </if>
+#       <!-- deduplicate, if the string exists already in 655 but is intended to morph 689 Formatschlagwort   -->
+#       <data name="label" source="689??.a|655??.a">
+#         <unique />
+#       </data>
+#     </entity>
+#   </entity>
+
+# 689 - not MARC standard element/DNB specific keywords (R), Subfields: $A (seems NR)
+
+do list(path:"689??", "var":"$i")
+  unless in("$i.a","natureOfContent[].*.label")
+    if any_equal("$i.A","f")
+      copy_field("$i.a","natureOfContent[].$append.label")
+    end
+  end
+end
+
+#
+#   <entity name="subject[]" flushWith="record">
+set_array("subject[]")
+
+
+#     <!-- 610 CorporateBody -->
+#     <call-macro name="subjectConcept" field="610" />
+#  <macro name="subjectConcept">
+#
+#     <!-- 650 Topical Term -->
+#     <call-macro name="subjectConcept" field="650" />
+#    <entity name="" flushWith="$[field]??" sameEntity="true" reset="true">
+#      <if>
+#        <any flushWith="$[field]??">
+#          <!-- Unique for subjects with ID   -->
+#          <data name="id" source="$[field]??.0">
+#            <unique/>
+#          </data>
+#          <!-- Unique for LCSH   -->
+#          <data source="$[field]?0.a" name="label">
+#            <unique/>
+#          </data>
+#          <!-- Unique for uncontrolled index terms   -->
+#          <data source="$[field]?4.a" name="label">
+#            <unique/>
+#          </data>
+#        </any>
+#      </if>
+#      <entity name="type[]" sameEntity="true" reset="true" flushWith="$[field]??">
+#        <data source="$[field]?[07].a">
+#          <constant value="Concept"/>
+#        </data>
+#        <data source="$[field]?4.a">
+#          <constant value="Keyword"/>
+#        </data>
+#      </entity>
+#      <entity name="source" sameEntity="true" reset="true" flushWith="$[field]??">
+#        <data source="$[field]?0.a" name="label">
+#          <constant value="Library of Congress Subject Headings"/>
+#        </data>
+#        <data source="$[field]?0.a" name="id">
+#          <constant value="https://id.loc.gov/authorities/subjects.html"/>
+#        </data>
+#        <data source="$[field]?4.a" name="label">
+#          <constant value="Freie Verschlagwortung"/>
+#        </data>
+#        <data source="$[field]?4.a" name="id">
+#          <constant value="https://www.wikidata.org/wiki/Q47524318"/>
+#        </data>
+#        <data name="id" source="$[field]??.0">
+#          <regexp match="\(DE-588\)(.*)" format="https://d-nb.info/gnd/7749153-1"/>
+#        </data>
+#        <data name="label" source="$[field]??.0">
+#          <regexp match="\(DE-588\)(.*)" format="Gemeinsame Normdatei (GND)"/>
+#        </data>
+#      </entity>
+#      <data name="id" source="$[field]??.0">
+#        <regexp match="\(DE-588\)(.*)" format="http://d-nb.info/gnd/${1}"/>
+#      </data>
+#      <data name="label" source="$[field]??.a" />
+#      <data name="gndIdentifier" source="$[field]??.0">
+#        <regexp match="\(DE-588\)(.*)" format="${1}"/>
+#      </data>
+#    </entity>
+#  </macro>
+
+# I change the approach from element oriented (all 630) to a subject/concept kind oriented approach (all LCSH, all GND, all keywords, etc.)
+
+# 610 - Subject Added Entry-Corporate Name (R), Subfield: $a (NR)
+# 650 - Subject Added Entry-Topical Term (R),  Subfield: $a (NR)
+# 653 - Index Term-Uncontrolled (R),  !!! Subfield: $a (R) !!!!
+
+
+do list(path:"610?4|650?4|653??", "var":"$i")
+      # TODO: Deduplicate values.
+      #          <data source="$[field]?4.a" name="label">
+      #            <unique/>
+      #          </data>
+  set_array("subject[].$append.type[]","Keyword")
+  #      <entity name="source" sameEntity="true" reset="true" flushWith="$[field]??">
+  #        <data source="$[field]?4.a" name="label">
+#          <constant value="Freie Verschlagwortung"/>
+#        </data>
+#        <data source="$[field]?4.a" name="id">
+#          <constant value="https://www.wikidata.org/wiki/Q47524318"/>
+#        </data>
+  add_field("subject[].$last.source.label","Freie Verschlagwortung")
+  add_field("subject[].$last.source.id","https://www.wikidata.org/wiki/Q47524318")
+  #      <data name="label" source="$[field]??.a" />
+  copy_field("$i.a","subject[].$last.label")
+end
+
+do list(path:"610?0|650?0", "var":"$i")
+      # TODO: Deduplicate values.
+      #          <data source="$[field]?4.a" name="label">
+      #            <unique/>
+      #          </data>
+  set_array("subject[].$append.type[]","Concept")
+#        <data source="$[field]?0.a" name="label">
+#          <constant value="Library of Congress Subject Headings"/>
+#        </data>
+#        <data source="$[field]?0.a" name="id">
+#          <constant value="https://id.loc.gov/authorities/subjects.html"/>
+#        </data>
+  add_field("subject[].$last.source.label","Library of Congress Subject Headings")
+  add_field("subject[].$last.source.id","https://id.loc.gov/authorities/subjects.html")
+  #      <data name="label" source="$[field]??.a" />
+  copy_field("$i.a","subject[].$last.label")
+end
+
+
+#        <data name="id" source="$[field]??.0">
+#          <regexp match="\(DE-588\)(.*)" format="https://d-nb.info/gnd/7749153-1"/>
+#        </data>
+#        <data name="label" source="$[field]??.0">
+#          <regexp match="\(DE-588\)(.*)" format="Gemeinsame Normdatei (GND)"/>
+#        </data>
+
+do list(path:"610??|650??", "var":"$i")
+  if any_match("$i.0","^\\(DE-588\\)(.*)$")
+        # TODO: Deduplicate values.
+        #          <data source="$[field]?4.a" name="label">
+        #            <unique/>
+        #          </data>
+    set_array("subject[].$append.type[]","Concept")
+  #        <data source="$[field]?0.a" name="label">
+  #          <constant value="Library of Congress Subject Headings"/>
+  #        </data>
+  #        <data source="$[field]?0.a" name="id">
+  #          <constant value="https://id.loc.gov/authorities/subjects.html"/>
+  #        </data>
+    add_field("subject[].$last.source.label","Gemeinsame Normdatei (GND)")
+    add_field("subject[].$last.source.id","https://d-nb.info/gnd/7749153-1")
+    #      <data name="label" source="$[field]??.a" />
+    copy_field("$i.a","subject[].$last.label")
+    do list(path:"$i.0", "var":"$j")
+      if any_match("$j","^\\(DE-588\\)(.*)$")
+        copy_field("$j", "subject[].$last.id")
+        replace_all("subject[].$last.id","^\\(DE-588\\)(.*)$","http://d-nb.info/gnd/$1")
+        copy_field("$j", "subject[].$last.gndIdentifier")
+        replace_all("subject[].$last.gndIdentifier","^\\(DE-588\\)(.*)$","$1")
+      end
+    end
+  end
+end
+
+
+
+#  ALMA: This (653) has been included above as keywors.
+
+#     <!-- 653  Index Term-Uncontrolled (but hbz says Stichwörter) -->
+#     <entity name="" flushWith="653??" sameEntity="true" reset="true">
+#       <entity name="type[]" sameEntity="true" reset="true" flushWith="650??">
+#         <data source="653??.a">
+#           <constant value="keyword"/>
+#         </data>
+#       </entity>
+#       <entity name="source" sameEntity="true" reset="true" flushWith="653??">
+#         <data source="653??.a" name="label">
+#           <constant value="Freie Verschlagwortung"/>
+#         </data>
+#         <data source="653??.a" name="id">
+#           <constant value="https://www.wikidata.org/wiki/Q47524318"/>
+#         </data>
+#       </entity>
+#       <data name="label" source="653??.a" />
+#     </entity>
+
+
+
+
+
+
+
+#
+#     <!-- DDC Dewey 082 -->
+#     <entity name="" flushWith="0820 |08200">
+#       <data name="notation" source="0820 .a|08200.a" />
+#       <data name="label" source="0820 .a|08200.a">
+#         <lookup in="deweyLabels"/>
+#       </data>
+#       <entity name="source" sameEntity="true" reset="true" flushWith="0820 |08200">
+#         <data name="id" source="0820 .a|08200.a">
+#           <constant value="http://d-nb.info/gnd/4149423-4"/>
+#         </data>
+#         <data name="label" source="0820 .a|08200.a">
+#           <constant value="Dewey-Dezimalklassifikation"/>
+#         </data>
+#         <data name="version" source="0820 .2|08200.2" />
+#       </entity>
+#     </entity>
+
+# 082 - Dewey Decimal Classification Number (R) - Subfield: $a (R), $2 (NR)
+
+do list(path:"0820 |08200", "var":"$i")
+  set_array("subject[].$append.type[]","Concept")
+  add_field("subject[].$last.source.label","Dewey-Dezimalklassifikation")
+  add_field("subject[].$last.source.id","http://d-nb.info/gnd/4149423-4")
+  do list(path:"$i.a", "var": "$j")
+    unless exists("subject[].$last.label")
+      copy_field("$i.a","subject[].$last.label")
+      # TODO: lookup(in:"deweyLabels") does not work yet due to hidden mapping file.
+      copy_field("$i.a","subject[].$last.notation")
+    end
+  end
+  copy_field("$i.2","subject[].$last.version")
+end
+
+# 084 - Other Classification Number (R) - Subfield: $a (R), $2 (NR)
+
+do list(path:"084??", "var":"$i")
+  do list(path:"$i.0", "var":"$j")
+    if any_contain("$j","https://nwbib.de/subjects")
+      copy_field("$j", "subject[].$append.id")
+      copy_field("$i.a", "subject[].$last.label")
+      if any_match("$j", "https://nwbib.de/subjects#N(.*)$")
+        copy_field("$j", "subject[].$last.notation")
+        replace_all("subject[].$last.notation","https://nwbib.de/subjects#N(.*)$","$1")
+      end
+      set_array("subject[].$last.type[]","Concept")
+      add_field("subject[].$last.source.id","https://nwbib.de/subjects")
+      add_field("subject[].$last.source.label","Sachsystematik der Nordrhein-Westfälischen Bibliographie")
+    end
+  end
+end
+
+#
+#     <!-- local subjects 982 -->
+#     <entity name="" flushWith="982  " sameEntity="true" reset="true">
+#       <if>
+#         <data source="982  .[ab]" />
+#       </if>
+#       <entity name="type[]" sameEntity="true" reset="true" flushWith="982  .[ab]">
+#         <data source="982  .[ab]">
+#           <constant value="Keyword"/>
+#         </data>
+#       </entity>
+#       <data name="label" source="982  .[ab]" />
+#       <entity name="source" sameEntity="true" reset="true" flushWith="982  ">
+#         <data name="id" source="982  .M">
+#           <lookup in="alma-iz-code-to-isil" />
+#           <compose prefix="http://lobid.org/organisations/" postfix="#!"/>
+#         </data>
+#         <data name="label" source="982  .M">
+#           <lookup in="alma-iz-code-to-isil" />
+#           <compose prefix="Freie Verschlagwortung durch "/>
+#         </data>
+#       </entity>
+
+# local subjects 982 - no info on repeatability
+
+do list(path:"982  ", "var":"$i")
+  if exists("$i.a|b")
+    set_array("subject[].$append.type[]","Keyword")
+    copy_field("$i.M","$i.@organisations")
+    lookup("$i.@organisations","alma-iz-code-to-isil")
+    paste("subject[].$last.source.id","~http://lobid.org/organisations/","$i.@organisations","~#!", join_char:"")
+    paste("subject[].$last.source.label","~Freie Verschlagwortung durch","$i.@organisations")
+    copy_field("$i.a|b","subject[].$last.label")
+    copy_field("$i.2","subject[].$last.version")
+  end
+end
+
+
+
+
+
+#     </entity>
+#     <!-- 689 RSWK Schlagwortfolgen fka: Schlagwortketten 1 - 10 -->
+#     <!-- 1 -->
+#     <call-macro name="schlagwortfolge" field="6890" />
+#     <!-- 2 -->
+#     <call-macro name="schlagwortfolge" field="6891" />
+#     <!-- 3 -->
+#     <call-macro name="schlagwortfolge" field="6892" />
+#     <!-- 4 -->
+#     <call-macro name="schlagwortfolge" field="6893" />
+#     <!-- 5 -->
+#     <call-macro name="schlagwortfolge" field="6894" />
+#     <!-- 6 -->
+#     <call-macro name="schlagwortfolge" field="6895" />
+#     <!-- 7 -->
+#     <call-macro name="schlagwortfolge" field="6896" />
+#     <!-- 8 -->
+#     <call-macro name="schlagwortfolge" field="6897" />
+#     <!-- 9 -->
+#     <call-macro name="schlagwortfolge" field="6898" />
+##     <!-- 10 -->
+##     <call-macro name="schlagwortfolge" field="6899" />
+##   </entity>
+# <macro name="schlagwortfolge">
+#    <entity name="" flushWith="record">
+#      <entity name="type[]" sameEntity="true" reset="true">
+#        <data name="" source="$[field]0">
+#          <constant value="ComplexSubject"/>
+#        </data>
+#      </entity>
+#      <concat name="label" delimiter=" | ">
+#        <data source="$[field]?.a" />
+#      </concat>
+#      <entity name="componentList[]" flushWith="record">
+#        <entity name="" sameEntity="true" reset="true" flushWith="$[field]?">
+#          <entity name="type[]" sameEntity="true" reset="true">
+#            <data source="$[field]?.D">
+#              <lookup in="rswk-indicator" />
+#            </data>
+#          </entity>
+#          <data name="label" source="$[field]?.a" />
+#          <data name="id" source="$[field]?.0">
+#            <regexp match="\(DE-588\)(.*)" format="http://d-nb.info/gnd/${1}"/>
+#          </data>
+#          <entity name="source" sameEntity="true" reset="true">
+#            <data name="id" source="$[field]?.0">
+#              <regexp match="\(DE-588\)(.*)" format="https://d-nb.info/gnd/7749153-1"/>
+#            </data>
+#            <data name="label" source="$[field]?.0">
+#              <regexp match="\(DE-588\)(.*)" format="Gemeinsame Normdatei (GND)"/>
+#            </data>
+#          </entity>
+#          <data name="gndIdentifier" source="$[field]?.0">
+#            <regexp match="\(DE-588\)(.*)" format="${1}"/>
+#          </data>
+#        </entity>
+#      </entity>
+#    </entity>
+#  </macro>
+#
+
+# 689 RSWK Schlagwortfolgen fka: Schlagwortketten 1 - 10 - no info on repeatability
+
+do put_macro("schlagwortfolge")
+  if exists("$[field]")
+    set_array("subject[].$append.type[]","ComplexSubject")
+    set_array("subject[].$last.label")
+    set_array("subject[].$last.componentList[]")
+    do list(path:"$[field]", "var":"$i")
+      set_array("subject[].$last.componentList[].$append.type[]")
+      do list(path: "$i.D", "var": "$k")
+        copy_field("$k","subject[].$last.componentList[].$last.type[].$append")
+      end
+      copy_field("$i.a","subject[].$last.componentList[].$last.label")
+      copy_field("$i.a","subject[].$last.label.$append")
+      do list(path:"$i.0", "var": "$j")
+        if any_match("$j","^\\(DE-588\\)(.*)$")
+          add_field("subject[].$last.componentList[].$last.source.label","Gemeinsame Normdatei (GND)")
+          add_field("subject[].$last.componentList[].$last.source.id","https://d-nb.info/gnd/7749153-1")
+          copy_field("$j", "subject[].$last.componentList[].$last.id")
+          replace_all("subject[].$last.componentList[].$last.id","^\\(DE-588\\)(.*)$","http://d-nb.info/gnd/$1")
+          copy_field("$j", "subject[].$last.componentList[].$last.gndIdentifier")
+          replace_all("subject[].$last.componentList[].$last.gndIdentifier","^\\(DE-588\\)(.*)$","$1")
+        end
+      end
+    end
+    join_field("subject[].$last.label"," | ")
+  end
+end
+
+# 689 RSWK Schlagwortfolgen fka: Schlagwortketten 1 - 10
+call_macro("schlagwortfolge", field: "6890?")
+call_macro("schlagwortfolge", field: "6891?")
+call_macro("schlagwortfolge", field: "6892?")
+call_macro("schlagwortfolge", field: "6893?")
+call_macro("schlagwortfolge", field: "6894?")
+call_macro("schlagwortfolge", field: "6895?")
+call_macro("schlagwortfolge", field: "6896?")
+call_macro("schlagwortfolge", field: "6897?")
+call_macro("schlagwortfolge", field: "6898?")
+call_macro("schlagwortfolge", field: "6899?")
+
+
+lookup("subject[].*.componentList[].*.type[].*","rswk-indicator")
+
+#
+#   <entity name="subjectAltLabel[]" flushWith="record">
+#     <data source="GST  .a|GST  .g|GPN1 .a|GGN  .a">
+#       <unique />
+#     </data>
+#   </entity>
+
+set_array("subjectAltLabel[]")
+copy_field("GST  .a","subjectAltLabel[].$append")
+copy_field("GST  .g","subjectAltLabel[].$append")
+copy_field("GPN1 .a","subjectAltLabel[].$append")
+copy_field("GGN  .a","subjectAltLabel[].$append")
+uniq("subjectAltLabel[]")
+
+# TODO: any way to add the labels to the matching subject ?
+
+# nwbib
+
+#  <datafield tag="084" ind1=" " ind2=" ">
+#    <subfield code="a">Westfalen</subfield>
+#    <subfield code="0">https://nwbib.de/spatial#N04</subfield>
+#    <subfield code="2">nwbib</subfield>
+#  </datafield>
+#  <datafield tag="084" ind1=" " ind2=" ">
+#    <subfield code="a">M&#252;nster</subfield>
+#    <subfield code="0">https://nwbib.de/spatial#Q2742</subfield>
+#    <subfield code="2">nwbib</subfield>
+#  </datafield>
+#  <datafield tag="084" ind1=" " ind2=" ">
+#    <subfield code="a">Denkmalpflege. Denkmalschutz</subfield>
+#    <subfield code="0">https://nwbib.de/subjects#N844200</subfield>
+#    <subfield code="2">nwbib</subfield>
+#  </datafield>
+
+set_array("spatial[]")
+
+do list(path:"084??", "var":"$i")
+  do list(path:"$i.0", "var":"$j")
+    if any_contain("$j","https://nwbib.de/spatial#")
+      copy_field("$j", "spatial[].$append.id")
+      copy_field("$i.a", "spatial[].$last.label")
+      if any_match("$j", "https://nwbib.de/spatial#N(.*)$")
+        copy_field("$j", "spatial[].$last.notation")
+      end
+      set_array("spatial[].$last.type[]","Concept")
+      add_field("spatial[].$last.source.id","https://nwbib.de/spatial")
+      add_field("spatial[].$last.source.label","Raumsystematik der Nordrhein-Westfälischen Bibliographie")
+    end
+  end
+end
+
+replace_all("spatial[].*.notation","https://nwbib.de/spatial#N(.*)$","$1")
+
+#   <entity name="hasItem[]" flushWith="record">
+set_array("hasItem[]")
+
+#
+#     <!-- MBD -->
+#     <entity name="" reset="true" sameEntity="true" flushWith="MBD  ">
+#
+#       <combine name="id" value="https://lobid.org/item/${i}">
+#         <data name="i" source="MBD  .i"/>
+#       </combine>
+#       <entity name="type[]" sameEntity="true">
+#         <data name="" source="MBD  .i">
+#           <constant value="MBD"/>
+#         </data>
+#       </entity>
+#       <entity name="heldBy" sameEntity="true" reset="true">
+#         <data name="id" source="MBD  .M">
+#           <lookup in="alma-iz-code-to-isil" />
+#           <compose prefix="http://lobid.org/organisations/" postfix="#!"/>
+#         </data>
+#         <data name="label" source="MBD  .M">
+#           <constant value="lobid Organisation"/>
+#         </data>
+#       </entity>
+#     </entity>
+
+do list(path:"MBD  ", "var": "$i")
+  copy_field("$i.i", "hasItem[].$append.id")
+  prepend("hasItem[].$last.id","https://lobid.org/item/")
+  set_array("hasItem[].$last.type[]", "Item", "MBD")
+  copy_field("$i.M", "hasItem[].$last.heldBy.id")
+  lookup("hasItem[].$last.heldBy.id", "alma-iz-code-to-isil")
+  prepend("hasItem[].$last.heldBy.id", "http://lobid.org/organisations/")
+  append("hasItem[].$last.heldBy.id","#!")
+end
+
+
+#     <!-- HOL -->
+#     <entity name="" reset="true" sameEntity="true">
+#       <combine name="id" value="https://lobid.org/item/${i}" reset="true" sameEntity="true">
+#         <data name="i" source="HOL  .8"/>
+#       </combine>
+#       <entity name="type[]" reset="true" sameEntity="true">
+#         <data name="" source="HOL  .8">
+#           <constant value="HOL"/>
+#         </data>
+#       </entity>
+#       <data name="label" source="HOL  .8">
+#         <constant value="lobid Bestandsressource"/>
+#       </data>
+#       <entity name="heldBy" reset="true" sameEntity="true">
+#         <data name="id" source="HOL  .8">
+#           <regexp match=".*(\d{4})$" format="${1}"/>
+#           <lookup in="alma-institution-code-to-isil" />
+#           <compose prefix="http://lobid.org/organisations/" postfix="#!"/>
+#         </data>
+#         <data name="label" source="HOL  .8">
+#           <constant value="lobid Organisation"/>
+#         </data>
+#       </entity>
+#     </entity>
+
+do list(path:"HOL  ", "var": "$i")
+  copy_field("$i.8", "hasItem[].$append.id")
+  prepend("hasItem[].$last.id","https://lobid.org/item/")
+  add_field("hasItem[].$last.label", "lobid Bestandsressource")
+  set_array("hasItem[].$last.type[]", "Item", "HOL")
+  copy_field("$i.8", "hasItem[].$last.heldBy.id")
+  replace_all("hasItem[].$last.heldBy.id",".*(\\d{4})$","$1")
+  lookup("hasItem[].$last.heldBy.id", "alma-institution-code-to-isil")
+  prepend("hasItem[].$last.heldBy.id", "http://lobid.org/organisations/")
+  append("hasItem[].$last.heldBy.id","#!")
+end
+
+
+#     <!-- H52 -->
+#     <entity name="" reset="true" sameEntity="true">
+#       <combine name="id" value="https://lobid.org/item/${i}">
+#         <data name="i" source="H52  .8">
+#           <regexp match=".*(\d{4})$" />
+#         </data>
+#       </combine>
+#       <entity name="type[]" sameEntity="true" reset="true">
+#         <data name="" source="H52  .8">
+#           <regexp match=".*(\d{4})$" />
+#           <constant value="H52"/>
+#         </data>
+#       </entity>
+#       <data name="label" source="H52  .8">
+#         <regexp match=".*(\d{4})$" />
+#         <constant value="lobid Bestandsressource"/>
+#       </data>
+#       <entity name="heldBy" sameEntity="true" reset="true">
+#         <data name="id" source="H52  .8">
+#           <regexp match=".*(\d{4})$" format="${1}"/>
+#           <lookup in="alma-institution-code-to-isil" />
+#           <compose prefix="http://lobid.org/organisations/" postfix="#!"/>
+#         </data>
+#         <data name="label" source="H52  .8">
+#           <regexp match=".*(\d{4})$" />
+#           <constant value="lobid Organisation"/>
+#         </data>
+#       </entity>
+#       <data name="callNumber" source="H52  .h" />
+#       <combine name="currentLocation" value="${a} / ${b}" sameEntity="true" reset="true">
+#         <data name="a" source="H52  .b"/>
+#         <data name="b" source="H52  .c"/>
+#       </combine>
+#     </entity>
+
+# # TODO: The morph only took up H52 without indices, but what about 1. inidice 8 ("H528 ") and 2. indice 1 ("H5281")
+# do list(path:"H52  ", "var": "$i")
+#   if any_match("$i.8", ".*(\\d{4})$")
+#     copy_field("$i.8", "hasItem[].$append.id")
+#     prepend("hasItem[].$last.id","https://lobid.org/item/")
+#     add_field("hasItem[].$last.label", "lobid Bestandsressource")
+#     set_array("hasItem[].$last.type[]", "Item", "H52")
+#     copy_field("$i.h", "hasItem[].$last.callNumber")
+#     paste("hasItem[].$last.currentLocation", "$i.b", "~/", "$i.c")
+#     copy_field("$i.8", "hasItem[].$last.heldBy.id")
+#     replace_all("hasItem[].$last.heldBy.id",".*(\\d{4})$","$1")
+#     lookup("hasItem[].$last.heldBy.id", "alma-institution-code-to-isil")
+#     prepend("hasItem[].$last.heldBy.id", "http://lobid.org/organisations/")
+#     append("hasItem[].$last.heldBy.id","#!")
+#   end
+# end
+
+#
+#     <!-- ITM -->
+#     <entity name="" reset="true" sameEntity="true" flushWith="ITM  ">
+#       <combine name="id" value="https://lobid.org/item/${i}">
+#         <data name="i" source="ITM  .a"/>
+#       </combine>
+#       <entity name="type[]" sameEntity="true">
+#         <data name="" source="ITM  .a">
+#           <constant value="ITM"/>
+#         </data>
+#       </entity>
+#       <data name="label" source="ITM  .a">
+#         <constant value="lobid Bestandsressource"/>
+#       </data>
+#       <entity name="heldBy" sameEntity="true">
+#         <data name="id" source="ITM  .a">
+#           <regexp match=".*(\d{4})$" format="${1}"/>
+#           <lookup in="alma-institution-code-to-isil" />
+#           <compose prefix="http://lobid.org/organisations/" postfix="#!"/>
+#         </data>
+#         <data name="label" source="ITM  .a">
+#           <constant value="lobid Organisation"/>
+#         </data>
+#       </entity>
+#       <choose name="callNumber" sameEntity="true" flushWith="ITM  ">
+#         <data source="ITM  .c" />
+#         <data source="ITM  .n" />
+#       </choose>
+#       <combine name="currentLocation" value="${a} / ${b}" sameEntity="true">
+#         <data name="a" source="ITM  .w"/>
+#         <data name="b" source="ITM  .x"/>
+#       </combine>
+#     </entity>
+
+
+# TODO: Objects created from ITM seem to produce duplicates. Either we need something to differentiate these or deduplicate these.
+do list(path:"ITM  ", "var": "$i")
+  copy_field("$i.a", "hasItem[].$append.id")
+  prepend("hasItem[].$last.id","https://lobid.org/item/")
+  add_field("hasItem[].$last.label", "lobid Bestandsressource")
+  set_array("hasItem[].$last.type[]", "Item", "ITM")
+  copy_field("$i.c", "hasItem[].$last.callNumber")
+  unless exists("hasItem[].$last.callNumber")
+    copy_field("$i.n", "hasItem[].$last.callNumber")
+  end
+  paste("hasItem[].$last.currentLocation", "$i.w", "~/", "$i.x")
+  copy_field("$i.a", "hasItem[].$last.heldBy.id")
+  replace_all("hasItem[].$last.heldBy.id",".*(\\d{4})$","$1")
+  lookup("hasItem[].$last.heldBy.id", "alma-institution-code-to-isil")
+  prepend("hasItem[].$last.heldBy.id", "http://lobid.org/organisations/")
+  append("hasItem[].$last.heldBy.id","#!")
+end
+
+
+# TODO: POR
+#     <!-- POR -->
+#     <!-- POR  .a but no POR  .A -->
+#     <entity name="" reset="true" sameEntity="true">
+#       <if>
+#         <data name="id" source="POR  .a">
+#           <regexp match=".*(\d{4})$" format="${1}"/>
+#           <lookup in="alma-institution-code-to-isil" />
+#           <not-equals string="DE-605" />
+#         </data>
+#       </if>
+#       <combine name="id" value="https://lobid.org/item/${i}">
+#         <data name="i" source="POR  .a"/>
+#       </combine>
+#       <entity name="type[]" sameEntity="true">
+#         <data name="" source="POR  .a">
+#           <constant value="POR"/>
+#         </data>
+#       </entity>
+#       <data name="label" source="POR  .a">
+#         <constant value="Portfolio"/>
+#       </data>
+#       <data name="electronicLocator" source="POR  .D" />
+#       <data name="sublocation" source="POR  .d" />
+#       <entity name="heldBy" sameEntity="true">
+#         <data name="id" source="POR  .a">
+#           <regexp match=".*(\d{4})$" format="${1}"/>
+#           <lookup in="alma-institution-code-to-isil" />
+#           <compose prefix="http://lobid.org/organisations/" postfix="#!"/>
+#         </data>
+#         <data name="label" source="POR  .w">
+#           <constant value="lobid Organisation"/>
+#         </data>
+#       </entity>
+#     </entity>
+
+do list(path:"POR  ", "var": "$i")
+# entity for every POR  .a without POR  .A
+  unless any_match("$i.a",".*6441$") # filter out hbz
+    copy_field("$i.a", "hasItem[].$append.id")
+    prepend("hasItem[].$last.id","https://lobid.org/item/")
+    set_array("hasItem[].$last.type[]", "Item", "POR")
+    add_field("hasItem[].$last.label", "POR")
+    copy_field("$i.D", "hasItem[].$last.electronicLocator")
+    copy_field("$i.d", "hasItem[].$last.sublocation")
+    copy_field("$i.a", "hasItem[].$last.heldBy.id")
+    replace_all("hasItem[].$last.heldBy.id",".*(\\d{4})$","$1")
+    lookup("hasItem[].$last.heldBy.id", "alma-institution-code-to-isil")
+    prepend("hasItem[].$last.heldBy.id", "http://lobid.org/organisations/")
+    append("hasItem[].$last.heldBy.id","#!")
+  end
+  # entity for every POR  .A
+  if exists ("$i.A")
+    do list(path:"$i.A", "var": "$j")
+      copy_field("$i.a", "hasItem[].$append.id")
+      prepend("hasItem[].$last.id","https://lobid.org/item/")
+      set_array("hasItem[].$last.type[]", "Item", "POR")
+      add_field("hasItem[].$last.label", "POR")
+      copy_field("$i.D", "hasItem[].$last.electronicLocator")
+      copy_field("$i.d", "hasItem[].$last.sublocation")
+      copy_field("$j", "hasItem[].$last.heldBy.id")
+      lookup("hasItem[].$last.heldBy.id", "alma-iz-code-to-isil")
+      prepend("hasItem[].$last.heldBy.id", "http://lobid.org/organisations/")
+      append("hasItem[].$last.heldBy.id","#!")
+    end
+  end
+end
+
+
+#     <!-- POR  .a = NZ => hasItem for each POR  .A -->
+#     <entity name="" reset="true" flushWith="POR  .A" sameEntity="true">
+#       <combine name="id" value="https://lobid.org/item/${i}" flushWith="POR  .A">
+#         <data name="i" source="POR  .a"/>
+#       </combine>
+#       <entity name="type[]" sameEntity="true" reset="true">
+#         <data name="" source="POR  .A">
+#           <constant value="POR"/>
+#         </data>
+#       </entity>
+#       <data name="label" source="POR  .A">
+#         <constant value="Portfolio"/>
+#       </data>
+#       <!--<data name="electronicLocator" source="POR  .D" />
+#     <data name="sublocation" source="POR  .d" />-->
+#       <entity name="heldBy" sameEntity="true" reset="true">
+#         <data name="id" source="POR  .A">
+#           <lookup in="alma-iz-code-to-isil" />
+#           <compose prefix="http://lobid.org/organisations/" postfix="#!"/>
+#         </data>
+#         <data name="label" source="POR  .A">
+#           <constant value="lobid Organisation"/>
+#         </data>
+#       </entity>
+#     </entity>
+#   </entity>
+#
+# </rules>
+
+set_array("medium[]")
+
+# The type and medium transformation has to be completly remodeled since the transformation was not identical with
+# the old ALEPH Moprh Transformation.
+
+#  <!--
+#    CF = Computer files
+#    MK = Music
+#    MP  = Map
+#    CR = Continuing Resources
+#    VM = Visual materials
+#    MX = Mixed materials
+#    BK  = Book
+#  -->
+# Leader/06 values
+# Value 	Field 008/18-34 configuration
+# a 	    Language material 	Books OR Continuing resources
+# c 	    Notated music 	Music
+# d 	    Manuscript notated music 	Music
+# e 	    Cartographic material 	Maps
+# f 	    Manuscript cartographic material 	Maps
+# g 	    Projected medium 	Visual materials
+# i 	    Nonmusical sound recording 	Music
+# j 	    Musical sound recording 	Music
+# k 	    Two-dimensional nonprojectable graphic 	Visual materials
+# m 	    Computer file 	Computer files
+# o 	    Kit 	Visual materials
+# p 	    Mixed material 	Mixed materials
+# r 	    Three dimensional artifact or naturally occurring object 	Visual materials
+# t 	    Manuscript language material 	Books
+
+# @LeaderPos06 - Type of record
+# @LeaderPos07 - Bibliographic level
+# set @leaderType-variable
+copy_field("leader","@leaderPos06-07")
+substring("@leaderPos06-07","6","2")
+
+if any_match("@leaderPos06-07","a[acdm]|t.")
+  add_field("@leaderTyp","Book")
+  # TODO: Why is `m` not CF but CR sometimes.
+elsif any_match("@leaderPos06-07","a[bis]|m[bis]")
+  add_field("@leaderTyp","Continuing Resources")
+elsif any_match("@leaderPos06-07","m[^bis]")
+  add_field("@leaderTyp","Computer files")
+elsif any_match("@leaderPos06-07","[cdij].")
+  add_field("@leaderTyp","Music")
+elsif any_match("@leaderPos06-07","[ef].")
+  add_field("@leaderTyp","Map")
+elsif any_match("@leaderPos06-07","[gkor].")
+  add_field("@leaderTyp","Visual materials")
+elsif any_match("@leaderPos06-07","p.")
+  add_field("@leaderTyp","Mixed materials")
+end
+
+paste("@leaderTyp+008","@leaderTyp","008", join_char:"")
+
+# medium (Mappings based on old ALEPH-morph, Introx Mapping and 050 Mapping from Verbund)
+# https://service-wiki.hbz-nrw.de/display/VDBE/ALT+-+Mapping+MAB2+-+MARC+21+-++Segmente+0---%2C+001+-+088+-+Kurzform
+
+# 337: https://service-wiki.hbz-nrw.de/pages/viewpage.action?pageId=510164996&preview=/510164996/510165005/F8_Liste_061_.txt
+# 338: Value list: https://service-wiki.hbz-nrw.de/pages/viewpage.action?pageId=510164996&preview=/510164996/510165006/F8_Liste_062_.txt
+
+# TODO: Check introx concerning possible mappings of 340 https://github.com/hbz/limetrans/blob/d2dff10e1b5cdf5699239a8f3474f8b652d582a3/src/main/resources/transformation/alma.fix#L629
+
+# medium: "Audio-Dokument":	"http://purl.org/ontology/bibo/AudioDocument"
+
+if any_match("@leaderPos06-07","[ij].")
+  add_field("medium[].$append.label","Audio-Dokument")
+elsif any_match("006", "^[ij].*")
+  add_field("medium[].$append.label","Audio-Dokument")
+elsif any_match("007", "^[s].*")
+  add_field("medium[].$append.label","Audio-Dokument")
+elsif any_match("@leaderTyp+008", "Computer files(.{26})h.*")
+  add_field("medium[].$append.label","Audio-Dokument")
+elsif any_match("006", "m(.{8})h.*") # Pos00+09
+  add_field("medium[].$append.label","Audio-Dokument")
+elsif any_match("337  ", "audio")
+  add_field("medium[].$append.label","Audio-Dokument")
+elsif any_match("338 .a", "Audiodisk|Audiokassette|Audiocartridge|Notenrolle|Phonographenzylinder|Tonbandspule|Sonstige Tonträger")
+  add_field("medium[].$append.label","Audio-Dokument")
+elsif any_match("338  .b", "s")
+  add_field("medium[].$append.label","Audio-Dokument")
+elsif any_match("245[10]0.h", "^[Tt][oO].*|Audio-CD")
+  add_field("medium[].$append.label","Audio-Dokument")
+elsif any_match("689??.a", "Hörbuch|Tonträger")
+  add_field("medium[].$append.label","Audio-Dokument")
+end
+
+# medium: "Audio-Kassette":	"http://id.loc.gov/vocabulary/carriers/ss"
+# TODO: In the frontend the icon says Tonband which is more encompassing than "Kassette"
+if any_match("007", "^ss.*")
+  add_field("medium[].$append.label","Audio-Kassette")
+elsif any_match("245[10]0.h", "Kompaktkassette|MC|Tonkassette")
+  add_field("medium[].$append.label","Audio-Dokument")
+end
+
+# medium: "Audio-Visuell":	"http://purl.org/ontology/bibo/AudioVisualDocument" & "Video": "http://rdaregistry.info/termList/RDAMediaType/1008"
+
+
+if any_match("007", "^([gmv]).*")
+  add_field("medium[].$append.label","Video")
+  add_field("medium[].$append.label", "Audio-Visuell")
+elsif any_match("@leaderTyp+008", "Visual materials(.{32})[fmstv].*")   # Pos33 TODO: Check if s (Slide/Dia) and t(Transparency) are correct since both are not video specific.
+  add_field("medium[].$append.label","Video")
+  add_field("medium[].$append.label", "Audio-Visuell")
+elsif any_match("006", "^[gkor](.{15})[fmstv].*") # Pos00+16 Check if s (Slide/Dia) and t(Transparency) are correct since both are not video specific.
+  add_field("medium[].$append.label","Video")
+  add_field("medium[].$append.label", "Audio-Visuell")
+elsif any_match("245[10]0.h", "Bildtonträger")
+  add_field("medium[].$append.label","Video")
+  add_field("medium[].$append.label", "Audio-Visuell")
+elsif any_match("300  .a", ".*(DVD-Video|Video).*")
+  add_field("medium[].$append.label","Video")
+  add_field("medium[].$append.label", "Audio-Visuell")
+elsif any_match("337  .a", "video")
+  add_field("medium[].$append.label","Video")
+  add_field("medium[].$append.label", "Audio-Visuell")
+elsif any_match("337  .b", "v")
+  add_field("medium[].$append.label","Video")
+  add_field("medium[].$append.label", "Audio-Visuell")
+elsif any_match("338 .a", "^(Video).*|Sonstige Video-Datenträger$")
+  add_field("medium[].$append.label","Video")
+  add_field("medium[].$append.label", "Audio-Visuell")
+elsif any_match("338  .b", "vd")
+  add_field("medium[].$append.label","Video")
+  add_field("medium[].$append.label", "Audio-Visuell")
+elsif any_match("689??.a", "Hörbuch|Tonträger")
+  add_field("medium[].$append.label","DVD-Video|Video[ck]assette")
+  add_field("medium[].$append.label", "Audio-Visuell")
+end
+
+
+
+# medium: "Blindenschrift":	"http://purl.org/library/BrailleBook"
+if any_match("007", "^fb.*|^tc.*") # TODO: This does not always seems to fit. Had fu but u is for unkown. Added text Pos 01 b (Braille)
+  add_field("medium[].$append.label","Blindenschrift")
+  add_field("medium[].$append.label", "Print")
+elsif any_match("@leaderTyp+008", "(Book|Music|Continuing Resources|Mixed materials)(.{23})[f].*")  # Pos23
+  add_field("medium[].$append.label","Blindenschrift")
+  add_field("medium[].$append.label", "Print")
+elsif any_match("@leaderTyp+008", "(Map|Visual materials)(.{29})[f].*")  # Pos29
+  add_field("medium[].$append.label","Blindenschrift")
+  add_field("medium[].$append.label", "Print")
+elsif any_match("006", "^[efgkor](.{11})[f].*") # Pos00+12
+  add_field("medium[].$append.label","Blindenschrift")
+  add_field("medium[].$append.label", "Print")
+elsif any_match("006", "^[acdijpst](.{5})[f].*") # Pos00+06
+  add_field("medium[].$append.label","Blindenschrift")
+  add_field("medium[].$append.label", "Print")
+elsif any_match("546  .a", ".*Braille.*")
+  add_field("medium[].$append.label","Blindenschrift")
+  add_field("medium[].$append.label", "Print")
+end
+
+# medium:   "Print":	"http://rdaregistry.info/termList/RDAproductionMethod/1010"
+
+# Old ALEPH MORPH:
+#		<data source="050." name="@medium">
+#			<regexp match="^[abcd]" format="http://rdaregistry.info/termList/RDAproductionMethod/1010"/>
+#		</data>
+#		<data source="050." name="@medium">
+#			<regexp match="^.......a" format="http://rdaregistry.info/termList/RDAproductionMethod/1010"/>
+#		</data>
+#		<data source="334-[12].a" name="@medium">
+#			<regexp match="Plakat" format="http://rdaregistry.info/termList/RDAproductionMethod/1010"/>
+#		</data>
+#		<data source="40[03]-1.a" name="@medium">
+#			<regexp match="Nachdruck|Reprint" format="http://rdaregistry.info/termList/RDAproductionMethod/1010"/>
+#		</data>
+
+# TODO: Check if there are reaseons that kit and mixed materials are stated as Pint: https://service-wiki.hbz-nrw.de/display/DBI/Facettenwerte
+# I exlude them at the moment since they can be print but must not be print.
+# There should be some examples for mixed materials and kits.
+# Mediakombination was also set as print in ALEPH Morph: https://github.com/hbz/lobid-resources/blob/be3dde0ca3b3d3c51247ad8b930bc309f9e5b5b0/src/main/resources/morph-hbz01-to-lobid.xml#L1612
+# Also one cannot set Pos06 a (Language material) by default since: "Includes microforms and electronic resources that are basically textual in nature, whether they are reproductions from print or originally produced."
+# https://www.loc.gov/marc/bibliographic/bdleader.html
+
+# if any_match("@leaderPos06-07", "^[op].*")
+#  add_field("medium[].$append.label","Print")
+#if any_match("006", "^[op].*")
+# add_field("medium[].$append.label","Print")
+
+if any_match("007", "(^k[fhjs]|^t[^c]).*") # TODO: I excluded ^o (Kit) and added all Pos01 for text except Braille.
+  add_field("medium[].$append.label","Print")
+elsif any_match("@leaderTyp+008", "(Book|Music|Continuing Resources|Mixed materials)(.{23})[dr].*")  # Pos23
+  add_field("medium[].$append.label","Print")
+elsif any_match("@leaderTyp+008", "(Map|Visual materials)(.{29})[dr].*")  # Pos29
+  add_field("medium[].$append.label","Print")
+# elsif any_match("@leaderTyp+008", "(Visual materials)(.{33})b.*")  # Pos33  TODO: I excluded Kit
+#  add_field("medium[].$append.label","Print")
+elsif any_match("006", "[acdpst]](.{5})[dr].*") # Pos00+06 Added Print for pos 006.
+  add_field("medium[].$append.label","Print")
+elsif any_match("006", "[efgkor]](.11)[dr].*") # Pos00+12 Added Print for pos 006.
+  add_field("medium[].$append.label","Print")
+elsif any_match("245[10]0.h", "Plakat")
+  add_field("medium[].$append.label","Print")
+elsif any_match("25[09]??.a", "Nachdruck|Reprint") # Element 250 and 259
+  add_field("medium[].$append.label","Print")
+end
+
+# medium:   "Datenträger":	"http://rdaregistry.info/termList/RDAMediaType/1003"
+# TODO: Check why so many Manuscripts are Print AND Manuscript.
+
+# OLD ALEPH-Moprh:
+#		<data source="652a[-1].a" name="@medium">
+#			<regexp match="^[BbCcDdHhFfKkUu][AaDdEeIiLlSsVv]"
+#				format="http://rdaregistry.info/termList/RDAMediaType/1003"/>
+#		</data>
+#		<data source="@medium" name="http://purl.org/dc/terms/medium"/>
+
+if any_match("@leaderPos06-07", "^m.*")
+  add_field("medium[].$append.label","Datenträger")
+elsif any_match("006", "^m.*")
+  add_field("medium[].$append.label","Datenträger")
+elsif any_match("007", "^c.*")
+  add_field("medium[].$append.label","Datenträger")
+elsif any_match("@leaderTyp+008", "(Book|Music|Continuing Resources|Mixed materials)(.{23})[sq].*")  # Pos23
+  add_field("medium[].$append.label","Datenträger")
+elsif any_match("@leaderTyp+008", "(Map|Visual materials)(.{29})[sq].*")  # Pos29
+  add_field("medium[].$append.label","Datenträger")
+elsif any_match("006", "^[efgkor](.{11})[sq].*") # Pos00+12
+  add_field("medium[].$append.label","Datenträger")
+elsif any_match("006", "^[acdijpst](.{5})[sq].*") # Pos00+06
+  add_field("medium[].$append.label","Datenträger")
+elsif any_match("337  .a", "Computermedien")
+  add_field("medium[].$append.label","Datenträger")
+elsif any_match("338 .a", ".*([Cc]omputer|[Cc]omputermedien|informatique|Computerdisk|computer disc|Magnetband|Speicherkarte).*")
+  add_field("medium[].$append.label","Datenträger")
+elsif any_match("338  .b", "c.")
+  add_field("medium[].$append.label","Datenträger")
+# From the old ALEPH-Morph #		<!-- looking for Blu-ray, Cartridge, CD, Diskette, DVD, Festplatte, HD-DVD, Kassette, USB -->
+elsif any_match("340  .a", "^[BbCcDdHhFfKkUu][AaDdEeIiLlSsVv].*")
+  add_field("medium[].$append.label","Datenträger")
+elsif any_match("340  .*.a", "^[BbCcDdHhFfKkUu][AaDdEeIiLlSsVv].*")
+  add_field("medium[].$append.label","Datenträger")
+end
+
+# medium: "Manuskript":	"http://purl.org/ontology/bibo/Manuscript"
+
+# Old ALEPH-Moprh
+# <data source="050." name="@medium">
+#			<regexp match="^.a" format="http://purl.org/ontology/bibo/Manuscript"/>
+#		</data>
+
+
+
+if any_match("@leaderPos06-07", "^[dft].")
+  add_field("medium[].$append.label","Manuskript")
+elsif any_match("006", "^[dft].*")
+  add_field("medium[].$append.label","Manuskript")
+end
+
+# medium: "Mikroformat": "http://rdaregistry.info/termList/RDAMediaType/1002"
+
+
+if any_match("007", "^h.*")
+  add_field("medium[].$append.label","Mikroformat")
+elsif any_match("@leaderTyp+008", "(Book|Music|Continuing Resources|Mixed materials)(.{23})[abc].*")  # Pos23
+  add_field("medium[].$append.label","Mikroformat")
+elsif any_match("@leaderTyp+008", "(Map|Visual materials)(.{29})[abc].*")  # Pos29
+  add_field("medium[].$append.label","Mikroformat")
+elsif any_match("006", "^[efgkor](.{11})[abc].*") # Pos00+12
+  add_field("medium[].$append.label","Mikroformat")
+elsif any_match("006", "^[acdijpst](.{5})[abc].*") # Pos00+06
+  add_field("medium[].$append.label","Mikroformat")
+elsif any_match("245[10]0.h", ".*Mikrofor.*")
+  add_field("medium[].$append.label","Mikroformat")
+elsif any_match("25[09]??.a", ".*Mikro.*") # Element 250 and 259
+  add_field("medium[].$append.label","Mikroformat")
+elsif any_match("337  .a","Mikroform|microform")
+  add_field("medium[].$append.label","Mikroformat")
+elsif any_match("337  .b", "h")
+  add_field("medium[].$append.label","Mikroformat")
+elsif any_match("338 .a", ".*[Mm]ikro.*")
+  add_field("medium[].$append.label","Mikroformat")
+elsif any_match("338  .b", "he|hj") # TODO: More codes?
+  add_field("medium[].$append.label","Mikroformat")
+elsif any_match("689??.a", "Hörbuch|Tonträger")
+  add_field("medium[].$append.label","Mikroformat")
+end
+
+# medium: "Kombination":	"http://iflastandards.info/ns/isbd/terms/mediatype/T1008"
+
+#		<data source="050." name="@medium">
+#			<regexp match="^.......a" format="http://iflastandards.info/ns/isbd/terms/mediatype/T1008"/>
+#		</data>
+#		<data source="334-[-12].a" name="@medium">
+#			<regexp match="Medienkombination" format="http://iflastandards.info/ns/isbd/terms/mediatype/T1008"/>
+#		</data>
+#		<data source="9[01234][27]-[-1].f" name="@medium">
+#			<regexp match="Medienkombination" format="http://iflastandards.info/ns/isbd/terms/mediatype/T1008"/>
+#		</data>
+
+# TODO: TT000166861 is in lobid ALEPH Kombination but not here. Need to check later.
+
+if any_match("@leaderPos06-07", "^[op].")
+  add_field("medium[].$append.label","Kombination")
+elsif any_match("006", "^[op].*")
+  add_field("medium[].$append.label","Kombination")
+elsif any_match("007", "^o.*")
+  add_field("medium[].$append.label","Kombination")
+elsif any_match("245[10]0.h", ".*Medienkombination.*")
+  add_field("medium[].$append.label","Kombination")
+elsif any_match("689??.a", ".*Medienkombination.*")
+  add_field("medium[].$append.label","Kombination")
+end
+
+# medium: "Online-Ressource": "http://rdaregistry.info/termList/RDACarrierType/1018"
+#
+# 		<data source="050." name="@1018">
+# 			<regexp match="^........g" format="http://rdaregistry.info/termList/RDACarrierType/1018"/>
+# 		</data>
+# 		<data source="058." name="@1018">
+# 			<regexp match="^.r" format="http://rdaregistry.info/termList/RDACarrierType/1018"/>
+# 		</data>
+# 		<data source="652a[-1].a" name="@1018">
+# 			<regexp match="^[AaOo][rn]" format="http://rdaregistry.info/termList/RDACarrierType/1018"/>
+# 		</data>
+# 		<data source="@1018" name="@medium"/>
+#
+# TODO: Old Morph also sets remote access as online ressource (050/8/1=g=Computerdatei(en) im Fernzugriff and 058.) Our ALMA-Transformation does not, how should we proceed.
+
+if any_match("@leaderTyp+008", "(Book|Music|Computer files|Continuing Resources|Mixed materials)(.{23})[o].*")  # Pos23
+  add_field("medium[].$append.label","Online-Ressource")
+elsif any_match("@leaderTyp+008", "(Map|Visual materials)(.{29})[o].*")  # Pos29
+  add_field("medium[].$append.label","Online-Ressource")
+elsif any_match("006", "^[efgkor](.{11})[o].*") # Pos00+12
+  add_field("medium[].$append.label","Online-Ressource")
+elsif any_match("006", "^[acdijpst](.{5})[o].*") # Pos00+06
+  add_field("medium[].$append.label","Online-Ressource")
+elsif any_match("300  ", ".*[Oo]nline.*") # Pos00+06
+  add_field("medium[].$append.label","Online-Ressource")
+elsif any_match("338 .a", "^(.*([Oo]nline.*|online bron|online resource|online-ressource|Online-Ressource|ressource en ligne)$")
+  add_field("medium[].$append.label","Online-Ressource")
+elsif any_match("338  .b", "cr")
+  add_field("medium[].$append.label","Online-Ressource")
+elsif any_match("340  .a", "Online-Ressource")
+  add_field("medium[].$append.label","Online-Ressource")
+elsif any_match("340  .*.a", "Online-Ressource")
+  add_field("medium[].$append.label","Online-Ressource")
+end
+
+# medium: "Schallplatte":	"http://purl.org/ontology/mo/Vinyl"
+
+#		<data source="050." name="@mediumAudio">
+#			<regexp match="^.....aj" format="http://purl.org/ontology/mo/Vinyl"/>
+#		</data>
+#		<data source="050." name="@mediumAudio">
+#			<regexp match="^.....aj" format="$[ns-bibo]AudioDocument"/>
+#		</data>
+#		<data source="334-[12].a" name="@mediumAudio">
+#			<regexp match="Schallplatte" format="http://purl.org/ontology/mo/Vinyl"/>
+#		</data>
+#		<data source="334-[12].a" name="@mediumAudio">
+#			<regexp match="Schallplatte" format="$[ns-bibo]AudioDocument"/>
+#		</data>
+
+# TODO: HBZ Mappiong 050 -> Marc sets to none specific medium type Leader,06=j+ 007,00=s + 007,01=z . How to proceed here?
+# TODO: What about Shellac?
+# TODO: In all the MARC specifics for SChallplatten seem poor.
+
+if any_match("300  .a", ".*Schallpl.*")
+  add_field("medium[].$append.label","Schallplatte")
+  add_field("medium[].$append.label","Audio-Dokument")
+elsif any_match("340  .a", "[Vv]inyl")
+  add_field("medium[].$append.label","Schallplatte")
+  add_field("medium[].$append.label","Audio-Dokument")
+elsif any_match("340  .*.a", "[Vv]inyl")
+  add_field("medium[].$append.label","Schallplatte")
+  add_field("medium[].$append.label","Audio-Dokument")
+end
+
+
+# medium: "Miscellaneous":	"http://purl.org/lobid/lv#Miscellaneous"
+# TODO: label always is german but "Miscellaneous" is not.
+
+#		<combine name="@medium" value="$[ns-lobid-vocab]Miscellaneous" flushWith="record">
+#			<if>
+#				<none>
+#					<data source="@medium">
+#						<regexp match=".*"/>
+#					</data>
+#				</none>
+#			</if>
+#			<data source="@id"/>
+#		</combine>
+#		<combine name="~rdf:subject" value="${a}" flushWith="@medium">
+#			<data source="@medium"/>
+#			<data source="@id" name="a">
+#				<regexp match="(.*)" format="$[ns-lobid-resource]${1}#!"/>
+#			</data>
+#		</combine>
+
+# Introx sets all Braille to "Miscellaneous". I move them to Braille. Also Introx sets specific stuff to "Sonstige". In old ALEPH-Morph this is a default value.
+# I will follow the old ALEPH-Moprh approach here.
+# This will be done after the type definition.
+
+
+# ----- type[] -----
+# All metadata records have type: "BibliographicResource"
+# Base for type list is schema: https://github.com/hbz/lobid-resources/blob/eb1cbfaf013b03aee49291d8b3a4d00aa046e333/src/test/resources/schemas/type.json
+
+# TODO Check 655 for possible mappings.
+
+set_array("type[]","BibliographicResource")
+
+# From schema list of set types:
+#             "enum": [
+#                 "BibliographicResource", #
+#                 "ArchivalResource",
+#                 "ArchivedWebPage", #
+#                 "Book", #
+#                 "Collection",
+#                 "Periodical", #
+#                 "Series", #
+#                 "Newspaper", #
+#                 "Journal",
+#                 "MultiVolumeBook", #
+#                 "PublicationIssue", #
+#                 "Article", #
+#                 "Miscellaneous", #
+#                 "Thesis", #
+#                 "EditedVolume", #
+#                 "Proceedings", #
+#                 "Festschrift", #
+#                 "Bibliography", #
+#                 "OfficialPublication", #
+#                 "ReferenceSource", #
+#                 "Statistics", #
+#                 "Legislation", #
+#                 "PublishedScore", #
+#                 "Schoolbook", #
+#                 "Game", #
+#                 "Biography", #
+#                 "Report", #
+#                 "Image", #
+#                 "Map", #
+#                 "Standard" #
+#             ]
+
+# There seems to be a discrepancy between the values in the schema enum and in the aggregation.
+# Real data: http://lobid.org/resources/search?format=json&aggregations=type
+
+# type: "ArchivalResource"
+# TODO: This is part of  the schema but seems to be not really used.
+
+# type: "ArchivedWebPage"
+
+#		<data source="051." name="@archived">
+#			<regexp match="^.w" format="$[ns-lobid-vocab]ArchivedWebPage"/>
+#		</data>
+
+# TODO: There seems to be no mapping from 051.: .w to any MARC Values.
+# TODO: Check for that later.
+
+# type: "Article"
+
+#		<data source="051." name="@article">
+#			<regexp match="^.t|^..t|^...t|^.....t" format="$[ns-bibo]Article"/>
+#		</data>
+#		<data source="052." name="@article">
+#			<regexp match="^[af]|^.au|^...au|^.....au" format="$[ns-bibo]Article"/>
+#		</data>
+
+# if any_equal("@type__008Pos33", "B#e")
+#   add_field("@facet_type", "Aufsatz")
+# else
+#   if any_match("@006Pos00__006Pos16", "[at]#e")
+#     add_field("@facet_type", "Aufsatz")
+#   else
+#     if any_match("@type__008Pos24|@type__008Pos25|@type__008Pos26|@type__008Pos27", "(?:B|CR)#g")
+#       add_field("@facet_type", "Aufsatz")
+#     else
+#       if any_match("@006Pos00__006Pos07|@006Pos00__006Pos08|@006Pos00__006Pos09|@006Pos00__006Pos10", "[ast]#g")
+#         add_field("@facet_type", "Aufsatz")
+#       end
+#     end
+#   end
+# end
+
+# TODO: What is Aufsatz/Artikel inteded for only monograph, serial or continues ressource component?
+# TODO: There is no mapping for 052/1-6/6=au Aufsatz
+# TODO: What about leader07 a and b? https://www.loc.gov/marc/bibliographic/bdleader.html
+
+# TODO: Transformation needs to be added later.
+
+
+# type: "Bibliography"
+
+# Introx:
+# if any_match("@type__008Pos24|@type__008Pos25|@type__008Pos26|@type__008Pos27", "(?:B|CR)#[bknq]")
+#   add_field("@facet_type", "Bibliografie")
+# else
+#   if any_match("@006Pos00__006Pos07|@006Pos00__006Pos08|@006Pos00__006Pos09|@006Pos00__006Pos10", "[ast]#[bknq]")
+#     add_field("@facet_type", "Bibliografie")
+#   else
+#     if any_equal("@type__008Pos26", "CF#e")
+#       add_field("@facet_type", "Bibliografie")
+#     else
+#       if any_equal("@006Pos00__006Pos09", "m#e")
+#         add_field("@facet_type", "Bibliografie")
+#       end
+#     end
+#   end
+# end
+
+#         <all>
+#           <data source="@type">
+#             <regexp match="^(B|CR)$" />
+#           </data>
+#           <data source="@008Pos2[4567]">
+#             <regexp match="[bknq]" />
+#           </data>
+#         </all>
+#         <all>
+#           <data source="@006Pos00">
+#             <regexp match="[ast]" />
+#           </data>
+#           <data source="@006Pos0[789]|@006Pos10">
+#             <regexp match="[bknq]" />
+#           </data>
+#         </all>
+#         <all>
+#           <data source="@type">
+#             <equals string="CF" />
+#           </data>
+#           <data source="@008Pos26">
+#             <equals string="e" />
+#           </data>
+#         </all>
+#         <all>
+#           <data source="@006Pos00">
+#             <equals string="m" />
+#           </data>
+#           <data source="@006Pos09">
+#             <equals string="e" />
+#           </data>
+#         </all>
+#       </any>
+#     </if>
+#
+# Old alephmorph:
+#		<data source="051." name="@rdftype">
+#			<regexp match="^.[b]|^..[b]|^...[b]" format="$[ns-lobid-vocab]Bibliography"/>
+#		</data>
+#		<data source="052." name="@rdftype">
+#			<regexp match="^.b[i]|^...b[i]|^.....b[i]" format="$[ns-lobid-vocab]Bibliography"/>
+#		</data>
+
+if any_match("@leaderTyp+008", "(Book|Continuing Resources)(.{24}|.{25}|.{26}|.{27})[bknq].*")  # Pos24-27
+  add_field("type[].$append","Bibliography")
+elsif any_match("@leaderTyp+008", "Computer files(.{26})[e].*")  # Pos26
+  add_field("type[].$append","Bibliography")
+elsif any_match("006", "^[ast](.{6}|.{7}|.{8}|.{9})[bknq].*") # Pos00+07-10
+  add_field("type[].$append","Bibliography")
+elsif any_match("006", "^m(.{8})e.*") # Pos00+07-10
+  add_field("type[].$append","Bibliography")
+end
+
+# type: "Biography"
+
+#		<!-- biography -->
+#		<data source="051." name="@rdftype">
+#			<regexp match="^.[h]|^..[h]|^...[h]" format="$[ns-lobid-vocab]Biography"/>
+#		</data>
+#		<data source="052." name="@rdftype">
+#			<regexp match="^.b[g]|^...b[g]|^.....b[g]" format="$[ns-lobid-vocab]Biography"/>
+#		</data>
+#		<data source="9[01234][27]-[-1].f" name="@rdftype">
+#			<regexp match="Autobiographie|Biographie" format="$[ns-lobid-vocab]Biography"/>
+#		</data>
+
+# if any_match("@type__008Pos34", "B#[abc]")
+#   add_field("@facet_type", "Biografie")
+# else
+#   if any_match("@006Pos00__006Pos17", "[at]#[abc]")
+#     add_field("@facet_type", "Biografie")
+#   else
+#     if any_match("@type__008Pos30|@type__008Pos31", "Mu#[ab]")
+#       add_field("@facet_type", "Biografie")
+#     else
+#       if any_match("@006Pos00__006Pos13|@006Pos00__006Pos14", "[cdij]#[ab]")
+#         add_field("@facet_type", "Biografie")
+#       else
+#         if any_equal("@type__008Pos24|@type__008Pos25|@type__008Pos26|@type__008Pos27", "CR#h")
+#           add_field("@facet_type", "Biografie")
+#         else
+#           if any_equal("@006Pos00__006Pos07|@006Pos00__006Pos08|@006Pos00__006Pos09|@006Pos00__006Pos10", "s#h")
+#             add_field("@facet_type", "Biografie")
+#           end
+#         end
+#       end
+#     end
+#   end
+# end
+
+if any_match("@leaderTyp+008", "Book(.{34})[abc].*")  # Pos34
+  add_field("type[].$append","Biography")
+elsif any_match("@leaderTyp+008", "Music(.{30}|.{31})[ab].*")  # Pos30-31
+  add_field("type[].$append","Biography")
+elsif any_match("@leaderTyp+008", "(Book|Continuing Resources)(.{24}|.{25}|.{26}|.{27})h.*")  # Pos34 # Book has no h but internal mapping uses this.
+  add_field("type[].$append","Biography")
+elsif any_match("006", "^[at](.{17})[abc].*") # Pos00+18
+  add_field("type[].$append","Biography")
+elsif any_match("006", "^[cdij](.{12}|.{13})[ab].*") # Pos00+13-14
+  add_field("type[].$append","Biography")
+elsif any_match("006", "^[s](.{6}|.{7}|.{8}|.{9})h.*") # Pos00+07-10
+  add_field("type[].$append","Biography")
+elsif any_match("655 7.a", "Biografie")
+    add_field("type[].$append","Biography")
+elsif any_match("655 7.*.a", "Biografie")
+    add_field("type[].$append","Biography")
+elsif any_match("689??.a", "Autobiographie|Biographie")
+  add_field("type[].$append","Biography")
+end
+
+# TODO: HT018860300 should also be tagged as Biography but it seems that 008 has no info for Biografie and is not transformed properly.
+
+# type: "EditedVolume"
+
+# 		<combine name="@rdftype" value="${a}">
+# 			<if>
+# 				<none>
+# 					<data source="052.">
+# 						<regexp
+# 							match="^........([dcwesmbqfaghtz])|^.........([dcwesmbqfaghtz])|^..........([dcwesmbqfaghtz])"/>
+# 					</data>
+# 					<data source="542[-ab][-1].[a]"/>
+# 				</none>
+# 			</if>
+# 			<choose name="a">
+# 				<data source="9[01234][27][-a][-1].f" name="a">
+# 					<regexp match="^Aufsatzsammlung" format="$[ns-lobid-vocab]EditedVolume"/>
+# 				</data>
+# 				<data source="9[01234][27][-a][-1].9" name="a">
+# 					<regexp match="4143413" format="$[ns-lobid-vocab]EditedVolume"/>
+# 				</data>
+# 			</choose>
+# 		</combine>
+#
+# introx
+#     if exists("700??")
+#   unless exists("100??")
+#     add_field("@facet_type", "Sammelwerk")
+#     filter("@facet_type", "^Monographie$", invert: "true")
+#   end
+# end
+
+# taken from introx based on https://jira.hbz-nrw.de/browse/DOX-1405
+# This also results in 990123613330206441 which is a Tonkassete. Perhaps this needs a differentiation.
+
+if exists("700??")
+  unless exists("100??")
+    add_field("type[].$append", "EditedVolume")
+    filter("type[]", "^Monographie$", invert: "true")
+  end
+elsif any_match("689??.a", ".*Aufsatzsammlung.*")
+  add_field("type[].$append", "EditedVolume")
+elsif any_match("689??.*.a", ".*Aufsatzsammlung.*")
+  add_field("type[].$append", "EditedVolume")
+elsif any_match("689??.0", ".*4143413.*")
+  add_field("type[].$append", "EditedVolume")
+elsif any_match("689??.*.0", ".*4143413.*")
+  add_field("type[].$append", "EditedVolume")
+end
+
+
+# type: "Festschrift"
+
+# Old ALEPH-MORPH:
+# <!-- festschrift -->
+# 		<data source="051." name="@rdftype">
+# 			<regexp match="^.f|^..f|^...f" format="$[ns-lobid-vocab]Festschrift"/>
+# 		</data>
+
+# Introx-Fix:
+# if any_equal("@type__008Pos30", "B#1")
+#   add_field("@facet_type", "Festschrift")
+# else
+#   if any_match("@006Pos00__006Pos13", "[at]#1")
+#     add_field("@facet_type", "Festschrift")
+#   end
+# end
+
+if any_match("@leaderTyp+008", "Book(.{30})1.*")  # Pos30
+  add_field("type[].$append","Festschrift")
+elsif any_match("006", "^[at](.{12})1.*") # Pos00+13
+  add_field("type[].$append","Festschrift")
+elsif any_match("title", ".*Festschrift.*") # often Festschrift is not stated as such in Control fields but in the title.
+  add_field("type[].$append","Festschrift")
+elsif any_match("otherTitleInformation[]", ".*Festschrift.*")
+  add_field("type[].$append","Festschrift")
+end
+
+# type: "image"
+
+# <!-- picture -->
+# 		<data source="050." name="@rdftype">
+# 			<regexp match="^.....d" format="$[ns-bibo]Image"/>
+# 		</data>
+# 		<data source="334-[12].a" name="@rdftype">
+# 			<regexp match="^Bildli" format="$[ns-bibo]Image"/>
+# 		</data>
+
+# if any_equal("@007Pos00", "r")
+#   add_field("@facet_format", "Bild")
+# else
+#   if any_match("@007Pos00__007Pos01", "k#[cdefhijklnpqrsuvz]")
+#     add_field("@facet_format", "Bild")
+#   else
+#     if any_match("@type__008Pos33|@type__008Pos34", "M#[jo]")
+#       add_field("@facet_format", "Bild")
+#     else
+#       if any_match("@006Pos00__006Pos16|@006Pos00__006Pos17", "[ef]#[jo]")
+#         add_field("@facet_format", "Bild")
+#       else
+#         if any_match("@type__008Pos33", "VM#[dikln]")
+#           add_field("@facet_format", "Bild")
+#         else
+#           if any_match("@006Pos00__006Pos16", "[gkor]#[dikln]")
+#             add_field("@facet_format", "Bild")
+#           end
+#         end
+#       end
+#     end
+#   end
+# end
+
+
+if any_match("007", "^[kr].*") # r = Remote-Sensing Image and k = Nonprojected graphic
+  add_field("type[].$append", "Image")
+elsif any_match("245[10]0.h", ".*Bildli.*")
+  add_field("type[].$append", "Image")
+elsif any_match("@leaderTyp+008", "Map(.{33}|.{34})[jo].*")  # Pos33/34
+  add_field("type[].$append","Image")
+elsif any_match("@leaderTyp+008", "Visual materials(.{33})[dikln].*")  # Pos33
+  add_field("type[].$append","Image")
+elsif any_match("006", "^[ef](.15}|.{16})[jo].*") # Pos00+16/17
+  add_field("type[].$append","Image")
+elsif any_match("006", "^[gkor](.15})[dikln].*") # Pos00+16
+  add_field("type[].$append","Image")
+end
+
+# type: "Map"
+# TODO: HT017559543 should be no map.
+
+# Old Aleph morph:
+#		<!-- map -->
+#		<data source="050." name="@rdftypeMap">
+#			<regexp match="^..........a" format="$[ns-bibo]Map"/>
+#		</data>
+#		<data source="433[-c].a" name="@rdftypeMap">
+#			<regexp match="Kt.|Karte" format="$[ns-bibo]Map"/>
+#		</data>
+#		<data source="9[01234][27]-1.f" name="@rdftypeMap">
+#			<regexp match="Altkarte|Karte|Stadtplan" format="$[ns-bibo]Map"/>
+#		</data>
+#		<data source="@rdftypeMap" name="@rdftype"/>
+#
+
+# Introx:
+# if any_match("@LeaderPos06|@006Pos00", "[ef]")
+#   add_field("@facet_format", "Landkarte")
+# elsif any_match("@007Pos00", "[ad]")
+#   add_field("@facet_format", "Landkarte")
+# end
+
+
+if any_equal("@leaderTyp", "Map")
+  add_field("type[].$append","Map")
+elsif any_match("006", "^[ef].*")
+  add_field("type[].$append","Map")
+elsif any_match("007", "^[ad].*")
+  add_field("type[].$append","Map")
+elsif any_match("300  .a", ".*(Kt.|[kK]arte).*")
+  add_field("type[].$append","Map")
+elsif any_match("300  .*.a", ".*(Kt.|[kK]arte).*")
+  add_field("type[].$append","Map")
+elsif any_match("689??.a", ".*(Altkarte|Karte|Stadtplan).*")
+  add_field("type[].$append", "Map")
+elsif any_match("689??.*.a", ".*(Altkarte|Karte|Stadtplan).*")
+  add_field("type[].$append", "Map")
+end
+
+# type: "Game"
+
+# <!-- game -->
+# 		<data source="050." name="@rdftype">
+# 			<regexp match="^.........a" format="http://schema.org/Game"/>
+# 		</data>
+
+# if any_equal("@006Pos00__006Pos09", "m#g")
+#   add_field("@facet_format", "Spiel")
+# else
+#   if any_equal("@type__008Pos26", "CF#g")
+#     add_field("@facet_format", "Spiel")
+#   else
+#     if any_match("@type__008Pos33|@type__008Pos34", "M#[pn]")
+#       add_field("@facet_format", "Spiel")
+#     else
+#       if any_match("@006Pos00__006Pos16|@006Pos00__006Pos17", "[ef]#[pn]")
+#         add_field("@facet_format", "Spiel")
+#       else
+#         if any_equal("@type__008Pos33", "VM#g")
+#           add_field("@facet_format", "Spiel")
+#         else
+#           if any_match("@006Pos00__006Pos16", "[gkor]#g")
+#             add_field("@facet_format", "Spiel")
+#           end
+#         end
+#       end
+#     end
+#   end
+# end
+
+
+
+if any_match("@leaderTyp+008", "(Computer files)(.{26})[g].*")  # Pos26
+  add_field("type[].$append","Game")
+elsif any_match("@leaderTyp+008", "(Map)(.{33}|.{34})[pn].*")  # Pos33|34
+  add_field("type[].$append","Game")
+elsif any_match("@leaderTyp+008", "(Visual materials)(.{33})g.*")  # Pos33
+  add_field("type[].$append","Game")
+elsif any_match("006", "^[m](.{8})[g].*") # Pos00+09
+  add_field("type[].$append","Game")
+elsif any_match("006", "^[gkor](.{15})[g].*") # Pos00+16
+  add_field("type[].$append","Game")
+elsif any_match("006", "^[ef](.{14}|.{15})[p].*") # Pos00+15|16
+  add_field("type[].$append","Game")
+end
+
+# type: "Legislation"
+
+# <!-- legislation -->
+# 		<data source="051." name="@rdftype">
+# 			<regexp match="^.l|^..l|^...l" format="$[ns-lobid-vocab]Legislation"/>
+# 		</data>
+# 		<data source="052." name="@rdftype">
+# 			<regexp match="^.ag|^...ag|^.....ag" format="$[ns-lobid-vocab]Legislation"/>
+# 		</data>
+#
+
+if any_match("@leaderTyp+008", "(Book|Continuing Resources)(.{24}|.{25}|.{26}|.{27})l.*")  # Pos24/25/26/27 # What about g (legal article)?
+  add_field("type[].$append","Legislation")
+elsif any_match("006", "^[ats](.{6}|.{7}|.{8}|.{9})l.*") # Pos00+07-10
+  add_field("type[].$append","Legislation")
+end
+
+# TODO: HT012338254 should be legislation too but 008 seems to be not set appropriately. Could add w - Law reports and digests ?
+
+
+# type: "MultiVolumeBook"
+
+#		<!-- multi-volume book -->
+#		<data source="051." name="@rdftype">
+#			<regexp match="^[nt]" format="$[ns-bibo]MultiVolumeBook"/>
+#		</data>
+
+# TODO: The mapping https://service-wiki.hbz-nrw.de/display/VDBE/ALT+-+Mapping+MAB2+-+MARC+21+-++Segmente+0---%2C+001+-+088+-+Kurzform
+# suggests leader07 m but this only says Monograph or Item nothing about MultiVolume.
+# Need to find specific infos about that.
+
+# type: "PublishedScore" (Musikalia)
+
+#		<!-- music -->
+#		<data source="051." name="@rdftype">
+#			<regexp match="^.m|^..m|^...m" format="http://purl.org/ontology/mo/PublishedScore"/>
+#		</data>
+#		<data source="052." name="@rdftype">
+#			<regexp match="^.mu|^...mu|^.....mu" format="http://purl.org/ontology/mo/PublishedScore"/>
+#		</data>
+#		<data source="334-1.a" name="@rdftype">
+#			<regexp match="Musikdruck" format="http://purl.org/ontology/mo/PublishedScore"/>
+#		</data>
+#		<data source="541[-ab]?.?" name="@rdftype">
+#			<regexp match=".*" format="http://purl.org/ontology/mo/PublishedScore"/>
+#		</data>
+
+# also if it has ismn?
+# hbz mapping for 051. 0 m seems odd 008,18-19 ||? 052. none at all.
+
+
+if any_match("245[10]0.h", ".*Musikdruck.*")
+  add_field("type[].$append", "PublishedScore")
+elsif exists("ismn[].1")
+  add_field("type[].$append", "PublishedScore")
+end
+
+# type: "Newspaper"
+
+# <!-- newspaper -->
+# 		<data source="052." name="@rdftype">
+# 			<regexp match="^z|^.[ae]o|^...[ae]o|^.....[ae]o" format="$[ns-bibo]Newspaper"/>
+# 		</data>
+# 		<data source="052." name="@rdftype">
+# 			<regexp match="^z|^.[url]p|^...[url]p|^.....[url]p" format="$[ns-bibo]Newspaper"/>
+# 		</data>
+# 		<data source="9[01234][27]-[-1].f" name="@rdftype">
+# 			<regexp match="Zeitung" format="$[ns-bibo]Newspaper"/>
+# 		</data>
+
+if any_match("@leaderTyp+008", "(Continuing Resources)(.{21})n.*")  # Pos21
+  add_field("type[].$append","Newspaper")
+elsif any_match("006", "^s(.{3})n.*") # Pos00+04
+  add_field("type[].$append","Newspaper")
+elsif any_match("689??.a", ".*Zeitung.*")
+  add_field("type[].$append", "Newspaper")
+elsif any_match("689??.*.a", ".*Zeitung.*")
+  add_field("type[].$append", "Newspaper")
+end
+
+# type: "Standard"
+
+# Old ALEPH Morph:
+# <!-- norm -->
+# 		<data source="051." name="@rdftype">
+# 			<regexp match="^.n|^..n|^...n" format="$[ns-bibo]Standard"/>
+# 		</data>
+# 		<data source="052." name="@rdftype">
+# 			<regexp match="^.no|^...no|^.....no" format="$[ns-bibo]Standard"/>
+# 		</data>
+# 		<data source="9[01234][27]-[-12].f" name="@rdftype">
+# 			<regexp match="Norm|Richtlinie" format="$[ns-bibo]Standard"/>
+# 		</data>
+
+# Introx:
+# if any_match("@type__008Pos24|@type__008Pos25|@type__008Pos26|@type__008Pos27", "(?:B|CR)#u")
+#   add_field("@facet_type", "Norm")
+# else
+#   if any_match("@006Pos00__006Pos07|@006Pos00__006Pos08|@006Pos00__006Pos09|@006Pos00__006Pos10", "[ast]#u")
+#     add_field("@facet_type", "Norm")
+#   end
+# end
+
+if any_match("@leaderTyp+008", "(Book|Continuing Resources)(.{24}|.{25}|.{26}|.{27})u.*")  # Pos24-27
+  add_field("type[].$append","Standard")
+elsif any_match("006", "^[ast](.{6}|.{7}|.{8}|.{9})u.*") # Pos00+07-10
+  add_field("type[].$append","Standard")
+elsif any_match("689??.a", ".*(Norm|Richtlinie).*")
+  add_field("type[].$append", "Standard")
+elsif any_match("689??.*.a", ".*(Norm|Richtlinie).*")
+  add_field("type[].$append", "Standard")
+end
+
+
+# type: "Periodical"
+
+# <!-- periodical -->
+# 		<data source="052." name="@rdftype">
+# 			<regexp match="^[jp].*|^.il.*|^...il.*|^.....il.*" format="$[ns-bibo]Periodical"/>
+# 		</data>
+# 		<data source="9[01234][27]-[-1].f" name="@rdftype">
+# 			<regexp match="Zeitschrift" format="$[ns-bibo]Periodical"/>
+# 		</data>
+
+# Introx has a very elaborate periodical system.
+
+# 052. il (Illustrierte) has no mapping.
+# This also includes Series not just Journals is that right? Leader Pos. 7s = serial.
+# If Continuing Resources 008 21 p = Periodical. What about j = journal?
+
+if any_match("@leaderTyp+008", "(Continuing Resources)(.{21})p.*")  # Pos21
+  add_field("type[].$append","Periodical")
+elsif any_match("006", "^[s](.{3})p.*") # Pos00+04
+  add_field("type[].$append","Periodical")
+elsif any_match("689??.a", ".*Zeitschrift.*")
+  add_field("type[].$append", "Periodical")
+elsif any_match("689??.*.a", ".*Zeitschrift.*")
+  add_field("type[].$append", "Periodical")
+end
+
+# TODO: If mapping with 689?? keywords we should also integrate a control that A should be "f".
+
+# type: "Proceedings"
+
+# <!-- proceedings -->
+# 		<data source="051." name="@rdftype">
+# 			<regexp match="^.k|^..k|^...k" format="$[ns-bibo]Proceedings"/>
+# 		</data>
+# 		<data source="052." name="@rdftype">
+# 			<regexp match="^.ko|^...ko|^.....ko" format="$[ns-bibo]Proceedings"/>
+# 		</data>
+# 		<data source="9[01234][27]-[-1].f" name="@rdftype">
+# 			<regexp match="Kongress" format="$[ns-bibo]Proceedings"/>
+# 		</data>
+
+if any_match("@leaderTyp+008", "(Book|Continuing Resources)(.{29})1.*")  # Pos29
+  add_field("type[].$append","Proceedings")
+elsif any_match("006", "^[ast](.{11})1.*") # Pos00+04
+  add_field("type[].$append","Proceedings")
+elsif any_match("689??.a", "Kongress")
+  add_field("type[].$append", "Proceedings")
+elsif any_match("689??.*.a", "Kongress")
+  add_field("type[].$append", "Proceedings")
+end
+
+# TODO: Check if content keywords 689?? should be no regexp.
+# TODO: Check if 689?? is repeatable or if every instance is singular due to indices.
+
+
+# type: "PublicationIssue"
+
+# <!-- issue and volume of periodical work -->
+# 		<combine name="@rdftype" value="${a}">
+# 			<data source="025z2.a"/>
+# 			<data source="089|090-1.a" name="a">
+# 				<regexp match=".*" format="http://schema.org/PublicationIssue"/>
+# 			</data>
+# 		</combine>
+
+# TODO: I do not understand this transformation.
+
+
+if exists("zdbId")
+  if exists("245??.n")
+    add_field("type[].$append", "PublicationIssue")
+  elsif exists("77308.q")
+    add_field("type[].$append", "PublicationIssue")
+  end
+end
+
+# TODO: HT003176544 transforms but is not PublicationIssue in lobid ALEPH.
+# TODO: Also check if PublicationIssue and Periodical as type are mutual exclusive.
+
+
+# type:"ReferenceSource"
+
+# <!-- reference source -->
+# 		<data source="051." name="@rdftype">
+# 			<regexp match="^.[de]|^..[de]|^...[de]" format="$[ns-bibo]ReferenceSource"/>
+# 		</data>
+# 		<data source="052." name="@rdftype">
+# 			<regexp match="^.ez|^...ez|^.....ez" format="$[ns-bibo]ReferenceSource"/>
+# 		</data>
+# 		<data source="9[01234][27]-[-12].f" name="@rdftype">
+# 			<regexp match="Bestimmungsbuch|Enzyklopädie|Werkverzeichnis|W[ö|oe]rterbuch"
+# 				format="$[ns-bibo]ReferenceSource"/>
+# 		</data>
+
+# Introx:
+# if any_match("@type__008Pos24|@type__008Pos25|@type__008Pos26|@type__008Pos27", "(?:B|CR)#[der]")
+#   add_field("@facet_type", "Nachschlagewerk")
+# else
+#   if any_match("@006Pos00__006Pos07|@006Pos00__006Pos08|@006Pos00__006Pos09|@006Pos00__006Pos10", "[ast]#[der]")
+#     add_field("@facet_type", "Nachschlagewerk")
+#   end
+# end
+
+if any_match("@leaderTyp+008", "(Book|Continuing Resources)(.{24}|.{25}|.{26}|.{27})[der].*")  # Pos24-27
+  add_field("type[].$append","ReferenceSource")
+elsif any_match("006", "^[ast](.{6}|.{7}|.{8}|.{9})[der].*") # Pos00+07-10
+  add_field("type[].$append","ReferenceSource")
+elsif any_match("689??.a", ".*(Bestimmungsbuch|Enzyklopädie|Werkverzeichnis|W[ö|oe]rterbuch).*")
+  add_field("type[].$append", "Standard")
+elsif any_match("689??.*.a", ".*(Bestimmungsbuch|Enzyklopädie|Werkverzeichnis|W[ö|oe]rterbuch).*")
+  add_field("type[].$append", "Standard")
+end
+
+
+# type: "Report"
+
+# <!-- report -->
+# 		<data source="051." name="@rdftype">
+# 			<regexp match="^.[r]|^..[r]|^...[r]" format="http://purl.org/ontology/bibo/Report"/>
+# 		</data>
+# 		<data source="9[01234][27]-[-12].9" name="@rdftype">
+# 			<regexp match="4128022-2" format="http://purl.org/ontology/bibo/Report"/>
+# 		</data>
+# 		<data source="9[01234][27]-[1].f" name="@rdftype">
+# 			<regexp match="Bericht|Erlebnisbericht|Forschungsbericht|Literaturbericht|Reisebericht"
+# 				format="http://purl.org/ontology/bibo/Report"/>
+# 		</data>
+
+# TODO: hbz ALMA-Mapping sets 051. r to 008 24-27 t but this is technical report isnt that to narrow.
+# The Mapping "Bericht|Erlebnisbericht|Forschungsbericht|Literaturbericht|Reisebericht" is broader.
+
+if any_match("@leaderTyp+008", "(Book|Continuing Resources)(.{24}|.{25}|.{26}|.{27})t.*")  # Pos24-27
+  add_field("type[].$append","Report")
+elsif any_match("006", "^[ast](.{6}|.{7}|.{8}|.{9})t.*") # Pos00+07-10
+  add_field("type[].$append","Report")
+elsif any_match("689??.a", ".*(Bericht|Erlebnisbericht|Forschungsbericht|Literaturbericht|Reisebericht).*")
+  add_field("type[].$append", "Report")
+elsif any_match("689??.*.a", ".*(Bericht|Erlebnisbericht|Forschungsbericht|Literaturbericht|Reisebericht).*")
+  add_field("type[].$append", "Report")
+end
+
+# type: "Schoolbook"
+
+#		<!-- schoolbook -->
+#		<data source="051." name="@rdftype">
+#			<regexp match="^.x|^..x|^...x" format="$[ns-lobid-vocab]Schoolbook"/>
+#		</data>
+#		<data source="9[01234][27]-[1].f" name="@rdftype">
+#			<regexp match="Schulbuch" format="$[ns-lobid-vocab]Schoolbook"/>
+#		</data>
+
+# TODO:051. x mapping does not exist in hbz ALMA.
+
+if any_match("655??.a", ".*(Schulbuch).*")
+  add_field("type[].$append", "Schoolbook")
+elsif any_match("655??.*.a", ".*(Schulbuch).*")
+  add_field("type[].$append", "Schoolbook")
+elsif any_match("689??.a", ".*(Schulbuch).*")
+  add_field("type[].$append", "Schoolbook")
+elsif any_match("689??.*.a", ".*(Schulbuch).*")
+  add_field("type[].$append", "Schoolbook")
+end
+
+# type: "Series"
+
+# <!-- series -->
+# 		<combine name="@rdftype" value="${a}">
+# 			<if>
+# 				<none>
+# 					<data source="540[-ab][-1].[ab]"/>
+# 				</none>
+# 			</if>
+# 			<data source="052." name="a">
+# 				<regexp match="^r|^.se|^...se|^.....se" format="$[ns-bibo]Series"/>
+# 			</data>
+# 		</combine>
+# 		<data source="9[01234][2re7]-[1].f" name="@rdftype">
+# 			<regexp match="Schriftenreihe" format="$[ns-bibo]Series"/>
+# 		</data>
+
+# Not sure if there is an transformation for series in Introx.
+# I excluded the the filter if there is an isbn since 008 21 m is specific for monographic series.
+# TODO: Check why HT017894012 is not Series. It seems that it is Journal/Periodical.
+
+if any_match("@leaderTyp+008", "(Continuing Resources)(.{21})m.*")  # Pos21
+  add_field("type[].$append","Series")
+elsif any_match("006", "^[s](.{3})m.*") # Pos00+04
+  add_field("type[].$append","Series")
+elsif any_match("655??.a", ".*Monografische Reihe.*")
+  add_field("type[].$append", "Series")
+elsif any_match("655??.*.a", ".*Monografische Reihe.*")
+  add_field("type[].$append", "Series")
+elsif any_match("689??.a", ".*Schriftenreihe.*")
+  add_field("type[].$append", "Series")
+elsif any_match("689??.*.a", ".*Schriftenreihe.*")
+  add_field("type[].$append", "Series")
+end
+
+# type: "Statistics"
+
+# <!-- statistics -->
+# 		<data source="051." name="@rdftype">
+# 			<regexp match="^.s|^..s|^...s" format="http://purl.org/lobid/lv#Statistics"/>
+# 		</data>
+# 		<data source="052." name="@rdftype">
+# 			<regexp match="^.st|^..st|^...st|^....st|^.....st|^......st"
+# 				format="http://purl.org/lobid/lv#Statistics"/>
+# 		</data>
+
+
+if any_match("@leaderTyp+008", "(Book|Continuing Resources)(.{24}|.{25}|.{26}|.{27})s.*")  # Pos24-27
+  add_field("type[].$append","Statistics")
+elsif any_match("006", "^[ast](.{6}|.{7}|.{8}|.{9})s.*") # Pos00+07-10
+  add_field("type[].$append","Statistics")
+end
+
+# TODO: Check more for values in 655.
+
+
+# type: "Thesis"
+
+# <!-- thesis -->
+# 		<data source="051." name="@rdftype">
+# 			<regexp match="^.[uy]|^..[uy]|^...[uy]" format="$[ns-bibo]Thesis"/>
+# 		</data>
+# 		<data source="052." name="@rdftype">
+# 			<regexp match="^.sc|^...sc|^.....sc" format="$[ns-bibo]Thesis"/>
+# 		</data>
+# 		<data source="519-[12].?" name="@rdftype">
+# 			<regexp match=".*" format="$[ns-bibo]Thesis"/>
+# 		</data>
+
+# Old mapping also includes u = Universitätsschrift and not just y Dissertation. But both is set as m
+# Introx is setting this to Hochschulschrift not to Thesis which is more inclusive and would be a more acceptable mapping I think.
+# We should decide what is better.
+
+if any_match("@leaderTyp+008", "(Book|Continuing Resources)(.{24}|.{25}|.{26}|.{27})m.*")  # Pos24-27
+  add_field("type[].$append","Thesis")
+elsif any_match("006", "^[ast](.{6}|.{7}|.{8}|.{9})m.*") # Pos00+07-10
+  add_field("type[].$append","Thesis")
+end
+
+
+# type: "Book"
+
+# Old ALEPH Morph:
+# <!-- type is book (and also manifestation) if 050 begins with 'a' and 051 or 052 is missing
+#			or 051 and 052 does not fulfill a certain pattern -->
+#		<combine name="@rdftype" value="$[ns-bibo]Book">
+#			<if>
+#				<none>
+#					<data source="@idzdb"/>
+#					<data source="050.">
+#						<regexp match="^.........a"/>
+#					</data>
+#					<data source="051.">
+#						<regexp match="^a"/>
+#					</data>
+#					<data source="051.">
+#						<regexp match="^.[mt]"/>
+#					</data>
+#					<data source="051.">
+#						<regexp match="^..[tm]"/>
+#					</data>
+#					<data source="051.">
+#						<regexp match="^...t"/>
+#					</data>
+#					<data source="051.">
+#						<regexp match="^....t"/>
+#					</data>
+#					<data source="051.">
+#						<regexp match="^.....t"/>
+#					</data>
+#					<data source="051.">
+#						<regexp match="^.z"/>
+#					</data>
+#					<data source="052.">
+#						<regexp match="^[a-zA-Z]"/>
+#					</data>
+#					<data source="089-[-1].a|090-[-1].a">
+#						<regexp match="Heft"/>
+#					</data>
+#					<data source="@matVideo"/>
+#					<data source="@mediumAudio"/>
+#					<data source="@archived"/>
+#				</none>
+#			</if>
+#			<choose>
+#				<data source="050.">
+#					<regexp match="^a"/>
+#				</data>
+#				<data source="051.">
+#					<regexp match="^m|^s|^.x|^..x|^...x|^....[fkls]"/>
+#				</data>
+#				<data source="062-1.a">
+#					<regexp match="Band"/>
+#				</data>
+#				<data source="089-[-1].a|090-[-1].a"/>
+#				<data source="9[01234][27]-[-1].f">
+#					<regexp
+#						match="Anthologie|Atlas|Auktionskatalog|Bildband|Bilderbuch|Jugendbuch|Jugendsachbuch|Kinderbuch|Kindersachbuch|Kochbuch|Lehrbuch|Lesebuch"/>
+#				</data>
+#			</choose>
+#		</combine>
+#
+# ALMA Moprh
+#  <combine name="@facet_type" value="Book">
+#    <if>
+#      <data source="@LeaderPos07">
+#        <regexp match="[adm]" />
+#      </data>
+#    </if>
+#    <data source="001" />
+#  </combine>
+
+# TODO: Check if we still need the complex transformation for book.
+
+if any_match("@leaderPos06-07", "^.[adm]")
+  add_field("type[].$append","Book")
+end
+
+
+# Set medium default to print if there is no medium and type "Book" exists.
+
+unless exists("medium[].1")
+  if any_equal("type[]", "Book")
+    add_field("medium[].$append.label", "Print")
+  end
+end
+
+# Add ids for medium[].
+
+do list(path:"medium[]", "var": "$i")
+	copy_field("$i.label","$i.id")
+	lookup("$i.id","medium-id-to-label")
+end
+# TODO: Uniq array objects.
+
+
 # mediumAndType.fix is needed ahead of contribution.fix because of dependencies
-include ("./fix/contribution.fix")
+#   <entity name="responsibilityStatement[]" flushWith="245??.c">
+#     <data name="" source="245??.c" />
+#   </entity>
+
+# 245 - Title Statement (NR) - Subfield: $c (NR)
+set_array("responsibilityStatement[]")
+copy_field("245??.c", "responsibilityStatement[].$append")
+
+#
+#   <entity name="contribution[]" flushWith="record">
+set_array("contribution[]")
+
+# 100 and 700
+
+#     <!-- 100[01]-->
+#     <entity name="" flushWith="100[01] " sameEntity="true">
+#       <if>
+#         <none flushWith="100[01] " sameEntity="true">
+#           <data name="" source="100[01] .M" />
+#         </none>
+#       </if>
+#       <entity name="type[]" reset="true">
+#         <data name="" source="100[01] ">
+#           <constant value="Contribution"/>
+#         </data>
+#       </entity>
+#       <entity name="agent" flushWith="100[01] " sameEntity="true" reset="true">
+#         <call-macro name="gndIdentifier" field="100" />
+#         <call-macro name="gndIdentifierId" field="100" />
+#         <call-macro name="personName" dname="label" field="100" />
+#         <entity name="type[]" reset="true">
+#           <data name="" source="100[01] .a">
+#             <constant value="Person"/>
+#           </data>
+#         </entity>
+#       </entity>
+#       <entity name="role" reset="true" sameEntity="true" flushWith="100[01] ">
+#         <data name="id" source="100[01] .4">
+#           <compose prefix="http://id.loc.gov/vocabulary/relators/"/>
+#         </data>
+#       </entity>
+#     </entity>
+#
+#     <!--700[01] -->
+#     <entity name="" flushWith="700[01] " sameEntity="true">
+#       <entity name="type[]" reset="true">
+#         <data name="" source="700[01] ">
+#           <constant value="Contribution"/>
+#         </data>
+#       </entity>
+#       <entity name="agent" flushWith="700[01] " reset="true">
+#         <call-macro name="personIdentifier" dname="gndIdentifier" field="700" />
+#         <call-macro name="gndIdentifierId" field="700" />
+#         <call-macro name="personName" dname="label" field="700" />
+#         <entity name="type[]" reset="true">
+#           <data name="" source="700[01] .a">
+#             <constant value="Person"/>
+#           </data>
+#         </entity>
+#       </entity>
+#       <entity name="role" reset="true" sameEntity="true" flushWith="700[01] ">
+#         <data name="id" source="700[01] .4">
+#           <compose prefix="http://id.loc.gov/vocabulary/relators/"/>
+#         </data>
+#       </entity>
+#     </entity>
+# I separate the cleaning from the copying since the cleaning needs to be done for evey element.
+
+# 100 - Main Entry-Personal Name (NR)
+# Subfields: $a (NR), $0 (R), $4 (R)
+# Subfield: $M is a local field and can create duplicates and is therefore ignored.
+
+
+do list(path:"100[01] ", "var":"$i")
+  unless exists("$i.M")
+    # in some cases (e.g. 99370763882706441) we have an invalid repeated subfield $a
+    # since in the invalid record one cannot untangle the info easily (creates dublicate info and no roles) the fix scipts if the subfield $a is an array.
+    unless exists("$i.a.1")
+      unless exists("$i.4")
+        if any_match("type[]","ArchivedWebPage|Miscellaneous|Bibliography|Statistics|Legislation|PublishedScore|Game|Image|Map|Standard")
+          add_field("$i.4","cre")
+        elsif any_match("type[]","Periodical|Collection|Series|Newspaper|Journal|PublicationIssue|EditedVolume|Proceedings|Festschrift|ReferenceSource")
+          add_field("$i.4","edt")
+        elsif any_match("type[]","Book|MultiVolumeBook|Article|Thesis|OfficialPublication|Schoolbook|Biography|Report")
+          add_field("$i.4","aut")
+        else
+          add_field("$i.4","cre")
+        end
+      end
+      do list(path: "$i.4", "var":"$j")
+        set_hash("contribution[].$append.agent")
+        do list(path:"$i.0","var":"$k")
+          if all_match("$k", "^\\(DE-588\\).*$")
+        # GND identifier
+            paste("contribution[].$last.agent.gndIdentifier","$k")
+        # GND Identifier id
+            paste("contribution[].$last.agent.id","$k")
+          end
+        end
+        # name
+        copy_field("$i.a","contribution[].$last.agent.label")
+        # type
+        set_array("contribution[].$last.agent.type[]","Person")
+        # role
+        copy_field("$j","contribution[].$last.role.id")
+      end
+    end
+  end
+end
+
+# 700 - Added Entry-Personal Name (R)
+# Subfields: $a (NR), $0 (R), $4 (R)
+# Subfield: $M is a local field and can create duplicates and is therefore ignored.
+
+do list(path:"700[01] ", "var":"$i")
+  unless exists("$i.M")
+    # in some cases (e.g. 99370763882706441) we have an invalid repeated subfield $a
+    # since in the invalid record one cannot untangle the info easily (creates dublicate info and no roles) the fix scipts if the subfield $a is an array.
+    unless exists("$i.a.1")
+      unless exists("$i.4")
+        add_field("$i.4","ctb")
+      end
+      do list(path: "$i.4", "var":"$j")
+        set_hash("contribution[].$append.agent")
+        do list(path:"$i.0","var":"$k")
+          if all_match("$k", "^\\(DE-588\\).*$")
+        # GND identifier
+            paste("contribution[].$last.agent.gndIdentifier","$k")
+        # GND Identifier id
+            paste("contribution[].$last.agent.id","$k")
+          end
+        end
+        # name
+        copy_field("$i.a","contribution[].$last.agent.label")
+        # type
+        set_array("contribution[].$last.agent.type[]","Person")
+        # role
+        copy_field("$j","contribution[].$last.role.id")
+      end
+    end
+  end
+end
+
+#
+#     <!-- 110|710[012] -->
+#     <entity name="" flushWith="[17]10[012] " sameEntity="true">
+#       <entity name="type[]" reset="true">
+#         <data name="" source="[17]10[012] ">
+#           <constant value="Contribution"/>
+#         </data>
+#       </entity>
+#       <entity name="agent" flushWith="[17]10[012] " reset="true">
+#         <call-macro name="gndIdentifier" field="[17]10" />
+#         <call-macro name="gndIdentifierId" field="[17]10" />
+#         <combine name="label" value="${a}${b}" flushWith="[17]10[012] ">
+#           <data name="a" source="[17]10[012] .a">
+#             <replace pattern="\.$" with=""/>
+#           </data>
+#           <data name="b" source="[17]10[012] .b">
+#             <replace pattern="\.$" with=""/>
+#             <compose prefix=". " />
+#           </data>
+#         </combine>
+#         <entity name="type[]" reset="true">
+#           <data name="" source="[17]10[012] .a">
+#             <constant value="CorporateBody"/>
+#           </data>
+#         </entity>
+#       </entity>
+#       <entity name="role" reset="true" sameEntity="true" flushWith="[17]10[012] ">
+#         <data name="id" source="[17]10[012] .4">
+#           <compose prefix="http://id.loc.gov/vocabulary/relators/"/>
+#         </data>
+#       </entity>
+#     </entity>
+#
+
+# 110 - Main Entry-Corporate Name (NR)
+# Subfields: $a (NR), $0 (R), $4 (R)
+# Subfield: $M is a local field and can create duplicates and is therefore ignored.
+
+
+
+do list(path:"110[012] ", "var":"$i")
+  unless exists("$i.M")
+    # in some cases (e.g. 99370763882706441) we have an invalid repeated subfield $a
+    # since in the invalid record one cannot untangle the info easily (creates dublicate info and no roles) the fix scipts if the subfield $a is an array.
+    unless exists("$i.a.1")
+      unless exists("$i.4")
+        if any_match("type[]","ArchivedWebPage|Miscellaneous|Bibliography|Statistics|Legislation|PublishedScore|Game|Image|Map|Standard")
+          add_field("$i.4","cre")
+        elsif any_match("type[]","Periodical|Collection|Series|Newspaper|Journal|PublicationIssue|EditedVolume|Proceedings|Festschrift|ReferenceSource")
+          add_field("$i.4","edt")
+        elsif any_match("type[]","Book|MultiVolumeBook|Article|Thesis|OfficialPublication|Schoolbook|Biography|Report")
+          add_field("$i.4","aut")
+        else
+          add_field("$i.4","cre")
+        end
+      end
+      do list(path: "$i.4", "var":"$j")
+        set_hash("contribution[].$append.agent")
+        do list(path:"$i.0","var":"$k")
+          if all_match("$k", "^\\(DE-588\\).*$")
+        # GND identifier
+            paste("contribution[].$last.agent.gndIdentifier","$k")
+        # GND Identifier id
+            paste("contribution[].$last.agent.id","$k")
+          end
+        end
+        # name
+          paste("contribution[].$last.agent.label", "$i.a", "$i.b", join_char: ". ")
+        # type
+        set_array("contribution[].$last.agent.type[]","CorporateBody")
+        # role
+        copy_field("$j","contribution[].$last.role.id")
+      end
+    end
+  end
+end
+
+# 710 - Added Entry-Corporate Name (R)
+# Subfields: $a (NR), $0 (R), $4 (R)
+# Subfield: $M is a local field and can create duplicates and is therefore ignored.
+
+
+do list(path:"710[012] ", "var":"$i")
+  unless exists("$i.M")
+    # in some cases (e.g. 99370763882706441) we have an invalid repeated subfield $a
+    # since in the invalid record one cannot untangle the info easily (creates dublicate info and no roles) the fix scipts if the subfield $a is an array.
+    unless exists("$i.a.1")
+      unless exists("$i.4")
+        add_field("$i.4","ctb")
+      end
+      do list(path: "$i.4", "var":"$j")
+        set_hash("contribution[].$append.agent")
+        do list(path:"$i.0","var":"$k")
+          if all_match("$k", "^\\(DE-588\\).*$")
+        # GND identifier
+            paste("contribution[].$last.agent.gndIdentifier","$k")
+        # GND Identifier id
+            paste("contribution[].$last.agent.id","$k")
+          end
+        end
+        # name
+          paste("contribution[].$last.agent.label", "$i.a", "$i.b", join_char: ". ")
+        # type
+        set_array("contribution[].$last.agent.type[]","CorporateBody")
+        # role
+        copy_field("$j","contribution[].$last.role.id")
+      end
+    end
+  end
+end
+
+
+set_array("contribution[].*.type[]", "Contribution")
+replace_all("contribution[].*.agent.id","^\\(DE-588\\)(.*$)","https://d-nb.info/gnd/$1")
+replace_all("contribution[].*.agent.label","(?<!\\p{Upper})\\.$|[,]$","")
+prepend("contribution[].*.role.id","http://id.loc.gov/vocabulary/relators/")
+
+# Deleted the "conference"-Element TODO: specific conference Info needs to be added elsewhere.
+
 
 
 vacuum()
