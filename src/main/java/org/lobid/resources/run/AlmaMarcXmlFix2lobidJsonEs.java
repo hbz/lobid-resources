@@ -198,6 +198,7 @@ public class AlmaMarcXmlFix2lobidJsonEs {
       Metafix metafix = new Metafix(fixFileName, fixVariables);
       LOG.info("Setting strictness to EXPRESSION => metafix will not break if a field makes trouble but rather logs warning");
       metafix.setStrictness(Metafix.Strictness.EXPRESSION);
+      metafix.setStrictnessHandlesProcessExceptions(true);
       sr.setReceiver(new XmlDecoder())//
           .setReceiver(marcXmlHandler)//
           .setReceiver(metafix)
