@@ -1,9 +1,3 @@
-
-#  <!-- 2xx -->
-
-# Variable @title
-#  <call-macro name="regex-del-punctuation-end" dsource="245??.a" dname="@title" />
-
 # 245 - Title Statement (NR) - Subfield: $a (NR), $b (NR), $n (R), $p (R)
 
 copy_field("245??.a","@title")
@@ -11,28 +5,12 @@ replace_all("@title", "^[©]|\\s?[,.:;/=]?$", "")
 replace_all("@title", "<", "")
 replace_all("@title", ">", "")
 
-#  <concat delimiter=". " name="@titleOfSubSeries_n" flushWith="245??.p">
-#    <data name="n" source="245??.n"/>
-#  </concat>
 
 set_array("@titleOfSubSeries_n")
 do list(path:"245??.n", "var":"$i")
   copy_field("$i","@titleOfSubSeries_n.$append")
 end
 join_field("@titleOfSubSeries_n", ". ")
-
-
-#  <combine name="@titleOfSubSeries" value="${n}${p}" sameEntity="true" flushWith="245??">
-#    <data name="p" source="245??.p">
-#      <occurrence only="1"/>
-#      <replace pattern="\s?\.?\s?$" with=""/>
-#      <replace pattern="&gt;" with=""/>
-#      <replace pattern="&lt;" with=""/>
-#    </data>
-#    <data name="n" source="@titleOfSubSeries_n">
-#      <regexp match="(.*)" format="${1}: "/>
-#    </data>
-#  </combine>
 
 set_array("@titleOfSubSeries_p")
 
@@ -46,58 +24,20 @@ prepend("@titleOfSubSeries_p.1", ": ")
 
 paste("@titleOfSubSeries", "@titleOfSubSeries_n",  "@titleOfSubSeries_p.1", join_char: "")
 
-
-#  <data name="titleOfSubSeries" source="@titleOfSubSeries" />
-
 copy_field("@titleOfSubSeries", "titleOfSubSeries")
 vacuum()
 prepend("@titleOfSubSeries",", ")
 
-#  <combine name="title" value="${maintitle}${subtitle}" flushWith="record">
-#    <data name="maintitle" source="@title">
-# solved with "@title" variable
-#     <!-- Delete not sorting signs in title -->
-#     <replace pattern="&gt;" with=""/>
-#     <replace pattern="&lt;" with=""/>
-#    </data>
-#    <data name="subtitle" source="@titleOfSubSeries">
-#      <regexp match="(.*)" format=", ${1}"/>
-#    </data>
-#  </combine>
-
 paste("title","@title", "@titleOfSubSeries", join_char: "")
-
-
-
-#  <entity name="alternativeTitle[]" flushWith="record">
-#    <data source="246?[ 345678].a">
-#      <replace pattern="\.$" with="" />
-#    </data>
-#  </entity>
 
 # 246 - Varying Form of Title (R) - Subfields: $a (NR)
 
 set_array("alternativeTitle[]")
 copy_field("246?[ 345678].a","alternativeTitle[].$append")
 
-#
-#  <entity name="otherTitleInformation[]">
-#    <data name="" source="245??.b">
-#      <occurrence only="1" />
-#      <replace pattern="\s?[./]\s?$" with="" />
-#    </data>
-#  </entity>
-
 set_array("otherTitleInformation[]")
 copy_field("245??.b","otherTitleInformation[].$append")
 replace_all("otherTitleInformation[].*","\\s?[./]\\s?$","")
-
-
-#  <entity name="edition[]" flushWith="record">
-#    <data name="" source="250  .a">
-#      <replace pattern="\s?[=/]$" with="" />
-#    </data>
-#  </entity>
 
 # 250 - Edition Statement (R) - Subfields: $a (NR)
 
@@ -114,18 +54,18 @@ do list(path:"260[ 23] |264[ 23][ 1]", "var":"$i")
   paste("publication[].$last.publicationHistory", "$i.c")
   do list(path: "$i.c", "var":"$j")
     replace_all("$j", "\\[|\\]|ca. |c ", "")
-    unless exists("publication[].$last.startDate") 
-      if any_match("$j",".*?(\\d{4}).*")  
+    unless exists("publication[].$last.startDate")
+      if any_match("$j",".*?(\\d{4}).*")
         paste("publication[].$last.startDate", "$j")
       end
     end
-    unless exists("publication[].$last.endDate")     
-      if any_match("$j",".*-(\\d{4})$")  
+    unless exists("publication[].$last.endDate")
+      if any_match("$j",".*-(\\d{4})$")
         paste("publication[].$last.endDate", "$j")
       end
     end
   end
-  # TODO is there a way to distinguish PublicationEvent and SecondaryPublicationEvent? 
+  # TODO is there a way to distinguish PublicationEvent and SecondaryPublicationEvent?
   set_array("publication[].$last.type[]","PublicationEvent")
   set_array("publication[].$last.location[]")
   copy_field("$i.a", "publication[].$last.location[].$append")
