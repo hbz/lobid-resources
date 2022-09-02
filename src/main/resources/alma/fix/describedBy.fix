@@ -1,7 +1,7 @@
 # 	<data name="@createTime" source="@almaMmsId">
 # 		<constant value="$[createEndTime]"/>
 # 	</data>
-# 
+#
 # 	<entity name="describedBy" flushWith="record">
 # 		<data name="id" source="@almaMmsId">
 # 			<regexp match="(.*)" format="http://lobid.org/resources/${1}"/>
@@ -77,7 +77,7 @@ set_array("describedBy.resultOf.type[]", "CreateAction")
 # 			</combine>
 add_field("describedBy.resultOf.endTime","0000-00-00T00:00:00")
 # TODO: Add timestamp at the moment not supported by FIX.
-	
+
 
 # 			<entity name="instrument">
 # 				<data name="id" source="@almaMmsId">
@@ -133,7 +133,7 @@ add_field("describedBy.resultOf.object.inDataset.id", "https://datahub.io/datase
 add_field("describedBy.resultOf.object.inDataset.label", "hbz_unioncatalog")
 
 # 			</entity>
-# 
+#
 # 		</entity>
 # 		<entity name="license[]">
 # 			<entity name="">
@@ -161,8 +161,17 @@ add_field("describedBy.license[].$last.label","Creative Commons-Lizenz CC0 1.0 U
 # TODO: It seems that there are a lot of organisations that are not in lobid, we should filter them out.
 
 # 040 - Cataloging Source (NR) - Subfield: $a (NR), $c (NR), $d (R)
+# ALMA has a lot of invalid repeated subfields $a
 
-copy_field("040  .a", "describedBy.sourceOrganization.id")
+do list(path: "040  ", "var":"$i")
+
+  do list(path:"$i.a","var":"$j")
+    unless exists("describedBy.sourceOrganization.id")
+      copy_field("$j", "describedBy.sourceOrganization.id")
+    end
+  end
+end
+
 replace_all("describedBy.sourceOrganization.id", " ", "")
 prepend("describedBy.sourceOrganization.id", "http://lobid.org/organisations/DE-")
 append("describedBy.sourceOrganization.id", "#!")
@@ -221,4 +230,4 @@ end
 
 # 	</entity>
 # </rules>
-# 
+#
