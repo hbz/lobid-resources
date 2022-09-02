@@ -132,6 +132,8 @@ public final class AlmaMarc21XmlToLobidJsonMetafixTest {
         opener.setReceiver(new TarReader());
         MarcXmlHandler marcXmlHandler = new MarcXmlHandler();
         marcXmlHandler.setNamespace(null);
+        StreamBatchLogger logger = new StreamBatchLogger();
+        logger.setBatchSize(10);
         EtikettJson etikettJson = new EtikettJson();
         etikettJson.setLabelsDirectoryName("labels");
         etikettJson.setFilenameOfContext("web/conf/context.jsonld");
@@ -142,6 +144,7 @@ public final class AlmaMarc21XmlToLobidJsonMetafixTest {
         try {
             opener.setReceiver(new TarReader()).setReceiver(new XmlDecoder())//
                 .setReceiver(marcXmlHandler)//
+                .setReceiver(logger)//
                 .setReceiver(new Metafix(FIX, morphVariables))//
                 .setReceiver(new JsonEncoder())//
                 .setReceiver(etikettJson).setReceiver(jsonToElasticsearchBulkMap);
