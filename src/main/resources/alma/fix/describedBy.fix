@@ -170,6 +170,12 @@ do list(path: "040  ", "var":"$i")
       copy_field("$j", "describedBy.sourceOrganization.id")
     end
   end
+  do list(path:"$i.c","var":"$j")
+    unless exists("describedBy.provider.id")
+      copy_field("$j", "describedBy.provider.id")
+    end
+  end
+
 end
 
 replace_all("describedBy.sourceOrganization.id", " ", "")
@@ -188,8 +194,7 @@ end
 # 			</data>
 # 		</entity>
 
-# TODO: It seems that there are a lot of organisations that are not in lobid, we should filter them out.
-copy_field("040  .c", "describedBy.provider.id")
+
 replace_all("describedBy.provider.id", " ", "")
 prepend("describedBy.provider.id", "http://lobid.org/organisations/DE-")
 append("describedBy.provider.id", "#!")
