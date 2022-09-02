@@ -203,25 +203,6 @@ do list(path: "77608", "var":"$i")
 end
 
 
-#
-#  <!-- 8xx -->
-#  <entity name="tableOfContents[]" flushWith="record">
-#    <entity name="" sameEntity="true" reset="true">
-#      <if>
-#        <all flushWith="8564?" sameEntity="true" reset="true">
-#          <data source="8564?.3">
-#            <regexp match="^[Ii][Nn][Hh][aA][lL][tT][sS][vV]"/>
-#          </data>
-#          <data source="8564?.u">
-#            <unique />
-#          </data>
-#        </all>
-#      </if>
-#      <data name="id" source="8564?.u" />
-#      <data name="label" source="8564?.3" />
-#    </entity>
-#  </entity>
-
 # 856 - Electronic Location and Access (R) - Subfield: $u (R) $3 (NR)
 # 1. Indicator: 4 = HTTP
 
@@ -283,13 +264,6 @@ do list(path: "8564?", "var":"$i")
   end
 end
 
-# "fulltextOnline[]" needs to add:
-#		<combine name="@fulltextOnlineUri" value="${a}" sameEntity="true">
-#			<data source="655[-eu][ -1].[x3]">
-#				<regexp match="Archivierte Online|EZB|Online-Ausg|Resolving-System|Volltext"/>
-#			</data>
-#			<data source="@linkUri" name="a"/>
-#		</combine>
 
 # TODO: hasVersion is outcommented since it needs some remodelling
 # See https://github.com/hbz/lobid-resources/issues/1242
@@ -317,49 +291,6 @@ end
 #  </entity> -->
 #
 
-
-
-#  <entity name="related[]" flushWith="record">
-#    <entity name="" flushWith="775??|776??" sameEntity="true">
-#      <if>
-#        <any>
-#          <data source="775??.z|776??.z">
-#            <unique />
-#          </data>
-#          <data source="775??.w|776??.w">
-#            <unique />
-#          </data>
-#          <data source="775??.t|776??.t">
-#            <unique />
-#          </data>
-#          <data source="775??.x|776??.x">
-#            <unique />
-#          </data>
-#        </any>
-#      </if>
-#      <data name="id" source="775??.w|776??.w">
-#        <regexp match="\(DE-605\)(.*)" format="http://lobid.org/resources/${1}#!"/>
-#      </data>
-#      <concat name="note" delimiter=" " sameEntity="true" flushWith="775??|776??">
-#        <data source="775??.i|776??.i" />
-#        <data source="775??.n|776??.n" />
-#      </concat>
-#      <data name="label" source="775??.t|776??.t" />
-#      <entity name="isbn[]" sameEntity="true">
-#        <data name="" source="775??.z|776??.z">
-#          <isbn to="clean"/>
-#          <isbn to="isbn10"/>
-#          <unique />
-#        </data>
-#        <data name="" source="775??.z|776??.z">
-#          <isbn to="clean"/>
-#          <isbn to="isbn13"/>
-#          <unique />
-#        </data>
-#      </entity>
-#      <data name="issn" source="775??.x|776??.x" />
-#    </entity>
-#  </entity>
 
 # 775 - Other Edition Entry (R) - Subfield: $w (R), $t (NR), $i (R), $n (R), $x(NR), $z (R)
 # 776 - Additional Physical Form Entry (R) -  Subfield: $w (R), $t (NR), $i (R), $n (R), $x (NR), $z (R)
@@ -391,30 +322,12 @@ do list(path:"775??|776??", "var":"$i")
 end
 
 
-
-
-
-
 #
 #  <!-- TODO: inCollection: missing edoweb, rpb, publisso, also type-element -->
 #  <entity name="inCollection[]" flushWith="record">
 set_array("inCollection[]")
 
-
-#    <!-- ZDB -->
-#    <entity name="" sameEntity="true" reset="true">
-#      <data name="label" source="@zdbId">
-#        <constant value="Zeitschriftendatenbank (ZDB)" />
-#      </data>
-#      <data name="id" source="@zdbId">
-#        <constant value="http://lobid.org/resources/HT014846970#!" />
-#      </data>
-#      <entity name="type[]" sameEntity="true">
-#        <data name="" source="@zdbId">
-#          <constant value="Collection"/>
-#        </data>
-#      </entity>
-#    </entity>
+# zdb
 
 if exists("zdbId")
   add_field("inCollection[].$append.id", "http://lobid.org/resources/HT014846970#!")
@@ -425,7 +338,7 @@ end
 # Checks rpb subjects are provided.
 
 do list(path:"084??", "var":"$i")
-  do once()
+  do once("rpb")
     if any_equal("$i.2","rpb")
       add_field("inCollection[].$append.id", "http://lobid.org/resources/HT013494180#!")
       add_field("inCollection[].$last.label", "Rheinland-Pfälzische Bibliographie")
@@ -433,23 +346,7 @@ do list(path:"084??", "var":"$i")
   end
 end
 
-
-#    <!-- EZB -->
-#    <entity name="" sameEntity="true" reset="true">
-#      <data name="label" source="85640.x">
-#        <equals string="EZB" />
-#        <constant value="Elektronische Zeitschriftenbibliothek (EZB)" />
-#      </data>
-#      <data name="id" source="85640.x">
-#        <equals string="EZB" />
-#        <constant value="http://lobid.org/resources/HT016356466#!" />
-#      </data>
-#      <entity name="type[]" sameEntity="true">
-#        <data name="" source="85640.x">
-#          <constant value="Collection"/>
-#        </data>
-#      </entity>
-#    </entity>
+# ezb
 
 # 856 - Electronic Location and Access (R) - Subfield: $x - Nonpublic note (R)
 # TODO: Check if src/test/resources/alma-fix/(CKB)5280000000199164.xml is also an EZB titel even when it has no 865.
@@ -460,6 +357,7 @@ do list(path:"85640", "var":"$i")
   end
 end
 
+# edoweb
 
 do list(path:"85640", "var":"$i")
   if any_match("$i.u","^.*edoweb.*") # can test x and x.*
@@ -467,6 +365,8 @@ do list(path:"85640", "var":"$i")
     add_field("inCollection[].$last.label", "Edoweb Rheinland-Pfalz")
   end
 end
+
+# publisso
 
 
 # TODO: AlephMorph checked for ellinet in "078r1.a" but publisso is also stated in the Link URI is that enough?
@@ -477,24 +377,7 @@ do list(path:"85640", "var":"$i")
   end
 end
 
-
-#    <!-- nwbib -->
-#    <entity name="" sameEntity="true" reset="true">
-#      <data name="label" source="084  .2">
-#        <equals string="nwbib" />
-#        <constant value="Nordrhein-Westfälische Bibliographie (NWBib)" />
-#        <unique />
-#      </data>
-#      <data name="id" source="084  .2">
-#        <equals string="nwbib" />
-#        <constant value="http://lobid.org/resources/HT014176012#!" />
-#      </data>
-#      <entity name="type[]" sameEntity="true">
-#        <data name="" source="084  .2">
-#          <constant value="Collection"/>
-#        </data>
-#      </entity>
-#    </entity>
+# nwbib
 
 # 084 - Other Classification Number (R), Subfield: $2 (NR)
 
@@ -509,20 +392,7 @@ end
 
 
 
-#    <!-- eResource package -->
-#    <entity name="" sameEntity="true" reset="true">
-#      <data source="912  .a" name="id">
-#        <regexp match="(ZDB-[0-9]{1,6}-[a-zA-Z|0-9\\-]*).*" format="http://lobid.org/organisations/${1}#!"/>
-#      </data>
-#      <data source="912  .a" name="label">
-#        <regexp match="(ZDB-[0-9]{1,6}-[a-zA-Z|0-9\\-]*).*" format="eResource package" />
-#      </data>
-#      <entity name="type[]" sameEntity="true" reset="true">
-#        <data name="" source="912  .a">
-#          <constant value="Collection"/>
-#        </data>
-#      </entity>
-#    </entity>
+#    eResource package
 
 # 912 ## "(nur Präfix ZDB-, und "vd18")" no Information about repeatability
 
@@ -535,18 +405,7 @@ do list(path:"912  ", "var":"$i")
 end
 
 
-#    <!-- E-Book and digital copy selections (inofficial) -->
-#    <entity name="" sameEntity="true" reset="true">
-#      <data source="962  .e" name="id">
-#        <regexp match="^[^Z][^D][^B].*" />
-#        <regexp match="(.*)" format="https://lobid.org/collections#${1}"/>
-#      </data>
-#      <entity name="type[]" sameEntity="true" reset="true">
-#        <data name="" source="962  .e">
-#          <constant value="Collection"/>
-#        </data>
-#      </entity>
-#    </entity>
+#  E-Book and digital copy selections (inofficial)
 
 # 912 ## no Information about repeatability
 
@@ -560,20 +419,6 @@ do list(path:"962  ", "var":"$i")
   end
 end
 
-#    <!-- 960 selections (inofficial) -->
-#    <entity name="" sameEntity="true" reset="true">
-#      <data source="9601 .?" name="id">
-#        <regexp match="(.*)" format="https://lobid.org/collections#${1}"/>
-#      </data>
-#      <entity name="type[]" sameEntity="true" reset="true">
-#        <data name="" source="9601 .?">
-#          <constant value="Collection"/>
-#        </data>
-#      </entity>
-#    </entity>
-#  </entity>
-#</rules>
-#
 
 # 960 ## no Information about repeatability
 # TODO: This needs further inspection if we need a collection fr all subfields: https://service-wiki.hbz-nrw.de/display/VDBE/960+-+Selektionskennzeichen+NZ

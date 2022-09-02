@@ -1,15 +1,3 @@
-#  <!-- 0xx -->
-#
-
-
-#
-#  <data name="@language_source_all" source="008">
-#    <substring start="35" end="38" />
-#  </data>
-#  <data name="@language_source_all" source="041[ 01] .[adj]" />
-# TODO: Needs to be explained why this is double. Can only one of the elements be used?
-
-
 # 008 - Fixed-Length Data Elements-General Information (NR) - No subfields
 
 set_array("@language")
@@ -17,14 +5,9 @@ copy_field("008", "@008-lang")
 substring("@008-lang", "35", "38")
 copy_field("008-lang", "@language.$append")
 copy_field("041[ 01] .[adj]", "@language.$append")
-#  <data name="@language_source" source="@language_source_all">
-#    <unique />
-#  </data>
+
 uniq("@language")
-#  <data name="@language_long" source="@language_source">
-#    <lookup in="ISO639-2-to-GND" />
-#  </data>
-#  <entity name="language[]" flushWith="record">
+
 set_array("language[]")
 do list(path:"@language", "var":"$i")
   copy_field("$i", "language[].$append.id")
@@ -33,17 +16,6 @@ end
 
 lookup("language[].*.label","ISO639-2-to-GND")
 prepend("language[].*.id", "http://id.loc.gov/vocabulary/iso639-2/")
-
-
-#    <entity name="" flushWith="@language_source" reset="true">
-#      <data name="id" source="@language_source">
-#        <regexp match="(.*)" format="http://id.loc.gov/vocabulary/iso639-2/${1}"/>
-#      </data>
-#      <data name="label" source="@language_long" />
-#    </entity>
-#  </entity>
-
-# TODO: Is this needed?
 
 #
 #  <!-- 3xx -->
@@ -180,26 +152,8 @@ prepend("language[].*.id", "http://id.loc.gov/vocabulary/iso639-2/")
 #      </data>
 #    </choose>
 #  </combine>
-#
 
-# TODO: This seems to be a relict of Introx.
-#  <!--  TODO: this used to be mapped as "publicationHistory". Check how to handle
-#
-#  <entity name="ChronologyAndEnumeration">
-#    <concat name="value" delimiter=" ; ">
-#      <data source="3620 .a" />
-#    </concat>
-#  </entity>
-#  -->
-#
-#  <!-- 4xx -->
-#
-#  <!-- 5xx -->
-#  <entity name="note[]" flushWith="record">
-#    <data name="" source="500  .a">
-#      <unique />
-#    </data>
-#  </entity>
+
 
 # 500 - General Note (R) Subfield: $a (NR)
 set_array("note[]")
@@ -208,10 +162,6 @@ do list(path:"500  ", "var": "$i")
 end
 uniq("note[]")
 
-#
-#  <entity name="abstract[]" flushWith="record">
-#    <data name="" source="520[ 13] .[ab]" />
-#  </entity>
 
 # 520 - Summary, Etc. (R) Subfield: $a (NR), $b (NR)
 # TODO: Check if 1. Indicator 1 (REVIEW) is really to count as abstract. Perhaps 2 (Scope and content) is a better fit.
@@ -221,12 +171,6 @@ do list(path:"520[ 13] ", "var": "$i")
   copy_field("$i.[ab]", "abstract[].$append")
 end
 
-
-#
-#  <entity name="thesisInformation[]" flushWith="record">
-#    <data name="" source="502??.a" />
-#  </entity>
-
 # 502 - Dissertation Note (R) Subfield: $a (R)
 # TODO: Get testdata.
 set_array("thesisInformation[]")
@@ -234,20 +178,6 @@ do list(path:"502  ", "var": "$i")
   copy_field("$i.a", "thesisInformation[].$append")
 end
 
-
-
-#		<concat delimiter="; " name="http://purl.org/dc/terms/bibliographicCitation">
-#			<data source="59[0123568][-abcd][-12].a">
-#				<replace pattern="&gt;&gt;" with=""/>
-#				<replace pattern="&lt;&lt;" with=""/>
-#				<replace pattern="^http" with="Siehe: http"/>
-#			</data>
-#		</concat>
-#		<data source="525[-a][-1].a" name="http://purl.org/dc/terms/bibliographicCitation">
-#			<replace pattern="&gt;&gt;" with=""/>
-#			<replace pattern="&lt;&lt;" with=""/>
-#			<replace pattern="^http" with="Siehe: http"/>
-#		</data>
 
 # bibliographicCitation
 # TODO: This element seems to be not very informative due to the distributed and uncomplete information.
