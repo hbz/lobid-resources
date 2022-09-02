@@ -86,15 +86,12 @@ public final class AlmaMarc21XmlToLobidJsonMetafixTest {
         XmlFilenameWriter xmlFilenameWriter = new XmlFilenameWriter();
         xmlFilenameWriter.setProperty("/record/controlfield[@tag='001']");
         xmlFilenameWriter.setTarget(DIRECTORY.getPath());
-        StreamBatchLogger logger = new StreamBatchLogger();
-        logger.setBatchSize(10);
         FileOpener opener = new FileOpener();
         SimpleXmlEncoder simpleXmlEncoder = new SimpleXmlEncoder();
         simpleXmlEncoder.setSeparateRoots(true);
 
         XmlDecoder xmlDecoder = new XmlDecoder(); //
         xmlDecoder.setReceiver(xmlElementSplitter) //
-            .setReceiver(logger) //
             .setReceiver(new LiteralToObject()) //
             .setReceiver(stringFilter)//
             .setReceiver(new StringReader()) //
@@ -127,6 +124,7 @@ public final class AlmaMarc21XmlToLobidJsonMetafixTest {
      */
     @Test
     public void transformFile() {
+        LOG.info("Starting transforming File");
         FileOpener opener = new FileOpener();
         opener.setDecompressConcatenated(true);
         opener.setReceiver(new TarReader());
