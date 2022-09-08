@@ -17,142 +17,73 @@ end
 lookup("language[].*.label","ISO639-2-to-GND")
 prepend("language[].*.id", "http://id.loc.gov/vocabulary/iso639-2/")
 
-#
-#  <!-- 3xx -->
-#
+
 # 300 - Physical Description (R)
 # Old Morph MAB-> Extent was less complex: 		<data source="433[-abc][-1].[aq]|653-1.a" name="http://id.loc.gov/ontologies/bibframe/extent"/>
-# TODO: Figure out if we need the extent info as complex as the introx info.
+# TODO: Figure out if we need the extent info as complex as the introx info. I reuse the introx transformation here.
 
-#  <data name="@300a1" source="300  .a">
-#    <occurrence only="1" />
-#    <replace pattern="\s?[:;+\(]?$" with="" />
-#  </data>
-#  <data name="@300a2" source="300  .a">
-#    <occurrence only="2" />
-#    <replace pattern="\s?[:;+\)]?$" with="" />
-#  </data>
-#  <data name="@300b" source="300  .b">
-#    <replace pattern="\s?[:;+\(]?$" with="" />
-#  </data>
-#  <data name="@300c1" source="300  .c">
-#    <occurrence only="1" />
-#    <replace pattern="\.?\s?[+\(]?$" with="" />
-#  </data>
-#  <data name="@300c2" source="300  .c">
-#    <occurrence only="2" />
-#    <replace pattern="\.?\s?[:;+\)]?$" with="" />
-#  </data>
-#  <data name="@300e" source="300  .e">
-#    <replace pattern="\.?\s?\(?$" with="" />
-#  </data>
-#
-#  <combine name="@300a2_punct" value="${a2})">
-#    <if>
-#      <all>
-#        <data source="@300a2" />
-#        <none>
-#          <data source="@300c2" />
-#        </none>
-#      </all>
-#    </if>
-#    <data name="a2" source="@300a2" />
-#  </combine>
-#  <combine name="@300a2_punct" value="${a2} ; ">
-#    <if>
-#      <all>
-#        <data source="@300a2" />
-#        <data source="@300c2" />
-#      </all>
-#    </if>
-#    <data name="a2" source="@300a2" />
-#  </combine>
-#  <combine name="@300b_punct" value=" : ${b}">
-#    <if>
-#      <all>
-#        <data source="@300b" />
-#        <data source="@300a1" />
-#      </all>
-#    </if>
-#    <data name="b" source="@300b" />
-#  </combine>
-#  <combine name="@300c1_punct" value=" ; ${c1}">
-#    <if>
-#      <all>
-#        <data source="@300c1" />
-#        <data source="@300a1|@300b" />
-#      </all>
-#    </if>
-#    <data name="c1" source="@300c1" />
-#  </combine>
-#  <combine name="@300c2_punct" value="${c2})">
-#    <data name="c2" source="@300c2" />
-#  </combine>
-#  <combine name="@300e_punct" value=" ; ${e}">
-#    <if>
-#      <all>
-#        <data source="300  .e" />
-#        <data source="@300[ac]1|@300b" />
-#        <none>
-#          <data source="@300[ac]2" />
-#        </none>
-#      </all>
-#    </if>
-#    <data name="e" source="@300e" />
-#  </combine>
-#  <combine name="@300e_punct" value=" ; ${e} (">
-#    <if>
-#      <all>
-#        <data source="300  .e" />
-#        <data source="@300[ac]1|@300b" />
-#        <data source="@300[ac]2" />
-#      </all>
-#    </if>
-#    <data name="e" source="@300e" />
-#  </combine>
-#
-#  <combine name="extent" value="${a1}${b}${c1}${e}${a2}${c2}">
-#    <choose name="a1">
-#      <data source="@300a1" />
-#      <data source="300*">
-#        <constant value="" />
-#      </data>
-#    </choose>
-#    <choose name="b">
-#      <data source="@300b_punct" />
-#      <data source="@300b" />
-#      <data source="300*">
-#        <constant value="" />
-#      </data>
-#    </choose>
-#    <choose name="c1">
-#      <data source="@300c1_punct" />
-#      <data source="@300c1" />
-#      <data source="300*">
-#        <constant value="" />
-#      </data>
-#    </choose>
-#    <choose name="e">
-#      <data source="@300e_punct" />
-#      <data source="@300e" />
-#      <data source="300*">
-#        <constant value="" />
-#      </data>
-#    </choose>
-#    <choose name="a2">
-#      <data source="@300a2_punct" />
-#      <data source="300*">
-#        <constant value="" />
-#      </data>
-#    </choose>
-#    <choose name="c2">
-#      <data source="@300c2_punct" />
-#      <data source="300*">
-#        <constant value="" />
-#      </data>
-#    </choose>
-#  </combine>
-
+set_array("@300a")
+copy_field("300  .a", "@300a")
+if exists("@300a.1")
+  copy_field("@300a.1", "@300a1")
+  replace_all("@300a1", "\\s?[:;+(]?$", "")
+end
+if exists("@300a.2")
+  copy_field("@300a.2", "@300a2")
+  replace_all("@300a2", "\\s?[:;+)]?$", "")
+end
+do list(path: "300  .b", "var": "$i")
+  replace_all("$i", "\\s?[:;+(]?$", "")
+  copy_field("$i", "@300b")
+end
+set_array("@300c")
+copy_field("300  .c", "@300c")
+if exists("@300c.1")
+  copy_field("@300c.1", "@300c1")
+  replace_all("@300c1", "[.]?\\s?[:;+(]?$", "")
+end
+if exists("@300c.2")
+  copy_field("@300c.2", "@300c2")
+  replace_all("@300c2", "[.]?\\s?[:;+)]?$", "")
+end
+do list(path: "300  .e", "var": "$i")
+  replace_all("$i", "[.]?\\s?\\(?$", "")
+  copy_field("$i", "@300e")
+end
+if exists("@300a2")
+  if exists("@300c2")
+    paste("@300a2_punct", "@300a2", "~ ; ", join_char: "")
+  else
+    paste("@300a2_punct", "@300a2", "~)", join_char: "")
+  end
+end
+if exists("@300b")
+  if exists("@300a1")
+    paste("@300b_punct", "~ : ", "@300b", join_char: "")
+  else
+    copy_field("@300b", "@300b_punct")
+  end
+end
+if exists("@300c1")
+  if exists("@300a1|@300b")
+    paste("@300c1_punct", "~ ; ", "@300c1", join_char: "")
+  else
+    copy_field("@300c1", "@300c1_punct")
+  end
+end
+copy_field("@300c2", "@300c2_punct")
+if exists("300  .e")
+  if exists("@300[ac]1|@300b")
+    if exists("@300[ac]2")
+      paste("@300e_punct", "~ ; ", "@300e", "~ (", join_char: "")
+    else
+      paste("@300e_punct", "~ ; ", "@300e", join_char: "")
+    end
+  else
+    copy_field("@300e", "@300e_punct")
+  end
+end
+paste("extent", "@300a1", "@300b_punct", "@300c1_punct", "@300e_punct", "@300a2_punct", "@300c2_punct", join_char: "")
 
 
 # 500 - General Note (R) Subfield: $a (NR)
