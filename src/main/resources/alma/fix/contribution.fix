@@ -161,10 +161,44 @@ do list(path:"710[012] ", "var":"$i")
   end
 end
 
+# 111 - Main Entry - Meeting Name (NR)
+# 711 - Added Entry - Meeting Name (R)
+# Subfields: $a (NR), $0 (R), $4 (R)
+# Subfield: $M is a local field and can create duplicates and is therefore ignored.
+
+# Deleted the "conference"-Element TODO: specific conference Info needs to be added elsewhere.
+
+do list(path:"111[012] |711[012] ", "var":"$i")
+  unless exists("$i.M")
+    # in some cases (e.g. 99370763882706441) we have an invalid repeated subfield $a
+    # since in the invalid record one cannot untangle the info easily (creates dublicate info and no roles) the fix scipts if the subfield $a is an array.
+    unless exists("$i.a.1")
+      unless exists("$i.4")
+        add_field("$i.4","oth")
+      end
+      do list(path: "$i.4", "var":"$j")
+        set_hash("contribution[].$append.agent")
+        do list(path:"$i.0","var":"$k")
+          if all_match("$k", "^\\(DE-588\\).*$")
+        # GND identifier
+            paste("contribution[].$last.agent.gndIdentifier","$k")
+        # GND Identifier id
+            paste("contribution[].$last.agent.id","$k")
+          end
+        end
+        # name
+          paste("contribution[].$last.agent.label", "$i.a", "$i.b", join_char: ". ")
+        # type
+        set_array("contribution[].$last.agent.type[]","ConferenceOrEvent")
+        # role
+        copy_field("$j","contribution[].$last.role.id")
+      end
+    end
+  end
+end
+
 
 set_array("contribution[].*.type[]", "Contribution")
 replace_all("contribution[].*.agent.id","^\\(DE-588\\)(.*$)","https://d-nb.info/gnd/$1")
 replace_all("contribution[].*.agent.label","(?<!\\p{Upper})\\.$|[,]$","")
 prepend("contribution[].*.role.id","http://id.loc.gov/vocabulary/relators/")
-
-# Deleted the "conference"-Element TODO: specific conference Info needs to be added elsewhere.
