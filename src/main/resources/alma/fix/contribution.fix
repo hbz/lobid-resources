@@ -187,7 +187,11 @@ do list(path:"111[012] |711[012] ", "var":"$i")
           end
         end
         # name
-          paste("contribution[].$last.agent.label", "$i.a", "$i.b", join_char: ". ")
+        paste("contribution[].$last.agent.label", "$i.a", "~ (", "$i.n", "~ : ", "$i.d", "~ : ", "$i.c", "~)", join_char: "")
+        replace_all("contribution[].$last.agent.label"," \\( :  : \\)","")
+        replace_all("contribution[].$last.agent.label",":  :",":")
+        replace_all("contribution[].$last.agent.label"," \\( : | \\( :  : "," \\(")
+        replace_all("contribution[].$last.agent.label"," : \\)|:  : \\)","\\)")
         # type
         set_array("contribution[].$last.agent.type[]","ConferenceOrEvent")
         # role
