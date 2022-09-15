@@ -109,6 +109,7 @@ public class AlmaMarcXmlFix2lobidJsonEs {
         fixVariables.put("catalogid", "DE-605");
         fixVariables.put("createEndTime", "1"); // 1 <=> true
         fixVariables.put("institution-code", "DE-605");
+        fixVariables.put("deweyLabels", "src/test/resources/deweyLabels.tsv");
 
         XmlElementSplitter xmlElementSplitter = new XmlElementSplitter();
         xmlElementSplitter.setElementName("record");

@@ -84,7 +84,7 @@ do list(path:"0820 |08200", "var":"$i")
   do list(path:"$i.a", "var": "$j")
     unless exists("subject[].$last.label")
       copy_field("$i.a","subject[].$last.label")
-      # TODO: lookup(in:"deweyLabels") does not work yet due to hidden mapping file.
+      lookup("subject[].$last.label", "$[deweyLabels]","sep_char":"\t")
       copy_field("$i.a","subject[].$last.notation")
     end
   end
