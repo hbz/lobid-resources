@@ -30,8 +30,12 @@ add_field("describedBy.inDataset.label","lobid-resources – Der hbz-Verbundkata
 
 set_array("describedBy.resultOf.type[]", "CreateAction")
 
-add_field("describedBy.resultOf.endTime","0000-00-00T00:00:00")
-# TODO: Add timestamp at the moment not supported by FIX.
+add_field("@createTime","$[createEndTime]")
+if all_match("@createTime","0")
+  add_field("describedBy.resultOf.endTime","0000-00-00T00:00:00")
+else
+  timestamp("describedBy.resultOf.endTime",format:"yyyy-MM-dd'T'HH:mm:ss", timezone:"Europe/Berlin")
+end
 
 
 add_field("describedBy.resultOf.instrument.id","https://github.com/hbz/lobid-resources")
