@@ -112,44 +112,55 @@ end
 # local subjects 982 - no info on repeatability
 
 do list(path:"982  ", "var":"$i")
-  if exists("$i.a|b")
+  if exists("$i.a")
     set_array("subject[].$append.type[]","Keyword")
     copy_field("$i.M","$i.@organisations")
     lookup("$i.@organisations","alma-iz-code-to-isil")
     paste("subject[].$last.source.id","~http://lobid.org/organisations/","$i.@organisations","~#!", join_char:"")
     paste("subject[].$last.source.label","~Freie Verschlagwortung durch","$i.@organisations")
-    copy_field("$i.a|b","subject[].$last.label")
+    copy_field("$i.a","subject[].$last.label")
+    copy_field("$i.b","subject[].$last.label")
+    copy_field("$i.2","subject[].$last.version")
+  elsif exists("$i.b")
+    set_array("subject[].$append.type[]","Keyword")
+    copy_field("$i.M","$i.@organisations")
+    lookup("$i.@organisations","alma-iz-code-to-isil")
+    paste("subject[].$last.source.id","~http://lobid.org/organisations/","$i.@organisations","~#!", join_char:"")
+    paste("subject[].$last.source.label","~Freie Verschlagwortung durch","$i.@organisations")
+    copy_field("$i.a","subject[].$last.label")
+    copy_field("$i.b","subject[].$last.label")
     copy_field("$i.2","subject[].$last.version")
   end
 end
 
 
 # 689 RSWK Schlagwortfolgen fka: Schlagwortketten 1 - 10 - no info on repeatability
-
-do put_macro("schlagwortfolge")
-  if exists("$[field]")
-    set_array("subject[].$append.type[]","ComplexSubject")
-    set_array("subject[].$last.label")
-    set_array("subject[].$last.componentList[]")
-    do list(path:"$[field]", "var":"$i")
-      set_array("subject[].$last.componentList[].$append.type[]")
-      do list(path: "$i.D", "var": "$k")
-        copy_field("$k","subject[].$last.componentList[].$last.type[].$append")
-      end
-      copy_field("$i.a","subject[].$last.componentList[].$last.label")
-      copy_field("$i.a","subject[].$last.label.$append")
-      do list(path:"$i.0", "var": "$j")
-        if any_match("$j","^\\(DE-588\\)(.*)$")
-          add_field("subject[].$last.componentList[].$last.source.label","Gemeinsame Normdatei (GND)")
-          add_field("subject[].$last.componentList[].$last.source.id","https://d-nb.info/gnd/7749153-1")
-          copy_field("$j", "subject[].$last.componentList[].$last.id")
-          replace_all("subject[].$last.componentList[].$last.id","^\\(DE-588\\)(.*)$","http://d-nb.info/gnd/$1")
-          copy_field("$j", "subject[].$last.componentList[].$last.gndIdentifier")
-          replace_all("subject[].$last.componentList[].$last.gndIdentifier","^\\(DE-588\\)(.*)$","$1")
+do once("schlagwortfolgeMacro")
+  do put_macro("schlagwortfolge")
+    if exists("$[field]")
+      set_array("subject[].$append.type[]","ComplexSubject")
+      set_array("subject[].$last.label")
+      set_array("subject[].$last.componentList[]")
+      do list(path:"$[field]", "var":"$i")
+        set_array("subject[].$last.componentList[].$append.type[]")
+        do list(path: "$i.D", "var": "$k")
+          copy_field("$k","subject[].$last.componentList[].$last.type[].$append")
+        end
+        copy_field("$i.a","subject[].$last.componentList[].$last.label")
+        copy_field("$i.a","subject[].$last.label.$append")
+        do list(path:"$i.0", "var": "$j")
+          if any_match("$j","^\\(DE-588\\)(.*)$")
+            add_field("subject[].$last.componentList[].$last.source.label","Gemeinsame Normdatei (GND)")
+            add_field("subject[].$last.componentList[].$last.source.id","https://d-nb.info/gnd/7749153-1")
+            copy_field("$j", "subject[].$last.componentList[].$last.id")
+            replace_all("subject[].$last.componentList[].$last.id","^\\(DE-588\\)(.*)$","http://d-nb.info/gnd/$1")
+            copy_field("$j", "subject[].$last.componentList[].$last.gndIdentifier")
+            replace_all("subject[].$last.componentList[].$last.gndIdentifier","^\\(DE-588\\)(.*)$","$1")
+          end
         end
       end
+      join_field("subject[].$last.label"," | ")
     end
-    join_field("subject[].$last.label"," | ")
   end
 end
 
