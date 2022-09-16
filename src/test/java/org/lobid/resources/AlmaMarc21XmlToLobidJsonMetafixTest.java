@@ -44,7 +44,7 @@ public final class AlmaMarc21XmlToLobidJsonMetafixTest {
     private static final File DIRECTORY = new File("src/test/resources/alma-fix/");
     private static final String BIG_ALMA_XML_FILE = "src/test/resources/alma/almaMarcXmlTestFiles.xml.tar.bz2"; //share input file with morph ETL
     private static final String XML = "xml";
-    final HashMap<String, String> morphVariables = new HashMap<>();
+    final HashMap<String, String> fixVariables = new HashMap<>();
     private static boolean GENERATE_TESTDATA = System.getProperty("generateTestData", "false").equals("true");
     private static final PrintStream ORIG_OUT = System.out;
     private static final Logger LOG = LogManager.getLogger(AlmaMarc21XmlToLobidJsonMetafixTest.class);
@@ -56,11 +56,12 @@ public final class AlmaMarc21XmlToLobidJsonMetafixTest {
      */
     @Before
     public void setup() {
-        morphVariables.put("isil", "DE-632");
-        morphVariables.put("member", "DE-605");
-        morphVariables.put("catalogid", "DE-605");
-        morphVariables.put("createEndTime", "0"); // 0 <=> false
-        morphVariables.put("institution-code", "DE-605");
+        fixVariables.put("isil", "DE-632");
+        fixVariables.put("member", "DE-605");
+        fixVariables.put("catalogid", "DE-605");
+        fixVariables.put("createEndTime", "0"); // 0 <=> false
+        fixVariables.put("institution-code", "DE-605");
+        fixVariables.put("deweyLabels", "src/test/resources/deweyLabels.tsv");
         if (GENERATE_TESTDATA) {
             extractXmlTestRecords(PATTERN_TO_IDENTIFY_XML_RECORDS);
         }
@@ -143,7 +144,7 @@ public final class AlmaMarc21XmlToLobidJsonMetafixTest {
             opener.setReceiver(new TarReader()).setReceiver(new XmlDecoder())//
                 .setReceiver(marcXmlHandler)//
                 .setReceiver(logger)//
-                .setReceiver(new Metafix(FIX, morphVariables))//
+                .setReceiver(new Metafix(FIX, fixVariables))//
                 .setReceiver(new JsonEncoder())//
                 .setReceiver(etikettJson).setReceiver(jsonToElasticsearchBulkMap);
 
