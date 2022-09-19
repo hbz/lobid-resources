@@ -151,7 +151,6 @@ public class AlmaMarcXml2lobidJsonEs {
           opener.closeStream();
           success = true;
           message = "ETL succeeded, index name: " + indexName;
-          notifyWebhook();
         } catch (Exception e) {
           e.printStackTrace();
           LOG.error(
@@ -163,7 +162,9 @@ public class AlmaMarcXml2lobidJsonEs {
         if (switchAutomatically) {
           switchAlias();
         }
-
+        if (success) {
+          notifyWebhook();
+        }
         AlmaMarcXml2lobidJsonEs.threadAlreadyStarted = false;
         LOG.info(
                 MSG_THREAD_ALREADY_STARTED + " false");
