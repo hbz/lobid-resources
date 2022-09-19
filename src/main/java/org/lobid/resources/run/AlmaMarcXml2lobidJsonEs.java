@@ -281,14 +281,27 @@ public class AlmaMarcXml2lobidJsonEs {
   }
 
     private static void notifyWebhook() {
-    LOG.debug("Start notifying webhook ...");
-        httpPoster.setContentType("application/json");
+        boolean errored = false;
+        LOG.info("Going to notify webhook ... but first waiting 5 minutes as safety distance"); //the #1430
         try {
+            Thread.sleep(300000);
+            LOG.info("... waited 5 minutes as safety distance. Starting notifying webhook ");
+            httpPoster.setContentType("application/json");
             httpPoster.setUrl(triggerWebhookUrl);
             httpPoster.processData(triggerWebhookData);
-        } catch (Exception e) {
-            LOG.error(String.format("Couldn't notify webhook listener at '%s' with data '%s': %s", triggerWebhookUrl, triggerWebhookData, e.getMessage()));
         }
+        catch (InterruptedException ie) {
+            errored = true;
+            LOG.error(String.format("Couldn't lay thread to sleep ", ie.getMessage()),
+                ie);
+        }
+        catch (Exception e) {
+            errored = true;
+            LOG.error(String.format("Couldn't notify webhook listener at '%s' with data '%s': %s", triggerWebhookUrl, triggerWebhookData, e.getMessage()));
 
+        }
+        if (errored) {
+            LOG.error(String.format("Couldn't notify webhook listener at '%s' with data '%s'", triggerWebhookUrl, triggerWebhookData));
+        }
     }
 }
