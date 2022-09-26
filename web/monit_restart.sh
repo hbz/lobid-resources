@@ -30,7 +30,10 @@ JAVA_OPTS=$(echo "$JAVA_OPTS" |sed 's#,#\ #g')
 cd $HOME/git/$REPO
 case $ACTION in
 	start)
-		rm target/universal/stage/RUNNING_PID
+                if [ -f target/universal/stage/RUNNING_PID ]; then
+                    kill $(cat target/universal/stage/RUNNING_PID)
+                    rm target/universal/stage/RUNNING_PID
+                fi
 		JAVA_OPTS="$JAVA_OPTS -XX:+HeapDumpOnOutOfMemoryError" $HOME/activator-dist-1.3.5/activator "start $PORT"
 		;;
 	stop)
