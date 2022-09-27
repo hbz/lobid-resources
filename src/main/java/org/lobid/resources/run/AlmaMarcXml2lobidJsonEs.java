@@ -48,7 +48,7 @@ public class AlmaMarcXml2lobidJsonEs {
   private static String cluster;
   private static String indexName;
   private static boolean updateDonotCreateIndex;
-  private static String morphFileName = "src/main/resources/alma/alma.xml";
+  private static String morphFileName = "alma/alma.xml";
   private static final String INDEXCONFIG = "index-config.json";
   private static final HashMap<String, String> morphVariables = new HashMap<>();
   private static String mailtoInfo = "localhost";

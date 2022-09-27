@@ -2,27 +2,25 @@
 
 package controllers.resources;
 
-import java.io.File;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
-
-import org.lobid.resources.run.AlmaMarcXml2lobidJsonEs;
-
+import org.lobid.resources.run.AlmaMarcXmlFix2lobidJsonEs;
 import play.Logger;
 import play.mvc.Controller;
 import play.mvc.Result;
 
+import java.io.File;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 /**
- * Webhook listener starting update/basedump process for the Alma ETL. Also use
+ * Webhook listener starting update/basedump process for the Alma Fix ETL. Also use
  * to switch ES index alias. Reloads "webhook" configs dynamically, i.e. every
  * time a webhook is called.
  *
  * @author Pascal Christoph (dr0i)
  */
-public class Webhook extends Controller {
+public class WebhookAlmaFix extends Controller {
   private static final String RESOURCES_CONF = "conf/resources.conf";
   private static final String ETL_OF = "ETL of ";
   private static String filenameUpdate;
@@ -48,7 +46,7 @@ public class Webhook extends Controller {
   private static final String MSG_CREATE_INDEX_ALREADY_RUNNING =
       "Couldn't create new index with name '%s' "
           + MSG_ETL_PROCESS_IS_ALREADY_RUNNING;
-  private static final String MORPH_FILENAME = "alma/alma.xml";
+  private static final String MORPH_FILENAME = "conf/alma/alma.fix";
   // If null, create default values from Global settings
   public static String clusterHost = null;
   public static String clusterName = null;
@@ -58,7 +56,7 @@ public class Webhook extends Controller {
   public static String triggerWebhookUrl;
   public static String triggerWebhookData;
 
-  public Webhook() {
+  public WebhookAlmaFix() {
   }
 
   /**
@@ -74,18 +72,18 @@ public class Webhook extends Controller {
     if (!GIVEN_TOKEN.equals(token)) {
       return wrongToken(KIND, GIVEN_TOKEN);
     }
-    if (AlmaMarcXml2lobidJsonEs.threadAlreadyStarted) {
-      AlmaMarcXml2lobidJsonEs.sendMail(ETL_OF + KIND, false,
+    if (AlmaMarcXmlFix2lobidJsonEs.threadAlreadyStarted) {
+      AlmaMarcXmlFix2lobidJsonEs.sendMail(ETL_OF + KIND, false,
           MSG_UPDATE_ALREADY_RUNNING);
       return status(423, MSG_UPDATE_ALREADY_RUNNING);
     }
     Logger.info(String.format(msgStartEtl, KIND));
-    AlmaMarcXml2lobidJsonEs.setKindOfEtl(KIND);
-    AlmaMarcXml2lobidJsonEs.setSwitchAliasAfterETL(false);
-    AlmaMarcXml2lobidJsonEs.main(filenameUpdate, indexNameOfUpdate,
+    AlmaMarcXmlFix2lobidJsonEs.setKindOfEtl(KIND);
+    AlmaMarcXmlFix2lobidJsonEs.setSwitchAliasAfterETL(false);
+    AlmaMarcXmlFix2lobidJsonEs.main(filenameUpdate, indexNameOfUpdate,
         indexUpdateAliasSufix, clusterHost, clusterName, UPDATE_NEWEST_INDEX,
         MORPH_FILENAME);
-    AlmaMarcXml2lobidJsonEs.sendMail(ETL_OF + KIND, true,
+    AlmaMarcXmlFix2lobidJsonEs.sendMail(ETL_OF + KIND, true,
         "Going to update index '" + indexNameOfUpdate + "'");
     return ok("... started ETL " + KIND);
   }
@@ -106,8 +104,8 @@ public class Webhook extends Controller {
     token = config.getString("webhook.alma.token");
     alias1 = indexNameOfBasedump;
     alias2 = indexNameOfBasedump + indexBasedumpAliasSuffix;
-    AlmaMarcXml2lobidJsonEs.setTriggerWebhookUrl(triggerWebhookUrl);
-    AlmaMarcXml2lobidJsonEs.setTriggerWebhookData(triggerWebhookData);
+    AlmaMarcXmlFix2lobidJsonEs.setTriggerWebhookUrl(triggerWebhookUrl);
+    AlmaMarcXmlFix2lobidJsonEs.setTriggerWebhookData(triggerWebhookData);
   }
 
   /**
@@ -125,22 +123,22 @@ public class Webhook extends Controller {
     }
     createIndexNameOfBasedump = indexNameOfBasedump + "-" + LocalDateTime.now()
         .format(DateTimeFormatter.ofPattern("yyyyMMdd-kkmm"));
-    if (AlmaMarcXml2lobidJsonEs.threadAlreadyStarted) {
-      AlmaMarcXml2lobidJsonEs.sendMail(ETL_OF + KIND, false, String
+    if (AlmaMarcXmlFix2lobidJsonEs.threadAlreadyStarted) {
+      AlmaMarcXmlFix2lobidJsonEs.sendMail(ETL_OF + KIND, false, String
           .format(MSG_CREATE_INDEX_ALREADY_RUNNING, createIndexNameOfBasedump));
       return status(423, MSG_CREATE_INDEX_ALREADY_RUNNING);
     }
     Logger.info(String.format(msgStartEtl, KIND));
-    AlmaMarcXml2lobidJsonEs.setKindOfEtl(KIND);
+    AlmaMarcXmlFix2lobidJsonEs.setKindOfEtl(KIND);
     if (basedumpSwitchAutomatically.equals("true")) {
-      AlmaMarcXml2lobidJsonEs.setSwitchAliasAfterETL(true);
-      AlmaMarcXml2lobidJsonEs.setSwitchVariables(alias1, alias2, clusterHost,
+      AlmaMarcXmlFix2lobidJsonEs.setSwitchAliasAfterETL(true);
+      AlmaMarcXmlFix2lobidJsonEs.setSwitchVariables(alias1, alias2, clusterHost,
           basedumpSwitchMindocs, basedumpSwitchMinsize);
     }
-    AlmaMarcXml2lobidJsonEs.main(filenameBasedump, createIndexNameOfBasedump,
+    AlmaMarcXmlFix2lobidJsonEs.main(filenameBasedump, createIndexNameOfBasedump,
         indexBasedumpAliasSuffix, clusterHost, clusterName, CREATE_INDEX,
         MORPH_FILENAME);
-    AlmaMarcXml2lobidJsonEs.sendMail(ETL_OF + KIND, true,
+    AlmaMarcXmlFix2lobidJsonEs.sendMail(ETL_OF + KIND, true,
         "Going to created new index with name " + createIndexNameOfBasedump
             + " , adding " + indexBasedumpAliasSuffix + " to alias of index");
     return ok("... started ETL " + KIND);
@@ -162,20 +160,21 @@ public class Webhook extends Controller {
     }
     Logger.info("start " + msg);
     boolean success = false;
-    if (AlmaMarcXml2lobidJsonEs.threadAlreadyStarted) {
-      AlmaMarcXml2lobidJsonEs.sendMail("Fail " + msg, false, String
+    if (AlmaMarcXmlFix2lobidJsonEs.threadAlreadyStarted) {
+      AlmaMarcXmlFix2lobidJsonEs.sendMail("Fail " + msg, false, String
           .format(MSG_CREATE_INDEX_ALREADY_RUNNING, createIndexNameOfBasedump));
+     
       return status(423, String.format(MSG_CREATE_INDEX_ALREADY_RUNNING,
           createIndexNameOfBasedump));
     }
-    AlmaMarcXml2lobidJsonEs.setSwitchVariables(alias1, alias2, clusterHost,
+    AlmaMarcXmlFix2lobidJsonEs.setSwitchVariables(alias1, alias2, clusterHost,
         basedumpSwitchMindocs, basedumpSwitchMinsize);
-    success = AlmaMarcXml2lobidJsonEs.switchAlias();
+    success = AlmaMarcXmlFix2lobidJsonEs.switchAlias();
     if (success) {
-      msg = AlmaMarcXml2lobidJsonEs.MSG_SUCCESS + msg;
+      msg = AlmaMarcXmlFix2lobidJsonEs.MSG_SUCCESS + msg;
       return ok(msg);
     }
-    msg = AlmaMarcXml2lobidJsonEs.MSG_FAIL + msg;
+    msg = AlmaMarcXmlFix2lobidJsonEs.MSG_FAIL + msg;
     return internalServerError(msg);
   }
 
@@ -183,7 +182,7 @@ public class Webhook extends Controller {
       final String GIVEN_TOKEN) {
     String msg = String.format(msgWrongToken, GIVEN_TOKEN, KIND);
     Logger.error(msg);
-    AlmaMarcXml2lobidJsonEs.sendMail(KIND, false, msg);
+    AlmaMarcXmlFix2lobidJsonEs.sendMail(KIND, false, msg);
     return forbidden(msg);
   }
 
