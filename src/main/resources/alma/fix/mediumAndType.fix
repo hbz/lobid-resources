@@ -185,7 +185,7 @@ elsif any_match("25[09]??.a", "Nachdruck|Reprint") # Element 250 and 259
 end
 
 # medium:   "Datenträger":	"http://rdaregistry.info/termList/RDAMediaType/1003"
-# TODO: Check why so many Manuscripts are Print AND Manuscript.
+
 
 if any_match("@leaderPos06-07", "^m.*")
   add_field("medium[].$append.label","Datenträger")
@@ -215,7 +215,7 @@ elsif any_match("340  .*.a", "^[BbCcDdHhFfKkUu][AaDdEeIiLlSsVv].*")
 end
 
 # medium: "Manuskript":	"http://purl.org/ontology/bibo/Manuscript"
-
+# TODO: Check why so many Manuscripts are Print AND Manuscript.
 
 if any_match("@leaderPos06-07", "^[dft].")
   add_field("medium[].$append.label","Manuskript")

@@ -96,14 +96,12 @@ uniq("note[]")
 
 # 520 - Summary, Etc. (R) Subfield: $a (NR), $b (NR)
 # TODO: Check if 1. Indicator 1 (REVIEW) is really to count as abstract. Perhaps 2 (Scope and content) is a better fit.
-# TODO: Get testdata.
 set_array("abstract[]")
 do list(path:"520[ 13] ", "var": "$i")
   copy_field("$i.[ab]", "abstract[].$append")
 end
 
 # 502 - Dissertation Note (R) Subfield: $a (R)
-# TODO: Get testdata.
 set_array("thesisInformation[]")
 do list(path:"502  ", "var": "$i")
   copy_field("$i.a", "thesisInformation[].$append")
