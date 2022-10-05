@@ -204,8 +204,18 @@ do list(path:"084??", "var":"$i")
       set_array("spatial[].$last.type[]","Concept")
       add_field("spatial[].$last.source.id","https://nwbib.de/spatial")
       add_field("spatial[].$last.source.label","Raumsystematik der Nordrhein-Westfälischen Bibliographie")
+      copy_field("$j", "spatial[].$append.focus.id")
     end
   end
 end
 
-replace_all("spatial[].*.notation","https://nwbib.de/spatial#N(.*)$","$1")
+do list(path:"spatial[]", "var":"$i")
+  replace_all("$i.notation","https://nwbib.de/spatial#N(.*)$","$1")
+  lookup("$i.focus.id","src/main/resources/nwbib-spatial.tsv", sep_char:"\t")
+  copy_field("$i.focus.id","$i.focus.label")
+  replace_all("$i.focus.label","^(.*)|.*","$1")
+  replace_all("$i.focus.id",".*|(http.*)","$1")
+  set_array("$i.focus.type[]")
+  copy_field("$i.focus.id","$i.focus.type[].$append")
+  lookup("$i.focus.id","src/main/resources/wd_itemLabelTypesCoordinates.tsv", sep_char:"\t")
+end
