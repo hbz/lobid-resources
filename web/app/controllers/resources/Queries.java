@@ -389,7 +389,7 @@ public class Queries {
 	public static class IdQuery extends AbstractIndexQuery {
 		@Override
 		public List<String> fields() {
-			return Arrays.asList("isbn", "issn", "hbzId");
+			return Arrays.asList("isbn", "issn", "hbzId", "rpbId", "biblioVinoId");
 		}
 
 		@Override
