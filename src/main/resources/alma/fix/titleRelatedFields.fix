@@ -77,5 +77,7 @@ replace_all("publication[].*.startDate", ".*?(\\d{4}).*", "$1")
 replace_all("publication[].*.endDate", ".*-(\\d{4})$", "$1")
 
 replace_all("publication[].*.location[].*", "^\\[|\\]$", "")
+uniq("publication[].*.location[]")
 
 replace_all("publication[].*.publishedBy[].*", "^[©]|\\s?[,.:;/=]?$", "")
+uniq("publication[].*.publishedBy[]")
