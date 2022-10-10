@@ -25,7 +25,6 @@ import org.metafacture.metafix.Metafix;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.PrintStream;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Objects;
@@ -43,10 +42,8 @@ public final class AlmaMarc21XmlToLobidJsonMetafixTest {
     private static final String FIX = "src/main/resources/alma/alma.fix";
     private static final File DIRECTORY = new File("src/test/resources/alma-fix/");
     private static final String BIG_ALMA_XML_FILE = "src/test/resources/alma/almaMarcXmlTestFiles.xml.tar.bz2"; //share input file with morph ETL
-    private static final String XML = "xml";
     final HashMap<String, String> fixVariables = new HashMap<>();
-    private static boolean GENERATE_TESTDATA = System.getProperty("generateTestData", "false").equals("true");
-    private static final PrintStream ORIG_OUT = System.out;
+    private static final boolean GENERATE_TESTDATA = System.getProperty("generateTestData", "false").equals("true");
     private static final Logger LOG = LogManager.getLogger(AlmaMarc21XmlToLobidJsonMetafixTest.class);
     // try patterns like e.g."662", NOT".*662" (which just would slow down)
     private static final String PATTERN_TO_IDENTIFY_XML_RECORDS = "";
@@ -168,7 +165,7 @@ public final class AlmaMarc21XmlToLobidJsonMetafixTest {
     }
 
     private void compareGeneratedJson() {
-        Arrays.asList(DIRECTORY.listFiles(f -> f.getAbsolutePath().endsWith("tmp"))).forEach(file -> {
+        Arrays.asList(Objects.requireNonNull(DIRECTORY.listFiles(f -> f.getAbsolutePath().endsWith("tmp")))).forEach(file -> {
             final String filenameJson = file.getAbsolutePath().replaceAll("\\.tmp", "");
             ObjectMapper mapper = new ObjectMapper();
             try {
@@ -192,7 +189,6 @@ public final class AlmaMarc21XmlToLobidJsonMetafixTest {
     private String getJsonStringFromFile(String filenameJson, ObjectMapper mapper) throws IOException {
         JsonNode expectedJsonNode = mapper.readTree(new File(filenameJson));
         Object expectedJsonObject = mapper.readValue(expectedJsonNode.toString(), Object.class);
-        String expectedJson = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(expectedJsonObject) + "\n";
-        return expectedJson;
+        return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(expectedJsonObject) + "\n";
     }
 }
