@@ -1894,7 +1894,7 @@
 		<data source="519-[12].?" name="@rdftype">
 			<regexp match=".*" format="$[ns-bibo]Thesis"/>
 		</data>
-		<!-- type is book (and also manifestation) if 050 begins with 'a' and 051 or 052 is missing 
+		<!-- type is book (and also manifestation) if 050 begins with 'a' and 051 or 052 is missing
 			or 051 and 052 does not fulfill a certain pattern -->
 		<combine name="@rdftype" value="$[ns-bibo]Book">
 			<if>
@@ -2617,7 +2617,9 @@
 		<!-- ########## publisher -->
 		<!-- ####################### -->
 		<!-- primary publication -->
-		<data source="41[05][-abcu][-12].a|419-[12].a|594[-abc][-12].a" name="@placeOfPublication_"/>
+		<data source="41[05][-abcu][-12].a|419-[12].a|594[-abc][-12].a" name="@placeOfPublication_">
+			<replace pattern="^http" with="Siehe: http"/>
+		</data>
 		<choose name="@placeOfPublication" flushWith="@placeOfPublication_">
 			<data source="@placeOfPublication_">
 				<regexp match="^\[.*\]"/>
@@ -3266,7 +3268,7 @@
 		<call-macro name="setContributorPersonBnodeOrId" field="100"/>
 		<data source="@creatorPersonBnodeOrId100" name="@agentId100"/>
 		<data source="@contributorPersonBnodeOrId100" name="@agentId100"/>
-		<!-- relators are concatinated, then parts of it are taken with a regular expression and 
+		<!-- relators are concatinated, then parts of it are taken with a regular expression and
 			used to create bnodes or roles -->
 		<call-macro name="setRelatorPerson" field="100"/>
 		<call-macro name="chooseRelatorNotFrom100sRoleFields" field="100"/>
@@ -6432,8 +6434,8 @@
 		<!-- ########### -->
 		<!-- Schlagwortketten (aka "subject chains", "complex subjects" ..), mixed with nwbib speciality -->
 		<!-- ########### -->
-		<!-- Schlagwortketten (aka "subject chains", with permutation number) - It's necessary to 
-			repeat the combines to fire correctly when dealing with multiple e.g. "902". Use macros to 
+		<!-- Schlagwortketten (aka "subject chains", with permutation number) - It's necessary to
+			repeat the combines to fire correctly when dealing with multiple e.g. "902". Use macros to
 			avoid duplication. Use gnd subjects literals, use even if link present/> -->
 		<call-macro name="subject-chain-name1" field_1="902" field_2="903"/>
 		<call-macro name="subject-chain-perm1" field="902"/>
@@ -6863,7 +6865,7 @@
       </data>
       <data source="@linkUri" name="a"/>
 		</combine>
-		<!--first three chars of "Resolving System" or "Volltext" or "EZB" or "Archivierte Online 
+		<!--first three chars of "Resolving System" or "Volltext" or "EZB" or "Archivierte Online
 			Ressource " or "Online-Ausgabe" <=> @fulltextOnlineUri> -->
 		<combine name="@fulltextOnlineUri" value="${a}" sameEntity="true">
 			<data source="655[-eu][ -1].[x3]">
@@ -6881,7 +6883,7 @@
 			<data source="655[-eu][ -1].[xy3]"/>
 			<data source="@linkUri"/>
 		</choose>
-		<!-- ... check if URI and if it's of type "webPageArchived" to determine if it's the archived 
+		<!-- ... check if URI and if it's of type "webPageArchived" to determine if it's the archived
 			web source. URL musn't be an edoweb one. -->
 		<combine name="@655edoweb" value="${a}">
 			<choose name="a">
@@ -7378,7 +7380,7 @@
 			<lookup in="wd_itemLabelTypesCoordinates"/>
 			<regexp match="(.*?),.*" format="${1}"/>
 		</data>
-		<data source="@700uri2Qid" name="http://xmlns.com/foaf/0.1/focus"/>	
+		<data source="@700uri2Qid" name="http://xmlns.com/foaf/0.1/focus"/>
 		<!-- build structure using tsv of wd_itemLabelTypesCoordinates -->
 		<data source="@700uri2Qid" name="~rdf:subject"/>
 		<data source="@700uri2Qid" name="@wd_itemLabelTypesCoordinates">
