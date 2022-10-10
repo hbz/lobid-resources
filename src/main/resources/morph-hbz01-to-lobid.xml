@@ -2617,7 +2617,9 @@
 		<!-- ########## publisher -->
 		<!-- ####################### -->
 		<!-- primary publication -->
-		<data source="41[05][-abcu][-12].a|419-[12].a|594[-abc][-12].a" name="@placeOfPublication_"/>
+		<data source="41[05][-abcu][-12].a|419-[12].a|594[-abc][-12].a" name="@placeOfPublication_">
+			<replace pattern="^http" with="Siehe: http"/>
+		</data>
 		<choose name="@placeOfPublication" flushWith="@placeOfPublication_">
 			<data source="@placeOfPublication_">
 				<regexp match="^\[.*\]"/>
