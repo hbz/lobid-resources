@@ -142,6 +142,8 @@ public class AlmaMarcXmlFix2lobidJsonEs {
                         .addReceiver(receiverThread())//
                         .addReceiver(receiverThread())//
                         .addReceiver(receiverThread())//
+                        .addReceiver(receiverThread())//
+                        .addReceiver(receiverThread())//
                         .addReceiver(receiverThread());
                 }
                 String message;
