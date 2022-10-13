@@ -1,17 +1,21 @@
-# Get type and coordinates for hand-selected regions
+# Get type and coordinates for all Wikidata resources having the NWBid property
+# use like: $ bash getAllNwbibTypeAndCoordinatesFromWikidata.sparql > nwbibWikidataLabelTypeCoords.csv
+# see https://github.com/hbz/lobid-resources/issues/1471
+
 curl --header "Accept: text/csv"  -G 'https://query.wikidata.org/sparql' --data-urlencode query='
 SELECT DISTINCT
+(CONCAT("https://nwbib.de/spatial#",?nwbibIdLabel) AS ?nwbibId)
 ?item
 ?itemLabel
 (GROUP_CONCAT(DISTINCT ?type;separator=", ") AS ?types)
 ?coordinates
 WHERE {
  {
- ?item wdt:P6814 ?nwbibId .
+ ?item wdt:P6814 ?nwbibIdLabel .
  ?item p:P31 [ ps:P31 ?type ] .
     OPTIONAL { ?item wdt:P625 ?coordinates . }
  }
  SERVICE wikibase:label {  bd:serviceParam wikibase:language "de" }
 }
-GROUP BY  ?item ?itemLabel ?coordinates
+GROUP BY ?nwbibIdLabel ?item ?itemLabel ?coordinates
 '
