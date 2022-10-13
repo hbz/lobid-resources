@@ -1,0 +1,17 @@
+# Get type and coordinates for hand-selected regions
+curl --header "Accept: text/csv"  -G 'https://query.wikidata.org/sparql' --data-urlencode query='
+SELECT DISTINCT
+?item
+?itemLabel
+(GROUP_CONCAT(DISTINCT ?type;separator=", ") AS ?types)
+?coordinates
+WHERE {
+ {
+ ?item wdt:P6814 ?nwbibId .
+ ?item p:P31 [ ps:P31 ?type ] .
+    OPTIONAL { ?item wdt:P625 ?coordinates . }
+ }
+ SERVICE wikibase:label {  bd:serviceParam wikibase:language "de" }
+}
+GROUP BY  ?item ?itemLabel ?coordinates
+'
