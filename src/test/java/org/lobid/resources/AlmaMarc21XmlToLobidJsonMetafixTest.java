@@ -41,7 +41,7 @@ public final class AlmaMarc21XmlToLobidJsonMetafixTest {
 
     private static final String FIX = "src/main/resources/alma/alma.fix";
     private static final File DIRECTORY = new File("src/test/resources/alma-fix/");
-    private static final String BIG_ALMA_XML_FILE = "src/test/resources/alma/almaMarcXmlTestFiles.xml.tar.bz2"; //share input file with morph ETL
+    private static final String BIG_ALMA_XML_FILE = "src/test/resources/alma-fix/almaMarcXmlTestFiles.xml.tar.bz2";
     final HashMap<String, String> fixVariables = new HashMap<>();
     private static final boolean GENERATE_TESTDATA = System.getProperty("generateTestData", "false").equals("true");
     private static final Logger LOG = LogManager.getLogger(AlmaMarc21XmlToLobidJsonMetafixTest.class);
