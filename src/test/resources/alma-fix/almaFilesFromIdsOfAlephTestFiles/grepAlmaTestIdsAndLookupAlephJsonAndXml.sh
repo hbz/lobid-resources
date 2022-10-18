@@ -8,8 +8,8 @@ for almaMmsId in $(ls ../*.json); do
     echo "almaMmsId:$almaMmsId hbzId:$hbzId"
     json=$(curl --silent "http://lobid.org/resources/search?q=hbzId:${hbzId}&format=json"| jq .member[])
     xml=$(curl --silent "http://lobid.org/hbz01/${hbzId}" | xmllint --format -)
-    echo "$json" > "${almaMmsId}_${hbzId}.json"
-    echo "$xml" > "${almaMmsId}_${hbzId}.xml"
+    echo "$json" > "${almaMmsId}_${hbzId}-aleph.json"
+    echo "$xml" > "${almaMmsId}_${hbzId}-aleph.xml"
   else
     echo "No hbzId for $almaMmsId"
   fi
