@@ -47,6 +47,8 @@ replace_all("edition[].*","\\s?[./]\\s?$","")
 
 # 260 - Publication, Distribution, etc. (Imprint) (R) - Subfield: $a (R), $b (R), $c (R)
 # 264 - Production, Publication, Distribution, Manufacture, and Copyright Notice (R) -  Subfield: $a (R), $b (R), $c  (R)
+# 008,18 for frequency
+# 515 - Numbering Peculiarities Note (R)
 
 set_array("publication[]")
 do list(path:"260[ 23] |264[ 23][ 1]", "var":"$i")
@@ -71,6 +73,22 @@ do list(path:"260[ 23] |264[ 23][ 1]", "var":"$i")
   copy_field("$i.a", "publication[].$last.location[].$append")
   set_array("publication[].$last.publishedBy[]")
   copy_field("$i.b", "publication[].$last.publishedBy[].$append")
+  set_array("publication[].$last.frequency[]")
+  if any_match("leader","^.{6}(a[bis]|m[bis]).*$") # checks if continous ressource
+    unless any_match("008","^.{18}[#\\| u].*$") # filters out not matching values and also the value unknown
+      copy_field("008","publication[].$last.frequency[].$append.id")
+      replace_all("publication[].$last.frequency[].$last.id", "^.{18}(.).*$", "http://marc21rdf.info/terms/continuingfre#$1")
+    end
+  elsif any_match("006","^s.*$")
+    do list(path: "006", "var":"$z")
+      if any_match("$z","^s.*$")
+        unless any_match("$z","^.[#\\| u].*$")
+          copy_field("$z","publication[].$last.frequency[].$append.id")
+          replace_all("publication[].$last.frequency[].$last.id", "^.(.).*$", "http://marc21rdf.info/terms/continuingfre#$1")
+        end
+      end
+    end
+  end
 end
 
 replace_all("publication[].*.startDate", ".*?(\\d{4}).*", "$1")
