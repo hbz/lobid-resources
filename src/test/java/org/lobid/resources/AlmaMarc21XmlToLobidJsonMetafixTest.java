@@ -59,6 +59,8 @@ public final class AlmaMarc21XmlToLobidJsonMetafixTest {
         fixVariables.put("createEndTime", "0"); // 0 <=> false
         fixVariables.put("institution-code", "DE-605");
         fixVariables.put("deweyLabels", "src/test/resources/deweyLabels.tsv");
+        fixVariables.put("nwbib-spatial", "src/main/resources/nwbib-spatial.tsv");
+        fixVariables.put("wd_itemLabelTypesCoordinates", "src/main/resources/wd_itemLabelTypesCoordinates.tsv");
         if (GENERATE_TESTDATA) {
             extractXmlTestRecords(PATTERN_TO_IDENTIFY_XML_RECORDS);
         }
