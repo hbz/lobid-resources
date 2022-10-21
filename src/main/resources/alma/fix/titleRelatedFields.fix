@@ -89,6 +89,8 @@ do list(path:"260[ 23] |264[ 23][ 1]", "var":"$i")
       end
     end
   end
+  set_array("publication[].$last.note[]")
+  copy_field("515??.a","publication[].$last.note[].$append")
 end
 
 replace_all("publication[].*.startDate", ".*?(\\d{4}).*", "$1")
