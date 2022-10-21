@@ -12,7 +12,7 @@
 #
 # Example: "bash updateAlmaTestFiles.sh HT017664407"
 
-TEST_FILE="almaMarcXmlTestFiles"
+TEMPORARY_TEST_FILE="almaMarcXmlTestFiles"
 
 tar xfj almaMarcXmlTestFiles.xml.tar.bz2
 
@@ -27,20 +27,20 @@ function getAlmaXmlAndAppendItToArchive() {
 	fi
 	# get AlmaMarcXml
 	curl --silent $almaXmlUrl | xmllint --format - | grep -v '<?xml version="1.0"?>' > $hbzId.xml
-	cat $hbzId.xml >> $TEST_FILE
+	cat $hbzId.xml >> $TEMPORARY_TEST_FILE
 	rm $hbzId.xml
 	rm $hbzId.json
 }
 
 function appendClosingColletionTagToArchive() {
-	echo "</collection>" >> $TEST_FILE
+	echo "</collection>" >> $TEMPORARY_TEST_FILE
 }
 
 case $1 in
 	all)
 		# set head of xml file
 		echo '<?xml version="1.0" encoding="UTF-8"?>
-<collection>' > $TEST_FILE
+<collection>' > $TEMPORARY_TEST_FILE
 		# get all JSON test files; filter names from then
 		for hbzId in $(ls *.json|cut -d '/' -f2|cut -d '.' -f1 ); do
 			getAlmaXmlAndAppendItToArchive $hbzId
@@ -52,6 +52,7 @@ case $1 in
 		getAlmaXmlAndAppendItToArchive $1
 		appendClosingColletionTagToArchive
 esac
-tar cfj almaMarcXmlTestFiles.xml.tar.bz2 $TEST_FILE
+tar cfj almaMarcXmlTestFiles.xml.tar.bz2 $TEMPORARY_TEST_FILE
+rm $TEMPORARY_TEST_FILE
 cd ../../../../
 mvn -DgenerateTestData=true failsafe:integration-test -Dit.test=AlmaMarc21XmlToLobidJsonTest
