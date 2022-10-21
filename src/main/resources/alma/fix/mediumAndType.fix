@@ -409,6 +409,9 @@ set_array("type[]","BibliographicResource")
 
 # TODO: Transformation needs to be added later.
 
+if any_match("@leaderPos06-07",".a")
+  add_field("type[].$append","Article")
+end
 
 # type: "Bibliography"
 
