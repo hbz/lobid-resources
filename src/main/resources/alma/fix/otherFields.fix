@@ -130,3 +130,14 @@ replace_all("bibliographicCitation.*","<<|>>","")
 replace_all("bibliographicCitation.*","^http","Siehe: http")
 
 join_field("bibliographicCitation", "; ")
+
+# 542 - Information Relating to Copyright Status (R) - $n - Note (R)  $u - Uniform Resource Identifier (R)
+
+set_array("license[]")
+do list(path: "542??", "var": "$i")
+  copy_field("$i.u", "license[].$append.id")
+  if exists("$i.u")
+    set_array("license[].$last.note[]")
+    copy_field("$i.n", "license[].$last.note[].$append")
+  end
+end
