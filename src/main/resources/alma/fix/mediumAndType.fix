@@ -377,11 +377,13 @@ set_array("type[]","BibliographicResource")
 
 # TODO: There seems to be no mapping from 051.: .w to any MARC Values.
 
-do list(path: "856??", "var": "$i")
-  if any_equal("$i.z", "Archivierte Online-Ressource")
-    add_field("type[].$append","ArchivedWebPage")
-  elsif any_equal("$i.x", "Archivierte Online-Ressource")
-    add_field("type[].$append","ArchivedWebPage")
+if any_equal("natureOfContent[].*.label","Website")
+  do list(path: "856??", "var": "$i")
+    if any_equal("$i.z", "Archivierte Online-Ressource")
+      add_field("type[].$append","ArchivedWebPage")
+    elsif any_equal("$i.x", "Archivierte Online-Ressource")
+      add_field("type[].$append","ArchivedWebPage")
+    end
   end
 end
 
