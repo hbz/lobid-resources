@@ -385,6 +385,13 @@ if any_equal("natureOfContent[].*.label","Website")
       add_field("type[].$append","ArchivedWebPage")
     end
   end
+  # if type is ArchivedWebPage also add element `webPageArchived`
+  set_array("webPageArchived[]")
+  do list(path: "856??", "var": "$i")
+    unless any_contain("$i.u", "edoweb")
+      copy_field("$i.u","webPageArchived[].$append.id")
+    end
+  end
 end
 
 
