@@ -30,7 +30,7 @@
         @defining(!(doc\\"containedIn").isEmpty && (doc\"type").toString.contains("Article")){superordination =>
           <div class="col-md-@if(items.isEmpty && !doc.toString.contains("fulltextOnline") && !superordination){12} else {8}">
             <dl>
-            @defining((doc\\"hbzId")(0).asOpt[String].getOrElse(q)){ id =>
+            @defining((doc\\"almaMmsId")(0).asOpt[String].getOrElse(q)){ id =>
               <dt>@tags.star_button(id) Titeldetails:
               <small style='float:right'>
               <a class='mab-link' title="MAB-XML-Quelldaten anzeigen" href="@Application.CONFIG.getString("hbz01.api")/@id"><small>&#12296;M&#12297;</small></a>

@@ -244,7 +244,7 @@ public class Application extends Controller {
 							: "");
 			boolean badRequest = t instanceof IllegalArgumentException;
 			if (badRequest) {
-				Logger.error(message);
+				Logger.error(message, t);
 				String header =
 						"Ungültige Suchanfrage. Maskieren Sie Sonderzeichen mit "
 								+ "<code>\\</code>. Siehe auch <a href=\""
@@ -253,7 +253,7 @@ public class Application extends Controller {
 								+ "Dokumentation der unterstützten Suchsyntax</a>.";
 				return badRequest(views.html.error.render(q, message, header));
 			}
-			Logger.error(message);
+			Logger.error(message, t);
 			String header = "Es ist ein Fehler aufgetreten. "
 					+ "Bitte versuchen Sie es erneut oder kontaktieren Sie das "
 					+ "Entwicklerteam, falls das Problem fortbesteht "
