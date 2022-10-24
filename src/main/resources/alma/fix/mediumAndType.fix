@@ -376,7 +376,15 @@ set_array("type[]","BibliographicResource")
 #		</data>
 
 # TODO: There seems to be no mapping from 051.: .w to any MARC Values.
-# TODO: Check for that later.
+
+do list(path: "856??", "var": "$i")
+  if any_equal("$i.z", "Archivierte Online-Ressource")
+    add_field("type[].$append","ArchivedWebPage")
+  elsif any_equal("$i.x", "Archivierte Online-Ressource")
+    add_field("type[].$append","ArchivedWebPage")
+  end
+end
+
 
 # type: "Article"
 
@@ -833,3 +841,5 @@ do list(path:"medium[]", "var": "$i")
 	lookup("$i.id","medium-id-to-label")
 end
 # TODO: Uniq array objects.
+
+uniq("type[]")
