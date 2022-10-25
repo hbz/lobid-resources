@@ -239,6 +239,6 @@ do list(path:"spatial[]", "var":"$i")
   elsif any_match ("$i.focus.type[].*","^.*,(http.*),Point.*")
     replace_all("$i.focus.type[].*","^.*,(http.*),Point.*","$1")
   end
-  replace_all("$i.focus.geo.lat","^.*,Point\\((.*) .*\\)","$1")
-  replace_all("$i.focus.geo.lon","^.*,Point\\(.* (.*)\\)","$1")
+  replace_all("$i.focus.geo.lon","^.*,Point\\((.*) .*\\)","$1")
+  replace_all("$i.focus.geo.lat","^.*,Point\\(.* (.*)\\)","$1")
 end
