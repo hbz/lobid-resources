@@ -107,6 +107,16 @@ do list(path:"084??", "var":"$i")
       add_field("subject[].$last.source.label","Sachsystematik der Nordrhein-Westfälischen Bibliographie")
     end
   end
+  unless any_contain("$i.0", "https://nwbib.de/")
+    do list(path:"$i.a", "var":"$j")
+      copy_field("$j", "subject[].$append.id")
+      copy_field("$j", "subject[].$last.notation")
+      set_array("subject[].$last.type[]","Concept")
+      copy_field("$i.2", "subject[].$last.source.id")
+      copy_field("$i.2", "subject[].$last.source.label")
+      lookup("subject[].$last.source.label","src/main/resources/alma/maps/classificationCode2Label.tsv",sep_char:"\t")
+    end
+  end
 end
 
 # local subjects 982 - no info on repeatability
