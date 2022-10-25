@@ -79,3 +79,10 @@ replace_all("publication[].*.endDate", ".*-(\\d{4})$", "$1")
 replace_all("publication[].*.location[].*", "^\\[|\\]$", "")
 
 replace_all("publication[].*.publishedBy[].*", "^[©]|\\s?[,.:;/=]?$", "")
+
+# 246 - Varying Form of Title (R) - $a - Title proper/short title (NR)
+
+set_array("titleKeyword[]")
+do list(path: "24610", "var": "$i")
+  copy_field("$i.a","titleKeyword[].$append")
+end
