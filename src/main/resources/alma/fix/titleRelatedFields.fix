@@ -86,3 +86,10 @@ set_array("titleKeyword[]")
 do list(path: "24610", "var": "$i")
   copy_field("$i.a","titleKeyword[].$append")
 end
+
+
+# 210 - Abbreviated Title (R) - $a - Abbreviated title (NR)
+set_array("shortTitle[]")
+do list(path: "210??", "var": "$i")
+  copy_field("$i.a","shortTitle[].$append")
+end
