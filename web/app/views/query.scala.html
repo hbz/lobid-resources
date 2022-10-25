@@ -115,8 +115,8 @@
                   <th style="width: 5%; text-align: right"></th>
                   <th style="width: 5%; text-align: right"></th>
                  </tr>
-                 @for((doc,i) <- hits; id = ((doc\\"almaMmsId"))(0).as[String]) {
-                    @tags.query_result_short(id,doc,i-1,(Json.parse(result)\\"almaMmsId").map(_.as[String]))
+                 @for((doc,i) <- hits; id = (doc\"almaMmsId").asOpt[String].getOrElse((doc\"hbzId").as[String])) {
+                    @tags.query_result_short(id,doc,i-1)
                  }
                  </table>
                  <div class="panel-body hide-in-print" style="text-align:center">
