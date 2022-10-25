@@ -354,8 +354,8 @@ public class Lobid {
 				result.put(isil, uris);
 			} catch (ArrayIndexOutOfBoundsException x) {
 				Logger.error(
-						"Can't process item URI, expecting ISIL as last element when splitting at ':' with '{}'",
-						itemUri);
+						"Can't process item URI {}, expecting ISIL at index {} when splitting at ':'",
+						itemUri, x.getMessage());
 				Logger.debug(x.getMessage(), x);
 			}
 		}
