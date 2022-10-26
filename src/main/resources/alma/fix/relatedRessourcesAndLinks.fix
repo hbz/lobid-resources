@@ -498,8 +498,23 @@ end
 set_array("exampleOfWork.label")
 copy_field("1300 .a", "exampleOfWork.label.$append")
 copy_field("1300 .g", "exampleOfWork.label.$append")
+do list(path: "1300 .0", "var":"$i")
+  if any_match("$i", "^\\(DE-588\\).*")
+    copy_field("$i", "exampleOfWork.id")
+    replace_all("exampleOfWork.id","^\\(DE-588\\)(.*$)","https://d-nb.info/gnd/$1")
+  end
+end
+
+copy_field("24010.a", "exampleOfWork.label.$append")
+copy_field("24010.g", "exampleOfWork.label.$append")
+do list(path: "24010.0", "var":"$i")
+  if any_match("$i", "^\\(DE-588\\).*")
+    copy_field("$i", "exampleOfWork.id")
+    replace_all("exampleOfWork.id","^\\(DE-588\\)(.*$)","https://d-nb.info/gnd/$1")
+  end
+end
 join_field("exampleOfWork.label", " ")
 
-if exists("1300 ")
+unless any_equal("exampleOfWork.label", "")
   set_array("exampleOfWork.type[]","Work")
 end
