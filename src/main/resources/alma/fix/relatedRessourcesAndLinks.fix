@@ -518,3 +518,38 @@ join_field("exampleOfWork.label", " ")
 unless any_equal("exampleOfWork.label", "")
   set_array("exampleOfWork.type[]","Work")
 end
+
+# following only with second indicator 2 for analytical entries:
+# 700 - Added Entry-Personal Name (R)
+# 710 - Added Entry-Corporate Name (R)
+# 711 - Added Entry-Meeting Name (R)
+# 730 - Added Entry-Uniform Title (R)
+
+set_array("containsExampleOfWork[]")
+do list(path:"700?2|710?2|711?2|730?2", "var": "$i")
+  unless exists("$i.M")
+    set_array("containsExampleOfWork[].$append.label")
+    set_array("containsExampleOfWork[].$last.creatorOfWork")
+    copy_field("$i.a","containsExampleOfWork[].$last.creatorOfWork.$append")
+    copy_field("$i.d","containsExampleOfWork[].$last.creatorOfWork.$append")
+    copy_field("$i.t","containsExampleOfWork[].$last.label.$append")
+    copy_field("$i.p","containsExampleOfWork[].$last.label.$append")
+    copy_field("$i.n","containsExampleOfWork[].$last.label.$append")
+    copy_field("$i.r","containsExampleOfWork[].$last.label.$append")
+    join_field("containsExampleOfWork[].$last.label", ". ")
+    join_field("containsExampleOfWork[].$last.creatorOfWork", " ")
+    copy_field("$i.n","containsExampleOfWork[].$last.workNumbering")
+    copy_field("$i.r","containsExampleOfWork[].$last.musicalKey")
+    set_array("containsExampleOfWork[].$last.type[]","Work")
+    set_array("containsExampleOfWork[].$last.instrumentation[]")
+    do list(path:"$i.m","var":"$j")
+      copy_field("$j","containsExampleOfWork[].$last.instrumentation[].$append")
+    end
+    do list(path: "$i.0", "var":"$k")
+      if any_match("$k", "^\\(DE-588\\).*")
+        copy_field("$k", "containsExampleOfWork[].$last.id")
+        replace_all("containsExampleOfWork[].$last.id","^\\(DE-588\\)(.*$)","https://d-nb.info/gnd/$1")
+      end
+    end
+  end
+end
