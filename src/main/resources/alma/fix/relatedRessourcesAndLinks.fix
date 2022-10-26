@@ -491,3 +491,15 @@ do list(path:"785??", "var":"$i")
   end
 end
 
+
+
+# 130 - Main Entry-Uniform Title (NR)
+
+set_array("exampleOfWork.label")
+copy_field("1300 .a", "exampleOfWork.label.$append")
+copy_field("1300 .g", "exampleOfWork.label.$append")
+join_field("exampleOfWork.label", " ")
+
+if exists("1300 ")
+  set_array("exampleOfWork.type[]","Work")
+end
