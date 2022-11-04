@@ -1433,7 +1433,7 @@
 		<!-- ####################### -->
 		<!-- ####### hbz ID sameAs ZDB ID -->
 		<!-- ####################### -->
-		<data source="@idzdb" name="http://www.w3.org/2002/07/owl#sameAs">
+		<data source="@idzdb" name="http://schema.org/sameAs">
 			<regexp match="(.*)" format="$[ns-zdb-services]${1}"/>
 		</data>
 		<data source="@idzdb" name="$[ns-lobid-vocab]zdbID"/>
@@ -1475,7 +1475,7 @@
 		<!-- ####################### -->
 		<!-- ####### Set owl:sameAs -->
 		<!-- ####################### -->
-		<data source="@id" name="http://www.w3.org/2002/07/owl#sameAs">
+		<data source="@id" name="http://schema.org/sameAs">
 			<regexp match="(.*)" format="http://hub.culturegraph.org/resource/HBZ-${1}"/>
 		</data>
 		<!-- ####################### -->
@@ -1489,7 +1489,7 @@
 			<regexp match="(.*)" format="$[ns-zdb-services]${1}"/>
 		</data>
 		<data source="025o[-12].a" name="@oclcNumber"/>
-		<data source="@oclcNumber" name="http://www.w3.org/2002/07/owl#sameAs">
+		<data source="@oclcNumber" name="http://schema.org/sameAs">
 			<regexp match="(.*)" format="http://worldcat.org/oclc/${1}"/>
 			<sanitizeUrl></sanitizeUrl>
 		</data>
