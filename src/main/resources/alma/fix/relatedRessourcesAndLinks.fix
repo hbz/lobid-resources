@@ -306,6 +306,7 @@ do list(path:"775??|776??", "var":"$i")
     end
     set_array("related[].$last.note[]")
     paste("related[].$last.note[].$append","$i.i", "$i.n")
+    replace_all("related[].$last.note[].$last", "Erscheint auch als ","")
     copy_field("$i.t", "related[].$last.label")
     copy_field("$i.x", "related[].$last.issn")
     copy_field("$i.z", "$i.isbn13")
