@@ -126,8 +126,9 @@ copy_field("77308.d","bibliographicCitation.$append")
 do list(path:"77308.g", "var":"$i")
   copy_field("$i","bibliographicCitation.$append")
 end
-copy_field("77308.n","bibliographicCitation.$append")
-copy_field("77308.n","bibliographicCitation.$append")
+do list(path:"77308.n", "var":"$i")
+  copy_field("$i","bibliographicCitation.$append")
+end
 copy_field("501??.a","bibliographicCitation.$append")
 
 replace_all("bibliographicCitation.*","<<|>>","")
