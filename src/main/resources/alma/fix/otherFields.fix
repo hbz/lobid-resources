@@ -118,15 +118,29 @@ end
 set_array("bibliographicCitation")
 
 
+# 773 - Host Item Entry (R) - $t - Title (NR), $b - Edition (NR), $d - Place, publisher, and date of publication (NR), $g - Related parts (R), $n - Note (R)
+
 copy_field("77308.t","bibliographicCitation.$append")
 copy_field("77308.b","bibliographicCitation.$append")
 copy_field("77308.d","bibliographicCitation.$append")
-copy_field("77308.g","bibliographicCitation.$append")
-copy_field("77308.n","bibliographicCitation.$append")
-copy_field("77308.n","bibliographicCitation.$append")
+do list(path:"77308.g", "var":"$i")
+  copy_field("$i","bibliographicCitation.$append")
+end
+do list(path:"77308.n", "var":"$i")
+  copy_field("$i","bibliographicCitation.$append")
+end
 copy_field("501??.a","bibliographicCitation.$append")
 
 replace_all("bibliographicCitation.*","<<|>>","")
 replace_all("bibliographicCitation.*","^http","Siehe: http")
 
 join_field("bibliographicCitation", "; ")
+
+# 542 - Information Relating to Copyright Status (R) - $n - Note (R)  $u - Uniform Resource Identifier (R)
+
+set_array("license[]")
+do list(path: "542??", "var": "$i")
+  copy_field("$i.u", "license[].$append.id")
+  copy_field("$i.u", "license[].$last.label")
+  replace_all("license[].$last.label", "^(http://|https://)(.*)$","$2")
+end

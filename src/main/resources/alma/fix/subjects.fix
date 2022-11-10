@@ -107,6 +107,18 @@ do list(path:"084??", "var":"$i")
       add_field("subject[].$last.source.label","Sachsystematik der Nordrhein-Westfälischen Bibliographie")
     end
   end
+  unless any_contain("$i.0", "https://nwbib.de/") # filter out any nwbib concepts
+    unless any_match("$i.2", "ssgn|fid") # filter out any Sondersammelgebiete and Fachinformationsdienste
+      do list(path:"$i.a", "var":"$j")
+        copy_field("$j", "subject[].$append.notation")
+        set_array("subject[].$last.type[]","Concept")
+        copy_field("$i.2", "subject[].$last.source.label")
+        lookup("subject[].$last.source.label","alma/maps/classificationCode2Label.tsv",sep_char:"\t")
+        copy_field("subject[].$last.source.label","subject[].$last.source.id")
+        lookup("subject[].$last.source.id","alma/maps/classificationLabel2Uri.tsv",sep_char:"\t",delete:"true")
+      end
+    end
+  end
 end
 
 # local subjects 982 - no info on repeatability
@@ -204,8 +216,29 @@ do list(path:"084??", "var":"$i")
       set_array("spatial[].$last.type[]","Concept")
       add_field("spatial[].$last.source.id","https://nwbib.de/spatial")
       add_field("spatial[].$last.source.label","Raumsystematik der Nordrhein-Westfälischen Bibliographie")
+      copy_field("$j", "spatial[].$last.focus.id")
     end
   end
 end
 
-replace_all("spatial[].*.notation","https://nwbib.de/spatial#N(.*)$","$1")
+do list(path:"spatial[]", "var":"$i")
+  replace_all("$i.notation","https://nwbib.de/spatial#N(.*)$","$1")
+  lookup("$i.focus.id","$[nwbib-spatial]", sep_char:"\t")
+  copy_field("$i.focus.id","$i.focus.label")
+  replace_all("$i.focus.label","^(.*?)\\|.*\\|.*","$1")
+  replace_all("$i.focus.id","^.*\\|(http.*)","$1")
+  set_array("$i.focus.type[]")
+  copy_field("$i.focus.id","$i.focus.type[].$append")
+  lookup("$i.focus.type[].*","$[wd_itemLabelTypesCoordinates]", sep_char:"\t", delete:"true")
+  copy_field("$i.focus.type[].$last", "$i.focus.geo.lat")
+  copy_field("$i.focus.type[].$last", "$i.focus.geo.lon")
+  if any_match("$i.focus.type[].*",'^.*,"(.*)",Point.*')
+    replace_all("$i.focus.type[].*",'^.*,"(.*)",Point.*',"$1")
+    split_field("$i.focus.type[].$last",", ")
+    flatten("$i.focus.type[]")
+  elsif any_match ("$i.focus.type[].*","^.*,(http.*),Point.*")
+    replace_all("$i.focus.type[].*","^.*,(http.*),Point.*","$1")
+  end
+  replace_all("$i.focus.geo.lon","^.*,Point\\((.*) .*\\)","$1")
+  replace_all("$i.focus.geo.lat","^.*,Point\\(.* (.*)\\)","$1")
+end

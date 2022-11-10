@@ -353,7 +353,10 @@ public class Lobid {
 				uris.add(itemUri);
 				result.put(isil, uris);
 			} catch (ArrayIndexOutOfBoundsException x) {
-				Logger.error(x.getMessage());
+				Logger.error(
+						"Can't process item URI {}, expecting ISIL at index {} when splitting at ':'",
+						itemUri, x.getMessage());
+				Logger.debug(x.getMessage(), x);
 			}
 		}
 	}
