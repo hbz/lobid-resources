@@ -46,6 +46,8 @@ do list(path:"100[01] ", "var":"$i")
         set_array("contribution[].$last.agent.type[]","Person")
         # role
         copy_field("$j","contribution[].$last.role.id")
+        # dateOfBirthAndDeath #will be split on a later stage
+        copy_field("$i.d","contribution[].$last.agent.dateOfBirthAndDeath")
       end
     end
   end
@@ -79,6 +81,8 @@ do list(path:"700[01] ", "var":"$i")
         set_array("contribution[].$last.agent.type[]","Person")
         # role
         copy_field("$j","contribution[].$last.role.id")
+        # dateOfBirthAndDeath #will be split on a later stage
+        copy_field("$i.d","contribution[].$last.agent.dateOfBirthAndDeath")
       end
     end
   end
@@ -206,3 +210,59 @@ set_array("contribution[].*.type[]", "Contribution")
 replace_all("contribution[].*.agent.id","^\\(DE-588\\)(.*$)","https://d-nb.info/gnd/$1")
 replace_all("contribution[].*.agent.label","(?<!\\p{Upper})\\.$|[,]$","")
 prepend("contribution[].*.role.id","http://id.loc.gov/vocabulary/relators/")
+
+do list (path: "contribution[]", "var": "$i")
+  if any_match("$i.agent.dateOfBirthAndDeath", "^([012][0-9]{3})-.*")
+    copy_field("$i.agent.dateOfBirthAndDeath","$i.agent.dateOfBirth")
+    replace_all("$i.agent.dateOfBirth", "^([012][0-9]{3})-.*","$1")
+  elsif any_match("$i.agent.dateOfBirthAndDeath", "^([1-9][0-9]{2})-.*")
+    copy_field("$i.agent.dateOfBirthAndDeath","$i.agent.dateOfBirth")
+    replace_all("$i.agent.dateOfBirth", "^([1-9][0-9]{2})-.*","0$1")
+  elsif any_match("$i.agent.dateOfBirthAndDeath", "^([1-9][0-9])-.*")
+    copy_field("$i.agent.dateOfBirthAndDeath","$i.agent.dateOfBirth")
+    replace_all("$i.agent.dateOfBirth", "^([1-9][0-9])-.*","00$1")
+  elsif any_match("$i.agent.dateOfBirthAndDeath", "^([0-9])-.*")
+    copy_field("$i.agent.dateOfBirthAndDeath","$i.agent.dateOfBirth")
+    replace_all("$i.agent.dateOfBirth", "^([0-9])-.*","000$1")
+  elsif any_match("$i.agent.dateOfBirthAndDeath", "^v([012][0-9]{3})-.*")
+    copy_field("$i.agent.dateOfBirthAndDeath","$i.agent.dateOfBirth")
+    replace_all("$i.agent.dateOfBirth", "^v([012][0-9]{3})-.*","-$1")
+  elsif any_match("$i.agent.dateOfBirthAndDeath", "^v([1-9][0-9]{2})-.*")
+    copy_field("$i.agent.dateOfBirthAndDeath","$i.agent.dateOfBirth")
+    replace_all("$i.agent.dateOfBirth", "^v([1-9][0-9]{2})-.*","-0$1")
+  elsif any_match("$i.agent.dateOfBirthAndDeath", "^v([1-9][0-9])-.*")
+    copy_field("$i.agent.dateOfBirthAndDeath","$i.agent.dateOfBirth")
+    replace_all("$i.agent.dateOfBirth", "^v([1-9][0-9])-.*","-00$1")
+  elsif any_match("$i.agent.dateOfBirthAndDeath", "^v([0-9])-.*")
+    copy_field("$i.agent.dateOfBirthAndDeath","$i.agent.dateOfBirth")
+    replace_all("$i.agent.dateOfBirth", "^v([0-9])-.*","-000$1")
+  end
+  if any_match("$i.agent.dateOfBirthAndDeath", ".*-([012][0-9]{3})$")
+    copy_field("$i.agent.dateOfBirthAndDeath","$i.agent.dateOfDeath")
+    replace_all("$i.agent.dateOfDeath", ".*-([012][0-9]{3})$","$1")
+  elsif any_match("$i.agent.dateOfBirthAndDeath", ".*-([1-9][0-9]{2})$")
+    copy_field("$i.agent.dateOfBirthAndDeath","$i.agent.dateOfDeath")
+    replace_all("$i.agent.dateOfDeath", ".*-([1-9][0-9]{2})$","0$1")
+  elsif any_match("$i.agent.dateOfBirthAndDeath", ".*-([1-9][0-9])$")
+    copy_field("$i.agent.dateOfBirthAndDeath","$i.agent.dateOfDeath")
+    replace_all("$i.agent.dateOfDeath", ".*-([1-9][0-9])$","00$1")
+  elsif any_match("$i.agent.dateOfBirthAndDeath", ".*-([0-9])$")
+    copy_field("$i.agent.dateOfBirthAndDeath","$i.agent.dateOfDeath")
+    replace_all("$i.agent.dateOfDeath", ".*-([0-9])$","000$1")
+  elsif any_match("$i.agent.dateOfBirthAndDeath", ".*-v([012][0-9]{3})$")
+    copy_field("$i.agent.dateOfBirthAndDeath","$i.agent.dateOfDeath")
+    replace_all("$i.agent.dateOfDeath", ".*-v([012][0-9]{3})$","-$1")
+  elsif any_match("$i.agent.dateOfBirthAndDeath", ".*-v([1-9][0-9]{2})$")
+    copy_field("$i.agent.dateOfBirthAndDeath","$i.agent.dateOfDeath")
+    replace_all("$i.agent.dateOfDeath", ".*-v([1-9][0-9]{2})$","-0$1")
+  elsif any_match("$i.agent.dateOfBirthAndDeath", ".*-v([1-9][0-9])$")
+    copy_field("$i.agent.dateOfBirthAndDeath","$i.agent.dateOfDeath")
+    replace_all("$i.agent.dateOfDeath", ".*-v([1-9][0-9])$","-00$1")
+  elsif any_match("$i.agent.dateOfBirthAndDeath", ".*-v([0-9])$")
+    copy_field("$i.agent.dateOfBirthAndDeath","$i.agent.dateOfDeath")
+    replace_all("$i.agent.dateOfDeath", ".*-v([0-9])$","-000$1")
+  end
+  unless any_match("$i.agent.dateOfBirthAndDeath","^ca\\..*|.*Jh\\.")
+    remove_field("$i.agent.dateOfBirthAndDeath")
+  end
+end
