@@ -20,6 +20,7 @@ if [ -n "$ERRORS" ]; then
 Getriggert von ausgeführt in $(pwd)/scripts :
 
 Achte auf das Datum der ERROR-Zeilen - evtl. sind das alte Fehler!
+Finde den ersten Datumseintrag indem du nach "Current record:" suchst.
 
 $ERRORS
 EOF
