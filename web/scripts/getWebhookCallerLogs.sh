@@ -15,7 +15,7 @@ DATE=$(date +"%F")
 ERRORS=$(echo "$ERRORS" | grep $DATE| grep "ERROR\|response code"|grep -v 204)
 
 if [ -n "$ERRORS" ]; then
-        mail -s "Triggered Webhook's response in Alma Fix ETL" "${MAIL_TO}" -a "From: ${MAIL_FROM}" << EOF
+        mail -s "ERRORS when triggering Webhook in Alma Fix ETL" "${MAIL_TO}" -a "From: ${MAIL_FROM}" << EOF
 $ERRORS
 EOF
 fi
