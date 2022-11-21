@@ -13,12 +13,18 @@ jobs:
       with:
         java-version: 1.8
       # uncomment when needed
-    - name: Cache Maven packages
-      uses: actions/cache@v2
-      with:
-        path: ~/.m2
-        key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-        restore-keys: ${{ runner.os }}-m2
+    #- name: Cache Maven packages
+    #  uses: actions/cache@v2
+    #  with:
+    #    path: ~/.m2
+    #    key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+    #    restore-keys: ${{ runner.os }}-m2
+    - name: Install metafacture-core snapshot
+      run: |
+        git clone https://github.com/metafacture/metafacture-core.git
+        cd metafacture-core
+        ./gradlew publishToMavenLocal
+        cd ..
     - name: Install metafacture-fix snapshot
       run: |
         git clone https://github.com/metafacture/metafacture-fix.git
