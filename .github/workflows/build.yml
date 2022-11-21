@@ -12,14 +12,13 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: 1.8
-      # uncomment when needed
-    #- name: Cache Maven packages
-    #  uses: actions/cache@v2
-    #  with:
-    #    path: ~/.m2
-    #    key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-    #    restore-keys: ${{ runner.os }}-m2
-    - name: Install metafacture-core snapshot
+    - name: Cache Maven packages
+      uses: actions/cache@v2
+      with:
+        path: ~/.m2
+        key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+        restore-keys: ${{ runner.os }}-m2
+    - name: Install metafacture-core-5.4.1-rc1
       run: |
         git clone https://github.com/metafacture/metafacture-core.git
         cd metafacture-core
@@ -34,6 +33,13 @@ jobs:
         cd ..
     - name: Build with Maven
       run: mvn install
+    - name: Cache SBT
+      uses: actions/cache@v3
+      with:
+        path: |
+          ~/.ivy2/cache
+          ~/.sbt
+        key: ${{ runner.os }}-sbt-${{ hashFiles('**/build.sbt') }}
     - name: Build with play
       run: |
         cd web
