@@ -1,27 +1,27 @@
 set_array("hasItem[]")
 
-do list(path:"MBD  ", "var": "$i")
-  copy_field("$i.i", "hasItem[].$append.id")
-  prepend("hasItem[].$last.id","https://lobid.org/item/")
-  set_array("hasItem[].$last.type[]", "Item", "MBD")
-  copy_field("$i.M", "hasItem[].$last.heldBy.id")
-  lookup("hasItem[].$last.heldBy.id", "alma-iz-code-to-isil")
-  prepend("hasItem[].$last.heldBy.id", "http://lobid.org/organisations/")
-  append("hasItem[].$last.heldBy.id","#!")
-end
+# do list(path:"MBD  ", "var": "$i")
+#   copy_field("$i.i", "hasItem[].$append.id")
+#   prepend("hasItem[].$last.id","https://lobid.org/item/")
+#   set_array("hasItem[].$last.type[]", "Item", "MBD")
+#   copy_field("$i.M", "hasItem[].$last.heldBy.id")
+#   lookup("hasItem[].$last.heldBy.id", "alma-iz-code-to-isil")
+#   prepend("hasItem[].$last.heldBy.id", "http://lobid.org/organisations/")
+#   append("hasItem[].$last.heldBy.id","#!")
+# end
 
 
-do list(path:"HOL  ", "var": "$i")
-  copy_field("$i.8", "hasItem[].$append.id")
-  prepend("hasItem[].$last.id","https://lobid.org/item/")
-  add_field("hasItem[].$last.label", "lobid Bestandsressource")
-  set_array("hasItem[].$last.type[]", "Item", "HOL")
-  copy_field("$i.8", "hasItem[].$last.heldBy.id")
-  replace_all("hasItem[].$last.heldBy.id",".*(\\d{4})$","$1")
-  lookup("hasItem[].$last.heldBy.id", "alma-institution-code-to-isil")
-  prepend("hasItem[].$last.heldBy.id", "http://lobid.org/organisations/")
-  append("hasItem[].$last.heldBy.id","#!")
-end
+# do list(path:"HOL  ", "var": "$i")
+#   copy_field("$i.8", "hasItem[].$append.id")
+#   prepend("hasItem[].$last.id","https://lobid.org/item/")
+#   add_field("hasItem[].$last.label", "lobid Bestandsressource")
+#   set_array("hasItem[].$last.type[]", "Item", "HOL")
+#   copy_field("$i.8", "hasItem[].$last.heldBy.id")
+#   replace_all("hasItem[].$last.heldBy.id",".*(\\d{4})$","$1")
+#   lookup("hasItem[].$last.heldBy.id", "alma-institution-code-to-isil")
+#   prepend("hasItem[].$last.heldBy.id", "http://lobid.org/organisations/")
+#   append("hasItem[].$last.heldBy.id","#!")
+# end
 
 
 # # TODO: The morph only took up H52 without indices, but what about 1. inidice 8 ("H528 ") and 2. indice 1 ("H5281")
@@ -47,7 +47,7 @@ do list(path:"ITM  ", "var": "$i")
   copy_field("$i.a", "hasItem[].$append.id")
   prepend("hasItem[].$last.id","https://lobid.org/item/")
   add_field("hasItem[].$last.label", "lobid Bestandsressource")
-  set_array("hasItem[].$last.type[]", "Item", "ITM")
+  set_array("hasItem[].$last.type[]", "Item")
   copy_field("$i.c", "hasItem[].$last.callNumber")
   unless exists("hasItem[].$last.callNumber")
     copy_field("$i.n", "hasItem[].$last.callNumber")
@@ -61,35 +61,36 @@ do list(path:"ITM  ", "var": "$i")
 end
 
 
-do list(path:"POR  ", "var": "$i")
-# entity for every POR  .a without POR  .A
-  unless any_match("$i.a",".*6441$") # filter out hbz
-    copy_field("$i.a", "hasItem[].$append.id")
-    prepend("hasItem[].$last.id","https://lobid.org/item/")
-    set_array("hasItem[].$last.type[]", "Item", "POR")
-    add_field("hasItem[].$last.label", "POR")
-    copy_field("$i.D", "hasItem[].$last.electronicLocator")
-    copy_field("$i.d", "hasItem[].$last.sublocation")
-    copy_field("$i.a", "hasItem[].$last.heldBy.id")
-    replace_all("hasItem[].$last.heldBy.id",".*(\\d{4})$","$1")
-    lookup("hasItem[].$last.heldBy.id", "alma-institution-code-to-isil")
-    prepend("hasItem[].$last.heldBy.id", "http://lobid.org/organisations/")
-    append("hasItem[].$last.heldBy.id","#!")
-  end
-  # entity for every POR  .A
-  if exists ("$i.A")
-    do list(path:"$i.A", "var": "$j")
-      copy_field("$i.a", "hasItem[].$append.id")
-      prepend("hasItem[].$last.id","https://lobid.org/item/")
-      set_array("hasItem[].$last.type[]", "Item", "POR")
-      add_field("hasItem[].$last.label", "POR")
-      copy_field("$i.D", "hasItem[].$last.electronicLocator")
-      copy_field("$i.d", "hasItem[].$last.sublocation")
-      copy_field("$j", "hasItem[].$last.heldBy.id")
-      lookup("hasItem[].$last.heldBy.id", "alma-iz-code-to-isil")
-      prepend("hasItem[].$last.heldBy.id", "http://lobid.org/organisations/")
-      append("hasItem[].$last.heldBy.id","#!")
-    end
-  end
-end
-
+# do list(path:"POR  ", "var": "$i")
+# # entity for every POR  .a without POR  .A
+#   unless any_match("$i.a",".*6441$") # filter out hbz
+#     copy_field("$i.a", "hasItem[].$append.id")
+#     prepend("hasItem[].$last.id","https://lobid.org/item/")
+#     set_array("hasItem[].$last.type[]", "Item", "POR")
+#     add_field("hasItem[].$last.label", "POR")
+#     copy_field("$i.D", "hasItem[].$last.electronicLocator")
+#     copy_field("$i.d", "hasItem[].$last.sublocation")
+#     copy_field("$i.a", "hasItem[].$last.heldBy.id")
+#     replace_all("hasItem[].$last.heldBy.id",".*(\\d{4})$","$1")
+#     lookup("hasItem[].$last.heldBy.id", "alma-institution-code-to-isil")
+#     prepend("hasItem[].$last.heldBy.id", "http://lobid.org/organisations/")
+#     append("hasItem[].$last.heldBy.id","#!")
+#   end
+#   # entity for every POR  .A
+#   if exists ("$i.A")
+#     do list(path:"$i.A", "var": "$j")
+#       copy_field("$i.a", "hasItem[].$append.id")
+#       prepend("hasItem[].$last.id","https://lobid.org/item/")
+#       set_array("hasItem[].$last.type[]", "Item", "POR")
+#       add_field("hasItem[].$last.label", "POR")
+#       copy_field("$i.D", "hasItem[].$last.electronicLocator")
+#       copy_field("$i.d", "hasItem[].$last.sublocation")
+#       copy_field("$j", "hasItem[].$last.heldBy.id")
+#       lookup("hasItem[].$last.heldBy.id", "alma-iz-code-to-isil")
+#       prepend("hasItem[].$last.heldBy.id", "http://lobid.org/organisations/")
+#       append("hasItem[].$last.heldBy.id","#!")
+#     end
+#   end
+# end
+#
+#
