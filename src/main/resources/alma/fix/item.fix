@@ -44,7 +44,7 @@ set_array("hasItem[]")
 
 # TODO: Objects created from ITM seem to produce duplicates. Either we need something to differentiate these or deduplicate these.
 do list(path:"ITM  ", "var": "$i")
-  copy_field("$i.a", "hasItem[].$append.id")
+  add_field( "hasItem[].$append.test","")
   prepend("hasItem[].$last.id","https://lobid.org/item/")
   add_field("hasItem[].$last.label", "lobid Bestandsressource")
   set_array("hasItem[].$last.type[]", "Item")
@@ -56,9 +56,12 @@ do list(path:"ITM  ", "var": "$i")
   copy_field("$i.a", "hasItem[].$last.heldBy.id")
   replace_all("hasItem[].$last.heldBy.id",".*(\\d{4})$","$1")
   lookup("hasItem[].$last.heldBy.id", "alma-institution-code-to-isil")
+  copy_field("hasItem[].$last.heldBy.id","hasItem[].$last.heldBy.isil")
   prepend("hasItem[].$last.heldBy.id", "http://lobid.org/organisations/")
   append("hasItem[].$last.heldBy.id","#!")
+  paste("hasItem[].$last.id", "~http://lobid.org/items/","almaMmsId", "~:", "hasItem[].$last.heldBy.isil","~:", "hasItem[].$last.callNumber","~#!", join_char: "")
 end
+
 
 
 # do list(path:"POR  ", "var": "$i")
