@@ -1,8 +1,8 @@
 # Get type and coordinates for all Wikidata resources having the NWBid property
-# use like: $ bash getAllNwbibTypeAndCoordinatesFromWikidata.sparql > nwbibWikidataLabelTypeCoords.csv
+# use like: $ bash getAllNwbibTypeAndCoordinatesFromWikidata.sparql
 # see https://github.com/hbz/lobid-resources/issues/1471
 
-curl --header "Accept: text/csv"  -G 'https://query.wikidata.org/sparql' --data-urlencode query='
+curl --header "Accept: text/csv" -o alma/maps/nwbibWikidataLabelTypeCoords.csv -G 'https://query.wikidata.org/sparql' --data-urlencode query='
 SELECT DISTINCT
 (CONCAT("https://nwbib.de/spatial#",?nwbibIdLabel) AS ?nwbibId)
 ?item
