@@ -437,16 +437,15 @@ end
 
 set_array("inCollection[].*.type[]","Collection")
 
-set_array("similar[]")
 
 do list(path:"doi[]", "var":"$i")
-  copy_field("$i", "similar[].$append.id")
-  replace_all("similar[].$last.id", "^(.*)$","http://dx.doi.org/$1")
+  copy_field("$i", "sameAs[].$append.id")
+  replace_all("sameAs[].$last.id", "^(.*)$","http://dx.doi.org/$1")
 end
 
 do list(path:"urn[]", "var":"$i")
-  copy_field("$i", "similar[].$append.id")
-  replace_all("similar[].$last.id", "^(.*)$","http://nbn-resolving.de/$1")
+  copy_field("$i", "sameAs[].$append.id")
+  replace_all("sameAs[].$last.id", "^(.*)$","http://nbn-resolving.de/$1")
 end
 
 # TODO: is this needed too?
@@ -456,6 +455,8 @@ end
 # 		  </data>
 # 		  <data source="776-1.i" name="http://id.loc.gov/ontologies/bibframe/note" />
 # 	  </entity>
+
+
 
 # predecessor
 
