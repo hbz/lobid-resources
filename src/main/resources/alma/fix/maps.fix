@@ -1,31 +1,17 @@
-put_map("alma-iz-code-to-isil",
-  "49HBZ_UBD": "DE-290",  # Universitätsbibliothek Dortmund -->
-  "49HBZ_BIE": "DE-361",  # Universitätsbibliothek Bielefeld -->
-  "49HBZ_DUE": "DE-61", # Universitäts- und Landesbibliothek Düsseldorf -->
-  "49HBZ_FHA": "DE-A96",  # Hochschulbibliothek der Fachhochschule Aachen -->
-  "49HBZ_WUP": "DE-468",  # Universitätsbibliothek Wuppertal -->
-  "49HBZ_UDE": "DE-468",  # Universitätsbibliothek Duisburg-Essen -->
-  "49HBZ_NETWORK": "DE-605"
-)
+put_filemap("./maps/institutions.tsv","alma-iz-code-to-isil", sep_char:"\t",key_column:"2",value_column:"0",expected_columns:"-1")
+put_filemap("./maps/institutions.tsv","alma-institution-code-to-isil", sep_char:"\t",key_column:"1",value_column:"0",expected_columns:"-1")
+
 
 put_map("rswk-indicator",
   "p": "Person",
-  "b": "CorporateBody", 
-  "f": "ConferenceOrEvent",  
+  "b": "CorporateBody",
+  "f": "ConferenceOrEvent",
   "u": "Work",
   "g": "PlaceOrGeographicName",
   "s": "SubjectHeading"
 )
 
-put_map("alma-institution-code-to-isil",
-  "6441": "DE-605",# /> <!-- hbz - Hochschulbibliothekszentrum des Landes Nordrhein-Westfalen -->
-  "6442": "DE-361", # /> <!-- Universitätsbibliothek Bielefeld -->
-  "6443": "DE-61", # >  <!-- Universitäts- und Landesbibliothek Düsseldorf -->
-  "6444": "DE-A96", # /> <!-- Hochschulbibliothek der Fachhochschule Aachen -->
-  "6445": "DE-290", # /> <!-- Universitätsbibliothek Dortmund -->
-  "6446": "DE-465", # /> <!-- Universitätsbibliothek Duisburg-Essen (DE-464 = Campus Duisburg, DE-465 = Campus Essen) -->
-  "6447": "DE-468" # /> <!-- Universitätsbibliothek Wuppertal -->
-)
+
 
 
 put_map("medium-id-to-label",
