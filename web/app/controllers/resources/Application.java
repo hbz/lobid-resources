@@ -75,7 +75,7 @@ import views.html.stars;
 
 /**
  * The main application controller.
- * 
+ *
  * @author Fabian Steeg (fsteeg)
  */
 public class Application extends Controller {
@@ -99,8 +99,10 @@ public class Application extends Controller {
 	/** The internal ES field for issued years. */
 	public static final String ISSUED_FIELD = "publication.startDate";
 	/** Access to the resources.conf config file. */
+	private final static File RESOURCES_CONF = new File("conf/resources.conf").exists() ?
+			new File("conf/resources.conf") : new File("conf/resources.conf_template")  ;
 	public final static Config CONFIG =
-			ConfigFactory.parseFile(new File("conf/resources.conf")).resolve();
+			ConfigFactory.parseFile(RESOURCES_CONF).resolve();
 
 	static Form<String> queryForm = Form.form(String.class);
 
@@ -880,9 +882,9 @@ public class Application extends Controller {
 
 	/**
 	 * See https://www.w3.org/TR/dwbp/#metadata
-	 * 
+	 *
 	 * @param format The format ("json" or "html")
-	 * 
+	 *
 	 * @return JSON-LD dataset metadata
 	 */
 	public static Result dataset(String format) {
