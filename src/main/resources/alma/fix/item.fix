@@ -45,9 +45,8 @@ set_array("hasItem[]")
 # TODO: Objects created from ITM seem to produce duplicates. Either we need something to differentiate these or deduplicate these.
 do list(path:"ITM  ", "var": "$i")
   add_field( "hasItem[].$append.test","")
-  prepend("hasItem[].$last.id","https://lobid.org/item/")
   add_field("hasItem[].$last.label", "lobid Bestandsressource")
-  set_array("hasItem[].$last.type[]", "Item")
+  set_array("hasItem[].$last.type[]", "Item","PhysicalObject")
   copy_field("$i.c", "hasItem[].$last.callNumber")
   unless exists("hasItem[].$last.callNumber")
     copy_field("$i.n", "hasItem[].$last.callNumber")
@@ -64,36 +63,44 @@ end
 
 
 
-# do list(path:"POR  ", "var": "$i")
-# # entity for every POR  .a without POR  .A
-#   unless any_match("$i.a",".*6441$") # filter out hbz
-#     copy_field("$i.a", "hasItem[].$append.id")
-#     prepend("hasItem[].$last.id","https://lobid.org/item/")
-#     set_array("hasItem[].$last.type[]", "Item", "POR")
-#     add_field("hasItem[].$last.label", "POR")
-#     copy_field("$i.D", "hasItem[].$last.electronicLocator")
-#     copy_field("$i.d", "hasItem[].$last.sublocation")
-#     copy_field("$i.a", "hasItem[].$last.heldBy.id")
-#     replace_all("hasItem[].$last.heldBy.id",".*(\\d{4})$","$1")
-#     lookup("hasItem[].$last.heldBy.id", "alma-institution-code-to-isil")
-#     prepend("hasItem[].$last.heldBy.id", "http://lobid.org/organisations/")
-#     append("hasItem[].$last.heldBy.id","#!")
-#   end
-#   # entity for every POR  .A
-#   if exists ("$i.A")
-#     do list(path:"$i.A", "var": "$j")
-#       copy_field("$i.a", "hasItem[].$append.id")
-#       prepend("hasItem[].$last.id","https://lobid.org/item/")
-#       set_array("hasItem[].$last.type[]", "Item", "POR")
-#       add_field("hasItem[].$last.label", "POR")
-#       copy_field("$i.D", "hasItem[].$last.electronicLocator")
-#       copy_field("$i.d", "hasItem[].$last.sublocation")
-#       copy_field("$j", "hasItem[].$last.heldBy.id")
-#       lookup("hasItem[].$last.heldBy.id", "alma-iz-code-to-isil")
-#       prepend("hasItem[].$last.heldBy.id", "http://lobid.org/organisations/")
-#       append("hasItem[].$last.heldBy.id","#!")
-#     end
-#   end
-# end
-#
-#
+do list(path:"POR  ", "var": "$i")
+# entity for every POR  .a without POR  .A
+  unless any_match("$i.a",".*6441$") # filter out hbz
+    add_field( "hasItem[].$append.test","")
+    set_array("hasItem[].$last.type[]", "Item", "DigitalDocument")
+    add_field("hasItem[].$last.label", "Electronic Portfolio")
+    copy_field("$i.D", "$i.@electronicLocator")
+    replace_all("$i.@electronicLocator","https://eu04.alma.exlibrisgroup.com/view/uresolver/49HBZ_NETWORK","")
+    paste("hasItem[].$last.electronicLocator", "~https://eu04.alma.exlibrisgroup.com/view/uresolver/","$i.M","$i.@electronicLocator", join_char: "")
+    copy_field("$i.d", "$i.@sublocation")
+    replace_all("$i.@sublocation","https://hbz-network.userservices.exlibrisgroup.com/view/uresolver/49HBZ_NETWORK","")
+    paste("hasItem[].$last.sublocation", "~https://hbz-network.userservices.exlibrisgroup.com/view/uresolver/","$i.M","$i.@sublocation", join_char: "")
+    copy_field("$i.a", "hasItem[].$last.heldBy.id")
+    replace_all("hasItem[].$last.heldBy.id",".*(\\d{4})$","$1")
+    lookup("hasItem[].$last.heldBy.id", "alma-institution-code-to-isil")
+    copy_field("hasItem[].$last.heldBy.id","hasItem[].$last.heldBy.isil")
+    prepend("hasItem[].$last.heldBy.id", "http://lobid.org/organisations/")
+    append("hasItem[].$last.heldBy.id","#!")
+    paste("hasItem[].$last.id", "~http://lobid.org/items/","almaMmsId", "~:", "hasItem[].$last.heldBy.isil","~:", "$i.a","~#!", join_char: "")
+  end
+  # entity for every POR  .A
+  if exists ("$i.A")
+    copy_field("$i.D", "$i.@electronicLocator")
+    replace_all("$i.@electronicLocator","https://eu04.alma.exlibrisgroup.com/view/uresolver/49HBZ_NETWORK","")
+    copy_field("$i.d", "$i.@sublocation")
+    replace_all("$i.@sublocation","https://hbz-network.userservices.exlibrisgroup.com/view/uresolver/49HBZ_NETWORK","")
+    do list(path:"$i.A", "var": "$j")
+      add_field( "hasItem[].$append.test","")
+      set_array("hasItem[].$last.type[]", "Item", "DigitalDocument")
+      add_field("hasItem[].$last.label", "Electronic Portfolio")
+      paste("hasItem[].$last.electronicLocator", "~https://eu04.alma.exlibrisgroup.com/view/uresolver/","$j","$i.@electronicLocator", join_char: "")
+      paste("hasItem[].$last.sublocation", "~https://hbz-network.userservices.exlibrisgroup.com/view/uresolver/","$j","$i.@sublocation", join_char: "")
+      copy_field("$j", "hasItem[].$last.heldBy.id")
+      lookup("hasItem[].$last.heldBy.id", "alma-iz-code-to-isil")
+      copy_field("hasItem[].$last.heldBy.id","hasItem[].$last.heldBy.isil")
+      prepend("hasItem[].$last.heldBy.id", "http://lobid.org/organisations/")
+      append("hasItem[].$last.heldBy.id","#!")
+      paste("hasItem[].$last.id", "~http://lobid.org/items/","almaMmsId", "~:", "hasItem[].$last.heldBy.isil","~:", "$i.a","~#!", join_char: "")
+    end
+  end
+end
