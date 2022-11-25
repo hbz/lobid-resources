@@ -13,6 +13,7 @@
 # Example: "bash updateAlmaTestFiles.sh HT017664407"
 
 TEMPORARY_TEST_FILE="almaMarcXmlTestFiles"
+TEMPORARY_TEST_FILE_LINTET=${TEMPORARY_TEST_FILE}.lintet
 
 tar xfj almaMarcXmlTestFiles.xml.tar.bz2
 
@@ -52,7 +53,8 @@ case $1 in
 		getAlmaXmlAndAppendItToArchive $1
 		appendClosingColletionTagToArchive
 esac
-tar cfj almaMarcXmlTestFiles.xml.tar.bz2 $TEMPORARY_TEST_FILE
-rm $TEMPORARY_TEST_FILE
+xmllint --format $TEMPORARY_TEST_FILE > "$TEMPORARY_TEST_FILE_LINTET"
+tar cfj almaMarcXmlTestFiles.xml.tar.bz2 $TEMPORARY_TEST_FILE_LINTET
+rm $TEMPORARY_TEST_FILE $TEMPORARY_TEST_FILE_LINTET
 cd ../../../../
 mvn -DgenerateTestData=true failsafe:integration-test -Dit.test=AlmaMarc21XmlToLobidJsonMetafixTest
