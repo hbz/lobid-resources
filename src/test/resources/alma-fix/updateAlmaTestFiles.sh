@@ -54,7 +54,8 @@ case $1 in
 		appendClosingColletionTagToArchive
 esac
 xmllint --format $TEMPORARY_TEST_FILE > "$TEMPORARY_TEST_FILE_LINTET"
-tar cfj almaMarcXmlTestFiles.xml.tar.bz2 $TEMPORARY_TEST_FILE_LINTET
-rm $TEMPORARY_TEST_FILE $TEMPORARY_TEST_FILE_LINTET
+mv $TEMPORARY_TEST_FILE_LINTET $TEMPORARY_TEST_FILE
+tar cfj almaMarcXmlTestFiles.xml.tar.bz2 $TEMPORARY_TEST_FILE
+rm $TEMPORARY_TEST_FILE
 cd ../../../../
 mvn -DgenerateTestData=true failsafe:integration-test -Dit.test=AlmaMarc21XmlToLobidJsonMetafixTest
