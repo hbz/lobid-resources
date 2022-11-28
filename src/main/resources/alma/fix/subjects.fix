@@ -113,9 +113,9 @@ do list(path:"084??", "var":"$i")
         copy_field("$j", "subject[].$append.notation")
         set_array("subject[].$last.type[]","Concept")
         copy_field("$i.2", "subject[].$last.source.label")
-        lookup("subject[].$last.source.label","alma/maps/classificationCode2Label.tsv",sep_char:"\t")
-        copy_field("subject[].$last.source.label","subject[].$last.source.id")
-        lookup("subject[].$last.source.id","alma/maps/classificationLabel2Uri.tsv",sep_char:"\t",delete:"true")
+        lookup("subject[].$last.source.label","classificationCode2Label")
+        copy_field("$i.2","subject[].$last.source.id")
+        lookup("subject[].$last.source.id","classificationCode2Uri", delete:"true")
       end
     end
   end
