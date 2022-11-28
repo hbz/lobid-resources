@@ -2,7 +2,7 @@
 # use like: $ bash getAllNwbibTypeAndCoordinatesFromWikidata.sparql
 # see https://github.com/hbz/lobid-resources/issues/1471
 
-curl --header "Accept: text/tab-separated-values" -o alma/maps/nwbibWikidataLabelTypeCoords.tsv -G 'https://query.wikidata.org/sparql' --data-urlencode query='
+curl --header "Accept: text/tab-separated-values" -G 'https://query.wikidata.org/sparql' --data-urlencode query='
 SELECT DISTINCT
 (CONCAT("https://nwbib.de/spatial#",?nwbibIdLabel) AS ?nwbibId)
 ?item
@@ -18,4 +18,4 @@ WHERE {
  SERVICE wikibase:label {  bd:serviceParam wikibase:language "de" }
 }
 GROUP BY ?nwbibIdLabel ?item ?itemLabel ?coordinates
-'
+'  |sed 's#^"##g'|sed 's#"\t<#\t#g'|sed 's#>\t"#\t#g' |sed 's#"@..#\t#g'  |sed 's#\t"#\t#g' |sed 's#"\t#\t#g' |sed 's#"\^\^.*##g' |sed 's#\t\t#\t#g' > ./src/main/resources/alma/maps/nwbibWikidataLabelTypeCoords.tsv
