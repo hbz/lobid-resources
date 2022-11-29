@@ -46,7 +46,7 @@ public class WebhookAlmaFix extends Controller {
   private static final String MSG_CREATE_INDEX_ALREADY_RUNNING =
       "Couldn't create new index with name '%s' "
           + MSG_ETL_PROCESS_IS_ALREADY_RUNNING;
-  private static final String MORPH_FILENAME = "conf/alma/alma.fix";
+  private static final String FIX_FILENAME = "../src/main/resources/alma/alma.fix";
   // If null, create default values from Global settings
   public static String clusterHost = null;
   public static String clusterName = null;
@@ -82,7 +82,7 @@ public class WebhookAlmaFix extends Controller {
     AlmaMarcXmlFix2lobidJsonEs.setSwitchAliasAfterETL(false);
     AlmaMarcXmlFix2lobidJsonEs.main(filenameUpdate, indexNameOfUpdate,
         indexUpdateAliasSufix, clusterHost, clusterName, UPDATE_NEWEST_INDEX,
-        MORPH_FILENAME);
+        FIX_FILENAME);
     AlmaMarcXmlFix2lobidJsonEs.sendMail(ETL_OF + KIND, true,
         "Going to update index '" + indexNameOfUpdate + "'");
     return ok("... started ETL " + KIND);
@@ -137,7 +137,7 @@ public class WebhookAlmaFix extends Controller {
     }
     AlmaMarcXmlFix2lobidJsonEs.main(filenameBasedump, createIndexNameOfBasedump,
         indexBasedumpAliasSuffix, clusterHost, clusterName, CREATE_INDEX,
-        MORPH_FILENAME);
+        FIX_FILENAME);
     AlmaMarcXmlFix2lobidJsonEs.sendMail(ETL_OF + KIND, true,
         "Going to created new index with name " + createIndexNameOfBasedump
             + " , adding " + indexBasedumpAliasSuffix + " to alias of index");
@@ -163,7 +163,7 @@ public class WebhookAlmaFix extends Controller {
     if (AlmaMarcXmlFix2lobidJsonEs.threadAlreadyStarted) {
       AlmaMarcXmlFix2lobidJsonEs.sendMail("Fail " + msg, false, String
           .format(MSG_CREATE_INDEX_ALREADY_RUNNING, createIndexNameOfBasedump));
-     
+
       return status(423, String.format(MSG_CREATE_INDEX_ALREADY_RUNNING,
           createIndexNameOfBasedump));
     }

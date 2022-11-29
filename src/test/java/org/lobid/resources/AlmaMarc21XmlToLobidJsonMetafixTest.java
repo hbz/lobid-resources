@@ -61,7 +61,9 @@ public final class AlmaMarc21XmlToLobidJsonMetafixTest {
         fixVariables.put("deweyLabels", "src/test/resources/deweyLabels.tsv");
         fixVariables.put("nwbib-spatial", "src/main/resources/nwbib-spatial.tsv");
         fixVariables.put("wd_itemLabelTypesCoordinates", "src/main/resources/wd_itemLabelTypesCoordinates.tsv");
-        fixVariables.put("maps-institutions.tsv", "alma/maps/institutions.tsv");
+        fixVariables.put("classification.tsv", "src/main/resources/alma/maps/classification.tsv");
+        fixVariables.put("maps-institutions.tsv", "src/main/resources/alma/maps/institutions.tsv");
+        fixVariables.put("nwbibWikidataLabelTypeCoords.tsv", "src/main/resources/alma/maps/nwbibWikidataLabelTypeCoords.tsv");
         if (GENERATE_TESTDATA) {
             extractXmlTestRecords(PATTERN_TO_IDENTIFY_XML_RECORDS);
         }
@@ -134,7 +136,7 @@ public final class AlmaMarc21XmlToLobidJsonMetafixTest {
         StreamBatchLogger logger = new StreamBatchLogger();
         logger.setBatchSize(10);
         EtikettJson etikettJson = new EtikettJson();
-        etikettJson.setLabelsDirectoryName("labels");
+        etikettJson.setLabelsDirectoryName("../lobid-resources/src/main/resources/labels");
         etikettJson.setFilenameOfContext("web/conf/context.jsonld");
         etikettJson.setGenerateContext(true);
         etikettJson.setPretty(true);
