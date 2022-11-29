@@ -44,7 +44,7 @@ public class AlmaMarcXmlFix2lobidJsonEs {
     private static String cluster;
     private static String indexName;
     private static boolean updateDonotCreateIndex;
-    private static String fixFileName = "alma/alma.fix";
+    private static String fixFileName = "src/main/resources/alma/alma.fix";
 
     private static final String INDEXCONFIG = "index-config.json";
     private static final HashMap<String, String> fixVariables = new HashMap<>();
@@ -113,7 +113,7 @@ public class AlmaMarcXmlFix2lobidJsonEs {
                 fixVariables.put("deweyLabels", "deweyLabels.tsv");
                 fixVariables.put("nwbib-spatial", "nwbib-spatial.tsv");
                 fixVariables.put("wd_itemLabelTypesCoordinates", "wd_itemLabelTypesCoordinates.tsv");
-                fixVariables.put("maps-institutions.tsv", "alma/maps/institutions.tsv");
+                fixVariables.put("maps-institutions.tsv", "src/main/resources/alma/maps/institutions.tsv");
                 fixVariables.put("nwbibWikidataLabelTypeCoords.tsv", "alma/maps/nwbibWikidataLabelTypeCoords.tsv");
                 fixVariables.put("classification.tsv", "alma/maps/classification.tsv");
 
@@ -199,7 +199,7 @@ public class AlmaMarcXmlFix2lobidJsonEs {
         MarcXmlHandler marcXmlHandler = new MarcXmlHandler();
         marcXmlHandler.setNamespace(null);
         EtikettJson etikettJson = new EtikettJson();
-        etikettJson.setLabelsDirectoryName("labels");
+        etikettJson.setLabelsDirectoryName("../src/main/resources/labels");
         etikettJson.setFilenameOfContext("context.jsonld");
         etikettJson.setGenerateContext(true);
         JsonEncoder jsonEncoder = new JsonEncoder();

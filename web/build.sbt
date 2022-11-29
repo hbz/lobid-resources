@@ -4,9 +4,6 @@ version := "0.2.1-SNAPSHOT"
 
 scalaVersion := "2.11.11"
 
-// used by the webhook listener invoking the ETL
-unmanagedResourceDirectories in Compile += baseDirectory.value / "../src/main/resources/"
-
 libraryDependencies ++= Seq(
   cache,
   javaWs,
