@@ -208,6 +208,7 @@ end
 
 set_array("contribution[].*.type[]", "Contribution")
 replace_all("contribution[].*.agent.id","^\\(DE-588\\)(.*$)","https://d-nb.info/gnd/$1")
+replace_all("contribution[].*.agent.gndIdentifier","^\\(DE-588\\)(.*$)","GND-$1")
 replace_all("contribution[].*.agent.label","(?<!\\p{Upper})\\.$|[,]$","")
 prepend("contribution[].*.role.id","http://id.loc.gov/vocabulary/relators/")
 
@@ -266,3 +267,5 @@ do list (path: "contribution[]", "var": "$i")
     remove_field("$i.agent.dateOfBirthAndDeath")
   end
 end
+
+replace_all("contribution[].*.agent.gndIdentifier","^GND-(.*$)","$1")
