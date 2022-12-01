@@ -67,7 +67,7 @@ do list(path:"0242?", "var":"$i")
 end
 replace_all("ismn[].*", "-","")
 
-# TODO: Specify if DOI should be URI?
+
 # 024 (R) Subfield a (NR) 1. Indicator 7 = to defined Identifier
 set_array("doi[]")
 do list(path:"0247?", "var":"$i")
@@ -75,6 +75,17 @@ do list(path:"0247?", "var":"$i")
     copy_field("$i.a", "doi[].$append")
   end
 end
+
+# Sometimes dois are not set in 024 then we could pick up the missing from 856.
+# 856 - Electronic Location and Access (R) - Subfield: $u (R) $3 (NR)
+# 1. Indicator: 4 = HTTP
+do list(path:"8564?", "var":"$i")
+  if any_contain("$i.u","doi")
+    copy_field("$i.u", "doi[].$append")
+    replace_all("doi[].$last", "^.*doi.org/(.*)$", "$1")
+  end
+end
+uniq("doi[]")
 
 # 035 - System Control Number (R) - Subfield: $a (NR)
 set_array("oclcNumber[]")
