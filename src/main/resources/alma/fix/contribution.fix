@@ -279,7 +279,7 @@ do list (path: "contribution[]", "var": "$i")
 
   # compare GND itdentifier with GPN for enrichment:
   set_array("$i.agent.altLabel[]")
-  do list(path:"GPN??", "var": "$z")
+  do list(path:"GPN??|GKT??", "var": "$z")
     if in ("$i.agent.@gndIdn", "$z.B")
       copy_field("$z.a","$i.agent.altLabel[].§append")
     end
@@ -287,5 +287,4 @@ do list (path: "contribution[]", "var": "$i")
   remove_field("$i.agent.@gndIdn")
 end
 
-# Delete needed prefix for the GND enrichment
-replace_all("contribution[].*.agent.gndIdentifier","^GND-(.*$)","$1")
+
