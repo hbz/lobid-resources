@@ -82,7 +82,7 @@ do list(path:"610??|650??", "var":"$i")
 end
 
 
-# compare GND itdentifier with GPN for enrichment:
+# compare GND identifier (idn) with ALMA GND enrichment elements:
 do list(path:"subject[]", "var":"$i")
   set_array("$i.altLabel[]")
   do list(path:"GPN??|GKT??|GKS??|GST??|GGN??", "var": "$z")
@@ -273,7 +273,7 @@ do list (path: "subject[]", "var": "$i")
     unless any_match("$j.dateOfBirthAndDeath","^ca\\..*|.*Jh\\.")
       remove_field("$j.dateOfBirthAndDeath")
     end
-    # compare GND itdentifier with GPN for enrichment:
+    # compare GND identifier (idn) with ALMA GND enrichment elements:
     set_array("$j.altLabel[]")
     do list(path:"GPN??|GKT??|GKS??|GST??|GGN??", "var": "$z")
       if in ("$j.@gndIdn", "$z.B")

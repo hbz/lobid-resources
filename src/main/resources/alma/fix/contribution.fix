@@ -307,7 +307,7 @@ do list (path: "contribution[]", "var": "$i")
     remove_field("$i.agent.dateOfBirthAndDeath")
   end
 
-  # compare GND itdentifier with GPN for enrichment:
+  # compare GND identifier (idn) with ALMA GND enrichment elements:
   set_array("$i.agent.altLabel[]")
   do list(path:"GPN??|GKT??|GKS??", "var": "$z")
     if in ("$i.agent.@gndIdn", "$z.B")
