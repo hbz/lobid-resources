@@ -40,13 +40,17 @@ replace_all("describedBy.resultOf.object.dateCreated"," .*","")
 replace_all("describedBy.resultOf.object.dateCreated","c|©|\\s?|,|.|:|;|/|=","")
 replace_all("describedBy.resultOf.object.dateModified","-","")
 replace_all("describedBy.resultOf.object.dateModified"," .*","")
-replace_all("describedBy.resultOf.object.+dateModified","c|©|\\s?|,|.|:|;|/|=","")
+replace_all("describedBy.resultOf.object.dateModified","c|©|\\s?|,|.|:|;|/|=","")
 unless any_match("describedBy.resultOf.object.dateCreated","\\d{8}|\\d{4}")
 	remove_field("describedBy.resultOf.object.dateCreated")
 end
 unless any_match("describedBy.resultOf.object.dateModified","\\d{8}|\\d{4}")
 	remove_field("describedBy.resultOf.object.dateModified")
 end
+replace_all("describedBy.resultOf.object.dateCreated","^(\\d{4})(\\d{2})(\\d{2})$","$1-$2-$3")
+replace_all("describedBy.resultOf.object.dateModified","^(\\d{4})(\\d{2})(\\d{2})$","$1-$2-$3")
+replace_all("describedBy.resultOf.object.dateCreated","^(\\d{4})$","$1-01-01")
+replace_all("describedBy.resultOf.object.dateModified","^(\\d{4})$","$1-01-01")
 
 set_array("describedBy.resultOf.object.type[]", "DataFeedItem")
 
