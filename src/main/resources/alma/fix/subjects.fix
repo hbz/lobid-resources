@@ -63,6 +63,7 @@ do list(path:"610??|650??", "var":"$i")
     add_field("subject[].$last.source.label","Gemeinsame Normdatei (GND)")
     add_field("subject[].$last.source.id","https://d-nb.info/gnd/7749153-1")
     copy_field("$i.a","subject[].$last.label")
+    copy_field("$i.B","subject[].$last.@gndIdn")
     do list(path:"$i.0", "var":"$j")
       if any_match("$j","^\\(DE-588\\)(.*)$")
         copy_field("$j", "subject[].$last.id")
@@ -70,10 +71,27 @@ do list(path:"610??|650??", "var":"$i")
         copy_field("$j", "subject[].$last.gndIdentifier")
         replace_all("subject[].$last.gndIdentifier","^\\(DE-588\\)(.*)$","$1")
       end
+      unless exists("$i.B")
+        if any_match("$j","^\\(uri\\).*DNB\\|(.*)$")
+          copy_field("$j", "subject[].$last.@gndIdn")
+          replace_all("subject[].$last.@gndIdn", "^\\(uri\\).*DNB\\|(.*)$","GND-$1")
+        end
+      end
     end
   end
 end
 
+
+# compare GND itdentifier with GPN for enrichment:
+do list(path:"subject[]", "var":"$i")
+  set_array("$i.altLabel[]")
+  do list(path:"GPN??|GKT??|GKS??|GST??|GGN??", "var": "$z")
+    if in ("$i.@gndIdn", "$z.B")
+      copy_field("$z.a","$i.altLabel[].§append")
+    end
+  end
+  remove_field("$i.@gndIdn")
+end
 
 # 082 - Dewey Decimal Classification Number (R) - Subfield: $a (R), $2 (NR)
 
