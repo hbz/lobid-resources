@@ -285,18 +285,6 @@ do list (path: "subject[]", "var": "$i")
 end
 
 
-
-
-
-set_array("subjectAltLabel[]")
-copy_field("GST  .a","subjectAltLabel[].$append")
-copy_field("GST  .g","subjectAltLabel[].$append")
-copy_field("GPN1 .a","subjectAltLabel[].$append")
-copy_field("GGN  .a","subjectAltLabel[].$append")
-uniq("subjectAltLabel[]")
-
-# TODO: any way to add the labels to the matching subject ?
-
 # nwbib
 
 set_array("spatial[]")
