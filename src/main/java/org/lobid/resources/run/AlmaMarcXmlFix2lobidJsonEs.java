@@ -110,12 +110,13 @@ public class AlmaMarcXmlFix2lobidJsonEs {
                 fixVariables.put("catalogid", "DE-605");
                 fixVariables.put("createEndTime", "1"); // 1 <=> true
                 fixVariables.put("institution-code", "DE-605");
-                fixVariables.put("deweyLabels", "deweyLabels.tsv");
-                fixVariables.put("nwbib-spatial", "nwbib-spatial.tsv");
-                fixVariables.put("wd_itemLabelTypesCoordinates", "wd_itemLabelTypesCoordinates.tsv");
-                fixVariables.put("maps-institutions.tsv", "src/main/resources/alma/maps/institutions.tsv");
-                fixVariables.put("nwbibWikidataLabelTypeCoords.tsv", "alma/maps/nwbibWikidataLabelTypeCoords.tsv");
-                fixVariables.put("classification.tsv", "alma/maps/classification.tsv");
+                // the './' is mandatory to get play to use the "conf" directory. Base is the root directory of the fix, which is "alma":
+                fixVariables.put("deweyLabels", "./../deweyLabels.tsv");
+                fixVariables.put("nwbib-spatial", "./../nwbib-spatial.tsv");
+                fixVariables.put("wd_itemLabelTypesCoordinates", "./../wd_itemLabelTypesCoordinates.tsv");
+                fixVariables.put("maps-institutions.tsv", "./maps/institutions.tsv");
+                fixVariables.put("nwbibWikidataLabelTypeCoords.tsv", "./maps/nwbibWikidataLabelTypeCoords.tsv");
+                fixVariables.put("classification.tsv", "./maps/classification.tsv");
 
                 XmlElementSplitter xmlElementSplitter = new XmlElementSplitter();
                 xmlElementSplitter.setElementName("record");
