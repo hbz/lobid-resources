@@ -407,7 +407,6 @@ do list(path:"912  ", "var":"$i")
   if any_match("$i.a", "(ZDB-[0-9]{1,6}-[a-zA-Z|0-9\\-]*).*")
     copy_field("$i.a", "inCollection[].$append.id")
     replace_all("inCollection[].$last.id", "(ZDB-[0-9]{1,6}-[a-zA-Z|0-9\\-]*).*", "http://lobid.org/organisations/$1#!")
-    add_field("inCollection[].$last.label", "eResource package")
   end
 end
 
@@ -420,7 +419,7 @@ do list(path:"962  ", "var":"$i")
   do list(path:"$i.e", "var": "$j")
     unless any_match("$j", "^ZDB.*")
       copy_field("$j", "inCollection[].$append.id")
-      replace_all("inCollection[].$last.id", "^(.*)$", "http://lobid.org/collections/$1#!")
+      replace_all("inCollection[].$last.id", "^(.*)$", "https://lobid.org/collections#$1")
       # TODO: Do we need a label?
     end
   end
@@ -434,7 +433,7 @@ end
 # do list(path:"960??", "var":"$i")
 #   do list(path:"$i.?", "var": "$j")
 #       copy_field("$j", "inCollection[].$append.id")
-#       replace_all("inCollection[].$last.id", "^(.*)$", "http://lobid.org/collections/$1#!")
+#       replace_all("inCollection[].$last.id", "^(.*)$", "https://lobid.org/collections#$1")
 #       # TODO: Do we need a label? https://github.com/hbz/lobid-resources/issues/1305#issuecomment-912312471, also labels seem wrong.
 #   end
 # end
