@@ -46,7 +46,7 @@ public class WebhookAlmaFix extends Controller {
   private static final String MSG_CREATE_INDEX_ALREADY_RUNNING =
       "Couldn't create new index with name '%s' "
           + MSG_ETL_PROCESS_IS_ALREADY_RUNNING;
-  private static final String FIX_FILENAME = "../src/main/resources/alma/alma.fix";
+  private static final String FIX_FILENAME = "conf/alma/alma.fix";
   // If null, create default values from Global settings
   public static String clusterHost = null;
   public static String clusterName = null;
