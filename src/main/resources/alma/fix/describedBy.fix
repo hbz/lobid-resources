@@ -7,22 +7,6 @@ prepend("describedBy.label", "Webseite der hbz-Ressource ")
 
 set_array("describedBy.type[]", "BibliographicDescription")
 
-# MNG is a ALMA-specific element
-
-copy_field("MNG  .b","describedBy.dateCreated")
-copy_field("MNG  .d","describedBy.dateModified")
-replace_all("describedBy.dateCreated","-","")
-replace_all("describedBy.dateCreated"," .*","")
-replace_all("describedBy.dateCreated","c|©|\\s?|,|.|:|;|/|=","")
-replace_all("describedBy.dateModified","-","")
-replace_all("describedBy.dateModified"," .*","")
-replace_all("describedBy.dateModified","c|©|\\s?|,|.|:|;|/|=","")
-unless any_match("describedBy.dateCreated","\\d{8}|\\d{4}")
-	remove_field("describedBy.dateCreated")
-end
-unless any_match("describedBy.dateModified","\\d{8}|\\d{4}")
-	remove_field("describedBy.dateModified")
-end
 
 add_field("describedBy.inDataset.id","http://lobid.org/resources/dataset#!")
 
@@ -47,6 +31,26 @@ add_field("describedBy.resultOf.instrument.label","Software lobid-resources")
 copy_field("almaMmsId","describedBy.resultOf.object.id")
 prepend("describedBy.resultOf.object.id","https://lobid.org/hbz01/")
 
+# MNG is a ALMA-specific element
+
+copy_field("MNG  .b","describedBy.resultOf.object.dateCreated")
+copy_field("MNG  .d","describedBy.resultOf.object.dateModified")
+replace_all("describedBy.resultOf.object.dateCreated","-","")
+replace_all("describedBy.resultOf.object.dateCreated"," .*","")
+replace_all("describedBy.resultOf.object.dateCreated","c|©|\\s?|,|.|:|;|/|=","")
+replace_all("describedBy.resultOf.object.dateModified","-","")
+replace_all("describedBy.resultOf.object.dateModified"," .*","")
+replace_all("describedBy.resultOf.object.dateModified","c|©|\\s?|,|.|:|;|/|=","")
+unless any_match("describedBy.resultOf.object.dateCreated","\\d{8}|\\d{4}")
+	remove_field("describedBy.resultOf.object.dateCreated")
+end
+unless any_match("describedBy.resultOf.object.dateModified","\\d{8}|\\d{4}")
+	remove_field("describedBy.resultOf.object.dateModified")
+end
+replace_all("describedBy.resultOf.object.dateCreated","^(\\d{4})(\\d{2})(\\d{2})$","$1-$2-$3")
+replace_all("describedBy.resultOf.object.dateModified","^(\\d{4})(\\d{2})(\\d{2})$","$1-$2-$3")
+replace_all("describedBy.resultOf.object.dateCreated","^(\\d{4})$","$1-01-01")
+replace_all("describedBy.resultOf.object.dateModified","^(\\d{4})$","$1-01-01")
 
 set_array("describedBy.resultOf.object.type[]", "DataFeedItem")
 
