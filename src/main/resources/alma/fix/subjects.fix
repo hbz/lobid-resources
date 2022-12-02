@@ -178,6 +178,7 @@ do once("schlagwortfolgeMacro")
         end
         copy_field("$i.a","subject[].$last.componentList[].$last.label")
         copy_field("$i.a","subject[].$last.label.$append")
+        copy_field("$i.B","subject[].$last.componentList[].$last.@gndIdn")
         do list(path:"$i.0", "var": "$j")
           if any_match("$j","^\\(DE-588\\)(.*)$")
             add_field("subject[].$last.componentList[].$last.source.label","Gemeinsame Normdatei (GND)")
@@ -186,6 +187,12 @@ do once("schlagwortfolgeMacro")
             replace_all("subject[].$last.componentList[].$last.id","^\\(DE-588\\)(.*)$","http://d-nb.info/gnd/$1")
             copy_field("$j", "subject[].$last.componentList[].$last.gndIdentifier")
             replace_all("subject[].$last.componentList[].$last.gndIdentifier","^\\(DE-588\\)(.*)$","$1")
+          end
+          unless exists("$i.B")
+            if any_match("$j","^\\(uri\\).*DNB\\|(.*)$")
+              copy_field("$j", "subject[].$last.componentList[].$last.@gndIdn")
+              replace_all("subject[].$last.componentList[].$last.@gndIdn", "^\\(uri\\).*DNB\\|(.*)$","GND-$1")
+            end
           end
         end
         copy_field("$i.d","subject[].$last.componentList[].$last.dateOfBirthAndDeath") # dates will be differentiated later in the process
@@ -266,8 +273,19 @@ do list (path: "subject[]", "var": "$i")
     unless any_match("$j.dateOfBirthAndDeath","^ca\\..*|.*Jh\\.")
       remove_field("$j.dateOfBirthAndDeath")
     end
+    # compare GND itdentifier with GPN for enrichment:
+    set_array("$j.altLabel[]")
+    do list(path:"GPN??|GKT??|GKS??|GST??|GGN??", "var": "$z")
+      if in ("$j.@gndIdn", "$z.B")
+        copy_field("$z.a","$j.altLabel[].§append")
+      end
+    end
+    remove_field("$j.@gndIdn")
   end
 end
+
+
+
 
 
 set_array("subjectAltLabel[]")
