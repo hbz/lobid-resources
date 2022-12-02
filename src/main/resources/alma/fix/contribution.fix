@@ -39,7 +39,15 @@ do list(path:"100[01] ", "var":"$i")
         # GND Identifier id
             paste("contribution[].$last.agent.id","$k")
           end
+          unless exists("$i.B")
+            if any_match("$k","^\\(uri\\).*DNB\\|(.*)$")
+              copy_field("$k", "contribution[].$last.agent.@gndIdn")
+              replace_all("contribution[].$last.agent.@gndIdn", "^\\(uri\\).*DNB\\|(.*)$","GND-$1")
+            end
+          end
         end
+        # GND idn as variable
+        copy_field("$i.B","contribution[].$last.agent.@gndIdn")
         # name
         copy_field("$i.a","contribution[].$last.agent.label")
         # type
@@ -74,7 +82,15 @@ do list(path:"700[01] ", "var":"$i")
         # GND Identifier id
             paste("contribution[].$last.agent.id","$k")
           end
+          unless exists("$i.B")
+            if any_match("$k","^\\(uri\\).*DNB\\|(.*)$")
+              copy_field("$k", "contribution[].$last.agent.@gndIdn")
+              replace_all("contribution[].$last.agent.@gndIdn", "^\\(uri\\).*DNB\\|(.*)$","GND-$1")
+            end
+          end
         end
+        # GND idn as variable
+        copy_field("$i.B","contribution[].$last.agent.@gndIdn")
         # name
         copy_field("$i.a","contribution[].$last.agent.label")
         # type
@@ -119,7 +135,15 @@ do list(path:"110[012] ", "var":"$i")
         # GND Identifier id
             paste("contribution[].$last.agent.id","$k")
           end
+          unless exists("$i.B")
+            if any_match("$k","^\\(uri\\).*DNB\\|(.*)$")
+              copy_field("$k", "contribution[].$last.agent.@gndIdn")
+              replace_all("contribution[].$last.agent.@gndIdn", "^\\(uri\\).*DNB\\|(.*)$","GND-$1")
+            end
+          end
         end
+        # GND idn as variable
+        copy_field("$i.B","contribution[].$last.agent.@gndIdn")
         # name
           paste("contribution[].$last.agent.label", "$i.a", "$i.b", join_char: ". ")
         # type
@@ -153,7 +177,15 @@ do list(path:"710[012] ", "var":"$i")
         # GND Identifier id
             paste("contribution[].$last.agent.id","$k")
           end
+          unless exists("$i.B")
+            if any_match("$k","^\\(uri\\).*DNB\\|(.*)$")
+              copy_field("$k", "contribution[].$last.agent.@gndIdn")
+              replace_all("contribution[].$last.agent.@gndIdn", "^\\(uri\\).*DNB\\|(.*)$","GND-$1")
+            end
+          end
         end
+        # GND idn as variable
+        copy_field("$i.B","contribution[].$last.agent.@gndIdn")
         # name
           paste("contribution[].$last.agent.label", "$i.a", "$i.b", join_char: ". ")
         # type
@@ -189,7 +221,15 @@ do list(path:"111[012] |711[012] ", "var":"$i")
         # GND Identifier id
             paste("contribution[].$last.agent.id","$k")
           end
+          unless exists("$i.B")
+            if any_match("$k","^\\(uri\\).*DNB\\|(.*)$")
+              copy_field("$k", "contribution[].$last.agent.@gndIdn")
+              replace_all("contribution[].$last.agent.@gndIdn", "^\\(uri\\).*DNB\\|(.*)$","GND-$1")
+            end
+          end
         end
+        # GND idn as variable
+        copy_field("$i.B","contribution[].$last.agent.@gndIdn")
         # name
         paste("contribution[].$last.agent.label", "$i.a", "~ (", "$i.n", "~ : ", "$i.d", "~ : ", "$i.c", "~)", join_char: "")
         replace_all("contribution[].$last.agent.label"," \\( :  : \\)","")
@@ -208,6 +248,7 @@ end
 
 set_array("contribution[].*.type[]", "Contribution")
 replace_all("contribution[].*.agent.id","^\\(DE-588\\)(.*$)","https://d-nb.info/gnd/$1")
+replace_all("contribution[].*.agent.gndIdentifier","^\\(DE-588\\)(.*$)","$1")
 replace_all("contribution[].*.agent.label","(?<!\\p{Upper})\\.$|[,]$","")
 prepend("contribution[].*.role.id","http://id.loc.gov/vocabulary/relators/")
 
@@ -265,4 +306,15 @@ do list (path: "contribution[]", "var": "$i")
   unless any_match("$i.agent.dateOfBirthAndDeath","^ca\\..*|.*Jh\\.")
     remove_field("$i.agent.dateOfBirthAndDeath")
   end
+
+  # compare GND identifier (idn) with ALMA GND enrichment elements:
+  set_array("$i.agent.altLabel[]")
+  do list(path:"GPN??|GKT??|GKS??", "var": "$z")
+    if in ("$i.agent.@gndIdn", "$z.B")
+      copy_field("$z.a","$i.agent.altLabel[].§append")
+    end
+  end
+  remove_field("$i.agent.@gndIdn")
 end
+
+
