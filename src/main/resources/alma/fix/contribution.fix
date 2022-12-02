@@ -314,6 +314,18 @@ do list (path: "contribution[]", "var": "$i")
       copy_field("$z.a","$i.agent.altLabel[].$append")
     end
   end
+
+  # orcid
+  set_array("$i.agent.sameAs[]")
+  do list(path:"GSI??", "var": "$z")
+    if in ("$i.agent.@gndIdn", "$z.B")
+      if any_equal("$z.2","orcid")
+        paste("$i.agent.sameAs[].$append","~https://orcid.org/","$z.a", join_char:"")
+      end
+    end
+  end
+
+
   remove_field("$i.agent.@gndIdn")
 end
 
