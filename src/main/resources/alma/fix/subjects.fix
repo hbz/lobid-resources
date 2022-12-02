@@ -87,7 +87,7 @@ do list(path:"subject[]", "var":"$i")
   set_array("$i.altLabel[]")
   do list(path:"GPN??|GKT??|GKS??|GST??|GGN??", "var": "$z")
     if in ("$i.@gndIdn", "$z.B")
-      copy_field("$z.a","$i.altLabel[].§append")
+      copy_field("$z.a","$i.altLabel[].$append")
     end
   end
   remove_field("$i.@gndIdn")
@@ -277,7 +277,7 @@ do list (path: "subject[]", "var": "$i")
     set_array("$j.altLabel[]")
     do list(path:"GPN??|GKT??|GKS??|GST??|GGN??", "var": "$z")
       if in ("$j.@gndIdn", "$z.B")
-        copy_field("$z.a","$j.altLabel[].§append")
+        copy_field("$z.a","$j.altLabel[].$append")
       end
     end
     remove_field("$j.@gndIdn")
