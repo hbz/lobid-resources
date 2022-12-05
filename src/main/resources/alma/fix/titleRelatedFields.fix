@@ -97,7 +97,7 @@ do list(path: "publication[]", "var": "$i")
   replace_all("$i.startDate", ".*?(\\d{4}).*", "$1")
   replace_all("$i.endDate", ".*-(\\d{4})$", "$1")
   replace_all("$i.location[].*", "^\\[|\\]$", "")
-  replace_all("$i.publishedBy[].*", "^[©]|\\s?[,.:;/=]?$", "")
+  replace_all("$i.publishedBy[].*", "^[©]|\\s?[,:;/=]?$", "")
   uniq("$i.location[]")
 end
 
