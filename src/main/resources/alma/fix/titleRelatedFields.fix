@@ -93,12 +93,15 @@ do list(path:"260[ 23] |264[ 23][ 1]", "var":"$i")
   copy_field("515??.a","publication[].$last.note[].$append")
 end
 
-replace_all("publication[].*.startDate", ".*?(\\d{4}).*", "$1")
-replace_all("publication[].*.endDate", ".*-(\\d{4})$", "$1")
+do list(path: "publication[]", "var": "$i")
+  replace_all("$i.startDate", ".*?(\\d{4}).*", "$1")
+  replace_all("$i.endDate", ".*-(\\d{4})$", "$1")
+  replace_all("$i.location[].*", "^\\[|\\]$", "")
+  replace_all("$i.publishedBy[].*", "^[©]|\\s?[,:;/=]?$", "")
+  uniq("$i.location[]")
+end
 
-replace_all("publication[].*.location[].*", "^\\[|\\]$", "")
 
-replace_all("publication[].*.publishedBy[].*", "^[©]|\\s?[,.:;/=]?$", "")
 
 # 246 - Varying Form of Title (R) - $a - Title proper/short title (NR)
 
