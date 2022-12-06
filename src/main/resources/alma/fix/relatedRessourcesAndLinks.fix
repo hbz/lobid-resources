@@ -169,11 +169,13 @@ set_array("containedIn[]")
 
 if any_match("leader", "^.{7}[ad].*")
   do list(path:"77308", "var":"$i")
+    add_field("containedIn[].$append.test","")
     do list(path:"$i.w", "var":"$j")
       if any_match("$j","^\\(DE-(600|605)\\).*") # TODO: Some ressources have ALMA MMS IDs as relation idetifier e.g.: 991000688209706449 has $w 991021220959706449. How to deal with these?
-        copy_field("$j","containedIn[].$append.id")
+        copy_field("$j","containedIn[].$last.id")
       end
     end
+    copy_field("$i.t","containedIn[].$last.label")
   end
 end
 
