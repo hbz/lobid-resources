@@ -26,6 +26,11 @@ end
 
 replace_all("hbzId","\\(DE-605\\)(.*)","$1")
 
+# add a deprecatedUri to all records with hbzId to document all old lobid urls.
+if exists("hbzId")
+  paste("deprecatedUri", "~http://lobid.org/resources/", "hbzId", "~#!", join_char: "")
+end
+
 # 020 - International Standard Book Number (R) - $a (NR)
 # source data sometimes provides repeated subfield $a even if this is not valid marc
 
