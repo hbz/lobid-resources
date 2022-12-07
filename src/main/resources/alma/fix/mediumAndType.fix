@@ -271,8 +271,6 @@ end
 
 # medium: "Online-Ressource": "http://rdaregistry.info/termList/RDACarrierType/1018"
 
-# TODO: Old Morph also sets remote access as online ressource (050/8/1=g=Computerdatei(en) im Fernzugriff and 058.) Our ALMA-Transformation does not, how should we proceed.
-
 if any_match("@leaderTyp+008", "(Book|Music|Computer files|Continuing Resources|Mixed materials)(.{23})[o].*")  # Pos23
   add_field("medium[].$append.label","Online-Ressource")
 elsif any_match("@leaderTyp+008", "(Map|Visual materials)(.{29})[o].*")  # Pos29
@@ -280,6 +278,8 @@ elsif any_match("@leaderTyp+008", "(Map|Visual materials)(.{29})[o].*")  # Pos29
 elsif any_match("006", "^[efgkor](.{11})[o].*") # Pos00+12
   add_field("medium[].$append.label","Online-Ressource")
 elsif any_match("006", "^[acdijpst](.{5})[o].*") # Pos00+06
+  add_field("medium[].$append.label","Online-Ressource")
+elsif any_match("007", "^cr.*") # Old Aleph Transformation maps Computerdatei(en) im Fernzugriff as online resource. We continue to map this in ALMA.
   add_field("medium[].$append.label","Online-Ressource")
 elsif any_match("300  ", ".*[Oo]nline.*") # Pos00+06
   add_field("medium[].$append.label","Online-Ressource")
