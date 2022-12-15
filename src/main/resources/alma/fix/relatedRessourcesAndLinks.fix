@@ -400,6 +400,17 @@ do list(path:"084  ", "var":"$i")
 end
 
 
+# Holding Collection
+
+do list(path:"HOL??", "var":"$i")
+  copy_field("$i.8", "inCollection[].$append.id")
+  replace_all("inCollection[].$last.id",".*(\\d{4})$","$1")
+  lookup("inCollection[].$last.id", "alma-institution-code-to-isil")
+  copy_field("inCollection[].$last.id", "inCollection[].$last.label")
+  prepend("inCollection[].$last.id", "http://lobid.org/organisations/")
+  prepend("inCollection[].$last.label", "ALMA_Holdings von ")
+end
+
 
 #    eResource package
 
