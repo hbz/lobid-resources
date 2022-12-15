@@ -624,10 +624,14 @@ if any_match("@leaderTyp+008", "(Continuing Resources)(.{21})p.*")  # Pos21
   add_field("type[].$append","Periodical")
 elsif any_match("006", "^[s](.{3})p.*") # Pos00+04
   add_field("type[].$append","Periodical")
-elsif any_match("689??.a", ".*Zeitschrift.*")
-  add_field("type[].$append", "Periodical")
-elsif any_match("689??.*.a", ".*Zeitschrift.*")
-  add_field("type[].$append", "Periodical")
+end
+
+do list(path:"689??", "var":"$i")
+  if all_match("$i.A", "f|F")
+    if any_match("$i.a", "Zeitschrift")
+      add_field("type[].$append", "Periodical")
+    end
+  end
 end
 
 # TODO: If mapping with 689?? keywords we should also integrate a control that A should be "f".
