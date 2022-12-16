@@ -124,7 +124,7 @@ elsif any_match("338 .a", "^(Video).*|Sonstige Video-Datenträger$")
 elsif any_match("338  .b", "vd")
   add_field("medium[].$append.label","Video")
   add_field("medium[].$append.label", "Audio-Visuell")
-elsif any_match("natureOfContent[].*.label", "DVD-Video|Video[ck]assette")
+elsif any_match("natureOfContent[].*.label", ".*(DVD-Video|Video[ck]assette).*")
   add_field("medium[].$append.label","Video")
   add_field("medium[].$append.label", "Audio-Visuell")
 end
@@ -454,7 +454,7 @@ elsif any_match("006", "^[cdij](.{12}|.{13})[ab].*") # Pos00+13-14
   add_field("type[].$append","Biography")
 elsif any_match("006", "^[s](.{6}|.{7}|.{8}|.{9})h.*") # Pos00+07-10
   add_field("type[].$append","Biography")
-elsif any_match("natureOfContent[].*.label", "(Autobiographie|Autobiografie|Biographie|Biografie).*")
+elsif any_match("natureOfContent[].*.label", ".*(Autobiographie|Autobiografie|Biographie|Biografie).*")
   add_field("type[].$append","Biography")
 end
 
@@ -692,7 +692,7 @@ if any_match("@leaderTyp+008", "(Continuing Resources)(.{21})m.*")  # Pos21
   add_field("type[].$append","Series")
 elsif any_match("006", "^[s](.{3})m.*") # Pos00+04
   add_field("type[].$append","Series")
-elsif any_match("natureOfContent[].*.label", ".*Monografische Reihe|Schriftenreihe.*")
+elsif any_match("natureOfContent[].*.label", ".*(Monografische Reihe|Schriftenreihe).*")
   add_field("type[].$append", "Series")
 end
 
