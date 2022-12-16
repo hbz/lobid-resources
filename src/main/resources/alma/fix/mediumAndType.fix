@@ -462,16 +462,7 @@ end
 
 # type: "EditedVolume"
 
-
-# taken from introx based on https://jira.hbz-nrw.de/browse/DOX-1405
-# This also results in 990123613330206441 which is a Tonkassete. Perhaps this needs a differentiation.
-
-if exists("700??")
-  unless exists("100??")
-    add_field("type[].$append", "EditedVolume")
-    filter("type[]", "^Monographie$", invert: "true")
-  end
-elsif any_match("natureOfContent[].*.label", ".*Aufsatzsammlung.*")
+if any_match("natureOfContent[].*.label", ".*Aufsatzsammlung.*")
   add_field("type[].$append", "EditedVolume")
 end
 
