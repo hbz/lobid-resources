@@ -82,7 +82,7 @@ elsif any_match("338  .b", "s")
   add_field("medium[].$append.label","Audio-Dokument")
 elsif any_match("245[10]0.h", "^[Tt][oO].*|Audio-CD")
   add_field("medium[].$append.label","Audio-Dokument")
-elsif any_match("689??.a", "Hörbuch|Tonträger")
+elsif any_match("natureOfContent[].*.label", ".*(Hörbuch|Tonträger).*")
   add_field("medium[].$append.label","Audio-Dokument")
 end
 
@@ -124,8 +124,8 @@ elsif any_match("338 .a", "^(Video).*|Sonstige Video-Datenträger$")
 elsif any_match("338  .b", "vd")
   add_field("medium[].$append.label","Video")
   add_field("medium[].$append.label", "Audio-Visuell")
-elsif any_match("689??.a", "Hörbuch|Tonträger")
-  add_field("medium[].$append.label","DVD-Video|Video[ck]assette")
+elsif any_match("natureOfContent[].*.label", "DVD-Video|Video[ck]assette")
+  add_field("medium[].$append.label","Video")
   add_field("medium[].$append.label", "Audio-Visuell")
 end
 
@@ -248,7 +248,7 @@ elsif any_match("338 .a", ".*[Mm]ikro.*")
   add_field("medium[].$append.label","Mikroformat")
 elsif any_match("338  .b", "he|hj") # TODO: More codes?
   add_field("medium[].$append.label","Mikroformat")
-elsif any_match("689??.a", "Hörbuch|Tonträger")
+elsif any_match("natureOfContent[].*.label", ".*Mikroform.*")
   add_field("medium[].$append.label","Mikroformat")
 end
 
@@ -265,7 +265,7 @@ elsif any_match("007", "^o.*")
   add_field("medium[].$append.label","Kombination")
 elsif any_match("245[10]0.h", ".*Medienkombination.*")
   add_field("medium[].$append.label","Kombination")
-elsif any_match("689??.a", ".*Medienkombination.*")
+elsif any_match("natureOfContent[].*.label", ".*Medienkombination.*")
   add_field("medium[].$append.label","Kombination")
 end
 
@@ -454,11 +454,7 @@ elsif any_match("006", "^[cdij](.{12}|.{13})[ab].*") # Pos00+13-14
   add_field("type[].$append","Biography")
 elsif any_match("006", "^[s](.{6}|.{7}|.{8}|.{9})h.*") # Pos00+07-10
   add_field("type[].$append","Biography")
-elsif any_match("655 7.a", "Biografie")
-    add_field("type[].$append","Biography")
-elsif any_match("655 7.*.a", "Biografie")
-    add_field("type[].$append","Biography")
-elsif any_match("689??.a", "Autobiographie|Biographie")
+elsif any_match("natureOfContent[].*.label", "(Autobiographie|Autobiografie|Biographie|Biografie).*")
   add_field("type[].$append","Biography")
 end
 
@@ -475,13 +471,7 @@ if exists("700??")
     add_field("type[].$append", "EditedVolume")
     filter("type[]", "^Monographie$", invert: "true")
   end
-elsif any_match("689??.a", ".*Aufsatzsammlung.*")
-  add_field("type[].$append", "EditedVolume")
-elsif any_match("689??.*.a", ".*Aufsatzsammlung.*")
-  add_field("type[].$append", "EditedVolume")
-elsif any_match("689??.0", ".*4143413.*")
-  add_field("type[].$append", "EditedVolume")
-elsif any_match("689??.*.0", ".*4143413.*")
+elsif any_match("natureOfContent[].*.label", ".*Aufsatzsammlung.*")
   add_field("type[].$append", "EditedVolume")
 end
 
@@ -530,9 +520,7 @@ elsif any_match("300  .a", ".*(Kt.|[kK]arte).*")
   add_field("type[].$append","Map")
 elsif any_match("300  .*.a", ".*(Kt.|[kK]arte).*")
   add_field("type[].$append","Map")
-elsif any_match("689??.a", ".*(Altkarte|Karte|Stadtplan).*")
-  add_field("type[].$append", "Map")
-elsif any_match("689??.*.a", ".*(Altkarte|Karte|Stadtplan).*")
+elsif any_match("natureOfContent[].*.label", ".*(Altkarte|Karte|Stadtplan).*")
   add_field("type[].$append", "Map")
 end
 
@@ -592,9 +580,7 @@ if any_match("@leaderTyp+008", "(Continuing Resources)(.{21})n.*")  # Pos21
   add_field("type[].$append","Newspaper")
 elsif any_match("006", "^s(.{3})n.*") # Pos00+04
   add_field("type[].$append","Newspaper")
-elsif any_match("689??.a", ".*Zeitung.*")
-  add_field("type[].$append", "Newspaper")
-elsif any_match("689??.*.a", ".*Zeitung.*")
+elsif any_match("natureOfContent[].*.label", ".*Zeitung.*")
   add_field("type[].$append", "Newspaper")
 end
 
@@ -605,9 +591,7 @@ if any_match("@leaderTyp+008", "(Book|Continuing Resources)(.{24}|.{25}|.{26}|.{
   add_field("type[].$append","Standard")
 elsif any_match("006", "^[ast](.{6}|.{7}|.{8}|.{9})u.*") # Pos00+07-10
   add_field("type[].$append","Standard")
-elsif any_match("689??.a", ".*(Norm|Richtlinie).*")
-  add_field("type[].$append", "Standard")
-elsif any_match("689??.*.a", ".*(Norm|Richtlinie).*")
+elsif any_match("natureOfContent[].*.label", ".*(Norm|Richtlinie).*")
   add_field("type[].$append", "Standard")
 end
 
@@ -624,15 +608,10 @@ if any_match("@leaderTyp+008", "(Continuing Resources)(.{21})p.*")  # Pos21
   add_field("type[].$append","Periodical")
 elsif any_match("006", "^[s](.{3})p.*") # Pos00+04
   add_field("type[].$append","Periodical")
+elsif any_match("natureOfContent[].*.label", ".*Zeitschrift.*")
+  add_field("type[].$append", "Periodical")
 end
 
-do list(path:"689??", "var":"$i")
-  if all_match("$i.A", "f|F")
-    if any_match("$i.a", "Zeitschrift")
-      add_field("type[].$append", "Periodical")
-    end
-  end
-end
 
 # TODO: If mapping with 689?? keywords we should also integrate a control that A should be "f".
 
@@ -643,9 +622,7 @@ if any_match("@leaderTyp+008", "(Book|Continuing Resources)(.{29})1.*")  # Pos29
   add_field("type[].$append","Proceedings")
 elsif any_match("006", "^[ast](.{11})1.*") # Pos00+04
   add_field("type[].$append","Proceedings")
-elsif any_match("689??.a", "Kongress")
-  add_field("type[].$append", "Proceedings")
-elsif any_match("689??.*.a", "Kongress")
+elsif any_match("natureOfContent[].*.label", ".*(Kongress|Konferenzschrift).*")
   add_field("type[].$append", "Proceedings")
 end
 
@@ -676,9 +653,7 @@ if any_match("@leaderTyp+008", "(Book|Continuing Resources)(.{24}|.{25}|.{26}|.{
   add_field("type[].$append","ReferenceSource")
 elsif any_match("006", "^[ast](.{6}|.{7}|.{8}|.{9})[der].*") # Pos00+07-10
   add_field("type[].$append","ReferenceSource")
-elsif any_match("689??.a", ".*(Bestimmungsbuch|Enzyklopädie|Werkverzeichnis|W[ö|oe]rterbuch).*")
-  add_field("type[].$append", "ReferenceSource")
-elsif any_match("689??.*.a", ".*(Bestimmungsbuch|Enzyklopädie|Werkverzeichnis|W[ö|oe]rterbuch).*")
+elsif any_match("natureOfContent[].*.label", ".*(Bestimmungsbuch|Enzyklopädie|Werkverzeichnis|W[ö|oe]rterbuch).*")
   add_field("type[].$append", "ReferenceSource")
 end
 
@@ -693,9 +668,7 @@ if any_match("@leaderTyp+008", "(Book|Continuing Resources)(.{24}|.{25}|.{26}|.{
   add_field("type[].$append","Report")
 elsif any_match("006", "^[ast](.{6}|.{7}|.{8}|.{9})t.*") # Pos00+07-10
   add_field("type[].$append","Report")
-elsif any_match("689??.a", ".*(Bericht|Erlebnisbericht|Forschungsbericht|Literaturbericht|Reisebericht).*")
-  add_field("type[].$append", "Report")
-elsif any_match("689??.*.a", ".*(Bericht|Erlebnisbericht|Forschungsbericht|Literaturbericht|Reisebericht).*")
+elsif any_match("natureOfContent[].*.label", ".*(Bericht|Erlebnisbericht|Forschungsbericht|Literaturbericht|Reisebericht).*")
   add_field("type[].$append", "Report")
 end
 
@@ -704,13 +677,7 @@ end
 
 # TODO:051. x mapping does not exist in hbz ALMA.
 
-if any_match("655??.a", ".*(Schulbuch).*")
-  add_field("type[].$append", "Schoolbook")
-elsif any_match("655??.*.a", ".*(Schulbuch).*")
-  add_field("type[].$append", "Schoolbook")
-elsif any_match("689??.a", ".*(Schulbuch).*")
-  add_field("type[].$append", "Schoolbook")
-elsif any_match("689??.*.a", ".*(Schulbuch).*")
+if any_match("natureOfContent[].*.label", ".*(Schulbuch).*")
   add_field("type[].$append", "Schoolbook")
 end
 
@@ -725,13 +692,7 @@ if any_match("@leaderTyp+008", "(Continuing Resources)(.{21})m.*")  # Pos21
   add_field("type[].$append","Series")
 elsif any_match("006", "^[s](.{3})m.*") # Pos00+04
   add_field("type[].$append","Series")
-elsif any_match("655??.a", ".*Monografische Reihe.*")
-  add_field("type[].$append", "Series")
-elsif any_match("655??.*.a", ".*Monografische Reihe.*")
-  add_field("type[].$append", "Series")
-elsif any_match("689??.a", ".*Schriftenreihe.*")
-  add_field("type[].$append", "Series")
-elsif any_match("689??.*.a", ".*Schriftenreihe.*")
+elsif any_match("natureOfContent[].*.label", ".*Monografische Reihe|Schriftenreihe.*")
   add_field("type[].$append", "Series")
 end
 

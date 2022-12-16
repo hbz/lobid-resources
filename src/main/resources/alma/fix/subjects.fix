@@ -1,4 +1,4 @@
-#   <!-- 655 Form/Genre keyword transformed as natureOfContent   -->
+# natureOfContent combines Formschlagwörter (`689 $A: f`) and Formangaben (`655`) 
 
 set_array("natureOfContent[]")
 
@@ -23,9 +23,18 @@ end
 
 do list(path:"689??", "var":"$i")
   unless in("$i.a","natureOfContent[].*.label")
-    if any_equal("$i.A","f")
+    if any_match("$i.A","f|F")
       copy_field("$i.a","natureOfContent[].$append.label")
     end
+  end
+end
+
+# maps missing GND URIs to Formschlagwörtern with matching Formangaben-Values: https://wiki.dnb.de/download/attachments/106042227/AH-007.pdf
+do list(path: "natureOfContent[]", "var":"$i")
+  unless exists("$i.id")
+    copy_field("$i.label","$i.id")
+    lookup("$i.id","formschlagwort2Gnd", delete:"true")
+    prepend("$i.id", "http://d-nb.info/gnd/")
   end
 end
 
