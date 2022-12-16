@@ -62,6 +62,7 @@ public final class AlmaMarc21XmlToLobidJsonMetafixTest {
         fixVariables.put("nwbib-spatial", "src/main/resources/nwbib-spatial.tsv");
         fixVariables.put("wd_itemLabelTypesCoordinates", "src/main/resources/wd_itemLabelTypesCoordinates.tsv");
         fixVariables.put("classification.tsv", "src/main/resources/alma/maps/classification.tsv");
+        fixVariables.put("formangabe.tsv", "src/main/resources/alma/maps/formangabe.tsv");
         fixVariables.put("maps-institutions.tsv", "src/main/resources/alma/maps/institutions.tsv");
         fixVariables.put("nwbibWikidataLabelTypeCoords.tsv", "src/main/resources/alma/maps/nwbibWikidataLabelTypeCoords.tsv");
         if (GENERATE_TESTDATA) {

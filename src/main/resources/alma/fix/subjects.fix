@@ -29,6 +29,15 @@ do list(path:"689??", "var":"$i")
   end
 end
 
+# maps missing GND URIs to Formschlagwörtern with matching Formangaben-Values: https://wiki.dnb.de/download/attachments/106042227/AH-007.pdf
+do list(path: "natureOfContent[]", "var":"$i")
+  unless exists("$i.id")
+    copy_field("$i.label","$i.id")
+    lookup("$i.id","formschlagwort2Gnd", delete:"true")
+    prepend("$i.id", "http://d-nb.info/gnd/")
+  end
+end
+
 set_array("subject[]")
 
 

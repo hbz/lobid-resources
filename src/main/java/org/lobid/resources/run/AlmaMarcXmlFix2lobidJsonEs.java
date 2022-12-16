@@ -117,6 +117,7 @@ public class AlmaMarcXmlFix2lobidJsonEs {
                 fixVariables.put("maps-institutions.tsv", "./maps/institutions.tsv");
                 fixVariables.put("nwbibWikidataLabelTypeCoords.tsv", "./maps/nwbibWikidataLabelTypeCoords.tsv");
                 fixVariables.put("classification.tsv", "./maps/classification.tsv");
+                fixVariables.put("formangabe.tsv", "./maps/formangabe.tsv");
 
                 XmlElementSplitter xmlElementSplitter = new XmlElementSplitter();
                 xmlElementSplitter.setElementName("record");
