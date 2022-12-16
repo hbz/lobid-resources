@@ -782,20 +782,9 @@ end
 #				</data>
 #			</choose>
 #		</combine>
-#
-# ALMA Moprh
-#  <combine name="@facet_type" value="Book">
-#    <if>
-#      <data source="@LeaderPos07">
-#        <regexp match="[adm]" />
-#      </data>
-#    </if>
-#    <data source="001" />
-#  </combine>
 
-# TODO: Check if we still need the complex transformation for book.
 
-if any_match("@leaderPos06-07", "^.[adm]")
+if any_match("@leaderPos06-07", "^a[acdm]|t.")
   add_field("type[].$append","Book")
 end
 
