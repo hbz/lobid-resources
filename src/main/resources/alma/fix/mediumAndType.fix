@@ -677,9 +677,9 @@ if any_match("@leaderTyp+008", "(Book|Continuing Resources)(.{24}|.{25}|.{26}|.{
 elsif any_match("006", "^[ast](.{6}|.{7}|.{8}|.{9})[der].*") # Pos00+07-10
   add_field("type[].$append","ReferenceSource")
 elsif any_match("689??.a", ".*(Bestimmungsbuch|Enzyklopädie|Werkverzeichnis|W[ö|oe]rterbuch).*")
-  add_field("type[].$append", "Standard")
+  add_field("type[].$append", "ReferenceSource")
 elsif any_match("689??.*.a", ".*(Bestimmungsbuch|Enzyklopädie|Werkverzeichnis|W[ö|oe]rterbuch).*")
-  add_field("type[].$append", "Standard")
+  add_field("type[].$append", "ReferenceSource")
 end
 
 
