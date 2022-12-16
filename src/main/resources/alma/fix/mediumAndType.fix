@@ -723,66 +723,6 @@ end
 
 # type: "Book"
 
-# Old ALEPH Morph:
-# <!-- type is book (and also manifestation) if 050 begins with 'a' and 051 or 052 is missing
-#			or 051 and 052 does not fulfill a certain pattern -->
-#		<combine name="@rdftype" value="$[ns-bibo]Book">
-#			<if>
-#				<none>
-#					<data source="@idzdb"/>
-#					<data source="050.">
-#						<regexp match="^.........a"/>
-#					</data>
-#					<data source="051.">
-#						<regexp match="^a"/>
-#					</data>
-#					<data source="051.">
-#						<regexp match="^.[mt]"/>
-#					</data>
-#					<data source="051.">
-#						<regexp match="^..[tm]"/>
-#					</data>
-#					<data source="051.">
-#						<regexp match="^...t"/>
-#					</data>
-#					<data source="051.">
-#						<regexp match="^....t"/>
-#					</data>
-#					<data source="051.">
-#						<regexp match="^.....t"/>
-#					</data>
-#					<data source="051.">
-#						<regexp match="^.z"/>
-#					</data>
-#					<data source="052.">
-#						<regexp match="^[a-zA-Z]"/>
-#					</data>
-#					<data source="089-[-1].a|090-[-1].a">
-#						<regexp match="Heft"/>
-#					</data>
-#					<data source="@matVideo"/>
-#					<data source="@mediumAudio"/>
-#					<data source="@archived"/>
-#				</none>
-#			</if>
-#			<choose>
-#				<data source="050.">
-#					<regexp match="^a"/>
-#				</data>
-#				<data source="051.">
-#					<regexp match="^m|^s|^.x|^..x|^...x|^....[fkls]"/>
-#				</data>
-#				<data source="062-1.a">
-#					<regexp match="Band"/>
-#				</data>
-#				<data source="089-[-1].a|090-[-1].a"/>
-#				<data source="9[01234][27]-[-1].f">
-#					<regexp
-#						match="Anthologie|Atlas|Auktionskatalog|Bildband|Bilderbuch|Jugendbuch|Jugendsachbuch|Kinderbuch|Kindersachbuch|Kochbuch|Lehrbuch|Lesebuch"/>
-#				</data>
-#			</choose>
-#		</combine>
-
 
 if any_match("@leaderPos06-07", "^a[acdm]|t.")
   add_field("type[].$append","Book")
