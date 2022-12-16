@@ -23,7 +23,7 @@ end
 
 do list(path:"689??", "var":"$i")
   unless in("$i.a","natureOfContent[].*.label")
-    if any_equal("$i.A","f")
+    if any_match("$i.A","f|F")
       copy_field("$i.a","natureOfContent[].$append.label")
     end
   end
