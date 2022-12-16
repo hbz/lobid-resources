@@ -786,6 +786,8 @@ end
 
 if any_match("@leaderPos06-07", "^a[acdm]|t.")
   add_field("type[].$append","Book")
+elsif any_match("006", "^[at].*")
+  add_field("type[].$append","Book")
 end
 
 
