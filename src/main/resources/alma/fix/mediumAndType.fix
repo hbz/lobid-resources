@@ -124,7 +124,7 @@ elsif any_match("338 .a", "^(Video).*|Sonstige Video-Datenträger$")
 elsif any_match("338  .b", "vd")
   add_field("medium[].$append.label","Video")
   add_field("medium[].$append.label", "Audio-Visuell")
-elsif any_match("natureOfContent[].*.label", ".*(DVD-Video|Video[ck]assette).*")
+elsif any_match("natureOfContent[].*.label", ".*(DVD-Video|Film|Video[ck]assette).*")
   add_field("medium[].$append.label","Video")
   add_field("medium[].$append.label", "Audio-Visuell")
 end
