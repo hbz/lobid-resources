@@ -82,7 +82,7 @@ elsif any_match("338  .b", "s")
   add_field("medium[].$append.label","Audio-Dokument")
 elsif any_match("245[10]0.h", "^[Tt][oO].*|Audio-CD")
   add_field("medium[].$append.label","Audio-Dokument")
-elsif any_match("natureOfContent[].*.label", ".*(Hörbuch|Tonträger).*")
+elsif any_match("natureOfContent[].*.label", ".*(Hörbuch|Hörspiel|Tonträger).*")
   add_field("medium[].$append.label","Audio-Dokument")
 end
 
