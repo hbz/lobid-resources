@@ -150,6 +150,9 @@ elsif any_match("006", "^[acdijpst](.{5})[f].*") # Pos00+06
 elsif any_match("546  .a", ".*Braille.*")
   add_field("medium[].$append.label","Blindenschrift")
   add_field("medium[].$append.label", "Print")
+elsif any_match("natureOfContent[].*.label", ".*Blindendruck.*")
+  add_field("medium[].$append.label","Blindenschrift")
+  add_field("medium[].$append.label", "Print")
 end
 
 # medium:   "Print":	"http://rdaregistry.info/termList/RDAproductionMethod/1010"
