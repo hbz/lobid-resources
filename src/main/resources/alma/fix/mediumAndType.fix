@@ -224,7 +224,10 @@ if any_match("@leaderPos06-07", "^[dft].")
   add_field("medium[].$append.label","Manuskript")
 elsif any_match("006", "^[dft].*")
   add_field("medium[].$append.label","Manuskript")
+elsif any_match("natureOfContent[].*.label", ".*(Musikhandschrift|Handschrift).*")
+  add_field("medium[].$append.label","Manuskript")
 end
+
 
 # medium: "Mikroformat": "http://rdaregistry.info/termList/RDAMediaType/1002"
 
@@ -293,6 +296,8 @@ elsif any_match("338  .b", "cr")
 elsif any_match("340  .a", "Online-Ressource")
   add_field("medium[].$append.label","Online-Ressource")
 elsif any_match("340  .*.a", "Online-Ressource")
+  add_field("medium[].$append.label","Online-Ressource")
+elsif any_match("natureOfContent[].*.label", ".*(Website|Weblog).*")
   add_field("medium[].$append.label","Online-Ressource")
 end
 
@@ -441,6 +446,8 @@ elsif any_match("006", "^[ast](.{6}|.{7}|.{8}|.{9})[bknq].*") # Pos00+07-10
   add_field("type[].$append","Bibliography")
 elsif any_match("006", "^m(.{8})e.*") # Pos00+07-10
   add_field("type[].$append","Bibliography")
+elsif any_match("natureOfContent[].*.label", ".*Bibliografie.*")
+  add_field("type[].$append","Bibliography")
 end
 
 # type: "Biography"
@@ -481,6 +488,8 @@ elsif any_match("title", ".*Festschrift.*") # often Festschrift is not stated as
   add_field("type[].$append","Festschrift")
 elsif any_match("otherTitleInformation[]", ".*Festschrift.*")
   add_field("type[].$append","Festschrift")
+elsif any_match("natureOfContent[].*.label", ".*Festschrift.*")
+  add_field("type[].$append","Festschrift")
 end
 
 # type: "image"
@@ -498,6 +507,8 @@ elsif any_match("006", "^[ef](.15}|.{16})[jo].*") # Pos00+16/17
   add_field("type[].$append","Image")
 elsif any_match("006", "^[gkor](.15})[dikln].*") # Pos00+16
   add_field("type[].$append","Image")
+elsif any_match("natureOfContent[].*.label", "Bild|Grafik|Röntgenbild|Zeichnung")
+  add_field("type[].$append","Image")
 end
 
 # type: "Map"
@@ -514,7 +525,7 @@ elsif any_match("300  .a", ".*(Kt.|[kK]arte).*")
   add_field("type[].$append","Map")
 elsif any_match("300  .*.a", ".*(Kt.|[kK]arte).*")
   add_field("type[].$append","Map")
-elsif any_match("natureOfContent[].*.label", ".*(Altkarte|Karte|Stadtplan).*")
+elsif any_match("natureOfContent[].*.label", ".*(Altkarte|Karte|Stadtplan|Weltkarte).*")
   add_field("type[].$append", "Map")
 end
 
@@ -533,6 +544,8 @@ elsif any_match("006", "^[gkor](.{15})[g].*") # Pos00+16
   add_field("type[].$append","Game")
 elsif any_match("006", "^[ef](.{14}|.{15})[p].*") # Pos00+15|16
   add_field("type[].$append","Game")
+elsif any_match("natureOfContent[].*.label", "Spiel")
+  add_field("type[].$append", "Game")
 end
 
 # type: "Legislation"
@@ -564,6 +577,8 @@ end
 if any_match("245[10]0.h", ".*Musikdruck.*")
   add_field("type[].$append", "PublishedScore")
 elsif exists("ismn[].1")
+  add_field("type[].$append", "PublishedScore")
+elsif any_match("natureOfContent[].*.label", "Musikhandschrift")
   add_field("type[].$append", "PublishedScore")
 end
 
@@ -602,7 +617,7 @@ if any_match("@leaderTyp+008", "(Continuing Resources)(.{21})p.*")  # Pos21
   add_field("type[].$append","Periodical")
 elsif any_match("006", "^[s](.{3})p.*") # Pos00+04
   add_field("type[].$append","Periodical")
-elsif any_match("natureOfContent[].*.label", ".*Zeitschrift.*")
+elsif any_match("natureOfContent[].*.label", ".*(Zeitschrift|Werkzeitschrift).*")
   add_field("type[].$append", "Periodical")
 end
 
@@ -647,7 +662,7 @@ if any_match("@leaderTyp+008", "(Book|Continuing Resources)(.{24}|.{25}|.{26}|.{
   add_field("type[].$append","ReferenceSource")
 elsif any_match("006", "^[ast](.{6}|.{7}|.{8}|.{9})[der].*") # Pos00+07-10
   add_field("type[].$append","ReferenceSource")
-elsif any_match("natureOfContent[].*.label", ".*(Bestimmungsbuch|Enzyklopädie|Werkverzeichnis|W[ö|oe]rterbuch).*")
+elsif any_match("natureOfContent[].*.label", ".*(Bestimmungsbuch|Enzyklopädie|Werkverzeichnis|[Ww](ö|(oe))rterbuch).*")
   add_field("type[].$append", "ReferenceSource")
 end
 
@@ -673,6 +688,8 @@ end
 
 if any_match("natureOfContent[].*.label", ".*(Schulbuch).*")
   add_field("type[].$append", "Schoolbook")
+elsif any_match("natureOfContent[].*.label", ".*Schulbuch.*")
+  add_field("type[].$append", "Schoolbook")
 end
 
 # type: "Series"
@@ -697,6 +714,8 @@ if any_match("@leaderTyp+008", "(Book|Continuing Resources)(.{24}|.{25}|.{26}|.{
   add_field("type[].$append","Statistics")
 elsif any_match("006", "^[ast](.{6}|.{7}|.{8}|.{9})s.*") # Pos00+07-10
   add_field("type[].$append","Statistics")
+elsif any_match("natureOfContent[].*.label", ".*Statistik.*")
+  add_field("type[].$append", "Statistics")
 end
 
 # TODO: Check more for values in 655.
@@ -712,6 +731,8 @@ if any_match("@leaderTyp+008", "(Book|Continuing Resources)(.{24}|.{25}|.{26}|.{
   add_field("type[].$append","Thesis")
 elsif any_match("006", "^[ast](.{6}|.{7}|.{8}|.{9})m.*") # Pos00+07-10
   add_field("type[].$append","Thesis")
+elsif any_match("natureOfContent[].*.label", ".*Hochschulschrift.*")
+  add_field("type[].$append", "Thesis")
 end
 
 
