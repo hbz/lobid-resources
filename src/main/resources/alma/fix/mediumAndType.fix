@@ -747,6 +747,12 @@ elsif any_match("natureOfContent[].*.label", ".*(Adressbuch|Anthologie|Atlas|Auk
   add_field("type[].$append", "Series")
 end
 
+# Set default type value  "Sonstiges" (Miscellaneous) if no type besides "BibliographicResource" is set.
+
+unless exists("type[].2")
+  add_field("type[].$append", "Miscellaneous")
+end
+
 
 # Set medium default to print if there is no medium and type "Book" exists. Else set "Sonstiges" (Miscellaneous) as default medium.
 
