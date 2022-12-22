@@ -75,6 +75,12 @@ do list(path: "HOL  ", "var": "$i")
       prepend("hasItem[].$last.heldBy.id", "http://lobid.org/organisations/")
       append("hasItem[].$last.heldBy.id","#!")
       paste("hasItem[].$last.id", "~http://lobid.org/items/","almaMmsId", "~:", "hasItem[].$last.heldBy.isil","~#!", join_char: "")
+      do list(path:"H52??", "var": "$H52")
+        if in("$i.8", "$H52.8")
+          paste("hasItem[].$last.currentLocation", "$H52.b", "~/", "$H52.c")
+          copy_field("$H52.h", "hasItem[].$last.callNumber")
+        end
+      end
     end
   end
 end
