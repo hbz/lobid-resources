@@ -320,13 +320,6 @@ elsif any_match("340  .*.a", "[Vv]inyl")
 end
 
 
-# medium: "Miscellaneous":	"http://purl.org/lobid/lv#Miscellaneous"
-# TODO: label always is german but "Miscellaneous" is not.
-
-
-# Introx sets all Braille to "Miscellaneous". I move them to Braille. Also Introx sets specific stuff to "Sonstige". In old ALEPH-Morph this is a default value.
-# I will follow the old ALEPH-Moprh approach here.
-# This will be done after the type definition.
 
 
 # ----- type[] -----
@@ -755,11 +748,14 @@ elsif any_match("natureOfContent[].*.label", ".*(Adressbuch|Anthologie|Atlas|Auk
 end
 
 
-# Set medium default to print if there is no medium and type "Book" exists.
+# Set medium default to print if there is no medium and type "Book" exists. Else set "Sonstiges" (Miscellaneous) as default medium.
 
 unless exists("medium[].1")
   if any_equal("type[]", "Book")
     add_field("medium[].$append.label", "Print")
+  else
+  # medium: "Sonstiges":	"http://purl.org/lobid/lv#Miscellaneous"
+    add_field("medium[].$append.label", "Sonstiges")
   end
 end
 
