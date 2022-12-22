@@ -169,13 +169,13 @@ set_array("containedIn[]")
 
 if any_match("leader", "^.{7}[ad].*")
   do list(path:"77308", "var":"$i")
-    add_field("containedIn[].$append.test","")
     do list(path:"$i.w", "var":"$j")
       if any_match("$j","^\\(DE-(600|605)\\).*")
+        add_field("containedIn[].$append.test","")
         copy_field("$j","containedIn[].$last.id")
+        copy_field("$i.t","containedIn[].$last.label")
       end
     end
-    copy_field("$i.t","containedIn[].$last.label")
   end
 end
 

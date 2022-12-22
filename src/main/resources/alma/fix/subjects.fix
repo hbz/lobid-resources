@@ -1,4 +1,4 @@
-# natureOfContent combines Formschlagwörter (`689 $A: f`) and Formangaben (`655`) 
+# natureOfContent combines Formschlagwörter (`689 $A: f`) and Formangaben (`655`)
 
 set_array("natureOfContent[]")
 
@@ -72,7 +72,11 @@ do list(path:"610??|650??", "var":"$i")
     add_field("subject[].$last.source.label","Gemeinsame Normdatei (GND)")
     add_field("subject[].$last.source.id","https://d-nb.info/gnd/7749153-1")
     copy_field("$i.a","subject[].$last.label")
-    copy_field("$i.B","subject[].$last.@gndIdn")
+    do list(path: "$i.B","var":"$gnd")
+      unless exists("subject[].$last.@gndIdn")
+        copy_field("$gnd","subject[].$last.@gndIdn")
+      end
+    end
     do list(path:"$i.0", "var":"$j")
       if any_match("$j","^\\(DE-588\\)(.*)$")
         copy_field("$j", "subject[].$last.id")
@@ -187,7 +191,11 @@ do once("schlagwortfolgeMacro")
         end
         copy_field("$i.a","subject[].$last.componentList[].$last.label")
         copy_field("$i.a","subject[].$last.label.$append")
-        copy_field("$i.B","subject[].$last.componentList[].$last.@gndIdn")
+        do list(path: "$i.B","var":"$gnd")
+          unless exists("subject[].$last.componentList[].$last.@gndIdn")
+            copy_field("$gnd","subject[].$last.componentList[].$last.@gndIdn")
+          end
+        end
         do list(path:"$i.0", "var": "$j")
           if any_match("$j","^\\(DE-588\\)(.*)$")
             add_field("subject[].$last.componentList[].$last.source.label","Gemeinsame Normdatei (GND)")
