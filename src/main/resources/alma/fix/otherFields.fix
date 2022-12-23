@@ -120,19 +120,33 @@ set_array("bibliographicCitation")
 
 # 773 - Host Item Entry (R) - $t - Title (NR), $b - Edition (NR), $d - Place, publisher, and date of publication (NR), $g - Related parts (R), $n - Note (R)
 
-copy_field("77308.t","bibliographicCitation.$append")
-copy_field("77308.b","bibliographicCitation.$append")
-copy_field("77308.d","bibliographicCitation.$append")
-do list(path:"77308.g", "var":"$i")
-  copy_field("$i","bibliographicCitation.$append")
+
+do list(path: "500??", "var":"$i")
+  if any_contain("$i.a","In:")
+    copy_field("$i.a","bibliographicCitation.$append")
+  end
 end
-do list(path:"77308.n", "var":"$i")
-  copy_field("$i","bibliographicCitation.$append")
+
+unless exists("bibliographicCitation.1")
+  if exists("501??")
+    copy_field("501??.a","bibliographicCitation.$append")
+  else
+    copy_field("77308.t","bibliographicCitation.$append")
+    copy_field("77308.b","bibliographicCitation.$append")
+    copy_field("77308.d","bibliographicCitation.$append")
+    do list(path:"77308.g", "var":"$i")
+      copy_field("$i","bibliographicCitation.$append")
+    end
+    do list(path:"77308.n", "var":"$i")
+      copy_field("$i","bibliographicCitation.$append")
+    end
+  end
 end
-copy_field("501??.a","bibliographicCitation.$append")
+
 
 replace_all("bibliographicCitation.*","<<|>>","")
 replace_all("bibliographicCitation.*","^http","Siehe: http")
+replace_all("bibliographicCitation.*","^In: ","")
 
 join_field("bibliographicCitation", "; ")
 
