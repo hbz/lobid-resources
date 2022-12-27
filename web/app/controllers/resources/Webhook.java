@@ -3,6 +3,7 @@
 package controllers.resources;
 
 import java.io.File;
+import java.nio.file.Files;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -74,6 +75,9 @@ public class Webhook extends Controller {
     if (!GIVEN_TOKEN.equals(token)) {
       return wrongToken(KIND, GIVEN_TOKEN);
     }
+    if (Files.size(filenameUpdate) < 512) {
+          return status(500, MSG_FILE_TOO_SMALL)
+    }
     if (AlmaMarcXml2lobidJsonEs.threadAlreadyStarted) {
       AlmaMarcXml2lobidJsonEs.sendMail(ETL_OF + KIND, false,
           MSG_UPDATE_ALREADY_RUNNING);
@@ -122,6 +126,9 @@ public class Webhook extends Controller {
     final String KIND = "basedump";
     if (!GIVEN_TOKEN.equals(token)) {
       return wrongToken(KIND, GIVEN_TOKEN);
+    }
+    if (Files.size(filenameBasedump) < 512) {
+        return status(500, MSG_FILE_TOO_SMALL)
     }
     createIndexNameOfBasedump = indexNameOfBasedump + "-" + LocalDateTime.now()
         .format(DateTimeFormatter.ofPattern("yyyyMMdd-kkmm"));

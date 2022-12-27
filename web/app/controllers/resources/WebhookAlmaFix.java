@@ -10,6 +10,7 @@ import play.mvc.Controller;
 import play.mvc.Result;
 
 import java.io.File;
+import java.nio.file.Files;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -42,6 +43,7 @@ public class WebhookAlmaFix extends Controller {
   private static final String MSG_UPDATE_ALREADY_RUNNING =
       "Couldn't update index '" + indexNameOfUpdate
           + MSG_ETL_PROCESS_IS_ALREADY_RUNNING;
+  private static final String MSG_FILE_TOO_SMALL = "File size is too small - data seems to be empty";
   private static String createIndexNameOfBasedump = "dummy";
   private static final String MSG_CREATE_INDEX_ALREADY_RUNNING =
       "Couldn't create new index with name '%s' "
@@ -72,6 +74,9 @@ public class WebhookAlmaFix extends Controller {
     if (!GIVEN_TOKEN.equals(token)) {
       return wrongToken(KIND, GIVEN_TOKEN);
     }
+    if (Files.size(filenameUpdate) < 512) {
+        return status(500, MSG_FILE_TOO_SMALL)
+    }
     if (AlmaMarcXmlFix2lobidJsonEs.threadAlreadyStarted) {
       AlmaMarcXmlFix2lobidJsonEs.sendMail(ETL_OF + KIND, false,
           MSG_UPDATE_ALREADY_RUNNING);
@@ -83,7 +88,8 @@ public class WebhookAlmaFix extends Controller {
     AlmaMarcXmlFix2lobidJsonEs.main(filenameUpdate, indexNameOfUpdate,
         indexUpdateAliasSufix, clusterHost, clusterName, UPDATE_NEWEST_INDEX,
         FIX_FILENAME);
-    AlmaMarcXmlFix2lobidJsonEs.sendMail(ETL_OF + KIND, true,
+
+    AlmaMarcXmlFix2lobidJsonEs.sendMail("Triggering of " + ETL_OF + KIND, true,
         "Going to update index '" + indexNameOfUpdate + "'");
     return ok("... started ETL " + KIND);
   }
@@ -120,6 +126,9 @@ public class WebhookAlmaFix extends Controller {
     final String KIND = "basedump";
     if (!GIVEN_TOKEN.equals(token)) {
       return wrongToken(KIND, GIVEN_TOKEN);
+    }
+    if (Files.size(filenameBasedump) < 512) {
+        return status(500, MSG_FILE_TOO_SMALL)
     }
     createIndexNameOfBasedump = indexNameOfBasedump + "-" + LocalDateTime.now()
         .format(DateTimeFormatter.ofPattern("yyyyMMdd-kkmm"));

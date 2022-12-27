@@ -164,8 +164,8 @@ public class AlmaMarcXmlFix2lobidJsonEs {
                 catch (Exception e) {
                     e.printStackTrace();
                     LOG.error(
-                        String.format("ETL fails: %s %s", e.getMessage(), e));
-                    message = e.toString();
+                        "ETL fails: ", e.getMessage(), e);
+                    message = e.getStackTrace().toString();
                     success = false;
                 }
                 sendMail(kind, success, message);
@@ -290,7 +290,7 @@ public class AlmaMarcXmlFix2lobidJsonEs {
         String mailto = (SUCCESS ? mailtoInfo : mailtoError);
         try {
             Email.sendEmail("sol", mailto,
-                "Webhook '" + KIND + "'' " + (SUCCESS ? "success :)" : "fails :("),
+                "Webhook '" + KIND + "' " + (SUCCESS ? "success :)" : "fails :("),
                 MESSAGE);
         }
         catch (Exception e) {
