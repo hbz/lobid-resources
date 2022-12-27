@@ -45,6 +45,7 @@ public class Webhook extends Controller {
   private static final String MSG_UPDATE_ALREADY_RUNNING =
       "Couldn't update index '" + indexNameOfUpdate
           + MSG_ETL_PROCESS_IS_ALREADY_RUNNING;
+  private static final String MSG_FILE_TOO_SMALL = "File size is too small - data seems to be empty";
   private static String createIndexNameOfBasedump = "dummy";
   private static final String MSG_CREATE_INDEX_ALREADY_RUNNING =
       "Couldn't create new index with name '%s' "
