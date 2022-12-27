@@ -66,7 +66,8 @@ public class WebhookAlmaFix extends Controller {
    *
    * @param GIVEN_TOKEN the token to authorize updating
    * @return "200 ok" or "403 forbidden" (depending on token) or "423 locked" in
-   *         case of an already triggered process that was not yet finished
+   *         case of an already triggered process that was not yet finished, or a "500"
+   *         if the size of the data file is too small.
    */
   public static Result updateAlma(final String GIVEN_TOKEN) {
     reloadConfigs();
@@ -75,7 +76,7 @@ public class WebhookAlmaFix extends Controller {
       return wrongToken(KIND, GIVEN_TOKEN);
     }
     if (Files.size(filenameUpdate) < 512) {
-        return status(500, MSG_FILE_TOO_SMALL)
+        return status(500, MSG_FILE_TOO_SMALL);
     }
     if (AlmaMarcXmlFix2lobidJsonEs.threadAlreadyStarted) {
       AlmaMarcXmlFix2lobidJsonEs.sendMail(ETL_OF + KIND, false,
@@ -119,7 +120,8 @@ public class WebhookAlmaFix extends Controller {
    *
    * @param GIVEN_TOKEN the token to authorize updating
    * @return "200 ok" or "403 forbidden" (depending on token) or "423 locked" in
-   *         case of an already triggered process that was not yet finished
+   *         case of an already triggered process that was not yet finished, or a "500"
+   *         if the size of the data file is too small.
    */
   public static Result basedumpAlma(final String GIVEN_TOKEN) {
     reloadConfigs();
@@ -128,7 +130,7 @@ public class WebhookAlmaFix extends Controller {
       return wrongToken(KIND, GIVEN_TOKEN);
     }
     if (Files.size(filenameBasedump) < 512) {
-        return status(500, MSG_FILE_TOO_SMALL)
+        return status(500, MSG_FILE_TOO_SMALL);
     }
     createIndexNameOfBasedump = indexNameOfBasedump + "-" + LocalDateTime.now()
         .format(DateTimeFormatter.ofPattern("yyyyMMdd-kkmm"));
