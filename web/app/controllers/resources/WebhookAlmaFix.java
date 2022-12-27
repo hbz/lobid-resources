@@ -10,7 +10,10 @@ import play.mvc.Controller;
 import play.mvc.Result;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -75,8 +78,13 @@ public class WebhookAlmaFix extends Controller {
     if (!GIVEN_TOKEN.equals(token)) {
       return wrongToken(KIND, GIVEN_TOKEN);
     }
-    if (Files.size(filenameUpdate) < 512) {
-        return status(500, MSG_FILE_TOO_SMALL);
+    try {
+        if (Files.size(Paths.get(filenameUpdate)) < 512) {
+            return status(500, MSG_FILE_TOO_SMALL);
+        }
+    }
+    catch (IOException e) {
+        return status(500, "Problems with data file\n" + e);
     }
     if (AlmaMarcXmlFix2lobidJsonEs.threadAlreadyStarted) {
       AlmaMarcXmlFix2lobidJsonEs.sendMail(ETL_OF + KIND, false,
@@ -129,8 +137,13 @@ public class WebhookAlmaFix extends Controller {
     if (!GIVEN_TOKEN.equals(token)) {
       return wrongToken(KIND, GIVEN_TOKEN);
     }
-    if (Files.size(filenameBasedump) < 512) {
-        return status(500, MSG_FILE_TOO_SMALL);
+    try {
+        if (Files.size(Paths.get(filenameBasedump)) < 512) {
+            return status(500, MSG_FILE_TOO_SMALL);
+        }
+    }
+    catch (IOException e) {
+        return status(500, "Problems with data file\n" + e);
     }
     createIndexNameOfBasedump = indexNameOfBasedump + "-" + LocalDateTime.now()
         .format(DateTimeFormatter.ofPattern("yyyyMMdd-kkmm"));
