@@ -80,6 +80,9 @@ public class WebhookAlmaFix extends Controller {
     }
     try {
         if (Files.size(Paths.get(filenameUpdate)) < 512) {
+            Logger.error(MSG_FILE_TOO_SMALL);
+            AlmaMarcXmlFix2lobidJsonEs.sendMail("Triggering of " + ETL_OF + KIND, false,
+                MSG_FILE_TOO_SMALL);
             return status(500, MSG_FILE_TOO_SMALL);
         }
     }
@@ -139,6 +142,9 @@ public class WebhookAlmaFix extends Controller {
     }
     try {
         if (Files.size(Paths.get(filenameBasedump)) < 512) {
+            Logger.error(MSG_FILE_TOO_SMALL);
+            AlmaMarcXmlFix2lobidJsonEs.sendMail("Triggering of " + ETL_OF + KIND, false,
+                MSG_FILE_TOO_SMALL);
             return status(500, MSG_FILE_TOO_SMALL);
         }
     }

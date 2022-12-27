@@ -14,6 +14,7 @@ import com.typesafe.config.ConfigFactory;
 
 import org.lobid.resources.run.AlmaMarcXml2lobidJsonEs;
 
+import org.lobid.resources.run.AlmaMarcXmlFix2lobidJsonEs;
 import play.Logger;
 import play.mvc.Controller;
 import play.mvc.Result;
@@ -81,6 +82,9 @@ public class Webhook extends Controller {
     }
     try {
         if (Files.size(Paths.get(filenameUpdate)) < 512) {
+            Logger.error(MSG_FILE_TOO_SMALL);
+            AlmaMarcXmlFix2lobidJsonEs.sendMail("Triggering of " + ETL_OF + KIND, false,
+                MSG_FILE_TOO_SMALL);
             return status(500, MSG_FILE_TOO_SMALL);
         }
     }
@@ -139,6 +143,9 @@ public class Webhook extends Controller {
     }
     try {
         if (Files.size(Paths.get(filenameBasedump)) < 512) {
+            Logger.error(MSG_FILE_TOO_SMALL);
+            AlmaMarcXmlFix2lobidJsonEs.sendMail("Triggering of " + ETL_OF + KIND, false,
+                MSG_FILE_TOO_SMALL);
             return status(500, MSG_FILE_TOO_SMALL);
         }
     }
