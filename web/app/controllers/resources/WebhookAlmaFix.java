@@ -169,7 +169,7 @@ public class WebhookAlmaFix extends Controller {
         indexBasedumpAliasSuffix, clusterHost, clusterName, CREATE_INDEX,
         FIX_FILENAME);
     AlmaMarcXmlFix2lobidJsonEs.sendMail(ETL_OF + KIND, true,
-        "Going to created new index with name " + createIndexNameOfBasedump
+        "Going to create new index with name " + createIndexNameOfBasedump
             + " , adding " + indexBasedumpAliasSuffix + " to alias of index");
     return ok("... started ETL " + KIND);
   }
