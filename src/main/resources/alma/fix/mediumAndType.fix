@@ -84,6 +84,8 @@ elsif any_match("245[10]0.h", "^[Tt][oO].*|Audio-CD")
   add_field("medium[].$append.label","Audio-Dokument")
 elsif any_match("natureOfContent[].*.label", ".*(Hörbuch|Hörspiel|Tonträger).*")
   add_field("medium[].$append.label","Audio-Dokument")
+elsif any_match("300  .a", ".*(Tonkassette|Schallplatte|Schallpl.|Magnetbandkassette|Kompaktkassette|Compact-Disk|Compact-Disc|CD |CD$).*")
+  add_field("medium[].$append.label","Audio-Dokument")
 end
 
 # medium: "Audio-Kassette":	"http://id.loc.gov/vocabulary/carriers/ss"
@@ -91,7 +93,9 @@ end
 if any_match("007", "^ss.*")
   add_field("medium[].$append.label","Audio-Kassette")
 elsif any_match("245[10]0.h", "Kompaktkassette|MC|Tonkassette")
-  add_field("medium[].$append.label","Audio-Dokument")
+  add_field("medium[].$append.label","Audio-Kassette")
+elsif any_match("300  .a", ".*Kompaktkassette.*")
+  add_field("medium[].$append.label","Audio-Kassette")
 end
 
 # medium: "Audio-Visuell":	"http://purl.org/ontology/bibo/AudioVisualDocument" & "Video": "http://rdaregistry.info/termList/RDAMediaType/1008"
