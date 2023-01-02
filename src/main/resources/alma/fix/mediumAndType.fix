@@ -424,15 +424,7 @@ end
 #   end
 # end
 
-# TODO: What is Aufsatz/Artikel inteded for only monograph, serial or continues ressource component?
-# TODO: There is no mapping for 052/1-6/6=au Aufsatz
-# TODO: What about leader07 a and b? https://www.loc.gov/marc/bibliographic/bdleader.html
 
-# TODO: Transformation needs to be added later.
-
-if any_match("@leaderPos06-07",".a")
-  add_field("type[].$append","Article")
-end
 
 # type: "Bibliography"
 
@@ -756,6 +748,20 @@ unless exists("type[].2")
   add_field("type[].$append", "Miscellaneous")
 end
 
+# TODO: What is Aufsatz/Artikel inteded for only monograph, serial or continues ressource component?
+# TODO: There is no mapping for 052/1-6/6=au Aufsatz
+# TODO: What about leader07 a and b? https://www.loc.gov/marc/bibliographic/bdleader.html
+
+# TODO: Transformation needs to be added later.
+
+if any_match ("type[]", "Miscellaneous|Biography|Bibliography")
+  unless any_match ("medium[].*.label", ".*(Audio|Video).*")
+    if any_match("@leaderPos06-07",".a")
+      add_field("type[].$append","Article")
+      replace_all("type[].*","Miscellaneous","")
+    end
+  end
+end
 
 # Set medium default to print if there is no medium and type "Book" exists. Else set "Sonstiges" (Miscellaneous) as default medium.
 
