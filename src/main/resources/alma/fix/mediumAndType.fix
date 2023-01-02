@@ -506,7 +506,7 @@ elsif any_match("006", "^[ef](.15}|.{16})[jo].*") # Pos00+16/17
   add_field("type[].$append","Image")
 elsif any_match("006", "^[gkor](.15})[dikln].*") # Pos00+16
   add_field("type[].$append","Image")
-elsif any_match("natureOfContent[].*.label", "Bild|Grafik|Röntgenbild|Zeichnung")
+elsif any_match("natureOfContent[].*.label", "Bild|Diagramm|Fotografie|Grafik|Plakat|Postkarte|Röntgenbild|Zeichnung|Technische Zeichnung")
   add_field("type[].$append","Image")
 end
 
