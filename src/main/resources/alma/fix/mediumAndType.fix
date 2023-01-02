@@ -291,9 +291,9 @@ elsif any_match("006", "^[acdijpst](.{5})[o].*") # Pos00+06
   add_field("medium[].$append.label","Online-Ressource")
 elsif any_match("007", "^cr.*") # Old Aleph Transformation maps Computerdatei(en) im Fernzugriff as online resource. We continue to map this in ALMA.
   add_field("medium[].$append.label","Online-Ressource")
-elsif any_match("300  ", ".*[Oo]nline.*") # Pos00+06
+elsif any_match("300  ", ".*([Oo]nline|ressource en ligne).*") # Pos00+06
   add_field("medium[].$append.label","Online-Ressource")
-elsif any_match("338 .a", "^(.*([Oo]nline.*|online bron|online resource|online-ressource|Online-Ressource|ressource en ligne)$")
+elsif any_match("338  .a", "^.*([Oo]nline.*|online bron|online resource|online-ressource|Online-Ressource|ressource en ligne).*$")
   add_field("medium[].$append.label","Online-Ressource")
 elsif any_match("338  .b", "cr")
   add_field("medium[].$append.label","Online-Ressource")
