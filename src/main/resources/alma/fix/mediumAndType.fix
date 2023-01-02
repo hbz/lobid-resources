@@ -173,7 +173,7 @@ end
 #if any_match("006", "^[op].*")
 # add_field("medium[].$append.label","Print")
 
-if any_match("007", "(^k[fhjs]|^t[^c]).*") # TODO: I excluded ^o (Kit) and added all Pos01 for text except Braille.
+if any_match("007", "(^k[fhjs]|^t[ab]).*") # TODO: I excluded ^o (Kit) and added all Pos01 for text except Braille.
   add_field("medium[].$append.label","Print")
 elsif any_match("@leaderTyp+008", "(Book|Music|Continuing Resources|Mixed materials)(.{23})[dr].*")  # Pos23
   add_field("medium[].$append.label","Print")
@@ -763,6 +763,8 @@ end
 unless exists("medium[].1")
   if any_equal("type[]", "Book")
     add_field("medium[].$append.label", "Print")
+  elsif any_match("@leaderPos06-07", "a.*")
+    add_field("medium[].$append.label","Print")
   else
   # medium: "Sonstiges":	"http://purl.org/lobid/lv#Miscellaneous"
     add_field("medium[].$append.label", "Sonstiges")
