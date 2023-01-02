@@ -214,10 +214,9 @@ elsif any_match("338  .a", ".*([Cc]omputer|[Cc]omputermedien|informatique|Comput
   add_field("medium[].$append.label","Datenträger")
 elsif any_match("338  .b", "c.")
   add_field("medium[].$append.label","Datenträger")
-# From the old ALEPH-Morph #		<!-- looking for Blu-ray, Cartridge, CD, Diskette, DVD, Festplatte, HD-DVD, Kassette, USB -->
-elsif any_match("340  .a", "^[BbCcDdHhFfKkUu][AaDdEeIiLlSsVv].*")
+elsif any_match("340  .a", ".*(Elektronische Ressource|Blu-ray|Cartridge|CD|Computerdatei|Diskette|DVD|E-Books|Einsteckmodul|Festplatte|Kassette|Elektron. Ressource|Funknetz-Karte|Optische|USB-Stick).*")
   add_field("medium[].$append.label","Datenträger")
-elsif any_match("340  .*.a", "^[BbCcDdHhFfKkUu][AaDdEeIiLlSsVv].*")
+elsif any_match("340  .a", ".*(Elektronische Ressource|Blu-ray|Cartridge|CD|Computerdatei|Diskette|DVD|E-Books|Einsteckmodul|Festplatte|Kassette|Elektron. Ressource|Funknetz-Karte|Optische|USB-Stick).*")
   add_field("medium[].$append.label","Datenträger")
 end
 
