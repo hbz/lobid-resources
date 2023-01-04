@@ -33,6 +33,8 @@ paste("title","@title", "@titleOfSubSeries", join_char: "")
 set_array("alternativeTitle[]")
 copy_field("246?[ 345678].a","alternativeTitle[].$append")
 
+replace_all("alternativeTitle[].*","<<|>>","")
+
 set_array("otherTitleInformation[]")
 copy_field("245??.b","otherTitleInformation[].$append")
 replace_all("otherTitleInformation[].*","\\s?[./]\\s?$","")
