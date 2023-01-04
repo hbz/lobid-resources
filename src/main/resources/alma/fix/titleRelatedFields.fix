@@ -2,8 +2,7 @@
 
 copy_field("245??.a","@title")
 replace_all("@title", "^[©]|\\s?[,.:;/=]?$", "")
-replace_all("@title", "<", "")
-replace_all("@title", ">", "")
+replace_all("@title","<<|>>","")
 
 
 set_array("@titleOfSubSeries_n")
@@ -18,8 +17,7 @@ do list(path:"245??.p", "var":"$i")
   copy_field("$i","@titleOfSubSeries_p.$append")
 end
 replace_all("@titleOfSubSeries_p.*", "\\s?\\.?\\s?$", "")
-replace_all("@titleOfSubSeries_p.*", "<", "")
-replace_all("@titleOfSubSeries_p.*", ">", "")
+replace_all("@titleOfSubSeries_p.*","<<|>>","")
 prepend("@titleOfSubSeries_p.1", ": ")
 
 paste("@titleOfSubSeries", "@titleOfSubSeries_n",  "@titleOfSubSeries_p.1", join_char: "")
