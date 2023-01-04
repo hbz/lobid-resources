@@ -94,7 +94,6 @@ set_array("isPartOf[]")
 #    </entity>
 
 # 773 - Host Item Entry (R) Subfield: $w (NR), $t (NR), $q (NR)
-# TODO: Shouldnt type always be arrays
 
 unless any_match("leader", "^.{7}[ad].*")
   do list(path: "773??", "var": "$i")
@@ -111,7 +110,6 @@ unless any_match("leader", "^.{7}[ad].*")
 end
 
 # 490 - Series Statement (R) - Subfield: $a (R)
-# TODO: Shouldnt type always be arrays
 # 490 with 1. Indicator 1 has an identical entry in 830. So only 490 with 1. Indicator 0
 
 do list(path: "4900?", "var": "$i")
@@ -296,7 +294,6 @@ end
 
 # 775 - Other Edition Entry (R) - Subfield: $w (R), $t (NR), $i (R), $n (R), $x(NR), $z (R)
 # 776 - Additional Physical Form Entry (R) -  Subfield: $w (R), $t (NR), $i (R), $n (R), $x (NR), $z (R)
-# TODO: Needs ISBN function for mapping ISBN in subfield Z! Need test ressource for that.
 
 set_array("related[]")
 do list(path:"775??|776??", "var":"$i")
@@ -331,9 +328,7 @@ do list(path:"related[]", "var":"$i")
 end
 
 
-#
-#  <!-- TODO: inCollection: missing edoweb, rpb, publisso, also type-element -->
-#  <entity name="inCollection[]" flushWith="record">
+
 set_array("inCollection[]")
 
 # zdb
@@ -453,15 +448,6 @@ do list(path:"urn[]", "var":"$i")
   copy_field("$i", "sameAs[].$append.id")
   replace_all("sameAs[].$last.id", "^(.*)$","http://nbn-resolving.de/$1")
 end
-
-# TODO: is this needed too?
-# <entity name="http://umbel.org/umbel#isLike">
-# 		  <data source="776-1.z" name="$[ns-bibo]isbn" >
-# 		    <isbn to="clean"/>
-# 		  </data>
-# 		  <data source="776-1.i" name="http://id.loc.gov/ontologies/bibframe/note" />
-# 	  </entity>
-
 
 
 # predecessor
