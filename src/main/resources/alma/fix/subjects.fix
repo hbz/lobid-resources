@@ -98,7 +98,7 @@ end
 # compare GND identifier (idn) with ALMA GND enrichment elements:
 do list(path:"subject[]", "var":"$i")
   set_array("$i.altLabel[]")
-  do list(path:"GPN??|GKT??|GKS??|GST??|GGN??", "var": "$z")
+  do list(path:"GEL??|GPN??|GKT??|GKS??|GST??|GGN??", "var": "$z")
     if in ("$i.@gndIdn", "$z.B")
       copy_field("$z.a","$i.altLabel[].$append")
     end
