@@ -64,6 +64,14 @@ do list(path:"610?0|650?0", "var":"$i")
   copy_field("$i.a","subject[].$last.label")
 end
 
+do list(path:"610?7|650?7", "var":"$i")
+  if any_match("$i.2",".*fast.*")
+    set_array("subject[].$append.type[]","Concept")
+    add_field("subject[].$last.source.label","FAST (Faceted Application of Subject Terminology)")
+    add_field("subject[].$last.source.id","http://fast.oclc.org/")
+    copy_field("$i.a","subject[].$last.label")
+  end
+end
 
 do list(path:"610??|650??", "var":"$i")
   if any_match("$i.0","^\\(DE-588\\)(.*)$")
