@@ -38,6 +38,18 @@ do list(path: "natureOfContent[]", "var":"$i")
   end
 end
 
+do once("subjectLabel")
+  do put_macro("subjectLabel")
+    set_array("subject[].$last.label")
+    copy_field("$i.a","subject[].$last.label.$append")
+    copy_field("$i.x","subject[].$last.label.$append")
+    copy_field("$i.y","subject[].$last.label.$append")
+    copy_field("$i.z","subject[].$last.label.$append")
+    copy_field("$i.v","subject[].$last.label.$append")
+    join_field("subject[].$last.label"," / ")
+  end
+end
+
 set_array("subject[]")
 
 
@@ -53,7 +65,7 @@ do list(path:"610?4|650?4|651?4|653??", "var":"$i")
   set_array("subject[].$append.type[]","Keyword")
   add_field("subject[].$last.source.label","Freie Verschlagwortung")
   add_field("subject[].$last.source.id","https://www.wikidata.org/wiki/Q47524318")
-  copy_field("$i.a","subject[].$last.label")
+  call_macro("subjectLabel")
 end
 
 do list(path:"610?0|650?0|651?0", "var":"$i")
@@ -61,7 +73,7 @@ do list(path:"610?0|650?0|651?0", "var":"$i")
   set_array("subject[].$append.type[]","Concept")
   add_field("subject[].$last.source.label","Library of Congress Subject Headings")
   add_field("subject[].$last.source.id","https://id.loc.gov/authorities/subjects.html")
-  copy_field("$i.a","subject[].$last.label")
+  call_macro("subjectLabel")
 end
 
 do list(path:"610?7|650?7|651?7", "var":"$i")
@@ -69,7 +81,7 @@ do list(path:"610?7|650?7|651?7", "var":"$i")
     set_array("subject[].$append.type[]","Concept")
     add_field("subject[].$last.source.label","FAST (Faceted Application of Subject Terminology)")
     add_field("subject[].$last.source.id","http://fast.oclc.org/")
-    copy_field("$i.a","subject[].$last.label")
+    call_macro("subjectLabel")
   end
 end
 
@@ -79,7 +91,7 @@ do list(path:"610??|650??", "var":"$i")
     set_array("subject[].$append.type[]","Concept")
     add_field("subject[].$last.source.label","Gemeinsame Normdatei (GND)")
     add_field("subject[].$last.source.id","https://d-nb.info/gnd/7749153-1")
-    copy_field("$i.a","subject[].$last.label")
+    call_macro("subjectLabel")
     do list(path: "$i.B","var":"$gnd")
       unless exists("subject[].$last.@gndIdn")
         copy_field("$gnd","subject[].$last.@gndIdn")
