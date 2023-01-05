@@ -60,7 +60,7 @@ set_array("subject[]")
 # 653 - Index Term-Uncontrolled (R),  !!! Subfield: $a (R) !!!!
 
 
-do list(path:"610?4|650?4|651?4|653??", "var":"$i")
+do list(path:"600?4|610?4|650?4|651?4|653??", "var":"$i")
       # TODO: Deduplicate values.
   set_array("subject[].$append.type[]","Keyword")
   add_field("subject[].$last.source.label","Freie Verschlagwortung")
@@ -68,7 +68,7 @@ do list(path:"610?4|650?4|651?4|653??", "var":"$i")
   call_macro("subjectLabel")
 end
 
-do list(path:"610?0|650?0|651?0", "var":"$i")
+do list(path:"600?0|610?0|650?0|651?0", "var":"$i")
       # TODO: Deduplicate values.
   set_array("subject[].$append.type[]","Concept")
   add_field("subject[].$last.source.label","Library of Congress Subject Headings")
@@ -76,7 +76,7 @@ do list(path:"610?0|650?0|651?0", "var":"$i")
   call_macro("subjectLabel")
 end
 
-do list(path:"610?7|650?7|651?7", "var":"$i")
+do list(path:"600?7|610?7|650?7|651?7", "var":"$i")
   if any_match("$i.2",".*fast.*")
     set_array("subject[].$append.type[]","Concept")
     add_field("subject[].$last.source.label","FAST (Faceted Application of Subject Terminology)")
@@ -85,7 +85,7 @@ do list(path:"610?7|650?7|651?7", "var":"$i")
   end
 end
 
-do list(path:"610??|650??", "var":"$i")
+do list(path:"600??|610??|650??|651??", "var":"$i")
   if any_match("$i.0","^\\(DE-588\\)(.*)$")
         # TODO: Deduplicate values.
     set_array("subject[].$append.type[]","Concept")
