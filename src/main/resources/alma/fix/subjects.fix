@@ -41,7 +41,13 @@ end
 do once("subjectLabel")
   do put_macro("subjectLabel")
     set_array("subject[].$last.label")
-    copy_field("$i.a","subject[].$last.label.$append")
+    set_array("$i.@name")
+    copy_field("$i.a","$i.@name.$append")
+    copy_field("$i.b","$i.@name.$append")
+    copy_field("$i.c","$i.@name.$append")
+    copy_field("$i.d","$i.@name.$append")
+    join_field("$i.@name")
+    copy_field("$i.@name","subject[].$last.label.$append")
     copy_field("$i.x","subject[].$last.label.$append")
     copy_field("$i.y","subject[].$last.label.$append")
     copy_field("$i.z","subject[].$last.label.$append")
@@ -83,6 +89,13 @@ do list(path:"600?7|610?7|650?7|651?7", "var":"$i")
     add_field("subject[].$last.source.id","http://fast.oclc.org/")
     call_macro("subjectLabel")
   end
+end
+
+do list(path:"600?2|610?2|650?2|651?2", "var":"$i")
+    set_array("subject[].$append.type[]","Concept")
+    add_field("subject[].$last.source.label","Medical Subject Headings")
+    add_field("subject[].$last.source.id","https://www.nlm.nih.gov/mesh/meshhome.html")
+    call_macro("subjectLabel")
 end
 
 do list(path:"600??|610??|650??|651??", "var":"$i")
