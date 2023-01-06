@@ -559,10 +559,10 @@ end
 
 # type: "MultiVolumeBook"
 
+if any_match("leader", ".{7}m.{11}a.*")  # Pos24/25/26/27 # What about g (legal article)?
+  add_field("type[].$append","MultiVolumeBook")
+end
 
-# TODO: The mapping https://service-wiki.hbz-nrw.de/display/VDBE/ALT+-+Mapping+MAB2+-+MARC+21+-++Segmente+0---%2C+001+-+088+-+Kurzform
-# suggests leader07 m but this only says Monograph or Item nothing about MultiVolume.
-# Need to find specific infos about that.
 
 # type: "PublishedScore" (Musikalia)
 
