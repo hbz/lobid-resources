@@ -507,27 +507,7 @@ elsif any_match("natureOfContent[].*.label", "Bild|Grafik|Röntgenbild|Zeichnung
   add_field("type[].$append","Image")
 end
 
-# type: "Map"
-# TODO: HT017559543 should be no map.
 
-
-if any_equal("@leaderTyp", "Map")
-  add_field("type[].$append","Map")
-elsif any_match("006", "^[ef].*")
-  add_field("type[].$append","Map")
-elsif any_match("007", "^[ad].*")
-  add_field("type[].$append","Map")
-elsif any_match("natureOfContent[].*.label", ".*(Altkarte|Karte|Stadtplan|Weltkarte).*")
-  add_field("type[].$append", "Map")
-end
-
-do list(path: "300  ", "var": "$i")
-  unless any_match("$i.a",".*Spiel.*")
-    if any_match("$i.a", ".*(Kt.|[kK]arte).*")
-      add_field("type[].$append","Map")
-    end
-  end
-end
 
 # type: "Game"
 
@@ -546,6 +526,28 @@ elsif any_match("006", "^[ef](.{14}|.{15})[p].*") # Pos00+15|16
   add_field("type[].$append","Game")
 elsif any_match("natureOfContent[].*.label", "Spiel")
   add_field("type[].$append", "Game")
+end
+
+# type: "Map"
+# TODO: HT017559543 should be no map.
+
+
+if any_equal("@leaderTyp", "Map")
+  add_field("type[].$append","Map")
+elsif any_match("006", "^[ef].*")
+  add_field("type[].$append","Map")
+elsif any_match("007", "^[ad].*")
+  add_field("type[].$append","Map")
+elsif any_match("natureOfContent[].*.label", ".*(Altkarte|Karte|Stadtplan|Weltkarte).*")
+  add_field("type[].$append", "Map")
+end
+
+unless any_equal("type[]","Game")
+  unless any_match("300  .a", ".*Spiel.*")
+    if any_match("300  .a", ".*(Kt.|[kK]arte).*")
+      add_field("type[].$append","Map")
+    end
+  end
 end
 
 # type: "Legislation"
