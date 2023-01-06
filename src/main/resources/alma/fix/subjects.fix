@@ -301,6 +301,7 @@ do list (path: "subject[]", "var": "$i")
   end
 end
 
+replace_all("subject[].*.altLabel[].*","  | \\( \\)","")
 
 uniq("subject[]")
 
