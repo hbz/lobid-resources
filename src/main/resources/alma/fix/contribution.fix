@@ -349,4 +349,5 @@ do list (path: "contribution[]", "var": "$i")
   remove_field("$i.agent.@gndIdn")
 end
 
-
+replace_all("contribution[].*.agent.label","<<|>>","")
+replace_all("contribution[].*.agent.altLabel[].*","<<|>>","")
