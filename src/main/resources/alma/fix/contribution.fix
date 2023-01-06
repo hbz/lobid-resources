@@ -331,7 +331,7 @@ do list (path: "contribution[]", "var": "$i")
   set_array("$i.agent.altLabel[]")
   do list(path:"GPN??|GKT??|GKS??", "var": "$z")
     if in ("$i.agent.@gndIdn", "$z.B")
-      copy_field("$z.a","$i.agent.altLabel[].$append")
+      paste("$i.agent.altLabel[].$append", "$z.a", "~(", "$z.b", "$z.c", "~)")
     end
   end
 
@@ -351,3 +351,5 @@ end
 
 replace_all("contribution[].*.agent.label","<<|>>","")
 replace_all("contribution[].*.agent.altLabel[].*","<<|>>","")
+replace_all("contribution[].*.agent.altLabel[].*","  | \\( \\)","")
+
