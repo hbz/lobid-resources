@@ -158,6 +158,8 @@ do list(path: "830??", "var": "$i")
   end
 end
 
+replace_all("isPartOf[].*.hasSuperordinate[].*.label","<<|>>","")
+
 # containedIn
 # containedIn only states ressources that are not published by them self but as part of a host ressource.
 
@@ -179,7 +181,7 @@ end
 
 replace_all("containedIn[].*.id", "^\\(DE-605\\)(.*)$", "http://lobid.org/resources/$1#!")
 replace_all("containedIn[].*.id", "^\\(DE-600\\)(.*)$", "http://ld.zdb-services.de/resource/$1")
-
+replace_all("containedIn[].*.label","<<|>>","")
 
 # primaryForm
 
@@ -298,28 +300,30 @@ end
 set_array("related[]")
 do list(path:"775??|776??", "var":"$i")
   unless exists("$i.M")
-    add_field("related[].$append.test","")
-    if all_match("$i.w", "\\(DE-605\\)(.*)")
-      copy_field("$i.w", "related[].$last.id")
-      replace_all("related[].$last.id", "^\\(DE-605\\)(.*)$", "http://lobid.org/resources/$1#!")
-    end
-    set_array("related[].$last.note[]")
-    paste("related[].$last.note[].$append","$i.i", "$i.n")
-    replace_all("related[].$last.note[].$last", "Erscheint auch als ","")
-    copy_field("$i.t", "related[].$last.label")
-    copy_field("$i.x", "related[].$last.issn")
-    set_array("$i.isbn13")
-    set_array("$i.isbn10")
-    do list(path: "$i.z", "var":"$j")
-      isbn("$j", to: "clean")
-      copy_field("$j", "$i.isbn13.$append")
-      copy_field("$j", "$i.isbn10.$append")
-    end
-    set_array("related[].$last.isbn[]")
-    isbn("$i.isbn10.*", to:"isbn10")
-    isbn("$i.isbn13.*", to:"isbn13")
-    copy_field("$i.isbn13.*", "related[].$last.isbn[].$append")
-    copy_field("$i.isbn10.*", "related[].$last.isbn[].$append")
+    unless any_match ("$i.i", ".*eproduktion von.*")
+      add_field("related[].$append.test","")
+      if all_match("$i.w", "\\(DE-605\\)(.*)")
+        copy_field("$i.w", "related[].$last.id")
+        replace_all("related[].$last.id", "^\\(DE-605\\)(.*)$", "http://lobid.org/resources/$1#!")
+      end
+      set_array("related[].$last.note[]")
+      paste("related[].$last.note[].$append","$i.i", "$i.n")
+      replace_all("related[].$last.note[].$last", "Erscheint auch als ","")
+      copy_field("$i.t", "related[].$last.label")
+      copy_field("$i.x", "related[].$last.issn")
+      set_array("$i.isbn13")
+      set_array("$i.isbn10")
+      do list(path: "$i.z", "var":"$j")
+        isbn("$j", to: "clean")
+        copy_field("$j", "$i.isbn13.$append")
+        copy_field("$j", "$i.isbn10.$append")
+      end
+      set_array("related[].$last.isbn[]")
+      isbn("$i.isbn10.*", to:"isbn10")
+      isbn("$i.isbn13.*", to:"isbn13")
+      copy_field("$i.isbn13.*", "related[].$last.isbn[].$append")
+      copy_field("$i.isbn10.*", "related[].$last.isbn[].$append")
+      end
   end
 end
 
@@ -514,6 +518,8 @@ unless any_equal("exampleOfWork.label", "")
   set_array("exampleOfWork.type[]","Work")
 end
 
+replace_all("exampleOfWork.label","<<|>>","")
+
 # following only with second indicator 2 for analytical entries:
 # 700 - Added Entry-Personal Name (R)
 # 710 - Added Entry-Corporate Name (R)
@@ -548,3 +554,5 @@ do list(path:"700?2|710?2|711?2|730?2", "var": "$i")
     end
   end
 end
+
+replace_all("containsExampleOfWork[].*.label","<<|>>","")
