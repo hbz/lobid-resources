@@ -128,13 +128,38 @@ end
 # compare GND identifier (idn) with ALMA GND enrichment elements:
 do list(path:"subject[]", "var":"$i")
   set_array("$i.altLabel[]")
-  do list(path:"GEL??|GPN??|GKT??|GKS??|GST??|GGN??", "var": "$z")
-    if in ("$i.@gndIdn", "$z.B")
-      if exists("$z.x") # check if GND concept has combined variant
-        paste("$i.altLabel[].$append","$z.a","~/","$z.x")
-      else
-        copy_field("$z.a","$i.altLabel[].$append")
+  do list(path:"GPN??", "var": "$z")
+    if in ("$i.@gndIdn", "$z.B") # Person labels have no character between $a (Name) and $b (Number).
+      set_array("$z.@combinedLabel")
+      copy_field("$z.a","$z.@combinedLabel.$append")
+      copy_field("$z.b","$z.@combinedLabel.$append")
+      join_field("$z.@combinedLabel", " ")
+      if exists("$z.c")
+        paste("$z.@combinedLabel", "$z.@combinedLabel", "~, ", "$z.c", join_char:"")
       end
+      if exists("$z.g")
+        paste("$z.@combinedLabel", "$z.@combinedLabel", "~ (", "$z.g", "~)", join_char:"")
+      end
+      if exists("$z.x")
+        paste("$z.@combinedLabel", "$z.@combinedLabel", "~/","$z.x")
+      end
+      copy_field("$z.@combinedLabel", "$i.altLabel[].$append")
+    end
+  end
+  do list(path:"GEL??|GKT??|GKS??|GST??|GGN??", "var": "$z")  # Other altLabels have a "," character between $a and $b.
+    if in ("$i.@gndIdn", "$z.B")
+      set_array("$z.@combinedLabel")  # check if GND concept has combined variant
+      copy_field("$z.a","$z.@combinedLabel.$append")
+      copy_field("$z.b","$z.@combinedLabel.$append")
+      copy_field("$z.c","$z.@combinedLabel.$append")
+      join_field("$z.@combinedLabel", ", ")
+      if exists("$z.g")
+        paste("$z.@combinedLabel", "$z.@combinedLabel", "~ (", "$z.g", "~)", join_char:"")
+      end
+      if exists("$z.x")
+        paste("$z.@combinedLabel", "$z.@combinedLabel", "~/","$z.x")
+      end
+      copy_field("$z.@combinedLabel", "$i.altLabel[].$append")
     end
   end
   remove_field("$i.@gndIdn")
@@ -326,13 +351,38 @@ do list (path: "subject[]", "var": "$i")
     end
     # compare GND identifier (idn) with ALMA GND enrichment elements:
     set_array("$j.altLabel[]")
-    do list(path:"GPN??|GKT??|GKS??|GST??|GGN??", "var": "$z")
-      if in ("$j.@gndIdn", "$z.B")
-        if exists("$z.x") # check if GND concept has combined variant
-          paste("$j.altLabel[].$append","$z.a","~/","$z.x")
-        else
-          copy_field("$z.a","$j.altLabel[].$append")
+    do list(path:"GPN??", "var": "$z")
+      if in ("$j.@gndIdn", "$z.B") # Person labels have no character between $a (Name) and $b (Number).
+        set_array("$z.@combinedLabel")
+        copy_field("$z.a","$z.@combinedLabel.$append")
+        copy_field("$z.b","$z.@combinedLabel.$append")
+        join_field("$z.@combinedLabel", " ")
+        if exists("$z.c")
+          paste("$z.@combinedLabel", "$z.@combinedLabel", "~, ", "$z.c", join_char:"")
         end
+        if exists("$z.g")
+          paste("$z.@combinedLabel", "$z.@combinedLabel", "~ (", "$z.g", "~)", join_char:"")
+        end
+        if exists("$z.x")
+          paste("$z.@combinedLabel", "$z.@combinedLabel", "~/","$z.x")
+        end
+        copy_field("$z.@combinedLabel", "$j.altLabel[].$append")
+      end
+    end
+    do list(path:"GEL??|GKT??|GKS??|GST??|GGN??", "var": "$z")  # Other altLabels have a "," character between $a and $b.
+      if in ("$j.@gndIdn", "$z.B")  # check if GND concept has combined variant
+        set_array("$z.@combinedLabel")
+        copy_field("$z.a","$z.@combinedLabel.$append")
+        copy_field("$z.b","$z.@combinedLabel.$append")
+        copy_field("$z.c","$z.@combinedLabel.$append")
+        join_field("$z.@combinedLabel", ", ")
+        if exists("$z.g")
+          paste("$z.@combinedLabel", "$z.@combinedLabel", "~ (", "$z.g", "~)", join_char:"")
+        end
+        if exists("$z.x")
+          paste("$z.@combinedLabel", "$z.@combinedLabel", "~/","$z.x")
+        end
+        copy_field("$z.@combinedLabel", "$j.altLabel[].$append")
       end
     end
     remove_field("$j.@gndIdn")
