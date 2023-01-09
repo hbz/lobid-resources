@@ -252,8 +252,27 @@ do once("schlagwortfolgeMacro")
         do list(path: "$i.D", "var": "$k")
           copy_field("$k","subject[].$last.componentList[].$last.type[].$append")
         end
-        copy_field("$i.a","subject[].$last.componentList[].$last.label")
-        copy_field("$i.a","subject[].$last.label.$append")
+        set_array("$i.@combinedLabel")  # check if GND concept has combined variant
+        copy_field("$i.a","$i.@combinedLabel.$append")
+        copy_field("$i.b","$i.@combinedLabel.$append")
+        if any_equal("subject[].$last.componentList[].$last.type[]","p")
+          join_field("$i.@combinedLabel", " ")
+        else
+          join_field("$i.@combinedLabel", ". ")
+        end
+        if exists("$i.c")
+          paste("$i.@combinedLabel", "$i.@combinedLabel", "~, ", "$i.c", join_char:"")
+        end
+        if exists("$i.g")
+          paste("$i.@combinedLabel", "$i.@combinedLabel", "~ (", "$i.g", "~)", join_char:"")
+        end
+        if exists("$i.x")
+          paste("$i.@combinedLabel", "$i.@combinedLabel", "~/","$i.x")
+        end
+        copy_field("$i.@combinedLabel", "subject[].$last.componentList[].$last.label")
+        unless any_equal("subject[].$last.componentList[].$last.label","")
+          copy_field("subject[].$last.componentList[].$last.label","subject[].$last.label.$append")
+        end
         do list(path: "$i.B","var":"$gnd")
           unless exists("subject[].$last.componentList[].$last.@gndIdn")
             copy_field("$gnd","subject[].$last.componentList[].$last.@gndIdn")
