@@ -152,8 +152,10 @@ do list(path:"subject[]", "var":"$i")
         set_array("$z.@combinedLabel")  # check if GND concept has combined variant
         copy_field("$z.a","$z.@combinedLabel.$append")
         copy_field("$z.b","$z.@combinedLabel.$append")
-        copy_field("$z.c","$z.@combinedLabel.$append")
-        join_field("$z.@combinedLabel", ", ")
+        join_field("$z.@combinedLabel", ". ")
+        if exists("$z.c")
+          paste("$z.@combinedLabel", "$z.@combinedLabel", "~, ", "$z.c", join_char:"")
+        end
         if exists("$z.g")
           paste("$z.@combinedLabel", "$z.@combinedLabel", "~ (", "$z.g", "~)", join_char:"")
         end
@@ -377,8 +379,10 @@ do list (path: "subject[]", "var": "$i")
           set_array("$z.@combinedLabel")
           copy_field("$z.a","$z.@combinedLabel.$append")
           copy_field("$z.b","$z.@combinedLabel.$append")
-          copy_field("$z.c","$z.@combinedLabel.$append")
-          join_field("$z.@combinedLabel", ", ")
+          join_field("$z.@combinedLabel", ". ")
+          if exists("$z.c")
+            paste("$z.@combinedLabel", "$z.@combinedLabel", "~, ", "$z.c", join_char:"")
+          end
           if exists("$z.g")
             paste("$z.@combinedLabel", "$z.@combinedLabel", "~ (", "$z.g", "~)", join_char:"")
           end
