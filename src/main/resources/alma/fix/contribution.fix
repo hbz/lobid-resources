@@ -53,7 +53,14 @@ do list(path:"100[01] ", "var":"$i")
           end
         end
         # name
-        copy_field("$i.a","contribution[].$last.agent.label")
+        set_array("$i.@combinedLabel")
+        copy_field("$i.a","$i.@combinedLabel.$append")
+        copy_field("$i.b","$i.@combinedLabel.$append")
+        join_field("$i.@combinedLabel", " ")
+        if exists("$i.c")
+          paste("$i.@combinedLabel", "$i.@combinedLabel", "~, ", "$i.c", join_char:"")
+        end
+        copy_field("$i.@combinedLabel","contribution[].$last.agent.label")
         # type
         set_array("contribution[].$last.agent.type[]","Person")
         # role
@@ -100,7 +107,14 @@ do list(path:"700[01] ", "var":"$i")
           end
         end
         # name
-        copy_field("$i.a","contribution[].$last.agent.label")
+        set_array("$i.@combinedLabel")
+        copy_field("$i.a","$i.@combinedLabel.$append")
+        copy_field("$i.b","$i.@combinedLabel.$append")
+        join_field("$i.@combinedLabel", " ")
+        if exists("$i.c")
+          paste("$i.@combinedLabel", "$i.@combinedLabel", "~, ", "$i.c", join_char:"")
+        end
+        copy_field("$i.@combinedLabel","contribution[].$last.agent.label")
         # type
         set_array("contribution[].$last.agent.type[]","Person")
         # role
