@@ -329,7 +329,11 @@ do list (path: "contribution[]", "var": "$i")
   set_array("$i.agent.altLabel[]")
   do list(path:"GEL??|GPN??|GKT??|GKS??", "var": "$z")
     if in ("$i.agent.@gndIdn", "$z.B")
-      copy_field("$z.a","$i.agent.altLabel[].$append")
+      if exists("$z.x")
+        paste("$i.agent.altLabel[].$append","$z.a","~/","$z.x")
+      else
+        copy_field("$z.a","$i.agent.altLabel[].$append")
+      end
     end
   end
 
