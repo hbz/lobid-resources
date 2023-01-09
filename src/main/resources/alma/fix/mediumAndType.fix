@@ -722,7 +722,7 @@ if any_match("@leaderPos06-07", "^a[cdm]|t.")
 elsif any_match("006", "^[at].*")
   add_field("type[].$append","Book")
 elsif any_match("natureOfContent[].*.label", ".*(Adressbuch|Anthologie|Atlas|Auktionskatalog|Ausstellungskatalog|Backbuch|Bestimmungsbuch|Bildband|Bilderbuch|Drehbuch|Jugendbuch|Jugendsachbuch|Kinderbuch|Kindersachbuch|Kochbuch|Künstlerbuch|Lehrbuch|Lehrerhandbuch|Lesebuch|Liederbuch|Sachbilderbuch|Schulbuch|Tagebuch|Telefonbuch|[Ww]örterbuch).*")
-  add_field("type[].$append", "Series")
+  add_field("type[].$append", "Book")
 end
 
 # Set default type value  "Sonstiges" (Miscellaneous) if no type besides "BibliographicResource" is set.
