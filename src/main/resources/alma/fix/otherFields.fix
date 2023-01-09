@@ -19,8 +19,7 @@ prepend("language[].*.id", "http://id.loc.gov/vocabulary/iso639-2/")
 
 
 # 300 - Physical Description (R)
-# Old Morph MAB-> Extent was less complex: 		<data source="433[-abc][-1].[aq]|653-1.a" name="http://id.loc.gov/ontologies/bibframe/extent"/>
-# TODO: Figure out if we need the extent info as complex as the introx info. I reuse the introx transformation here.
+# We reuse the introx transformation here.
 
 set_array("@300a")
 copy_field("300  .a", "@300a")
