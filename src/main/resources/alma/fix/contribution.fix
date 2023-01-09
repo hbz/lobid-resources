@@ -327,7 +327,7 @@ do list (path: "contribution[]", "var": "$i")
 
   # compare GND identifier (idn) with ALMA GND enrichment elements:
   set_array("$i.agent.altLabel[]")
-  do list(path:"GPN??|GKT??|GKS??", "var": "$z")
+  do list(path:"GEL??|GPN??|GKT??|GKS??", "var": "$z")
     if in ("$i.agent.@gndIdn", "$z.B")
       copy_field("$z.a","$i.agent.altLabel[].$append")
     end
