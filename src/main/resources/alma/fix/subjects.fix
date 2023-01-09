@@ -305,6 +305,12 @@ do list (path: "subject[]", "var": "$i")
     remove_field("$j.@gndIdn")
   end
 end
+do list(path:"subject[]", "var": "$i")
+  uniq("$i.altLabel[]")
+  do list(path:"$i.componentList[]","var":"$j")
+    uniq("$j.altLabel[]")
+  end
+end
 
 uniq("subject[]")
 
