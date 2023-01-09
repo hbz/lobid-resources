@@ -1,48 +1,5 @@
 set_array("hasItem[]")
 
-# do list(path:"MBD  ", "var": "$i")
-#   copy_field("$i.i", "hasItem[].$append.id")
-#   prepend("hasItem[].$last.id","https://lobid.org/item/")
-#   set_array("hasItem[].$last.type[]", "Item", "MBD")
-#   copy_field("$i.M", "hasItem[].$last.heldBy.id")
-#   lookup("hasItem[].$last.heldBy.id", "alma-iz-code-to-isil")
-#   prepend("hasItem[].$last.heldBy.id", "http://lobid.org/organisations/")
-#   append("hasItem[].$last.heldBy.id","#!")
-# end
-
-
-# do list(path:"HOL  ", "var": "$i")
-#   copy_field("$i.8", "hasItem[].$append.id")
-#   prepend("hasItem[].$last.id","https://lobid.org/item/")
-#   add_field("hasItem[].$last.label", "lobid Bestandsressource")
-#   set_array("hasItem[].$last.type[]", "Item", "HOL")
-#   copy_field("$i.8", "hasItem[].$last.heldBy.id")
-#   replace_all("hasItem[].$last.heldBy.id",".*(\\d{4})$","$1")
-#   lookup("hasItem[].$last.heldBy.id", "alma-institution-code-to-isil")
-#   prepend("hasItem[].$last.heldBy.id", "http://lobid.org/organisations/")
-#   append("hasItem[].$last.heldBy.id","#!")
-# end
-
-
-# # TODO: The morph only took up H52 without indices, but what about 1. inidice 8 ("H528 ") and 2. indice 1 ("H5281")
-# do list(path:"H52  ", "var": "$i")
-#   if any_match("$i.8", ".*(\\d{4})$")
-#     copy_field("$i.8", "hasItem[].$append.id")
-#     prepend("hasItem[].$last.id","https://lobid.org/item/")
-#     add_field("hasItem[].$last.label", "lobid Bestandsressource")
-#     set_array("hasItem[].$last.type[]", "Item", "H52")
-#     copy_field("$i.h", "hasItem[].$last.callNumber")
-#     paste("hasItem[].$last.currentLocation", "$i.b", "~/", "$i.c")
-#     copy_field("$i.8", "hasItem[].$last.heldBy.id")
-#     replace_all("hasItem[].$last.heldBy.id",".*(\\d{4})$","$1")
-#     lookup("hasItem[].$last.heldBy.id", "alma-institution-code-to-isil")
-#     prepend("hasItem[].$last.heldBy.id", "http://lobid.org/organisations/")
-#     append("hasItem[].$last.heldBy.id","#!")
-#   end
-# end
-
-
-# TODO: Objects created from ITM seem to produce duplicates. Either we need something to differentiate these or deduplicate these.
 do list(path:"ITM  ", "var": "$i")
   add_field( "hasItem[].$append.test","")
   add_field("hasItem[].$last.label", "lobid Bestandsressource")
