@@ -218,8 +218,6 @@ end
 # Subfields: $a (NR), $0 (R), $4 (R)
 # Subfield: $M is a local field and can create duplicates and is therefore ignored.
 
-# Deleted the "conference"-Element TODO: specific conference Info needs to be added elsewhere.
-
 do list(path:"111[012] |711[012] ", "var":"$i")
   unless exists("$i.M")
     # in some cases (e.g. 99370763882706441) we have an invalid repeated subfield $a
@@ -329,7 +327,7 @@ do list (path: "contribution[]", "var": "$i")
 
   # compare GND identifier (idn) with ALMA GND enrichment elements:
   set_array("$i.agent.altLabel[]")
-  do list(path:"GPN??|GKT??|GKS??", "var": "$z")
+  do list(path:"GEL??|GPN??|GKT??|GKS??", "var": "$z")
     if in ("$i.agent.@gndIdn", "$z.B")
       if exists("$z.x")
         paste("$i.agent.altLabel[].$append","$z.a","~/","$z.x")
@@ -353,4 +351,5 @@ do list (path: "contribution[]", "var": "$i")
   remove_field("$i.agent.@gndIdn")
 end
 
-
+replace_all("contribution[].*.agent.label","<<|>>","")
+replace_all("contribution[].*.agent.altLabel[].*","<<|>>","")
