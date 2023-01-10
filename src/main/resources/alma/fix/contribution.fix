@@ -53,7 +53,14 @@ do list(path:"100[01] ", "var":"$i")
           end
         end
         # name
-        copy_field("$i.a","contribution[].$last.agent.label")
+        set_array("$i.@combinedLabel")
+        copy_field("$i.a","$i.@combinedLabel.$append")
+        copy_field("$i.b","$i.@combinedLabel.$append")
+        join_field("$i.@combinedLabel", " ")
+        if exists("$i.c")
+          paste("$i.@combinedLabel", "$i.@combinedLabel", "~, ", "$i.c", join_char:"")
+        end
+        copy_field("$i.@combinedLabel","contribution[].$last.agent.label")
         # type
         set_array("contribution[].$last.agent.type[]","Person")
         # role
@@ -100,7 +107,14 @@ do list(path:"700[01] ", "var":"$i")
           end
         end
         # name
-        copy_field("$i.a","contribution[].$last.agent.label")
+        set_array("$i.@combinedLabel")
+        copy_field("$i.a","$i.@combinedLabel.$append")
+        copy_field("$i.b","$i.@combinedLabel.$append")
+        join_field("$i.@combinedLabel", " ")
+        if exists("$i.c")
+          paste("$i.@combinedLabel", "$i.@combinedLabel", "~, ", "$i.c", join_char:"")
+        end
+        copy_field("$i.@combinedLabel","contribution[].$last.agent.label")
         # type
         set_array("contribution[].$last.agent.type[]","Person")
         # role
@@ -327,12 +341,41 @@ do list (path: "contribution[]", "var": "$i")
 
   # compare GND identifier (idn) with ALMA GND enrichment elements:
   set_array("$i.agent.altLabel[]")
-  do list(path:"GEL??|GPN??|GKT??|GKS??", "var": "$z")
-    if in ("$i.agent.@gndIdn", "$z.B")
+  do list(path:"GPN??", "var": "$z")
+    if in ("$i.agent.@gndIdn", "$z.B") # Person labels have no character between $a (Name) and $b (Number).
+      set_array("$z.@combinedLabel")
+      copy_field("$z.a","$z.@combinedLabel.$append")
+      copy_field("$z.b","$z.@combinedLabel.$append")
+      join_field("$z.@combinedLabel", " ")
+      if exists("$z.c")
+        paste("$z.@combinedLabel", "$z.@combinedLabel", "~, ", "$z.c", join_char:"")
+      end
+      if exists("$z.g")
+        paste("$z.@combinedLabel", "$z.@combinedLabel", "~ (", "$z.g", "~)", join_char:"")
+      end
       if exists("$z.x")
-        paste("$i.agent.altLabel[].$append","$z.a","~/","$z.x")
-      else
-        copy_field("$z.a","$i.agent.altLabel[].$append")
+        paste("$z.@combinedLabel", "$z.@combinedLabel", "~/","$z.x")
+      end
+      copy_field("$z.@combinedLabel", "$i.agent.altLabel[].$append")
+    end
+  end
+  do list(path:"GEL??|GKT??|GKS??|GST??|GGN??", "var": "$z")  # Other altLabels have a "," character between $a and $b.
+    unless any_equal("$z.i","Spitzenorgan")
+      if in ("$i.agent.@gndIdn", "$z.B")
+        set_array("$z.@combinedLabel")  # check if GND concept has combined variant
+        copy_field("$z.a","$z.@combinedLabel.$append")
+        copy_field("$z.b","$z.@combinedLabel.$append")
+        join_field("$z.@combinedLabel", ". ")
+        if exists("$z.c")
+          paste("$z.@combinedLabel", "$z.@combinedLabel", "~, ", "$z.c", join_char:"")
+        end
+        if exists("$z.g")
+          paste("$z.@combinedLabel", "$z.@combinedLabel", "~ (", "$z.g", "~)", join_char:"")
+        end
+        if exists("$z.x")
+          paste("$z.@combinedLabel", "$z.@combinedLabel", "~/","$z.x")
+        end
+        copy_field("$z.@combinedLabel", "$i.agent.altLabel[].$append")
       end
     end
   end
@@ -351,5 +394,8 @@ do list (path: "contribution[]", "var": "$i")
   remove_field("$i.agent.@gndIdn")
 end
 
-replace_all("contribution[].*.agent.label","<<|>>","")
-replace_all("contribution[].*.agent.altLabel[].*","<<|>>","")
+do list (path:"contribution[]", "var":"$i")
+  replace_all("$i.agent.label","<<|>>","")
+  uniq("$i.agent.altLabel[]")
+  replace_all("$i.agent.altLabel[].*","<<|>>","")
+end
