@@ -326,7 +326,7 @@ public class Lobid {
 	}
 
 	private static boolean isGnd(String term) {
-		return term.startsWith("https://d-nb.info/gnd");
+		return term.contains("://d-nb.info/gnd");
 	}
 
 	/**
