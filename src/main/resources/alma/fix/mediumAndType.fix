@@ -2,33 +2,7 @@ set_array("medium[]")
 
 # The type and medium transformation has to be completly remodeled since the transformation was not identical with
 # the old ALEPH Moprh Transformation.
-
-#  <!--
-#    CF = Computer files
-#    MK = Music
-#    MP  = Map
-#    CR = Continuing Resources
-#    VM = Visual materials
-#    MX = Mixed materials
-#    BK  = Book
-#  -->
-# Leader/06 values
-# Value 	Field 008/18-34 configuration
-# a 	    Language material 	Books OR Continuing resources
-# c 	    Notated music 	Music
-# d 	    Manuscript notated music 	Music
-# e 	    Cartographic material 	Maps
-# f 	    Manuscript cartographic material 	Maps
-# g 	    Projected medium 	Visual materials
-# i 	    Nonmusical sound recording 	Music
-# j 	    Musical sound recording 	Music
-# k 	    Two-dimensional nonprojectable graphic 	Visual materials
-# m 	    Computer file 	Computer files
-# o 	    Kit 	Visual materials
-# p 	    Mixed material 	Mixed materials
-# r 	    Three dimensional artifact or naturally occurring object 	Visual materials
-# t 	    Manuscript language material 	Books
-
+# For leader specific values see: https://www.loc.gov/marc/bibliographic/bdleader.html
 # @LeaderPos06 - Type of record
 # @LeaderPos07 - Bibliographic level
 # set @leaderType-variable
@@ -187,7 +161,6 @@ elsif any_match("25[09]??.a", "Nachdruck|Reprint") # Element 250 and 259
 end
 
 # medium:   "Datenträger":	"http://rdaregistry.info/termList/RDAMediaType/1003"
-# TODO: Check why so many Manuscripts are Print AND Manuscript.
 
 if any_match("@leaderPos06-07", "^m.*")
   add_field("medium[].$append.label","Datenträger")
@@ -216,6 +189,7 @@ elsif any_match("340  .a", ".*(Elektronische Ressource|Blu-ray|Cartridge|CD|Comp
 end
 
 # medium: "Manuskript":	"http://purl.org/ontology/bibo/Manuscript"
+# TODO: Check why so many Manuscripts are Print AND Manuscript.
 
 
 if any_match("@leaderPos06-07", "^[dft].")
@@ -323,40 +297,6 @@ end
 
 set_array("type[]","BibliographicResource")
 
-# From schema list of set types:
-#             "enum": [
-#                 "BibliographicResource", #
-#                 "ArchivalResource",
-#                 "ArchivedWebPage", #
-#                 "Book", #
-#                 "Collection",
-#                 "Periodical", #
-#                 "Series", #
-#                 "Newspaper", #
-#                 "Journal",
-#                 "MultiVolumeBook", #
-#                 "PublicationIssue", #
-#                 "Article", #
-#                 "Miscellaneous", #
-#                 "Thesis", #
-#                 "EditedVolume", #
-#                 "Proceedings", #
-#                 "Festschrift", #
-#                 "Bibliography", #
-#                 "OfficialPublication", #
-#                 "ReferenceSource", #
-#                 "Statistics", #
-#                 "Legislation", #
-#                 "PublishedScore", #
-#                 "Schoolbook", #
-#                 "Game", #
-#                 "Biography", #
-#                 "Report", #
-#                 "Image", #
-#                 "Map", #
-#                 "Standard" #
-#             ]
-
 # There seems to be a discrepancy between the values in the schema enum and in the aggregation.
 # Real data: http://lobid.org/resources/search?format=json&aggregations=type
 
@@ -365,11 +305,8 @@ set_array("type[]","BibliographicResource")
 
 # type: "ArchivedWebPage"
 
-#		<data source="051." name="@archived">
-#			<regexp match="^.w" format="$[ns-lobid-vocab]ArchivedWebPage"/>
-#		</data>
-
-# TODO: There seems to be no mapping from 051.: .w to any MARC Values.
+# There seems to be no mapping from 051.: .w to any MARC Values.
+# Should we also add type WebPage ?
 
 if any_equal("natureOfContent[].*.label","Website")
   do list(path: "856??", "var": "$i")
@@ -387,33 +324,6 @@ if any_equal("natureOfContent[].*.label","Website")
     end
   end
 end
-
-
-# type: "Article"
-
-#		<data source="051." name="@article">
-#			<regexp match="^.t|^..t|^...t|^.....t" format="$[ns-bibo]Article"/>
-#		</data>
-#		<data source="052." name="@article">
-#			<regexp match="^[af]|^.au|^...au|^.....au" format="$[ns-bibo]Article"/>
-#		</data>
-
-# if any_equal("@type__008Pos33", "B#e")
-#   add_field("@facet_type", "Aufsatz")
-# else
-#   if any_match("@006Pos00__006Pos16", "[at]#e")
-#     add_field("@facet_type", "Aufsatz")
-#   else
-#     if any_match("@type__008Pos24|@type__008Pos25|@type__008Pos26|@type__008Pos27", "(?:B|CR)#g")
-#       add_field("@facet_type", "Aufsatz")
-#     else
-#       if any_match("@006Pos00__006Pos07|@006Pos00__006Pos08|@006Pos00__006Pos09|@006Pos00__006Pos10", "[ast]#g")
-#         add_field("@facet_type", "Aufsatz")
-#       end
-#     end
-#   end
-# end
-
 
 
 # type: "Bibliography"
@@ -556,7 +466,7 @@ end
 # type: "PublishedScore" (Musikalia)
 
 
-# also if it has ismn?
+# also if it has ismn
 # hbz mapping for 051. 0 m seems odd 008,18-19 ||? 052. none at all.
 
 
@@ -621,8 +531,6 @@ end
 
 # type: "PublicationIssue"
 
-# TODO: I do not understand this transformation.
-
 
 if exists("zdbId")
   if exists("245??.n")
@@ -634,6 +542,7 @@ end
 
 # TODO: HT003176544 transforms but is not PublicationIssue in lobid ALEPH.
 # TODO: Also check if PublicationIssue and Periodical as type are mutual exclusive.
+# TODO: Check if there are other versions of PublicationIssue
 
 
 # type:"ReferenceSource"
@@ -725,11 +634,16 @@ elsif any_match("natureOfContent[].*.label", ".*(Adressbuch|Anthologie|Atlas|Auk
   add_field("type[].$append", "Book")
 end
 
+
+# type: "Miscellaneous"
+
 # Set default type value  "Sonstiges" (Miscellaneous) if no type besides "BibliographicResource" is set.
 
 unless exists("type[].2")
   add_field("type[].$append", "Miscellaneous")
 end
+
+# type: "Article"
 
 # TODO: What is Aufsatz/Artikel inteded for only monograph, serial or continues ressource component?
 # TODO: There is no mapping for 052/1-6/6=au Aufsatz
