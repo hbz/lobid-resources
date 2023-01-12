@@ -7,14 +7,18 @@ replace_all("@title","<<|>>","")
 
 set_array("@titleOfSubSeries_n") # Subvolume numbering
 do list(path:"245??.n", "var":"$i")
-  copy_field("$i","@titleOfSubSeries_n.$append")
+  unless all_equal("$i","[...]")
+    copy_field("$i","@titleOfSubSeries_n.$append")
+  end
 end
 join_field("@titleOfSubSeries_n", ". ")
 
 set_array("@titleOfSubSeries_p")
 
 do list(path:"245??.p", "var":"$i") # Subvolume title
-  copy_field("$i","@titleOfSubSeries_p.$append")
+  unless all_equal("$i","[...]")
+    copy_field("$i","@titleOfSubSeries_p.$append")
+  end
 end
 replace_all("@titleOfSubSeries_p.*", "\\s?\\.?\\s?$", "")
 replace_all("@titleOfSubSeries_p.*","<<|>>","")
