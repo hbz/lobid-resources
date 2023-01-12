@@ -35,6 +35,7 @@ import play.libs.F.Promise;
 import play.libs.Json;
 import play.libs.ws.WS;
 import play.mvc.Http;
+import play.mvc.Http.Status;
 import play.mvc.Result;
 import play.test.Helpers;
 
@@ -132,6 +133,12 @@ public class Lobid {
 			String simpleId =
 					id.replaceAll("https?://lobid.org/resources?/(.+?)(#!)?$", "$1");
 			Result result = Application.resource(simpleId, "json").get(API_TIMEOUT);
+			if (result.status() != Status.OK) {
+				// In an almaMmsId-based setup, we might still link to others via hbzId
+				// (see https://github.com/hbz/lobid-resources/issues/1592 for details)
+				String actualId = Application.idSearchResult(simpleId);
+				result = Application.resource(actualId, "json").get(API_TIMEOUT);
+			}
 			JsonNode json =
 					Json.parse(Helpers.contentAsString(result)).findValue("title");
 			String label =
