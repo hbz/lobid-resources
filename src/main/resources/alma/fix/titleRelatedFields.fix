@@ -5,7 +5,7 @@ replace_all("@title", "^[©]|\\s?[,.:;/=]?$", "")
 replace_all("@title","<<|>>","")
 
 
-set_array("@titleOfSubSeries_n")
+set_array("@titleOfSubSeries_n") # Subvolume numbering
 do list(path:"245??.n", "var":"$i")
   copy_field("$i","@titleOfSubSeries_n.$append")
 end
@@ -13,19 +13,24 @@ join_field("@titleOfSubSeries_n", ". ")
 
 set_array("@titleOfSubSeries_p")
 
-do list(path:"245??.p", "var":"$i")
+do list(path:"245??.p", "var":"$i") # Subvolume title
   copy_field("$i","@titleOfSubSeries_p.$append")
 end
 replace_all("@titleOfSubSeries_p.*", "\\s?\\.?\\s?$", "")
 replace_all("@titleOfSubSeries_p.*","<<|>>","")
-prepend("@titleOfSubSeries_p.1", ": ")
+join_field("@titleOfSubSeries_p", ". ")
+vacuum()
+if exists("@titleOfSubSeries_n") # separate subvolume numbering and title with :
+  prepend("@titleOfSubSeries_p", ": ")
+end
 
-paste("@titleOfSubSeries", "@titleOfSubSeries_n",  "@titleOfSubSeries_p.1", join_char: "")
+paste("@titleOfSubSeries", "@titleOfSubSeries_n",  "@titleOfSubSeries_p", join_char: "")
 
 vacuum()
+
 prepend("@titleOfSubSeries",", ")
 
-paste("title","@title", "@titleOfSubSeries", join_char: "")
+paste("title","@title", "@titleOfSubSeries", join_char: "") # title consists of main title + if exists: subvolume numbering and subvolume title
 
 # 246 - Varying Form of Title (R) - Subfields: $a (NR)
 
