@@ -13,7 +13,7 @@ do list(path:"655 7", "var":"$i")
       # This is only DNB, should we also check for other uris for keywords?
       if any_match("$j","^\\(DE-588\\)(.*)$")
         copy_field("$j","natureOfContent[].$last.id")
-        replace_all("natureOfContent[].$last.id", "^\\(DE-588\\)(.*)$", "http://d-nb.info/gnd/$1")
+        replace_all("natureOfContent[].$last.id", "^\\(DE-588\\)(.*)$", "https://d-nb.info/gnd/$1")
       end
     end
   end
@@ -34,7 +34,7 @@ do list(path: "natureOfContent[]", "var":"$i")
   unless exists("$i.id")
     copy_field("$i.label","$i.id")
     lookup("$i.id","formschlagwort2Gnd", delete:"true")
-    prepend("$i.id", "http://d-nb.info/gnd/")
+    prepend("$i.id", "https://d-nb.info/gnd/")
   end
 end
 
@@ -123,7 +123,7 @@ do list(path:"600??", "var":"$i")
     do list(path:"$i.0", "var":"$j")
       if any_match("$j","^\\(DE-588\\)(.*)$")
         copy_field("$j", "subject[].$last.id")
-        replace_all("subject[].$last.id","^\\(DE-588\\)(.*)$","http://d-nb.info/gnd/$1")
+        replace_all("subject[].$last.id","^\\(DE-588\\)(.*)$","https://d-nb.info/gnd/$1")
         copy_field("$j", "subject[].$last.gndIdentifier")
         replace_all("subject[].$last.gndIdentifier","^\\(DE-588\\)(.*)$","$1")
       end
@@ -164,7 +164,7 @@ do list(path:"610??|611??|630??|648??|650??|651??", "var":"$i")
     do list(path:"$i.0", "var":"$j")
       if any_match("$j","^\\(DE-588\\)(.*)$")
         copy_field("$j", "subject[].$last.id")
-        replace_all("subject[].$last.id","^\\(DE-588\\)(.*)$","http://d-nb.info/gnd/$1")
+        replace_all("subject[].$last.id","^\\(DE-588\\)(.*)$","https://d-nb.info/gnd/$1")
         copy_field("$j", "subject[].$last.gndIdentifier")
         replace_all("subject[].$last.gndIdentifier","^\\(DE-588\\)(.*)$","$1")
       end
@@ -228,7 +228,7 @@ end
 do list(path:"0820 |08200", "var":"$i")
   set_array("subject[].$append.type[]","Concept")
   add_field("subject[].$last.source.label","Dewey-Dezimalklassifikation")
-  add_field("subject[].$last.source.id","http://d-nb.info/gnd/4149423-4")
+  add_field("subject[].$last.source.id","https://d-nb.info/gnd/4149423-4")
   do list(path:"$i.a", "var": "$j")
     unless exists("subject[].$last.label")
       copy_field("$i.a","subject[].$last.label")
@@ -337,7 +337,7 @@ do once("schlagwortfolgeMacro")
             add_field("subject[].$last.componentList[].$last.source.label","Gemeinsame Normdatei (GND)")
             add_field("subject[].$last.componentList[].$last.source.id","https://d-nb.info/gnd/7749153-1")
             copy_field("$j", "subject[].$last.componentList[].$last.id")
-            replace_all("subject[].$last.componentList[].$last.id","^\\(DE-588\\)(.*)$","http://d-nb.info/gnd/$1")
+            replace_all("subject[].$last.componentList[].$last.id","^\\(DE-588\\)(.*)$","https://d-nb.info/gnd/$1")
             copy_field("$j", "subject[].$last.componentList[].$last.gndIdentifier")
             replace_all("subject[].$last.componentList[].$last.gndIdentifier","^\\(DE-588\\)(.*)$","$1")
           end
