@@ -151,7 +151,8 @@ public enum TableRow {
 			String[] refAndLabel = refAndLabel(property, val, labels);
 			String href = refAndLabel[0];
 			String label = refAndLabel[1];
-			return String.format("<a title='%s' href='%s'>%s</a>", href, href, label);
+			return String.format("<a title='%s' href='%s'>%s</a>", href,
+					href.substring(href.indexOf("/resources")), label);
 		}
 
 	};
