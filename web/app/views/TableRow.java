@@ -149,10 +149,12 @@ public enum TableRow {
 		private String link(String property, String val,
 				Optional<List<String>> labels) {
 			String[] refAndLabel = refAndLabel(property, val, labels);
-			String href = refAndLabel[0];
+			String url = refAndLabel[0];
 			String label = refAndLabel[1];
-			return String.format("<a title='%s' href='%s'>%s</a>", href,
-					href.substring(href.indexOf("/resources")), label);
+			String resources = "/resources";
+			return String.format("<a title='%s' href='%s'>%s</a>", url,
+					url.contains(resources) ? url.substring(url.indexOf(resources)) : url,
+					label);
 		}
 
 	};
