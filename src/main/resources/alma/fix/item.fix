@@ -24,7 +24,7 @@ do list(path: "HOL  ", "var": "$i")
     unless in("$i.8", "ITM  .*.H")
       add_field( "hasItem[].$append.test","")
       add_field("hasItem[].$last.label", "lobid Bestandsressource")
-      set_array("hasItem[].$last.type[]", "Item","NoItem")
+      set_array("hasItem[].$last.type[]", "Item","PhysikalischerTitel")
       copy_field("$i.8", "hasItem[].$last.heldBy.id")
       replace_all("hasItem[].$last.heldBy.id",".*(\\d{4})$","$1")
       lookup("hasItem[].$last.heldBy.id", "alma-institution-code-to-isil")
@@ -36,6 +36,29 @@ do list(path: "HOL  ", "var": "$i")
         if in("$i.8", "$H52.8")
           paste("hasItem[].$last.currentLocation", "$H52.b", "~/", "$H52.c")
           copy_field("$H52.h", "hasItem[].$last.callNumber")
+        end
+      end
+    end
+  end
+end
+
+do list(path: "MBD  ", "var": "$i")
+  unless any_match("$i.M","49HBZ_NETWORK")
+    unless in("$i.M", "HOL  .M")
+      unless in("$i.M", "HOL  .*.M")
+        unless in("$i.M", "POR  .M")
+          unless in("$i.M", "POR  .*.M")
+            add_field( "hasItem[].$append.test","")
+            add_field("hasItem[].$last.label", "lobid Bestandsressource")
+            set_array("hasItem[].$last.type[]", "Item","NurTitel")
+            copy_field("$i.i", "hasItem[].$last.heldBy.id")
+            replace_all("hasItem[].$last.heldBy.id",".*(\\d{4})$","$1")
+            lookup("hasItem[].$last.heldBy.id", "alma-institution-code-to-isil")
+            copy_field("hasItem[].$last.heldBy.id","hasItem[].$last.heldBy.isil")
+            prepend("hasItem[].$last.heldBy.id", "http://lobid.org/organisations/")
+            append("hasItem[].$last.heldBy.id","#!")
+            paste("hasItem[].$last.id", "~http://lobid.org/items/","almaMmsId", "~:", "hasItem[].$last.heldBy.isil","~#!", join_char: "")
+          end
         end
       end
     end
