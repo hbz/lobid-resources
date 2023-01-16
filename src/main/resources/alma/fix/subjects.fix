@@ -115,11 +115,6 @@ do list(path:"600??", "var":"$i")
       paste("$i.@combinedLabel", "$i.@combinedLabel", "~/","$i.x")
     end
     copy_field("$i.@combinedLabel", "subject[].$last.label")
-    do list(path: "$i.B","var":"$gnd")
-      unless exists("subject[].$last.@gndIdn")
-        copy_field("$gnd","subject[].$last.@gndIdn")
-      end
-    end
     do list(path:"$i.0", "var":"$j")
       if any_match("$j","^\\(DE-588\\)(.*)$")
         copy_field("$j", "subject[].$last.id")
@@ -127,11 +122,19 @@ do list(path:"600??", "var":"$i")
         copy_field("$j", "subject[].$last.gndIdentifier")
         replace_all("subject[].$last.gndIdentifier","^\\(DE-588\\)(.*)$","$1")
       end
-      unless exists("$i.B")
-        if any_match("$j","^\\(uri\\).*DNB\\|(.*)$")
-          copy_field("$j", "subject[].$last.@gndIdn")
-          replace_all("subject[].$last.@gndIdn", "^\\(uri\\).*DNB\\|(.*)$","GND-$1")
+      # GND idn as variable
+      if exists("$i.B")
+        do list(path: "$i.B","var":"$gnd")
+          unless exists("subject[].$last.@gndIdn")
+            copy_field("$gnd","subject[].$last.@gndIdn")
+          end
         end
+      elsif any_match("$j","^.*DNB\\|(.*)$")
+        copy_field("$j", "subject[].$last.@gndIdn")
+        replace_all("subject[].$last.@gndIdn", "^.*DNB\\|(.*)$","GND-$1")
+      elsif any_match("$j","^\\(DE-101\\)(.*)$")
+        copy_field("$j", "subject[].$last.@gndIdn")
+        replace_all("subject[].$last.@gndIdn", "^\\(DE-101\\)(.*)$","GND-$1")
       end
     end
   end
@@ -156,11 +159,6 @@ do list(path:"610??|611??|630??|648??|650??|651??", "var":"$i")
       paste("$i.@combinedLabel", "$i.@combinedLabel", "~/","$i.x")
     end
     copy_field("$i.@combinedLabel", "subject[].$last.label")
-    do list(path: "$i.B","var":"$gnd")
-      unless exists("subject[].$last.@gndIdn")
-        copy_field("$gnd","subject[].$last.@gndIdn")
-      end
-    end
     do list(path:"$i.0", "var":"$j")
       if any_match("$j","^\\(DE-588\\)(.*)$")
         copy_field("$j", "subject[].$last.id")
@@ -168,11 +166,19 @@ do list(path:"610??|611??|630??|648??|650??|651??", "var":"$i")
         copy_field("$j", "subject[].$last.gndIdentifier")
         replace_all("subject[].$last.gndIdentifier","^\\(DE-588\\)(.*)$","$1")
       end
-      unless exists("$i.B")
-        if any_match("$j","^\\(uri\\).*DNB\\|(.*)$")
-          copy_field("$j", "subject[].$last.@gndIdn")
-          replace_all("subject[].$last.@gndIdn", "^\\(uri\\).*DNB\\|(.*)$","GND-$1")
+      # GND idn as variable
+      if exists("$i.B")
+        do list(path: "$i.B","var":"$gnd")
+          unless exists("subject[].$last.@gndIdn")
+            copy_field("$gnd","subject[].$last.@gndIdn")
+          end
         end
+      elsif any_match("$j","^.*DNB\\|(.*)$")
+        copy_field("$j", "subject[].$last.@gndIdn")
+        replace_all("subject[].$last.@gndIdn", "^.*DNB\\|(.*)$","GND-$1")
+      elsif any_match("$j","^\\(DE-101\\)(.*)$")
+        copy_field("$j", "subject[].$last.@gndIdn")
+        replace_all("subject[].$last.@gndIdn", "^\\(DE-101\\)(.*)$","GND-$1")
       end
     end
   end
@@ -327,11 +333,6 @@ do once("schlagwortfolgeMacro")
         unless any_equal("subject[].$last.componentList[].$last.label","")
           copy_field("subject[].$last.componentList[].$last.label","subject[].$last.label.$append")
         end
-        do list(path: "$i.B","var":"$gnd")
-          unless exists("subject[].$last.componentList[].$last.@gndIdn")
-            copy_field("$gnd","subject[].$last.componentList[].$last.@gndIdn")
-          end
-        end
         do list(path:"$i.0", "var": "$j")
           if any_match("$j","^\\(DE-588\\)(.*)$")
             add_field("subject[].$last.componentList[].$last.source.label","Gemeinsame Normdatei (GND)")
@@ -341,11 +342,19 @@ do once("schlagwortfolgeMacro")
             copy_field("$j", "subject[].$last.componentList[].$last.gndIdentifier")
             replace_all("subject[].$last.componentList[].$last.gndIdentifier","^\\(DE-588\\)(.*)$","$1")
           end
-          unless exists("$i.B")
-            if any_match("$j","^\\(uri\\).*DNB\\|(.*)$")
-              copy_field("$j", "subject[].$last.componentList[].$last.@gndIdn")
-              replace_all("subject[].$last.componentList[].$last.@gndIdn", "^\\(uri\\).*DNB\\|(.*)$","GND-$1")
+          # GND idn as variable
+          if exists("$i.B")
+            do list(path: "$i.B","var":"$gnd")
+              unless exists("subject[].$last.componentList[].$last.@gndIdn")
+                copy_field("$gnd","subject[].$last.componentList[].$last.@gndIdn")
+              end
             end
+          elsif any_match("$j","^.*DNB\\|(.*)$")
+            copy_field("$j", "subject[].$last.componentList[].$last.@gndIdn")
+            replace_all("subject[].$last.componentList[].$last.@gndIdn", "^.*DNB\\|(.*)$","GND-$1")
+          elsif any_match("$j","^\\(DE-101\\)(.*)$")
+              copy_field("$j", "subject[].$last.componentList[].$last.@gndIdn")
+              replace_all("subject[].$last.componentList[].$last.@gndIdn", "^\\(DE-101\\)(.*)$","GND-$1")
           end
         end
         copy_field("$i.d","subject[].$last.componentList[].$last.dateOfBirthAndDeath") # dates will be differentiated later in the process
