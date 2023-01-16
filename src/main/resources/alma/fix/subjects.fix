@@ -128,9 +128,9 @@ do list(path:"600??", "var":"$i")
         replace_all("subject[].$last.gndIdentifier","^\\(DE-588\\)(.*)$","$1")
       end
       unless exists("$i.B")
-        if any_match("$j","^\\(uri\\).*DNB\\|(.*)$")
+        if any_match("$j","^.*DNB\\|(.*)$")
           copy_field("$j", "subject[].$last.@gndIdn")
-          replace_all("subject[].$last.@gndIdn", "^\\(uri\\).*DNB\\|(.*)$","GND-$1")
+          replace_all("subject[].$last.@gndIdn", "^.*DNB\\|(.*)$","GND-$1")
         end
       end
     end
@@ -169,9 +169,9 @@ do list(path:"610??|611??|630??|648??|650??|651??", "var":"$i")
         replace_all("subject[].$last.gndIdentifier","^\\(DE-588\\)(.*)$","$1")
       end
       unless exists("$i.B")
-        if any_match("$j","^\\(uri\\).*DNB\\|(.*)$")
+        if any_match("$j","^.*DNB\\|(.*)$")
           copy_field("$j", "subject[].$last.@gndIdn")
-          replace_all("subject[].$last.@gndIdn", "^\\(uri\\).*DNB\\|(.*)$","GND-$1")
+          replace_all("subject[].$last.@gndIdn", "^.*DNB\\|(.*)$","GND-$1")
         end
       end
     end
@@ -342,9 +342,9 @@ do once("schlagwortfolgeMacro")
             replace_all("subject[].$last.componentList[].$last.gndIdentifier","^\\(DE-588\\)(.*)$","$1")
           end
           unless exists("$i.B")
-            if any_match("$j","^\\(uri\\).*DNB\\|(.*)$")
+            if any_match("$j","^.*DNB\\|(.*)$")
               copy_field("$j", "subject[].$last.componentList[].$last.@gndIdn")
-              replace_all("subject[].$last.componentList[].$last.@gndIdn", "^\\(uri\\).*DNB\\|(.*)$","GND-$1")
+              replace_all("subject[].$last.componentList[].$last.@gndIdn", "^.*DNB\\|(.*)$","GND-$1")
             end
           end
         end

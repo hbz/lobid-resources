@@ -40,9 +40,9 @@ do list(path:"100[01] ", "var":"$i")
             paste("contribution[].$last.agent.id","$k")
           end
           unless exists("$i.B")
-            if any_match("$k","^\\(uri\\).*DNB\\|(.*)$")
+            if any_match("$k","^.*DNB\\|(.*)$")
               copy_field("$k", "contribution[].$last.agent.@gndIdn")
-              replace_all("contribution[].$last.agent.@gndIdn", "^\\(uri\\).*DNB\\|(.*)$","GND-$1")
+              replace_all("contribution[].$last.agent.@gndIdn", "^.*DNB\\|(.*)$","GND-$1")
             end
           end
         end
@@ -94,9 +94,9 @@ do list(path:"700[01] ", "var":"$i")
             paste("contribution[].$last.agent.id","$k")
           end
           unless exists("$i.B")
-            if any_match("$k","^\\(uri\\).*DNB\\|(.*)$")
+            if any_match("$k","^.*DNB\\|(.*)$")
               copy_field("$k", "contribution[].$last.agent.@gndIdn")
-              replace_all("contribution[].$last.agent.@gndIdn", "^\\(uri\\).*DNB\\|(.*)$","GND-$1")
+              replace_all("contribution[].$last.agent.@gndIdn", "^.*DNB\\|(.*)$","GND-$1")
             end
           end
         end
@@ -158,9 +158,9 @@ do list(path:"110[012] ", "var":"$i")
             paste("contribution[].$last.agent.id","$k")
           end
           unless exists("$i.B")
-            if any_match("$k","^\\(uri\\).*DNB\\|(.*)$")
+            if any_match("$k","^.*DNB\\|(.*)$")
               copy_field("$k", "contribution[].$last.agent.@gndIdn")
-              replace_all("contribution[].$last.agent.@gndIdn", "^\\(uri\\).*DNB\\|(.*)$","GND-$1")
+              replace_all("contribution[].$last.agent.@gndIdn", "^.*DNB\\|(.*)$","GND-$1")
             end
           end
         end
@@ -204,9 +204,9 @@ do list(path:"710[012] ", "var":"$i")
             paste("contribution[].$last.agent.id","$k")
           end
           unless exists("$i.B")
-            if any_match("$k","^\\(uri\\).*DNB\\|(.*)$")
+            if any_match("$k","^.*DNB\\|(.*)$")
               copy_field("$k", "contribution[].$last.agent.@gndIdn")
-              replace_all("contribution[].$last.agent.@gndIdn", "^\\(uri\\).*DNB\\|(.*)$","GND-$1")
+              replace_all("contribution[].$last.agent.@gndIdn", "^.*DNB\\|(.*)$","GND-$1")
             end
           end
         end
@@ -250,9 +250,9 @@ do list(path:"111[012] |711[012] ", "var":"$i")
             paste("contribution[].$last.agent.id","$k")
           end
           unless exists("$i.B")
-            if any_match("$k","^\\(uri\\).*DNB\\|(.*)$")
+            if any_match("$k","^.*DNB\\|(.*)$")
               copy_field("$k", "contribution[].$last.agent.@gndIdn")
-              replace_all("contribution[].$last.agent.@gndIdn", "^\\(uri\\).*DNB\\|(.*)$","GND-$1")
+              replace_all("contribution[].$last.agent.@gndIdn", "^.*DNB\\|(.*)$","GND-$1")
             end
           end
         end
