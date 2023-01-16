@@ -101,6 +101,14 @@ do list(path:"260[ 23] |264[ 23][ 1]", "var":"$i")
   copy_field("515??.a","publication[].$last.note[].$append")
 end
 
+do list(path:"500  ", "var":"$i")
+  if any_match("$i.a", "^.*saṃ. \\d{4}=(\\d{4}).*Chr.*")
+    remove_field("publication[].$last.startDate")
+    copy_field("$i.a","publication[].$last.startDate")
+    replace_all("publication[].$last.startDate","^.*saṃ. \\d{4}=(\\d{4}).*Chr.*","$1")
+  end
+end
+
 do list(path: "publication[]", "var": "$i")
   replace_all("$i.startDate", ".*?([01]\\d{3}|20\\d{2}).*", "$1")
   replace_all("$i.endDate", ".*-([01]\\d{3}|20\\d{2})$", "$1")
