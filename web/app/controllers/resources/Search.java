@@ -1,4 +1,4 @@
-/* Copyright 2015-2019 Fabian Steeg, hbz. Licensed under the EPL 2.0 */
+/* Copyright 2015-2023 Fabian Steeg, hbz. Licensed under the EPL 2.0 */
 
 package controllers.resources;
 
@@ -163,7 +163,11 @@ public class Search {
 			List<JsonNode> results = new ArrayList<>();
 			this.aggregations = response.getAggregations();
 			for (SearchHit sh : hits.getHits()) {
-				results.add(Json.toJson(sh.getSource()));
+				Map<String, Object> source = sh.getSource();
+				// TODO: temp, need a proper score solution, with query, see
+				// https://github.com/hbz/lobid-resources/issues/635
+				source.put("_score", sh.getScore());
+				results.add(Json.toJson(source));
 			}
 			result = Json.toJson(results);
 			total = hits.getTotalHits();

@@ -13,6 +13,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
+import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.Operator;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.QueryStringQueryBuilder;
 
@@ -129,11 +131,14 @@ public class Reconcile extends Controller {
 					new TypeReference<Map<String, Object>>() {/**/
 					});
 			ObjectNode resultForHit = Json.newObject();
-			resultForHit.set("id", hit.get("almaMmsId"));
+			String[] elements = hit.get("id").asText().split("/");
+			resultForHit.put("id", elements[elements.length - 1].replace("#!", ""));
 			Object nameObject = map.get("title");
 			String name = nameObject == null ? "" : nameObject + "";
 			resultForHit.put("name", name);
-			resultForHit.set("score", hit.get("score")); // TODO we have no score here
+			// TODO: temp, need a proper score solution, with query, see
+			// https://github.com/hbz/lobid-resources/issues/635
+			resultForHit.set("score", hit.get("_score"));
 			resultForHit.put("match", false);
 			resultForHit.set("type", hit.get("type"));
 			result.add(resultForHit);
@@ -169,14 +174,22 @@ public class Reconcile extends Controller {
 						.field("almaMmsId")//
 						.field("sameAs.id")//
 						.field("id");//
-		QueryStringQueryBuilder propQuery =
-				QueryBuilders.queryStringQuery(propString).boost(5f);
 
-		Search index =
-				new Search.Builder().query(mainQuery).from(0).size(limit).build();
-		// TODO use filter (as filter) and propQuery (as 'should' query)
+		BoolQueryBuilder query = QueryBuilders.boolQuery().must(mainQuery)
+				// TODO: temp, don't reconcile against RPB records:
+				.mustNot(queryStringQuery("_exists_:rpbId"));
+		if (!filter.isEmpty()) {
+			query = query.filter(queryStringQuery(filter));
+		}
+		if (propString != null && !propString.trim().isEmpty()) {
+			query = query.should(queryStringQuery(propString).boost(5f));
+		}
+		return new Search.Builder().query(query).from(0).size(limit).build()
+				.queryResources();
+	}
 
-		return index.queryResources();
+	private static QueryStringQueryBuilder queryStringQuery(String q) {
+		return QueryBuilders.queryStringQuery(q).defaultOperator(Operator.AND);
 	}
 
 	private static String propQuery(Entry<String, JsonNode> entry) {
@@ -185,10 +198,11 @@ public class Reconcile extends Controller {
 		if (props != null) {
 			Logger.debug("Properties: {}", props);
 			for (JsonNode p : props) {
-				String field = p.get("pid").asText(); // TODO use field?
-				String value = p.get("v").asText().trim();
+				String field = p.get("pid").asText();
+				String value = preprocess(p.get("v").asText().trim());
 				if (!value.isEmpty()) {
-					segments.add("(" + value + ")");
+					segments
+							.add("(" + (field.equals("hbzId") ? "hbzId:" : "") + value + ")");
 				}
 			}
 		}
@@ -203,7 +217,7 @@ public class Reconcile extends Controller {
 	}
 
 	private static String clean(String in) {
-		String out = in.replaceAll("[:+\\-=<>(){}\\[\\]^]", " ");
+		String out = in.replaceAll("[!/:+\\-=<>(){}\\[\\]^]", " ");
 		Logger.info("Cleaned invalid query string '{}' to: '{}'", in, out);
 		return out;
 	}
