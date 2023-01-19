@@ -169,11 +169,11 @@ public class Reconcile extends Controller {
 						.field("title", 4f)//
 						.field("otherTitleInformation", 2f)//
 						.field("responsibilityStatement")//
-						.field("rpbId")//
-						.field("hbzId")//
-						.field("almaMmsId")//
-						.field("sameAs.id")//
-						.field("id");//
+						.field("rpbId", 4f)//
+						.field("hbzId", 4f)//
+						.field("almaMmsId", 4f)//
+						.field("sameAs.id", 2f)//
+						.field("id", 4f);//
 
 		BoolQueryBuilder query = QueryBuilders.boolQuery().must(mainQuery)
 				// TODO: temp, don't reconcile against RPB records:
