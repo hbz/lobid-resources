@@ -10,9 +10,9 @@ import org.metafacture.io.FileOpener;
 
 /**
  * Indexes entityfacts into its own ES-Index.
- * 
+ *
  * @author Pascal Christoph (dr0i)
- * 
+ *
  */
 @SuppressWarnings("javadoc")
 public final class Entityfacts2Es {
@@ -36,7 +36,6 @@ public final class Entityfacts2Es {
 		esIndexer.setUpdateNewestIndex(false);
 		esIndexer.setIndexConfig("index-config-entityfacts.json");
 		esIndexer.lookupMabxmlDeletion = false;
-		esIndexer.lookupWikidata = false;
 		esIndexer.onSetReceiver();
 		opener.setReceiver(rre).setReceiver(esIndexer);
 		opener.process(new File(inputPath).getAbsolutePath());

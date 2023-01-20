@@ -17,9 +17,9 @@ import org.metafacture.monitoring.ObjectBatchLogger;
 /**
  * Transform loc bibframe ntriples into JSON-LD and index that into
  * elasticsearch.
- * 
+ *
  * @author Pascal Christoph (dr0i)
- * 
+ *
  */
 @SuppressWarnings("javadoc")
 public class LocBibframe2JsonEs {
@@ -93,7 +93,6 @@ public class LocBibframe2JsonEs {
 		esIndexer.setUpdateNewestIndex(update);
 		esIndexer.setIndexConfig(indexConfig);
 		esIndexer.lookupMabxmlDeletion = false;
-		esIndexer.lookupWikidata = false;
 		esIndexer.onSetReceiver();
 		return esIndexer;
 	}
