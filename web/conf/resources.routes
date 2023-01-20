@@ -25,6 +25,7 @@ DELETE /resources/stars/:id             controllers.resources.Application.unstar
 GET    /resources/context.jsonld        controllers.resources.Application.context()
 GET    /resources/dataset.jsonld        controllers.resources.Application.dataset(format="json")
 GET    /resources/dataset               controllers.resources.Application.dataset(format?="")
+GET    /resources/:id.preview           controllers.resources.Application.preview(id)
 GET    /resources/:id.:format           controllers.resources.Application.resourceDotFormat(id, format)
 GET    /items/:id.$format<html|json|rdf|ttl|nt> controllers.resources.Application.itemDotFormat(id, format)
 GET    /resources/:id                   controllers.resources.Application.resource(id, format ?= null)
