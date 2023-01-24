@@ -206,8 +206,7 @@ public class Reconcile extends Controller {
 				String field = p.get("pid").asText();
 				String value = preprocess(p.get("v").asText().trim());
 				if (!value.isEmpty()) {
-					segments
-							.add("(" + (field.equals("hbzId") ? "hbzId:" : "") + value + ")");
+					segments.add("(" + field + ":" + value + ")");
 				}
 			}
 		}
@@ -223,7 +222,9 @@ public class Reconcile extends Controller {
 
 	private static String clean(String in) {
 		String out = in.replaceAll("[!/:+\\-=<>(){}\\[\\]^]", " ");
-		Logger.info("Cleaned invalid query string '{}' to: '{}'", in, out);
+		if (!in.equals(out)) {
+			Logger.info("Cleaned query string '{}' to: '{}'", in, out);
+		}
 		return out;
 	}
 
