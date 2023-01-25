@@ -71,8 +71,8 @@ public class Reconcile extends Controller {
 		ObjectNode result = Json.newObject();
 		result.putArray("versions").add("0.1").add("0.2");
 		result.put("name",
-				"lobid-resources reconciliation for OpenRefine (localhost)");
-		result.put("identifierSpace", "http://localhost:9000/resources");
+				"lobid-resources reconciliation for OpenRefine (" + host + ")");
+		result.put("identifierSpace", host + "/resources");
 		result.put("schemaSpace", "http://purl.org/dc/terms/BibliographicResource");
 		result.set("defaultTypes", TYPES);
 		result.set("view", Json.newObject().put("url", host + "/resources/{{id}}"));
