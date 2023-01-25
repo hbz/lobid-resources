@@ -17,6 +17,7 @@ import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.Operator;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.QueryStringQueryBuilder;
+import org.elasticsearch.search.SearchHit;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -190,7 +191,13 @@ public class Reconcile extends Controller {
 			query = query.should(queryStringQuery(propString).boost(5f));
 		}
 		return new Search.Builder().query(query).from(0).size(limit).build()
-				.queryResources();
+				.queryResources((SearchHit hit) -> {
+					Map<String, Object> source = hit.getSource();
+					// TODO: temp, need a proper score solution, with query, see
+					// https://github.com/hbz/lobid-resources/issues/635
+					source.put("_score", hit.getScore());
+					return Json.toJson(source);
+				});
 	}
 
 	private static QueryStringQueryBuilder queryStringQuery(String q) {
