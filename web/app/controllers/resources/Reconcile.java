@@ -223,12 +223,18 @@ public class Reconcile extends Controller {
 	}
 
 	static String preprocess(String s) {
-		return s.startsWith("http") ? "\"" + s + "\""
+		return s.startsWith("http") || isGndId(s) ? "\"" + s + "\""
 				: /* index.validate(s) ? s : */ clean(s); // TODO add validation
 	}
 
+	private static boolean isGndId(String string) {
+		return string.matches(
+				// https://www.wikidata.org/wiki/Property:P227#P1793
+				"1[012]?\\d{7}[0-9X]|[47]\\d{6}-\\d|[1-9]\\d{0,7}-[0-9X]|3\\d{7}[0-9X]");
+	}
+
 	private static String clean(String in) {
-		String out = in.replaceAll("[!/:+\\-=<>(){}\\[\\]^]", " ");
+		String out = in.replaceAll("[\"!/:+\\-=<>(){}\\[\\]^]", " ");
 		if (!in.equals(out)) {
 			Logger.info("Cleaned query string '{}' to: '{}'", in, out);
 		}
