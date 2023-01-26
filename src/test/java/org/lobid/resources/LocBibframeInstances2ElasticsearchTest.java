@@ -44,7 +44,7 @@ import de.hbz.lobid.helper.CompareJsonMaps;
  * elasticsearch.Query the index and test the data by transforming the data into
  * one big ntriple file(which is great to make diffs)and into several* JSON-LD
  * files(reflecting the records residing in elasticsearch).
- * 
+ *
  * @author Pascal Christoph(dr0i)
  **/
 @SuppressWarnings("javadoc")
@@ -202,7 +202,6 @@ public final class LocBibframeInstances2ElasticsearchTest {
 		esIndexer.setIndexAliasSuffix("");
 		esIndexer.setUpdateNewestIndex(false);
 		esIndexer.setIndexConfig(LocBibframe2JsonEs.INDEX_CONFIG_BIBFRAME);
-		esIndexer.lookupWikidata = false;
 		esIndexer.onSetReceiver();
 		return esIndexer;
 	}

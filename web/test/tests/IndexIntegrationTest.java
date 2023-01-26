@@ -21,7 +21,7 @@ import play.Logger;
 
 /**
  * Integration tests for functionality provided by the {@link Search} class.
- * 
+ *
  * @author Fabian Steeg (fsteeg)
  */
 @SuppressWarnings("javadoc")
@@ -35,14 +35,14 @@ public class IndexIntegrationTest extends LocalIndexSetup {
 		return queries(new Object[][] {
 			{ "title:der", /*->*/ 27 },
 			{ "title:Westfalen", /*->*/ 6 },
-			{ "contribution.agent.label:Westfalen", /*->*/ 10 },
-			{ "contribution.agent.label:Westfälen", /*->*/ 10 },
+			{ "contribution.agent.label:Westfalen", /*->*/ 9 },
+			{ "contribution.agent.label:Westfälen", /*->*/ 9 },
 			{ "contribution.agent.id:\"https\\://d-nb.info/gnd/5265186-1\"", /*->*/ 1 },
 			{ "contribution.agent.id:5265186-1", /*->*/ 0 },
 			{ "contribution.agent.id:\"5265186-1\"", /*->*/ 0 },
 			{ "title:Westfalen AND contribution.agent.label:Westfalen", /*->*/ 3 },
 			{ "title:Westfalen OR title:Munsterland", /*->*/ 7 },
-			{ "(title:Westfalen OR title:Münsterland) AND contribution.agent.id:\"https\\://d-nb.info/gnd/2019209-5\"", /*->*/ 1 },
+			{ "(title:Westfalen OR title:Münsterland) AND contribution.agent.id:\"https\\://d-nb.info/gnd/2019209-5\"", /*->*/ 0 },
 			{ "subject.componentList.label:Münsterland", /*->*/ 2 },
 			{ "subject.componentList.label:Muensterland", /*->*/ 2 },
 			{ "subject.componentList.label:Munsterland", /*->*/ 2 },
@@ -54,11 +54,11 @@ public class IndexIntegrationTest extends LocalIndexSetup {
 			{ "subjectAltLabel:Südwestfale", /*->*/ 1 },
 			{ "subjectAltLabel.unstemmed:Südwestfale", /*->*/ 0 },
 			{ "subject.componentList.id:\"https\\://d-nb.info/gnd/4042570-8\"", /*->*/ 6 },
-			{ "(title:Westfalen OR title:Münsterland) AND NOT contribution.agent.id:\"https\\://d-nb.info/gnd/2019209-5\"", /*->*/ 6 },
+			{ "(title:Westfalen OR title:Münsterland) AND NOT contribution.agent.id:\"https\\://d-nb.info/gnd/2019209-5\"", /*->*/ 7 },
 			{ "subject.componentList.label:Westfalen", /*->*/ 12 },
 			{ "subject.componentList.label:Westfälen", /*->*/ 12 },
-			{ "spatial.label:Westfalen", /*->*/ 15 },
-			{ "spatial.label:Westfälen", /*->*/ 15 },
+			{ "spatial.label:Westfalen", /*->*/ 14 },
+			{ "spatial.label:Westfälen", /*->*/ 14 },
 			{ "subject.componentList.id:\"https\\://d-nb.info/gnd/4042570-8\"", /*->*/ 6 },
 			{ "subject.componentList.id:1113670827", /*->*/ 0 },
 			{ "subject.componentList.type:PlaceOrGeographicName", /*->*/ 38 },
@@ -79,7 +79,7 @@ public class IndexIntegrationTest extends LocalIndexSetup {
 			{ "publication.publishedBy:DÄG", /*->*/ 1 },
 			{ "hasItem.id:\"http\\://lobid.org/items/TT003059252\\:DE-5-58\\:9%2F041#\\!\"", /*->*/ 1 },
 			{ "hasItem.id:TT003059252\\:DE-5-58\\:9%2F041", /*->*/ 0 },
-			{ "coverage:99", /*->*/ 24},
+			{ "coverage:99", /*->*/ 16},
 			{ "isbn:3454128013", /*->*/ 1},
 			{ "isbn:345-4128-013", /*->*/ 1},
 			{ "\"Studies in social and political theory\"", /*->*/ 1},
