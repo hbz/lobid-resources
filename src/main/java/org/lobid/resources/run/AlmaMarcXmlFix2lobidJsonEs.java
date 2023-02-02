@@ -6,6 +6,8 @@ import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import de.hbz.lobid.helper.HttpPoster;
 import org.apache.logging.log4j.LogManager;
@@ -80,7 +82,7 @@ public class AlmaMarcXmlFix2lobidJsonEs {
                 String usage =
                     "<input path>%s<index name>%s<index alias suffix ('NOALIAS' sets it empty)>%s<node>%s<cluster>%s<'update' (will take latest index), 'exact' (will take ->'index name' even when no timestamp is suffixed) , else create new index with actual timestamp>%s<optional: filename of a list of files which shall be ETLed>%s<optional: filename of morph>%s";
                 String inputPath = args[0];
-                LOG.info(String.format("inputFile=%s", inputPath));
+                LOG.info(String.format("inputFile(s)=%s", inputPath));
                 indexName = args[1];
                 String date =
                     new SimpleDateFormat("yyyyMMdd-HHmmss").format(new Date());
@@ -156,8 +158,12 @@ public class AlmaMarcXmlFix2lobidJsonEs {
                 String message;
                 boolean success;
                 try {
-                    opener.process(inputPath);
-                    opener.closeStream();
+                    String inputPathes[] = inputPath.split(";");
+                    for (int i=0;i < inputPathes.length; i++ ) {
+                        LOG.info(String.format("Going to process inputFile=%s", inputPathes[i]));
+                        opener.process(inputPathes[i]);
+                        opener.closeStream();
+                    }
                     success = true;
                     message = "ETL succeeded, index name: " + indexName;
                 }
@@ -165,7 +171,10 @@ public class AlmaMarcXmlFix2lobidJsonEs {
                     e.printStackTrace();
                     LOG.error(
                         "ETL fails: ", e.getMessage(), e);
-                    message = e.getStackTrace().toString();
+                    message =  Stream
+                        .of(e.getStackTrace())
+                        .map(StackTraceElement::toString)
+                        .collect(Collectors.joining("\n"));
                     success = false;
                 }
                 sendMail(kind, success, message);
