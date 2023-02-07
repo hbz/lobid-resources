@@ -16,8 +16,7 @@ import org.junit.runners.Suite;
     TestGenerateContext.class,
     org.lobid.resources.Hbz01MabXmlDeletions2ElasticsearchTest.class,
     org.lobid.resources.LocBibframeInstances2ElasticsearchTest.class,
-    org.lobid.resources.AlmaMarc21XmlToLobidJsonMetafixTest.class,
-    org.lobid.resources.AlmaMarc21XmlToLobidJsonTest.class})
+    org.lobid.resources.AlmaMarc21XmlToLobidJsonMetafixTest.class})
 
 public final class UnitTests {
     /* Suite class, groups tests via annotation above */

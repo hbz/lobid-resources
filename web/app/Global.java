@@ -12,7 +12,6 @@ import org.elasticsearch.transport.client.PreBuiltTransportClient;
 
 import controllers.resources.LocalIndex;
 import controllers.resources.Search;
-import controllers.resources.Webhook;
 import controllers.resources.WebhookAlmaFix;
 
 import org.lobid.resources.run.AlmaMarcXml2lobidJsonEs;
@@ -63,17 +62,11 @@ public class Global extends GlobalSettings {
             TransportClient c = new PreBuiltTransportClient(settings);
             addHosts(c);
             client = c;
-            Webhook.clusterHost = CLUSTER_HOSTS.get(0);
             WebhookAlmaFix.clusterHost = CLUSTER_HOSTS.get(0);
-            Webhook.clusterName = CLUSTER_NAME;
             WebhookAlmaFix.clusterName = CLUSTER_NAME;
-            AlmaMarcXml2lobidJsonEs.setMailtoInfo(MAILTO_INFO);
             AlmaMarcXmlFix2lobidJsonEs.setMailtoInfo(MAILTO_INFO);
-            AlmaMarcXml2lobidJsonEs.setMailtoError(MAILTO_ERROR);
             AlmaMarcXmlFix2lobidJsonEs.setMailtoError(MAILTO_ERROR);
-            Webhook.triggerWebhookUrl = TRIGGER_WEBHOOK_URL;
             WebhookAlmaFix.triggerWebhookUrl = TRIGGER_WEBHOOK_URL;
-            Webhook.triggerWebhookData = TRIGGER_WEBHOOK_DATA;
             WebhookAlmaFix.triggerWebhookData = TRIGGER_WEBHOOK_DATA;
         }
         if (client != null) {
