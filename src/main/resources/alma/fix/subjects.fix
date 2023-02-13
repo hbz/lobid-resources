@@ -262,7 +262,30 @@ do list(path:"084??", "var":"$i")
     end
   end
   unless any_contain("$i.0", "https://nwbib.de/") # filter out any nwbib concepts
-    unless any_match("$i.2", "ssgn|fid") # filter out any Sondersammelgebiete and Fachinformationsdienste
+    if any_match("$i.2", "rpb") # only check for RPB
+      do list(path: "$i.a", "var":"$j")
+        if any_contain("$j","rpbr")
+          copy_field("$j", "subject[].$append.notation")
+          paste("subject[].$last.id","~https://rpb.lobid.org/spatial#","$j",join_char:"")
+          set_array("subject[].$last.type[]","Concept")
+          add_field("subject[].$last.source.id","https://rpb.lobid.org/spatial")
+          add_field("subject[].$last.source.label","RPB-Raumsystematik")
+        elsif any_contain("$j","rpb")
+          copy_field("$j", "subject[].$append.notation")
+          paste("subject[].$last.id","~http://purl.org/lobid/rpb#","$j",join_char:"")
+          set_array("subject[].$last.type[]","Concept")
+          add_field("subject[].$last.source.id","http://purl.org/lobid/rpb")
+          add_field("subject[].$last.source.label","Systematik der Rheinland-Pfälzischen Bibliographie")
+        else
+          copy_field("$j", "subject[].$append.notation")
+          paste("subject[].$last.id","~https://w3id.org/lobid/rpb2#","$j",join_char:"")
+          set_array("subject[].$last.type[]","Concept")
+          add_field("subject[].$last.source.id","https://w3id.org/lobid/rpb2")
+          add_field("subject[].$last.source.label","RPB-Sachgruppen und Zusätze")
+        end
+      end
+    end
+    unless any_match("$i.2", "ssgn|fid|rpb") # filter out any Sondersammelgebiete, Fachinformationsdienste, RPB
       do list(path:"$i.a", "var":"$j")
         copy_field("$j", "subject[].$append.notation")
         set_array("subject[].$last.type[]","Concept")
