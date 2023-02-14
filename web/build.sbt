@@ -23,7 +23,6 @@ libraryDependencies ++= Seq(
   "com.google.gdata" % "core" % "1.47.1" exclude ("com.google.guava", "guava"),
   "org.easytesting" % "fest-assert" % "1.4" % "test"
 )
-excludeDependencies += "org.metafacture" % "metafix"
 
 resolvers += "Local Maven Repository" at Path.userHome.asFile.toURI.toURL + ".m2/repository"
 
