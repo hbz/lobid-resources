@@ -1,7 +1,9 @@
 # 245 - Title Statement (NR) - Subfield: $a (NR), $b (NR), $n (R), $p (R)
 
 copy_field("245??.a","@title")
-replace_all("@title", "^[©]|\\s?[,.:;/=]?$", "")
+unless any_match("@title",".*\\.\\.\\.")
+  replace_all("@title", "^[©]|\\s?[,.:;/=]?$", "")
+end
 replace_all("@title","<<|>>","")
 
 
