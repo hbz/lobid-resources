@@ -114,7 +114,11 @@ end
 do list(path: "4900?", "var": "$i")
   set_array("isPartOf[].$append.type[]", "IsPartOfRelation")
   set_array("isPartOf[].$last.hasSuperordinate[]")
-  copy_field("$i.a", "isPartOf[].$last.hasSuperordinate[].$append.label")
+  set_array("isPartOf[].$last.hasSuperordinate[].$append.label")
+  do list(path:"$i.a", "var":"$j")
+    copy_field("$j", "isPartOf[].$last.hasSuperordinate[].$last.label.$append")
+  end
+  join_field("isPartOf[].$last.hasSuperordinate[].$last.label")
   copy_field("$i.v", "isPartOf[].$last.numbering")
 end
 
@@ -152,12 +156,18 @@ do list(path: "830??", "var": "$i")
       copy_field("$i.w", "isPartOf[].$last.hasSuperordinate[].$last.id")
       replace_all("isPartOf[].$last.hasSuperordinate[].$last.id", "^\\(DE-605\\)(.*)$", "http://lobid.org/resources/$1#!")
     end
-    copy_field("$i.a", "isPartOf[].$last.hasSuperordinate[].$last.label")
+    set_array("isPartOf[].$last.hasSuperordinate[].$last.label", " / ")
+    do list(path:"$i.a", "var":"$j")
+      copy_field("$j", "isPartOf[].$last.hasSuperordinate[].$last.label.$append")
+    end
+    join_field("isPartOf[].$last.hasSuperordinate[].$last.label", " / ")
     copy_field("$i.v", "isPartOf[].$last.numbering")
   end
 end
 
 replace_all("isPartOf[].*.hasSuperordinate[].*.label","<<|>>","")
+
+uniq("isPartOf[]")
 
 # containedIn
 # containedIn only states ressources that are not published by them self but as part of a host ressource.
