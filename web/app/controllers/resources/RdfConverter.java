@@ -46,8 +46,8 @@ public class RdfConverter {
 	public static String toRdf(final String jsonLd, final RdfFormat format) {
 		try {
 			//convert json-ld string into InputStream as is required by the read() function.
-			InputStream targetStream = new ByteArrayInputStream(jsonLd.getBytes());
-			Model model = ModelFactory.createDefaultModel() ;
+			final InputStream targetStream = new ByteArrayInputStream(jsonLd.getBytes());
+			final Model model = ModelFactory.createDefaultModel() ;
 
 			model.read(targetStream, "", "JSON-LD");
 			model.setNsPrefix("bf", "http://id.loc.gov/ontologies/bibframe/");
