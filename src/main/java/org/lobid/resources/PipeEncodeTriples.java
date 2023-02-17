@@ -8,8 +8,17 @@ import java.util.Stack;
 import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.rdf.model.AnonId;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.Property;
+import org.apache.jena.rdf.model.RDFList;
+import org.apache.jena.rdf.model.RDFNode;
+import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
+import org.apache.jena.util.ResourceUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.metafacture.framework.StreamReceiver;
@@ -17,20 +26,11 @@ import org.metafacture.framework.annotations.Description;
 import org.metafacture.framework.annotations.In;
 import org.metafacture.framework.annotations.Out;
 
-import com.hp.hpl.jena.graph.NodeFactory;
-import com.hp.hpl.jena.rdf.model.AnonId;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.rdf.model.Property;
-import com.hp.hpl.jena.rdf.model.RDFList;
-import com.hp.hpl.jena.rdf.model.RDFNode;
-import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.util.ResourceUtils;
 
 /**
  * Treats Literals, URIs, Blank Nodes and Lists. The latter will be invoked by
  * using the <entity> element in the morph file. Output are N-Triples.
- * 
+ *
  * @author Fabian Steeg, Pascal Christoph (dr0i)
  */
 @Description("Encode a stream as N-Triples")
@@ -66,7 +66,7 @@ public class PipeEncodeTriples extends AbstractGraphPipeEncoder {
 
 	/**
 	 * Allows to define the subject from outside, e.g. from a flux file.
-	 * 
+	 *
 	 * @param subject set the subject for each triple
 	 */
 	public void setSubject(final String subject) {
@@ -76,7 +76,7 @@ public class PipeEncodeTriples extends AbstractGraphPipeEncoder {
 
 	/**
 	 * Allows to store URN's as URI's- Default is to store them as literals.
-	 * 
+	 *
 	 * @param storeUrnAsUri set if urn's should be stored as URIs
 	 */
 	public void setStoreUrnAsUri(final String storeUrnAsUri) {
@@ -176,7 +176,7 @@ public class PipeEncodeTriples extends AbstractGraphPipeEncoder {
 
 	/**
 	 * Treats bnodes and also rdf-lists .
-	 * 
+	 *
 	 */
 	@Override
 	public void startEntity(String name) {
