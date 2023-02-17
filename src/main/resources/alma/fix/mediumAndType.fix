@@ -534,7 +534,9 @@ end
 
 if exists("zdbId")
   if exists("245??.n")
-    add_field("type[].$append", "PublicationIssue")
+    unless any_contain("245??.n","...")
+      add_field("type[].$append", "PublicationIssue")
+    end
   elsif exists("77308.q")
     add_field("type[].$append", "PublicationIssue")
   end
