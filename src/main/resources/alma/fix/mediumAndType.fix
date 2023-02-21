@@ -639,7 +639,7 @@ end
 
 # type: "Miscellaneous"
 
-# Set default type value  "Sonstiges" (Miscellaneous) if no type besides "BibliographicResource" is set.
+# Set default type value  "Sonstige" (Miscellaneous) if no type besides "BibliographicResource" is set.
 
 unless exists("type[].2")
   add_field("type[].$append", "Miscellaneous")
@@ -662,7 +662,7 @@ if any_match ("type[]", "Miscellaneous|Biography|Bibliography")
   end
 end
 
-# Set medium default to print if there is no medium and type "Book" exists. Else set "Sonstiges" (Miscellaneous) as default medium.
+# Set medium default to print if there is no medium and type "Book" exists. Else set "Sonstige" (Miscellaneous) as default medium.
 
 unless exists("medium[].1")
   if any_equal("type[]", "Book")
@@ -670,8 +670,8 @@ unless exists("medium[].1")
   elsif any_match("@leaderPos06-07", "a.*")
     add_field("medium[].$append.label","Print")
   else
-  # medium: "Sonstiges":	"http://purl.org/lobid/lv#Miscellaneous"
-    add_field("medium[].$append.label", "Sonstiges")
+  # medium: "Sonstige":	"http://purl.org/lobid/lv#Miscellaneous"
+    add_field("medium[].$append.label", "Sonstige")
   end
 end
 
