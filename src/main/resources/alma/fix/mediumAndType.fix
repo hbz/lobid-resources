@@ -63,7 +63,6 @@ elsif any_match("300  .a", ".*(Tonkassette|Schallplatte|Schallpl.|Magnetbandkass
 end
 
 # medium: "Audio-Kassette":	"http://id.loc.gov/vocabulary/carriers/ss"
-# TODO: In the frontend the icon says Tonband which is more encompassing than "Kassette"
 if any_match("007", "^ss.*")
   add_field("medium[].$append.label","Audio-Kassette")
 elsif any_match("245[10]0.h", "Kompaktkassette|MC|Tonkassette")
