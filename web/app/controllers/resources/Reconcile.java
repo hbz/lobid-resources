@@ -170,28 +170,26 @@ public class Reconcile extends Controller {
 		int limit = limitNode == null ? -1 : limitNode.asInt();
 		JsonNode typeNode = entry.getValue().get("type");
 		String filter = typeNode == null ? "" : "type:" + typeNode.asText();
-		float topBoost = 12f;
-		float mediumBoost = 6f;
-		float minBoost = 2f;
 		QueryStringQueryBuilder mainQuery =
 				QueryBuilders.queryStringQuery(queryString)//
-						.field("title", topBoost)//
-						.field("otherTitleInformation", mediumBoost)//
+						.field("title", 8f)//
+						.field("alternativeTitle", 4f)//
+						.field("otherTitleInformation", 2f)//
 						.field("responsibilityStatement")//
-						.field("rpbId", topBoost)//
-						.field("hbzId", topBoost)//
-						.field("almaMmsId", topBoost)//
-						.field("sameAs.id", minBoost)//
-						.field("id", topBoost);//
+						.field("rpbId", 8f)//
+						.field("hbzId", 8f)//
+						.field("almaMmsId", 8f)//
+						.field("sameAs.id", 2f)//
+						.field("id", 8f);//
 
 		BoolQueryBuilder query = QueryBuilders.boolQuery().must(mainQuery)
 				// TODO: temp, don't reconcile against RPB records:
 				.mustNot(queryStringQuery("_exists_:rpbId"));
 		if (!filter.isEmpty()) {
-			query = query.should(queryStringQuery(filter).boost(topBoost));
+			query = query.should(queryStringQuery(filter).boost(8f));
 		}
 		if (propString != null && !propString.trim().isEmpty()) {
-			query = query.should(queryStringQuery(propString).boost(mediumBoost));
+			query = query.should(queryStringQuery(propString).boost(5f));
 		}
 		return new Search.Builder().query(query).from(0).size(limit).build()
 				.queryResources((SearchHit hit) -> {
