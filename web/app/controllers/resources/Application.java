@@ -521,7 +521,7 @@ public class Application extends Controller {
 		return promise;
 	}
 
-	private static String idSearchResult(final String id) {
+	static String idSearchResult(final String id) {
 		JsonNode result;
 		String idSearch = "hbzId:" + id;
 		Logger.debug("Could not get resource via index ID, trying search: '{}'",

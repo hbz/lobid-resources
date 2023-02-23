@@ -12,6 +12,7 @@ import java.util.NoSuchElementException;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.riot.RDFLanguages;
@@ -24,12 +25,11 @@ import org.metafacture.framework.annotations.Out;
 import org.metafacture.framework.helpers.DefaultObjectReceiver;
 import org.metafacture.xml.FilenameExtractor;
 
-import com.hp.hpl.jena.rdf.model.Model;
 
 /**
  * A sink, writing triples into files. The filenames are constructed from the
  * literal of an given property.
- * 
+ *
  * @author Pascal Christoph (dr0i)
  */
 @Description("Writes the object value of an RDF model into a file. Default serialization is 'NTRIPLES'. The filename is "
@@ -96,7 +96,7 @@ public final class RdfModelFileWriter extends DefaultObjectReceiver<Model>
 
 	/**
 	 * Sets the rdf serialization language.
-	 * 
+	 *
 	 * @param serialization the language to be serialized
 	 */
 	public void setSerialization(final String serialization) {

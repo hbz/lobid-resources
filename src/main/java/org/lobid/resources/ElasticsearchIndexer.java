@@ -55,7 +55,6 @@ import org.elasticsearch.index.query.QueryStringQueryBuilder;
 import org.elasticsearch.rest.action.admin.indices.AliasesNotFoundException;
 import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.transport.client.PreBuiltTransportClient;
-import org.lobid.resources.run.WikidataGeodata2Es;
 import org.metafacture.framework.ObjectReceiver;
 import org.metafacture.framework.annotations.In;
 import org.metafacture.framework.annotations.Out;
@@ -63,7 +62,7 @@ import org.metafacture.framework.helpers.DefaultObjectPipe;
 
 /**
  * Index JSON into elasticsearch.
- * 
+ *
  * @author Pascal Christoph (dr0i)
  * @author Fabian Steeg (fsteeg)
  */
@@ -90,13 +89,9 @@ public class ElasticsearchIndexer
 	private String aliasSuffix = "";
 	private static String indexConfig;
 	private static ObjectMapper mapper = new ObjectMapper();
-	/** Defines the threshold for wikidata lookups */
-	public static double MINIMUM_SCORE = 1.0;
 	private HashMap<String, Object> settings = new HashMap<>();
 	/** Defines if the mabxml lookup should be done */
 	public boolean lookupMabxmlDeletion;
-	/** Defines if a wikidata lookup should be done */
-	public boolean lookupWikidata;
 	private static HashSet<String> unsuccessfullyLookup = new HashSet<>();
 	private static final LocalDateTime now = LocalDateTime.now();
 
@@ -186,17 +181,6 @@ public class ElasticsearchIndexer
 		settings.put("index.refresh_interval", "-1");
 		request.settings(settings);
 		client.admin().indices().updateSettings(request).actionGet();
-		if (lookupWikidata) {
-			WikidataGeodata2Es.setIndexAliasSuffix(
-					aliasSuffix.equals("NOALIAS") ? "" : aliasSuffix);
-			LOG.info("Using wikidata geo_nwbib index with name:"
-					+ WikidataGeodata2Es.getIndexAlias());
-			LOG.info("Start loading manually created Qid map ...");
-			WikidataGeodata2Es.loadQidMap();
-			LOG.info("Finished loading created Qid map loaded.");
-			LOG.info(
-					"Threshold minimum score for spatial enrichment: " + MINIMUM_SCORE);
-		}
 	}
 
 	private boolean indexExists() {
@@ -215,22 +199,11 @@ public class ElasticsearchIndexer
 		if (json.containsKey(Properties.PARENT.getName())) { // items
 			indexRequest.parent(json.get(Properties.PARENT.getName()));
 		} else {
-			if (lookupWikidata) {
-				try {
-					ObjectNode node = mapper.readValue(
-							json.get(Properties.GRAPH.getName()), ObjectNode.class);
-					jsonDoc = enrich(WikidataGeodata2Es.getIndexAlias(), "coverage",
-							"spatial", node);
-				} catch (IOException e1) {
-					LOG.info(
-							"Enrichment problem with" + json.get(Properties.ID.getName()),
-							e1);
-				}
-			} else if (lookupMabxmlDeletion) {
-				jsonDoc = enrichMabxmlDeletions(json.get(Properties.ID.getName())
-						.replaceAll(".*/", "").replaceAll("#!", ""), jsonDoc);
-			}
-		}
+            if (lookupMabxmlDeletion) {
+                jsonDoc = enrichMabxmlDeletions(json.get(Properties.ID.getName())
+                    .replaceAll(".*/", "").replaceAll("#!", ""), jsonDoc);
+            }
+        }
 		indexRequest.source(jsonDoc, JSON);
 		bulkRequest.add(indexRequest);
 		docs++;
@@ -283,84 +256,9 @@ public class ElasticsearchIndexer
 		return ret;
 	}
 
-	private String enrich(final String index, final String queryField,
-			final String SPATIAL, ObjectNode node) {
-		Iterable<Entry<String, JsonNode>> iterable = () -> node.fields();
-		Optional<Entry<String, JsonNode>> o =
-				StreamSupport.stream(iterable.spliterator(), false)
-						.filter(k -> k.getKey().equals(queryField)).findFirst();
-		if (o.isPresent()) {
-			String[] coverage = o.get().getValue().toString().split("\",\"");
-			ArrayNode spatialNode = node.withArray(SPATIAL);
-			HashSet<String> wdIds = new HashSet<>();
-			for (int i = 0; i < coverage.length; i++) {
-				if (coverage[i].contains("Sitz:"))
-					coverage[i] = coverage[i].replaceFirst("\\(Sitz:.*", "");
-				Pair<String, String> query = new Pair<>(
-						coverage[i].replaceAll("[^\\p{IsAlphabetic}]", " ").trim(),
-						WikidataGeodata2Es.NWBIB_LOCATION_CODES_2_WIKIDATA_ENTITIES
-								.getOrDefault(
-										coverage[i].replaceAll("[^\\p{Digit}]", " ").trim(), ""));
-				try {
-					if (unsuccessfullyLookup.contains(query.first + query.second))
-						throw new Exception(
-								"Already lookuped with no good result, skipping");
-					SearchHits hits = null;
-					QueryBuilder queryBuilded;
-					String string2wikidataTsv;
-					if ((string2wikidataTsv =
-							WikidataGeodata2Es.getQidMap().get(query.first)) != null)
-						queryBuilded = QueryBuilders.idsQuery().addIds(string2wikidataTsv);
-					else {
-						queryBuilded = QueryBuilders.boolQuery()
-								.must(new MultiMatchQueryBuilder(query.first)
-										.fields(WikidataGeodata2Es.FIELD_BOOST)
-										.type(MultiMatchQueryBuilder.Type.CROSS_FIELDS)
-										.operator(Operator.AND));
-					    if (!query.second.isEmpty())
-						    queryBuilded = ((BoolQueryBuilder) queryBuilded)
-							    	.must(new MultiMatchQueryBuilder(query.second)
-											.fields(WikidataGeodata2Es.TYPE_QUERY));
-					}
-					hits = client.prepareSearch(index).setQuery(queryBuilded).get()
-							.getHits();
-					if (hits.getTotalHits() > 0) {
-						ObjectNode newSpatialNode = mapper
-								.readValue(hits.getAt(0).getSourceAsString(), ObjectNode.class);
-						newSpatialNode.remove("locatedIn");
-						newSpatialNode.remove("aliases");
-						LOG.info(i + " 1.Hit Query=" + query + " score="
-								+ hits.getAt(0).getScore() + " source="
-								+ newSpatialNode.toString());
-						if (hits.getAt(0).getScore() < MINIMUM_SCORE) {
-							unsuccessfullyLookup.add(query.first + query.second);
-							throw new Exception(
-									"Score " + hits.getAt(0).getScore() + " to low.");
-						}
-						String wdId = newSpatialNode.findPath("id").toString();
-						if (!wdIds.contains(wdId)) { // add entity only once
-							spatialNode.add(newSpatialNode);
-							wdIds.add(wdId);
-						}
-					} else
-						throw new Exception("No hit.");
-				} catch (Exception e) {
-					LOG.warn("Couldn't get a hit using index '" + index + "' querying '"
-							+ query + "'. " + e.getMessage());
-					unsuccessfullyLookup.add(query.first + query.second);
-				}
-			}
-			if (spatialNode.size() > 0)
-				node.set(SPATIAL, spatialNode);
-			else
-				node.remove(SPATIAL);
-		}
-		return node.toString();
-	}
-
 	/**
 	 * Sets the name of the index config json filename.
-	 * 
+	 *
 	 * @param indexConfig the filename of the index config
 	 */
 	public void setIndexConfig(final String indexConfig) {
@@ -369,7 +267,7 @@ public class ElasticsearchIndexer
 
 	/**
 	 * Sets the elasticsearch cluster name.
-	 * 
+	 *
 	 * @param clustername the name of the cluster
 	 */
 	public void setClustername(final String clustername) {
@@ -378,7 +276,7 @@ public class ElasticsearchIndexer
 
 	/**
 	 * Sets the elasticsearch hostname
-	 * 
+	 *
 	 * @param hostname may be an IP or a domain name
 	 */
 	public void setHostname(final String hostname) {
@@ -387,7 +285,7 @@ public class ElasticsearchIndexer
 
 	/**
 	 * Sets the elasticsearch index name
-	 * 
+	 *
 	 * @param indexname name of the index
 	 */
 	public void setIndexName(final String indexname) {
@@ -396,7 +294,7 @@ public class ElasticsearchIndexer
 
 	/**
 	 * Sets an optional suffix to the elasticsearch index alias.
-	 * 
+	 *
 	 * @param aliasSuffix
 	 */
 	public void setIndexAliasSuffix(String aliasSuffix) {
@@ -405,7 +303,7 @@ public class ElasticsearchIndexer
 
 	/**
 	 * Sets the elasticsearch client.
-	 * 
+	 *
 	 * @param client the elasticsearch client
 	 */
 	public void setElasticsearchClient(Client client) {
@@ -414,9 +312,9 @@ public class ElasticsearchIndexer
 
 	/**
 	 * Sets the elasticsearch client.
-	 * 
+	 *
 	 * @return client the elasticsearch client
-	 * 
+	 *
 	 */
 	public Client getElasticsearchClient() {
 		return this.client;
@@ -424,7 +322,7 @@ public class ElasticsearchIndexer
 
 	/**
 	 * Sets a flag wether the index alias(es) should be updated
-	 * 
+	 *
 	 * @param updateIndex name of the index
 	 */
 	public void setUpdateNewestIndex(final boolean updateIndex) {
@@ -472,7 +370,7 @@ public class ElasticsearchIndexer
 
 	/**
 	 * Updates alias, may remove old indices.
-	 * 
+	 *
 	 */
 	public void updateAliases() {
 		final SortedSetMultimap<String, String> indices =
@@ -494,7 +392,7 @@ public class ElasticsearchIndexer
 	 * This adds the productive prefix as alias to the newest index (which names
 	 * begins with productive prefix) and adds the staging alias to the second
 	 * newest index name.
-	 * 
+	 *
 	 * @param productivePrefix the productive alias (and also the prefix of the
 	 *          names of the indices)
 	 * @param staging the "-staging" alias
