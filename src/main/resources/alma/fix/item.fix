@@ -31,19 +31,28 @@ do list(path: "HOL  ", "var": "$i")
       add_field( "hasItem[].$append.test","")
       add_field("hasItem[].$last.label", "lobid Bestandsressource")
       set_array("hasItem[].$last.type[]", "Item","PhysikalischerTitel")
-      copy_field("$i.8", "hasItem[].$last.heldBy.id")
-      replace_all("hasItem[].$last.heldBy.id",".*(\\d{4})$","$1")
-      lookup("hasItem[].$last.heldBy.id", "alma-institution-code-to-isil")
-      copy_field("hasItem[].$last.heldBy.id","hasItem[].$last.heldBy.isil")
-      prepend("hasItem[].$last.heldBy.id", "http://lobid.org/organisations/")
-      append("hasItem[].$last.heldBy.id","#!")
-      paste("hasItem[].$last.id", "~http://lobid.org/items/","almaMmsId", "~:", "hasItem[].$last.heldBy.isil","~#!", join_char: "")
       do list(path:"H52??", "var": "$H52")
         if in("$i.8", "$H52.8")
           paste("hasItem[].$last.currentLocation", "$H52.b", "~/", "$H52.c")
           copy_field("$H52.h", "hasItem[].$last.callNumber")
-          paste("hasItem[].$last.id", "~http://lobid.org/items/","almaMmsId", "~:", "hasItem[].$last.heldBy.isil","~#!", join_char: "")
+          paste("$i.@sublibraryIsil","$i.M","~+","$H52.b",join_char:"")
+          lookup("$i.@sublibraryIsil", "sublibraryIsil",delete:"true")
         end
+      end
+      if exists("$i.@sublibraryIsil")
+        copy_field("$i.@sublibraryIsil", "hasItem[].$last.heldBy.id")
+      else
+        copy_field("$i.8", "hasItem[].$last.heldBy.id")
+        replace_all("hasItem[].$last.heldBy.id",".*(\\d{4})$","$1")
+        lookup("hasItem[].$last.heldBy.id", "alma-institution-code-to-isil")
+      end
+      copy_field("hasItem[].$last.heldBy.id","hasItem[].$last.heldBy.isil")
+      prepend("hasItem[].$last.heldBy.id", "http://lobid.org/organisations/")
+      append("hasItem[].$last.heldBy.id","#!")
+      if exists("hasItem[].$last.callNumber")
+        paste("hasItem[].$last.id", "~http://lobid.org/items/","almaMmsId", "~:", "hasItem[].$last.heldBy.isil","~:","hasItem[].$last.callNumber","~#!", join_char: "")
+      else
+        paste("hasItem[].$last.id", "~http://lobid.org/items/","almaMmsId", "~:", "hasItem[].$last.heldBy.isil","~#!", join_char: "")
       end
     end
   end
