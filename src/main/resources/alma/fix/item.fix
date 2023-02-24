@@ -10,10 +10,12 @@ do list(path:"ITM  ", "var": "$i")
   end
   copy_field("$i.b", "hasItem[].$last.serialNumber")
   paste("hasItem[].$last.currentLocation", "$i.w", "~/", "$i.x")
+  # following fix checks for sublibrary codes and if they map to provided sublocation Isil
   paste("$i.@sublibraryIsil","$i.M","~+","$i.w",join_char:"")
   lookup("$i.@sublibraryIsil", "sublibraryIsil",delete:"true")
   if exists("$i.@sublibraryIsil")
     copy_field("$i.@sublibraryIsil", "hasItem[].$last.heldBy.id")
+  # if no mapping for a sublocation code is provided or no sublocation code exists ($i.w) the main library ISIL is used.
   else
     copy_field("$i.a", "hasItem[].$last.heldBy.id")
     replace_all("hasItem[].$last.heldBy.id",".*(\\d{4})$","$1")
@@ -35,12 +37,14 @@ do list(path: "HOL  ", "var": "$i")
         if in("$i.8", "$H52.8")
           paste("hasItem[].$last.currentLocation", "$H52.b", "~/", "$H52.c")
           copy_field("$H52.h", "hasItem[].$last.callNumber")
+          # following fix checks for sublibrary codes and if they map to provided sublocation Isil
           paste("$i.@sublibraryIsil","$i.M","~+","$H52.b",join_char:"")
           lookup("$i.@sublibraryIsil", "sublibraryIsil",delete:"true")
         end
       end
       if exists("$i.@sublibraryIsil")
         copy_field("$i.@sublibraryIsil", "hasItem[].$last.heldBy.id")
+      # if no mapping for a sublocation code is provided or no sublocation code exists ($i.w) the main library ISIL is used.
       else
         copy_field("$i.8", "hasItem[].$last.heldBy.id")
         replace_all("hasItem[].$last.heldBy.id",".*(\\d{4})$","$1")
