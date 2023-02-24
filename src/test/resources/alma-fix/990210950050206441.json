@@ -2,13 +2,13 @@
   "@context" : "http://lobid.org/resources/context.jsonld",
   "almaMmsId" : "990210950050206441",
   "hbzId" : "HT018924091",
+  "deprecatedUri" : "http://lobid.org/resources/HT018924091#!",
   "isbn" : [ "9783981189339", "3981189337" ],
   "oclcNumber" : [ "1107003384" ],
   "title" : "Der Ferd das Buch",
   "otherTitleInformation" : [ "die Cartoon-Sammlung" ],
   "edition" : [ "1. Auflage" ],
   "publication" : [ {
-    "publicationHistory" : "2016",
     "startDate" : "2016",
     "type" : [ "PublicationEvent" ],
     "location" : [ "Dinslaken" ],
@@ -18,8 +18,6 @@
     "id" : "http://lobid.org/resources/990210950050206441",
     "label" : "Webseite der hbz-Ressource 990210950050206441",
     "type" : [ "BibliographicDescription" ],
-    "dateCreated" : "20210405",
-    "dateModified" : "20210409",
     "inDataset" : {
       "id" : "http://lobid.org/resources/dataset#!",
       "label" : "lobid-resources – Der hbz-Verbundkatalog als Linked Open Data"
@@ -34,6 +32,8 @@
       },
       "object" : {
         "id" : "https://lobid.org/hbz01/990210950050206441",
+        "dateCreated" : "2021-04-05",
+        "dateModified" : "2022-12-04",
         "type" : [ "DataFeedItem" ],
         "label" : "hbz-Ressource 990210950050206441 im Exportformat MARC21 XML",
         "inDataset" : {
@@ -78,7 +78,7 @@
   "extent" : "108 ungezählte Seiten : 54 Illustrationen",
   "natureOfContent" : [ {
     "label" : "Bildband",
-    "id" : "http://d-nb.info/gnd/4145395-5"
+    "id" : "https://d-nb.info/gnd/4145395-5"
   } ],
   "subject" : [ {
     "type" : [ "Keyword" ],
@@ -120,7 +120,7 @@
         "label" : "Gemeinsame Normdatei (GND)",
         "id" : "https://d-nb.info/gnd/7749153-1"
       },
-      "id" : "http://d-nb.info/gnd/1093886471",
+      "id" : "https://d-nb.info/gnd/1093886471",
       "gndIdentifier" : "1093886471",
       "dateOfBirthAndDeath" : "ca. 20.-21. Jh."
     }, {
@@ -130,8 +130,9 @@
         "label" : "Gemeinsame Normdatei (GND)",
         "id" : "https://d-nb.info/gnd/7749153-1"
       },
-      "id" : "http://d-nb.info/gnd/4147365-6",
-      "gndIdentifier" : "4147365-6"
+      "id" : "https://d-nb.info/gnd/4147365-6",
+      "gndIdentifier" : "4147365-6",
+      "altLabel" : [ "Kartoon" ]
     } ]
   } ],
   "spatial" : [ {
@@ -145,7 +146,7 @@
     "focus" : {
       "id" : "http://www.wikidata.org/entity/Q3939",
       "label" : "Dinslaken",
-      "type" : [ "http://www.wikidata.org/entity/Q1548518", "http://www.wikidata.org/entity/Q707813" ],
+      "type" : [ "http://www.wikidata.org/entity/Q515", "http://www.wikidata.org/entity/Q1548518", "http://www.wikidata.org/entity/Q707813", "http://www.wikidata.org/entity/Q42744322" ],
       "geo" : {
         "lat" : "51.566666666",
         "lon" : "6.733333333"
@@ -162,7 +163,7 @@
     "focus" : {
       "id" : "http://www.wikidata.org/entity/Q2100",
       "label" : "Duisburg",
-      "type" : [ "http://www.wikidata.org/entity/Q1549591", "http://www.wikidata.org/entity/Q22865", "http://www.wikidata.org/entity/Q1187811", "http://www.wikidata.org/entity/Q253030", "http://www.wikidata.org/entity/Q262166", "http://www.wikidata.org/entity/Q707813", "http://www.wikidata.org/entity/Q42744322" ],
+      "type" : [ "http://www.wikidata.org/entity/Q42744322", "http://www.wikidata.org/entity/Q707813", "http://www.wikidata.org/entity/Q1549591", "http://www.wikidata.org/entity/Q1187811", "http://www.wikidata.org/entity/Q253030", "http://www.wikidata.org/entity/Q85635630" ],
       "geo" : {
         "lat" : "51.432222222",
         "lon" : "6.761111111"
@@ -171,15 +172,16 @@
   } ],
   "hasItem" : [ {
     "label" : "lobid Bestandsressource",
-    "type" : [ "Item" ],
+    "type" : [ "Item", "PhysicalObject" ],
     "callNumber" : "pfl/e6097",
+    "serialNumber" : "136699801",
     "currentLocation" : "X0001 / 00",
     "heldBy" : {
       "id" : "http://lobid.org/organisations/DE-61#!",
       "isil" : "DE-61",
       "label" : "lobid Organisation"
     },
-    "id" : "http://lobid.org/items/990210950050206441:DE-61:pfl/e6097#!"
+    "id" : "http://lobid.org/items/990210950050206441:DE-61:X0001:pfl/e6097#!"
   } ],
   "medium" : [ {
     "label" : "Print",
@@ -189,7 +191,7 @@
   "responsibilityStatement" : [ "Poverino Peppino" ],
   "contribution" : [ {
     "agent" : {
-      "gndIdentifier" : "(DE-588)1093886471",
+      "gndIdentifier" : "1093886471",
       "id" : "https://d-nb.info/gnd/1093886471",
       "label" : "Ferd",
       "type" : [ "Person" ],
@@ -202,7 +204,7 @@
     "type" : [ "Contribution" ]
   }, {
     "agent" : {
-      "gndIdentifier" : "(DE-588)1065498934",
+      "gndIdentifier" : "1065498934",
       "id" : "https://d-nb.info/gnd/1065498934",
       "label" : "StadtIndianer-Verlag e.K.",
       "type" : [ "CorporateBody" ]

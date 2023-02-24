@@ -2,12 +2,12 @@
   "@context" : "http://lobid.org/resources/context.jsonld",
   "almaMmsId" : "990171142550206441",
   "hbzId" : "HT015671602",
+  "deprecatedUri" : "http://lobid.org/resources/HT015671602#!",
   "isbn" : [ "9780838909508", "0838909507" ],
   "oclcNumber" : [ "229920989" ],
   "title" : "FRBR",
   "otherTitleInformation" : [ "a guide for the perplexed" ],
   "publication" : [ {
-    "publicationHistory" : "2008",
     "startDate" : "2008",
     "type" : [ "PublicationEvent" ],
     "location" : [ "Chicago" ],
@@ -17,8 +17,6 @@
     "id" : "http://lobid.org/resources/990171142550206441",
     "label" : "Webseite der hbz-Ressource 990171142550206441",
     "type" : [ "BibliographicDescription" ],
-    "dateCreated" : "20210405",
-    "dateModified" : "20210409",
     "inDataset" : {
       "id" : "http://lobid.org/resources/dataset#!",
       "label" : "lobid-resources – Der hbz-Verbundkatalog als Linked Open Data"
@@ -33,6 +31,8 @@
       },
       "object" : {
         "id" : "https://lobid.org/hbz01/990171142550206441",
+        "dateCreated" : "2021-04-05",
+        "dateModified" : "2021-04-09",
         "type" : [ "DataFeedItem" ],
         "label" : "hbz-Ressource 990171142550206441 im Exportformat MARC21 XML",
         "inDataset" : {
@@ -85,7 +85,7 @@
     "type" : [ "Concept" ],
     "source" : {
       "label" : "Dewey-Dezimalklassifikation",
-      "id" : "http://d-nb.info/gnd/4149423-4"
+      "id" : "https://d-nb.info/gnd/4149423-4"
     },
     "label" : "Bibliografische Analyse und Kontrolle",
     "notation" : "025.3"
@@ -113,33 +113,35 @@
         "label" : "Gemeinsame Normdatei (GND)",
         "id" : "https://d-nb.info/gnd/7749153-1"
       },
-      "id" : "http://d-nb.info/gnd/7615733-7",
-      "gndIdentifier" : "7615733-7"
+      "id" : "https://d-nb.info/gnd/7615733-7",
+      "gndIdentifier" : "7615733-7",
+      "altLabel" : [ "FRBR" ]
     } ]
   } ],
-  "subjectAltLabel" : [ "FRBR", "Maxwell, Robert LeGrand" ],
   "hasItem" : [ {
     "label" : "lobid Bestandsressource",
-    "type" : [ "Item" ],
-    "callNumber" : "AD530 M465",
-    "currentLocation" : "UB_BI / 01_Mono",
-    "heldBy" : {
-      "id" : "http://lobid.org/organisations/DE-361#!",
-      "isil" : "DE-361",
-      "label" : "lobid Organisation"
-    },
-    "id" : "http://lobid.org/items/990171142550206441:DE-361:AD530 M465#!"
-  }, {
-    "label" : "lobid Bestandsressource",
-    "type" : [ "Item" ],
+    "type" : [ "Item", "PhysicalObject" ],
     "callNumber" : "A 12200",
+    "serialNumber" : "20139223",
     "currentLocation" : "ZB / Freihand",
     "heldBy" : {
       "id" : "http://lobid.org/organisations/DE-290#!",
       "isil" : "DE-290",
       "label" : "lobid Organisation"
     },
-    "id" : "http://lobid.org/items/990171142550206441:DE-290:A 12200#!"
+    "id" : "http://lobid.org/items/990171142550206441:DE-290:ZB:A 12200#!"
+  }, {
+    "label" : "lobid Bestandsressource",
+    "type" : [ "Item", "PhysicalObject" ],
+    "callNumber" : "AD530 M465",
+    "serialNumber" : "018/4273175+01",
+    "currentLocation" : "UB_BI / 01_Mono",
+    "heldBy" : {
+      "id" : "http://lobid.org/organisations/DE-361#!",
+      "isil" : "DE-361",
+      "label" : "lobid Organisation"
+    },
+    "id" : "http://lobid.org/items/990171142550206441:DE-361:UB_BI:AD530 M465#!"
   } ],
   "medium" : [ {
     "label" : "Print",
@@ -149,11 +151,12 @@
   "responsibilityStatement" : [ "Robert L. Maxwell" ],
   "contribution" : [ {
     "agent" : {
-      "gndIdentifier" : "(DE-588)142840386",
+      "gndIdentifier" : "142840386",
       "id" : "https://d-nb.info/gnd/142840386",
       "label" : "Maxwell, Robert L.",
       "type" : [ "Person" ],
-      "dateOfBirth" : "1957"
+      "dateOfBirth" : "1957",
+      "altLabel" : [ "Maxwell, Robert LeGrand" ]
     },
     "role" : {
       "id" : "http://id.loc.gov/vocabulary/relators/aut",

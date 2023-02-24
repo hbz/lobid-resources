@@ -2,23 +2,20 @@
   "@context" : "http://lobid.org/resources/context.jsonld",
   "almaMmsId" : "990110509950206441",
   "hbzId" : "BT000003404",
+  "deprecatedUri" : "http://lobid.org/resources/BT000003404#!",
   "isbn" : [ "3575112088", "9783575112088" ],
-  "titleOfSubSeries" : "2: Nordrhein-Westfalen, Niedersachsen-Süd : mit Ortsverzeichnis",
   "title" : "Deutschland, 2: Nordrhein-Westfalen, Niedersachsen-Süd : mit Ortsverzeichnis",
   "edition" : [ "10.[Aufl., Ausg.] 1993/94" ],
   "publication" : [ {
-    "publicationHistory" : "1993",
     "startDate" : "1993",
     "type" : [ "PublicationEvent" ],
     "location" : [ "Berlin [u.a." ],
-    "publishedBy" : [ "Reise- u. Verkehrsverl" ]
+    "publishedBy" : [ "Reise- u. Verkehrsverl." ]
   } ],
   "describedBy" : {
     "id" : "http://lobid.org/resources/990110509950206441",
     "label" : "Webseite der hbz-Ressource 990110509950206441",
     "type" : [ "BibliographicDescription" ],
-    "dateCreated" : "20210406",
-    "dateModified" : "20210408",
     "inDataset" : {
       "id" : "http://lobid.org/resources/dataset#!",
       "label" : "lobid-resources – Der hbz-Verbundkatalog als Linked Open Data"
@@ -33,6 +30,8 @@
       },
       "object" : {
         "id" : "https://lobid.org/hbz01/990110509950206441",
+        "dateCreated" : "2021-04-06",
+        "dateModified" : "2022-12-05",
         "type" : [ "DataFeedItem" ],
         "label" : "hbz-Ressource 990110509950206441 im Exportformat MARC21 XML",
         "inDataset" : {
@@ -63,10 +62,13 @@
     "hasSuperordinate" : [ {
       "label" : "Euro cart : Euro-Regionalkarte"
     } ]
-  } ],
-  "containedIn" : [ {
-    "id" : "http://lobid.org/resources/BT000100437#!",
-    "label" : "lobid Ressource"
+  }, {
+    "type" : [ "IsPartOfRelation" ],
+    "hasSuperordinate" : [ {
+      "id" : "http://lobid.org/resources/BT000100437#!",
+      "label" : "lobid Ressource"
+    } ],
+    "numbering" : "2"
   } ],
   "inCollection" : [ {
     "id" : "http://lobid.org/resources/HT014176012#!",
@@ -80,7 +82,7 @@
   "extent" : "Kt.",
   "natureOfContent" : [ {
     "label" : "Karte",
-    "id" : "http://d-nb.info/gnd/4029783-4"
+    "id" : "https://d-nb.info/gnd/4029783-4"
   } ],
   "subject" : [ {
     "id" : "https://nwbib.de/subjects#N126000",
@@ -101,8 +103,9 @@
         "label" : "Gemeinsame Normdatei (GND)",
         "id" : "https://d-nb.info/gnd/7749153-1"
       },
-      "id" : "http://d-nb.info/gnd/4042570-8",
-      "gndIdentifier" : "4042570-8"
+      "id" : "https://d-nb.info/gnd/4042570-8",
+      "gndIdentifier" : "4042570-8",
+      "altLabel" : [ "Nord-Westphalie", "Norte-Westfalia", "NRW", "North Rhine-Westphalia", "NW", "Noordrijn-Westfalen", "North-Rhine/Westphalia", "Land Nordrhein-Westfalen" ]
     } ]
   }, {
     "type" : [ "ComplexSubject" ],
@@ -114,11 +117,11 @@
         "label" : "Gemeinsame Normdatei (GND)",
         "id" : "https://d-nb.info/gnd/7749153-1"
       },
-      "id" : "http://d-nb.info/gnd/4115393-5",
-      "gndIdentifier" : "4115393-5"
+      "id" : "https://d-nb.info/gnd/4115393-5",
+      "gndIdentifier" : "4115393-5",
+      "altLabel" : [ "Südniedersachsen", "Südliches Niedersachsen" ]
     } ]
   } ],
-  "subjectAltLabel" : [ "Südniedersachsen", "Südliches Niedersachsen", "Nord-Westphalie", "Norte-Westfalia", "NRW", "North Rhine-Westphalia", "NW", "Noordrijn-Westfalen", "North-Rhine/Westphalia", "Land Nordrhein-Westfalen" ],
   "spatial" : [ {
     "id" : "https://nwbib.de/spatial#N01",
     "label" : "Nordrhein-Westfalen",
@@ -142,6 +145,6 @@
     "label" : "Print",
     "id" : "http://rdaregistry.info/termList/RDAproductionMethod/1010"
   } ],
-  "type" : [ "BibliographicResource", "Map", "Book" ],
+  "type" : [ "BibliographicResource", "Map" ],
   "id" : "http://lobid.org/resources/990110509950206441#!"
 }

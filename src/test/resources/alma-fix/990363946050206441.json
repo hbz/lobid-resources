@@ -2,11 +2,12 @@
   "@context" : "http://lobid.org/resources/context.jsonld",
   "almaMmsId" : "990363946050206441",
   "hbzId" : "HT020202475",
+  "deprecatedUri" : "http://lobid.org/resources/HT020202475#!",
   "isbn" : [ "9783161546303", "316154630X" ],
+  "doi" : [ "10.1628/978-3-16-154630-3" ],
   "title" : "Kritische Theorie",
   "otherTitleInformation" : [ "Schlüsselbegriffe, Kontroversen, Grenzen" ],
   "publication" : [ {
-    "publicationHistory" : "[2016]",
     "startDate" : "2016",
     "type" : [ "PublicationEvent" ],
     "location" : [ "Tübingen" ],
@@ -16,8 +17,6 @@
     "id" : "http://lobid.org/resources/990363946050206441",
     "label" : "Webseite der hbz-Ressource 990363946050206441",
     "type" : [ "BibliographicDescription" ],
-    "dateCreated" : "20210405",
-    "dateModified" : "20210409",
     "inDataset" : {
       "id" : "http://lobid.org/resources/dataset#!",
       "label" : "lobid-resources – Der hbz-Verbundkatalog als Linked Open Data"
@@ -32,6 +31,8 @@
       },
       "object" : {
         "id" : "https://lobid.org/hbz01/990363946050206441",
+        "dateCreated" : "2021-04-05",
+        "dateModified" : "2022-12-05",
         "type" : [ "DataFeedItem" ],
         "label" : "hbz-Ressource 990363946050206441 im Exportformat MARC21 XML",
         "inDataset" : {
@@ -48,23 +49,39 @@
       "id" : "http://lobid.org/organisations/DE-290#!",
       "label" : "lobid Organisation"
     },
+    "provider" : {
+      "id" : "http://lobid.org/organisations/DE-DE-605#!",
+      "label" : "lobid Organisation"
+    },
     "modifiedBy" : {
-      "id" : "http://lobid.org/organisations/DE-290#!",
+      "id" : "http://lobid.org/organisations/DE-5#!",
       "label" : "lobid Organisation"
     }
   },
   "sameAs" : [ {
     "id" : "http://hub.culturegraph.org/resource/HBZ-HT020202475",
     "label" : "Culturegraph Ressource"
+  }, {
+    "id" : "http://dx.doi.org/10.1628/978-3-16-154630-3",
+    "label" : "978-3-16-154630-3"
+  } ],
+  "fulltextOnline" : [ {
+    "label" : "Volltext",
+    "id" : "https://doi.org/10.1628/978-3-16-154630-3"
+  }, {
+    "label" : "Volltext",
+    "id" : "https://www.mohrsiebeck.com/buch/kritische-theorie-9783161546303"
   } ],
   "related" : [ {
+    "id" : "http://lobid.org/resources/HT019007872#!",
     "note" : [ "Druck-Ausgabe" ],
+    "label" : "Kritische Theorie",
     "isbn" : [ "9783161546105", "3161546105" ]
   } ],
   "inCollection" : [ {
     "id" : "http://lobid.org/organisations/ZDB-197-MSE#!",
-    "label" : "eResource package",
-    "type" : [ "Collection" ]
+    "type" : [ "Collection" ],
+    "label" : "Mohr Siebeck eBooks"
   } ],
   "language" : [ {
     "id" : "http://id.loc.gov/vocabulary/iso639-2/ger",
@@ -85,8 +102,33 @@
       "id" : "https://www.wikidata.org/wiki/Q47524318"
     },
     "label" : "Electronic books"
+  }, {
+    "type" : [ "ComplexSubject" ],
+    "label" : "Kritische Theorie",
+    "componentList" : [ {
+      "type" : [ "SubjectHeading" ],
+      "label" : "Kritische Theorie",
+      "source" : {
+        "label" : "Gemeinsame Normdatei (GND)",
+        "id" : "https://d-nb.info/gnd/7749153-1"
+      },
+      "id" : "https://d-nb.info/gnd/4073840-1",
+      "gndIdentifier" : "4073840-1",
+      "altLabel" : [ "Frankfurter Schule", "Kritische Gesellschaftstheorie" ]
+    } ]
   } ],
-  "subjectAltLabel" : [ "Brojer, Štefan", "Breuer, S." ],
+  "hasItem" : [ {
+    "type" : [ "Item", "DigitalDocument" ],
+    "label" : "Electronic Portfolio",
+    "electronicLocator" : "https://eu04.alma.exlibrisgroup.com/view/uresolver/49HBZ_UBD/openurl?u.ignore_date_coverage=true&portfolio_pid=53209365020006445&Force_direct=true",
+    "sublocation" : "https://hbz-network.userservices.exlibrisgroup.com/view/uresolver/49HBZ_UBD/openurl?u.ignore_date_coverage=true&rft.mms_id=991009604019706445",
+    "heldBy" : {
+      "id" : "http://lobid.org/organisations/DE-290#!",
+      "isil" : "DE-290",
+      "label" : "lobid Organisation"
+    },
+    "id" : "http://lobid.org/items/990363946050206441:DE-290:53209365020006445#!"
+  } ],
   "medium" : [ {
     "label" : "Datenträger",
     "id" : "http://rdaregistry.info/termList/RDAMediaType/1003"
@@ -98,11 +140,12 @@
   "responsibilityStatement" : [ "Stefan Breuer" ],
   "contribution" : [ {
     "agent" : {
-      "gndIdentifier" : "(DE-588)120195364",
+      "gndIdentifier" : "120195364",
       "id" : "https://d-nb.info/gnd/120195364",
       "label" : "Breuer, Stefan",
       "type" : [ "Person" ],
-      "dateOfBirth" : "1948"
+      "dateOfBirth" : "1948",
+      "altLabel" : [ "Brojer, Štefan", "Breuer, S." ]
     },
     "role" : {
       "id" : "http://id.loc.gov/vocabulary/relators/aut",

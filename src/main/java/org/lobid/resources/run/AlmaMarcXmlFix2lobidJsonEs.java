@@ -6,6 +6,8 @@ import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import de.hbz.lobid.helper.HttpPoster;
 import org.apache.logging.log4j.LogManager;
@@ -44,7 +46,7 @@ public class AlmaMarcXmlFix2lobidJsonEs {
     private static String cluster;
     private static String indexName;
     private static boolean updateDonotCreateIndex;
-    private static String fixFileName = "alma/alma.fix";
+    private static String fixFileName = "src/main/resources/alma/alma.fix";
 
     private static final String INDEXCONFIG = "index-config.json";
     private static final HashMap<String, String> fixVariables = new HashMap<>();
@@ -80,7 +82,7 @@ public class AlmaMarcXmlFix2lobidJsonEs {
                 String usage =
                     "<input path>%s<index name>%s<index alias suffix ('NOALIAS' sets it empty)>%s<node>%s<cluster>%s<'update' (will take latest index), 'exact' (will take ->'index name' even when no timestamp is suffixed) , else create new index with actual timestamp>%s<optional: filename of a list of files which shall be ETLed>%s<optional: filename of morph>%s";
                 String inputPath = args[0];
-                LOG.info(String.format("inputFile=%s", inputPath));
+                LOG.info(String.format("inputFile(s)=%s", inputPath));
                 indexName = args[1];
                 String date =
                     new SimpleDateFormat("yyyyMMdd-HHmmss").format(new Date());
@@ -110,9 +112,14 @@ public class AlmaMarcXmlFix2lobidJsonEs {
                 fixVariables.put("catalogid", "DE-605");
                 fixVariables.put("createEndTime", "1"); // 1 <=> true
                 fixVariables.put("institution-code", "DE-605");
-                fixVariables.put("deweyLabels", "deweyLabels.tsv");
-                fixVariables.put("nwbib-spatial", "nwbib-spatial.tsv");
-                fixVariables.put("wd_itemLabelTypesCoordinates", "wd_itemLabelTypesCoordinates.tsv");
+                // the './' is mandatory to get play to use the "conf" directory. Base is the root directory of the fix, which is "alma":
+                fixVariables.put("deweyLabels", "./../deweyLabels.tsv");
+                fixVariables.put("nwbib-spatial", "./../nwbib-spatial.tsv");
+                fixVariables.put("wd_itemLabelTypesCoordinates", "./../wd_itemLabelTypesCoordinates.tsv");
+                fixVariables.put("maps-institutions.tsv", "./maps/institutions.tsv");
+                fixVariables.put("nwbibWikidataLabelTypeCoords.tsv", "./maps/nwbibWikidataLabelTypeCoords.tsv");
+                fixVariables.put("classification.tsv", "./maps/classification.tsv");
+                fixVariables.put("formangabe.tsv", "./maps/formangabe.tsv");
 
                 XmlElementSplitter xmlElementSplitter = new XmlElementSplitter();
                 xmlElementSplitter.setElementName("record");
@@ -151,16 +158,23 @@ public class AlmaMarcXmlFix2lobidJsonEs {
                 String message;
                 boolean success;
                 try {
-                    opener.process(inputPath);
-                    opener.closeStream();
+                    String inputPathes[] = inputPath.split(";");
+                    for (int i=0;i < inputPathes.length; i++ ) {
+                        LOG.info(String.format("Going to process inputFile=%s", inputPathes[i]));
+                        opener.process(inputPathes[i]);
+                        opener.closeStream();
+                    }
                     success = true;
                     message = "ETL succeeded, index name: " + indexName;
                 }
                 catch (Exception e) {
                     e.printStackTrace();
                     LOG.error(
-                        String.format("ETL fails: %s %s", e.getMessage(), e));
-                    message = e.toString();
+                        "ETL fails: ", e.getMessage(), e);
+                    message =  Stream
+                        .of(e.getStackTrace())
+                        .map(StackTraceElement::toString)
+                        .collect(Collectors.joining("\n"));
                     success = false;
                 }
                 sendMail(kind, success, message);
@@ -285,7 +299,7 @@ public class AlmaMarcXmlFix2lobidJsonEs {
         String mailto = (SUCCESS ? mailtoInfo : mailtoError);
         try {
             Email.sendEmail("sol", mailto,
-                "Webhook '" + KIND + "'' " + (SUCCESS ? "success :)" : "fails :("),
+                "Webhook '" + KIND + "' " + (SUCCESS ? "success :)" : "fails :("),
                 MESSAGE);
         }
         catch (Exception e) {

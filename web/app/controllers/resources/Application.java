@@ -472,6 +472,12 @@ public class Application extends Controller {
 		Promise<Result> promise = Promise.promise(() -> {
 			JsonNode result =
 					new Search.Builder().build().getResource(id).getResult();
+			if (result == null) {
+				String movedTo = idSearchResult(id);
+				if (movedTo != null) {
+					return movedPermanently(routes.Application.resource(movedTo, format));
+				}
+			}
 			boolean htmlRequested =
 					responseFormat.equals(Accept.Format.HTML.queryParamString);
 			if (htmlRequested) {
@@ -484,6 +490,18 @@ public class Application extends Controller {
 		});
 		cacheOnRedeem(cacheId, promise, ONE_DAY);
 		return promise;
+	}
+
+	static String idSearchResult(final String id) {
+		JsonNode result;
+		String idSearch = "hbzId:" + id;
+		Logger.debug("Could not get resource via index ID, trying search: '{}'",
+				idSearch);
+		QueryBuilder idQuery = new Queries.Builder().q(idSearch).build();
+		result = new Search.Builder().query(idQuery).size(1).build()
+				.queryResources().getResult();
+		JsonNode newId = result.size() > 0 ? result.get(0).get("almaMmsId") : null;
+		return newId != null ? newId.textValue() : null;
 	}
 
 	/**

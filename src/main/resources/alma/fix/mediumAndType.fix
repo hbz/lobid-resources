@@ -2,33 +2,7 @@ set_array("medium[]")
 
 # The type and medium transformation has to be completly remodeled since the transformation was not identical with
 # the old ALEPH Moprh Transformation.
-
-#  <!--
-#    CF = Computer files
-#    MK = Music
-#    MP  = Map
-#    CR = Continuing Resources
-#    VM = Visual materials
-#    MX = Mixed materials
-#    BK  = Book
-#  -->
-# Leader/06 values
-# Value 	Field 008/18-34 configuration
-# a 	    Language material 	Books OR Continuing resources
-# c 	    Notated music 	Music
-# d 	    Manuscript notated music 	Music
-# e 	    Cartographic material 	Maps
-# f 	    Manuscript cartographic material 	Maps
-# g 	    Projected medium 	Visual materials
-# i 	    Nonmusical sound recording 	Music
-# j 	    Musical sound recording 	Music
-# k 	    Two-dimensional nonprojectable graphic 	Visual materials
-# m 	    Computer file 	Computer files
-# o 	    Kit 	Visual materials
-# p 	    Mixed material 	Mixed materials
-# r 	    Three dimensional artifact or naturally occurring object 	Visual materials
-# t 	    Manuscript language material 	Books
-
+# For leader specific values see: https://www.loc.gov/marc/bibliographic/bdleader.html
 # @LeaderPos06 - Type of record
 # @LeaderPos07 - Bibliographic level
 # set @leaderType-variable
@@ -76,22 +50,25 @@ elsif any_match("006", "m(.{8})h.*") # Pos00+09
   add_field("medium[].$append.label","Audio-Dokument")
 elsif any_match("337  ", "audio")
   add_field("medium[].$append.label","Audio-Dokument")
-elsif any_match("338 .a", "Audiodisk|Audiokassette|Audiocartridge|Notenrolle|Phonographenzylinder|Tonbandspule|Sonstige Tonträger")
+elsif any_match("338  .a", "Audiodisk|Audiokassette|Audiocartridge|Notenrolle|Phonographenzylinder|Tonbandspule|Sonstige Tonträger")
   add_field("medium[].$append.label","Audio-Dokument")
 elsif any_match("338  .b", "s")
   add_field("medium[].$append.label","Audio-Dokument")
 elsif any_match("245[10]0.h", "^[Tt][oO].*|Audio-CD")
   add_field("medium[].$append.label","Audio-Dokument")
-elsif any_match("689??.a", "Hörbuch|Tonträger")
+elsif any_match("natureOfContent[].*.label", ".*(Hörbuch|Hörspiel|Tonträger).*")
+  add_field("medium[].$append.label","Audio-Dokument")
+elsif any_match("300  .a", ".*(Tonkassette|Schallplatte|Schallpl.|Magnetbandkassette|Kompaktkassette|Compact-Disk|Compact-Disc|CD |CD$).*")
   add_field("medium[].$append.label","Audio-Dokument")
 end
 
 # medium: "Audio-Kassette":	"http://id.loc.gov/vocabulary/carriers/ss"
-# TODO: In the frontend the icon says Tonband which is more encompassing than "Kassette"
 if any_match("007", "^ss.*")
   add_field("medium[].$append.label","Audio-Kassette")
 elsif any_match("245[10]0.h", "Kompaktkassette|MC|Tonkassette")
-  add_field("medium[].$append.label","Audio-Dokument")
+  add_field("medium[].$append.label","Audio-Kassette")
+elsif any_match("300  .a", ".*Kompaktkassette.*")
+  add_field("medium[].$append.label","Audio-Kassette")
 end
 
 # medium: "Audio-Visuell":	"http://purl.org/ontology/bibo/AudioVisualDocument" & "Video": "http://rdaregistry.info/termList/RDAMediaType/1008"
@@ -118,14 +95,14 @@ elsif any_match("337  .a", "video")
 elsif any_match("337  .b", "v")
   add_field("medium[].$append.label","Video")
   add_field("medium[].$append.label", "Audio-Visuell")
-elsif any_match("338 .a", "^(Video).*|Sonstige Video-Datenträger$")
+elsif any_match("338  .a", "^(Video).*|Sonstige Video-Datenträger$")
   add_field("medium[].$append.label","Video")
   add_field("medium[].$append.label", "Audio-Visuell")
 elsif any_match("338  .b", "vd")
   add_field("medium[].$append.label","Video")
   add_field("medium[].$append.label", "Audio-Visuell")
-elsif any_match("689??.a", "Hörbuch|Tonträger")
-  add_field("medium[].$append.label","DVD-Video|Video[ck]assette")
+elsif any_match("natureOfContent[].*.label", ".*(DVD-Video|Film|Video[ck]assette).*")
+  add_field("medium[].$append.label","Video")
   add_field("medium[].$append.label", "Audio-Visuell")
 end
 
@@ -150,29 +127,27 @@ elsif any_match("006", "^[acdijpst](.{5})[f].*") # Pos00+06
 elsif any_match("546  .a", ".*Braille.*")
   add_field("medium[].$append.label","Blindenschrift")
   add_field("medium[].$append.label", "Print")
+elsif any_match("natureOfContent[].*.label", ".*Blindendruck.*")
+  add_field("medium[].$append.label","Blindenschrift")
+  add_field("medium[].$append.label", "Print")
 end
 
 # medium:   "Print":	"http://rdaregistry.info/termList/RDAproductionMethod/1010"
 
-# TODO: Check if there are reaseons that kit and mixed materials are stated as Pint: https://service-wiki.hbz-nrw.de/display/DBI/Facettenwerte
-# I exlude them at the moment since they can be print but must not be print.
-# There should be some examples for mixed materials and kits.
-# Mediakombination was also set as print in ALEPH Morph: https://github.com/hbz/lobid-resources/blob/be3dde0ca3b3d3c51247ad8b930bc309f9e5b5b0/src/main/resources/morph-hbz01-to-lobid.xml#L1612
-# Also one cannot set Pos06 a (Language material) by default since: "Includes microforms and electronic resources that are basically textual in nature, whether they are reproductions from print or originally produced."
-# https://www.loc.gov/marc/bibliographic/bdleader.html
 
 # if any_match("@leaderPos06-07", "^[op].*")
 #  add_field("medium[].$append.label","Print")
 #if any_match("006", "^[op].*")
 # add_field("medium[].$append.label","Print")
 
-if any_match("007", "(^k[fhjs]|^t[^c]).*") # TODO: I excluded ^o (Kit) and added all Pos01 for text except Braille.
+
+if any_match("007", "(^k[fhjs]|^t[ab]).*") # I excluded ^o (Kit) and added all Pos01 for text except Braille.
   add_field("medium[].$append.label","Print")
 elsif any_match("@leaderTyp+008", "(Book|Music|Continuing Resources|Mixed materials)(.{23})[dr].*")  # Pos23
   add_field("medium[].$append.label","Print")
 elsif any_match("@leaderTyp+008", "(Map|Visual materials)(.{29})[dr].*")  # Pos29
   add_field("medium[].$append.label","Print")
-# elsif any_match("@leaderTyp+008", "(Visual materials)(.{33})b.*")  # Pos33  TODO: I excluded Kit
+# elsif any_match("@leaderTyp+008", "(Visual materials)(.{33})b.*")  # Pos33  I excluded Kit
 #  add_field("medium[].$append.label","Print")
 elsif any_match("006", "[acdpst]](.{5})[dr].*") # Pos00+06 Added Print for pos 006.
   add_field("medium[].$append.label","Print")
@@ -185,7 +160,6 @@ elsif any_match("25[09]??.a", "Nachdruck|Reprint") # Element 250 and 259
 end
 
 # medium:   "Datenträger":	"http://rdaregistry.info/termList/RDAMediaType/1003"
-# TODO: Check why so many Manuscripts are Print AND Manuscript.
 
 if any_match("@leaderPos06-07", "^m.*")
   add_field("medium[].$append.label","Datenträger")
@@ -203,25 +177,28 @@ elsif any_match("006", "^[acdijpst](.{5})[sq].*") # Pos00+06
   add_field("medium[].$append.label","Datenträger")
 elsif any_match("337  .a", "Computermedien")
   add_field("medium[].$append.label","Datenträger")
-elsif any_match("338 .a", ".*([Cc]omputer|[Cc]omputermedien|informatique|Computerdisk|computer disc|Magnetband|Speicherkarte).*")
+elsif any_match("338  .a", ".*([Cc]omputer|[Cc]omputermedien|informatique|Computerdisk|computer disc|Magnetband|Speicherkarte).*")
   add_field("medium[].$append.label","Datenträger")
 elsif any_match("338  .b", "c.")
   add_field("medium[].$append.label","Datenträger")
-# From the old ALEPH-Morph #		<!-- looking for Blu-ray, Cartridge, CD, Diskette, DVD, Festplatte, HD-DVD, Kassette, USB -->
-elsif any_match("340  .a", "^[BbCcDdHhFfKkUu][AaDdEeIiLlSsVv].*")
+elsif any_match("340  .a", ".*(Elektronische Ressource|Blu-ray|Cartridge|CD|Computerdatei|Diskette|DVD|E-Books|Einsteckmodul|Festplatte|Kassette|Elektron. Ressource|Funknetz-Karte|Optische|USB-Stick).*")
   add_field("medium[].$append.label","Datenträger")
-elsif any_match("340  .*.a", "^[BbCcDdHhFfKkUu][AaDdEeIiLlSsVv].*")
+elsif any_match("340  .a", ".*(Elektronische Ressource|Blu-ray|Cartridge|CD|Computerdatei|Diskette|DVD|E-Books|Einsteckmodul|Festplatte|Kassette|Elektron. Ressource|Funknetz-Karte|Optische|USB-Stick).*")
   add_field("medium[].$append.label","Datenträger")
 end
 
 # medium: "Manuskript":	"http://purl.org/ontology/bibo/Manuscript"
+# TODO: Check why so many Manuscripts are Print AND Manuscript.
 
 
 if any_match("@leaderPos06-07", "^[dft].")
   add_field("medium[].$append.label","Manuskript")
 elsif any_match("006", "^[dft].*")
   add_field("medium[].$append.label","Manuskript")
+elsif any_match("natureOfContent[].*.label", ".*(Musikhandschrift|Handschrift).*")
+  add_field("medium[].$append.label","Manuskript")
 end
+
 
 # medium: "Mikroformat": "http://rdaregistry.info/termList/RDAMediaType/1002"
 
@@ -244,18 +221,15 @@ elsif any_match("337  .a","Mikroform|microform")
   add_field("medium[].$append.label","Mikroformat")
 elsif any_match("337  .b", "h")
   add_field("medium[].$append.label","Mikroformat")
-elsif any_match("338 .a", ".*[Mm]ikro.*")
+elsif any_match("338  .a", ".*[Mm]ikro.*")
   add_field("medium[].$append.label","Mikroformat")
 elsif any_match("338  .b", "he|hj") # TODO: More codes?
   add_field("medium[].$append.label","Mikroformat")
-elsif any_match("689??.a", "Hörbuch|Tonträger")
+elsif any_match("natureOfContent[].*.label", ".*Mikroform.*")
   add_field("medium[].$append.label","Mikroformat")
 end
 
 # medium: "Kombination":	"http://iflastandards.info/ns/isbd/terms/mediatype/T1008"
-
-
-# TODO: TT000166861 is in lobid ALEPH Kombination but not here. Need to check later.
 
 if any_match("@leaderPos06-07", "^[op].")
   add_field("medium[].$append.label","Kombination")
@@ -265,13 +239,11 @@ elsif any_match("007", "^o.*")
   add_field("medium[].$append.label","Kombination")
 elsif any_match("245[10]0.h", ".*Medienkombination.*")
   add_field("medium[].$append.label","Kombination")
-elsif any_match("689??.a", ".*Medienkombination.*")
+elsif any_match("natureOfContent[].*.label", ".*Medienkombination.*")
   add_field("medium[].$append.label","Kombination")
 end
 
 # medium: "Online-Ressource": "http://rdaregistry.info/termList/RDACarrierType/1018"
-
-# TODO: Old Morph also sets remote access as online ressource (050/8/1=g=Computerdatei(en) im Fernzugriff and 058.) Our ALMA-Transformation does not, how should we proceed.
 
 if any_match("@leaderTyp+008", "(Book|Music|Computer files|Continuing Resources|Mixed materials)(.{23})[o].*")  # Pos23
   add_field("medium[].$append.label","Online-Ressource")
@@ -281,15 +253,19 @@ elsif any_match("006", "^[efgkor](.{11})[o].*") # Pos00+12
   add_field("medium[].$append.label","Online-Ressource")
 elsif any_match("006", "^[acdijpst](.{5})[o].*") # Pos00+06
   add_field("medium[].$append.label","Online-Ressource")
-elsif any_match("300  ", ".*[Oo]nline.*") # Pos00+06
+elsif any_match("007", "^cr.*") # Old Aleph Transformation maps Computerdatei(en) im Fernzugriff as online resource. We continue to map this in ALMA.
   add_field("medium[].$append.label","Online-Ressource")
-elsif any_match("338 .a", "^(.*([Oo]nline.*|online bron|online resource|online-ressource|Online-Ressource|ressource en ligne)$")
+elsif any_match("300  ", ".*([Oo]nline|ressource en ligne).*") # Pos00+06
+  add_field("medium[].$append.label","Online-Ressource")
+elsif any_match("338  .a", "^.*([Oo]nline.*|online bron|online resource|online-ressource|Online-Ressource|ressource en ligne).*$")
   add_field("medium[].$append.label","Online-Ressource")
 elsif any_match("338  .b", "cr")
   add_field("medium[].$append.label","Online-Ressource")
 elsif any_match("340  .a", "Online-Ressource")
   add_field("medium[].$append.label","Online-Ressource")
 elsif any_match("340  .*.a", "Online-Ressource")
+  add_field("medium[].$append.label","Online-Ressource")
+elsif any_match("natureOfContent[].*.label", ".*(Website|Weblog).*")
   add_field("medium[].$append.label","Online-Ressource")
 end
 
@@ -312,56 +288,13 @@ elsif any_match("340  .*.a", "[Vv]inyl")
 end
 
 
-# medium: "Miscellaneous":	"http://purl.org/lobid/lv#Miscellaneous"
-# TODO: label always is german but "Miscellaneous" is not.
-
-
-# Introx sets all Braille to "Miscellaneous". I move them to Braille. Also Introx sets specific stuff to "Sonstige". In old ALEPH-Morph this is a default value.
-# I will follow the old ALEPH-Moprh approach here.
-# This will be done after the type definition.
 
 
 # ----- type[] -----
 # All metadata records have type: "BibliographicResource"
 # Base for type list is schema: https://github.com/hbz/lobid-resources/blob/eb1cbfaf013b03aee49291d8b3a4d00aa046e333/src/test/resources/schemas/type.json
 
-# TODO Check 655 for possible mappings.
-
 set_array("type[]","BibliographicResource")
-
-# From schema list of set types:
-#             "enum": [
-#                 "BibliographicResource", #
-#                 "ArchivalResource",
-#                 "ArchivedWebPage", #
-#                 "Book", #
-#                 "Collection",
-#                 "Periodical", #
-#                 "Series", #
-#                 "Newspaper", #
-#                 "Journal",
-#                 "MultiVolumeBook", #
-#                 "PublicationIssue", #
-#                 "Article", #
-#                 "Miscellaneous", #
-#                 "Thesis", #
-#                 "EditedVolume", #
-#                 "Proceedings", #
-#                 "Festschrift", #
-#                 "Bibliography", #
-#                 "OfficialPublication", #
-#                 "ReferenceSource", #
-#                 "Statistics", #
-#                 "Legislation", #
-#                 "PublishedScore", #
-#                 "Schoolbook", #
-#                 "Game", #
-#                 "Biography", #
-#                 "Report", #
-#                 "Image", #
-#                 "Map", #
-#                 "Standard" #
-#             ]
 
 # There seems to be a discrepancy between the values in the schema enum and in the aggregation.
 # Real data: http://lobid.org/resources/search?format=json&aggregations=type
@@ -371,11 +304,8 @@ set_array("type[]","BibliographicResource")
 
 # type: "ArchivedWebPage"
 
-#		<data source="051." name="@archived">
-#			<regexp match="^.w" format="$[ns-lobid-vocab]ArchivedWebPage"/>
-#		</data>
-
-# TODO: There seems to be no mapping from 051.: .w to any MARC Values.
+# There seems to be no mapping from 051.: .w to any MARC Values.
+# Should we also add type WebPage ?
 
 if any_equal("natureOfContent[].*.label","Website")
   do list(path: "856??", "var": "$i")
@@ -395,38 +325,6 @@ if any_equal("natureOfContent[].*.label","Website")
 end
 
 
-# type: "Article"
-
-#		<data source="051." name="@article">
-#			<regexp match="^.t|^..t|^...t|^.....t" format="$[ns-bibo]Article"/>
-#		</data>
-#		<data source="052." name="@article">
-#			<regexp match="^[af]|^.au|^...au|^.....au" format="$[ns-bibo]Article"/>
-#		</data>
-
-# if any_equal("@type__008Pos33", "B#e")
-#   add_field("@facet_type", "Aufsatz")
-# else
-#   if any_match("@006Pos00__006Pos16", "[at]#e")
-#     add_field("@facet_type", "Aufsatz")
-#   else
-#     if any_match("@type__008Pos24|@type__008Pos25|@type__008Pos26|@type__008Pos27", "(?:B|CR)#g")
-#       add_field("@facet_type", "Aufsatz")
-#     else
-#       if any_match("@006Pos00__006Pos07|@006Pos00__006Pos08|@006Pos00__006Pos09|@006Pos00__006Pos10", "[ast]#g")
-#         add_field("@facet_type", "Aufsatz")
-#       end
-#     end
-#   end
-# end
-
-# TODO: What is Aufsatz/Artikel inteded for only monograph, serial or continues ressource component?
-# TODO: There is no mapping for 052/1-6/6=au Aufsatz
-# TODO: What about leader07 a and b? https://www.loc.gov/marc/bibliographic/bdleader.html
-
-# TODO: Transformation needs to be added later.
-
-
 # type: "Bibliography"
 
 
@@ -437,6 +335,8 @@ elsif any_match("@leaderTyp+008", "Computer files(.{26})[e].*")  # Pos26
 elsif any_match("006", "^[ast](.{6}|.{7}|.{8}|.{9})[bknq].*") # Pos00+07-10
   add_field("type[].$append","Bibliography")
 elsif any_match("006", "^m(.{8})e.*") # Pos00+07-10
+  add_field("type[].$append","Bibliography")
+elsif any_match("natureOfContent[].*.label", ".*Bibliografie.*")
   add_field("type[].$append","Bibliography")
 end
 
@@ -454,11 +354,7 @@ elsif any_match("006", "^[cdij](.{12}|.{13})[ab].*") # Pos00+13-14
   add_field("type[].$append","Biography")
 elsif any_match("006", "^[s](.{6}|.{7}|.{8}|.{9})h.*") # Pos00+07-10
   add_field("type[].$append","Biography")
-elsif any_match("655 7.a", "Biografie")
-    add_field("type[].$append","Biography")
-elsif any_match("655 7.*.a", "Biografie")
-    add_field("type[].$append","Biography")
-elsif any_match("689??.a", "Autobiographie|Biographie")
+elsif any_match("natureOfContent[].*.label", ".*(Autobiographie|Autobiografie|Biographie|Biografie).*")
   add_field("type[].$append","Biography")
 end
 
@@ -466,22 +362,7 @@ end
 
 # type: "EditedVolume"
 
-
-# taken from introx based on https://jira.hbz-nrw.de/browse/DOX-1405
-# This also results in 990123613330206441 which is a Tonkassete. Perhaps this needs a differentiation.
-
-if exists("700??")
-  unless exists("100??")
-    add_field("type[].$append", "EditedVolume")
-    filter("type[]", "^Monographie$", invert: "true")
-  end
-elsif any_match("689??.a", ".*Aufsatzsammlung.*")
-  add_field("type[].$append", "EditedVolume")
-elsif any_match("689??.*.a", ".*Aufsatzsammlung.*")
-  add_field("type[].$append", "EditedVolume")
-elsif any_match("689??.0", ".*4143413.*")
-  add_field("type[].$append", "EditedVolume")
-elsif any_match("689??.*.0", ".*4143413.*")
+if any_match("natureOfContent[].*.label", ".*Aufsatzsammlung.*")
   add_field("type[].$append", "EditedVolume")
 end
 
@@ -496,6 +377,8 @@ elsif any_match("006", "^[at](.{12})1.*") # Pos00+13
 elsif any_match("title", ".*Festschrift.*") # often Festschrift is not stated as such in Control fields but in the title.
   add_field("type[].$append","Festschrift")
 elsif any_match("otherTitleInformation[]", ".*Festschrift.*")
+  add_field("type[].$append","Festschrift")
+elsif any_match("natureOfContent[].*.label", ".*Festschrift.*")
   add_field("type[].$append","Festschrift")
 end
 
@@ -514,27 +397,10 @@ elsif any_match("006", "^[ef](.15}|.{16})[jo].*") # Pos00+16/17
   add_field("type[].$append","Image")
 elsif any_match("006", "^[gkor](.15})[dikln].*") # Pos00+16
   add_field("type[].$append","Image")
+elsif any_match("natureOfContent[].*.label", "Bild|Diagramm|Fotografie|Grafik|Plakat|Postkarte|Röntgenbild|Zeichnung|Technische Zeichnung")
+  add_field("type[].$append","Image")
 end
 
-# type: "Map"
-# TODO: HT017559543 should be no map.
-
-
-if any_equal("@leaderTyp", "Map")
-  add_field("type[].$append","Map")
-elsif any_match("006", "^[ef].*")
-  add_field("type[].$append","Map")
-elsif any_match("007", "^[ad].*")
-  add_field("type[].$append","Map")
-elsif any_match("300  .a", ".*(Kt.|[kK]arte).*")
-  add_field("type[].$append","Map")
-elsif any_match("300  .*.a", ".*(Kt.|[kK]arte).*")
-  add_field("type[].$append","Map")
-elsif any_match("689??.a", ".*(Altkarte|Karte|Stadtplan).*")
-  add_field("type[].$append", "Map")
-elsif any_match("689??.*.a", ".*(Altkarte|Karte|Stadtplan).*")
-  add_field("type[].$append", "Map")
-end
 
 # type: "Game"
 
@@ -551,6 +417,30 @@ elsif any_match("006", "^[gkor](.{15})[g].*") # Pos00+16
   add_field("type[].$append","Game")
 elsif any_match("006", "^[ef](.{14}|.{15})[p].*") # Pos00+15|16
   add_field("type[].$append","Game")
+elsif any_match("natureOfContent[].*.label", "Spiel")
+  add_field("type[].$append", "Game")
+end
+
+# type: "Map"
+# TODO: HT017559543 should be no map.
+
+
+if any_equal("@leaderTyp", "Map")
+  add_field("type[].$append","Map")
+elsif any_match("006", "^[ef].*")
+  add_field("type[].$append","Map")
+elsif any_match("007", "^[ad].*")
+  add_field("type[].$append","Map")
+elsif any_match("natureOfContent[].*.label", ".*(Altkarte|Karte|Stadtplan|Weltkarte).*")
+  add_field("type[].$append", "Map")
+end
+
+unless any_equal("type[]","Game")
+  unless any_match("300  .a", ".*Spiel.*")
+    if any_match("300  .a", ".*(Kt.|[kK]arte).*")
+      add_field("type[].$append","Map")
+    end
+  end
 end
 
 # type: "Legislation"
@@ -567,21 +457,23 @@ end
 
 # type: "MultiVolumeBook"
 
+if any_match("leader", ".{7}m.{11}a.*")  # Pos24/25/26/27 # What about g (legal article)?
+  add_field("type[].$append","MultiVolumeBook")
+end
 
-# TODO: The mapping https://service-wiki.hbz-nrw.de/display/VDBE/ALT+-+Mapping+MAB2+-+MARC+21+-++Segmente+0---%2C+001+-+088+-+Kurzform
-# suggests leader07 m but this only says Monograph or Item nothing about MultiVolume.
-# Need to find specific infos about that.
 
 # type: "PublishedScore" (Musikalia)
 
 
-# also if it has ismn?
+# also if it has ismn
 # hbz mapping for 051. 0 m seems odd 008,18-19 ||? 052. none at all.
 
 
 if any_match("245[10]0.h", ".*Musikdruck.*")
   add_field("type[].$append", "PublishedScore")
 elsif exists("ismn[].1")
+  add_field("type[].$append", "PublishedScore")
+elsif any_match("natureOfContent[].*.label", "Musikhandschrift")
   add_field("type[].$append", "PublishedScore")
 end
 
@@ -592,9 +484,7 @@ if any_match("@leaderTyp+008", "(Continuing Resources)(.{21})n.*")  # Pos21
   add_field("type[].$append","Newspaper")
 elsif any_match("006", "^s(.{3})n.*") # Pos00+04
   add_field("type[].$append","Newspaper")
-elsif any_match("689??.a", ".*Zeitung.*")
-  add_field("type[].$append", "Newspaper")
-elsif any_match("689??.*.a", ".*Zeitung.*")
+elsif any_match("natureOfContent[].*.label", ".*Zeitung.*")
   add_field("type[].$append", "Newspaper")
 end
 
@@ -605,9 +495,7 @@ if any_match("@leaderTyp+008", "(Book|Continuing Resources)(.{24}|.{25}|.{26}|.{
   add_field("type[].$append","Standard")
 elsif any_match("006", "^[ast](.{6}|.{7}|.{8}|.{9})u.*") # Pos00+07-10
   add_field("type[].$append","Standard")
-elsif any_match("689??.a", ".*(Norm|Richtlinie).*")
-  add_field("type[].$append", "Standard")
-elsif any_match("689??.*.a", ".*(Norm|Richtlinie).*")
+elsif any_match("natureOfContent[].*.label", ".*(Norm|Richtlinie).*")
   add_field("type[].$append", "Standard")
 end
 
@@ -624,13 +512,9 @@ if any_match("@leaderTyp+008", "(Continuing Resources)(.{21})p.*")  # Pos21
   add_field("type[].$append","Periodical")
 elsif any_match("006", "^[s](.{3})p.*") # Pos00+04
   add_field("type[].$append","Periodical")
-elsif any_match("689??.a", ".*Zeitschrift.*")
-  add_field("type[].$append", "Periodical")
-elsif any_match("689??.*.a", ".*Zeitschrift.*")
+elsif any_match("natureOfContent[].*.label", ".*(Zeitschrift|Werkzeitschrift).*")
   add_field("type[].$append", "Periodical")
 end
-
-# TODO: If mapping with 689?? keywords we should also integrate a control that A should be "f".
 
 # type: "Proceedings"
 
@@ -639,24 +523,19 @@ if any_match("@leaderTyp+008", "(Book|Continuing Resources)(.{29})1.*")  # Pos29
   add_field("type[].$append","Proceedings")
 elsif any_match("006", "^[ast](.{11})1.*") # Pos00+04
   add_field("type[].$append","Proceedings")
-elsif any_match("689??.a", "Kongress")
-  add_field("type[].$append", "Proceedings")
-elsif any_match("689??.*.a", "Kongress")
+elsif any_match("natureOfContent[].*.label", ".*(Kongress|Konferenzschrift).*")
   add_field("type[].$append", "Proceedings")
 end
-
-# TODO: Check if content keywords 689?? should be no regexp.
-# TODO: Check if 689?? is repeatable or if every instance is singular due to indices.
 
 
 # type: "PublicationIssue"
 
-# TODO: I do not understand this transformation.
-
 
 if exists("zdbId")
   if exists("245??.n")
-    add_field("type[].$append", "PublicationIssue")
+    unless any_contain("245??.n","...")
+      add_field("type[].$append", "PublicationIssue")
+    end
   elsif exists("77308.q")
     add_field("type[].$append", "PublicationIssue")
   end
@@ -664,6 +543,7 @@ end
 
 # TODO: HT003176544 transforms but is not PublicationIssue in lobid ALEPH.
 # TODO: Also check if PublicationIssue and Periodical as type are mutual exclusive.
+# TODO: Check if there are other versions of PublicationIssue
 
 
 # type:"ReferenceSource"
@@ -672,10 +552,8 @@ if any_match("@leaderTyp+008", "(Book|Continuing Resources)(.{24}|.{25}|.{26}|.{
   add_field("type[].$append","ReferenceSource")
 elsif any_match("006", "^[ast](.{6}|.{7}|.{8}|.{9})[der].*") # Pos00+07-10
   add_field("type[].$append","ReferenceSource")
-elsif any_match("689??.a", ".*(Bestimmungsbuch|Enzyklopädie|Werkverzeichnis|W[ö|oe]rterbuch).*")
-  add_field("type[].$append", "Standard")
-elsif any_match("689??.*.a", ".*(Bestimmungsbuch|Enzyklopädie|Werkverzeichnis|W[ö|oe]rterbuch).*")
-  add_field("type[].$append", "Standard")
+elsif any_match("natureOfContent[].*.label", ".*(Bestimmungsbuch|Enzyklopädie|Werkverzeichnis|[Ww](ö|(oe))rterbuch).*")
+  add_field("type[].$append", "ReferenceSource")
 end
 
 
@@ -689,24 +567,18 @@ if any_match("@leaderTyp+008", "(Book|Continuing Resources)(.{24}|.{25}|.{26}|.{
   add_field("type[].$append","Report")
 elsif any_match("006", "^[ast](.{6}|.{7}|.{8}|.{9})t.*") # Pos00+07-10
   add_field("type[].$append","Report")
-elsif any_match("689??.a", ".*(Bericht|Erlebnisbericht|Forschungsbericht|Literaturbericht|Reisebericht).*")
-  add_field("type[].$append", "Report")
-elsif any_match("689??.*.a", ".*(Bericht|Erlebnisbericht|Forschungsbericht|Literaturbericht|Reisebericht).*")
+elsif any_match("natureOfContent[].*.label", ".*(Bericht|Erlebnisbericht|Forschungsbericht|Literaturbericht|Reisebericht).*")
   add_field("type[].$append", "Report")
 end
 
 # type: "Schoolbook"
 
 
-# TODO:051. x mapping does not exist in hbz ALMA.
+# MAB 051. x mapping does not exist in hbz ALMA.
 
-if any_match("655??.a", ".*(Schulbuch).*")
+if any_match("natureOfContent[].*.label", ".*(Schulbuch).*")
   add_field("type[].$append", "Schoolbook")
-elsif any_match("655??.*.a", ".*(Schulbuch).*")
-  add_field("type[].$append", "Schoolbook")
-elsif any_match("689??.a", ".*(Schulbuch).*")
-  add_field("type[].$append", "Schoolbook")
-elsif any_match("689??.*.a", ".*(Schulbuch).*")
+elsif any_match("natureOfContent[].*.label", ".*Schulbuch.*")
   add_field("type[].$append", "Schoolbook")
 end
 
@@ -721,13 +593,7 @@ if any_match("@leaderTyp+008", "(Continuing Resources)(.{21})m.*")  # Pos21
   add_field("type[].$append","Series")
 elsif any_match("006", "^[s](.{3})m.*") # Pos00+04
   add_field("type[].$append","Series")
-elsif any_match("655??.a", ".*Monografische Reihe.*")
-  add_field("type[].$append", "Series")
-elsif any_match("655??.*.a", ".*Monografische Reihe.*")
-  add_field("type[].$append", "Series")
-elsif any_match("689??.a", ".*Schriftenreihe.*")
-  add_field("type[].$append", "Series")
-elsif any_match("689??.*.a", ".*Schriftenreihe.*")
+elsif any_match("natureOfContent[].*.label", ".*(Monografische Reihe|Schriftenreihe).*")
   add_field("type[].$append", "Series")
 end
 
@@ -738,9 +604,9 @@ if any_match("@leaderTyp+008", "(Book|Continuing Resources)(.{24}|.{25}|.{26}|.{
   add_field("type[].$append","Statistics")
 elsif any_match("006", "^[ast](.{6}|.{7}|.{8}|.{9})s.*") # Pos00+07-10
   add_field("type[].$append","Statistics")
+elsif any_match("natureOfContent[].*.label", ".*Statistik.*")
+  add_field("type[].$append", "Statistics")
 end
-
-# TODO: Check more for values in 655.
 
 
 # type: "Thesis"
@@ -753,93 +619,58 @@ if any_match("@leaderTyp+008", "(Book|Continuing Resources)(.{24}|.{25}|.{26}|.{
   add_field("type[].$append","Thesis")
 elsif any_match("006", "^[ast](.{6}|.{7}|.{8}|.{9})m.*") # Pos00+07-10
   add_field("type[].$append","Thesis")
+elsif any_match("natureOfContent[].*.label", ".*Hochschulschrift.*")
+  add_field("type[].$append", "Thesis")
 end
 
 
 # type: "Book"
 
-# Old ALEPH Morph:
-# <!-- type is book (and also manifestation) if 050 begins with 'a' and 051 or 052 is missing
-#			or 051 and 052 does not fulfill a certain pattern -->
-#		<combine name="@rdftype" value="$[ns-bibo]Book">
-#			<if>
-#				<none>
-#					<data source="@idzdb"/>
-#					<data source="050.">
-#						<regexp match="^.........a"/>
-#					</data>
-#					<data source="051.">
-#						<regexp match="^a"/>
-#					</data>
-#					<data source="051.">
-#						<regexp match="^.[mt]"/>
-#					</data>
-#					<data source="051.">
-#						<regexp match="^..[tm]"/>
-#					</data>
-#					<data source="051.">
-#						<regexp match="^...t"/>
-#					</data>
-#					<data source="051.">
-#						<regexp match="^....t"/>
-#					</data>
-#					<data source="051.">
-#						<regexp match="^.....t"/>
-#					</data>
-#					<data source="051.">
-#						<regexp match="^.z"/>
-#					</data>
-#					<data source="052.">
-#						<regexp match="^[a-zA-Z]"/>
-#					</data>
-#					<data source="089-[-1].a|090-[-1].a">
-#						<regexp match="Heft"/>
-#					</data>
-#					<data source="@matVideo"/>
-#					<data source="@mediumAudio"/>
-#					<data source="@archived"/>
-#				</none>
-#			</if>
-#			<choose>
-#				<data source="050.">
-#					<regexp match="^a"/>
-#				</data>
-#				<data source="051.">
-#					<regexp match="^m|^s|^.x|^..x|^...x|^....[fkls]"/>
-#				</data>
-#				<data source="062-1.a">
-#					<regexp match="Band"/>
-#				</data>
-#				<data source="089-[-1].a|090-[-1].a"/>
-#				<data source="9[01234][27]-[-1].f">
-#					<regexp
-#						match="Anthologie|Atlas|Auktionskatalog|Bildband|Bilderbuch|Jugendbuch|Jugendsachbuch|Kinderbuch|Kindersachbuch|Kochbuch|Lehrbuch|Lesebuch"/>
-#				</data>
-#			</choose>
-#		</combine>
-#
-# ALMA Moprh
-#  <combine name="@facet_type" value="Book">
-#    <if>
-#      <data source="@LeaderPos07">
-#        <regexp match="[adm]" />
-#      </data>
-#    </if>
-#    <data source="001" />
-#  </combine>
 
-# TODO: Check if we still need the complex transformation for book.
-
-if any_match("@leaderPos06-07", "^.[adm]")
+if any_match("@leaderPos06-07", "^a[cdm]|t.")
   add_field("type[].$append","Book")
+elsif any_match("006", "^[at].*")
+  add_field("type[].$append","Book")
+elsif any_match("natureOfContent[].*.label", ".*(Adressbuch|Anthologie|Atlas|Auktionskatalog|Ausstellungskatalog|Backbuch|Bestimmungsbuch|Bildband|Bilderbuch|Drehbuch|Jugendbuch|Jugendsachbuch|Kinderbuch|Kindersachbuch|Kochbuch|Künstlerbuch|Lehrbuch|Lehrerhandbuch|Lesebuch|Liederbuch|Sachbilderbuch|Schulbuch|Tagebuch|Telefonbuch|[Ww]örterbuch).*")
+  add_field("type[].$append", "Book")
 end
 
 
-# Set medium default to print if there is no medium and type "Book" exists.
+# type: "Miscellaneous"
+
+# Set default type value  "Sonstige" (Miscellaneous) if no type besides "BibliographicResource" is set.
+
+unless exists("type[].2")
+  add_field("type[].$append", "Miscellaneous")
+end
+
+# type: "Article"
+
+# TODO: What is Aufsatz/Artikel inteded for only monograph, serial or continues ressource component?
+# TODO: There is no mapping for 052/1-6/6=au Aufsatz
+# TODO: What about leader07 a and b? https://www.loc.gov/marc/bibliographic/bdleader.html
+
+# TODO: Transformation needs to be added later.
+
+if any_match ("type[]", "Miscellaneous|Biography|Bibliography")
+  unless any_match ("medium[].*.label", ".*(Audio|Video).*")
+    if any_match("@leaderPos06-07",".a")
+      add_field("type[].$append","Article")
+      replace_all("type[].*","Miscellaneous","")
+    end
+  end
+end
+
+# Set medium default to print if there is no medium and type "Book" exists. Else set "Sonstige" (Miscellaneous) as default medium.
 
 unless exists("medium[].1")
   if any_equal("type[]", "Book")
     add_field("medium[].$append.label", "Print")
+  elsif any_match("@leaderPos06-07", "a.*")
+    add_field("medium[].$append.label","Print")
+  else
+  # medium: "Sonstige":	"http://purl.org/lobid/lv#Miscellaneous"
+    add_field("medium[].$append.label", "Sonstige")
   end
 end
 
@@ -849,6 +680,6 @@ do list(path:"medium[]", "var": "$i")
 	copy_field("$i.label","$i.id")
 	lookup("$i.id","medium-id-to-label")
 end
-# TODO: Uniq array objects.
 
 uniq("type[]")
+uniq("medium[]")

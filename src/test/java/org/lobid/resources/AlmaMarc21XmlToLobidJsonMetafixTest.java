@@ -11,7 +11,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.metafacture.biblio.marc21.MarcXmlHandler;
 import org.metafacture.io.FileOpener;
-import org.metafacture.io.TarReader;
+import org.metafacture.files.DirReader;
 import org.metafacture.json.JsonEncoder;
 import org.metafacture.mangling.LiteralToObject;
 import org.metafacture.monitoring.StreamBatchLogger;
@@ -40,8 +40,8 @@ import static org.junit.Assert.fail;
 public final class AlmaMarc21XmlToLobidJsonMetafixTest {
 
     private static final String FIX = "src/main/resources/alma/alma.fix";
-    private static final File DIRECTORY = new File("src/test/resources/alma-fix/");
-    private static final String BIG_ALMA_XML_FILE = "src/test/resources/alma-fix/almaMarcXmlTestFiles.xml.tar.bz2";
+    private static final String DIRECTORY_NAME = "src/test/resources/alma-fix/";
+    private static final File DIRECTORY = new File(DIRECTORY_NAME);
     final HashMap<String, String> fixVariables = new HashMap<>();
     private static final boolean GENERATE_TESTDATA = System.getProperty("generateTestData", "false").equals("true");
     private static final Logger LOG = LogManager.getLogger(AlmaMarc21XmlToLobidJsonMetafixTest.class);
@@ -61,58 +61,10 @@ public final class AlmaMarc21XmlToLobidJsonMetafixTest {
         fixVariables.put("deweyLabels", "src/test/resources/deweyLabels.tsv");
         fixVariables.put("nwbib-spatial", "src/main/resources/nwbib-spatial.tsv");
         fixVariables.put("wd_itemLabelTypesCoordinates", "src/main/resources/wd_itemLabelTypesCoordinates.tsv");
-        if (GENERATE_TESTDATA) {
-            extractXmlTestRecords(PATTERN_TO_IDENTIFY_XML_RECORDS);
-        }
-    }
-
-    /**
-     * Splits xml and extracts records hit by a pattern. Needs 50 secs for 100.000
-     * resources in a 44_MB_XML.tar.gz. It's 100 times faster than Filter(morph)
-     * if the pattern matches early (eg. "001"). This method helps to update the
-     * Marc-Xml test files by identifying the records, determining the name of the
-     * file using an xpath to get the value from `035 .a` and writes this into the
-     * test directory. *
-     *
-     * @param pattern the pattern which is searched for to identify xml records
-     */
-    public static void extractXmlTestRecords(final String pattern) {
-        long startTime = System.currentTimeMillis();
-        XmlElementSplitter xmlElementSplitter = new XmlElementSplitter();
-        xmlElementSplitter.setElementName("record");
-        XmlElementSplitter xmlElementSplitter_1 = new XmlElementSplitter();
-        xmlElementSplitter_1.setElementName("record");
-        final StringFilter stringFilter = new StringFilter(pattern);
-        XmlFilenameWriter xmlFilenameWriter = new XmlFilenameWriter();
-        xmlFilenameWriter.setProperty("/record/controlfield[@tag='001']");
-        xmlFilenameWriter.setTarget(DIRECTORY.getPath());
-        FileOpener opener = new FileOpener();
-        SimpleXmlEncoder simpleXmlEncoder = new SimpleXmlEncoder();
-        simpleXmlEncoder.setSeparateRoots(true);
-
-        XmlDecoder xmlDecoder = new XmlDecoder(); //
-        xmlDecoder.setReceiver(xmlElementSplitter) //
-            .setReceiver(new LiteralToObject()) //
-            .setReceiver(stringFilter)//
-            .setReceiver(new StringReader()) //
-            .setReceiver(new XmlDecoder()) //
-            .setReceiver(xmlElementSplitter_1) //
-            .setReceiver(xmlFilenameWriter);
-
-        if (BIG_ALMA_XML_FILE.toLowerCase().endsWith("tar.bz2") || BIG_ALMA_XML_FILE.toLowerCase().endsWith("tar.gz")) {
-            LOG.info("recognised as tar archive");
-            opener.setReceiver(new TarReader()).setReceiver(xmlDecoder);
-        }
-        else {
-            LOG.info("recognised as BGZF");
-            opener.setDecompressConcatenated(true);
-            opener.setReceiver(xmlDecoder);
-        }
-        opener.process(BIG_ALMA_XML_FILE);
-        opener.closeStream();
-
-        long endTime = System.currentTimeMillis();
-        LOG.info("Time needed:" + (endTime - startTime) / 1000);
+        fixVariables.put("classification.tsv", "src/main/resources/alma/maps/classification.tsv");
+        fixVariables.put("formangabe.tsv", "src/main/resources/alma/maps/formangabe.tsv");
+        fixVariables.put("maps-institutions.tsv", "src/main/resources/alma/maps/institutions.tsv");
+        fixVariables.put("nwbibWikidataLabelTypeCoords.tsv", "src/main/resources/alma/maps/nwbibWikidataLabelTypeCoords.tsv");
     }
 
     /**
@@ -126,8 +78,9 @@ public final class AlmaMarc21XmlToLobidJsonMetafixTest {
     public void transformFile() {
         LOG.info("Starting transforming File");
         FileOpener opener = new FileOpener();
+        DirReader dirReader = new DirReader();
+        dirReader.setFilenamePattern("(.*)xml");
         opener.setDecompressConcatenated(true);
-        opener.setReceiver(new TarReader());
         MarcXmlHandler marcXmlHandler = new MarcXmlHandler();
         marcXmlHandler.setNamespace(null);
         StreamBatchLogger logger = new StreamBatchLogger();
@@ -140,21 +93,20 @@ public final class AlmaMarc21XmlToLobidJsonMetafixTest {
         String keyToGetMainId = System.getProperty("keyToGetMainId", "almaMmsId");
         JsonToElasticsearchBulkMap jsonToElasticsearchBulkMap = new JsonToElasticsearchBulkMap(keyToGetMainId, "resource", "ignored");
         try {
-            opener.setReceiver(new TarReader()).setReceiver(new XmlDecoder())//
+            dirReader.setReceiver(opener).setReceiver(new XmlDecoder())//
                 .setReceiver(marcXmlHandler)//
                 .setReceiver(logger)//
                 .setReceiver(new Metafix(FIX, fixVariables))//
                 .setReceiver(new JsonEncoder())//
                 .setReceiver(etikettJson).setReceiver(jsonToElasticsearchBulkMap);
-
             if (GENERATE_TESTDATA) {
                 jsonToElasticsearchBulkMap.setReceiver(new JsonFileWriter<HashMap<String, String>>(DIRECTORY.getPath()));
             }
             else {
                 jsonToElasticsearchBulkMap.setReceiver(new JsonFileWriter<HashMap<String, String>>(DIRECTORY.getPath(), ".tmp"));
             }
-            opener.process(BIG_ALMA_XML_FILE);
-            opener.closeStream();
+            dirReader.process(DIRECTORY_NAME);
+            dirReader.closeStream();
             compareGeneratedJson();
         }
         catch (Exception e) {

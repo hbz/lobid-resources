@@ -2,12 +2,12 @@
   "@context" : "http://lobid.org/resources/context.jsonld",
   "almaMmsId" : "990126276700206441",
   "hbzId" : "HT014015351",
+  "deprecatedUri" : "http://lobid.org/resources/HT014015351#!",
   "isbn" : [ "3770538471", "9783770538478" ],
   "oclcNumber" : [ "238307096" ],
   "title" : "Spuren, Lektüren",
   "otherTitleInformation" : [ "Praktiken des Symbolischen ; [Festschrift für Ludwig Jäger zum 60. Geburtstag]" ],
   "publication" : [ {
-    "publicationHistory" : "2005",
     "startDate" : "2005",
     "type" : [ "PublicationEvent" ],
     "location" : [ "München" ],
@@ -17,8 +17,6 @@
     "id" : "http://lobid.org/resources/990126276700206441",
     "label" : "Webseite der hbz-Ressource 990126276700206441",
     "type" : [ "BibliographicDescription" ],
-    "dateCreated" : "20210405",
-    "dateModified" : "20220228",
     "inDataset" : {
       "id" : "http://lobid.org/resources/dataset#!",
       "label" : "lobid-resources – Der hbz-Verbundkatalog als Linked Open Data"
@@ -33,6 +31,8 @@
       },
       "object" : {
         "id" : "https://lobid.org/hbz01/990126276700206441",
+        "dateCreated" : "2021-04-05",
+        "dateModified" : "2022-12-04",
         "type" : [ "DataFeedItem" ],
         "label" : "hbz-Ressource 990126276700206441 im Exportformat MARC21 XML",
         "inDataset" : {
@@ -72,9 +72,16 @@
   "extent" : "324 S. : Ill.",
   "natureOfContent" : [ {
     "label" : "Aufsatzsammlung",
-    "id" : "http://d-nb.info/gnd/4143413-4"
+    "id" : "https://d-nb.info/gnd/4143413-4"
   } ],
   "subject" : [ {
+    "type" : [ "Keyword" ],
+    "source" : {
+      "id" : "http://lobid.org/organisations/DE-82#!",
+      "label" : "Freie Verschlagwortung durch DE-82"
+    },
+    "label" : "Barthes, Roland / Goethe, Johann Wolfgang / Saussure, Ferdinand de / Shakespeare, William"
+  }, {
     "type" : [ "ComplexSubject" ],
     "label" : "Abbild | Symbolik",
     "componentList" : [ {
@@ -84,7 +91,7 @@
         "label" : "Gemeinsame Normdatei (GND)",
         "id" : "https://d-nb.info/gnd/7749153-1"
       },
-      "id" : "http://d-nb.info/gnd/4604932-0",
+      "id" : "https://d-nb.info/gnd/4604932-0",
       "gndIdentifier" : "4604932-0"
     }, {
       "type" : [ "SubjectHeading" ],
@@ -93,43 +100,130 @@
         "label" : "Gemeinsame Normdatei (GND)",
         "id" : "https://d-nb.info/gnd/7749153-1"
       },
-      "id" : "http://d-nb.info/gnd/4184194-3",
+      "id" : "https://d-nb.info/gnd/4184194-3",
       "gndIdentifier" : "4184194-3"
     } ]
   } ],
   "hasItem" : [ {
     "label" : "lobid Bestandsressource",
-    "type" : [ "Item" ],
+    "type" : [ "Item", "PhysicalObject" ],
     "callNumber" : "BJHJ1028",
+    "serialNumber" : "W00020777",
     "currentLocation" : "W0001 / 11",
     "heldBy" : {
       "id" : "http://lobid.org/organisations/DE-468#!",
       "isil" : "DE-468",
       "label" : "lobid Organisation"
     },
-    "id" : "http://lobid.org/items/990126276700206441:DE-468:BJHJ1028#!"
+    "id" : "http://lobid.org/items/990126276700206441:DE-468:W0001:BJHJ1028#!"
   }, {
     "label" : "lobid Bestandsressource",
-    "type" : [ "Item" ],
+    "type" : [ "Item", "PhysicalObject" ],
+    "callNumber" : "KKZJ 1",
+    "serialNumber" : "90745439",
+    "currentLocation" : "MOP / MOP_Haupt",
+    "heldBy" : {
+      "id" : "http://lobid.org/organisations/DE-Dm13#!",
+      "isil" : "DE-Dm13",
+      "label" : "lobid Organisation"
+    },
+    "id" : "http://lobid.org/items/990126276700206441:DE-Dm13:MOP:KKZJ 1#!"
+  }, {
+    "label" : "lobid Bestandsressource",
+    "type" : [ "Item", "PhysicalObject" ],
+    "callNumber" : "BJHJ/JAE",
+    "serialNumber" : "140533301",
+    "currentLocation" : "F0001 / 00",
+    "heldBy" : {
+      "id" : "http://lobid.org/organisations/DE-708#!",
+      "isil" : "DE-708",
+      "label" : "lobid Organisation"
+    },
+    "id" : "http://lobid.org/items/990126276700206441:DE-708:F0001:BJHJ/JAE#!"
+  }, {
+    "label" : "lobid Bestandsressource",
+    "type" : [ "Item", "PhysicalObject" ],
+    "callNumber" : "609:1.6 JAE",
+    "serialNumber" : "609:025732",
+    "currentLocation" : "609 / 0",
+    "heldBy" : {
+      "id" : "http://lobid.org/organisations/DE-82#!",
+      "isil" : "DE-82",
+      "label" : "lobid Organisation"
+    },
+    "id" : "http://lobid.org/items/990126276700206441:DE-82:609:609:1.6 JAE#!"
+  }, {
+    "label" : "lobid Bestandsressource",
+    "type" : [ "Item", "PhysicalObject" ],
+    "callNumber" : "deu 503-109",
+    "serialNumber" : "C372365",
+    "currentLocation" : "RL002 / FHULD",
+    "heldBy" : {
+      "id" : "http://lobid.org/organisations/DE-386#!",
+      "isil" : "DE-386",
+      "label" : "lobid Organisation"
+    },
+    "id" : "http://lobid.org/items/990126276700206441:DE-386:RL002:deu 503-109#!"
+  }, {
+    "label" : "lobid Bestandsressource",
+    "type" : [ "Item", "PhysicalObject" ],
+    "callNumber" : "deu 503-109",
+    "serialNumber" : "C372366",
+    "currentLocation" : "RL002 / FHULD",
+    "heldBy" : {
+      "id" : "http://lobid.org/organisations/DE-386#!",
+      "isil" : "DE-386",
+      "label" : "lobid Organisation"
+    },
+    "id" : "http://lobid.org/items/990126276700206441:DE-386:RL002:deu 503-109#!"
+  }, {
+    "label" : "lobid Bestandsressource",
+    "type" : [ "Item", "PhysicalObject" ],
     "callNumber" : "OH058 S7L5",
+    "serialNumber" : "158/4162880+01",
     "currentLocation" : "UB_BI / 156_Mono",
     "heldBy" : {
       "id" : "http://lobid.org/organisations/DE-361#!",
       "isil" : "DE-361",
       "label" : "lobid Organisation"
     },
-    "id" : "http://lobid.org/items/990126276700206441:DE-361:OH058 S7L5#!"
+    "id" : "http://lobid.org/items/990126276700206441:DE-361:UB_BI:OH058 S7L5#!"
   }, {
     "label" : "lobid Bestandsressource",
-    "type" : [ "Item" ],
+    "type" : [ "Item", "PhysicalObject" ],
     "callNumber" : "kulb100.s772",
+    "serialNumber" : "109927001",
     "currentLocation" : "X0031 / 31",
     "heldBy" : {
       "id" : "http://lobid.org/organisations/DE-61#!",
       "isil" : "DE-61",
       "label" : "lobid Organisation"
     },
-    "id" : "http://lobid.org/items/990126276700206441:DE-61:kulb100.s772#!"
+    "id" : "http://lobid.org/items/990126276700206441:DE-61:X0031:kulb100.s772#!"
+  }, {
+    "label" : "lobid Bestandsressource",
+    "type" : [ "Item", "PhysicalObject" ],
+    "callNumber" : "3H 83949",
+    "serialNumber" : "3H 83949",
+    "currentLocation" : "ZB / ZB_FHM1",
+    "heldBy" : {
+      "id" : "http://lobid.org/organisations/DE-6#!",
+      "isil" : "DE-6",
+      "label" : "lobid Organisation"
+    },
+    "id" : "http://lobid.org/items/990126276700206441:DE-6:ZB:3H 83949#!"
+  }, {
+    "label" : "lobid Bestandsressource",
+    "type" : [ "Item", "PhysicalObject" ],
+    "callNumber" : "21KKZJ1005",
+    "serialNumber" : "21KKZJ1005",
+    "currentLocation" : "S0001 / AR2",
+    "heldBy" : {
+      "id" : "http://lobid.org/organisations/DE-467#!",
+      "isil" : "DE-467",
+      "label" : "lobid Organisation"
+    },
+    "id" : "http://lobid.org/items/990126276700206441:DE-467:S0001:21KKZJ1005#!"
   } ],
   "medium" : [ {
     "label" : "Print",
@@ -149,7 +243,7 @@
     "type" : [ "Contribution" ]
   }, {
     "agent" : {
-      "gndIdentifier" : "(DE-588)136788548",
+      "gndIdentifier" : "136788548",
       "id" : "https://d-nb.info/gnd/136788548",
       "label" : "Jäger, Ludwig",
       "type" : [ "Person" ],

@@ -2,11 +2,11 @@
   "@context" : "http://lobid.org/resources/context.jsonld",
   "almaMmsId" : "990173811970206441",
   "hbzId" : "HT015865114",
+  "deprecatedUri" : "http://lobid.org/resources/HT015865114#!",
   "oclcNumber" : [ "612359731" ],
   "title" : "Von der Teilung zur Einheit",
   "otherTitleInformation" : [ "die Welt nach 1945" ],
   "publication" : [ {
-    "publicationHistory" : "2003-",
     "startDate" : "2003",
     "type" : [ "PublicationEvent" ],
     "location" : [ "Bamberg" ],
@@ -18,8 +18,6 @@
     "id" : "http://lobid.org/resources/990173811970206441",
     "label" : "Webseite der hbz-Ressource 990173811970206441",
     "type" : [ "BibliographicDescription" ],
-    "dateCreated" : "20210406",
-    "dateModified" : "20210409",
     "inDataset" : {
       "id" : "http://lobid.org/resources/dataset#!",
       "label" : "lobid-resources – Der hbz-Verbundkatalog als Linked Open Data"
@@ -34,6 +32,8 @@
       },
       "object" : {
         "id" : "https://lobid.org/hbz01/990173811970206441",
+        "dateCreated" : "2021-04-06",
+        "dateModified" : "2022-12-04",
         "type" : [ "DataFeedItem" ],
         "label" : "hbz-Ressource 990173811970206441 im Exportformat MARC21 XML",
         "inDataset" : {
@@ -76,7 +76,7 @@
   } ],
   "natureOfContent" : [ {
     "label" : "Schulbuch",
-    "id" : "http://d-nb.info/gnd/4053458-3"
+    "id" : "https://d-nb.info/gnd/4053458-3"
   } ],
   "subject" : [ {
     "notation" : "120",
@@ -118,16 +118,35 @@
         "label" : "Gemeinsame Normdatei (GND)",
         "id" : "https://d-nb.info/gnd/7749153-1"
       },
-      "id" : "http://d-nb.info/gnd/4020533-2",
-      "gndIdentifier" : "4020533-2"
+      "id" : "https://d-nb.info/gnd/4020533-2",
+      "gndIdentifier" : "4020533-2",
+      "altLabel" : [ "Geschichte / Didaktik", "Geschichte / Unterricht", "Geschichtsdidaktik" ]
     } ]
   } ],
-  "subjectAltLabel" : [ "Geschichte", "Geschichtsdidaktik" ],
+  "hasItem" : [ {
+    "label" : "lobid Bestandsressource",
+    "type" : [ "Item", "NurTitel" ],
+    "heldBy" : {
+      "id" : "http://lobid.org/organisations/DE-386#!",
+      "isil" : "DE-386",
+      "label" : "lobid Organisation"
+    },
+    "id" : "http://lobid.org/items/990173811970206441:DE-386#!"
+  }, {
+    "label" : "lobid Bestandsressource",
+    "type" : [ "Item", "NurTitel" ],
+    "heldBy" : {
+      "id" : "http://lobid.org/organisations/DE-6#!",
+      "isil" : "DE-6",
+      "label" : "lobid Organisation"
+    },
+    "id" : "http://lobid.org/items/990173811970206441:DE-6#!"
+  } ],
   "medium" : [ {
     "label" : "Print",
     "id" : "http://rdaregistry.info/termList/RDAproductionMethod/1010"
   } ],
-  "type" : [ "BibliographicResource", "EditedVolume", "Schoolbook", "Book" ],
+  "type" : [ "BibliographicResource", "MultiVolumeBook", "Schoolbook", "Book" ],
   "contribution" : [ {
     "agent" : {
       "label" : "Weber, Jürgen",

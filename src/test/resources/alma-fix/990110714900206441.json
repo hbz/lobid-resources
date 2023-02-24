@@ -2,9 +2,9 @@
   "@context" : "http://lobid.org/resources/context.jsonld",
   "almaMmsId" : "990110714900206441",
   "hbzId" : "BT000024700",
+  "deprecatedUri" : "http://lobid.org/resources/BT000024700#!",
   "title" : "1. grenzüberschreitende Euregio-Betriebskontakttage in Nordrhein-Westfalen",
   "publication" : [ {
-    "publicationHistory" : "1993",
     "startDate" : "1993",
     "type" : [ "PublicationEvent" ]
   } ],
@@ -12,8 +12,6 @@
     "id" : "http://lobid.org/resources/990110714900206441",
     "label" : "Webseite der hbz-Ressource 990110714900206441",
     "type" : [ "BibliographicDescription" ],
-    "dateCreated" : "20210406",
-    "dateModified" : "20221008",
     "inDataset" : {
       "id" : "http://lobid.org/resources/dataset#!",
       "label" : "lobid-resources – Der hbz-Verbundkatalog als Linked Open Data"
@@ -28,6 +26,8 @@
       },
       "object" : {
         "id" : "https://lobid.org/hbz01/990110714900206441",
+        "dateCreated" : "2021-04-06",
+        "dateModified" : "2022-12-04",
         "type" : [ "DataFeedItem" ],
         "label" : "hbz-Ressource 990110714900206441 im Exportformat MARC21 XML",
         "inDataset" : {
@@ -63,7 +63,7 @@
     "type" : [ "Collection" ]
   } ],
   "note" : [ "In: Bürgerbuch Gronau und Epe. - 4. 1993/94 (1993) S. 68, 70-71 : Ill." ],
-  "bibliographicCitation" : "1993",
+  "bibliographicCitation" : "Bürgerbuch Gronau und Epe. - 4. 1993/94 (1993) S. 68, 70-71 : Ill.",
   "subject" : [ {
     "id" : "https://nwbib.de/subjects#N548040",
     "label" : "Messen. Ausstellungen",
@@ -75,32 +75,34 @@
     }
   }, {
     "type" : [ "ComplexSubject" ],
-    "label" : "Gronau",
+    "label" : "Gronau (Westfalen) / Euregio-Betriebskontakttage",
     "componentList" : [ {
       "type" : [ "SubjectHeading" ],
-      "label" : "Gronau"
+      "label" : "Gronau (Westfalen) / Euregio-Betriebskontakttage"
     } ]
   }, {
     "type" : [ "ComplexSubject" ],
-    "label" : "EUREGIO | Messe",
+    "label" : "EUREGIO (Körperschaft) | Messe (Wirtschaft)",
     "componentList" : [ {
       "type" : [ "CorporateBody" ],
-      "label" : "EUREGIO",
+      "label" : "EUREGIO (Körperschaft)",
       "source" : {
         "label" : "Gemeinsame Normdatei (GND)",
         "id" : "https://d-nb.info/gnd/7749153-1"
       },
-      "id" : "http://d-nb.info/gnd/2065029-2",
-      "gndIdentifier" : "2065029-2"
+      "id" : "https://d-nb.info/gnd/2065029-2",
+      "gndIdentifier" : "2065029-2",
+      "altLabel" : [ "EUREGIO e.V.", "EUREGIO-Kommunalgemeinschaft Rhein-Ems e.V." ]
     }, {
       "type" : [ "SubjectHeading" ],
-      "label" : "Messe",
+      "label" : "Messe (Wirtschaft)",
       "source" : {
         "label" : "Gemeinsame Normdatei (GND)",
         "id" : "https://d-nb.info/gnd/7749153-1"
       },
-      "id" : "http://d-nb.info/gnd/4074745-1",
-      "gndIdentifier" : "4074745-1"
+      "id" : "https://d-nb.info/gnd/4074745-1",
+      "gndIdentifier" : "4074745-1",
+      "altLabel" : [ "Fachmesse", "Handelsmesse" ]
     } ]
   } ],
   "spatial" : [ {
@@ -113,14 +115,15 @@
     },
     "focus" : {
       "id" : "http://www.wikidata.org/entity/Q1374337",
-      "label" : "Euregio (Sitz: Gronau)"
+      "label" : "Euregio",
+      "type" : [ "http://www.wikidata.org/entity/Q153026" ]
     }
   } ],
   "medium" : [ {
     "label" : "Print",
     "id" : "http://rdaregistry.info/termList/RDAproductionMethod/1010"
   } ],
-  "type" : [ "BibliographicResource", "Book" ],
+  "type" : [ "BibliographicResource", "Article" ],
   "contribution" : [ {
     "agent" : {
       "label" : "Prause, Klaus",

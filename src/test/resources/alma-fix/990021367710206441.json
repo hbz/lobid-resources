@@ -2,13 +2,13 @@
   "@context" : "http://lobid.org/resources/context.jsonld",
   "almaMmsId" : "990021367710206441",
   "hbzId" : "HT005207972",
+  "deprecatedUri" : "http://lobid.org/resources/HT005207972#!",
   "isbn" : [ "0256018243", "9780256018240" ],
   "oclcNumber" : [ "265495256" ],
   "title" : "Labor economics",
   "otherTitleInformation" : [ "wages, employment, and trade unionism" ],
   "edition" : [ "3. ed" ],
   "publication" : [ {
-    "publicationHistory" : "1976",
     "startDate" : "1976",
     "type" : [ "PublicationEvent" ],
     "location" : [ "Homewood, Ill." ],
@@ -18,8 +18,6 @@
     "id" : "http://lobid.org/resources/990021367710206441",
     "label" : "Webseite der hbz-Ressource 990021367710206441",
     "type" : [ "BibliographicDescription" ],
-    "dateCreated" : "20210406",
-    "dateModified" : "20210407",
     "inDataset" : {
       "id" : "http://lobid.org/resources/dataset#!",
       "label" : "lobid-resources – Der hbz-Verbundkatalog als Linked Open Data"
@@ -34,6 +32,8 @@
       },
       "object" : {
         "id" : "https://lobid.org/hbz01/990021367710206441",
+        "dateCreated" : "2021-04-06",
+        "dateModified" : "2022-12-04",
         "type" : [ "DataFeedItem" ],
         "label" : "hbz-Ressource 990021367710206441 im Exportformat MARC21 XML",
         "inDataset" : {
@@ -77,43 +77,56 @@
         "label" : "Gemeinsame Normdatei (GND)",
         "id" : "https://d-nb.info/gnd/7749153-1"
       },
-      "id" : "http://d-nb.info/gnd/4322126-9",
-      "gndIdentifier" : "4322126-9"
+      "id" : "https://d-nb.info/gnd/4322126-9",
+      "gndIdentifier" : "4322126-9",
+      "altLabel" : [ "Labor economics", "Labour economics", "Arbeitsökonomik" ]
     } ]
   } ],
   "hasItem" : [ {
     "label" : "lobid Bestandsressource",
-    "type" : [ "Item" ],
+    "type" : [ "Item", "PhysicalObject" ],
     "callNumber" : "5200/Mars",
+    "serialNumber" : "20098056",
     "currentLocation" : "SFS / Freihand",
     "heldBy" : {
       "id" : "http://lobid.org/organisations/DE-290#!",
       "isil" : "DE-290",
       "label" : "lobid Organisation"
     },
-    "id" : "http://lobid.org/items/990021367710206441:DE-290:5200/Mars#!"
+    "id" : "http://lobid.org/items/990021367710206441:DE-290:SFS:5200/Mars#!"
   }, {
     "label" : "lobid Bestandsressource",
-    "type" : [ "Item" ],
+    "type" : [ "Item", "PhysicalObject" ],
     "callNumber" : "F 29772",
+    "serialNumber" : "186573",
     "currentLocation" : "ZB / Freihand",
     "heldBy" : {
       "id" : "http://lobid.org/organisations/DE-290#!",
       "isil" : "DE-290",
       "label" : "lobid Organisation"
     },
-    "id" : "http://lobid.org/items/990021367710206441:DE-290:F 29772#!"
+    "id" : "http://lobid.org/items/990021367710206441:DE-290:ZB:F 29772#!"
   }, {
     "label" : "lobid Bestandsressource",
-    "type" : [ "Item" ],
+    "type" : [ "Item", "PhysicalObject" ],
     "callNumber" : "SL800 M367(3)",
+    "serialNumber" : "138/1155937+01",
     "currentLocation" : "UB_BI / 13W_Mono",
     "heldBy" : {
       "id" : "http://lobid.org/organisations/DE-361#!",
       "isil" : "DE-361",
       "label" : "lobid Organisation"
     },
-    "id" : "http://lobid.org/items/990021367710206441:DE-361:SL800 M367(3)#!"
+    "id" : "http://lobid.org/items/990021367710206441:DE-361:UB_BI:SL800 M367(3)#!"
+  }, {
+    "label" : "lobid Bestandsressource",
+    "type" : [ "Item", "NurTitel" ],
+    "heldBy" : {
+      "id" : "http://lobid.org/organisations/DE-466#!",
+      "isil" : "DE-466",
+      "label" : "lobid Organisation"
+    },
+    "id" : "http://lobid.org/items/990021367710206441:DE-466#!"
   } ],
   "medium" : [ {
     "label" : "Print",
@@ -133,10 +146,11 @@
     "type" : [ "Contribution" ]
   }, {
     "agent" : {
-      "gndIdentifier" : "(DE-588)127022538",
+      "gndIdentifier" : "127022538",
       "id" : "https://d-nb.info/gnd/127022538",
       "label" : "Cartter, Allan Murray",
-      "type" : [ "Person" ]
+      "type" : [ "Person" ],
+      "altLabel" : [ "Cartter, Allan M.", "Murray Cartter, Allan" ]
     },
     "role" : {
       "id" : "http://id.loc.gov/vocabulary/relators/aut",

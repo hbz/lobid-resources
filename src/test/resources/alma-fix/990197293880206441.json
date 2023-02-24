@@ -2,6 +2,7 @@
   "@context" : "http://lobid.org/resources/context.jsonld",
   "almaMmsId" : "990197293880206441",
   "hbzId" : "TT050421649",
+  "deprecatedUri" : "http://lobid.org/resources/TT050421649#!",
   "isbn" : [ "9783642320798", "3642320791" ],
   "doi" : [ "10.1007/978-3-642-32079-8" ],
   "oclcNumber" : [ "857645183" ],
@@ -9,7 +10,6 @@
   "otherTitleInformation" : [ "Ein Lehrbuch für Linux- und Unix-Anwender" ],
   "edition" : [ "11., vollst. überarb. Aufl. 2013" ],
   "publication" : [ {
-    "publicationHistory" : "2013",
     "startDate" : "2013",
     "type" : [ "PublicationEvent" ],
     "location" : [ "Berlin, Heidelberg" ],
@@ -19,8 +19,6 @@
     "id" : "http://lobid.org/resources/990197293880206441",
     "label" : "Webseite der hbz-Ressource 990197293880206441",
     "type" : [ "BibliographicDescription" ],
-    "dateCreated" : "20210405",
-    "dateModified" : "20210409",
     "inDataset" : {
       "id" : "http://lobid.org/resources/dataset#!",
       "label" : "lobid-resources – Der hbz-Verbundkatalog als Linked Open Data"
@@ -35,6 +33,8 @@
       },
       "object" : {
         "id" : "https://lobid.org/hbz01/990197293880206441",
+        "dateCreated" : "2021-04-05",
+        "dateModified" : "2022-12-04",
         "type" : [ "DataFeedItem" ],
         "label" : "hbz-Ressource 990197293880206441 im Exportformat MARC21 XML",
         "inDataset" : {
@@ -86,12 +86,12 @@
   } ],
   "inCollection" : [ {
     "id" : "http://lobid.org/organisations/ZDB-2-STI#!",
-    "label" : "eResource package",
-    "type" : [ "Collection" ]
-  }, {
-    "id" : "http://lobid.org/collections/Springer#!",
     "type" : [ "Collection" ],
-    "label" : "Springer#!"
+    "label" : "lobid Organisation"
+  }, {
+    "id" : "https://lobid.org/collections#Springer",
+    "type" : [ "Collection" ],
+    "label" : "collections#Springer"
   } ],
   "language" : [ {
     "id" : "http://id.loc.gov/vocabulary/iso639-2/ger",
@@ -150,7 +150,7 @@
         "label" : "Gemeinsame Normdatei (GND)",
         "id" : "https://d-nb.info/gnd/7749153-1"
       },
-      "id" : "http://d-nb.info/gnd/4061835-3",
+      "id" : "https://d-nb.info/gnd/4061835-3",
       "gndIdentifier" : "4061835-3"
     }, {
       "type" : [ "SubjectHeading" ],
@@ -159,9 +159,228 @@
         "label" : "Gemeinsame Normdatei (GND)",
         "id" : "https://d-nb.info/gnd/7749153-1"
       },
-      "id" : "http://d-nb.info/gnd/4337730-0",
+      "id" : "https://d-nb.info/gnd/4337730-0",
       "gndIdentifier" : "4337730-0"
     } ]
+  } ],
+  "hasItem" : [ {
+    "label" : "lobid Bestandsressource",
+    "type" : [ "Item", "NurTitel" ],
+    "heldBy" : {
+      "id" : "http://lobid.org/organisations/DE-361#!",
+      "isil" : "DE-361",
+      "label" : "lobid Organisation"
+    },
+    "id" : "http://lobid.org/items/990197293880206441:DE-361#!"
+  }, {
+    "type" : [ "Item", "DigitalDocument" ],
+    "label" : "Electronic Portfolio",
+    "electronicLocator" : "https://eu04.alma.exlibrisgroup.com/view/uresolver/49HBZ_FDO/openurl?u.ignore_date_coverage=true&portfolio_pid=53717454420006441&Force_direct=true",
+    "sublocation" : "https://hbz-network.userservices.exlibrisgroup.com/view/uresolver/49HBZ_FDO/openurl?u.ignore_date_coverage=true&rft.mms_id=990197293880206441",
+    "heldBy" : {
+      "id" : "http://lobid.org/organisations/DE-Dm13#!",
+      "isil" : "DE-Dm13",
+      "label" : "lobid Organisation"
+    },
+    "id" : "http://lobid.org/items/990197293880206441:DE-Dm13:53717454420006441#!"
+  }, {
+    "type" : [ "Item", "DigitalDocument" ],
+    "label" : "Electronic Portfolio",
+    "electronicLocator" : "https://eu04.alma.exlibrisgroup.com/view/uresolver/49HBZ_FHA/openurl?u.ignore_date_coverage=true&portfolio_pid=53717454420006441&Force_direct=true",
+    "sublocation" : "https://hbz-network.userservices.exlibrisgroup.com/view/uresolver/49HBZ_FHA/openurl?u.ignore_date_coverage=true&rft.mms_id=990197293880206441",
+    "heldBy" : {
+      "id" : "http://lobid.org/organisations/DE-A96#!",
+      "isil" : "DE-A96",
+      "label" : "lobid Organisation"
+    },
+    "id" : "http://lobid.org/items/990197293880206441:DE-A96:53717454420006441#!"
+  }, {
+    "type" : [ "Item", "DigitalDocument" ],
+    "label" : "Electronic Portfolio",
+    "electronicLocator" : "https://eu04.alma.exlibrisgroup.com/view/uresolver/49HBZ_UDE/openurl?u.ignore_date_coverage=true&portfolio_pid=53717454420006441&Force_direct=true",
+    "sublocation" : "https://hbz-network.userservices.exlibrisgroup.com/view/uresolver/49HBZ_UDE/openurl?u.ignore_date_coverage=true&rft.mms_id=990197293880206441",
+    "heldBy" : {
+      "id" : "http://lobid.org/organisations/DE-465#!",
+      "isil" : "DE-465",
+      "label" : "lobid Organisation"
+    },
+    "id" : "http://lobid.org/items/990197293880206441:DE-465:53717454420006441#!"
+  }, {
+    "type" : [ "Item", "DigitalDocument" ],
+    "label" : "Electronic Portfolio",
+    "electronicLocator" : "https://eu04.alma.exlibrisgroup.com/view/uresolver/49HBZ_WHS/openurl?u.ignore_date_coverage=true&portfolio_pid=53717454420006441&Force_direct=true",
+    "sublocation" : "https://hbz-network.userservices.exlibrisgroup.com/view/uresolver/49HBZ_WHS/openurl?u.ignore_date_coverage=true&rft.mms_id=990197293880206441",
+    "heldBy" : {
+      "id" : "http://lobid.org/organisations/DE-1010#!",
+      "isil" : "DE-1010",
+      "label" : "lobid Organisation"
+    },
+    "id" : "http://lobid.org/items/990197293880206441:DE-1010:53717454420006441#!"
+  }, {
+    "type" : [ "Item", "DigitalDocument" ],
+    "label" : "Electronic Portfolio",
+    "electronicLocator" : "https://eu04.alma.exlibrisgroup.com/view/uresolver/49HBZ_RUW/openurl?u.ignore_date_coverage=true&portfolio_pid=53717454420006441&Force_direct=true",
+    "sublocation" : "https://hbz-network.userservices.exlibrisgroup.com/view/uresolver/49HBZ_RUW/openurl?u.ignore_date_coverage=true&rft.mms_id=990197293880206441",
+    "heldBy" : {
+      "id" : "http://lobid.org/organisations/DE-1393#!",
+      "isil" : "DE-1393",
+      "label" : "lobid Organisation"
+    },
+    "id" : "http://lobid.org/items/990197293880206441:DE-1393:53717454420006441#!"
+  }, {
+    "type" : [ "Item", "DigitalDocument" ],
+    "label" : "Electronic Portfolio",
+    "electronicLocator" : "https://eu04.alma.exlibrisgroup.com/view/uresolver/49HBZ_PAD/openurl?u.ignore_date_coverage=true&portfolio_pid=53717454420006441&Force_direct=true",
+    "sublocation" : "https://hbz-network.userservices.exlibrisgroup.com/view/uresolver/49HBZ_PAD/openurl?u.ignore_date_coverage=true&rft.mms_id=990197293880206441",
+    "heldBy" : {
+      "id" : "http://lobid.org/organisations/DE-466#!",
+      "isil" : "DE-466",
+      "label" : "lobid Organisation"
+    },
+    "id" : "http://lobid.org/items/990197293880206441:DE-466:53717454420006441#!"
+  }, {
+    "type" : [ "Item", "DigitalDocument" ],
+    "label" : "Electronic Portfolio",
+    "electronicLocator" : "https://eu04.alma.exlibrisgroup.com/view/uresolver/49HBZ_SIE/openurl?u.ignore_date_coverage=true&portfolio_pid=53717454420006441&Force_direct=true",
+    "sublocation" : "https://hbz-network.userservices.exlibrisgroup.com/view/uresolver/49HBZ_SIE/openurl?u.ignore_date_coverage=true&rft.mms_id=990197293880206441",
+    "heldBy" : {
+      "id" : "http://lobid.org/organisations/DE-467#!",
+      "isil" : "DE-467",
+      "label" : "lobid Organisation"
+    },
+    "id" : "http://lobid.org/items/990197293880206441:DE-467:53717454420006441#!"
+  }, {
+    "type" : [ "Item", "DigitalDocument" ],
+    "label" : "Electronic Portfolio",
+    "electronicLocator" : "https://eu04.alma.exlibrisgroup.com/view/uresolver/49HBZ_WUP/openurl?u.ignore_date_coverage=true&portfolio_pid=53717454420006441&Force_direct=true",
+    "sublocation" : "https://hbz-network.userservices.exlibrisgroup.com/view/uresolver/49HBZ_WUP/openurl?u.ignore_date_coverage=true&rft.mms_id=990197293880206441",
+    "heldBy" : {
+      "id" : "http://lobid.org/organisations/DE-468#!",
+      "isil" : "DE-468",
+      "label" : "lobid Organisation"
+    },
+    "id" : "http://lobid.org/items/990197293880206441:DE-468:53717454420006441#!"
+  }, {
+    "type" : [ "Item", "DigitalDocument" ],
+    "label" : "Electronic Portfolio",
+    "electronicLocator" : "https://eu04.alma.exlibrisgroup.com/view/uresolver/49HBZ_BIE/openurl?u.ignore_date_coverage=true&portfolio_pid=53717454420006441&Force_direct=true",
+    "sublocation" : "https://hbz-network.userservices.exlibrisgroup.com/view/uresolver/49HBZ_BIE/openurl?u.ignore_date_coverage=true&rft.mms_id=990197293880206441",
+    "heldBy" : {
+      "id" : "http://lobid.org/organisations/DE-361#!",
+      "isil" : "DE-361",
+      "label" : "lobid Organisation"
+    },
+    "id" : "http://lobid.org/items/990197293880206441:DE-361:53717454420006441#!"
+  }, {
+    "type" : [ "Item", "DigitalDocument" ],
+    "label" : "Electronic Portfolio",
+    "electronicLocator" : "https://eu04.alma.exlibrisgroup.com/view/uresolver/49HBZ_HSD/openurl?u.ignore_date_coverage=true&portfolio_pid=53717454420006441&Force_direct=true",
+    "sublocation" : "https://hbz-network.userservices.exlibrisgroup.com/view/uresolver/49HBZ_HSD/openurl?u.ignore_date_coverage=true&rft.mms_id=990197293880206441",
+    "heldBy" : {
+      "id" : "http://lobid.org/organisations/DE-Due62#!",
+      "isil" : "DE-Due62",
+      "label" : "lobid Organisation"
+    },
+    "id" : "http://lobid.org/items/990197293880206441:DE-Due62:53717454420006441#!"
+  }, {
+    "type" : [ "Item", "DigitalDocument" ],
+    "label" : "Electronic Portfolio",
+    "electronicLocator" : "https://eu04.alma.exlibrisgroup.com/view/uresolver/49HBZ_FSW/openurl?u.ignore_date_coverage=true&portfolio_pid=53717454420006441&Force_direct=true",
+    "sublocation" : "https://hbz-network.userservices.exlibrisgroup.com/view/uresolver/49HBZ_FSW/openurl?u.ignore_date_coverage=true&rft.mms_id=990197293880206441",
+    "heldBy" : {
+      "id" : "http://lobid.org/organisations/DE-Hag4#!",
+      "isil" : "DE-Hag4",
+      "label" : "lobid Organisation"
+    },
+    "id" : "http://lobid.org/items/990197293880206441:DE-Hag4:53717454420006441#!"
+  }, {
+    "type" : [ "Item", "DigitalDocument" ],
+    "label" : "Electronic Portfolio",
+    "electronicLocator" : "https://eu04.alma.exlibrisgroup.com/view/uresolver/49HBZ_UBD/openurl?u.ignore_date_coverage=true&portfolio_pid=53717454420006441&Force_direct=true",
+    "sublocation" : "https://hbz-network.userservices.exlibrisgroup.com/view/uresolver/49HBZ_UBD/openurl?u.ignore_date_coverage=true&rft.mms_id=990197293880206441",
+    "heldBy" : {
+      "id" : "http://lobid.org/organisations/DE-290#!",
+      "isil" : "DE-290",
+      "label" : "lobid Organisation"
+    },
+    "id" : "http://lobid.org/items/990197293880206441:DE-290:53717454420006441#!"
+  }, {
+    "type" : [ "Item", "DigitalDocument" ],
+    "label" : "Electronic Portfolio",
+    "electronicLocator" : "https://eu04.alma.exlibrisgroup.com/view/uresolver/49HBZ_BRS/openurl?u.ignore_date_coverage=true&portfolio_pid=53717454420006441&Force_direct=true",
+    "sublocation" : "https://hbz-network.userservices.exlibrisgroup.com/view/uresolver/49HBZ_BRS/openurl?u.ignore_date_coverage=true&rft.mms_id=990197293880206441",
+    "heldBy" : {
+      "id" : "http://lobid.org/organisations/DE-1044#!",
+      "isil" : "DE-1044",
+      "label" : "lobid Organisation"
+    },
+    "id" : "http://lobid.org/items/990197293880206441:DE-1044:53717454420006441#!"
+  }, {
+    "type" : [ "Item", "DigitalDocument" ],
+    "label" : "Electronic Portfolio",
+    "electronicLocator" : "https://eu04.alma.exlibrisgroup.com/view/uresolver/49HBZ_DUE/openurl?u.ignore_date_coverage=true&portfolio_pid=53717454420006441&Force_direct=true",
+    "sublocation" : "https://hbz-network.userservices.exlibrisgroup.com/view/uresolver/49HBZ_DUE/openurl?u.ignore_date_coverage=true&rft.mms_id=990197293880206441",
+    "heldBy" : {
+      "id" : "http://lobid.org/organisations/DE-61#!",
+      "isil" : "DE-61",
+      "label" : "lobid Organisation"
+    },
+    "id" : "http://lobid.org/items/990197293880206441:DE-61:53717454420006441#!"
+  }, {
+    "type" : [ "Item", "DigitalDocument" ],
+    "label" : "Electronic Portfolio",
+    "electronicLocator" : "https://eu04.alma.exlibrisgroup.com/view/uresolver/49HBZ_FHM/openurl?u.ignore_date_coverage=true&portfolio_pid=53717454420006441&Force_direct=true",
+    "sublocation" : "https://hbz-network.userservices.exlibrisgroup.com/view/uresolver/49HBZ_FHM/openurl?u.ignore_date_coverage=true&rft.mms_id=990197293880206441",
+    "heldBy" : {
+      "id" : "http://lobid.org/organisations/DE-836#!",
+      "isil" : "DE-836",
+      "label" : "lobid Organisation"
+    },
+    "id" : "http://lobid.org/items/990197293880206441:DE-836:53717454420006441#!"
+  }, {
+    "type" : [ "Item", "DigitalDocument" ],
+    "label" : "Electronic Portfolio",
+    "electronicLocator" : "https://eu04.alma.exlibrisgroup.com/view/uresolver/49HBZ_HBI/openurl?u.ignore_date_coverage=true&portfolio_pid=53717454420006441&Force_direct=true",
+    "sublocation" : "https://hbz-network.userservices.exlibrisgroup.com/view/uresolver/49HBZ_HBI/openurl?u.ignore_date_coverage=true&rft.mms_id=990197293880206441",
+    "heldBy" : {
+      "id" : "http://lobid.org/organisations/DE-Bi10#!",
+      "isil" : "DE-Bi10",
+      "label" : "lobid Organisation"
+    },
+    "id" : "http://lobid.org/items/990197293880206441:DE-Bi10:53717454420006441#!"
+  }, {
+    "type" : [ "Item", "DigitalDocument" ],
+    "label" : "Electronic Portfolio",
+    "electronicLocator" : "https://eu04.alma.exlibrisgroup.com/view/uresolver/49HBZ_RTU/openurl?u.ignore_date_coverage=true&portfolio_pid=53717454420006441&Force_direct=true",
+    "sublocation" : "https://hbz-network.userservices.exlibrisgroup.com/view/uresolver/49HBZ_RTU/openurl?u.ignore_date_coverage=true&rft.mms_id=990197293880206441",
+    "heldBy" : {
+      "id" : "http://lobid.org/organisations/DE-386#!",
+      "isil" : "DE-386",
+      "label" : "lobid Organisation"
+    },
+    "id" : "http://lobid.org/items/990197293880206441:DE-386:53717454420006441#!"
+  }, {
+    "type" : [ "Item", "DigitalDocument" ],
+    "label" : "Electronic Portfolio",
+    "electronicLocator" : "https://eu04.alma.exlibrisgroup.com/view/uresolver/49HBZ_HBO/openurl?u.ignore_date_coverage=true&portfolio_pid=53717454420006441&Force_direct=true",
+    "sublocation" : "https://hbz-network.userservices.exlibrisgroup.com/view/uresolver/49HBZ_HBO/openurl?u.ignore_date_coverage=true&rft.mms_id=990197293880206441",
+    "heldBy" : {
+      "id" : "http://lobid.org/organisations/DE-Bm40#!",
+      "isil" : "DE-Bm40",
+      "label" : "lobid Organisation"
+    },
+    "id" : "http://lobid.org/items/990197293880206441:DE-Bm40:53717454420006441#!"
+  }, {
+    "type" : [ "Item", "DigitalDocument" ],
+    "label" : "Electronic Portfolio",
+    "electronicLocator" : "https://eu04.alma.exlibrisgroup.com/view/uresolver/49HBZ_UBA/openurl?u.ignore_date_coverage=true&portfolio_pid=53717454420006441&Force_direct=true",
+    "sublocation" : "https://hbz-network.userservices.exlibrisgroup.com/view/uresolver/49HBZ_UBA/openurl?u.ignore_date_coverage=true&rft.mms_id=990197293880206441",
+    "heldBy" : {
+      "id" : "http://lobid.org/organisations/DE-82#!",
+      "isil" : "DE-82",
+      "label" : "lobid Organisation"
+    },
+    "id" : "http://lobid.org/items/990197293880206441:DE-82:53717454420006441#!"
   } ],
   "medium" : [ {
     "label" : "Datenträger",
@@ -170,7 +389,7 @@
     "label" : "Online-Ressource",
     "id" : "http://rdaregistry.info/termList/RDACarrierType/1018"
   } ],
-  "type" : [ "BibliographicResource", "Book" ],
+  "type" : [ "BibliographicResource", "Miscellaneous" ],
   "responsibilityStatement" : [ "von Christine Wolfinger" ],
   "contribution" : [ {
     "agent" : {

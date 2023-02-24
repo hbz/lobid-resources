@@ -2,11 +2,10 @@
   "@context" : "http://lobid.org/resources/context.jsonld",
   "almaMmsId" : "990123613330206441",
   "hbzId" : "TT000166861",
-  "titleOfSubSeries" : "Tonkassette",
+  "deprecatedUri" : "http://lobid.org/resources/TT000166861#!",
   "title" : "Die Sonnenblume [Medienkombination], Tonkassette",
   "otherTitleInformation" : [ "99 Lieder für Kinder ; Grundschule" ],
   "publication" : [ {
-    "publicationHistory" : "[1992]",
     "startDate" : "1992",
     "type" : [ "PublicationEvent" ],
     "location" : [ "Boppard [u.a." ],
@@ -16,8 +15,6 @@
     "id" : "http://lobid.org/resources/990123613330206441",
     "label" : "Webseite der hbz-Ressource 990123613330206441",
     "type" : [ "BibliographicDescription" ],
-    "dateCreated" : "20210405",
-    "dateModified" : "20210408",
     "inDataset" : {
       "id" : "http://lobid.org/resources/dataset#!",
       "label" : "lobid-resources – Der hbz-Verbundkatalog als Linked Open Data"
@@ -32,6 +29,8 @@
       },
       "object" : {
         "id" : "https://lobid.org/hbz01/990123613330206441",
+        "dateCreated" : "2021-04-05",
+        "dateModified" : "2021-04-08",
         "type" : [ "DataFeedItem" ],
         "label" : "hbz-Ressource 990123613330206441 im Exportformat MARC21 XML",
         "inDataset" : {
@@ -57,16 +56,23 @@
     "id" : "http://hub.culturegraph.org/resource/HBZ-TT000166861",
     "label" : "Culturegraph Ressource"
   } ],
-  "containedIn" : [ {
-    "id" : "http://lobid.org/resources/TT000034241#!",
-    "label" : "lobid Ressource"
+  "isPartOf" : [ {
+    "type" : [ "IsPartOfRelation" ],
+    "hasSuperordinate" : [ {
+      "id" : "http://lobid.org/resources/TT000034241#!",
+      "label" : "lobid Ressource"
+    } ],
+    "numbering" : "Tonkassette"
   } ],
   "extent" : "1 Kompaktkassette",
   "medium" : [ {
-    "label" : "Print",
-    "id" : "http://rdaregistry.info/termList/RDAproductionMethod/1010"
+    "label" : "Audio-Dokument",
+    "id" : "http://purl.org/ontology/bibo/AudioDocument"
+  }, {
+    "label" : "Audio-Kassette",
+    "id" : "http://id.loc.gov/vocabulary/carriers/ss"
   } ],
-  "type" : [ "BibliographicResource", "EditedVolume", "Book" ],
+  "type" : [ "BibliographicResource", "Miscellaneous" ],
   "responsibilityStatement" : [ "[hrsg. von] Heinz Lemmermann" ],
   "contribution" : [ {
     "agent" : {

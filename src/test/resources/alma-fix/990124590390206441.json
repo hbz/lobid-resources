@@ -2,11 +2,11 @@
   "@context" : "http://lobid.org/resources/context.jsonld",
   "almaMmsId" : "990124590390206441",
   "hbzId" : "HT013911008",
+  "deprecatedUri" : "http://lobid.org/resources/HT013911008#!",
   "isbn" : [ "3936547041", "9783936547047" ],
   "oclcNumber" : [ "1068984194" ],
   "title" : "1000 Fotos aus Rothenburg ob der Tauber",
   "publication" : [ {
-    "publicationHistory" : "2003",
     "startDate" : "2003",
     "type" : [ "PublicationEvent" ],
     "location" : [ "Velbert" ],
@@ -16,8 +16,6 @@
     "id" : "http://lobid.org/resources/990124590390206441",
     "label" : "Webseite der hbz-Ressource 990124590390206441",
     "type" : [ "BibliographicDescription" ],
-    "dateCreated" : "20210405",
-    "dateModified" : "20210926",
     "inDataset" : {
       "id" : "http://lobid.org/resources/dataset#!",
       "label" : "lobid-resources – Der hbz-Verbundkatalog als Linked Open Data"
@@ -32,6 +30,8 @@
       },
       "object" : {
         "id" : "https://lobid.org/hbz01/990124590390206441",
+        "dateCreated" : "2021-04-05",
+        "dateModified" : "2021-09-26",
         "type" : [ "DataFeedItem" ],
         "label" : "hbz-Ressource 990124590390206441 im Exportformat MARC21 XML",
         "inDataset" : {
@@ -71,7 +71,7 @@
   "extent" : "1 CD-ROM ; 12 cm + 1 Beih. [6] S.",
   "natureOfContent" : [ {
     "label" : "CD-ROM",
-    "id" : "http://d-nb.info/gnd/4139307-7"
+    "id" : "https://d-nb.info/gnd/4139307-7"
   } ],
   "subject" : [ {
     "type" : [ "ComplexSubject" ],
@@ -83,22 +83,23 @@
         "label" : "Gemeinsame Normdatei (GND)",
         "id" : "https://d-nb.info/gnd/7749153-1"
       },
-      "id" : "http://d-nb.info/gnd/4050698-8",
-      "gndIdentifier" : "4050698-8"
+      "id" : "https://d-nb.info/gnd/4050698-8",
+      "gndIdentifier" : "4050698-8",
+      "altLabel" : [ "Rothenburg, Tauber", "Rothenburg o.d.T.", "Rothenburg o. Tbr.", "Rotenburg (Tauber)", "Reichsstadt Rothenburg ob der Tauber", "Reichsstadt Rothenburg o.d.T.", "Rothenburg (Tauber)", "Rotenburg ob der Tauber" ]
     } ]
   } ],
-  "subjectAltLabel" : [ "Rothenburg, Tauber", "Rothenburg o.d.T.", "Rothenburg o. Tbr.", "Rotenburg", "Reichsstadt Rothenburg ob der Tauber", "Reichsstadt Rothenburg o.d.T.", "Rothenburg", "Rotenburg ob der Tauber" ],
   "hasItem" : [ {
     "label" : "lobid Bestandsressource",
-    "type" : [ "Item" ],
+    "type" : [ "Item", "PhysicalObject" ],
     "callNumber" : "CB088.87-4144798",
+    "serialNumber" : "148/4144798+01",
     "currentLocation" : "UB_BI / 14G_Sond",
     "heldBy" : {
       "id" : "http://lobid.org/organisations/DE-361#!",
       "isil" : "DE-361",
       "label" : "lobid Organisation"
     },
-    "id" : "http://lobid.org/items/990124590390206441:DE-361:CB088.87-4144798#!"
+    "id" : "http://lobid.org/items/990124590390206441:DE-361:UB_BI:CB088.87-4144798#!"
   } ],
   "medium" : [ {
     "label" : "Audio-Dokument",
@@ -110,6 +111,6 @@
     "label" : "Datenträger",
     "id" : "http://rdaregistry.info/termList/RDAMediaType/1003"
   } ],
-  "type" : [ "BibliographicResource", "Book" ],
+  "type" : [ "BibliographicResource", "Miscellaneous" ],
   "id" : "http://lobid.org/resources/990124590390206441#!"
 }

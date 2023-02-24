@@ -2,12 +2,12 @@
   "@context" : "http://lobid.org/resources/context.jsonld",
   "almaMmsId" : "990059571560206441",
   "hbzId" : "HT001039253",
+  "deprecatedUri" : "http://lobid.org/resources/HT001039253#!",
   "isbn" : [ "3410104356", "9783410104353" ],
   "oclcNumber" : [ "916023707" ],
   "title" : "Federnnormen",
   "edition" : [ "2., geänd. Aufl., Stand d.abgedr. Normen: Januar 1974" ],
   "publication" : [ {
-    "publicationHistory" : "1974",
     "startDate" : "1974",
     "type" : [ "PublicationEvent" ],
     "location" : [ "Berlin [u.a." ],
@@ -17,8 +17,6 @@
     "id" : "http://lobid.org/resources/990059571560206441",
     "label" : "Webseite der hbz-Ressource 990059571560206441",
     "type" : [ "BibliographicDescription" ],
-    "dateCreated" : "20210405",
-    "dateModified" : "20220308",
     "inDataset" : {
       "id" : "http://lobid.org/resources/dataset#!",
       "label" : "lobid-resources – Der hbz-Verbundkatalog als Linked Open Data"
@@ -33,6 +31,8 @@
       },
       "object" : {
         "id" : "https://lobid.org/hbz01/990059571560206441",
+        "dateCreated" : "2021-04-05",
+        "dateModified" : "2022-12-05",
         "type" : [ "DataFeedItem" ],
         "label" : "hbz-Ressource 990059571560206441 im Exportformat MARC21 XML",
         "inDataset" : {
@@ -88,8 +88,9 @@
         "label" : "Gemeinsame Normdatei (GND)",
         "id" : "https://d-nb.info/gnd/7749153-1"
       },
-      "id" : "http://d-nb.info/gnd/4016583-8",
-      "gndIdentifier" : "4016583-8"
+      "id" : "https://d-nb.info/gnd/4016583-8",
+      "gndIdentifier" : "4016583-8",
+      "altLabel" : [ "Metallfeder" ]
     }, {
       "type" : [ "SubjectHeading" ],
       "label" : "Norm",
@@ -97,11 +98,24 @@
         "label" : "Gemeinsame Normdatei (GND)",
         "id" : "https://d-nb.info/gnd/7749153-1"
       },
-      "id" : "http://d-nb.info/gnd/4419668-4",
-      "gndIdentifier" : "4419668-4"
+      "id" : "https://d-nb.info/gnd/4419668-4",
+      "gndIdentifier" : "4419668-4",
+      "altLabel" : [ "Normschrift (Norm)" ]
     } ]
   } ],
-  "subjectAltLabel" : [ "Normschrift", "Metallfeder", "Norm" ],
+  "hasItem" : [ {
+    "label" : "lobid Bestandsressource",
+    "type" : [ "Item", "PhysicalObject" ],
+    "callNumber" : "FK162-29+2",
+    "serialNumber" : "FK162-29+2",
+    "currentLocation" : "ZB / MAGAZIN_2",
+    "heldBy" : {
+      "id" : "http://lobid.org/organisations/DE-82#!",
+      "isil" : "DE-82",
+      "label" : "lobid Organisation"
+    },
+    "id" : "http://lobid.org/items/990059571560206441:DE-82:ZB:FK162-29+2#!"
+  } ],
   "medium" : [ {
     "label" : "Print",
     "id" : "http://rdaregistry.info/termList/RDAproductionMethod/1010"
@@ -110,10 +124,11 @@
   "responsibilityStatement" : [ "hrsg. vom Dt. Normenausschuss (DNA)" ],
   "contribution" : [ {
     "agent" : {
-      "gndIdentifier" : "(DE-588)41115-2",
+      "gndIdentifier" : "41115-2",
       "id" : "https://d-nb.info/gnd/41115-2",
       "label" : "Deutscher Normenausschuß",
-      "type" : [ "CorporateBody" ]
+      "type" : [ "CorporateBody" ],
+      "altLabel" : [ "Normenausschuß (Deutschland, Bundesrepublik)", "Deutscher Normenausschuß e.V.", "DNA", "D.N.A." ]
     },
     "role" : {
       "id" : "http://id.loc.gov/vocabulary/relators/oth",

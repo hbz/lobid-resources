@@ -2,10 +2,10 @@
   "@context" : "http://lobid.org/resources/context.jsonld",
   "almaMmsId" : "990167595410206441",
   "hbzId" : "TT002494857",
+  "deprecatedUri" : "http://lobid.org/resources/TT002494857#!",
   "oclcNumber" : [ "1075948907" ],
   "title" : "MALEREI, RADIERUNGEN, HOLZSCHNITTE",
   "publication" : [ {
-    "publicationHistory" : "1980",
     "startDate" : "1980",
     "type" : [ "PublicationEvent" ],
     "location" : [ "DÜSSELDORF" ],
@@ -15,8 +15,6 @@
     "id" : "http://lobid.org/resources/990167595410206441",
     "label" : "Webseite der hbz-Ressource 990167595410206441",
     "type" : [ "BibliographicDescription" ],
-    "dateCreated" : "20210405",
-    "dateModified" : "20210914",
     "inDataset" : {
       "id" : "http://lobid.org/resources/dataset#!",
       "label" : "lobid-resources – Der hbz-Verbundkatalog als Linked Open Data"
@@ -31,6 +29,8 @@
       },
       "object" : {
         "id" : "https://lobid.org/hbz01/990167595410206441",
+        "dateCreated" : "2021-04-05",
+        "dateModified" : "2021-09-14",
         "type" : [ "DataFeedItem" ],
         "label" : "hbz-Ressource 990167595410206441 im Exportformat MARC21 XML",
         "inDataset" : {
@@ -61,14 +61,27 @@
   } ],
   "extent" : "53 BL. MIT ZAHLR. ABB. U. TAF., TEILS FARB.",
   "note" : [ "NE: SOHLE 1 <GALERIE, BERGKAMEN>. - AUSSTELLUNGSKAT." ],
-  "medium" : [ {
-    "label" : "Print",
-    "id" : "http://rdaregistry.info/termList/RDAproductionMethod/1010"
+  "hasItem" : [ {
+    "label" : "lobid Bestandsressource",
+    "type" : [ "Item", "PhysicalObject" ],
+    "callNumber" : "N C 228",
+    "serialNumber" : "Z143-028930",
+    "currentLocation" : "PHIL / PHIL_KBIB",
+    "heldBy" : {
+      "id" : "http://lobid.org/organisations/DE-6#!",
+      "isil" : "DE-6",
+      "label" : "lobid Organisation"
+    },
+    "id" : "http://lobid.org/items/990167595410206441:DE-6:PHIL:N C 228#!"
   } ],
-  "type" : [ "BibliographicResource", "EditedVolume", "Image", "Book" ],
+  "medium" : [ {
+    "label" : "Sonstige",
+    "id" : "http://purl.org/lobid/lv#Miscellaneous"
+  } ],
+  "type" : [ "BibliographicResource", "Image" ],
   "contribution" : [ {
     "agent" : {
-      "gndIdentifier" : "(DE-588)118521314",
+      "gndIdentifier" : "118521314",
       "id" : "https://d-nb.info/gnd/118521314",
       "label" : "Çoban, Ismail",
       "type" : [ "Person" ],
@@ -81,10 +94,11 @@
     "type" : [ "Contribution" ]
   }, {
     "agent" : {
-      "gndIdentifier" : "(DE-588)5150278-1",
+      "gndIdentifier" : "5150278-1",
       "id" : "https://d-nb.info/gnd/5150278-1",
       "label" : "Bergkamen. Kulturverwaltung",
-      "type" : [ "CorporateBody" ]
+      "type" : [ "CorporateBody" ],
+      "altLabel" : [ "Kulturverwaltung (Bergkamen)" ]
     },
     "role" : {
       "id" : "http://id.loc.gov/vocabulary/relators/oth",
@@ -93,10 +107,11 @@
     "type" : [ "Contribution" ]
   }, {
     "agent" : {
-      "gndIdentifier" : "(DE-588)2052102-9",
+      "gndIdentifier" : "2052102-9",
       "id" : "https://d-nb.info/gnd/2052102-9",
       "label" : "Städtische Galerie Sohle 1",
-      "type" : [ "CorporateBody" ]
+      "type" : [ "CorporateBody" ],
+      "altLabel" : [ "Bildergalerie Bergkamen", "Galerie Sohle 1 (Bergkamen)", "Sohle Eins, Multimedia-Galerie (Bergkamen)", "Multimedia-Galerie (Bergkamen)", "Sohle 1, Kommunale Galerie (Bergkamen)", "Sohle Eins, Kommunale Galerie (Bergkamen)", "Stadtmuseum Bergkamen. Städtische Galerie Sohle 1", "Stadtmuseum Bergkamen. Galerie Sohle 1", "Stadtmuseum Bergkamen. Bildergalerie", "Stadtmuseum Bergkamen. Sohle 1, Multimedia-Galerie", "Stadtmuseum Bergkamen. Multimedia-Galerie", "Stadtmuseum Bergkamen. Sohle 1, Kommunale Galerie", "Stadtmuseum Bergkamen. Kommunale Galerie", "Bildergalerie der Stadt Bergkamen", "Sohle Eins, Multimedia-Galerie", "Sohle 1, Kommunale Galerie", "Sohle Eins, Kommunale Galerie", "Kommunale Galerie Sohle 1", "Städtische Galerie Sohle 1", "Kommunale Galerie (Bergkamen)" ]
     },
     "role" : {
       "id" : "http://id.loc.gov/vocabulary/relators/oth",

@@ -1,39 +1,49 @@
 # 245 - Title Statement (NR) - Subfield: $a (NR), $b (NR), $n (R), $p (R)
 
 copy_field("245??.a","@title")
-replace_all("@title", "^[©]|\\s?[,.:;/=]?$", "")
-replace_all("@title", "<", "")
-replace_all("@title", ">", "")
+unless any_match("@title",".*\\.\\.\\.")
+  replace_all("@title", "^[©]|\\s?[,.:;/=]?$", "")
+end
+replace_all("@title","<<|>>","")
 
 
-set_array("@titleOfSubSeries_n")
+set_array("@titleOfSubSeries_n") # Subvolume numbering
 do list(path:"245??.n", "var":"$i")
-  copy_field("$i","@titleOfSubSeries_n.$append")
+  unless all_equal("$i","[...]")
+    copy_field("$i","@titleOfSubSeries_n.$append")
+  end
 end
 join_field("@titleOfSubSeries_n", ". ")
 
 set_array("@titleOfSubSeries_p")
 
-do list(path:"245??.p", "var":"$i")
-  copy_field("$i","@titleOfSubSeries_p.$append")
+do list(path:"245??.p", "var":"$i") # Subvolume title
+  unless all_equal("$i","[...]")
+    copy_field("$i","@titleOfSubSeries_p.$append")
+  end
 end
 replace_all("@titleOfSubSeries_p.*", "\\s?\\.?\\s?$", "")
-replace_all("@titleOfSubSeries_p.*", "<", "")
-replace_all("@titleOfSubSeries_p.*", ">", "")
-prepend("@titleOfSubSeries_p.1", ": ")
-
-paste("@titleOfSubSeries", "@titleOfSubSeries_n",  "@titleOfSubSeries_p.1", join_char: "")
-
-copy_field("@titleOfSubSeries", "titleOfSubSeries")
+replace_all("@titleOfSubSeries_p.*","<<|>>","")
+join_field("@titleOfSubSeries_p", ". ")
 vacuum()
+if exists("@titleOfSubSeries_n") # separate subvolume numbering and title with :
+  prepend("@titleOfSubSeries_p", ": ")
+end
+
+paste("@titleOfSubSeries", "@titleOfSubSeries_n",  "@titleOfSubSeries_p", join_char: "")
+
+vacuum()
+
 prepend("@titleOfSubSeries",", ")
 
-paste("title","@title", "@titleOfSubSeries", join_char: "")
+paste("title","@title", "@titleOfSubSeries", join_char: "") # title consists of main title + if exists: subvolume numbering and subvolume title
 
 # 246 - Varying Form of Title (R) - Subfields: $a (NR)
 
 set_array("alternativeTitle[]")
 copy_field("246?[ 345678].a","alternativeTitle[].$append")
+
+replace_all("alternativeTitle[].*","<<|>>","")
 
 set_array("otherTitleInformation[]")
 copy_field("245??.b","otherTitleInformation[].$append")
@@ -53,16 +63,16 @@ replace_all("edition[].*","\\s?[./]\\s?$","")
 set_array("publication[]")
 do list(path:"260[ 23] |264[ 23][ 1]", "var":"$i")
   add_field("publication[].$append.test","")
-  paste("publication[].$last.publicationHistory", "$i.c")
+  copy_field("362??.a","publication[].$last.publicationHistory")
   do list(path: "$i.c", "var":"$j")
     replace_all("$j", "\\[|\\]|ca. |c ", "")
     unless exists("publication[].$last.startDate")
-      if any_match("$j",".*?(\\d{4}).*")
+      if any_match("$j",".*?([01]\\d{3}|20\\d{2}).*")
         paste("publication[].$last.startDate", "$j")
       end
     end
     unless exists("publication[].$last.endDate")
-      if any_match("$j",".*-(\\d{4})$")
+      if any_match("$j",".*-([01]\\d{3}|20\\d{2})$")
         paste("publication[].$last.endDate", "$j")
       end
     end
@@ -93,12 +103,23 @@ do list(path:"260[ 23] |264[ 23][ 1]", "var":"$i")
   copy_field("515??.a","publication[].$last.note[].$append")
 end
 
-replace_all("publication[].*.startDate", ".*?(\\d{4}).*", "$1")
-replace_all("publication[].*.endDate", ".*-(\\d{4})$", "$1")
+do list(path:"500  ", "var":"$i")
+  if any_match("$i.a", "^.*saṃ. \\d{4}=(\\d{4}).*Chr.*")
+    remove_field("publication[].$last.startDate")
+    copy_field("$i.a","publication[].$last.startDate")
+    replace_all("publication[].$last.startDate","^.*saṃ. \\d{4}=(\\d{4}).*Chr.*","$1")
+  end
+end
 
-replace_all("publication[].*.location[].*", "^\\[|\\]$", "")
+do list(path: "publication[]", "var": "$i")
+  replace_all("$i.startDate", ".*?([01]\\d{3}|20\\d{2}).*", "$1")
+  replace_all("$i.endDate", ".*-([01]\\d{3}|20\\d{2})$", "$1")
+  replace_all("$i.location[].*", "^\\[|\\]$", "")
+  replace_all("$i.publishedBy[].*", "^[©]|\\s?[,:;/=]?$", "")
+  uniq("$i.location[]")
+end
 
-replace_all("publication[].*.publishedBy[].*", "^[©]|\\s?[,.:;/=]?$", "")
+
 
 # 246 - Varying Form of Title (R) - $a - Title proper/short title (NR)
 

@@ -1,6 +1,6 @@
 name := "lobid-resources-web"
 
-version := "0.2.1-SNAPSHOT"
+version := "0.2.2-SNAPSHOT"
 
 scalaVersion := "2.11.11"
 
@@ -17,16 +17,13 @@ libraryDependencies ++= Seq(
     // otherwise javaWs won't work
     exclude ("io.netty", "netty"),
   "org.mockito" % "mockito-core" % "1.9.5",
-  "com.github.jsonld-java" % "jsonld-java" % "0.4.1",
-  "com.github.jsonld-java" % "jsonld-java-jena" % "0.4.1",
-  "org.apache.jena" % "jena-arq" % "2.9.3",
   "com.google.gdata" % "core" % "1.47.1" exclude ("com.google.guava", "guava"),
   "org.easytesting" % "fest-assert" % "1.4" % "test"
 )
 
 resolvers += "Local Maven Repository" at Path.userHome.asFile.toURI.toURL + ".m2/repository"
 
-libraryDependencies += "org.lobid" % "lobid-resources" % "0.4.2-SNAPSHOT" changing()
+libraryDependencies += "org.lobid" % "lobid-resources" % "0.4.3-SNAPSHOT" changing()
 
 lazy val root = (project in file(".")).enablePlugins(PlayJava)
 

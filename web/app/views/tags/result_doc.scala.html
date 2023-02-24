@@ -176,6 +176,7 @@
 @table(){
   <tr><td>Titel</td><td>@((doc\"title").asOpt[String].getOrElse(""))@for(corporateBodyForTitle <- (doc \ "corporateBodyForTitle").asOpt[Seq[String]]){. @corporateBodyForTitle}</td></tr>
   @result_field("Titelzusatz", "otherTitleInformation", doc, TableRow.VALUES)
+  @result_field("Alternativer Titel", "alternativeTitle", doc, TableRow.VALUES)
   @result_field("Unterreihe", "titleOfSubSeries", doc, TableRow.VALUES)
   @result_field("Verantwortlich", "responsibilityStatement", doc, TableRow.VALUES)
   @contributions((doc \ "contribution").asOpt[Seq[JsValue]].getOrElse(Seq()))

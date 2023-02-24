@@ -2,22 +2,21 @@
   "@context" : "http://lobid.org/resources/context.jsonld",
   "almaMmsId" : "990197023370206441",
   "hbzId" : "HT017664407",
+  "deprecatedUri" : "http://lobid.org/resources/HT017664407#!",
+  "oclcNumber" : [ "854723647" ],
   "zdbId" : "2719150-3",
   "title" : "Aegyptische Nachrichten",
   "publication" : [ {
-    "publicationHistory" : "1912-1912",
+    "publicationHistory" : "1912,Jan.-Dez.; mehr nicht digitalisiert",
     "startDate" : "1912",
     "endDate" : "1912",
     "type" : [ "PublicationEvent" ],
-    "location" : [ "Kairo" ],
-    "publishedBy" : [ "[s.n.]" ]
+    "location" : [ "Kairo" ]
   } ],
   "describedBy" : {
     "id" : "http://lobid.org/resources/990197023370206441",
     "label" : "Webseite der hbz-Ressource 990197023370206441",
     "type" : [ "BibliographicDescription" ],
-    "dateCreated" : "20210405",
-    "dateModified" : "20210409",
     "inDataset" : {
       "id" : "http://lobid.org/resources/dataset#!",
       "label" : "lobid-resources – Der hbz-Verbundkatalog als Linked Open Data"
@@ -32,6 +31,8 @@
       },
       "object" : {
         "id" : "https://lobid.org/hbz01/990197023370206441",
+        "dateCreated" : "2021-04-05",
+        "dateModified" : "2022-12-04",
         "type" : [ "DataFeedItem" ],
         "label" : "hbz-Ressource 990197023370206441 im Exportformat MARC21 XML",
         "inDataset" : {
@@ -51,11 +52,18 @@
     "provider" : {
       "id" : "http://lobid.org/organisations/DE-DNB#!",
       "label" : "lobid Organisation"
+    },
+    "modifiedBy" : {
+      "id" : "http://lobid.org/organisations/DE-605#!",
+      "label" : "lobid Organisation"
     }
   },
   "sameAs" : [ {
     "id" : "http://hub.culturegraph.org/resource/HBZ-HT017664407",
     "label" : "Culturegraph Ressource"
+  }, {
+    "id" : "http://worldcat.org/oclc/854723647",
+    "label" : "OCLC Ressource"
   }, {
     "id" : "http://ld.zdb-services.de/resource/2719150-3",
     "label" : "ZDB-Ressource"
@@ -73,13 +81,21 @@
     "id" : "http://lobid.org/resources/HT014846970#!",
     "label" : "Zeitschriftendatenbank (ZDB)",
     "type" : [ "Collection" ]
+  }, {
+    "id" : "http://lobid.org/resources/HT016356466#!",
+    "label" : "Elektronische Zeitschriftenbibliothek (EZB)",
+    "type" : [ "Collection" ]
   } ],
   "language" : [ {
     "id" : "http://id.loc.gov/vocabulary/iso639-2/egy",
     "label" : "Ägyptisch"
   } ],
-  "note" : [ "Gesehen am 03.06.2013", "Layoutgetreue Digitalisate mit Browsefunktion" ],
-  "subjectAltLabel" : [ "<<al->> Qāhira", "Miṣr al-Qāhira", "AlQāhira", "Al-Qāhira", "Misr el-Kahira", "Al Kahira", "<<Al>> Kahira", "LeCaire", "Le Caire", "Qahîr", "<<al->> Kahira", "al-Kahira", "Il Cairo", "Alkeir", "<<al->>Qāhira", "Cairo", "<<Le>> Caire", "قاهرة", "مصر القاهرة", "مصر" ],
+  "extent" : "Online-Ressource",
+  "note" : [ "Gesehen am 03.06.2013" ],
+  "natureOfContent" : [ {
+    "label" : "Zeitung",
+    "id" : "https://d-nb.info/gnd/4067510-5"
+  } ],
   "medium" : [ {
     "label" : "Datenträger",
     "id" : "http://rdaregistry.info/termList/RDAMediaType/1003"
@@ -87,6 +103,6 @@
     "label" : "Online-Ressource",
     "id" : "http://rdaregistry.info/termList/RDACarrierType/1018"
   } ],
-  "type" : [ "BibliographicResource" ],
+  "type" : [ "BibliographicResource", "Newspaper" ],
   "id" : "http://lobid.org/resources/990197023370206441#!"
 }

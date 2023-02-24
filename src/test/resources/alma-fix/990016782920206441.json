@@ -2,12 +2,12 @@
   "@context" : "http://lobid.org/resources/context.jsonld",
   "almaMmsId" : "990016782920206441",
   "hbzId" : "HT004285445",
+  "deprecatedUri" : "http://lobid.org/resources/HT004285445#!",
   "ismn" : [ "M204421206" ],
   "oclcNumber" : [ "1068203015" ],
   "title" : "Erleben - Verstehen - Lernen",
   "otherTitleInformation" : [ "Klavierschule für Erwachsene" ],
   "publication" : [ {
-    "publicationHistory" : "c 1989",
     "startDate" : "1989",
     "type" : [ "PublicationEvent" ],
     "location" : [ "Wilhelmshaven" ],
@@ -17,8 +17,6 @@
     "id" : "http://lobid.org/resources/990016782920206441",
     "label" : "Webseite der hbz-Ressource 990016782920206441",
     "type" : [ "BibliographicDescription" ],
-    "dateCreated" : "20210405",
-    "dateModified" : "20210407",
     "inDataset" : {
       "id" : "http://lobid.org/resources/dataset#!",
       "label" : "lobid-resources – Der hbz-Verbundkatalog als Linked Open Data"
@@ -33,6 +31,8 @@
       },
       "object" : {
         "id" : "https://lobid.org/hbz01/990016782920206441",
+        "dateCreated" : "2021-04-05",
+        "dateModified" : "2021-04-07",
         "type" : [ "DataFeedItem" ],
         "label" : "hbz-Ressource 990016782920206441 im Exportformat MARC21 XML",
         "inDataset" : {
@@ -67,40 +67,43 @@
   "extent" : "80 S. + lose Beil.",
   "hasItem" : [ {
     "label" : "lobid Bestandsressource",
-    "type" : [ "Item" ],
+    "type" : [ "Item", "PhysicalObject" ],
     "callNumber" : "C 10 / MolU / Erle",
+    "serialNumber" : "E1000000037300",
     "currentLocation" : "Z9036 / FHA",
     "heldBy" : {
       "id" : "http://lobid.org/organisations/DE-1156#!",
       "isil" : "DE-1156",
       "label" : "lobid Organisation"
     },
-    "id" : "http://lobid.org/items/990016782920206441:DE-1156:C 10 / MolU / Erle#!"
+    "id" : "http://lobid.org/items/990016782920206441:DE-1156:Z9036:C 10 / MolU / Erle#!"
   }, {
     "label" : "lobid Bestandsressource",
-    "type" : [ "Item" ],
+    "type" : [ "Item", "PhysicalObject" ],
     "callNumber" : "P KLS Mol 4.1",
+    "serialNumber" : "Z156-011049",
     "currentLocation" : "MUPA / MUPA_BIB",
     "heldBy" : {
       "id" : "http://lobid.org/organisations/DE-6#!",
       "isil" : "DE-6",
       "label" : "lobid Organisation"
     },
-    "id" : "http://lobid.org/items/990016782920206441:DE-6:P KLS Mol 4.1#!"
+    "id" : "http://lobid.org/items/990016782920206441:DE-6:MUPA:P KLS Mol 4.1#!"
   } ],
   "medium" : [ {
-    "label" : "Print",
-    "id" : "http://rdaregistry.info/termList/RDAproductionMethod/1010"
+    "label" : "Sonstige",
+    "id" : "http://purl.org/lobid/lv#Miscellaneous"
   } ],
-  "type" : [ "BibliographicResource", "PublishedScore", "Book" ],
+  "type" : [ "BibliographicResource", "PublishedScore" ],
   "responsibilityStatement" : [ "Uli Molsen" ],
   "contribution" : [ {
     "agent" : {
-      "gndIdentifier" : "(DE-588)134465202",
+      "gndIdentifier" : "134465202",
       "id" : "https://d-nb.info/gnd/134465202",
       "label" : "Molsen, Uli",
       "type" : [ "Person" ],
-      "dateOfBirth" : "1947"
+      "dateOfBirth" : "1947",
+      "altLabel" : [ "Molsen, Gert-Ulrich" ]
     },
     "role" : {
       "id" : "http://id.loc.gov/vocabulary/relators/cmp",

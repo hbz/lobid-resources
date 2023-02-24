@@ -2,12 +2,12 @@
   "@context" : "http://lobid.org/resources/context.jsonld",
   "almaMmsId" : "990104908070206441",
   "hbzId" : "HT012338254",
+  "deprecatedUri" : "http://lobid.org/resources/HT012338254#!",
   "zdbId" : "903128-5",
   "title" : "Appropriation acts of the General Assembly of the Commonwealth of Pennsylvania",
-  "alternativeTitle" : [ "Appropriation acts" ],
   "otherTitleInformation" : [ "passed at the session of .." ],
   "publication" : [ {
-    "publicationHistory" : "1911-",
+    "publicationHistory" : "Nachgewiesen 1911 -",
     "startDate" : "1911",
     "type" : [ "PublicationEvent" ],
     "location" : [ "Harrisburg, Pa." ]
@@ -16,8 +16,6 @@
     "id" : "http://lobid.org/resources/990104908070206441",
     "label" : "Webseite der hbz-Ressource 990104908070206441",
     "type" : [ "BibliographicDescription" ],
-    "dateCreated" : "20210405",
-    "dateModified" : "20220624",
     "inDataset" : {
       "id" : "http://lobid.org/resources/dataset#!",
       "label" : "lobid-resources – Der hbz-Verbundkatalog als Linked Open Data"
@@ -32,6 +30,8 @@
       },
       "object" : {
         "id" : "https://lobid.org/hbz01/990104908070206441",
+        "dateCreated" : "2021-04-05",
+        "dateModified" : "2022-09-07",
         "type" : [ "DataFeedItem" ],
         "label" : "hbz-Ressource 990104908070206441 im Exportformat MARC21 XML",
         "inDataset" : {
@@ -51,6 +51,10 @@
     "provider" : {
       "id" : "http://lobid.org/organisations/DE-DNB#!",
       "label" : "lobid Organisation"
+    },
+    "modifiedBy" : {
+      "id" : "http://lobid.org/organisations/DE-605#!",
+      "label" : "lobid Organisation"
     }
   },
   "sameAs" : [ {
@@ -65,9 +69,15 @@
     "label" : "Zeitschriftendatenbank (ZDB)",
     "type" : [ "Collection" ]
   } ],
-  "note" : [ "Nebent. d. Mikrofiche-Ausg.: Appropriation acts" ],
+  "natureOfContent" : [ {
+    "label" : "Zeitschrift",
+    "id" : "https://d-nb.info/gnd/4067488-5"
+  }, {
+    "label" : "Amtliche Publikation",
+    "id" : "https://d-nb.info/gnd/4142300-8"
+  } ],
   "subject" : [ {
-    "notation" : "650",
+    "notation" : "330",
     "type" : [ "Concept" ],
     "source" : {
       "label" : "ZDB-Systematik",
@@ -75,16 +85,17 @@
     }
   } ],
   "medium" : [ {
-    "label" : "Print",
-    "id" : "http://rdaregistry.info/termList/RDAproductionMethod/1010"
+    "label" : "Mikroformat",
+    "id" : "http://rdaregistry.info/termList/RDAMediaType/1002"
   } ],
   "type" : [ "BibliographicResource", "Periodical" ],
   "contribution" : [ {
     "agent" : {
-      "gndIdentifier" : "(DE-588)123031-1",
+      "gndIdentifier" : "123031-1",
       "id" : "https://d-nb.info/gnd/123031-1",
       "label" : "Pennsylvania. General Assembly",
-      "type" : [ "CorporateBody" ]
+      "type" : [ "CorporateBody" ],
+      "altLabel" : [ "General Assembly (Pennsylvania)" ]
     },
     "role" : {
       "id" : "http://id.loc.gov/vocabulary/relators/aut",

@@ -10,6 +10,10 @@ import play.mvc.Controller;
 import play.mvc.Result;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -42,11 +46,12 @@ public class WebhookAlmaFix extends Controller {
   private static final String MSG_UPDATE_ALREADY_RUNNING =
       "Couldn't update index '" + indexNameOfUpdate
           + MSG_ETL_PROCESS_IS_ALREADY_RUNNING;
+  private static final String MSG_FILE_TOO_SMALL = "File size is too small - data seems to be empty";
   private static String createIndexNameOfBasedump = "dummy";
   private static final String MSG_CREATE_INDEX_ALREADY_RUNNING =
       "Couldn't create new index with name '%s' "
           + MSG_ETL_PROCESS_IS_ALREADY_RUNNING;
-  private static final String MORPH_FILENAME = "conf/alma/alma.fix";
+  private static final String FIX_FILENAME = "conf/alma/alma.fix";
   // If null, create default values from Global settings
   public static String clusterHost = null;
   public static String clusterName = null;
@@ -64,13 +69,27 @@ public class WebhookAlmaFix extends Controller {
    *
    * @param GIVEN_TOKEN the token to authorize updating
    * @return "200 ok" or "403 forbidden" (depending on token) or "423 locked" in
-   *         case of an already triggered process that was not yet finished
+   *         case of an already triggered process that was not yet finished, or a "500"
+   *         if the size of the data file is too small.
    */
   public static Result updateAlma(final String GIVEN_TOKEN) {
     reloadConfigs();
     final String KIND = "update";
     if (!GIVEN_TOKEN.equals(token)) {
       return wrongToken(KIND, GIVEN_TOKEN);
+    }
+    try {
+        if (Files.size(Paths.get(filenameUpdate.split(";")[0])) < 512) {
+            Logger.error(MSG_FILE_TOO_SMALL);
+            AlmaMarcXmlFix2lobidJsonEs.sendMail("Triggering of " + ETL_OF + KIND, false,
+                MSG_FILE_TOO_SMALL);
+            return status(500, MSG_FILE_TOO_SMALL);
+        }
+    }
+    catch (IOException e) {
+        AlmaMarcXmlFix2lobidJsonEs.sendMail("Triggering of " + ETL_OF + KIND, false,
+            e.getMessage());
+        return status(500, "Problems with data file\n" + e);
     }
     if (AlmaMarcXmlFix2lobidJsonEs.threadAlreadyStarted) {
       AlmaMarcXmlFix2lobidJsonEs.sendMail(ETL_OF + KIND, false,
@@ -82,8 +101,9 @@ public class WebhookAlmaFix extends Controller {
     AlmaMarcXmlFix2lobidJsonEs.setSwitchAliasAfterETL(false);
     AlmaMarcXmlFix2lobidJsonEs.main(filenameUpdate, indexNameOfUpdate,
         indexUpdateAliasSufix, clusterHost, clusterName, UPDATE_NEWEST_INDEX,
-        MORPH_FILENAME);
-    AlmaMarcXmlFix2lobidJsonEs.sendMail(ETL_OF + KIND, true,
+        FIX_FILENAME);
+
+    AlmaMarcXmlFix2lobidJsonEs.sendMail("Triggering of " + ETL_OF + KIND, true,
         "Going to update index '" + indexNameOfUpdate + "'");
     return ok("... started ETL " + KIND);
   }
@@ -113,13 +133,25 @@ public class WebhookAlmaFix extends Controller {
    *
    * @param GIVEN_TOKEN the token to authorize updating
    * @return "200 ok" or "403 forbidden" (depending on token) or "423 locked" in
-   *         case of an already triggered process that was not yet finished
+   *         case of an already triggered process that was not yet finished, or a "500"
+   *         if the size of the data file is too small.
    */
   public static Result basedumpAlma(final String GIVEN_TOKEN) {
     reloadConfigs();
     final String KIND = "basedump";
     if (!GIVEN_TOKEN.equals(token)) {
       return wrongToken(KIND, GIVEN_TOKEN);
+    }
+    try {
+        if (Files.size(Paths.get(filenameBasedump)) < 512) {
+            Logger.error(MSG_FILE_TOO_SMALL);
+            AlmaMarcXmlFix2lobidJsonEs.sendMail("Triggering of " + ETL_OF + KIND, false,
+                MSG_FILE_TOO_SMALL);
+            return status(500, MSG_FILE_TOO_SMALL);
+        }
+    }
+    catch (IOException e) {
+        return status(500, "Problems with data file\n" + e);
     }
     createIndexNameOfBasedump = indexNameOfBasedump + "-" + LocalDateTime.now()
         .format(DateTimeFormatter.ofPattern("yyyyMMdd-kkmm"));
@@ -137,9 +169,9 @@ public class WebhookAlmaFix extends Controller {
     }
     AlmaMarcXmlFix2lobidJsonEs.main(filenameBasedump, createIndexNameOfBasedump,
         indexBasedumpAliasSuffix, clusterHost, clusterName, CREATE_INDEX,
-        MORPH_FILENAME);
+        FIX_FILENAME);
     AlmaMarcXmlFix2lobidJsonEs.sendMail(ETL_OF + KIND, true,
-        "Going to created new index with name " + createIndexNameOfBasedump
+        "Going to create new index with name " + createIndexNameOfBasedump
             + " , adding " + indexBasedumpAliasSuffix + " to alias of index");
     return ok("... started ETL " + KIND);
   }
@@ -163,7 +195,7 @@ public class WebhookAlmaFix extends Controller {
     if (AlmaMarcXmlFix2lobidJsonEs.threadAlreadyStarted) {
       AlmaMarcXmlFix2lobidJsonEs.sendMail("Fail " + msg, false, String
           .format(MSG_CREATE_INDEX_ALREADY_RUNNING, createIndexNameOfBasedump));
-     
+
       return status(423, String.format(MSG_CREATE_INDEX_ALREADY_RUNNING,
           createIndexNameOfBasedump));
     }
