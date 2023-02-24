@@ -22,7 +22,7 @@ do list(path:"ITM  ", "var": "$i")
   copy_field("hasItem[].$last.heldBy.id","hasItem[].$last.heldBy.isil")
   prepend("hasItem[].$last.heldBy.id", "http://lobid.org/organisations/")
   append("hasItem[].$last.heldBy.id","#!")
-  paste("hasItem[].$last.id", "~http://lobid.org/items/","almaMmsId", "~:", "hasItem[].$last.heldBy.isil","~:", "$i.w","~:", "hasItem[].$last.callNumber","~#!", join_char: "")
+  paste("hasItem[].$last.id", "~http://lobid.org/items/","almaMmsId", "~:", "hasItem[].$last.heldBy.isil","~:", "hasItem[].$last.callNumber","~#!", join_char: "")
 end
 
 do list(path: "HOL  ", "var": "$i")
@@ -42,7 +42,7 @@ do list(path: "HOL  ", "var": "$i")
         if in("$i.8", "$H52.8")
           paste("hasItem[].$last.currentLocation", "$H52.b", "~/", "$H52.c")
           copy_field("$H52.h", "hasItem[].$last.callNumber")
-          paste("hasItem[].$last.id", "~http://lobid.org/items/","almaMmsId", "~:", "hasItem[].$last.heldBy.isil","~:","$H52.b","~#!", join_char: "")
+          paste("hasItem[].$last.id", "~http://lobid.org/items/","almaMmsId", "~:", "hasItem[].$last.heldBy.isil","~#!", join_char: "")
         end
       end
     end
