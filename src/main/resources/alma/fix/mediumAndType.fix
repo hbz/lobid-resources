@@ -63,7 +63,6 @@ elsif any_match("300  .a", ".*(Tonkassette|Schallplatte|Schallpl.|Magnetbandkass
 end
 
 # medium: "Audio-Kassette":	"http://id.loc.gov/vocabulary/carriers/ss"
-# TODO: In the frontend the icon says Tonband which is more encompassing than "Kassette"
 if any_match("007", "^ss.*")
   add_field("medium[].$append.label","Audio-Kassette")
 elsif any_match("245[10]0.h", "Kompaktkassette|MC|Tonkassette")
@@ -534,7 +533,9 @@ end
 
 if exists("zdbId")
   if exists("245??.n")
-    add_field("type[].$append", "PublicationIssue")
+    unless any_contain("245??.n","...")
+      add_field("type[].$append", "PublicationIssue")
+    end
   elsif exists("77308.q")
     add_field("type[].$append", "PublicationIssue")
   end
@@ -637,7 +638,7 @@ end
 
 # type: "Miscellaneous"
 
-# Set default type value  "Sonstiges" (Miscellaneous) if no type besides "BibliographicResource" is set.
+# Set default type value  "Sonstige" (Miscellaneous) if no type besides "BibliographicResource" is set.
 
 unless exists("type[].2")
   add_field("type[].$append", "Miscellaneous")
@@ -660,7 +661,7 @@ if any_match ("type[]", "Miscellaneous|Biography|Bibliography")
   end
 end
 
-# Set medium default to print if there is no medium and type "Book" exists. Else set "Sonstiges" (Miscellaneous) as default medium.
+# Set medium default to print if there is no medium and type "Book" exists. Else set "Sonstige" (Miscellaneous) as default medium.
 
 unless exists("medium[].1")
   if any_equal("type[]", "Book")
@@ -668,8 +669,8 @@ unless exists("medium[].1")
   elsif any_match("@leaderPos06-07", "a.*")
     add_field("medium[].$append.label","Print")
   else
-  # medium: "Sonstiges":	"http://purl.org/lobid/lv#Miscellaneous"
-    add_field("medium[].$append.label", "Sonstiges")
+  # medium: "Sonstige":	"http://purl.org/lobid/lv#Miscellaneous"
+    add_field("medium[].$append.label", "Sonstige")
   end
 end
 

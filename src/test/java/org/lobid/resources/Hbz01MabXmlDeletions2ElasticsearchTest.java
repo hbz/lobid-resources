@@ -18,6 +18,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.jena.rdf.model.Model;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.elasticsearch.action.bulk.BulkRequestBuilder;
@@ -48,7 +49,6 @@ import com.github.jsonldjava.core.JsonLdError;
 import com.github.jsonldjava.core.JsonLdOptions;
 import com.github.jsonldjava.core.JsonLdProcessor;
 import com.github.jsonldjava.utils.JsonUtils;
-import com.hp.hpl.jena.rdf.model.Model;
 
 import de.hbz.lobid.helper.CompareJsonMaps;
 
@@ -57,7 +57,7 @@ import de.hbz.lobid.helper.CompareJsonMaps;
  * elasticsearch*JSON-LD.Query the index and test the data by transforming the
  * data into*several JSON-LD files(reflecting the records residing in
  * elasticsearch).**
- * 
+ *
  * @author Pascal Christoph(dr0i)
  **/
 @SuppressWarnings("javadoc")

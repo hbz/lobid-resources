@@ -9,18 +9,18 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.Property;
+import org.apache.jena.rdf.model.ResIterator;
+import org.apache.jena.rdf.model.Resource;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.rdf.model.Property;
-import com.hp.hpl.jena.rdf.model.ResIterator;
-import com.hp.hpl.jena.rdf.model.Resource;
 
 /**
  * Creates nwbib maps used by morph.
- * 
+ *
  * @author Pascal Christoph (dr0i)
  *
  */
@@ -42,7 +42,7 @@ public final class CreateWikidataNwbibMaps {
 
 	/**
 	 * Creates a tsv using nwbib-spatial.ttl for a morph map.
-	 * 
+	 *
 	 * @param args nope
 	 */
 	public static void main(String... args) {
