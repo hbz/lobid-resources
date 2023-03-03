@@ -14,7 +14,6 @@ import controllers.resources.LocalIndex;
 import controllers.resources.Search;
 import controllers.resources.WebhookAlmaFix;
 
-import org.lobid.resources.run.AlmaMarcXml2lobidJsonEs;
 import org.lobid.resources.run.AlmaMarcXmlFix2lobidJsonEs;
 import play.Application;
 import play.GlobalSettings;
