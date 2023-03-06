@@ -27,17 +27,11 @@ GET    /resources/:id                   controllers.resources.Application.resour
 GET    /items/:id                       controllers.resources.Application.item(id, format ?= null)
 GET    /resources/deletions/search      controllers.resources.Deletions.query(q?="",size:Int?=15)
 
-POST   /resources/webhook/update-alma   controllers.resources.Webhook.updateAlma(token?="")
-GET   /resources/webhook/update-alma   controllers.resources.Webhook.updateAlma(token?="")
-POST   /resources/webhook/basedump-alma   controllers.resources.Webhook.basedumpAlma(token?="")
-GET   /resources/webhook/basedump-alma   controllers.resources.Webhook.basedumpAlma(token?="")
-GET   /resources/webhook/switchalias   controllers.resources.Webhook.switchEsAlias(token?="")
-
-POST   /resources/webhook/update-almafix   controllers.resources.WebhookAlmaFix.updateAlma(token?="")
-GET   /resources/webhook/update-almafix   controllers.resources.WebhookAlmaFix.updateAlma(token?="")
-POST   /resources/webhook/basedump-almafix   controllers.resources.WebhookAlmaFix.basedumpAlma(token?="")
-GET   /resources/webhook/basedump-almafix   controllers.resources.WebhookAlmaFix.basedumpAlma(token?="")
-GET   /resources/webhook/switchaliasAlmaFix   controllers.resources.WebhookAlmaFix.switchEsAlias(token?="")
+POST   /resources/webhook/update-alma   controllers.resources.WebhookAlmaFix.updateAlma(token?="")
+GET   /resources/webhook/update-alma   controllers.resources.WebhookAlmaFix.updateAlma(token?="")
+POST   /resources/webhook/basedump-alma   controllers.resources.WebhookAlmaFix.basedumpAlma(token?="")
+GET   /resources/webhook/basedump-alma   controllers.resources.WebhookAlmaFix.basedumpAlma(token?="")
+GET   /resources/webhook/switchalias   controllers.resources.WebhookAlmaFix.switchEsAlias(token?="")
 
 
 # Map static resources from the /public folder to the /assets URL path
