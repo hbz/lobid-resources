@@ -50,15 +50,17 @@ set_array("isPartOf[]")
 
 unless any_match("leader", "^.{7}[ad].*")
   do list(path: "773??", "var": "$i")
-    do list(path: "$i.w", "var": "$j")
-      set_array("isPartOf[].$append.type[]", "IsPartOfRelation")
-      set_array("isPartOf[].$last.hasSuperordinate[]")
-      add_field("isPartOf[].$last.hasSuperordinate[].$append.test", "")
-      if all_match("$j", "\\(DE-605\\)(.*)")
-        copy_field("$j", "isPartOf[].$last.hasSuperordinate[].$last.id")
+    unless any_equal("$i.9","LOCAL")
+      do list(path: "$i.w", "var": "$j")
+        set_array("isPartOf[].$append.type[]", "IsPartOfRelation")
+        set_array("isPartOf[].$last.hasSuperordinate[]")
+        add_field("isPartOf[].$last.hasSuperordinate[].$append.test", "")
+        if all_match("$j", "\\(DE-605\\)(.*)")
+          copy_field("$j", "isPartOf[].$last.hasSuperordinate[].$last.id")
+        end
+        copy_field("$i.t", "isPartOf[].$last.hasSuperordinate[].$last.label")
+        copy_field("$i.q", "isPartOf[].$last.numbering")
       end
-      copy_field("$i.t", "isPartOf[].$last.hasSuperordinate[].$last.label")
-      copy_field("$i.q", "isPartOf[].$last.numbering")
     end
   end
 end
@@ -113,15 +115,17 @@ set_array("containedIn[]")
 if any_match("leader", "^.{7}[ad].*")
   if exists("@titleOfSubSeries")
     do list(path: "773??", "var": "$i")
-      do list(path: "$i.w", "var": "$j")
-        set_array("isPartOf[].$append.type[]", "IsPartOfRelation")
-        set_array("isPartOf[].$last.hasSuperordinate[]")
-        add_field("isPartOf[].$last.hasSuperordinate[].$append.test", "")
-        if all_match("$j", "\\(DE-605\\)(.*)")
-          copy_field("$j", "isPartOf[].$last.hasSuperordinate[].$last.id")
+      unless any_equal("$i.9","LOCAL")
+        do list(path: "$i.w", "var": "$j")
+          set_array("isPartOf[].$append.type[]", "IsPartOfRelation")
+          set_array("isPartOf[].$last.hasSuperordinate[]")
+          add_field("isPartOf[].$last.hasSuperordinate[].$append.test", "")
+          if all_match("$j", "\\(DE-605\\)(.*)")
+            copy_field("$j", "isPartOf[].$last.hasSuperordinate[].$last.id")
+          end
+          copy_field("$i.t", "isPartOf[].$last.hasSuperordinate[].$last.label")
+          copy_field("$i.q", "isPartOf[].$last.numbering")
         end
-        copy_field("$i.t", "isPartOf[].$last.hasSuperordinate[].$last.label")
-        copy_field("$i.q", "isPartOf[].$last.numbering")
       end
     end
   else # exclude subseries and subvolumes
