@@ -421,6 +421,12 @@ do list(path:"084  ", "var":"$i")
   end
 end
 
+do list(path:"084  ", "var":"$i")
+  if exists("rpbId")
+      add_field("inCollection[].$append.id", "http://lobid.org/resources/HT013494180#!")
+      add_field("inCollection[].$last.label", "Rheinland-Pfälzische Bibliographie (RPB)")
+  end
+end
 
 
 #    eResource package
@@ -579,3 +585,4 @@ do list(path:"700?2|710?2|711?2|730?2", "var": "$i")
 end
 
 replace_all("containsExampleOfWork[].*.label","<<|>>","")
+uniq("inCollection[]")
