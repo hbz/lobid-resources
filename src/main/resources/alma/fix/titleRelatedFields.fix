@@ -43,6 +43,15 @@ paste("title","@title", "@titleOfSubSeries", join_char: "") # title consists of 
 set_array("alternativeTitle[]")
 copy_field("246?[ 345678].a","alternativeTitle[].$append")
 
+# 247 - Former Title (R)
+do list(path: "247??", "var":"$i")
+  if exists("$i.f")
+    paste("alternativeTitle[].$append","$i.a", "~(","$i.f","~)")
+  else
+    copy_field("$i.a","alternativeTitle[].$append")
+  end
+end
+
 replace_all("alternativeTitle[].*","<<|>>","")
 
 set_array("otherTitleInformation[]")
