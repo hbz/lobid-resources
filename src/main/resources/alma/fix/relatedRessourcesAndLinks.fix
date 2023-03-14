@@ -76,7 +76,7 @@ do list(path: "4900?", "var": "$i")
   do list(path:"$i.a", "var":"$j")
     copy_field("$j", "isPartOf[].$last.hasSuperordinate[].$last.label.$append")
   end
-  join_field("isPartOf[].$last.hasSuperordinate[].$last.label")
+  join_field("isPartOf[].$last.hasSuperordinate[].$last.label", " / ")
   copy_field("$i.v", "isPartOf[].$last.numbering")
 end
 
@@ -142,6 +142,7 @@ if any_match("leader", "^.{7}[ad].*")
 end
 
 replace_all("isPartOf[].*.hasSuperordinate[].*.id", "^\\(DE-605\\)(.*)$", "http://lobid.org/resources/$1#!")
+replace_all("isPartOf[].*.numbering", "^[©]|\\s?[,.:;/=]?$", "")
 uniq("isPartOf[]")
 replace_all("containedIn[].*.id", "^\\(DE-605\\)(.*)$", "http://lobid.org/resources/$1#!")
 replace_all("containedIn[].*.id", "^\\(DE-600\\)(.*)$", "http://ld.zdb-services.de/resource/$1")
