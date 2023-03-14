@@ -1,16 +1,4 @@
-#
-#  <entity name="sameAs[]" flushWith="record">
 set_array("sameAs[]")
-
-
-#    <entity name="">
-#      <data name="id" source="035  .a">
-#        <regexp match="\(DE-605\)(.*)" format="http://hub.culturegraph.org/resource/HBZ-${1}"/>
-#      </data>
-#      <data name="label" source="035  .a">
-#        <regexp match="\(DE-605\)(.*)" format="Culturegraph Ressource"/>
-#      </data>
-#    </entity>
 
 
 # 035 - System Control Number (R) - Subfield: $a (NR)
@@ -22,31 +10,11 @@ do list(path:"035  ", "var":"$i")
   end
 end
 
-
-#    <entity name="">
-#      <data name="id" source="@oclcNumber">
-#        <compose prefix="http://worldcat.org/oclc/"/>
-#      </data>
-#      <data name="label" source="@oclcNumber">
-#        <constant value="OCLC Ressource"/>
-#      </data>
-#    </entity>
-
 do list(path: "oclcNumber[]", "var": "$i")
   paste("sameAs[].$append.id","~http://worldcat.org/oclc/", "$i", join_char:"")
   add_field("sameAs[].$last.label","OCLC Ressource")
 end
 
-
-#    <entity name="">
-#      <data name="id" source="@zdbId">
-#        <compose prefix="http://ld.zdb-services.de/resource/"/>
-#      </data>
-#      <data name="label" source="@zdbId">
-#        <constant value="ZDB-Ressource"/>
-#      </data>
-#    </entity>
-#  </entity>
 
 do list(path: "zdbId", "var": "$i")
   paste("sameAs[].$append.id","~http://ld.zdb-services.de/resource/", "$i", join_char:"")
@@ -76,35 +44,24 @@ replace_all("supplement[].*.id","^\\(DE-600\\)(.*)$","http://ld.zdb-services.de/
 # it describes the relation between a published ressource and its superordinate series or collection.
 # in contrast to containedIn it is a standalone publication
 
-#  <entity name="isPartOf[]" flushWith="record">
 set_array("isPartOf[]")
-#    <entity name="" sameEntity="true" reset="true" flushWith="773??|490??">
-#      <data source="773??.w|490??.a" name="type">
-#        <constant value="IsPartOfRelation" />
-#      </data>
-#      <entity name="hasSuperordinate[]" sameEntity="true" reset="true">
-#        <entity name="" sameEntity="true" reset="true" flushWith="773??|490??">
-#          <data name="id" source="773??.w">
-#            <regexp match="\(DE-605\)(.*)" format="http://lobid.org/resources/${1}#!"/>
-#          </data>
-#          <data source="773??.t|490??.a" name="label" />
-#        </entity>
-#      </entity>
-#      <data source="773??.q" name="numbering" />
-#    </entity>
 
 # 773 - Host Item Entry (R) Subfield: $w (NR), $t (NR), $q (NR)
 
 unless any_match("leader", "^.{7}[ad].*")
   do list(path: "773??", "var": "$i")
-    set_array("isPartOf[].$append.type[]", "IsPartOfRelation")
-    set_array("isPartOf[].$last.hasSuperordinate[]")
-    add_field("isPartOf[].$last.hasSuperordinate[].$append.test", "")
-    if all_match("$i.w", "\\(DE-605\\)(.*)")
-      copy_field("$i.w", "isPartOf[].$last.hasSuperordinate[].$append.id")
+    unless any_equal("$i.9","LOCAL")
+      do list(path: "$i.w", "var": "$j")
+        set_array("isPartOf[].$append.type[]", "IsPartOfRelation")
+        set_array("isPartOf[].$last.hasSuperordinate[]")
+        add_field("isPartOf[].$last.hasSuperordinate[].$append.test", "")
+        if all_match("$j", "\\(DE-605\\)(.*)")
+          copy_field("$j", "isPartOf[].$last.hasSuperordinate[].$last.id")
+        end
+        copy_field("$i.t", "isPartOf[].$last.hasSuperordinate[].$last.label")
+        copy_field("$i.q", "isPartOf[].$last.numbering")
+      end
     end
-    copy_field("$i.t", "isPartOf[].$last.hasSuperordinate[].$last.label")
-    copy_field("$i.q", "isPartOf[].$last.numbering")
   end
 end
 
@@ -114,7 +71,8 @@ end
 do list(path: "4900?", "var": "$i")
   set_array("isPartOf[].$append.type[]", "IsPartOfRelation")
   set_array("isPartOf[].$last.hasSuperordinate[]")
-  set_array("isPartOf[].$last.hasSuperordinate[].$append.label")
+  add_field("isPartOf[].$last.hasSuperordinate[].$append.test", "")
+  set_array("isPartOf[].$last.hasSuperordinate[].$last.label")
   do list(path:"$i.a", "var":"$j")
     copy_field("$j", "isPartOf[].$last.hasSuperordinate[].$last.label.$append")
   end
@@ -122,27 +80,6 @@ do list(path: "4900?", "var": "$i")
   copy_field("$i.v", "isPartOf[].$last.numbering")
 end
 
-#    <entity name="" sameEntity="true" reset="true" flushWith="830??">
-#      <!-- Check for duplicates in local fields. -->
-#      <if>
-#        <data source="830??.w">
-#          <unique/>
-#        </data>
-#      </if>
-#      <data source="830??.w" name="type">
-#        <constant value="IsPartOfRelation" />
-#      </data>
-#      <entity name="hasSuperordinate[]" sameEntity="true" reset="true">
-#        <entity name="" sameEntity="true" reset="true" flushWith="830??">
-#          <data name="id" source="830??.w">
-#            <regexp match="\(DE-605\)(.*)" format="http://lobid.org/resources/${1}#!"/>
-#          </data>
-#          <data source="830??.a" name="label" />
-#        </entity>
-#      </entity>
-#      <data source="830??.v" name="numbering" />
-#    </entity>
-#  </entity>
 
 # 830 - Series Added Entry-Uniform Title (R) - Subfield: $w (R), $a (NR), $v (NR)
 # Element can be repeatable with local entries they have subfield $M.
@@ -154,7 +91,6 @@ do list(path: "830??", "var": "$i")
     add_field("isPartOf[].$last.hasSuperordinate[].$append.test", "")
     if all_match("$i.w", "\\(DE-605\\)(.*)")
       copy_field("$i.w", "isPartOf[].$last.hasSuperordinate[].$last.id")
-      replace_all("isPartOf[].$last.hasSuperordinate[].$last.id", "^\\(DE-605\\)(.*)$", "http://lobid.org/resources/$1#!")
     end
     set_array("isPartOf[].$last.hasSuperordinate[].$last.label")
     do list(path:"$i.a", "var":"$j")
@@ -167,7 +103,7 @@ end
 
 replace_all("isPartOf[].*.hasSuperordinate[].*.label","<<|>>","")
 
-uniq("isPartOf[]")
+
 
 # containedIn
 # containedIn only states ressources that are not published by them self but as part of a host ressource.
@@ -179,14 +115,18 @@ set_array("containedIn[]")
 if any_match("leader", "^.{7}[ad].*")
   if exists("@titleOfSubSeries")
     do list(path: "773??", "var": "$i")
-      set_array("isPartOf[].$append.type[]", "IsPartOfRelation")
-      set_array("isPartOf[].$last.hasSuperordinate[]")
-      add_field("isPartOf[].$last.hasSuperordinate[].$append.test", "")
-      if all_match("$i.w", "\\(DE-605\\)(.*)")
-        copy_field("$i.w", "isPartOf[].$last.hasSuperordinate[].$append.id")
+      unless any_equal("$i.9","LOCAL")
+        do list(path: "$i.w", "var": "$j")
+          set_array("isPartOf[].$append.type[]", "IsPartOfRelation")
+          set_array("isPartOf[].$last.hasSuperordinate[]")
+          add_field("isPartOf[].$last.hasSuperordinate[].$append.test", "")
+          if all_match("$j", "\\(DE-605\\)(.*)")
+            copy_field("$j", "isPartOf[].$last.hasSuperordinate[].$last.id")
+          end
+          copy_field("$i.t", "isPartOf[].$last.hasSuperordinate[].$last.label")
+          copy_field("$i.q", "isPartOf[].$last.numbering")
+        end
       end
-      copy_field("$i.t", "isPartOf[].$last.hasSuperordinate[].$last.label")
-      copy_field("$i.q", "isPartOf[].$last.numbering")
     end
   else # exclude subseries and subvolumes
     do list(path:"773??", "var":"$i")
@@ -201,7 +141,8 @@ if any_match("leader", "^.{7}[ad].*")
   end
 end
 
-        replace_all("isPartOf[].*.hasSuperordinate[].*.id", "^\\(DE-605\\)(.*)$", "http://lobid.org/resources/$1#!")
+replace_all("isPartOf[].*.hasSuperordinate[].*.id", "^\\(DE-605\\)(.*)$", "http://lobid.org/resources/$1#!")
+uniq("isPartOf[]")
 replace_all("containedIn[].*.id", "^\\(DE-605\\)(.*)$", "http://lobid.org/resources/$1#!")
 replace_all("containedIn[].*.id", "^\\(DE-600\\)(.*)$", "http://ld.zdb-services.de/resource/$1")
 replace_all("containedIn[].*.label","<<|>>","")
