@@ -111,3 +111,5 @@ do list(path:"035  ", "var":"$i")
 end
 replace_all("zdbId", "\\(DE-600\\)","")
 
+copy_field("almaMmsId","rpbId")
+lookup("rpbId","almaMmsId2rpbId",delete:"true")

@@ -16,6 +16,10 @@ put_filemap("$[classification.tsv]","classificationCode2Uri", sep_char:"\t",key_
 # Formschlagwort/Formangaben-Mapping -> GND (based on: https://wiki.dnb.de/download/attachments/106042227/AH-007.pdf)
 put_filemap("$[formangabe.tsv]","formschlagwort2Gnd", sep_char:"\t",key_column:"0",value_column:"1",expected_columns:"-1")
 
+# almaMmsId -> rpbId
+put_filemap("$[almaMmsId2rpbId]","almaMmsId2rpbId", sep_char:"\t",key_column:"0",value_column:"1",expected_columns:"-1")
+
+
 
 put_map("rswk-indicator",
   "p": "Person",
