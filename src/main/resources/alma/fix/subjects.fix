@@ -8,12 +8,14 @@ set_array("natureOfContent[]")
 
 do list(path:"655 7", "var":"$i")
  unless in("$i.a","natureOfContent[].*.label")
-    copy_field("$i.a","natureOfContent[].$append.label")
-    do list(path:"$i.0","var":"$j")
-      # This is only DNB, should we also check for other uris for keywords?
-      if any_match("$j","^\\(DE-588\\)(.*)$")
-        copy_field("$j","natureOfContent[].$last.id")
-        replace_all("natureOfContent[].$last.id", "^\\(DE-588\\)(.*)$", "https://d-nb.info/gnd/$1")
+    unless any_equal("$i.2","gnd-carrier")
+      copy_field("$i.a","natureOfContent[].$append.label")
+      do list(path:"$i.0","var":"$j")
+        # This is only DNB, should we also check for other uris for keywords?
+        if any_match("$j","^\\(DE-588\\)(.*)$")
+          copy_field("$j","natureOfContent[].$last.id")
+          replace_all("natureOfContent[].$last.id", "^\\(DE-588\\)(.*)$", "https://d-nb.info/gnd/$1")
+        end
       end
     end
   end
