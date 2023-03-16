@@ -436,14 +436,26 @@
                         },
                         "label" : {
                            "type" : "text",
-                           "analyzer" : "german_analyzer"
+                           "analyzer" : "german_analyzer",
+                           "fields": {
+                                "unstemmed": {
+                                    "type": "text",
+                                    "analyzer" : "german_analyzer_unstemmed"
+                                }
+                            }
                         },
                         "dateOfDeath" : {
                            "type" : "text"
                         },
                         "altLabel" : {
                            "type" : "text",
-                           "analyzer" : "german_analyzer"
+                           "analyzer" : "german_analyzer",
+                           "fields": {
+                                "unstemmed": {
+                                    "type": "text",
+                                    "analyzer" : "german_analyzer_unstemmed"
+                                }
+                            }
                         },
                         "dateOfBirth" : {
                            "type" : "text"
