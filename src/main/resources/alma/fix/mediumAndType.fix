@@ -36,6 +36,9 @@ paste("@leaderTyp+008","@leaderTyp","008", join_char:"")
 
 # TODO: Check introx concerning possible mappings of 340 https://github.com/hbz/limetrans/blob/d2dff10e1b5cdf5699239a8f3474f8b652d582a3/src/main/resources/transformation/alma.fix#L629
 
+copy_field("300  .a","@300  .a_mainExtend") # All extent infos listed after : or ; are only refering to parts not the resource itself.
+replace_all("@300  .a_mainExtend", "[:;].*","")
+
 # medium: "Audio-Dokument":	"http://purl.org/ontology/bibo/AudioDocument"
 
 if any_match("@leaderPos06-07","[ij].")
@@ -58,7 +61,7 @@ elsif any_match("245[10]0.h", "^[Tt][oO].*|Audio-CD")
   add_field("medium[].$append.label","Audio-Dokument")
 elsif any_match("natureOfContent[].*.label", ".*(Hörbuch|Hörspiel|Tonträger).*")
   add_field("medium[].$append.label","Audio-Dokument")
-elsif any_match("300  .a", ".*(Tonkassette|Schallplatte|Schallpl.|Magnetbandkassette|Kompaktkassette|Compact-Disk|Compact-Disc|CD |CD$).*")
+elsif any_match("@300  .a_mainExtend", ".*(Tonkassette|Schallplatte|Schallpl.|Magnetbandkassette|Kompaktkassette|Compact-Disk|Compact-Disc|CD |CD$).*")
   add_field("medium[].$append.label","Audio-Dokument")
 end
 
@@ -67,7 +70,7 @@ if any_match("007", "^ss.*")
   add_field("medium[].$append.label","Audio-Kassette")
 elsif any_match("245[10]0.h", "Kompaktkassette|MC|Tonkassette")
   add_field("medium[].$append.label","Audio-Kassette")
-elsif any_match("300  .a", ".*Kompaktkassette.*")
+elsif any_match("@300  .a_mainExtend", ".*Kompaktkassette.*")
   add_field("medium[].$append.label","Audio-Kassette")
 end
 
@@ -86,7 +89,7 @@ elsif any_match("006", "^[gkor](.{15})[fmstv].*") # Pos00+16 Check if s (Slide/D
 elsif any_match("245[10]0.h", "Bildtonträger")
   add_field("medium[].$append.label","Video")
   add_field("medium[].$append.label", "Audio-Visuell")
-elsif any_match("300  .a", ".*(DVD-Video|Video).*")
+elsif any_match("@300  .a_mainExtend", ".*(DVD-Video|Video).*")
   add_field("medium[].$append.label","Video")
   add_field("medium[].$append.label", "Audio-Visuell")
 elsif any_match("337  .a", "video")
@@ -255,7 +258,7 @@ elsif any_match("006", "^[acdijpst](.{5})[o].*") # Pos00+06
   add_field("medium[].$append.label","Online-Ressource")
 elsif any_match("007", "^cr.*") # Old Aleph Transformation maps Computerdatei(en) im Fernzugriff as online resource. We continue to map this in ALMA.
   add_field("medium[].$append.label","Online-Ressource")
-elsif any_match("300  ", ".*([Oo]nline|ressource en ligne).*") # Pos00+06
+elsif any_match("@300  .a_mainExtend", ".*([Oo]nline|ressource en ligne).*") # Pos00+06
   add_field("medium[].$append.label","Online-Ressource")
 elsif any_match("338  .a", "^.*([Oo]nline.*|online bron|online resource|online-ressource|Online-Ressource|ressource en ligne).*$")
   add_field("medium[].$append.label","Online-Ressource")
@@ -276,7 +279,7 @@ end
 # TODO: What about Shellac?
 # TODO: In all the MARC specifics for SChallplatten seem poor.
 
-if any_match("300  .a", ".*Schallpl.*")
+if any_match("@300  .a_mainExtend", ".*Schallpl.*")
   add_field("medium[].$append.label","Schallplatte")
   add_field("medium[].$append.label","Audio-Dokument")
 elsif any_match("340  .a", "[Vv]inyl")
@@ -436,8 +439,8 @@ elsif any_match("natureOfContent[].*.label", ".*(Altkarte|Karte|Stadtplan|Weltka
 end
 
 unless any_equal("type[]","Game")
-  unless any_match("300  .a", ".*Spiel.*")
-    if any_match("300  .a", ".*(Kt.|[kK]arte).*")
+  unless any_match("@300  .a_mainExtend", ".*Spiel.*")
+    if any_match("@300  .a_mainExtend", ".*(Kt.|[kK]arte).*")
       add_field("type[].$append","Map")
     end
   end
