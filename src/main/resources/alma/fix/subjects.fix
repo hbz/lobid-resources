@@ -9,12 +9,14 @@ set_array("natureOfContent[]")
 do list(path:"655 7", "var":"$i")
  unless in("$i.a","natureOfContent[].*.label")
     unless any_equal("$i.2","gnd-carrier")
-      copy_field("$i.a","natureOfContent[].$append.label")
-      do list(path:"$i.0","var":"$j")
-        # This is only DNB, should we also check for other uris for keywords?
-        if any_match("$j","^\\(DE-588\\)(.*)$")
-          copy_field("$j","natureOfContent[].$last.id")
-          replace_all("natureOfContent[].$last.id", "^\\(DE-588\\)(.*)$", "https://d-nb.info/gnd/$1")
+      unless any_match("$i.a",".*(Audiovisuelles Material|Bildplatte|CD|CD-ROM|Dia|Diskette|DVD-Audio|DVD-ROM|DVD-Video|Elektronische Publikation|Film|Medienkombination|Mikroform|Musikdruck|Online-Publikation|Schallplatte|Text|Tonbildreihe|Tonkassette|Tonträger|Videokassette).*")
+        copy_field("$i.a","natureOfContent[].$append.label")
+        do list(path:"$i.0","var":"$j")
+          # This is only DNB, should we also check for other uris for keywords?
+          if any_match("$j","^\\(DE-588\\)(.*)$")
+            copy_field("$j","natureOfContent[].$last.id")
+            replace_all("natureOfContent[].$last.id", "^\\(DE-588\\)(.*)$", "https://d-nb.info/gnd/$1")
+          end
         end
       end
     end
@@ -26,7 +28,9 @@ end
 do list(path:"689??", "var":"$i")
   unless in("$i.a","natureOfContent[].*.label")
     if any_match("$i.A","f|F")
-      copy_field("$i.a","natureOfContent[].$append.label")
+      unless any_match("$i.a",".*(Audiovisuelles Material|Bildplatte|CD|CD-ROM|Dia|Diskette|DVD-Audio|DVD-ROM|DVD-Video|Elektronische Publikation|Film|Medienkombination|Mikroform|Musikdruck|Online-Publikation|Schallplatte|Text|Tonbildreihe|Tonkassette|Tonträger|Videokassette).*")
+        copy_field("$i.a","natureOfContent[].$append.label")
+      end
     end
   end
 end
