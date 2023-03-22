@@ -97,22 +97,31 @@ do list(path: "040  ", "var":"$i")
 end
 
 replace_all("describedBy.sourceOrganization.id", " ", "")
-prepend("describedBy.sourceOrganization.id", "http://lobid.org/organisations/DE-")
+unless any_match("describedBy.sourceOrganization.id","[A-Za-z]{2}-.*")
+  prepend("describedBy.sourceOrganization.id","DE-")
+end
+prepend("describedBy.sourceOrganization.id", "http://lobid.org/organisations/")
 append("describedBy.sourceOrganization.id", "#!")
 if exists("describedBy.sourceOrganization.id")
 	add_field("describedBy.sourceOrganization.label","lobid Organisation")
 end
 
 replace_all("describedBy.provider.id", " ", "")
-prepend("describedBy.provider.id", "http://lobid.org/organisations/DE-")
+unless any_match("describedBy.provider.id","[A-Za-z]{2}-.*")
+  prepend("describedBy.provider.id","DE-")
+end
+prepend("describedBy.provider.id", "http://lobid.org/organisations/")
 append("describedBy.provider.id", "#!")
 if exists("describedBy.provider.id")
 	add_field("describedBy.provider.label","lobid Organisation")
 end
 
-replace_all("describedBy.modifiedBy.id", "(DE-)?(.*)", "$2")
+
 replace_all("describedBy.modifiedBy.id", " ", "")
-prepend("describedBy.modifiedBy.id", "http://lobid.org/organisations/DE-")
+unless any_match("describedBy.modifiedBy.id","[A-Za-z]{2}-.*")
+  prepend("describedBy.modifiedBy.id","DE-")
+end
+prepend("describedBy.modifiedBy.id", "http://lobid.org/organisations/")
 append("describedBy.modifiedBy.id", "#!")
 if exists("describedBy.modifiedBy.id")
 	add_field("describedBy.modifiedBy.label","lobid Organisation")
