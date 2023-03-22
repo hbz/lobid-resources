@@ -81,7 +81,7 @@ do list(path:"260[ 23] |264[ 23][ 1]", "var":"$i")
       end
     end
     unless exists("publication[].$last.endDate")
-      if any_match("$j",".*-([01]\\d{3}|20\\d{2})$")
+      if any_match("$j",".*-[ ]?([01]\\d{3}|20\\d{2})$")
         paste("publication[].$last.endDate", "$j")
       end
     end
@@ -142,7 +142,7 @@ do list(path:"533  ", "var": "$i")
       end
     end
     unless exists("publication[].$last.endDate")
-      if any_match("$j",".*-([01]\\d{3}|20\\d{2})$")
+      if any_match("$j",".*-[ ]?([01]\\d{3}|20\\d{2})$")
         paste("publication[].$last.endDate", "$j")
       end
     end
@@ -152,7 +152,7 @@ end
 # Cleaning up dates of publicaton []
 do list(path: "publication[]", "var": "$i")
   replace_all("$i.startDate", ".*?([01]\\d{3}|20\\d{2}).*", "$1")
-  replace_all("$i.endDate", ".*-([01]\\d{3}|20\\d{2})$", "$1")
+  replace_all("$i.endDate", ".*-[ ]?([01]\\d{3}|20\\d{2})$", "$1")
   replace_all("$i.location[].*", "^\\[|\\]$", "")
   replace_all("$i.publishedBy[].*", "^[©]|\\s?[,:;/=]?$", "")
   uniq("$i.location[]")
