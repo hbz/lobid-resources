@@ -177,7 +177,20 @@ do list(path:"110[012] ", "var":"$i")
           end
         end
         # name
-          paste("contribution[].$last.agent.label", "$i.a", "$i.b", join_char: ". ")
+          set_array("$i.@combinedLabel")  # check if GND concept has combined variant
+          copy_field("$i.a","$i.@combinedLabel.$append")
+          copy_field("$i.b","$i.@combinedLabel.$append")
+          join_field("$i.@combinedLabel", ". ")
+          if exists("$i.c")
+            paste("$i.@combinedLabel", "$i.@combinedLabel", "~, ", "$i.c", join_char:"")
+          end
+          if exists("$i.g")
+            paste("$i.@combinedLabel", "$i.@combinedLabel", "~ (", "$i.g", "~)", join_char:"")
+          end
+          if exists("$i.x")
+            paste("$i.@combinedLabel", "$i.@combinedLabel", "~/","$i.x")
+          end
+          copy_field("$i.@combinedLabel", "contribution[].$last.agent.label")
         # type
         set_array("contribution[].$last.agent.type[]","CorporateBody")
         # role
@@ -225,7 +238,20 @@ do list(path:"710[012] ", "var":"$i")
           end
         end
         # name
-          paste("contribution[].$last.agent.label", "$i.a", "$i.b", join_char: ". ")
+          set_array("$i.@combinedLabel")  # check if GND concept has combined variant
+          copy_field("$i.a","$i.@combinedLabel.$append")
+          copy_field("$i.b","$i.@combinedLabel.$append")
+          join_field("$i.@combinedLabel", ". ")
+          if exists("$i.c")
+            paste("$i.@combinedLabel", "$i.@combinedLabel", "~, ", "$i.c", join_char:"")
+          end
+          if exists("$i.g")
+            paste("$i.@combinedLabel", "$i.@combinedLabel", "~ (", "$i.g", "~)", join_char:"")
+          end
+          if exists("$i.x")
+            paste("$i.@combinedLabel", "$i.@combinedLabel", "~/","$i.x")
+          end
+          copy_field("$i.@combinedLabel", "contribution[].$last.agent.label")
         # type
         set_array("contribution[].$last.agent.type[]","CorporateBody")
         # role
