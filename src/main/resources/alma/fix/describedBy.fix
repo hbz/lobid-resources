@@ -87,23 +87,23 @@ do list(path: "040  ", "var":"$i")
 
 # TODO: 040  .d is repeatable but lobid modifiedBy is only a simple object. How to deal with this?
   do list(path:"$i.d", "var":"$j")
-      unless any_match("$j", "9999|0001")
-        unless exists("describedBy.modifiedBy.id")
-          copy_field("$j", "describedBy.modifiedBy.id")
-        end
-      end
+    unless exists("describedBy.modifiedBy.id")
+      copy_field("$j", "describedBy.modifiedBy.id")
+    end
   end
 
 end
 
 replace_all("describedBy.sourceOrganization.id", " ", "")
-unless any_match("describedBy.sourceOrganization.id","[A-Za-z]{2}-.*")
-  prepend("describedBy.sourceOrganization.id","DE-")
-end
 if any_match("describedBy.sourceOrganization.id",".*(hbz|HBZ).*")
   replace_all("describedBy.sourceOrganization.id", "^.*$", "DE-605")
 elsif any_match("describedBy.sourceOrganization.id",".*(dnb|DNB|GWDNB|GWDEB|GWDDB|DEDNM|DEDND).*")
   replace_all("describedBy.sourceOrganization.id", "^.*$", "DE-101")
+elsif any_match("describedBy.sourceOrganization.id", "^\\d{4}$")
+  lookup("describedBy.sourceOrganization.id", "picaCreatorId2Isil")
+end
+unless any_match("describedBy.sourceOrganization.id","[A-Za-z]{2}-.*")
+  prepend("describedBy.sourceOrganization.id","DE-")
 end
 prepend("describedBy.sourceOrganization.id", "http://lobid.org/organisations/")
 append("describedBy.sourceOrganization.id", "#!")
@@ -112,13 +112,15 @@ if exists("describedBy.sourceOrganization.id")
 end
 
 replace_all("describedBy.provider.id", " ", "")
-unless any_match("describedBy.provider.id","[A-Za-z]{2}-.*")
-  prepend("describedBy.provider.id","DE-")
-end
 if any_match("describedBy.provider.id",".*(hbz|HBZ).*")
   replace_all("describedBy.provider.id", "^.*$", "DE-605")
 elsif any_match("describedBy.provider.id",".*(dnb|DNB|GWDNB|GWDEB|GWDDB|DEDNM|DEDND).*")
   replace_all("describedBy.provider.id", "^.*$", "DE-101")
+elsif any_match("describedBy.provider.id", "^\\d{4}$")
+  lookup("describedBy.provider.id", "picaCreatorId2Isil")
+end
+unless any_match("describedBy.provider.id","[A-Za-z]{2}-.*")
+  prepend("describedBy.provider.id","DE-")
 end
 prepend("describedBy.provider.id", "http://lobid.org/organisations/")
 append("describedBy.provider.id", "#!")
@@ -128,13 +130,15 @@ end
 
 
 replace_all("describedBy.modifiedBy.id", " ", "")
-unless any_match("describedBy.modifiedBy.id","[A-Za-z]{2}-.*")
-  prepend("describedBy.modifiedBy.id","DE-")
-end
 if any_match("describedBy.modifiedBy.id",".*(hbz|HBZ).*")
   replace_all("describedBy.modifiedBy.id", "^.*$", "DE-605")
 elsif any_match("describedBy.modifiedBy.id",".*(dnb|DNB|GWDNB|GWDEB|GWDDB|DEDNM|DEDND).*")
   replace_all("describedBy.modifiedBy.id", "^.*$", "DE-101")
+elsif any_match("describedBy.modifiedBy.id", "^\\d{4}$")
+  lookup("describedBy.modifiedBy.id", "picaCreatorId2Isil")
+end
+unless any_match("describedBy.modifiedBy.id","[A-Za-z]{2}-.*")
+  prepend("describedBy.modifiedBy.id","DE-")
 end
 prepend("describedBy.modifiedBy.id", "http://lobid.org/organisations/")
 append("describedBy.modifiedBy.id", "#!")
