@@ -102,6 +102,15 @@ do list(path:"600?2|610?2|611?2|630?2|648?2|650?2|651?2", "var":"$i")
     call_macro("subjectLabel")
 end
 
+do list(path:"600?7|610?7|611?7|630?7|648?7|650?7|651?7", "var":"$i")
+  if any_match("$i.2",".*(mesh|MeSH).*")
+    set_array("subject[].$append.type[]","Concept")
+    add_field("subject[].$last.source.label","Medical Subject Headings")
+    add_field("subject[].$last.source.id","https://www.nlm.nih.gov/mesh/meshhome.html")
+    call_macro("subjectLabel")
+  end
+end
+
 do list(path:"600??", "var":"$i")
   if any_match("$i.0","^\\(DE-588\\)(.*)$")
     set_array("subject[].$append.type[]","Concept")
