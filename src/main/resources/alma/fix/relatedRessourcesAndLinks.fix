@@ -300,6 +300,15 @@ end
 
 set_array("inCollection[]")
 
+# hbz NZ
+
+do list(path:"MBD  ","var":"$i")
+  if any_equal("$i.M", "49HBZ_NETWORK")
+    add_field("inCollection[].$append.id", "http://lobid.org/organisations/DE-655#!")
+    add_field("inCollection[].$last.label", "hbz - Hochschulbibliothekszentrum des Landes Nordrhein-Westfalen, Netzwerkzone")
+  end
+end
+
 # zdb
 
 if exists("zdbId")
