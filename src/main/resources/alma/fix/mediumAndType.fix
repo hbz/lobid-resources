@@ -485,6 +485,8 @@ elsif exists("ismn[].1")
   add_field("type[].$append", "PublishedScore")
 elsif any_match("natureOfContent[].*.label", "Musikhandschrift")
   add_field("type[].$append", "PublishedScore")
+elsif any_match("@300a_mainExtend", ".*Partitur.*")
+  add_field("type[].$append", "PublishedScore")
 end
 
 # type: "Newspaper"
