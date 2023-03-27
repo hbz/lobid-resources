@@ -477,8 +477,9 @@ end
 # also if it has ismn
 # hbz mapping for 051. 0 m seems odd 008,18-19 ||? 052. none at all.
 
-
-if any_match("245[10]0.h", ".*Musikdruck.*")
+if any_match("@leaderPos06-07", "^[cd].")
+  add_field("type[].$append","PublishedScore")
+elsif any_match("245[10]0.h", ".*Musikdruck.*")
   add_field("type[].$append", "PublishedScore")
 elsif exists("ismn[].1")
   add_field("type[].$append", "PublishedScore")
