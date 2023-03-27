@@ -85,11 +85,9 @@ do list(path: "040  ", "var":"$i")
     end
   end
 
-# TODO: 040  .d is repeatable but lobid modifiedBy is only a simple object. How to deal with this?
+set_array("describedBy.modifiedBy[]")
   do list(path:"$i.d", "var":"$j")
-    unless exists("describedBy.modifiedBy.id")
-      copy_field("$j", "describedBy.modifiedBy.id")
-    end
+    copy_field("$j", "describedBy.modifiedBy[].$append.id")
   end
 
 end
@@ -129,19 +127,20 @@ if exists("describedBy.provider.id")
 end
 
 
-replace_all("describedBy.modifiedBy.id", " ", "")
-if any_match("describedBy.modifiedBy.id",".*(hbz|HBZ).*")
-  replace_all("describedBy.modifiedBy.id", "^.*$", "DE-605")
-elsif any_match("describedBy.modifiedBy.id",".*(dnb|DNB|GWDNB|GWDEB|GWDDB|DEDNM|DEDND).*")
-  replace_all("describedBy.modifiedBy.id", "^.*$", "DE-101")
-elsif any_match("describedBy.modifiedBy.id", "^\\d{4}$")
-  lookup("describedBy.modifiedBy.id", "picaCreatorId2Isil")
+replace_all("describedBy.modifiedBy[].*.id", " ", "")
+do list(path:"describedBy.modifiedBy[]","var":"$i")
+  if any_match("$i.id",".*(hbz|HBZ).*")
+    replace_all("$i.id", "^.*$", "DE-605")
+  elsif any_match("$i.id",".*(dnb|DNB|GWDNB|GWDEB|GWDDB|DEDNM|DEDND).*")
+    replace_all("$i.id", "^.*$", "DE-101")
+  elsif any_match("$i.id", "^\\d{4}$")
+    lookup("$i.id", "picaCreatorId2Isil")
+  end
+  unless any_match("$i.id","[A-Za-z]{2}-.*")
+    prepend("$i.id","DE-")
+  end
 end
-unless any_match("describedBy.modifiedBy.id","[A-Za-z]{2}-.*")
-  prepend("describedBy.modifiedBy.id","DE-")
-end
-prepend("describedBy.modifiedBy.id", "http://lobid.org/organisations/")
-append("describedBy.modifiedBy.id", "#!")
-if exists("describedBy.modifiedBy.id")
-	add_field("describedBy.modifiedBy.label","lobid Organisation")
-end
+prepend("describedBy.modifiedBy[].*.id", "http://lobid.org/organisations/")
+append("describedBy.modifiedBy[].*.id", "#!")
+
+uniq("describedBy.modifiedBy[]")
