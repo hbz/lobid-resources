@@ -545,7 +545,7 @@ end
 
 set_array("digiBibSubjectFacet[]")
 do list(path:"subject[]","var":"$i")
-  if any_equal("$i.type[]","Concept")
+  if any_match("$i.type[]",".*(Concept|Keyword).*")
     unless exists("$i.notation")
       copy_field("$i.label","digiBibSubjectFacet[].$append")
     end
