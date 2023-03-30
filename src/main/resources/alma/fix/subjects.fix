@@ -545,7 +545,7 @@ end
 
 set_array("subjectslabels[]")
 do list(path:"subject[]","var":"$i")
-  if any_match("$i.type[]",".*(Concept|Keyword).*")
+  if any_match("$i.type[]","Concept")
     unless exists("$i.notation")
       copy_field("$i.label","subjectslabels[].$append")
     end
