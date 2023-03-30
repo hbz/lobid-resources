@@ -73,7 +73,7 @@ set_array("subject[]")
 
 
 do list(path:"600?4|610?4|611?4|630?4|648?4|650?4|651?4|653??", "var":"$i")
-  set_array("subject[].$append.type[]","Keyword")
+  set_array("subject[].$append.type[]","Concept")
   add_field("subject[].$last.source.label","Freie Verschlagwortung")
   add_field("subject[].$last.source.id","https://www.wikidata.org/wiki/Q47524318")
   call_macro("subjectLabel")
