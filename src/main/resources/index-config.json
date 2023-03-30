@@ -511,10 +511,18 @@
                "type" : "nested",
                "include_in_parent" : "true",
                "properties": {
+                  "altLabel": {
+                     "type": "text",
+                     "analyzer" : "german_analyzer"
+                  },
                   "componentList": {
                      "type" : "nested",
                      "include_in_parent" : "true",
                      "properties": {
+                        "altLabel": {
+                           "type": "text",
+                           "analyzer" : "german_analyzer"
+                        },
                         "id": {
                            "type" : "keyword"
                         },
