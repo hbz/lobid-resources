@@ -543,13 +543,13 @@ do list(path:"spatial[]", "var":"$i")
   replace_all("$i.focus.geo.lat","^Point\\(.* (.*)\\)","$1")
 end
 
-set_array("digiBibSubjectFacet[]")
+set_array("subjectslabels[]")
 do list(path:"subject[]","var":"$i")
   if any_match("$i.type[]",".*(Concept|Keyword).*")
     unless exists("$i.notation")
-      copy_field("$i.label","digiBibSubjectFacet[].$append")
+      copy_field("$i.label","subjectslabels[].$append")
     end
   end
-  copy_field("$i.componentList[].*.label","digiBibSubjectFacet[].$append")
+  copy_field("$i.componentList[].*.label","subjectslabels[].$append")
 end
-uniq("digiBibSubjectFacet[]")
+uniq("subjectslabels[]")
