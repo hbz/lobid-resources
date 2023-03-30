@@ -642,13 +642,24 @@ end
 
 # type: "Book"
 
-
-if any_match("@leaderPos06-07", "^a[cdm]|t.")
-  add_field("type[].$append","Book")
-elsif any_match("006", "^[at].*")
-  add_field("type[].$append","Book")
-elsif any_match("natureOfContent[].*.label", ".*(Adressbuch|Anthologie|Atlas|Auktionskatalog|Ausstellungskatalog|Backbuch|Bestimmungsbuch|Bildband|Bilderbuch|Drehbuch|Jugendbuch|Jugendsachbuch|Kinderbuch|Kindersachbuch|Kochbuch|Künstlerbuch|Lehrbuch|Lehrerhandbuch|Lesebuch|Liederbuch|Sachbilderbuch|Schulbuch|Tagebuch|Telefonbuch|[Ww]örterbuch).*")
-  add_field("type[].$append", "Book")
+unless exists("zdbId")
+  unless any_match("@leaderPos06-07",".[abis]")
+    unless any_match("type[]","Game|ArchivedWebPage")
+      unless any_match("008",".{24}","\\|###")
+        unless any_match("medium[].*.label",".*(Video|Audio).*")
+          if any_match("@leaderPos06-07", "^a[cdm]|t.|[cdm]m")
+            add_field("type[].$append","Book")
+          elsif any_match("006", "^[at].*")
+            add_field("type[].$append","Book")
+          elsif any_match("natureOfContent[].*.label", ".*(Adressbuch|Anthologie|Atlas|Auktionskatalog|Ausstellungskatalog|Backbuch|Bestimmungsbuch|Bildband|Bilderbuch|Drehbuch|Jugendbuch|Jugendsachbuch|Kinderbuch|Kindersachbuch|Kochbuch|Künstlerbuch|Lehrbuch|Lehrerhandbuch|Lesebuch|Liederbuch|Sachbilderbuch|Schulbuch|Tagebuch|Telefonbuch|[Ww]örterbuch).*")
+            add_field("type[].$append", "Book")
+          elsif any_match("090  .h", "[abcdefgh]")
+            add_field("type[].$append","Book")
+          end
+        end
+      end
+    end
+  end
 end
 
 
