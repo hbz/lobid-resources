@@ -1,7 +1,5 @@
 copy_field("001","almaMmsId")
 
-paste("id", "~http://lobid.org/resources/", "001", "~#!", join_char: "")
-
 
 # 024 - Other Standard Identifier (R) Subfield: $a (NR) $2 (NR)
 # urn
@@ -113,3 +111,13 @@ replace_all("zdbId", "\\(DE-600\\)","")
 
 copy_field("almaMmsId","rpbId")
 lookup("rpbId","almaMmsId2rpbId",delete:"true")
+
+if exists("hbzId")
+  copy_field("hbzId","@id")
+elsif exists("zdbId")
+  copy_field("zdbId","@id")
+else
+  copy_field("almaMmsId","@id")
+end
+
+paste("id", "~http://lobid.org/resources/", "@id", "~#!", join_char: "")
