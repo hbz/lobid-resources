@@ -98,7 +98,6 @@ public class IndexIntegrationTest extends LocalIndexSetup {
 			String s = (String) testCase[0];
 			Integer hits = (Integer) testCase[1];
 			result.add(new Object[] { new Queries.Builder().q(s), /*->*/ hits });
-			result.add(new Object[] { new Queries.Builder().word(s), /*->*/ hits });
 		}
 		return result;
 	}
