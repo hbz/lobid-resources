@@ -25,7 +25,7 @@ do list(path:"ITM  ", "var": "$i")
   prepend("hasItem[].$last.heldBy.id", "http://lobid.org/organisations/")
   append("hasItem[].$last.heldBy.id","#!")
   # item id is constructed "http://lobid.org/items/[almaMmsId of the record]:[isil of the Owner]:[almaMmsId of the holding]#!"
-  paste("hasItem[].$last.id", "~http://lobid.org/items/","almaMmsId", "~:", "hasItem[].$last.heldBy.isil","~:", "$i.a","~#!", join_char: "")
+  paste("hasItem[].$last.id", "~http://lobid.org/items/","@id", "~:", "hasItem[].$last.heldBy.isil","~:", "$i.a","~#!", join_char: "")
 end
 
 do list(path: "HOL  ", "var": "$i")
@@ -55,7 +55,7 @@ do list(path: "HOL  ", "var": "$i")
       prepend("hasItem[].$last.heldBy.id", "http://lobid.org/organisations/")
       append("hasItem[].$last.heldBy.id","#!")
       # item id is constructed "http://lobid.org/items/[almaMmsId of the record]:[isil of the Owner]:[almaMmsId of the holding]#!"
-      paste("hasItem[].$last.id", "~http://lobid.org/items/","almaMmsId", "~:", "hasItem[].$last.heldBy.isil","~:","$i.8","~#!", join_char: "")
+      paste("hasItem[].$last.id", "~http://lobid.org/items/","@id", "~:", "hasItem[].$last.heldBy.isil","~:","$i.8","~#!", join_char: "")
     end
   end
 end
@@ -76,7 +76,7 @@ do list(path: "MBD  ", "var": "$i")
             prepend("hasItem[].$last.heldBy.id", "http://lobid.org/organisations/")
             append("hasItem[].$last.heldBy.id","#!")
             # item id is constructed "http://lobid.org/items/[almaMmsId of the record]:[isil of the Owner]:[almaMmsId of the holding]#!"
-            paste("hasItem[].$last.id", "~http://lobid.org/items/","almaMmsId", "~:", "hasItem[].$last.heldBy.isil","~:", "$i.i", "~#!", join_char: "")
+            paste("hasItem[].$last.id", "~http://lobid.org/items/","@id", "~:", "hasItem[].$last.heldBy.isil","~:", "$i.i", "~#!", join_char: "")
           end
         end
       end
@@ -103,7 +103,7 @@ do list(path:"POR  ", "var": "$i")
     prepend("hasItem[].$last.heldBy.id", "http://lobid.org/organisations/")
     append("hasItem[].$last.heldBy.id","#!")
     # item id is constructed "http://lobid.org/items/[almaMmsId of the record]:[isil of the Owner]:[almaMmsId of the holding]#!"
-    paste("hasItem[].$last.id", "~http://lobid.org/items/","almaMmsId", "~:", "hasItem[].$last.heldBy.isil","~:", "$i.a","~#!", join_char: "")
+    paste("hasItem[].$last.id", "~http://lobid.org/items/","@id", "~:", "hasItem[].$last.heldBy.isil","~:", "$i.a","~#!", join_char: "")
   end
   # entity for every POR  .A
   if exists ("$i.A")
@@ -123,7 +123,7 @@ do list(path:"POR  ", "var": "$i")
       prepend("hasItem[].$last.heldBy.id", "http://lobid.org/organisations/")
       append("hasItem[].$last.heldBy.id","#!")
       # item id is constructed "http://lobid.org/items/[almaMmsId of the record]:[isil of the Owner]:[almaMmsId of the holding]#!"
-      paste("hasItem[].$last.id", "~http://lobid.org/items/","almaMmsId", "~:", "hasItem[].$last.heldBy.isil","~:", "$i.a","~#!", join_char: "")
+      paste("hasItem[].$last.id", "~http://lobid.org/items/","@id", "~:", "hasItem[].$last.heldBy.isil","~:", "$i.a","~#!", join_char: "")
     end
   end
 end
