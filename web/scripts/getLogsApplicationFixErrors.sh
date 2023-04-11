@@ -4,9 +4,11 @@
 
 MAIL_TO=$(cat .secrets/MAIL_TO)
 MAIL_FROM=$(cat .secrets/MAIL_FROM)
-
-cd ../
-NEWEST_LOG_FN=$(ls application-log*.gz| tail -n1)
+if [ -z $1 ]; then
+	NEWEST_LOG_FN=$(ls ../application-log*.gz| tail -n1)
+	else
+	NEWEST_LOG_FN="../logs/application.log"
+fi
 echo $NEWEST_LOG_FN
 ERRORS=$(zgrep  -v 'replace_all("hbzId",' $NEWEST_LOG_FN | grep -B1 'Error while executing Fix expression')
 SHORTEND_ERRORS=$(echo "$ERRORS" | sed 's#.*001=\(.*\), .*#\1#g'| sed 's#, 0.*##g')
@@ -17,8 +19,9 @@ if [ -n "$ERRORS" ]; then
                 ERRORS_TAILED="Es sind zu viele ERRORS - es werden nur die letzten 30 Zeilen angezeigt von insgesamt $ERRORS_LINES_COUNT:"
                 SHORTEND_ERRORS="$ERRORS_TAILED $(echo "$SHORTEND_ERRORS"|tail -n50)"
         fi
+	echo "$SHORTEND_ERRORS"
         mail -s "FIX errors in Alma Fix ETL" "${MAIL_TO}" -a "From: ${MAIL_FROM}" << EOF
-Getriggert von ausgeführt in $(pwd)/scripts :
+Getriggert von ausgeführt in $(pwd)/scripts/getLogsApplicationFixErrors.sh :
 
 Achte auf das Datum der ERROR-Zeilen - evtl. sind das alte Fehler!
 
