@@ -56,7 +56,9 @@ replace_all("alternativeTitle[].*","<<|>>","")
 
 set_array("otherTitleInformation[]")
 copy_field("245??.b","otherTitleInformation[].$append")
-replace_all("otherTitleInformation[].*","\\s?[./]\\s?$","")
+unless any_match("otherTitleInformation[].*",".*\\.\\.\\.")
+  replace_all("otherTitleInformation[].*","\\s?[./]\\s?$","")
+end
 
 # 250 - Edition Statement (R) - Subfields: $a (NR)
 
