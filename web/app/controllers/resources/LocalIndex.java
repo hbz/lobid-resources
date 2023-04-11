@@ -44,24 +44,25 @@ import play.libs.Json;
  */
 public class LocalIndex {
 
-	private static String TEST_CONFIG =
+	private static final String TEST_CONFIG =
 			"../src/main/resources/index-config.json";
 	private static final String TEST_DATA = "../src/test/resources/jsonld";
 	private static final String TEST_DATA_ITEMS = TEST_DATA + "/items";
 
-    private Node node;
+	private Node node;
 	private Client client;
 	private static final URI CONTEXT_URI =
 			new File("conf/context.jsonld").toURI();
 
-    public LocalIndex() {
-        this(TEST_CONFIG,TEST_DATA,TEST_DATA_ITEMS);
-    }
-    /**
+	public LocalIndex() {
+		this(TEST_CONFIG,TEST_DATA,TEST_DATA_ITEMS);
+	}
+
+	/**
 	 * Create a new local index based on our test set
 	 */
 	public LocalIndex(String testConfig, String testData, String testDataItems) {
-            node = new Node(Settings.builder()
+		node = new Node(Settings.builder()
 				.put(Node.NODE_NAME_SETTING.getKey(), "testNode")
 				.put(NetworkModule.TRANSPORT_TYPE_KEY, NetworkModule.LOCAL_TRANSPORT)
 				.put(NetworkModule.HTTP_ENABLED.getKey(), false) //
@@ -78,9 +79,9 @@ public class LocalIndex {
 				.actionGet();
 		BulkRequestBuilder bulkRequest = client.prepareBulk();
 		readTestData(testConfig, new File(testData), bulkRequest);
-        if (testDataItems!=null) {
-            readTestData(testConfig, new File(testDataItems), bulkRequest);
-        }
+		if (testDataItems!=null) {
+			readTestData(testConfig, new File(testDataItems), bulkRequest);
+		}
 		final List<BulkItemResponse> failed = new ArrayList<>();
 		if (bulkRequest.numberOfActions() > 0)
 			runBulkRequest(bulkRequest, failed);

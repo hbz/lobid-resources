@@ -16,14 +16,14 @@ import controllers.resources.Search;
 @SuppressWarnings("javadoc")
 public abstract class LocalIndexSetup {
 
-    private static LocalIndex index;
-    private static String TEST_CONFIG =
-        "../src/main/resources/alma/index-config.json";
-    private static String TEST_DATA = "../src/test/resources/alma-fix";
+	private static LocalIndex index;
+	private static final String TEST_CONFIG =
+		"../src/main/resources/alma/index-config.json";
+	private static final String TEST_DATA = "../src/test/resources/alma-fix";
 
 	@BeforeClass
 	public static void setup() {
-        index = new LocalIndex(TEST_CONFIG,TEST_DATA,null);
+		index = new LocalIndex(TEST_CONFIG,TEST_DATA,null);
 		Search.elasticsearchClient = index.getNode().client();
 	}
 
