@@ -1,4 +1,4 @@
-/* Copyright 2015-2019 Fabian Steeg, hbz. Licensed under the EPL 2.0 */
+/* Copyright 2015-2023 Fabian Steeg, hbz. Licensed under the EPL 2.0 */
 
 package controllers.resources;
 
@@ -24,10 +24,8 @@ import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.join.aggregations.ChildrenAggregationBuilder;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
-import org.elasticsearch.search.aggregations.AggregationBuilder;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
 import org.elasticsearch.search.aggregations.Aggregations;
 import org.elasticsearch.search.sort.SortBuilders;
@@ -54,7 +52,6 @@ public class Search {
 			Application.CONFIG.getString("index.type.resource");
 
 	static final String OWNER_ID_FIELD = "hasItem.heldBy.id";
-	private static final String OWNER_AGGREGATION_FIELD = "heldBy.id";
 	private static final String SPATIAL_LABEL_FIELD = "spatial.label.raw";
 	static final String SPATIAL_GEO_FIELD = "spatial.focus.geo";
 	private static final String SPATIAL_ID_FIELD = "spatial.id";
@@ -266,14 +263,7 @@ public class Search {
 					Arrays.asList(TOPIC_AGGREGATION, SPATIAL_ID_FIELD, SUBJECT_ID_FIELD)
 							.contains(field) ? 9999
 									: (field.equals(ISSUED_FIELD) ? 1000 : 100);
-			if (field.equals(OWNER_AGGREGATION)) {
-				AggregationBuilder ownerAggregation =
-						new ChildrenAggregationBuilder(Application.OWNER_AGGREGATION,
-								TYPE_ITEM)
-										.subAggregation(AggregationBuilders.terms(field)
-												.field(OWNER_AGGREGATION_FIELD).size(size));
-				searchRequest.addAggregation(ownerAggregation);
-			} else if (field.equals(SPATIAL_GEO_FIELD)) {
+			if (field.equals(SPATIAL_GEO_FIELD)) {
 				searchRequest
 						.addAggregation(AggregationBuilders.geohashGrid(SPATIAL_GEO_FIELD)
 								.field(SPATIAL_GEO_FIELD).precision(9));

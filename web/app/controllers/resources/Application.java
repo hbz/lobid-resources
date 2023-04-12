@@ -1,4 +1,4 @@
-/* Copyright 2014-2017 Fabian Steeg, hbz. Licensed under the EPL 2.0 */
+/* Copyright 2014-2023 Fabian Steeg, hbz. Licensed under the EPL 2.0 */
 
 package controllers.resources;
 
@@ -89,7 +89,7 @@ public class Application extends Controller {
 	/** The internal ES field for the medium facet. */
 	public static final String MEDIUM_FIELD = "medium.id";
 	/** The internal ES aggregation name for the owner facet. */
-	public static final String OWNER_AGGREGATION = "owner";
+	public static final String OWNER_AGGREGATION = "hasItem.heldBy.isil";
 	/** The internal ES field for the topics. */
 	public static final String TOPIC_AGGREGATION = "subject.label.raw";
 	/** The internal ES field for subjects. */
