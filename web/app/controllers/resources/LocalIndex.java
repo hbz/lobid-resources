@@ -38,7 +38,7 @@ import play.libs.Json;
 
 /**
  * Set up a local Elasticsearch index for testing
- * 
+ *
  * @author fsteeg
  *
  */
@@ -54,10 +54,14 @@ public class LocalIndex {
 	private static final URI CONTEXT_URI =
 			new File("conf/context.jsonld").toURI();
 
+	public LocalIndex() {
+		this(TEST_CONFIG,TEST_DATA,TEST_DATA_ITEMS);
+	}
+
 	/**
 	 * Create a new local index based on our test set
 	 */
-	public LocalIndex() {
+	public LocalIndex(String testConfig, String testData, String testDataItems) {
 		node = new Node(Settings.builder()
 				.put(Node.NODE_NAME_SETTING.getKey(), "testNode")
 				.put(NetworkModule.TRANSPORT_TYPE_KEY, NetworkModule.LOCAL_TRANSPORT)
@@ -74,8 +78,10 @@ public class LocalIndex {
 		client.admin().cluster().prepareHealth().setWaitForYellowStatus().execute()
 				.actionGet();
 		BulkRequestBuilder bulkRequest = client.prepareBulk();
-		readTestData(new File(TEST_DATA), bulkRequest);
-		readTestData(new File(TEST_DATA_ITEMS), bulkRequest);
+		readTestData(testConfig, new File(testData), bulkRequest);
+		if (testDataItems!=null) {
+			readTestData(testConfig, new File(testDataItems), bulkRequest);
+		}
 		final List<BulkItemResponse> failed = new ArrayList<>();
 		if (bulkRequest.numberOfActions() > 0)
 			runBulkRequest(bulkRequest, failed);
@@ -100,7 +106,7 @@ public class LocalIndex {
 		}
 	}
 
-	private void readTestData(File sampleDataRoot,
+	private void readTestData(final String testConfig, File sampleDataRoot,
 			BulkRequestBuilder bulkRequest) {
 		Arrays.asList(sampleDataRoot.listFiles(f -> f.getAbsolutePath().endsWith("json"))).forEach((file) -> {
 			try {
@@ -117,7 +123,7 @@ public class LocalIndex {
 						Json.fromJson(Json.parse(data), Map.class);
 				map.put("@context", CONTEXT_URI);
 				final IndexRequestBuilder requestBuilder =
-						createRequestBuilder(type, id, parent, map);
+						createRequestBuilder(testConfig, type, id, parent, map);
 				bulkRequest.add(requestBuilder);
 			} catch (Exception e) {
 				Logger.error("Error reading file {}: {}", file, e.getMessage());
@@ -148,23 +154,23 @@ public class LocalIndex {
 		}
 	}
 
-	private IndexRequestBuilder createRequestBuilder(final String type, String id,
+	private IndexRequestBuilder createRequestBuilder(final String testConfig, final String type, String id,
 			String parent, final Map<String, Object> map) {
 		final IndicesAdminClient admin = client.admin().indices();
 		if (!admin.prepareExists(Search.INDEX_NAME).execute().actionGet()
 				.isExists()) {
 			admin.prepareCreate(Search.INDEX_NAME)
-					.setSource(config(), XContentType.JSON).execute().actionGet();
+					.setSource(config(testConfig), XContentType.JSON).execute().actionGet();
 		}
 		final IndexRequestBuilder request =
 				client.prepareIndex(Search.INDEX_NAME, type, id).setSource(map);
 		return parent.isEmpty() ? request : request.setParent(parent);
 	}
 
-	private static String config() {
+	private static String config(final String testConfig) {
 		String res = null;
 		try {
-			final InputStream config = new FileInputStream(TEST_CONFIG);
+			final InputStream config = new FileInputStream(testConfig);
 			try (InputStreamReader reader = new InputStreamReader(config, "UTF-8")) {
 				res = CharStreams.toString(reader);
 			}

@@ -75,60 +75,60 @@ add_field("describedBy.license[].$last.label","Creative Commons-Lizenz CC0 1.0 U
 do list(path: "040  ", "var":"$i")
 
   do list(path:"$i.a","var":"$j")
-    unless exists("describedBy.sourceOrganization.id")
-      copy_field("$j", "describedBy.sourceOrganization.id")
+    unless exists("describedBy.resultOf.object.sourceOrganization.id")
+      copy_field("$j", "describedBy.resultOf.object.sourceOrganization.id")
     end
   end
   do list(path:"$i.c","var":"$j")
-    unless exists("describedBy.provider.id")
-      copy_field("$j", "describedBy.provider.id")
+    unless exists("describedBy.resultOf.object.provider.id")
+      copy_field("$j", "describedBy.resultOf.object.provider.id")
     end
   end
 
-set_array("describedBy.modifiedBy[]")
+set_array("describedBy.resultOf.object.modifiedBy[]")
   do list(path:"$i.d", "var":"$j")
-    copy_field("$j", "describedBy.modifiedBy[].$append.id")
+    copy_field("$j", "describedBy.resultOf.object.modifiedBy[].$append.id")
   end
 
 end
 
-replace_all("describedBy.sourceOrganization.id", " ", "")
-if any_match("describedBy.sourceOrganization.id",".*(hbz|HBZ).*")
-  replace_all("describedBy.sourceOrganization.id", "^.*$", "DE-605")
-elsif any_match("describedBy.sourceOrganization.id",".*(dnb|DNB|GWDNB|GWDEB|GWDDB|DEDNM|DEDND).*")
-  replace_all("describedBy.sourceOrganization.id", "^.*$", "DE-101")
-elsif any_match("describedBy.sourceOrganization.id", "^\\d{4}$")
-  lookup("describedBy.sourceOrganization.id", "picaCreatorId2Isil")
+replace_all("describedBy.resultOf.object.sourceOrganization.id", " ", "")
+if any_match("describedBy.resultOf.object.sourceOrganization.id",".*(hbz|HBZ).*")
+  replace_all("describedBy.resultOf.object.sourceOrganization.id", "^.*$", "DE-605")
+elsif any_match("describedBy.resultOf.object.sourceOrganization.id",".*(dnb|DNB|GWDNB|GWDEB|GWDDB|DEDNM|DEDND).*")
+  replace_all("describedBy.resultOf.object.sourceOrganization.id", "^.*$", "DE-101")
+elsif any_match("describedBy.resultOf.object.sourceOrganization.id", "^\\d{4}$")
+  lookup("describedBy.resultOf.object.sourceOrganization.id", "picaCreatorId2Isil")
 end
-unless any_match("describedBy.sourceOrganization.id","[A-Za-z]{2}-.*")
-  prepend("describedBy.sourceOrganization.id","DE-")
+unless any_match("describedBy.resultOf.object.sourceOrganization.id","[A-Za-z]{2}-.*")
+  prepend("describedBy.resultOf.object.sourceOrganization.id","DE-")
 end
-prepend("describedBy.sourceOrganization.id", "http://lobid.org/organisations/")
-append("describedBy.sourceOrganization.id", "#!")
-if exists("describedBy.sourceOrganization.id")
-	add_field("describedBy.sourceOrganization.label","lobid Organisation")
-end
-
-replace_all("describedBy.provider.id", " ", "")
-if any_match("describedBy.provider.id",".*(hbz|HBZ).*")
-  replace_all("describedBy.provider.id", "^.*$", "DE-605")
-elsif any_match("describedBy.provider.id",".*(dnb|DNB|GWDNB|GWDEB|GWDDB|DEDNM|DEDND).*")
-  replace_all("describedBy.provider.id", "^.*$", "DE-101")
-elsif any_match("describedBy.provider.id", "^\\d{4}$")
-  lookup("describedBy.provider.id", "picaCreatorId2Isil")
-end
-unless any_match("describedBy.provider.id","[A-Za-z]{2}-.*")
-  prepend("describedBy.provider.id","DE-")
-end
-prepend("describedBy.provider.id", "http://lobid.org/organisations/")
-append("describedBy.provider.id", "#!")
-if exists("describedBy.provider.id")
-	add_field("describedBy.provider.label","lobid Organisation")
+prepend("describedBy.resultOf.object.sourceOrganization.id", "http://lobid.org/organisations/")
+append("describedBy.resultOf.object.sourceOrganization.id", "#!")
+if exists("describedBy.resultOf.object.sourceOrganization.id")
+	add_field("describedBy.resultOf.object.sourceOrganization.label","lobid Organisation")
 end
 
+replace_all("describedBy.resultOf.object.provider.id", " ", "")
+if any_match("describedBy.resultOf.object.provider.id",".*(hbz|HBZ).*")
+  replace_all("describedBy.resultOf.object.provider.id", "^.*$", "DE-605")
+elsif any_match("describedBy.resultOf.object.provider.id",".*(dnb|DNB|GWDNB|GWDEB|GWDDB|DEDNM|DEDND).*")
+  replace_all("describedBy.resultOf.object.provider.id", "^.*$", "DE-101")
+elsif any_match("describedBy.resultOf.object.provider.id", "^\\d{4}$")
+  lookup("describedBy.resultOf.object.provider.id", "picaCreatorId2Isil")
+end
+unless any_match("describedBy.resultOf.object.provider.id","[A-Za-z]{2}-.*")
+  prepend("describedBy.resultOf.object.provider.id","DE-")
+end
+prepend("describedBy.resultOf.object.provider.id", "http://lobid.org/organisations/")
+append("describedBy.resultOf.object.provider.id", "#!")
+if exists("describedBy.resultOf.object.provider.id")
+	add_field("describedBy.resultOf.object.provider.label","lobid Organisation")
+end
 
-replace_all("describedBy.modifiedBy[].*.id", " ", "")
-do list(path:"describedBy.modifiedBy[]","var":"$i")
+
+replace_all("describedBy.resultOf.object.modifiedBy[].*.id", " ", "")
+do list(path:"describedBy.resultOf.object.modifiedBy[]","var":"$i")
   if any_match("$i.id",".*(hbz|HBZ).*")
     replace_all("$i.id", "^.*$", "DE-605")
   elsif any_match("$i.id",".*(dnb|DNB|GWDNB|GWDEB|GWDDB|DEDNM|DEDND).*")
@@ -140,7 +140,7 @@ do list(path:"describedBy.modifiedBy[]","var":"$i")
     prepend("$i.id","DE-")
   end
 end
-prepend("describedBy.modifiedBy[].*.id", "http://lobid.org/organisations/")
-append("describedBy.modifiedBy[].*.id", "#!")
+prepend("describedBy.resultOf.object.modifiedBy[].*.id", "http://lobid.org/organisations/")
+append("describedBy.resultOf.object.modifiedBy[].*.id", "#!")
 
-uniq("describedBy.modifiedBy[]")
+uniq("describedBy.resultOf.object.modifiedBy[]")

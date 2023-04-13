@@ -479,6 +479,13 @@ end
 
 # TODO: HT012338254 should be legislation too but 008 seems to be not set appropriately. Could add w - Law reports and digests ?
 
+# type: "MusicalRecording"
+if any_match("@leaderPos06-07", "j.")  # Pos24/25/26/27 # What about g (legal article)?
+  add_field("type[].$append","MusicalRecording")
+elsif any_match("006", "^j.*") # Pos00
+  add_field("type[].$append","MusicalRecording")
+end
+
 
 # type: "MultiVolumeBook"
 
