@@ -89,7 +89,7 @@ public class Application extends Controller {
 	/** The internal ES field for the medium facet. */
 	public static final String MEDIUM_FIELD = "medium.id";
 	/** The internal ES aggregation name for the owner facet. */
-	public static final String OWNER_AGGREGATION = "hasItem.heldBy.isil";
+	public static final String OWNER_AGGREGATION = "hasItem.heldBy.id";
 	/** The internal ES field for the topics. */
 	public static final String TOPIC_AGGREGATION = "subject.label.raw";
 	/** The internal ES field for subjects. */
