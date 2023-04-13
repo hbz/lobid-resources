@@ -70,9 +70,6 @@ function indexWhenGeoIndexOk() {
 }
 
 # do this only once:
-git fetch
-git checkout $BRANCH
-git pull origin $BRANCH
 mvn clean assembly:assembly -DdescriptorId=jar-with-dependencies -DskipTests=true -DskipIntegrationTests
 indexWhenGeoIndexOk
 
