@@ -32,6 +32,7 @@ import com.google.common.base.Joiner;
 
 import controllers.resources.Queries;
 import controllers.resources.Search;
+import play.api.Logger;
 import play.libs.Json;
 import play.mvc.Http;
 import play.mvc.Result;
@@ -67,10 +68,9 @@ public class IntegrationTests extends LocalIndexSetup {
 					terms.getBuckets().stream().map(Bucket::getKeyAsString);
 			Stream<Long> counts =
 					terms.getBuckets().stream().map(Bucket::getDocCount);
-			assertThat(values.collect(Collectors.toList())).contains(
-					"BibliographicResource", "Book", "Game", "Miscellaneous",
-					"Periodical");
-			assertThat(counts.collect(Collectors.toList())).excludes(0);
+            assertThat(values.collect(Collectors.toList())).contains("BibliographicResource", "Book", "Bibliography",
+                "EditedVolume", "Game", "Image", "Periodical", "Series");
+            assertThat(counts.collect(Collectors.toList())).excludes(0);
 		});
 	}
 
