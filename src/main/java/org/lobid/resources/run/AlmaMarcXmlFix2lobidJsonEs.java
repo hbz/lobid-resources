@@ -48,7 +48,7 @@ public class AlmaMarcXmlFix2lobidJsonEs {
     private static boolean updateDonotCreateIndex;
     private static String fixFileName = "src/main/resources/alma/alma.fix";
 
-    private static final String INDEXCONFIG = "index-config.json";
+    private static final String INDEXCONFIG = "alma/index-config.json";
     private static final HashMap<String, String> fixVariables = new HashMap<>();
     private static String mailtoInfo = "localhost";
     private static String mailtoError = "localhost";
