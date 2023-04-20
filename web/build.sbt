@@ -23,7 +23,7 @@ libraryDependencies ++= Seq(
 
 resolvers += "Local Maven Repository" at Path.userHome.asFile.toURI.toURL + ".m2/repository"
 
-libraryDependencies += "org.lobid" % "lobid-resources" % "0.4.3-SNAPSHOT" changing()
+libraryDependencies += "org.lobid" % "lobid-resources" % "0.5.0-SNAPSHOT" changing()
 
 lazy val root = (project in file(".")).enablePlugins(PlayJava)
 
