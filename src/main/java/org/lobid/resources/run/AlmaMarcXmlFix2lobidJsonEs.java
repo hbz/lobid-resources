@@ -80,7 +80,7 @@ public class AlmaMarcXmlFix2lobidJsonEs {
             public void run() {
                 LOG.info(String.format("Running thread: %s", getName()));
                 String usage =
-                    "<input path>%s<index name>%s<index alias suffix ('NOALIAS' sets it empty)>%s<node>%s<cluster>%s<'update' (will take latest index), 'exact' (will take ->'index name' even when no timestamp is suffixed) , else create new index with actual timestamp>%s<optional: filename of a list of files which shall be ETLed>%s<optional: filename of morph>%s";
+                    "<input path>%s<index name>%s<index alias suffix ('NOALIAS' sets it empty)>%s<node>%s<cluster>%s<'update' (will take latest index), 'exact' (will take ->'index name' even when no timestamp is suffixed) , else create new index with actual timestamp>%s<optional: filename of a list of files which shall be ETLed>%s<optional: filename of fix>%s";
                 String inputPath = args[0];
                 LOG.info(String.format("inputFile(s)=%s", inputPath));
                 indexName = args[1];
