@@ -494,7 +494,7 @@ public class Application extends Controller {
 
 	static String idSearchResult(final String id) {
 		JsonNode result;
-		String idSearch = "hbzId:" + id;
+		String idSearch = String.format("(hbzId:%s OR zdbId:%s)", id, id);
 		Logger.debug("Could not get resource via index ID, trying search: '{}'",
 				idSearch);
 		QueryBuilder idQuery = new Queries.Builder().q(idSearch).build();
