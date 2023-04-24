@@ -2,7 +2,9 @@
 add_field("@context","http://lobid.org/resources/context.jsonld")
 
 # Add maps
-include ("./fix/maps.fix")
+do once("maps")
+  include ("./fix/maps.fix")
+end
 include ("./fix/identifiers.fix")
 include ("./fix/titleRelatedFields.fix")
 include ("./fix/describedBy.fix")
