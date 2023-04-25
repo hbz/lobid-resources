@@ -32,6 +32,7 @@ import com.google.common.base.Joiner;
 
 import controllers.resources.Queries;
 import controllers.resources.Search;
+import play.api.Logger;
 import play.libs.Json;
 import play.mvc.Http;
 import play.mvc.Result;
@@ -67,10 +68,9 @@ public class IntegrationTests extends LocalIndexSetup {
 					terms.getBuckets().stream().map(Bucket::getKeyAsString);
 			Stream<Long> counts =
 					terms.getBuckets().stream().map(Bucket::getDocCount);
-			assertThat(values.collect(Collectors.toList())).contains(
-					"BibliographicResource", "Book", "Thesis", "Sonstige",
-					"Article");
-			assertThat(counts.collect(Collectors.toList())).excludes(0);
+            assertThat(values.collect(Collectors.toList())).contains("BibliographicResource", "Book", "Bibliography",
+                "EditedVolume", "Game", "Image", "Periodical", "Series");
+            assertThat(counts.collect(Collectors.toList())).excludes(0);
 		});
 	}
 
@@ -101,7 +101,7 @@ public class IntegrationTests extends LocalIndexSetup {
 	private static void bulkRequestWith(String param) {
 		running(testServer(3333), () -> {
 			Result result =
-					route(fakeRequest(GET, "/resources/search?q=buch&format=" + param));
+					route(fakeRequest(GET, "/resources/search?q=theorie&format=" + param));
 			assertThat(result).isNotNull();
 			assertThat(result.contentType()).isEqualTo("application/x-jsonlines");
 			String text = Helpers.contentAsString(result);
@@ -115,7 +115,7 @@ public class IntegrationTests extends LocalIndexSetup {
 	public void sizeRequest() {
 		running(testServer(3333), () -> {
 			Search index = new Search.Builder()
-					.query(new Queries.Builder().q("hbzId:TT050409948").build()).build();
+					.query(new Queries.Builder().q("hbzId:HT020202475").build()).build();
 			Long hits = index.totalHits();
 			assertThat(hits).isGreaterThan(0);
 		});
@@ -123,22 +123,22 @@ public class IntegrationTests extends LocalIndexSetup {
 
 	@Test
 	public void sizeRequestOwnerFull() {
-		ownerTest("http://lobid.org/organisations/DE-260#!");
+		ownerTest("http://lobid.org/organisations/DE-290#!");
 	}
 
 	@Test
 	public void sizeRequestOwnerAbout() {
-		ownerTest("http://lobid.org/organisations/DE-260");
+		ownerTest("http://lobid.org/organisations/DE-290");
 	}
 
 	@Test
 	public void sizeRequestOwnerShort() {
-		ownerTest("DE-260");
+		ownerTest("DE-290");
 	}
 
 	@Test
 	public void sizeRequestOwnerShortMulti() {
-		ownerTest("DE-260,DE-290");
+		ownerTest("DE-5,DE-290");
 	}
 
 	private static void ownerTest(String id) {
@@ -153,10 +153,9 @@ public class IntegrationTests extends LocalIndexSetup {
 	public void agentRequest() {
 		running(testServer(3333), () -> {
 			for (String s : Arrays.asList("Westfalen",
-					"https://d-nb.info/gnd/5265186-1", //
-					"Reulecke, Jürgen (1940-)", //
-					"Reiff, Johann J. (1793-1864)", //
-					"https://d-nb.info/gnd/5265186-1,https://d-nb.info/gnd/5265186-1,AND")) {
+                    "120195364", //
+					"Breuer, Stefan (1948-)", //
+					"https://d-nb.info/gnd/120195364,AND")) {
 				assertThat(new Search.Builder()
 						.query(new Queries.Builder().agent(s).build()).build().totalHits())
 								.as(s).isGreaterThanOrEqualTo(1);
@@ -168,9 +167,9 @@ public class IntegrationTests extends LocalIndexSetup {
 	public void responseJsonFilterGet() {
 		running(testServer(3333), () -> {
 			Search index = new Search.Builder().build();
-			JsonNode hit = index.getResource("TT050409948").getResult();
+			JsonNode hit = index.getResource("990363946050206441").getResult();
 			assertThat(hit.isObject()).as("hit is an object").isTrue();
-			assertThat(hit.findValue("hbzId").asText()).isEqualTo("TT050409948");
+			assertThat(hit.findValue("hbzId").asText()).isEqualTo("HT020202475");
 			Search.HIDE_FIELDS.forEach(field -> assertThat(hit.get(field)).isNull());
 		});
 	}
@@ -205,7 +204,7 @@ public class IntegrationTests extends LocalIndexSetup {
 							.size(100).build().queryResources();
 			Search nwbib = new Search.Builder()
 					.query(new Queries.Builder().q("*")
-							.filter("inCollection.id:HT014176012").build())
+							.filter("inCollection.id:ZDB-197-MSE").build())
 					.size(100).build().queryResources();
 			assertThat(all.getTotal()).isGreaterThan(nwbib.getTotal());
 		});

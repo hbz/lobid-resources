@@ -28,9 +28,9 @@ import play.test.Helpers;
 
 /**
  * Test customizable aggregations.
- * 
+ *
  * See https://github.com/hbz/lobid-resources/pull/243
- * 
+ *
  * @author Fabian Steeg (fsteeg)
  */
 @SuppressWarnings("javadoc")

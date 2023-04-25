@@ -1,6 +1,6 @@
 name := "lobid-resources-web"
 
-version := "0.2.2-SNAPSHOT"
+version := "0.3.0-SNAPSHOT"
 
 scalaVersion := "2.11.11"
 
@@ -23,7 +23,7 @@ libraryDependencies ++= Seq(
 
 resolvers += "Local Maven Repository" at Path.userHome.asFile.toURI.toURL + ".m2/repository"
 
-libraryDependencies += "org.lobid" % "lobid-resources" % "0.5.0-SNAPSHOT" changing()
+libraryDependencies += "org.lobid" % "lobid-resources" % "0.6.0-SNAPSHOT" changing()
 
 lazy val root = (project in file(".")).enablePlugins(PlayJava)
 

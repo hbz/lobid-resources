@@ -45,7 +45,7 @@ import play.libs.Json;
 public class LocalIndex {
 
 	private static final String TEST_CONFIG =
-			"../src/main/resources/index-config.json";
+			"../src/main/resources/almafix/index-config.json";
 	private static final String TEST_DATA = "../src/test/resources/jsonld";
 	private static final String TEST_DATA_ITEMS = TEST_DATA + "/items";
 
