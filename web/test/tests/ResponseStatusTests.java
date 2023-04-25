@@ -35,8 +35,11 @@ public class ResponseStatusTests extends LocalIndexSetup {
 		// @formatter:off
 		return Arrays.asList(new Object[][] {
 			{ "/resources/99371123630706441", /*->*/ Status.OK },
+			{ "/items/99371123630706441:DE-Hag4:5388892840006461#!", /*->*/ Status.SEE_OTHER },
 			{ "/resources/123", /*->*/ Status.NOT_FOUND },
+			{ "/items/123", /*->*/ Status.SEE_OTHER },
 			{ "/resources/123?format=html", /*->*/ Status.NOT_FOUND },
+			{ "/items/123?format=html", /*->*/ Status.SEE_OTHER },
 			{ "/resources/search?q=*", /*->*/ Status.OK },
 			{ "/resources/search?q=test", /*->*/ Status.OK },
 			{ "/resources/search?word=*", /*->*/ Status.OK },

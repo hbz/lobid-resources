@@ -47,7 +47,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.ImmutableMap;
-import com.google.gdata.util.common.base.PercentEscaper;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 
@@ -67,7 +66,6 @@ import play.test.Helpers;
 import views.html.api;
 import views.html.dataset;
 import views.html.details;
-import views.html.details_item;
 import views.html.index;
 import views.html.query;
 import views.html.rss;
@@ -519,35 +517,8 @@ public class Application extends Controller {
 	 * @return The details for the item with the given ID.
 	 */
 	public static Promise<Result> item(final String id, String format) {
-		String responseFormat = Accept.formatFor(format, request().acceptedTypes());
-		String cacheId = String.format("item(%s,%s)", id, responseFormat);
-		@SuppressWarnings("unchecked")
-		Promise<Result> cachedResult = (Promise<Result>) Cache.get(cacheId);
-		if (cachedResult != null)
-			return cachedResult;
-		Promise<Result> promise = Promise.promise(() -> {
-			/* @formatter:off
-			 * Escape item IDs for index lookup the same way as during transformation, see:
-			 * https://github.com/hbz/lobid-resources/blob/master/src/main/resources/morph-hbz01-to-lobid.xml#L781
-			 * https://github.com/hbz/lobid-resources/blob/master/src/main/java/org/lobid/resources/UrlEscaper.java#L31
-			 * @formatter:on
-			 */
-			JsonNode itemJson = new Search.Builder().build()
-					.getItem(
-							new PercentEscaper(PercentEscaper.SAFEPATHCHARS_URLENCODER, false)
-									.escape(id))
-					.getResult();
-			boolean htmlRequested =
-					responseFormat.equals(Accept.Format.HTML.queryParamString);
-			if (htmlRequested) {
-				return itemJson == null ? notFound(details_item.render(id, ""))
-						: ok(details_item.render(id, itemJson.toString()));
-			}
-			return itemJson == null ? notFound("\"Not found: " + id + "\"")
-					: responseFor(itemJson, responseFormat);
-		});
-		cacheOnRedeem(cacheId, promise, ONE_DAY);
-		return promise;
+		return Promise.pure(redirect(routes.Application.resource( // 303, See Other
+				id.contains(":") ? id.substring(0, id.indexOf(':')) : id, format)));
 	}
 
 	private static void cacheOnRedeem(final String cacheId,
