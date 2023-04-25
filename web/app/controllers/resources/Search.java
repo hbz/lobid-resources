@@ -180,28 +180,6 @@ public class Search {
 	}
 
 	/**
-	 * @param id The item ID to use for an Elasticsearch GET request
-	 * @return This index, get results via {@link #getResult()} and
-	 *         {@link #getTotal()}
-	 */
-	public Search getItem(String id) {
-		return withClient((Client client) -> {
-			SearchRequestBuilder requestBuilder = client.prepareSearch(INDEX_NAME)
-					.setSearchType(SearchType.DFS_QUERY_THEN_FETCH).setTypes(TYPE_ITEM)
-					.setQuery(QueryBuilders.idsQuery().addIds(id)).setSize(1);
-			SearchResponse response = requestBuilder.execute().actionGet();
-			if (response.getHits().getTotalHits() > 0) {
-				String sourceAsString = response.getHits().getAt(0).getSourceAsString();
-				result = Json.parse(sourceAsString);
-				total = 1;
-			} else {
-				Logger.warn("No item found for ID {}", id);
-			}
-			return this;
-		});
-	}
-
-	/**
 	 * @param id The resource ID to use for an Elasticsearch GET request
 	 * @return This index, get results via {@link #getResult()} and
 	 *         {@link #getTotal()}

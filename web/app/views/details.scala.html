@@ -26,7 +26,7 @@
     @main("", if( (doc\\"title").isEmpty) "lobid-resources - Vollanzeige" else (doc\\"title")(0).asOpt[String].getOrElse(q)) {
       <h1>@((doc\"title").asOpt[String].getOrElse(q))@for(corporateBodyForTitle <- (doc \ "corporateBodyForTitle").asOpt[Seq[String]]){. @corporateBodyForTitle(0)} @for(subTitle <- (doc \ "otherTitleInformation").asOpt[Seq[String]]){<br/><small>@subTitle(0)</small>}</h1>
       <div class="row" id="search-results">
-      @defining(Lobid.items(doc.toString)) { items =>
+      @defining((Lobid.items(doc.toString), Lobid.itemDetails(doc.toString))) { case (items, itemDetails) =>
         @defining(!(doc\\"containedIn").isEmpty && (doc\"type").toString.contains("Article")){superordination =>
           <div class="col-md-@if(items.isEmpty && !doc.toString.contains("fulltextOnline") && !superordination){12} else {8}">
             <dl>
@@ -72,7 +72,7 @@
              @defining(items.size){num =>
              <dt>Bestand in @num Bibliothek@if(num>1){en}:</dt>
              }
-             <dd>@tags.items_map(items)</dd>
+             <dd>@tags.items_map(items, itemDetails)</dd>
             }
             </dl>
           </div>

@@ -332,6 +332,24 @@ public class Lobid {
 		return term.contains("lobid.org/organisation");
 	}
 
+	/**
+	 * @param doc The result JSON doc
+	 * @return A mapping of item IDs (URIs) to item details (JSON strings)
+	 */
+	public static Map<String, String> itemDetails(String doc) {
+		JsonNode items = Json.parse(doc).findValue("hasItem");
+		Map<String, String> result = new HashMap<>();
+		if (items != null && (items.isArray() || items.isTextual())) {
+			Iterator<JsonNode> elements =
+					items.isArray() ? items.elements() : Arrays.asList(items).iterator();
+			while (elements.hasNext()) {
+				JsonNode nextItem = elements.next();
+				result.put(nextItem.get("id").asText(), nextItem.toString());
+			}
+		}
+		return result;
+	}
+
 	private static boolean isGnd(String term) {
 		return term.startsWith("https://d-nb.info/gnd");
 	}

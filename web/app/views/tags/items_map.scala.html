@@ -1,6 +1,6 @@
 @* Copyright 2014 Fabian Steeg, hbz. Licensed under the EPL 2.0 *@
 
-@(items: Map[String,List[String]])
+@(items: Map[String,List[String]], itemDetails: Map[String,String])
 
 @import play.api.libs.ws.WS
 @import play.api.libs.json.JsArray
@@ -69,18 +69,17 @@ map.addLayer(layer);
             allTableDetails += tableDetails;
           else
             allTableDetails += '<tr><th style="width: 30%"/><th style="width: 70%"/></tr>' + tableDetails;
-        @for((item,i) <- items(key).zipWithIndex;
-            itemId = item.replaceAll("https?://lobid\\.org/items/|#!", "");
-            itemJsonNode = new controllers.resources.Search.Builder().build().getItem(itemId).getResult();
-            if(itemJsonNode != null);
-            itemJson = Json.parse(itemJsonNode.toString);
+        @for((itemId,i) <- items(key).zipWithIndex;
+            shortItemId = itemId.substring(itemId.lastIndexOf(":") + 1, itemId.lastIndexOf("#"));
+            itemJson = Json.parse(itemDetails(itemId));
             owners = (itemJson\\"heldBy");
             if(!owners.isEmpty);
             signatures = (itemJson\\"callNumber");
-            if(!signatures.isEmpty);
-            signature = if(signatures(0).asOpt[String].isDefined){signatures(0).as[String]}else{signatures(0).as[Seq[JsValue]].head.as[String]}){
-              var sig = '<tr><td>Signatur:</td>'+
-                '<td>@if(!signature.isEmpty){<a href="@item">@signature</a>}else{&lt;Keine Angabe&gt;}</td></tr>';
+            signature = if(signatures.isEmpty) "" else signatures(0).as[String];
+            urls = (itemJson\\"electronicLocator");
+            url = if(urls.isEmpty) "" else urls(0).as[String]) {
+              var sig = '<tr><td>@if(!signature.isEmpty){Signatur:}@if(!urls.isEmpty){Elektronische Ressource:}</td>'+
+                '<td>@if(!url.isEmpty){<a href="@url">@shortItemId</a>} else {@if(!signature.isEmpty){@signature}}</td></tr>';
               @for(noteSeq <- (itemJson\"note").asOpt[Seq[String]]; note = noteSeq(0)) {sig += '<tr><td>Notiz:</td><td>' + '@note' + '</td></tr>';}
               tableDetails += sig;
               allTableDetails += sig;
