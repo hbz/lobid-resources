@@ -406,12 +406,16 @@ public class Lobid {
 				// use secondary if main is equal, e.g. DE-5-11 before DE-5-20
 				return numerical(all1[2]) < numerical(all2[2]);
 			}
-		} else if (all1[1].equals(all2[1])) {
-			// same main sigel, prefer shorter, e.g. DE-5 before DE-5-11
-			return all1.length < all2.length;
+		} else if (all1.length == 2 && all2.length == 2) {
+			if (all1[1].equals(all2[1])) {
+				// same main sigel, prefer shorter, e.g. DE-5 before DE-5-11
+				return all1.length < all2.length;
+			}
+			// compare by main sigel, e.g. DE-5 before DE-6:
+			return numerical(all1[1]) < numerical(all2[1]);
 		}
-		// compare by main sigel, e.g. DE-5 before DE-6:
-		return numerical(all1[1]) < numerical(all2[1]);
+		// not actually an ISIL, compare given values as numbers:
+		return numerical(i1) < numerical(i2);
 	}
 
 	private static int numerical(String s) {
