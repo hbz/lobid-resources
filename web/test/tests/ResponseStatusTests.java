@@ -22,7 +22,7 @@ import play.mvc.Result;
 
 /**
  * Test response status codes for different requests.
- * 
+ *
  * @author Fabian Steeg (fsteeg)
  */
 @SuppressWarnings("javadoc")
@@ -34,8 +34,8 @@ public class ResponseStatusTests extends LocalIndexSetup {
 	public static Collection<Object[]> data() {
 		// @formatter:off
 		return Arrays.asList(new Object[][] {
-			{ "/resources/TT050409948", /*->*/ Status.OK },
-			{ "/items/TT003059252:DE-5-58:9%2F041", /*->*/ Status.SEE_OTHER },
+			{ "/resources/99371123630706441", /*->*/ Status.OK },
+			{ "/items/99371123630706441:DE-Hag4:5388892840006461#!", /*->*/ Status.SEE_OTHER },
 			{ "/resources/123", /*->*/ Status.NOT_FOUND },
 			{ "/items/123", /*->*/ Status.SEE_OTHER },
 			{ "/resources/123?format=html", /*->*/ Status.NOT_FOUND },

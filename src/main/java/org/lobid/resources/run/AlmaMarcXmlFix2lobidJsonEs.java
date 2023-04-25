@@ -48,7 +48,7 @@ public class AlmaMarcXmlFix2lobidJsonEs {
     private static boolean updateDonotCreateIndex;
     private static String fixFileName = "src/main/resources/alma/alma.fix";
 
-    private static final String INDEXCONFIG = "index-config.json";
+    private static final String INDEXCONFIG = "alma/index-config.json";
     private static final HashMap<String, String> fixVariables = new HashMap<>();
     private static String mailtoInfo = "localhost";
     private static String mailtoError = "localhost";
@@ -80,7 +80,7 @@ public class AlmaMarcXmlFix2lobidJsonEs {
             public void run() {
                 LOG.info(String.format("Running thread: %s", getName()));
                 String usage =
-                    "<input path>%s<index name>%s<index alias suffix ('NOALIAS' sets it empty)>%s<node>%s<cluster>%s<'update' (will take latest index), 'exact' (will take ->'index name' even when no timestamp is suffixed) , else create new index with actual timestamp>%s<optional: filename of a list of files which shall be ETLed>%s<optional: filename of morph>%s";
+                    "<input path>%s<index name>%s<index alias suffix ('NOALIAS' sets it empty)>%s<node>%s<cluster>%s<'update' (will take latest index), 'exact' (will take ->'index name' even when no timestamp is suffixed) , else create new index with actual timestamp>%s<optional: filename of a list of files which shall be ETLed>%s<optional: filename of fix>%s";
                 String inputPath = args[0];
                 LOG.info(String.format("inputFile(s)=%s", inputPath));
                 indexName = args[1];

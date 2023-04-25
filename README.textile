@@ -1,6 +1,8 @@
 h1. About
 
-Transform MAB-XML to JSON for Elasticsearch indexing with "Metafacture":https://github.com/culturegraph/metafacture-core/wiki, serve API and UI with "Play Framework":https://playframework.com/.
+Transform Alma MARC-XML to JSON for Elasticsearch indexing with "Metafacture":https://github.com/culturegraph/metafacture-core/wiki, serve API and UI with "Play Framework":https://playframework.com/.
+
+Aleph MAB-XML was supported up to tag `0.5.0`.
 
 This repo replaces the lobid-resources part of "https://github.com/lobid/lodmill":https://github.com/lobid/lodmill.
 
@@ -43,17 +45,15 @@ Use @"start 8000"@ to run in production background mode on port 8000 (hit Ctrl+D
 
 h1. Example of getting the data
 
-In the online test the data is indexed to a living elasticsearch instance.
-This instance is only reachable within our internally network, thus this test
+In the online test the data is indexed into a living elasticsearch instance.
+This instance is only reachable within our internal network, thus this test
 must be executed manually. Then elasticsearch can be looked up like this:
 
-http://lobid.org/resources/HT002619538
+https://alma.lobid.org/resources/990054215550206441
 
 For querying it you can use the elasticsearch query DSL, like:
 
-http://lobid.org/resources?q=title:Mobydick
-
-The result shows the data which also "Hbz01MabXml2ElasticsearchLobidTest.java":https://github.com/hbz/lobid-resources/blob/master/src/test/java/org/lobid/resources/Hbz01MabXml2ElasticsearchLobidTest.java produces.
+https://alma.lobid.org/resources/search?q=title:%22Moby%20dick%22
 
 h1. Developer instructions
 
@@ -62,15 +62,14 @@ how to update the JSON-LD and its context, and how to index the data.
 
 h2. Changing transformations
 
-After changing the "morph":https://github.com/hbz/lobid-resources/blob/master/src/main/resources/morph-hbz01-to-lobid.xml the build must be executed:
+After changing the "fix":https://github.com/hbz/lobid-resources/blob/master/src/main/resources/alma/alma.fix the build must be executed:
 
 @mvn clean install@
 
 Two possible outcomes:
 
 * *BUILD SUCCESS*: the tested resources don't reflect the changes.
-In this case you should add an Aleph-MabXml resource to "hbz01XmlClobs.tar.bz2":https://github.com/hbz/lobid-resources/blob/master/src/test/resources/hbz01XmlClobs.tar.bz2 that _would_ reflect your changes. Do like this to add the resource HT018895767:
-@cd src/test/resources; rm -rf hbz01XmlClobs; tar xfj hbz01XmlClobs; xmllint --format http://beta.lobid.org/hbz01/HT018895767 > hbhbz01XmlClobs/HT018895767; tar cfj hbz01XmlClobs.tar.bz2 hbz01XmlClobs; cd -; mvn clean install; git add src/test/resources/jsonld/ ; git add src/test/resources/hbz01.es.nt@
+In this case you should add an Alma-MARC-XML resource to "src/test/resources/alma-fix/":https://github.com/hbz/lobid-resources/blob/master/src/test/resources/alma-fix that _would_ reflect your changes.
 
 * *BUILD FAILURE*: the newly generated data isn't equal to the test resources.
 This is a good thing because you wanted the change.
@@ -86,7 +85,7 @@ Let's see what has changed:
 
 Let's make a diff on the changes, e.g. all JSON-LD documents:
 
-@git diff src/test/resources/jsonld/@
+@git diff src/test/resources/alma-fix/@
 
 You can validate the generated JSON-LD documents with the provided schemas:
 
@@ -94,7 +93,7 @@ You can validate the generated JSON-LD documents with the provided schemas:
 
 If you are satisfied with the changes, go ahead and add and commit them:
 
-@git add src/test/resources/jsonld/; git commit@
+@git add src/test/resources/alma-fix/; git commit@
 
 Do this respectivly for all other test files (Ntriples ...).
 If you've added and commited everything, check again if all is ok:
@@ -108,86 +107,13 @@ h2. Propagate the context.json to lobid-resources-web
 The generated _context.jsonld_ is automatically written to the proper directory
 so that it is automatically deployed when the web application is deployed.
 
-When the small test set is indexed by using _buildAndETLTestSet.sh_ deploy your branch in
+When the small test set is indexed by using _buildAndETLTestAlmaFix.sh_ deploy your branch in
 the staging directory of the web application. The _context_ for the resources is adapted
 to use the "staging.lobid.org"-domain and thus the staging-_context.jsonld_ will resolve using the one in that directory.
 
 h3. Elasticsearch index
 
-This is about the building of the production index as well as the small test index.
-
-h4. Production
-
-All automation is configured at one central crontab entry: _hduser@weywot1_ .
-This is your starting point for tracing what scripts are triggered on what server
-at which time. All is logged, see the crontab entries resp. the scripts.
-
-Like with the old (and still productive) lobid index, a weekly fulldump
-index is build on Saturday/Sunday. This is the base which will then be complemented by the daily incremental updates.
-Have a look at "both source data, base and daily updates":http://lobid.org/download/dumps/DE-605/mabxml/.
-The base-file must be referenced by a symbolic link residing in the nfs: "/files/open_data/closed/hbzvk/index.hbz-nrw.de/alephxml/clobs/baseline/aliasNewestFulldump.tar.gz". It is this symbolic link which is used by indexing processes.
-Building the full index takes around 12 hours. The finished index is aliased
-to _resources-staging_. This is manually to be tested. If it's ok, the
-index is switched by simply renaming this alias to _resources_ . Both aliases are
-reflected in the lookup-URI (e.g. http://lobid.org/resources/HT015082724 vs
-http://lobid.org/resources-staging/HT015082724 resp. internal ES URI
-@http://gaia.hbz-nrw.de:9200/resources/_all/HT015082724@ and
-@http://gaia.hbz-nrw.de:9200/resources-staging/_all/HT015082724@ ).
-
-The three latest indices will be retained, also every index with no _-staging_
-suffix on the alias. Other indices which start with the same string (e.g. @resources@) will be
-removed by the index program after the indexing is finished - the hard disk
-is not of endless size ;) .
-
-Note: in production, always make sure that the JSON-LD context is the proper one.
-
-h4. Small test
-
-This will download ~5k aleph xml clobs (if not already residing in your filesystem)
-and index them into elasticsearch, aliased _test-resources_ (not interfering with the
-productive indexes, thus not removing any productive index).
-
-@cd src/test/resources; bash buildAndETLTestSet.sh@
-
-h3. Data updates
-
-How to manually invoke data updates for both API 1.x data and API 2.0 data.
-
-Data source for updates and baselines: http://lobid.org/download/dumps/DE-605/mabxml/
-
-These are created with @weywot1:/home/hduser/git/hbz-aleph-dumping/bin/daily-hbz-aleph.sh@.
-
-For all commands below, add this to redirect output to file and follow that file:
-
-@> log/201605090945-master.startHbz01ToLobidResources.sh.log 2>&1 & tail -f log/201605090945-master.startHbz01ToLobidResources.sh.log@
-
-h4. Data 1.x, at hduser@weywot1:/home/hduser/git/lodmill/lodmill-rd/doc/scripts/hbz01$
-
-Single update:
-
-@bash -x startHbz01ToLobidResources.sh master /files/open_data/open/DE-605/mabxml/DE-605-aleph-update-marcxchange-20160411-20160412.tar.gz lobid-resources-staging NOALIAS quaoar2.hbz-nrw.de quaoar exact@
-
-Updates listed in file:
-
-@bash -x startHbz01ToLobidResources.sh master dummy_ignore lobid-resources-staging NOALIAS quaoar2.hbz-nrw.de quaoar exact doc/scripts/hbz01/toBeUpdateFilesXmlClobs_afterBasedump.txt@
-
-New baseline index:
-
-@bash -x startHbz01ToLobidResources.sh master /files/open_data/closed/hbzvk/index.hbz-nrw.de/alephxml/clobs/baseline/aliasNewestFulldump.tar.gz lobid-resources-201605090945 "-staging" quaoar2.hbz-nrw.de quaoar create doc/scripts/hbz01/toBeUpdateFilesXmlClobs_afterBasedump.txt@
-
-h4. Data 2.0, at hduser@gaia:/opt/hadoop/git/lobid-resources$
-
-Single update:
-
-@bash -x startHbz01ToLobidResources.sh master /files/open_data/open/DE-605/mabxml/DE-605-aleph-update-marcxchange-20160411-20160412.tar.gz resources-staging NOALIAS gaia.hbz-nrw.de lobid-gaia exact@
-
-Updates listed in file:
-
-@bash -x startHbz01ToLobidResources.sh master dummy_ignore resources-staging NOALIAS gaia.hbz-nrw.de lobid-gaia exact toBeUpdateFilesXmlClobs_afterBasedump.txt@
-
-New baseline index:
-
-@bash -x startHbz01ToLobidResources.sh master /files/open_data/closed/hbzvk/index.hbz-nrw.de/alephxml/clobs/baseline/aliasNewestFulldump.tar.gz resources-201605090945 NOALIAS gaia.hbz-nrw.de lobid-gaia create@
+See https://github.com/hbz/lobid-resources/wiki/Maintaining-Alma.lobid-API.
 
 h1. License
 
