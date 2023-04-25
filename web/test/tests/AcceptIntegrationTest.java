@@ -1,6 +1,7 @@
 /* Copyright 2014-2017 Fabian Steeg, hbz. Licensed under the EPL 2.0 */
 
 package tests;
+
 import static org.fest.assertions.Assertions.assertThat;
 import static play.test.Helpers.GET;
 import static play.test.Helpers.fakeApplication;
