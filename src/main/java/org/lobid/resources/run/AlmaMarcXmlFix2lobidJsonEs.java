@@ -4,6 +4,7 @@ package org.lobid.resources.run;
 
 import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
+import java.time.Duration;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.stream.Collectors;
@@ -78,6 +79,7 @@ public class AlmaMarcXmlFix2lobidJsonEs {
         LOG.info(MSG_THREAD_ALREADY_STARTED + " true");
         new Thread("AlmaMarcXmlFix2lobidJsonEs") {
             public void run() {
+                long startMilliseconds=System.currentTimeMillis();
                 LOG.info(String.format("Running thread: %s", getName()));
                 String usage =
                     "<input path>%s<index name>%s<index alias suffix ('NOALIAS' sets it empty)>%s<node>%s<cluster>%s<'update' (will take latest index), 'exact' (will take ->'index name' even when no timestamp is suffixed) , else create new index with actual timestamp>%s<optional: filename of a list of files which shall be ETLed>%s<optional: filename of fix>%s";
@@ -158,7 +160,7 @@ public class AlmaMarcXmlFix2lobidJsonEs {
                         .addReceiver(receiverThread())//
                         .addReceiver(receiverThread());
                 }
-                String message;
+                StringBuilder message = new StringBuilder();
                 boolean success;
                 try {
                     String inputPathes[] = inputPath.split(";");
@@ -168,19 +170,22 @@ public class AlmaMarcXmlFix2lobidJsonEs {
                         opener.closeStream();
                     }
                     success = true;
-                    message = "ETL succeeded, index name: " + indexName;
+                    message.append("ETL succeeded, index name: " + indexName);
                 }
                 catch (Exception e) {
                     e.printStackTrace();
                     LOG.error(
                         "ETL fails: ", e.getMessage(), e);
-                    message =  Stream
+                    message.append(Stream
                         .of(e.getStackTrace())
                         .map(StackTraceElement::toString)
-                        .collect(Collectors.joining("\n"));
+                        .collect(Collectors.joining("\n")));
                     success = false;
                 }
-                sendMail(kind, success, message);
+                String timeNeeded="Time needed: " + getTimeNeeded(startMilliseconds);
+                LOG.info(timeNeeded);
+                message.append("\n"+timeNeeded);
+                sendMail(kind, success, message.toString());
                 if (switchAutomatically) {
                     success = switchAlias();
                 }
@@ -193,6 +198,15 @@ public class AlmaMarcXmlFix2lobidJsonEs {
             }
         }.start();
 
+    }
+
+    private static String getTimeNeeded(long startMilliseconds) {
+        long tookSeconds= (System.currentTimeMillis()- startMilliseconds) * 1000;
+        Duration duration = Duration.ofSeconds(tookSeconds);
+        long HH = tookSeconds / 3600;
+        long MM = (tookSeconds % 3600) / 60;
+        long SS = tookSeconds % 60;
+        return String.format("%02dh:%02dm:%02ds", HH, MM, SS);
     }
 
     private static ElasticsearchIndexer getElasticsearchIndexer() {
