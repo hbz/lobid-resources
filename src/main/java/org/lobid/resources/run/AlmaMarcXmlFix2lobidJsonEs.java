@@ -79,7 +79,7 @@ public class AlmaMarcXmlFix2lobidJsonEs {
         LOG.info(MSG_THREAD_ALREADY_STARTED + " true");
         new Thread("AlmaMarcXmlFix2lobidJsonEs") {
             public void run() {
-                long startMilliseconds=System.currentTimeMillis();
+                long startMilliseconds = System.currentTimeMillis();
                 LOG.info(String.format("Running thread: %s", getName()));
                 String usage =
                     "<input path>%s<index name>%s<index alias suffix ('NOALIAS' sets it empty)>%s<node>%s<cluster>%s<'update' (will take latest index), 'exact' (will take ->'index name' even when no timestamp is suffixed) , else create new index with actual timestamp>%s<optional: filename of a list of files which shall be ETLed>%s<optional: filename of fix>%s";
@@ -201,7 +201,7 @@ public class AlmaMarcXmlFix2lobidJsonEs {
     }
 
     private static String getTimeNeeded(long startMilliseconds) {
-        long tookSeconds= (System.currentTimeMillis()- startMilliseconds) * 1000;
+        long tookSeconds = (System.currentTimeMillis()- startMilliseconds) / 1000;
         Duration duration = Duration.ofSeconds(tookSeconds);
         long HH = tookSeconds / 3600;
         long MM = (tookSeconds % 3600) / 60;
