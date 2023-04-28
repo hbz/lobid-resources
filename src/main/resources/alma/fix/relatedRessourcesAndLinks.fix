@@ -376,6 +376,18 @@ do list(path:"084  ", "var":"$i")
   end
 end
 
+do list(path:"960??", "var":"$i")
+  if any_contain("$i.n","NWBib")
+    unless any_equal("inCollection[].*.id","http://lobid.org/resources/HT014176012#!")
+      add_field("inCollection[].$append.id", "http://lobid.org/resources/HT014176012#!")
+      add_field("inCollection[].$last.label", "Nordrhein-Westfälische Bibliographie (NWBib)")
+    end
+  end
+end
+
+#rpb
+
+# 084 - Other Classification Number (R), Subfield: $2 (NR)
 do list(path:"084  ", "var":"$i")
   if exists("rpbId")
       add_field("inCollection[].$append.id", "http://lobid.org/resources/HT013494180#!")
