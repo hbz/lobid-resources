@@ -25,9 +25,8 @@ do list(path: "zdbId", "var": "$i")
 end
 
 # rpb
-
 do list(path: "rpbId", "var": "$i")
-  paste("sameAs[].$append.id","~http://rpb.lobid.org/", "$i", "~#!",join_char:"")
+  paste("sameAs[].$append.id","~http://rpb.lobid.org/RPB-", "$i", "~#!",join_char:"")
   add_field("sameAs[].$last.label","RPB-Ressource")
 end
 
