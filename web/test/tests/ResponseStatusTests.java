@@ -35,6 +35,9 @@ public class ResponseStatusTests extends LocalIndexSetup {
 		// @formatter:off
 		return Arrays.asList(new Object[][] {
 			{ "/resources/99371123630706441", /*->*/ Status.OK },
+			{ "/resources/HT000161712", /*->*/ Status.MOVED_PERMANENTLY },
+			{ "/resources/123550-3", /*->*/ Status.MOVED_PERMANENTLY },
+			{ "/resources/ZDB-123550-3", /*->*/ Status.MOVED_PERMANENTLY },
 			{ "/items/99371123630706441:DE-Hag4:5388892840006461#!", /*->*/ Status.SEE_OTHER },
 			{ "/resources/123", /*->*/ Status.NOT_FOUND },
 			{ "/items/123", /*->*/ Status.SEE_OTHER },
