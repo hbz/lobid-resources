@@ -10,21 +10,29 @@ do list(path:"035  ", "var":"$i")
   end
 end
 
+# oclc
+
 do list(path: "oclcNumber[]", "var": "$i")
   paste("sameAs[].$append.id","~http://worldcat.org/oclc/", "$i", join_char:"")
   add_field("sameAs[].$last.label","OCLC Ressource")
 end
 
+# zdb
 
 do list(path: "zdbId", "var": "$i")
   paste("sameAs[].$append.id","~http://ld.zdb-services.de/resource/", "$i", join_char:"")
   add_field("sameAs[].$last.label","ZDB-Ressource")
 end
 
+# rpb
+
 do list(path: "rpbId", "var": "$i")
   paste("sameAs[].$append.id","~http://rpb.lobid.org/", "$i", "~#!",join_char:"")
   add_field("sameAs[].$last.label","RPB-Ressource")
 end
+
+# nwbib, see below inCollection nwbib
+
 
 # 770 - Supplement/Special Issue Entry (R) - Subflied: $i (R), $t (NR), $w (R)
 
@@ -391,6 +399,11 @@ do list(path:"960??", "var":"$i")
       add_field("inCollection[].$last.label", "Nordrhein-Westfälische Bibliographie (NWBib)")
     end
   end
+end
+
+if any_equal("inCollection[].*.id", "http://lobid.org/resources/HT014176012#!")
+  paste("sameAs[].$append.id","~http://nwbib.lobid.org/", "almaMmsId", "~#!",join_char:"")
+  add_field("sameAs[].$last.label","NWBib-Ressource")
 end
 
 #rpb
