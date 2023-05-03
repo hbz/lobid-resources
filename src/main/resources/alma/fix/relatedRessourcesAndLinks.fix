@@ -21,6 +21,11 @@ do list(path: "zdbId", "var": "$i")
   add_field("sameAs[].$last.label","ZDB-Ressource")
 end
 
+do list(path: "rpbId", "var": "$i")
+  paste("sameAs[].$append.id","~http://rpb.lobid.org/", "$i", "~#!",join_char:"")
+  add_field("sameAs[].$last.label","RPB-Ressource")
+end
+
 # 770 - Supplement/Special Issue Entry (R) - Subflied: $i (R), $t (NR), $w (R)
 
 set_array("supplement[]")
@@ -146,12 +151,12 @@ if any_match("leader", "^.{7}[ad].*")
 end
 
 replace_all("isPartOf[].*.hasSuperordinate[].*.id", "^\\(DE-605\\)(.*)$", "http://lobid.org/resources/$1#!")
-replace_all("isPartOf[].*.hasSuperordinate[].*.id", "^\\(DE-600\\)(.*)$", "http://lobid.org/resources/ZDB-$1")
+replace_all("isPartOf[].*.hasSuperordinate[].*.id", "^\\(DE-600\\)(.*)$", "http://lobid.org/resources/ZDB-$1#!")
 
 replace_all("isPartOf[].*.numbering", "^[©]|\\s?[,.:;/=]?$", "")
 uniq("isPartOf[]")
 replace_all("containedIn[].*.id", "^\\(DE-605\\)(.*)$", "http://lobid.org/resources/$1#!")
-replace_all("containedIn[].*.id", "^\\(DE-600\\)(.*)$", "http://lobid.org/resources/ZDB-$1")
+replace_all("containedIn[].*.id", "^\\(DE-600\\)(.*)$", "http://lobid.org/resources/ZDB-$1#!")
 replace_all("containedIn[].*.label","<<|>>","")
 
 # primaryForm
