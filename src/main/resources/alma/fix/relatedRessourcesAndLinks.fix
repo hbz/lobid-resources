@@ -195,6 +195,10 @@ do list(path: "77608", "var":"$i")
     end
     paste("primaryForm[].$last.label", "$i.i", "$i.w")
     replace_all("primaryForm[].$last.label", "\\((?:DE-600|DE-605)\\)", "")
+    set_array("primaryForm[].$last.note[]")
+    do list(path:"$i.i","var":"$j")
+      copy_field("$j","primaryForm[].$last.note[].$append")
+    end
   end
 end
 
