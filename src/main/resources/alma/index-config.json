@@ -343,6 +343,8 @@
                 }
             },
             "hasItem" : {
+               "type" : "nested",
+               "include_in_parent" : true,
                "properties" : {
                   "type" : {
                      "type" : "keyword"
@@ -380,6 +382,9 @@
                      "index" : "false"
                   },
                   "callNumber" : {
+                     "type" : "keyword"
+                  },
+                  "currentLocation" : {
                      "type" : "keyword"
                   }
                }
@@ -427,7 +432,7 @@
             },
             "contribution" : {
                "type" : "nested",
-               "include_in_parent" : "true",
+               "include_in_parent" : true,
                "properties" : {
                   "agent" : {
                      "properties" : {
@@ -509,7 +514,7 @@
             },
             "subject": {
                "type" : "nested",
-               "include_in_parent" : "true",
+               "include_in_parent" : true,
                "properties": {
                   "altLabel": {
                      "type": "text",
@@ -517,7 +522,7 @@
                   },
                   "componentList": {
                      "type" : "nested",
-                     "include_in_parent" : "true",
+                     "include_in_parent" : true,
                      "properties": {
                         "altLabel": {
                            "type": "text",

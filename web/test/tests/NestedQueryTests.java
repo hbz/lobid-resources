@@ -31,9 +31,11 @@ public class NestedQueryTests extends LocalIndexSetup {
 		return Arrays.asList(new Object[][] {
 			// Nested query: only return hits where query matches 1 nested pseudo-doc:
 			{ "contribution:contribution.agent.label:becker AND contribution.role.label:Beitragende", "", /*->*/ 1 },
+			{ "hasItem:hasItem.heldBy.isil:DE-38 AND hasItem.currentLocation:\"K0001 / UNASSIGNED\"", "", /*->*/ 1 },
 			// Nested query: don't match if query parts match different nested docs:
 			{ "contribution:contribution.agent.label:becker AND contribution.role.label:Herausgeber", "", /*->*/ 1 },
-            { "contribution:contribution.agent.label:becker AND contribution.role.label:Autor", "", /*->*/ 0 },
+			{ "contribution:contribution.agent.label:becker AND contribution.role.label:Autor", "", /*->*/ 0 },
+			{ "hasItem:hasItem.heldBy.isil:DE-38 AND hasItem.currentLocation:\"N5001 / UNASSIGNED\"", "", /*->*/ 0 },
 			// Normal query: return hits where query matches parent top-level doc:
 			{ "", "contribution.agent.label:becker AND contribution.role.label:Herausgeber", /*->*/ 1 },
 			// Same for 'spatial' nested field:
@@ -41,10 +43,8 @@ public class NestedQueryTests extends LocalIndexSetup {
 			{ "spatial:spatial.label:Dinslaken AND spatial.source.id:\"https://nwbib.de/subjects\",", "", /*->*/ 0 },
 			{ "", "subject.label:Westfalen AND subject.source.label:Sachsystematik", /*->*/ 1 },
 			// Same for 'subject.componentList' nested field:
-			{ "subject.componentList:subject.componentList.label:Ruhrgebiet AND subject.componentList.type:PlaceOrGeographicName",
-				"", /*->*/ 1 },
-			{ "subject.componentList:subject.componentList.label:Ruhrgebiet AND subject.componentList.type:SubjectHeading",
-				"", /*->*/ 0 },
+			{ "subject.componentList:subject.componentList.label:Ruhrgebiet AND subject.componentList.type:PlaceOrGeographicName", "", /*->*/ 1 },
+			{ "subject.componentList:subject.componentList.label:Ruhrgebiet AND subject.componentList.type:SubjectHeading", "", /*->*/ 0 },
 			{ "", "subject.componentList.label:Ruhrgebiet AND subject.componentList.type:SubjectHeading", /*->*/ 1 }
 		});
 	} // @formatter:on
@@ -54,28 +54,30 @@ public class NestedQueryTests extends LocalIndexSetup {
 	private Search index;
 
 	public NestedQueryTests(String nestedString, String queryString,
-			int resultCount) {
+		int resultCount) {
 		this.nestedString = nestedString;
 		this.expectedResultCount = resultCount;
 		this.index = new Search.Builder()
-				.query(
-						new Queries.Builder().q(queryString).nested(nestedString).build())
-				.size(1).build();
+			.query(
+				new Queries.Builder().q(queryString).nested(nestedString).build())
+			.size(1).build();
 	}
 
 	@Test
 	public void testResultCount() {
 		running(fakeApplication(), () -> {
-			if (expectedResultCount == 1)
+			if (expectedResultCount == 1) {
 				assertThat(hitsForQuery()).isGreaterThanOrEqualTo(expectedResultCount);
-			else
+			}
+			else {
 				assertThat(hitsForQuery()).isEqualTo(expectedResultCount);
+			}
 		});
 	}
 
 	private long hitsForQuery() {
 		return nestedString.isEmpty() ? index.totalHits()
-				: index.queryResources().getTotal();
+			: index.queryResources().getTotal();
 	}
 
 }
