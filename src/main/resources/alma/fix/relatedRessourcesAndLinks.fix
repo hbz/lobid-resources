@@ -501,6 +501,11 @@ do list(path:"780??", "var":"$i")
       copy_field("$j", "predecessor[].$last.id")
     end
   end
+  replace_all("predecessor[].$last.label", "\\((?:DE-600|DE-605)\\)", "")
+  set_array("predecessor[].$last.note[]")
+  do list(path:"$i.i","var":"$j")
+    copy_field("$j","predecessor[].$last.note[].$append")
+  end
 end
 
 replace_all("predecessor[].*.id", "^\\(DE-605\\)(.*)$", "http://lobid.org/resources/$1#!")
