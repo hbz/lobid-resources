@@ -1,11 +1,10 @@
 {
   "@context" : "http://lobid.org/resources/context.jsonld",
   "almaMmsId" : "990133067580206441",
-  "hbzId" : "HT014176012",
-  "deprecatedUri" : "http://lobid.org/resources/HT014176012#!",
+  "oclcNumber" : [ "1183389769" ],
   "zdbId" : "2163340-X",
   "title" : "Nordrhein-Westfälische Bibliographie",
-  "otherTitleInformation" : [ "Regionale Literaturdokumentation ab Berichtsjahr ..." ],
+  "otherTitleInformation" : [ "Regionale Literaturdokumentation ab Berichtsjahr  ..." ],
   "publication" : [ {
     "publicationHistory" : "1983 -",
     "startDate" : "1983",
@@ -32,7 +31,7 @@
       "object" : {
         "id" : "https://lobid.org/hbz01/990133067580206441",
         "dateCreated" : "2021-04-06",
-        "dateModified" : "2022-12-27",
+        "dateModified" : "2023-04-23",
         "type" : [ "DataFeedItem" ],
         "label" : "hbz-Ressource 990133067580206441 im Exportformat MARC21 XML",
         "inDataset" : {
@@ -48,7 +47,7 @@
           "label" : "lobid Organisation"
         },
         "modifiedBy" : [ {
-          "id" : "http://lobid.org/organisations/DE-605#!",
+          "id" : "http://lobid.org/organisations/DE-6#!",
           "label" : "lobid Organisation"
         } ]
       }
@@ -59,8 +58,8 @@
     } ]
   },
   "sameAs" : [ {
-    "id" : "http://hub.culturegraph.org/resource/HBZ-HT014176012",
-    "label" : "Culturegraph Ressource"
+    "id" : "http://worldcat.org/oclc/1183389769",
+    "label" : "OCLC Ressource"
   }, {
     "id" : "http://ld.zdb-services.de/resource/2163340-X",
     "label" : "ZDB-Ressource"
@@ -71,12 +70,6 @@
   "fulltextOnline" : [ {
     "label" : "Agentur",
     "id" : "https://nwbib.de/"
-  } ],
-  "related" : [ {
-    "id" : "http://lobid.org/resources/HT002202742#!",
-    "note" : [ "Vorg. u. Druckausg." ],
-    "label" : "Nordrhein-westfälische Bibliographie",
-    "issn" : "0177-3283"
   } ],
   "inCollection" : [ {
     "id" : "http://lobid.org/organisations/DE-655#!",
@@ -91,6 +84,10 @@
     "label" : "Nordrhein-Westfälische Bibliographie (NWBib)",
     "type" : [ "Collection" ]
   } ],
+  "predecessor" : [ {
+    "label" : "Nordrhein-westfälische Bibliographie",
+    "id" : "http://lobid.org/resources/ZDB-629156-9#!"
+  } ],
   "extent" : "Online-Ressource",
   "natureOfContent" : [ {
     "label" : "Zeitschrift",
@@ -101,29 +98,15 @@
   }, {
     "label" : "Datenbank",
     "id" : "https://d-nb.info/gnd/4011119-2"
-  }, {
-    "label" : "Bibliographie"
   } ],
   "subject" : [ {
-    "notation" : "010",
+    "id" : "https://nwbib.de/subjects#N101000",
+    "label" : "Bibliographien",
+    "notation" : "101000",
     "type" : [ "Concept" ],
     "source" : {
-      "label" : "ZDB-Systematik",
-      "id" : "http://bartoc.org/en/node/18915"
-    }
-  }, {
-    "notation" : "914.3",
-    "type" : [ "Concept" ],
-    "source" : {
-      "label" : "ZDB-Systematik",
-      "id" : "http://bartoc.org/en/node/18915"
-    }
-  }, {
-    "notation" : "943",
-    "type" : [ "Concept" ],
-    "source" : {
-      "label" : "ZDB-Systematik",
-      "id" : "http://bartoc.org/en/node/18915"
+      "id" : "https://nwbib.de/subjects",
+      "label" : "Sachsystematik der Nordrhein-Westfälischen Bibliographie"
     }
   }, {
     "notation" : "AD 57550",
@@ -133,40 +116,29 @@
       "id" : "https://d-nb.info/gnd/4449787-8"
     }
   }, {
-    "notation" : "01",
+    "notation" : "010",
     "type" : [ "Concept" ],
     "source" : {
-      "label" : "nwbib",
-      "id" : "nwbib"
+      "label" : "DNB (Systematik der Deutschen Nationalbibliographie)",
+      "id" : "http://bartoc.org/en/node/18497"
     }
   }, {
-    "notation" : "101000",
+    "notation" : "914.3",
     "type" : [ "Concept" ],
     "source" : {
-      "label" : "nwbib",
-      "id" : "nwbib"
+      "label" : "DNB (Systematik der Deutschen Nationalbibliographie)",
+      "id" : "http://bartoc.org/en/node/18497"
+    }
+  }, {
+    "notation" : "943",
+    "type" : [ "Concept" ],
+    "source" : {
+      "label" : "DNB (Systematik der Deutschen Nationalbibliographie)",
+      "id" : "http://bartoc.org/en/node/18497"
     }
   }, {
     "type" : [ "ComplexSubject" ],
-    "label" : "Nordrhein-Westfalen | Bibliographie | Online-Publikation",
-    "componentList" : [ {
-      "type" : [ "PlaceOrGeographicName" ],
-      "label" : "Nordrhein-Westfalen",
-      "source" : {
-        "label" : "Gemeinsame Normdatei (GND)",
-        "id" : "https://d-nb.info/gnd/7749153-1"
-      },
-      "id" : "https://d-nb.info/gnd/4042570-8",
-      "gndIdentifier" : "4042570-8",
-      "altLabel" : [ "Nord-Westphalie", "Norte-Westfalia", "NRW", "North Rhine-Westphalia", "NW", "Noordrijn-Westfalen", "North-Rhine/Westphalia", "Land Nordrhein-Westfalen" ]
-    }, {
-      "label" : "Bibliographie"
-    }, {
-      "label" : "Online-Publikation"
-    } ]
-  }, {
-    "type" : [ "ComplexSubject" ],
-    "label" : "Nordrhein-Westfalen | Landeskunde | Bibliographie | Online-Publikation",
+    "label" : "Nordrhein-Westfalen | Landeskunde | Regionalliteratur",
     "componentList" : [ {
       "type" : [ "PlaceOrGeographicName" ],
       "label" : "Nordrhein-Westfalen",
@@ -188,12 +160,51 @@
       "gndIdentifier" : "4073972-7",
       "altLabel" : [ "Regionalkunde" ]
     }, {
-      "label" : "Bibliographie"
-    }, {
-      "label" : "Online-Publikation"
+      "type" : [ "SubjectHeading" ],
+      "label" : "Regionalliteratur",
+      "source" : {
+        "label" : "Gemeinsame Normdatei (GND)",
+        "id" : "https://d-nb.info/gnd/7749153-1"
+      },
+      "id" : "https://d-nb.info/gnd/4177428-0",
+      "gndIdentifier" : "4177428-0",
+      "altLabel" : [ "Regionale Literatur", "Regionalismus / Literatur" ]
+    } ]
+  }, {
+    "type" : [ "ComplexSubject" ],
+    "label" : "Nordrhein-Westfalen",
+    "componentList" : [ {
+      "type" : [ "PlaceOrGeographicName" ],
+      "label" : "Nordrhein-Westfalen",
+      "source" : {
+        "label" : "Gemeinsame Normdatei (GND)",
+        "id" : "https://d-nb.info/gnd/7749153-1"
+      },
+      "id" : "https://d-nb.info/gnd/4042570-8",
+      "gndIdentifier" : "4042570-8",
+      "altLabel" : [ "Nord-Westphalie", "Norte-Westfalia", "NRW", "North Rhine-Westphalia", "NW", "Noordrijn-Westfalen", "North-Rhine/Westphalia", "Land Nordrhein-Westfalen" ]
     } ]
   } ],
-  "subjectslabels" : [ "Nordrhein-Westfalen", "Bibliographie", "Online-Publikation", "Landeskunde" ],
+  "spatial" : [ {
+    "id" : "https://nwbib.de/spatial#N01",
+    "label" : "Nordrhein-Westfalen",
+    "notation" : "01",
+    "type" : [ "Concept" ],
+    "source" : {
+      "id" : "https://nwbib.de/spatial",
+      "label" : "Raumsystematik der Nordrhein-Westfälischen Bibliographie"
+    },
+    "focus" : {
+      "id" : "http://www.wikidata.org/entity/Q1198",
+      "label" : "Nordrhein-Westfalen",
+      "type" : [ "http://www.wikidata.org/entity/Q1221156" ],
+      "geo" : {
+        "lat" : "51.466666666",
+        "lon" : "7.55"
+      }
+    }
+  } ],
+  "subjectslabels" : [ "Nordrhein-Westfalen", "Landeskunde", "Regionalliteratur" ],
   "hasItem" : [ {
     "type" : [ "Item", "DigitalDocument" ],
     "label" : "Electronic Portfolio",
@@ -216,17 +227,6 @@
       "label" : "lobid Organisation"
     },
     "id" : "http://lobid.org/items/990133067580206441:DE-465:53804555180006441#!"
-  }, {
-    "type" : [ "Item", "DigitalDocument" ],
-    "label" : "Electronic Portfolio",
-    "electronicLocator" : "https://eu04.alma.exlibrisgroup.com/view/uresolver/49HBZ_FHM/openurl?u.ignore_date_coverage=true&portfolio_pid=53804555180006441&Force_direct=true",
-    "sublocation" : "https://hbz-network.userservices.exlibrisgroup.com/view/uresolver/49HBZ_FHM/openurl?u.ignore_date_coverage=true&rft.mms_id=990133067580206441",
-    "heldBy" : {
-      "id" : "http://lobid.org/organisations/DE-836#!",
-      "isil" : "DE-836",
-      "label" : "lobid Organisation"
-    },
-    "id" : "http://lobid.org/items/990133067580206441:DE-836:53804555180006441#!"
   }, {
     "type" : [ "Item", "DigitalDocument" ],
     "label" : "Electronic Portfolio",
@@ -258,7 +258,7 @@
       "id" : "https://d-nb.info/gnd/2047974-8",
       "label" : "Hochschulbibliothekszentrum des Landes Nordrhein-Westfalen (hbz)",
       "type" : [ "CorporateBody" ],
-      "altLabel" : [ "Hochschulbibliothekszentrum des Landes Nordrhein-Westfalen", "Hochschulbibliothekszentrum des Landes NRW", "Hochschulbibliothekszentrum NRW", "Hochschulbibliothekszentrum", "hbz Köln", "hbz" ]
+      "altLabel" : [ "Hochschulbibliothekszentrum des Landes Nordrhein-Westfalen", "Hochschulbibliothekszentrum des Landes NRW", "Hochschulbibliothekszentrum NRW", "Hochschulbibliothekszentrum", "hbz Köln", "hbz", "North Rhine-Westphalian Library Service Centre" ]
     },
     "role" : {
       "id" : "http://id.loc.gov/vocabulary/relators/isb",
