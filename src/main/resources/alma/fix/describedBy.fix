@@ -95,6 +95,7 @@ end
 do once("provenanceLinksMacro")
   do put_macro("provenanceLinks")
     replace_all("$[field]", " ", "")
+    replace_all("$[field]", "\\/Inst","")
     if any_match("$[field]",".*(hbz|HBZ).*")
       replace_all("$[field]", "^.*$", "DE-605")
     elsif any_match("$[field]","^NRW$|^NRW\\/Hist.Buch$")
