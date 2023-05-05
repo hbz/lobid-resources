@@ -99,8 +99,12 @@
             "heldBy" : {
                "properties" : {
                   "label" : {
-                     "index": "false",
-                     "type" : "text"
+                     "type" : "text",
+                     "fields": {
+                        "raw": {
+                          "type": "keyword"
+                        }
+                     }
                   },
                   "id" : {
                      "type" : "keyword"
