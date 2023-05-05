@@ -425,7 +425,7 @@ do list(path:"912  ", "var":"$i")
     copy_field("$i.a", "inCollection[].$append.id")
     replace_all("inCollection[].$last.id", "(ZDB-[0-9]{1,6}-[a-zA-Z|0-9\\-]*).*", "http://lobid.org/organisations/$1#!")
     copy_field("inCollection[].$last.id","inCollection[].$last.label")
-    lookup("inCollection[].$last.label","lobidOrgLabels")
+    lookup("inCollection[].$last.label","lobidOrgLabels",delete:"true")
   end
 end
 
