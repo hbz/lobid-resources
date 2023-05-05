@@ -1,10 +1,17 @@
-
 add_field("@context","http://lobid.org/resources/context.jsonld")
 
 # Add maps
 do once("maps")
   include ("./fix/maps.fix")
 end
+# Add vars
+do once("vars")
+  put_var("member", "-")
+end
+
+# drop all local fields #1687
+de.hbz.lobid.helper.DropLocal()
+
 include ("./fix/identifiers.fix")
 include ("./fix/titleRelatedFields.fix")
 include ("./fix/describedBy.fix")
@@ -16,7 +23,6 @@ include ("./fix/item.fix")
 include ("./fix/mediumAndType.fix")
 # mediumAndType.fix is needed ahead of contribution.fix because of dependencies
 include ("./fix/contribution.fix")
-
 
 vacuum()
 retain(
