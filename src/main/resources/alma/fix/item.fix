@@ -24,6 +24,7 @@ do list(path:"ITM  ", "var": "$i")
   copy_field("hasItem[].$last.heldBy.id","hasItem[].$last.heldBy.isil")
   prepend("hasItem[].$last.heldBy.id", "http://lobid.org/organisations/")
   append("hasItem[].$last.heldBy.id","#!")
+  copy_field("hasItem[].$last.heldBy.id", "hasItem[].$last.heldBy.label")
   # item id is constructed "http://lobid.org/items/[almaMmsId of the record]:[isil of the Owner]:[almaMmsId of the holding]#!"
   paste("hasItem[].$last.id", "~http://lobid.org/items/","almaMmsId", "~:", "hasItem[].$last.heldBy.isil","~:", "$i.a","~#!", join_char: "")
 end
@@ -54,6 +55,7 @@ do list(path: "HOL  ", "var": "$i")
       copy_field("hasItem[].$last.heldBy.id","hasItem[].$last.heldBy.isil")
       prepend("hasItem[].$last.heldBy.id", "http://lobid.org/organisations/")
       append("hasItem[].$last.heldBy.id","#!")
+      copy_field("hasItem[].$last.heldBy.id", "hasItem[].$last.heldBy.label")
       # item id is constructed "http://lobid.org/items/[almaMmsId of the record]:[isil of the Owner]:[almaMmsId of the holding]#!"
       paste("hasItem[].$last.id", "~http://lobid.org/items/","almaMmsId", "~:", "hasItem[].$last.heldBy.isil","~:","$i.8","~#!", join_char: "")
     end
@@ -75,6 +77,7 @@ do list(path: "MBD  ", "var": "$i")
             copy_field("hasItem[].$last.heldBy.id","hasItem[].$last.heldBy.isil")
             prepend("hasItem[].$last.heldBy.id", "http://lobid.org/organisations/")
             append("hasItem[].$last.heldBy.id","#!")
+            copy_field("hasItem[].$last.heldBy.id", "hasItem[].$last.heldBy.label")
             # item id is constructed "http://lobid.org/items/[almaMmsId of the record]:[isil of the Owner]:[almaMmsId of the holding]#!"
             paste("hasItem[].$last.id", "~http://lobid.org/items/","almaMmsId", "~:", "hasItem[].$last.heldBy.isil","~:", "$i.i", "~#!", join_char: "")
           end
@@ -102,6 +105,7 @@ do list(path:"POR  ", "var": "$i")
     copy_field("hasItem[].$last.heldBy.id","hasItem[].$last.heldBy.isil")
     prepend("hasItem[].$last.heldBy.id", "http://lobid.org/organisations/")
     append("hasItem[].$last.heldBy.id","#!")
+    copy_field("hasItem[].$last.heldBy.id", "hasItem[].$last.heldBy.label")
     # item id is constructed "http://lobid.org/items/[almaMmsId of the record]:[isil of the Owner]:[almaMmsId of the holding]#!"
     paste("hasItem[].$last.id", "~http://lobid.org/items/","almaMmsId", "~:", "hasItem[].$last.heldBy.isil","~:", "$i.a","~#!", join_char: "")
   end
@@ -122,8 +126,11 @@ do list(path:"POR  ", "var": "$i")
       copy_field("hasItem[].$last.heldBy.id","hasItem[].$last.heldBy.isil")
       prepend("hasItem[].$last.heldBy.id", "http://lobid.org/organisations/")
       append("hasItem[].$last.heldBy.id","#!")
+      copy_field("hasItem[].$last.heldBy.id", "hasItem[].$last.heldBy.label")
       # item id is constructed "http://lobid.org/items/[almaMmsId of the record]:[isil of the Owner]:[almaMmsId of the holding]#!"
       paste("hasItem[].$last.id", "~http://lobid.org/items/","almaMmsId", "~:", "hasItem[].$last.heldBy.isil","~:", "$i.a","~#!", join_char: "")
     end
   end
 end
+
+lookup("hasItem[].*.heldBy.label", "lobidOrgLabels")
