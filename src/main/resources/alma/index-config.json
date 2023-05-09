@@ -303,9 +303,13 @@
                   },
                   "heldBy" : {
                      "properties" : {
-                        "label" : {
-                           "type" : "text",
-                           "index" : "false"
+                       "label" : {
+                           "fields" : {
+                              "raw" : {
+                                 "type" : "keyword"
+                              }
+                           },
+                           "type" : "text"
                         },
                         "id" : {
                            "type" : "keyword"
