@@ -276,13 +276,13 @@ do list(path:"084??", "var":"$i")
           paste("subject[].$last.id","~http://purl.org/lobid/rpb#","subject[].$last.notation",join_char:"")
           set_array("subject[].$last.type[]","Concept")
           add_field("subject[].$last.source.id","http://purl.org/lobid/rpb")
-          add_field("subject[].$last.source.label","Systematik der Rheinland-Pfälzischen Bibliographie")
+          add_field("subject[].$last.source.label","RPB-Sachsystematik")
         else
           copy_field("$j", "subject[].$append.notation")
           paste("subject[].$last.id","~https://w3id.org/lobid/rpb2#","$j",join_char:"")
           set_array("subject[].$last.type[]","Concept")
           add_field("subject[].$last.source.id","https://w3id.org/lobid/rpb2")
-          add_field("subject[].$last.source.label","RPB-Sachgruppen und Zusätze")
+          add_field("subject[].$last.source.label","LBZ-Notationen")
         end
       end
     end
