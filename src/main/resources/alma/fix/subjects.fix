@@ -281,15 +281,47 @@ do list(path:"084??", "var":"$i")
       do list(path:"$i.a", "var":"$j")
         copy_field("$j", "subject[].$append.notation")
         set_array("subject[].$last.type[]","Concept")
-        copy_field("$i.2", "subject[].$last.source.label")
-        lookup("subject[].$last.source.label","classificationCode2Label")
-        copy_field("$i.2","subject[].$last.source.id")
-        lookup("subject[].$last.source.id","classificationCode2Uri", delete:"true")
+         # LBZ-Notationen aka rpb2 fka RPB-Sachgruppen und Zusätze
+        if any_match("$i.2", "rpb")
+          if any_match("$j","\\d{3}")
+            copy_field("$j","$i.@rpb2NotationId")
+            prepend("$i.@rpb2NotationId","https://w3id.org/lobid/rpb2#n")
+            copy_field("$i.@rpb2NotationId","subject[].$last.id")
+            lookup("$i.@rpb2NotationId","rpb2")
+            move_field("$i.@rpb2NotationId","subject[].$last.label")
+            add_field("subject[].$last.source.id", "https://w3id.org/lobid/rpb2")
+            add_field("subject[].$last.source.label", "LBZ-Notationen")
+          # RPB-Raumsystematik aka rpbr
+          elsif any_match("$j","^rpbr.*")
+            copy_field("$j","$i.@rpbrNotationId")
+            replace_all("$i.@rpbrNotationId","rpbr_(.*)_","https://rpb.lobid.org/spatial#n$1")
+            copy_field("$i.@rpbrNotationId","subject[].$last.id")
+            lookup("$i.@rpbrNotationId","rpbr")
+            move_field("$i.@rpbrNotationId","subject[].$last.label")
+            add_field("subject[].$last.source.id", "https://rpb.lobid.org/spatial")
+            add_field("subject[].$last.source.label", "RPB-Raumsystematik")
+            replace_all("subject[].$last.notation","rpbr_(.*)_","$1")
+          # RPB-Sachsystematik fka. Systematik der Rheinland-Pfälzischen Bibliographie
+          elsif any_match("$j","^rpb.*")
+            copy_field("$j","$i.@rpbNotationId")
+            replace_all("$i.@rpbNotationId","rpb(.*)","http://purl.org/lobid/rpb#n$1")
+            copy_field("$i.@rpbNotationId","subject[].$last.id")
+            lookup("$i.@rpbNotationId","rpb")
+            move_field("$i.@rpbNotationId","subject[].$last.label")
+            add_field("subject[].$last.source.id", "http://purl.org/lobid/rpb")
+            add_field("subject[].$last.source.label", "RPB-Sachsystematik")
+            replace_all("subject[].$last.notation","rpb(.*)","$1")
+          end
+        else
+          copy_field("$i.2", "subject[].$last.source.label")
+          lookup("subject[].$last.source.label","classificationCode2Label")
+          copy_field("$i.2","subject[].$last.source.id")
+          lookup("subject[].$last.source.id","classificationCode2Uri", delete:"true")
+        end
       end
     end
   end
 end
-
 
 # 689 RSWK Schlagwortfolgen fka: Schlagwortketten 1 - 10 - no info on repeatability
 do once("schlagwortfolgeMacro")
