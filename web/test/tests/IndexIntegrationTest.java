@@ -83,7 +83,11 @@ public class IndexIntegrationTest extends LocalIndexSetup {
 			{ "(+Handbook +on +policy +process +and +governing)", /*->*/ 1},
 			{ "\"Mülheim an der Ruhr\"", /*->*/ 1},
 			{ "(+Mülheim +an +der +Ruhr)", /*->*/ 1},
-			{ "\"Amtliche Publikation\"", /*->*/ 1}
+			{ "\"Amtliche Publikation\"", /*->*/ 1},
+			{ "describedBy.resultOf.object.dateCreated:\"2023-03-22\"", /*->*/ 1},
+			{ "describedBy.resultOf.object.dateModified:\"2022-07-18\"", /*->*/ 1},
+			{ "describedBy.resultOf.object.sourceOrganization.id:\"http\\://lobid.org/organisations/DE-5#\\!\"", /*->*/ 4},
+			{ "describedBy.resultOf.object.modifiedBy.id:\"http\\://lobid.org/organisations/DE-6#\\!\"", /*->*/ 11 }
 		});
 	} // @formatter:on
 
