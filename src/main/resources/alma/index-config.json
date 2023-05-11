@@ -63,72 +63,6 @@
       }
    },
    "mappings" : {
-      "item" : {
-         "date_detection" : "false",
-         "properties" : {
-            "describedBy" : {
-               "properties" : {
-                  "id" : {
-                     "index" : "false",
-                     "type" : "keyword"
-                  },
-                  "label" : {
-                     "type" : "text",
-                     "index": "false"
-                  }
-               }
-            },
-            "type" : {
-               "type" : "keyword"
-            },
-            "itemOf" : {
-               "properties" : {
-                  "label" : {
-                     "index": "false",
-                     "type" : "text"
-                  },
-                  "id" : {
-                     "type" : "keyword",
-                     "index": "false"
-                  }
-               }
-            },
-            "id" : {
-               "type" : "keyword"
-            },
-            "heldBy" : {
-               "properties" : {
-                  "label" : {
-                     "type" : "text",
-                     "fields": {
-                        "raw": {
-                          "type": "keyword"
-                        }
-                     }
-                  },
-                  "id" : {
-                     "type" : "keyword"
-                  }
-               }
-            },
-            "note" : {
-               "index": "false",
-               "type" : "text"
-            },
-            "callNumber" : {
-               "type" : "keyword"
-            }
-         },
-         "_parent" : {
-            "type" : "resource"
-         },
-         "_routing" : {
-            "required" : true
-         },
-         "_all" : {
-            "analyzer" : "german_analyzer"
-         }
-      },
       "resource" : {
          "dynamic": false,
          "properties" : {
@@ -369,7 +303,12 @@
                   },
                   "heldBy" : {
                      "properties" : {
-                        "label" : {
+                       "label" : {
+                           "fields" : {
+                              "raw" : {
+                                 "type" : "keyword"
+                              }
+                           },
                            "type" : "text",
                            "index" : "false"
                         },
