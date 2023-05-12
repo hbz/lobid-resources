@@ -2,10 +2,11 @@
 
 package controllers.resources;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
+import java.net.URL;
+import java.net.URLConnection;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.text.Collator;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -101,6 +102,8 @@ public class Application extends Controller {
 			new File("conf/resources.conf") : new File("conf/resources.conf_template")  ;
 	public final static Config CONFIG =
 			ConfigFactory.parseFile(RESOURCES_CONF).resolve();
+	public final static String MARC_XML_API = CONFIG.getString("mrcx.api");
+
 
 	static Form<String> queryForm = Form.form(String.class);
 
@@ -482,6 +485,17 @@ public class Application extends Controller {
 				return result != null
 						? ok(details.render(CONFIG, result.toString(), id))
 						: notFound(details.render(CONFIG, "", id));
+			}
+			boolean marcxmlRequested =
+				responseFormat.equals(Accept.Format.MARC_XML.queryParamString);
+			if (marcxmlRequested) {
+				URLConnection conn = new URL(MARC_XML_API + id).openConnection();
+				String marcxml;
+				try (BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8))) {
+					marcxml = reader.lines().collect(Collectors.joining("\n"));
+				}
+				return marcxml.isEmpty() ? internalServerError("No content")
+					: ok(marcxml).as(Format.MARC_XML.types[0] + "; charset=utf-8");
 			}
 			return result != null ? responseFor(result, responseFormat)
 					: notFound("\"Not found: " + id + "\"");

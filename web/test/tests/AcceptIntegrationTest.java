@@ -58,10 +58,12 @@ public class AcceptIntegrationTest extends LocalIndexSetup {
 			{ fakeRequest(GET, "/resources/990210781980206441").header("Accept", "application/pdf"), /*->*/ "application/json" },
 			// get, other formats as query param:
 			{ fakeRequest(GET, "/resources/990210781980206441?format=html"), /*->*/ "text/html" },
+			{ fakeRequest(GET, "/resources/990210781980206441?format=mrcx"), /*->*/ "application/marcxml+xml" },
 			{ fakeRequest(GET, "/resources/990210781980206441?format=rdf"), /*->*/ "application/rdf+xml" },
 			{ fakeRequest(GET, "/resources/990210781980206441?format=ttl"), /*->*/ "text/turtle" },
 			{ fakeRequest(GET, "/resources/990210781980206441?format=nt"), /*->*/ "application/n-triples" },
 			// get, formats as URL path elem:
+			{ fakeRequest(GET, "/resources/990210781980206441.mrcx"), /*->*/ "application/marcxml+xml" },
 			{ fakeRequest(GET, "/resources/990210781980206441.html"), /*->*/ "text/html" },
 			{ fakeRequest(GET, "/resources/990210781980206441.json"), /*->*/ "application/json" },
 			{ fakeRequest(GET, "/resources/990210781980206441.rdf"), /*->*/ "application/rdf+xml" },
@@ -71,6 +73,7 @@ public class AcceptIntegrationTest extends LocalIndexSetup {
 			{ fakeRequest(GET, "/resources/990210781980206441").header("Accept", "application/json"), /*->*/ "application/json" },
 			{ fakeRequest(GET, "/resources/990210781980206441").header("Accept", "text/html"), /*->*/ "text/html" },
 			{ fakeRequest(GET, "/resources/990210781980206441").header("Accept", "text/xml"), /*->*/ "application/rdf+xml" },
+			{ fakeRequest(GET, "/resources/990210781980206441").header("Accept", "application/marcxml+xml"), /*->*/ "application/marcxml+xml" },
 			{ fakeRequest(GET, "/resources/990210781980206441").header("Accept", "application/xml"), /*->*/ "application/rdf+xml" },
 			{ fakeRequest(GET, "/resources/990210781980206441").header("Accept", "application/rdf+xml"), /*->*/ "application/rdf+xml" },
 			{ fakeRequest(GET, "/resources/990210781980206441").header("Accept", "text/turtle"), /*->*/ "text/turtle" },
