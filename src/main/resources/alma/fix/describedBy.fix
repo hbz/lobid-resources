@@ -94,6 +94,7 @@ end
 
 do once("provenanceLinksMacro")
   do put_macro("provenanceLinks")
+    lookup("$[field]","sigel2isilMap")
     replace_all("$[field]", " ", "")
     replace_all("$[field]", "\\/Inst","")
     if any_match("$[field]",".*(hbz|HBZ).*")

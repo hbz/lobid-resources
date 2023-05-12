@@ -69,6 +69,7 @@ public final class AlmaMarc21XmlToLobidJsonMetafixTest {
         fixVariables.put("nwbibWikidataLabelTypeCoords.tsv", "src/main/resources/alma/maps/nwbibWikidataLabelTypeCoords.tsv");
         fixVariables.put("almaMmsId2rpbId", "src/main/resources/alma/maps/almaMmsId2rpbId.tsv");
         fixVariables.put("lobidOrgLabels", "src/main/resources/alma/maps/lobidOrgLabels.tsv");
+        fixVariables.put("sigel2isilMap.tsv", "src/main/resources/alma/maps/sigel2isilMap.tsv");
     }
 
     /**
