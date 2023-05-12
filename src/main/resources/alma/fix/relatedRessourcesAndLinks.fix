@@ -337,11 +337,19 @@ set_array("inCollection[]")
 
 # hbz NZ
 
-do list(path:"MBD  ","var":"$i")
-  if any_equal("$i.M", "49HBZ_NETWORK")
-    add_field("inCollection[].$append.id", "http://lobid.org/organisations/DE-655#!")
-    add_field("inCollection[].$last.label", "hbz - Hochschulbibliothekszentrum des Landes Nordrhein-Westfalen, Netzwerkzone")
+if any_equal("MBD  .M", "49HBZ_NETWORK")
+  if any_match("POR  .A", ".*")
+    add_field("@inNZ", "true")
+  else
+    unless any_match("035  .a", "^\\(EXLCZ\\).*")
+      add_field("@inNZ", "true")
+    end
   end
+end
+
+if exists("@inNZ")
+  add_field("inCollection[].$append.id", "http://lobid.org/organisations/DE-655#!")
+  add_field("inCollection[].$last.label", "hbz - Hochschulbibliothekszentrum des Landes Nordrhein-Westfalen, Netzwerkzone")
 end
 
 # zdb
