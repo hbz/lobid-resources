@@ -718,34 +718,15 @@
             },
             "describedBy" : {
                "properties" : {
-                  "dateCreated" : {
-                     "type": "date",
-                     "format": "yyyyMMdd"
-                  },
                   "id" : {
                      "index" :"false",
                      "type" : "keyword"
-                  },
-                  "dateModified" : {
-                     "type": "date",
-                     "format": "yyyyMMdd"
                   },
                   "label" : {
                      "type" : "text",
                      "index": "false"
                   },
-                  "modifiedBy" : {
-                     "properties" : {
-                        "id" : {
-                           "type" : "keyword"
-                        },
-                        "label": {
-                           "index" : "false",
-                           "type" : "keyword"
-                        }
-                     }
-                  },
-                  "resultOf" : {
+                 "resultOf" : {
                      "properties" : {
                         "endTime" : {
                            "index" : "false",
@@ -765,6 +746,14 @@
                         },
                         "object" : {
                            "properties" : {
+                              "dateCreated" : {
+                                 "type": "date",
+                                 "format": "yyyy-MM-dd"
+                              },
+                              "dateModified" : {
+                                 "type": "date",
+                                 "format": "yyyy-MM-dd"
+                              },
                               "id" : {
                                  "index" : "false",
                                  "type" : "keyword"
@@ -772,34 +761,45 @@
                               "label" : {
                                  "index" : "false",
                                  "type" : "text"
+                              },
+                              "modifiedBy" : {
+                                 "properties" : {
+                                    "id" : {
+                                       "type" : "keyword"
+                                    },
+                                    "label": {
+                                       "index" : "false",
+                                       "type" : "keyword"
+                                    }
+                                 }
+                              },
+                              "sourceOrganization" : {
+                                 "properties" : {
+                                     "id" : {
+                                         "type" : "keyword"
+                                     },
+                                     "label": {
+                                         "index" : "false",
+                                         "type" : "keyword"
+                                     }
+                                 }
+                              },
+                              "provider" : {
+                                 "properties" : {
+                                     "id" : {
+                                         "type" : "keyword"
+                                     },
+                                     "label": {
+                                        "index" : "false",
+                                        "type" : "keyword"
+                                     }
+                                 }
+                              },
+                              "type" : {
+                                 "index" : false,
+                                 "type" : "keyword"
                               }
                            }
-                        },
-                        "type" : {
-                           "index" : "false",
-                           "type" : "keyword"
-                        }
-                     }
-                  },
-                  "sourceOrganization" : {
-                     "properties" : {
-                        "id" : {
-                           "type" : "keyword"
-                        },
-                        "label": {
-                           "index" : "false",
-                           "type" : "keyword"
-                        }
-                     }
-                  },
-                  "provider" : {
-                     "properties" : {
-                        "id" : {
-                           "type" : "keyword"
-                        },
-                        "label": {
-                           "index" : "false",
-                           "type" : "keyword"
                         }
                      }
                   }
