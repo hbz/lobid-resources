@@ -86,8 +86,10 @@ end
 # 1. Indicator: 4 = HTTP
 do list(path:"8564?", "var":"$i")
   if any_contain("$i.u","doi")
-    copy_field("$i.u", "doi[].$append")
-    replace_all("doi[].$last", "^.*doi.org/(.*)$", "$1")
+    if all_match("$i.u", ".*(10\\.(\\d)+/(\\S)+).*") # Volltext
+      copy_field("$i.u", "doi[].$append")
+      replace_all("doi[].$last", ".*(10\\.(\\d)+/(\\S)+).*", "$1")
+    end
   end
 end
 uniq("doi[]")
