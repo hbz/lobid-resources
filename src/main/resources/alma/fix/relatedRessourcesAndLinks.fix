@@ -258,10 +258,6 @@ do list(path: "8564?", "var":"$i")
       copy_field("$i.3", "fulltextOnline[].$append.label")
       copy_field("$i.u", "fulltextOnline[].$last.id")
     end
-    if all_match("$i.u", "^http:\\/\\/nbn-resolving.de\\/urn.*") # Volltext
-      copy_field("$i.u", "fulltextOnline[].$append.id")
-      add_field("fulltextOnline[].$last.label", "URN-Link")
-    end
   end
 end
 
@@ -274,7 +270,14 @@ do list(path:"doi[]","var":"$i")
   add_field("fulltextOnline[].$last.label", "DOI-Link")
 end
 
+# urn for fullTextOnline and sameAs
 
+do list(path:"urn[]","var":"$i")
+  copy_field("$i", "fulltextOnline[].$append.id")
+  prepend("fulltextOnline[].$last.id","https://nbn-resolving.de/")
+  copy_field("fulltextOnline[].$last.id", "sameAs[].$append.id")
+  add_field("fulltextOnline[].$last.label", "URN-Link")
+end
 
 # TODO: hasVersion is outcommented since it needs some remodelling
 # See https://github.com/hbz/lobid-resources/issues/1242
@@ -496,12 +499,6 @@ end
 
 
 set_array("inCollection[].*.type[]","Collection")
-
-
-do list(path:"urn[]", "var":"$i")
-  copy_field("$i", "sameAs[].$append.id")
-  replace_all("sameAs[].$last.id", "^(.*)$","http://nbn-resolving.de/$1")
-end
 
 
 # predecessor
