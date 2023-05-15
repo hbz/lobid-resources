@@ -68,11 +68,16 @@ set_array("subject[]")
 # I change the approach from element oriented (all 630) to a subject/concept kind oriented approach (all LCSH, all GND, all keywords, etc.)
 
 # 610 - Subject Added Entry-Corporate Name (R), Subfield: $a (NR)
+# 611 - Subject Added Entry - Meeting Name (R)
+# 630 - Subject Added Entry - Uniform Title (R) 
+# 648 - Subject Added Entry - Chronological Term (R) 
 # 650 - Subject Added Entry-Topical Term (R),  Subfield: $a (NR)
+# 651 - Subject Added Entry - Geographic Name (R)
 # 653 - Index Term-Uncontrolled (R),  !!! Subfield: $a (R) !!!!
+# 688 - Subject Added Entry - Type of Entity Unspecified (R)
 
 
-do list(path:"600?4|610?4|611?4|630?4|648?4|650?4|651?4|653??", "var":"$i")
+do list(path:"600?4|610?4|611?4|630?4|648?4|650?4|651?4|653??|688??", "var":"$i")
   set_array("subject[].$append.type[]","Concept")
   add_field("subject[].$last.source.label","Freie Verschlagwortung")
   add_field("subject[].$last.source.id","https://www.wikidata.org/wiki/Q47524318")
