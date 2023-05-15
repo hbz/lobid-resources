@@ -85,11 +85,9 @@ end
 # 856 - Electronic Location and Access (R) - Subfield: $u (R) $3 (NR)
 # 1. Indicator: 4 = HTTP
 do list(path:"8564?", "var":"$i")
-  if any_contain("$i.u","doi")
-    if all_match("$i.u", ".*(10\\.(\\d)+/(\\S)+).*") # Volltext
-      copy_field("$i.u", "doi[].$append")
-      replace_all("doi[].$last", ".*(10\\.(\\d)+/(\\S)+).*", "$1")
-    end
+  if all_match("$i.u", ".*(10\\.(\\d)+/(\\S)+).*") # Volltext
+    copy_field("$i.u", "doi[].$append")
+    replace_all("doi[].$last", ".*(10\\.(\\d)+/(\\S)+).*", "$1")
   end
 end
 uniq("doi[]")

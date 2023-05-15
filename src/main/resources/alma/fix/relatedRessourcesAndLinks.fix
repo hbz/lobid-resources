@@ -258,16 +258,22 @@ do list(path: "8564?", "var":"$i")
       copy_field("$i.3", "fulltextOnline[].$append.label")
       copy_field("$i.u", "fulltextOnline[].$last.id")
     end
-    if all_match("$i.u", "^http:\\/\\/dx.doi.org\\/.*") # Volltext
-      copy_field("$i.u", "fulltextOnline[].$append.id")
-      add_field("fulltextOnline[].$last.label", "DOI-Link")
-    end
     if all_match("$i.u", "^http:\\/\\/nbn-resolving.de\\/urn.*") # Volltext
       copy_field("$i.u", "fulltextOnline[].$append.id")
       add_field("fulltextOnline[].$last.label", "URN-Link")
     end
   end
 end
+
+# doi for fullTextOnline and sameAs
+
+do list(path:"doi[]","var":"$i")
+  copy_field("$i", "fulltextOnline[].$append.id")
+  prepend("fulltextOnline[].$last.id","https://doi.org/")
+  copy_field("fulltextOnline[].$last.id", "sameAs[].$append.id")
+  add_field("fulltextOnline[].$last.label", "DOI-Link")
+end
+
 
 
 # TODO: hasVersion is outcommented since it needs some remodelling
@@ -491,11 +497,6 @@ end
 
 set_array("inCollection[].*.type[]","Collection")
 
-
-do list(path:"doi[]", "var":"$i")
-  copy_field("$i", "sameAs[].$append.id")
-  replace_all("sameAs[].$last.id", "^(.*)$","http://dx.doi.org/$1")
-end
 
 do list(path:"urn[]", "var":"$i")
   copy_field("$i", "sameAs[].$append.id")
