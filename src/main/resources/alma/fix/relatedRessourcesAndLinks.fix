@@ -204,6 +204,23 @@ end
 replace_all("primaryForm[].*.id", "^\\(DE-605\\)(.*)$", "http://lobid.org/resources/$1#!")
 replace_all("primaryForm[].*.id", "^\\(DE-600\\)(.*)$", "http://lobid.org/resources/ZDB-$1#!")
 
+# secondaryForm
+
+set_array("secondaryForm[]")
+
+do list(path: "77608", "var":"$i")
+  if any_match ("$i.i", ".*eproduktion")
+    add_field("secondaryForm[].$append.test","")
+    if all_match("$i.w", "^\\((?:DE-600|DE-605)\\)(.*)$")
+      copy_field("$i.w", "secondaryForm[].$last.id")
+    end
+    copy_field("$i.i", "secondaryForm[].$last.label")
+  end
+end
+
+replace_all("secondaryForm[].*.id", "^\\(DE-605\\)(.*)$", "http://lobid.org/resources/$1#!")
+replace_all("secondaryForm[].*.id", "^\\(DE-600\\)(.*)$", "http://lobid.org/resources/ZDB-$1#!")
+
 # 856 - Electronic Location and Access (R) - Subfield: $u (R) $3 (NR)
 # 1. Indicator: 4 = HTTP
 
@@ -314,7 +331,7 @@ end
 set_array("related[]")
 do list(path:"775??|776??", "var":"$i")
   unless exists("$i.M")
-    unless any_match ("$i.i", ".*eproduktion von.*")
+    unless any_match ("$i.i", ".*eproduktion von.*|.*eproduktion")
       add_field("related[].$append.test","")
       if all_match("$i.w", "^\\((?:DE-600|DE-605)\\)(.*)$")
         copy_field("$i.w", "related[].$last.id")
