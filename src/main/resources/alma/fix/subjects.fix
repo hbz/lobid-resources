@@ -182,6 +182,9 @@ do once("gndNonPersonCombinedLabel")
     if exists("$[field].g")
       paste("$[field].@combinedLabel", "$[field].@combinedLabel", "~ (", "$[field].g", "~)", join_char:"")
     end
+    if exists("$[field].n")
+      paste("$[field].@combinedLabel", "$[field].@combinedLabel", "~, ","$[field].n", join_char:"")
+    end
     if exists("$[field].x")
       paste("$[field].@combinedLabel", "$[field].@combinedLabel", "~/","$[field].x")
     end
