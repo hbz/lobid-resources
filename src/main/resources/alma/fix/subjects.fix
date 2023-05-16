@@ -176,11 +176,25 @@ do once("gndNonPersonCombinedLabel")
     copy_field("$[field].a","$[field].@combinedLabel.$append")
     copy_field("$[field].b","$[field].@combinedLabel.$append")
     join_field("$[field].@combinedLabel", ". ") # This is the difference to gnd person
-    if exists("$[field].c")
-      paste("$[field].@combinedLabel", "$[field].@combinedLabel", "~, ", "$[field].c", join_char:"")
-    end
-    if exists("$[field].g")
-      paste("$[field].@combinedLabel", "$[field].@combinedLabel", "~ (", "$[field].g", "~)", join_char:"")
+    if exists("$[field].d") # special move for events
+      set_array("$[field].@combinedDetailsForEvents") 
+      if exists("$[field].g")
+        paste("$[field].@combinedDetailsForEvents", "$[field].g", join_char:"")
+      end
+      if exists("$[field].d")
+        paste("$[field].@combinedDetailsForEvents", "$[field].@combinedDetailsForEvents", "~ : ", "$[field].d", join_char:"")
+      end
+      if exists("$[field].c")
+        paste("$[field].@combinedDetailsForEvents", "$[field].@combinedDetailsForEvents", "~ : ", "$[field].c", join_char:"")
+      end
+      paste("$[field].@combinedLabel", "$[field].@combinedLabel", "~ (", "$[field].@combinedDetailsForEvents", "~)", join_char:"")
+    else
+      if exists("$[field].c")
+        paste("$[field].@combinedLabel", "$[field].@combinedLabel", "~, ", "$[field].c", join_char:"")
+      end
+      if exists("$[field].g")
+        paste("$[field].@combinedLabel", "$[field].@combinedLabel", "~ (", "$[field].g", "~)", join_char:"")
+      end
     end
     if exists("$[field].n")
       paste("$[field].@combinedLabel", "$[field].@combinedLabel", "~, ","$[field].n", join_char:"")
