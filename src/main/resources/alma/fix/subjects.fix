@@ -66,7 +66,7 @@ set_array("subject[]")
 
 
 # I change the approach from element oriented (all 630) to a subject/concept kind oriented approach (all LCSH, all GND, all keywords, etc.)
-
+# 600 - Subject Added Entry - Personal Name (R)
 # 610 - Subject Added Entry-Corporate Name (R), Subfield: $a (NR)
 # 611 - Subject Added Entry - Meeting Name (R)
 # 630 - Subject Added Entry - Uniform Title (R) 
@@ -116,24 +116,32 @@ do list(path:"600?7|610?7|611?7|630?7|648?7|650?7|651?7", "var":"$i")
   end
 end
 
+# Macro for combinedLabel Person
+
+do once("gndPersonCombinedLabel")
+  do put_macro("gndPersonCombinedLabel")
+      set_array("$[field].@combinedLabel")  # check if GND concept has combined variant
+      copy_field("$[field].a","$[field].@combinedLabel.$append")
+      copy_field("$[field].b","$[field].@combinedLabel.$append")
+      join_field("$[field].@combinedLabel", " ") # This is the difference to gnd non person
+      if exists("$[field].c")
+        paste("$[field].@combinedLabel", "$[field].@combinedLabel", "~, ", "$[field].c", join_char:"")
+      end
+      if exists("$[field].g")
+        paste("$[field].@combinedLabel", "$[field].@combinedLabel", "~ (", "$[field].g", "~)", join_char:"")
+      end
+      if exists("$[field].x")
+        paste("$[field].@combinedLabel", "$[field].@combinedLabel", "~/","$[field].x")
+      end
+  end
+end
+
 do list(path:"600??", "var":"$i")
   if any_match("$i.0","^\\(DE-588\\)(.*)$")
     set_array("subject[].$append.type[]","Concept")
     add_field("subject[].$last.source.label","Gemeinsame Normdatei (GND)")
     add_field("subject[].$last.source.id","https://d-nb.info/gnd/7749153-1")
-    set_array("$i.@combinedLabel")  # check if GND concept has combined variant
-    copy_field("$i.a","$i.@combinedLabel.$append")
-    copy_field("$i.b","$i.@combinedLabel.$append")
-    join_field("$i.@combinedLabel", " ")
-    if exists("$i.c")
-      paste("$i.@combinedLabel", "$i.@combinedLabel", "~, ", "$i.c", join_char:"")
-    end
-    if exists("$i.g")
-      paste("$i.@combinedLabel", "$i.@combinedLabel", "~ (", "$i.g", "~)", join_char:"")
-    end
-    if exists("$i.x")
-      paste("$i.@combinedLabel", "$i.@combinedLabel", "~/","$i.x")
-    end
+    call_macro("gndPersonCombinedLabel",field:"$i")
     copy_field("$i.@combinedLabel", "subject[].$last.label")
     do list(path:"$i.0", "var":"$j")
       if any_match("$j","^\\(DE-588\\)(.*)$")
@@ -160,24 +168,32 @@ do list(path:"600??", "var":"$i")
   end
 end
 
+# Macro for combinedLabel Non-Person
+
+do once("gndNonPersonCombinedLabel")
+  do put_macro("gndNonPersonCombinedLabel")
+    set_array("$[field].@combinedLabel")  # check if GND concept has combined variant
+    copy_field("$[field].a","$[field].@combinedLabel.$append")
+    copy_field("$[field].b","$[field].@combinedLabel.$append")
+    join_field("$[field].@combinedLabel", ". ") # This is the difference to gnd person
+    if exists("$[field].c")
+      paste("$[field].@combinedLabel", "$[field].@combinedLabel", "~, ", "$[field].c", join_char:"")
+    end
+    if exists("$[field].g")
+      paste("$[field].@combinedLabel", "$[field].@combinedLabel", "~ (", "$[field].g", "~)", join_char:"")
+    end
+    if exists("$[field].x")
+      paste("$[field].@combinedLabel", "$[field].@combinedLabel", "~/","$[field].x")
+    end
+  end
+end
+
 do list(path:"610??|611??|630??|648??|650??|651??", "var":"$i")
   if any_match("$i.0","^\\(DE-588\\)(.*)$")
     set_array("subject[].$append.type[]","Concept")
     add_field("subject[].$last.source.label","Gemeinsame Normdatei (GND)")
     add_field("subject[].$last.source.id","https://d-nb.info/gnd/7749153-1")
-    set_array("$i.@combinedLabel")  # check if GND concept has combined variant
-    copy_field("$i.a","$i.@combinedLabel.$append")
-    copy_field("$i.b","$i.@combinedLabel.$append")
-    join_field("$i.@combinedLabel", ". ")
-    if exists("$i.c")
-      paste("$i.@combinedLabel", "$i.@combinedLabel", "~, ", "$i.c", join_char:"")
-    end
-    if exists("$i.g")
-      paste("$i.@combinedLabel", "$i.@combinedLabel", "~ (", "$i.g", "~)", join_char:"")
-    end
-    if exists("$i.x")
-      paste("$i.@combinedLabel", "$i.@combinedLabel", "~/","$i.x")
-    end
+    call_macro("gndNonPersonCombinedLabel",field:"$i")
     copy_field("$i.@combinedLabel", "subject[].$last.label")
     do list(path:"$i.0", "var":"$j")
       if any_match("$j","^\\(DE-588\\)(.*)$")
@@ -210,38 +226,14 @@ do list(path:"subject[]", "var":"$i")
   set_array("$i.altLabel[]")
   do list(path:"GPN??", "var": "$z")
     if in ("$i.@gndIdn", "$z.B") # Person labels have no character between $a (Name) and $b (Number).
-      set_array("$z.@combinedLabel")
-      copy_field("$z.a","$z.@combinedLabel.$append")
-      copy_field("$z.b","$z.@combinedLabel.$append")
-      join_field("$z.@combinedLabel", " ")
-      if exists("$z.c")
-        paste("$z.@combinedLabel", "$z.@combinedLabel", "~, ", "$z.c", join_char:"")
-      end
-      if exists("$z.g")
-        paste("$z.@combinedLabel", "$z.@combinedLabel", "~ (", "$z.g", "~)", join_char:"")
-      end
-      if exists("$z.x")
-        paste("$z.@combinedLabel", "$z.@combinedLabel", "~/","$z.x")
-      end
+      call_macro("gndPersonCombinedLabel",field:"$z")
       copy_field("$z.@combinedLabel", "$i.altLabel[].$append")
     end
   end
   do list(path:"GEL??|GKT??|GKS??|GST??|GGN??", "var": "$z")  # Other altLabels have a "," character between $a and $b.
     unless any_equal("$z.i","Spitzenorgan")
       if in ("$i.@gndIdn", "$z.B")
-        set_array("$z.@combinedLabel")  # check if GND concept has combined variant
-        copy_field("$z.a","$z.@combinedLabel.$append")
-        copy_field("$z.b","$z.@combinedLabel.$append")
-        join_field("$z.@combinedLabel", ". ")
-        if exists("$z.c")
-          paste("$z.@combinedLabel", "$z.@combinedLabel", "~, ", "$z.c", join_char:"")
-        end
-        if exists("$z.g")
-          paste("$z.@combinedLabel", "$z.@combinedLabel", "~ (", "$z.g", "~)", join_char:"")
-        end
-        if exists("$z.x")
-          paste("$z.@combinedLabel", "$z.@combinedLabel", "~/","$z.x")
-        end
+        call_macro("gndNonPersonCombinedLabel",field:"$z")
         copy_field("$z.@combinedLabel", "$i.altLabel[].$append")
       end
     end
@@ -368,22 +360,10 @@ do once("schlagwortfolgeMacro")
         do list(path: "$i.D", "var": "$k")
           copy_field("$k","subject[].$last.componentList[].$last.type[].$append")
         end
-        set_array("$i.@combinedLabel")  # check if GND concept has combined variant
-        copy_field("$i.a","$i.@combinedLabel.$append")
-        copy_field("$i.b","$i.@combinedLabel.$append")
         if any_equal("subject[].$last.componentList[].$last.type[]","p")
-          join_field("$i.@combinedLabel", " ")
+          call_macro("gndPersonCombinedLabel",field:"$i") 
         else
-          join_field("$i.@combinedLabel", ". ")
-        end
-        if exists("$i.c")
-          paste("$i.@combinedLabel", "$i.@combinedLabel", "~, ", "$i.c", join_char:"")
-        end
-        if exists("$i.g")
-          paste("$i.@combinedLabel", "$i.@combinedLabel", "~ (", "$i.g", "~)", join_char:"")
-        end
-        if exists("$i.x")
-          paste("$i.@combinedLabel", "$i.@combinedLabel", "~/","$i.x")
+          call_macro("gndNonPersonCombinedLabel",field:"$i")
         end
         copy_field("$i.@combinedLabel", "subject[].$last.componentList[].$last.label")
         unless any_equal("subject[].$last.componentList[].$last.label","")
@@ -495,38 +475,14 @@ do list (path: "subject[]", "var": "$i")
     set_array("$j.altLabel[]")
     do list(path:"GPN??", "var": "$z")
       if in ("$j.@gndIdn", "$z.B") # Person labels have no character between $a (Name) and $b (Number).
-        set_array("$z.@combinedLabel")
-        copy_field("$z.a","$z.@combinedLabel.$append")
-        copy_field("$z.b","$z.@combinedLabel.$append")
-        join_field("$z.@combinedLabel", " ")
-        if exists("$z.c")
-          paste("$z.@combinedLabel", "$z.@combinedLabel", "~, ", "$z.c", join_char:"")
-        end
-        if exists("$z.g")
-          paste("$z.@combinedLabel", "$z.@combinedLabel", "~ (", "$z.g", "~)", join_char:"")
-        end
-        if exists("$z.x")
-          paste("$z.@combinedLabel", "$z.@combinedLabel", "~/","$z.x")
-        end
+        call_macro("gndPersonCombinedLabel",field:"$z") 
         copy_field("$z.@combinedLabel", "$j.altLabel[].$append")
       end
     end
     do list(path:"GEL??|GKT??|GKS??|GST??|GGN??", "var": "$z")  # Other altLabels have a "," character between $a and $b.
       unless any_equal("$z.i","Spitzenorgan")
         if in ("$j.@gndIdn", "$z.B")  # check if GND concept has combined variant
-          set_array("$z.@combinedLabel")
-          copy_field("$z.a","$z.@combinedLabel.$append")
-          copy_field("$z.b","$z.@combinedLabel.$append")
-          join_field("$z.@combinedLabel", ". ")
-          if exists("$z.c")
-            paste("$z.@combinedLabel", "$z.@combinedLabel", "~, ", "$z.c", join_char:"")
-          end
-          if exists("$z.g")
-            paste("$z.@combinedLabel", "$z.@combinedLabel", "~ (", "$z.g", "~)", join_char:"")
-          end
-          if exists("$z.x")
-            paste("$z.@combinedLabel", "$z.@combinedLabel", "~/","$z.x")
-          end
+          call_macro("gndNonPersonCombinedLabel",field:"$z")
           copy_field("$z.@combinedLabel", "$j.altLabel[].$append")
         end
       end
