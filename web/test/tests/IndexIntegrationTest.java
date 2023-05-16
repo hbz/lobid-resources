@@ -34,14 +34,14 @@ public class IndexIntegrationTest extends LocalIndexSetup {
 		// @formatter:off
 		return queries(new Object[][] {
 			{ "title:der", /*->*/ 12 },
-			{ "title:Westfalen", /*->*/ 6 },
+			{ "title:Westfalen", /*->*/ 7 },
 			{ "contribution.agent.label:Westfalen", /*->*/ 3 },
 			{ "contribution.agent.label:Westfälen", /*->*/ 3 },
 			{ "contribution.agent.id:\"https\\://d-nb.info/gnd/5253963-5\"", /*->*/ 1 },
 			{ "contribution.agent.id:5265186-1", /*->*/ 0 },
 			{ "contribution.agent.id:\"5265186-1\"", /*->*/ 0 },
 			{ "title:Westfalen AND contribution.agent.label:Prause", /*->*/ 1 },
-			{ "title:Westfalen OR title:Munsterland", /*->*/ 6 },
+			{ "title:Westfalen OR title:Munsterland", /*->*/ 7 },
 			{ "(title:Westfalen OR title:Münsterland) AND contribution.agent.id:\"https\\://d-nb.info/gnd/5253963-5\"", /*->*/ 0 },
 			{ "subject.componentList.label:Düsseldorf", /*->*/ 1 },
 			{ "subject.componentList.label:Duesseldorf", /*->*/ 1 },
@@ -49,14 +49,14 @@ public class IndexIntegrationTest extends LocalIndexSetup {
 			{ "subject.componentList.label:Düsseldorfer", /*->*/ 1 },
 			{ "subject.componentList.label.unstemmed:Düsseldorfer", /*->*/ 0 },
 			{ "subject.componentList.id:\"https\\://d-nb.info/gnd/4042570-8\"", /*->*/ 2 },
-			{ "(title:Westfalen OR title:Münsterland) AND NOT contribution.agent.id:\"https\\://d-nb.info/gnd/2019209-5\"", /*->*/ 6 },
-			{ "subject.componentList.label:Westfalen", /*->*/ 6 },
-			{ "subject.componentList.label:Westfälen", /*->*/ 6 },
-			{ "spatial.label:Westfalen", /*->*/ 5 },
-			{ "spatial.label:Westfälen", /*->*/ 5 },
+			{ "(title:Westfalen OR title:Münsterland) AND NOT contribution.agent.id:\"https\\://d-nb.info/gnd/2019209-5\"", /*->*/ 7 },
+			{ "subject.componentList.label:Westfalen", /*->*/ 9 },
+			{ "subject.componentList.label:Westfälen", /*->*/ 9 },
+			{ "spatial.label:Westfalen", /*->*/ 6 },
+			{ "spatial.label:Westfälen", /*->*/ 6 },
 			{ "subject.componentList.id:1113670827", /*->*/ 0 },
 			{ "subject.componentList.type:PlaceOrGeographicName", /*->*/ 16 },
-			{ "publication.location:Berlin", /*->*/ 12 },
+			{ "publication.location:Berlin", /*->*/ 13 },
 			{ "subject.notation:914.3", /*->*/ 4 },
 			{ "subject.notation:914", /*->*/ 0 },
 			{ "subject.notation:914*", /*->*/ 4 },
@@ -65,7 +65,7 @@ public class IndexIntegrationTest extends LocalIndexSetup {
 			{ "publication.startDate:1993", /*->*/ 2 },
 			{ "publication.location:Berlin AND publication.startDate:1993", /*->*/ 1 },
 			{ "publication.location:Berlin AND publication.startDate:[1992 TO 2017]", /*->*/ 5 },
-			{ "inCollection.id:\"http\\://lobid.org/organisations/DE-655#\\!\"", /*->*/ 106 },
+			{ "inCollection.id:\"http\\://lobid.org/organisations/DE-655#\\!\"", /*->*/ 109 },
 			{ "inCollection.id:NWBib", /*->*/ 0 },
 			{ "publication.publishedBy:Quedenfeldt", /*->*/ 2 },
 			{ "publication.publishedBy:Quedenfeld", /*->*/ 2 },
@@ -87,7 +87,7 @@ public class IndexIntegrationTest extends LocalIndexSetup {
 			{ "describedBy.resultOf.object.dateCreated:\"2023-03-22\"", /*->*/ 1},
 			{ "describedBy.resultOf.object.dateModified:\"2022-07-18\"", /*->*/ 1},
 			{ "describedBy.resultOf.object.sourceOrganization.id:\"http\\://lobid.org/organisations/DE-5#\\!\"", /*->*/ 4},
-			{ "describedBy.resultOf.object.modifiedBy.id:\"http\\://lobid.org/organisations/DE-6#\\!\"", /*->*/ 11 }
+			{ "describedBy.resultOf.object.modifiedBy.id:\"http\\://lobid.org/organisations/DE-6#\\!\"", /*->*/ 13 }
 		});
 	} // @formatter:on
 
