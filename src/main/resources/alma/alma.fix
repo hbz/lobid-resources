@@ -1,8 +1,9 @@
 add_field("@context","http://lobid.org/resources/context.jsonld")
 
 # Add maps
-do once("maps")
+do once("mapsAndMacros")
   include ("./fix/maps.fix")
+  include ("./fix/macros.fix")
 end
 # Add vars
 do once("vars")

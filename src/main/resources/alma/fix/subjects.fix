@@ -44,24 +44,6 @@ do list(path: "natureOfContent[]", "var":"$i")
   end
 end
 
-do once("subjectLabel")
-  do put_macro("subjectLabel")
-    set_array("subject[].$last.label")
-    set_array("$i.@name")
-    copy_field("$i.a","$i.@name.$append")
-    copy_field("$i.b","$i.@name.$append")
-    copy_field("$i.c","$i.@name.$append")
-    copy_field("$i.d","$i.@name.$append")
-    join_field("$i.@name")
-    copy_field("$i.@name","subject[].$last.label.$append")
-    copy_field("$i.x","subject[].$last.label.$append")
-    copy_field("$i.y","subject[].$last.label.$append")
-    copy_field("$i.z","subject[].$last.label.$append")
-    copy_field("$i.v","subject[].$last.label.$append")
-    join_field("subject[].$last.label"," / ")
-  end
-end
-
 set_array("subject[]")
 
 
@@ -116,25 +98,7 @@ do list(path:"600?7|610?7|611?7|630?7|648?7|650?7|651?7", "var":"$i")
   end
 end
 
-# Macro for combinedLabel Person
 
-do once("gndPersonCombinedLabel")
-  do put_macro("gndPersonCombinedLabel")
-      set_array("$[field].@combinedLabel")  # check if GND concept has combined variant
-      copy_field("$[field].a","$[field].@combinedLabel.$append")
-      copy_field("$[field].b","$[field].@combinedLabel.$append")
-      join_field("$[field].@combinedLabel", " ") # This is the difference to gnd non person
-      if exists("$[field].c")
-        paste("$[field].@combinedLabel", "$[field].@combinedLabel", "~, ", "$[field].c", join_char:"")
-      end
-      if exists("$[field].g")
-        paste("$[field].@combinedLabel", "$[field].@combinedLabel", "~ (", "$[field].g", "~)", join_char:"")
-      end
-      if exists("$[field].x")
-        paste("$[field].@combinedLabel", "$[field].@combinedLabel", "~/","$[field].x")
-      end
-  end
-end
 
 do list(path:"600??", "var":"$i")
   if any_match("$i.0","^\\(DE-588\\)(.*)$")
@@ -168,45 +132,6 @@ do list(path:"600??", "var":"$i")
   end
 end
 
-# Macro for combinedLabel Non-Person
-
-do once("gndNonPersonCombinedLabel")
-  do put_macro("gndNonPersonCombinedLabel")
-    set_array("$[field].@combinedLabel")  # check if GND concept has combined variant
-    copy_field("$[field].a","$[field].@combinedLabel.$append")
-    copy_field("$[field].b","$[field].@combinedLabel.$append")
-    join_field("$[field].@combinedLabel", ". ") # This is the difference to gnd person
-    if exists("$[field].d") # special move for events
-      set_array("$[field].@combinedDetailsForEvents") 
-      if exists("$[field].g")
-        paste("$[field].@combinedDetailsForEvents", "$[field].g", join_char:"")
-      end
-      if exists("$[field].d")
-        paste("$[field].@combinedDetailsForEvents", "$[field].@combinedDetailsForEvents", "~ : ", "$[field].d", join_char:"")
-      end
-      if exists("$[field].c")
-        paste("$[field].@combinedDetailsForEvents", "$[field].@combinedDetailsForEvents", "~ : ", "$[field].c", join_char:"")
-      end
-      paste("$[field].@combinedLabel", "$[field].@combinedLabel", "~ (", "$[field].@combinedDetailsForEvents", "~)", join_char:"")
-    else
-      if exists("$[field].c")
-        paste("$[field].@combinedLabel", "$[field].@combinedLabel", "~, ", "$[field].c", join_char:"")
-      end
-      if exists("$[field].g")
-        paste("$[field].@combinedLabel", "$[field].@combinedLabel", "~ (", "$[field].g", "~)", join_char:"")
-      end
-    end
-    if exists("$[field].n")
-      paste("$[field].@combinedLabel", "$[field].@combinedLabel", "~, ","$[field].n", join_char:"")
-    end
-    if exists("$[field].x")
-      paste("$[field].@combinedLabel", "$[field].@combinedLabel", "~/","$[field].x")
-    end
-    if exists("$[field].t")
-      paste("$[field].@combinedLabel", "$[field].@combinedLabel", "~: ","$[field].t", join_char:"")
-    end
-  end
-end
 
 do list(path:"610??|611??|630??|648??|650??|651??", "var":"$i")
   if any_match("$i.0","^\\(DE-588\\)(.*)$")
@@ -367,60 +292,8 @@ do list(path:"982  ", "var":"$i")
   end
 end
 
-
 # 689 RSWK Schlagwortfolgen fka: Schlagwortketten 1 - 10 - no info on repeatability
-do once("schlagwortfolgeMacro")
-  do put_macro("schlagwortfolge")
-    if exists("$[field]")
-      set_array("subject[].$append.type[]","ComplexSubject")
-      set_array("subject[].$last.label")
-      set_array("subject[].$last.componentList[]")
-      do list(path:"$[field]", "var":"$i")
-        set_array("subject[].$last.componentList[].$append.type[]")
-        do list(path: "$i.D", "var": "$k")
-          copy_field("$k","subject[].$last.componentList[].$last.type[].$append")
-        end
-        if any_equal("subject[].$last.componentList[].$last.type[]","p")
-          call_macro("gndPersonCombinedLabel",field:"$i") 
-        else
-          call_macro("gndNonPersonCombinedLabel",field:"$i")
-        end
-        copy_field("$i.@combinedLabel", "subject[].$last.componentList[].$last.label")
-        unless any_equal("subject[].$last.componentList[].$last.label","")
-          copy_field("subject[].$last.componentList[].$last.label","subject[].$last.label.$append")
-        end
-        do list(path:"$i.0", "var": "$j")
-          if any_match("$j","^\\(DE-588\\)(.*)$")
-            add_field("subject[].$last.componentList[].$last.source.label","Gemeinsame Normdatei (GND)")
-            add_field("subject[].$last.componentList[].$last.source.id","https://d-nb.info/gnd/7749153-1")
-            copy_field("$j", "subject[].$last.componentList[].$last.id")
-            replace_all("subject[].$last.componentList[].$last.id","^\\(DE-588\\)(.*)$","https://d-nb.info/gnd/$1")
-            copy_field("$j", "subject[].$last.componentList[].$last.gndIdentifier")
-            replace_all("subject[].$last.componentList[].$last.gndIdentifier","^\\(DE-588\\)(.*)$","$1")
-          end
-          # GND idn as variable
-          if exists("$i.B")
-            do list(path: "$i.B","var":"$gnd")
-              unless exists("subject[].$last.componentList[].$last.@gndIdn")
-                copy_field("$gnd","subject[].$last.componentList[].$last.@gndIdn")
-              end
-            end
-          elsif any_match("$j","^.*DNB\\|(.*)$")
-            copy_field("$j", "subject[].$last.componentList[].$last.@gndIdn")
-            replace_all("subject[].$last.componentList[].$last.@gndIdn", "^.*DNB\\|(.*)$","GND-$1")
-          elsif any_match("$j","^\\(DE-101\\)(.*)$")
-              copy_field("$j", "subject[].$last.componentList[].$last.@gndIdn")
-              replace_all("subject[].$last.componentList[].$last.@gndIdn", "^\\(DE-101\\)(.*)$","GND-$1")
-          end
-        end
-        copy_field("$i.d","subject[].$last.componentList[].$last.dateOfBirthAndDeath") # dates will be differentiated later in the process
-      end
-      join_field("subject[].$last.label"," | ")
-    end
-  end
-end
 
-# 689 RSWK Schlagwortfolgen fka: Schlagwortketten 1 - 10
 call_macro("schlagwortfolge", field: "6890?")
 call_macro("schlagwortfolge", field: "6891?")
 call_macro("schlagwortfolge", field: "6892?")
