@@ -55,13 +55,7 @@ do list(path:"100[01] ", "var":"$i")
           end
         end
         # name
-        set_array("$i.@combinedLabel")
-        copy_field("$i.a","$i.@combinedLabel.$append")
-        copy_field("$i.b","$i.@combinedLabel.$append")
-        join_field("$i.@combinedLabel", " ")
-        if exists("$i.c")
-          paste("$i.@combinedLabel", "$i.@combinedLabel", "~, ", "$i.c", join_char:"")
-        end
+        call_macro("gndPersonCombinedLabel",field:"$i") 
         copy_field("$i.@combinedLabel","contribution[].$last.agent.label")
         # type
         set_array("contribution[].$last.agent.type[]","Person")
@@ -111,13 +105,7 @@ do list(path:"700[01] ", "var":"$i")
           end
         end
         # name
-        set_array("$i.@combinedLabel")
-        copy_field("$i.a","$i.@combinedLabel.$append")
-        copy_field("$i.b","$i.@combinedLabel.$append")
-        join_field("$i.@combinedLabel", " ")
-        if exists("$i.c")
-          paste("$i.@combinedLabel", "$i.@combinedLabel", "~, ", "$i.c", join_char:"")
-        end
+        call_macro("gndPersonCombinedLabel",field:"$i") 
         copy_field("$i.@combinedLabel","contribution[].$last.agent.label")
         # type
         set_array("contribution[].$last.agent.type[]","Person")
@@ -177,19 +165,7 @@ do list(path:"110[012] ", "var":"$i")
           end
         end
         # name
-          set_array("$i.@combinedLabel")  # check if GND concept has combined variant
-          copy_field("$i.a","$i.@combinedLabel.$append")
-          copy_field("$i.b","$i.@combinedLabel.$append")
-          join_field("$i.@combinedLabel", ". ")
-          if exists("$i.c")
-            paste("$i.@combinedLabel", "$i.@combinedLabel", "~, ", "$i.c", join_char:"")
-          end
-          if exists("$i.g")
-            paste("$i.@combinedLabel", "$i.@combinedLabel", "~ (", "$i.g", "~)", join_char:"")
-          end
-          if exists("$i.x")
-            paste("$i.@combinedLabel", "$i.@combinedLabel", "~/","$i.x")
-          end
+          call_macro("gndNonPersonCombinedLabel",field:"$i")
           copy_field("$i.@combinedLabel", "contribution[].$last.agent.label")
         # type
         set_array("contribution[].$last.agent.type[]","CorporateBody")
@@ -238,19 +214,7 @@ do list(path:"710[012] ", "var":"$i")
           end
         end
         # name
-          set_array("$i.@combinedLabel")  # check if GND concept has combined variant
-          copy_field("$i.a","$i.@combinedLabel.$append")
-          copy_field("$i.b","$i.@combinedLabel.$append")
-          join_field("$i.@combinedLabel", ". ")
-          if exists("$i.c")
-            paste("$i.@combinedLabel", "$i.@combinedLabel", "~, ", "$i.c", join_char:"")
-          end
-          if exists("$i.g")
-            paste("$i.@combinedLabel", "$i.@combinedLabel", "~ (", "$i.g", "~)", join_char:"")
-          end
-          if exists("$i.x")
-            paste("$i.@combinedLabel", "$i.@combinedLabel", "~/","$i.x")
-          end
+          call_macro("gndNonPersonCombinedLabel",field:"$i")
           copy_field("$i.@combinedLabel", "contribution[].$last.agent.label")
         # type
         set_array("contribution[].$last.agent.type[]","CorporateBody")
@@ -379,38 +343,14 @@ do list (path: "contribution[]", "var": "$i")
   set_array("$i.agent.altLabel[]")
   do list(path:"GPN??", "var": "$z")
     if in ("$i.agent.@gndIdn", "$z.B") # Person labels have no character between $a (Name) and $b (Number).
-      set_array("$z.@combinedLabel")
-      copy_field("$z.a","$z.@combinedLabel.$append")
-      copy_field("$z.b","$z.@combinedLabel.$append")
-      join_field("$z.@combinedLabel", " ")
-      if exists("$z.c")
-        paste("$z.@combinedLabel", "$z.@combinedLabel", "~, ", "$z.c", join_char:"")
-      end
-      if exists("$z.g")
-        paste("$z.@combinedLabel", "$z.@combinedLabel", "~ (", "$z.g", "~)", join_char:"")
-      end
-      if exists("$z.x")
-        paste("$z.@combinedLabel", "$z.@combinedLabel", "~/","$z.x")
-      end
+      call_macro("gndPersonCombinedLabel",field:"$z") 
       copy_field("$z.@combinedLabel", "$i.agent.altLabel[].$append")
     end
   end
   do list(path:"GEL??|GKT??|GKS??|GST??|GGN??", "var": "$z")  # Other altLabels have a "," character between $a and $b.
     unless any_equal("$z.i","Spitzenorgan")
       if in ("$i.agent.@gndIdn", "$z.B")
-        set_array("$z.@combinedLabel")  # check if GND concept has combined variant
-        copy_field("$z.a","$z.@combinedLabel.$append")
-        copy_field("$z.b","$z.@combinedLabel.$append")
-        join_field("$z.@combinedLabel", ". ")
-        if exists("$z.c")
-          paste("$z.@combinedLabel", "$z.@combinedLabel", "~, ", "$z.c", join_char:"")
-        end
-        if exists("$z.g")
-          paste("$z.@combinedLabel", "$z.@combinedLabel", "~ (", "$z.g", "~)", join_char:"")
-        end
-        if exists("$z.x")
-          paste("$z.@combinedLabel", "$z.@combinedLabel", "~/","$z.x")
-        end
+        call_macro("gndNonPersonCombinedLabel",field:"$z")
         copy_field("$z.@combinedLabel", "$i.agent.altLabel[].$append")
       end
     end
