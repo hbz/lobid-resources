@@ -25,7 +25,6 @@ do put_macro("gndNonPersonCombinedLabel")
   copy_field("$[field].b","$[field].@combinedLabel.$append")
   join_field("$[field].@combinedLabel", ". ") # This is the difference to gnd person
   if exists("$[field].d") # special move for events
-    set_array("$[field].@combinedDetailsForEvents") 
     if exists("$[field].g")
       paste("$[field].@combinedDetailsForEvents", "$[field].g", join_char:"")
     end
