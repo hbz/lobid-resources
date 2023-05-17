@@ -165,7 +165,7 @@ do list(path:"110[012] ", "var":"$i")
           end
         end
         # name
-          call_macro("gndNonPersonCombinedLabel",field:"$i")
+          call_macro("gndOtherCombinedLabel",field:"$i")
           copy_field("$i.@combinedLabel", "contribution[].$last.agent.label")
         # type
         set_array("contribution[].$last.agent.type[]","CorporateBody")
@@ -214,7 +214,7 @@ do list(path:"710[012] ", "var":"$i")
           end
         end
         # name
-          call_macro("gndNonPersonCombinedLabel",field:"$i")
+          call_macro("gndOtherCombinedLabel",field:"$i")
           copy_field("$i.@combinedLabel", "contribution[].$last.agent.label")
         # type
         set_array("contribution[].$last.agent.type[]","CorporateBody")
@@ -263,11 +263,8 @@ do list(path:"111[012] |711[012] ", "var":"$i")
           end
         end
         # name
-        paste("contribution[].$last.agent.label", "$i.a", "~ (", "$i.n", "~ : ", "$i.d", "~ : ", "$i.c", "~)", join_char: "")
-        replace_all("contribution[].$last.agent.label"," \\( :  : \\)","")
-        replace_all("contribution[].$last.agent.label",":  :",":")
-        replace_all("contribution[].$last.agent.label"," \\( : | \\( :  : "," \\(")
-        replace_all("contribution[].$last.agent.label"," : \\)|:  : \\)","\\)")
+        call_macro("gndEventCombinedLabel",field:"$i")
+        copy_field("$i.@combinedLabel", "contribution[].$last.agent.label")        
         # type
         set_array("contribution[].$last.agent.type[]","ConferenceOrEvent")
         # role
@@ -347,10 +344,18 @@ do list (path: "contribution[]", "var": "$i")
       copy_field("$z.@combinedLabel", "$i.agent.altLabel[].$append")
     end
   end
-  do list(path:"GEL??|GKT??|GKS??|GST??|GGN??", "var": "$z")  # Other altLabels have a "," character between $a and $b.
+    do list(path:"GKS??", "var": "$z")  # Other altLabels have a "," character between $a and $b.
     unless any_equal("$z.i","Spitzenorgan")
       if in ("$i.agent.@gndIdn", "$z.B")
-        call_macro("gndNonPersonCombinedLabel",field:"$z")
+        call_macro("gndEventCombinedLabel",field:"$z")
+        copy_field("$z.@combinedLabel", "$i.agent.altLabel[].$append")
+      end
+    end
+  end
+  do list(path:"GEL??|GKT??|GST??|GGN??", "var": "$z")  # Other altLabels have a "," character between $a and $b.
+    unless any_equal("$z.i","Spitzenorgan")
+      if in ("$i.agent.@gndIdn", "$z.B")
+        call_macro("gndOtherCombinedLabel",field:"$z")
         copy_field("$z.@combinedLabel", "$i.agent.altLabel[].$append")
       end
     end

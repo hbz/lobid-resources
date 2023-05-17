@@ -1,3 +1,21 @@
+# Macro for combinedLabel Event / Meeting
+
+do put_macro("gndEventCombinedLabel")
+  set_array("$[field].@combinedLabel")  # check if GND concept has combined variant
+  copy_field("$[field].a","$[field].@combinedLabel.$append")
+  copy_field("$[field].b","$[field].@combinedLabel.$append")
+  join_field("$[field].@combinedLabel", ". ") # This is the difference to gnd person
+  set_array("$[field].@combinedDetailsForEvents")
+  copy_field("$[field].n","$[field].@combinedDetailsForEvents.$append")  
+  copy_field("$[field].g","$[field].@combinedDetailsForEvents.$append")
+  copy_field("$[field].d","$[field].@combinedDetailsForEvents.$append")
+  copy_field("$[field].c","$[field].@combinedDetailsForEvents.$append")        
+  join_field("$[field].@combinedDetailsForEvents"," : ")
+  unless is_empty("$[field].@combinedDetailsForEvents.")
+    paste("$[field].@combinedLabel", "$[field].@combinedLabel", "~ (", "$[field].@combinedDetailsForEvents", "~)", join_char:"")
+  end
+end
+
 # Macro for combinedLabel Person
 
 do put_macro("gndPersonCombinedLabel")
@@ -17,31 +35,18 @@ do put_macro("gndPersonCombinedLabel")
 end
 
 
-# Macro for combinedLabel Non-Person
+# Macro for combinedLabel Non-Person and Non-Event
 
-do put_macro("gndNonPersonCombinedLabel")
+do put_macro("gndOtherCombinedLabel")
   set_array("$[field].@combinedLabel")  # check if GND concept has combined variant
   copy_field("$[field].a","$[field].@combinedLabel.$append")
   copy_field("$[field].b","$[field].@combinedLabel.$append")
   join_field("$[field].@combinedLabel", ". ") # This is the difference to gnd person
-  if exists("$[field].d") # special move for events
-    if exists("$[field].g")
-      paste("$[field].@combinedDetailsForEvents", "$[field].g", join_char:"")
-    end
-    if exists("$[field].d")
-      paste("$[field].@combinedDetailsForEvents", "$[field].@combinedDetailsForEvents", "~ : ", "$[field].d", join_char:"")
-    end
-    if exists("$[field].c")
-      paste("$[field].@combinedDetailsForEvents", "$[field].@combinedDetailsForEvents", "~ : ", "$[field].c", join_char:"")
-    end
-    paste("$[field].@combinedLabel", "$[field].@combinedLabel", "~ (", "$[field].@combinedDetailsForEvents", "~)", join_char:"")
-  else
-    if exists("$[field].c")
-      paste("$[field].@combinedLabel", "$[field].@combinedLabel", "~, ", "$[field].c", join_char:"")
-    end
-    if exists("$[field].g")
-      paste("$[field].@combinedLabel", "$[field].@combinedLabel", "~ (", "$[field].g", "~)", join_char:"")
-    end
+  if exists("$[field].c")
+    paste("$[field].@combinedLabel", "$[field].@combinedLabel", "~, ", "$[field].c", join_char:"")
+  end
+  if exists("$[field].g")
+    paste("$[field].@combinedLabel", "$[field].@combinedLabel", "~ (", "$[field].g", "~)", join_char:"")
   end
   if exists("$[field].n")
     paste("$[field].@combinedLabel", "$[field].@combinedLabel", "~, ","$[field].n", join_char:"")
@@ -93,9 +98,11 @@ do put_macro("schlagwortfolge")
         copy_field("$k","subject[].$last.componentList[].$last.type[].$append")
       end
       if any_equal("subject[].$last.componentList[].$last.type[]","p")
-        call_macro("gndPersonCombinedLabel",field:"$i") 
+        call_macro("gndPersonCombinedLabel",field:"$i")
+      elsif any_equal("subject[].$last.componentList[].$last.type[]","f")
+        call_macro("gndEventCombinedLabel",field:"$i")        
       else
-        call_macro("gndNonPersonCombinedLabel",field:"$i")
+        call_macro("gndOtherCombinedLabel",field:"$i")
       end
       copy_field("$i.@combinedLabel", "subject[].$last.componentList[].$last.label")
       unless any_equal("subject[].$last.componentList[].$last.label","")
