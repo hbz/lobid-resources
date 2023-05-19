@@ -1,16 +1,14 @@
-add_field("@context","http://lobid.org/resources/context.jsonld")
-
-# Add maps
-do once("maps")
+# Setup adds maps, macros and vars once
+do once("setup")
   include ("./fix/maps.fix")
-end
-# Add vars
-do once("vars")
+  include ("./fix/macros.fix")
   put_var("member", "-")
 end
 
 # drop all local fields #1687
 de.hbz.lobid.helper.DropLocal()
+
+add_field("@context","http://lobid.org/resources/context.jsonld")
 
 include ("./fix/identifiers.fix")
 include ("./fix/titleRelatedFields.fix")
