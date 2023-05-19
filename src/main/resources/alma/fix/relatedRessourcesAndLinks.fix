@@ -407,16 +407,20 @@ end
 
 # 856 - Electronic Location and Access (R) - Subfield: $x - Nonpublic note (R)
 # TODO: Check if src/test/resources/alma-fix/(CKB)5280000000199164.xml is also an EZB titel even when it has no 865.
-do list(path:"85640", "var":"$i")
+do list(path:"8564?", "var":"$i")
   if any_equal("$i.x","EZB") # can test x and x.*
     add_field("inCollection[].$append.id", "http://lobid.org/resources/HT016356466#!")
     add_field("inCollection[].$last.label", "Elektronische Zeitschriftenbibliothek (EZB)")
+  elsif any_match("$i.u","http://www.bibliothek.uni-regensburg.de/ezeit.*")
+    add_field("inCollection[].$append.id", "http://lobid.org/resources/HT016356466#!")
+    add_field("inCollection[].$last.label", "Elektronische Zeitschriftenbibliothek (EZB)")    
   end
 end
 
+
 # edoweb
 
-do list(path:"85640", "var":"$i")
+do list(path:"8564?", "var":"$i")
   if any_match("$i.u","^.*edoweb.*") # can test x and x.*
     add_field("inCollection[].$append.id", "http://lobid.org/resources/HT016925914#!")
     add_field("inCollection[].$last.label", "Edoweb Rheinland-Pfalz")
@@ -427,7 +431,7 @@ end
 
 
 # TODO: AlephMorph checked for ellinet in "078r1.a" but publisso is also stated in the Link URI is that enough?
-do list(path:"85640", "var":"$i")
+do list(path:"8564?", "var":"$i")
   if any_match("$i.u","^.*publisso.*") # can test x and x.*
     add_field("inCollection[].$append.id", "http://repository.publisso.de")
     add_field("inCollection[].$last.label", "Fachrepositorium Lebenswissenschaften")
