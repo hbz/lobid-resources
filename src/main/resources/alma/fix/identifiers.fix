@@ -135,7 +135,14 @@ do list(path:"0167 ", "var":"$i")
       copy_field("$i.a","zdbId")
     end
   end
+
+# dnbId
+  if any_match("$i.2","DE-101")
+    copy_field("$i.a","dnbId")
+  end
 end
+
+
 
 copy_field("almaMmsId","rpbId")
 lookup("rpbId","almaMmsId2rpbId",delete:"true")
