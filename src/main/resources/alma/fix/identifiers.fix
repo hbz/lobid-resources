@@ -128,6 +128,14 @@ end
 replace_all("zdbId", "\\(DE-600\\)","")
 replace_all("zdbId", "\\(DE-599\\)ZDB","")
 
+#160 - 016 - National Bibliographic Agency Control Number (R)
+do list(path:"0167 ", "var":"$i")
+  unless exists("zdbId")
+    if any_match("$i.2","DE-600")
+      copy_field("$i.a","zdbId")
+    end
+  end
+end
 
 copy_field("almaMmsId","rpbId")
 lookup("rpbId","almaMmsId2rpbId",delete:"true")
