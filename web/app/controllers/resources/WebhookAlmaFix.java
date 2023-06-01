@@ -47,8 +47,7 @@ public class WebhookAlmaFix extends Controller {
   private static final String MSG_ETL_PROCESS_IS_ALREADY_RUNNING =
       " because an ETL process is already running. Try again later!";
   private static final String MSG_UPDATE_ALREADY_RUNNING =
-      "Couldn't update index '" + indexNameOfUpdate
-          + MSG_ETL_PROCESS_IS_ALREADY_RUNNING;
+      "Couldn't update index %s'" + MSG_ETL_PROCESS_IS_ALREADY_RUNNING;
   private static final String MSG_FILE_TOO_SMALL = "File size is too small - data seems to be empty";
   private static String createIndexNameOfBasedump = "dummy";
   private static final String MSG_CREATE_INDEX_ALREADY_RUNNING =
@@ -98,7 +97,7 @@ public class WebhookAlmaFix extends Controller {
       return status(500, "Problems with data file\n" + msg);
     }
     if (AlmaMarcXmlFix2lobidJsonEs.threadAlreadyStarted) {
-      msg = composeMessage(MSG_UPDATE_ALREADY_RUNNING);
+      msg = composeMessage(String.format(MSG_UPDATE_ALREADY_RUNNING, indexNameOfUpdate));
       AlmaMarcXmlFix2lobidJsonEs.sendMail(ETL_OF + KIND, false,
           msg);
       return status(423, msg);
