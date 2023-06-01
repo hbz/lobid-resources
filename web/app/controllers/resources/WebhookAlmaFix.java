@@ -7,6 +7,7 @@ import com.typesafe.config.ConfigFactory;
 import org.lobid.resources.run.AlmaMarcXmlFix2lobidJsonEs;
 import play.Logger;
 import play.mvc.Controller;
+import play.mvc.Http;
 import play.mvc.Result;
 
 import java.io.File;
@@ -15,6 +16,9 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * Webhook listener starting update/basedump process for the Alma Fix ETL. Also use
@@ -43,8 +47,7 @@ public class WebhookAlmaFix extends Controller {
   private static final String MSG_ETL_PROCESS_IS_ALREADY_RUNNING =
       " because an ETL process is already running. Try again later!";
   private static final String MSG_UPDATE_ALREADY_RUNNING =
-      "Couldn't update index '" + indexNameOfUpdate
-          + MSG_ETL_PROCESS_IS_ALREADY_RUNNING;
+      "Couldn't update index %s'" + MSG_ETL_PROCESS_IS_ALREADY_RUNNING;
   private static final String MSG_FILE_TOO_SMALL = "File size is too small - data seems to be empty";
   private static String createIndexNameOfBasedump = "dummy";
   private static final String MSG_CREATE_INDEX_ALREADY_RUNNING =
@@ -94,7 +97,7 @@ public class WebhookAlmaFix extends Controller {
       return status(500, "Problems with data file\n" + msg);
     }
     if (AlmaMarcXmlFix2lobidJsonEs.threadAlreadyStarted) {
-      msg = composeMessage(MSG_UPDATE_ALREADY_RUNNING);
+      msg = composeMessage(String.format(MSG_UPDATE_ALREADY_RUNNING, indexNameOfUpdate));
       AlmaMarcXmlFix2lobidJsonEs.sendMail(ETL_OF + KIND, false,
           msg);
       return status(423, msg);
@@ -225,8 +228,19 @@ public class WebhookAlmaFix extends Controller {
   }
 
   private static String composeMessage(final String MSG) {
-    String remoteAddress = request().remoteAddress();
+    String remoteAddress = getClientIpAddr(request());
     String msgCalledFrom = String.format(MSG_CALLED_FROM_REMOTE_ADDRESS, remoteAddress) + "\n";
     return msgCalledFrom + MSG;
   }
+
+	private static final List<String> IP_HEADERS = Arrays.asList("X-Forwarded-For", "Proxy-Client-IP", "WL-Proxy-Client-IP", "HTTP_CLIENT_IP", "HTTP_X_FORWARDED_FOR");
+
+	private static String getClientIpAddr(Http.Request request) {
+		return IP_HEADERS.stream()
+			.map(request::getHeader)
+			.filter(Objects::nonNull)
+			.filter(ip -> !ip.isEmpty() && !ip.equalsIgnoreCase("unknown"))
+			.findFirst()
+			.orElseGet(request::remoteAddress);
+	}
 }
