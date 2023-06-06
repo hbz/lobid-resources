@@ -477,12 +477,11 @@ end
 #rpb
 
 # 084 - Other Classification Number (R), Subfield: $2 (NR)
-do list(path:"084  ", "var":"$i")
-  if exists("rpbId")
-      add_field("inCollection[].$append.id", "http://lobid.org/resources/HT013494180#!")
-      add_field("inCollection[].$last.label", "Rheinland-Pfälzische Bibliographie (RPB)")
-  end
+if exists("rpbId")
+    add_field("inCollection[].$append.id", "http://lobid.org/resources/HT013494180#!")
+    add_field("inCollection[].$last.label", "Rheinland-Pfälzische Bibliographie (RPB)")
 end
+
 
 
 #    eResource package
