@@ -43,15 +43,20 @@ do list(path: "HOL  ", "var": "$i")
       set_array("hasItem[].$last.type[]", "Item","PhysikalischerTitel")
       do list(path:"H52??", "var": "$H52")
         if in("$i.8", "$H52.8")
-          paste("hasItem[].$last.currentLocation", "$H52.b", "~/", "$H52.c")
+          if is_array("$H52.b") # Test if H52 $b is repeated. This appears to be not often but broke the transformation. We drop the additional sublocations.
+            copy_field("$H52.b.1","$i.@H52b")
+          else
+            copy_field("$H52.b","$i.@H52b")
+          end
+          paste("hasItem[].$last.currentLocation", "$i.@H52b", "~/", "$H52.c")
           copy_field("$H52.h", "hasItem[].$last.callNumber")
-          copy_field("$H52.b","$i.@sublibraryIsil")
+          copy_field("$i.@H52b","$i.@sublibraryIsil")
           lookup("$i.@sublibraryIsil", "hbzowner2sigel",delete:"true")
           lookup("$i.@sublibraryIsil", "sigel2isilMap",delete:"true") 
           lookup("$i.@sublibraryIsil", "isilRedirect")       
           # following fix checks for sublibrary codes and if they map to provided sublocation Isil
           unless exists("$i.@sublibraryIsil")
-            paste("$i.@sublibraryIsil","$i.M","~+","$H52.b",join_char:"")
+            paste("$i.@sublibraryIsil","$i.M","~+","$i.@H52b",join_char:"")
             lookup("$i.@sublibraryIsil", "sublibraryIsil",delete:"true")
           end
         end
