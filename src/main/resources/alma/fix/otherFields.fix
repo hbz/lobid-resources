@@ -2,8 +2,8 @@
 
 set_array("@language")
 copy_field("008", "@008-lang")
-substring("@008-lang", "35", "38")
-copy_field("008-lang", "@language.$append")
+substring("@008-lang", "35", "3")
+copy_field("@008-lang", "@language.$append")
 copy_field("041[ 01] .[adj]", "@language.$append")
 
 uniq("@language")
