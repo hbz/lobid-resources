@@ -404,17 +404,6 @@ if exists("zdbId")
   add_field("inCollection[].$last.label", "Zeitschriftendatenbank (ZDB)")
 end
 
-# rpb
-# Checks rpb subjects are provided.
-
-do list(path:"084??", "var":"$i")
-  do once("rpb")
-    if any_equal("$i.2","rpb")
-      add_field("inCollection[].$append.id", "http://lobid.org/resources/HT013494180#!")
-      add_field("inCollection[].$last.label", "Rheinland-Pfälzische Bibliographie")
-    end
-  end
-end
 
 # ezb
 
@@ -491,12 +480,20 @@ end
 #rpb
 
 # 084 - Other Classification Number (R), Subfield: $2 (NR)
-do list(path:"084  ", "var":"$i")
-  if exists("rpbId")
+if exists("rpbId")
+    add_field("inCollection[].$append.id", "http://lobid.org/resources/HT013494180#!")
+    add_field("inCollection[].$last.label", "Rheinland-Pfälzische Bibliographie (RPB)")
+end
+
+do list(path:"084??", "var":"$i")
+  if any_equal("$i.2","rpb")
+    if any_match("$j","^rpbr.*|\\d{3}") # exclude LBZ Notations
       add_field("inCollection[].$append.id", "http://lobid.org/resources/HT013494180#!")
-      add_field("inCollection[].$last.label", "Rheinland-Pfälzische Bibliographie (RPB)")
+      add_field("inCollection[].$last.label", "Rheinland-Pfälzische Bibliographie")
+    end
   end
 end
+
 
 
 #    eResource package
