@@ -2,16 +2,18 @@
 
 set_array("@language")
 copy_field("008", "@008-lang")
-substring("@008-lang", "35", "38")
-copy_field("008-lang", "@language.$append")
+substring("@008-lang", "35", "3")
+copy_field("@008-lang", "@language.$append")
 copy_field("041[ 01] .[adj]", "@language.$append")
 
 uniq("@language")
 
 set_array("language[]")
 do list(path:"@language", "var":"$i")
-  copy_field("$i", "language[].$append.id")
-  copy_field("$i", "language[].$last.label")
+  unless any_match("$i","zxx|mul|sgn|und|.*[\\|\\#].*")
+    copy_field("$i", "language[].$append.id")
+    copy_field("$i", "language[].$last.label")
+  end
 end
 
 lookup("language[].*.label","ISO639-2-to-GND")
