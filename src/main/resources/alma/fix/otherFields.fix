@@ -10,8 +10,10 @@ uniq("@language")
 
 set_array("language[]")
 do list(path:"@language", "var":"$i")
-  copy_field("$i", "language[].$append.id")
-  copy_field("$i", "language[].$last.label")
+  unless any_match("$i","zxx|mul|sgn|und|.*[\\|\\#].*")
+    copy_field("$i", "language[].$append.id")
+    copy_field("$i", "language[].$last.label")
+  end
 end
 
 lookup("language[].*.label","ISO639-2-to-GND")
