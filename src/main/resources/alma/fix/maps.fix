@@ -14,16 +14,16 @@ put_filemap("$[picaCreatorId2Isil.tsv]","picaCreatorId2Isil", sep_char:"\t", sep
 put_filemap("$[nwbibWikidataLabelTypeCoords.tsv]","nwbibWikidataId", sep_char:"\t",key_column:"0",value_column:"1",expected_columns:"-1")
 put_filemap("$[nwbibWikidataLabelTypeCoords.tsv]","nwbibWikidataLabel", sep_char:"\t",key_column:"0",value_column:"2",expected_columns:"-1")
 put_filemap("$[nwbibWikidataLabelTypeCoords.tsv]","nwbibWikidataTypes", sep_char:"\t",key_column:"0",value_column:"3",expected_columns:"-1")
-put_filemap("$[nwbibWikidataLabelTypeCoords.tsv]","nwbibWikidataGeodata", sep_char:"\t",key_column:"0",value_column:"4",expected_columns:"-1")
+  put_filemap("$[nwbibWikidataLabelTypeCoords.tsv]","nwbibWikidataGeodata", sep_char:"\t",key_column:"0",value_column:"4",expected_columns:"-1")
 
 # Library Classifications
 put_filemap("$[classification.tsv]","classificationCode2Label", sep_char:"\t",key_column:"0",value_column:"1",expected_columns:"-1")
 put_filemap("$[classification.tsv]","classificationCode2Uri", sep_char:"\t",key_column:"0",value_column:"2",expected_columns:"-1")
 
 # RPB SKOS Maps
-put_rdfmap("https://raw.githubusercontent.com/lobid/vocabs/master/rpb/rpb2.ttl", "rpb2", target: "skos:prefLabel", select_language: "de")
-put_rdfmap("https://raw.githubusercontent.com/hbz/lobid-vocabs/master/rpb/rpb-spatial.ttl", "rpbr", target: "skos:prefLabel", select_language: "de")
-put_rdfmap("https://raw.githubusercontent.com/hbz/lobid-vocabs/master/rpb/rpb.ttl", "rpb", target: "skos:prefLabel", select_language: "de")
+put_rdfmap("$[rpb2.ttl]", "rpb2", target: "skos:prefLabel", select_language: "de") # LBZ-Notationen aka rpb2 fka RPB-Sachgruppen und Zusätze
+put_rdfmap("$[rpb-spatial.ttl]", "rpbr", target: "skos:prefLabel", select_language: "de") # RPB-Raumsystematik aka rpbr
+put_rdfmap("$[rpb.ttl]", "rpb", target: "skos:prefLabel", select_language: "de") # RPB-Sachsystematik fka. Systematik der Rheinland-Pfälzischen Bibliographie
 
 
 # Formschlagwort/Formangaben-Mapping -> GND (based on: https://wiki.dnb.de/download/attachments/106042227/AH-007.pdf)
