@@ -459,6 +459,22 @@
                   }
                }
             },
+            "bibliographicLevel" : {
+               "properties" : {
+                  "id" : {
+                     "type" : "keyword"
+                  },
+                  "label" : {
+                     "type" : "text",
+                     "index" : "false",
+                     "fields": {
+                        "raw": {
+                          "type": "keyword"
+                        }
+                     }
+                  }
+               }
+            },
             "subject": {
                "type" : "nested",
                "include_in_parent" : true,

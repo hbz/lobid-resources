@@ -43,6 +43,7 @@ public class IndexIntegrationTest extends LocalIndexSetup {
 			{ "title:Westfalen AND contribution.agent.label:Prause", /*->*/ 1 },
 			{ "title:Westfalen OR title:Munsterland", /*->*/ 8 },
 			{ "(title:Westfalen OR title:Münsterland) AND contribution.agent.id:\"https\\://d-nb.info/gnd/5253963-5\"", /*->*/ 0 },
+			{ "bibliographicLevel.label.raw:\"Monographic component part\"", /*->*/ 13 },
 			{ "subject.componentList.label:Düsseldorf", /*->*/ 1 },
 			{ "subject.componentList.label:Duesseldorf", /*->*/ 1 },
 			{ "subject.componentList.label:Dusseldorf", /*->*/ 1 },
