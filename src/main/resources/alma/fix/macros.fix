@@ -57,6 +57,9 @@ do put_macro("gndOtherCombinedLabel")
   if exists("$[field].t")
     paste("$[field].@combinedLabel", "$[field].@combinedLabel", "~: ","$[field].t", join_char:"")
   end
+  if exists("$[field].z")
+    paste("$[field].@combinedLabel", "$[field].@combinedLabel", "~ (", "$[field].z", "~)", join_char:"")
+  end
 end
 
 # for describedBy provenance info
