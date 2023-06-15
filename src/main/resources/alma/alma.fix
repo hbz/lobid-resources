@@ -5,6 +5,11 @@ do once("setup")
   put_var("member", "-")
 end
 
+# Skip all deleted records
+if any_equal("DEL??.a", "Y")
+  reject()
+end
+
 # drop all local fields #1687
 de.hbz.lobid.helper.DropLocal()
 
