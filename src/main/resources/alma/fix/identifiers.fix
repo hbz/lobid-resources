@@ -114,20 +114,6 @@ do list(path:"035  ", "var":"$i")
 end
 replace_all("oclcNumber[].*", "\\(OCoLC\\)","")
 
-
-# 035 - System Control Number (R) - Subfield: $a (NR)
-do list(path:"035  ", "var":"$i")
-  unless exists("zdbId")
-    if all_match("$i.a", "\\(DE-600\\)(.*)")
-      copy_field("$i.a", "zdbId")
-    elsif all_match("$i.a", "\\(DE-599\\)(ZDB.*)")
-      copy_field("$i.a", "zdbId")
-    end
-  end
-end
-replace_all("zdbId", "\\(DE-600\\)","")
-replace_all("zdbId", "\\(DE-599\\)ZDB","")
-
 #160 - 016 - National Bibliographic Agency Control Number (R)
 do list(path:"0167 ", "var":"$i")
   unless exists("zdbId")
@@ -142,6 +128,20 @@ do list(path:"0167 ", "var":"$i")
   end
 end
 
+# 035 - System Control Number (R) - Subfield: $a (NR)
+do list(path:"035  ", "var":"$i")
+  unless exists("zdbId")
+    if all_match("$i.a", "\\(DE-600\\)(.*)")
+      copy_field("$i.a", "zdbId")
+    elsif all_match("$i.a", "\\(DE-599\\)(ZDB.*)")
+      copy_field("$i.a", "zdbId")
+    end
+  end
+end
+
+# clean up ZDB
+replace_all("zdbId", "\\(DE-600\\)","")
+replace_all("zdbId", "\\(DE-599\\)ZDB","")
 
 
 copy_field("almaMmsId","rpbId")
