@@ -142,6 +142,7 @@ end
 # clean up ZDB
 replace_all("zdbId", "\\(DE-600\\)","")
 replace_all("zdbId", "\\(DE-599\\)ZDB","")
+replace_all("zdbId", " ","-") # CZ entries have incorrect spaces sometimes in the zdbId, we need to replace them with "-".
 
 
 copy_field("almaMmsId","rpbId")
