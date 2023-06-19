@@ -18,5 +18,6 @@ if [ -n "$ERRORS" ]; then
         mail -s "ERRORS when triggering Webhook in Alma Fix ETL" "${MAIL_TO}" -a "From: ${MAIL_FROM}" << EOF
 $ERRORS
 EOF
+        echo $ERRORS
 fi
 
