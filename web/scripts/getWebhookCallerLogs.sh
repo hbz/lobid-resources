@@ -4,7 +4,7 @@
 # to today's entries, and send email if ERRORS appeared or response code != 204
 # see https://github.com/hbz/lobid-resources/issues/1512
 
-MAIL_TO=$(cat .secrets/MAIL_TO)
+MAIL_TO=$(cat .secrets/MAIL_TO_WEBHOOK_SUBSCRIBER)
 MAIL_FROM=$(cat .secrets/MAIL_FROM)
 
 ERROR_PATTERN="Got response code\|HttpPoster\|notifyWebhook"
