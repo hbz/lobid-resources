@@ -148,3 +148,8 @@ replace_all("zdbId", " ","-") # CZ entries have incorrect spaces sometimes in th
 copy_field("almaMmsId","rpbId")
 lookup("rpbId","almaMmsId2rpbId",delete:"true")
 replace_all("rpbId", "^RPB","")
+
+set_array("stockNumber[]")
+do list(path:"028??", "var":"$i")
+  copy_field("$i.a", "stockNumber[].$append")
+end
