@@ -60,6 +60,8 @@ import play.cache.Cached;
 import play.data.Form;
 import play.libs.F.Promise;
 import play.libs.Json;
+import play.libs.ws.WS;
+import play.libs.ws.WSResponse;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
@@ -513,8 +515,20 @@ public class Application extends Controller {
 		QueryBuilder idQuery = new Queries.Builder().q(idSearch).build();
 		result = new Search.Builder().query(idQuery).size(1).build()
 				.queryResources().getResult();
+		if (result.isEmpty() || result.get(0).get("almaMmsId") == null) {
+			Logger.debug("Could not get resource via alt IDs, trying Aleph data...");
+			JsonNode alephJson = getFromAleph(id);
+			JsonNode zdbId = alephJson != null ? alephJson.get("zdbId") : null;
+			return zdbId != null ? idSearchResult(zdbId.textValue()) : null;
+		}
 		JsonNode newId = result.size() > 0 ? result.get(0).get("almaMmsId") : null;
 		return newId != null ? newId.textValue() : null;
+	}
+
+	private static JsonNode getFromAleph(final String id) {
+		String url = "http://aleph.lobid.org/resources/" + id; // TODO: move to conf, use promise
+		return WS.url(url).setHeader("Accept", "application/json").get()
+				.map((WSResponse response) -> response.asJson()).get(REQUEST_TIMEOUT);
 	}
 
 	/**
