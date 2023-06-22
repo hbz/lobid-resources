@@ -75,6 +75,7 @@ public final class AlmaMarc21XmlToLobidJsonMetafixTest {
         fixVariables.put("rpb2.ttl", "src/main/resources/alma/maps/rpb2.ttl");
         fixVariables.put("rpb-spatial.ttl", "src/main/resources/alma/maps/rpb-spatial.ttl");
         fixVariables.put("rpb.ttl", "src/main/resources/alma/maps/rpb.ttl");
+        fixVariables.put("hbzId2zdbId.tsv", "src/main/resources/alma/maps/hbzId2zdbId.tsv");
     }
 
     /**
