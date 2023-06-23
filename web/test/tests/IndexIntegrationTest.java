@@ -57,7 +57,7 @@ public class IndexIntegrationTest extends LocalIndexSetup {
 			{ "spatial.label:Westfälen", /*->*/ 7 },
 			{ "subject.componentList.id:1113670827", /*->*/ 0 },
 			{ "subject.componentList.type:PlaceOrGeographicName", /*->*/ 19 },
-			{ "publication.location:Berlin", /*->*/ 13 },
+			{ "publication.location:Berlin", /*->*/ 14 },
 			{ "subject.notation:914.3", /*->*/ 6 },
 			{ "subject.notation:914", /*->*/ 0 },
 			{ "subject.notation:914*", /*->*/ 6 },

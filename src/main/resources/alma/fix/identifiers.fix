@@ -43,6 +43,7 @@ if exists("hbzId")
   paste("deprecatedUri", "~http://lobid.org/resources/", "hbzId", "~#!", join_char: "")
 end
 
+
 # 020 - International Standard Book Number (R) - $a (NR)
 # source data sometimes provides repeated subfield $a even if this is not valid marc
 
@@ -114,20 +115,6 @@ do list(path:"035  ", "var":"$i")
 end
 replace_all("oclcNumber[].*", "\\(OCoLC\\)","")
 
-
-# 035 - System Control Number (R) - Subfield: $a (NR)
-do list(path:"035  ", "var":"$i")
-  unless exists("zdbId")
-    if all_match("$i.a", "\\(DE-600\\)(.*)")
-      copy_field("$i.a", "zdbId")
-    elsif all_match("$i.a", "\\(DE-599\\)(ZDB.*)")
-      copy_field("$i.a", "zdbId")
-    end
-  end
-end
-replace_all("zdbId", "\\(DE-600\\)","")
-replace_all("zdbId", "\\(DE-599\\)ZDB","")
-
 #160 - 016 - National Bibliographic Agency Control Number (R)
 do list(path:"0167 ", "var":"$i")
   unless exists("zdbId")
@@ -142,8 +129,30 @@ do list(path:"0167 ", "var":"$i")
   end
 end
 
+# 035 - System Control Number (R) - Subfield: $a (NR)
+do list(path:"035  ", "var":"$i")
+  unless exists("zdbId")
+    if all_match("$i.a", "\\(DE-600\\)(.*)")
+      copy_field("$i.a", "zdbId")
+    elsif all_match("$i.a", "\\(DE-599\\)(ZDB.*)")
+      copy_field("$i.a", "zdbId")
+    end
+  end
+end
+
+# clean up ZDB
+replace_all("zdbId", "\\(DE-600\\)","")
+replace_all("zdbId", "\\(DE-599\\)ZDB","")
+replace_all("zdbId", " ","-") # CZ entries have incorrect spaces sometimes in the zdbId, we need to replace them with "-".
 
 
 copy_field("almaMmsId","rpbId")
 lookup("rpbId","almaMmsId2rpbId",delete:"true")
 replace_all("rpbId", "^RPB","")
+
+copy_field("zdbId","@hbzId")
+lookup("@hbzId","zdbId2oldHbzId",delete:"true")
+if exists("@hbzId")
+  paste("deprecatedUri", "~http://lobid.org/resources/", "@hbzId", "~#!", join_char: "")
+end
+copy_field("@hbzId","hbzId")
