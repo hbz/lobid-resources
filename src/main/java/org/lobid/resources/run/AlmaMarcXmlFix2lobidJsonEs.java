@@ -132,6 +132,7 @@ public class AlmaMarcXmlFix2lobidJsonEs {
                 fixVariables.put("rpb2.ttl", "./maps/rpb2.ttl");
                 fixVariables.put("rpb-spatial.ttl", "./maps/rpb-spatial.ttl");
                 fixVariables.put("rpb.ttl", "./maps/rpb.ttl");
+                fixVariables.put("hbzId2zdbId.tsv", "./maps/hbzId2zdbId.tsv.gz");
 
                 XmlElementSplitter xmlElementSplitter = new XmlElementSplitter();
                 xmlElementSplitter.setElementName("record");
