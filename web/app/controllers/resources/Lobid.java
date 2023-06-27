@@ -436,9 +436,9 @@ public class Lobid {
 		return numerical(i1) < numerical(i2);
 	}
 
-	private static int numerical(String s) {
+	private static long numerical(String s) {
 		// replace non-digits with 9, e.g. for DE-5 before DE-Walb1
-		return Integer.parseInt(s.replaceAll("\\D", "9"));
+		return Long.parseLong(s.replaceAll("\\D", "9"));
 	}
 
 }
