@@ -845,12 +845,23 @@ public class Application extends Controller {
 			List<JsonNode> json = (List<JsonNode>) cachedJson;
 			return Promise.pure(ok(stars.render(starredIds, json, format)));
 		}
-		List<JsonNode> vals = starredIds.stream()
-				.map(id -> new Search.Builder().build().getResource(id).getResult())
-				.collect(Collectors.toList());
+		List<JsonNode> vals =
+				starredIds.stream().map(id -> jsonFor(id)).collect(Collectors.toList());
 		uncache(starredIds);
 		Cache.set(cacheKey, vals, ONE_DAY);
 		return Promise.pure(ok(stars.render(starredIds, vals, format)));
+	}
+
+	/**
+	 * @param id The ID to get the JSON data for
+	 * @return The resource JSON for the given ID
+	 */
+	public static JsonNode jsonFor(String id) {
+		JsonNode getResult =
+				new Search.Builder().build().getResource(id).getResult();
+		return getResult != null ? getResult
+				: new Search.Builder().query(new Queries.IdQuery().build(id)).build()
+						.queryResources().getResult().get(0);
 	}
 
 	/**
