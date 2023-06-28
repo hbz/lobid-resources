@@ -471,10 +471,12 @@ public class Application extends Controller {
 		if (cachedResult != null)
 			return cachedResult;
 		Promise<Result> promise = Promise.promise(() -> {
-			JsonNode result =
-					new Search.Builder().build().getResource(id).getResult();
+			JsonNode result = getJsonForId(id);
 			if (result == null) {
 				String movedTo = idSearchResult(id);
+				Logger.debug(
+						"Could not get resource via index ID or ID query, trying redirect to: '{}'",
+						movedTo);
 				if (movedTo != null) {
 					return movedPermanently(routes.Application.resource(movedTo, format));
 				}
@@ -504,12 +506,23 @@ public class Application extends Controller {
 		return promise;
 	}
 
+	private static JsonNode getJsonForId(final String id) {
+		JsonNode result = new Search.Builder().build().getResource(id).getResult();
+		if (result == null) {
+			QueryBuilder idQuery = new Queries.IdQuery().build(id);
+			result = new Search.Builder().query(idQuery).build().queryResources()
+					.getResult().get(0);
+			Logger.debug(
+					"Could not get resource via index ID, tried IdQuery '{}' with result '{}'",
+					id, result);
+		}
+		return result;
+	}
+
 	static String idSearchResult(final String id) {
 		JsonNode result;
 		String idSearch = String.format("(hbzId:%s OR zdbId:(%s OR %s))", id, id,
 				id.replace("ZDB-", ""));
-		Logger.debug("Could not get resource via index ID, trying search: '{}'",
-				idSearch);
 		QueryBuilder idQuery = new Queries.Builder().q(idSearch).build();
 		result = new Search.Builder().query(idQuery).size(1).build()
 				.queryResources().getResult();

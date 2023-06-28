@@ -10,7 +10,7 @@
             <link>@controllers.resources.Application.CONFIG.getString("host")@uri</link>
             <description>hbz union catalogue query @query</description>
             @for((doc, i) <- hits;
-                ids <- (doc \ "almaMmsId").asOpt[JsValue].getOrElse(doc \ "hbzId").asOpt[JsValue];
+                ids <- (doc \ "almaMmsId").asOpt[JsValue].orElse((doc \ "hbzId").asOpt[JsValue]).orElse((doc \ "rpbId").asOpt[JsValue]);
                 id = ids.asOpt[Seq[JsValue]].getOrElse(Seq(ids))(0).as[String];
                 dateCreated = ((doc \ "describedBy" \ "dateCreated").asOpt[String].getOrElse((doc \ "describedBy" \ "resultOf"  \ "object" \ "dateCreated").as[String]))
             ) {

@@ -30,7 +30,7 @@
         @defining(!(doc\\"containedIn").isEmpty && (doc\"type").toString.contains("Article")){superordination =>
           <div class="col-md-@if(items.isEmpty && !doc.toString.contains("fulltextOnline") && !superordination){12} else {8}">
             <dl>
-            @defining((doc\"almaMmsId").asOpt[String].getOrElse((doc\"hbzId").asOpt[String].getOrElse(q))){ id =>
+            @defining((doc\"almaMmsId").asOpt[String].orElse((doc\"hbzId").asOpt[String]).orElse((doc\"rpbId").asOpt[String]).getOrElse(q)){ id =>
               <dt>@tags.star_button(id) Titeldetails:
               <small style='float:right'>
               <a title="Quelldaten anzeigen" href='@if((doc\"almaMmsId").asOpt[String].isDefined){@Application.CONFIG.getString("mrcx.api")@id}else{@Application.CONFIG.getString("hbz01.api")/@id}'><small>&#12296;M&#12297;</small></a>
