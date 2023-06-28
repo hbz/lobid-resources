@@ -471,15 +471,23 @@ public class Application extends Controller {
 		if (cachedResult != null)
 			return cachedResult;
 		Promise<Result> promise = Promise.promise(() -> {
-			JsonNode result = getJsonForId(id);
-			if (result == null) {
+			JsonNode result = new Search.Builder().build().getResource(id).getResult();
+			if (result == null) { // direct access failed, try to redirect to almaMmsId
 				String movedTo = idSearchResult(id);
 				Logger.debug(
-						"Could not get resource via index ID or ID query, trying redirect to: '{}'",
-						movedTo);
+						"Could not get resource via index ID, trying to redirect '{}' to almaMmsId: '{}'",
+						id, movedTo);
 				if (movedTo != null) {
 					return movedPermanently(routes.Application.resource(movedTo, format));
 				}
+			}
+			if (result == null) { // no almaMmsId to redirect to, try ID query w/o redirect
+				QueryBuilder idQuery = new Queries.IdQuery().build(id);
+				result = new Search.Builder().query(idQuery).build().queryResources()
+						.getResult().get(0);
+				Logger.debug(
+						"Could not get resource via index ID or redirect, trying query '{}', result: '{}'",
+						idQuery, result);
 			}
 			boolean htmlRequested =
 					responseFormat.equals(Accept.Format.HTML.queryParamString);
@@ -504,19 +512,6 @@ public class Application extends Controller {
 		});
 		cacheOnRedeem(cacheId, promise, ONE_DAY);
 		return promise;
-	}
-
-	private static JsonNode getJsonForId(final String id) {
-		JsonNode result = new Search.Builder().build().getResource(id).getResult();
-		if (result == null) {
-			QueryBuilder idQuery = new Queries.IdQuery().build(id);
-			result = new Search.Builder().query(idQuery).build().queryResources()
-					.getResult().get(0);
-			Logger.debug(
-					"Could not get resource via index ID, tried IdQuery '{}' with result '{}'",
-					id, result);
-		}
-		return result;
 	}
 
 	static String idSearchResult(final String id) {
