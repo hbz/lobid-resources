@@ -13,6 +13,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -30,8 +31,10 @@ import org.elasticsearch.common.network.NetworkModule;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.xcontent.XContentType;
 import org.elasticsearch.env.Environment;
+import org.elasticsearch.node.InternalSettingsPreparer;
 import org.elasticsearch.node.Node;
 import org.elasticsearch.node.NodeValidationException;
+import org.xbib.elasticsearch.plugin.bundle.BundlePlugin;
 
 import play.Logger;
 import play.libs.Json;
@@ -62,7 +65,7 @@ public class LocalIndex {
 	 * Create a new local index based on our test set
 	 */
 	public LocalIndex(String testConfig, String testData, String testDataItems) {
-		node = new Node(Settings.builder()
+		node = new LocalNode(Settings.builder()
 				.put(Node.NODE_NAME_SETTING.getKey(), "testNode")
 				.put(NetworkModule.TRANSPORT_TYPE_KEY, NetworkModule.LOCAL_TRANSPORT)
 				.put(NetworkModule.HTTP_ENABLED.getKey(), false) //
@@ -178,6 +181,12 @@ public class LocalIndex {
 			Logger.error(e.getMessage(), e);
 		}
 		return res;
+	}
+	private static class LocalNode extends Node {
+		private LocalNode(final Settings settings) {
+			super(InternalSettingsPreparer.prepareEnvironment(settings, null),
+				Collections.singleton(BundlePlugin.class));
+		}
 	}
 
 }
