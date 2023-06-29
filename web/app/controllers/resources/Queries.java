@@ -405,10 +405,7 @@ public class Queries {
 				if (normalizedQueryString.matches("\"?\\d.*\"?")) { // thus: isbn
 					normalizedQueryString = normalizedQueryString.replaceAll("-", "");
 				}
-			final String hbzId = "\\p{L}+\\d+(-.+)?";
-			return normalizedQueryString.matches(hbzId)
-					? "http://lobid.org/resources/" + normalizedQueryString
-					: normalizedQueryString;
+			return normalizedQueryString;
 		}
 	}
 
