@@ -10,8 +10,9 @@ import java.net.UnknownHostException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
@@ -35,7 +36,7 @@ public final class SwitchEsAlmaAlias {
   private static final int BYTES_MINIMUM = 49 * 1024 * 1024 * 1024;
   private static ObjectMapper objectMapper = new ObjectMapper();
   private static final Logger LOG =
-      LogManager.getLogger(SwitchEsAlmaAlias.class);
+      LoggerFactory.getLogger(SwitchEsAlmaAlias.class);
   private static StringBuilder logMessages = new StringBuilder(512);
 
   private SwitchEsAlmaAlias() {

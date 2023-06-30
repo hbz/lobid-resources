@@ -5,8 +5,6 @@ package org.lobid.resources;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.hbz.lobid.helper.JsonFileWriter;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
 import org.metafacture.biblio.marc21.MarcXmlHandler;
@@ -22,6 +20,9 @@ import org.metafacture.xml.XmlDecoder;
 import org.metafacture.xml.XmlElementSplitter;
 import org.metafacture.xml.XmlFilenameWriter;
 import org.metafacture.metafix.Metafix;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -44,7 +45,7 @@ public final class AlmaMarc21XmlToLobidJsonMetafixTest {
     private static final File DIRECTORY = new File(DIRECTORY_NAME);
     final HashMap<String, String> fixVariables = new HashMap<>();
     private static final boolean GENERATE_TESTDATA = System.getProperty("generateTestData", "false").equals("true");
-    private static final Logger LOG = LogManager.getLogger(AlmaMarc21XmlToLobidJsonMetafixTest.class);
+    private static final Logger LOG = LoggerFactory.getLogger(AlmaMarc21XmlToLobidJsonMetafixTest.class);
     // try patterns like e.g."662", NOT".*662" (which just would slow down)
     private static final String PATTERN_TO_IDENTIFY_XML_RECORDS = "";
 

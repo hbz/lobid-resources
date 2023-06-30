@@ -15,24 +15,20 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map.Entry;
-import java.util.Optional;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.StreamSupport;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+
 import com.google.common.collect.SortedSetMultimap;
 import com.google.common.collect.TreeMultimap;
-import com.google.gdata.util.common.base.Pair;
 import com.google.gdata.util.common.io.CharStreams;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.elasticsearch.action.admin.cluster.state.ClusterStateRequest;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
 import org.elasticsearch.action.admin.indices.settings.put.UpdateSettingsRequest;
@@ -46,15 +42,12 @@ import org.elasticsearch.client.transport.NoNodeAvailableException;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
-import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.MultiMatchQueryBuilder;
-import org.elasticsearch.index.query.Operator;
-import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.QueryStringQueryBuilder;
 import org.elasticsearch.rest.action.admin.indices.AliasesNotFoundException;
 import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.transport.client.PreBuiltTransportClient;
+
 import org.metafacture.framework.ObjectReceiver;
 import org.metafacture.framework.annotations.In;
 import org.metafacture.framework.annotations.Out;
@@ -72,7 +65,7 @@ public class ElasticsearchIndexer
 		extends DefaultObjectPipe<HashMap<String, String>, ObjectReceiver<Void>> {
 
 	private static final Logger LOG =
-			LogManager.getLogger(ElasticsearchIndexer.class);
+		LoggerFactory.getLogger(ElasticsearchIndexer.class);
 	private String hostname;
 	private String clustername;
 	private BulkRequestBuilder bulkRequest;
@@ -227,7 +220,7 @@ public class ElasticsearchIndexer
 				LOG.warn("Retry indexing record" + json.get(Properties.ID.getName())
 						+ ":" + e.getMessage() + " (" + retries + " more retries)");
 			} catch (final Exception ex) {
-				LOG.warn(ex);
+				LOG.warn(ex.getMessage());
 			}
 		}
 	}
