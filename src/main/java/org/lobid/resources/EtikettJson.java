@@ -13,8 +13,9 @@ import java.util.Map;
 
 import com.github.jsonldjava.utils.JsonUtils;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.metafacture.framework.ObjectReceiver;
 import org.metafacture.framework.annotations.In;
 import org.metafacture.framework.annotations.Out;
@@ -32,7 +33,7 @@ import de.hbz.lobid.helper.EtikettMaker;
 @Out(String.class)
 public final class EtikettJson
     extends DefaultObjectPipe<String, ObjectReceiver<String>> {
-  private static final Logger LOG = LogManager.getLogger(EtikettJson.class);
+  private static final Logger LOG = LoggerFactory.getLogger(EtikettJson.class);
   private String labelsDirectoryName = "labels";
   private String contextFilenameLocation;
   private boolean generateContext = false;

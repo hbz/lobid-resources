@@ -8,8 +8,8 @@ import java.util.Map;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -24,7 +24,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 @XmlRootElement
 public class Etikett {
-	final static Logger logger = LogManager.getLogger(Etikett.class);
+	final static Logger logger = LoggerFactory.getLogger(Etikett.class);
 
 	public enum EtikettType {
 		CACHE, CONTEXT, STORE
