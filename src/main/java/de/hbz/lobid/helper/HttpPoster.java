@@ -1,10 +1,14 @@
 package de.hbz.lobid.helper;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.io.*;
-import java.net.*;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLConnection;
+import java.net.MalformedURLException;
 
 /**
  * Uploads data using {@link URLConnection} with POST method and returns the response.
@@ -17,7 +21,7 @@ public final class HttpPoster {
     public final String POST = "POST";
     private String contentType = "application/json";
     private URL url;
-    private static final Logger LOG = LogManager.getLogger(HttpPoster.class);
+    private static final Logger LOG = LoggerFactory.getLogger(HttpPoster.class);
 
     /**
      * Creates an instance of {@link HttpPoster}.

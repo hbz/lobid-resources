@@ -11,8 +11,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import de.hbz.lobid.helper.HttpPoster;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.lobid.resources.ElasticsearchIndexer;
 import org.lobid.resources.EtikettJson;
 import org.lobid.resources.JsonToElasticsearchBulkMap;
@@ -27,6 +25,9 @@ import org.metafacture.strings.StringReader;
 import org.metafacture.xml.XmlDecoder;
 import org.metafacture.xml.XmlElementSplitter;
 import org.metafacture.metafix.Metafix;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import de.hbz.lobid.helper.Email;
 
@@ -57,8 +58,7 @@ public class AlmaMarcXmlFix2lobidJsonEs {
     private static String triggerWebhookData;
     private static String kind = "";
     private static boolean switchAutomatically = false;
-    private static final Logger LOG =
-        LogManager.getLogger(AlmaMarcXmlFix2lobidJsonEs.class);
+    private static final Logger LOG = LoggerFactory.getLogger(AlmaMarcXmlFix2lobidJsonEs.class);
     public static boolean threadAlreadyStarted = false;
     private static String switchAlias1;
     private static String switchAlias2;
