@@ -14,8 +14,9 @@ import javax.mail.MessagingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
@@ -40,7 +41,7 @@ import de.hbz.lobid.helper.Email;
  */
 public class UpdateAliases {
   private static ObjectMapper objectMapper = new ObjectMapper();
-  private static final Logger LOG = LogManager.getLogger(UpdateAliases.class);
+  private static final Logger LOG = LoggerFactory.getLogger(UpdateAliases.class);
   private static boolean success = false;
   private static String logMessage;
   private static StringBuilder logMessages = new StringBuilder(512);
