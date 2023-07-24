@@ -558,8 +558,16 @@ if any_match("@leaderTyp+008", "(Continuing Resources)(.{21})p.*")  # Pos21
   add_field("type[].$append","Periodical")
 elsif any_match("006", "^[s](.{3})p.*") # Pos00+04
   add_field("type[].$append","Periodical")
-elsif any_match("natureOfContent[].*.label", ".*(Zeitschrift|Werkzeitschrift).*")
+elsif any_match("natureOfContent[].*.label", ".*(Zeitschrift|Werkzeitschrift|eriodical).*")
   add_field("type[].$append", "Periodical")
+elsif any_equal("906", "JOURNAL")
+  add_field("type[].$append","Periodical")
+else 
+  do list(path: "POR  ","var":"$i")
+    if any_equal("$i.f","JOURNAL")
+      add_field("type[].$append","Periodical")
+    end
+  end
 end
 
 # type: "Proceedings"
