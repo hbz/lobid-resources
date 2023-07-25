@@ -159,3 +159,13 @@ do list(path: "542??", "var": "$i")
   copy_field("$i.u", "license[].$last.label")
   replace_all("license[].$last.label", "^(http://|https://)(.*)$","$2")
 end
+
+set_array("langNote[]")
+do list(path: "546??", "var": "$i")
+  set_array("$i.@langNote")
+  copy_field("$i.a", "$i.@langNote.$append")
+  copy_field("$i.b", "$i.@langNote.$append")
+  replace_all("$i.@langNote.*", "[.;]$", "")
+  join_field("$i.@langNote", "; ")
+  move_field("$i.@langNote", "langNote[].$append")
+end

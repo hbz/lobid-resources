@@ -77,7 +77,7 @@
 }
 
 @with_icon(label: String, property: String, fullField: String) = {
-  @if((doc\property).get.asOpt[JsValue].isDefined) {
+  @if((doc\property).asOpt[JsValue].isDefined) {
     @defining(if(property != "type") { nestedIds(property) } else { singleOrMultiString(property) }){ v =>
       <tr><td>@label</td><td><span class="@Lobid.facetIcon(v,fullField)"></span> @Lobid.facetLabel(v,fullField,"")</td></tr>
     }
@@ -91,8 +91,8 @@
   }}}
 }
 
-@lobidUrl(hbzId: String) = @{
-  "http://lobid.org/resources/" + hbzId + "#!"
+@lobidUrl(doc: JsValue) = @{
+  "http://lobid.org/resources/" + (doc\"almaMmsId").asOpt[String].orElse((doc\"hbzId").asOpt[String]).orElse((doc\"rpbId").asOpt[String]).getOrElse("") + "#!"
 }
 
 @lobid2_part_of(field: String, subField: String) = {
@@ -196,7 +196,7 @@
   @result_field("In", "containedIn", doc, TableRow.LINKS)
 
   @lobid2_part_of("isPartOf", "hasSuperordinate")
-  @defining(lobidUrl((doc \ "hbzId").asOpt[String].getOrElse(""))){ id =>
+  @defining(lobidUrl(doc)){ id =>
    @subordinated("isPartOf.hasSuperordinate.id", id, "Bände", ("zugehöriger Band", "zugehörige Bände"))
    @subordinated("containedIn.id", id, "Enthält", ("Beitrag", "Beiträge"))
   }

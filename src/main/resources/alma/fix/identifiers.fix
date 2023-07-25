@@ -43,6 +43,7 @@ if exists("hbzId")
   paste("deprecatedUri", "~http://lobid.org/resources/", "hbzId", "~#!", join_char: "")
 end
 
+
 # 020 - International Standard Book Number (R) - $a (NR)
 # source data sometimes provides repeated subfield $a even if this is not valid marc
 
@@ -148,3 +149,15 @@ replace_all("zdbId", " ","-") # CZ entries have incorrect spaces sometimes in th
 copy_field("almaMmsId","rpbId")
 lookup("rpbId","almaMmsId2rpbId",delete:"true")
 replace_all("rpbId", "^RPB","")
+
+set_array("stockNumber[]")
+do list(path:"028??", "var":"$i")
+  copy_field("$i.a", "stockNumber[].$append")
+end
+
+copy_field("zdbId","@hbzId")
+lookup("@hbzId","zdbId2oldHbzId",delete:"true")
+if exists("@hbzId")
+  paste("deprecatedUri", "~http://lobid.org/resources/", "@hbzId", "~#!", join_char: "")
+end
+copy_field("@hbzId","hbzId")
