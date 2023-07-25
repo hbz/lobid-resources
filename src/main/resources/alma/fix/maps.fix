@@ -35,6 +35,8 @@ put_filemap("$[almaMmsId2rpbId]","almaMmsId2rpbId", sep_char:"\t",key_column:"0"
 # lobid Organisations id -> label
 put_filemap("$[lobidOrgLabels]","lobidOrgLabels", sep_char:"\t",key_column:"0",value_column:"1",expected_columns:"-1")
 
+# map zdbId to old hbzId(HT Nummer) based on the last aleph transformation
+put_filemap("$[hbzId2zdbId.tsv]","zdbId2oldHbzId", sep_char:"\t",key_column:"1",value_column:"0",expected_columns:"-1")
 
 put_map("rswk-indicator",
   "p": "Person",

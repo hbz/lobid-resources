@@ -57,7 +57,7 @@ public class IndexIntegrationTest extends LocalIndexSetup {
 			{ "spatial.label:Westfälen", /*->*/ 7 },
 			{ "subject.componentList.id:1113670827", /*->*/ 0 },
 			{ "subject.componentList.type:PlaceOrGeographicName", /*->*/ 19 },
-			{ "publication.location:Berlin", /*->*/ 13 },
+			{ "publication.location:Berlin", /*->*/ 14 },
 			{ "subject.notation:914.3", /*->*/ 6 },
 			{ "subject.notation:914", /*->*/ 0 },
 			{ "subject.notation:914*", /*->*/ 6 },
@@ -88,7 +88,9 @@ public class IndexIntegrationTest extends LocalIndexSetup {
 			{ "describedBy.resultOf.object.dateCreated:\"2023-03-22\"", /*->*/ 1},
 			{ "describedBy.resultOf.object.dateModified:\"2022-07-18\"", /*->*/ 1},
 			{ "describedBy.resultOf.object.sourceOrganization.id:\"http\\://lobid.org/organisations/DE-5#\\!\"", /*->*/ 4},
-			{ "describedBy.resultOf.object.modifiedBy.id:\"http\\://lobid.org/organisations/DE-6#\\!\"", /*->*/ 13 }
+			{ "describedBy.resultOf.object.modifiedBy.id:\"http\\://lobid.org/organisations/DE-6#\\!\"", /*->*/ 13 },
+			{ "\"Reader-friendly\"", /*->*/ 1},
+			{ "\"Reader friendly\"", /*->*/ 1}
 		});
 	} // @formatter:on
 
