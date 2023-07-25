@@ -376,7 +376,8 @@ end
 
 replace_all("related[].*.id", "^\\(DE-605\\)(.*)$", "http://lobid.org/resources/$1#!")
 replace_all("related[].*.id", "^\\(DE-600\\)(.*)$", "http://lobid.org/resources/ZDB-$1#!")
-
+replace_all("related[].*.issn", "-","")
+replace_all("related[].*.isbn", "-","")
 
 set_array("inCollection[]")
 
