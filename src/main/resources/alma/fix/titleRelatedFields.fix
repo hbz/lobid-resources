@@ -224,16 +224,41 @@ end
 
 set_array("publication[]")
 if exists("264[ 23][ 1]")
-  call_macro("publication",field:"264[ 23][ 1]")
+  call_macro("publication",field:"2643[ 1]") # 3 - Current/Latest
+  call_macro("publication",field:"2642[ 1]") # 2 - Intervening
+  call_macro("publication",field:"264 [ 1]") # # - Not applicable/No information provided/Earliest
 else
-  call_macro("publication",field:"260[ 23] ")
+  call_macro("publication",field:"2603[ 1]") # 3 - Current/Latest
+  call_macro("publication",field:"2602[ 1]") # 2 - Intervening
+  call_macro("publication",field:"260 [ 1]") # # - Not applicable/No information provided/Earliest
 end
 
-do list(path:"500  ", "var":"$i")
-  if any_match("$i.a", "^.*saṃ. \\d{4}=(\\d{4}).*Chr.*")
-    remove_field("publication[].$last.startDate")
-    copy_field("$i.a","publication[].$last.startDate")
-    replace_all("publication[].$last.startDate","^.*saṃ. \\d{4}=(\\d{4}).*Chr.*","$1")
+if exists("publication[].$first")
+  copy_field("362??.a","publication[].$first.publicationHistory")
+    set_array("publication[].$first.frequency[]")
+    if any_match("leader","^.{6}(a[bis]|m[bis]).*$") # checks if continous ressource
+      unless any_match("008","^.{18}[#\\| u].*$") # filters out not matching values and also the value unknown
+        copy_field("008","publication[].$first.frequency[].$append.id")
+        replace_all("publication[].$first.frequency[].$last.id", "^.{18}(.).*$", "http://marc21rdf.info/terms/continuingfre#$1")
+      end
+    elsif any_match("006","^s.*$")
+      do list(path: "006", "var":"$z")
+        if any_match("$z","^s.*$")
+          unless any_match("$z","^.[#\\| u].*$")
+            copy_field("$z","publication[].$first.frequency[].$append.id")
+            replace_all("publication[].$first.frequency[].$last.id", "^.(.).*$", "http://marc21rdf.info/terms/continuingfre#$1")
+          end
+        end
+      end
+    end
+    set_array("publication[].$first.note[]")
+    copy_field("515??.a","publication[].$first.note[].$append")
+  do list(path:"500  ", "var":"$i")
+    if any_match("$i.a", "^.*saṃ. \\d{4}=(\\d{4}).*Chr.*")
+      remove_field("publication[].$first.startDate")
+      copy_field("$i.a","publication[].$first.startDate")
+      replace_all("publication[].$first.startDate","^.*saṃ. \\d{4}=(\\d{4}).*Chr.*","$1")
+    end
   end
 end
 
