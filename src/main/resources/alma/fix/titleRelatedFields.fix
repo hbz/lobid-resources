@@ -223,7 +223,11 @@ end
 # 515 - Numbering Peculiarities Note (R)
 
 set_array("publication[]")
-call_macro("publication",field:"260[ 23] |264[ 23][ 1]")
+if exists("264[ 23][ 1]")
+  call_macro("publication",field:"264[ 23][ 1]")
+else
+  call_macro("publication",field:"260[ 23] ")
+end
 
 do list(path:"500  ", "var":"$i")
   if any_match("$i.a", "^.*saṃ. \\d{4}=(\\d{4}).*Chr.*")
