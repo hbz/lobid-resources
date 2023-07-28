@@ -29,7 +29,7 @@ import play.Logger;
 public class IndexIntegrationTest extends LocalIndexSetup {
 
 	// test data parameters, formatted as "input /*->*/ expected output"
-	@Parameters(name = "{0}")
+	@Parameters(name = "({index}) {0}")
 	public static Collection<Object[]> data() {
 		// @formatter:off
 		return queries(new Object[][] {
