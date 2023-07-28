@@ -14,6 +14,9 @@ do put_macro("gndEventCombinedLabel")
   unless is_empty("$[field].@combinedDetailsForEvents.")
     paste("$[field].@combinedLabel", "$[field].@combinedLabel", "~ (", "$[field].@combinedDetailsForEvents", "~)", join_char:"")
   end
+  if exists("$[field].t")
+    paste("$[field].@combinedLabel", "$[field].@combinedLabel", "~: ","$[field].t", join_char:"")
+  end
 end
 
 # Macro for combinedLabel Person
@@ -31,6 +34,9 @@ do put_macro("gndPersonCombinedLabel")
     end
     if exists("$[field].x")
       paste("$[field].@combinedLabel", "$[field].@combinedLabel", "~/","$[field].x")
+    end
+    if exists("$[field].t")
+      paste("$[field].@combinedLabel", "$[field].@combinedLabel", "~: ","$[field].t", join_char:"")
     end
 end
 
