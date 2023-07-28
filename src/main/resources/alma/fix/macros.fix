@@ -104,7 +104,7 @@ do put_macro("schlagwortfolge")
     do list(path:"$[field]", "var":"$i")
       set_array("subject[].$last.componentList[].$append.type[]")
       if exists("$i.t") # Marker for Werktitel/Work even when the GND-enrichment is falsly labeld as Peron or differently
-        add_field("subject[].$last.componentList[].$last.type[].$append","work")
+        add_field("subject[].$last.componentList[].$last.type[].$append","Work")
       else
         do list(path: "$i.D", "var": "$k")
           copy_field("$k","subject[].$last.componentList[].$last.type[].$append")
