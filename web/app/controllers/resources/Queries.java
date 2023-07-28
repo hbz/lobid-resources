@@ -32,13 +32,13 @@ import com.google.common.collect.ImmutableMap;
 
 /**
  * Queries on the lobid-resources index.
- * 
+ *
  * @author Fabian Steeg (fsteeg)
  */
 public class Queries {
 	/**
 	 * Parameters for API requests.
-	 * 
+	 *
 	 * @author Fabian Steeg (fsteeg)
 	 */
 	static enum Parameter {
@@ -163,6 +163,11 @@ public class Queries {
 		public QueryBuilder build() { return new Queries(this).query(); }
 		//@formatter:on
 
+		@Override
+		public String toString() {
+			return q;
+		}
+
 	}
 
 	private QueryBuilder query() {
@@ -194,7 +199,7 @@ public class Queries {
 
 	/**
 	 * Superclass for queries on different indexes.
-	 * 
+	 *
 	 * @author Fabian Steeg (fsteeg)
 	 */
 	static abstract class AbstractIndexQuery {
