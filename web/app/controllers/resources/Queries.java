@@ -165,7 +165,25 @@ public class Queries {
 
 		@Override
 		public String toString() {
-			return q;
+			final Map<Parameter, String> parameters = Parameter
+					.select(new ImmutableMap.Builder<Parameter, String>() /*@formatter:off*/
+							.put(Parameter.ID, id)
+							.put(Parameter.Q, q)
+							.put(Parameter.NAME, name)
+							.put(Parameter.AGENT, agent)
+							.put(Parameter.SUBJECT, subject)
+							.put(Parameter.PUBLISHER, publisher)
+							.put(Parameter.ISSUED, issued)
+							.put(Parameter.MEDIUM, medium)
+							.put(Parameter.NESTED, nested)
+							.put(Parameter.LOCATION, location)
+							.put(Parameter.T, t)
+							.put(Parameter.FILTER, filter)
+							.put(Parameter.OWNER, owner)
+							.put(Parameter.WORD, word)
+							.build());/*@formatter:on*/
+
+			return parameters.toString();
 		}
 
 	}
