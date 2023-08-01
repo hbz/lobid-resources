@@ -115,7 +115,7 @@ public class AlmaMarcXmlFix2lobidJsonEs {
                 fixVariables.put("createEndTime", "1"); // 1 <=> true
                 fixVariables.put("institution-code", "DE-605");
                 // the './' is mandatory to get play to use the "conf" directory. Base is the root directory of the fix, which is "alma":
-                fixVariables.put("deweyLabels", "./../deweyLabels.tsv");
+                fixVariables.put("deweyLabels", "./maps/deweyLabels.tsv");
                 fixVariables.put("nwbib-spatial", "./../nwbib-spatial.tsv");
                 fixVariables.put("wd_itemLabelTypesCoordinates", "./../wd_itemLabelTypesCoordinates.tsv");
                 fixVariables.put("maps-institutions.tsv", "./maps/institutions.tsv");
