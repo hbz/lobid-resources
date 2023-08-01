@@ -242,7 +242,7 @@ do list(path:"0820 |08200", "var":"$i")
   do list(path:"$i.a", "var": "$j")
     unless exists("subject[].$last.label")
       copy_field("$i.a","subject[].$last.label")
-      lookup("subject[].$last.label", "$[deweyLabels]","sep_char":"\t")
+      lookup("subject[].$last.label", "deweyLabels")
       copy_field("$i.a","subject[].$last.notation")
     end
   end
