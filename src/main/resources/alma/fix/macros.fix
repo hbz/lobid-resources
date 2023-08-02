@@ -6,8 +6,8 @@ do put_macro("alternateGraphicRepresationForContribution")
 #    replace_all("$i.linkageTest","880(.*)","$[sourceField]$1")
     do list(path:"880??","var":"$880")
       if in ("$i.linkageTest","$880.linkageTest")
-        copy_field("$880.6","contribution[].$last.agent.alternateGraphicRepresentation[].$append.script")
-        copy_field("$880.a","contribution[].$last.agent.alternateGraphicRepresentation[].$append.label")     
+        copy_field("$880.6","$[targetField].alternateGraphicRepresentation[].$append.script")
+        copy_field("$880.a","$[targetField].alternateGraphicRepresentation[].$append.label")     
       end
     end
   end
@@ -123,6 +123,7 @@ do put_macro("schlagwortfolge")
         call_macro("gndOtherCombinedLabel",field:"$i")
       end
       copy_field("$i.@combinedLabel", "subject[].$last.componentList[].$last.label")
+      call_macro("alternateGraphicRepresationForContribution",targetField:"subject[].$last.componentList[].$last")
       unless any_equal("subject[].$last.componentList[].$last.label","")
         copy_field("subject[].$last.componentList[].$last.label","subject[].$last.label.$append")
       end
