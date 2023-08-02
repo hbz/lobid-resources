@@ -63,6 +63,7 @@ do list(path:"100[01] ", "var":"$i")
         copy_field("$j","contribution[].$last.role.id")
         # dateOfBirthAndDeath #will be split on a later stage
         copy_field("$i.d","contribution[].$last.agent.dateOfBirthAndDeath")
+        call_macro("alternateGraphicRepresationForContribution",sourceField:"100")
       end
     end
   end
@@ -113,6 +114,7 @@ do list(path:"700[01] ", "var":"$i")
         copy_field("$j","contribution[].$last.role.id")
         # dateOfBirthAndDeath #will be split on a later stage
         copy_field("$i.d","contribution[].$last.agent.dateOfBirthAndDeath")
+        call_macro("alternateGraphicRepresationForContribution",sourceField:"700")
       end
     end
   end
@@ -171,6 +173,7 @@ do list(path:"110[012] ", "var":"$i")
         set_array("contribution[].$last.agent.type[]","CorporateBody")
         # role
         copy_field("$j","contribution[].$last.role.id")
+        call_macro("alternateGraphicRepresationForContribution",sourceField:"110")
       end
     end
   end
@@ -220,6 +223,7 @@ do list(path:"710[012] ", "var":"$i")
         set_array("contribution[].$last.agent.type[]","CorporateBody")
         # role
         copy_field("$j","contribution[].$last.role.id")
+        call_macro("alternateGraphicRepresationForContribution",sourceField:"710")
       end
     end
   end
@@ -269,6 +273,8 @@ do list(path:"111[012] |711[012] ", "var":"$i")
         set_array("contribution[].$last.agent.type[]","ConferenceOrEvent")
         # role
         copy_field("$j","contribution[].$last.role.id")
+        call_macro("alternateGraphicRepresationForContribution",sourceField:"111")
+        call_macro("alternateGraphicRepresationForContribution",sourceField:"711")
       end
     end
   end
@@ -374,6 +380,9 @@ do list (path: "contribution[]", "var": "$i")
 
   remove_field("$i.agent.@gndIdn")
 end
+
+replace_all("contribution[].*.agent.alternateGraphicRepresentation[].*.script","(\\d{3}-\\d{2})/(.*)","$2")
+lookup("contribution[].*.agent.alternateGraphicRepresentation[].*.script","ISO15924-to-script")
 
 do list (path:"contribution[]", "var":"$i")
   replace_all("$i.agent.label","<<|>>","")

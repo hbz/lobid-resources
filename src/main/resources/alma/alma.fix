@@ -15,6 +15,11 @@ de.hbz.lobid.helper.DropLocal()
 
 add_field("@context","http://lobid.org/resources/context.jsonld")
 
+do list(path:"880??","var":"$i")
+  copy_field("$i.6","$i.linkageTest")
+  replace_all("$i.linkageTest","\\d{3}(-\\d{2}).*","880$1")
+end
+
 include ("./fix/identifiers.fix")
 include ("./fix/titleRelatedFields.fix")
 include ("./fix/describedBy.fix")

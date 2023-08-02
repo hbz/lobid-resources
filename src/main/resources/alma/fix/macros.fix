@@ -1,3 +1,18 @@
+# alternateGraphicRepresation
+do put_macro("alternateGraphicRepresationForContribution")
+  if exists("$i.6")
+    set_array("contribution[].$last.agent.alternateGraphicRepresentation[]")
+    copy_field("$i.6","$i.linkageTest")
+#    replace_all("$i.linkageTest","880(.*)","$[sourceField]$1")
+    do list(path:"880??","var":"$880")
+      if in ("$i.linkageTest","$880.linkageTest")
+        copy_field("$880.6","contribution[].$last.agent.alternateGraphicRepresentation[].$append.script")
+        copy_field("$880.a","contribution[].$last.agent.alternateGraphicRepresentation[].$append.label")     
+      end
+    end
+  end
+end
+
 # Macro for combinedLabel Event / Meeting
 
 do put_macro("gndEventCombinedLabel")
