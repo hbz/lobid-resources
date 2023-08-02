@@ -380,8 +380,6 @@ do list (path: "contribution[]", "var": "$i")
   remove_field("$i.agent.@gndIdn")
 end
 
-replace_all("contribution[].*.agent.alternateGraphicRepresentation[].*.script","(\\d{3}-\\d{2})/(.*)","$2")
-lookup("contribution[].*.agent.alternateGraphicRepresentation[].*.script","ISO15924-to-script")
 
 do list (path:"contribution[]", "var":"$i")
   replace_all("$i.agent.label","<<|>>","")

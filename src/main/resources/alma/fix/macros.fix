@@ -6,8 +6,14 @@ do put_macro("alternateGraphicRepresationForContribution")
 #    replace_all("$i.linkageTest","880(.*)","$[sourceField]$1")
     do list(path:"880??","var":"$880")
       if in ("$i.linkageTest","$880.linkageTest")
-        copy_field("$880.6","$[targetField].alternateGraphicRepresentation[].$append.script")
-        copy_field("$880.a","$[targetField].alternateGraphicRepresentation[].$append.label")     
+        copy_field("$880.6","$880.@script.id")
+        copy_field("$880.6","$880.@script.label")        
+        replace_all("$880.@script.id","(\\d{3}-\\d{2})/(.*)","https://unicode.org/iso15924/iso15924.txt#$2")
+        replace_all("$880.@script.label","(\\d{3}-\\d{2})/(.*)","$2")
+        lookup("$880.@script.label","ISO15924-to-script")
+        copy_field("$880.@script.id","$[targetField].alternateGraphicRepresentation[].$append.script.id")
+        copy_field("$880.@script.label","$[targetField].alternateGraphicRepresentation[].$last.script.label")        
+        copy_field("$880.a","$[targetField].alternateGraphicRepresentation[].$last.label")     
       end
     end
   end
