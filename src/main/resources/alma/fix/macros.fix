@@ -1,5 +1,5 @@
 # alternateGraphicRepresation
-do put_macro("alternateGraphicRepresationForContribution")
+do put_macro("alternateGraphicRepresationSimple")
   if exists("$i.6")
     set_array("contribution[].$last.agent.alternateGraphicRepresentation[]")
     copy_field("$i.6","$i.linkageTest")
@@ -129,7 +129,7 @@ do put_macro("schlagwortfolge")
         call_macro("gndOtherCombinedLabel",field:"$i")
       end
       copy_field("$i.@combinedLabel", "subject[].$last.componentList[].$last.label")
-      call_macro("alternateGraphicRepresationForContribution",targetField:"subject[].$last.componentList[].$last")
+      call_macro("alternateGraphicRepresationSimple",targetField:"subject[].$last.componentList[].$last")
       unless any_equal("subject[].$last.componentList[].$last.label","")
         copy_field("subject[].$last.componentList[].$last.label","subject[].$last.label.$append")
       end
