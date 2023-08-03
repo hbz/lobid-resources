@@ -58,7 +58,9 @@ do list(path:"245??","var":"$i")
              do list(path:"alternateGraphicRepresentation[]","var":"$AGR")
                if in ("$880.@script.id","$AGR.script.id")     
                  copy_field("$880.a","$AGR.title")
-                 set_array("$AGR.otherTitleInformation[]")
+                 unless exists("$AGR.otherTitleInformation[]")
+                   set_array("$AGR.otherTitleInformation[]")
+                 end
                  copy_field("$880.b","$AGR.otherTitleInformation[].$append")     
                end
              end
