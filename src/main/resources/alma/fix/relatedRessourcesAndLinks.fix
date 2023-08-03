@@ -106,7 +106,7 @@ do list(path: "4900?", "var": "$i")
   join_field("isPartOf[].$last.hasSuperordinate[].$last.label", " / ")
   set_array("isPartOf[].$last.numbering")
   do list(path:"$i.v", "var":"$j")
-    copy_field("$j", "isPartOf[].$last.numbering", " ")
+    copy_field("$j", "isPartOf[].$last.numbering.$append")
   end
   join_field("isPartOf[].$last.numbering")
 end
