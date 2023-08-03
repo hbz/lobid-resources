@@ -25,14 +25,21 @@ end
 replace_all("@titleOfSubSeries_p.*", "\\s?\\.?\\s?$", "")
 replace_all("@titleOfSubSeries_p.*","<<|>>","")
 join_field("@titleOfSubSeries_p", ". ")
-vacuum()
+if is_empty("@titleOfSubSeries_p")
+  remove_field("@titleOfSubSeries_p")
+end
+if is_empty("@titleOfSubSeries_n")
+  remove_field("@titleOfSubSeries_n")
+end
 if exists("@titleOfSubSeries_n") # separate subvolume numbering and title with :
   prepend("@titleOfSubSeries_p", ": ")
 end
 
 paste("@titleOfSubSeries", "@titleOfSubSeries_n",  "@titleOfSubSeries_p", join_char: "")
 
-vacuum()
+if is_empty("@titleOfSubSeries")
+  remove_field("@titleOfSubSeries")
+end
 
 prepend("@titleOfSubSeries",", ")
 
@@ -47,11 +54,6 @@ do list(path:"245??","var":"$i")
     do list(path:"880??","var":"$880")
      unless exists("$880.M")
         if in ("$i.linkageTest","$880.linkageTest")
-          copy_field("$880.6","$880.@script.id")
-          copy_field("$880.6","$880.@script.label")        
-          replace_all("$880.@script.id","(\\d{3}-\\d{2})/(.*)","https://unicode.org/iso15924/iso15924.txt#$2")
-          replace_all("$880.@script.label","(\\d{3}-\\d{2})/(.*)","$2")
-          lookup("$880.@script.label","ISO15924-to-script")
           # if in ("$880.@script.id","alternateGraphicRepresentation[].*.script.id")   
           #   do list(path:"alternateGraphicRepresentation[]","var":"$AGR")
           #     if in ("$880.@script.id","$AGR.script.id")     
