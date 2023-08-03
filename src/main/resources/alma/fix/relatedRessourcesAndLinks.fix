@@ -487,7 +487,7 @@ end
 
 do list(path:"084??", "var":"$i")
   if any_equal("$i.2","rpb")
-    if any_match("$i.a","^rpbr.*|\\d{3}") # exclude LBZ Notations
+    if any_match("$i.a","^rpb.*") # exclude LBZ Notations
       add_field("inCollection[].$append.id", "http://lobid.org/resources/HT013494180#!")
       add_field("inCollection[].$last.label", "Rheinland-Pfälzische Bibliographie")
     end
