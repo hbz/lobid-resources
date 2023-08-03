@@ -54,21 +54,21 @@ do list(path:"245??","var":"$i")
     do list(path:"880??","var":"$880")
      unless exists("$880.M")
         if in ("$i.linkageTest","$880.linkageTest")
-          # if in ("$880.@script.id","alternateGraphicRepresentation[].*.script.id")   
-          #   do list(path:"alternateGraphicRepresentation[]","var":"$AGR")
-          #     if in ("$880.@script.id","$AGR.script.id")     
-          #       copy_field("$880.a","$AGR.title")
-          #       set_array("$AGR.otherTitleInformation[]")
-          #       copy_field("$880.b","$AGR.otherTitleInformation[].$append")     
-          #     end
-          #   end
-          # else    
+           if in ("$880.@script.id","alternateGraphicRepresentation[].*.script.id")   
+             do list(path:"alternateGraphicRepresentation[]","var":"$AGR")
+               if in ("$880.@script.id","$AGR.script.id")     
+                 copy_field("$880.a","$AGR.title")
+                 set_array("$AGR.otherTitleInformation[]")
+                 copy_field("$880.b","$AGR.otherTitleInformation[].$append")     
+               end
+             end
+           else    
             copy_field("$880.@script.id","alternateGraphicRepresentation[].$append.script.id")
             copy_field("$880.@script.label","alternateGraphicRepresentation[].$last.script.label")        
             copy_field("$880.a","alternateGraphicRepresentation[].$last.title")
             set_array("alternateGraphicRepresentation[].$last.otherTitleInformation[]")
             copy_field("$880.b","alternateGraphicRepresentation[].$last.otherTitleInformation[].$append")
-          # end
+           end
         end
       end
     end
@@ -80,39 +80,34 @@ end
 set_array("alternativeTitle[]")
 copy_field("246?[ 345678].a","alternativeTitle[].$append")
 
-# do list(path:"246?[ 345678]","var":"$i")
-#   if exists("$i.6")
-#     copy_field("$i.6","$i.linkageTest")
-#     do list(path:"880??","var":"$880")
-#      unless exists("$880.M")
-#         if in ("$i.linkageTest","$880.linkageTest")
-#           copy_field("$880.6","$880.@script.id")
-#           copy_field("$880.6","$880.@script.label")        
-#           replace_all("$880.@script.id","(\\d{3}-\\d{2})/(.*)","https://unicode.org/iso15924/iso15924.txt#$2")
-#           replace_all("$880.@script.label","(\\d{3}-\\d{2})/(.*)","$2")
-#           lookup("$880.@script.label","ISO15924-to-script")
-#           if in ("$880.@script.id","alternateGraphicRepresentation[].*.script.id")   
-#             do list(path:"alternateGraphicRepresentation[]","var":"$AGR")
-#               if in ("$880.@script.id","$AGR.script.id")
-#                 if exists("$AGR.alternativeTitle[]")     
-#                   copy_field("$880.a","$AGR.alternativeTitle[].$append")     
-#                 else
-#                   set_array("$AGR.alternativeTitle[]")
-#                   copy_field("$880.a","$AGR.alternativeTitle[].$append")
-#                 end
-#               end
-#             end
-#           else    
-#             copy_field("$880.@script.id","alternateGraphicRepresentation[].$append.script.id")
-#             copy_field("$880.@script.label","alternateGraphicRepresentation[].$last.script.label")        
-#             set_array("alternateGraphicRepresentation[].$last.alternativeTitle[]")
-#             copy_field("$880.a","alternateGraphicRepresentation[].$last.alternativeTitle[].$append")
-#           end
-#         end
-#       end
-#     end
-#   end
-# end  
+do list(path:"246?[ 345678]","var":"$i")
+  if exists("$i.6")
+    copy_field("$i.6","$i.linkageTest")
+    do list(path:"880??","var":"$880")
+     unless exists("$880.M")
+        if in ("$i.linkageTest","$880.linkageTest")
+          if in ("$880.@script.id","alternateGraphicRepresentation[].*.script.id")   
+            do list(path:"alternateGraphicRepresentation[]","var":"$AGR")
+              if in ("$880.@script.id","$AGR.script.id")
+                if exists("$AGR.alternativeTitle[]")     
+                  copy_field("$880.a","$AGR.alternativeTitle[].$append")     
+                else
+                  set_array("$AGR.alternativeTitle[]")
+                  copy_field("$880.a","$AGR.alternativeTitle[].$append")
+                end
+              end
+            end
+          else    
+            copy_field("$880.@script.id","alternateGraphicRepresentation[].$append.script.id")
+            copy_field("$880.@script.label","alternateGraphicRepresentation[].$last.script.label")        
+            set_array("alternateGraphicRepresentation[].$last.alternativeTitle[]")
+            copy_field("$880.a","alternateGraphicRepresentation[].$last.alternativeTitle[].$append")
+          end
+        end
+      end
+    end
+  end
+end  
 
 
 # 247 - Former Title (R)
@@ -138,35 +133,30 @@ set_array("edition[]")
 copy_field("250  .a","edition[].$append")
 replace_all("edition[].*","\\s?[./]\\s?$","")
 
-# do list(path:"250  ","var":"$i")
-#   if exists("$i.6")
-#     copy_field("$i.6","$i.linkageTest")
-#     do list(path:"880??","var":"$880")
-#      unless exists("$880.M")
-#         if in ("$i.linkageTest","$880.linkageTest")
-#           copy_field("$880.6","$880.@script.id")
-#           copy_field("$880.6","$880.@script.label")        
-#           replace_all("$880.@script.id","(\\d{3}-\\d{2})/(.*)","https://unicode.org/iso15924/iso15924.txt#$2")
-#           replace_all("$880.@script.label","(\\d{3}-\\d{2})/(.*)","$2")
-#           lookup("$880.@script.label","ISO15924-to-script")
-#           if in ("$880.@script.id","alternateGraphicRepresentation[].*.script.id")   
-#             do list(path:"alternateGraphicRepresentation[]","var":"$AGR")
-#               if in ("$880.@script.id","$AGR.script.id")
-#                 set_array("$AGR.edition[]")
-#                 copy_field("$880.a","$AGR.edition[].$append")
-#               end
-#             end
-#           else    
-#             copy_field("$880.@script.id","alternateGraphicRepresentation[].$append.script.id")
-#             copy_field("$880.@script.label","alternateGraphicRepresentation[].$last.script.label")        
-#             set_array("alternateGraphicRepresentation[].$last.edition[]")
-#             copy_field("$880.a","alternateGraphicRepresentation[].$last.edition[].$append")
-#           end
-#         end
-#       end
-#     end
-#   end
-# end
+do list(path:"250  ","var":"$i")
+  if exists("$i.6")
+    copy_field("$i.6","$i.linkageTest")
+    do list(path:"880??","var":"$880")
+     unless exists("$880.M")
+        if in ("$i.linkageTest","$880.linkageTest")
+          if in ("$880.@script.id","alternateGraphicRepresentation[].*.script.id")   
+            do list(path:"alternateGraphicRepresentation[]","var":"$AGR")
+              if in ("$880.@script.id","$AGR.script.id")
+                set_array("$AGR.edition[]")
+                copy_field("$880.a","$AGR.edition[].$append")
+              end
+            end
+          else    
+            copy_field("$880.@script.id","alternateGraphicRepresentation[].$append.script.id")
+            copy_field("$880.@script.label","alternateGraphicRepresentation[].$last.script.label")        
+            set_array("alternateGraphicRepresentation[].$last.edition[]")
+            copy_field("$880.a","alternateGraphicRepresentation[].$last.edition[].$append")
+          end
+        end
+      end
+    end
+  end
+end
 
 # 260 - Publication, Distribution, etc. (Imprint) (R) - Subfield: $a (R), $b (R), $c (R)
 # 264 - Production, Publication, Distribution, Manufacture, and Copyright Notice (R) -  Subfield: $a (R), $b (R), $c  (R)
@@ -214,6 +204,22 @@ do list(path:"260[ 23] |264[ 23][ 1]", "var":"$i")
   end
   set_array("publication[].$last.note[]")
   copy_field("515??.a","publication[].$last.note[].$append")
+  if exists("$i.6")
+    copy_field("$i.6","$i.linkageTest")
+    do list(path:"880??","var":"$880")
+     unless exists("$880.M")
+        if in ("$i.linkageTest","$880.linkageTest")
+          set_array("publication[].$last.alternateGraphicRepresentation[]") 
+          copy_field("$880.@script.id","publication[].$last.alternateGraphicRepresentation[].$append.script.id")
+          copy_field("$880.@script.label","publication[].$last.alternateGraphicRepresentation[].$last.script.label")
+          set_array("publication[].$last.alternateGraphicRepresentation[].$last.location[]")        
+          copy_field("$880.a", "publication[].$last.alternateGraphicRepresentation[].$last.location[].$append")
+          set_array("publication[].$last.alternateGraphicRepresentation[].$last.publishedBy[]")
+          copy_field("$880.b", "publication[].$last.alternateGraphicRepresentation[].$last.publishedBy[].$append")
+        end
+      end
+    end
+  end
 end
 
 do list(path:"500  ", "var":"$i")
@@ -223,6 +229,8 @@ do list(path:"500  ", "var":"$i")
     replace_all("publication[].$last.startDate","^.*saṃ. \\d{4}=(\\d{4}).*Chr.*","$1")
   end
 end
+
+
 
 
 # Mapping for SecondaryPublication
