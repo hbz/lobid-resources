@@ -19,6 +19,7 @@ do list(path:"880??","var":"$i")
   copy_field("$i.6","$i.linkageTest")
   replace_all("$i.linkageTest","\\d{3}(-\\d{2}).*","880$1")
 end
+set_array("alternateGraphicRepresentation[]")
 
 include ("./fix/identifiers.fix")
 include ("./fix/titleRelatedFields.fix")
@@ -37,6 +38,7 @@ retain(
   "@context",
   "abstract[]",
   "almaMmsId",
+  "alternateGraphicRepresentation[]",
   "alternativeTitle[]",
   "bibliographicCitation",
   "bibliographicLevel",
