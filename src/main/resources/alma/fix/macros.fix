@@ -1,21 +1,26 @@
 # alternateGraphicRepresation
 do put_macro("alternateGraphicRepresationSimple")
-  if exists("$i.6")
-    set_array("contribution[].$last.agent.alternateGraphicRepresentation[]")
-    copy_field("$i.6","$i.linkageTest")
-#    replace_all("$i.linkageTest","880(.*)","$[sourceField]$1")
+  if exists("$[variable].6")
+    set_array("$[targetField].alternateGraphicRepresentation[]")
+    copy_field("$[variable].6","$[variable].linkageTest")
+#    replace_all("$[variable].linkageTest","880(.*)","$[sourceField]$1")
     do list(path:"880??","var":"$880")
-      if in ("$i.linkageTest","$880.linkageTest")
-        copy_field("$880.6","$880.@script.id")
-        copy_field("$880.6","$880.@script.label")        
-        replace_all("$880.@script.id","(\\d{3}-\\d{2})/(.*)","https://unicode.org/iso15924/iso15924.txt#$2")
-        replace_all("$880.@script.label","(\\d{3}-\\d{2})/(.*)","$2")
-        lookup("$880.@script.label","ISO15924-to-script")
-        copy_field("$880.@script.id","$[targetField].alternateGraphicRepresentation[].$append.script.id")
-        copy_field("$880.@script.label","$[targetField].alternateGraphicRepresentation[].$last.script.label")        
-        copy_field("$880.a","$[targetField].alternateGraphicRepresentation[].$last.label")     
+     unless exists("$880.M")
+        if in ("$[variable].linkageTest","$880.linkageTest")
+          copy_field("$880.6","$880.@script.id")
+          copy_field("$880.6","$880.@script.label")        
+          replace_all("$880.@script.id","(\\d{3}-\\d{2})/(.*)","https://unicode.org/iso15924/iso15924.txt#$2")
+          replace_all("$880.@script.label","(\\d{3}-\\d{2})/(.*)","$2")
+          lookup("$880.@script.label","ISO15924-to-script")
+          copy_field("$880.@script.id","$[targetField].alternateGraphicRepresentation[].$append.script.id")
+          copy_field("$880.@script.label","$[targetField].alternateGraphicRepresentation[].$last.script.label")        
+          copy_field("$880.a","$[targetField].alternateGraphicRepresentation[].$last.label")     
+        end
       end
     end
+  end
+  if is_empty("$[targetField].alternateGraphicRepresentation[]")
+    remove_field("$[targetField].alternateGraphicRepresentation[]")
   end
 end
 
@@ -129,7 +134,7 @@ do put_macro("schlagwortfolge")
         call_macro("gndOtherCombinedLabel",field:"$i")
       end
       copy_field("$i.@combinedLabel", "subject[].$last.componentList[].$last.label")
-      call_macro("alternateGraphicRepresationSimple",targetField:"subject[].$last.componentList[].$last")
+      call_macro("alternateGraphicRepresationSimple",targetField:"subject[].$last.componentList[].$last",variable:"$i")
       unless any_equal("subject[].$last.componentList[].$last.label","")
         copy_field("subject[].$last.componentList[].$last.label","subject[].$last.label.$append")
       end
