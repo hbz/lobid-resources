@@ -5,8 +5,6 @@ package org.lobid.resources;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.hbz.lobid.helper.JsonFileWriter;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
 import org.metafacture.biblio.marc21.MarcXmlHandler;
@@ -22,6 +20,9 @@ import org.metafacture.xml.XmlDecoder;
 import org.metafacture.xml.XmlElementSplitter;
 import org.metafacture.xml.XmlFilenameWriter;
 import org.metafacture.metafix.Metafix;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -44,7 +45,7 @@ public final class AlmaMarc21XmlToLobidJsonMetafixTest {
     private static final File DIRECTORY = new File(DIRECTORY_NAME);
     final HashMap<String, String> fixVariables = new HashMap<>();
     private static final boolean GENERATE_TESTDATA = System.getProperty("generateTestData", "false").equals("true");
-    private static final Logger LOG = LogManager.getLogger(AlmaMarc21XmlToLobidJsonMetafixTest.class);
+    private static final Logger LOG = LoggerFactory.getLogger(AlmaMarc21XmlToLobidJsonMetafixTest.class);
     // try patterns like e.g."662", NOT".*662" (which just would slow down)
     private static final String PATTERN_TO_IDENTIFY_XML_RECORDS = "";
 
@@ -69,6 +70,13 @@ public final class AlmaMarc21XmlToLobidJsonMetafixTest {
         fixVariables.put("nwbibWikidataLabelTypeCoords.tsv", "src/main/resources/alma/maps/nwbibWikidataLabelTypeCoords.tsv");
         fixVariables.put("almaMmsId2rpbId", "src/main/resources/alma/maps/almaMmsId2rpbId.tsv");
         fixVariables.put("lobidOrgLabels", "src/main/resources/alma/maps/lobidOrgLabels.tsv");
+        fixVariables.put("sigel2isilMap.tsv", "src/main/resources/alma/maps/sigel2isilMap.tsv");
+        fixVariables.put("hbzowner2sigel.tsv", "src/main/resources/alma/maps/hbzowner2sigel.tsv");
+        fixVariables.put("isilRedirect.tsv", "src/main/resources/alma/maps/isilRedirect.tsv");
+        fixVariables.put("rpb2.ttl", "src/main/resources/alma/maps/rpb2.ttl");
+        fixVariables.put("rpb-spatial.ttl", "src/main/resources/alma/maps/rpb-spatial.ttl");
+        fixVariables.put("rpb.ttl", "src/main/resources/alma/maps/rpb.ttl");
+        fixVariables.put("hbzId2zdbId.tsv", "src/main/resources/alma/maps/hbzId2zdbId.tsv.gz");
     }
 
     /**

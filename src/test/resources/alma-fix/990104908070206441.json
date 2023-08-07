@@ -1,9 +1,11 @@
 {
   "@context" : "http://lobid.org/resources/context.jsonld",
   "almaMmsId" : "990104908070206441",
-  "hbzId" : "HT012338254",
-  "deprecatedUri" : "http://lobid.org/resources/HT012338254#!",
+  "oclcNumber" : [ "1367906311" ],
   "zdbId" : "903128-5",
+  "dnbId" : "014967758",
+  "deprecatedUri" : "http://lobid.org/resources/HT012338254#!",
+  "hbzId" : "HT012338254",
   "title" : "Appropriation acts of the General Assembly of the Commonwealth of Pennsylvania",
   "alternativeTitle" : [ "Appropriation acts ( Nebent. d. Mikrofiche-Ausg. )" ],
   "otherTitleInformation" : [ "passed at the session of ..." ],
@@ -11,12 +13,13 @@
     "publicationHistory" : "Nachgewiesen 1911 -",
     "startDate" : "1911",
     "type" : [ "PublicationEvent" ],
-    "location" : [ "Harrisburg, Pa." ]
+    "location" : [ "Harrisburg, Pa." ],
+    "publishedBy" : [ "[Verlag nicht ermittelbar]" ]
   }, {
     "type" : [ "SecondaryPublicationEvent" ],
-    "location" : [ "Mikrofiche-Ausg.", "Buffalo, NY" ],
-    "description" : [ "Mikrofiche-Ausg.: Buffalo, NY : Hein" ],
-    "publishedBy" : "Mikrofiche-Ausg."
+    "location" : [ "Buffalo, NY" ],
+    "description" : [ "Mikrofiche-Ausg." ],
+    "publishedBy" : "Hein"
   } ],
   "describedBy" : {
     "id" : "http://lobid.org/resources/990104908070206441",
@@ -37,7 +40,7 @@
       "object" : {
         "id" : "https://lobid.org/marcxml/990104908070206441",
         "dateCreated" : "2021-04-05",
-        "dateModified" : "2022-09-07",
+        "dateModified" : "2023-04-23",
         "type" : [ "DataFeedItem" ],
         "label" : "hbz-Ressource 990104908070206441 im Exportformat MARC21 XML",
         "inDataset" : {
@@ -55,9 +58,6 @@
         "modifiedBy" : [ {
           "id" : "http://lobid.org/organisations/DE-101#!",
           "label" : "Deutsche Nationalbibliothek"
-        }, {
-          "id" : "http://lobid.org/organisations/DE-605#!",
-          "label" : "hbz - Hochschulbibliothekszentrum des Landes Nordrhein-Westfalen"
         } ]
       }
     },
@@ -67,11 +67,14 @@
     } ]
   },
   "sameAs" : [ {
-    "id" : "http://hub.culturegraph.org/resource/HBZ-HT012338254",
-    "label" : "Culturegraph Ressource"
+    "id" : "http://worldcat.org/oclc/1367906311",
+    "label" : "OCLC Ressource"
   }, {
     "id" : "http://ld.zdb-services.de/resource/903128-5",
     "label" : "ZDB-Ressource"
+  }, {
+    "id" : "https://d-nb.info/014967758",
+    "label" : "DNB-Ressource"
   } ],
   "inCollection" : [ {
     "id" : "http://lobid.org/organisations/DE-655#!",
@@ -93,8 +96,8 @@
     "notation" : "330",
     "type" : [ "Concept" ],
     "source" : {
-      "label" : "ZDB-Systematik",
-      "id" : "http://bartoc.org/en/node/18915"
+      "label" : "DNB (Systematik der Deutschen Nationalbibliographie)",
+      "id" : "http://bartoc.org/en/node/18497"
     }
   } ],
   "medium" : [ {
@@ -105,7 +108,7 @@
     "label" : "Serial",
     "id" : "https://www.loc.gov/marc/bibliographic/bdleader.html#Serial"
   },
-  "type" : [ "BibliographicResource", "Periodical" ],
+  "type" : [ "BibliographicResource", "Legislation", "Periodical" ],
   "contribution" : [ {
     "agent" : {
       "gndIdentifier" : "123031-1",

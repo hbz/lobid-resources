@@ -1,0 +1,169 @@
+# Macro for combinedLabel Event / Meeting
+
+do put_macro("gndEventCombinedLabel")
+  set_array("$[field].@combinedLabel")  # check if GND concept has combined variant
+  copy_field("$[field].a","$[field].@combinedLabel.$append")
+  copy_field("$[field].b","$[field].@combinedLabel.$append")
+  join_field("$[field].@combinedLabel", ". ") # This is the difference to gnd person
+  set_array("$[field].@combinedDetailsForEvents")
+  copy_field("$[field].n","$[field].@combinedDetailsForEvents.$append")  
+  copy_field("$[field].g","$[field].@combinedDetailsForEvents.$append")
+  copy_field("$[field].d","$[field].@combinedDetailsForEvents.$append")
+  copy_field("$[field].c","$[field].@combinedDetailsForEvents.$append")        
+  join_field("$[field].@combinedDetailsForEvents"," : ")
+  unless is_empty("$[field].@combinedDetailsForEvents.")
+    paste("$[field].@combinedLabel", "$[field].@combinedLabel", "~ (", "$[field].@combinedDetailsForEvents", "~)", join_char:"")
+  end
+  if exists("$[field].t")
+    paste("$[field].@combinedLabel", "$[field].@combinedLabel", "~: ","$[field].t", join_char:"")
+  end
+end
+
+# Macro for combinedLabel Person
+
+do put_macro("gndPersonCombinedLabel")
+    set_array("$[field].@combinedLabel")  # check if GND concept has combined variant
+    copy_field("$[field].a","$[field].@combinedLabel.$append")
+    copy_field("$[field].b","$[field].@combinedLabel.$append")
+    join_field("$[field].@combinedLabel", " ") # This is the difference to gnd non person
+    if exists("$[field].c")
+      paste("$[field].@combinedLabel", "$[field].@combinedLabel", "~, ", "$[field].c", join_char:"")
+    end
+    if exists("$[field].g")
+      paste("$[field].@combinedLabel", "$[field].@combinedLabel", "~ (", "$[field].g", "~)", join_char:"")
+    end
+    if exists("$[field].x")
+      paste("$[field].@combinedLabel", "$[field].@combinedLabel", "~/","$[field].x")
+    end
+    if exists("$[field].t")
+      paste("$[field].@combinedLabel", "$[field].@combinedLabel", "~: ","$[field].t", join_char:"")
+    end
+end
+
+
+# Macro for combinedLabel Non-Person and Non-Event
+
+do put_macro("gndOtherCombinedLabel")
+  set_array("$[field].@combinedLabel")  # check if GND concept has combined variant
+  copy_field("$[field].a","$[field].@combinedLabel.$append")
+  copy_field("$[field].b","$[field].@combinedLabel.$append")
+  join_field("$[field].@combinedLabel", ". ") # This is the difference to gnd person
+  if exists("$[field].c")
+    paste("$[field].@combinedLabel", "$[field].@combinedLabel", "~, ", "$[field].c", join_char:"")
+  end
+  if exists("$[field].g")
+    paste("$[field].@combinedLabel", "$[field].@combinedLabel", "~ (", "$[field].g", "~)", join_char:"")
+  end
+  if exists("$[field].n")
+    paste("$[field].@combinedLabel", "$[field].@combinedLabel", "~, ","$[field].n", join_char:"")
+  end
+  if exists("$[field].x")
+    paste("$[field].@combinedLabel", "$[field].@combinedLabel", "~/","$[field].x")
+  end
+  if exists("$[field].t")
+    paste("$[field].@combinedLabel", "$[field].@combinedLabel", "~: ","$[field].t", join_char:"")
+  end
+  if exists("$[field].z")
+    paste("$[field].@combinedLabel", "$[field].@combinedLabel", "~ (", "$[field].z", "~)", join_char:"")
+  end
+end
+
+# for describedBy provenance info
+
+do put_macro("provenanceLinks")
+  lookup("$[field]","sigel2isilMap")
+  replace_all("$[field]", " ", "")
+  replace_all("$[field]", "\\/Inst","")
+  if any_match("$[field]",".*(hbz|HBZ).*")
+    replace_all("$[field]", "^.*$", "DE-605")
+  elsif any_match("$[field]","^NRW$|^NRW\\/Hist.Buch$")
+    replace_all("$[field]", "^.*$", "DE-605")
+  elsif any_match("$[field]","^292$")
+    replace_all("$[field]", "^292$", "DE-101b")
+  elsif any_match("$[field]","(.*)\\/NWBib$")
+    replace_all("describedBy.resultOf.object.sourceOrganization.id", "(.*)\\/NWBib$", "DE-$1")
+  elsif any_match("$[field]",".*(dnb|DNB|GWDNB|GWDEB|GWDDB|DEDNM|DEDND).*")
+    replace_all("$[field]", "^.*$", "DE-101")
+  elsif any_match("$[field]", "^\\d{4}$")
+    lookup("$[field]", "picaCreatorId2Isil")
+  end
+  unless any_match("$[field]","[A-Za-z]{2}-.*")
+    prepend("$[field]","DE-")
+  end
+  prepend("$[field]", "http://lobid.org/organisations/")
+  append("$[field]", "#!")
+end
+
+# for Schlagwortfolgen
+
+do put_macro("schlagwortfolge")
+  if exists("$[field]")
+    set_array("subject[].$append.type[]","ComplexSubject")
+    set_array("subject[].$last.label")
+    set_array("subject[].$last.componentList[]")
+    do list(path:"$[field]", "var":"$i")
+      set_array("subject[].$last.componentList[].$append.type[]")
+      if exists("$i.t") # Marker for Werktitel/Work even when the GND-enrichment is falsly labeld as Peron or differently
+        add_field("subject[].$last.componentList[].$last.type[].$append","Work")
+      else
+        do list(path: "$i.D", "var": "$k")
+          copy_field("$k","subject[].$last.componentList[].$last.type[].$append")
+        end
+      end
+      if any_equal("subject[].$last.componentList[].$last.type[]","p")
+        call_macro("gndPersonCombinedLabel",field:"$i")
+      elsif any_equal("subject[].$last.componentList[].$last.type[]","f")
+        call_macro("gndEventCombinedLabel",field:"$i")        
+      else
+        call_macro("gndOtherCombinedLabel",field:"$i")
+      end
+      copy_field("$i.@combinedLabel", "subject[].$last.componentList[].$last.label")
+      unless any_equal("subject[].$last.componentList[].$last.label","")
+        copy_field("subject[].$last.componentList[].$last.label","subject[].$last.label.$append")
+      end
+      do list(path:"$i.0", "var": "$j")
+        if any_match("$j","^\\(DE-588\\)(.*)$")
+          add_field("subject[].$last.componentList[].$last.source.label","Gemeinsame Normdatei (GND)")
+          add_field("subject[].$last.componentList[].$last.source.id","https://d-nb.info/gnd/7749153-1")
+          copy_field("$j", "subject[].$last.componentList[].$last.id")
+          replace_all("subject[].$last.componentList[].$last.id","^\\(DE-588\\)(.*)$","https://d-nb.info/gnd/$1")
+          copy_field("$j", "subject[].$last.componentList[].$last.gndIdentifier")
+          replace_all("subject[].$last.componentList[].$last.gndIdentifier","^\\(DE-588\\)(.*)$","$1")
+        end
+        # GND idn as variable
+        if exists("$i.B")
+          do list(path: "$i.B","var":"$gnd")
+            unless exists("subject[].$last.componentList[].$last.@gndIdn")
+              copy_field("$gnd","subject[].$last.componentList[].$last.@gndIdn")
+            end
+          end
+        elsif any_match("$j","^.*DNB\\|(.*)$")
+          copy_field("$j", "subject[].$last.componentList[].$last.@gndIdn")
+          replace_all("subject[].$last.componentList[].$last.@gndIdn", "^.*DNB\\|(.*)$","GND-$1")
+        elsif any_match("$j","^\\(DE-101\\)(.*)$")
+            copy_field("$j", "subject[].$last.componentList[].$last.@gndIdn")
+            replace_all("subject[].$last.componentList[].$last.@gndIdn", "^\\(DE-101\\)(.*)$","GND-$1")
+        end
+      end
+      copy_field("$i.d","subject[].$last.componentList[].$last.dateOfBirthAndDeath") # dates will be differentiated later in the process
+    end
+    join_field("subject[].$last.label"," | ")
+  end
+end
+
+
+do put_macro("subjectLabel")
+  set_array("subject[].$last.label")
+  set_array("$i.@name")
+  copy_field("$i.a","$i.@name.$append")
+  copy_field("$i.b","$i.@name.$append")
+  copy_field("$i.c","$i.@name.$append")
+  copy_field("$i.d","$i.@name.$append")
+  join_field("$i.@name")
+  copy_field("$i.@name","subject[].$last.label.$append")
+  copy_field("$i.x","subject[].$last.label.$append")
+  copy_field("$i.y","subject[].$last.label.$append")
+  copy_field("$i.z","subject[].$last.label.$append")
+  copy_field("$i.v","subject[].$last.label.$append")
+  join_field("subject[].$last.label"," / ")
+end

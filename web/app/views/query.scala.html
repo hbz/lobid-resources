@@ -50,6 +50,10 @@
 	if(q.contains("hasSuperordinate")) {select(("Band","Bände"))} else if (q.contains("containedIn")) {select(("Beitrag","Beiträge"))} else {""}
 }
 
+@idFrom(doc: JsValue) = @{
+	(doc\"almaMmsId").asOpt[String].orElse((doc\"hbzId").asOpt[String]).orElse((doc\"rpbId").asOpt[String]).getOrElse("")
+}
+
 @main(q, "lobid-resources - Ergebnisliste", rss = Some(resources.routes.Application.query(q,agent,name,subject,id,publisher,issued,medium,from,size,owner,t,word=word,format="rss").toString)) {
     @if(Seq(name, id, publisher).exists(!_.isEmpty)){ @* advanced search, not shown in facets *@
       @tags.search_advanced("Suche aktualisieren", q, agent, name, subject, id, publisher, issued, sortParam)
@@ -97,7 +101,7 @@
                        zeige @(from+1) bis @(Math.min(from+hits.size,from+size)):
                     </div>
                     <div class="col-md-1" style="text-align: right; padding-right: 4px;">
-                      @defining((Json.parse(result)\\"hbzId").map(_.as[String]).mkString(",")) { ids =>
+                      @defining((for(doc <- Json.parse(result).as[Seq[JsValue]]; id = idFrom(doc)) yield id).mkString(",")) { ids =>
                       @if(ids.split(",").forall(Application.currentlyStarred().split(" ").contains)) {
                         <a href='@resources.routes.Application.clearStars(ids)' title="Alle Titel dieser Seite von Merkliste entfernen"><span class="glyphicon glyphicon-star"></span></a>
                       } else {
@@ -115,7 +119,7 @@
                   <th style="width: 5%; text-align: right"></th>
                   <th style="width: 5%; text-align: right"></th>
                  </tr>
-                 @for((doc,i) <- hits; id = (doc\"almaMmsId").asOpt[String].getOrElse((doc\"hbzId").as[String])) {
+                 @for((doc,i) <- hits; id = idFrom(doc)) {
                     @tags.query_result_short(id,doc,i-1)
                  }
                  </table>

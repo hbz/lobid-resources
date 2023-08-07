@@ -12,8 +12,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -30,7 +30,7 @@ public class EtikettMaker implements EtikettMakerInterface {
 	private static final String ID = "id";
 	private String contextLocation = "web/conf/context.jsonld";
 
-	final static Logger logger = LogManager.getLogger(EtikettMaker.class);
+	final static Logger logger = LoggerFactory.getLogger(EtikettMaker.class);
 
 	/**
 	 * A map with URIs as key

@@ -1,10 +1,12 @@
 {
   "@context" : "http://lobid.org/resources/context.jsonld",
   "almaMmsId" : "990113537330206441",
-  "hbzId" : "HT013026834",
-  "deprecatedUri" : "http://lobid.org/resources/HT013026834#!",
+  "oclcNumber" : [ "183251724" ],
   "zdbId" : "2033740-1",
+  "dnbId" : "021118205",
   "rpbId" : "036t000472",
+  "deprecatedUri" : "http://lobid.org/resources/HT013026834#!",
+  "hbzId" : "HT013026834",
   "title" : "Mainz",
   "otherTitleInformation" : [ "Programm" ],
   "publication" : [ {
@@ -12,7 +14,8 @@
     "startDate" : "1999",
     "endDate" : "2004",
     "type" : [ "PublicationEvent" ],
-    "location" : [ "Mainz" ]
+    "location" : [ "Mainz" ],
+    "publishedBy" : [ "[Verlag nicht ermittelbar]" ]
   } ],
   "describedBy" : {
     "id" : "http://lobid.org/resources/990113537330206441",
@@ -33,7 +36,7 @@
       "object" : {
         "id" : "https://lobid.org/marcxml/990113537330206441",
         "dateCreated" : "2021-04-05",
-        "dateModified" : "2021-04-08",
+        "dateModified" : "2023-04-22",
         "type" : [ "DataFeedItem" ],
         "label" : "hbz-Ressource 990113537330206441 im Exportformat MARC21 XML",
         "inDataset" : {
@@ -45,12 +48,12 @@
           "label" : "Wissenschaftliche Stadtbibliothek"
         },
         "provider" : {
-          "id" : "http://lobid.org/organisations/DE-101b#!",
-          "label" : "Deutsche Nationalbibliothek Frankfurt am Main"
+          "id" : "http://lobid.org/organisations/DE-101#!",
+          "label" : "Deutsche Nationalbibliothek"
         },
         "modifiedBy" : [ {
-          "id" : "http://lobid.org/organisations/DE-600#!",
-          "label" : "Zeitschriftendatenbank (ZDB)"
+          "id" : "http://lobid.org/organisations/DE-101#!",
+          "label" : "Deutsche Nationalbibliothek"
         } ]
       }
     },
@@ -60,11 +63,14 @@
     } ]
   },
   "sameAs" : [ {
-    "id" : "http://hub.culturegraph.org/resource/HBZ-HT013026834",
-    "label" : "Culturegraph Ressource"
+    "id" : "http://worldcat.org/oclc/183251724",
+    "label" : "OCLC Ressource"
   }, {
     "id" : "http://ld.zdb-services.de/resource/2033740-1",
     "label" : "ZDB-Ressource"
+  }, {
+    "id" : "https://d-nb.info/021118205",
+    "label" : "DNB-Ressource"
   } ],
   "inCollection" : [ {
     "id" : "http://lobid.org/organisations/DE-655#!",
@@ -83,12 +89,16 @@
     "id" : "http://id.loc.gov/vocabulary/iso639-2/ger",
     "label" : "Deutsch"
   } ],
+  "natureOfContent" : [ {
+    "label" : "Zeitschrift",
+    "id" : "https://d-nb.info/gnd/4067488-5"
+  } ],
   "subject" : [ {
-    "notation" : "655",
+    "notation" : "380",
     "type" : [ "Concept" ],
     "source" : {
-      "label" : "ZDB-Systematik",
-      "id" : "http://bartoc.org/en/node/18915"
+      "label" : "DNB (Systematik der Deutschen Nationalbibliographie)",
+      "id" : "http://bartoc.org/en/node/18497"
     }
   } ],
   "medium" : [ {

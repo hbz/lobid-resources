@@ -92,32 +92,6 @@ set_array("describedBy.resultOf.object.modifiedBy[]")
 
 end
 
-do once("provenanceLinksMacro")
-  do put_macro("provenanceLinks")
-    replace_all("$[field]", " ", "")
-    replace_all("$[field]", "\\/Inst","")
-    if any_match("$[field]",".*(hbz|HBZ).*")
-      replace_all("$[field]", "^.*$", "DE-605")
-    elsif any_match("$[field]","^NRW$|^NRW\\/Hist.Buch$")
-      replace_all("$[field]", "^.*$", "DE-605")
-    elsif any_match("$[field]","^292$")
-      replace_all("$[field]", "^292$", "DE-101b")
-    elsif any_match("$[field]","(.*)\\/NWBib$")
-      replace_all("describedBy.resultOf.object.sourceOrganization.id", "(.*)\\/NWBib$", "DE-$1")
-    elsif any_match("$[field]",".*(dnb|DNB|GWDNB|GWDEB|GWDDB|DEDNM|DEDND).*")
-      replace_all("$[field]", "^.*$", "DE-101")
-    elsif any_match("$[field]", "^\\d{4}$")
-      lookup("$[field]", "picaCreatorId2Isil")
-    end
-    unless any_match("$[field]","[A-Za-z]{2}-.*")
-      prepend("$[field]","DE-")
-    end
-    prepend("$[field]", "http://lobid.org/organisations/")
-    append("$[field]", "#!")
-  end
-end
-
-
 call_macro("provenanceLinks",field: "describedBy.resultOf.object.sourceOrganization.id")
 copy_field("describedBy.resultOf.object.sourceOrganization.id","describedBy.resultOf.object.sourceOrganization.label")
 lookup("describedBy.resultOf.object.sourceOrganization.label","lobidOrgLabels",delete:"true")

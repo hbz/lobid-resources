@@ -2,10 +2,11 @@
   "@context" : "http://lobid.org/resources/context.jsonld",
   "almaMmsId" : "990184127410206441",
   "urn" : [ "urn:nbn:de:hbz:061:3-3091" ],
-  "hbzId" : "HT016709661",
-  "deprecatedUri" : "http://lobid.org/resources/HT016709661#!",
   "oclcNumber" : [ "1184284280" ],
   "zdbId" : "2594002-8",
+  "dnbId" : "1009982311",
+  "deprecatedUri" : "http://lobid.org/resources/HT016709661#!",
+  "hbzId" : "HT016709661",
   "title" : "Wohnungsmarktbericht",
   "otherTitleInformation" : [ "Fortschreibung mit Stand ..." ],
   "publication" : [ {
@@ -35,7 +36,7 @@
       "object" : {
         "id" : "https://lobid.org/marcxml/990184127410206441",
         "dateCreated" : "2021-04-05",
-        "dateModified" : "2022-12-27",
+        "dateModified" : "2023-04-22",
         "type" : [ "DataFeedItem" ],
         "label" : "hbz-Ressource 990184127410206441 im Exportformat MARC21 XML",
         "inDataset" : {
@@ -53,9 +54,6 @@
         "modifiedBy" : [ {
           "id" : "http://lobid.org/organisations/DE-600#!",
           "label" : "Zeitschriftendatenbank (ZDB)"
-        }, {
-          "id" : "http://lobid.org/organisations/DE-605#!",
-          "label" : "hbz - Hochschulbibliothekszentrum des Landes Nordrhein-Westfalen"
         } ]
       }
     },
@@ -65,24 +63,27 @@
     } ]
   },
   "sameAs" : [ {
-    "id" : "http://hub.culturegraph.org/resource/HBZ-HT016709661",
-    "label" : "Culturegraph Ressource"
-  }, {
     "id" : "http://worldcat.org/oclc/1184284280",
     "label" : "OCLC Ressource"
   }, {
     "id" : "http://ld.zdb-services.de/resource/2594002-8",
     "label" : "ZDB-Ressource"
   }, {
+    "id" : "https://d-nb.info/1009982311",
+    "label" : "DNB-Ressource"
+  }, {
+    "id" : "https://nbn-resolving.de/urn:nbn:de:hbz:061:3-3091",
+    "label" : "urn:nbn:de:hbz:061:3-3091"
+  }, {
     "id" : "http://nwbib.de/990184127410206441#!",
     "label" : "NWBib-Ressource"
-  }, {
-    "id" : "http://nbn-resolving.de/urn:nbn:de:hbz:061:3-3091",
-    "label" : "urn:nbn:de:hbz:061:3-3091"
   } ],
   "fulltextOnline" : [ {
     "label" : "Verlag",
     "id" : "http://www.duesseldorf.de/wohnen/veroeffentlichung/index.shtml"
+  }, {
+    "id" : "https://nbn-resolving.de/urn:nbn:de:hbz:061:3-3091",
+    "label" : "URN-Link"
   } ],
   "inCollection" : [ {
     "id" : "http://lobid.org/organisations/DE-655#!",
@@ -99,11 +100,13 @@
   } ],
   "predecessor" : [ {
     "label" : "Wohnungsmarktbericht",
-    "id" : "http://lobid.org/resources/HT016481985#!"
+    "id" : "http://lobid.org/resources/ZDB-2568547-8#!",
+    "note" : [ "Druckausg. u. Vorg." ]
   } ],
   "successor" : [ {
     "label" : "Wohnungsmarkt Düsseldorf",
-    "id" : "http://lobid.org/resources/HT016709667#!"
+    "id" : "http://lobid.org/resources/ZDB-2594008-9#!",
+    "note" : [ "Forts.:" ]
   } ],
   "language" : [ {
     "id" : "http://id.loc.gov/vocabulary/iso639-2/ger",
@@ -115,13 +118,6 @@
     "id" : "https://d-nb.info/gnd/4067488-5"
   } ],
   "subject" : [ {
-    "notation" : "300",
-    "type" : [ "Concept" ],
-    "source" : {
-      "label" : "ZDB-Systematik",
-      "id" : "http://bartoc.org/en/node/18915"
-    }
-  }, {
     "id" : "https://nwbib.de/subjects#N574060",
     "label" : "Wohnungswirtschaft",
     "notation" : "574060",
@@ -129,6 +125,13 @@
     "source" : {
       "id" : "https://nwbib.de/subjects",
       "label" : "Sachsystematik der Nordrhein-Westfälischen Bibliographie"
+    }
+  }, {
+    "notation" : "300",
+    "type" : [ "Concept" ],
+    "source" : {
+      "label" : "DNB (Systematik der Deutschen Nationalbibliographie)",
+      "id" : "http://bartoc.org/en/node/18497"
     }
   }, {
     "type" : [ "ComplexSubject" ],
@@ -142,7 +145,7 @@
       },
       "id" : "https://d-nb.info/gnd/4013255-9",
       "gndIdentifier" : "4013255-9",
-      "altLabel" : [ "Dusseldorf", "Djussel'dorf", "Dyusserudorufu", "Duseerduofu", "Stadtgemeinde Düsseldorf", "Landeshauptstadt Düsseldorf", "Stadt Düsseldorf" ]
+      "altLabel" : [ "Dusseldorf", "Djussel'dorf", "Dyusserudorufu", "Duseerduofu", "Düsselopagum", "Stadtgemeinde Düsseldorf", "Landeshauptstadt Düsseldorf", "Stadt Düsseldorf" ]
     }, {
       "type" : [ "SubjectHeading" ],
       "label" : "Wohnungsmarkt",
@@ -221,17 +224,6 @@
       "label" : "Universitätsbibliothek Duisburg-Essen"
     },
     "id" : "http://lobid.org/items/990184127410206441:DE-465:53804344220006441#!"
-  }, {
-    "type" : [ "Item", "DigitalDocument" ],
-    "label" : "Electronic Portfolio",
-    "electronicLocator" : "https://eu04.alma.exlibrisgroup.com/view/uresolver/49HBZ_FHM/openurl?u.ignore_date_coverage=true&portfolio_pid=53804344220006441&Force_direct=true",
-    "sublocation" : "https://hbz-network.userservices.exlibrisgroup.com/view/uresolver/49HBZ_FHM/openurl?u.ignore_date_coverage=true&rft.mms_id=990184127410206441",
-    "heldBy" : {
-      "id" : "http://lobid.org/organisations/DE-836#!",
-      "isil" : "DE-836",
-      "label" : "FH Münster, Hochschulbibliothek"
-    },
-    "id" : "http://lobid.org/items/990184127410206441:DE-836:53804344220006441#!"
   }, {
     "type" : [ "Item", "DigitalDocument" ],
     "label" : "Electronic Portfolio",

@@ -11,8 +11,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import de.hbz.lobid.helper.HttpPoster;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.lobid.resources.ElasticsearchIndexer;
 import org.lobid.resources.EtikettJson;
 import org.lobid.resources.JsonToElasticsearchBulkMap;
@@ -27,6 +25,9 @@ import org.metafacture.strings.StringReader;
 import org.metafacture.xml.XmlDecoder;
 import org.metafacture.xml.XmlElementSplitter;
 import org.metafacture.metafix.Metafix;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import de.hbz.lobid.helper.Email;
 
@@ -57,8 +58,7 @@ public class AlmaMarcXmlFix2lobidJsonEs {
     private static String triggerWebhookData;
     private static String kind = "";
     private static boolean switchAutomatically = false;
-    private static final Logger LOG =
-        LogManager.getLogger(AlmaMarcXmlFix2lobidJsonEs.class);
+    private static final Logger LOG = LoggerFactory.getLogger(AlmaMarcXmlFix2lobidJsonEs.class);
     public static boolean threadAlreadyStarted = false;
     private static String switchAlias1;
     private static String switchAlias2;
@@ -120,12 +120,19 @@ public class AlmaMarcXmlFix2lobidJsonEs {
                 fixVariables.put("wd_itemLabelTypesCoordinates", "./../wd_itemLabelTypesCoordinates.tsv");
                 fixVariables.put("maps-institutions.tsv", "./maps/institutions.tsv");
                 fixVariables.put("sublibraryIsil.tsv", "./maps/generatedAlmaSublibraryCode2Isil.tsv");
-                        fixVariables.put("picaCreatorId2Isil.tsv", "./maps/picaCreatorId2Isil.tsv");
+                fixVariables.put("picaCreatorId2Isil.tsv", "./maps/picaCreatorId2Isil.tsv");
                 fixVariables.put("nwbibWikidataLabelTypeCoords.tsv", "./maps/nwbibWikidataLabelTypeCoords.tsv");
                 fixVariables.put("classification.tsv", "./maps/classification.tsv");
                 fixVariables.put("formangabe.tsv", "./maps/formangabe.tsv");
                 fixVariables.put("almaMmsId2rpbId", "./maps/almaMmsId2rpbId.tsv");
                 fixVariables.put("lobidOrgLabels", "./maps/lobidOrgLabels.tsv");
+                fixVariables.put("sigel2isilMap.tsv", "./maps/sigel2isilMap.tsv");
+                fixVariables.put("hbzowner2sigel.tsv", "./maps/hbzowner2sigel.tsv");
+                fixVariables.put("isilRedirect.tsv", "./maps/isilRedirect.tsv");
+                fixVariables.put("rpb2.ttl", "./maps/rpb2.ttl");
+                fixVariables.put("rpb-spatial.ttl", "./maps/rpb-spatial.ttl");
+                fixVariables.put("rpb.ttl", "./maps/rpb.ttl");
+                fixVariables.put("hbzId2zdbId.tsv", "./maps/hbzId2zdbId.tsv.gz");
 
                 XmlElementSplitter xmlElementSplitter = new XmlElementSplitter();
                 xmlElementSplitter.setElementName("record");

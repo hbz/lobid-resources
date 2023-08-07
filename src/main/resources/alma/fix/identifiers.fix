@@ -14,7 +14,19 @@ do list(path: "0247?", "var": "$i")
   end
 end
 
+# Sometimes urn are not set in 024 then we could pick up the missing from 856.
+# 856 - Electronic Location and Access (R) - Subfield: $u (R) $3 (NR)
+# 1. Indicator: 4 = HTTP
+do list(path:"8564?", "var":"$i")
+  if all_match("$i.u", "^http[s]?:\\/\\/nbn-resolving.(de|org)\\/(.*)")
+    copy_field("$i.u", "urn[].$append")
+    replace_all("urn[].$last", "^http[s]?:\\/\\/nbn-resolving.(de|org)\\/(.*)", "$2")
+  end
+end
+
 replace_all("urn[].*","^(nbn:de:.*\\d)$","urn:$1")
+
+uniq("urn[]")
 
 # 035 - System Control Number (R) - Subfield: $a (NR)
 
@@ -30,6 +42,7 @@ replace_all("hbzId","\\(DE-605\\)(.*)","$1")
 if exists("hbzId")
   paste("deprecatedUri", "~http://lobid.org/resources/", "hbzId", "~#!", join_char: "")
 end
+
 
 # 020 - International Standard Book Number (R) - $a (NR)
 # source data sometimes provides repeated subfield $a even if this is not valid marc
@@ -85,9 +98,9 @@ end
 # 856 - Electronic Location and Access (R) - Subfield: $u (R) $3 (NR)
 # 1. Indicator: 4 = HTTP
 do list(path:"8564?", "var":"$i")
-  if any_contain("$i.u","doi")
+  if all_match("$i.u", ".*(10\\.(\\d)+/(\\S)+).*") # Volltext
     copy_field("$i.u", "doi[].$append")
-    replace_all("doi[].$last", "^.*doi.org/(.*)$", "$1")
+    replace_all("doi[].$last", ".*(10\\.(\\d)+/(\\S)+).*", "$1")
   end
 end
 uniq("doi[]")
@@ -102,15 +115,49 @@ do list(path:"035  ", "var":"$i")
 end
 replace_all("oclcNumber[].*", "\\(OCoLC\\)","")
 
+#160 - 016 - National Bibliographic Agency Control Number (R)
+do list(path:"0167 ", "var":"$i")
+  unless exists("zdbId")
+    if any_match("$i.2","DE-600")
+      copy_field("$i.a","zdbId")
+    end
+  end
+
+# dnbId
+  if any_match("$i.2","DE-101")
+    copy_field("$i.a","dnbId")
+  end
+end
 
 # 035 - System Control Number (R) - Subfield: $a (NR)
 do list(path:"035  ", "var":"$i")
-  if all_match("$i.a", "\\(DE-600\\)(.*)")
-    copy_field("$i.a", "zdbId")
+  unless exists("zdbId")
+    if all_match("$i.a", "\\(DE-600\\)(.*)")
+      copy_field("$i.a", "zdbId")
+    elsif all_match("$i.a", "\\(DE-599\\)(ZDB.*)")
+      copy_field("$i.a", "zdbId")
+    end
   end
 end
+
+# clean up ZDB
 replace_all("zdbId", "\\(DE-600\\)","")
+replace_all("zdbId", "\\(DE-599\\)ZDB","")
+replace_all("zdbId", " ","-") # CZ entries have incorrect spaces sometimes in the zdbId, we need to replace them with "-".
+
 
 copy_field("almaMmsId","rpbId")
 lookup("rpbId","almaMmsId2rpbId",delete:"true")
 replace_all("rpbId", "^RPB","")
+
+set_array("stockNumber[]")
+do list(path:"028??", "var":"$i")
+  copy_field("$i.a", "stockNumber[].$append")
+end
+
+copy_field("zdbId","@hbzId")
+lookup("@hbzId","zdbId2oldHbzId",delete:"true")
+if exists("@hbzId")
+  paste("deprecatedUri", "~http://lobid.org/resources/", "@hbzId", "~#!", join_char: "")
+end
+copy_field("@hbzId","hbzId")

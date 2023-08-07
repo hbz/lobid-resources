@@ -1,21 +1,24 @@
-add_field("@context","http://lobid.org/resources/context.jsonld")
-
-# Add maps
-do once("maps")
+# Setup adds maps, macros and vars once
+do once("setup")
   include ("./fix/maps.fix")
-end
-# Add vars
-do once("vars")
+  include ("./fix/macros.fix")
   put_var("member", "-")
+end
+
+# Skip all deleted records
+if any_equal("DEL??.a", "Y")
+  reject()
 end
 
 # drop all local fields #1687
 de.hbz.lobid.helper.DropLocal()
 
+add_field("@context","http://lobid.org/resources/context.jsonld")
+
 include ("./fix/identifiers.fix")
 include ("./fix/titleRelatedFields.fix")
 include ("./fix/describedBy.fix")
-# identifiers.fix is needed ahead of relatedRessourcesAndLinks.fix because of dependencies
+# identifiers.fix and titleRelatedFields.fix are needed ahead of relatedRessourcesAndLinks.fix because of dependencies
 include ("./fix/relatedRessourcesAndLinks.fix")
 include ("./fix/otherFields.fix")
 include ("./fix/subjects.fix")
@@ -38,12 +41,14 @@ retain(
   "containsExampleOfWork[]",
   "contribution[]",
   "deprecatedUri",
+  "dnbId",
   "doi[]",
   "extent",
   "edition[]",
   "exampleOfWork",
   "fulltextOnline[]",
   "hasItem[]",
+  "secondaryForm[]",
   "hbzId",
   "id",
   "inCollection[]",
@@ -52,6 +57,7 @@ retain(
   "ismn[]",
   "isPartOf[]",
   "language[]",
+  "langNote[]",
   "license[]",
   "medium[]",
   "natureOfContent[]",
@@ -68,6 +74,7 @@ retain(
   "seeAlso[]",
   "shortTitle[]",
   "spatial[]",
+  "stockNumber[]",
   "subject[]",
   "successor[]",
   "supplement[]",

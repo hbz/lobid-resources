@@ -1,12 +1,13 @@
 {
   "@context" : "http://lobid.org/resources/context.jsonld",
   "almaMmsId" : "990136041660206441",
-  "hbzId" : "HT014388022",
-  "deprecatedUri" : "http://lobid.org/resources/HT014388022#!",
   "oclcNumber" : [ "724776703" ],
   "zdbId" : "2189310-X",
+  "dnbId" : "027510077",
+  "deprecatedUri" : "http://lobid.org/resources/HT014388022#!",
+  "hbzId" : "HT014388022",
   "title" : "Blick aktuell, Vallendar : Heimatzeitung für die Verbandsgemeinde Vallendar",
-  "alternativeTitle" : [ "Blick aktuell / Vallendar", "Die Heimatzeitung", "Heimatzeitung für die Verbandsgemeinde Vallendar" ],
+  "alternativeTitle" : [ "Die Heimatzeitung", "Heimatzeitung für die Verbandsgemeinde Vallendar" ],
   "otherTitleInformation" : [ "die Heimatzeitung" ],
   "publication" : [ {
     "publicationHistory" : "2005,1/20 - 2007,13",
@@ -40,7 +41,7 @@
       "object" : {
         "id" : "https://lobid.org/marcxml/990136041660206441",
         "dateCreated" : "2021-04-05",
-        "dateModified" : "2022-12-22",
+        "dateModified" : "2023-04-26",
         "type" : [ "DataFeedItem" ],
         "label" : "hbz-Ressource 990136041660206441 im Exportformat MARC21 XML",
         "inDataset" : {
@@ -58,9 +59,6 @@
         "modifiedBy" : [ {
           "id" : "http://lobid.org/organisations/DE-600#!",
           "label" : "Zeitschriftendatenbank (ZDB)"
-        }, {
-          "id" : "http://lobid.org/organisations/DE-605#!",
-          "label" : "hbz - Hochschulbibliothekszentrum des Landes Nordrhein-Westfalen"
         } ]
       }
     },
@@ -70,18 +68,19 @@
     } ]
   },
   "sameAs" : [ {
-    "id" : "http://hub.culturegraph.org/resource/HBZ-HT014388022",
-    "label" : "Culturegraph Ressource"
-  }, {
     "id" : "http://worldcat.org/oclc/724776703",
     "label" : "OCLC Ressource"
   }, {
     "id" : "http://ld.zdb-services.de/resource/2189310-X",
     "label" : "ZDB-Ressource"
+  }, {
+    "id" : "https://d-nb.info/027510077",
+    "label" : "DNB-Ressource"
   } ],
   "supplement" : [ {
+    "note" : [ "Beil.:" ],
     "label" : "Regio-Journal / Region Rhein und Wied. Region Rhein und Wied",
-    "id" : "http://lobid.org/resources/HT014878025#!"
+    "id" : "http://lobid.org/resources/ZDB-2254689-3#!"
   } ],
   "inCollection" : [ {
     "id" : "http://lobid.org/organisations/DE-655#!",
@@ -94,7 +93,8 @@
   } ],
   "successor" : [ {
     "label" : "Blick aktuell / Verbandsgemeinde Vallendar. Verbandsgemeinde Vallendar",
-    "id" : "http://lobid.org/resources/HT016138750#!"
+    "id" : "http://lobid.org/resources/ZDB-2525103-X#!",
+    "note" : [ "Forts.:" ]
   } ],
   "language" : [ {
     "id" : "http://id.loc.gov/vocabulary/iso639-2/ger",
@@ -109,6 +109,33 @@
     "id" : "https://d-nb.info/gnd/4177435-8"
   } ],
   "subject" : [ {
+    "notation" : "620",
+    "type" : [ "Concept" ],
+    "id" : "https://w3id.org/lobid/rpb2#n620",
+    "label" : "Publizistik",
+    "source" : {
+      "id" : "https://w3id.org/lobid/rpb2",
+      "label" : "LBZ-Notationen"
+    }
+  }, {
+    "notation" : "130",
+    "type" : [ "Concept" ],
+    "id" : "https://w3id.org/lobid/rpb2#n130",
+    "label" : "Landeskunde Region Koblenz",
+    "source" : {
+      "id" : "https://w3id.org/lobid/rpb2",
+      "label" : "LBZ-Notationen"
+    }
+  }, {
+    "notation" : "140",
+    "type" : [ "Concept" ],
+    "id" : "https://w3id.org/lobid/rpb2#n140",
+    "label" : "Pflichtexemplar Region Koblenz",
+    "source" : {
+      "id" : "https://w3id.org/lobid/rpb2",
+      "label" : "LBZ-Notationen"
+    }
+  }, {
     "notation" : "050",
     "type" : [ "Concept" ],
     "source" : {
@@ -119,19 +146,28 @@
     "notation" : "914.3",
     "type" : [ "Concept" ],
     "source" : {
-      "label" : "ZDB-Systematik",
-      "id" : "http://bartoc.org/en/node/18915"
+      "label" : "DNB (Systematik der Deutschen Nationalbibliographie)",
+      "id" : "http://bartoc.org/en/node/18497"
     }
   }, {
     "notation" : "943",
     "type" : [ "Concept" ],
     "source" : {
-      "label" : "ZDB-Systematik",
-      "id" : "http://bartoc.org/en/node/18915"
+      "label" : "DNB (Systematik der Deutschen Nationalbibliographie)",
+      "id" : "http://bartoc.org/en/node/18497"
     }
-  }, {
-    "notation" : "620 ; 130 ; 140",
-    "type" : [ "Concept" ]
+  } ],
+  "hasItem" : [ {
+    "label" : "lobid Bestandsressource",
+    "type" : [ "Item", "PhysikalischerTitel" ],
+    "currentLocation" : "R0001 / kA",
+    "callNumber" : "ZA 4343",
+    "heldBy" : {
+      "id" : "http://lobid.org/organisations/DE-929#!",
+      "isil" : "DE-929",
+      "label" : "Landesbibliothekszentrum Rheinland-Pfalz / Rheinische Landesbibliothek"
+    },
+    "id" : "http://lobid.org/items/990136041660206441:DE-929:2264740600007506#!"
   } ],
   "medium" : [ {
     "label" : "Print",

@@ -2,10 +2,11 @@
 
 package controllers.resources;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
+import java.net.URL;
+import java.net.URLConnection;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.text.Collator;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -101,6 +102,8 @@ public class Application extends Controller {
 			new File("conf/resources.conf") : new File("conf/resources.conf_template")  ;
 	public final static Config CONFIG =
 			ConfigFactory.parseFile(RESOURCES_CONF).resolve();
+	public final static String MARC_XML_API = CONFIG.getString("mrcx.api");
+
 
 	static Form<String> queryForm = Form.form(String.class);
 
@@ -468,13 +471,23 @@ public class Application extends Controller {
 		if (cachedResult != null)
 			return cachedResult;
 		Promise<Result> promise = Promise.promise(() -> {
-			JsonNode result =
-					new Search.Builder().build().getResource(id).getResult();
-			if (result == null) {
+			JsonNode result = new Search.Builder().build().getResource(id).getResult();
+			if (result == null) { // direct access failed, try to redirect to almaMmsId
 				String movedTo = idSearchResult(id);
+				Logger.debug(
+						"Could not get resource via index ID, trying to redirect '{}' to almaMmsId: '{}'",
+						id, movedTo);
 				if (movedTo != null) {
 					return movedPermanently(routes.Application.resource(movedTo, format));
 				}
+			}
+			if (result == null) { // no almaMmsId to redirect to, try ID query w/o redirect
+				QueryBuilder idQuery = new Queries.IdQuery().build(id);
+				result = new Search.Builder().query(idQuery).build().queryResources()
+						.getResult().get(0);
+				Logger.debug(
+						"Could not get resource via index ID or redirect, trying query '{}', result: '{}'",
+						idQuery, result);
 			}
 			boolean htmlRequested =
 					responseFormat.equals(Accept.Format.HTML.queryParamString);
@@ -482,6 +495,17 @@ public class Application extends Controller {
 				return result != null
 						? ok(details.render(CONFIG, result.toString(), id))
 						: notFound(details.render(CONFIG, "", id));
+			}
+			boolean marcxmlRequested =
+				responseFormat.equals(Accept.Format.MARC_XML.queryParamString);
+			if (marcxmlRequested) {
+				URLConnection conn = new URL(MARC_XML_API + id).openConnection();
+				String marcxml;
+				try (BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8))) {
+					marcxml = reader.lines().collect(Collectors.joining("\n"));
+				}
+				return marcxml.isEmpty() ? internalServerError("No content")
+					: ok(marcxml).as(Format.MARC_XML.types[0] + "; charset=utf-8");
 			}
 			return result != null ? responseFor(result, responseFormat)
 					: notFound("\"Not found: " + id + "\"");
@@ -494,8 +518,6 @@ public class Application extends Controller {
 		JsonNode result;
 		String idSearch = String.format("(hbzId:%s OR zdbId:(%s OR %s))", id, id,
 				id.replace("ZDB-", ""));
-		Logger.debug("Could not get resource via index ID, trying search: '{}'",
-				idSearch);
 		QueryBuilder idQuery = new Queries.Builder().q(idSearch).build();
 		result = new Search.Builder().query(idQuery).size(1).build()
 				.queryResources().getResult();
@@ -818,12 +840,23 @@ public class Application extends Controller {
 			List<JsonNode> json = (List<JsonNode>) cachedJson;
 			return Promise.pure(ok(stars.render(starredIds, json, format)));
 		}
-		List<JsonNode> vals = starredIds.stream()
-				.map(id -> new Search.Builder().build().getResource(id).getResult())
-				.collect(Collectors.toList());
+		List<JsonNode> vals =
+				starredIds.stream().map(id -> jsonFor(id)).collect(Collectors.toList());
 		uncache(starredIds);
 		Cache.set(cacheKey, vals, ONE_DAY);
 		return Promise.pure(ok(stars.render(starredIds, vals, format)));
+	}
+
+	/**
+	 * @param id The ID to get the JSON data for
+	 * @return The resource JSON for the given ID
+	 */
+	public static JsonNode jsonFor(String id) {
+		JsonNode getResult =
+				new Search.Builder().build().getResource(id).getResult();
+		return getResult != null ? getResult
+				: new Search.Builder().query(new Queries.IdQuery().build(id)).build()
+						.queryResources().getResult().get(0);
 	}
 
 	/**

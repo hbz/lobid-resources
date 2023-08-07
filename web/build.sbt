@@ -18,7 +18,9 @@ libraryDependencies ++= Seq(
     exclude ("io.netty", "netty"),
   "org.mockito" % "mockito-core" % "1.9.5",
   "com.google.gdata" % "core" % "1.47.1" exclude ("com.google.guava", "guava"),
-  "org.easytesting" % "fest-assert" % "1.4" % "test"
+  "org.easytesting" % "fest-assert" % "1.4" % "test",
+  "org.apache.logging.log4j" % "log4j-core" % "2.20.0",
+  "org.xbib.elasticsearch.plugin" % "elasticsearch-plugin-bundle" % "5.4.1.0"
 )
 
 resolvers += "Local Maven Repository" at Path.userHome.asFile.toURI.toURL + ".m2/repository"
