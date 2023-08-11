@@ -191,6 +191,8 @@ replace_all("containedIn[].*.id", "^\\(DE-605\\)(.*)$", "http://lobid.org/resour
 replace_all("containedIn[].*.id", "^\\(DE-600\\)(.*)$", "http://lobid.org/resources/ZDB-$1#!")
 replace_all("containedIn[].*.label","<<|>>","")
 
+uniq("containedIn[]")
+
 # primaryForm
 
 # 776 - Additional Physical Form Entry (R) - $i (R), $w (R)
