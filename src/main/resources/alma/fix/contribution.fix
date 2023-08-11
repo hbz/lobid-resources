@@ -384,3 +384,5 @@ do list (path:"contribution[]", "var":"$i")
   uniq("$i.agent.altLabel[]")
   replace_all("$i.agent.altLabel[].*","<<|>>","")
 end
+
+uniq("contribution[]")
