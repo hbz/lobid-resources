@@ -304,33 +304,6 @@ do list(path:"084??", "var":"$i")
   end
 end
 
-
-
-
-# local subjects 982 - no info on repeatability
-
-do list(path:"982  ", "var":"$i")
-  if exists("$i.a")
-    set_array("subject[].$append.type[]","Keyword")
-    copy_field("$i.M","$i.@organisations")
-    lookup("$i.@organisations","alma-iz-code-to-isil")
-    paste("subject[].$last.source.id","~http://lobid.org/organisations/","$i.@organisations","~#!", join_char:"")
-    paste("subject[].$last.source.label","~Freie Verschlagwortung durch","$i.@organisations")
-    copy_field("$i.a","subject[].$last.label")
-    copy_field("$i.b","subject[].$last.label")
-    copy_field("$i.2","subject[].$last.version")
-  elsif exists("$i.b")
-    set_array("subject[].$append.type[]","Keyword")
-    copy_field("$i.M","$i.@organisations")
-    lookup("$i.@organisations","alma-iz-code-to-isil")
-    paste("subject[].$last.source.id","~http://lobid.org/organisations/","$i.@organisations","~#!", join_char:"")
-    paste("subject[].$last.source.label","~Freie Verschlagwortung durch","$i.@organisations")
-    copy_field("$i.a","subject[].$last.label")
-    copy_field("$i.b","subject[].$last.label")
-    copy_field("$i.2","subject[].$last.version")
-  end
-end
-
 # 689 RSWK Schlagwortfolgen fka: Schlagwortketten 1 - 10 - no info on repeatability
 
 call_macro("schlagwortfolge", field: "6890?")
@@ -403,6 +376,7 @@ do list (path: "subject[]", "var": "$i")
     unless any_match("$j.dateOfBirthAndDeath","^ca\\..*|.*Jh\\.")
       remove_field("$j.dateOfBirthAndDeath")
     end
+    replace_all("$j.label","<<|>>","")
     # compare GND identifier (idn) with ALMA GND enrichment elements:
     set_array("$j.altLabel[]")
     do list(path:"GPN??", "var": "$z")
@@ -429,6 +403,8 @@ do list(path:"subject[]", "var": "$i")
   end
 end
 
+# clean up subjects
+replace_all("subject[].*.label","<<|>>","")
 uniq("subject[]")
 
 # nwbib

@@ -4,9 +4,12 @@ do list(path:"ITM  ", "var": "$i")
   add_field( "hasItem[].$append.test","")
   add_field("hasItem[].$last.label", "lobid Bestandsressource")
   set_array("hasItem[].$last.type[]", "Item","PhysicalObject")
-  copy_field("$i.c", "hasItem[].$last.callNumber")
-  unless exists("hasItem[].$last.callNumber")
+  if exists("$i.z") # Temporary call number subfield
+    copy_field("$i.z", "hasItem[].$last.callNumber")
+  elsif exists("$i.n") # Item call number subfield
     copy_field("$i.n", "hasItem[].$last.callNumber")
+  else # $c = Call number subfield
+    copy_field("$i.c", "hasItem[].$last.callNumber")
   end
   copy_field("$i.H", "@ITM-H.$append")
   copy_field("$i.b", "hasItem[].$last.serialNumber")
