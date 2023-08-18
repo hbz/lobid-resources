@@ -3,10 +3,12 @@ put_filemap("$[maps-institutions.tsv]","alma-institution-code-to-isil", sep_char
 
 put_filemap("$[sublibraryIsil.tsv]","sublibraryIsil", sep_char:"\t")
 
+# lobid Organisations id -> label
+put_filemap("$[lobidOrganisationsMapping.tsv]","lobidOrgLabels", sep_char:"\t",key_column:"0",value_column:"3",expected_columns:"-1")
+
 put_filemap("$[lobidOrganisationsMapping.tsv]","sigel2isilMap", sep_char:"\t",key_column:"2",value_column:"1",expected_columns:"-1")
 put_filemap("$[hbzowner2sigel.tsv]","hbzowner2sigel", sep_char:"\t",key_column:"0",value_column:"2",expected_columns:"-1")
 put_filemap("$[isilRedirect.tsv]","isilRedirect", sep_char:"\t",key_column:"1",value_column:"0",expected_columns:"-1")
-
 
 put_filemap("$[picaCreatorId2Isil.tsv]","picaCreatorId2Isil", sep_char:"\t", sep_char:"\t",key_column:"0",value_column:"2",expected_columns:"-1")
 
@@ -14,7 +16,7 @@ put_filemap("$[picaCreatorId2Isil.tsv]","picaCreatorId2Isil", sep_char:"\t", sep
 put_filemap("$[nwbibWikidataLabelTypeCoords.tsv]","nwbibWikidataId", sep_char:"\t",key_column:"0",value_column:"1",expected_columns:"-1")
 put_filemap("$[nwbibWikidataLabelTypeCoords.tsv]","nwbibWikidataLabel", sep_char:"\t",key_column:"0",value_column:"2",expected_columns:"-1")
 put_filemap("$[nwbibWikidataLabelTypeCoords.tsv]","nwbibWikidataTypes", sep_char:"\t",key_column:"0",value_column:"3",expected_columns:"-1")
-  put_filemap("$[nwbibWikidataLabelTypeCoords.tsv]","nwbibWikidataGeodata", sep_char:"\t",key_column:"0",value_column:"4",expected_columns:"-1")
+put_filemap("$[nwbibWikidataLabelTypeCoords.tsv]","nwbibWikidataGeodata", sep_char:"\t",key_column:"0",value_column:"4",expected_columns:"-1")
 
 # Library Classifications
 put_filemap("$[classification.tsv]","classificationCode2Label", sep_char:"\t",key_column:"0",value_column:"1",expected_columns:"-1")
@@ -31,9 +33,6 @@ put_filemap("$[formangabe.tsv]","formschlagwort2Gnd", sep_char:"\t",key_column:"
 
 # almaMmsId -> rpbId
 put_filemap("$[almaMmsId2rpbId]","almaMmsId2rpbId", sep_char:"\t",key_column:"0",value_column:"1",expected_columns:"-1")
-
-# lobid Organisations id -> label
-put_filemap("$[lobidOrgLabels]","lobidOrgLabels", sep_char:"\t",key_column:"0",value_column:"1",expected_columns:"-1")
 
 # map zdbId to old hbzId(HT Nummer) based on the last aleph transformation
 put_filemap("$[hbzId2zdbId.tsv]","zdbId2oldHbzId", sep_char:"\t",key_column:"1",value_column:"0",expected_columns:"-1")
