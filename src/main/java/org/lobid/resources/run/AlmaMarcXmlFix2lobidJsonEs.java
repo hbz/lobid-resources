@@ -126,7 +126,7 @@ public class AlmaMarcXmlFix2lobidJsonEs {
                 fixVariables.put("formangabe.tsv", "./maps/formangabe.tsv");
                 fixVariables.put("almaMmsId2rpbId", "./maps/almaMmsId2rpbId.tsv");
                 fixVariables.put("lobidOrgLabels", "./maps/lobidOrgLabels.tsv");
-                fixVariables.put("sigel2isilMap.tsv", "./maps/sigel2isilMap.tsv");
+                fixVariables.put("lobidOrganisationsMapping.tsv", "./maps/lobidOrganisationsMapping.tsv");
                 fixVariables.put("hbzowner2sigel.tsv", "./maps/hbzowner2sigel.tsv");
                 fixVariables.put("isilRedirect.tsv", "./maps/isilRedirect.tsv");
                 fixVariables.put("rpb2.ttl", "./maps/rpb2.ttl");
