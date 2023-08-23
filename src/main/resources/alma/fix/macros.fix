@@ -1,20 +1,56 @@
 # alternateGraphicRepresation
-do put_macro("alternateGraphicRepresationSimple")
-  if exists("$[variable].6")
-    set_array("$[targetField].alternateGraphicRepresentation[]")
-    copy_field("$[variable].6","$[variable].linkageTest")
+do put_macro("alternateGraphicRepresationArrayOfObjects")
+  if exists("$i.6")
+    copy_field("$i.6","$i.linkageTest")
     do list(path:"880??","var":"$880")
      unless exists("$880.M")
-        if in ("$[variable].linkageTest","$880.linkageTest")
-          copy_field("$880.@script.id","$[targetField].alternateGraphicRepresentation[].$append.script.id")
-          copy_field("$880.@script.label","$[targetField].alternateGraphicRepresentation[].$last.script.label")        
-          copy_field("$880.a","$[targetField].alternateGraphicRepresentation[].$last.label")     
+        if in ("$i.linkageTest","$880.linkageTest")
+          if in ("$880.@script.id","alternateGraphicRepresentation[].*.script.id")   
+            do list(path:"alternateGraphicRepresentation[]","var":"$AGR")
+              if in ("$880.@script.id","$AGR.script.id")
+                unless exists("$AGR.record.$[targetArray]")
+                  set_array("$AGR.record.$[targetArray]")
+                end
+                copy_field("$880.a","$AGR.record.$[targetField].label")
+              end
+            end
+          else    
+            copy_field("$880.@script.id","alternateGraphicRepresentation[].$append.script.id")
+            copy_field("$880.@script.label","alternateGraphicRepresentation[].$last.script.label")        
+            set_array("alternateGraphicRepresentation[].$last.record.$[targetField]")
+            copy_field("$880.a","alternateGraphicRepresentation[].$last.record.$[targetField].label")
+          end
         end
       end
     end
   end
-  if is_empty("$[targetField].alternateGraphicRepresentation[]")
-    remove_field("$[targetField].alternateGraphicRepresentation[]")
+end
+
+do put_macro("alternateGraphicRepresationIsPartOf")
+  if exists("$i.6")
+    copy_field("$i.6","$i.linkageTest")
+    do list(path:"880??","var":"$880")
+     unless exists("$880.M")
+        if in ("$i.linkageTest","$880.linkageTest")
+          if in ("$880.@script.id","alternateGraphicRepresentation[].*.script.id")   
+            do list(path:"alternateGraphicRepresentation[]","var":"$AGR")
+              if in ("$880.@script.id","$AGR.script.id")
+                unless exists("$AGR.record.isPartOf[]")
+                  set_array("$AGR.record.isPartOf[]")
+                end
+                set_array("$AGR.record.isPartOf[].$append.hasSuperordinate[]")                
+                copy_field("$880.a","$AGR.record.$[targetField].label")
+              end
+            end
+          else    
+            copy_field("$880.@script.id","alternateGraphicRepresentation[].$append.script.id")
+            copy_field("$880.@script.label","alternateGraphicRepresentation[].$last.script.label")        
+            set_array("alternateGraphicRepresentation[].$last.record.$[targetField]")
+            copy_field("$880.a","alternateGraphicRepresentation[].$last.record.$[targetField].label")
+          end
+        end
+      end
+    end
   end
 end
 
@@ -128,7 +164,6 @@ do put_macro("schlagwortfolge")
         call_macro("gndOtherCombinedLabel",field:"$i")
       end
       copy_field("$i.@combinedLabel", "subject[].$last.componentList[].$last.label")
-      call_macro("alternateGraphicRepresationSimple",targetField:"subject[].$last.componentList[].$last",variable:"$i")
       unless any_equal("subject[].$last.componentList[].$last.label","")
         copy_field("subject[].$last.componentList[].$last.label","subject[].$last.label.$append")
       end

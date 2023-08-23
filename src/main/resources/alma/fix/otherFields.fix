@@ -104,17 +104,17 @@ do list(path:"500  ","var":"$i")
           if in ("$880.@script.id","alternateGraphicRepresentation[].*.script.id")   
             do list(path:"alternateGraphicRepresentation[]","var":"$AGR")
               if in ("$880.@script.id","$AGR.script.id")
-                unless exists("$AGR.note[]")
-                  set_array("$AGR.note[]")
+                unless exists("$AGR.record.note[]")
+                  set_array("$AGR.record.note[]")
                 end
-                copy_field("$880.a","$AGR.note[].$append")
+                copy_field("$880.a","$AGR.record.note[].$append")
               end
             end
           else    
             copy_field("$880.@script.id","alternateGraphicRepresentation[].$append.script.id")
             copy_field("$880.@script.label","alternateGraphicRepresentation[].$last.script.label")        
-            set_array("alternateGraphicRepresentation[].$last.note[]")
-            copy_field("$880.a","alternateGraphicRepresentation[].$last.note[].$append")
+            set_array("alternateGraphicRepresentation[].$last.record.note[]")
+            copy_field("$880.a","alternateGraphicRepresentation[].$last.record.note[].$append")
           end
         end
       end
