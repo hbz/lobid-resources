@@ -70,6 +70,9 @@ do put_macro("gndEventCombinedLabel")
   unless is_empty("$[field].@combinedDetailsForEvents.")
     paste("$[field].@combinedLabel", "$[field].@combinedLabel", "~ (", "$[field].@combinedDetailsForEvents", "~)", join_char:"")
   end
+  if exists("$[field].t")
+    paste("$[field].@combinedLabel", "$[field].@combinedLabel", "~: ","$[field].t", join_char:"")
+  end
 end
 
 # Macro for combinedLabel Person
@@ -87,6 +90,9 @@ do put_macro("gndPersonCombinedLabel")
     end
     if exists("$[field].x")
       paste("$[field].@combinedLabel", "$[field].@combinedLabel", "~/","$[field].x")
+    end
+    if exists("$[field].t")
+      paste("$[field].@combinedLabel", "$[field].@combinedLabel", "~: ","$[field].t", join_char:"")
     end
 end
 
@@ -153,8 +159,12 @@ do put_macro("schlagwortfolge")
     set_array("subject[].$last.componentList[]")
     do list(path:"$[field]", "var":"$i")
       set_array("subject[].$last.componentList[].$append.type[]")
-      do list(path: "$i.D", "var": "$k")
-        copy_field("$k","subject[].$last.componentList[].$last.type[].$append")
+      if exists("$i.t") # Marker for Werktitel/Work even when the GND-enrichment is falsly labeld as Peron or differently
+        add_field("subject[].$last.componentList[].$last.type[].$append","Work")
+      else
+        do list(path: "$i.D", "var": "$k")
+          copy_field("$k","subject[].$last.componentList[].$last.type[].$append")
+        end
       end
       if any_equal("subject[].$last.componentList[].$last.type[]","p")
         call_macro("gndPersonCombinedLabel",field:"$i")

@@ -24,7 +24,7 @@ prepend("language[].*.id", "http://id.loc.gov/vocabulary/iso639-2/")
 # We reuse the introx transformation here.
 
 set_array("@300a")
-copy_field("300  .a", "@300a")
+copy_field("300  .a", "@300a.$append")
 if exists("@300a.1")
   copy_field("@300a.1", "@300a1")
   replace_all("@300a1", "\\s?[:;+(]?$", "")
@@ -38,7 +38,7 @@ do list(path: "300  .b", "var": "$i")
   copy_field("$i", "@300b")
 end
 set_array("@300c")
-copy_field("300  .c", "@300c")
+copy_field("300  .c", "@300c.$append")
 if exists("@300c.1")
   copy_field("@300c.1", "@300c1")
   replace_all("@300c1", "[.]?\\s?[:;+(]?$", "")

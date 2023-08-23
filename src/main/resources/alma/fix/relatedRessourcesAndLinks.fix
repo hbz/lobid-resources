@@ -109,7 +109,7 @@ do list(path: "4900?", "var": "$i")
 
   set_array("isPartOf[].$last.numbering")
   do list(path:"$i.v", "var":"$j")
-    copy_field("$j", "isPartOf[].$last.numbering", " ")
+    copy_field("$j", "isPartOf[].$last.numbering.$append")
   end
   join_field("isPartOf[].$last.numbering")
 end
@@ -196,6 +196,8 @@ uniq("isPartOf[]")
 replace_all("containedIn[].*.id", "^\\(DE-605\\)(.*)$", "http://lobid.org/resources/$1#!")
 replace_all("containedIn[].*.id", "^\\(DE-600\\)(.*)$", "http://lobid.org/resources/ZDB-$1#!")
 replace_all("containedIn[].*.label","<<|>>","")
+
+uniq("containedIn[]")
 
 # primaryForm
 
@@ -493,7 +495,7 @@ end
 
 do list(path:"084??", "var":"$i")
   if any_equal("$i.2","rpb")
-    if any_match("$i.a","^rpbr.*|\\d{3}") # exclude LBZ Notations
+    if any_match("$i.a","^rpb.*") # exclude LBZ Notations
       add_field("inCollection[].$append.id", "http://lobid.org/resources/HT013494180#!")
       add_field("inCollection[].$last.label", "Rheinland-Pfälzische Bibliographie")
     end
