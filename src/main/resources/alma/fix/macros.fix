@@ -1,10 +1,10 @@
 # alternateGraphicRepresation
 do put_macro("alternateGraphicRepresationArrayOfObjects")
-  if exists("$i.6")
-    copy_field("$i.6","$i.linkageTest")
+  if exists("$[variable].6")
+    copy_field("$[variable].6","$[variable].linkageTest")
     do list(path:"880??","var":"$880")
      unless exists("$880.M")
-        if in ("$i.linkageTest","$880.linkageTest")
+        if in ("$[variable].linkageTest","$880.linkageTest")
           if in ("$880.@script.id","alternateGraphicRepresentation[].*.script.id")   
             do list(path:"alternateGraphicRepresentation[]","var":"$AGR")
               if in ("$880.@script.id","$AGR.script.id")
@@ -17,7 +17,7 @@ do put_macro("alternateGraphicRepresationArrayOfObjects")
           else    
             copy_field("$880.@script.id","alternateGraphicRepresentation[].$append.script.id")
             copy_field("$880.@script.label","alternateGraphicRepresentation[].$last.script.label")        
-            set_array("alternateGraphicRepresentation[].$last.record.$[targetField]")
+            set_array("alternateGraphicRepresentation[].$last.record.$[targetArray]")
             copy_field("$880.a","alternateGraphicRepresentation[].$last.record.$[targetField].label")
           end
         end
@@ -27,11 +27,11 @@ do put_macro("alternateGraphicRepresationArrayOfObjects")
 end
 
 do put_macro("alternateGraphicRepresationIsPartOf")
-  if exists("$i.6")
-    copy_field("$i.6","$i.linkageTest")
+  if exists("$[variable].6")
+    copy_field("$[variable].6","$[variable].linkageTest")
     do list(path:"880??","var":"$880")
      unless exists("$880.M")
-        if in ("$i.linkageTest","$880.linkageTest")
+        if in ("$[variable].linkageTest","$880.linkageTest")
           if in ("$880.@script.id","alternateGraphicRepresentation[].*.script.id")   
             do list(path:"alternateGraphicRepresentation[]","var":"$AGR")
               if in ("$880.@script.id","$AGR.script.id")
