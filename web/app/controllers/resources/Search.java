@@ -141,6 +141,10 @@ public class Search {
 	 *         {@link #getTotal()}
 	 */
 	public Search queryResources() {
+		return queryResources((SearchHit hit) -> Json.toJson(hit.getSource()));
+	}
+
+	Search queryResources(Function<SearchHit, JsonNode> transformer) {
 		Search resultIndex = withClient((Client client) -> {
 			validate(client, query);
 			Logger.trace("queryResources: q={}, from={}, size={}, sort={}, query={}",
@@ -160,7 +164,7 @@ public class Search {
 			List<JsonNode> results = new ArrayList<>();
 			this.aggregations = response.getAggregations();
 			for (SearchHit sh : hits.getHits()) {
-				results.add(Json.toJson(sh.getSource()));
+				results.add(transformer.apply(sh));
 			}
 			result = Json.toJson(results);
 			total = hits.getTotalHits();

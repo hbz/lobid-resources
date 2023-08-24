@@ -71,6 +71,7 @@ import views.html.index;
 import views.html.query;
 import views.html.rss;
 import views.html.stars;
+import views.html.tags.result_doc;
 
 /**
  * The main application controller.
@@ -455,6 +456,34 @@ public class Application extends Controller {
 	public static Promise<Result> resourceDotFormat(final String id,
 			String format) {
 		return resource(id, format);
+	}
+
+	/**
+	 * @param id The resource ID.
+	 * @return The preview page for the resource with the given ID.
+	 */
+	public static Promise<Result> preview(final String id) {
+		String cacheId = String.format("show(%s,%s)", id, "preview");
+		@SuppressWarnings("unchecked")
+		Promise<Result> cachedResult = (Promise<Result>) Cache.get(cacheId);
+		if (cachedResult != null)
+			return cachedResult;
+		Promise<Result> promise = Promise.promise(() -> {
+			JsonNode result =
+					new Search.Builder().build().getResource(id).getResult();
+			if (result == null) {
+				String movedTo = idSearchResult(id);
+				if (movedTo != null) {
+					return movedPermanently(routes.Application.preview(movedTo));
+				}
+			}
+			return result != null
+					? ok(result_doc
+							.render(play.api.libs.json.Json.parse(result.toString())))
+					: notFound(details.render(CONFIG, "", id));
+		});
+		cacheOnRedeem(cacheId, promise, ONE_DAY);
+		return promise;
 	}
 
 	/**

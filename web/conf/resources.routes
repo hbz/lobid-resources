@@ -12,6 +12,10 @@ GET    /resources/advanced              controllers.resources.Application.advanc
 GET    /resources/search                controllers.resources.Application.query(q?="", agent?="", name?="", subject?="", id?="", publisher?="", issued?="", medium ?= "", from:Int?=0, size:Int?=15, owner?="", t?="", sort ?= "", word?="", format ?= null, aggregations ?= "", location ?= "", nested ?= "", filter ?= "")
 GET    /resources/facets                controllers.resources.Application.facets(q,agent?="", name?="", subject?="", id?="", publisher?="", issued?="", medium ?= "", from:Int,size:Int,owner,t,field,sort,word?="", location ?= "", nested ?= "", filter ?= "")
 
+#OpenRefine reconciliation endpoint
+GET    /resources/reconcile             controllers.resources.Reconcile.main(callback ?= "", queries ?= "", extend ?= "")
+POST   /resources/reconcile             controllers.resources.Reconcile.reconcile()
+
 GET    /resources/stars                 controllers.resources.Application.showStars(format?="", ids?="")
 GET    /resources/stars/clear           controllers.resources.Application.clearStars(ids ?= "")
 GET    /resources/stars/all             controllers.resources.Application.starAll(ids)
@@ -21,6 +25,7 @@ DELETE /resources/stars/:id             controllers.resources.Application.unstar
 GET    /resources/context.jsonld        controllers.resources.Application.context()
 GET    /resources/dataset.jsonld        controllers.resources.Application.dataset(format="json")
 GET    /resources/dataset               controllers.resources.Application.dataset(format?="")
+GET    /resources/:id.preview           controllers.resources.Application.preview(id)
 GET    /resources/:id.:format           controllers.resources.Application.resourceDotFormat(id, format)
 GET    /items/:id.$format<html|json|rdf|ttl|nt> controllers.resources.Application.itemDotFormat(id, format)
 GET    /resources/:id                   controllers.resources.Application.resource(id, format ?= null)
