@@ -19,6 +19,7 @@ do list(path:"100[01] ", "var":"$i")
     # in some cases (e.g. 99370763882706441) we have an invalid repeated subfield $a
     # since in the invalid record one cannot untangle the info easily (creates dublicate info and no roles) the fix scipts if the subfield $a is an array.
     unless exists("$i.a.1")
+      call_macro("rolesFromSubfieldE")
       unless exists("$i.4")
         if any_match("type[]","ArchivedWebPage|Miscellaneous|Bibliography|Statistics|Legislation|PublishedScore|Game|Image|Map|Standard")
           add_field("$i.4","cre")
@@ -77,6 +78,7 @@ do list(path:"700[01] ", "var":"$i")
     # in some cases (e.g. 99370763882706441) we have an invalid repeated subfield $a
     # since in the invalid record one cannot untangle the info easily (creates dublicate info and no roles) the fix scipts if the subfield $a is an array.
     unless exists("$i.a.1")
+      call_macro("rolesFromSubfieldE")
       unless exists("$i.4")
         add_field("$i.4","ctb")
       end
@@ -129,6 +131,7 @@ do list(path:"110[012] ", "var":"$i")
     # in some cases (e.g. 99370763882706441) we have an invalid repeated subfield $a
     # since in the invalid record one cannot untangle the info easily (creates dublicate info and no roles) the fix scipts if the subfield $a is an array.
     unless exists("$i.a.1")
+      call_macro("rolesFromSubfieldE")
       unless exists("$i.4")
         if any_match("type[]","ArchivedWebPage|Miscellaneous|Bibliography|Statistics|Legislation|PublishedScore|Game|Image|Map|Standard")
           add_field("$i.4","cre")
@@ -186,6 +189,7 @@ do list(path:"710[012] ", "var":"$i")
     # in some cases (e.g. 99370763882706441) we have an invalid repeated subfield $a
     # since in the invalid record one cannot untangle the info easily (creates dublicate info and no roles) the fix scipts if the subfield $a is an array.
     unless exists("$i.a.1")
+      call_macro("rolesFromSubfieldE")
       unless exists("$i.4")
         add_field("$i.4","ctb")
       end
@@ -380,3 +384,5 @@ do list (path:"contribution[]", "var":"$i")
   uniq("$i.agent.altLabel[]")
   replace_all("$i.agent.altLabel[].*","<<|>>","")
 end
+
+uniq("contribution[]")
