@@ -116,9 +116,14 @@ public class IndexIntegrationTest extends LocalIndexSetup {
 	@Test
 	public void testResultCount() {
 		running(fakeApplication(), () -> {
-			long totalHits = index.totalHits();
-			Logger.debug("{}", index.getResult());
-			assertThat(totalHits).isEqualTo(expectedResultCount);
+			try {
+				long totalHits = index.totalHits();
+				Logger.debug("{}", index.getResult());
+				assertThat(totalHits).isEqualTo(expectedResultCount);
+			}
+			catch (RuntimeException e) {
+				assertThat(-1).isEqualTo(expectedResultCount);
+			}
 		});
 	}
 
