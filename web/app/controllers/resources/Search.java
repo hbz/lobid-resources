@@ -126,21 +126,16 @@ public class Search {
 	/**
 	 * @return The number of result for this search
 	 */
-	public long totalHits() {
-		try {
+	public long totalHits() throws IllegalArgumentException {
 			return Cache.getOrElse("total-" + query,
 					() -> queryResources().getTotal(), Application.ONE_DAY);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return -1;
 	}
 
 	/**
 	 * @return This index, get results via {@link #getResult()} and
 	 *         {@link #getTotal()}
 	 */
-	public Search queryResources() {
+	public Search queryResources() throws IllegalArgumentException {
 		Search resultIndex = withClient((Client client) -> {
 			validate(client, query);
 			Logger.trace("queryResources: q={}, from={}, size={}, sort={}, query={}",
@@ -253,7 +248,7 @@ public class Search {
 		return searchRequest;
 	}
 
-	<T> T withClient(Function<Client, T> function) {
+	<T> T withClient(Function<Client, T> function) throws IllegalArgumentException{
 		if (elasticsearchClient != null) {
 			return function.apply(elasticsearchClient);
 		}
