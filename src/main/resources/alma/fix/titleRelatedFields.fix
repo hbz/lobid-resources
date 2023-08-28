@@ -57,11 +57,15 @@ do list(path:"245??","var":"$i")
            if in ("$880.@script.id","alternateGraphicRepresentation[].*.script.id")   
              do list(path:"alternateGraphicRepresentation[]","var":"$AGR")
                if in ("$880.@script.id","$AGR.script.id")     
-                 copy_field("$880.a","$AGR.record.title")
-                 unless exists("$AGR.record.otherTitleInformation[]")
-                   set_array("$AGR.record.otherTitleInformation[]")
-                 end
-                 copy_field("$880.b","$AGR.record.otherTitleInformation[].$append")     
+                copy_field("$880.a","$AGR.record.title")
+                unless exists("$AGR.record.otherTitleInformation[]")
+                  set_array("$AGR.record.otherTitleInformation[]")
+                end
+                copy_field("$880.b","$AGR.record.otherTitleInformation[].$append")     
+                unless exists("$AGR.record.responsibilityStatement[]")
+                  set_array("$AGR.record.responsibilityStatement[]")
+                end
+                copy_field("$880.c","$AGR.record.responsibilityStatement[].$append")  
                end
              end
            else    
@@ -70,6 +74,8 @@ do list(path:"245??","var":"$i")
             copy_field("$880.a","alternateGraphicRepresentation[].$last.record.title")
             set_array("alternateGraphicRepresentation[].$last.record.otherTitleInformation[]")
             copy_field("$880.b","alternateGraphicRepresentation[].$last.record.otherTitleInformation[].$append")
+            set_array("alternateGraphicRepresentation[].$last.record.responsibilityStatement[]")
+            copy_field("$880.c","alternateGraphicRepresentation[].$last.record.responsibilityStatement[].$append")            
            end
         end
       end
