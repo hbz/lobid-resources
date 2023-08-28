@@ -49,7 +49,7 @@ do list(path: "HOL  ", "var": "$i")
   unless in("$i.8", "@ITM-H") # Checks if there is no corresponding ITM-Field
     do list(path:"H52??", "var": "$H52")
       if in("$i.8", "$H52.8")
-        paste("$H52.supressedLocation", "$H52.M", "~+", "$H52.c",join_char:"")
+        paste("$H52.supressedLocation", "$i.M", "~+", "$H52.c",join_char:"")
         lookup("$H52.supressedLocation","suppressedLocations",delete:"true")
         unless exists("$H52.supressedLocation") # Test if location is suppressed with mapping provided by the libraries.
           add_field( "hasItem[].$append.test","")
