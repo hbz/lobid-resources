@@ -119,7 +119,8 @@ public class AlmaMarcXmlFix2lobidJsonEs {
                 fixVariables.put("nwbib-spatial", "./../nwbib-spatial.tsv");
                 fixVariables.put("wd_itemLabelTypesCoordinates", "./../wd_itemLabelTypesCoordinates.tsv");
                 fixVariables.put("maps-institutions.tsv", "./maps/institutions.tsv");
-                fixVariables.put("sublibraryIsil.tsv", "./maps/generatedAlmaSublibraryCode2Isil.tsv");
+                fixVariables.put("sublibraryIsil", "./maps/generatedAlmaSublibraryCode2Isil.tsv");
+                fixVariables.put("suppressedLocations", "./maps/generatedAlmaSuppressedLocations.tsv");                
                 fixVariables.put("picaCreatorId2Isil.tsv", "./maps/picaCreatorId2Isil.tsv");
                 fixVariables.put("nwbibWikidataLabelTypeCoords.tsv", "./maps/nwbibWikidataLabelTypeCoords.tsv");
                 fixVariables.put("classification.tsv", "./maps/classification.tsv");

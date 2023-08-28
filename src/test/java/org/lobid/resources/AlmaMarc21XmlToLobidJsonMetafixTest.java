@@ -65,7 +65,8 @@ public final class AlmaMarc21XmlToLobidJsonMetafixTest {
         fixVariables.put("classification.tsv", "src/main/resources/alma/maps/classification.tsv");
         fixVariables.put("formangabe.tsv", "src/main/resources/alma/maps/formangabe.tsv");
         fixVariables.put("maps-institutions.tsv", "src/main/resources/alma/maps/institutions.tsv");
-        fixVariables.put("sublibraryIsil.tsv", "src/main/resources/alma/maps/generatedAlmaSublibraryCode2Isil.tsv");
+        fixVariables.put("sublibraryIsil", "src/main/resources/alma/maps/generatedAlmaSublibraryCode2Isil.tsv");
+        fixVariables.put("suppressedLocations", "src/main/resources/alma/maps/generatedAlmaSuppressedLocations.tsv");
         fixVariables.put("picaCreatorId2Isil.tsv", "src/main/resources/alma/maps/picaCreatorId2Isil.tsv");
         fixVariables.put("nwbibWikidataLabelTypeCoords.tsv", "src/main/resources/alma/maps/nwbibWikidataLabelTypeCoords.tsv");
         fixVariables.put("almaMmsId2rpbId", "src/main/resources/alma/maps/almaMmsId2rpbId.tsv");
