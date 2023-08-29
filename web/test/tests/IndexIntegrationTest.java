@@ -29,11 +29,11 @@ import play.Logger;
 public class IndexIntegrationTest extends LocalIndexSetup {
 
 	// test data parameters, formatted as "input /*->*/ expected output"
-	@Parameters(name = "{0}")
+	@Parameters(name = "({index}) {0}")
 	public static Collection<Object[]> data() {
 		// @formatter:off
 		return queries(new Object[][] {
-			{ "title:der", /*->*/ 13 },
+			{ "title:der", /*->*/ 14 },
 			{ "title:Westfalen", /*->*/ 8 },
 			{ "contribution.agent.label:Westfalen", /*->*/ 3 },
 			{ "contribution.agent.label:Westfälen", /*->*/ 3 },
@@ -43,7 +43,7 @@ public class IndexIntegrationTest extends LocalIndexSetup {
 			{ "title:Westfalen AND contribution.agent.label:Prause", /*->*/ 1 },
 			{ "title:Westfalen OR title:Munsterland", /*->*/ 8 },
 			{ "(title:Westfalen OR title:Münsterland) AND contribution.agent.id:\"https\\://d-nb.info/gnd/5253963-5\"", /*->*/ 0 },
-			{ "bibliographicLevel.label.raw:\"Monographic component part\"", /*->*/ 13 },
+			{ "bibliographicLevel.label.raw:\"Monographic component part\"", /*->*/ 14 },
 			{ "subject.componentList.label:Düsseldorf", /*->*/ 1 },
 			{ "subject.componentList.label:Duesseldorf", /*->*/ 1 },
 			{ "subject.componentList.label:Dusseldorf", /*->*/ 1 },
@@ -56,17 +56,17 @@ public class IndexIntegrationTest extends LocalIndexSetup {
 			{ "spatial.label:Westfalen", /*->*/ 7 },
 			{ "spatial.label:Westfälen", /*->*/ 7 },
 			{ "subject.componentList.id:1113670827", /*->*/ 0 },
-			{ "subject.componentList.type:PlaceOrGeographicName", /*->*/ 19 },
+			{ "subject.componentList.type:PlaceOrGeographicName", /*->*/ 21 },
 			{ "publication.location:Berlin", /*->*/ 14 },
 			{ "subject.notation:914.3", /*->*/ 6 },
 			{ "subject.notation:914", /*->*/ 0 },
 			{ "subject.notation:914*", /*->*/ 6 },
 			{ "publication.location:Köln", /*->*/ 5 },
 			{ "publication.location:Koln", /*->*/ 5 },
-			{ "publication.startDate:1993", /*->*/ 2 },
+			{ "publication.startDate:1993", /*->*/ 3 },
 			{ "publication.location:Berlin AND publication.startDate:1993", /*->*/ 1 },
 			{ "publication.location:Berlin AND publication.startDate:[1992 TO 2017]", /*->*/ 5 },
-			{ "inCollection.id:\"http\\://lobid.org/organisations/DE-655#\\!\"", /*->*/ 114 },
+			{ "inCollection.id:\"http\\://lobid.org/organisations/DE-655#\\!\"", /*->*/ 121 },
 			{ "inCollection.id:NWBib", /*->*/ 0 },
 			{ "publication.publishedBy:Quedenfeldt", /*->*/ 2 },
 			{ "publication.publishedBy:Quedenfeld", /*->*/ 2 },
@@ -88,7 +88,7 @@ public class IndexIntegrationTest extends LocalIndexSetup {
 			{ "describedBy.resultOf.object.dateCreated:\"2023-03-22\"", /*->*/ 1},
 			{ "describedBy.resultOf.object.dateModified:\"2022-07-18\"", /*->*/ 1},
 			{ "describedBy.resultOf.object.sourceOrganization.id:\"http\\://lobid.org/organisations/DE-5#\\!\"", /*->*/ 4},
-			{ "describedBy.resultOf.object.modifiedBy.id:\"http\\://lobid.org/organisations/DE-6#\\!\"", /*->*/ 13 },
+			{ "describedBy.resultOf.object.modifiedBy.id:\"http\\://lobid.org/organisations/DE-6#\\!\"", /*->*/ 14 },
 			{ "\"Reader-friendly\"", /*->*/ 1},
 			{ "\"Reader friendly\"", /*->*/ 1}
 		});
@@ -116,9 +116,14 @@ public class IndexIntegrationTest extends LocalIndexSetup {
 	@Test
 	public void testResultCount() {
 		running(fakeApplication(), () -> {
-			long totalHits = index.totalHits();
-			Logger.debug("{}", index.getResult());
-			assertThat(totalHits).isEqualTo(expectedResultCount);
+			try {
+				long totalHits = index.totalHits();
+				Logger.debug("{}", index.getResult());
+				assertThat(totalHits).isEqualTo(expectedResultCount);
+			}
+			catch (RuntimeException e) {
+				assertThat(-1).isEqualTo(expectedResultCount);
+			}
 		});
 	}
 

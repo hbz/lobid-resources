@@ -1,68 +1,37 @@
 set_array("hasItem[]")
 set_array("@ITM-H") # Helper element for creating Holding from HOL ("PhysikalischerTitel")
 do list(path:"ITM  ", "var": "$i")
-  add_field( "hasItem[].$append.test","")
-  add_field("hasItem[].$last.label", "lobid Bestandsressource")
-  set_array("hasItem[].$last.type[]", "Item","PhysicalObject")
-  copy_field("$i.c", "hasItem[].$last.callNumber")
-  unless exists("hasItem[].$last.callNumber")
-    copy_field("$i.n", "hasItem[].$last.callNumber")
-  end
-  copy_field("$i.H", "@ITM-H.$append")
-  copy_field("$i.b", "hasItem[].$last.serialNumber")
-  paste("hasItem[].$last.currentLocation", "$i.w", "~/", "$i.x")
-  copy_field("$i.w","$i.@sublibraryIsil")
-  lookup("$i.@sublibraryIsil", "hbzowner2sigel",delete:"true")
-  lookup("$i.@sublibraryIsil", "sigel2isilMap",delete:"true")
-  lookup("$i.@sublibraryIsil", "isilRedirect")     
-  # following fix checks for sublibrary codes and if they map to provided sublocation Isil
-  unless exists("$i.@sublibraryIsil")
-    paste("$i.@sublibraryIsil","$i.M","~+","$i.w",join_char:"")
-    lookup("$i.@sublibraryIsil", "sublibraryIsil",delete:"true")
-  end
-  if exists("$i.@sublibraryIsil")
-    copy_field("$i.@sublibraryIsil", "hasItem[].$last.heldBy.id")
-  # if no mapping for a sublocation code is provided or no sublocation code exists ($i.w) the main library ISIL is used.
-  else
-    copy_field("$i.a", "hasItem[].$last.heldBy.id")
-    replace_all("hasItem[].$last.heldBy.id",".*(\\d{4})$","$1")
-    lookup("hasItem[].$last.heldBy.id", "alma-institution-code-to-isil")
-  end
-  copy_field("hasItem[].$last.heldBy.id","hasItem[].$last.heldBy.isil")
-  prepend("hasItem[].$last.heldBy.id", "http://lobid.org/organisations/")
-  append("hasItem[].$last.heldBy.id","#!")
-  copy_field("hasItem[].$last.heldBy.id", "hasItem[].$last.heldBy.label")
-  # item id is constructed "http://lobid.org/items/[almaMmsId of the record]:[isil of the Owner]:[almaMmsId of the holding]#!"
-  paste("hasItem[].$last.id", "~http://lobid.org/items/","almaMmsId", "~:", "hasItem[].$last.heldBy.isil","~:", "$i.a","~#!", join_char: "")
-end
-
-set_array("@HOL-M_POR-M") # Helper element for creating Holding from MBD ("NurTitel")
-do list(path: "HOL  ", "var": "$i")
-  copy_field("$i.M","@HOL-M_POR-M.$append")
-  unless in("$i.8", "@ITM-H") # Checks if there is no corresponding ITM-Field
+  paste("$i.supressedLocation", "$i.M", "~+", "$i.x",join_char:"")
+  lookup("$i.supressedLocation","suppressedLocations",delete:"true")
+  unless exists("$i.supressedLocation") # Test if location is suppressed with mapping provided by the libraries.
     add_field( "hasItem[].$append.test","")
     add_field("hasItem[].$last.label", "lobid Bestandsressource")
-    set_array("hasItem[].$last.type[]", "Item","PhysikalischerTitel")
-    do list(path:"H52??", "var": "$H52")
-      if in("$i.8", "$H52.8")
-        paste("hasItem[].$last.currentLocation", "$H52.b", "~/", "$H52.c")
-        copy_field("$H52.h", "hasItem[].$last.callNumber")
-        copy_field("$H52.b","$i.@sublibraryIsil")
-        lookup("$i.@sublibraryIsil", "hbzowner2sigel",delete:"true")
-        lookup("$i.@sublibraryIsil", "sigel2isilMap",delete:"true") 
-        lookup("$i.@sublibraryIsil", "isilRedirect")       
-        # following fix checks for sublibrary codes and if they map to provided sublocation Isil
-        unless exists("$i.@sublibraryIsil")
-          paste("$i.@sublibraryIsil","$i.M","~+","$H52.b",join_char:"")
-          lookup("$i.@sublibraryIsil", "sublibraryIsil",delete:"true")
-        end
-      end
+    set_array("hasItem[].$last.type[]", "Item","PhysicalObject")
+    if exists("$i.z") # Temporary call number subfield
+      copy_field("$i.z", "hasItem[].$last.callNumber")
+    elsif exists("$i.n") # Item call number subfield
+      copy_field("$i.n", "hasItem[].$last.callNumber")
+    else # $c = Call number subfield
+      copy_field("$i.c", "hasItem[].$last.callNumber")
+    end
+    copy_field("$i.H", "@ITM-H.$append")
+    copy_field("$i.b", "hasItem[].$last.serialNumber")
+    copy_field("$i.w","hasItem[].$last.currentLibrary")
+    copy_field("$i.x","hasItem[].$last.currentLocation")
+    copy_field("$i.w","$i.@sublibraryIsil")
+    lookup("$i.@sublibraryIsil", "hbzowner2sigel",delete:"true")
+    lookup("$i.@sublibraryIsil", "sigel2isilMap",delete:"true")
+    lookup("$i.@sublibraryIsil", "isilRedirect")     
+    # following fix checks for sublibrary codes and if they map to provided sublocation Isil
+    unless exists("$i.@sublibraryIsil")
+      paste("$i.@sublibraryIsil","$i.M","~+","$i.w",join_char:"")
+      lookup("$i.@sublibraryIsil", "sublibraryIsil",delete:"true")
     end
     if exists("$i.@sublibraryIsil")
       copy_field("$i.@sublibraryIsil", "hasItem[].$last.heldBy.id")
     # if no mapping for a sublocation code is provided or no sublocation code exists ($i.w) the main library ISIL is used.
     else
-      copy_field("$i.8", "hasItem[].$last.heldBy.id")
+      copy_field("$i.a", "hasItem[].$last.heldBy.id")
       replace_all("hasItem[].$last.heldBy.id",".*(\\d{4})$","$1")
       lookup("hasItem[].$last.heldBy.id", "alma-institution-code-to-isil")
     end
@@ -71,7 +40,51 @@ do list(path: "HOL  ", "var": "$i")
     append("hasItem[].$last.heldBy.id","#!")
     copy_field("hasItem[].$last.heldBy.id", "hasItem[].$last.heldBy.label")
     # item id is constructed "http://lobid.org/items/[almaMmsId of the record]:[isil of the Owner]:[almaMmsId of the holding]#!"
-    paste("hasItem[].$last.id", "~http://lobid.org/items/","almaMmsId", "~:", "hasItem[].$last.heldBy.isil","~:","$i.8","~#!", join_char: "")
+    paste("hasItem[].$last.id", "~http://lobid.org/items/","almaMmsId", "~:", "hasItem[].$last.heldBy.isil","~:", "$i.a","~#!", join_char: "")
+  end
+end
+
+set_array("@HOL-M_POR-M") # Helper element for creating Holding from MBD ("NurTitel")
+do list(path: "HOL  ", "var": "$i")
+  copy_field("$i.M","@HOL-M_POR-M.$append")
+  unless in("$i.8", "@ITM-H") # Checks if there is no corresponding ITM-Field
+    do list(path:"H52??", "var": "$H52")
+      if in("$i.8", "$H52.8")
+        paste("$H52.supressedLocation", "$i.M", "~+", "$H52.c",join_char:"")
+        lookup("$H52.supressedLocation","suppressedLocations",delete:"true")
+        unless exists("$H52.supressedLocation") # Test if location is suppressed with mapping provided by the libraries.
+          add_field( "hasItem[].$append.test","")
+          add_field("hasItem[].$last.label", "lobid Bestandsressource")
+          set_array("hasItem[].$last.type[]", "Item","PhysikalischerTitel")
+          copy_field("$H52.b","hasItem[].$last.currentLibrary")
+          copy_field("$H52.c","hasItem[].$last.currentLocation")
+          copy_field("$H52.h", "hasItem[].$last.callNumber")
+          copy_field("$H52.b","$i.@sublibraryIsil")
+          lookup("$i.@sublibraryIsil", "hbzowner2sigel",delete:"true")
+          lookup("$i.@sublibraryIsil", "sigel2isilMap",delete:"true") 
+          lookup("$i.@sublibraryIsil", "isilRedirect")       
+          # following fix checks for sublibrary codes and if they map to provided sublocation Isil
+          unless exists("$i.@sublibraryIsil")
+            paste("$i.@sublibraryIsil","$i.M","~+","$H52.b",join_char:"")
+            lookup("$i.@sublibraryIsil", "sublibraryIsil",delete:"true")
+          end
+          if exists("$i.@sublibraryIsil")
+            copy_field("$i.@sublibraryIsil", "hasItem[].$last.heldBy.id")
+          # if no mapping for a sublocation code is provided or no sublocation code exists ($i.w) the main library ISIL is used.
+          else
+            copy_field("$i.8", "hasItem[].$last.heldBy.id")
+            replace_all("hasItem[].$last.heldBy.id",".*(\\d{4})$","$1")
+            lookup("hasItem[].$last.heldBy.id", "alma-institution-code-to-isil")
+          end
+          copy_field("hasItem[].$last.heldBy.id","hasItem[].$last.heldBy.isil")
+          prepend("hasItem[].$last.heldBy.id", "http://lobid.org/organisations/")
+          append("hasItem[].$last.heldBy.id","#!")
+          copy_field("hasItem[].$last.heldBy.id", "hasItem[].$last.heldBy.label")
+          # item id is constructed "http://lobid.org/items/[almaMmsId of the record]:[isil of the Owner]:[almaMmsId of the holding]#!"
+          paste("hasItem[].$last.id", "~http://lobid.org/items/","almaMmsId", "~:", "hasItem[].$last.heldBy.isil","~:","$i.8","~#!", join_char: "")
+        end
+      end
+    end
   end
 end
 

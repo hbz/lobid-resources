@@ -30,12 +30,12 @@ public class NestedQueryTests extends LocalIndexSetup {
 		// @formatter:off
 		return Arrays.asList(new Object[][] {
 			// Nested query: only return hits where query matches 1 nested pseudo-doc:
-			{ "contribution:contribution.agent.label:becker AND contribution.role.label:Beitragende", "", /*->*/ 1 },
-			{ "hasItem:hasItem.heldBy.isil:DE-38 AND hasItem.currentLocation:\"K0001 / UNASSIGNED\"", "", /*->*/ 1 },
+			{ "contribution:contribution.agent.label:becker AND contribution.role.label:Herausgeber", "", /*->*/ 1 },
+			{ "hasItem:hasItem.heldBy.isil:DE-38 AND hasItem.currentLibrary:\"K0001\" AND hasItem.currentLocation:\"UNASSIGNED\"", "", /*->*/ 1 },
 			// Nested query: don't match if query parts match different nested docs:
 			{ "contribution:contribution.agent.label:becker AND contribution.role.label:Herausgeber", "", /*->*/ 1 },
 			{ "contribution:contribution.agent.label:becker AND contribution.role.label:Autor", "", /*->*/ 0 },
-			{ "hasItem:hasItem.heldBy.isil:DE-38 AND hasItem.currentLocation:\"N5001 / UNASSIGNED\"", "", /*->*/ 0 },
+			{ "hasItem:hasItem.heldBy.isil:DE-38 AND hasItem.currentLibrary:\"N5001\" AND hasItem.currentLocation:\"UNASSIGNED\"", "", /*->*/ 0 },
 			// Normal query: return hits where query matches parent top-level doc:
 			{ "", "contribution.agent.label:becker AND contribution.role.label:Herausgeber", /*->*/ 1 },
 			// Same for 'spatial' nested field:

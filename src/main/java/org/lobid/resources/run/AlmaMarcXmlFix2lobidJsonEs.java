@@ -119,14 +119,14 @@ public class AlmaMarcXmlFix2lobidJsonEs {
                 fixVariables.put("nwbib-spatial", "./../nwbib-spatial.tsv");
                 fixVariables.put("wd_itemLabelTypesCoordinates", "./../wd_itemLabelTypesCoordinates.tsv");
                 fixVariables.put("maps-institutions.tsv", "./maps/institutions.tsv");
-                fixVariables.put("sublibraryIsil.tsv", "./maps/generatedAlmaSublibraryCode2Isil.tsv");
+                fixVariables.put("sublibraryIsil", "./maps/generatedAlmaSublibraryCode2Isil.tsv");
+                fixVariables.put("suppressedLocations", "./maps/generatedAlmaSuppressedLocations.tsv");                
                 fixVariables.put("picaCreatorId2Isil.tsv", "./maps/picaCreatorId2Isil.tsv");
                 fixVariables.put("nwbibWikidataLabelTypeCoords.tsv", "./maps/nwbibWikidataLabelTypeCoords.tsv");
                 fixVariables.put("classification.tsv", "./maps/classification.tsv");
                 fixVariables.put("formangabe.tsv", "./maps/formangabe.tsv");
                 fixVariables.put("almaMmsId2rpbId", "./maps/almaMmsId2rpbId.tsv");
-                fixVariables.put("lobidOrgLabels", "./maps/lobidOrgLabels.tsv");
-                fixVariables.put("sigel2isilMap.tsv", "./maps/sigel2isilMap.tsv");
+                fixVariables.put("lobidOrganisationsMapping.tsv", "./maps/lobidOrganisationsMapping.tsv");
                 fixVariables.put("hbzowner2sigel.tsv", "./maps/hbzowner2sigel.tsv");
                 fixVariables.put("isilRedirect.tsv", "./maps/isilRedirect.tsv");
                 fixVariables.put("rpb2.ttl", "./maps/rpb2.ttl");

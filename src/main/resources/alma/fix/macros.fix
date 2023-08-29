@@ -1,3 +1,149 @@
+# alternateGraphicRepresation
+do put_macro("alternateGraphicRepresationArrayOfObjects")
+  if exists("$[variable].6")
+    copy_field("$[variable].6","$[variable].linkageTest")
+    do list(path:"880??","var":"$880")
+     unless exists("$880.M")
+        if in ("$[variable].linkageTest","$880.linkageTest")
+          if in ("$880.@script.id","alternateGraphicRepresentation[].*.script.id")   
+            do list(path:"alternateGraphicRepresentation[]","var":"$AGR")
+              if in ("$880.@script.id","$AGR.script.id")
+                unless exists("$AGR.record.$[targetArray]")
+                  set_array("$AGR.record.$[targetArray]")
+                end
+                copy_field("$880.a","$AGR.record.$[targetField].label")
+              end
+            end
+          else    
+            copy_field("$880.@script.id","alternateGraphicRepresentation[].$append.script.id")
+            copy_field("$880.@script.label","alternateGraphicRepresentation[].$last.script.label")        
+            set_array("alternateGraphicRepresentation[].$last.record.$[targetArray]")
+            copy_field("$880.a","alternateGraphicRepresentation[].$last.record.$[targetField].label")
+          end
+        end
+      end
+    end
+  end
+end
+
+do put_macro("alternateGraphicRepresationIsPartOf")
+  if exists("$[variable].6")
+    copy_field("$[variable].6","$[variable].linkageTest")
+    do list(path:"880??","var":"$880")
+     unless exists("$880.M")
+        if in ("$[variable].linkageTest","$880.linkageTest")
+          if in ("$880.@script.id","alternateGraphicRepresentation[].*.script.id")   
+            do list(path:"alternateGraphicRepresentation[]","var":"$AGR")
+              if in ("$880.@script.id","$AGR.script.id")
+                unless exists("$AGR.record.isPartOf[]")
+                  set_array("$AGR.record.isPartOf[]")
+                end
+                set_array("$AGR.record.isPartOf[].$append.hasSuperordinate[]")                
+                copy_field("$880.a","$AGR.record.$[targetField].label")
+              end
+            end
+          else    
+            copy_field("$880.@script.id","alternateGraphicRepresentation[].$append.script.id")
+            copy_field("$880.@script.label","alternateGraphicRepresentation[].$last.script.label")        
+            set_array("alternateGraphicRepresentation[].$last.record.$[targetField]")
+            copy_field("$880.a","alternateGraphicRepresentation[].$last.record.$[targetField].label")
+          end
+        end
+      end
+    end
+  end
+end
+
+# Additional contributor roles from subfield $e
+do put_macro("rolesFromSubfieldE")
+  if exists("$i.e")
+    unless is_array("$i.4")
+      move_field("$i.4","$i.@4")
+      set_array("$i.4")
+      move_field("$i.@4","$i.4.$append")          
+    end
+    do list(path:"$i.e","var":"$e")
+      if any_match("$e","(?i).*dars.*")
+        add_field("$i.4.$append","act")
+      elsif any_match("$e","(?i).*nach.*")
+        add_field("$i.4.$append","aft")
+      elsif any_match("$e","(?i).*vorl.*")
+        add_field("$i.4.$append","ant")
+      elsif any_match("$e","(?i).*(Artist|Künstler).*")
+        add_field("$i.4.$append","art")
+      elsif any_match("$e","(?i).*Vorw.*")
+        add_field("$i.4.$append","aui")
+      elsif any_match("$e","(?i).*Drehb.*")
+        add_field("$i.4.$append","aus")
+      elsif any_match("$e","(?i).*(author|Verfasser).*")
+        add_field("$i.4.$append","aut")
+      elsif any_match("$e","(?i).*B[ü|ue]hnenbild.*") # was http://purl.org/lobid/lv#StageDesign in old morph
+        add_field("$i.4.$append","std")
+      elsif any_match("$e","(?i).*choreogr.*")
+        add_field("$i.4.$append","chr")
+      elsif any_match("$e","(?i).*(mitarb|Beitr|Beitr|Komm\\.).*")
+        add_field("$i.4.$append","ctb")
+      elsif any_match("$e","(?i).*(Komp).*")
+        add_field("$i.4.$append","cmp")
+      elsif any_match("$e","(?i).*(Dir|Chorleit).*")
+        add_field("$i.4.$append","cnd")
+      elsif any_match("$e","(?i).*(Sammler).*")
+        add_field("$i.4.$append","col")
+      elsif any_match("$e","(?i).*(Kartogra).*")
+        add_field("$i.4.$append","col")
+      elsif any_match("$e","(?i).*(Tänzer).*")
+        add_field("$i.4.$append","dnc")
+      elsif any_match("$e","(?i).*Herausgebendes Organ.*")
+        add_field("$i.4.$append","isb")
+      elsif any_match("$e","(?i).*(hrsg|editor|Herausg).*|^Ed\\.$")
+        add_field("$i.4.$append","edt")
+      elsif any_match("$e","(?i).*(Stecher).*")
+        add_field("$i.4.$append","egr")
+      elsif any_match("$e","(?i).*(Widmungsempfänger).*")
+        add_field("$i.4.$append","hnr")
+      elsif any_match("$e","(?i).*(Ill|Zeichn).*")
+        add_field("$i.4.$append","ill")
+      elsif any_match("$e","(?i).*(Interviewter).*")
+        add_field("$i.4.$append","ive")
+      elsif any_match("$e","(?i).*(Interviewer).*")
+        add_field("$i.4.$append","ivr")
+      elsif any_match("$e","(?i).*(Instr|Cembalo|Fagott|Flöte|Gitarre|guitar|Harfe|harp|Horn|Klarinette|clarinet|Klavier|Piano|Kontrabass|Laute|Oboe|Org|Posaune|Saxophon|Schlagzeug|drums|Tromp|Violoncello|Violine).*")
+        add_field("$i.4.$append","itr")
+      elsif any_match("$e","(?i).*(Libr).*")
+        add_field("$i.4.$append","lbt")
+      elsif any_match("$e","(?i).*(Ltg).*")
+        add_field("$i.4.$append","ltg")
+      elsif any_match("$e","(?i).*(Moderation|moderat).*")
+        add_field("$i.4.$append","mod")
+      elsif any_match("$e","(?i).*(Musi).*")
+        add_field("$i.4.$append","mus")
+      elsif any_match("$e","(?i).*(Begr).*")
+        add_field("$i.4.$append","org")
+      elsif any_match("$e","(?i).*(Otogr).*")
+        add_field("$i.4.$append","pht")
+      elsif any_match("$e","(?i).*(Interpr).*")
+        add_field("$i.4.$append","prf")
+      elsif any_match("$e","(?i).*(Prod).*")
+        add_field("$i.4.$append","pro")
+      elsif any_match("$e","(?i).*(Adressat).*")
+        add_field("$i.4.$append","rcp")
+      elsif any_match("$e","(?i).*(Adressat).*")
+        add_field("$i.4.$append","red")
+      elsif any_match("$e","(?i).*(Gesang|Alt|Bariton|Bass|Baß|Counterten|Mezzosopr|Sopr|Ten|Singer).*")
+        add_field("$i.4.$append","sng")
+      elsif any_match("$e","(?i).*(sprecher).*")
+        add_field("$i.4.$append","spk")
+      elsif any_match("$e","(?i).*(bers|transla).*")
+        add_field("$i.4.$append","trl")
+      end
+    end
+    if is_empty("$i.4")
+      remove_field("$i.4")
+    end
+    uniq("$i.4")
+  end
+end
+
 # Macro for combinedLabel Event / Meeting
 
 do put_macro("gndEventCombinedLabel")
@@ -13,6 +159,9 @@ do put_macro("gndEventCombinedLabel")
   join_field("$[field].@combinedDetailsForEvents"," : ")
   unless is_empty("$[field].@combinedDetailsForEvents.")
     paste("$[field].@combinedLabel", "$[field].@combinedLabel", "~ (", "$[field].@combinedDetailsForEvents", "~)", join_char:"")
+  end
+  if exists("$[field].t")
+    paste("$[field].@combinedLabel", "$[field].@combinedLabel", "~: ","$[field].t", join_char:"")
   end
 end
 
@@ -31,6 +180,9 @@ do put_macro("gndPersonCombinedLabel")
     end
     if exists("$[field].x")
       paste("$[field].@combinedLabel", "$[field].@combinedLabel", "~/","$[field].x")
+    end
+    if exists("$[field].t")
+      paste("$[field].@combinedLabel", "$[field].@combinedLabel", "~: ","$[field].t", join_char:"")
     end
 end
 
@@ -72,6 +224,18 @@ do put_macro("provenanceLinks")
     replace_all("$[field]", "^.*$", "DE-605")
   elsif any_match("$[field]","^NRW$|^NRW\\/Hist.Buch$")
     replace_all("$[field]", "^.*$", "DE-605")
+  elsif  any_equal("$[field]", "Springer")
+    replace_all("$[field]", "^.*$", "DE-He213")
+  elsif  any_equal("$[field]", "BSZ")
+    replace_all("$[field]", "^.*$", "DE-576")
+  elsif  any_equal("$[field]", "GBV")
+    replace_all("$[field]", "^.*$", "DE-601") 
+  elsif  any_equal("$[field]", "KOBV")
+    replace_all("$[field]", "^.*$", "DE-602") 
+  elsif  any_equal("$[field]", "HeBIS")
+    replace_all("$[field]", "^.*$", "DE-603") 
+  elsif  any_equal("$[field]", "BVB")
+    replace_all("$[field]", "^.*$", "DE-604") 
   elsif any_match("$[field]","^292$")
     replace_all("$[field]", "^292$", "DE-101b")
   elsif any_match("$[field]","(.*)\\/NWBib$")
@@ -81,6 +245,8 @@ do put_macro("provenanceLinks")
   elsif any_match("$[field]", "^\\d{4}$")
     lookup("$[field]", "picaCreatorId2Isil")
   end
+
+
   unless any_match("$[field]","[A-Za-z]{2}-.*")
     prepend("$[field]","DE-")
   end
@@ -97,8 +263,12 @@ do put_macro("schlagwortfolge")
     set_array("subject[].$last.componentList[]")
     do list(path:"$[field]", "var":"$i")
       set_array("subject[].$last.componentList[].$append.type[]")
-      do list(path: "$i.D", "var": "$k")
-        copy_field("$k","subject[].$last.componentList[].$last.type[].$append")
+      if exists("$i.t") # Marker for Werktitel/Work even when the GND-enrichment is falsly labeld as Peron or differently
+        add_field("subject[].$last.componentList[].$last.type[].$append","Work")
+      else
+        do list(path: "$i.D", "var": "$k")
+          copy_field("$k","subject[].$last.componentList[].$last.type[].$append")
+        end
       end
       if any_equal("subject[].$last.componentList[].$last.type[]","p")
         call_macro("gndPersonCombinedLabel",field:"$i")
