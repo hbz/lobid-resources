@@ -291,15 +291,20 @@ do list(path:"084??", "var":"$i")
               replace_all("subject[].$last.notation","rpb(.*)","$1")
             end
           elsif any_match("$i.2", "sdnb|zdbs")
-            if any_equal("$i.q","DE-600")
-              add_field("subject[].$last.source.label","DDC-Sachgruppen der ZDB")
-              add_field("subject[].$last.source.id","https://zeitschriftendatenbank.de//fileadmin/user_upload/ZDB/pdf/ggr/AH_DDC_Sachgruppen.pdf")
-            elsif any_equal("$i.2","zdbs")
-              add_field("subject[].$last.source.label","DDC-Sachgruppen der ZDB")
-              add_field("subject[].$last.source.id","https://zeitschriftendatenbank.de//fileadmin/user_upload/ZDB/pdf/ggr/AH_DDC_Sachgruppen.pdf")
-            else
-              add_field("subject[].$last.source.label","Sachgruppen der DNB")
-              add_field("subject[].$last.source.id","https://bartoc.org/en/node/20049")
+            if any_match("$j","\\d{3}(\\.\\d{1,3})?|[BKS]")
+              if any_equal("$i.q","DE-600")
+                add_field("subject[].$last.source.label","DDC-Sachgruppen der ZDB")
+                add_field("subject[].$last.source.id","https://zeitschriftendatenbank.de//fileadmin/user_upload/ZDB/pdf/ggr/AH_DDC_Sachgruppen.pdf")
+              elsif any_equal("$i.2","zdbs")
+                add_field("subject[].$last.source.label","DDC-Sachgruppen der ZDB")
+                add_field("subject[].$last.source.id","https://zeitschriftendatenbank.de//fileadmin/user_upload/ZDB/pdf/ggr/AH_DDC_Sachgruppen.pdf")
+              else
+                add_field("subject[].$last.source.label","Sachgruppen der DNB")
+                add_field("subject[].$last.source.id","https://bartoc.org/en/node/20049")
+              end
+            elsif any_match("$j","\\d{2}")
+              add_field("subject[].$last.source.label","Systematik der DNB (bis 2003)")
+              add_field("subject[].$last.source.id","https://bartoc.org/en/node/18497")
             end
           else
             copy_field("$i.2", "subject[].$last.source.label")
