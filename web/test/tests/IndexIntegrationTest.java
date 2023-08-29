@@ -33,7 +33,7 @@ public class IndexIntegrationTest extends LocalIndexSetup {
 	public static Collection<Object[]> data() {
 		// @formatter:off
 		return queries(new Object[][] {
-			{ "title:der", /*->*/ 13 },
+			{ "title:der", /*->*/ 14 },
 			{ "title:Westfalen", /*->*/ 8 },
 			{ "contribution.agent.label:Westfalen", /*->*/ 3 },
 			{ "contribution.agent.label:Westfälen", /*->*/ 3 },
