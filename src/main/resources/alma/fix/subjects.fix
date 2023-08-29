@@ -244,7 +244,6 @@ do list(path:"0820 |08200", "var":"$i")
     lookup("subject[].$last.label", "deweyLabels", delete:"true")
     copy_field("$j","subject[].$last.notation")
     copy_field("$i.2","subject[].$last.version")
-    copy_field("$i.2","subject[].$last.version")
   end
 end
 
@@ -290,6 +289,17 @@ do list(path:"084??", "var":"$i")
               add_field("subject[].$last.source.id", "http://purl.org/lobid/rpb")
               add_field("subject[].$last.source.label", "RPB-Sachsystematik")
               replace_all("subject[].$last.notation","rpb(.*)","$1")
+            end
+          elsif any_match("$i.2", "sdnb|zdbs")
+            if any_equal("$i.q","DE-600")
+              add_field("subject[].$last.source.label","DDC-Sachgruppen der ZDB")
+              add_field("subject[].$last.source.id","https://zeitschriftendatenbank.de//fileadmin/user_upload/ZDB/pdf/ggr/AH_DDC_Sachgruppen.pdf")
+            elsif any_equal("$i.2","zdbs")
+              add_field("subject[].$last.source.label","DDC-Sachgruppen der ZDB")
+              add_field("subject[].$last.source.id","https://zeitschriftendatenbank.de//fileadmin/user_upload/ZDB/pdf/ggr/AH_DDC_Sachgruppen.pdf")
+            else
+              add_field("subject[].$last.source.label","Sachgruppen der DNB")
+              add_field("subject[].$last.source.id","https://bartoc.org/en/node/20049")
             end
           else
             copy_field("$i.2", "subject[].$last.source.label")
