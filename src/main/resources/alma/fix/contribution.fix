@@ -64,6 +64,7 @@ do list(path:"100[01] ", "var":"$i")
         copy_field("$j","contribution[].$last.role.id")
         # dateOfBirthAndDeath #will be split on a later stage
         copy_field("$i.d","contribution[].$last.agent.dateOfBirthAndDeath")
+        call_macro("alternateGraphicRepresationArrayOfObjects",targetArray:"contribution[]",targetField:"contribution[].$append.agent",variable:"$i")
       end
     end
   end
@@ -115,6 +116,7 @@ do list(path:"700[01] ", "var":"$i")
         copy_field("$j","contribution[].$last.role.id")
         # dateOfBirthAndDeath #will be split on a later stage
         copy_field("$i.d","contribution[].$last.agent.dateOfBirthAndDeath")
+        call_macro("alternateGraphicRepresationArrayOfObjects",targetArray:"contribution[]",targetField:"contribution[].$append.agent",variable:"$i")
       end
     end
   end
@@ -174,6 +176,7 @@ do list(path:"110[012] ", "var":"$i")
         set_array("contribution[].$last.agent.type[]","CorporateBody")
         # role
         copy_field("$j","contribution[].$last.role.id")
+        call_macro("alternateGraphicRepresationArrayOfObjects",targetArray:"contribution[]",targetField:"contribution[].$append.agent",variable:"$i")
       end
     end
   end
@@ -224,6 +227,7 @@ do list(path:"710[012] ", "var":"$i")
         set_array("contribution[].$last.agent.type[]","CorporateBody")
         # role
         copy_field("$j","contribution[].$last.role.id")
+        call_macro("alternateGraphicRepresationArrayOfObjects",targetArray:"contribution[]",targetField:"contribution[].$append.agent",variable:"$i")
       end
     end
   end
@@ -273,6 +277,7 @@ do list(path:"111[012] |711[012] ", "var":"$i")
         set_array("contribution[].$last.agent.type[]","ConferenceOrEvent")
         # role
         copy_field("$j","contribution[].$last.role.id")
+        call_macro("alternateGraphicRepresationArrayOfObjects",targetArray:"contribution[]",targetField:"contribution[].$append.agent",variable:"$i")
       end
     end
   end
@@ -378,6 +383,7 @@ do list (path: "contribution[]", "var": "$i")
 
   remove_field("$i.agent.@gndIdn")
 end
+
 
 do list (path:"contribution[]", "var":"$i")
   replace_all("$i.agent.label","<<|>>","")
