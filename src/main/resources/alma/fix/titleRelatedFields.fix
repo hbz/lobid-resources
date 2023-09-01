@@ -25,23 +25,96 @@ end
 replace_all("@titleOfSubSeries_p.*", "\\s?\\.?\\s?$", "")
 replace_all("@titleOfSubSeries_p.*","<<|>>","")
 join_field("@titleOfSubSeries_p", ". ")
-vacuum()
+if is_empty("@titleOfSubSeries_p")
+  remove_field("@titleOfSubSeries_p")
+end
+if is_empty("@titleOfSubSeries_n")
+  remove_field("@titleOfSubSeries_n")
+end
 if exists("@titleOfSubSeries_n") # separate subvolume numbering and title with :
   prepend("@titleOfSubSeries_p", ": ")
 end
 
 paste("@titleOfSubSeries", "@titleOfSubSeries_n",  "@titleOfSubSeries_p", join_char: "")
 
-vacuum()
+if is_empty("@titleOfSubSeries")
+  remove_field("@titleOfSubSeries")
+end
 
 prepend("@titleOfSubSeries",", ")
 
 paste("title","@title", "@titleOfSubSeries", join_char: "") # title consists of main title + if exists: subvolume numbering and subvolume title
 
+
+# alternateGraphicRepresentation for title, otherTitleInformation, alternativetitle, edition and note
+
+do list(path:"245??","var":"$i")
+  if exists("$i.6")
+    copy_field("$i.6","$i.linkageTest")
+    do list(path:"880??","var":"$880")
+     unless exists("$880.M")
+        if in ("$i.linkageTest","$880.linkageTest")
+           if in ("$880.@script.id","alternateGraphicRepresentation[].*.script.id")   
+             do list(path:"alternateGraphicRepresentation[]","var":"$AGR")
+               if in ("$880.@script.id","$AGR.script.id")     
+                copy_field("$880.a","$AGR.record.title")
+                unless exists("$AGR.record.otherTitleInformation[]")
+                  set_array("$AGR.record.otherTitleInformation[]")
+                end
+                copy_field("$880.b","$AGR.record.otherTitleInformation[].$append")     
+                unless exists("$AGR.record.responsibilityStatement[]")
+                  set_array("$AGR.record.responsibilityStatement[]")
+                end
+                copy_field("$880.c","$AGR.record.responsibilityStatement[].$append")  
+               end
+             end
+           else    
+            copy_field("$880.@script.id","alternateGraphicRepresentation[].$append.script.id")
+            copy_field("$880.@script.label","alternateGraphicRepresentation[].$last.script.label")        
+            copy_field("$880.a","alternateGraphicRepresentation[].$last.record.title")
+            set_array("alternateGraphicRepresentation[].$last.record.otherTitleInformation[]")
+            copy_field("$880.b","alternateGraphicRepresentation[].$last.record.otherTitleInformation[].$append")
+            set_array("alternateGraphicRepresentation[].$last.record.responsibilityStatement[]")
+            copy_field("$880.c","alternateGraphicRepresentation[].$last.record.responsibilityStatement[].$append")            
+           end
+        end
+      end
+    end
+  end
+end  
+
 # 246 - Varying Form of Title (R) - Subfields: $a (NR)
 
 set_array("alternativeTitle[]")
 copy_field("246?[ 345678].a","alternativeTitle[].$append")
+
+do list(path:"246?[ 345678]","var":"$i")
+  if exists("$i.6")
+    copy_field("$i.6","$i.linkageTest")
+    do list(path:"880??","var":"$880")
+     unless exists("$880.M")
+        if in ("$i.linkageTest","$880.linkageTest")
+          if in ("$880.@script.id","alternateGraphicRepresentation[].*.script.id")   
+            do list(path:"alternateGraphicRepresentation[]","var":"$AGR")
+              if in ("$880.@script.id","$AGR.script.id")
+                unless exists("$AGR.record.alternativeTitle[]")
+                  set_array("$AGR.record.alternativeTitle[]")
+                end
+                copy_field("$880.a","$AGR.record.alternativeTitle[].$append")
+              end
+            end
+          else    
+            copy_field("$880.@script.id","alternateGraphicRepresentation[].$append.script.id")
+            copy_field("$880.@script.label","alternateGraphicRepresentation[].$last.script.label")        
+            set_array("alternateGraphicRepresentation[].$last.record.alternativeTitle[]")
+            copy_field("$880.a","alternateGraphicRepresentation[].$last.record.alternativeTitle[].$append")
+          end
+        end
+      end
+    end
+  end
+end  
+
 
 # 247 - Former Title (R)
 do list(path: "247??", "var":"$i")
@@ -65,6 +138,33 @@ end
 set_array("edition[]")
 copy_field("250  .a","edition[].$append")
 replace_all("edition[].*","\\s?[./]\\s?$","")
+
+do list(path:"250  ","var":"$i")
+  if exists("$i.6")
+    copy_field("$i.6","$i.linkageTest")
+    do list(path:"880??","var":"$880")
+     unless exists("$880.M")
+        if in ("$i.linkageTest","$880.linkageTest")
+          if in ("$880.@script.id","alternateGraphicRepresentation[].*.script.id")   
+            do list(path:"alternateGraphicRepresentation[]","var":"$AGR")
+              if in ("$880.@script.id","$AGR.script.id")
+                 unless exists("$AGR.record.edition[]")
+                   set_array("$AGR.record.edition[]")
+                 end
+                copy_field("$880.a","$AGR.record.edition[].$append")
+              end
+            end
+          else    
+            copy_field("$880.@script.id","alternateGraphicRepresentation[].$append.script.id")
+            copy_field("$880.@script.label","alternateGraphicRepresentation[].$last.script.label")        
+            set_array("alternateGraphicRepresentation[].$last.record.edition[]")
+            copy_field("$880.a","alternateGraphicRepresentation[].$last.record.edition[].$append")
+          end
+        end
+      end
+    end
+  end
+end
 
 # 260 - Publication, Distribution, etc. (Imprint) (R) - Subfield: $a (R), $b (R), $c (R)
 # 264 - Production, Publication, Distribution, Manufacture, and Copyright Notice (R) -  Subfield: $a (R), $b (R), $c  (R)
@@ -112,7 +212,40 @@ do list(path:"260[ 23] |264[ 23][ 1]", "var":"$i")
   end
   set_array("publication[].$last.note[]")
   copy_field("515??.a","publication[].$last.note[].$append")
+  if exists("$i.6")
+    copy_field("$i.6","$i.linkageTest")
+    do list(path:"880??","var":"$880")
+     unless exists("$880.M")
+        if in ("$i.linkageTest","$880.linkageTest")
+          if in ("$880.@script.id","alternateGraphicRepresentation[].*.script.id")   
+            do list(path:"alternateGraphicRepresentation[]","var":"$AGR")
+              if in ("$880.@script.id","$AGR.script.id")
+                unless exists("$AGR.record.publication[]")
+                  set_array("$AGR.record.publication[]")
+                end                
+                add_field ("$AGR.record.publication[].$append.dummi","")       
+                set_array("$AGR.record.publication[].$last.location[]")        
+                copy_field("$880.a", "$AGR.record.publication[].$last.location[].$append")
+                set_array("$AGR.record.publication[].$last.publishedBy[]")
+                copy_field("$880.b", "$AGR.record.publication[].$last.publishedBy[].$append")
+              end
+            end
+          else    
+            copy_field("$880.@script.id","alternateGraphicRepresentation[].$append.script.id")
+            copy_field("$880.@script.label","alternateGraphicRepresentation[].$last.script.label")
+            set_array("alternateGraphicRepresentation[].$last.publication[]")
+            add_field ("alternateGraphicRepresentation[].$last.publication[].$append.dummi","")       
+            set_array("alternateGraphicRepresentation[].$last.publication[].$last.location[]")        
+            copy_field("$880.a", "alternateGraphicRepresentation[].$last.publication[].$last.location[].$append")
+            set_array("alternateGraphicRepresentation[].$last.publication[].$last.publishedBy[]")
+            copy_field("$880.b", "alternateGraphicRepresentation[].$last.publication[].$last.publishedBy[].$append")
+          end
+        end
+      end
+    end
+  end
 end
+
 
 do list(path:"500  ", "var":"$i")
   if any_match("$i.a", "^.*saṃ. \\d{4}=(\\d{4}).*Chr.*")
@@ -121,6 +254,8 @@ do list(path:"500  ", "var":"$i")
     replace_all("publication[].$last.startDate","^.*saṃ. \\d{4}=(\\d{4}).*Chr.*","$1")
   end
 end
+
+
 
 
 # Mapping for SecondaryPublication

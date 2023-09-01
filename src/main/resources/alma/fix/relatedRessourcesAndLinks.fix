@@ -82,6 +82,7 @@ unless any_match("leader", "^.{7}[ad].*")
           copy_field("$j", "isPartOf[].$last.hasSuperordinate[].$last.id")
         end
         copy_field("$i.t", "isPartOf[].$last.hasSuperordinate[].$last.label")
+        call_macro("alternateGraphicRepresationIsPartOf",targetField:"isPartOf[].$last.hasSuperordinate[].$append",variable:"$i")
         copy_field("$i.q", "isPartOf[].$last.numbering")
         set_array("isPartOf[].$last.note[]")
         do list(path:"$i.i","var":"$j")
@@ -104,6 +105,8 @@ do list(path: "4900?", "var": "$i")
     copy_field("$j", "isPartOf[].$last.hasSuperordinate[].$last.label.$append")
   end
   join_field("isPartOf[].$last.hasSuperordinate[].$last.label", " / ")
+  call_macro("alternateGraphicRepresationIsPartOf",targetField:"isPartOf[].$last.hasSuperordinate[].$append",variable:"$i")
+
   set_array("isPartOf[].$last.numbering")
   do list(path:"$i.v", "var":"$j")
     copy_field("$j", "isPartOf[].$last.numbering.$append")
@@ -128,6 +131,9 @@ do list(path: "830??", "var": "$i")
       copy_field("$j", "isPartOf[].$last.hasSuperordinate[].$last.label.$append")
     end
     join_field("isPartOf[].$last.hasSuperordinate[].$last.label", " / ")
+    do list(path: "4901?", "var": "$j")
+      call_macro("alternateGraphicRepresationIsPartOf",targetField:"isPartOf[].$last.hasSuperordinate[].$append",variable:"$j")
+    end
     copy_field("$i.v", "isPartOf[].$last.numbering")
   end
 end

@@ -64,6 +64,7 @@ do list(path:"600?4|610?4|611?4|630?4|648?4|650?4|651?4|653??|688??", "var":"$i"
   add_field("subject[].$last.source.label","Freie Verschlagwortung")
   add_field("subject[].$last.source.id","https://www.wikidata.org/wiki/Q47524318")
   call_macro("subjectLabel")
+  call_macro("alternateGraphicRepresationArrayOfObjects",targetArray:"subject[]",targetField:"subject[].$append",variable:"$i")
 end
 
 do list(path:"600?0|610?0|611?0|630?0|648?0|650?0|651?0", "var":"$i")
@@ -71,6 +72,7 @@ do list(path:"600?0|610?0|611?0|630?0|648?0|650?0|651?0", "var":"$i")
   add_field("subject[].$last.source.label","Library of Congress Subject Headings")
   add_field("subject[].$last.source.id","https://id.loc.gov/authorities/subjects.html")
   call_macro("subjectLabel")
+  call_macro("alternateGraphicRepresationArrayOfObjects",targetArray:"subject[]",targetField:"subject[].$append",variable:"$i")
 end
 
 do list(path:"600?7|610?7|611?7|630?7|648?7|650?7|651?7", "var":"$i")
@@ -79,6 +81,7 @@ do list(path:"600?7|610?7|611?7|630?7|648?7|650?7|651?7", "var":"$i")
     add_field("subject[].$last.source.label","FAST (Faceted Application of Subject Terminology)")
     add_field("subject[].$last.source.id","http://fast.oclc.org/")
     call_macro("subjectLabel")
+  call_macro("alternateGraphicRepresationArrayOfObjects",targetArray:"subject[]",targetField:"subject[].$append",variable:"$i")
   end
 end
 
@@ -87,6 +90,7 @@ do list(path:"600?2|610?2|611?2|630?2|648?2|650?2|651?2", "var":"$i")
     add_field("subject[].$last.source.label","Medical Subject Headings")
     add_field("subject[].$last.source.id","https://www.nlm.nih.gov/mesh/meshhome.html")
     call_macro("subjectLabel")
+  call_macro("alternateGraphicRepresationArrayOfObjects",targetArray:"subject[]",targetField:"subject[].$append",variable:"$i")
 end
 
 do list(path:"600?7|610?7|611?7|630?7|648?7|650?7|651?7", "var":"$i")
@@ -95,6 +99,7 @@ do list(path:"600?7|610?7|611?7|630?7|648?7|650?7|651?7", "var":"$i")
     add_field("subject[].$last.source.label","Medical Subject Headings")
     add_field("subject[].$last.source.id","https://www.nlm.nih.gov/mesh/meshhome.html")
     call_macro("subjectLabel")
+  call_macro("alternateGraphicRepresationArrayOfObjects",targetArray:"subject[]",targetField:"subject[].$append",variable:"$i")
   end
 end
 
@@ -107,6 +112,7 @@ do list(path:"600??", "var":"$i")
     add_field("subject[].$last.source.id","https://d-nb.info/gnd/7749153-1")
     call_macro("gndPersonCombinedLabel",field:"$i")
     copy_field("$i.@combinedLabel", "subject[].$last.label")
+    call_macro("alternateGraphicRepresationArrayOfObjects",targetArray:"subject[]",targetField:"subject[].$append",variable:"$i")
     do list(path:"$i.0", "var":"$j")
       if any_match("$j","^\\(DE-588\\)(.*)$")
         copy_field("$j", "subject[].$last.id")
@@ -139,6 +145,7 @@ do list(path:"611??", "var":"$i")
     add_field("subject[].$last.source.id","https://d-nb.info/gnd/7749153-1")
     call_macro("gndEventCombinedLabel",field:"$i")
     copy_field("$i.@combinedLabel", "subject[].$last.label")
+    call_macro("alternateGraphicRepresationArrayOfObjects",targetArray:"subject[]",targetField:"subject[].$append",variable:"$i")
     do list(path:"$i.0", "var":"$j")
       if any_match("$j","^\\(DE-588\\)(.*)$")
         copy_field("$j", "subject[].$last.id")
@@ -171,6 +178,7 @@ do list(path:"610??|630??|648??|650??|651??", "var":"$i")
     add_field("subject[].$last.source.id","https://d-nb.info/gnd/7749153-1")
     call_macro("gndOtherCombinedLabel",field:"$i")
     copy_field("$i.@combinedLabel", "subject[].$last.label")
+    call_macro("alternateGraphicRepresationArrayOfObjects",targetArray:"subject[]",targetField:"subject[].$append",variable:"$i")
     do list(path:"$i.0", "var":"$j")
       if any_match("$j","^\\(DE-588\\)(.*)$")
         copy_field("$j", "subject[].$last.id")
@@ -258,46 +266,38 @@ do list(path:"084??", "var":"$i")
     end
   end
   unless any_contain("$i.0", "https://nwbib.de/") # filter out any nwbib concepts
-    unless any_match("$i.2", "ssgn|fid") # filter out any Sondersammelgebiete and Fachinformationsdienste
-      do list(path:"$i.a", "var":"$j")
-        copy_field("$j", "subject[].$append.notation")
-        set_array("subject[].$last.type[]","Concept")
-         # LBZ-Notationen aka rpb2 fka RPB-Sachgruppen und Zusätze
-        if any_match("$i.2", "rpb")
-          if any_match("$j","\\d{3}")
-            copy_field("$j","$i.@rpb2NotationId")
-            prepend("$i.@rpb2NotationId","https://w3id.org/lobid/rpb2#n")
-            copy_field("$i.@rpb2NotationId","subject[].$last.id")
-            lookup("$i.@rpb2NotationId","rpb2")
-            move_field("$i.@rpb2NotationId","subject[].$last.label")
-            add_field("subject[].$last.source.id", "https://w3id.org/lobid/rpb2")
-            add_field("subject[].$last.source.label", "LBZ-Notationen")
-          # RPB-Raumsystematik aka rpbr
-          elsif any_match("$j","^rpbr.*")
-            copy_field("$j","$i.@rpbrNotationId")
-            replace_all("$i.@rpbrNotationId","rpbr_(.*)_","https://rpb.lobid.org/spatial#n$1")
-            copy_field("$i.@rpbrNotationId","subject[].$last.id")
-            lookup("$i.@rpbrNotationId","rpbr")
-            move_field("$i.@rpbrNotationId","subject[].$last.label")
-            add_field("subject[].$last.source.id", "https://rpb.lobid.org/spatial")
-            add_field("subject[].$last.source.label", "RPB-Raumsystematik")
-            replace_all("subject[].$last.notation","rpbr_(.*)_","$1")
-          # RPB-Sachsystematik fka. Systematik der Rheinland-Pfälzischen Bibliographie
-          elsif any_match("$j","^rpb.*")
-            copy_field("$j","$i.@rpbNotationId")
-            replace_all("$i.@rpbNotationId","rpb(.*)","http://purl.org/lobid/rpb#n$1")
-            copy_field("$i.@rpbNotationId","subject[].$last.id")
-            lookup("$i.@rpbNotationId","rpb")
-            move_field("$i.@rpbNotationId","subject[].$last.label")
-            add_field("subject[].$last.source.id", "http://purl.org/lobid/rpb")
-            add_field("subject[].$last.source.label", "RPB-Sachsystematik")
-            replace_all("subject[].$last.notation","rpb(.*)","$1")
+    unless any_match("$i.a", "^rpbr.*") # filter out any RPB Spatial
+      unless any_match("$i.2", "ssgn|fid") # filter out any Sondersammelgebiete and Fachinformationsdienste
+        do list(path:"$i.a", "var":"$j")
+          copy_field("$j", "subject[].$append.notation")
+          set_array("subject[].$last.type[]","Concept")
+          # LBZ-Notationen aka rpb2 fka RPB-Sachgruppen und Zusätze
+          if any_match("$i.2", "rpb")
+            if any_match("$j","\\d{3}")
+              copy_field("$j","$i.@rpb2NotationId")
+              prepend("$i.@rpb2NotationId","https://w3id.org/lobid/rpb2#n")
+              copy_field("$i.@rpb2NotationId","subject[].$last.id")
+              lookup("$i.@rpb2NotationId","rpb2")
+              move_field("$i.@rpb2NotationId","subject[].$last.label")
+              add_field("subject[].$last.source.id", "https://w3id.org/lobid/rpb2")
+              add_field("subject[].$last.source.label", "LBZ-Notationen")
+            # RPB-Sachsystematik fka. Systematik der Rheinland-Pfälzischen Bibliographie
+            elsif any_match("$j","^rpb.*")
+              copy_field("$j","$i.@rpbNotationId")
+              replace_all("$i.@rpbNotationId","rpb(.*)","http://purl.org/lobid/rpb#n$1")
+              copy_field("$i.@rpbNotationId","subject[].$last.id")
+              lookup("$i.@rpbNotationId","rpb")
+              move_field("$i.@rpbNotationId","subject[].$last.label")
+              add_field("subject[].$last.source.id", "http://purl.org/lobid/rpb")
+              add_field("subject[].$last.source.label", "RPB-Sachsystematik")
+              replace_all("subject[].$last.notation","rpb(.*)","$1")
+            end
+          else
+            copy_field("$i.2", "subject[].$last.source.label")
+            lookup("subject[].$last.source.label","classificationCode2Label")
+            copy_field("$i.2","subject[].$last.source.id")
+            lookup("subject[].$last.source.id","classificationCode2Uri", delete:"true")
           end
-        else
-          copy_field("$i.2", "subject[].$last.source.label")
-          lookup("subject[].$last.source.label","classificationCode2Label")
-          copy_field("$i.2","subject[].$last.source.id")
-          lookup("subject[].$last.source.id","classificationCode2Uri", delete:"true")
         end
       end
     end
@@ -407,12 +407,13 @@ end
 replace_all("subject[].*.label","<<|>>","")
 uniq("subject[]")
 
-# nwbib
+# spatial
 
 set_array("spatial[]")
 
 do list(path:"084??", "var":"$i")
   do list(path:"$i.0", "var":"$j")
+  # nwbib spatial
     if any_contain("$j","https://nwbib.de/spatial#")
       copy_field("$j", "spatial[].$append.id")
       copy_field("$i.a", "spatial[].$last.label")
@@ -425,27 +426,43 @@ do list(path:"084??", "var":"$i")
       copy_field("$j", "spatial[].$last.focus.id")
     end
   end
+  do list(path:"$i.a", "var":"$j")
+    # RPB spatial
+    if any_match("$j","^rpbr.*")
+      set_array("spatial[].$append.type[]","Concept")
+      copy_field("$j","$i.@rpbrNotationId")
+      replace_all("$i.@rpbrNotationId","rpbr_(99_o)?(.*)_","https://rpb.lobid.org/spatial#n$2")
+      copy_field("$i.@rpbrNotationId","spatial[].$last.id")
+      lookup("$i.@rpbrNotationId","rpbr")
+      move_field("$i.@rpbrNotationId","spatial[].$last.label")
+      add_field("spatial[].$last.source.id", "https://rpb.lobid.org/spatial")
+      add_field("spatial[].$last.source.label", "RPB-Raumsystematik")
+      replace_all("spatial[].$last.notation","rpbr_(99_o)?(.*)_","$2")
+    end
+  end
 end
 
 do list(path:"spatial[]", "var":"$i")
-  replace_all("$i.notation","https://nwbib.de/spatial#N(.*)$","$1")
-  copy_field("$i.focus.id","$i.focus.label")
-  set_array("$i.focus.type[]")
-  copy_field("$i.focus.id","$i.focus.type[].$append")
-  copy_field("$i.focus.id","$i.focus.@geoData")
-  lookup("$i.focus.id","nwbibWikidataId",delete:"true")
-  lookup("$i.focus.label","nwbibWikidataLabel",delete:"true")
-  lookup("$i.focus.type[].*","nwbibWikidataTypes",delete:"true")
-  lookup("$i.focus.@geoData","nwbibWikidataGeodata",delete:"true")
-  copy_field("$i.focus.@geoData", "$i.focus.geo.lat")
-  copy_field("$i.focus.@geoData", "$i.focus.geo.lon")
-  remove_field("$i.focus.@geoData")
-  if any_match("$i.focus.type[].*",'^.*,.*')
-    split_field("$i.focus.type[].$last",", ")
-    flatten("$i.focus.type[]")
+  if any_contain("$i.source.id","https://nwbib.de/spatial")
+    replace_all("$i.notation","https://nwbib.de/spatial#N(.*)$","$1")
+    copy_field("$i.focus.id","$i.focus.label")
+    set_array("$i.focus.type[]")
+    copy_field("$i.focus.id","$i.focus.type[].$append")
+    copy_field("$i.focus.id","$i.focus.@geoData")
+    lookup("$i.focus.id","nwbibWikidataId",delete:"true")
+    lookup("$i.focus.label","nwbibWikidataLabel",delete:"true")
+    lookup("$i.focus.type[].*","nwbibWikidataTypes",delete:"true")
+    lookup("$i.focus.@geoData","nwbibWikidataGeodata",delete:"true")
+    copy_field("$i.focus.@geoData", "$i.focus.geo.lat")
+    copy_field("$i.focus.@geoData", "$i.focus.geo.lon")
+    remove_field("$i.focus.@geoData")
+    if any_match("$i.focus.type[].*",'^.*,.*')
+      split_field("$i.focus.type[].$last",", ")
+      flatten("$i.focus.type[]")
+    end
+    replace_all("$i.focus.geo.lon","^Point\\((.*) .*\\)","$1")
+    replace_all("$i.focus.geo.lat","^Point\\(.* (.*)\\)","$1")
   end
-  replace_all("$i.focus.geo.lon","^Point\\((.*) .*\\)","$1")
-  replace_all("$i.focus.geo.lat","^Point\\(.* (.*)\\)","$1")
 end
 
 set_array("subjectslabels[]")
