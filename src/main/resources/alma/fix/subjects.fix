@@ -303,7 +303,7 @@ do list(path:"084??", "var":"$i")
                 add_field("subject[].$last.source.id","https://bartoc.org/en/node/20049")
               end
               copy_field("$j","subject[].$last.label")
-              lookup("subject[].$last.label", "dnbSachgruppen", delete:"true")
+              lookup("subject[].$last.label", "dnbSachgruppen")
             elsif any_match("$j","\\d{2}")
               add_field("subject[].$last.source.label","Systematik der DNB (bis 2003)")
               add_field("subject[].$last.source.id","https://bartoc.org/en/node/18497")
