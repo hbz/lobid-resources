@@ -11,14 +11,14 @@ do put_macro("alternateGraphicRepresationArrayOfObjects")
                 unless exists("$AGR.record.$[targetArray]")
                   set_array("$AGR.record.$[targetArray]")
                 end
-                copy_field("$880.a","$AGR.record.$[targetField].label")
+                copy_field("$880.a","$AGR.record.$[targetArray].$append$[targetField].label")
               end
             end
           else    
             copy_field("$880.@script.id","alternateGraphicRepresentation[].$append.script.id")
             copy_field("$880.@script.label","alternateGraphicRepresentation[].$last.script.label")        
             set_array("alternateGraphicRepresentation[].$last.record.$[targetArray]")
-            copy_field("$880.a","alternateGraphicRepresentation[].$last.record.$[targetField].label")
+            copy_field("$880.a","alternateGraphicRepresentation[].$last.record.$[targetArray].$append$[targetField].label")
           end
         end
       end
