@@ -131,11 +131,12 @@ do list(path: "830??", "var": "$i")
       copy_field("$j", "isPartOf[].$last.hasSuperordinate[].$last.label.$append")
     end
     join_field("isPartOf[].$last.hasSuperordinate[].$last.label", " / ")
-    do list(path: "4901?", "var": "$j")
-      call_macro("alternateGraphicRepresationIsPartOf",targetField:"isPartOf[].$last.hasSuperordinate[].$append",variable:"$j")
-    end
     copy_field("$i.v", "isPartOf[].$last.numbering")
   end
+end
+
+do list(path: "4901?", "var": "$j")
+  call_macro("alternateGraphicRepresationIsPartOf",targetField:"isPartOf[].$last.hasSuperordinate[].$append",variable:"$j")
 end
 
 replace_all("isPartOf[].*.hasSuperordinate[].*.label","<<|>>","")
