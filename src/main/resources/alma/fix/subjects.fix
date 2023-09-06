@@ -284,7 +284,7 @@ do list(path:"084??", "var":"$i")
             # RPB-Sachsystematik fka. Systematik der Rheinland-Pfälzischen Bibliographie
             elsif any_match("$j","^rpb.*")
               copy_field("$j","$i.@rpbNotationId")
-              replace_all("$i.@rpbNotationId","rpb(.*)","http://purl.org/lobid/rpb#n$1")
+              replace_all("$i.@rpbNotationId","rpb(\\d*).*","http://purl.org/lobid/rpb#n$1")
               copy_field("$i.@rpbNotationId","subject[].$last.id")
               lookup("$i.@rpbNotationId","rpb")
               move_field("$i.@rpbNotationId","subject[].$last.label")
