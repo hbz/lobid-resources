@@ -106,6 +106,14 @@ do list(path:"alternateGraphicRepresentation[]","var":"$AGR")
     remove_field("$AGR.record.@titleOfSubSeries")
     remove_field("$AGR.record.@titleOfSubSeries_n")
     remove_field("$AGR.record.@titleOfSubSeries_p")
+  elsif exists("$AGR.record.@titleOfSubSeries_p") # We have an appearance where there is no title $a is given as alternateGraphicRepresentation
+    if exists("$AGR.record.@titleOfSubSeries_n") # separate subvolume numbering and title with :
+      prepend("$AGR.record.@titleOfSubSeries_p", ": ")
+    end
+
+    paste("$AGR.record.title", "$AGR.record.@titleOfSubSeries_n",  "$AGR.record.@titleOfSubSeries_p", join_char: "")
+    remove_field("$AGR.record.@titleOfSubSeries_n")
+    remove_field("$AGR.record.@titleOfSubSeries_p")
   end
 end
 
