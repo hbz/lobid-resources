@@ -40,6 +40,7 @@ do put_macro("alternateGraphicRepresationIsPartOf")
                 end
                 set_array("$AGR.record.isPartOf[].$append.hasSuperordinate[]")                
                 copy_field("$880.a","$AGR.record.$[targetField].label")
+                copy_field("$880.v", "$AGR.record.isPartOf[].$last.numbering")
               end
             end
           else    
@@ -47,6 +48,7 @@ do put_macro("alternateGraphicRepresationIsPartOf")
             copy_field("$880.@script.label","alternateGraphicRepresentation[].$last.script.label")        
             set_array("alternateGraphicRepresentation[].$last.record.$[targetField]")
             copy_field("$880.a","alternateGraphicRepresentation[].$last.record.$[targetField].label")
+            copy_field("$880.v", "alternateGraphicRepresentation[].$last.record.isPartOf[].$last.numbering")
           end
         end
       end
