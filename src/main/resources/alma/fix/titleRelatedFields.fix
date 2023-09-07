@@ -221,6 +221,7 @@ end
 # 264 - Production, Publication, Distribution, Manufacture, and Copyright Notice (R) -  Subfield: $a (R), $b (R), $c  (R)
 # 008,18 for frequency
 # 515 - Numbering Peculiarities Note (R)
+# Prefer 264 over 260 since it can create duplicate info and 260 is discontinued in RDA.
 
 set_array("publication[]")
 if exists("264[ 23][ 1]")
@@ -232,6 +233,8 @@ else
   call_macro("publication",field:"2602[ 1]") # 2 - Intervening
   call_macro("publication",field:"260 [ 1]") # # - Not applicable/No information provided/Earliest
 end
+
+# Only add additional publication info to the first publication-object since it is the latest.
 
 if exists("publication[].$first")
   copy_field("362??.a","publication[].$first.publicationHistory")
