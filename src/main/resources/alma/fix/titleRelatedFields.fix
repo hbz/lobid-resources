@@ -57,7 +57,9 @@ do list(path:"245??","var":"$i")
            if in ("$880.@script.id","alternateGraphicRepresentation[].*.script.id")   
              do list(path:"alternateGraphicRepresentation[]","var":"$AGR")
                if in ("$880.@script.id","$AGR.script.id")     
-                copy_field("$880.a","$AGR.record.title")
+                copy_field("$880.a","$AGR.record.@title")
+                copy_field("$880.n","$AGR.record.@titleOfSubSeries_n")
+                copy_field("$880.p","$AGR.record.@titleOfSubSeries_p")
                 unless exists("$AGR.record.otherTitleInformation[]")
                   set_array("$AGR.record.otherTitleInformation[]")
                 end
@@ -71,7 +73,9 @@ do list(path:"245??","var":"$i")
            else    
             copy_field("$880.@script.id","alternateGraphicRepresentation[].$append.script.id")
             copy_field("$880.@script.label","alternateGraphicRepresentation[].$last.script.label")        
-            copy_field("$880.a","alternateGraphicRepresentation[].$last.record.title")
+            copy_field("$880.a","alternateGraphicRepresentation[].$last.record.@title")
+            copy_field("$880.n","alternateGraphicRepresentation[].$last.record.@titleOfSubSeries_n")
+            copy_field("$880.p","alternateGraphicRepresentation[].$last.record.@titleOfSubSeries_p")            
             set_array("alternateGraphicRepresentation[].$last.record.otherTitleInformation[]")
             copy_field("$880.b","alternateGraphicRepresentation[].$last.record.otherTitleInformation[].$append")
             set_array("alternateGraphicRepresentation[].$last.record.responsibilityStatement[]")
@@ -81,7 +85,43 @@ do list(path:"245??","var":"$i")
       end
     end
   end
-end  
+end
+
+do list(path:"alternateGraphicRepresentation[]","var":"$AGR")
+  if exists("$AGR.record.@title")
+    unless exists("$AGR.record.@titleOfSubSeries_n")
+      copy_field("@titleOfSubSeries_n","$AGR.record.@titleOfSubSeries_n")
+    end
+    if exists("$AGR.record.@titleOfSubSeries_n") # separate subvolume numbering and title with :
+      prepend("$AGR.record.@titleOfSubSeries_p", ": ")
+    end
+
+    paste("$AGR.record.@titleOfSubSeries", "$AGR.record.@titleOfSubSeries_n",  "$AGR.record.@titleOfSubSeries_p", join_char: "")
+
+    if is_empty("$AGR.record.@titleOfSubSeries")
+      remove_field("$AGR.record.@titleOfSubSeries")
+    end
+
+    prepend("$AGR.record.@titleOfSubSeries",", ")
+
+    paste("$AGR.record.title","$AGR.record.@title", "$AGR.record.@titleOfSubSeries", join_char: "") # title consists of main title + if exists: subvolume numbering and subvolume title
+    remove_field("$AGR.record.@title")    
+    remove_field("$AGR.record.@titleOfSubSeries")
+    remove_field("$AGR.record.@titleOfSubSeries_n")
+    remove_field("$AGR.record.@titleOfSubSeries_p")
+  elsif exists("$AGR.record.@titleOfSubSeries_p") # We have an appearance where there is no title $a is given as alternateGraphicRepresentation
+    unless exists("$AGR.record.@titleOfSubSeries_n")
+      copy_field("@titleOfSubSeries_n","$AGR.record.@titleOfSubSeries_n")
+    end
+    if exists("$AGR.record.@titleOfSubSeries_n") # separate subvolume numbering and title with :
+      prepend("$AGR.record.@titleOfSubSeries_p", ": ")
+    end
+
+    paste("$AGR.record.title", "$AGR.record.@titleOfSubSeries_n",  "$AGR.record.@titleOfSubSeries_p", join_char: "")
+    remove_field("$AGR.record.@titleOfSubSeries_n")
+    remove_field("$AGR.record.@titleOfSubSeries_p")
+  end
+end
 
 # 246 - Varying Form of Title (R) - Subfields: $a (NR)
 
