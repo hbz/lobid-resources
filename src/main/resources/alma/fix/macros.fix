@@ -11,14 +11,14 @@ do put_macro("alternateGraphicRepresationArrayOfObjects")
                 unless exists("$AGR.record.$[targetArray]")
                   set_array("$AGR.record.$[targetArray]")
                 end
-                copy_field("$880.a","$AGR.record.$[targetField].label")
+                copy_field("$880.a","$AGR.record.$[targetArray].$append$[targetField].label")
               end
             end
           else    
             copy_field("$880.@script.id","alternateGraphicRepresentation[].$append.script.id")
             copy_field("$880.@script.label","alternateGraphicRepresentation[].$last.script.label")        
             set_array("alternateGraphicRepresentation[].$last.record.$[targetArray]")
-            copy_field("$880.a","alternateGraphicRepresentation[].$last.record.$[targetField].label")
+            copy_field("$880.a","alternateGraphicRepresentation[].$last.record.$[targetArray].$append$[targetField].label")
           end
         end
       end
@@ -39,14 +39,16 @@ do put_macro("alternateGraphicRepresationIsPartOf")
                   set_array("$AGR.record.isPartOf[]")
                 end
                 set_array("$AGR.record.isPartOf[].$append.hasSuperordinate[]")                
-                copy_field("$880.a","$AGR.record.$[targetField].label")
+                copy_field("$880.a","$AGR.record.isPartOf[].$last.hasSuperordinate[].$append.label")
+                copy_field("$880.v", "$AGR.record.isPartOf[].$last.numbering")
               end
             end
           else    
             copy_field("$880.@script.id","alternateGraphicRepresentation[].$append.script.id")
             copy_field("$880.@script.label","alternateGraphicRepresentation[].$last.script.label")        
-            set_array("alternateGraphicRepresentation[].$last.record.$[targetField]")
-            copy_field("$880.a","alternateGraphicRepresentation[].$last.record.$[targetField].label")
+            set_array("alternateGraphicRepresentation[].$last.record.isPartOf[].$last.hasSuperordinate[].$append")
+            copy_field("$880.a","alternateGraphicRepresentation[].$last.record.isPartOf[].$last.hasSuperordinate[].$append.label")
+            copy_field("$880.v", "alternateGraphicRepresentation[].$last.record.isPartOf[].$last.numbering")
           end
         end
       end
