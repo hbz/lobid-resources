@@ -98,7 +98,15 @@ public class IndexIntegrationTest extends LocalIndexSetup {
 			{ "q.publisher:\"Aachen Eilendorf\"", /*->*/ 0 },
 			{ "q.publisher:Quedenfeldt", /*->*/ 2 },
 			{ "q.publisher:Quedenfeld", /*->*/ 0 },
-			{ "q.publisher:Quedenfeld*", /*->*/ 2 }
+			{ "q.publisher:Quedenfeld*", /*->*/ 2 },
+			{ "q.subject:Düsseldorf", /*->*/ 1 },
+			{ "q.subject:Duesseldorf", /*->*/ 1 },
+			{ "q.subject:Dusseldorf", /*->*/ 1 },
+			{ "q.subject:Düsseldorfer", /*->*/ 1 },
+			{ "q.subject:Westfalen", /*->*/ 10 },
+			{ "q.subject:Westfälen", /*->*/ 10 },
+			{ "q.subject:Lithuania", /*->*/ 1 },
+			{ "q.subject:Baukem", /*->*/ 1 }
 		});
 	} // @formatter:on
 

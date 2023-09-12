@@ -594,7 +594,10 @@
           "properties": {
             "altLabel": {
               "type": "text",
-              "analyzer": "german_analyzer"
+              "analyzer": "german_analyzer",
+              "copy_to": [
+                "q.subject"
+              ]
             },
             "componentList": {
               "type": "nested",
@@ -602,7 +605,10 @@
               "properties": {
                 "altLabel": {
                   "type": "text",
-                  "analyzer": "german_analyzer"
+                  "analyzer": "german_analyzer",
+                  "copy_to": [
+                    "q.subject"
+                  ]
                 },
                 "id": {
                   "type": "keyword"
@@ -619,6 +625,9 @@
                 "label": {
                   "type": "text",
                   "analyzer": "german_analyzer",
+                  "copy_to": [
+                    "q.subject"
+                  ],
                   "fields": {
                     "raw": {
                       "type": "keyword"
@@ -650,6 +659,9 @@
             "label": {
               "type": "text",
               "analyzer": "german_analyzer",
+              "copy_to": [
+                "q.subject"
+              ],
               "fields": {
                 "raw": {
                   "type": "keyword"
@@ -993,6 +1005,11 @@
               "type": "short"
             },
             "publisher": {
+              "type": "text",
+              "analyzer": "digibib_default",
+              "search_analyzer": "digibib_search"
+            },
+            "subject": {
               "type": "text",
               "analyzer": "digibib_default",
               "search_analyzer": "digibib_search"
