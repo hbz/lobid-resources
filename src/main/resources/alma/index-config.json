@@ -551,11 +551,17 @@
         },
         "title": {
           "type": "text",
-          "analyzer": "german_analyzer"
+          "analyzer": "german_analyzer",
+          "copy_to": [
+            "q.title"
+          ]
         },
         "titleOfSubSeries": {
           "type": "text",
-          "analyzer": "german_analyzer"
+          "analyzer": "german_analyzer",
+          "copy_to": [
+            "q.title"
+          ]
         },
         "medium": {
           "properties": {
@@ -833,8 +839,11 @@
           "type": "text"
         },
         "otherTitleInformation": {
+          "type": "text",
           "analyzer": "german_analyzer",
-          "type": "text"
+          "copy_to": [
+            "q.title"
+          ]
         },
         "type": {
           "type": "keyword"
@@ -1010,6 +1019,11 @@
               "search_analyzer": "digibib_search"
             },
             "subject": {
+              "type": "text",
+              "analyzer": "digibib_default",
+              "search_analyzer": "digibib_search"
+            },
+            "title": {
               "type": "text",
               "analyzer": "digibib_default",
               "search_analyzer": "digibib_search"

@@ -106,7 +106,10 @@ public class IndexIntegrationTest extends LocalIndexSetup {
 			{ "q.subject:Westfalen", /*->*/ 10 },
 			{ "q.subject:Westfälen", /*->*/ 10 },
 			{ "q.subject:Lithuania", /*->*/ 1 },
-			{ "q.subject:Baukem", /*->*/ 1 }
+			{ "q.subject:Baukem", /*->*/ 1 },
+			{ "q.title:der", /*->*/ 0 },
+			{ "q.title:Westfalen", /*->*/ 8 },
+			{ "q.title:Eilendorf", /*->*/ 1 }
 		});
 	} // @formatter:on
 
