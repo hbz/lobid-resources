@@ -90,7 +90,8 @@ public class IndexIntegrationTest extends LocalIndexSetup {
 			{ "describedBy.resultOf.object.sourceOrganization.id:\"http\\://lobid.org/organisations/DE-5#\\!\"", /*->*/ 4},
 			{ "describedBy.resultOf.object.modifiedBy.id:\"http\\://lobid.org/organisations/DE-6#\\!\"", /*->*/ 14 },
 			{ "\"Reader-friendly\"", /*->*/ 1},
-			{ "\"Reader friendly\"", /*->*/ 1}
+			{ "\"Reader friendly\"", /*->*/ 1},
+			{ "q.date:2000", /*->*/ 3 }
 		});
 	} // @formatter:on
 

@@ -179,7 +179,10 @@
             },
             "endDate": {
               "type": "date",
-              "format": "yyyy"
+              "format": "yyyy",
+              "copy_to": [
+                "q.date"
+              ]
             },
             "frequency": {
               "properties": {
@@ -202,7 +205,10 @@
             },
             "startDate": {
               "type": "date",
-              "format": "yyyy"
+              "format": "yyyy",
+              "copy_to": [
+                "q.date"
+              ]
             }
           }
         },
@@ -873,6 +879,13 @@
             "notation": {
               "index": true,
               "type": "text"
+            }
+          }
+        },
+        "q": {
+          "properties": {
+            "date": {
+              "type": "short"
             }
           }
         }
