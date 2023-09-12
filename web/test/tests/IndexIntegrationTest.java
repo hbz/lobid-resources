@@ -91,7 +91,14 @@ public class IndexIntegrationTest extends LocalIndexSetup {
 			{ "describedBy.resultOf.object.modifiedBy.id:\"http\\://lobid.org/organisations/DE-6#\\!\"", /*->*/ 14 },
 			{ "\"Reader-friendly\"", /*->*/ 1},
 			{ "\"Reader friendly\"", /*->*/ 1},
-			{ "q.date:2000", /*->*/ 3 }
+			{ "q.date:2000", /*->*/ 3 },
+			{ "q.publisher:Aachen", /*->*/ 2 },
+			{ "q.publisher:Aachen\\-Eilendorf", /*->*/ 1 },
+			{ "q.publisher:Eilendörf", /*->*/ 1 },
+			{ "q.publisher:\"Aachen Eilendorf\"", /*->*/ 0 },
+			{ "q.publisher:Quedenfeldt", /*->*/ 2 },
+			{ "q.publisher:Quedenfeld", /*->*/ 0 },
+			{ "q.publisher:Quedenfeld*", /*->*/ 2 }
 		});
 	} // @formatter:on
 

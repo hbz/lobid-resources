@@ -39,6 +39,37 @@
           "hyphen_analyzer": {
             "tokenizer": "standard",
             "char_filter": "remove-hyphens"
+          },
+          "digibib_default": {
+            "type": "custom",
+            "tokenizer": "hyphen",
+            "filter": [
+              "lowercase",
+              "digibib_german_stop_words",
+              "keyword_repeat",
+              "icu_normalizer",
+              "icu_folding",
+              "hyphen",
+              "digibib_string_normalizer",
+              "snowball",
+              "digibib_standardnumber",
+              "unique"
+            ]
+          },
+          "digibib_search": {
+            "type": "custom",
+            "tokenizer": "hyphen",
+            "filter": [
+              "lowercase",
+              "digibib_german_stop_words",
+              "keyword_repeat",
+              "icu_normalizer",
+              "icu_folding",
+              "digibib_string_normalizer",
+              "snowball",
+              "digibib_standardnumber",
+              "unique"
+            ]
           }
         },
         "filter": {
@@ -50,6 +81,74 @@
           "snowball": {
             "type": "snowball",
             "language": "German2"
+          },
+          "digibib_german_stop_words": {
+            "type": "stop",
+            "stopwords": [
+              "and",
+              "the",
+              "of",
+              "to",
+              "als",
+              "am",
+              "an",
+              "auf",
+              "aus",
+              "bei",
+              "bis",
+              "da",
+              "das",
+              "dass",
+              "daß",
+              "dem",
+              "den",
+              "der",
+              "des",
+              "die",
+              "dir",
+              "du",
+              "durch",
+              "ein",
+              "eine",
+              "einem",
+              "einen",
+              "einer",
+              "eines",
+              "er",
+              "es",
+              "für",
+              "hat",
+              "ihre",
+              "im",
+              "in",
+              "ist",
+              "mit",
+              "nach",
+              "nicht",
+              "oder",
+              "um",
+              "und",
+              "vom",
+              "von",
+              "vor",
+              "was",
+              "wie",
+              "zu",
+              "zum",
+              "zur",
+              "über"
+            ]
+          },
+          "digibib_standardnumber": {
+            "type": "standardnumber",
+            "number_types": [
+              "isbn"
+            ]
+          },
+          "digibib_string_normalizer": {
+            "type": "pattern_replace",
+            "pattern": "'",
+            "replacement": ""
           }
         },
         "char_filter": {
@@ -175,7 +274,10 @@
           "properties": {
             "location": {
               "type": "text",
-              "analyzer": "german_analyzer"
+              "analyzer": "german_analyzer",
+              "copy_to": [
+                "q.publisher"
+              ]
             },
             "endDate": {
               "type": "date",
@@ -198,7 +300,10 @@
             "publishedBy": {
               "type": "text",
               "search_analyzer": "german_analyzer",
-              "analyzer": "ngram_analyzer"
+              "analyzer": "ngram_analyzer",
+              "copy_to": [
+                "q.publisher"
+              ]
             },
             "type": {
               "type": "keyword"
@@ -886,6 +991,11 @@
           "properties": {
             "date": {
               "type": "short"
+            },
+            "publisher": {
+              "type": "text",
+              "analyzer": "digibib_default",
+              "search_analyzer": "digibib_search"
             }
           }
         }
