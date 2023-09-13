@@ -15,7 +15,7 @@ XML_HEAD='<?xml version="1.0" encoding="UTF-8"?>'
 
 function getAlmaXmlWriteFile() {
 	resourceId=$1
-	URL_BASE="https://test.lobid.org/marcxml/"
+	URL_BASE="https://alma.lobid.org/marcxml/"
 	echo "getting Alma Xml for $hbzId ..."
 	# if it's a hbzId, we have to lookup the almaId first
 	if [[ $resourceId =~ ^[A-Z\(] ]]; then
