@@ -119,20 +119,18 @@ end
 # Element can be repeatable with local entries they have subfield $M.
 
 do list(path: "830??", "var": "$i")
-  unless exists("$i.M")
-    set_array("isPartOf[].$append.type[]", "IsPartOfRelation")
-    set_array("isPartOf[].$last.hasSuperordinate[]")
-    add_field("isPartOf[].$last.hasSuperordinate[].$append.test", "")
-    if all_match("$i.w", "^\\((?:DE-600|DE-605)\\)(.*)$")
-      copy_field("$i.w", "isPartOf[].$last.hasSuperordinate[].$last.id")
-    end
-    set_array("isPartOf[].$last.hasSuperordinate[].$last.label")
-    do list(path:"$i.a", "var":"$j")
-      copy_field("$j", "isPartOf[].$last.hasSuperordinate[].$last.label.$append")
-    end
-    join_field("isPartOf[].$last.hasSuperordinate[].$last.label", " / ")
-    copy_field("$i.v", "isPartOf[].$last.numbering")
+  set_array("isPartOf[].$append.type[]", "IsPartOfRelation")
+  set_array("isPartOf[].$last.hasSuperordinate[]")
+  add_field("isPartOf[].$last.hasSuperordinate[].$append.test", "")
+  if all_match("$i.w", "^\\((?:DE-600|DE-605)\\)(.*)$")
+    copy_field("$i.w", "isPartOf[].$last.hasSuperordinate[].$last.id")
   end
+  set_array("isPartOf[].$last.hasSuperordinate[].$last.label")
+  do list(path:"$i.a", "var":"$j")
+    copy_field("$j", "isPartOf[].$last.hasSuperordinate[].$last.label.$append")
+  end
+  join_field("isPartOf[].$last.hasSuperordinate[].$last.label", " / ")
+  copy_field("$i.v", "isPartOf[].$last.numbering")
 end
 
 do list(path: "4901?", "var": "$j")
@@ -249,55 +247,47 @@ replace_all("secondaryForm[].*.id", "^\\(DE-600\\)(.*)$", "http://lobid.org/reso
 set_array("tableOfContents[]")
 
 do list(path: "8564?", "var":"$i")
-  unless exists("$i.M")
-    if all_match("$i.3", "^[Ii][Nn][Hh][aA][lL][tT][sS][vV].*") # Inhaltsverzeichnis
-      copy_field("$i.3", "tableOfContents[].$append.label")
-      copy_field("$i.u", "tableOfContents[].$last.id")
-    end
+  if all_match("$i.3", "^[Ii][Nn][Hh][aA][lL][tT][sS][vV].*") # Inhaltsverzeichnis
+    copy_field("$i.3", "tableOfContents[].$append.label")
+    copy_field("$i.u", "tableOfContents[].$last.id")
   end
 end
 
 set_array("description[]")
 
 do list(path: "8564?", "var":"$i")
-  unless exists("$i.M")
-    if all_match("$i.3", "^[Ii][Nn][Hh][aA][lL][tT][sS][tT].*") # Inhaltstext
-      copy_field("$i.3", "description[].$append.label")
-      copy_field("$i.u", "description[].$last.id")
-    end
+  if all_match("$i.3", "^[Ii][Nn][Hh][aA][lL][tT][sS][tT].*") # Inhaltstext
+    copy_field("$i.3", "description[].$append.label")
+    copy_field("$i.u", "description[].$last.id")
   end
 end
 
 set_array("seeAlso[]")
 
 do list(path: "8564?", "var":"$i")
-  unless exists("$i.M")
-    if all_match("$i.3", "^[zZ][uU][sS].*") # Zusätzliche Angaben
-      copy_field("$i.3", "seeAlso[].$append.label")
-      copy_field("$i.u", "seeAlso[].$last.id")
-    end
+  if all_match("$i.3", "^[zZ][uU][sS].*") # Zusätzliche Angaben
+    copy_field("$i.3", "seeAlso[].$append.label")
+    copy_field("$i.u", "seeAlso[].$last.id")
   end
 end
 
 set_array("fulltextOnline[]")
 
 do list(path: "8564?", "var":"$i")
-  unless exists("$i.M")
-    unless any_match("$i.u",".*(doi.org|nbn-resolving).*")
-      if all_equal("$i.z", "kostenfrei") # kostenfrei, added Digitalisierung not only Verlag or Agentur as filter
-        if all_match("$i.x", "Verlag|Agentur|Digitalisierung")
-          copy_field("$i.x", "fulltextOnline[].$append.label")
-          copy_field("$i.u", "fulltextOnline[].$last.id")
-        end
-      end
-      if all_match("$i.x", ".*(Archivierte Online|EZB|Online-Ausg|Resolving-System|Volltext).*")
+  unless any_match("$i.u",".*(doi.org|nbn-resolving).*")
+    if all_equal("$i.z", "kostenfrei") # kostenfrei, added Digitalisierung not only Verlag or Agentur as filter
+      if all_match("$i.x", "Verlag|Agentur|Digitalisierung")
         copy_field("$i.x", "fulltextOnline[].$append.label")
         copy_field("$i.u", "fulltextOnline[].$last.id")
       end
-      if all_match("$i.3", "^[vV][oO][lL].*") # Volltext
-        copy_field("$i.3", "fulltextOnline[].$append.label")
-        copy_field("$i.u", "fulltextOnline[].$last.id")
-      end
+    end
+    if all_match("$i.x", ".*(Archivierte Online|EZB|Online-Ausg|Resolving-System|Volltext).*")
+      copy_field("$i.x", "fulltextOnline[].$append.label")
+      copy_field("$i.u", "fulltextOnline[].$last.id")
+    end
+    if all_match("$i.3", "^[vV][oO][lL].*") # Volltext
+      copy_field("$i.3", "fulltextOnline[].$append.label")
+      copy_field("$i.u", "fulltextOnline[].$last.id")
     end
   end
 end
@@ -352,30 +342,28 @@ end
 
 set_array("related[]")
 do list(path:"775??|776??", "var":"$i")
-  unless exists("$i.M")
-    unless any_match ("$i.i", ".*eproduktion von.*|.*eproduktion")
-      add_field("related[].$append.test","")
-      if all_match("$i.w", "^\\((?:DE-600|DE-605)\\)(.*)$")
-        copy_field("$i.w", "related[].$last.id")
-      end
-      set_array("related[].$last.note[]")
-      paste("related[].$last.note[].$append","$i.i", "$i.n")
-      replace_all("related[].$last.note[].$last", "Erscheint auch als ","")
-      copy_field("$i.t", "related[].$last.label")
-      copy_field("$i.x", "related[].$last.issn")
-      set_array("$i.isbn13")
-      set_array("$i.isbn10")
-      do list(path: "$i.z", "var":"$j")
-        isbn("$j", to: "clean")
-        copy_field("$j", "$i.isbn13.$append")
-        copy_field("$j", "$i.isbn10.$append")
-      end
-      set_array("related[].$last.isbn[]")
-      isbn("$i.isbn10.*", to:"isbn10")
-      isbn("$i.isbn13.*", to:"isbn13")
-      copy_field("$i.isbn13.*", "related[].$last.isbn[].$append")
-      copy_field("$i.isbn10.*", "related[].$last.isbn[].$append")
-      end
+  unless any_match ("$i.i", ".*eproduktion von.*|.*eproduktion")
+    add_field("related[].$append.test","")
+    if all_match("$i.w", "^\\((?:DE-600|DE-605)\\)(.*)$")
+      copy_field("$i.w", "related[].$last.id")
+    end
+    set_array("related[].$last.note[]")
+    paste("related[].$last.note[].$append","$i.i", "$i.n")
+    replace_all("related[].$last.note[].$last", "Erscheint auch als ","")
+    copy_field("$i.t", "related[].$last.label")
+    copy_field("$i.x", "related[].$last.issn")
+    set_array("$i.isbn13")
+    set_array("$i.isbn10")
+    do list(path: "$i.z", "var":"$j")
+      isbn("$j", to: "clean")
+      copy_field("$j", "$i.isbn13.$append")
+      copy_field("$j", "$i.isbn10.$append")
+    end
+    set_array("related[].$last.isbn[]")
+    isbn("$i.isbn10.*", to:"isbn10")
+    isbn("$i.isbn13.*", to:"isbn13")
+    copy_field("$i.isbn13.*", "related[].$last.isbn[].$append")
+    copy_field("$i.isbn10.*", "related[].$last.isbn[].$append")
   end
 end
 
@@ -638,29 +626,27 @@ replace_all("exampleOfWork.label","<<|>>","")
 
 set_array("containsExampleOfWork[]")
 do list(path:"700?2|710?2|711?2|730?2", "var": "$i")
-  unless exists("$i.M")
-    set_array("containsExampleOfWork[].$append.label")
-    set_array("containsExampleOfWork[].$last.creatorOfWork")
-    copy_field("$i.a","containsExampleOfWork[].$last.creatorOfWork.$append")
-    copy_field("$i.d","containsExampleOfWork[].$last.creatorOfWork.$append")
-    copy_field("$i.t","containsExampleOfWork[].$last.label.$append")
-    copy_field("$i.p","containsExampleOfWork[].$last.label.$append")
-    copy_field("$i.n","containsExampleOfWork[].$last.label.$append")
-    copy_field("$i.r","containsExampleOfWork[].$last.label.$append")
-    join_field("containsExampleOfWork[].$last.label", ". ")
-    join_field("containsExampleOfWork[].$last.creatorOfWork", " ")
-    copy_field("$i.n","containsExampleOfWork[].$last.workNumbering")
-    copy_field("$i.r","containsExampleOfWork[].$last.musicalKey")
-    set_array("containsExampleOfWork[].$last.type[]","Work")
-    set_array("containsExampleOfWork[].$last.instrumentation[]")
-    do list(path:"$i.m","var":"$j")
-      copy_field("$j","containsExampleOfWork[].$last.instrumentation[].$append")
-    end
-    do list(path: "$i.0", "var":"$k")
-      if any_match("$k", "^\\(DE-588\\).*")
-        copy_field("$k", "containsExampleOfWork[].$last.id")
-        replace_all("containsExampleOfWork[].$last.id","^\\(DE-588\\)(.*$)","https://d-nb.info/gnd/$1")
-      end
+  set_array("containsExampleOfWork[].$append.label")
+  set_array("containsExampleOfWork[].$last.creatorOfWork")
+  copy_field("$i.a","containsExampleOfWork[].$last.creatorOfWork.$append")
+  copy_field("$i.d","containsExampleOfWork[].$last.creatorOfWork.$append")
+  copy_field("$i.t","containsExampleOfWork[].$last.label.$append")
+  copy_field("$i.p","containsExampleOfWork[].$last.label.$append")
+  copy_field("$i.n","containsExampleOfWork[].$last.label.$append")
+  copy_field("$i.r","containsExampleOfWork[].$last.label.$append")
+  join_field("containsExampleOfWork[].$last.label", ". ")
+  join_field("containsExampleOfWork[].$last.creatorOfWork", " ")
+  copy_field("$i.n","containsExampleOfWork[].$last.workNumbering")
+  copy_field("$i.r","containsExampleOfWork[].$last.musicalKey")
+  set_array("containsExampleOfWork[].$last.type[]","Work")
+  set_array("containsExampleOfWork[].$last.instrumentation[]")
+  do list(path:"$i.m","var":"$j")
+    copy_field("$j","containsExampleOfWork[].$last.instrumentation[].$append")
+  end
+  do list(path: "$i.0", "var":"$k")
+    if any_match("$k", "^\\(DE-588\\).*")
+      copy_field("$k", "containsExampleOfWork[].$last.id")
+      replace_all("containsExampleOfWork[].$last.id","^\\(DE-588\\)(.*$)","https://d-nb.info/gnd/$1")
     end
   end
 end
