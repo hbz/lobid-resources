@@ -109,7 +109,15 @@ public class IndexIntegrationTest extends LocalIndexSetup {
 			{ "q.subject:Baukem", /*->*/ 1 },
 			{ "q.title:der", /*->*/ 0 },
 			{ "q.title:Westfalen", /*->*/ 8 },
-			{ "q.title:Eilendorf", /*->*/ 1 }
+			{ "q.title:Eilendorf", /*->*/ 1 },
+			{ "q.all:Federale", /*->*/ 5 },
+			{ "q.all:Fédérale", /*->*/ 5 },
+			{ "q.all:(Courtillon cinema)", /*->*/ 1 },
+			{ "q.all:(Courtillon cinéma)", /*->*/ 1 },
+			{ "q.all:0702075558", /*->*/ 1 },
+			{ "q.all:07\\-0207\\-555\\-8", /*->*/ 1 },
+			{ "q.all:(Erleben \\- Verstehen & Lernen)", /*->*/ 3 },
+			{ "q.all:(Lexicography \\: Selected Papers)", /*->*/ 1 }
 		});
 	} // @formatter:on
 

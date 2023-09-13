@@ -192,11 +192,17 @@
           }
         },
         "alternativeTitle": {
+          "type": "text",
           "analyzer": "german_analyzer",
-          "type": "text"
+          "copy_to": [
+            "q.all"
+          ]
         },
         "responsibilityStatement": {
-          "type": "text"
+          "type": "text",
+          "copy_to": [
+            "q.all"
+          ]
         },
         "natureOfContent": {
           "properties": {
@@ -204,7 +210,10 @@
               "type": "keyword"
             },
             "label": {
-              "type": "text"
+              "type": "text",
+              "copy_to": [
+                "q.all"
+              ]
             }
           }
         },
@@ -238,10 +247,16 @@
               "type": "text"
             },
             "issn": {
-              "type": "keyword"
+              "type": "keyword",
+              "copy_to": [
+                "q.all"
+              ]
             },
             "isbn": {
-              "type": "keyword"
+              "type": "keyword",
+              "copy_to": [
+                "q.all"
+              ]
             }
           }
         },
@@ -276,6 +291,7 @@
               "type": "text",
               "analyzer": "german_analyzer",
               "copy_to": [
+                "q.all",
                 "q.publisher"
               ]
             },
@@ -283,6 +299,7 @@
               "type": "date",
               "format": "yyyy",
               "copy_to": [
+                "q.all",
                 "q.date"
               ]
             },
@@ -302,6 +319,7 @@
               "search_analyzer": "german_analyzer",
               "analyzer": "ngram_analyzer",
               "copy_to": [
+                "q.all",
                 "q.publisher"
               ]
             },
@@ -312,6 +330,7 @@
               "type": "date",
               "format": "yyyy",
               "copy_to": [
+                "q.all",
                 "q.date"
               ]
             }
@@ -337,12 +356,18 @@
           "analyzer": "id_analyzer"
         },
         "almaMmsId": {
+          "type": "text",
           "analyzer": "id_analyzer",
-          "type": "text"
+          "copy_to": [
+            "q.all"
+          ]
         },
         "hbzId": {
+          "type": "text",
           "analyzer": "id_analyzer",
-          "type": "text"
+          "copy_to": [
+            "q.all"
+          ]
         },
         "rpbId": {
           "analyzer": "id_analyzer",
@@ -433,7 +458,10 @@
             },
             "note": {
               "type": "text",
-              "index": false
+              "index": false,
+              "copy_to": [
+                "q.all"
+              ]
             },
             "callNumber": {
               "type": "keyword"
@@ -451,7 +479,10 @@
         },
         "titleKeyword": {
           "type": "text",
-          "analyzer": "german_analyzer"
+          "analyzer": "german_analyzer",
+          "copy_to": [
+            "q.all"
+          ]
         },
         "label": {
           "type": "text"
@@ -479,7 +510,10 @@
               "type": "keyword"
             },
             "label": {
-              "type": "text"
+              "type": "text",
+              "copy_to": [
+                "q.all"
+              ]
             },
             "type": {
               "type": "text",
@@ -502,6 +536,9 @@
                 "label": {
                   "type": "text",
                   "analyzer": "german_analyzer",
+                  "copy_to": [
+                    "q.all"
+                  ],
                   "fields": {
                     "unstemmed": {
                       "type": "text",
@@ -515,6 +552,9 @@
                 "altLabel": {
                   "type": "text",
                   "analyzer": "german_analyzer",
+                  "copy_to": [
+                    "q.all"
+                  ],
                   "fields": {
                     "unstemmed": {
                       "type": "text",
@@ -526,7 +566,10 @@
                   "type": "text"
                 },
                 "dateOfBirthAndDeath": {
-                  "type": "text"
+                  "type": "text",
+                  "copy_to": [
+                    "q.all"
+                  ]
                 },
                 "id": {
                   "type": "keyword"
@@ -553,6 +596,7 @@
           "type": "text",
           "analyzer": "german_analyzer",
           "copy_to": [
+            "q.all",
             "q.title"
           ]
         },
@@ -560,6 +604,7 @@
           "type": "text",
           "analyzer": "german_analyzer",
           "copy_to": [
+            "q.all",
             "q.title"
           ]
         },
@@ -602,6 +647,7 @@
               "type": "text",
               "analyzer": "german_analyzer",
               "copy_to": [
+                "q.all",
                 "q.subject"
               ]
             },
@@ -613,6 +659,7 @@
                   "type": "text",
                   "analyzer": "german_analyzer",
                   "copy_to": [
+                    "q.all",
                     "q.subject"
                   ]
                 },
@@ -632,6 +679,7 @@
                   "type": "text",
                   "analyzer": "german_analyzer",
                   "copy_to": [
+                    "q.all",
                     "q.subject"
                   ],
                   "fields": {
@@ -666,6 +714,7 @@
               "type": "text",
               "analyzer": "german_analyzer",
               "copy_to": [
+                "q.all",
                 "q.subject"
               ],
               "fields": {
@@ -700,7 +749,10 @@
         },
         "abstract": {
           "type": "text",
-          "analyzer": "german_analyzer"
+          "analyzer": "german_analyzer",
+          "copy_to": [
+            "q.all"
+          ]
         },
         "id": {
           "type": "keyword"
@@ -780,7 +832,10 @@
                 },
                 "label": {
                   "index": false,
-                  "type": "text"
+                  "type": "text",
+                  "copy_to": [
+                    "q.all"
+                  ]
                 }
               }
             },
@@ -810,7 +865,10 @@
           "type": "text"
         },
         "bibliographicCitation": {
-          "type": "text"
+          "type": "text",
+          "copy_to": [
+            "q.all"
+          ]
         },
         "webPageArchived": {
           "properties": {
@@ -835,13 +893,17 @@
           }
         },
         "issn": {
+          "type": "text",
           "analyzer": "hyphen_analyzer",
-          "type": "text"
+          "copy_to": [
+            "q.all"
+          ]
         },
         "otherTitleInformation": {
           "type": "text",
           "analyzer": "german_analyzer",
           "copy_to": [
+            "q.all",
             "q.title"
           ]
         },
@@ -849,8 +911,11 @@
           "type": "keyword"
         },
         "zdbId": {
+          "type": "text",
           "analyzer": "id_analyzer",
-          "type": "text"
+          "copy_to": [
+            "q.all"
+          ]
         },
         "note": {
           "index": false,
@@ -957,10 +1022,16 @@
         },
         "isbn": {
           "type": "text",
-          "analyzer": "hyphen_analyzer"
+          "analyzer": "hyphen_analyzer",
+          "copy_to": [
+            "q.all"
+          ]
         },
         "oclcNumber": {
-          "type": "text"
+          "type": "text",
+          "copy_to": [
+            "q.all"
+          ]
         },
         "spatial": {
           "type": "nested",
@@ -1010,6 +1081,11 @@
         },
         "q": {
           "properties": {
+            "all": {
+              "type": "text",
+              "analyzer": "digibib_default",
+              "search_analyzer": "digibib_search"
+            },
             "date": {
               "type": "short"
             },
