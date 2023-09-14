@@ -70,6 +70,20 @@
               "digibib_standardnumber",
               "unique"
             ]
+          },
+          "digibib_unstemmed": {
+            "type": "custom",
+            "tokenizer": "hyphen",
+            "filter": [
+              "lowercase",
+              "digibib_german_stop_words",
+              "keyword_repeat",
+              "icu_normalizer",
+              "icu_folding",
+              "digibib_simple_hyphen",
+              "german_normalize",
+              "unique"
+            ]
           }
         },
         "filter": {
@@ -138,6 +152,10 @@
               "zur",
               "über"
             ]
+          },
+          "digibib_simple_hyphen": {
+            "type": "hyphen",
+            "subwords": false
           },
           "digibib_standardnumber": {
             "type": "standardnumber",
@@ -543,6 +561,15 @@
                     "unstemmed": {
                       "type": "text",
                       "analyzer": "german_analyzer_unstemmed"
+                    },
+                    "digibib": {
+                      "type": "text",
+                      "analyzer": "digibib_default",
+                      "search_analyzer": "digibib_search"
+                    },
+                    "digibib_unstemmed": {
+                      "type": "text",
+                      "analyzer": "digibib_unstemmed"
                     }
                   }
                 },
@@ -559,6 +586,15 @@
                     "unstemmed": {
                       "type": "text",
                       "analyzer": "german_analyzer_unstemmed"
+                    },
+                    "digibib": {
+                      "type": "text",
+                      "analyzer": "digibib_default",
+                      "search_analyzer": "digibib_search"
+                    },
+                    "digibib_unstemmed": {
+                      "type": "text",
+                      "analyzer": "digibib_unstemmed"
                     }
                   }
                 },

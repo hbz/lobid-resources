@@ -117,7 +117,19 @@ public class IndexIntegrationTest extends LocalIndexSetup {
 			{ "q.all:0702075558", /*->*/ 1 },
 			{ "q.all:07\\-0207\\-555\\-8", /*->*/ 1 },
 			{ "q.all:(Erleben \\- Verstehen & Lernen)", /*->*/ 3 },
-			{ "q.all:(Lexicography \\: Selected Papers)", /*->*/ 1 }
+			{ "q.all:(Lexicography \\: Selected Papers)", /*->*/ 1 },
+			{ "contribution.agent.label.digibib:Westfalen", /*->*/ 3 },
+			{ "contribution.agent.label.digibib:Westfälen", /*->*/ 3 },
+			{ "contribution.agent.label.digibib:Westfälisch", /*->*/ 3 },
+			{ "contribution.agent.label.digibib:Praus", /*->*/ 1 },
+			{ "contribution.agent.label.digibib_unstemmed:Westfalen", /*->*/ 2 },
+			{ "contribution.agent.label.digibib_unstemmed:Westfälen", /*->*/ 2 },
+			{ "contribution.agent.label.digibib_unstemmed:Westfälisch", /*->*/ 0 },
+			{ "contribution.agent.label.digibib_unstemmed:Praus", /*->*/ 0 },
+			{ "contribution.agent.altLabel.digibib:Nemačke", /*->*/ 1 },
+			{ "contribution.agent.altLabel.digibib:Nemack", /*->*/ 1 },
+			{ "contribution.agent.altLabel.digibib_unstemmed:Nemačke", /*->*/ 1 },
+			{ "contribution.agent.altLabel.digibib_unstemmed:Nemack", /*->*/ 0 }
 		});
 	} // @formatter:on
 
