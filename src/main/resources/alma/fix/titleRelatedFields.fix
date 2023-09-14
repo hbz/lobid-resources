@@ -52,39 +52,37 @@ do list(path:"245??","var":"$i")
   if exists("$i.6")
     copy_field("$i.6","$i.linkageTest")
     do list(path:"880??","var":"$880")
-     unless exists("$880.M")
-        if in ("$i.linkageTest","$880.linkageTest")
-           if in ("$880.@script.id","alternateGraphicRepresentation[].*.script.id")   
-             do list(path:"alternateGraphicRepresentation[]","var":"$AGR")
-               if in ("$880.@script.id","$AGR.script.id")     
-                copy_field("$880.a","$AGR.record.@title")
-                copy_field("$880.n","$AGR.record.@titleOfSubSeries_n")
-                unless exists("$AGR.record.@titleOfSubSeries_p")
-                  set_array("$AGR.record.@titleOfSubSeries_p")
-                end
-                copy_field("$880.p","$AGR.record.@titleOfSubSeries_p.$append")
-                unless exists("$AGR.record.otherTitleInformation[]")
-                  set_array("$AGR.record.otherTitleInformation[]")
-                end
-                copy_field("$880.b","$AGR.record.otherTitleInformation[].$append")     
-                unless exists("$AGR.record.responsibilityStatement[]")
-                  set_array("$AGR.record.responsibilityStatement[]")
-                end
-                copy_field("$880.c","$AGR.record.responsibilityStatement[].$append")  
-               end
-             end
-           else    
-            copy_field("$880.@script.id","alternateGraphicRepresentation[].$append.script.id")
-            copy_field("$880.@script.label","alternateGraphicRepresentation[].$last.script.label")        
-            copy_field("$880.a","alternateGraphicRepresentation[].$last.record.@title")
-            copy_field("$880.n","alternateGraphicRepresentation[].$last.record.@titleOfSubSeries_n")
-            set_array("alternateGraphicRepresentation[].$last.record.@titleOfSubSeries_p")
-            copy_field("$880.p","alternateGraphicRepresentation[].$last.record.@titleOfSubSeries_p.$append")            
-            set_array("alternateGraphicRepresentation[].$last.record.otherTitleInformation[]")
-            copy_field("$880.b","alternateGraphicRepresentation[].$last.record.otherTitleInformation[].$append")
-            set_array("alternateGraphicRepresentation[].$last.record.responsibilityStatement[]")
-            copy_field("$880.c","alternateGraphicRepresentation[].$last.record.responsibilityStatement[].$append")            
-           end
+      if in ("$i.linkageTest","$880.linkageTest")
+        if in ("$880.@script.id","alternateGraphicRepresentation[].*.script.id")   
+          do list(path:"alternateGraphicRepresentation[]","var":"$AGR")
+            if in ("$880.@script.id","$AGR.script.id")     
+            copy_field("$880.a","$AGR.record.@title")
+            copy_field("$880.n","$AGR.record.@titleOfSubSeries_n")
+            unless exists("$AGR.record.@titleOfSubSeries_p")
+              set_array("$AGR.record.@titleOfSubSeries_p")
+            end
+            copy_field("$880.p","$AGR.record.@titleOfSubSeries_p.$append")
+            unless exists("$AGR.record.otherTitleInformation[]")
+              set_array("$AGR.record.otherTitleInformation[]")
+            end
+            copy_field("$880.b","$AGR.record.otherTitleInformation[].$append")     
+            unless exists("$AGR.record.responsibilityStatement[]")
+              set_array("$AGR.record.responsibilityStatement[]")
+            end
+            copy_field("$880.c","$AGR.record.responsibilityStatement[].$append")  
+            end
+          end
+        else    
+        copy_field("$880.@script.id","alternateGraphicRepresentation[].$append.script.id")
+        copy_field("$880.@script.label","alternateGraphicRepresentation[].$last.script.label")        
+        copy_field("$880.a","alternateGraphicRepresentation[].$last.record.@title")
+        copy_field("$880.n","alternateGraphicRepresentation[].$last.record.@titleOfSubSeries_n")
+        set_array("alternateGraphicRepresentation[].$last.record.@titleOfSubSeries_p")
+        copy_field("$880.p","alternateGraphicRepresentation[].$last.record.@titleOfSubSeries_p.$append")            
+        set_array("alternateGraphicRepresentation[].$last.record.otherTitleInformation[]")
+        copy_field("$880.b","alternateGraphicRepresentation[].$last.record.otherTitleInformation[].$append")
+        set_array("alternateGraphicRepresentation[].$last.record.responsibilityStatement[]")
+        copy_field("$880.c","alternateGraphicRepresentation[].$last.record.responsibilityStatement[].$append")            
         end
       end
     end
@@ -149,23 +147,21 @@ do list(path:"246?[ 345678]","var":"$i")
   if exists("$i.6")
     copy_field("$i.6","$i.linkageTest")
     do list(path:"880??","var":"$880")
-     unless exists("$880.M")
-        if in ("$i.linkageTest","$880.linkageTest")
-          if in ("$880.@script.id","alternateGraphicRepresentation[].*.script.id")   
-            do list(path:"alternateGraphicRepresentation[]","var":"$AGR")
-              if in ("$880.@script.id","$AGR.script.id")
-                unless exists("$AGR.record.alternativeTitle[]")
-                  set_array("$AGR.record.alternativeTitle[]")
-                end
-                copy_field("$880.a","$AGR.record.alternativeTitle[].$append")
+      if in ("$i.linkageTest","$880.linkageTest")
+        if in ("$880.@script.id","alternateGraphicRepresentation[].*.script.id")   
+          do list(path:"alternateGraphicRepresentation[]","var":"$AGR")
+            if in ("$880.@script.id","$AGR.script.id")
+              unless exists("$AGR.record.alternativeTitle[]")
+                set_array("$AGR.record.alternativeTitle[]")
               end
+              copy_field("$880.a","$AGR.record.alternativeTitle[].$append")
             end
-          else    
-            copy_field("$880.@script.id","alternateGraphicRepresentation[].$append.script.id")
-            copy_field("$880.@script.label","alternateGraphicRepresentation[].$last.script.label")        
-            set_array("alternateGraphicRepresentation[].$last.record.alternativeTitle[]")
-            copy_field("$880.a","alternateGraphicRepresentation[].$last.record.alternativeTitle[].$append")
           end
+        else    
+          copy_field("$880.@script.id","alternateGraphicRepresentation[].$append.script.id")
+          copy_field("$880.@script.label","alternateGraphicRepresentation[].$last.script.label")        
+          set_array("alternateGraphicRepresentation[].$last.record.alternativeTitle[]")
+          copy_field("$880.a","alternateGraphicRepresentation[].$last.record.alternativeTitle[].$append")
         end
       end
     end
@@ -200,23 +196,21 @@ do list(path:"250  ","var":"$i")
   if exists("$i.6")
     copy_field("$i.6","$i.linkageTest")
     do list(path:"880??","var":"$880")
-     unless exists("$880.M")
-        if in ("$i.linkageTest","$880.linkageTest")
-          if in ("$880.@script.id","alternateGraphicRepresentation[].*.script.id")   
-            do list(path:"alternateGraphicRepresentation[]","var":"$AGR")
-              if in ("$880.@script.id","$AGR.script.id")
-                 unless exists("$AGR.record.edition[]")
-                   set_array("$AGR.record.edition[]")
-                 end
-                copy_field("$880.a","$AGR.record.edition[].$append")
-              end
+      if in ("$i.linkageTest","$880.linkageTest")
+        if in ("$880.@script.id","alternateGraphicRepresentation[].*.script.id")   
+          do list(path:"alternateGraphicRepresentation[]","var":"$AGR")
+            if in ("$880.@script.id","$AGR.script.id")
+                unless exists("$AGR.record.edition[]")
+                  set_array("$AGR.record.edition[]")
+                end
+              copy_field("$880.a","$AGR.record.edition[].$append")
             end
-          else    
-            copy_field("$880.@script.id","alternateGraphicRepresentation[].$append.script.id")
-            copy_field("$880.@script.label","alternateGraphicRepresentation[].$last.script.label")        
-            set_array("alternateGraphicRepresentation[].$last.record.edition[]")
-            copy_field("$880.a","alternateGraphicRepresentation[].$last.record.edition[].$append")
           end
+        else    
+          copy_field("$880.@script.id","alternateGraphicRepresentation[].$append.script.id")
+          copy_field("$880.@script.label","alternateGraphicRepresentation[].$last.script.label")        
+          set_array("alternateGraphicRepresentation[].$last.record.edition[]")
+          copy_field("$880.a","alternateGraphicRepresentation[].$last.record.edition[].$append")
         end
       end
     end
@@ -272,31 +266,29 @@ do list(path:"260[ 23] |264[ 23][ 1]", "var":"$i")
   if exists("$i.6")
     copy_field("$i.6","$i.linkageTest")
     do list(path:"880??","var":"$880")
-     unless exists("$880.M")
-        if in ("$i.linkageTest","$880.linkageTest")
-          if in ("$880.@script.id","alternateGraphicRepresentation[].*.script.id")   
-            do list(path:"alternateGraphicRepresentation[]","var":"$AGR")
-              if in ("$880.@script.id","$AGR.script.id")
-                unless exists("$AGR.record.publication[]")
-                  set_array("$AGR.record.publication[]")
-                end                
-                add_field ("$AGR.record.publication[].$append.dummi","")       
-                set_array("$AGR.record.publication[].$last.location[]")        
-                copy_field("$880.a", "$AGR.record.publication[].$last.location[].$append")
-                set_array("$AGR.record.publication[].$last.publishedBy[]")
-                copy_field("$880.b", "$AGR.record.publication[].$last.publishedBy[].$append")
-              end
+      if in ("$i.linkageTest","$880.linkageTest")
+        if in ("$880.@script.id","alternateGraphicRepresentation[].*.script.id")   
+          do list(path:"alternateGraphicRepresentation[]","var":"$AGR")
+            if in ("$880.@script.id","$AGR.script.id")
+              unless exists("$AGR.record.publication[]")
+                set_array("$AGR.record.publication[]")
+              end                
+              add_field ("$AGR.record.publication[].$append.dummi","")       
+              set_array("$AGR.record.publication[].$last.location[]")        
+              copy_field("$880.a", "$AGR.record.publication[].$last.location[].$append")
+              set_array("$AGR.record.publication[].$last.publishedBy[]")
+              copy_field("$880.b", "$AGR.record.publication[].$last.publishedBy[].$append")
             end
-          else    
-            copy_field("$880.@script.id","alternateGraphicRepresentation[].$append.script.id")
-            copy_field("$880.@script.label","alternateGraphicRepresentation[].$last.script.label")
-            set_array("alternateGraphicRepresentation[].$last.publication[]")
-            add_field ("alternateGraphicRepresentation[].$last.publication[].$append.dummi","")       
-            set_array("alternateGraphicRepresentation[].$last.publication[].$last.location[]")        
-            copy_field("$880.a", "alternateGraphicRepresentation[].$last.publication[].$last.location[].$append")
-            set_array("alternateGraphicRepresentation[].$last.publication[].$last.publishedBy[]")
-            copy_field("$880.b", "alternateGraphicRepresentation[].$last.publication[].$last.publishedBy[].$append")
           end
+        else    
+          copy_field("$880.@script.id","alternateGraphicRepresentation[].$append.script.id")
+          copy_field("$880.@script.label","alternateGraphicRepresentation[].$last.script.label")
+          set_array("alternateGraphicRepresentation[].$last.publication[]")
+          add_field ("alternateGraphicRepresentation[].$last.publication[].$append.dummi","")       
+          set_array("alternateGraphicRepresentation[].$last.publication[].$last.location[]")        
+          copy_field("$880.a", "alternateGraphicRepresentation[].$last.publication[].$last.location[].$append")
+          set_array("alternateGraphicRepresentation[].$last.publication[].$last.publishedBy[]")
+          copy_field("$880.b", "alternateGraphicRepresentation[].$last.publication[].$last.publishedBy[].$append")
         end
       end
     end
