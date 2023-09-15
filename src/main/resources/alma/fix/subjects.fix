@@ -236,17 +236,16 @@ end
 # 082 - Dewey Decimal Classification Number (R) - Subfield: $a (R), $2 (NR)
 
 do list(path:"0820 |08200", "var":"$i")
-  set_array("subject[].$append.type[]","Concept")
-  add_field("subject[].$last.source.label","Dewey-Dezimalklassifikation")
-  add_field("subject[].$last.source.id","https://d-nb.info/gnd/4149423-4")
   do list(path:"$i.a", "var": "$j")
-    unless exists("subject[].$last.label")
-      copy_field("$i.a","subject[].$last.label")
-      lookup("subject[].$last.label", "deweyLabels")
-      copy_field("$i.a","subject[].$last.notation")
-    end
+    set_array("subject[].$append.type[]","Concept")
+    add_field("subject[].$last.source.label","Dewey-Dezimalklassifikation")
+    add_field("subject[].$last.source.id","https://d-nb.info/gnd/4149423-4")
+    copy_field("$j","subject[].$last.label")
+    lookup("subject[].$last.label", "deweyLabels")
+    copy_field("$j","subject[].$last.notation")
+    copy_field("$i.2","subject[].$last.version")
+    copy_field("$i.2","subject[].$last.version")
   end
-  copy_field("$i.2","subject[].$last.version")
 end
 
 # 084 - Other Classification Number (R) - Subfield: $a (R), $2 (NR)
