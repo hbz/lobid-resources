@@ -116,22 +116,20 @@ public class AlmaMarcXmlFix2lobidJsonEs {
                 fixVariables.put("institution-code", "DE-605");
                 // the './' is mandatory to get play to use the "conf" directory. Base is the root directory of the fix, which is "alma":
                 fixVariables.put("deweyLabels", "./../deweyLabels.tsv");
-                fixVariables.put("nwbib-spatial", "./../nwbib-spatial.tsv");
-                fixVariables.put("wd_itemLabelTypesCoordinates", "./../wd_itemLabelTypesCoordinates.tsv");
                 fixVariables.put("maps-institutions.tsv", "./maps/institutions.tsv");
-                fixVariables.put("sublibraryIsil", "./maps/generatedAlmaSublibraryCode2Isil.tsv");
-                fixVariables.put("suppressedLocations", "./maps/generatedAlmaSuppressedLocations.tsv");                
+                fixVariables.put("sublibraryIsil", "../../../../../../lookup-tables/data/almaSublibraryCode2Isil/generated/generatedAlmaSublibraryCode2Isil.tsv");
+                fixVariables.put("suppressedLocations", "../../../../../../lookup-tables/data/almaSuppressedLocations/generated/generatedAlmaSuppressedLocations.tsv");                
                 fixVariables.put("picaCreatorId2Isil.tsv", "./maps/picaCreatorId2Isil.tsv");
                 fixVariables.put("nwbibWikidataLabelTypeCoords.tsv", "./maps/nwbibWikidataLabelTypeCoords.tsv");
                 fixVariables.put("classification.tsv", "./maps/classification.tsv");
                 fixVariables.put("formangabe.tsv", "./maps/formangabe.tsv");
-                fixVariables.put("almaMmsId2rpbId", "./maps/almaMmsId2rpbId.tsv");
+                fixVariables.put("almaMmsId2rpbId", "../../../../../../lookup-tables/data/almaMmsId2rpbId.tsv");
                 fixVariables.put("lobidOrganisationsMapping.tsv", "./maps/lobidOrganisationsMapping.tsv");
                 fixVariables.put("hbzowner2sigel.tsv", "./maps/hbzowner2sigel.tsv");
                 fixVariables.put("isilRedirect.tsv", "./maps/isilRedirect.tsv");
-                fixVariables.put("rpb2.ttl", "./maps/rpb2.ttl");
-                fixVariables.put("rpb-spatial.ttl", "./maps/rpb-spatial.ttl");
-                fixVariables.put("rpb.ttl", "./maps/rpb.ttl");
+                fixVariables.put("rpb2.ttl", "../../../../../../vocabs/rpb/rpb2.ttl");
+                fixVariables.put("rpb-spatial.ttl", "../../../../../../vocabs/rpb/rpb-spatial.ttl");
+                fixVariables.put("rpb.ttl", "../../../../../../vocabs/rpb/rpb.ttl");
                 fixVariables.put("hbzId2zdbId.tsv", "./maps/hbzId2zdbId.tsv.gz");
 
                 XmlElementSplitter xmlElementSplitter = new XmlElementSplitter();

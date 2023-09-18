@@ -65,17 +65,17 @@ public final class AlmaMarc21XmlToLobidJsonMetafixTest {
         fixVariables.put("classification.tsv", "src/main/resources/alma/maps/classification.tsv");
         fixVariables.put("formangabe.tsv", "src/main/resources/alma/maps/formangabe.tsv");
         fixVariables.put("maps-institutions.tsv", "src/main/resources/alma/maps/institutions.tsv");
-        fixVariables.put("sublibraryIsil", "src/main/resources/alma/maps/generatedAlmaSublibraryCode2Isil.tsv");
+        fixVariables.put("sublibraryIsil", "src/test/resources/alma/maps/generatedAlmaSublibraryCode2Isil.tsv");
         fixVariables.put("suppressedLocations", "src/main/resources/alma/maps/generatedAlmaSuppressedLocations.tsv");
         fixVariables.put("picaCreatorId2Isil.tsv", "src/main/resources/alma/maps/picaCreatorId2Isil.tsv");
         fixVariables.put("nwbibWikidataLabelTypeCoords.tsv", "src/main/resources/alma/maps/nwbibWikidataLabelTypeCoords.tsv");
-        fixVariables.put("almaMmsId2rpbId", "src/main/resources/alma/maps/almaMmsId2rpbId.tsv");
+        fixVariables.put("almaMmsId2rpbId", "src/test/resources/alma/maps/almaMmsId2rpbId.tsv");
         fixVariables.put("lobidOrganisationsMapping.tsv", "src/main/resources/alma/maps/lobidOrganisationsMapping.tsv");
         fixVariables.put("hbzowner2sigel.tsv", "src/main/resources/alma/maps/hbzowner2sigel.tsv");
         fixVariables.put("isilRedirect.tsv", "src/main/resources/alma/maps/isilRedirect.tsv");
-        fixVariables.put("rpb2.ttl", "src/main/resources/alma/maps/rpb2.ttl");
-        fixVariables.put("rpb-spatial.ttl", "src/main/resources/alma/maps/rpb-spatial.ttl");
-        fixVariables.put("rpb.ttl", "src/main/resources/alma/maps/rpb.ttl");
+        fixVariables.put("rpb2.ttl", "src/test/resources/alma/maps/rpb2.ttl");
+        fixVariables.put("rpb-spatial.ttl", "src/test/resources/alma/maps/rpb-spatial.ttl");
+        fixVariables.put("rpb.ttl", "src/test/resources/alma/maps/rpb.ttl");
         fixVariables.put("hbzId2zdbId.tsv", "src/main/resources/alma/maps/hbzId2zdbId.tsv.gz");
     }
 
