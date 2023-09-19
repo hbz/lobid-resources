@@ -236,17 +236,15 @@ end
 # 082 - Dewey Decimal Classification Number (R) - Subfield: $a (R), $2 (NR)
 
 do list(path:"0820 |08200", "var":"$i")
-  set_array("subject[].$append.type[]","Concept")
-  add_field("subject[].$last.source.label","Dewey-Dezimalklassifikation")
-  add_field("subject[].$last.source.id","https://d-nb.info/gnd/4149423-4")
   do list(path:"$i.a", "var": "$j")
-    unless exists("subject[].$last.label")
-      copy_field("$i.a","subject[].$last.label")
-      lookup("subject[].$last.label", "$[deweyLabels]","sep_char":"\t")
-      copy_field("$i.a","subject[].$last.notation")
-    end
+    set_array("subject[].$append.type[]","Concept")
+    add_field("subject[].$last.source.label","Dewey-Dezimalklassifikation")
+    add_field("subject[].$last.source.id","https://d-nb.info/gnd/4149423-4")
+    copy_field("$j","subject[].$last.label")
+    lookup("subject[].$last.label", "deweyLabels", delete:"true")
+    copy_field("$j","subject[].$last.notation")
+    copy_field("$i.2","subject[].$last.version")
   end
-  copy_field("$i.2","subject[].$last.version")
 end
 
 # 084 - Other Classification Number (R) - Subfield: $a (R), $2 (NR)
@@ -291,6 +289,30 @@ do list(path:"084??", "var":"$i")
               add_field("subject[].$last.source.id", "http://purl.org/lobid/rpb")
               add_field("subject[].$last.source.label", "RPB-Sachsystematik")
               replace_all("subject[].$last.notation","rpb(.*)","$1")
+            end
+          elsif any_match("$i.2", "sdnb|zdbs")
+            if any_match("$j","\\d{3}(\\.\\d{1,3})?|[BKS]")
+              if any_equal("$i.q","DE-600")
+                add_field("subject[].$last.source.label","DDC-Sachgruppen der ZDB")
+              elsif any_equal("$i.2","zdbs")
+                add_field("subject[].$last.source.label","DDC-Sachgruppen der ZDB")
+              else
+                add_field("subject[].$last.source.label","Sachgruppen der DNB")
+                add_field("subject[].$last.source.id","https://bartoc.org/en/node/20049")
+              end
+              copy_field("$j","subject[].$last.label")
+              lookup("subject[].$last.label", "dnbSachgruppen")
+              # Also use all DNB and ZDB Sachgruppen as DDC too.
+              set_array("subject[].$append.type[]","Concept")
+              add_field("subject[].$last.source.label","Dewey-Dezimalklassifikation")
+              add_field("subject[].$last.source.id","https://d-nb.info/gnd/4149423-4")
+              copy_field("$j","subject[].$last.label")
+              lookup("subject[].$last.label", "deweyLabels")
+              copy_field("$j","subject[].$last.notation")
+              copy_field("$i.2","subject[].$last.version")
+            elsif any_match("$j","\\d{2}")
+              add_field("subject[].$last.source.label","Systematik der DNB (bis 2003)")
+              add_field("subject[].$last.source.id","https://bartoc.org/en/node/18497")
             end
           else
             copy_field("$i.2", "subject[].$last.source.label")
