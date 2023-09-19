@@ -263,6 +263,28 @@ if exists("publication[].$first")
       replace_all("publication[].$first.startDate","^.*saṃ. \\d{4}=(\\d{4}).*Chr.*","$1")
     end
   end
+  # Add fallbacks for missing publication dates and other publication info.
+  do list(path:"260[ 3][ 1]", "var":"$i")
+    do list(path: "$i.c", "var":"$j")
+      replace_all("$j", "\\[|\\]|ca. |c ", "")
+      unless exists("publication[].$first.startDate")
+        if any_match("$j",".*?([01]\\d{3}|20\\d{2}).*")
+          paste("publication[].$first.startDate", "$j")
+        end
+      end
+      unless exists("publication[].$first.endDate")
+        if any_match("$j",".*-[ ]?([01]\\d{3}|20\\d{2})$")
+          paste("publication[].$last.endDate", "$j")
+        end
+      end
+      unless exists("publication[].$first.location[].1")
+        copy_field("$i.a", "publication[].$first.location[].$append")
+      end
+      unless exists("publication[].$first.publishedBy[].1")
+        copy_field("$i.b", "publication[].$first.publishedBy[].$append")
+      end
+    end
+  end
 end
 
 
