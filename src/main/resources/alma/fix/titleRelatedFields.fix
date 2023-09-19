@@ -285,6 +285,22 @@ if exists("publication[].$first")
       end
     end
   end
+  unless exists("publication[].$first.startDate[]")
+    if any_match("008","^.{6}[brestikm](\\d{4}).*$")
+      copy_field("008","@008startDate")
+      replace_all("@008startDate","^.{7}(\\d{4}).*$","$1")
+      copy_field("@008startDate","publication[].$first.startDate")
+    end
+  end
+  unless exists("publication[].$first.endDate[]")
+    if any_match("008","^.{6}[km]\\d{4}(\\d{4}).*$")
+      copy_field("008","@008endDate")
+      replace_all("@008endDate","^.{11}(\\d{4}).*$","$1")
+      unless any_equal("@008endDate","9999")
+        copy_field("@008endDate","publication[].$first.endDate")
+      end
+    end
+  end
 end
 
 
