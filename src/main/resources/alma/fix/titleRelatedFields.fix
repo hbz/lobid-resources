@@ -234,6 +234,13 @@ else
   call_macro("publication",field:"260 [ 1]") # # - Not applicable/No information provided/Earliest
 end
 
+set_array("manufacture[]")
+if exists("264[ 23]3")
+  call_macro("manufacture",field:"26433") # 3 - Current/Latest
+  call_macro("manufacture",field:"26423") # 2 - Intervening
+  call_macro("manufacture",field:"264 3") # # - Not applicable/No information provided/Earliest
+end
+
 # Only add additional publication info to the first publication-object since it is the latest.
 
 if exists("publication[].$first")
