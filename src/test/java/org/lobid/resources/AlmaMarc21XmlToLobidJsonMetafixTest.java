@@ -59,7 +59,7 @@ public final class AlmaMarc21XmlToLobidJsonMetafixTest {
         fixVariables.put("catalogid", "DE-605");
         fixVariables.put("createEndTime", "0"); // 0 <=> false
         fixVariables.put("institution-code", "DE-605");
-        fixVariables.put("deweyLabels", "src/test/resources/deweyLabels.tsv");
+        fixVariables.put("deweyLabels", "src/test/resources/alma/maps/deweyLabels.tsv");
         fixVariables.put("dnbSachgruppen", "src/main/resources/alma/maps/dnbSachgruppen.tsv");
         fixVariables.put("classification.tsv", "src/main/resources/alma/maps/classification.tsv");
         fixVariables.put("formangabe.tsv", "src/main/resources/alma/maps/formangabe.tsv");
