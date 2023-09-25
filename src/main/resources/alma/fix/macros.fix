@@ -252,6 +252,25 @@ do put_macro("provenanceLinks")
   append("$[field]", "#!")
 end
 
+# opacLink
+
+do put_macro("opacLink")
+  copy_field("$.@iz", "$i.@opacLink")
+  if exists("zdbId")
+    lookup("$i.@opacLink","isil2opac_zdbId", delete:"true")
+    split_field("$i.@opacLink","{zdbid}")
+    if exists("$i.@opacLink.1")
+      paste("hasItem[].$last.opacLink","$i.@opacLink.1","zdbId","$i.@opacLink.2",join_char:"")
+    end
+  else
+    lookup("$i.@opacLink","isil2opac_hbzId", delete:"true")
+    split_field("$i.@opacLink","{hbzid}")
+    if exists("$i.@opacLink.1")
+      paste("hasItem[].$last.opacLink","$i.@opacLink.1","hbzId","$i.@opacLink.2",join_char:"")
+    end
+  end    
+end
+
 # for Schlagwortfolgen
 
 do put_macro("schlagwortfolge")
