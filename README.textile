@@ -102,6 +102,10 @@ If you've added and commited everything, check again if all is ok:
 
 This should result in *BUILD SUCCESS*. Push your changes. You're done :)
 
+h2. Tables as gitsubmodules
+Some lookup tables are provided through gitsubmodules. To make a @git pull@ also
+update these tables you can e.g. do @git config --local submodule.recurse true@ once.
+
 h2. Propagate the context.json to lobid-resources-web
 
 The generated _context.jsonld_ is automatically written to the proper directory
