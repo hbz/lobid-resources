@@ -255,20 +255,17 @@ end
 # opacLink
 
 do put_macro("opacLink")
-  copy_field("$.@iz", "$i.@opacLink")
-  if exists("zdbId")
-    lookup("$i.@opacLink","isil2opac_zdbId", delete:"true")
-    split_field("$i.@opacLink","{zdbid}")
-    if exists("$i.@opacLink.1")
-      paste("hasItem[].$last.opacLink","$i.@opacLink.1","zdbId","$i.@opacLink.2",join_char:"")
-    end
-  else
-    lookup("$i.@opacLink","isil2opac_hbzId", delete:"true")
-    split_field("$i.@opacLink","{hbzid}")
-    if exists("$i.@opacLink.1")
-      paste("hasItem[].$last.opacLink","$i.@opacLink.1","hbzId","$i.@opacLink.2",join_char:"")
-    end
-  end    
+  copy_field("$i.@iz", "$i.@opacLinkZdbId")
+  lookup("$i.@opacLinkZdbId","isil2opac_zdbId", delete:"true")
+  split_field("$i.@opacLinkZdbId","\\{zdbid\\}")
+  copy_field("$i.@iz", "$i.@opacLinkHbzId")
+  lookup("$i.@opacLinkHbzId","isil2opac_hbzId", delete:"true")
+  split_field("$i.@opacLinkHbzId","\\{hbzId\\}")
+  if exists("$i.@opacLinkZdbId.1")
+    paste("hasItem[].$last.opacLink","$i.@opacLinkZdbId.1","zdbId","$i.@opacLinkZdbId.2",join_char:"")
+  elsif exists("$i.@opacLinkHbzId.1")
+    paste("hasItem[].$last.opacLink","$i.@opacLinkHbzId.1","hbzId","$i.@opacLinkHbzId.2",join_char:"")
+  end
 end
 
 # for Schlagwortfolgen
