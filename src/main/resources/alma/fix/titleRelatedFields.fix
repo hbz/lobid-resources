@@ -221,86 +221,92 @@ end
 # 264 - Production, Publication, Distribution, Manufacture, and Copyright Notice (R) -  Subfield: $a (R), $b (R), $c  (R)
 # 008,18 for frequency
 # 515 - Numbering Peculiarities Note (R)
+# Prefer 264 over 260 since it can create duplicate info and 260 is discontinued in RDA.
 
 set_array("publication[]")
-do list(path:"260[ 23] |264[ 23][ 1]", "var":"$i")
-  add_field("publication[].$append.test","")
-  copy_field("362??.a","publication[].$last.publicationHistory")
-  do list(path: "$i.c", "var":"$j")
-    replace_all("$j", "\\[|\\]|ca. |c ", "")
-    unless exists("publication[].$last.startDate")
-      if any_match("$j",".*?([01]\\d{3}|20\\d{2}).*")
-        paste("publication[].$last.startDate", "$j")
-      end
-    end
-    unless exists("publication[].$last.endDate")
-      if any_match("$j",".*-[ ]?([01]\\d{3}|20\\d{2})$")
-        paste("publication[].$last.endDate", "$j")
-      end
-    end
-  end
-  # TODO is there a way to distinguish PublicationEvent and SecondaryPublicationEvent?
-  set_array("publication[].$last.type[]","PublicationEvent")
-  set_array("publication[].$last.location[]")
-  copy_field("$i.a", "publication[].$last.location[].$append")
-  set_array("publication[].$last.publishedBy[]")
-  copy_field("$i.b", "publication[].$last.publishedBy[].$append")
-  set_array("publication[].$last.frequency[]")
-  if any_match("leader","^.{6}(a[bis]|m[bis]).*$") # checks if continous ressource
-    unless any_match("008","^.{18}[#\\| u].*$") # filters out not matching values and also the value unknown
-      copy_field("008","publication[].$last.frequency[].$append.id")
-      replace_all("publication[].$last.frequency[].$last.id", "^.{18}(.).*$", "http://marc21rdf.info/terms/continuingfre#$1")
-    end
-  elsif any_match("006","^s.*$")
-    do list(path: "006", "var":"$z")
-      if any_match("$z","^s.*$")
-        unless any_match("$z","^.[#\\| u].*$")
-          copy_field("$z","publication[].$last.frequency[].$append.id")
-          replace_all("publication[].$last.frequency[].$last.id", "^.(.).*$", "http://marc21rdf.info/terms/continuingfre#$1")
-        end
-      end
-    end
-  end
-  set_array("publication[].$last.note[]")
-  copy_field("515??.a","publication[].$last.note[].$append")
-  if exists("$i.6")
-    copy_field("$i.6","$i.linkageTest")
-    do list(path:"880??","var":"$880")
-      if in ("$i.linkageTest","$880.linkageTest")
-        if in ("$880.@script.id","alternateGraphicRepresentation[].*.script.id")   
-          do list(path:"alternateGraphicRepresentation[]","var":"$AGR")
-            if in ("$880.@script.id","$AGR.script.id")
-              unless exists("$AGR.record.publication[]")
-                set_array("$AGR.record.publication[]")
-              end                
-              add_field ("$AGR.record.publication[].$append.dummi","")       
-              set_array("$AGR.record.publication[].$last.location[]")        
-              copy_field("$880.a", "$AGR.record.publication[].$last.location[].$append")
-              set_array("$AGR.record.publication[].$last.publishedBy[]")
-              copy_field("$880.b", "$AGR.record.publication[].$last.publishedBy[].$append")
-            end
-          end
-        else    
-          copy_field("$880.@script.id","alternateGraphicRepresentation[].$append.script.id")
-          copy_field("$880.@script.label","alternateGraphicRepresentation[].$last.script.label")
-          set_array("alternateGraphicRepresentation[].$last.publication[]")
-          add_field ("alternateGraphicRepresentation[].$last.publication[].$append.dummi","")       
-          set_array("alternateGraphicRepresentation[].$last.publication[].$last.location[]")        
-          copy_field("$880.a", "alternateGraphicRepresentation[].$last.publication[].$last.location[].$append")
-          set_array("alternateGraphicRepresentation[].$last.publication[].$last.publishedBy[]")
-          copy_field("$880.b", "alternateGraphicRepresentation[].$last.publication[].$last.publishedBy[].$append")
-        end
-      end
-    end
-  end
+if exists("264[ 23][ 1]")
+  call_macro("publication",field:"2643[ 1]") # 3 - Current/Latest
+  call_macro("publication",field:"2642[ 1]") # 2 - Intervening
+  call_macro("publication",field:"264 [ 1]") # # - Not applicable/No information provided/Earliest
+else
+  call_macro("publication",field:"2603[ 1]") # 3 - Current/Latest
+  call_macro("publication",field:"2602[ 1]") # 2 - Intervening
+  call_macro("publication",field:"260 [ 1]") # # - Not applicable/No information provided/Earliest
 end
 
+set_array("manufacture[]")
+if exists("264[ 23]3")
+  call_macro("manufacture",field:"26433") # 3 - Current/Latest
+  call_macro("manufacture",field:"26423") # 2 - Intervening
+  call_macro("manufacture",field:"264 3") # # - Not applicable/No information provided/Earliest
+end
 
-do list(path:"500  ", "var":"$i")
-  if any_match("$i.a", "^.*saṃ. \\d{4}=(\\d{4}).*Chr.*")
-    remove_field("publication[].$last.startDate")
-    copy_field("$i.a","publication[].$last.startDate")
-    replace_all("publication[].$last.startDate","^.*saṃ. \\d{4}=(\\d{4}).*Chr.*","$1")
+# Only add additional publication info to the first publication-object since it is the latest.
+
+if exists("publication[].$first")
+  copy_field("362??.a","publication[].$first.publicationHistory")
+    set_array("publication[].$first.frequency[]")
+    if any_match("leader","^.{6}(a[bis]|m[bis]).*$") # checks if continous ressource
+      unless any_match("008","^.{18}[#\\| u].*$") # filters out not matching values and also the value unknown
+        copy_field("008","publication[].$first.frequency[].$append.id")
+        replace_all("publication[].$first.frequency[].$last.id", "^.{18}(.).*$", "http://marc21rdf.info/terms/continuingfre#$1")
+      end
+    elsif any_match("006","^s.*$")
+      do list(path: "006", "var":"$z")
+        if any_match("$z","^s.*$")
+          unless any_match("$z","^.[#\\| u].*$")
+            copy_field("$z","publication[].$first.frequency[].$append.id")
+            replace_all("publication[].$first.frequency[].$last.id", "^.(.).*$", "http://marc21rdf.info/terms/continuingfre#$1")
+          end
+        end
+      end
+    end
+    set_array("publication[].$first.note[]")
+    copy_field("515??.a","publication[].$first.note[].$append")
+  do list(path:"500  ", "var":"$i")
+    if any_match("$i.a", "^.*saṃ. \\d{4}=(\\d{4}).*Chr.*")
+      remove_field("publication[].$first.startDate")
+      copy_field("$i.a","publication[].$first.startDate")
+      replace_all("publication[].$first.startDate","^.*saṃ. \\d{4}=(\\d{4}).*Chr.*","$1")
+    end
+  end
+  # Add fallbacks for missing publication dates and other publication info.
+  do list(path:"260[ 3][ 1]", "var":"$i")
+    do list(path: "$i.c", "var":"$j")
+      replace_all("$j", "\\[|\\]|ca. |c ", "")
+      unless exists("publication[].$first.startDate")
+        if any_match("$j",".*?([01]\\d{3}|20\\d{2}).*")
+          paste("publication[].$first.startDate", "$j")
+        end
+      end
+      unless exists("publication[].$first.endDate")
+        if any_match("$j",".*-[ ]?([01]\\d{3}|20\\d{2})$")
+          paste("publication[].$last.endDate", "$j")
+        end
+      end
+      unless exists("publication[].$first.location[].1")
+        copy_field("$i.a", "publication[].$first.location[].$append")
+      end
+      unless exists("publication[].$first.publishedBy[].1")
+        copy_field("$i.b", "publication[].$first.publishedBy[].$append")
+      end
+    end
+  end
+  unless exists("publication[].$first.startDate[]")
+    if any_match("008","^.{6}[brestikm](\\d{4}).*$")
+      copy_field("008","@008startDate")
+      replace_all("@008startDate","^.{7}(\\d{4}).*$","$1")
+      copy_field("@008startDate","publication[].$first.startDate")
+    end
+  end
+  unless exists("publication[].$first.endDate[]")
+    if any_match("008","^.{6}[km]\\d{4}(\\d{4}).*$")
+      copy_field("008","@008endDate")
+      replace_all("@008endDate","^.{11}(\\d{4}).*$","$1")
+      unless any_equal("@008endDate","9999")
+        copy_field("@008endDate","publication[].$first.endDate")
+      end
+    end
   end
 end
 

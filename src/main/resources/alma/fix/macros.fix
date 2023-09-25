@@ -325,3 +325,111 @@ do put_macro("subjectLabel")
   copy_field("$i.v","subject[].$last.label.$append")
   join_field("subject[].$last.label"," / ")
 end
+
+do put_macro("publication")
+  do list(path:"$[field]", "var":"$i")
+    add_field("publication[].$append.test","")
+    do list(path: "$i.c", "var":"$j")
+      replace_all("$j", "\\[|\\]|ca. |c ", "")
+      unless exists("publication[].$last.startDate")
+        if any_match("$j",".*?([01]\\d{3}|20\\d{2}).*")
+          paste("publication[].$last.startDate", "$j")
+        end
+      end
+      unless exists("publication[].$last.endDate")
+        if any_match("$j",".*-[ ]?([01]\\d{3}|20\\d{2})$")
+          paste("publication[].$last.endDate", "$j")
+        end
+      end
+    end
+    set_array("publication[].$last.type[]","PublicationEvent")
+    set_array("publication[].$last.location[]")
+    copy_field("$i.a", "publication[].$last.location[].$append")
+    set_array("publication[].$last.publishedBy[]")
+    copy_field("$i.b", "publication[].$last.publishedBy[].$append")
+    if exists("$i.6")
+      copy_field("$i.6","$i.linkageTest")
+      do list(path:"880??","var":"$880")
+        if in ("$i.linkageTest","$880.linkageTest")
+          if in ("$880.@script.id","alternateGraphicRepresentation[].*.script.id")   
+            do list(path:"alternateGraphicRepresentation[]","var":"$AGR")
+              if in ("$880.@script.id","$AGR.script.id")
+                unless exists("$AGR.record.publication[]")
+                  set_array("$AGR.record.publication[]")
+                end                
+                add_field ("$AGR.record.publication[].$append.dummi","")       
+                set_array("$AGR.record.publication[].$last.location[]")        
+                copy_field("$880.a", "$AGR.record.publication[].$last.location[].$append")
+                set_array("$AGR.record.publication[].$last.publishedBy[]")
+                copy_field("$880.b", "$AGR.record.publication[].$last.publishedBy[].$append")
+              end
+            end
+          else    
+            copy_field("$880.@script.id","alternateGraphicRepresentation[].$append.script.id")
+            copy_field("$880.@script.label","alternateGraphicRepresentation[].$last.script.label")
+            set_array("alternateGraphicRepresentation[].$last.publication[]")
+            add_field ("alternateGraphicRepresentation[].$last.publication[].$append.dummi","")       
+            set_array("alternateGraphicRepresentation[].$last.publication[].$last.location[]")        
+            copy_field("$880.a", "alternateGraphicRepresentation[].$last.publication[].$last.location[].$append")
+            set_array("alternateGraphicRepresentation[].$last.publication[].$last.publishedBy[]")
+            copy_field("$880.b", "alternateGraphicRepresentation[].$last.publication[].$last.publishedBy[].$append")
+          end
+        end
+      end
+    end
+  end
+end
+
+do put_macro("manufacture")
+  do list(path:"$[field]", "var":"$i")
+    add_field("manufacture[].$append.test","")
+    do list(path: "$i.c", "var":"$j")
+      replace_all("$j", "\\[|\\]|ca. |c ", "")
+      unless exists("manufacture[].$last.startDate")
+        if any_match("$j",".*?([01]\\d{3}|20\\d{2}).*")
+          paste("manufacture[].$last.startDate", "$j")
+        end
+      end
+      unless exists("manufacture[].$last.endDate")
+        if any_match("$j",".*-[ ]?([01]\\d{3}|20\\d{2})$")
+          paste("manufacture[].$last.endDate", "$j")
+        end
+      end
+    end
+    set_array("manufacture[].$last.type[]","Event")
+    set_array("manufacture[].$last.location[]")
+    copy_field("$i.a", "manufacture[].$last.location[].$append")
+    set_array("manufacture[].$last.manufacturedBy[]")
+    copy_field("$i.b", "manufacture[].$last.manufacturedBy[].$append")
+    if exists("$i.6")
+      copy_field("$i.6","$i.linkageTest")
+      do list(path:"880??","var":"$880")
+        if in ("$i.linkageTest","$880.linkageTest")
+          if in ("$880.@script.id","alternateGraphicRepresentation[].*.script.id")   
+            do list(path:"alternateGraphicRepresentation[]","var":"$AGR")
+              if in ("$880.@script.id","$AGR.script.id")
+                unless exists("$AGR.record.manufacture[]")
+                  set_array("$AGR.record.manufacture[]")
+                end                
+                add_field ("$AGR.record.manufacture[].$append.dummi","")       
+                set_array("$AGR.record.manufacture[].$last.location[]")        
+                copy_field("$880.a", "$AGR.record.manufacture[].$last.location[].$append")
+                set_array("$AGR.record.manufacture[].$last.manufacturedBy[]")
+                copy_field("$880.b", "$AGR.record.manufacture[].$last.manufacturedBy[].$append")
+              end
+            end
+          else    
+            copy_field("$880.@script.id","alternateGraphicRepresentation[].$append.script.id")
+            copy_field("$880.@script.label","alternateGraphicRepresentation[].$last.script.label")
+            set_array("alternateGraphicRepresentation[].$last.manufacture[]")
+            add_field ("alternateGraphicRepresentation[].$last.manufacture[].$append.dummi","")       
+            set_array("alternateGraphicRepresentation[].$last.manufacture[].$last.location[]")        
+            copy_field("$880.a", "alternateGraphicRepresentation[].$last.manufacture[].$last.location[].$append")
+            set_array("alternateGraphicRepresentation[].$last.manufacture[].$last.publishedBy[]")
+            copy_field("$880.b", "alternateGraphicRepresentation[].$last.manufacture[].$last.publishedBy[].$append")
+          end
+        end
+      end
+    end
+  end
+end
