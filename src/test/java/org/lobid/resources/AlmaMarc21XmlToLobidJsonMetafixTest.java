@@ -76,9 +76,9 @@ public final class AlmaMarc21XmlToLobidJsonMetafixTest {
         fixVariables.put("rpb.ttl", "src/test/resources/alma/maps/rpb.ttl");
         fixVariables.put("hbzId2zdbId.tsv", "src/main/resources/alma/maps/hbzId2zdbId.tsv.gz");
         fixVariables.put("isil2opac_hbzId.tsv", "src/main/resources/alma/maps/isil2opac_hbzId.tsv");         
-        fixVariables.put("isil2opac_isbn.tsv", "src/main/resources/alma/maps/isil2opac_hbzId.tsv");     
-        fixVariables.put("isil2opac_issn.tsv", "src/main/resources/alma/maps/isil2opac_hbzId.tsv");     
-        fixVariables.put("isil2opac_zdbId.tsv", "src/main/resources/alma/maps/isil2opac_hbzId.tsv");   
+        fixVariables.put("isil2opac_isbn.tsv", "src/main/resources/alma/maps/isil2opac_isil.tsv");     
+        fixVariables.put("isil2opac_issn.tsv", "src/main/resources/alma/maps/isil2opac_issn.tsv");     
+        fixVariables.put("isil2opac_zdbId.tsv", "src/main/resources/alma/maps/isil2opac_zdbId.tsv");   
     }
 
     /**

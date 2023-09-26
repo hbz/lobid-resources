@@ -132,9 +132,9 @@ public class AlmaMarcXmlFix2lobidJsonEs {
                 fixVariables.put("rpb.ttl", "../../../../../../vocabs/rpb/rpb.ttl");
                 fixVariables.put("hbzId2zdbId.tsv", "./maps/hbzId2zdbId.tsv.gz");
                 fixVariables.put("isil2opac_hbzId.tsv", "./maps/isil2opac_hbzId.tsv");         
-                fixVariables.put("isil2opac_isbn.tsv", "./maps/isil2opac_hbzId.tsv");     
-                fixVariables.put("isil2opac_issn.tsv", "./maps/isil2opac_hbzId.tsv");     
-                fixVariables.put("isil2opac_zdbId.tsv", "./maps/isil2opac_hbzId.tsv");     
+                fixVariables.put("isil2opac_isbn.tsv", "./maps/isil2opac_isbn.tsv");     
+                fixVariables.put("isil2opac_issn.tsv", "./maps/isil2opac_issn.tsv");     
+                fixVariables.put("isil2opac_zdbId.tsv", "./maps/isil2opac_zdbId.tsv");     
 
 
                 XmlElementSplitter xmlElementSplitter = new XmlElementSplitter();
