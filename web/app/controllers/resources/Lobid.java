@@ -2,9 +2,6 @@
 
 package controllers.resources;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -51,6 +48,7 @@ public class Lobid {
 	static final String ORGS_ROOT = Application.CONFIG.getString("orgs.api");
 	/** Timeout for API calls in milliseconds. */
 	public static final int API_TIMEOUT = 50000;
+	public static JsonNode isil2opac = null;
 
 	/**
 	 * @param url The URL to call
@@ -391,21 +389,16 @@ public class Lobid {
 	 * @return The OPAC URL for the given item, or null
 	 */
 	public static String opacUrl(String itemUri) {
-		try (InputStream stream =
-				new URL(Application.CONFIG.getString("isil2opac_hbzid")).openStream()) {
-			JsonNode json = Json.parse(stream);
+
 			String[] hbzId_isil_sig =
 					itemUri.substring(itemUri.indexOf("items/") + 6).split(":");
 			String hbzId = hbzId_isil_sig[0];
 			String isil = hbzId_isil_sig[1];
 			Logger.debug("From item URI {}, got ISIL {} and HBZ-ID {}", itemUri, isil,
 					hbzId);
-			JsonNode urlTemplate = json.get(isil);
+			JsonNode urlTemplate = isil2opac.get(isil);
 			if (urlTemplate != null)
 				return urlTemplate.asText().replace("{hbzid}", hbzId);
-		} catch (IOException e) {
-			Logger.error("Could not create OPAC URL", e);
-		}
 		return null;
 	}
 

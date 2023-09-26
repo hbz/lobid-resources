@@ -1,9 +1,14 @@
 /* Copyright 2017, hbz. Licensed under the EPL 2.0 */
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.InetAddress;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import controllers.resources.Lobid;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
@@ -18,6 +23,7 @@ import org.lobid.resources.run.AlmaMarcXmlFix2lobidJsonEs;
 import play.Application;
 import play.GlobalSettings;
 import play.Logger;
+import play.libs.Json;
 
 /**
  * Application global settings.
@@ -48,6 +54,8 @@ public class Global extends GlobalSettings {
     private LocalIndex localIndex = null;
     private Client client = null;
 
+    private static final String ISIL2OPAC ="../link-templates/isil2opac_hbzid.json";
+
     @Override
     public void onStart(Application app) {
         super.onStart(app);
@@ -71,6 +79,7 @@ public class Global extends GlobalSettings {
         if (client != null) {
             Search.elasticsearchClient = client;
         }
+        Lobid.isil2opac = loadIsil2Opac();
     }
 
     @Override
@@ -95,5 +104,17 @@ public class Global extends GlobalSettings {
                     e.getMessage());
             }
         }
+    }
+
+    private static JsonNode loadIsil2Opac() {
+        JsonNode node = null;
+        try (InputStream stream =
+                 new FileInputStream(ISIL2OPAC)) {
+            node = Json.parse(stream);
+        }
+        catch (IOException e) {
+            Logger.error("Could not create OPAC URL", e);
+        }
+        return node;
     }
 }
