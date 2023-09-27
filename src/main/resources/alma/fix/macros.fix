@@ -255,9 +255,11 @@ end
 # opacLink
 
 do put_macro("opacLink")
-  copy_field("$i.@iz", "$i.@opacLinkZdbId")
-  lookup("$i.@opacLinkZdbId","isil2opac_zdbId", delete:"true")
-  split_field("$i.@opacLinkZdbId","\\{zdbid\\}")
+  if exists("zdbId")
+    copy_field("$i.@iz", "$i.@opacLinkZdbId")
+    lookup("$i.@opacLinkZdbId","isil2opac_zdbId", delete:"true")
+    split_field("$i.@opacLinkZdbId","\\{zdbid\\}")
+  end
   copy_field("$i.@iz", "$i.@opacLinkHbzId")
   lookup("$i.@opacLinkHbzId","isil2opac_hbzId", delete:"true")
   split_field("$i.@opacLinkHbzId","\\{hbzid\\}")
