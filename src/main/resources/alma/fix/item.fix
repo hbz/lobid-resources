@@ -35,7 +35,10 @@ do list(path:"ITM  ", "var": "$i")
     else
       copy_field("$i.@iz", "hasItem[].$last.heldBy.id")
     end
-    call_macro("opacLink", field:"@iz")
+    call_macro("opacLink", field:"@sublibraryIsil")
+    unless exists("hasItem[].$last.opacLink")
+      call_macro("opacLink", field:"@iz")
+    end
     copy_field("hasItem[].$last.heldBy.id","hasItem[].$last.heldBy.isil")
     prepend("hasItem[].$last.heldBy.id", "http://lobid.org/organisations/")
     append("hasItem[].$last.heldBy.id","#!")
@@ -77,7 +80,10 @@ do list(path: "HOL  ", "var": "$i")
           else
             copy_field("$i.@iz", "hasItem[].$last.heldBy.id")
           end
-          call_macro("opacLink", field:"@iz")
+          call_macro("opacLink", field:"@sublibraryIsil")
+          unless exists("hasItem[].$last.opacLink")
+            call_macro("opacLink", field:"@iz")
+          end
           copy_field("hasItem[].$last.heldBy.id","hasItem[].$last.heldBy.isil")
           prepend("hasItem[].$last.heldBy.id", "http://lobid.org/organisations/")
           append("hasItem[].$last.heldBy.id","#!")
