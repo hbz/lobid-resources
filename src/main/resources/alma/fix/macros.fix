@@ -256,21 +256,21 @@ end
 
 do put_macro("opacLink")
   if exists("zdbId")
-    copy_field("$i.@iz", "$i.@opacLinkZdbId")
+    copy_field("$i.$[field]", "$i.@opacLinkZdbId")
     lookup("$i.@opacLinkZdbId","isil2opac_zdbId", delete:"true")
     split_field("$i.@opacLinkZdbId","\\{zdbid\\}")
   elsif exists("hbzId")
-    copy_field("$i.@iz", "$i.@opacLinkHbzId")
+    copy_field("$i.$[field]", "$i.@opacLinkHbzId")
     lookup("$i.@opacLinkHbzId","isil2opac_hbzId", delete:"true")
     split_field("$i.@opacLinkHbzId","\\{hbzid\\}")
   end
   if exists("issn[].1")
-    copy_field("$i.@iz", "$i.@opacLinkIssn")
+    copy_field("$i.$[field]", "$i.@opacLinkIssn")
     lookup("$i.@opacLinkIssn","isil2opac_issn", delete:"true")
     split_field("$i.@opacLinkIssn","\\{issn\\}")
   end
   if exists("isbn[].1")
-    copy_field("$i.@iz", "$i.@opacLinkIsbn")
+    copy_field("$i.$[field]", "$i.@opacLinkIsbn")
     lookup("$i.@opacLinkIsbn","isil2opac_isbn", delete:"true")
     split_field("$i.@opacLinkZdbId","\\{isbn\\}")
   end
