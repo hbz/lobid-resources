@@ -264,10 +264,24 @@ do put_macro("opacLink")
     lookup("$i.@opacLinkHbzId","isil2opac_hbzId", delete:"true")
     split_field("$i.@opacLinkHbzId","\\{hbzid\\}")
   end
+  if exists("issn[].1")
+    copy_field("$i.@iz", "$i.@opacLinkIssn")
+    lookup("$i.@opacLinkIssn","isil2opac_issn", delete:"true")
+    split_field("$i.@opacLinkIssn","\\{issn\\}")
+  end
+  if exists("isbn[].1")
+    copy_field("$i.@iz", "$i.@opacLinkIsbn")
+    lookup("$i.@opacLinkIsbn","isil2opac_isbn", delete:"true")
+    split_field("$i.@opacLinkZdbId","\\{isbn\\}")
+  end
   if exists("$i.@opacLinkZdbId.1")
     paste("hasItem[].$last.opacLink","$i.@opacLinkZdbId.1","zdbId","$i.@opacLinkZdbId.2",join_char:"")
   elsif exists("$i.@opacLinkHbzId.1")
     paste("hasItem[].$last.opacLink","$i.@opacLinkHbzId.1","hbzId","$i.@opacLinkHbzId.2",join_char:"")
+  elsif exists("$i.@opacLinkIsbn.1")
+    paste("hasItem[].$last.opacLink","$i.@opacLinkIsbn.1","isbn[].1","$i.@opacLinkisbn.2",join_char:"")
+  elsif exists("$i.@opacLinkIssn.1")
+    paste("hasItem[].$last.opacLink","$i.@opacLinkIssn.1","issn[].1","$i.@opacLinkissn.2",join_char:"")
   end
 end
 
