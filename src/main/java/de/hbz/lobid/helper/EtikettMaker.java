@@ -45,20 +45,20 @@ public class EtikettMaker implements EtikettMakerInterface {
 	/**
 	 * The context will be loaded on startup. You can reload the context with POST
 	 * /utils/reloadContext
-	 * 
+	 *
 	 */
 	Map<String, Object> context = new HashMap<>();
 
 	/**
 	 * The labels will be loaded on startup. You can reload the context with POST
 	 * /utils/reloadLabels
-	 * 
+	 *
 	 */
 	List<Etikett> labels = new ArrayList<>();
 
 	/**
 	 * The profile provides a json context and labels
-	 * 
+	 *
 	 * @param labelIn input stream to a labels file
 	 */
 	public EtikettMaker(InputStream labelIn) {
@@ -67,7 +67,7 @@ public class EtikettMaker implements EtikettMakerInterface {
 
 	/**
 	 * The profile provides a json context and labels
-	 * 
+	 *
 	 * @param labelInArr input stream array to label(s) file(s)
 	 */
 	public EtikettMaker(InputStream[] labelInArr) {
@@ -79,7 +79,7 @@ public class EtikettMaker implements EtikettMakerInterface {
 	 * The file provides a json context and labels. If it's one file this is the
 	 * labels. If fil is a drirectory every file in it will be merged to one
 	 * labels.
-	 * 
+	 *
 	 * @param labelFile a file to the label(s)
 	 */
 	public EtikettMaker(File labelFile) {
@@ -109,7 +109,7 @@ public class EtikettMaker implements EtikettMakerInterface {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see de.hbz.lobid.helper.EtikettMakerInterface#getContext()
 	 */
 	@Override
@@ -123,9 +123,9 @@ public class EtikettMaker implements EtikettMakerInterface {
 	 * fallback: the domainname (and a possible path) will be extracted from the
 	 * URI. This domainname is lookuped in the labels. Last fallback: If there is
 	 * nothing found, the domainname itself will be the label.
-	 * 
+	 *
 	 * In the end there will be a label for every URI.
-	 * 
+	 *
 	 * @see de.hbz.lobid.helper.EtikettMakerInterface#getEtikett(java.lang.String)
 	 */
 	@Override
@@ -169,7 +169,7 @@ public class EtikettMaker implements EtikettMakerInterface {
 
 	/**
 	 * Generates context.json based on labels.json. Stores into filesystem.
-	 * 
+	 *
 	 */
 	public void writeContext() {
 		logger.info("Writing context file ...");
@@ -292,7 +292,7 @@ public class EtikettMaker implements EtikettMakerInterface {
 
 	/**
 	 * Sets the filename of the jsonld-context.
-	 * 
+	 *
 	 * @param contextFname the filename of the jsonld-context
 	 */
 	@Override
