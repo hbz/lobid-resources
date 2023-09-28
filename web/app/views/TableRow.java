@@ -32,18 +32,6 @@ public enum TableRow {
 		public String process(JsonNode doc, String property, String param,
 				String label, List<String> values, Optional<List<String>> keys) {
 			List<String> vs = values;
-			if (doc.has("coverage")) { // see https://github.com/hbz/nwbib/issues/276
-				List<String> remove = Arrays.asList(//
-						"https://nwbib.de/spatial#N10", "https://nwbib.de/spatial#N12",
-						"https://nwbib.de/spatial#N14", "https://nwbib.de/spatial#N24",
-						"https://nwbib.de/spatial#N28", "https://nwbib.de/spatial#N35",
-						"https://nwbib.de/spatial#N36", "https://nwbib.de/spatial#N37",
-						"https://nwbib.de/spatial#N52", "https://nwbib.de/spatial#N54",
-						"https://nwbib.de/spatial#N72", "https://nwbib.de/spatial#N74",
-						"https://nwbib.de/spatial#N96", "https://nwbib.de/spatial#N97");
-				vs = vs.stream().filter(v -> !remove.contains(v))
-						.collect(Collectors.toList());
-			}
 			return vs.isEmpty() ? ""
 					: String.format("<tr><td>%s</td><td>%s</td></tr>", label,
 							vs.stream().map(val -> label(doc, property, param, val, keys))

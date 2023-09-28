@@ -31,6 +31,9 @@ put_rdfmap("$[rpb2.ttl]", "rpb2", target: "skos:prefLabel", select_language: "de
 put_rdfmap("$[rpb-spatial.ttl]", "rpbr", target: "skos:prefLabel", select_language: "de") # RPB-Raumsystematik aka rpbr
 put_rdfmap("$[rpb.ttl]", "rpb", target: "skos:prefLabel", select_language: "de") # RPB-Sachsystematik fka. Systematik der Rheinland-Pfälzischen Bibliographie
 
+# NWBib SKOS Maps
+put_rdfmap("$[nwbib-spatial.ttl]", "nwbib-spatial", target: "skos:prefLabel", select_language: "de") # NWBib-Raumsystematik
+put_rdfmap("$[nwbib.ttl]", "nwbib", target: "skos:prefLabel", select_language: "de") # Sachsystematik der Nordrhein-Westfälischen Bibliographie
 
 # Formschlagwort/Formangaben-Mapping -> GND (based on: https://wiki.dnb.de/download/attachments/106042227/AH-007.pdf)
 put_filemap("$[formangabe.tsv]","formschlagwort2Gnd", sep_char:"\t",key_column:"0",value_column:"1",expected_columns:"-1")
