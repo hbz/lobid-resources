@@ -42,8 +42,9 @@ do put_macro("alternateGraphicRepresationIsPartOf")
           end
         else    
           copy_field("$880.@script.id","alternateGraphicRepresentation[].$append.script.id")
-          copy_field("$880.@script.label","alternateGraphicRepresentation[].$last.script.label")        
-          set_array("alternateGraphicRepresentation[].$last.record.isPartOf[].$last.hasSuperordinate[].$append")
+          copy_field("$880.@script.label","alternateGraphicRepresentation[].$last.script.label")
+          set_array("alternateGraphicRepresentation[].$last.record.isPartOf[]")        
+          set_array("alternateGraphicRepresentation[].$last.record.isPartOf[].$append.hasSuperordinate[]")
           copy_field("$880.a","alternateGraphicRepresentation[].$last.record.isPartOf[].$last.hasSuperordinate[].$append.label")
           copy_field("$880.v", "alternateGraphicRepresentation[].$last.record.isPartOf[].$last.numbering")
         end
