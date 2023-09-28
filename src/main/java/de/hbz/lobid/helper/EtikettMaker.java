@@ -169,13 +169,15 @@ public class EtikettMaker implements EtikettMakerInterface {
     }
 
     /**
-     * Generates context.json based on labels.json. Stores into filesystem.
+     * Generates context.json based on labels.json.
+     * Stores into filesystem, alphabetically sorted.
      */
     public void writeContext() {
         logger.info("Writing context file ...");
         try {
             ObjectMapper objectMapper = new ObjectMapper();
-            objectMapper.enable(SerializationFeature.INDENT_OUTPUT)
+            objectMapper.enable(SerializationFeature.INDENT_OUTPUT) //
+                .enable(SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS) //
                 .writeValue(new File(getContextLocation()), context);
             logger.info(
                 "... done writing context file to " + getContextLocation() + ".");
