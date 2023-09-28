@@ -131,6 +131,8 @@ public class AlmaMarcXmlFix2lobidJsonEs {
                 fixVariables.put("rpb2.ttl", "../../../../../../vocabs/rpb/rpb2.ttl");
                 fixVariables.put("rpb-spatial.ttl", "../../../../../../vocabs/rpb/rpb-spatial.ttl");
                 fixVariables.put("rpb.ttl", "../../../../../../vocabs/rpb/rpb.ttl");
+                fixVariables.put("nwbib.ttl", "../../../../../../vocabs/nwbib/nwbib.ttl");
+                fixVariables.put("nwbib-spatial.ttl", "../../../../../../vocabs/nwbib/nwbib-spatial.ttl");
                 fixVariables.put("hbzId2zdbId.tsv", "./maps/hbzId2zdbId.tsv.gz");
 
                 XmlElementSplitter xmlElementSplitter = new XmlElementSplitter();
