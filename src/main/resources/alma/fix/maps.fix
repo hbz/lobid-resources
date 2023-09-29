@@ -44,6 +44,14 @@ put_filemap("$[almaMmsId2rpbId]","almaMmsId2rpbId", sep_char:"\t",key_column:"0"
 # map zdbId to old hbzId(HT Nummer) based on the last aleph transformation
 put_filemap("$[hbzId2zdbId.tsv]","zdbId2oldHbzId", sep_char:"\t",key_column:"1",value_column:"0",expected_columns:"-1")
 
+# opac links
+put_filemap("$[isil2opac_hbzId.tsv]","isil2opac_hbzId", sep_char:"\t")
+put_filemap("$[isil2opac_isbn.tsv]","isil2opac_isbn", sep_char:"\t")
+put_filemap("$[isil2opac_issn.tsv]","isil2opac_issn", sep_char:"\t")
+put_filemap("$[isil2opac_zdbId.tsv]","isil2opac_zdbId", sep_char:"\t")
+put_filemap("$[isil2opac_almaMmsId.tsv]","isil2opac_almaMmsId", sep_char:"\t")
+
+
 put_map("rswk-indicator",
   "p": "Person",
   "b": "CorporateBody",

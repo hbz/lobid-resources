@@ -253,6 +253,45 @@ do put_macro("provenanceLinks")
   append("$[field]", "#!")
 end
 
+# opacLink
+
+do put_macro("opacLink")
+  if exists("zdbId")
+    copy_field("$i.$[field]", "$i.@opacLinkZdbId")
+    lookup("$i.@opacLinkZdbId","isil2opac_zdbId", delete:"true")
+    split_field("$i.@opacLinkZdbId","\\{zdbid\\}")
+  elsif exists("hbzId")
+    copy_field("$i.$[field]", "$i.@opacLinkHbzId")
+    lookup("$i.@opacLinkHbzId","isil2opac_hbzId", delete:"true")
+    split_field("$i.@opacLinkHbzId","\\{hbzid\\}")
+  end
+  copy_field("$i.$[field]", "$i.@opacAlmaMmsId")
+  lookup("$i.@opacAlmaMmsId","isil2opac_almaMmsId", delete:"true")
+  split_field("$i.@opacAlmaMmsId","\\{almaMmsId\\}")
+  if exists("issn[].1")
+    copy_field("$i.$[field]", "$i.@opacLinkIssn")
+    lookup("$i.@opacLinkIssn","isil2opac_issn", delete:"true")
+    split_field("$i.@opacLinkIssn","\\{issn\\}")
+  end
+  if exists("isbn[].1")
+    copy_field("$i.$[field]", "$i.@opacLinkIsbn")
+    lookup("$i.@opacLinkIsbn","isil2opac_isbn", delete:"true")
+    split_field("$i.@opacLinkZdbId","\\{isbn\\}")
+  end
+  set_array("hasItem[].$last.seeAlso[]")
+  if exists("$i.@opacLinkZdbId.1")
+    paste("hasItem[].$last.seeAlso[].$append","$i.@opacLinkZdbId.1","zdbId","$i.@opacLinkZdbId.2",join_char:"")
+  elsif exists("$i.@opacLinkHbzId.1")
+    paste("hasItem[].$last.seeAlso[].$append","$i.@opacLinkHbzId.1","hbzId","$i.@opacLinkHbzId.2",join_char:"")
+  elsif exists("$i.@opacAlmaMmsId.1")
+    paste("hasItem[].$last.seeAlso[].$append","$i.@opacAlmaMmsId.1","almaMmsId","$i.@opacAlmaMmsId.2",join_char:"")
+  elsif exists("$i.@opacLinkIsbn.1")
+    paste("hasItem[].$last.seeAlso[].$append","$i.@opacLinkIsbn.1","isbn[].1","$i.@opacLinkIsbn.2",join_char:"")
+  elsif exists("$i.@opacLinkIssn.1")
+    paste("hasItem[].$last.seeAlso[].$append","$i.@opacLinkIssn.1","issn[].1","$i.@opacLinkIssn.2",join_char:"")
+  end
+end
+
 # for Schlagwortfolgen
 
 do put_macro("schlagwortfolge")
