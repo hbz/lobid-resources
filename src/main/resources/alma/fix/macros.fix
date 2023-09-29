@@ -253,6 +253,36 @@ do put_macro("provenanceLinks")
   append("$[field]", "#!")
 end
 
+# holding institution differentiating between library and sublibrary (libraryCode) and adding opacLink
+
+do put_macro("holdingLibrary+opacLink")
+  copy_field("$[mmsIdField]", "$i.@iz")
+  replace_all("$i.@iz",".*(\\d{4})$","$1")
+  lookup("$i.@iz", "alma-institution-code-to-isil")
+  copy_field("$[libraryCodeField]","$i.@sublibraryIsil")
+  lookup("$i.@sublibraryIsil", "hbzowner2sigel",delete:"true")
+  lookup("$i.@sublibraryIsil", "sigel2isilMap",delete:"true") 
+  # following fix checks for sublibrary codes and if they map to provided sublocation Isil
+  unless exists("$i.@sublibraryIsil")
+    paste("$i.@sublibraryIsil","$i.M","~+","$[libraryCodeField]",join_char:"")
+    lookup("$i.@sublibraryIsil", "sublibraryIsil",delete:"true")
+  end
+  if exists("$i.@sublibraryIsil")
+    copy_field("$i.@sublibraryIsil", "hasItem[].$last.heldBy.isil")
+  # if no mapping for a sublocation code is provided or no sublocation code exists ($i.w) the main library ISIL is used.
+  else
+    copy_field("$i.@iz", "hasItem[].$last.heldBy.isil")
+  end
+  call_macro("opacLink", field:"@sublibraryIsil")
+  unless exists("hasItem[].$last.seeAlso[].1")
+    call_macro("opacLink", field:"@iz")
+  end
+  paste("hasItem[].$last.heldBy.id", "~http://lobid.org/organisations/", "hasItem[].$last.heldBy.isil", "~#!", join_char:"")
+  copy_field("hasItem[].$last.heldBy.id", "hasItem[].$last.heldBy.label")
+  # item id is constructed "http://lobid.org/items/[almaMmsId of the record]:[isil of the Owner]:[almaMmsId of the holding]#!"
+  paste("hasItem[].$last.id", "~http://lobid.org/items/","almaMmsId", "~:", "hasItem[].$last.heldBy.isil","~:", "$[mmsIdField]","~#!", join_char: "")
+end
+
 # opacLink
 
 do put_macro("opacLink")

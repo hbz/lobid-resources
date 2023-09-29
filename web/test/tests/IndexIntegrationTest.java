@@ -33,7 +33,7 @@ public class IndexIntegrationTest extends LocalIndexSetup {
 	public static Collection<Object[]> data() {
 		// @formatter:off
 		return queries(new Object[][] {
-			{ "title:der", /*->*/ 14 },
+			{ "title:der", /*->*/ 15 },
 			{ "title:Westfalen", /*->*/ 8 },
 			{ "contribution.agent.label:Westfalen", /*->*/ 3 },
 			{ "contribution.agent.label:Westfälen", /*->*/ 3 },
@@ -66,7 +66,7 @@ public class IndexIntegrationTest extends LocalIndexSetup {
 			{ "publication.startDate:1993", /*->*/ 3 },
 			{ "publication.location:Berlin AND publication.startDate:1993", /*->*/ 1 },
 			{ "publication.location:Berlin AND publication.startDate:[1992 TO 2017]", /*->*/ 4 },
-			{ "inCollection.id:\"http\\://lobid.org/organisations/DE-655#\\!\"", /*->*/ 125 },
+			{ "inCollection.id:\"http\\://lobid.org/organisations/DE-655#\\!\"", /*->*/ 126 },
 			{ "inCollection.id:NWBib", /*->*/ 0 },
 			{ "publication.publishedBy:Quedenfeldt", /*->*/ 2 },
 			{ "publication.publishedBy:Quedenfeld", /*->*/ 2 },
