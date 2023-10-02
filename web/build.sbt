@@ -11,6 +11,8 @@ libraryDependencies ++= Seq(
   cache,
   javaWs,
   "com.typesafe.play" % "play-test_2.11" % "2.4.11",
+  "ch.qos.logback" % "logback-classic" % "1.3.11",
+  "ch.qos.logback" % "logback-core" % "1.3.11",
   "org.elasticsearch.plugin" % "parent-join-client" % "5.6.3" withSources(),
   "org.elasticsearch" % "elasticsearch" % "5.6.3" withSources(),
   "org.elasticsearch.client" % "transport" % "5.6.3" withSources()
