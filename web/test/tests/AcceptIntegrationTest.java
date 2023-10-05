@@ -94,9 +94,7 @@ public class AcceptIntegrationTest extends LocalIndexSetup {
 	@Test
 	public void test() {
 		running(fakeApplication(), () -> {
-            System.out.println(fakeRequest.path() +fakeRequest.body() );
 			Result result = route(fakeRequest);
-            System.out.println(result);
 			assertThat(result).isNotNull();
 			assertThat(result.contentType()).isEqualTo(contentType);
 			if (contentType.equals("application/json")) {
