@@ -66,7 +66,7 @@ public class InputStringsTest extends LocalIndexSetup {
 	 */
 	public InputStringsTest(final String input) {
 		this.input = input;
-		System.out.println(
+		Logger.debug(
 				String.format("Testing if calling searching for '%s' works", input));
 	}
 
