@@ -242,9 +242,7 @@ public class Application extends Controller {
 	private static Promise<Result> resultOrError(final String q,
 			Promise<Result> result) {
 		return result.recover((Throwable t) -> {
-			String message = "Could not query index: " + t.getMessage()
-					+ (t.getCause() != null ? ", cause: " + t.getCause().getMessage()
-							: "");
+			String message = "Could not query index:";
 			boolean badRequest = t instanceof IllegalArgumentException;
 			if (badRequest) {
 				Logger.error(message, t);
