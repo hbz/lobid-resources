@@ -42,8 +42,9 @@ do put_macro("alternateGraphicRepresationIsPartOf")
           end
         else    
           copy_field("$880.@script.id","alternateGraphicRepresentation[].$append.script.id")
-          copy_field("$880.@script.label","alternateGraphicRepresentation[].$last.script.label")        
-          set_array("alternateGraphicRepresentation[].$last.record.isPartOf[].$last.hasSuperordinate[].$append")
+          copy_field("$880.@script.label","alternateGraphicRepresentation[].$last.script.label")
+          set_array("alternateGraphicRepresentation[].$last.record.isPartOf[]")        
+          set_array("alternateGraphicRepresentation[].$last.record.isPartOf[].$append.hasSuperordinate[]")
           copy_field("$880.a","alternateGraphicRepresentation[].$last.record.isPartOf[].$last.hasSuperordinate[].$append.label")
           copy_field("$880.v", "alternateGraphicRepresentation[].$last.record.isPartOf[].$last.numbering")
         end
@@ -252,6 +253,75 @@ do put_macro("provenanceLinks")
   append("$[field]", "#!")
 end
 
+# holding institution differentiating between library and sublibrary (libraryCode) and adding opacLink
+
+do put_macro("holdingLibrary+opacLink")
+  copy_field("$[mmsIdField]", "$i.@iz")
+  replace_all("$i.@iz",".*(\\d{4})$","$1")
+  lookup("$i.@iz", "alma-institution-code-to-isil")
+  copy_field("$[libraryCodeField]","$i.@sublibraryIsil")
+  lookup("$i.@sublibraryIsil", "hbzowner2sigel",delete:"true")
+  lookup("$i.@sublibraryIsil", "sigel2isilMap",delete:"true") 
+  # following fix checks for sublibrary codes and if they map to provided sublocation Isil
+  unless exists("$i.@sublibraryIsil")
+    paste("$i.@sublibraryIsil","$i.M","~+","$[libraryCodeField]",join_char:"")
+    lookup("$i.@sublibraryIsil", "sublibraryIsil",delete:"true")
+  end
+  if exists("$i.@sublibraryIsil")
+    copy_field("$i.@sublibraryIsil", "hasItem[].$last.heldBy.isil")
+  # if no mapping for a sublocation code is provided or no sublocation code exists ($i.w) the main library ISIL is used.
+  else
+    copy_field("$i.@iz", "hasItem[].$last.heldBy.isil")
+  end
+  call_macro("opacLink", field:"@sublibraryIsil")
+  unless exists("hasItem[].$last.seeAlso[].1")
+    call_macro("opacLink", field:"@iz")
+  end
+  paste("hasItem[].$last.heldBy.id", "~http://lobid.org/organisations/", "hasItem[].$last.heldBy.isil", "~#!", join_char:"")
+  copy_field("hasItem[].$last.heldBy.id", "hasItem[].$last.heldBy.label")
+  # item id is constructed "http://lobid.org/items/[almaMmsId of the record]:[isil of the Owner]:[almaMmsId of the holding]#!"
+  paste("hasItem[].$last.id", "~http://lobid.org/items/","almaMmsId", "~:", "hasItem[].$last.heldBy.isil","~:", "$[mmsIdField]","~#!", join_char: "")
+end
+
+# opacLink
+
+do put_macro("opacLink")
+  if exists("zdbId")
+    copy_field("$i.$[field]", "$i.@opacLinkZdbId")
+    lookup("$i.@opacLinkZdbId","isil2opac_zdbId", delete:"true")
+    split_field("$i.@opacLinkZdbId","\\{zdbid\\}")
+  elsif exists("hbzId")
+    copy_field("$i.$[field]", "$i.@opacLinkHbzId")
+    lookup("$i.@opacLinkHbzId","isil2opac_hbzId", delete:"true")
+    split_field("$i.@opacLinkHbzId","\\{hbzid\\}")
+  end
+  copy_field("$i.$[field]", "$i.@opacAlmaMmsId")
+  lookup("$i.@opacAlmaMmsId","isil2opac_almaMmsId", delete:"true")
+  split_field("$i.@opacAlmaMmsId","\\{almaMmsId\\}")
+  if exists("issn[].1")
+    copy_field("$i.$[field]", "$i.@opacLinkIssn")
+    lookup("$i.@opacLinkIssn","isil2opac_issn", delete:"true")
+    split_field("$i.@opacLinkIssn","\\{issn\\}")
+  end
+  if exists("isbn[].1")
+    copy_field("$i.$[field]", "$i.@opacLinkIsbn")
+    lookup("$i.@opacLinkIsbn","isil2opac_isbn", delete:"true")
+    split_field("$i.@opacLinkZdbId","\\{isbn\\}")
+  end
+  set_array("hasItem[].$last.seeAlso[]")
+  if exists("$i.@opacLinkZdbId.1")
+    paste("hasItem[].$last.seeAlso[].$append","$i.@opacLinkZdbId.1","zdbId","$i.@opacLinkZdbId.2",join_char:"")
+  elsif exists("$i.@opacLinkHbzId.1")
+    paste("hasItem[].$last.seeAlso[].$append","$i.@opacLinkHbzId.1","hbzId","$i.@opacLinkHbzId.2",join_char:"")
+  elsif exists("$i.@opacAlmaMmsId.1")
+    paste("hasItem[].$last.seeAlso[].$append","$i.@opacAlmaMmsId.1","almaMmsId","$i.@opacAlmaMmsId.2",join_char:"")
+  elsif exists("$i.@opacLinkIsbn.1")
+    paste("hasItem[].$last.seeAlso[].$append","$i.@opacLinkIsbn.1","isbn[].1","$i.@opacLinkIsbn.2",join_char:"")
+  elsif exists("$i.@opacLinkIssn.1")
+    paste("hasItem[].$last.seeAlso[].$append","$i.@opacLinkIssn.1","issn[].1","$i.@opacLinkIssn.2",join_char:"")
+  end
+end
+
 # for Schlagwortfolgen
 
 do put_macro("schlagwortfolge")
@@ -373,6 +443,60 @@ do put_macro("publication")
             copy_field("$880.a", "alternateGraphicRepresentation[].$last.publication[].$last.location[].$append")
             set_array("alternateGraphicRepresentation[].$last.publication[].$last.publishedBy[]")
             copy_field("$880.b", "alternateGraphicRepresentation[].$last.publication[].$last.publishedBy[].$append")
+          end
+        end
+      end
+    end
+  end
+end
+
+do put_macro("manufacture")
+  do list(path:"$[field]", "var":"$i")
+    add_field("manufacture[].$append.test","")
+    do list(path: "$i.c", "var":"$j")
+      replace_all("$j", "\\[|\\]|ca. |c ", "")
+      unless exists("manufacture[].$last.startDate")
+        if any_match("$j",".*?([01]\\d{3}|20\\d{2}).*")
+          paste("manufacture[].$last.startDate", "$j")
+        end
+      end
+      unless exists("manufacture[].$last.endDate")
+        if any_match("$j",".*-[ ]?([01]\\d{3}|20\\d{2})$")
+          paste("manufacture[].$last.endDate", "$j")
+        end
+      end
+    end
+    set_array("manufacture[].$last.type[]","Event")
+    set_array("manufacture[].$last.location[]")
+    copy_field("$i.a", "manufacture[].$last.location[].$append")
+    set_array("manufacture[].$last.manufacturedBy[]")
+    copy_field("$i.b", "manufacture[].$last.manufacturedBy[].$append")
+    if exists("$i.6")
+      copy_field("$i.6","$i.linkageTest")
+      do list(path:"880??","var":"$880")
+        if in ("$i.linkageTest","$880.linkageTest")
+          if in ("$880.@script.id","alternateGraphicRepresentation[].*.script.id")   
+            do list(path:"alternateGraphicRepresentation[]","var":"$AGR")
+              if in ("$880.@script.id","$AGR.script.id")
+                unless exists("$AGR.record.manufacture[]")
+                  set_array("$AGR.record.manufacture[]")
+                end                
+                add_field ("$AGR.record.manufacture[].$append.dummi","")       
+                set_array("$AGR.record.manufacture[].$last.location[]")        
+                copy_field("$880.a", "$AGR.record.manufacture[].$last.location[].$append")
+                set_array("$AGR.record.manufacture[].$last.manufacturedBy[]")
+                copy_field("$880.b", "$AGR.record.manufacture[].$last.manufacturedBy[].$append")
+              end
+            end
+          else    
+            copy_field("$880.@script.id","alternateGraphicRepresentation[].$append.script.id")
+            copy_field("$880.@script.label","alternateGraphicRepresentation[].$last.script.label")
+            set_array("alternateGraphicRepresentation[].$last.manufacture[]")
+            add_field ("alternateGraphicRepresentation[].$last.manufacture[].$append.dummi","")       
+            set_array("alternateGraphicRepresentation[].$last.manufacture[].$last.location[]")        
+            copy_field("$880.a", "alternateGraphicRepresentation[].$last.manufacture[].$last.location[].$append")
+            set_array("alternateGraphicRepresentation[].$last.manufacture[].$last.publishedBy[]")
+            copy_field("$880.b", "alternateGraphicRepresentation[].$last.manufacture[].$last.publishedBy[].$append")
           end
         end
       end

@@ -9,7 +9,6 @@ put_filemap("$[lobidOrganisationsMapping.tsv]","lobidOrgLabels", sep_char:"\t",k
 
 put_filemap("$[lobidOrganisationsMapping.tsv]","sigel2isilMap", sep_char:"\t",key_column:"2",value_column:"1",expected_columns:"-1")
 put_filemap("$[hbzowner2sigel.tsv]","hbzowner2sigel", sep_char:"\t",key_column:"0",value_column:"2",expected_columns:"-1")
-put_filemap("$[isilRedirect.tsv]","isilRedirect", sep_char:"\t",key_column:"1",value_column:"0",expected_columns:"-1")
 
 put_filemap("$[picaCreatorId2Isil.tsv]","picaCreatorId2Isil", sep_char:"\t", sep_char:"\t",key_column:"0",value_column:"2",expected_columns:"-1")
 
@@ -32,6 +31,9 @@ put_rdfmap("$[rpb2.ttl]", "rpb2", target: "skos:prefLabel", select_language: "de
 put_rdfmap("$[rpb-spatial.ttl]", "rpbr", target: "skos:prefLabel", select_language: "de") # RPB-Raumsystematik aka rpbr
 put_rdfmap("$[rpb.ttl]", "rpb", target: "skos:prefLabel", select_language: "de") # RPB-Sachsystematik fka. Systematik der Rheinland-Pfälzischen Bibliographie
 
+# NWBib SKOS Maps
+put_rdfmap("$[nwbib-spatial.ttl]", "nwbib-spatial", target: "skos:prefLabel", select_language: "de") # NWBib-Raumsystematik
+put_rdfmap("$[nwbib.ttl]", "nwbib", target: "skos:prefLabel", select_language: "de") # Sachsystematik der Nordrhein-Westfälischen Bibliographie
 
 # Formschlagwort/Formangaben-Mapping -> GND (based on: https://wiki.dnb.de/download/attachments/106042227/AH-007.pdf)
 put_filemap("$[formangabe.tsv]","formschlagwort2Gnd", sep_char:"\t",key_column:"0",value_column:"1",expected_columns:"-1")
@@ -41,6 +43,14 @@ put_filemap("$[almaMmsId2rpbId]","almaMmsId2rpbId", sep_char:"\t",key_column:"0"
 
 # map zdbId to old hbzId(HT Nummer) based on the last aleph transformation
 put_filemap("$[hbzId2zdbId.tsv]","zdbId2oldHbzId", sep_char:"\t",key_column:"1",value_column:"0",expected_columns:"-1")
+
+# opac links
+put_filemap("$[isil2opac_hbzId.tsv]","isil2opac_hbzId", sep_char:"\t")
+put_filemap("$[isil2opac_isbn.tsv]","isil2opac_isbn", sep_char:"\t")
+put_filemap("$[isil2opac_issn.tsv]","isil2opac_issn", sep_char:"\t")
+put_filemap("$[isil2opac_zdbId.tsv]","isil2opac_zdbId", sep_char:"\t")
+put_filemap("$[isil2opac_almaMmsId.tsv]","isil2opac_almaMmsId", sep_char:"\t")
+
 
 put_map("rswk-indicator",
   "p": "Person",

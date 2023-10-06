@@ -18,29 +18,7 @@ do list(path:"ITM  ", "var": "$i")
     copy_field("$i.b", "hasItem[].$last.serialNumber")
     copy_field("$i.w","hasItem[].$last.currentLibrary")
     copy_field("$i.x","hasItem[].$last.currentLocation")
-    copy_field("$i.w","$i.@sublibraryIsil")
-    lookup("$i.@sublibraryIsil", "hbzowner2sigel",delete:"true")
-    lookup("$i.@sublibraryIsil", "sigel2isilMap",delete:"true")
-    lookup("$i.@sublibraryIsil", "isilRedirect")     
-    # following fix checks for sublibrary codes and if they map to provided sublocation Isil
-    unless exists("$i.@sublibraryIsil")
-      paste("$i.@sublibraryIsil","$i.M","~+","$i.w",join_char:"")
-      lookup("$i.@sublibraryIsil", "sublibraryIsil",delete:"true")
-    end
-    if exists("$i.@sublibraryIsil")
-      copy_field("$i.@sublibraryIsil", "hasItem[].$last.heldBy.id")
-    # if no mapping for a sublocation code is provided or no sublocation code exists ($i.w) the main library ISIL is used.
-    else
-      copy_field("$i.a", "hasItem[].$last.heldBy.id")
-      replace_all("hasItem[].$last.heldBy.id",".*(\\d{4})$","$1")
-      lookup("hasItem[].$last.heldBy.id", "alma-institution-code-to-isil")
-    end
-    copy_field("hasItem[].$last.heldBy.id","hasItem[].$last.heldBy.isil")
-    prepend("hasItem[].$last.heldBy.id", "http://lobid.org/organisations/")
-    append("hasItem[].$last.heldBy.id","#!")
-    copy_field("hasItem[].$last.heldBy.id", "hasItem[].$last.heldBy.label")
-    # item id is constructed "http://lobid.org/items/[almaMmsId of the record]:[isil of the Owner]:[almaMmsId of the holding]#!"
-    paste("hasItem[].$last.id", "~http://lobid.org/items/","almaMmsId", "~:", "hasItem[].$last.heldBy.isil","~:", "$i.a","~#!", join_char: "")
+    call_macro("holdingLibrary+opacLink", mmsIdField:"$i.a",libraryCodeField:"$i.w")
   end
 end
 
@@ -59,29 +37,7 @@ do list(path: "HOL  ", "var": "$i")
           copy_field("$H52.b","hasItem[].$last.currentLibrary")
           copy_field("$H52.c","hasItem[].$last.currentLocation")
           copy_field("$H52.h", "hasItem[].$last.callNumber")
-          copy_field("$H52.b","$i.@sublibraryIsil")
-          lookup("$i.@sublibraryIsil", "hbzowner2sigel",delete:"true")
-          lookup("$i.@sublibraryIsil", "sigel2isilMap",delete:"true") 
-          lookup("$i.@sublibraryIsil", "isilRedirect")       
-          # following fix checks for sublibrary codes and if they map to provided sublocation Isil
-          unless exists("$i.@sublibraryIsil")
-            paste("$i.@sublibraryIsil","$i.M","~+","$H52.b",join_char:"")
-            lookup("$i.@sublibraryIsil", "sublibraryIsil",delete:"true")
-          end
-          if exists("$i.@sublibraryIsil")
-            copy_field("$i.@sublibraryIsil", "hasItem[].$last.heldBy.id")
-          # if no mapping for a sublocation code is provided or no sublocation code exists ($i.w) the main library ISIL is used.
-          else
-            copy_field("$i.8", "hasItem[].$last.heldBy.id")
-            replace_all("hasItem[].$last.heldBy.id",".*(\\d{4})$","$1")
-            lookup("hasItem[].$last.heldBy.id", "alma-institution-code-to-isil")
-          end
-          copy_field("hasItem[].$last.heldBy.id","hasItem[].$last.heldBy.isil")
-          prepend("hasItem[].$last.heldBy.id", "http://lobid.org/organisations/")
-          append("hasItem[].$last.heldBy.id","#!")
-          copy_field("hasItem[].$last.heldBy.id", "hasItem[].$last.heldBy.label")
-          # item id is constructed "http://lobid.org/items/[almaMmsId of the record]:[isil of the Owner]:[almaMmsId of the holding]#!"
-          paste("hasItem[].$last.id", "~http://lobid.org/items/","almaMmsId", "~:", "hasItem[].$last.heldBy.isil","~:","$i.8","~#!", join_char: "")
+          call_macro("holdingLibrary+opacLink", mmsIdField:"$i.8",libraryCodeField:"$H52.b")
         end
       end
     end
@@ -101,15 +57,7 @@ do list(path:"POR  ", "var": "$i")
     copy_field("$i.d", "$i.@sublocation")
     replace_all("$i.@sublocation","https://hbz-network.userservices.exlibrisgroup.com/view/uresolver/49HBZ_NETWORK","")
     paste("hasItem[].$last.sublocation", "~https://hbz-network.userservices.exlibrisgroup.com/view/uresolver/","$i.M","$i.@sublocation", join_char: "")
-    copy_field("$i.a", "hasItem[].$last.heldBy.id")
-    replace_all("hasItem[].$last.heldBy.id",".*(\\d{4})$","$1")
-    lookup("hasItem[].$last.heldBy.id", "alma-institution-code-to-isil")
-    copy_field("hasItem[].$last.heldBy.id","hasItem[].$last.heldBy.isil")
-    prepend("hasItem[].$last.heldBy.id", "http://lobid.org/organisations/")
-    append("hasItem[].$last.heldBy.id","#!")
-    copy_field("hasItem[].$last.heldBy.id", "hasItem[].$last.heldBy.label")
-    # item id is constructed "http://lobid.org/items/[almaMmsId of the record]:[isil of the Owner]:[almaMmsId of the holding]#!"
-    paste("hasItem[].$last.id", "~http://lobid.org/items/","almaMmsId", "~:", "hasItem[].$last.heldBy.isil","~:", "$i.a","~#!", join_char: "")
+    call_macro("holdingLibrary+opacLink", mmsIdField:"$i.a",libraryCodeField:"$i.g")
   end
   # entity for every POR  .A
   if exists ("$i.A")
@@ -123,11 +71,11 @@ do list(path:"POR  ", "var": "$i")
       add_field("hasItem[].$last.label", "Electronic Portfolio")
       paste("hasItem[].$last.electronicLocator", "~https://eu04.alma.exlibrisgroup.com/view/uresolver/","$j","$i.@electronicLocator", join_char: "")
       paste("hasItem[].$last.sublocation", "~https://hbz-network.userservices.exlibrisgroup.com/view/uresolver/","$j","$i.@sublocation", join_char: "")
-      copy_field("$j", "hasItem[].$last.heldBy.id")
-      lookup("hasItem[].$last.heldBy.id", "alma-iz-code-to-isil")
-      copy_field("hasItem[].$last.heldBy.id","hasItem[].$last.heldBy.isil")
-      prepend("hasItem[].$last.heldBy.id", "http://lobid.org/organisations/")
-      append("hasItem[].$last.heldBy.id","#!")
+      copy_field("$j", "$i.@iz")
+      lookup("$i.@iz", "alma-iz-code-to-isil")
+      call_macro("opacLink", field:"@iz")
+      copy_field("$i.@iz","hasItem[].$last.heldBy.isil")
+      paste("hasItem[].$last.heldBy.id", "~http://lobid.org/organisations/", "hasItem[].$last.heldBy.isil", "~#!", join_char:"")
       copy_field("hasItem[].$last.heldBy.id", "hasItem[].$last.heldBy.label")
       # item id is constructed "http://lobid.org/items/[almaMmsId of the record]:[isil of the Owner]:[almaMmsId of the holding]#!"
       paste("hasItem[].$last.id", "~http://lobid.org/items/","almaMmsId", "~:", "hasItem[].$last.heldBy.isil","~:", "$i.a","~#!", join_char: "")
@@ -141,12 +89,12 @@ do list(path: "MBD  ", "var": "$i")
       add_field( "hasItem[].$append.test","")
       add_field("hasItem[].$last.label", "lobid Bestandsressource")
       set_array("hasItem[].$last.type[]", "Item","NurTitel")
-      copy_field("$i.i", "hasItem[].$last.heldBy.id")
-      replace_all("hasItem[].$last.heldBy.id",".*(\\d{4})$","$1")
-      lookup("hasItem[].$last.heldBy.id", "alma-institution-code-to-isil")
-      copy_field("hasItem[].$last.heldBy.id","hasItem[].$last.heldBy.isil")
-      prepend("hasItem[].$last.heldBy.id", "http://lobid.org/organisations/")
-      append("hasItem[].$last.heldBy.id","#!")
+      copy_field("$i.i", "$i.@iz")
+      replace_all("$i.@iz",".*(\\d{4})$","$1")
+      lookup("$i.@iz", "alma-institution-code-to-isil")
+      call_macro("opacLink", field:"@iz")
+      copy_field("$i.@iz","hasItem[].$last.heldBy.isil")
+      paste("hasItem[].$last.heldBy.id", "~http://lobid.org/organisations/", "hasItem[].$last.heldBy.isil", "~#!", join_char:"")
       copy_field("hasItem[].$last.heldBy.id", "hasItem[].$last.heldBy.label")
       # item id is constructed "http://lobid.org/items/[almaMmsId of the record]:[isil of the Owner]:[almaMmsId of the holding]#!"
       paste("hasItem[].$last.id", "~http://lobid.org/items/","almaMmsId", "~:", "hasItem[].$last.heldBy.isil","~:", "$i.i", "~#!", join_char: "")
