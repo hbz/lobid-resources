@@ -1,10 +1,25 @@
 <configuration>
   <conversionRule conversionWord="coloredLevel" converterClass="play.api.Logger$ColoredLevel" />
-  <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+  <appender name="FILE_APPLICATION" class="ch.qos.logback.core.rolling.RollingFileAppender">
     <file>./logs/application.log</file>
     <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
         <!-- Daily rollover with compression -->
         <fileNamePattern>application-log-%d{yyyy-MM-dd}.%i.gz</fileNamePattern>
+        <!-- keep 3 weeks worth of history -->
+        <maxHistory>21</maxHistory>
+        <!-- roll log file > 100MB -->
+        <maxFileSize>100MB</maxFileSize>
+    </rollingPolicy>
+    <encoder>
+      <pattern>%date{yyyy-MM-dd HH:mm:ss ZZZZ} [%level] from %logger in %thread - %message%n%xException</pattern>
+    </encoder>
+</appender>
+
+  <appender name="FILE_ETL" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <file>./logs/etl.log</file>
+    <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+        <!-- Daily rollover with compression -->
+        <fileNamePattern>etl-log-%d{yyyy-MM-dd}.%i.gz</fileNamePattern>
         <!-- keep 3 weeks worth of history -->
         <maxHistory>21</maxHistory>
         <!-- roll log file > 100MB -->
@@ -22,7 +37,7 @@
   </appender>
 
   <appender name="ASYNCFILE" class="ch.qos.logback.classic.AsyncAppender">
-    <appender-ref ref="FILE" />
+    <appender-ref ref="FILE_APPLICATION" />
   </appender>
 
   <appender name="ASYNCSTDOUT" class="ch.qos.logback.classic.AsyncAppender">
@@ -34,6 +49,12 @@
   <logger name="com.avaje.ebeaninternal.server.core.XmlConfigLoader" level="OFF" />
   <logger name="com.avaje.ebeaninternal.server.lib.BackgroundThread" level="OFF" />
   <logger name="com.gargoylesoftware.htmlunit.javascript" level="OFF" />
+
+  <logger name="play" level="INFO" />
+  <logger name="application" level="INFO" />
+  <logger name="etl" level="INFO" >
+    <appender-ref ref="FILE_ETL" />
+  </logger>
 
   <root level="INFO">
     <appender-ref ref="ASYNCFILE" />

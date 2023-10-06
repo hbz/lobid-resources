@@ -5,7 +5,6 @@ package controllers.resources;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import org.lobid.resources.run.AlmaMarcXmlFix2lobidJsonEs;
-import play.Logger;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
@@ -19,6 +18,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+
+import ch.qos.logback.classic.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Webhook listener starting update/basedump process for the Alma Fix ETL. Also use
@@ -55,6 +57,7 @@ public class WebhookAlmaFix extends Controller {
           + MSG_ETL_PROCESS_IS_ALREADY_RUNNING;
   private static final String MSG_CALLED_FROM_REMOTE_ADDRESS = "Called from: '%s' ";
   private static final String FIX_FILENAME = "conf/alma/alma.fix";
+  private static final Logger etl = (ch.qos.logback.classic.Logger)LoggerFactory.getLogger(WebhookAlmaFix.class);
   // If null, create default values from Global settings
   public static String clusterHost = null;
   public static String clusterName = null;
@@ -84,7 +87,7 @@ public class WebhookAlmaFix extends Controller {
     try {
       msg = composeMessage(MSG_FILE_TOO_SMALL);
       if (Files.size(Paths.get(filenameUpdate.split(";")[0])) < 512) {
-        Logger.error(msg);
+        etl.error(msg);
         AlmaMarcXmlFix2lobidJsonEs.sendMail("Triggering of " + ETL_OF + KIND, false,
             msg);
         return status(500, msg);
@@ -103,7 +106,7 @@ public class WebhookAlmaFix extends Controller {
       return status(423, msg);
     }
     msg = composeMessage(String.format(msgStartEtl, KIND));
-    Logger.info(msg);
+    etl.info(msg);
     AlmaMarcXmlFix2lobidJsonEs.setKindOfEtl(KIND);
     AlmaMarcXmlFix2lobidJsonEs.setSwitchAliasAfterETL(false);
     AlmaMarcXmlFix2lobidJsonEs.main(filenameUpdate, indexNameOfUpdate,
@@ -117,7 +120,7 @@ public class WebhookAlmaFix extends Controller {
 
   private static void reloadConfigs() {
     Config config = ConfigFactory.parseFile(new File(RESOURCES_CONF)).resolve();
-    Logger.info("reload configs:" + RESOURCES_CONF);
+    etl.info("reload configs:" + RESOURCES_CONF);
     filenameUpdate = config.getString("webhook.alma.update.filename");
     filenameBasedump = config.getString("webhook.alma.basedump.filename");
     indexNameOfBasedump = config.getString("webhook.alma.basedump.indexname");
@@ -153,7 +156,7 @@ public class WebhookAlmaFix extends Controller {
     try {
       if (Files.size(Paths.get(filenameBasedump)) < 512) {
         msg = composeMessage(MSG_FILE_TOO_SMALL);
-        Logger.error(msg);
+        etl.error(msg);
         AlmaMarcXmlFix2lobidJsonEs.sendMail("Triggering of " + ETL_OF + KIND, false,
             msg);
         return status(500, msg);
@@ -170,7 +173,7 @@ public class WebhookAlmaFix extends Controller {
       return status(423, msg);
     }
     msg = composeMessage(String.format(msgStartEtl, KIND));
-    Logger.info(msg);
+    etl.info(msg);
     AlmaMarcXmlFix2lobidJsonEs.setKindOfEtl(KIND);
     if (basedumpSwitchAutomatically.equals("true")) {
       AlmaMarcXmlFix2lobidJsonEs.setSwitchAliasAfterETL(true);
@@ -198,9 +201,9 @@ public class WebhookAlmaFix extends Controller {
     reloadConfigs();
     String subject = "switch aliases '" + alias1 + "' with '" + alias2 + "'";
     String msg = composeMessage(subject);
-    Logger.info(msg);
+    etl.info(msg);
     if (!GIVEN_TOKEN.equals(token)) {
-      Logger.info("Wrong token: " + GIVEN_TOKEN);
+      etl.info("Wrong token: " + GIVEN_TOKEN);
       return wrongToken(subject, GIVEN_TOKEN);
     }
     boolean success;
@@ -222,7 +225,7 @@ public class WebhookAlmaFix extends Controller {
   private static Result wrongToken(final String KIND,
       final String GIVEN_TOKEN) {
     String msg = composeMessage(String.format(msgWrongToken, GIVEN_TOKEN, KIND));
-    Logger.error(msg);
+    etl.error(msg);
     AlmaMarcXmlFix2lobidJsonEs.sendMail(KIND, false, msg);
     return forbidden(msg);
   }
