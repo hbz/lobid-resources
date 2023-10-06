@@ -1,0 +1,69 @@
+<configuration>
+  <appender name="FILE_APPLICATION" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <file>./logs/application.log</file>
+    <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+        <!-- Daily rollover with compression -->
+        <fileNamePattern>application-log-%d{yyyy-MM-dd}.%i.gz</fileNamePattern>
+        <!-- keep 3 weeks worth of history -->
+        <maxHistory>21</maxHistory>
+        <!-- roll log file > 100MB -->
+        <maxFileSize>100MB</maxFileSize>
+    </rollingPolicy>
+    <encoder>
+      <pattern>%date{yyyy-MM-dd HH:mm:ss ZZZZ} [%level] from %logger{36} - %message%n%xException</pattern>
+    </encoder>
+  </appender>
+
+  <appender name="FILE_ETL" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <file>./logs/etl.log</file>
+    <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+        <!-- Daily rollover with compression -->
+        <fileNamePattern>etl-log-%d{yyyy-MM-dd}.%i.gz</fileNamePattern>
+        <!-- keep 3 weeks worth of history -->
+        <maxHistory>21</maxHistory>
+        <!-- roll log file > 100MB -->
+        <maxFileSize>100MB</maxFileSize>
+    </rollingPolicy>
+    <encoder>
+        <pattern>%date{yyyy-MM-dd HH:mm:ss} [%level] %logger{52} in %thread - %message%n%xException</pattern>
+    </encoder>
+  </appender>
+
+  <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>%logger{15} - %message%n%xException{10}</pattern>
+    </encoder>
+  </appender>
+
+  <appender name="ASYNCSTDOUT" class="ch.qos.logback.classic.AsyncAppender">
+    <appender-ref ref="STDOUT" />
+  </appender>
+
+  <!-- Off these ones as they are annoying, and anyway we manage configuration ourself -->
+  <logger name="com.avaje.ebean.config.PropertyMapLoader" level="OFF" />
+  <logger name="com.avaje.ebeaninternal.server.core.XmlConfigLoader" level="OFF" />
+  <logger name="com.avaje.ebeaninternal.server.lib.BackgroundThread" level="OFF" />
+  <logger name="com.gargoylesoftware.htmlunit.javascript" level="OFF" />
+
+  <logger name="play" level="INFO" >
+    <appender-ref ref="FILE_APPLICATION" />
+  </logger>
+  <logger name="application" level="INFO" >
+    <appender-ref ref="FILE_APPLICATION" />
+  </logger>
+
+  <logger name="org.metafacture" level="INFO" >
+    <appender-ref ref="FILE_ETL" />
+  </logger>
+  <logger name="org.lobid" level="INFO" >
+    <appender-ref ref="FILE_ETL" />
+  </logger>
+  <logger name="de.hbz.lobid" level="INFO" >
+    <appender-ref ref="FILE_ETL" />
+  </logger>
+
+  <root level="INFO">
+    <appender-ref ref="ASYNCSTDOUT" />
+  </root>
+
+</configuration>
