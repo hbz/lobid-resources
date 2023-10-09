@@ -59,16 +59,6 @@ map.addLayer(layer);
         json = Json.parse(Lobid.cachedJsonCall(owner).toString);
         ownerUrl = if((json\\"url").isEmpty) owner else (json\\"url")(0).as[String];
         ownerName = if((json\\"name").isEmpty) "" else (json\\"name")(0).as[String]) {
-          var details = '<tr><td><i>Bibliothek:</i></td><td>'+
-            '<i>@if(!ownerName.isEmpty){<a href="@ownerUrl">@ownerName</a>}else{&lt;Keine Angabe&gt;}</i></td></tr>'
-            @defining(Lobid.opacUrl(items(key).head)){ opacLink =>
-              @if(opacLink!=null){+'<tr><td>Verfügbarkeit:</td>'+'<td><a href="@opacLink">Lokalen Katalog abfragen</a></td></tr>'};
-            }
-          tableDetails = details;
-          if(allTableDetails=='')
-            allTableDetails += tableDetails;
-          else
-            allTableDetails += '<tr><th style="width: 30%"/><th style="width: 70%"/></tr>' + tableDetails;
         @for((itemId,i) <- items(key).zipWithIndex;
             shortItemId = itemId.substring(itemId.lastIndexOf(":") + 1, itemId.lastIndexOf("#"));
             itemJson = Json.parse(itemDetails(itemId));
@@ -77,12 +67,23 @@ map.addLayer(layer);
             signatures = (itemJson\\"callNumber");
             signature = if(signatures.isEmpty) "" else signatures(0).as[String];
             urls = (itemJson\\"electronicLocator");
+            seeAlso=if((itemJson\\"seeAlso").isEmpty) null else (itemJson\\"seeAlso")(0).as[Seq[JsValue]].map(_.as[String]);
             url = if(urls.isEmpty) "" else urls(0).as[String]) {
-              var sig = '<tr><td>@if(!signature.isEmpty){Signatur:}@if(!urls.isEmpty){Elektronische Ressource:}</td>'+
-                '<td>@if(!url.isEmpty){<a href="@url">@shortItemId</a>} else {@if(!signature.isEmpty){@signature}}</td></tr>';
-              @for(noteSeq <- (itemJson\"note").asOpt[Seq[String]]; note = noteSeq(0)) {sig += '<tr><td>Notiz:</td><td>' + '@note' + '</td></tr>';}
-              tableDetails += sig;
-              allTableDetails += sig;
+            var details = '<tr><td><i>Bibliothek:</i></td><td>'+
+               '<i>@if(!ownerName.isEmpty){<a href="@ownerUrl">@ownerName</a>}else{&lt;Keine Angabe&gt;}</i></td></tr>'
+            @defining(seeAlso){ opacLink =>
+               @if(opacLink!=null){+'<tr><td>Verfügbarkeit:</td>'+'<td><a href="@opacLink">Lokalen Katalog abfragen</a></td></tr>'};
+               }
+               tableDetails = details;
+               if(allTableDetails=='')
+                  allTableDetails += tableDetails;
+                  else
+                    allTableDetails += '<tr><th style="width: 30%"/><th style="width: 70%"/></tr>' + tableDetails;
+               var sig = '<tr><td>@if(!signature.isEmpty){Signatur:}@if(!urls.isEmpty){Elektronische Ressource:}</td>'+
+               '<td>@if(!url.isEmpty){<a href="@url">@shortItemId</a>} else {@if(!signature.isEmpty){@signature}}</td></tr>';
+               @for(noteSeq <- (itemJson\"note").asOpt[Seq[String]]; note = noteSeq(0)) {sig += '<tr><td>Notiz:</td><td>' + '@note' + '</td></tr>';}
+               tableDetails += sig;
+               allTableDetails += sig;
         }
         @if(
         !(json \\ "lon").isEmpty && (json \\ "lon").head.asOpt[String].isDefined &&

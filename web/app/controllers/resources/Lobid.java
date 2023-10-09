@@ -30,6 +30,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.html.HtmlEscapers;
 
 import play.Logger;
+import play.api.libs.json.JsValue;
 import play.cache.Cache;
 import play.libs.F.Promise;
 import play.libs.Json;
@@ -384,29 +385,6 @@ public class Lobid {
 				Logger.debug(x.getMessage(), x);
 			}
 		}
-	}
-
-	/**
-	 * @param itemUri The lobid item URI
-	 * @return The OPAC URL for the given item, or null
-	 */
-	public static String opacUrl(String itemUri) {
-		try (InputStream stream =
-				new URL(Application.CONFIG.getString("isil2opac_hbzid")).openStream()) {
-			JsonNode json = Json.parse(stream);
-			String[] hbzId_isil_sig =
-					itemUri.substring(itemUri.indexOf("items/") + 6).split(":");
-			String hbzId = hbzId_isil_sig[0];
-			String isil = hbzId_isil_sig[1];
-			Logger.debug("From item URI {}, got ISIL {} and HBZ-ID {}", itemUri, isil,
-					hbzId);
-			JsonNode urlTemplate = json.get(isil);
-			if (urlTemplate != null)
-				return urlTemplate.asText().replace("{hbzid}", hbzId);
-		} catch (IOException e) {
-			Logger.error("Could not create OPAC URL", e);
-		}
-		return null;
 	}
 
 	/**
