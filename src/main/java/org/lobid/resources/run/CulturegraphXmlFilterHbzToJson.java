@@ -12,16 +12,16 @@ import org.metafacture.io.ObjectWriter;
 import org.metafacture.json.JsonEncoder;
 import org.metafacture.mangling.LiteralToObject;
 import org.metafacture.metamorph.Filter;
-import org.metafacture.metamorph.Metamorph;
 import org.metafacture.strings.StringReader;
 import org.metafacture.xml.XmlDecoder;
 import org.metafacture.xml.XmlElementSplitter;
+import org.metafacture.metafix.Metafix;
 
 /**
- * Filter resources with hbz holdings from culturegraph marcxml, tranform it
+ * Filter resources with hbz holdings from culturegraph marcxml while tranform it with reject()
  * into JSON and write this as an elasticsearch bulk json file.
- * 
- * @author Pascal Christoph(dr0i)
+ *
+ * @author Pascal Christoph(dr0i) & Tobias Bülte(TobiasNx)
  **/
 @SuppressWarnings("javadoc")
 public final class CulturegraphXmlFilterHbzToJson {
@@ -32,7 +32,7 @@ public final class CulturegraphXmlFilterHbzToJson {
 
 	public static void main(String... args) {
 		String XML_INPUT_FILE =new File(args[0]).getAbsolutePath();
-	
+
 		if (args.length >1) JSON_FILE=args[1];
 
 		final FileOpener opener = new FileOpener();
@@ -55,10 +55,8 @@ public final class CulturegraphXmlFilterHbzToJson {
 	private static StringReader receiverThread() {
 		final StringReader sr = new StringReader();
 		sr.setReceiver(new XmlDecoder()).setReceiver(new MarcXmlHandler())
-				.setReceiver(new Filter( // prevents empty records
-						new Metamorph("src/main/resources/morph-cg-to-es.xml")))
 				.setReceiver(
-						new Metamorph("src/main/resources/morph-cg-to-es.xml"))
+						new Metafix("src/main/resources/fix-cg-to-es.fix"))
 				.setReceiver(new JsonEncoder())
 				.setReceiver(new JsonToElasticsearchBulk("rvk",
 						ELASTICSEARCH_INDEX_NAME))
