@@ -2,17 +2,9 @@
 
 @(items: Map[String,List[String]], itemDetails: Map[String,String])
 
-@import play.api.libs.ws.WS
-@import play.api.libs.json.JsArray
 @import play.api.libs.json.Json
 @import play.api.libs.json.JsValue
-@import scala.concurrent._
-@import ExecutionContext.Implicits.global
-@import scala.concurrent.duration._
-@import play.api.Play.current
 @import controllers.resources._
-@import play.api.cache.Cache
-@import play.Logger
 
 @string(value: JsValue) = { @value.asOpt[String].getOrElse("--") }
 
