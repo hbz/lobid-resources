@@ -26,14 +26,16 @@
     @main("", if( (doc\\"title").isEmpty) "lobid-resources - Vollanzeige" else (doc\\"title")(0).asOpt[String].getOrElse(q)) {
       <h1>@((doc\"title").asOpt[String].getOrElse(q))@for(corporateBodyForTitle <- (doc \ "corporateBodyForTitle").asOpt[Seq[String]]){. @corporateBodyForTitle(0)} @for(subTitle <- (doc \ "otherTitleInformation").asOpt[Seq[String]]){<br/><small>@subTitle(0)</small>}</h1>
       <div class="row" id="search-results">
-      @defining(Lobid.items(doc.toString)) { items =>
+      @defining((Lobid.items(doc.toString), Lobid.itemDetails(doc.toString))) { case (items, itemDetails) =>
         @defining(!(doc\\"containedIn").isEmpty && (doc\"type").toString.contains("Article")){superordination =>
           <div class="col-md-@if(items.isEmpty && !doc.toString.contains("fulltextOnline") && !superordination){12} else {8}">
             <dl>
-            @defining((doc\\"hbzId")(0).asOpt[String].getOrElse(q)){ id =>
+            @defining((doc\"almaMmsId").asOpt[String].orElse((doc\"hbzId").asOpt[String]).orElse((doc\"rpbId").asOpt[String]).getOrElse(q)){ id =>
               <dt>@tags.star_button(id) Titeldetails:
               <small style='float:right'>
-              <a class='mab-link' title="MAB-XML-Quelldaten anzeigen" href="@Application.CONFIG.getString("hbz01.api")/@id"><small>&#12296;M&#12297;</small></a>
+              @if((doc\"almaMmsId").asOpt[String].isDefined||(doc\"hbzId").asOpt[String].isDefined){
+              <a title="Quelldaten anzeigen" href='@if((doc\"almaMmsId").asOpt[String].isDefined){@Application.CONFIG.getString("mrcx.api")@id}else{@Application.CONFIG.getString("hbz01.api")/@id}'><small>&#12296;M&#12297;</small></a>
+              }
               <a title="JSON-LD-Indexdaten anzeigen" href='@resources.routes.Application.resourceDotFormat(id, "json")'><img class='json-ld-icon' src='@routes.Assets.at("images/json-ld.png")'></a>
               </small>
               </dt>
@@ -72,7 +74,7 @@
              @defining(items.size){num =>
              <dt>Bestand in @num Bibliothek@if(num>1){en}:</dt>
              }
-             <dd>@tags.items_map(items)</dd>
+             <dd>@tags.items_map(items, itemDetails)</dd>
             }
             </dl>
           </div>

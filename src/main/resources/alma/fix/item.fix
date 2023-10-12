@@ -1,0 +1,105 @@
+set_array("hasItem[]")
+set_array("@ITM-H") # Helper element for creating Holding from HOL ("PhysikalischerTitel")
+do list(path:"ITM  ", "var": "$i")
+  paste("$i.supressedLocation", "$i.M", "~+", "$i.x",join_char:"")
+  lookup("$i.supressedLocation","suppressedLocations",delete:"true")
+  unless exists("$i.supressedLocation") # Test if location is suppressed with mapping provided by the libraries.
+    add_field( "hasItem[].$append.test","")
+    add_field("hasItem[].$last.label", "lobid Bestandsressource")
+    set_array("hasItem[].$last.type[]", "Item","PhysicalObject")
+    if exists("$i.z") # Temporary call number subfield
+      copy_field("$i.z", "hasItem[].$last.callNumber")
+    elsif exists("$i.n") # Item call number subfield
+      copy_field("$i.n", "hasItem[].$last.callNumber")
+    else # $c = Call number subfield
+      copy_field("$i.c", "hasItem[].$last.callNumber")
+    end
+    copy_field("$i.H", "@ITM-H.$append")
+    copy_field("$i.b", "hasItem[].$last.serialNumber")
+    copy_field("$i.w","hasItem[].$last.currentLibrary")
+    copy_field("$i.x","hasItem[].$last.currentLocation")
+    call_macro("holdingLibrary+opacLink", mmsIdField:"$i.a",libraryCodeField:"$i.w")
+  end
+end
+
+set_array("@HOL-M_POR-M") # Helper element for creating Holding from MBD ("NurTitel")
+do list(path: "HOL  ", "var": "$i")
+  copy_field("$i.M","@HOL-M_POR-M.$append")
+  unless in("$i.8", "@ITM-H") # Checks if there is no corresponding ITM-Field
+    do list(path:"H52??", "var": "$H52")
+      if in("$i.8", "$H52.8")
+        paste("$H52.supressedLocation", "$i.M", "~+", "$H52.c",join_char:"")
+        lookup("$H52.supressedLocation","suppressedLocations",delete:"true")
+        unless exists("$H52.supressedLocation") # Test if location is suppressed with mapping provided by the libraries.
+          add_field( "hasItem[].$append.test","")
+          add_field("hasItem[].$last.label", "lobid Bestandsressource")
+          set_array("hasItem[].$last.type[]", "Item","PhysikalischerTitel")
+          copy_field("$H52.b","hasItem[].$last.currentLibrary")
+          copy_field("$H52.c","hasItem[].$last.currentLocation")
+          copy_field("$H52.h", "hasItem[].$last.callNumber")
+          call_macro("holdingLibrary+opacLink", mmsIdField:"$i.8",libraryCodeField:"$H52.b")
+        end
+      end
+    end
+  end
+end
+
+do list(path:"POR  ", "var": "$i")
+  copy_field("$i.M","@HOL-M_POR-M.$append")
+# entity for every POR  .a without POR  .A
+  unless any_match("$i.a",".*6441$") # filter out hbz
+    add_field( "hasItem[].$append.test","")
+    set_array("hasItem[].$last.type[]", "Item", "DigitalDocument")
+    add_field("hasItem[].$last.label", "Electronic Portfolio")
+    copy_field("$i.D", "$i.@electronicLocator")
+    replace_all("$i.@electronicLocator","https://eu04.alma.exlibrisgroup.com/view/uresolver/49HBZ_NETWORK","")
+    paste("hasItem[].$last.electronicLocator", "~https://eu04.alma.exlibrisgroup.com/view/uresolver/","$i.M","$i.@electronicLocator", join_char: "")
+    copy_field("$i.d", "$i.@sublocation")
+    replace_all("$i.@sublocation","https://hbz-network.userservices.exlibrisgroup.com/view/uresolver/49HBZ_NETWORK","")
+    paste("hasItem[].$last.sublocation", "~https://hbz-network.userservices.exlibrisgroup.com/view/uresolver/","$i.M","$i.@sublocation", join_char: "")
+    call_macro("holdingLibrary+opacLink", mmsIdField:"$i.a",libraryCodeField:"$i.g")
+  end
+  # entity for every POR  .A
+  if exists ("$i.A")
+    copy_field("$i.D", "$i.@electronicLocator")
+    replace_all("$i.@electronicLocator","https://eu04.alma.exlibrisgroup.com/view/uresolver/49HBZ_NETWORK","")
+    copy_field("$i.d", "$i.@sublocation")
+    replace_all("$i.@sublocation","https://hbz-network.userservices.exlibrisgroup.com/view/uresolver/49HBZ_NETWORK","")
+    do list(path:"$i.A", "var": "$j")
+      add_field( "hasItem[].$append.test","")
+      set_array("hasItem[].$last.type[]", "Item", "DigitalDocument")
+      add_field("hasItem[].$last.label", "Electronic Portfolio")
+      paste("hasItem[].$last.electronicLocator", "~https://eu04.alma.exlibrisgroup.com/view/uresolver/","$j","$i.@electronicLocator", join_char: "")
+      paste("hasItem[].$last.sublocation", "~https://hbz-network.userservices.exlibrisgroup.com/view/uresolver/","$j","$i.@sublocation", join_char: "")
+      copy_field("$j", "$i.@iz")
+      lookup("$i.@iz", "alma-iz-code-to-isil")
+      call_macro("opacLink", field:"@iz")
+      copy_field("$i.@iz","hasItem[].$last.heldBy.isil")
+      paste("hasItem[].$last.heldBy.id", "~http://lobid.org/organisations/", "hasItem[].$last.heldBy.isil", "~#!", join_char:"")
+      copy_field("hasItem[].$last.heldBy.id", "hasItem[].$last.heldBy.label")
+      # item id is constructed "http://lobid.org/items/[almaMmsId of the record]:[isil of the Owner]:[almaMmsId of the holding]#!"
+      paste("hasItem[].$last.id", "~http://lobid.org/items/","almaMmsId", "~:", "hasItem[].$last.heldBy.isil","~:", "$i.a","~#!", join_char: "")
+    end
+  end
+end
+
+do list(path: "MBD  ", "var": "$i")
+  unless any_match("$i.M","49HBZ_NETWORK")
+    unless in("$i.M", "@HOL-M_POR-M") # Checks if there is no corresponding HOL or POR-Field
+      add_field( "hasItem[].$append.test","")
+      add_field("hasItem[].$last.label", "lobid Bestandsressource")
+      set_array("hasItem[].$last.type[]", "Item","NurTitel")
+      copy_field("$i.i", "$i.@iz")
+      replace_all("$i.@iz",".*(\\d{4})$","$1")
+      lookup("$i.@iz", "alma-institution-code-to-isil")
+      call_macro("opacLink", field:"@iz")
+      copy_field("$i.@iz","hasItem[].$last.heldBy.isil")
+      paste("hasItem[].$last.heldBy.id", "~http://lobid.org/organisations/", "hasItem[].$last.heldBy.isil", "~#!", join_char:"")
+      copy_field("hasItem[].$last.heldBy.id", "hasItem[].$last.heldBy.label")
+      # item id is constructed "http://lobid.org/items/[almaMmsId of the record]:[isil of the Owner]:[almaMmsId of the holding]#!"
+      paste("hasItem[].$last.id", "~http://lobid.org/items/","almaMmsId", "~:", "hasItem[].$last.heldBy.isil","~:", "$i.i", "~#!", join_char: "")
+    end
+  end
+end
+
+lookup("hasItem[].*.heldBy.label", "lobidOrgLabels",delete:"true")

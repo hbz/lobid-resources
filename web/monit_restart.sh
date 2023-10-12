@@ -30,12 +30,17 @@ JAVA_OPTS=$(echo "$JAVA_OPTS" |sed 's#,#\ #g')
 cd $HOME/git/$REPO
 case $ACTION in
 	start)
-		JAVA_OPTS="$JAVA_OPTS -XX:+HeapDumpOnOutOfMemoryError" $HOME/activator-dist-1.3.5/activator "start $PORT"
+                if [ -f target/universal/stage/RUNNING_PID ]; then
+                    kill $(cat target/universal/stage/RUNNING_PID)
+                    rm target/universal/stage/RUNNING_PID
+                fi
+		JAVA_OPTS="$JAVA_OPTS -XX:+ExitOnOutOfMemoryError -XX:+HeapDumpOnOutOfMemoryError -DpreferIPv4Stack" sbt clean "start $PORT" > monit_start.log
 		;;
 	stop)
 		kill $(cat target/universal/stage/RUNNING_PID)
 		sleep 14
 		kill -9 $(cat target/universal/stage/RUNNING_PID)
+		rm target/universal/stage/RUNNING_PID
 		;;
 	*)
 		echo "usage: $USAGE"

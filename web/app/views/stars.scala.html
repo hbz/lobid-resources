@@ -11,10 +11,11 @@
 @import play.api.Play.current
 @import play.api.libs.json.Json
 @import controllers.resources.Search
+@import controllers.resources.Application
 
 @entries() = {
     @for((id,i) <- ids.zipWithIndex; doc = Json.parse(vals(i).toString())) {
-        @if(f=="details"){@tags.result_doc(Json.parse(new Search.Builder().build().getResource(id).getResult().toString))} else {@tags.query_result_short(id,doc,i,ids)}
+        @if(f=="details"){@tags.result_doc(Json.parse(Application.jsonFor(id).toString))} else {@tags.query_result_short(id,doc,i,ids)}
     }
 }
 

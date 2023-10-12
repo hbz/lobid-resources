@@ -35,6 +35,7 @@ import play.libs.F.Promise;
 import play.libs.Json;
 import play.libs.ws.WS;
 import play.mvc.Http;
+import play.mvc.Http.Status;
 import play.mvc.Result;
 import play.test.Helpers;
 
@@ -132,6 +133,12 @@ public class Lobid {
 			String simpleId =
 					id.replaceAll("https?://lobid.org/resources?/(.+?)(#!)?$", "$1");
 			Result result = Application.resource(simpleId, "json").get(API_TIMEOUT);
+			if (result.status() != Status.OK) {
+				// In an almaMmsId-based setup, we might still link to others via hbzId
+				// (see https://github.com/hbz/lobid-resources/issues/1592 for details)
+				String actualId = Application.idSearchResult(simpleId);
+				result = Application.resource(actualId, "json").get(API_TIMEOUT);
+			}
 			JsonNode json =
 					Json.parse(Helpers.contentAsString(result)).findValue("title");
 			String label =
@@ -325,6 +332,24 @@ public class Lobid {
 		return term.contains("lobid.org/organisation");
 	}
 
+	/**
+	 * @param doc The result JSON doc
+	 * @return A mapping of item IDs (URIs) to item details (JSON strings)
+	 */
+	public static Map<String, String> itemDetails(String doc) {
+		JsonNode items = Json.parse(doc).findValue("hasItem");
+		Map<String, String> result = new HashMap<>();
+		if (items != null && (items.isArray() || items.isTextual())) {
+			Iterator<JsonNode> elements =
+					items.isArray() ? items.elements() : Arrays.asList(items).iterator();
+			while (elements.hasNext()) {
+				JsonNode nextItem = elements.next();
+				result.put(nextItem.get("id").asText(), nextItem.toString());
+			}
+		}
+		return result;
+	}
+
 	private static boolean isGnd(String term) {
 		return term.startsWith("https://d-nb.info/gnd");
 	}
@@ -353,7 +378,10 @@ public class Lobid {
 				uris.add(itemUri);
 				result.put(isil, uris);
 			} catch (ArrayIndexOutOfBoundsException x) {
-				Logger.error(x.getMessage());
+				Logger.error(
+						"Can't process item URI {}, expecting ISIL at index {} when splitting at ':'",
+						itemUri, x.getMessage());
+				Logger.debug(x.getMessage(), x);
 			}
 		}
 	}
@@ -396,17 +424,21 @@ public class Lobid {
 				// use secondary if main is equal, e.g. DE-5-11 before DE-5-20
 				return numerical(all1[2]) < numerical(all2[2]);
 			}
-		} else if (all1[1].equals(all2[1])) {
-			// same main sigel, prefer shorter, e.g. DE-5 before DE-5-11
-			return all1.length < all2.length;
+		} else if (all1.length == 2 && all2.length == 2) {
+			if (all1[1].equals(all2[1])) {
+				// same main sigel, prefer shorter, e.g. DE-5 before DE-5-11
+				return all1.length < all2.length;
+			}
+			// compare by main sigel, e.g. DE-5 before DE-6:
+			return numerical(all1[1]) < numerical(all2[1]);
 		}
-		// compare by main sigel, e.g. DE-5 before DE-6:
-		return numerical(all1[1]) < numerical(all2[1]);
+		// not actually an ISIL, compare given values as numbers:
+		return numerical(i1) < numerical(i2);
 	}
 
-	private static int numerical(String s) {
+	private static long numerical(String s) {
 		// replace non-digits with 9, e.g. for DE-5 before DE-Walb1
-		return Integer.parseInt(s.replaceAll("\\D", "9"));
+		return Long.parseLong(s.replaceAll("\\D", "9"));
 	}
 
 }

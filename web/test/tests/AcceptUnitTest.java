@@ -19,7 +19,7 @@ import play.mvc.Http;
 
 /**
  * Unit tests for functionality provided by the {@link Accept} class.
- * 
+ *
  * @author Fabian Steeg (fsteeg)
  */
 @SuppressWarnings("javadoc")

@@ -1,0 +1,197 @@
+# 008 - Fixed-Length Data Elements-General Information (NR) - No subfields
+
+set_array("@language")
+copy_field("008", "@008-lang")
+substring("@008-lang", "35", "3")
+copy_field("@008-lang", "@language.$append")
+copy_field("041[ 01] .[adj]", "@language.$append")
+
+uniq("@language")
+
+set_array("language[]")
+do list(path:"@language", "var":"$i")
+  unless any_match("$i","zxx|mul|sgn|und|.*[\\|\\#].*")
+    copy_field("$i", "language[].$append.id")
+    copy_field("$i", "language[].$last.label")
+  end
+end
+
+lookup("language[].*.label","ISO639-2-to-GND")
+prepend("language[].*.id", "http://id.loc.gov/vocabulary/iso639-2/")
+
+
+# 300 - Physical Description (R)
+# We reuse the introx transformation here.
+
+set_array("@300a")
+copy_field("300  .a", "@300a.$append")
+if exists("@300a.1")
+  copy_field("@300a.1", "@300a1")
+  replace_all("@300a1", "\\s?[:;+(]?$", "")
+end
+if exists("@300a.2")
+  copy_field("@300a.2", "@300a2")
+  replace_all("@300a2", "\\s?[:;+)]?$", "")
+end
+do list(path: "300  .b", "var": "$i")
+  replace_all("$i", "\\s?[:;+(]?$", "")
+  copy_field("$i", "@300b")
+end
+set_array("@300c")
+copy_field("300  .c", "@300c.$append")
+if exists("@300c.1")
+  copy_field("@300c.1", "@300c1")
+  replace_all("@300c1", "[.]?\\s?[:;+(]?$", "")
+end
+if exists("@300c.2")
+  copy_field("@300c.2", "@300c2")
+  replace_all("@300c2", "[.]?\\s?[:;+)]?$", "")
+end
+do list(path: "300  .e", "var": "$i")
+  replace_all("$i", "[.]?\\s?\\(?$", "")
+  copy_field("$i", "@300e")
+end
+if exists("@300a2")
+  if exists("@300c2")
+    paste("@300a2_punct", "@300a2", "~ ; ", join_char: "")
+  else
+    paste("@300a2_punct", "@300a2", "~)", join_char: "")
+  end
+end
+if exists("@300b")
+  if exists("@300a1")
+    paste("@300b_punct", "~ : ", "@300b", join_char: "")
+  else
+    copy_field("@300b", "@300b_punct")
+  end
+end
+if exists("@300c1")
+  if exists("@300a1|@300b")
+    paste("@300c1_punct", "~ ; ", "@300c1", join_char: "")
+  else
+    copy_field("@300c1", "@300c1_punct")
+  end
+end
+copy_field("@300c2", "@300c2_punct")
+if exists("300  .e")
+  if exists("@300[ac]1|@300b")
+    if exists("@300[ac]2")
+      paste("@300e_punct", "~ ; ", "@300e", "~ (", join_char: "")
+    else
+      paste("@300e_punct", "~ ; ", "@300e", join_char: "")
+    end
+  else
+    copy_field("@300e", "@300e_punct")
+  end
+end
+paste("extent", "@300a1", "@300b_punct", "@300c1_punct", "@300e_punct", "@300a2_punct", "@300c2_punct", join_char: "")
+
+
+# 500 - General Note (R) Subfield: $a (NR)
+set_array("note[]")
+do list(path:"500  ", "var": "$i")
+  copy_field("$i.a", "note[].$append")
+end
+uniq("note[]")
+
+
+do list(path:"500  ","var":"$i")
+  if exists("$i.6")
+    copy_field("$i.6","$i.linkageTest")
+    do list(path:"880??","var":"$880")
+      if in ("$i.linkageTest","$880.linkageTest")
+        if in ("$880.@script.id","alternateGraphicRepresentation[].*.script.id")   
+          do list(path:"alternateGraphicRepresentation[]","var":"$AGR")
+            if in ("$880.@script.id","$AGR.script.id")
+              unless exists("$AGR.record.note[]")
+                set_array("$AGR.record.note[]")
+              end
+              copy_field("$880.a","$AGR.record.note[].$append")
+            end
+          end
+        else    
+          copy_field("$880.@script.id","alternateGraphicRepresentation[].$append.script.id")
+          copy_field("$880.@script.label","alternateGraphicRepresentation[].$last.script.label")        
+          set_array("alternateGraphicRepresentation[].$last.record.note[]")
+          copy_field("$880.a","alternateGraphicRepresentation[].$last.record.note[].$append")
+        end
+      end
+    end
+  end
+end 
+
+
+# 520 - Summary, Etc. (R) Subfield: $a (NR), $b (NR)
+# TODO: Check if 1. Indicator 1 (REVIEW) is really to count as abstract. Perhaps 2 (Scope and content) is a better fit.
+# TODO: Get testdata.
+set_array("abstract[]")
+do list(path:"520[ 23] ", "var": "$i")
+  copy_field("$i.[ab]", "abstract[].$append")
+end
+
+# 502 - Dissertation Note (R) Subfield: $a (R)
+# TODO: Get testdata.
+set_array("thesisInformation[]")
+do list(path:"502  ", "var": "$i")
+  copy_field("$i.a", "thesisInformation[].$append")
+end
+
+
+# bibliographicCitation
+# TODO: This element seems to be not very informative due to the distributed and uncomplete information.
+# Also the element bibliographicCitation is confusing since it has a broader concept than the scope in lobid: only bibliographicInfo about issues/collection that an article belongs to.
+# Do we need a filter only for articles?
+
+set_array("bibliographicCitation")
+
+
+# 773 - Host Item Entry (R) - $t - Title (NR), $b - Edition (NR), $d - Place, publisher, and date of publication (NR), $g - Related parts (R), $n - Note (R)
+
+
+do list(path: "500??", "var":"$i")
+  if any_contain("$i.a","In:")
+    copy_field("$i.a","bibliographicCitation.$append")
+  end
+end
+
+unless exists("bibliographicCitation.1")
+  if exists("501??")
+    copy_field("501??.a","bibliographicCitation.$append")
+  else
+    copy_field("77308.t","bibliographicCitation.$append")
+    copy_field("77308.b","bibliographicCitation.$append")
+    copy_field("77308.d","bibliographicCitation.$append")
+    do list(path:"77308.g", "var":"$i")
+      copy_field("$i","bibliographicCitation.$append")
+    end
+    do list(path:"77308.n", "var":"$i")
+      copy_field("$i","bibliographicCitation.$append")
+    end
+  end
+end
+
+
+replace_all("bibliographicCitation.*","<<|>>","")
+replace_all("bibliographicCitation.*","^http","Siehe: http")
+replace_all("bibliographicCitation.*","^In: ","")
+
+join_field("bibliographicCitation", "; ")
+
+# 542 - Information Relating to Copyright Status (R) - $n - Note (R)  $u - Uniform Resource Identifier (R)
+
+set_array("license[]")
+do list(path: "542??", "var": "$i")
+  copy_field("$i.u", "license[].$append.id")
+  copy_field("$i.u", "license[].$last.label")
+  replace_all("license[].$last.label", "^(http://|https://)(.*)$","$2")
+end
+
+set_array("langNote[]")
+do list(path: "546??", "var": "$i")
+  set_array("$i.@langNote")
+  copy_field("$i.a", "$i.@langNote.$append")
+  copy_field("$i.b", "$i.@langNote.$append")
+  replace_all("$i.@langNote.*", "[.;]$", "")
+  join_field("$i.@langNote", "; ")
+  move_field("$i.@langNote", "langNote[].$append")
+end

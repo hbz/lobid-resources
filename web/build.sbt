@@ -1,28 +1,33 @@
 name := "lobid-resources-web"
 
-version := "0.2.0-SNAPSHOT"
+version := "0.3.0-SNAPSHOT"
 
 scalaVersion := "2.11.11"
+
+// used by the webhook listener invoking the ETL
+unmanagedResourceDirectories in Compile += baseDirectory.value / "../src/main/resources/"
 
 libraryDependencies ++= Seq(
   cache,
   javaWs,
   "com.typesafe.play" % "play-test_2.11" % "2.4.11",
+  "ch.qos.logback" % "logback-classic" % "1.3.11",
+  "ch.qos.logback" % "logback-core" % "1.3.11",
   "org.elasticsearch.plugin" % "parent-join-client" % "5.6.3" withSources(),
   "org.elasticsearch" % "elasticsearch" % "5.6.3" withSources(),
   "org.elasticsearch.client" % "transport" % "5.6.3" withSources()
     // otherwise javaWs won't work
     exclude ("io.netty", "netty"),
   "org.mockito" % "mockito-core" % "1.9.5",
-  "com.github.jsonld-java" % "jsonld-java" % "0.4.1",
-  "com.github.jsonld-java" % "jsonld-java-jena" % "0.4.1",
-  "org.apache.jena" % "jena-arq" % "2.9.3",
   "com.google.gdata" % "core" % "1.47.1" exclude ("com.google.guava", "guava"),
-  "org.apache.logging.log4j" % "log4j-core" % "2.9.1",
-  "org.apache.logging.log4j" % "log4j-api" % "2.9.1",
-  "org.apache.logging.log4j" % "log4j-1.2-api" % "2.9.1",
-  "org.easytesting" % "fest-assert" % "1.4" % "test"
+  "org.easytesting" % "fest-assert" % "1.4" % "test",
+  "org.apache.logging.log4j" % "log4j-core" % "2.20.0",
+  "org.xbib.elasticsearch.plugin" % "elasticsearch-plugin-bundle" % "5.4.1.0"
 )
+
+resolvers += "Local Maven Repository" at Path.userHome.asFile.toURI.toURL + ".m2/repository"
+
+libraryDependencies += "org.lobid" % "lobid-resources" % "0.6.0-SNAPSHOT" changing()
 
 lazy val root = (project in file(".")).enablePlugins(PlayJava)
 

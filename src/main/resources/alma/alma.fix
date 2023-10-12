@@ -1,0 +1,100 @@
+# Setup adds maps, macros and vars once
+do once("setup")
+  include ("./fix/maps.fix")
+  include ("./fix/macros.fix")
+  put_var("member", "-")
+end
+
+# Skip all deleted records
+if any_equal("DEL??.a", "Y")
+  reject()
+end
+
+add_field("@context","http://lobid.org/resources/context.jsonld")
+
+do list(path:"880??","var":"$i")
+  copy_field("$i.6","$i.linkageTest")
+  replace_all("$i.linkageTest","\\d{3}(-\\d{2}).*","880$1")
+  copy_field("$i.6","$i.@script.id")
+  copy_field("$i.6","$i.@script.label") 
+  replace_all("$i.@script.id","(\\d{3}-\\d{2})/(.*)","https://unicode.org/iso15924/iso15924.txt#$2")
+  replace_all("$i.@script.label","(\\d{3}-\\d{2})/(.*)","$2")
+  lookup("$i.@script.label","ISO15924-to-script")
+end
+set_array("alternateGraphicRepresentation[]")
+
+include ("./fix/identifiers.fix")
+include ("./fix/titleRelatedFields.fix")
+include ("./fix/describedBy.fix")
+# identifiers.fix and titleRelatedFields.fix are needed ahead of relatedRessourcesAndLinks.fix because of dependencies
+include ("./fix/relatedRessourcesAndLinks.fix")
+include ("./fix/otherFields.fix")
+include ("./fix/subjects.fix")
+include ("./fix/item.fix")
+include ("./fix/mediumAndType.fix")
+# mediumAndType.fix is needed ahead of contribution.fix because of dependencies
+include ("./fix/contribution.fix")
+
+vacuum()
+retain(
+  "@context",
+  "abstract[]",
+  "almaMmsId",
+  "alternateGraphicRepresentation[]",
+  "alternativeTitle[]",
+  "bibliographicCitation",
+  "bibliographicLevel",
+  "describedBy",
+  "description[]",
+  "containedIn[]",
+  "containsExampleOfWork[]",
+  "contribution[]",
+  "deprecatedUri",
+  "dnbId",
+  "doi[]",
+  "extent",
+  "edition[]",
+  "exampleOfWork",
+  "fulltextOnline[]",
+  "hasItem[]",
+  "secondaryForm[]",
+  "hbzId",
+  "id",
+  "inCollection[]",
+  "isbn[]",
+  "issn[]",
+  "ismn[]",
+  "isPartOf[]",
+  "language[]",
+  "langNote[]",
+  "license[]",
+  "manufacture[]",
+  "medium[]",
+  "natureOfContent[]",
+  "note[]",
+  "oclcNumber[]",
+  "otherTitleInformation[]",
+  "publication[]",
+  "predecessor[]",
+  "primaryForm[]",
+  "related[]",
+  "responsibilityStatement[]",
+  "rpbId",
+  "sameAs[]",
+  "seeAlso[]",
+  "shortTitle[]",
+  "spatial[]",
+  "stockNumber[]",
+  "subject[]",
+  "successor[]",
+  "supplement[]",
+  "tableOfContents[]",
+  "thesisInformation[]",
+  "title",
+  "titleKeyword[]",
+  "type[]",
+  "urn[]",
+  "webPageArchived[]",
+  "zdbId",
+  "subjectslabels[]"
+  )

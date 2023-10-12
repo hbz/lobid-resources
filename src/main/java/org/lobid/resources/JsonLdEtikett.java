@@ -9,8 +9,9 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.metafacture.framework.ObjectReceiver;
 import org.metafacture.framework.annotations.In;
 import org.metafacture.framework.annotations.Out;
@@ -27,7 +28,7 @@ import de.hbz.lobid.helper.EtikettMaker;
 @Out(HashMap.class)
 public final class JsonLdEtikett extends
 		DefaultObjectPipe<Map<String, Object>, ObjectReceiver<Map<String, Object>>> {
-	private static final Logger LOG = LogManager.getLogger(JsonLdEtikett.class);
+	private static final Logger LOG = LoggerFactory.getLogger(JsonLdEtikett.class);
 	private static String labelsDirectoryName = "labels";
 	private static String contextFilenameLocation = "web/conf/context.jsonld";
 

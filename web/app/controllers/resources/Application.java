@@ -1,11 +1,12 @@
-/* Copyright 2014-2017 Fabian Steeg, hbz. Licensed under the EPL 2.0 */
+/* Copyright 2014-2023 Fabian Steeg, hbz. Licensed under the EPL 2.0 */
 
 package controllers.resources;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
+import java.net.URL;
+import java.net.URLConnection;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.text.Collator;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -47,7 +48,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.ImmutableMap;
-import com.google.gdata.util.common.base.PercentEscaper;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 
@@ -67,7 +67,6 @@ import play.test.Helpers;
 import views.html.api;
 import views.html.dataset;
 import views.html.details;
-import views.html.details_item;
 import views.html.index;
 import views.html.query;
 import views.html.rss;
@@ -75,7 +74,7 @@ import views.html.stars;
 
 /**
  * The main application controller.
- * 
+ *
  * @author Fabian Steeg (fsteeg)
  */
 public class Application extends Controller {
@@ -89,7 +88,7 @@ public class Application extends Controller {
 	/** The internal ES field for the medium facet. */
 	public static final String MEDIUM_FIELD = "medium.id";
 	/** The internal ES aggregation name for the owner facet. */
-	public static final String OWNER_AGGREGATION = "owner";
+	public static final String OWNER_AGGREGATION = "hasItem.heldBy.id";
 	/** The internal ES field for the topics. */
 	public static final String TOPIC_AGGREGATION = "subject.label.raw";
 	/** The internal ES field for subjects. */
@@ -99,8 +98,12 @@ public class Application extends Controller {
 	/** The internal ES field for issued years. */
 	public static final String ISSUED_FIELD = "publication.startDate";
 	/** Access to the resources.conf config file. */
+	private final static File RESOURCES_CONF = new File("conf/resources.conf").exists() ?
+			new File("conf/resources.conf") : new File("conf/resources.conf_template")  ;
 	public final static Config CONFIG =
-			ConfigFactory.parseFile(new File("conf/resources.conf")).resolve();
+			ConfigFactory.parseFile(RESOURCES_CONF).resolve();
+	public final static String MARC_XML_API = CONFIG.getString("mrcx.api");
+
 
 	static Form<String> queryForm = Form.form(String.class);
 
@@ -244,7 +247,7 @@ public class Application extends Controller {
 							: "");
 			boolean badRequest = t instanceof IllegalArgumentException;
 			if (badRequest) {
-				Logger.error(message);
+				Logger.error(message, t);
 				String header =
 						"Ungültige Suchanfrage. Maskieren Sie Sonderzeichen mit "
 								+ "<code>\\</code>. Siehe auch <a href=\""
@@ -253,7 +256,7 @@ public class Application extends Controller {
 								+ "Dokumentation der unterstützten Suchsyntax</a>.";
 				return badRequest(views.html.error.render(q, message, header));
 			}
-			Logger.error(message);
+			Logger.error(message, t);
 			String header = "Es ist ein Fehler aufgetreten. "
 					+ "Bitte versuchen Sie es erneut oder kontaktieren Sie das "
 					+ "Entwicklerteam, falls das Problem fortbesteht "
@@ -468,8 +471,24 @@ public class Application extends Controller {
 		if (cachedResult != null)
 			return cachedResult;
 		Promise<Result> promise = Promise.promise(() -> {
-			JsonNode result =
-					new Search.Builder().build().getResource(id).getResult();
+			JsonNode result = new Search.Builder().build().getResource(id).getResult();
+			if (result == null) { // direct access failed, try to redirect to almaMmsId
+				String movedTo = idSearchResult(id);
+				Logger.debug(
+						"Could not get resource via index ID, trying to redirect '{}' to almaMmsId: '{}'",
+						id, movedTo);
+				if (movedTo != null) {
+					return movedPermanently(routes.Application.resource(movedTo, format));
+				}
+			}
+			if (result == null) { // no almaMmsId to redirect to, try ID query w/o redirect
+				QueryBuilder idQuery = new Queries.IdQuery().build(id);
+				result = new Search.Builder().query(idQuery).build().queryResources()
+						.getResult().get(0);
+				Logger.debug(
+						"Could not get resource via index ID or redirect, trying query '{}', result: '{}'",
+						idQuery, result);
+			}
 			boolean htmlRequested =
 					responseFormat.equals(Accept.Format.HTML.queryParamString);
 			if (htmlRequested) {
@@ -477,11 +496,33 @@ public class Application extends Controller {
 						? ok(details.render(CONFIG, result.toString(), id))
 						: notFound(details.render(CONFIG, "", id));
 			}
+			boolean marcxmlRequested =
+				responseFormat.equals(Accept.Format.MARC_XML.queryParamString);
+			if (marcxmlRequested) {
+				URLConnection conn = new URL(MARC_XML_API + id).openConnection();
+				String marcxml;
+				try (BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8))) {
+					marcxml = reader.lines().collect(Collectors.joining("\n"));
+				}
+				return marcxml.isEmpty() ? internalServerError("No content")
+					: ok(marcxml).as(Format.MARC_XML.types[0] + "; charset=utf-8");
+			}
 			return result != null ? responseFor(result, responseFormat)
 					: notFound("\"Not found: " + id + "\"");
 		});
 		cacheOnRedeem(cacheId, promise, ONE_DAY);
 		return promise;
+	}
+
+	static String idSearchResult(final String id) {
+		JsonNode result;
+		String idSearch = String.format("(hbzId:%s OR zdbId:(%s OR %s))", id, id,
+				id.replace("ZDB-", ""));
+		QueryBuilder idQuery = new Queries.Builder().q(idSearch).build();
+		result = new Search.Builder().query(idQuery).size(1).build()
+				.queryResources().getResult();
+		JsonNode newId = result.size() > 0 ? result.get(0).get("almaMmsId") : null;
+		return newId != null ? newId.textValue() : null;
 	}
 
 	/**
@@ -499,35 +540,8 @@ public class Application extends Controller {
 	 * @return The details for the item with the given ID.
 	 */
 	public static Promise<Result> item(final String id, String format) {
-		String responseFormat = Accept.formatFor(format, request().acceptedTypes());
-		String cacheId = String.format("item(%s,%s)", id, responseFormat);
-		@SuppressWarnings("unchecked")
-		Promise<Result> cachedResult = (Promise<Result>) Cache.get(cacheId);
-		if (cachedResult != null)
-			return cachedResult;
-		Promise<Result> promise = Promise.promise(() -> {
-			/* @formatter:off
-			 * Escape item IDs for index lookup the same way as during transformation, see:
-			 * https://github.com/hbz/lobid-resources/blob/master/src/main/resources/morph-hbz01-to-lobid.xml#L781
-			 * https://github.com/hbz/lobid-resources/blob/master/src/main/java/org/lobid/resources/UrlEscaper.java#L31
-			 * @formatter:on
-			 */
-			JsonNode itemJson = new Search.Builder().build()
-					.getItem(
-							new PercentEscaper(PercentEscaper.SAFEPATHCHARS_URLENCODER, false)
-									.escape(id))
-					.getResult();
-			boolean htmlRequested =
-					responseFormat.equals(Accept.Format.HTML.queryParamString);
-			if (htmlRequested) {
-				return itemJson == null ? notFound(details_item.render(id, ""))
-						: ok(details_item.render(id, itemJson.toString()));
-			}
-			return itemJson == null ? notFound("\"Not found: " + id + "\"")
-					: responseFor(itemJson, responseFormat);
-		});
-		cacheOnRedeem(cacheId, promise, ONE_DAY);
-		return promise;
+		return Promise.pure(redirect(routes.Application.resource( // 303, See Other
+				id.contains(":") ? id.substring(0, id.indexOf(':')) : id, format)));
 	}
 
 	private static void cacheOnRedeem(final String cacheId,
@@ -688,9 +702,9 @@ public class Application extends Controller {
 
 			String result = String.format("<li " + (current ? "class=\"active\"" : "")
 					+ "><a class=\"%s-facet-link\" href='%s'>"
-					+ "<input onclick=\"location.href='%s'\" class=\"facet-checkbox\" "
-					+ "type=\"checkbox\" %s>&nbsp;%s</input>" + "</a></li>",
-					Math.abs(field.hashCode()), routeUrl, routeUrl,
+					+ "<label for=\"%s\"><input id=\"%s\" onclick=\"location.href='%s'\" class=\"facet-checkbox\" "
+					+ "type=\"checkbox\" %s>&nbsp;%s</input></label>" + "</a></li>",
+					Math.abs(field.hashCode()), routeUrl, routeUrl, routeUrl, routeUrl,
 					current ? "checked" : "", fullLabel);
 
 			return result;
@@ -826,12 +840,23 @@ public class Application extends Controller {
 			List<JsonNode> json = (List<JsonNode>) cachedJson;
 			return Promise.pure(ok(stars.render(starredIds, json, format)));
 		}
-		List<JsonNode> vals = starredIds.stream()
-				.map(id -> new Search.Builder().build().getResource(id).getResult())
-				.collect(Collectors.toList());
+		List<JsonNode> vals =
+				starredIds.stream().map(id -> jsonFor(id)).collect(Collectors.toList());
 		uncache(starredIds);
 		Cache.set(cacheKey, vals, ONE_DAY);
 		return Promise.pure(ok(stars.render(starredIds, vals, format)));
+	}
+
+	/**
+	 * @param id The ID to get the JSON data for
+	 * @return The resource JSON for the given ID
+	 */
+	public static JsonNode jsonFor(String id) {
+		JsonNode getResult =
+				new Search.Builder().build().getResource(id).getResult();
+		return getResult != null ? getResult
+				: new Search.Builder().query(new Queries.IdQuery().build(id)).build()
+						.queryResources().getResult().get(0);
 	}
 
 	/**
@@ -880,9 +905,9 @@ public class Application extends Controller {
 
 	/**
 	 * See https://www.w3.org/TR/dwbp/#metadata
-	 * 
+	 *
 	 * @param format The format ("json" or "html")
-	 * 
+	 *
 	 * @return JSON-LD dataset metadata
 	 */
 	public static Result dataset(String format) {

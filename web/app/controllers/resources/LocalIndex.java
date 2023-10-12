@@ -13,9 +13,12 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import com.google.common.io.CharStreams;
 
 import org.elasticsearch.action.admin.indices.refresh.RefreshRequest;
 import org.elasticsearch.action.bulk.BulkItemResponse;
@@ -28,36 +31,41 @@ import org.elasticsearch.common.network.NetworkModule;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.xcontent.XContentType;
 import org.elasticsearch.env.Environment;
+import org.elasticsearch.node.InternalSettingsPreparer;
 import org.elasticsearch.node.Node;
 import org.elasticsearch.node.NodeValidationException;
-
-import com.google.common.io.CharStreams;
+import org.xbib.elasticsearch.plugin.bundle.BundlePlugin;
 
 import play.Logger;
 import play.libs.Json;
 
 /**
  * Set up a local Elasticsearch index for testing
- * 
+ *
  * @author fsteeg
  *
  */
 public class LocalIndex {
 
 	private static final String TEST_CONFIG =
-			"../src/main/resources/index-config.json";
+			"../src/main/resources/almafix/index-config.json";
 	private static final String TEST_DATA = "../src/test/resources/jsonld";
+	private static final String TEST_DATA_ITEMS = TEST_DATA + "/items";
 
 	private Node node;
 	private Client client;
 	private static final URI CONTEXT_URI =
 			new File("conf/context.jsonld").toURI();
 
+	public LocalIndex() {
+		this(TEST_CONFIG,TEST_DATA,TEST_DATA_ITEMS);
+	}
+
 	/**
 	 * Create a new local index based on our test set
 	 */
-	public LocalIndex() {
-		node = new Node(Settings.builder()
+	public LocalIndex(String testConfig, String testData, String testDataItems) {
+		node = new LocalNode(Settings.builder()
 				.put(Node.NODE_NAME_SETTING.getKey(), "testNode")
 				.put(NetworkModule.TRANSPORT_TYPE_KEY, NetworkModule.LOCAL_TRANSPORT)
 				.put(NetworkModule.HTTP_ENABLED.getKey(), false) //
@@ -72,9 +80,11 @@ public class LocalIndex {
 		client.admin().indices().prepareDelete("_all").execute().actionGet();
 		client.admin().cluster().prepareHealth().setWaitForYellowStatus().execute()
 				.actionGet();
-		File sampleDataRoot = new File(TEST_DATA);
 		BulkRequestBuilder bulkRequest = client.prepareBulk();
-		readTestData(sampleDataRoot, bulkRequest);
+		readTestData(testConfig, new File(testData), bulkRequest);
+		if (testDataItems!=null) {
+			readTestData(testConfig, new File(testDataItems), bulkRequest);
+		}
 		final List<BulkItemResponse> failed = new ArrayList<>();
 		if (bulkRequest.numberOfActions() > 0)
 			runBulkRequest(bulkRequest, failed);
@@ -99,9 +109,9 @@ public class LocalIndex {
 		}
 	}
 
-	private void readTestData(File sampleDataRoot,
+	private void readTestData(final String testConfig, File sampleDataRoot,
 			BulkRequestBuilder bulkRequest) {
-		Arrays.asList(sampleDataRoot.listFiles()).forEach((file) -> {
+		Arrays.asList(sampleDataRoot.listFiles(f -> f.getAbsolutePath().endsWith("json"))).forEach((file) -> {
 			try {
 				String data = Files
 						.readAllLines(Paths.get(file.getAbsolutePath()),
@@ -109,14 +119,14 @@ public class LocalIndex {
 						.stream().map(String::trim).collect(Collectors.joining());
 				boolean isItem = file.getName().contains(":");
 				String type = isItem ? "item" : "resource";
-				String id = file.getName();
+				String id = file.getName().replaceFirst("\\.json$", "");
 				String parent = isItem
 						? "http://lobid.org/resources/" + file.getName().split(":")[0] : "";
 				final Map<String, Object> map =
 						Json.fromJson(Json.parse(data), Map.class);
 				map.put("@context", CONTEXT_URI);
 				final IndexRequestBuilder requestBuilder =
-						createRequestBuilder(type, id, parent, map);
+						createRequestBuilder(testConfig, type, id, parent, map);
 				bulkRequest.add(requestBuilder);
 			} catch (Exception e) {
 				Logger.error("Error reading file {}: {}", file, e.getMessage());
@@ -147,23 +157,23 @@ public class LocalIndex {
 		}
 	}
 
-	private IndexRequestBuilder createRequestBuilder(final String type, String id,
+	private IndexRequestBuilder createRequestBuilder(final String testConfig, final String type, String id,
 			String parent, final Map<String, Object> map) {
 		final IndicesAdminClient admin = client.admin().indices();
 		if (!admin.prepareExists(Search.INDEX_NAME).execute().actionGet()
 				.isExists()) {
 			admin.prepareCreate(Search.INDEX_NAME)
-					.setSource(config(), XContentType.JSON).execute().actionGet();
+					.setSource(config(testConfig), XContentType.JSON).execute().actionGet();
 		}
 		final IndexRequestBuilder request =
 				client.prepareIndex(Search.INDEX_NAME, type, id).setSource(map);
 		return parent.isEmpty() ? request : request.setParent(parent);
 	}
 
-	private static String config() {
+	private static String config(final String testConfig) {
 		String res = null;
 		try {
-			final InputStream config = new FileInputStream(TEST_CONFIG);
+			final InputStream config = new FileInputStream(testConfig);
 			try (InputStreamReader reader = new InputStreamReader(config, "UTF-8")) {
 				res = CharStreams.toString(reader);
 			}
@@ -171,6 +181,12 @@ public class LocalIndex {
 			Logger.error(e.getMessage(), e);
 		}
 		return res;
+	}
+	private static class LocalNode extends Node {
+		private LocalNode(final Settings settings) {
+			super(InternalSettingsPreparer.prepareEnvironment(settings, null),
+				Collections.singleton(BundlePlugin.class));
+		}
 	}
 
 }

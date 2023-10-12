@@ -1,0 +1,149 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "lobid-resources",
+  "description": "This is a generic JSON schema for validating a JSON document against the lobid-resources data model",
+  "type": "object",
+  "properties": {
+    "@context": {
+      "$ref": "context.json"
+    },
+    "bibliographicCitation": {
+      "type": "string"
+    },
+    "containedIn": {
+      "$ref": "containedIn.json"
+    },
+    "id": {
+      "$ref": "id.json"
+    },
+    "type": {
+      "$ref": "type.json"
+    },
+    "contribution": {
+      "$ref": "contribution.json"
+    },
+    "describedBy": {
+      "$ref": "describedBy.json"
+    },
+    "description": {
+      "$ref": "description.json"
+    },
+    "edition": {
+      "title": "Statement on the edition of the resource",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "extent": {
+      "title": "Extent",
+      "type": "string"
+    },
+    "hasItem": {
+      "$ref": "hasItem.json"
+    },
+    "hbzId": {
+      "title": "hbz identifier",
+      "type": "string"
+    },
+    "inCollection": {
+      "$ref": "inCollection.json"
+    },
+    "isPartOf": {
+      "$ref": "isPartOf.json"
+    },
+    "isbn": {
+      "$ref": "isbn.json"
+    },
+    "issn": {
+      "$ref": "issn.json"
+    },
+    "language": {
+      "$ref": "language.json"
+    },
+    "natureOfContent": {
+      "$ref": "natureOfContent.json"
+    },
+    "note": {
+      "title": "Note",
+      "type": "array"
+    },
+    "oclcNumber": {
+      "title": "OCLC number",
+      "description": "The OCLC number of the resource",
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "\\d{1,14}"
+      }
+    },
+    "otherTitleInformation": {
+      "title": "Additional title information",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "publication": {
+      "$ref": "publication.json"
+    },
+    "responsibilityStatement": {
+      "title": "Responsibility Statement",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "sameAs": {
+      "$ref": "sameAs.json"
+    },
+    "similar": {
+      "$ref": "similar.json"
+    },
+    "spatial": {
+      "$ref": "spatial.json"
+    },
+    "subject": {
+      "title": "Subject",
+      "description": "Subject indexing of the resource",
+      "type": "array",
+      "items": {
+        "anyOf": [
+          {
+            "$ref": "complexSubject.json"
+          },
+          {
+            "$ref": "skosConcept.json"
+          }
+        ]
+      }
+    },
+    "subjectAltLabel": {
+      "title": "Alternative labels for subjects",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "supplement": {
+      "$ref": "supplement.json"
+    },
+    "tableOfContents": {
+      "$ref": "tableOfContents.json"
+    },
+    "title": {
+      "title": "Title",
+      "type": "string"
+    },
+    "zdbId": {
+      "title": "hbz identifier",
+      "type": "string",
+      "pattern": "\\d{1,7}-[Xx\\d]"
+    }
+  },
+  "required": [
+    "@context",
+    "id",
+    "type"
+  ]
+}

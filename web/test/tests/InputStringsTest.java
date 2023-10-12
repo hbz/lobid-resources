@@ -35,7 +35,7 @@ import play.test.Helpers;
 /**
  * Test nasty input strings using data from
  * https://github.com/minimaxir/big-list-of-naughty-strings
- * 
+ *
  * See http://www.playframework.com/documentation/2.3.x/JavaTest
  */
 @SuppressWarnings("javadoc")

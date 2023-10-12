@@ -24,45 +24,44 @@ import javax.mail.internet.MimeMultipart;
  */
 public class Email {
 
-	/**
-	 * Sends an email.
-	 * 
-	 * @author Pascal Christoph (dr0i)
-	 * 
-	 * @param fromName the name before the "@" of an email
-	 * @param toEmail the complete email address of the receiver
-	 * @param subject the subject of the mail
-	 * @param message the plain text message of the mail
-	 */
-	static public void sendEmail(final String fromName, final String toEmail,
-			final String subject, final String message) {
-		Properties prop = new Properties();
-		prop.put("mail.smtp.auth", false);
-		prop.put("mail.smtp.starttls.enable", "false");
-		prop.put("mail.smtp.host", "127.0.0.1");
-		prop.put("mail.smtp.port", "25");
+  /**
+   * Sends an email.
+   * 
+   * @author Pascal Christoph (dr0i)
+   * 
+   * @param fromName the name before the "@" of an email
+   * @param toEmail  the complete email address of the receiver
+   * @param subject  the subject of the mail
+   * @param message  the plain text message of the mail
+   * @throws UnknownHostException if host unknow
+   * @throws MessagingException   if messaging has an exception
+   */
+  public static void sendEmail(final String fromName, final String toEmail,
+      final String subject, final String message)
+      throws UnknownHostException, MessagingException {
+    Properties prop = new Properties();
+    prop.put("mail.smtp.auth", false);
+    prop.put("mail.smtp.starttls.enable", "false");
+    prop.put("mail.smtp.host", "127.0.0.1");
+    prop.put("mail.smtp.port", "25");
 
-		Session session = Session.getInstance(prop);
+    Session session = Session.getInstance(prop);
 
-		Message msg = new MimeMessage(session);
-		try {
-			msg.setFrom(new InternetAddress(
-					fromName + "@" + InetAddress.getLocalHost().getHostName()));
-			msg.setRecipients(Message.RecipientType.TO,
-					InternetAddress.parse(toEmail));
-			msg.setSubject(subject);
+    Message msg = new MimeMessage(session);
+    msg.setFrom(new InternetAddress(
+        fromName + "@" + InetAddress.getLocalHost().getHostName()));
+    msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(toEmail));
+    msg.setSubject(subject);
 
-			MimeBodyPart mimeBodyPart = new MimeBodyPart();
-			mimeBodyPart.setContent(message, "text/plain");
-			Multipart multipart = new MimeMultipart();
-			multipart.addBodyPart(mimeBodyPart);
+    MimeBodyPart mimeBodyPart = new MimeBodyPart();
+    mimeBodyPart.setContent(message, "text/plain");
+    Multipart multipart = new MimeMultipart();
+    multipart.addBodyPart(mimeBodyPart);
 
-			msg.setContent(multipart);
+    msg.setContent(multipart);
 
-			Transport.send(msg);
-		} catch (MessagingException | UnknownHostException e) {
-			e.printStackTrace();
-		}
-	}
+    Transport.send(msg);
+
+  }
 
 }

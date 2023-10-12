@@ -21,7 +21,7 @@ import play.Logger;
 
 /**
  * Integration tests for functionality provided by the {@link Search} class.
- * 
+ *
  * @author Fabian Steeg (fsteeg)
  */
 @SuppressWarnings("javadoc")
@@ -29,66 +29,110 @@ import play.Logger;
 public class IndexIntegrationTest extends LocalIndexSetup {
 
 	// test data parameters, formatted as "input /*->*/ expected output"
-	@Parameters(name = "{0}")
+	@Parameters(name = "({index}) {0}")
 	public static Collection<Object[]> data() {
 		// @formatter:off
 		return queries(new Object[][] {
-			{ "title:der", /*->*/ 26 },
-			{ "title:Westfalen", /*->*/ 5 },
-			{ "contribution.agent.label:Westfalen", /*->*/ 10 },
-			{ "contribution.agent.label:Westfälen", /*->*/ 10 },
-			{ "contribution.agent.id:\"https\\://d-nb.info/gnd/5265186-1\"", /*->*/ 1 },
+			{ "title:der", /*->*/ 15 },
+			{ "title:Westfalen", /*->*/ 8 },
+			{ "contribution.agent.label:Westfalen", /*->*/ 3 },
+			{ "contribution.agent.label:Westfälen", /*->*/ 3 },
+			{ "contribution.agent.id:\"https\\://d-nb.info/gnd/5253963-5\"", /*->*/ 1 },
 			{ "contribution.agent.id:5265186-1", /*->*/ 0 },
 			{ "contribution.agent.id:\"5265186-1\"", /*->*/ 0 },
-			{ "title:Westfalen AND contribution.agent.label:Westfalen", /*->*/ 3 },
-			{ "title:Westfalen OR title:Münsterland", /*->*/ 6 },
-			{ "title:Westfalen OR title:Munsterland", /*->*/ 6 },
-			{ "(title:Westfalen OR title:Münsterland) AND contribution.agent.id:\"https\\://d-nb.info/gnd/2019209-5\"", /*->*/ 1 },
-			{ "subject.componentList.label:Münsterland", /*->*/ 2 },
-			{ "subject.componentList.label:Muensterland", /*->*/ 2 },
-			{ "subject.componentList.label:Munsterland", /*->*/ 2 },
-			{ "subject.componentList.label:Münsterländer", /*->*/ 2 },
-			{ "subject.componentList.label.unstemmed:Münsterländer", /*->*/ 0 },
-			{ "subjectAltLabel:Südwestfalen", /*->*/ 1 },
-			{ "subjectAltLabel:Suedwestfalen", /*->*/ 1 },
-			{ "subjectAltLabel:Sudwestfalen", /*->*/ 1 },
-			{ "subjectAltLabel:Südwestfale", /*->*/ 1 },
-			{ "subjectAltLabel.unstemmed:Südwestfale", /*->*/ 0 },
-			{ "subject.componentList.id:\"https\\://d-nb.info/gnd/4042570-8\"", /*->*/ 5 },
-			{ "(title:Westfalen OR title:Münsterland) AND NOT contribution.agent.id:\"https\\://d-nb.info/gnd/2019209-5\"", /*->*/ 5 },
-			{ "subject.componentList.label:Westfalen", /*->*/ 11 },
-			{ "subject.componentList.label:Westfälen", /*->*/ 11 },
-			{ "spatial.label:Westfalen", /*->*/ 14 },
-			{ "spatial.label:Westfälen", /*->*/ 14 },
-			{ "subject.componentList.id:\"https\\://d-nb.info/gnd/4042570-8\"", /*->*/ 5 },
+			{ "title:Westfalen AND contribution.agent.label:Prause", /*->*/ 1 },
+			{ "title:Westfalen OR title:Munsterland", /*->*/ 8 },
+			{ "(title:Westfalen OR title:Münsterland) AND contribution.agent.id:\"https\\://d-nb.info/gnd/5253963-5\"", /*->*/ 0 },
+			{ "bibliographicLevel.label.raw:\"Monographic component part\"", /*->*/ 14 },
+			{ "subject.componentList.label:Düsseldorf", /*->*/ 1 },
+			{ "subject.componentList.label:Duesseldorf", /*->*/ 1 },
+			{ "subject.componentList.label:Dusseldorf", /*->*/ 1 },
+			{ "subject.componentList.label:Düsseldorfer", /*->*/ 1 },
+			{ "subject.componentList.label.unstemmed:Düsseldorfer", /*->*/ 0 },
+			{ "subject.componentList.id:\"https\\://d-nb.info/gnd/4042570-8\"", /*->*/ 2 },
+			{ "(title:Westfalen OR title:Münsterland) AND NOT contribution.agent.id:\"https\\://d-nb.info/gnd/2019209-5\"", /*->*/ 8 },
+			{ "subject.componentList.label:Westfalen", /*->*/ 10 },
+			{ "subject.componentList.label:Westfälen", /*->*/ 10 },
+			{ "spatial.label:Westfalen", /*->*/ 7 },
+			{ "spatial.label:Westfälen", /*->*/ 7 },
 			{ "subject.componentList.id:1113670827", /*->*/ 0 },
-			{ "subject.componentList.type:PlaceOrGeographicName", /*->*/ 37 },
-			{ "publication.location:Berlin", /*->*/ 19 },
-			{ "subject.notation:914.3", /*->*/ 5 },
+			{ "subject.componentList.type:PlaceOrGeographicName", /*->*/ 22 },
+			{ "publication.location:Berlin", /*->*/ 13 },
+			{ "subject.notation:914.3", /*->*/ 6 },
 			{ "subject.notation:914", /*->*/ 0 },
-			{ "subject.notation:914*", /*->*/ 5 },
-			{ "publication.location:Köln", /*->*/ 12 },
-			{ "publication.location:Koln", /*->*/ 12 },
+			{ "subject.notation:914*", /*->*/ 6 },
+			{ "publication.location:Köln", /*->*/ 5 },
+			{ "publication.location:Koln", /*->*/ 5 },
 			{ "publication.startDate:1993", /*->*/ 3 },
 			{ "publication.location:Berlin AND publication.startDate:1993", /*->*/ 1 },
-			{ "publication.location:Berlin AND publication.startDate:[1992 TO 2017]", /*->*/ 14 },
-			{ "inCollection.id:\"http\\://lobid.org/resources/HT014176012#\\!\"", /*->*/ 51 },
+			{ "publication.location:Berlin AND publication.startDate:[1992 TO 2017]", /*->*/ 4 },
+			{ "inCollection.id:\"http\\://lobid.org/organisations/DE-655#\\!\"", /*->*/ 126 },
 			{ "inCollection.id:NWBib", /*->*/ 0 },
-			{ "publication.publishedBy:Springer", /*->*/ 4 },
-			{ "publication.publishedBy:Spring", /*->*/ 4 },
-			{ "publication.publishedBy:DAG", /*->*/ 1 },
-			{ "publication.publishedBy:DÄG", /*->*/ 1 },
-			{ "hasItem.id:\"http\\://lobid.org/items/TT003059252\\:DE-5-58\\:9%2F041#\\!\"", /*->*/ 1 },
-			{ "hasItem.id:TT003059252\\:DE-5-58\\:9%2F041", /*->*/ 0 },
-			{ "coverage:99", /*->*/ 24},
-			{ "isbn:3454128013", /*->*/ 1},
-			{ "isbn:345-4128-013", /*->*/ 1},
-			{ "\"Studies in social and political theory\"", /*->*/ 1},
-			{ "(+Studies +in +social +and +political +theory)", /*->*/ 1},
-			{ "\"Zeitzeuge und Kleinod in Harsewinkel\"", /*->*/ 1},
-			{ "(+Zeitzeuge +und +Kleinod +in +Harsewinkel)", /*->*/ 1},
+			{ "publication.publishedBy:Quedenfeldt", /*->*/ 2 },
+			{ "publication.publishedBy:Quedenfeld", /*->*/ 2 },
+			{ "publication.publishedBy:Fidula", /*->*/ 1 },
+			{ "publication.publishedBy:Fidüla", /*->*/ 1 },
+			{ "hasItem.id:\"http\\://lobid.org/items/990021367710206441\\:DE-290\\:23198604440006445#\\!\"", /*->*/ 1 },
+			{ "hasItem.id:990021367710206441\\:DE-290\\:23198604440006445", /*->*/ 0 },
+			{ "hasItem.callNumber:\"5200/Mars\"", /*->*/ 1 },
+			{ "hasItem.callNumber:Hist*", /*->*/ 1 },
+			{ "hasItem.serialNumber:20098056", /*->*/ 1 },
+			{ "isbn:9780702075551", /*->*/ 1},
+			{ "isbn:070-2075-558", /*->*/ 1},
+			{ "isbn:0702075558", /*->*/ 1},
+			{ "\"Handbook on policy, process and governing\"", /*->*/ 1},
+			{ "(+Handbook +on +policy +process +and +governing)", /*->*/ 1},
 			{ "\"Mülheim an der Ruhr\"", /*->*/ 1},
-			{ "(+Mülheim +an +der +Ruhr)", /*->*/ 1}
+			{ "(+Mülheim +an +der +Ruhr)", /*->*/ 1},
+			{ "\"Amtliche Publikation\"", /*->*/ 1},
+			{ "describedBy.resultOf.object.dateCreated:\"2023-03-22\"", /*->*/ 1},
+			{ "describedBy.resultOf.object.dateModified:\"2023-07-30\"", /*->*/ 3},
+			{ "describedBy.resultOf.object.sourceOrganization.id:\"http\\://lobid.org/organisations/DE-5#\\!\"", /*->*/ 4},
+			{ "describedBy.resultOf.object.modifiedBy.id:\"http\\://lobid.org/organisations/DE-6#\\!\"", /*->*/ 14 },
+			{ "\"Reader-friendly\"", /*->*/ 1},
+			{ "\"Reader friendly\"", /*->*/ 1},
+			{ "q.date:2000", /*->*/ 3 },
+			{ "q.publisher:Aachen", /*->*/ 2 },
+			{ "q.publisher:Aachen\\-Eilendorf", /*->*/ 1 },
+			{ "q.publisher:Eilendörf", /*->*/ 1 },
+			{ "q.publisher:\"Aachen Eilendorf\"", /*->*/ 0 },
+			{ "q.publisher:Quedenfeldt", /*->*/ 2 },
+			{ "q.publisher:Quedenfeld", /*->*/ 0 },
+			{ "q.publisher:Quedenfeld*", /*->*/ 2 },
+			{ "q.subject:Düsseldorf", /*->*/ 1 },
+			{ "q.subject:Duesseldorf", /*->*/ 1 },
+			{ "q.subject:Dusseldorf", /*->*/ 1 },
+			{ "q.subject:Düsseldorfer", /*->*/ 1 },
+			{ "q.subject:Westfalen", /*->*/ 10 },
+			{ "q.subject:Westfälen", /*->*/ 10 },
+			{ "q.subject:Lithuania", /*->*/ 1 },
+			{ "q.subject:Baukem", /*->*/ 1 },
+			{ "q.title:der", /*->*/ 0 },
+			{ "q.title:Westfalen", /*->*/ 8 },
+			{ "q.title:Eilendorf", /*->*/ 1 },
+			{ "q.all:Federale", /*->*/ 5 },
+			{ "q.all:Fédérale", /*->*/ 5 },
+			{ "q.all:(Courtillon cinema)", /*->*/ 1 },
+			{ "q.all:(Courtillon cinéma)", /*->*/ 1 },
+			{ "q.all:0702075558", /*->*/ 1 },
+			{ "q.all:07\\-0207\\-555\\-8", /*->*/ 1 },
+			{ "q.all:07206763", /*->*/ 0 },
+			{ "q.all:0720\\-6763", /*->*/ 1 },
+			{ "q.all:HT072067630", /*->*/ 0 },
+			{ "q.all:(Erleben \\- Verstehen & Lernen)", /*->*/ 3 },
+			{ "q.all:(Lexicography \\: Selected Papers)", /*->*/ 1 },
+			{ "contribution.agent.label.digibib:Westfalen", /*->*/ 3 },
+			{ "contribution.agent.label.digibib:Westfälen", /*->*/ 3 },
+			{ "contribution.agent.label.digibib:Westfälisch", /*->*/ 3 },
+			{ "contribution.agent.label.digibib:Praus", /*->*/ 1 },
+			{ "contribution.agent.label.digibib_unstemmed:Westfalen", /*->*/ 2 },
+			{ "contribution.agent.label.digibib_unstemmed:Westfälen", /*->*/ 2 },
+			{ "contribution.agent.label.digibib_unstemmed:Westfälisch", /*->*/ 0 },
+			{ "contribution.agent.label.digibib_unstemmed:Praus", /*->*/ 0 },
+			{ "contribution.agent.altLabel.digibib:Nemačke", /*->*/ 1 },
+			{ "contribution.agent.altLabel.digibib:Nemack", /*->*/ 1 },
+			{ "contribution.agent.altLabel.digibib_unstemmed:Nemačke", /*->*/ 1 },
+			{ "contribution.agent.altLabel.digibib_unstemmed:Nemack", /*->*/ 0 }
 		});
 	} // @formatter:on
 
@@ -98,7 +142,6 @@ public class IndexIntegrationTest extends LocalIndexSetup {
 			String s = (String) testCase[0];
 			Integer hits = (Integer) testCase[1];
 			result.add(new Object[] { new Queries.Builder().q(s), /*->*/ hits });
-			result.add(new Object[] { new Queries.Builder().word(s), /*->*/ hits });
 		}
 		return result;
 	}
@@ -107,6 +150,7 @@ public class IndexIntegrationTest extends LocalIndexSetup {
 	private Search index;
 
 	public IndexIntegrationTest(Queries.Builder query, int resultCount) {
+        Logger.debug(query.build().toString());
 		this.expectedResultCount = resultCount;
 		this.index = new Search.Builder().query(query.build()).build();
 	}
@@ -114,9 +158,14 @@ public class IndexIntegrationTest extends LocalIndexSetup {
 	@Test
 	public void testResultCount() {
 		running(fakeApplication(), () -> {
-			long totalHits = index.totalHits();
-			Logger.debug("{}", index.getResult());
-			assertThat(totalHits).isEqualTo(expectedResultCount);
+			try {
+				long totalHits = index.totalHits();
+				Logger.debug("{}", index.getResult());
+				assertThat(totalHits).isEqualTo(expectedResultCount);
+			}
+			catch (RuntimeException e) {
+				assertThat(-1).isEqualTo(expectedResultCount);
+			}
 		});
 	}
 

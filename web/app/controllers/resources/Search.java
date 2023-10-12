@@ -1,4 +1,4 @@
-/* Copyright 2015-2019 Fabian Steeg, hbz. Licensed under the EPL 2.0 */
+/* Copyright 2015-2023 Fabian Steeg, hbz. Licensed under the EPL 2.0 */
 
 package controllers.resources;
 
@@ -24,10 +24,8 @@ import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.join.aggregations.ChildrenAggregationBuilder;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
-import org.elasticsearch.search.aggregations.AggregationBuilder;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
 import org.elasticsearch.search.aggregations.Aggregations;
 import org.elasticsearch.search.sort.SortBuilders;
@@ -54,7 +52,6 @@ public class Search {
 			Application.CONFIG.getString("index.type.resource");
 
 	static final String OWNER_ID_FIELD = "hasItem.heldBy.id";
-	private static final String OWNER_AGGREGATION_FIELD = "heldBy.id";
 	private static final String SPATIAL_LABEL_FIELD = "spatial.label.raw";
 	static final String SPATIAL_GEO_FIELD = "spatial.focus.geo";
 	private static final String SPATIAL_ID_FIELD = "spatial.id";
@@ -129,21 +126,16 @@ public class Search {
 	/**
 	 * @return The number of result for this search
 	 */
-	public long totalHits() {
-		try {
+	public long totalHits() throws IllegalArgumentException {
 			return Cache.getOrElse("total-" + query,
 					() -> queryResources().getTotal(), Application.ONE_DAY);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return -1;
 	}
 
 	/**
 	 * @return This index, get results via {@link #getResult()} and
 	 *         {@link #getTotal()}
 	 */
-	public Search queryResources() {
+	public Search queryResources() throws IllegalArgumentException {
 		Search resultIndex = withClient((Client client) -> {
 			validate(client, query);
 			Logger.trace("queryResources: q={}, from={}, size={}, sort={}, query={}",
@@ -180,28 +172,6 @@ public class Search {
 			throw new IllegalArgumentException("Invalid query: " + query);
 		}
 		Logger.debug("Valid query: {}", query);
-	}
-
-	/**
-	 * @param id The item ID to use for an Elasticsearch GET request
-	 * @return This index, get results via {@link #getResult()} and
-	 *         {@link #getTotal()}
-	 */
-	public Search getItem(String id) {
-		return withClient((Client client) -> {
-			SearchRequestBuilder requestBuilder = client.prepareSearch(INDEX_NAME)
-					.setSearchType(SearchType.DFS_QUERY_THEN_FETCH).setTypes(TYPE_ITEM)
-					.setQuery(QueryBuilders.idsQuery().addIds(id)).setSize(1);
-			SearchResponse response = requestBuilder.execute().actionGet();
-			if (response.getHits().getTotalHits() > 0) {
-				String sourceAsString = response.getHits().getAt(0).getSourceAsString();
-				result = Json.parse(sourceAsString);
-				total = 1;
-			} else {
-				Logger.warn("No item found for ID {}", id);
-			}
-			return this;
-		});
 	}
 
 	/**
@@ -266,14 +236,7 @@ public class Search {
 					Arrays.asList(TOPIC_AGGREGATION, SPATIAL_ID_FIELD, SUBJECT_ID_FIELD)
 							.contains(field) ? 9999
 									: (field.equals(ISSUED_FIELD) ? 1000 : 100);
-			if (field.equals(OWNER_AGGREGATION)) {
-				AggregationBuilder ownerAggregation =
-						new ChildrenAggregationBuilder(Application.OWNER_AGGREGATION,
-								TYPE_ITEM)
-										.subAggregation(AggregationBuilders.terms(field)
-												.field(OWNER_AGGREGATION_FIELD).size(size));
-				searchRequest.addAggregation(ownerAggregation);
-			} else if (field.equals(SPATIAL_GEO_FIELD)) {
+			if (field.equals(SPATIAL_GEO_FIELD)) {
 				searchRequest
 						.addAggregation(AggregationBuilders.geohashGrid(SPATIAL_GEO_FIELD)
 								.field(SPATIAL_GEO_FIELD).precision(9));
@@ -285,7 +248,7 @@ public class Search {
 		return searchRequest;
 	}
 
-	<T> T withClient(Function<Client, T> function) {
+	<T> T withClient(Function<Client, T> function) throws IllegalArgumentException{
 		if (elasticsearchClient != null) {
 			return function.apply(elasticsearchClient);
 		}

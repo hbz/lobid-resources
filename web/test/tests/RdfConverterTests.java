@@ -37,7 +37,7 @@ public class RdfConverterTests extends LocalIndexSetup {
 	@Parameters(name = "{0}")
 	public static Collection<Object[]> data() {
 		return Arrays
-				.asList(new Object[][] { { "TT050409948" }, { "BT000041593" } });
+				.asList(new Object[][] { { "990167595410206441" }, { "990110881770206441" } });
 	}
 
 	private String id;

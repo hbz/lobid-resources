@@ -22,6 +22,8 @@ fi
 REPO=$1
 HOME="/home/sol"
 
+cd $HOME/git/$REPO/
+mvn clean install -DskipTests=true
 cd $HOME/git/$REPO/web
 kill $(cat target/universal/stage/RUNNING_PID)
 sleep 14
