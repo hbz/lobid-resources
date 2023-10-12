@@ -17,8 +17,10 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.FileEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.elasticsearch.client.Client;
 import org.elasticsearch.common.network.NetworkModule;
 import org.elasticsearch.common.settings.Settings;
@@ -36,14 +38,14 @@ import org.lobid.resources.run.CulturegraphXmlFilterHbzToJson;
  * Test of filtering resources with hbz holdings from culturegraph marcxml,
  * tranforming into JSON, writing as an elasticsearch bulk json file, ingesting
  * it and retrieving it via HTTP.
- * 
+ *
  * @author Pascal Christoph(dr0i)
  **/
 @SuppressWarnings("javadoc")
 public final class CulturegraphXmlFilterHbzToJsonTest {
 
 	private static final Logger LOG =
-			LogManager.getLogger(CulturegraphXmlFilterHbzToJsonTest.class);
+			LoggerFactory.getLogger(CulturegraphXmlFilterHbzToJsonTest.class);
 
 	private static final String PATH_TO_TEST = "src/test/resources/";
 	public static final String JSON_OUTPUT_FILE =
