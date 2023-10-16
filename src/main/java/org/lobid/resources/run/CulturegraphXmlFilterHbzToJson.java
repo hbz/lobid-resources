@@ -3,6 +3,7 @@
 package org.lobid.resources.run;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 
 import org.metafacture.biblio.marc21.MarcXmlHandler;
 import org.metafacture.elasticsearch.JsonToElasticsearchBulk;
@@ -11,7 +12,6 @@ import org.metafacture.io.FileOpener;
 import org.metafacture.io.ObjectWriter;
 import org.metafacture.json.JsonEncoder;
 import org.metafacture.mangling.LiteralToObject;
-import org.metafacture.metamorph.Filter;
 import org.metafacture.strings.StringReader;
 import org.metafacture.xml.XmlDecoder;
 import org.metafacture.xml.XmlElementSplitter;
@@ -54,13 +54,17 @@ public final class CulturegraphXmlFilterHbzToJson {
 
 	private static StringReader receiverThread() {
 		final StringReader sr = new StringReader();
-		sr.setReceiver(new XmlDecoder()).setReceiver(new MarcXmlHandler())
-				.setReceiver(
-						new Metafix("src/main/resources/fix-cg-to-es.fix"))
-				.setReceiver(new JsonEncoder())
-				.setReceiver(new JsonToElasticsearchBulk("rvk",
-						ELASTICSEARCH_INDEX_NAME))
-				.setReceiver(new ObjectWriter<>(JSON_FILE));
+		try {
+            sr.setReceiver(new XmlDecoder()).setReceiver(new MarcXmlHandler())
+            		.setReceiver(
+            				new Metafix("src/main/resources/fix-cg-to-es.fix"))
+            		.setReceiver(new JsonEncoder())
+            		.setReceiver(new JsonToElasticsearchBulk("rvk",
+            				ELASTICSEARCH_INDEX_NAME))
+            		.setReceiver(new ObjectWriter<>(JSON_FILE));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
 		return sr;
 	}
 }
