@@ -12,6 +12,7 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
     TestGenerateContext.class,
+    org.lobid.resources.CulturegraphXmlFilterHbzToJsonTest.class,
     org.lobid.resources.AlmaMarc21XmlToLobidJsonMetafixTest.class})
 
 public final class UnitTests {
