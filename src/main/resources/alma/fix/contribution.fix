@@ -55,7 +55,7 @@ do list(path:"100[01] ", "var":"$i")
         end
       end
       # name
-      call_macro("gndPersonCombinedLabel",field:"$i") 
+      call_macro("gndPersonCombinedLabel",field:"$i")
       copy_field("$i.@combinedLabel","contribution[].$last.agent.label")
       # type
       set_array("contribution[].$last.agent.type[]","Person")
@@ -105,7 +105,7 @@ do list(path:"700[01] ", "var":"$i")
         end
       end
       # name
-      call_macro("gndPersonCombinedLabel",field:"$i") 
+      call_macro("gndPersonCombinedLabel",field:"$i")
       copy_field("$i.@combinedLabel","contribution[].$last.agent.label")
       # type
       set_array("contribution[].$last.agent.type[]","Person")
@@ -263,7 +263,7 @@ do list(path:"111[012] |711[012] ", "var":"$i")
       end
       # name
       call_macro("gndEventCombinedLabel",field:"$i")
-      copy_field("$i.@combinedLabel", "contribution[].$last.agent.label")        
+      copy_field("$i.@combinedLabel", "contribution[].$last.agent.label")
       # type
       set_array("contribution[].$last.agent.type[]","ConferenceOrEvent")
       # role
@@ -339,7 +339,7 @@ do list (path: "contribution[]", "var": "$i")
   set_array("$i.agent.altLabel[]")
   do list(path:"GPN??", "var": "$z")
     if in ("$i.agent.@gndIdn", "$z.B") # Person labels have no character between $a (Name) and $b (Number).
-      call_macro("gndPersonCombinedLabel",field:"$z") 
+      call_macro("gndPersonCombinedLabel",field:"$z")
       copy_field("$z.@combinedLabel", "$i.agent.altLabel[].$append")
     end
   end

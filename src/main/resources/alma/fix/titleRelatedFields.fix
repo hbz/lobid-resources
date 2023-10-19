@@ -53,9 +53,9 @@ do list(path:"245??","var":"$i")
     copy_field("$i.6","$i.linkageTest")
     do list(path:"880??","var":"$880")
       if in ("$i.linkageTest","$880.linkageTest")
-        if in ("$880.@script.id","alternateGraphicRepresentation[].*.script.id")   
+        if in ("$880.@script.id","alternateGraphicRepresentation[].*.script.id")
           do list(path:"alternateGraphicRepresentation[]","var":"$AGR")
-            if in ("$880.@script.id","$AGR.script.id")     
+            if in ("$880.@script.id","$AGR.script.id")
             copy_field("$880.a","$AGR.record.@title")
             copy_field("$880.n","$AGR.record.@titleOfSubSeries_n")
             unless exists("$AGR.record.@titleOfSubSeries_p")
@@ -65,24 +65,24 @@ do list(path:"245??","var":"$i")
             unless exists("$AGR.record.otherTitleInformation[]")
               set_array("$AGR.record.otherTitleInformation[]")
             end
-            copy_field("$880.b","$AGR.record.otherTitleInformation[].$append")     
+            copy_field("$880.b","$AGR.record.otherTitleInformation[].$append")
             unless exists("$AGR.record.responsibilityStatement[]")
               set_array("$AGR.record.responsibilityStatement[]")
             end
-            copy_field("$880.c","$AGR.record.responsibilityStatement[].$append")  
+            copy_field("$880.c","$AGR.record.responsibilityStatement[].$append")
             end
           end
-        else    
+        else
         copy_field("$880.@script.id","alternateGraphicRepresentation[].$append.script.id")
-        copy_field("$880.@script.label","alternateGraphicRepresentation[].$last.script.label")        
+        copy_field("$880.@script.label","alternateGraphicRepresentation[].$last.script.label")
         copy_field("$880.a","alternateGraphicRepresentation[].$last.record.@title")
         copy_field("$880.n","alternateGraphicRepresentation[].$last.record.@titleOfSubSeries_n")
         set_array("alternateGraphicRepresentation[].$last.record.@titleOfSubSeries_p")
-        copy_field("$880.p","alternateGraphicRepresentation[].$last.record.@titleOfSubSeries_p.$append")            
+        copy_field("$880.p","alternateGraphicRepresentation[].$last.record.@titleOfSubSeries_p.$append")
         set_array("alternateGraphicRepresentation[].$last.record.otherTitleInformation[]")
         copy_field("$880.b","alternateGraphicRepresentation[].$last.record.otherTitleInformation[].$append")
         set_array("alternateGraphicRepresentation[].$last.record.responsibilityStatement[]")
-        copy_field("$880.c","alternateGraphicRepresentation[].$last.record.responsibilityStatement[].$append")            
+        copy_field("$880.c","alternateGraphicRepresentation[].$last.record.responsibilityStatement[].$append")
         end
       end
     end
@@ -113,7 +113,7 @@ do list(path:"alternateGraphicRepresentation[]","var":"$AGR")
     prepend("$AGR.record.@titleOfSubSeries",", ")
 
     paste("$AGR.record.title","$AGR.record.@title", "$AGR.record.@titleOfSubSeries", join_char: "") # title consists of main title + if exists: subvolume numbering and subvolume title
-    remove_field("$AGR.record.@title")    
+    remove_field("$AGR.record.@title")
     remove_field("$AGR.record.@titleOfSubSeries")
     remove_field("$AGR.record.@titleOfSubSeries_n")
     remove_field("$AGR.record.@titleOfSubSeries_p")
@@ -148,7 +148,7 @@ do list(path:"246?[ 345678]","var":"$i")
     copy_field("$i.6","$i.linkageTest")
     do list(path:"880??","var":"$880")
       if in ("$i.linkageTest","$880.linkageTest")
-        if in ("$880.@script.id","alternateGraphicRepresentation[].*.script.id")   
+        if in ("$880.@script.id","alternateGraphicRepresentation[].*.script.id")
           do list(path:"alternateGraphicRepresentation[]","var":"$AGR")
             if in ("$880.@script.id","$AGR.script.id")
               unless exists("$AGR.record.alternativeTitle[]")
@@ -157,16 +157,16 @@ do list(path:"246?[ 345678]","var":"$i")
               copy_field("$880.a","$AGR.record.alternativeTitle[].$append")
             end
           end
-        else    
+        else
           copy_field("$880.@script.id","alternateGraphicRepresentation[].$append.script.id")
-          copy_field("$880.@script.label","alternateGraphicRepresentation[].$last.script.label")        
+          copy_field("$880.@script.label","alternateGraphicRepresentation[].$last.script.label")
           set_array("alternateGraphicRepresentation[].$last.record.alternativeTitle[]")
           copy_field("$880.a","alternateGraphicRepresentation[].$last.record.alternativeTitle[].$append")
         end
       end
     end
   end
-end  
+end
 
 
 # 247 - Former Title (R)
@@ -197,7 +197,7 @@ do list(path:"250  ","var":"$i")
     copy_field("$i.6","$i.linkageTest")
     do list(path:"880??","var":"$880")
       if in ("$i.linkageTest","$880.linkageTest")
-        if in ("$880.@script.id","alternateGraphicRepresentation[].*.script.id")   
+        if in ("$880.@script.id","alternateGraphicRepresentation[].*.script.id")
           do list(path:"alternateGraphicRepresentation[]","var":"$AGR")
             if in ("$880.@script.id","$AGR.script.id")
                 unless exists("$AGR.record.edition[]")
@@ -206,9 +206,9 @@ do list(path:"250  ","var":"$i")
               copy_field("$880.a","$AGR.record.edition[].$append")
             end
           end
-        else    
+        else
           copy_field("$880.@script.id","alternateGraphicRepresentation[].$append.script.id")
-          copy_field("$880.@script.label","alternateGraphicRepresentation[].$last.script.label")        
+          copy_field("$880.@script.label","alternateGraphicRepresentation[].$last.script.label")
           set_array("alternateGraphicRepresentation[].$last.record.edition[]")
           copy_field("$880.a","alternateGraphicRepresentation[].$last.record.edition[].$append")
         end
