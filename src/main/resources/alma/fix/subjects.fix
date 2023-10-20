@@ -51,8 +51,8 @@ set_array("subject[]")
 # 600 - Subject Added Entry - Personal Name (R)
 # 610 - Subject Added Entry-Corporate Name (R), Subfield: $a (NR)
 # 611 - Subject Added Entry - Meeting Name (R)
-# 630 - Subject Added Entry - Uniform Title (R) 
-# 648 - Subject Added Entry - Chronological Term (R) 
+# 630 - Subject Added Entry - Uniform Title (R)
+# 648 - Subject Added Entry - Chronological Term (R)
 # 650 - Subject Added Entry-Topical Term (R),  Subfield: $a (NR)
 # 651 - Subject Added Entry - Geographic Name (R)
 # 653 - Index Term-Uncontrolled (R),  !!! Subfield: $a (R) !!!!
@@ -405,7 +405,7 @@ do list (path: "subject[]", "var": "$i")
     set_array("$j.altLabel[]")
     do list(path:"GPN??", "var": "$z")
       if in ("$j.@gndIdn", "$z.B") # Person labels have no character between $a (Name) and $b (Number).
-        call_macro("gndPersonCombinedLabel",field:"$z") 
+        call_macro("gndPersonCombinedLabel",field:"$z")
         copy_field("$z.@combinedLabel", "$j.altLabel[].$append")
       end
     end
