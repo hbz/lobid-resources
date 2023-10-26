@@ -9,7 +9,7 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<target.jdk>1.8</target.jdk>
 		<junit.version>4.8.2</junit.version>
-		<logback.version>0.9.30</logback.version>
+		<logback.version>1.2.12</logback.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -26,6 +26,16 @@
 			<groupId>org.metafacture</groupId>
 			<artifactId>metafacture-json</artifactId>
 			<version>5.6.0</version>
+			<exclusions>
+				<exclusion>
+					<groupId>commons-logging</groupId>
+					<artifactId>commons-logging</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-api</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.metafacture</groupId>
@@ -88,24 +98,15 @@
 			<version>5.6.0</version>
 		</dependency>
 		<dependency>
-			<groupId>org.apache.jena</groupId>
-			<artifactId>jena-arq</artifactId>
-			<version>3.17.0</version>
-			<exclusions>
-			<exclusion>
-				<groupId>log4j</groupId>
-				<artifactId>log4j</artifactId>
-			</exclusion>
-			<exclusion>
-				<groupId>org.apache.httpcomponents</groupId>
-				<artifactId>httpclient</artifactId>
-			</exclusion>
-		</exclusions>
-		</dependency>
-		<dependency>
 			<groupId>org.metafacture</groupId>
 			<artifactId>metafix</artifactId>
 			<version>0.6.1</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-simple</artifactId>
+			</exclusion>
+		</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>com.github.jsonld-java</groupId>
@@ -129,7 +130,11 @@
 			<version>5.6.3</version>
 			<exclusions>
 				<exclusion>
-					<groupId>log4j</groupId>
+					<groupId>commons-logging</groupId>
+					<artifactId>commons-logging</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.apache.logging.log4j</groupId>
 					<artifactId>log4j-api</artifactId>
 				</exclusion>
 			</exclusions>
@@ -138,6 +143,12 @@
 			<groupId>org.elasticsearch.client</groupId>
 			<artifactId>transport</artifactId>
 			<version>5.6.3</version>
+			<exclusions>
+				<exclusion>
+					<groupId>commons-logging</groupId>
+					<artifactId>commons-logging</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
@@ -163,6 +174,21 @@
 			<groupId>javax.xml.bind</groupId>
 			<artifactId>jaxb-api</artifactId>
 			<version>2.3.0</version>
+		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<version>${logback.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-core</artifactId>
+			<version>${logback.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>log4j-over-slf4j</artifactId>
+			<version>1.7.36</version>
 		</dependency>
 	</dependencies>
 	<build>
