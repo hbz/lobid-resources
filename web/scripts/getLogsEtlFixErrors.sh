@@ -5,9 +5,9 @@
 MAIL_TO=$(cat .secrets/MAIL_TO)
 MAIL_FROM=$(cat .secrets/MAIL_FROM)
 if [ -z $1 ]; then
-	NEWEST_LOG_FN=$(ls ../application-log*.gz| tail -n1)
+	NEWEST_LOG_FN=$(ls ../etl-log*.gz| tail -n1)
 	else
-	NEWEST_LOG_FN="../logs/application.log"
+	NEWEST_LOG_FN="../logs/etl.log"
 fi
 echo $NEWEST_LOG_FN
 ERRORS=$(zgrep  -v 'replace_all("hbzId",' $NEWEST_LOG_FN | grep -B1 'Error while executing Fix expression')
@@ -21,7 +21,7 @@ if [ -n "$ERRORS" ]; then
         fi
 	echo "$SHORTEND_ERRORS"
         mail -s "FIX errors in Alma Fix ETL" "${MAIL_TO}" -a "From: ${MAIL_FROM}" << EOF
-Getriggert von ausgeführt in $(pwd)/scripts/getLogsApplicationFixErrors.sh :
+Getriggert von ausgeführt in $(pwd)/scripts/getLogsEtlFixErrors.sh :
 
 Achte auf das Datum der ERROR-Zeilen - evtl. sind das alte Fehler!
 
