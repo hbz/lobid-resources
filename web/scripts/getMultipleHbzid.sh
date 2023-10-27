@@ -7,7 +7,7 @@ MAIL_FROM=$(cat .secrets/MAIL_FROM)
 SEND_TO_VERBUND=$(cat .secrets/SEND_TO_VERBUND)
 
 cd ../
-NEWEST_LOG_FN=$(ls application-log*.gz| tail -n1)
+NEWEST_LOG_FN=$(ls etl-log*.gz| tail -n1)
 echo $NEWEST_LOG_FN
 HBZIDS=$( zgrep -B2 'java.lang.IllegalStateException: Expected String, got Array' $NEWEST_LOG_FN |grep -B1 'replace_all("hbzId",'| grep hbzId= | sed "s#\(.*\)almaMmsId=\(.*\), id=.*hbzId\(.*\)#\2\3#g" |tr = , |sed "s#\[\(.*\)\].*#\1#g"|sort -u)
 echo "$HBZIDS" >> $NEWEST_LOG_FN
