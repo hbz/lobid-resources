@@ -16,17 +16,19 @@ jobs:
         path: ~/.m2
         key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
         restore-keys: ${{ runner.os }}-m2
-        # - name: Install metafacture-core snapshots
-        #run: |
-        #git clone https://github.com/metafacture/metafacture-core.git
-        #cd metafacture-core
-        #./gradlew publishToMavenLocal
-        #cd ..
+    - name: Install metafacture-core-snapshots
+      run: |
+        git clone https://github.com/metafacture/metafacture-core.git
+        cd metafacture-core
+        git checkout 5.7.0-rc1
+        ./gradlew publishToMavenLocal
+        cd ..
     - name: Install metafacture-fix
       run: |
         git clone https://github.com/metafacture/metafacture-fix.git
         cd metafacture-fix
-        git reset --hard 0.6.1
+        git checkout master
+        git pull
         ./gradlew publishToMavenLocal
         cd ..
     - name: Build with Maven
