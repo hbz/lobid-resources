@@ -15,20 +15,29 @@ $ sudo /etc/ini.d/monit stop
 "
 
 if [ ! $# -eq 1 ]; then
-	echo "$USAGE"
-	exit 65
+        echo "$USAGE"
+        exit 65
 fi
 
 REPO=$1
 HOME="/home/sol"
+PID_FILE="target/universal/stage/RUNNING_PID"
 
 cd $HOME/git/$REPO/
 mvn clean install -DskipTests=true
 cd $HOME/git/$REPO/web
-kill $(cat target/universal/stage/RUNNING_PID)
-sleep 14
-kill -9 $(cat target/universal/stage/RUNNING_PID)
-rm target/universal/stage/RUNNING_PID
+
+if [ ! -f $PID_FILE ]; then
+        echo "RUNNING_PID missing. Getting PID and kill ... "
+        PID=$(lsof -i:7507 |awk -F'[^0-9]*' '$0=$2'  | tail -n1)
+        kill $PID
+        else
+                PID=$(cat $PID_FILE)
+                kill $PID
+                sleep 14
+                kill -9 $PID
+                rm $PID_FILE
+fi
 echo "Going to sleep for 11 seconds. Then lookup the process list for the repo name.
 If everything is fine, 'monit' is going to start the $REPO instance ..."
 sleep 11
