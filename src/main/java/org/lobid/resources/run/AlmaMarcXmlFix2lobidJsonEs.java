@@ -237,7 +237,7 @@ public class AlmaMarcXmlFix2lobidJsonEs {
 
     private static StringReader receiverThread() {
         StreamBatchLogger batchLogger = new StreamBatchLogger();
-        batchLogger.setBatchSize(100000);
+        batchLogger.setBatchSize(10000);
         MarcXmlHandler marcXmlHandler = new MarcXmlHandler();
         marcXmlHandler.setNamespace(null);
         EtikettJson etikettJson = new EtikettJson();
