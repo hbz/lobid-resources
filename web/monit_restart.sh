@@ -39,11 +39,11 @@ case $ACTION in
        fi
        JAVA_OPTS="$JAVA_OPTS -XX:+ExitOnOutOfMemoryError -XX:+HeapDumpOnOutOfMemoryError -DpreferIPv4Stack" sbt clean "start $PORT" & > monit_start.log
        if [ -n $DO_ETL_UPDATE ]; then
-          echo "Sleep 100s before starting ETL ..."
+          echo "Sleep 100s before starting ETL ..." >> monit_start.log
           sleep 100
           curl http://localhost:$PORT/resources/webhook/update-alma?token=$ETL_TOKEN
         fi
-        echo "Done starting!"
+        echo "Done starting!" >> monit_start.log
 		;;
 	stop)
 		kill $(cat target/universal/stage/RUNNING_PID)
