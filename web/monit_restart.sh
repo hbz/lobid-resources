@@ -20,6 +20,7 @@ REPO=$1
 ACTION=$2
 PORT=$3
 JAVA_OPTS="$4"
+DO_ETL_UPDATE="$5
 
 HOME="/home/sol"
 
@@ -28,13 +29,21 @@ HOME="/home/sol"
 JAVA_OPTS=$(echo "$JAVA_OPTS" |sed 's#,#\ #g')
 
 cd $HOME/git/$REPO
+ETL_TOKEN=$(cat scripts/.secrets/ETL_TOKEN)
+
 case $ACTION in
-	start)
-                if [ -f target/universal/stage/RUNNING_PID ]; then
-                    kill $(cat target/universal/stage/RUNNING_PID)
-                    rm target/universal/stage/RUNNING_PID
-                fi
-		JAVA_OPTS="$JAVA_OPTS -XX:+ExitOnOutOfMemoryError -XX:+HeapDumpOnOutOfMemoryError -DpreferIPv4Stack" sbt clean "start $PORT" > monit_start.log
+  start)
+       if [ -f target/universal/stage/RUNNING_PID ]; then
+          kill $(cat target/universal/stage/RUNNING_PID)
+          rm target/universal/stage/RUNNING_PID
+       fi
+       JAVA_OPTS="$JAVA_OPTS -XX:+ExitOnOutOfMemoryError -XX:+HeapDumpOnOutOfMemoryError -DpreferIPv4Stack" sbt clean "start $PORT" & > monit_start.log
+       if [ -n $DO_ETL_UPDATE ]; then
+          echo "Sleep 100s before starting ETL ..."
+          sleep 100
+          curl http://localhost:$PORT/resources/webhook/update-alma?token=$ETL_TOKEN
+        fi
+        echo "Done starting!"
 		;;
 	stop)
 		kill $(cat target/universal/stage/RUNNING_PID)
