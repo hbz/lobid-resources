@@ -37,7 +37,7 @@ case $ACTION in
           kill $(cat target/universal/stage/RUNNING_PID)
           rm target/universal/stage/RUNNING_PID
        fi
-       JAVA_OPTS="$JAVA_OPTS -XX:+ExitOnOutOfMemoryError -XX:+HeapDumpOnOutOfMemoryError -DpreferIPv4Stack" sbt clean "start $PORT" > monit_start.log &
+       JAVA_OPTS="$JAVA_OPTS -XX:+ExitOnOutOfMemoryError -XX:+HeapDumpOnOutOfMemoryError -DpreferIPv4Stack" sbt clean "start $PORT" & > monit_start.log
        if [ -n $DO_ETL_UPDATE ]; then
           echo "Sleep 100s before starting ETL ..." >> monit_start.log
           sleep 100
