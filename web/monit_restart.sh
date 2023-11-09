@@ -3,17 +3,17 @@
 USAGE="<GIT REPO NAME> {start|stop} <PORT> [<JAVA OPTS>]"
 
 if [ $# -lt 3 ]; then
-	echo "$USAGE
-				THIS SCRIPT SHOULD ONLY BE USED BY -MONIT-!
+  echo "$USAGE
+    THIS SCRIPT SHOULD ONLY BE USED BY -MONIT-!
 
-				If you want to restart an instance, use ./restart.sh
+    If you want to restart an instance, use ./restart.sh
 
-				First 3 parameters are mandatory.
-				Don't forget that the process is monitored by 'monit'.
-				It will restart automatically if you stop the API.
-				If you want to stop it permanently, do 'sudo /etc/ini.d/monit stop' first.
-				"
-	exit 65
+    First 3 parameters are mandatory.
+    Don't forget that the process is monitored by 'monit'.
+    It will restart automatically if you stop the API.
+    If you want to stop it permanently, do 'sudo /etc/ini.d/monit stop' first.
+    "
+ exit 65
 fi
 
 REPO=$1
@@ -44,15 +44,16 @@ case $ACTION in
           curl http://localhost:$PORT/resources/webhook/update-alma?token=$ETL_TOKEN
         fi
         echo "Done starting!" >> monit_start.log
-		;;
-	stop)
-		kill $(cat target/universal/stage/RUNNING_PID)
-		sleep 14
-		kill -9 $(cat target/universal/stage/RUNNING_PID)
-		rm target/universal/stage/RUNNING_PID
-		;;
-	*)
-		echo "usage: $USAGE"
-		;;
+  ;;
+ stop)
+  kill $(cat target/universal/stage/RUNNING_PID)
+  sleep 14
+  kill -9 $(cat target/universal/stage/RUNNING_PID)
+  rm target/universal/stage/RUNNING_PID
+  ;;
+ *)
+  echo "usage: $USAGE"
+  ;;
 esac
 exit 0
+
