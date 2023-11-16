@@ -35,7 +35,7 @@
 			</a></td>
 		</tr>
 		}
-		<tr><td>Basiert auf</td><td><a href='@json.get("isBasedOn").get("url").asText()'>@json.get("isBasedOn").get("name").get("de").asText()</a></td></tr>
+		<tr><td>Basiert auf</td><td>@json.get("isBasedOn").get("name").get("de").asText()</td></tr>
 		<tr><td>Veröffentlicht am</td><td>@json.get("datePublished").asText()</td></tr>
 		<tr><td>Sprache</td><td>@json.get("inLanguage").elements().next().asText()</td></tr>
 		<tr><td>Ergänzungsfrequenz</td><td>@json.get("accrualPeriodicity").get("name").get("de").asText()</td></tr>
