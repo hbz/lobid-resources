@@ -38,7 +38,7 @@ case $ACTION in
           rm target/universal/stage/RUNNING_PID
        fi
        JAVA_OPTS="$JAVA_OPTS -XX:+ExitOnOutOfMemoryError -XX:+HeapDumpOnOutOfMemoryError -DpreferIPv4Stack" sbt clean "start $PORT" & > monit_start.log
-       if [ -n $DO_ETL_UPDATE -a $(tail -n100 logs/etl.log  |grep -c "Finishing indexing of ES index 'resources-alma-fix'") -gt 0 ]; then
+       if [ -n $DO_ETL_UPDATE -a $(tail -n100 logs/etl.log  |grep -c "Finishing indexing of ES index 'resources-alma-fix'") -eq 0 ]; then
           echo "Automatical updates-ETL triggered and last entries were not ok, thus starting ETL. Sleep 100s before starting ETL ..." >> monit_start.log
           sleep 100
           curl http://localhost:$PORT/resources/webhook/update-alma?token=$ETL_TOKEN
