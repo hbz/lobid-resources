@@ -21,7 +21,7 @@ if [ -n "$ERRORS" ]; then
         fi
 	echo "$SHORTEND_ERRORS"
         mail -s "FIX errors in Alma Fix ETL" "${MAIL_TO}" -a "From: ${MAIL_FROM}" << EOF
-Getriggert von ausgeführt in $(pwd)/scripts/getLogsEtlFixErrors.sh :
+Getriggert von ausgeführt in $(pwd)/getLogsEtlFixErrors.sh :
 
 Achte auf das Datum der ERROR-Zeilen - evtl. sind das alte Fehler!
 
