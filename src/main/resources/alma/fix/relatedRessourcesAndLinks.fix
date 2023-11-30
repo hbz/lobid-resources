@@ -341,11 +341,15 @@ end
 # 776 - Additional Physical Form Entry (R) -  Subfield: $w (R), $t (NR), $i (R), $n (R), $x (NR), $z (R)
 
 set_array("related[]")
-do list(path:"775??|776??", "var":"$i")
+do list_as("$i":"775??|776??")
   unless any_match ("$i.i", ".*eproduktion von.*|.*eproduktion")
     add_field("related[].$append.test","")
     if all_match("$i.w", "^\\((?:DE-600|DE-605)\\)(.*)$")
-      copy_field("$i.w", "related[].$last.id")
+      if is_array("$i.w")
+        copy_field("$i.w.1", "related[].$last.id")
+      else
+        copy_field("$i.w", "related[].$last.id")
+      end
     end
     set_array("related[].$last.note[]")
     paste("related[].$last.note[].$append","$i.i", "$i.n")
@@ -371,8 +375,8 @@ do list(path:"related[]", "var":"$i")
   uniq("$i.isbn[]")
 end
 
-replace_all("related[].*.id", "^\\(DE-605\\)(.*)$", "http://lobid.org/resources/$1#!")
-replace_all("related[].*.id", "^\\(DE-600\\)(.*)$", "http://lobid.org/resources/ZDB-$1#!")
+replace_all("related[].*.id", "((\\(DE-605\\))+)(.*)$", "http://lobid.org/resources/$3#!")
+replace_all("related[].*.id", "\\(DE-600\\)(.*)$", "http://lobid.org/resources/ZDB-$1#!")
 
 
 set_array("inCollection[]")
