@@ -202,8 +202,6 @@ uniq("containedIn[]")
 
 # 776 - Additional Physical Form Entry (R) - $i (R), $w (R)
 
-# TODO: is this not duplicate info with "related"?
-
 set_array("primaryForm[]")
 
 do list(path: "77608", "var":"$i")
@@ -341,33 +339,24 @@ end
 # 776 - Additional Physical Form Entry (R) -  Subfield: $w (R), $t (NR), $i (R), $n (R), $x (NR), $z (R)
 
 set_array("related[]")
-do list_as("$i":"775??|776??")
+do list(path:"775??|776??", "var":"$i")
   unless any_match ("$i.i", ".*eproduktion von.*|.*eproduktion")
-    add_field("related[].$append.test","")
-    if all_match("$i.w", "^\\((?:DE-600|DE-605)\\)(.*)$")
-      if is_array("$i.w")
-        copy_field("$i.w.1", "related[].$last.id")
-      else
-        copy_field("$i.w", "related[].$last.id")
+    do list_as("$hbzId":"$i.w", "$isbn":"$i.z", "$label":"$i.t", "$note":"$i.n", "$issn":"$i.x", "$info":"$i.i")
+      set_hash("related[].$append")
+      if all_match("$hbzId", "^\\((DE-600|DE-605)\\).*$")
+        copy_field("$hbzId", "related[].$last.id")
       end
+      set_array("related[].$last.note[]")
+      paste("related[].$last.note[].$append","$info", "$note")
+      replace_all("related[].$last.note[].$last", "Erscheint auch als ","")
+      copy_field("$label", "related[].$last.label")
+      copy_field("$issn", "related[].$last.issn")
+      set_array("related[].$last.isbn[]")
+      isbn("$isbn", to:"isbn13")
+      copy_field("$isbn", "related[].$last.isbn[].$append")
+      isbn("$isbn", to:"isbn10")
+      copy_field("$isbn", "related[].$last.isbn[].$append")
     end
-    set_array("related[].$last.note[]")
-    paste("related[].$last.note[].$append","$i.i", "$i.n")
-    replace_all("related[].$last.note[].$last", "Erscheint auch als ","")
-    copy_field("$i.t", "related[].$last.label")
-    copy_field("$i.x", "related[].$last.issn")
-    set_array("$i.isbn13")
-    set_array("$i.isbn10")
-    do list(path: "$i.z", "var":"$j")
-      isbn("$j", to: "clean")
-      copy_field("$j", "$i.isbn13.$append")
-      copy_field("$j", "$i.isbn10.$append")
-    end
-    set_array("related[].$last.isbn[]")
-    isbn("$i.isbn10.*", to:"isbn10")
-    isbn("$i.isbn13.*", to:"isbn13")
-    copy_field("$i.isbn13.*", "related[].$last.isbn[].$append")
-    copy_field("$i.isbn10.*", "related[].$last.isbn[].$append")
   end
 end
 
@@ -375,8 +364,8 @@ do list(path:"related[]", "var":"$i")
   uniq("$i.isbn[]")
 end
 
-replace_all("related[].*.id", "((\\(DE-605\\))+)(.*)$", "http://lobid.org/resources/$3#!")
-replace_all("related[].*.id", "\\(DE-600\\)(.*)$", "http://lobid.org/resources/ZDB-$1#!")
+replace_all("related[].*.id", "^\\(DE-605\\)(.*)$", "http://lobid.org/resources/$1#!")
+replace_all("related[].*.id", "^\\(DE-600\\)(.*)$", "http://lobid.org/resources/ZDB-$1#!")
 
 
 set_array("inCollection[]")
