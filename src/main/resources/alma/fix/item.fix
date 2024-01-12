@@ -34,10 +34,18 @@ do list(path: "HOL  ", "var": "$i")
           add_field( "hasItem[].$append.test","")
           add_field("hasItem[].$last.label", "lobid Bestandsressource")
           set_array("hasItem[].$last.type[]", "Item","PhysikalischerTitel")
-          copy_field("$H52.b","hasItem[].$last.currentLibrary")
+          if exists("$H52.b.1")
+            copy_field("$H52.b.1","hasItem[].$last.currentLibrary")
+          else
+            copy_field("$H52.b","hasItem[].$last.currentLibrary")
+          end
           copy_field("$H52.c","hasItem[].$last.currentLocation")
           copy_field("$H52.h", "hasItem[].$last.callNumber")
-          call_macro("holdingLibrary+opacLink", mmsIdField:"$i.8",libraryCodeField:"$H52.b")
+          if exists("$H52.b.1")
+            call_macro("holdingLibrary+opacLink", mmsIdField:"$i.8",libraryCodeField:"$H52.b.1")
+          else  
+            call_macro("holdingLibrary+opacLink", mmsIdField:"$i.8",libraryCodeField:"$H52.b")
+          end
         end
       end
     end

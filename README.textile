@@ -100,7 +100,17 @@ If you've added and commited everything, check again if all is ok:
 
 @mvn clean install@
 
-This should result in *BUILD SUCCESS*. Push your changes. You're done :)
+This should result in *BUILD SUCCESS*. Push your changes.
+
+Check if the play tests work, e.g.:
+
+@sbt "test:testOnly *IntegrationTest"@
+
+If that fails, check the tests. Most of the time the "fix" is to update the test
+as new data introduce more/less hits.
+Then, at last:
+
+You're done :)
 
 h2. Tables as gitsubmodules
 
