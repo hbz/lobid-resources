@@ -76,7 +76,7 @@ do list(path:"022? ", "var":"$i")
   copy_field("$i.a", "issn[].$append")
 end
 replace_all("issn[].*", "-","")
-
+uniq("issn[]")
 
 # 024 - Other Standard Identifier (R) - Subfield a (NR) 1. Indicator 2 = ISMN
 set_array("ismn[]")
