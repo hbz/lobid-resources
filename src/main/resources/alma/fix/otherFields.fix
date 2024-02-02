@@ -10,7 +10,7 @@ uniq("@language")
 
 set_array("language[]")
 do list(path:"@language", "var":"$i")
-  unless any_match("$i","zxx|mul|sgn|und|.*[\\|\\#].*")
+  unless any_match("$i","zxx|mul|sgn|und|.*[\\|\\#].*|\\s*")
     copy_field("$i", "language[].$append.id")
     copy_field("$i", "language[].$last.label")
   end
