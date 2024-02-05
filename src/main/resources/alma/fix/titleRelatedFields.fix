@@ -342,8 +342,15 @@ do list(path:"533  ", "var": "$i")
 end
 
 # Cleaning up dates of publicaton []
+copy_field("leader","@leaderPos07")
+substring("@leaderPos07","7","1")
 do list(path: "publication[]", "var": "$i")
   replace_all("$i.startDate", ".*?([01]\\d{3}|20\\d{2}).*", "$1")
+  if any_match("@leaderPos07","s")
+    if any_contain("$i.startDate","0000")
+      remove_field("$i.startDate")
+    end
+  end
   replace_all("$i.endDate", ".*-[ ]?([01]\\d{3}|20\\d{2})$", "$1")
   replace_all("$i.location[].*", "^\\[(.*)\\]$", "$1")
   replace_all("$i.location[].*", "\\s?[,:;]$", "")
