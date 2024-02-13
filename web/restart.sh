@@ -33,10 +33,10 @@ if [ ! -f $PID_FILE ]; then
         kill $PID
         else
                 PID=$(cat $PID_FILE)
+                rm $PID_FILE
                 kill $PID
                 sleep 14
                 kill -9 $PID
-                rm $PID_FILE
 fi
 echo "Going to sleep for 11 seconds. Then lookup the process list for the repo name.
 If everything is fine, 'monit' is going to start the $REPO instance ..."
