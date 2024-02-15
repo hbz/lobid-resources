@@ -19,6 +19,17 @@ end
 lookup("language[].*.label","ISO639-2-to-GND")
 prepend("language[].*.id", "http://id.loc.gov/vocabulary/iso639-2/")
 
+unless exists("130??|240??")
+  set_array("lang_temp")
+  copy_field("041[ 01] .[hk]", "lang_temp.$append")
+  set_array("exampleOfWork.language[]")
+  do list(path:"lang_temp", "var": "$i")
+    copy_field("$i","exampleOfWork.language[].$append.id")
+    copy_field("$i","exampleOfWork.language[].$last.label")
+  end
+end
+lookup("exampleOfWork.language[].*.label","ISO639-2-to-GND")
+prepend("exampleOfWork.language[].*.id", "http://id.loc.gov/vocabulary/iso639-2/")
 
 # 300 - Physical Description (R)
 # We reuse the introx transformation here.
