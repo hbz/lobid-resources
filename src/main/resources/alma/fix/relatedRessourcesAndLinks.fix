@@ -620,9 +620,10 @@ if exists("130??|240??")
     copy_field("$i","exampleOfWork.language[].$append.id")
     copy_field("$i","exampleOfWork.language[].$last.label")
   end
+  lookup("exampleOfWork.language[].*.label","ISO639-2-to-GND")
+  prepend("exampleOfWork.language[].*.id", "http://id.loc.gov/vocabulary/iso639-2/")
 end
-lookup("exampleOfWork.language[].*.label","ISO639-2-to-GND")
-prepend("exampleOfWork.language[].*.id", "http://id.loc.gov/vocabulary/iso639-2/")
+
 
 # following only with second indicator 2 for analytical entries:
 # 700 - Added Entry-Personal Name (R)
