@@ -612,17 +612,17 @@ end
 replace_all("exampleOfWork.label","<<|>>","")
 
 # 041 h|k - Language code of original and/or intermediate translations of text
-if exists("130??|240??")
-  set_array("lang_temp")
-  copy_field("041[ 01] .[hk]", "lang_temp.$append")
-  set_array("exampleOfWork.language[]")
-  do list(path:"lang_temp", "var": "$i")
-    copy_field("$i","exampleOfWork.language[].$append.id")
-    copy_field("$i","exampleOfWork.language[].$last.label")
-  end
-  lookup("exampleOfWork.language[].*.label","ISO639-2-to-GND")
-  prepend("exampleOfWork.language[].*.id", "http://id.loc.gov/vocabulary/iso639-2/")
+
+set_array("lang_temp")
+copy_field("041[ 01] .[hk]", "lang_temp.$append")
+set_array("exampleOfWork.language[]")
+do list(path:"lang_temp", "var": "$i")
+  copy_field("$i","exampleOfWork.language[].$append.id")
+  copy_field("$i","exampleOfWork.language[].$last.label")
 end
+lookup("exampleOfWork.language[].*.label","ISO639-2-to-GND")
+prepend("exampleOfWork.language[].*.id", "http://id.loc.gov/vocabulary/iso639-2/")
+
 
 
 # following only with second indicator 2 for analytical entries:
