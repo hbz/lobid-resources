@@ -2,7 +2,7 @@ name := "lobid-resources-web"
 
 version := "0.3.1-SNAPSHOT"
 
-scalaVersion := "2.11.11"
+scalaVersion := "2.11.12"
 
 // used by the webhook listener invoking the ETL
 unmanagedResourceDirectories in Compile += baseDirectory.value / "../src/main/resources/"
@@ -24,7 +24,7 @@ resolvers += "Local Maven Repository" at Path.userHome.asFile.toURI.toURL + ".m2
 
 lazy val root = (project in file(".")).enablePlugins(PlayJava)
 
-javacOptions ++= Seq("-source", "1.8", "-target", "1.8")
+javacOptions ++= Seq("-source", "11", "-target", "11")
 
 import com.typesafe.sbteclipse.core.EclipsePlugin.EclipseKeys
 
