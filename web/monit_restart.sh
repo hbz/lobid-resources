@@ -26,6 +26,7 @@ HOME="/home/sol"
 
 # it is important to set the proper locale
 . $HOME/.locale
+export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64/
 JAVA_OPTS=$(echo "$JAVA_OPTS" |sed 's#,#\ #g')
 
 cd $HOME/git/$REPO
@@ -39,8 +40,8 @@ case $ACTION in
        fi
        JAVA_OPTS="$JAVA_OPTS -XX:+ExitOnOutOfMemoryError -XX:+HeapDumpOnOutOfMemoryError -DpreferIPv4Stack"
        sbt clean
-       sbt stage
-       ./target/universal/stage/bin/lobid-resources-web -Dhttp.port=$PORT -no-version-check > monit_start.log 2>&1 &
+       sbt --java-home $JAVA_HOME stage
+       ./target/universal/stage/bin/lobid-resources-web -Dhttp.port=$PORT -no-version-check > monit_start.log &
        if [ -n $DO_ETL_UPDATE -a $(tail -n100 logs/etl.log  |grep -c "Finishing indexing of ES index 'resources-alma-fix'") -eq 0 ]; then
           echo "Automatical updates-ETL triggered and last entries were not ok, thus starting ETL. Sleep 100s before starting ETL ..." >> monit_start.log
           sleep 100
