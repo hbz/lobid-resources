@@ -147,10 +147,11 @@
           subject <- value;
           components = (subject \ "componentList").asOpt[Seq[JsValue]].getOrElse(Seq(subject));
           component <- components;
-          label <- (component \ "label").asOpt[String];
-          id = (component \ "id").asOpt[String];
-          notation = (component \ "notation").asOpt[String]) {
-       <span><a title="Nach weiteren Titeln zu '@label' suchen" href='@if(id.isDefined){@resources.routes.Application.query(subject=id.get)} else {@resources.routes.Application.query(q="subject.label:\""+label+"\"")}'/>@label @if(notation.isDefined){(@notation.get)}</a></span>
+          notation = (component \ "notation").asOpt[String];
+          label <- (component \ "label").asOpt[String].orElse(notation);
+          id = (component \ "id").asOpt[String]) {
+       <span><a title="Nach weiteren Titeln zu '@label' suchen" href='@if(id.isDefined){@resources.routes.Application.query(subject=id.get)} else {@resources.routes.Application.query(q="subject.label:\""+label+"\" OR subject.notation:\""+label+"\"")}'/>
+           @label @if(notation.isDefined){(@notation.get)}</a></span>
        @for(idLink <- id){<a title="Linked-Data-Quelle öffnen" href='@idLink'><span class='glyphicon glyphicon-link'></span></a>}
        @if(components.last == component) { <br/> } else { | }
      }
