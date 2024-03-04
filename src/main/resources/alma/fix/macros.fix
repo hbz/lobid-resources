@@ -191,6 +191,7 @@ end
 do put_macro("gndOtherCombinedLabel")
   set_array("$[field].@combinedLabel")  # check if GND concept has combined variant
   copy_field("$[field].a","$[field].@combinedLabel.$append")
+  copy_field("$[field].p","$[field].@combinedLabel.$append")
   copy_field("$[field].b","$[field].@combinedLabel.$append")
   join_field("$[field].@combinedLabel", ". ") # This is the difference to gnd person
   if exists("$[field].c")
