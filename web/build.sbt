@@ -17,7 +17,7 @@ libraryDependencies ++= Seq(
   "com.google.gdata" % "core" % "1.47.1" exclude ("com.google.guava", "guava"),
   "org.easytesting" % "fest-assert" % "1.4" %Test,
   "org.xbib.elasticsearch.plugin" % "elasticsearch-plugin-bundle" % "5.4.1.0",
-  "org.lobid" % "lobid-resources" % "1.0.0" changing()
+  "org.lobid" % "lobid-resources" % "1.0.1-SNAPSHOT" changing()
 )
 
 resolvers += "Local Maven Repository" at Path.userHome.asFile.toURI.toURL + ".m2/repository"
