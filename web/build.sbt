@@ -1,6 +1,6 @@
 name := "lobid-resources-web"
 
-version := "0.3.1-SNAPSHOT"
+version := "1.0.0"
 
 scalaVersion := "2.11.12"
 
