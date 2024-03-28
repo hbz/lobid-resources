@@ -116,7 +116,7 @@ public class IndexIntegrationTest extends LocalIndexSetup {
 			{ "q.all:(Courtillon cinéma)", /*->*/ 1 },
 			{ "q.all:0702075558", /*->*/ 1 },
 			{ "q.all:07\\-0207\\-555\\-8", /*->*/ 1 },
-			{ "q.all:07206763", /*->*/ 0 },
+			{ "q.all:07206763", /*->*/ 1 },
 			{ "q.all:0720\\-6763", /*->*/ 1 },
 			{ "q.all:HT072067630", /*->*/ 0 },
 			{ "q.all:(Erleben \\- Verstehen & Lernen)", /*->*/ 3 },
