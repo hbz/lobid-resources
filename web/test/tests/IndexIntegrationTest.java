@@ -33,7 +33,7 @@ public class IndexIntegrationTest extends LocalIndexSetup {
 	public static Collection<Object[]> data() {
 		// @formatter:off
 		return queries(new Object[][] {
-			{ "title:der", /*->*/ 14 },
+			{ "title:der", /*->*/ 16 },
 			{ "title:Westfalen", /*->*/ 8 },
 			{ "contribution.agent.label:Westfalen", /*->*/ 3 },
 			{ "contribution.agent.label:Westfälen", /*->*/ 3 },
@@ -43,7 +43,7 @@ public class IndexIntegrationTest extends LocalIndexSetup {
 			{ "title:Westfalen AND contribution.agent.label:Prause", /*->*/ 1 },
 			{ "title:Westfalen OR title:Munsterland", /*->*/ 8 },
 			{ "(title:Westfalen OR title:Münsterland) AND contribution.agent.id:\"https\\://d-nb.info/gnd/5253963-5\"", /*->*/ 0 },
-			{ "bibliographicLevel.label.raw:\"Monographic component part\"", /*->*/ 14 },
+			{ "bibliographicLevel.label.raw:\"Monographic component part\"", /*->*/ 15 },
 			{ "subject.componentList.label:Düsseldorf", /*->*/ 1 },
 			{ "subject.componentList.label:Duesseldorf", /*->*/ 1 },
 			{ "subject.componentList.label:Dusseldorf", /*->*/ 1 },
@@ -51,13 +51,13 @@ public class IndexIntegrationTest extends LocalIndexSetup {
 			{ "subject.componentList.label.unstemmed:Düsseldorfer", /*->*/ 0 },
 			{ "subject.componentList.id:\"https\\://d-nb.info/gnd/4042570-8\"", /*->*/ 2 },
 			{ "(title:Westfalen OR title:Münsterland) AND NOT contribution.agent.id:\"https\\://d-nb.info/gnd/2019209-5\"", /*->*/ 8 },
-			{ "subject.componentList.label:Westfalen", /*->*/ 10 },
-			{ "subject.componentList.label:Westfälen", /*->*/ 10 },
-			{ "spatial.label:Westfalen", /*->*/ 7 },
-			{ "spatial.label:Westfälen", /*->*/ 7 },
+			{ "subject.componentList.label:Westfalen", /*->*/ 11 },
+			{ "subject.componentList.label:Westfälen", /*->*/ 11 },
+			{ "spatial.label:Westfalen", /*->*/ 8 },
+			{ "spatial.label:Westfälen", /*->*/ 8 },
 			{ "subject.componentList.id:1113670827", /*->*/ 0 },
 			{ "subject.componentList.type:PlaceOrGeographicName", /*->*/ 22 },
-			{ "publication.location:Berlin", /*->*/ 13 },
+			{ "publication.location:Berlin", /*->*/ 14 },
 			{ "subject.notation:914.3", /*->*/ 6 },
 			{ "subject.notation:914", /*->*/ 0 },
 			{ "subject.notation:914*", /*->*/ 6 },
@@ -66,7 +66,7 @@ public class IndexIntegrationTest extends LocalIndexSetup {
 			{ "publication.startDate:1993", /*->*/ 3 },
 			{ "publication.location:Berlin AND publication.startDate:1993", /*->*/ 1 },
 			{ "publication.location:Berlin AND publication.startDate:[1992 TO 2017]", /*->*/ 4 },
-			{ "inCollection.id:\"http\\://lobid.org/organisations/DE-655#\\!\"", /*->*/ 125 },
+			{ "inCollection.id:\"http\\://lobid.org/organisations/DE-655#\\!\"", /*->*/ 131 },
 			{ "inCollection.id:NWBib", /*->*/ 0 },
 			{ "publication.publishedBy:Quedenfeldt", /*->*/ 2 },
 			{ "publication.publishedBy:Quedenfeld", /*->*/ 2 },
@@ -88,7 +88,7 @@ public class IndexIntegrationTest extends LocalIndexSetup {
 			{ "describedBy.resultOf.object.dateCreated:\"2023-03-22\"", /*->*/ 1},
 			{ "describedBy.resultOf.object.dateModified:\"2023-07-30\"", /*->*/ 3},
 			{ "describedBy.resultOf.object.sourceOrganization.id:\"http\\://lobid.org/organisations/DE-5#\\!\"", /*->*/ 4},
-			{ "describedBy.resultOf.object.modifiedBy.id:\"http\\://lobid.org/organisations/DE-6#\\!\"", /*->*/ 14 },
+			{ "describedBy.resultOf.object.modifiedBy.id:\"http\\://lobid.org/organisations/DE-6#\\!\"", /*->*/ 15 },
 			{ "\"Reader-friendly\"", /*->*/ 1},
 			{ "\"Reader friendly\"", /*->*/ 1},
 			{ "q.date:2000", /*->*/ 3 },
@@ -103,8 +103,8 @@ public class IndexIntegrationTest extends LocalIndexSetup {
 			{ "q.subject:Duesseldorf", /*->*/ 1 },
 			{ "q.subject:Dusseldorf", /*->*/ 1 },
 			{ "q.subject:Düsseldorfer", /*->*/ 1 },
-			{ "q.subject:Westfalen", /*->*/ 10 },
-			{ "q.subject:Westfälen", /*->*/ 10 },
+			{ "q.subject:Westfalen", /*->*/ 11 },
+			{ "q.subject:Westfälen", /*->*/ 11 },
 			{ "q.subject:Lithuania", /*->*/ 1 },
 			{ "q.subject:Baukem", /*->*/ 1 },
 			{ "q.title:der", /*->*/ 0 },
@@ -132,7 +132,8 @@ public class IndexIntegrationTest extends LocalIndexSetup {
 			{ "contribution.agent.altLabel.digibib:Nemačke", /*->*/ 1 },
 			{ "contribution.agent.altLabel.digibib:Nemack", /*->*/ 1 },
 			{ "contribution.agent.altLabel.digibib_unstemmed:Nemačke", /*->*/ 1 },
-			{ "contribution.agent.altLabel.digibib_unstemmed:Nemack", /*->*/ 0 }
+			{ "contribution.agent.altLabel.digibib_unstemmed:Nemack", /*->*/ 0 },
+			{ "exampleOfWork.language.id:\"http\\://id.loc.gov/vocabulary/iso639-2/eng\"", /*->*/ 1 }
 		});
 	} // @formatter:on
 

@@ -393,7 +393,7 @@
           "analyzer": "id_analyzer",
           "type": "text"
         },
-        "biblioVinoId": {
+        "schoeneNummer": {
           "analyzer": "id_analyzer",
           "type": "text"
         },
@@ -541,6 +541,17 @@
             },
             "creatorOfWork": {
               "type": "text"
+            },
+            "language": {
+              "properties": {
+                "id": {
+                  "type": "keyword"
+                },
+                "label": {
+                  "type": "text",
+                  "index": false
+                }
+              }
             }
           }
         },

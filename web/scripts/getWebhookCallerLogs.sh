@@ -9,7 +9,7 @@ MAIL_FROM=$(cat .secrets/MAIL_FROM)
 
 ERROR_PATTERN="Got response code\|HttpPoster\|notifyWebhook"
 
-NEWEST_LOG_FN="../logs/ETL.log"
+NEWEST_LOG_FN="../logs/etl.log"
 ERRORS=$(grep  -B1 "$ERROR_PATTERN" $NEWEST_LOG_FN)
 DATE=$(date +"%F")
 ERRORS=$(echo "$ERRORS" | grep $DATE| grep "ERROR\|response code"|grep -v 204)

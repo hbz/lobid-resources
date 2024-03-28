@@ -202,8 +202,6 @@ uniq("containedIn[]")
 
 # 776 - Additional Physical Form Entry (R) - $i (R), $w (R)
 
-# TODO: is this not duplicate info with "related"?
-
 set_array("primaryForm[]")
 
 do list(path: "77608", "var":"$i")
@@ -343,28 +341,23 @@ end
 set_array("related[]")
 do list(path:"775??|776??", "var":"$i")
   unless any_match ("$i.i", ".*eproduktion von.*|.*eproduktion")
-    add_field("related[].$append.test","")
-    if all_match("$i.w", "^\\((?:DE-600|DE-605)\\)(.*)$")
-      copy_field("$i.w", "related[].$last.id")
+    do list_as("$hbzId":"$i.w", "$isbn":"$i.z", "$label":"$i.t", "$note":"$i.n", "$issn":"$i.x", "$info":"$i.i")
+      set_hash("related[].$append")
+      if all_match("$hbzId", "^\\((DE-600|DE-605)\\).*$")
+        copy_field("$hbzId", "related[].$last.id")
+      end
+      set_array("related[].$last.note[]")
+      paste("related[].$last.note[].$append","$info", "$note")
+      replace_all("related[].$last.note[].$last", "Erscheint auch als ","")
+      copy_field("$label", "related[].$last.label")
+      set_array("related[].$last.issn[]")
+      copy_field("$issn", "related[].$last.issn[].$append")
+      set_array("related[].$last.isbn[]")
+      isbn("$isbn", to:"isbn13")
+      copy_field("$isbn", "related[].$last.isbn[].$append")
+      isbn("$isbn", to:"isbn10")
+      copy_field("$isbn", "related[].$last.isbn[].$append")
     end
-    set_array("related[].$last.note[]")
-    paste("related[].$last.note[].$append","$i.i", "$i.n")
-    replace_all("related[].$last.note[].$last", "Erscheint auch als ","")
-    copy_field("$i.t", "related[].$last.label")
-    set_array("related[].$last.issn[]")
-    copy_field("$i.x", "related[].$last.issn[].$append")
-    set_array("$i.isbn13")
-    set_array("$i.isbn10")
-    do list(path: "$i.z", "var":"$j")
-      isbn("$j", to: "clean")
-      copy_field("$j", "$i.isbn13.$append")
-      copy_field("$j", "$i.isbn10.$append")
-    end
-    set_array("related[].$last.isbn[]")
-    isbn("$i.isbn10.*", to:"isbn10")
-    isbn("$i.isbn13.*", to:"isbn13")
-    copy_field("$i.isbn13.*", "related[].$last.isbn[].$append")
-    copy_field("$i.isbn10.*", "related[].$last.isbn[].$append")
   end
 end
 
@@ -619,6 +612,20 @@ unless any_equal("exampleOfWork.label", "")
 end
 
 replace_all("exampleOfWork.label","<<|>>","")
+
+# 041 h|k - Language code of original and/or intermediate translations of text
+
+set_array("lang_temp")
+copy_field("041[ 01] .[hk]", "lang_temp.$append")
+set_array("exampleOfWork.language[]")
+do list(path:"lang_temp", "var": "$i")
+  copy_field("$i","exampleOfWork.language[].$append.id")
+  copy_field("$i","exampleOfWork.language[].$last.label")
+end
+lookup("exampleOfWork.language[].*.label","ISO639-2-to-GND")
+prepend("exampleOfWork.language[].*.id", "http://id.loc.gov/vocabulary/iso639-2/")
+
+
 
 # following only with second indicator 2 for analytical entries:
 # 700 - Added Entry-Personal Name (R)
