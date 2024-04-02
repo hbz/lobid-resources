@@ -80,6 +80,10 @@ public class IndexIntegrationTest extends LocalIndexSetup {
 			{ "isbn:9780702075551", /*->*/ 1},
 			{ "isbn:070-2075-558", /*->*/ 1},
 			{ "isbn:0702075558", /*->*/ 1},
+            { "related.issn:07206763", /*->*/ 1 },
+			{ "related.issn:0720\\-6763", /*->*/ 1 },
+			{ "issn:21914664", /*->*/ 1 },
+			{ "issn:2191\\-4664", /*->*/ 1 },
 			{ "\"Handbook on policy, process and governing\"", /*->*/ 1},
 			{ "(+Handbook +on +policy +process +and +governing)", /*->*/ 1},
 			{ "\"Mülheim an der Ruhr\"", /*->*/ 1},
@@ -91,6 +95,7 @@ public class IndexIntegrationTest extends LocalIndexSetup {
 			{ "describedBy.resultOf.object.modifiedBy.id:\"http\\://lobid.org/organisations/DE-6#\\!\"", /*->*/ 15 },
 			{ "\"Reader-friendly\"", /*->*/ 1},
 			{ "\"Reader friendly\"", /*->*/ 1},
+        // all q tests are related to DigiBib
 			{ "q.date:2000", /*->*/ 3 },
 			{ "q.publisher:Aachen", /*->*/ 2 },
 			{ "q.publisher:Aachen\\-Eilendorf", /*->*/ 1 },
@@ -115,9 +120,11 @@ public class IndexIntegrationTest extends LocalIndexSetup {
 			{ "q.all:(Courtillon cinema)", /*->*/ 1 },
 			{ "q.all:(Courtillon cinéma)", /*->*/ 1 },
 			{ "q.all:0702075558", /*->*/ 1 },
-			{ "q.all:07\\-0207\\-555\\-8", /*->*/ 1 },
+			{ "q.all:07\\-0207\\-555\\-8", /*->*/ 1 }, // search with hyphens possible due to digibib_standardnumber
 			{ "q.all:07206763", /*->*/ 1 },
-			{ "q.all:0720\\-6763", /*->*/ 1 },
+			{ "q.all:0720\\-6763", /*->*/ 0 }, // search with hyphens not possible, different to lobid general search
+			{ "q.all:21914664", /*->*/ 1 },
+			{ "q.all:2191\\-4664", /*->*/ 0 }, // search with hyphens not possible, different to lobid general search
 			{ "q.all:HT072067630", /*->*/ 0 },
 			{ "q.all:(Erleben \\- Verstehen & Lernen)", /*->*/ 3 },
 			{ "q.all:(Lexicography \\: Selected Papers)", /*->*/ 1 },
