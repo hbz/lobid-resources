@@ -272,22 +272,24 @@ end
 set_array("fulltextOnline[]")
 
 do list(path: "8564?", "var":"$i")
-  unless any_match("$i.u",".*(doi.org|nbn-resolving).*")
-    if all_equal("$i.z", "kostenfrei") # kostenfrei, added Digitalisierung not only Verlag or Agentur as filter
-      if all_match("$i.x", "Verlag|Agentur|Digitalisierung")
+  if exists("$i.u")
+    unless any_match("$i.u",".*(doi.org|nbn-resolving).*")
+      if all_equal("$i.z", "kostenfrei") # kostenfrei, added Digitalisierung not only Verlag or Agentur as filter
+          if all_match("$i.x", "Verlag|Agentur|Digitalisierung")
+            copy_field("$i.x", "fulltextOnline[].$append.label")
+            copy_field("$i.u", "fulltextOnline[].$last.id")
+          end 
+      end
+      if all_match("$i.x", ".*(Archivierte Online|EZB|Online-Ausg|Resolving-System|Volltext).*")
         copy_field("$i.x", "fulltextOnline[].$append.label")
         copy_field("$i.u", "fulltextOnline[].$last.id")
       end
+      if all_match("$i.3", "^[vV][oO][lL].*") # Volltext
+        copy_field("$i.3", "fulltextOnline[].$append.label")
+        copy_field("$i.u", "fulltextOnline[].$last.id")
+      end
     end
-    if all_match("$i.x", ".*(Archivierte Online|EZB|Online-Ausg|Resolving-System|Volltext).*")
-      copy_field("$i.x", "fulltextOnline[].$append.label")
-      copy_field("$i.u", "fulltextOnline[].$last.id")
-    end
-    if all_match("$i.3", "^[vV][oO][lL].*") # Volltext
-      copy_field("$i.3", "fulltextOnline[].$append.label")
-      copy_field("$i.u", "fulltextOnline[].$last.id")
-    end
-  end
+  end  
 end
 
 # doi for fullTextOnline and sameAs
