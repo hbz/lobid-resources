@@ -2,12 +2,9 @@ set_array("sameAs[]")
 
 
 # 035 - System Control Number (R) - Subfield: $a (NR)
-do list(path:"035  ", "var":"$i")
-  if all_match("$i.a", "^\\(DE-605\\)(.*)$")
-    copy_field("$i.a", "sameAs[].$append.id")
-    replace_all("sameAs[].$last.id", "^\\(DE-605\\)(.*)$","http://hub.culturegraph.org/resource/HBZ-$1")
+if any_match("almaMmsId","^.*6441$")
+    paste("sameAs[].$append.id", "~http://hub.culturegraph.org/resource/(DE-605)","almaMmsId",join_char:"")
     add_field("sameAs[].$last.label","Culturegraph Ressource")
-  end
 end
 
 # oclc
@@ -278,7 +275,7 @@ do list(path: "8564?", "var":"$i")
           if all_match("$i.x", "Verlag|Agentur|Digitalisierung")
             copy_field("$i.x", "fulltextOnline[].$append.label")
             copy_field("$i.u", "fulltextOnline[].$last.id")
-          end 
+          end
       end
       if all_match("$i.x", ".*(Archivierte Online|EZB|Online-Ausg|Resolving-System|Volltext).*")
         copy_field("$i.x", "fulltextOnline[].$append.label")
@@ -289,7 +286,7 @@ do list(path: "8564?", "var":"$i")
         copy_field("$i.u", "fulltextOnline[].$last.id")
       end
     end
-  end  
+  end
 end
 
 # doi for fullTextOnline and sameAs
