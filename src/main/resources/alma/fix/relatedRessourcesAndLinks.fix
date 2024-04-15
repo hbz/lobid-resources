@@ -3,7 +3,7 @@ set_array("sameAs[]")
 
 # 035 - System Control Number (R) - Subfield: $a (NR)
 if any_match("almaMmsId","^.*6441$")
-    paste("sameAs[].$append.id", "~http://hub.culturegraph.org/resource/(DE-605)","almaMmsId",join_char:"")
+    paste("sameAs[].$append.id", "~https://hub.culturegraph.org/resource/(DE-605)","almaMmsId",join_char:"")
     add_field("sameAs[].$last.label","Culturegraph Ressource")
 end
 
