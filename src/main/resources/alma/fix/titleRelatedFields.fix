@@ -317,7 +317,7 @@ end
 # 533 - Reproduction Note (R)
 
 do list(path:"533  ", "var": "$i")
-  add_field("publication[].$append.test","")
+  set_hash( "publication[].$append")
   set_array("publication[].$last.type[]","SecondaryPublicationEvent")
   set_array("publication[].$last.location[]")
   do list(path:"$i.b","var":"$j")
