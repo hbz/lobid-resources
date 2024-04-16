@@ -349,7 +349,8 @@ do list(path:"775??|776??", "var":"$i")
       paste("related[].$last.note[].$append","$info", "$note")
       replace_all("related[].$last.note[].$last", "Erscheint auch als ","")
       copy_field("$label", "related[].$last.label")
-      copy_field("$issn", "related[].$last.issn")
+      set_array("related[].$last.issn[]")
+      copy_field("$issn", "related[].$last.issn[].$append")
       set_array("related[].$last.isbn[]")
       isbn("$isbn", to:"isbn13")
       copy_field("$isbn", "related[].$last.isbn[].$append")
@@ -361,6 +362,7 @@ end
 
 do list(path:"related[]", "var":"$i")
   uniq("$i.isbn[]")
+  replace_all("$i.issn[].*","-","")
 end
 
 replace_all("related[].*.id", "^\\(DE-605\\)(.*)$", "http://lobid.org/resources/$1#!")
