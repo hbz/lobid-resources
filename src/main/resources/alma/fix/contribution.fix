@@ -62,7 +62,9 @@ do list(path:"100[01] ", "var":"$i")
       # role
       copy_field("$j","contribution[].$last.role.id")
       # dateOfBirthAndDeath #will be split on a later stage
-      copy_field("$i.d","contribution[].$last.agent.dateOfBirthAndDeath")
+      unless exists("$i.d.1")
+        copy_field("$i.d","contribution[].$last.agent.dateOfBirthAndDeath")
+      end
       call_macro("alternateGraphicRepresationArrayOfObjects",targetArray:"contribution[]",targetField:".agent",variable:"$i")
     end
   end
@@ -112,7 +114,9 @@ do list(path:"700[01] ", "var":"$i")
       # role
       copy_field("$j","contribution[].$last.role.id")
       # dateOfBirthAndDeath #will be split on a later stage
-      copy_field("$i.d","contribution[].$last.agent.dateOfBirthAndDeath")
+      unless exists("$i.d.1")
+        copy_field("$i.d","contribution[].$last.agent.dateOfBirthAndDeath")
+      end  
       call_macro("alternateGraphicRepresationArrayOfObjects",targetArray:"contribution[]",targetField:".agent",variable:"$i")
     end
   end
