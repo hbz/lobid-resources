@@ -28,23 +28,25 @@ do list(path: "HOL  ", "var": "$i")
   unless in("$i.8", "@ITM-H") # Checks if there is no corresponding ITM-Field
     do list(path:"H52??", "var": "$H52")
       if in("$i.8", "$H52.8")
-        paste("$H52.supressedLocation", "$i.M", "~+", "$H52.c",join_char:"")
-        lookup("$H52.supressedLocation","suppressedLocations",delete:"true")
-        unless exists("$H52.supressedLocation") # Test if location is suppressed with mapping provided by the libraries.
-          set_hash( "hasItem[].$append")
-          add_field("hasItem[].$last.label", "lobid Bestandsressource")
-          set_array("hasItem[].$last.type[]", "Item","PhysikalischerTitel")
-          if exists("$H52.b.1")
-            copy_field("$H52.b.1","hasItem[].$last.currentLibrary")
-          else
-            copy_field("$H52.b","hasItem[].$last.currentLibrary")
-          end
-          copy_field("$H52.c","hasItem[].$last.currentLocation")
-          copy_field("$H52.h", "hasItem[].$last.callNumber")
-          if exists("$H52.b.1")
-            call_macro("holdingLibrary+opacLink", mmsIdField:"$i.8",libraryCodeField:"$H52.b.1")
-          else
-            call_macro("holdingLibrary+opacLink", mmsIdField:"$i.8",libraryCodeField:"$H52.b")
+        if exists("$H52.b")
+          paste("$H52.supressedLocation", "$i.M", "~+", "$H52.c",join_char:"")
+          lookup("$H52.supressedLocation","suppressedLocations",delete:"true")
+          unless exists("$H52.supressedLocation") # Test if location is suppressed with mapping provided by the libraries.
+            set_hash( "hasItem[].$append")
+            add_field("hasItem[].$last.label", "lobid Bestandsressource")
+            set_array("hasItem[].$last.type[]", "Item","PhysikalischerTitel")
+            if exists("$H52.b.1")
+              copy_field("$H52.b.1","hasItem[].$last.currentLibrary")
+            else
+              copy_field("$H52.b","hasItem[].$last.currentLibrary")
+            end
+            copy_field("$H52.c","hasItem[].$last.currentLocation")
+            copy_field("$H52.h", "hasItem[].$last.callNumber")
+            if exists("$H52.b.1")
+              call_macro("holdingLibrary+opacLink", mmsIdField:"$i.8",libraryCodeField:"$H52.b.1")
+            else
+              call_macro("holdingLibrary+opacLink", mmsIdField:"$i.8",libraryCodeField:"$H52.b")
+            end
           end
         end
       end
