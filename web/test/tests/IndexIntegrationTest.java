@@ -33,7 +33,7 @@ public class IndexIntegrationTest extends LocalIndexSetup {
 	public static Collection<Object[]> data() {
 		// @formatter:off
 		return queries(new Object[][] {
-			{ "title:der", /*->*/ 16 },
+			{ "title:der", /*->*/ 17 },
 			{ "title:Westfalen", /*->*/ 8 },
 			{ "contribution.agent.label:Westfalen", /*->*/ 3 },
 			{ "contribution.agent.label:Westfälen", /*->*/ 3 },
@@ -57,7 +57,7 @@ public class IndexIntegrationTest extends LocalIndexSetup {
 			{ "spatial.label:Westfälen", /*->*/ 8 },
 			{ "subject.componentList.id:1113670827", /*->*/ 0 },
 			{ "subject.componentList.type:PlaceOrGeographicName", /*->*/ 22 },
-			{ "publication.location:Berlin", /*->*/ 14 },
+			{ "publication.location:Berlin", /*->*/ 15 },
 			{ "subject.notation:914.3", /*->*/ 6 },
 			{ "subject.notation:914", /*->*/ 0 },
 			{ "subject.notation:914*", /*->*/ 6 },
@@ -65,8 +65,8 @@ public class IndexIntegrationTest extends LocalIndexSetup {
 			{ "publication.location:Koln", /*->*/ 5 },
 			{ "publication.startDate:1993", /*->*/ 3 },
 			{ "publication.location:Berlin AND publication.startDate:1993", /*->*/ 1 },
-			{ "publication.location:Berlin AND publication.startDate:[1992 TO 2017]", /*->*/ 4 },
-			{ "inCollection.id:\"http\\://lobid.org/organisations/DE-655#\\!\"", /*->*/ 131 },
+			{ "publication.location:Berlin AND publication.startDate:[1992 TO 2017]", /*->*/ 5 },
+			{ "inCollection.id:\"http\\://lobid.org/organisations/DE-655#\\!\"", /*->*/ 132 },
 			{ "inCollection.id:NWBib", /*->*/ 0 },
 			{ "publication.publishedBy:Quedenfeldt", /*->*/ 2 },
 			{ "publication.publishedBy:Quedenfeld", /*->*/ 2 },
@@ -91,7 +91,7 @@ public class IndexIntegrationTest extends LocalIndexSetup {
 			{ "\"Amtliche Publikation\"", /*->*/ 1},
 			{ "describedBy.resultOf.object.dateCreated:\"2023-03-22\"", /*->*/ 1},
 			{ "describedBy.resultOf.object.dateModified:\"2023-07-30\"", /*->*/ 3},
-			{ "describedBy.resultOf.object.sourceOrganization.id:\"http\\://lobid.org/organisations/DE-5#\\!\"", /*->*/ 4},
+			{ "describedBy.resultOf.object.sourceOrganization.id:\"http\\://lobid.org/organisations/DE-5#\\!\"", /*->*/ 5},
 			{ "describedBy.resultOf.object.modifiedBy.id:\"http\\://lobid.org/organisations/DE-6#\\!\"", /*->*/ 15 },
 			{ "\"Reader-friendly\"", /*->*/ 1},
 			{ "\"Reader friendly\"", /*->*/ 1},
