@@ -1,7 +1,7 @@
 {
   "@context" : "http://lobid.org/resources/context.jsonld",
   "almaMmsId" : "990055981810206441",
-  "issn" : [ "09405453", "09405453" ],
+  "issn" : [ "09405453" ],
   "oclcNumber" : [ "724554237" ],
   "zdbId" : "1089874-8",
   "dnbId" : "01620476X",
@@ -10,25 +10,20 @@
   "title" : "Bochumer Zeitpunkte",
   "otherTitleInformation" : [ "Beiträge zur Stadtgeschichte, Heimatkunde und Denkmalpflege" ],
   "publication" : [ {
-    "publicationHistory" : "1.1991 -",
     "startDate" : "1991",
     "type" : [ "PublicationEvent" ],
     "location" : [ "Bochum" ],
     "publishedBy" : [ "Kortum-Gesellschaft Bochum" ],
+    "publicationHistory" : "1.1991 -",
     "frequency" : [ {
       "id" : "http://marc21rdf.info/terms/continuingfre#z",
       "label" : "unregelmäßig oder sonstige Erscheinungsfrequenz"
     } ]
   }, {
-    "publicationHistory" : "1.1991 -",
     "startDate" : "1991",
     "type" : [ "PublicationEvent" ],
     "location" : [ "Bochum" ],
-    "publishedBy" : [ "Kracht" ],
-    "frequency" : [ {
-      "id" : "http://marc21rdf.info/terms/continuingfre#z",
-      "label" : "unregelmäßig oder sonstige Erscheinungsfrequenz"
-    } ]
+    "publishedBy" : [ "Kracht" ]
   } ],
   "describedBy" : {
     "id" : "http://lobid.org/resources/990055981810206441",
@@ -49,7 +44,7 @@
       "object" : {
         "id" : "https://lobid.org/marcxml/990055981810206441",
         "dateCreated" : "2021-04-06",
-        "dateModified" : "2023-05-01",
+        "dateModified" : "2023-05-30",
         "type" : [ "DataFeedItem" ],
         "label" : "hbz-Ressource 990055981810206441 im Exportformat MARC21 XML",
         "inDataset" : {
@@ -76,6 +71,9 @@
     } ]
   },
   "sameAs" : [ {
+    "id" : "https://hub.culturegraph.org/resource/(DE-605)990055981810206441",
+    "label" : "Culturegraph Ressource"
+  }, {
     "id" : "http://worldcat.org/oclc/724554237",
     "label" : "OCLC Ressource"
   }, {
@@ -118,37 +116,67 @@
     "notation" : "61",
     "type" : [ "Concept" ],
     "source" : {
-      "label" : "DNB (Systematik der Deutschen Nationalbibliographie)",
-      "id" : "http://bartoc.org/en/node/18497"
+      "label" : "Systematik der DNB (bis 2003)",
+      "id" : "https://bartoc.org/en/node/18497"
     }
   }, {
     "notation" : "63",
     "type" : [ "Concept" ],
     "source" : {
-      "label" : "DNB (Systematik der Deutschen Nationalbibliographie)",
-      "id" : "http://bartoc.org/en/node/18497"
+      "label" : "Systematik der DNB (bis 2003)",
+      "id" : "https://bartoc.org/en/node/18497"
     }
   }, {
     "notation" : "900",
     "type" : [ "Concept" ],
     "source" : {
-      "label" : "DNB (Systematik der Deutschen Nationalbibliographie)",
-      "id" : "http://bartoc.org/en/node/18497"
-    }
+      "label" : "Sachgruppen der DNB",
+      "id" : "https://bartoc.org/en/node/20049"
+    },
+    "label" : "Geschichte"
+  }, {
+    "type" : [ "Concept" ],
+    "source" : {
+      "label" : "Dewey-Dezimalklassifikation",
+      "id" : "https://d-nb.info/gnd/4149423-4"
+    },
+    "label" : "Geschichte, Geografie und Hilfswissenschaften",
+    "notation" : "900",
+    "version" : "sdnb"
   }, {
     "notation" : "910",
     "type" : [ "Concept" ],
     "source" : {
-      "label" : "DNB (Systematik der Deutschen Nationalbibliographie)",
-      "id" : "http://bartoc.org/en/node/18497"
-    }
+      "label" : "Sachgruppen der DNB",
+      "id" : "https://bartoc.org/en/node/20049"
+    },
+    "label" : "Geografie, Reisen"
+  }, {
+    "type" : [ "Concept" ],
+    "source" : {
+      "label" : "Dewey-Dezimalklassifikation",
+      "id" : "https://d-nb.info/gnd/4149423-4"
+    },
+    "label" : "Geografie & Reisen",
+    "notation" : "910",
+    "version" : "sdnb"
   }, {
     "notation" : "914.3",
     "type" : [ "Concept" ],
     "source" : {
-      "label" : "DNB (Systematik der Deutschen Nationalbibliographie)",
-      "id" : "http://bartoc.org/en/node/18497"
-    }
+      "label" : "Sachgruppen der DNB",
+      "id" : "https://bartoc.org/en/node/20049"
+    },
+    "label" : "Geografie, Reisen (Deutschland)"
+  }, {
+    "type" : [ "Concept" ],
+    "source" : {
+      "label" : "Dewey-Dezimalklassifikation",
+      "id" : "https://d-nb.info/gnd/4149423-4"
+    },
+    "label" : "Geografie Mitteleuropas und Reisen in Mitteleuropa",
+    "notation" : "914.3",
+    "version" : "sdnb"
   }, {
     "id" : "https://nwbib.de/subjects#N240000",
     "label" : "Geschichte",
@@ -171,9 +199,18 @@
     "notation" : "060",
     "type" : [ "Concept" ],
     "source" : {
-      "label" : "DNB (Systematik der Deutschen Nationalbibliographie)",
-      "id" : "http://bartoc.org/en/node/18497"
-    }
+      "label" : "DDC-Sachgruppen der ZDB"
+    },
+    "label" : "Organisationen, Museumswissenschaft"
+  }, {
+    "type" : [ "Concept" ],
+    "source" : {
+      "label" : "Dewey-Dezimalklassifikation",
+      "id" : "https://d-nb.info/gnd/4149423-4"
+    },
+    "label" : "060",
+    "notation" : "060",
+    "version" : "sdnb"
   }, {
     "type" : [ "ComplexSubject" ],
     "label" : "Bochum | Geschichte | Zeitschrift",
@@ -243,102 +280,106 @@
     "type" : [ "Item", "PhysicalObject" ],
     "callNumber" : "WES 0001",
     "serialNumber" : "ULB0054169",
-    "currentLocation" : "ZB / ZB_LSAZS",
+    "currentLibrary" : "ZB",
+    "currentLocation" : "ZB_LSAZS",
     "heldBy" : {
-      "id" : "http://lobid.org/organisations/DE-6#!",
       "isil" : "DE-6",
-      "label" : "Universitäts- und Landesbibliothek Münster"
+      "id" : "http://lobid.org/organisations/DE-6#!",
+      "label" : "Universitäts- und Landesbibliothek Münster, Zentralbibliothek"
     },
+    "seeAlso" : [ "https://hbz-ulbms.primo.exlibrisgroup.com/discovery/search?query=any,contains,990055981810206441&tab=Everything&search_scope=MyInst_and_CI&vid=49HBZ_ULM:VU2&offset=0" ],
     "id" : "http://lobid.org/items/990055981810206441:DE-6:23651985810006449#!"
   }, {
     "label" : "lobid Bestandsressource",
     "type" : [ "Item", "PhysicalObject" ],
     "callNumber" : "WES 0001",
     "serialNumber" : "ULB0041793",
-    "currentLocation" : "ZB / ZB_LSAZS",
+    "currentLibrary" : "ZB",
+    "currentLocation" : "ZB_LSAZS",
     "heldBy" : {
-      "id" : "http://lobid.org/organisations/DE-6#!",
       "isil" : "DE-6",
-      "label" : "Universitäts- und Landesbibliothek Münster"
+      "id" : "http://lobid.org/organisations/DE-6#!",
+      "label" : "Universitäts- und Landesbibliothek Münster, Zentralbibliothek"
     },
+    "seeAlso" : [ "https://hbz-ulbms.primo.exlibrisgroup.com/discovery/search?query=any,contains,990055981810206441&tab=Everything&search_scope=MyInst_and_CI&vid=49HBZ_ULM:VU2&offset=0" ],
     "id" : "http://lobid.org/items/990055981810206441:DE-6:23650616280006449#!"
   }, {
     "label" : "lobid Bestandsressource",
     "type" : [ "Item", "PhysicalObject" ],
     "callNumber" : "WES 0001",
     "serialNumber" : "ULB0041794",
-    "currentLocation" : "ZB / ZB_LSAZS",
+    "currentLibrary" : "ZB",
+    "currentLocation" : "ZB_LSAZS",
     "heldBy" : {
-      "id" : "http://lobid.org/organisations/DE-6#!",
       "isil" : "DE-6",
-      "label" : "Universitäts- und Landesbibliothek Münster"
+      "id" : "http://lobid.org/organisations/DE-6#!",
+      "label" : "Universitäts- und Landesbibliothek Münster, Zentralbibliothek"
     },
+    "seeAlso" : [ "https://hbz-ulbms.primo.exlibrisgroup.com/discovery/search?query=any,contains,990055981810206441&tab=Everything&search_scope=MyInst_and_CI&vid=49HBZ_ULM:VU2&offset=0" ],
     "id" : "http://lobid.org/items/990055981810206441:DE-6:23650616270006449#!"
   }, {
     "label" : "lobid Bestandsressource",
     "type" : [ "Item", "PhysikalischerTitel" ],
-    "currentLocation" : "BR001 / kA",
+    "currentLibrary" : "BR001",
+    "currentLocation" : "kA",
     "callNumber" : "Bg 223",
     "heldBy" : {
-      "id" : "http://lobid.org/organisations/DE-Bm3#!",
       "isil" : "DE-Bm3",
+      "id" : "http://lobid.org/organisations/DE-Bm3#!",
       "label" : "Bibliothek des Ruhrgebiets"
     },
-    "id" : "http://lobid.org/items/990055981810206441:DE-Bm3:2213999400007508#!"
+    "id" : "http://lobid.org/items/990055981810206441:DE-Bm3:2217998960007508#!"
   }, {
     "label" : "lobid Bestandsressource",
     "type" : [ "Item", "PhysikalischerTitel" ],
-    "currentLocation" : "Z9024 / kA",
-    "callNumber" : "Z 4040 4°",
-    "heldBy" : {
-      "id" : "http://lobid.org/organisations/DE-364#!",
-      "isil" : "DE-364",
-      "label" : "Martin-Opitz-Bibliothek (MOB)"
-    },
-    "id" : "http://lobid.org/items/990055981810206441:DE-364:2250507800007816#!"
-  }, {
-    "label" : "lobid Bestandsressource",
-    "type" : [ "Item", "PhysikalischerTitel" ],
-    "currentLocation" : "B0001 / kA",
-    "callNumber" : "ZGC 889",
-    "heldBy" : {
-      "id" : "http://lobid.org/organisations/DE-294#!",
-      "isil" : "DE-294",
-      "label" : "Ruhr-Universität Bochum, Universitätsbibliothek"
-    },
-    "id" : "http://lobid.org/items/990055981810206441:DE-294:22136258500007503#!"
-  }, {
-    "label" : "lobid Bestandsressource",
-    "type" : [ "Item", "PhysikalischerTitel" ],
-    "currentLocation" : "B0001 / kA",
+    "currentLibrary" : "UB",
+    "currentLocation" : "UB_Z",
     "callNumber" : "ZYC 22",
     "heldBy" : {
-      "id" : "http://lobid.org/organisations/DE-294#!",
       "isil" : "DE-294",
+      "id" : "http://lobid.org/organisations/DE-294#!",
       "label" : "Ruhr-Universität Bochum, Universitätsbibliothek"
     },
-    "id" : "http://lobid.org/items/990055981810206441:DE-294:22136258480007503#!"
+    "seeAlso" : [ "https://hbz-ubo.primo.exlibrisgroup.com/permalink/49HBZ_UBO/mnkbqv/alma990055981810206441" ],
+    "id" : "http://lobid.org/items/990055981810206441:DE-294:22118612190006471#!"
   }, {
     "label" : "lobid Bestandsressource",
     "type" : [ "Item", "PhysikalischerTitel" ],
-    "currentLocation" : "ZB / ZB_LS",
+    "currentLibrary" : "UB",
+    "currentLocation" : "UB_Z",
+    "callNumber" : "ZGC 889",
+    "heldBy" : {
+      "isil" : "DE-294",
+      "id" : "http://lobid.org/organisations/DE-294#!",
+      "label" : "Ruhr-Universität Bochum, Universitätsbibliothek"
+    },
+    "seeAlso" : [ "https://hbz-ubo.primo.exlibrisgroup.com/permalink/49HBZ_UBO/mnkbqv/alma990055981810206441" ],
+    "id" : "http://lobid.org/items/990055981810206441:DE-294:22118612210006471#!"
+  }, {
+    "label" : "lobid Bestandsressource",
+    "type" : [ "Item", "PhysikalischerTitel" ],
+    "currentLibrary" : "ZB",
+    "currentLocation" : "ZB_LS",
     "callNumber" : "WES 0.1:55",
     "heldBy" : {
-      "id" : "http://lobid.org/organisations/DE-6#!",
       "isil" : "DE-6",
-      "label" : "Universitäts- und Landesbibliothek Münster"
+      "id" : "http://lobid.org/organisations/DE-6#!",
+      "label" : "Universitäts- und Landesbibliothek Münster, Zentralbibliothek"
     },
+    "seeAlso" : [ "https://hbz-ulbms.primo.exlibrisgroup.com/discovery/search?query=any,contains,990055981810206441&tab=Everything&search_scope=MyInst_and_CI&vid=49HBZ_ULM:VU2&offset=0" ],
     "id" : "http://lobid.org/items/990055981810206441:DE-6:22547318240006449#!"
   }, {
     "label" : "lobid Bestandsressource",
     "type" : [ "Item", "PhysikalischerTitel" ],
-    "currentLocation" : "ZB / ZB_LS",
+    "currentLibrary" : "ZB",
+    "currentLocation" : "ZB_LS",
     "callNumber" : "WES 0.1:55",
     "heldBy" : {
-      "id" : "http://lobid.org/organisations/DE-6#!",
       "isil" : "DE-6",
-      "label" : "Universitäts- und Landesbibliothek Münster"
+      "id" : "http://lobid.org/organisations/DE-6#!",
+      "label" : "Universitäts- und Landesbibliothek Münster, Zentralbibliothek"
     },
+    "seeAlso" : [ "https://hbz-ulbms.primo.exlibrisgroup.com/discovery/search?query=any,contains,990055981810206441&tab=Everything&search_scope=MyInst_and_CI&vid=49HBZ_ULM:VU2&offset=0" ],
     "id" : "http://lobid.org/items/990055981810206441:DE-6:22547318250006449#!"
   } ],
   "medium" : [ {

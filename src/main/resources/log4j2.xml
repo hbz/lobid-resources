@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration>
   <Appenders>
-      <RollingFile name="RollingFile" fileName="logs/ETL.log" filePattern="ETL-log-%d{yyyy-ww}.gz" immediateFlush="true" append="true">
+      <RollingFile name="RollingFile" fileName="./logs/elasticsearch.log" filePattern="elasticsearch-log-%d{yyyy-ww}.gz" immediateFlush="true" append="true">
           <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} %level [%l] - %m%n"/>
           <!-- Weekly rollover with compression -->
           <Policies>

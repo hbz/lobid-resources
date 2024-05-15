@@ -9,11 +9,11 @@
   "title" : "Nordrhein-Westfälische Bibliographie",
   "otherTitleInformation" : [ "Regionale Literaturdokumentation ab Berichtsjahr  ..." ],
   "publication" : [ {
-    "publicationHistory" : "1983 -",
     "startDate" : "1983",
     "type" : [ "PublicationEvent" ],
     "location" : [ "Köln" ],
-    "publishedBy" : [ "HBZ" ]
+    "publishedBy" : [ "HBZ" ],
+    "publicationHistory" : "1983 -"
   } ],
   "describedBy" : {
     "id" : "http://lobid.org/resources/990133067580206441",
@@ -34,7 +34,7 @@
       "object" : {
         "id" : "https://lobid.org/marcxml/990133067580206441",
         "dateCreated" : "2021-04-06",
-        "dateModified" : "2023-04-23",
+        "dateModified" : "2023-05-29",
         "type" : [ "DataFeedItem" ],
         "label" : "hbz-Ressource 990133067580206441 im Exportformat MARC21 XML",
         "inDataset" : {
@@ -50,8 +50,8 @@
           "label" : "Deutsche Nationalbibliothek"
         },
         "modifiedBy" : [ {
-          "id" : "http://lobid.org/organisations/DE-6#!",
-          "label" : "Universitäts- und Landesbibliothek Münster"
+          "id" : "http://lobid.org/organisations/DE-21#!",
+          "label" : "Universitätsbibliothek der Eberhard Karls Universität"
         } ]
       }
     },
@@ -61,6 +61,9 @@
     } ]
   },
   "sameAs" : [ {
+    "id" : "https://hub.culturegraph.org/resource/(DE-605)990133067580206441",
+    "label" : "Culturegraph Ressource"
+  }, {
     "id" : "http://worldcat.org/oclc/1183389769",
     "label" : "OCLC Ressource"
   }, {
@@ -97,9 +100,6 @@
   } ],
   "extent" : "Online-Ressource",
   "natureOfContent" : [ {
-    "label" : "Zeitschrift",
-    "id" : "https://d-nb.info/gnd/4067488-5"
-  }, {
     "label" : "Bibliografie",
     "id" : "https://d-nb.info/gnd/4006432-3"
   }, {
@@ -126,23 +126,50 @@
     "notation" : "010",
     "type" : [ "Concept" ],
     "source" : {
-      "label" : "DNB (Systematik der Deutschen Nationalbibliographie)",
-      "id" : "http://bartoc.org/en/node/18497"
-    }
+      "label" : "DDC-Sachgruppen der ZDB"
+    },
+    "label" : "Bibliografien"
+  }, {
+    "type" : [ "Concept" ],
+    "source" : {
+      "label" : "Dewey-Dezimalklassifikation",
+      "id" : "https://d-nb.info/gnd/4149423-4"
+    },
+    "label" : "010",
+    "notation" : "010",
+    "version" : "sdnb"
   }, {
     "notation" : "914.3",
     "type" : [ "Concept" ],
     "source" : {
-      "label" : "DNB (Systematik der Deutschen Nationalbibliographie)",
-      "id" : "http://bartoc.org/en/node/18497"
-    }
+      "label" : "DDC-Sachgruppen der ZDB"
+    },
+    "label" : "Geografie, Reisen (Deutschland)"
+  }, {
+    "type" : [ "Concept" ],
+    "source" : {
+      "label" : "Dewey-Dezimalklassifikation",
+      "id" : "https://d-nb.info/gnd/4149423-4"
+    },
+    "label" : "Geografie Mitteleuropas und Reisen in Mitteleuropa",
+    "notation" : "914.3",
+    "version" : "sdnb"
   }, {
     "notation" : "943",
     "type" : [ "Concept" ],
     "source" : {
-      "label" : "DNB (Systematik der Deutschen Nationalbibliographie)",
-      "id" : "http://bartoc.org/en/node/18497"
-    }
+      "label" : "DDC-Sachgruppen der ZDB"
+    },
+    "label" : "Geschichte Deutschlands"
+  }, {
+    "type" : [ "Concept" ],
+    "source" : {
+      "label" : "Dewey-Dezimalklassifikation",
+      "id" : "https://d-nb.info/gnd/4149423-4"
+    },
+    "label" : "Deutschland und benachbarte mitteleuropäische Länder",
+    "notation" : "943",
+    "version" : "sdnb"
   }, {
     "type" : [ "ComplexSubject" ],
     "label" : "Nordrhein-Westfalen | Landeskunde | Regionalliteratur",
@@ -217,34 +244,49 @@
     "label" : "Electronic Portfolio",
     "electronicLocator" : "https://eu04.alma.exlibrisgroup.com/view/uresolver/49HBZ_DUE/openurl?u.ignore_date_coverage=true&portfolio_pid=53804555180006441&Force_direct=true",
     "sublocation" : "https://hbz-network.userservices.exlibrisgroup.com/view/uresolver/49HBZ_DUE/openurl?u.ignore_date_coverage=true&rft.mms_id=990133067580206441",
+    "seeAlso" : [ "https://katalog.ulb.hhu.de/Search/Results?lookfor=id_marc_001_txt:990133067580206441" ],
     "heldBy" : {
-      "id" : "http://lobid.org/organisations/DE-61#!",
       "isil" : "DE-61",
+      "id" : "http://lobid.org/organisations/DE-61#!",
       "label" : "Universitäts- und Landesbibliothek Düsseldorf"
     },
     "id" : "http://lobid.org/items/990133067580206441:DE-61:53804555180006441#!"
   }, {
     "type" : [ "Item", "DigitalDocument" ],
     "label" : "Electronic Portfolio",
+    "electronicLocator" : "https://eu04.alma.exlibrisgroup.com/view/uresolver/49HBZ_ULB/openurl?u.ignore_date_coverage=true&portfolio_pid=53804555180006441&Force_direct=true",
+    "sublocation" : "https://hbz-network.userservices.exlibrisgroup.com/view/uresolver/49HBZ_ULB/openurl?u.ignore_date_coverage=true&rft.mms_id=990133067580206441",
+    "seeAlso" : [ "https://bonnus.ulb.uni-bonn.de/permalink/49HBZ_ULB/idtnkp/alma990133067580206441" ],
+    "heldBy" : {
+      "isil" : "DE-5",
+      "id" : "http://lobid.org/organisations/DE-5#!",
+      "label" : "Universitäts- und Landesbibliothek Bonn"
+    },
+    "id" : "http://lobid.org/items/990133067580206441:DE-5:53804555180006441#!"
+  }, {
+    "type" : [ "Item", "DigitalDocument" ],
+    "label" : "Electronic Portfolio",
     "electronicLocator" : "https://eu04.alma.exlibrisgroup.com/view/uresolver/49HBZ_UDE/openurl?u.ignore_date_coverage=true&portfolio_pid=53804555180006441&Force_direct=true",
     "sublocation" : "https://hbz-network.userservices.exlibrisgroup.com/view/uresolver/49HBZ_UDE/openurl?u.ignore_date_coverage=true&rft.mms_id=990133067580206441",
+    "seeAlso" : [ "https://primo.uni-due.de/discovery/search?query=any,contains,990133067580206441&tab=Everything&search_scope=MyInst_and_CI_custom&vid=49HBZ_UDE:UDE&offset=0" ],
     "heldBy" : {
-      "id" : "http://lobid.org/organisations/DE-465#!",
       "isil" : "DE-465",
+      "id" : "http://lobid.org/organisations/DE-465#!",
       "label" : "Universitätsbibliothek Duisburg-Essen"
     },
     "id" : "http://lobid.org/items/990133067580206441:DE-465:53804555180006441#!"
   }, {
     "type" : [ "Item", "DigitalDocument" ],
     "label" : "Electronic Portfolio",
-    "electronicLocator" : "https://eu04.alma.exlibrisgroup.com/view/uresolver/49HBZ_ULM/openurl?u.ignore_date_coverage=true&portfolio_pid=53804555180006441&Force_direct=true",
-    "sublocation" : "https://hbz-network.userservices.exlibrisgroup.com/view/uresolver/49HBZ_ULM/openurl?u.ignore_date_coverage=true&rft.mms_id=990133067580206441",
+    "electronicLocator" : "https://eu04.alma.exlibrisgroup.com/view/uresolver/49HBZ_UBK/openurl?u.ignore_date_coverage=true&portfolio_pid=53804555180006441&Force_direct=true",
+    "sublocation" : "https://hbz-network.userservices.exlibrisgroup.com/view/uresolver/49HBZ_UBK/openurl?u.ignore_date_coverage=true&rft.mms_id=990133067580206441",
+    "seeAlso" : [ "https://katalog.ub.uni-koeln.de/portal/search.html?num=20&page=1&l=de&srt=year_desc&tab=books&hbzid=990133067580206441&fdb=uni " ],
     "heldBy" : {
-      "id" : "http://lobid.org/organisations/DE-6#!",
-      "isil" : "DE-6",
-      "label" : "Universitäts- und Landesbibliothek Münster"
+      "isil" : "DE-38",
+      "id" : "http://lobid.org/organisations/DE-38#!",
+      "label" : "Universitäts- und Stadtbibliothek Köln, Hauptabteilung"
     },
-    "id" : "http://lobid.org/items/990133067580206441:DE-6:53804555180006441#!"
+    "id" : "http://lobid.org/items/990133067580206441:DE-38:53804555180006441#!"
   } ],
   "medium" : [ {
     "label" : "Datenträger",

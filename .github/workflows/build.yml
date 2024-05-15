@@ -6,27 +6,28 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - name: Set up JDK 1.8
+    - name: Set up JDK 11
       uses: actions/setup-java@v1
       with:
-        java-version: 1.8
+        java-version: 11
     - name: Cache Maven packages
       uses: actions/cache@v2
       with:
         path: ~/.m2
         key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
         restore-keys: ${{ runner.os }}-m2
-        # - name: Install metafacture-core snapshots
-        #run: |
-        #git clone https://github.com/metafacture/metafacture-core.git
-        #cd metafacture-core
-        #./gradlew publishToMavenLocal
-        #cd ..
+    #- name: Install metafacture-core-snapshots
+    #  run: |
+    #    git clone https://github.com/metafacture/metafacture-core.git
+    #    cd metafacture-core
+    #    git checkout 5.7.0-rc1
+    #    ./gradlew publishToMavenLocal
+    #    cd ..
     - name: Install metafacture-fix
       run: |
         git clone https://github.com/metafacture/metafacture-fix.git
         cd metafacture-fix
-        git reset --hard 0.5.1
+        git checkout 1.0.0
         ./gradlew publishToMavenLocal
         cd ..
     - name: Build with Maven

@@ -179,6 +179,10 @@ elsif any_match("@leaderTyp+008", "(Book|Music|Continuing Resources|Mixed materi
   add_field("medium[].$append.label","Print")
 elsif any_match("@leaderTyp+008", "(Map|Visual materials)(.{29})[dr].*")  # Pos29
   add_field("medium[].$append.label","Print")
+elsif any_match("@leaderTyp+008", "Map.*")
+unless any_match("337.b","c")  # add medium "print" if map is non-electronic (337b code b computermedia)
+  add_field("medium[].$append.label","Print")
+end  
 # elsif any_match("@leaderTyp+008", "(Visual materials)(.{33})b.*")  # Pos33  I excluded Kit
 #  add_field("medium[].$append.label","Print")
 elsif any_match("006", "[acdpst]](.{5})[dr].*") # Pos00+06 Added Print for pos 006.
@@ -558,8 +562,20 @@ if any_match("@leaderTyp+008", "(Continuing Resources)(.{21})p.*")  # Pos21
   add_field("type[].$append","Periodical")
 elsif any_match("006", "^[s](.{3})p.*") # Pos00+04
   add_field("type[].$append","Periodical")
-elsif any_match("natureOfContent[].*.label", ".*(Zeitschrift|Werkzeitschrift).*")
+elsif any_match("natureOfContent[].*.label", "(?i).*(Zeitschrift|Periodical).*")
   add_field("type[].$append", "Periodical")
+elsif any_equal("906", "JOURNAL")
+  add_field("type[].$append","Periodical")
+else
+  set_array("@PORtype")
+  do list(path: "POR  ","var":"$i")
+    copy_field("$i.f","@PORtype.$append")
+  end
+  if any_equal("@PORtype","JOURNAL")
+    unless any_equal("@PORtype","BOOK")
+      add_field("type[].$append","Periodical")
+    end
+  end
 end
 
 # type: "Proceedings"

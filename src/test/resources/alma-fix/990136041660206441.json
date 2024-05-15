@@ -10,12 +10,12 @@
   "alternativeTitle" : [ "Die Heimatzeitung", "Heimatzeitung für die Verbandsgemeinde Vallendar" ],
   "otherTitleInformation" : [ "die Heimatzeitung" ],
   "publication" : [ {
-    "publicationHistory" : "2005,1/20 - 2007,13",
     "startDate" : "2005",
     "endDate" : "2007",
     "type" : [ "PublicationEvent" ],
     "location" : [ "Sinzig" ],
     "publishedBy" : [ "Krupp" ],
+    "publicationHistory" : "2005,1/20 - 2007,13",
     "frequency" : [ {
       "id" : "http://marc21rdf.info/terms/continuingfre#w",
       "label" : "wöchentlich"
@@ -41,7 +41,7 @@
       "object" : {
         "id" : "https://lobid.org/marcxml/990136041660206441",
         "dateCreated" : "2021-04-05",
-        "dateModified" : "2023-04-26",
+        "dateModified" : "2023-05-29",
         "type" : [ "DataFeedItem" ],
         "label" : "hbz-Ressource 990136041660206441 im Exportformat MARC21 XML",
         "inDataset" : {
@@ -68,6 +68,9 @@
     } ]
   },
   "sameAs" : [ {
+    "id" : "https://hub.culturegraph.org/resource/(DE-605)990136041660206441",
+    "label" : "Culturegraph Ressource"
+  }, {
     "id" : "http://worldcat.org/oclc/724776703",
     "label" : "OCLC Ressource"
   }, {
@@ -89,10 +92,6 @@
   }, {
     "id" : "http://lobid.org/resources/HT014846970#!",
     "label" : "Zeitschriftendatenbank (ZDB)",
-    "type" : [ "Collection" ]
-  }, {
-    "id" : "http://lobid.org/resources/HT013494180#!",
-    "label" : "Rheinland-Pfälzische Bibliographie",
     "type" : [ "Collection" ]
   } ],
   "successor" : [ {
@@ -143,34 +142,64 @@
     "notation" : "050",
     "type" : [ "Concept" ],
     "source" : {
-      "label" : "DNB (Systematik der Deutschen Nationalbibliographie)",
-      "id" : "http://bartoc.org/en/node/18497"
-    }
+      "label" : "Sachgruppen der DNB",
+      "id" : "https://bartoc.org/en/node/20049"
+    },
+    "label" : "Zeitschriften, fortlaufende Sammelwerke"
+  }, {
+    "type" : [ "Concept" ],
+    "source" : {
+      "label" : "Dewey-Dezimalklassifikation",
+      "id" : "https://d-nb.info/gnd/4149423-4"
+    },
+    "label" : "Allgemeine fortlaufende Sammelwerke",
+    "notation" : "050",
+    "version" : "sdnb"
   }, {
     "notation" : "914.3",
     "type" : [ "Concept" ],
     "source" : {
-      "label" : "DNB (Systematik der Deutschen Nationalbibliographie)",
-      "id" : "http://bartoc.org/en/node/18497"
-    }
+      "label" : "DDC-Sachgruppen der ZDB"
+    },
+    "label" : "Geografie, Reisen (Deutschland)"
+  }, {
+    "type" : [ "Concept" ],
+    "source" : {
+      "label" : "Dewey-Dezimalklassifikation",
+      "id" : "https://d-nb.info/gnd/4149423-4"
+    },
+    "label" : "Geografie Mitteleuropas und Reisen in Mitteleuropa",
+    "notation" : "914.3",
+    "version" : "sdnb"
   }, {
     "notation" : "943",
     "type" : [ "Concept" ],
     "source" : {
-      "label" : "DNB (Systematik der Deutschen Nationalbibliographie)",
-      "id" : "http://bartoc.org/en/node/18497"
-    }
+      "label" : "DDC-Sachgruppen der ZDB"
+    },
+    "label" : "Geschichte Deutschlands"
+  }, {
+    "type" : [ "Concept" ],
+    "source" : {
+      "label" : "Dewey-Dezimalklassifikation",
+      "id" : "https://d-nb.info/gnd/4149423-4"
+    },
+    "label" : "Deutschland und benachbarte mitteleuropäische Länder",
+    "notation" : "943",
+    "version" : "sdnb"
   } ],
   "hasItem" : [ {
     "label" : "lobid Bestandsressource",
     "type" : [ "Item", "PhysikalischerTitel" ],
-    "currentLocation" : "R0001 / kA",
+    "currentLibrary" : "R0001",
+    "currentLocation" : "kA",
     "callNumber" : "ZA 4343",
     "heldBy" : {
-      "id" : "http://lobid.org/organisations/DE-929#!",
       "isil" : "DE-929",
+      "id" : "http://lobid.org/organisations/DE-929#!",
       "label" : "Landesbibliothekszentrum Rheinland-Pfalz / Rheinische Landesbibliothek"
     },
+    "seeAlso" : [ "https://lbz-rlp.digibib.net/search/katalog/record/(DE-600)2189310-X" ],
     "id" : "http://lobid.org/items/990136041660206441:DE-929:2264740600007506#!"
   } ],
   "medium" : [ {

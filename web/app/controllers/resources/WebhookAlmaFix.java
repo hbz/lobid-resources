@@ -5,6 +5,7 @@ package controllers.resources;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import org.lobid.resources.run.AlmaMarcXmlFix2lobidJsonEs;
+
 import play.Logger;
 import play.mvc.Controller;
 import play.mvc.Http;
@@ -87,19 +88,22 @@ public class WebhookAlmaFix extends Controller {
         Logger.error(msg);
         AlmaMarcXmlFix2lobidJsonEs.sendMail("Triggering of " + ETL_OF + KIND, false,
             msg);
+        Logger.warn(msg);
         return status(500, msg);
       }
     }
     catch (IOException e) {
-      msg = composeMessage(e.getMessage());
+      msg = composeMessage("Problems with data file\n" + e.getMessage());
       AlmaMarcXmlFix2lobidJsonEs.sendMail("Triggering of " + ETL_OF + KIND, false,
           msg);
-      return status(500, "Problems with data file\n" + msg);
+      Logger.warn(msg);
+      return status(500, msg);
     }
     if (AlmaMarcXmlFix2lobidJsonEs.threadAlreadyStarted) {
       msg = composeMessage(String.format(MSG_UPDATE_ALREADY_RUNNING, indexNameOfUpdate));
       AlmaMarcXmlFix2lobidJsonEs.sendMail(ETL_OF + KIND, false,
           msg);
+      Logger.warn(msg);
       return status(423, msg);
     }
     msg = composeMessage(String.format(msgStartEtl, KIND));
@@ -156,17 +160,21 @@ public class WebhookAlmaFix extends Controller {
         Logger.error(msg);
         AlmaMarcXmlFix2lobidJsonEs.sendMail("Triggering of " + ETL_OF + KIND, false,
             msg);
+        Logger.warn(msg);
         return status(500, msg);
       }
     }
     catch (IOException e) {
-      return status(500, "Problems with data file\n" + e);
+      msg = composeMessage("IO Problems with data file\n" + e);
+      Logger.warn(msg);
+      return status(500, msg);
     }
     createIndexNameOfBasedump = indexNameOfBasedump + "-" + LocalDateTime.now()
         .format(DateTimeFormatter.ofPattern("yyyyMMdd-kkmm"));
     if (AlmaMarcXmlFix2lobidJsonEs.threadAlreadyStarted) {
       msg = composeMessage(String.format(MSG_CREATE_INDEX_ALREADY_RUNNING, createIndexNameOfBasedump));
       AlmaMarcXmlFix2lobidJsonEs.sendMail(ETL_OF + KIND, false, msg);
+      Logger.warn(msg);
       return status(423, msg);
     }
     msg = composeMessage(String.format(msgStartEtl, KIND));
@@ -200,29 +208,31 @@ public class WebhookAlmaFix extends Controller {
     String msg = composeMessage(subject);
     Logger.info(msg);
     if (!GIVEN_TOKEN.equals(token)) {
-      Logger.info("Wrong token: " + GIVEN_TOKEN);
       return wrongToken(subject, GIVEN_TOKEN);
     }
     boolean success;
     if (AlmaMarcXmlFix2lobidJsonEs.threadAlreadyStarted) {
       msg = composeMessage(String.format(MSG_CREATE_INDEX_ALREADY_RUNNING, createIndexNameOfBasedump));
       AlmaMarcXmlFix2lobidJsonEs.sendMail("Failed: " + subject, false, msg);
+      Logger.warn(msg);
       return status(423, msg);
     }
     AlmaMarcXmlFix2lobidJsonEs.setSwitchVariables(alias1, alias2, clusterHost, basedumpSwitchMindocs, basedumpSwitchMinsize);
     success = AlmaMarcXmlFix2lobidJsonEs.switchAlias();
     if (success) {
       msg = composeMessage(AlmaMarcXmlFix2lobidJsonEs.MSG_SUCCESS + subject);
+      Logger.info(msg);
       return ok(msg);
     }
     msg = composeMessage(AlmaMarcXmlFix2lobidJsonEs.MSG_FAIL + subject);
+    Logger.warn(msg);
     return internalServerError(msg);
   }
 
   private static Result wrongToken(final String KIND,
       final String GIVEN_TOKEN) {
     String msg = composeMessage(String.format(msgWrongToken, GIVEN_TOKEN, KIND));
-    Logger.error(msg);
+    Logger.warn(msg);
     AlmaMarcXmlFix2lobidJsonEs.sendMail(KIND, false, msg);
     return forbidden(msg);
   }

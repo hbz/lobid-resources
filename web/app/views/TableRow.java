@@ -20,7 +20,7 @@ import play.Logger;
 
 /**
  * Different ways of serializing a table row
- * 
+ *
  * @author Fabian Steeg (fsteeg)
  */
 @SuppressWarnings("javadoc")
@@ -32,58 +32,10 @@ public enum TableRow {
 		public String process(JsonNode doc, String property, String param,
 				String label, List<String> values, Optional<List<String>> keys) {
 			List<String> vs = values;
-			if (doc.has("coverage")) { // see https://github.com/hbz/nwbib/issues/276
-				List<String> remove = Arrays.asList(//
-						"https://nwbib.de/spatial#N10", "https://nwbib.de/spatial#N12",
-						"https://nwbib.de/spatial#N14", "https://nwbib.de/spatial#N24",
-						"https://nwbib.de/spatial#N28", "https://nwbib.de/spatial#N35",
-						"https://nwbib.de/spatial#N36", "https://nwbib.de/spatial#N37",
-						"https://nwbib.de/spatial#N52", "https://nwbib.de/spatial#N54",
-						"https://nwbib.de/spatial#N72", "https://nwbib.de/spatial#N74",
-						"https://nwbib.de/spatial#N96", "https://nwbib.de/spatial#N97");
-				vs = vs.stream().filter(v -> !remove.contains(v))
-						.collect(Collectors.toList());
-			}
 			return vs.isEmpty() ? ""
 					: String.format("<tr><td>%s</td><td>%s</td></tr>", label,
-							vs.stream().map(val -> label(doc, property, param, val, keys))
-									.collect(Collectors.joining(
-											property.equals("subjectChain") ? " <br/> " : " | ")));
-		}
-
-		private String label(JsonNode doc, String property, String param,
-				String val, Optional<List<String>> labels) {
-			String value = property.equals("subjectChain")
-					? val.replaceAll("\\([\\d,]+\\)$", "").trim() : val;
-			if (!labels.isPresent()) {
-				return refAndLabel(property, value, labels)[0];
-			}
-			String term = value;
-			if (param.equals("q")) {
-				term = "\"" + value + "\"";
-			}
-			try {
-				term = URLEncoder.encode(term, "UTF-8");
-			} catch (UnsupportedEncodingException e) {
-				Logger.error("Could not call encode '{}'", term, e);
-			}
-			String search = String.format("/resources/search?%s=%s", param, term);
-			JsonNode node = doc.get(property);
-			String label = labelForId(value, node, labels);
-			String result = labels.get().contains("numbering") ? label
-					: String.format(
-							"<a title=\"Nach weiteren Titeln suchen\" href=\"%s\">%s</a>",
-							search, label);
-			if (value.startsWith("http")) {
-				if (param.equals("agent") || param.equals("subject")
-						&& !value.contains("http://dewey.info")) {
-					result += String.format(
-							" <a title=\"Linked-Data-Quelle abrufen\" "
-									+ "href=\"%s\"><span class=\"glyphicon glyphicon-link\"></span></a>",
-							value);
-				}
-			}
-			return result;
+							vs.stream().map(val -> refAndLabel(property, val, keys)[0])
+									.collect(Collectors.joining("<br/> ")));
 		}
 	},
 	VALUES_MULTI {
@@ -159,40 +111,6 @@ public enum TableRow {
 
 	};
 
-	/**
-	 * @param id The ID
-	 * @param doc The full document
-	 * @param labelKeys Keys of the values to try as labels for the ID
-	 * @return An HTML-escaped label for the ID
-	 */
-	public static String labelForId(String id, JsonNode doc,
-			Optional<List<String>> labelKeys) {
-		String label = graphObjectLabelForId(id, doc, labelKeys);
-		return HtmlEscapers.htmlEscaper().escape(label);
-	}
-
-	private static String graphObjectLabelForId(String id, JsonNode doc,
-			Optional<List<String>> labelKeys) {
-		if (!labelKeys.isPresent() || labelKeys.get().isEmpty() || doc == null) {
-			return id;
-		}
-
-		List<JsonNode> graphs = doc.findValues("@graph");
-		for (JsonNode node : graphs.isEmpty() ? doc : graphs.get(0)) {
-			for (String key : labelKeys.get()) {
-				String idField = node.has("id") ? "id" : "@id";
-				if (node.has(key) && node.has(idField)
-						&& node.get(idField).textValue().equals(id)) {
-					JsonNode label = node.get(key);
-					if (label != null && label.isTextual()
-							&& !label.textValue().trim().isEmpty()) {
-						return label.textValue() + lifeDates(node);
-					}
-				}
-			}
-		}
-		return id;
-	}
 
 	private static String lifeDates(JsonNode node) {
 		JsonNode birth = node.get("dateOfBirth");
@@ -228,3 +146,4 @@ public enum TableRow {
 	public abstract String process(JsonNode doc, String property, String param,
 			String label, List<String> values, Optional<List<String>> labels);
 }
+

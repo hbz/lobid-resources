@@ -15,55 +15,57 @@ set_array("contribution[]")
 
 
 do list(path:"100[01] ", "var":"$i")
-  unless exists("$i.M")
-    # in some cases (e.g. 99370763882706441) we have an invalid repeated subfield $a
-    # since in the invalid record one cannot untangle the info easily (creates dublicate info and no roles) the fix scipts if the subfield $a is an array.
-    unless exists("$i.a.1")
-      unless exists("$i.4")
-        if any_match("type[]","ArchivedWebPage|Miscellaneous|Bibliography|Statistics|Legislation|PublishedScore|Game|Image|Map|Standard")
-          add_field("$i.4","cre")
-        elsif any_match("type[]","Periodical|Collection|Series|Newspaper|Journal|PublicationIssue|EditedVolume|Proceedings|Festschrift|ReferenceSource")
-          add_field("$i.4","edt")
-        elsif any_match("type[]","Book|MultiVolumeBook|Article|Thesis|OfficialPublication|Schoolbook|Biography|Report")
-          add_field("$i.4","aut")
-        else
-          add_field("$i.4","cre")
+  # in some cases (e.g. 99370763882706441) we have an invalid repeated subfield $a
+  # since in the invalid record one cannot untangle the info easily (creates dublicate info and no roles) the fix scipts if the subfield $a is an array.
+  unless exists("$i.a.1")
+    call_macro("rolesFromSubfieldE")
+    unless exists("$i.4")
+      if any_match("type[]","ArchivedWebPage|Miscellaneous|Bibliography|Statistics|Legislation|PublishedScore|Game|Image|Map|Standard")
+        add_field("$i.4","cre")
+      elsif any_match("type[]","Periodical|Collection|Series|Newspaper|Journal|PublicationIssue|EditedVolume|Proceedings|Festschrift|ReferenceSource")
+        add_field("$i.4","edt")
+      elsif any_match("type[]","Book|MultiVolumeBook|Article|Thesis|OfficialPublication|Schoolbook|Biography|Report")
+        add_field("$i.4","aut")
+      else
+        add_field("$i.4","cre")
+      end
+    end
+    do list(path: "$i.4", "var":"$j")
+      set_hash("contribution[].$append.agent")
+      do list(path:"$i.0","var":"$k")
+        if all_match("$k", "^\\(DE-588\\).*$")
+      # GND identifier
+          paste("contribution[].$last.agent.gndIdentifier","$k")
+      # GND Identifier id
+          paste("contribution[].$last.agent.id","$k")
+        end
+      # GND idn as variable
+        if exists("$i.B")
+          do list(path: "$i.B","var":"$gnd")
+            unless exists("contribution[].$last.agent.@gndIdn")
+              copy_field("$gnd","contribution[].$last.agent.@gndIdn")
+            end
+          end
+        elsif any_match("$k","^.*DNB\\|(.*)$")
+          copy_field("$k", "contribution[].$last.agent.@gndIdn")
+          replace_all("contribution[].$last.agent.@gndIdn", "^.*DNB\\|(.*)$","GND-$1")
+        elsif any_match("$k","^\\(DE-101\\)(.*)$")
+          copy_field("$k", "contribution[].$last.agent.@gndIdn")
+          replace_all("contribution[].$last.agent.@gndIdn", "^\\(DE-101\\)(.*)$","GND-$1")
         end
       end
-      do list(path: "$i.4", "var":"$j")
-        set_hash("contribution[].$append.agent")
-        do list(path:"$i.0","var":"$k")
-          if all_match("$k", "^\\(DE-588\\).*$")
-        # GND identifier
-            paste("contribution[].$last.agent.gndIdentifier","$k")
-        # GND Identifier id
-            paste("contribution[].$last.agent.id","$k")
-          end
-        # GND idn as variable
-          if exists("$i.B")
-            do list(path: "$i.B","var":"$gnd")
-              unless exists("contribution[].$last.agent.@gndIdn")
-                copy_field("$gnd","contribution[].$last.agent.@gndIdn")
-              end
-            end
-          elsif any_match("$k","^.*DNB\\|(.*)$")
-            copy_field("$k", "contribution[].$last.agent.@gndIdn")
-            replace_all("contribution[].$last.agent.@gndIdn", "^.*DNB\\|(.*)$","GND-$1")
-          elsif any_match("$k","^\\(DE-101\\)(.*)$")
-            copy_field("$k", "contribution[].$last.agent.@gndIdn")
-            replace_all("contribution[].$last.agent.@gndIdn", "^\\(DE-101\\)(.*)$","GND-$1")
-          end
-        end
-        # name
-        call_macro("gndPersonCombinedLabel",field:"$i") 
-        copy_field("$i.@combinedLabel","contribution[].$last.agent.label")
-        # type
-        set_array("contribution[].$last.agent.type[]","Person")
-        # role
-        copy_field("$j","contribution[].$last.role.id")
-        # dateOfBirthAndDeath #will be split on a later stage
+      # name
+      call_macro("gndPersonCombinedLabel",field:"$i")
+      copy_field("$i.@combinedLabel","contribution[].$last.agent.label")
+      # type
+      set_array("contribution[].$last.agent.type[]","Person")
+      # role
+      copy_field("$j","contribution[].$last.role.id")
+      # dateOfBirthAndDeath #will be split on a later stage
+      unless exists("$i.d.1")
         copy_field("$i.d","contribution[].$last.agent.dateOfBirthAndDeath")
       end
+      call_macro("alternateGraphicRepresationArrayOfObjects",targetArray:"contribution[]",targetField:".agent",variable:"$i")
     end
   end
 end
@@ -73,47 +75,49 @@ end
 # Subfield: $M is a local field and can create duplicates and is therefore ignored.
 
 do list(path:"700[01] ", "var":"$i")
-  unless exists("$i.M")
-    # in some cases (e.g. 99370763882706441) we have an invalid repeated subfield $a
-    # since in the invalid record one cannot untangle the info easily (creates dublicate info and no roles) the fix scipts if the subfield $a is an array.
-    unless exists("$i.a.1")
-      unless exists("$i.4")
-        add_field("$i.4","ctb")
-      end
-      do list(path: "$i.4", "var":"$j")
-        set_hash("contribution[].$append.agent")
-        do list(path:"$i.0","var":"$k")
-          if all_match("$k", "^\\(DE-588\\).*$")
-        # GND identifier
-            paste("contribution[].$last.agent.gndIdentifier","$k")
-        # GND Identifier id
-            paste("contribution[].$last.agent.id","$k")
-          end
-        # GND idn as variable
-          if exists("$i.B")
-            do list(path: "$i.B","var":"$gnd")
-              unless exists("contribution[].$last.agent.@gndIdn")
-                copy_field("$gnd","contribution[].$last.agent.@gndIdn")
-              end
-            end
-          elsif any_match("$k","^.*DNB\\|(.*)$")
-            copy_field("$k", "contribution[].$last.agent.@gndIdn")
-            replace_all("contribution[].$last.agent.@gndIdn", "^.*DNB\\|(.*)$","GND-$1")
-          elsif any_match("$k","^\\(DE-101\\)(.*)$")
-            copy_field("$k", "contribution[].$last.agent.@gndIdn")
-            replace_all("contribution[].$last.agent.@gndIdn", "^\\(DE-101\\)(.*)$","GND-$1")
-          end
+  # in some cases (e.g. 99370763882706441) we have an invalid repeated subfield $a
+  # since in the invalid record one cannot untangle the info easily (creates dublicate info and no roles) the fix scipts if the subfield $a is an array.
+  unless exists("$i.a.1")
+    call_macro("rolesFromSubfieldE")
+    unless exists("$i.4")
+      add_field("$i.4","ctb")
+    end
+    do list(path: "$i.4", "var":"$j")
+      set_hash("contribution[].$append.agent")
+      do list(path:"$i.0","var":"$k")
+        if all_match("$k", "^\\(DE-588\\).*$")
+      # GND identifier
+          paste("contribution[].$last.agent.gndIdentifier","$k")
+      # GND Identifier id
+          paste("contribution[].$last.agent.id","$k")
         end
-        # name
-        call_macro("gndPersonCombinedLabel",field:"$i") 
-        copy_field("$i.@combinedLabel","contribution[].$last.agent.label")
-        # type
-        set_array("contribution[].$last.agent.type[]","Person")
-        # role
-        copy_field("$j","contribution[].$last.role.id")
-        # dateOfBirthAndDeath #will be split on a later stage
-        copy_field("$i.d","contribution[].$last.agent.dateOfBirthAndDeath")
+      # GND idn as variable
+        if exists("$i.B")
+          do list(path: "$i.B","var":"$gnd")
+            unless exists("contribution[].$last.agent.@gndIdn")
+              copy_field("$gnd","contribution[].$last.agent.@gndIdn")
+            end
+          end
+        elsif any_match("$k","^.*DNB\\|(.*)$")
+          copy_field("$k", "contribution[].$last.agent.@gndIdn")
+          replace_all("contribution[].$last.agent.@gndIdn", "^.*DNB\\|(.*)$","GND-$1")
+        elsif any_match("$k","^\\(DE-101\\)(.*)$")
+          copy_field("$k", "contribution[].$last.agent.@gndIdn")
+          replace_all("contribution[].$last.agent.@gndIdn", "^\\(DE-101\\)(.*)$","GND-$1")
+        end
       end
+      # name
+      call_macro("gndPersonCombinedLabel",field:"$i")
+      copy_field("$i.@combinedLabel","contribution[].$last.agent.label")
+      # type
+      set_array("contribution[].$last.agent.type[]","Person")
+      # role
+      copy_field("$j","contribution[].$last.role.id")
+      # dateOfBirthAndDeath #will be split on a later stage
+      unless exists("$i.d.1")
+        copy_field("$i.d","contribution[].$last.agent.dateOfBirthAndDeath")
+      end  
+      call_macro("alternateGraphicRepresationArrayOfObjects",targetArray:"contribution[]",targetField:".agent",variable:"$i")
     end
   end
 end
@@ -125,53 +129,53 @@ end
 
 
 do list(path:"110[012] ", "var":"$i")
-  unless exists("$i.M")
-    # in some cases (e.g. 99370763882706441) we have an invalid repeated subfield $a
-    # since in the invalid record one cannot untangle the info easily (creates dublicate info and no roles) the fix scipts if the subfield $a is an array.
-    unless exists("$i.a.1")
-      unless exists("$i.4")
-        if any_match("type[]","ArchivedWebPage|Miscellaneous|Bibliography|Statistics|Legislation|PublishedScore|Game|Image|Map|Standard")
-          add_field("$i.4","cre")
-        elsif any_match("type[]","Periodical|Collection|Series|Newspaper|Journal|PublicationIssue|EditedVolume|Proceedings|Festschrift|ReferenceSource")
-          add_field("$i.4","edt")
-        elsif any_match("type[]","Book|MultiVolumeBook|Article|Thesis|OfficialPublication|Schoolbook|Biography|Report")
-          add_field("$i.4","aut")
-        else
-          add_field("$i.4","cre")
-        end
+  # in some cases (e.g. 99370763882706441) we have an invalid repeated subfield $a
+  # since in the invalid record one cannot untangle the info easily (creates dublicate info and no roles) the fix scipts if the subfield $a is an array.
+  unless exists("$i.a.1")
+    call_macro("rolesFromSubfieldE")
+    unless exists("$i.4")
+      if any_match("type[]","ArchivedWebPage|Miscellaneous|Bibliography|Statistics|Legislation|PublishedScore|Game|Image|Map|Standard")
+        add_field("$i.4","cre")
+      elsif any_match("type[]","Periodical|Collection|Series|Newspaper|Journal|PublicationIssue|EditedVolume|Proceedings|Festschrift|ReferenceSource")
+        add_field("$i.4","edt")
+      elsif any_match("type[]","Book|MultiVolumeBook|Article|Thesis|OfficialPublication|Schoolbook|Biography|Report")
+        add_field("$i.4","aut")
+      else
+        add_field("$i.4","cre")
       end
-      do list(path: "$i.4", "var":"$j")
-        set_hash("contribution[].$append.agent")
-        do list(path:"$i.0","var":"$k")
-          if all_match("$k", "^\\(DE-588\\).*$")
-        # GND identifier
-            paste("contribution[].$last.agent.gndIdentifier","$k")
-        # GND Identifier id
-            paste("contribution[].$last.agent.id","$k")
-          end
-        # GND idn as variable
-          if exists("$i.B")
-            do list(path: "$i.B","var":"$gnd")
-              unless exists("contribution[].$last.agent.@gndIdn")
-                copy_field("$gnd","contribution[].$last.agent.@gndIdn")
-              end
+    end
+    do list(path: "$i.4", "var":"$j")
+      set_hash("contribution[].$append.agent")
+      do list(path:"$i.0","var":"$k")
+        if all_match("$k", "^\\(DE-588\\).*$")
+      # GND identifier
+          paste("contribution[].$last.agent.gndIdentifier","$k")
+      # GND Identifier id
+          paste("contribution[].$last.agent.id","$k")
+        end
+      # GND idn as variable
+        if exists("$i.B")
+          do list(path: "$i.B","var":"$gnd")
+            unless exists("contribution[].$last.agent.@gndIdn")
+              copy_field("$gnd","contribution[].$last.agent.@gndIdn")
             end
-          elsif any_match("$k","^.*DNB\\|(.*)$")
-            copy_field("$k", "contribution[].$last.agent.@gndIdn")
-            replace_all("contribution[].$last.agent.@gndIdn", "^.*DNB\\|(.*)$","GND-$1")
-          elsif any_match("$k","^\\(DE-101\\)(.*)$")
-            copy_field("$k", "contribution[].$last.agent.@gndIdn")
-            replace_all("contribution[].$last.agent.@gndIdn", "^\\(DE-101\\)(.*)$","GND-$1")
           end
+        elsif any_match("$k","^.*DNB\\|(.*)$")
+          copy_field("$k", "contribution[].$last.agent.@gndIdn")
+          replace_all("contribution[].$last.agent.@gndIdn", "^.*DNB\\|(.*)$","GND-$1")
+        elsif any_match("$k","^\\(DE-101\\)(.*)$")
+          copy_field("$k", "contribution[].$last.agent.@gndIdn")
+          replace_all("contribution[].$last.agent.@gndIdn", "^\\(DE-101\\)(.*)$","GND-$1")
         end
-        # name
-          call_macro("gndOtherCombinedLabel",field:"$i")
-          copy_field("$i.@combinedLabel", "contribution[].$last.agent.label")
-        # type
-        set_array("contribution[].$last.agent.type[]","CorporateBody")
-        # role
-        copy_field("$j","contribution[].$last.role.id")
       end
+      # name
+        call_macro("gndOtherCombinedLabel",field:"$i")
+        copy_field("$i.@combinedLabel", "contribution[].$last.agent.label")
+      # type
+      set_array("contribution[].$last.agent.type[]","CorporateBody")
+      # role
+      copy_field("$j","contribution[].$last.role.id")
+      call_macro("alternateGraphicRepresationArrayOfObjects",targetArray:"contribution[]",targetField:".agent",variable:"$i")
     end
   end
 end
@@ -182,45 +186,45 @@ end
 
 
 do list(path:"710[012] ", "var":"$i")
-  unless exists("$i.M")
-    # in some cases (e.g. 99370763882706441) we have an invalid repeated subfield $a
-    # since in the invalid record one cannot untangle the info easily (creates dublicate info and no roles) the fix scipts if the subfield $a is an array.
-    unless exists("$i.a.1")
-      unless exists("$i.4")
-        add_field("$i.4","ctb")
-      end
-      do list(path: "$i.4", "var":"$j")
-        set_hash("contribution[].$append.agent")
-        do list(path:"$i.0","var":"$k")
-          if all_match("$k", "^\\(DE-588\\).*$")
-        # GND identifier
-            paste("contribution[].$last.agent.gndIdentifier","$k")
-        # GND Identifier id
-            paste("contribution[].$last.agent.id","$k")
-          end
-        # GND idn as variable
-          if exists("$i.B")
-            do list(path: "$i.B","var":"$gnd")
-              unless exists("contribution[].$last.agent.@gndIdn")
-                copy_field("$gnd","contribution[].$last.agent.@gndIdn")
-              end
-            end
-          elsif any_match("$k","^.*DNB\\|(.*)$")
-            copy_field("$k", "contribution[].$last.agent.@gndIdn")
-            replace_all("contribution[].$last.agent.@gndIdn", "^.*DNB\\|(.*)$","GND-$1")
-          elsif any_match("$k","^\\(DE-101\\)(.*)$")
-            copy_field("$k", "contribution[].$last.agent.@gndIdn")
-            replace_all("contribution[].$last.agent.@gndIdn", "^\\(DE-101\\)(.*)$","GND-$1")
-          end
+  # in some cases (e.g. 99370763882706441) we have an invalid repeated subfield $a
+  # since in the invalid record one cannot untangle the info easily (creates dublicate info and no roles) the fix scipts if the subfield $a is an array.
+  unless exists("$i.a.1")
+    call_macro("rolesFromSubfieldE")
+    unless exists("$i.4")
+      add_field("$i.4","ctb")
+    end
+    do list(path: "$i.4", "var":"$j")
+      set_hash("contribution[].$append.agent")
+      do list(path:"$i.0","var":"$k")
+        if all_match("$k", "^\\(DE-588\\).*$")
+      # GND identifier
+          paste("contribution[].$last.agent.gndIdentifier","$k")
+      # GND Identifier id
+          paste("contribution[].$last.agent.id","$k")
         end
-        # name
-          call_macro("gndOtherCombinedLabel",field:"$i")
-          copy_field("$i.@combinedLabel", "contribution[].$last.agent.label")
-        # type
-        set_array("contribution[].$last.agent.type[]","CorporateBody")
-        # role
-        copy_field("$j","contribution[].$last.role.id")
+      # GND idn as variable
+        if exists("$i.B")
+          do list(path: "$i.B","var":"$gnd")
+            unless exists("contribution[].$last.agent.@gndIdn")
+              copy_field("$gnd","contribution[].$last.agent.@gndIdn")
+            end
+          end
+        elsif any_match("$k","^.*DNB\\|(.*)$")
+          copy_field("$k", "contribution[].$last.agent.@gndIdn")
+          replace_all("contribution[].$last.agent.@gndIdn", "^.*DNB\\|(.*)$","GND-$1")
+        elsif any_match("$k","^\\(DE-101\\)(.*)$")
+          copy_field("$k", "contribution[].$last.agent.@gndIdn")
+          replace_all("contribution[].$last.agent.@gndIdn", "^\\(DE-101\\)(.*)$","GND-$1")
+        end
       end
+      # name
+        call_macro("gndOtherCombinedLabel",field:"$i")
+        copy_field("$i.@combinedLabel", "contribution[].$last.agent.label")
+      # type
+      set_array("contribution[].$last.agent.type[]","CorporateBody")
+      # role
+      copy_field("$j","contribution[].$last.role.id")
+      call_macro("alternateGraphicRepresationArrayOfObjects",targetArray:"contribution[]",targetField:".agent",variable:"$i")
     end
   end
 end
@@ -231,45 +235,44 @@ end
 # Subfield: $M is a local field and can create duplicates and is therefore ignored.
 
 do list(path:"111[012] |711[012] ", "var":"$i")
-  unless exists("$i.M")
-    # in some cases (e.g. 99370763882706441) we have an invalid repeated subfield $a
-    # since in the invalid record one cannot untangle the info easily (creates dublicate info and no roles) the fix scipts if the subfield $a is an array.
-    unless exists("$i.a.1")
-      unless exists("$i.4")
-        add_field("$i.4","oth")
-      end
-      do list(path: "$i.4", "var":"$j")
-        set_hash("contribution[].$append.agent")
-        do list(path:"$i.0","var":"$k")
-          if all_match("$k", "^\\(DE-588\\).*$")
-        # GND identifier
-            paste("contribution[].$last.agent.gndIdentifier","$k")
-        # GND Identifier id
-            paste("contribution[].$last.agent.id","$k")
-          end
-        # GND idn as variable
-          if exists("$i.B")
-            do list(path: "$i.B","var":"$gnd")
-              unless exists("contribution[].$last.agent.@gndIdn")
-                copy_field("$gnd","contribution[].$last.agent.@gndIdn")
-              end
-            end
-          elsif any_match("$k","^.*DNB\\|(.*)$")
-            copy_field("$k", "contribution[].$last.agent.@gndIdn")
-            replace_all("contribution[].$last.agent.@gndIdn", "^.*DNB\\|(.*)$","GND-$1")
-          elsif any_match("$k","^\\(DE-101\\)(.*)$")
-            copy_field("$k", "contribution[].$last.agent.@gndIdn")
-            replace_all("contribution[].$last.agent.@gndIdn", "^\\(DE-101\\)(.*)$","GND-$1")
-          end
+  # in some cases (e.g. 99370763882706441) we have an invalid repeated subfield $a
+  # since in the invalid record one cannot untangle the info easily (creates dublicate info and no roles) the fix scipts if the subfield $a is an array.
+  unless exists("$i.a.1")
+    unless exists("$i.4")
+      add_field("$i.4","oth")
+    end
+    do list(path: "$i.4", "var":"$j")
+      set_hash("contribution[].$append.agent")
+      do list(path:"$i.0","var":"$k")
+        if all_match("$k", "^\\(DE-588\\).*$")
+      # GND identifier
+          paste("contribution[].$last.agent.gndIdentifier","$k")
+      # GND Identifier id
+          paste("contribution[].$last.agent.id","$k")
         end
-        # name
-        call_macro("gndEventCombinedLabel",field:"$i")
-        copy_field("$i.@combinedLabel", "contribution[].$last.agent.label")        
-        # type
-        set_array("contribution[].$last.agent.type[]","ConferenceOrEvent")
-        # role
-        copy_field("$j","contribution[].$last.role.id")
+      # GND idn as variable
+        if exists("$i.B")
+          do list(path: "$i.B","var":"$gnd")
+            unless exists("contribution[].$last.agent.@gndIdn")
+              copy_field("$gnd","contribution[].$last.agent.@gndIdn")
+            end
+          end
+        elsif any_match("$k","^.*DNB\\|(.*)$")
+          copy_field("$k", "contribution[].$last.agent.@gndIdn")
+          replace_all("contribution[].$last.agent.@gndIdn", "^.*DNB\\|(.*)$","GND-$1")
+        elsif any_match("$k","^\\(DE-101\\)(.*)$")
+          copy_field("$k", "contribution[].$last.agent.@gndIdn")
+          replace_all("contribution[].$last.agent.@gndIdn", "^\\(DE-101\\)(.*)$","GND-$1")
+        end
       end
+      # name
+      call_macro("gndEventCombinedLabel",field:"$i")
+      copy_field("$i.@combinedLabel", "contribution[].$last.agent.label")
+      # type
+      set_array("contribution[].$last.agent.type[]","ConferenceOrEvent")
+      # role
+      copy_field("$j","contribution[].$last.role.id")
+      call_macro("alternateGraphicRepresationArrayOfObjects",targetArray:"contribution[]",targetField:".agent",variable:"$i")
     end
   end
 end
@@ -340,7 +343,7 @@ do list (path: "contribution[]", "var": "$i")
   set_array("$i.agent.altLabel[]")
   do list(path:"GPN??", "var": "$z")
     if in ("$i.agent.@gndIdn", "$z.B") # Person labels have no character between $a (Name) and $b (Number).
-      call_macro("gndPersonCombinedLabel",field:"$z") 
+      call_macro("gndPersonCombinedLabel",field:"$z")
       copy_field("$z.@combinedLabel", "$i.agent.altLabel[].$append")
     end
   end
@@ -375,8 +378,11 @@ do list (path: "contribution[]", "var": "$i")
   remove_field("$i.agent.@gndIdn")
 end
 
+
 do list (path:"contribution[]", "var":"$i")
   replace_all("$i.agent.label","<<|>>","")
   uniq("$i.agent.altLabel[]")
   replace_all("$i.agent.altLabel[].*","<<|>>","")
 end
+
+uniq("contribution[]")

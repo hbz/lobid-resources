@@ -3,114 +3,115 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.lobid</groupId>
 	<artifactId>lobid-resources</artifactId>
-	<version>0.6.0-SNAPSHOT</version>
+	<version>1.0.1-SNAPSHOT</version>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<target.jdk>1.8</target.jdk>
+		<target.jdk>11</target.jdk>
 		<junit.version>4.8.2</junit.version>
-		<logback.version>0.9.30</logback.version>
+		<logback.version>1.3.14</logback.version>
 	</properties>
 	<dependencies>
 		<dependency>
 			<groupId>org.metafacture</groupId>
 			<artifactId>metafacture-io</artifactId>
-			<version>5.6.0</version>
+			<version>6.0.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.metafacture</groupId>
 			<artifactId>metafacture-files</artifactId>
-			<version>5.6.0</version>
+			<version>6.0.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.metafacture</groupId>
 			<artifactId>metafacture-json</artifactId>
-			<version>5.6.0</version>
+			<version>6.0.0</version>
+			<exclusions>
+				<exclusion>
+					<groupId>commons-logging</groupId>
+					<artifactId>commons-logging</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-api</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.metafacture</groupId>
 			<artifactId>metafacture-biblio</artifactId>
-			<version>5.6.0</version>
+			<version>6.0.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.metafacture</groupId>
 			<artifactId>metafacture-formeta</artifactId>
-			<version>5.6.0</version>
+			<version>6.0.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.metafacture</groupId>
 			<artifactId>metafacture-monitoring</artifactId>
-			<version>5.6.0</version>
+			<version>6.0.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.metafacture</groupId>
 			<artifactId>metafacture-strings</artifactId>
-			<version>5.6.0</version>
+			<version>6.0.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.metafacture</groupId>
 			<artifactId>metafacture-formatting</artifactId>
-			<version>5.6.0</version>
+			<version>6.0.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.metafacture</groupId>
 			<artifactId>metafacture-triples</artifactId>
-			<version>5.6.0</version>
+			<version>6.0.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.metafacture</groupId>
 			<artifactId>metafacture-flowcontrol</artifactId>
-			<version>5.6.0</version>
+			<version>6.0.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.metafacture</groupId>
 			<artifactId>metamorph</artifactId>
-			<version>5.6.0</version>
+			<version>6.0.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.metafacture</groupId>
 			<artifactId>metafacture-plumbing</artifactId>
-			<version>5.6.0</version>
+			<version>6.0.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.metafacture</groupId>
 			<artifactId>metamorph-test</artifactId>
-			<version>5.6.0</version>
+			<version>6.0.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.metafacture</groupId>
 			<artifactId>metafacture-xml</artifactId>
-			<version>5.6.0</version>
+			<version>6.0.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.metafacture</groupId>
 			<artifactId>metafacture-mangling</artifactId>
-			<version>5.6.0</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.jena</groupId>
-			<artifactId>jena-arq</artifactId>
-			<version>3.17.0</version>
-			<exclusions>
-			<exclusion>
-				<groupId>log4j</groupId>
-				<artifactId>log4j</artifactId>
-			</exclusion>
-			<exclusion>
-				<groupId>org.apache.httpcomponents</groupId>
-				<artifactId>httpclient</artifactId>
-			</exclusion>
-		</exclusions>
+			<version>6.0.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.metafacture</groupId>
 			<artifactId>metafix</artifactId>
-			<version>0.5.1</version>
+			<version>1.0.0</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-simple</artifactId>
+			</exclusion>
+		</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>com.github.jsonld-java</groupId>
 			<artifactId>jsonld-java</artifactId>
-			<version>0.13.2</version>
+			<version>0.13.6</version>
 			<exclusions>
 				<exclusion>
 					<groupId>commons-codec</groupId>
@@ -129,7 +130,11 @@
 			<version>5.6.3</version>
 			<exclusions>
 				<exclusion>
-					<groupId>log4j</groupId>
+					<groupId>commons-logging</groupId>
+					<artifactId>commons-logging</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.apache.logging.log4j</groupId>
 					<artifactId>log4j-api</artifactId>
 				</exclusion>
 			</exclusions>
@@ -138,6 +143,12 @@
 			<groupId>org.elasticsearch.client</groupId>
 			<artifactId>transport</artifactId>
 			<version>5.6.3</version>
+			<exclusions>
+				<exclusion>
+					<groupId>commons-logging</groupId>
+					<artifactId>commons-logging</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
@@ -163,6 +174,21 @@
 			<groupId>javax.xml.bind</groupId>
 			<artifactId>jaxb-api</artifactId>
 			<version>2.3.0</version>
+		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<version>${logback.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-core</artifactId>
+			<version>${logback.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>log4j-over-slf4j</artifactId>
+			<version>1.7.36</version>
 		</dependency>
 	</dependencies>
 	<build>

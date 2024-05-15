@@ -1,6 +1,6 @@
 # author: dr0i
 #
-# grep all MapperParsingException in ETL.log and send email
+# grep all MapperParsingException in etl.log and send email
 # see https://github.com/hbz/lobid-resources/issues/1512
 
 MAIL_TO=$(cat .secrets/MAIL_TO)
@@ -9,9 +9,9 @@ MAIL_FROM=$(cat .secrets/MAIL_FROM)
 ERROR_PATTERN="MapperParsingException"
 
 if [ -z $1 ]; then
-        NEWEST_LOG_FN="../logs/application.log"
+        NEWEST_LOG_FN="../logs/etl.log"
         else
-        NEWEST_LOG_FN=$(ls ../application-log*.gz| tail -n1)
+        NEWEST_LOG_FN=$(ls ../etl-log*.gz| tail -n1)
 fi
 
 
