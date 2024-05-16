@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration>
-  <Appenders>
-      <RollingFile name="RollingFile" fileName="./logs/elasticsearch.log" filePattern="elasticsearch-log-%d{yyyy-ww}.gz" immediateFlush="true" append="true">
-          <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} %level [%l] - %m%n"/>
+    <Appenders>
+        <RollingFile name="RollingFile" fileName="./logs/elasticsearch.log" filePattern="elasticsearch-log-%d{yyyy-ww}.gz" immediateFlush="true" append="true">
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} %level [%l] - %m%n"/>
           <!-- Weekly rollover with compression -->
-          <Policies>
-              <TimeBasedTriggeringPolicy interval="1"/>
-          </Policies>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1"/>
+            </Policies>
           <!-- keep 8 weeks worth of history -->
-          <DefaultRolloverStrategy max="8"/>
-    </RollingFile>
-    <Console name="STDOUT" target="SYSTEM_OUT">
-      <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} %level [%l] - %m%n"/>
-    </Console>
-  </Appenders>
-  <Loggers>
-    <Root level="all">
-      <AppenderRef ref="STDOUT" level="info"/>
-      <AppenderRef ref="RollingFile" level="info"/>
-    </Root>
-  </Loggers>
+            <DefaultRolloverStrategy max="8"/>
+        </RollingFile>
+        <Console name="STDOUT" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} %level [%l] - %m%n"/>
+        </Console>
+    </Appenders>
+    <Loggers>
+        <Root level="all">
+            <AppenderRef ref="STDOUT" level="info"/>
+            <AppenderRef ref="RollingFile" level="info"/>
+        </Root>
+    </Loggers>
 </Configuration>

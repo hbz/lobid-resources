@@ -21,7 +21,7 @@ import de.hbz.lobid.helper.EtikettMaker;
 
 /**
  * Enrich a JSON-LD map document with etikett.
- * 
+ *
  * @author Pascal Christoph (dr0i)
  */
 @In(Map.class)
@@ -46,7 +46,7 @@ public final class JsonLdEtikett extends
 	/**
 	 * Takes a filename which could be a directory to create the context jsonld
 	 * out of labels.
-	 * 
+	 *
 	 * @param LABELS_DIRECTORY_FILENAME the name of the labels firectory or file
 	 * @param CONTEXT_LOCATION_FILENAME the filename of the to be produced and to
 	 *          be stored context
@@ -104,7 +104,7 @@ public final class JsonLdEtikett extends
 	/**
 	 * Gets the name of the directory of the label(s). Will be used to create
 	 * jsonld-context.
-	 * 
+	 *
 	 * @return the directory name to the label(s)
 	 */
 	public static String getLabelsDirectoryName() {
@@ -113,7 +113,7 @@ public final class JsonLdEtikett extends
 
 	/**
 	 * Gets the filename of the context.
-	 * 
+	 *
 	 * @return the filename to the context
 	 */
 	public String getContextName() {

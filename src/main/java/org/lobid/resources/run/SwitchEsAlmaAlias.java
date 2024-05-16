@@ -27,7 +27,7 @@ import org.lobid.resources.ElasticsearchIndexer;
  * the productive index aliased to 'staging'. If a sanity check is successful
  * the index alias "almaresources-staging" is switched to the alias name
  * "almaresources" and vice versa.
- * 
+ *
  * @author Pascal Christoph (dr0i)
  *
  */

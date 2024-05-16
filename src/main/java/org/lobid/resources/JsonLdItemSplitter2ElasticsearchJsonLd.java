@@ -17,7 +17,7 @@ import com.github.jsonldjava.utils.JsonUtils;
 
 /**
  * Splits a lobid resource into items and make them consumable by elasticsearch.
- * 
+ *
  * @author Pascal Christoph (dr0i)
  */
 @In(HashMap.class)

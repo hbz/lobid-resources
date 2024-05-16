@@ -23,7 +23,7 @@ while [ $HITS != 0 ] ; do
 	curl --globoff --header "Accept-Encoding: gzip" "http://lobid.org/resources/search?q=describedBy.dateCreated:[$FROM%20TO%20$TO]&format=bulk" > $FROM-$TO.jsonl.gz
 	GOT_HITS=$(zcat $FROM-$TO.jsonl.gz |wc -l)
 	echo "Got hits ($GOT_HITS), expected ($HITS)"
-	if [ $HITS != $GOT_HITS ]; then	
+	if [ $HITS != $GOT_HITS ]; then
 		echo "Got lesser hits than expected - cancelling !"
 		echo "Wait a bit and set FROM manually to retry beginning with '$FROM'."
 		exit
