@@ -4,6 +4,8 @@ on: push
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      MAVEN_OPTS: "-Xmx768M"
     steps:
     - uses: actions/checkout@v2
     - name: Set up JDK 11
