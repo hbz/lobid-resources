@@ -48,7 +48,7 @@ do list(path:"77008", "var":"$i")
     do list(path:"$i.i","var":"$j")
       copy_field("$j","supplement[].$last.note[].$append")
     end
-    copy_field("$i.t","supplement[].$last.label")
+    paste("supplement[].$last.label","$i.t","$i.b",join_char:". ")
     do list(path:"$i.w","var": "$j")
       if all_match("$j","^\\((?:DE-600|DE-605)\\)(.*)$")
         copy_field("$j","supplement[].$last.id")
