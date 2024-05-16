@@ -280,6 +280,9 @@ do put_macro("holdingLibrary+opacLink")
   end
   paste("hasItem[].$last.heldBy.id", "~http://lobid.org/organisations/", "hasItem[].$last.heldBy.isil", "~#!", join_char:"")
   copy_field("hasItem[].$last.heldBy.id", "hasItem[].$last.heldBy.label")
+  set_array("hasItem[].$last.inCollection[]")
+  paste("hasItem[].$last.inCollection[].$append.id", "~http://lobid.org/organisations/", "$i.@iz", "~#!", join_char:"")
+  paste("hasItem[].$last.inCollection[].$last.label", "~IZ of", "$i.@iz")
   # item id is constructed "http://lobid.org/items/[almaMmsId of the record]:[isil of the Owner]:[almaMmsId of the holding]#!"
   paste("hasItem[].$last.id", "~http://lobid.org/items/","almaMmsId", "~:", "hasItem[].$last.heldBy.isil","~:", "$[mmsIdField]","~#!", join_char: "")
 end
