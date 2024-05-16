@@ -1,5 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.lobid</groupId>
 	<artifactId>lobid-resources</artifactId>
@@ -105,8 +105,8 @@
 				<exclusion>
 					<groupId>org.slf4j</groupId>
 					<artifactId>slf4j-simple</artifactId>
-			</exclusion>
-		</exclusions>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>com.github.jsonld-java</groupId>
@@ -195,18 +195,18 @@
 		<resources>
 			<resource>
 				<directory>${basedir}/src/main/resources</directory>
-					<excludes>
-						<exclude>beacon/data/*.jsonl</exclude>
-					</excludes>
+				<excludes>
+					<exclude>beacon/data/*.jsonl</exclude>
+				</excludes>
 			</resource>
 		</resources>
 		<pluginManagement>
 			<plugins>
 				<plugin>
-				 <groupId>org.apache.maven.plugins</groupId>
-							<artifactId>maven-compiler-plugin</artifactId>
-							<version>3.3</version>
-							<configuration>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<version>3.3</version>
+					<configuration>
 						<source>${target.jdk}</source>
 						<target>${target.jdk}</target>
 						<showWarnings>true</showWarnings>
@@ -228,7 +228,7 @@
 					<configuration>
 						<test>*Test</test>
 						<environmentVariables>
-						<generateTestData>${generateTestData}</generateTestData>
+							<generateTestData>${generateTestData}</generateTestData>
 						</environmentVariables>
 						<test>UnitTests</test>
 						<forkCount>3</forkCount>
@@ -237,17 +237,17 @@
 						<argLine>-Xmx1024m</argLine>
 					</configuration>
 				</plugin>
-        <plugin>
-          <artifactId>maven-failsafe-plugin</artifactId>
-          <version>3.0.0-M5</version>
-          <executions>
-            <execution>
-              <goals>
-                 <goal>integration-test</goal>
-              </goals>
-            </execution>
-          </executions>
-        </plugin>
+				<plugin>
+					<artifactId>maven-failsafe-plugin</artifactId>
+					<version>3.0.0-M5</version>
+					<executions>
+						<execution>
+							<goals>
+								<goal>integration-test</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
 			</plugins>
 		</pluginManagement>
 	</build>
