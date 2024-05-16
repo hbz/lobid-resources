@@ -10,6 +10,17 @@ if any_equal("DEL??.a", "Y")
   reject()
 end
 
+# Helper element that states if a record is part of the hbz NZ
+if any_equal("MBD  .M", "49HBZ_NETWORK")
+  if any_match("POR  .A", ".*")
+    add_field("@inNZ", "true")
+  else
+    unless any_match("035  .a", "^\\(EXLCZ\\).*")
+      add_field("@inNZ", "true")
+    end
+  end
+end
+
 add_field("@context","http://lobid.org/resources/context.jsonld")
 
 do list(path:"880??","var":"$i")
