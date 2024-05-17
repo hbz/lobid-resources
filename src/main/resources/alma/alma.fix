@@ -23,6 +23,12 @@ end
 
 add_field("@context","http://lobid.org/resources/context.jsonld")
 
+# Set empty elements to manipulate the order winthin the record.
+add_field("id","")
+set_array("type[]")
+set_array("medium[]")
+add_field("title","")
+
 do list(path:"880??","var":"$i")
   copy_field("$i.6","$i.linkageTest")
   replace_all("$i.linkageTest","\\d{3}(-\\d{2}).*","880$1")
