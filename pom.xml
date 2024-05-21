@@ -247,7 +247,40 @@
               </goals>
             </execution>
           </executions>
-        </plugin>
+      </plugin>
+                      <plugin>
+                    <groupId>org.ec4j.maven</groupId>
+                    <artifactId>editorconfig-maven-plugin</artifactId>
+                    <version>0.1.3</version>
+                    <executions>
+                        <execution>
+                            <id>check</id>
+                            <phase>verify</phase>
+                            <goals>
+                                <goal>check</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                    <configuration>
+                        <excludes>
+                            <exclude>vocabs</exclude>
+                            <exclude>lookup-tables</exclude>
+                            <exclude>**/*.tsv</exclude>
+                            <exclude>web/public/stylesheets/bootstrap.min.css</exclude>
+                            <exclude>web/public/stylesheets/font-awesome.min.css</exclude>
+                            <exclude>web/public/stylesheets/jquery-ui.min.css</exclude>
+                            <exclude>web/public/stylesheets/leaflet.css</exclude>
+                            <exclude>web/public/stylesheets/octicons.css</exclude>
+                        </excludes>
+                        <includes>
+                            <include>pom.xml</include>
+                            <include>.editorconfig</include>
+                            <include>src/main/</include>
+                            <include>src/main/resources/alma/index-config.json</include>
+                            <include>web/public/stylesheets/</include>
+                        </includes>
+                    </configuration>
+                </plugin>
 			</plugins>
 		</pluginManagement>
 	</build>
