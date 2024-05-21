@@ -421,8 +421,10 @@ do list (path: "subject[]", "var": "$i")
   end
 end
 do list(path:"subject[]", "var": "$i")
+  replace_all("$i.altLabel[].*","<<|>>","")
   uniq("$i.altLabel[]")
   do list(path:"$i.componentList[]","var":"$j")
+    replace_all("$j.altLabel[].*","<<|>>","")
     uniq("$j.altLabel[]")
   end
 end

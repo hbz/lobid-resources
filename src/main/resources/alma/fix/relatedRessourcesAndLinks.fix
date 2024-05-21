@@ -48,7 +48,7 @@ do list(path:"77008", "var":"$i")
     do list(path:"$i.i","var":"$j")
       copy_field("$j","supplement[].$last.note[].$append")
     end
-    copy_field("$i.t","supplement[].$last.label")
+    paste("supplement[].$last.label","$i.t","$i.b",join_char:". ")
     do list(path:"$i.w","var": "$j")
       if all_match("$j","^\\((?:DE-600|DE-605)\\)(.*)$")
         copy_field("$j","supplement[].$last.id")
@@ -59,6 +59,7 @@ end
 
 replace_all("supplement[].*.id","^\\(DE-605\\)(.*)$","http://lobid.org/resources/$1#!")
 replace_all("supplement[].*.id","^\\(DE-600\\)(.*)$","http://lobid.org/resources/ZDB-$1#!")
+replace_all("supplement[].*.label","<<|>>","")
 
 # isPartOf
 # it describes the relation between a published ressource and its superordinate series or collection.
@@ -367,6 +368,7 @@ end
 
 replace_all("related[].*.id", "^\\(DE-605\\)(.*)$", "http://lobid.org/resources/$1#!")
 replace_all("related[].*.id", "^\\(DE-600\\)(.*)$", "http://lobid.org/resources/ZDB-$1#!")
+replace_all("related[].*.label","<<|>>","")
 
 
 set_array("inCollection[]")
