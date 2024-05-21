@@ -251,7 +251,7 @@
         <plugin>
           <groupId>org.ec4j.maven</groupId>
           <artifactId>editorconfig-maven-plugin</artifactId>
-          <version>0.1.3						                        						                        						            <!-- check the latest on http://search.maven.org/maven2/org/ec4j/maven/editorconfig-maven-plugin/ --></version>
+          <version>0.1.3</version>
           <executions>
             <execution>
               <id>check</id>
@@ -262,19 +262,9 @@
             </execution>
           </executions>
           <configuration>
-            <!-- See http://ec4j.github.io/editorconfig-maven-plugin/ for full configuration reference -->
             <excludes>
-              <!-- Note that maven submodule directories and many non-source file patterns are excluded by default -->
-              <!-- see https://github.com/ec4j/editorconfig-linters/blob/master/editorconfig-lint-api/src/main/java/org/ec4j/lint/api/Constants.java#L37 -->
-              <!-- You can exclude further files from processing: -->
-              <exclude>src/main/**/*.whatever</exclude>
               <exclude>src/test/resources/alma-fix/</exclude>
             </excludes>
-            <!-- All files are included by default:
-	  <includes>
-		<include>**</include>
-	  </includes>
-	  -->
           </configuration>
         </plugin>
       </plugins>
