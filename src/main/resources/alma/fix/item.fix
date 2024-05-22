@@ -120,3 +120,10 @@ end
 
 lookup("hasItem[].*.heldBy.label", "lobidOrgLabels",delete:"true")
 lookup("hasItem[].*.inCollection[].*.label", "lobidOrgLabels",delete:"true")
+
+do list(path: "hasItem[]","var":"$i")
+  if any_match("$i.inCollection[].*.id","http:\\/\\/lobid.org\\/organisations\\/7816..")
+    add_field("$i.inCollection[].1.id","http://lobid.org/organisations/BRIDGE_FIZ-7816#!")
+    add_field("$i.inCollection[].1.label","Bibliotheken ohne zentrale Katalogisierung (IZ Bridge)")
+  end
+end
