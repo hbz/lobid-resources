@@ -27,11 +27,12 @@ jobs:
     #    cd ..
     - name: Install metafacture-fix
       run: |
+        cd ..
         git clone https://github.com/metafacture/metafacture-fix.git
         cd metafacture-fix
         git checkout 1.0.0
         ./gradlew publishToMavenLocal
-        cd ..
+        cd -
     - name: Build with Maven
       run: |
         mvn install
