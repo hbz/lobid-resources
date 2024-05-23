@@ -18,7 +18,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * This class is used in ApplicationProfile
- * 
+ *
  * @author Jan Schnasse
  *
  */
@@ -38,7 +38,7 @@ public class Etikett {
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 6716611400533458082L;
 

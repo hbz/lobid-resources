@@ -109,7 +109,7 @@
 @facetLabel(current: String, label: String, activeCountId: String = "", currentCount: String = "") = {
   @if(!current.isEmpty){
      <span class="badge" id="facet-filter"><span id="@activeCountId">@currentCount</span> @label</span>
-     <a href="@resources.routes.Application.query(q,if(agent==current) "" else agent,name,if (urisOnly(subject)==current) "" else subject,id,publisher,if(issued==current) "" else issued,if (medium==current) "" else medium,from,size,if (owner==current) "" else owner,if (t==current) "" else t,sortParam,word=word).toString" title="Filter entfernen"><span class="octicon octicon-x"></span></a> 
+     <a href="@resources.routes.Application.query(q,if(agent==current) "" else agent,name,if (urisOnly(subject)==current) "" else subject,id,publisher,if(issued==current) "" else issued,if (medium==current) "" else medium,from,size,if (owner==current) "" else owner,if (t==current) "" else t,sortParam,word=word).toString" title="Filter entfernen"><span class="octicon octicon-x"></span></a>
    }
 }
 

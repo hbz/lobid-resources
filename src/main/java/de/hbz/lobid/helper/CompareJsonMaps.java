@@ -26,7 +26,7 @@ import com.fasterxml.jackson.databind.node.JsonNodeType;
  * values must be in the given order, so this tests also ordered lists.
  * Successfully compared elements will be removed from the actual map, thus a
  * successful comparison leads to an empty 'actual' map (see last line).
- * 
+ *
  * @author Pascal Christoph (dr0i)
  * @author Jan Schnasse
  *
@@ -139,7 +139,7 @@ public final class CompareJsonMaps {
 	/**
 	 * Construct a map with json paths as keys with aggregated values form json
 	 * nodes.
-	 * 
+	 *
 	 * @param jnode the JsonNode which should be transformed into a map
 	 * @param map the map constructed out of the JsonNode
 	 */

@@ -26,14 +26,14 @@
             Keine gemerkten Titel. Sie können Titel in der Trefferliste oder der Einzeltrefferanzeige durch Klicken des Sterns hinzufügen.
         </div>
     } else {
-            <span class="glyphicon glyphicon-star-empty"></span> 
+            <span class="glyphicon glyphicon-star-empty"></span>
             <b>Merkliste: @ids.size Einträge</b>
-            <span class="hide-in-print"> | 
+            <span class="hide-in-print"> |
                 <a href='@resources.routes.Application.showStars(if(f=="details"){""} else {"details"}, ids.mkString(","))'>
                   <span class="glyphicon glyphicon-info-sign"></span> @if(f=="details"){Kurzansicht} else {Detailansicht}
                 </a> |
                 <a href="javascript:if(window.print)window.print()">
-                    <span class="glyphicon glyphicon-print"></span> 
+                    <span class="glyphicon glyphicon-print"></span>
                     Drucken</a> |
                 <span id="clear-list"><a style="cursor:pointer;"
                     onclick="$('#clear-list').html('Bestätigung: <a href=\'@resources.routes.Application.clearStars()\'>Merkliste dauerhaft löschen</a> | <a style=\'cursor:pointer\'; onclick=\'window.location.reload()\'>Abbrechen</a>')">
