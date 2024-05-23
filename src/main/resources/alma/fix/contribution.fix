@@ -116,7 +116,7 @@ do list(path:"700[01] ", "var":"$i")
       # dateOfBirthAndDeath #will be split on a later stage
       unless exists("$i.d.1")
         copy_field("$i.d","contribution[].$last.agent.dateOfBirthAndDeath")
-      end  
+      end
       call_macro("alternateGraphicRepresationArrayOfObjects",targetArray:"contribution[]",targetField:".agent",variable:"$i")
     end
   end

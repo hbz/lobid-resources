@@ -26,7 +26,7 @@ import de.hbz.lobid.helper.EtikettMaker;
 /**
  * Enriches a JSON document using Etikett. Thus every's object "id" will have a
  * "label". Optionally creates a JSON-LD context from the labels.
- * 
+ *
  * @author Pascal Christoph (dr0i)
  */
 @In(String.class)
@@ -111,9 +111,9 @@ public final class EtikettJson
   /**
    * Sets the name of the directory of the label(s). Will be used to create
    * jsonld-context.
-   * 
+   *
    * @param DIR_TO_LABELS the directory ehre the labels reside
-   * 
+   *
    */
   public void setLabelsDirectoryName(final String DIR_TO_LABELS) {
     this.labelsDirectoryName = DIR_TO_LABELS;
@@ -121,9 +121,9 @@ public final class EtikettJson
 
   /**
    * Sets the name of the file of the context that is generated from the labels.
-   * 
+   *
    * @param FILENAME_OF_CONTEXT the directory wehre the labels reside
-   * 
+   *
    */
   public void setFilenameOfContext(final String FILENAME_OF_CONTEXT) {
     contextFilenameLocation = FILENAME_OF_CONTEXT;
@@ -131,9 +131,9 @@ public final class EtikettJson
 
   /**
    * Generate the context from labels and store it.
-   * 
+   *
    * @param GENERATE_CONTEXT if true generate the context. Defaults to false.
-   * 
+   *
    */
   public void setGenerateContext(final boolean GENERATE_CONTEXT) {
     generateContext = GENERATE_CONTEXT;
@@ -141,9 +141,9 @@ public final class EtikettJson
 
   /**
    * Result pretty json or jsonl (json in one line). Defaults to jsonl.
-   * 
+   *
    * @param PRETTY if true pretty json is generated
-   * 
+   *
    */
   public void setPretty(final boolean PRETTY) {
     pretty = PRETTY;

@@ -35,7 +35,7 @@ import de.hbz.lobid.helper.Email;
  * "[resources|geo_nwbib]" and vice versa. Also writes an email using
  * {@link de.hbz.lobid.helper.Email} to write an email to the address given by
  * the java system property 'emailTo'.
- * 
+ *
  * @author Pascal Christoph (dr0i)
  *
  */
