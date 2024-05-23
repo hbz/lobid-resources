@@ -87,6 +87,9 @@ do list(path:"POR  ", "var": "$i")
       copy_field("$i.@iz","hasItem[].$last.heldBy.isil")
       paste("hasItem[].$last.heldBy.id", "~http://lobid.org/organisations/", "hasItem[].$last.heldBy.isil", "~#!", join_char:"")
       copy_field("hasItem[].$last.heldBy.id", "hasItem[].$last.heldBy.label")
+      set_array("hasItem[].$last.inCollection[]")
+      paste("hasItem[].$last.inCollection[].$append.id", "~http://lobid.org/organisations/", "$i.@iz", "~#!", join_char:"")
+      copy_field("hasItem[].$last.inCollection[].$last.id", "hasItem[].$last.inCollection[].$last.label")
       # item id is constructed "http://lobid.org/items/[almaMmsId of the record]:[isil of the Owner]:[almaMmsId of the holding]#!"
       paste("hasItem[].$last.id", "~http://lobid.org/items/","almaMmsId", "~:", "hasItem[].$last.heldBy.isil","~:", "$i.a","~#!", join_char: "")
     end
@@ -106,10 +109,21 @@ do list(path: "MBD  ", "var": "$i")
       copy_field("$i.@iz","hasItem[].$last.heldBy.isil")
       paste("hasItem[].$last.heldBy.id", "~http://lobid.org/organisations/", "hasItem[].$last.heldBy.isil", "~#!", join_char:"")
       copy_field("hasItem[].$last.heldBy.id", "hasItem[].$last.heldBy.label")
-      # item id is constructed "http://lobid.org/items/[almaMmsId of the record]:[isil of the Owner]:[almaMmsId of the holding]#!"
+      set_array("hasItem[].$last.inCollection[]")
+      paste("hasItem[].$last.inCollection[].$append.id", "~http://lobid.org/organisations/", "$i.@iz", "~#!", join_char:"")
+      copy_field("hasItem[].$last.inCollection[].$last.id", "hasItem[].$last.inCollection[].$last.label")
+    # item id is constructed "http://lobid.org/items/[almaMmsId of the record]:[isil of the Owner]:[almaMmsId of the holding]#!"
       paste("hasItem[].$last.id", "~http://lobid.org/items/","almaMmsId", "~:", "hasItem[].$last.heldBy.isil","~:", "$i.i", "~#!", join_char: "")
     end
   end
 end
 
 lookup("hasItem[].*.heldBy.label", "lobidOrgLabels",delete:"true")
+lookup("hasItem[].*.inCollection[].*.label", "lobidOrgLabels",delete:"true")
+
+do list(path: "hasItem[]","var":"$i")
+  if any_match("$i.inCollection[].*.id","http:\\/\\/lobid.org\\/organisations\\/7816..")
+    add_field("$i.inCollection[].1.id","http://lobid.org/organisations/BRIDGE_FIZ-7816#!")
+    add_field("$i.inCollection[].1.label","Bibliotheken ohne zentrale Katalogisierung (IZ Bridge)")
+  end
+end
