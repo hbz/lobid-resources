@@ -19,11 +19,11 @@ if [ $# -lt 7 ]
 example parameter:
 
 master
-files/open_data/closed/hbzvk/index.hbz-nrw.de/alephxml/clobs/baseline/DE-605-aleph-2015050310.tar.gz 
-lobid-resources 
--staging 
-quaoar2.hbz-nrw.de 
-quaoar 
+files/open_data/closed/hbzvk/index.hbz-nrw.de/alephxml/clobs/baseline/DE-605-aleph-2015050310.tar.gz
+lobid-resources
+-staging
+quaoar2.hbz-nrw.de
+quaoar
 update
 
 <INDEX_ALIAS_SUFFIX> may be:

@@ -15,7 +15,7 @@ import play.mvc.Result;
 
 /**
  * Controller to access the "deletions" index.
- * 
+ *
  * @author dr0i
  *
  */
@@ -24,7 +24,7 @@ public class Deletions extends Controller {
 	/**
 	 * @param q Query to search in all fields of the deletions index
 	 * @param size The maxmimum amount of allowed hits
-	 * 
+	 *
 	 * @return The search results
 	 */
 	public static Promise<Result> query(String q, int size) {

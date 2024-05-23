@@ -5,7 +5,7 @@
 @import helper._
 @import controllers.resources.Lobid
 
-@main("", "Dataset: lobid-resources") { 
+@main("", "Dataset: lobid-resources") {
 	<h3>Daten<small><a title="Beschreibung als JSON-LD anzeigen" href='@resources.routes.Application.dataset("json")'><img class='json-ld-icon' src='@routes.Assets.at("images/json-ld.png")'></a></small></h3>
 	<table class="table table-striped">
 		<tr><th width="20%"/><th width="80%"/></tr>
@@ -20,7 +20,7 @@
 			<td>Schlagwörter</td>
 			<td>@json.get("keywords").toString().replaceAll("\",\"", ", ").replaceAll("[\"\\[\\]]", "")</td>
 		</tr>
-		@defining(json.get("spatial").elements()) { spatial => 
+		@defining(json.get("spatial").elements()) { spatial =>
 			@defining((spatial.next(), spatial.next())) { case (s1, s2) =>
 		<tr><td>Raumbezug</td><td>
 			<a href='@s1.get("id").asText()'>@s1.get("name").get("de").asText()</a>,

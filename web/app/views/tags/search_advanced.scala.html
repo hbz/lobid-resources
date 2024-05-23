@@ -80,7 +80,7 @@ function suggests(term){
 }
 </script>
 
-@helper.form(action = controllers.resources.routes.Application.query(), 
+@helper.form(action = controllers.resources.routes.Application.query(),
     'id -> "resources-form", 'role -> "form", 'class -> "form-inline") {
   @defining(TreeMap("name"->name,"agent"->agent,"corporation"->corporation,"subject"->Lobid.withoutUris(subject), "id"->id,"publisher"->publisher,"q"->q).filter({case (k,v) => !v.isEmpty && (k != "subject" || (k == "subject" && !v.startsWith("http")))})) { fields =>
   @for(((k,v),i)<- (if(fields.isEmpty) TreeMap("q" -> "") else fields).zipWithIndex){
@@ -109,7 +109,7 @@ function suggests(term){
       <div class="form-group col col-md-1">
           <a href="#" id="and-search-field-@i" class="btn btn-default add-and-button and disabled" title="UND">UND</a>
           <a href="#" id="add-search-field-@i" class="btn btn-default add-and-button add" onclick="addSearchWidget(@(i+1))" title="Kriterium hinzufügen">
-                  <span class="glyphicon glyphicon-plus-sign"></span></a> 
+                  <span class="glyphicon glyphicon-plus-sign"></span></a>
       </div>
       <script>
 	  $("#add-search-field-@(i-1)").hide();
