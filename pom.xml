@@ -1,5 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.lobid</groupId>
     <artifactId>lobid-resources</artifactId>
@@ -234,7 +234,7 @@
                         <forkCount>3</forkCount>
                         <reuseForks>true</reuseForks>
                         <cleanupDaemonThreads>false</cleanupDaemonThreads>
-                        <argLine>-Xmx1024m</argLine>
+                        <argLine>-Xmx1536m</argLine>
                     </configuration>
                 </plugin>
                 <plugin>
@@ -265,6 +265,7 @@
                         <excludes>
                             <exclude>web/public/javascripts/leaflet.js</exclude>
                             <exclude>**/*.woff2</exclude>
+                            <exclude>web/conf/context.jsonld</exclude>
                             <exclude>src/test/resources/alma-fix/</exclude>
                             <exclude>web/public/stylesheets/bootstrap.min.css</exclude>
                             <exclude>web/public/stylesheets/font-awesome.min.css</exclude>
@@ -277,6 +278,7 @@
                         </excludes>
                     </configuration>
                 </plugin>
+
             </plugins>
         </pluginManagement>
     </build>
