@@ -172,17 +172,19 @@ end
 #if any_match("006", "^[op].*")
 # add_field("medium[].$append.label","Print")
 
-
-if any_match("007", "(^k[fhjs]|^t[ab]).*") # I excluded ^o (Kit) and added all Pos01 for text except Braille.
-  add_field("medium[].$append.label","Print")
-elsif any_match("@leaderTyp+008", "(Book|Music|Continuing Resources|Mixed materials)(.{23})[dr].*")  # Pos23
+unless any_match("@leaderPos06-07","[dftgij].")
+  if any_match("007", "(^k[fhjs]|^t.).*") # I excluded ^o (Kit) and added all Pos01 for text except Braille.
+    add_field("medium[].$append.label","Print")
+  end
+end
+if any_match("@leaderTyp+008", "(Book|Music|Continuing Resources|Mixed materials)(.{23})[dr].*")  # Pos23
   add_field("medium[].$append.label","Print")
 elsif any_match("@leaderTyp+008", "(Map|Visual materials)(.{29})[dr].*")  # Pos29
   add_field("medium[].$append.label","Print")
 elsif any_match("@leaderTyp+008", "Map.*")
-unless any_match("337.b","c")  # add medium "print" if map is non-electronic (337b code b computermedia)
-  add_field("medium[].$append.label","Print")
-end
+  unless any_match("337.b","c")  # add medium "print" if map is non-electronic (337b code b computermedia)
+    add_field("medium[].$append.label","Print")
+  end
 # elsif any_match("@leaderTyp+008", "(Visual materials)(.{33})b.*")  # Pos33  I excluded Kit
 #  add_field("medium[].$append.label","Print")
 elsif any_match("006", "[acdpst]](.{5})[dr].*") # Pos00+06 Added Print for pos 006.
