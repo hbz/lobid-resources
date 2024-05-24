@@ -251,13 +251,19 @@ do put_macro("provenanceLinks")
   end
 
 
-  unless any_match("$[field]","([A-Za-z]{2}-|http).*")
+  if any_match("$[field]","\\d*")
     prepend("$[field]","DE-")
   end
+
   unless any_match("$[field]","http.*")
+    unless any_match("$[field]","[A-Za-z]{2}-.*")
+      prepend("$[field]","XX-")
+    end
     prepend("$[field]", "http://lobid.org/organisations/")
     append("$[field]", "#!")
   end
+
+
 end
 
 # holding institution differentiating between library and sublibrary (libraryCode) and adding opacLink
