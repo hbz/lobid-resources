@@ -165,9 +165,6 @@ do list(path: "500??", "var":"$i")
 end
 
 unless exists("bibliographicCitation.1")
-  if exists("501??")
-    copy_field("501??.a","bibliographicCitation.$append")
-  else
     copy_field("77308.t","bibliographicCitation.$append")
     copy_field("77308.b","bibliographicCitation.$append")
     copy_field("77308.d","bibliographicCitation.$append")
@@ -177,7 +174,6 @@ unless exists("bibliographicCitation.1")
     do list(path:"77308.n", "var":"$i")
       copy_field("$i","bibliographicCitation.$append")
     end
-  end
 end
 
 
