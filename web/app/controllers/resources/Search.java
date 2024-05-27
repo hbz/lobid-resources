@@ -39,7 +39,7 @@ import play.libs.Json;
 
 /**
  * Access to the Elasticsearch index.
- * 
+ *
  * @author Fabian Steeg (fsteeg)
  *
  */

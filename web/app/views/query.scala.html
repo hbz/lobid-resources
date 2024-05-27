@@ -97,7 +97,7 @@
                     <div class="col-md-10">
                      @allHits @if(!q.isEmpty && !labelRaw.isEmpty) {
                       @defining("https://lobid.org/resources/" + q.substring(q.lastIndexOf("/")+1, q.length()-1)) { lobidUrl =>
-                       @labelRaw in: <a href="@lobidUrl">@Html(Lobid.resourceLabel(lobidUrl))</a>}}else{Treffer}, 
+                       @labelRaw in: <a href="@lobidUrl">@Html(Lobid.resourceLabel(lobidUrl))</a>}}else{Treffer},
                        zeige @(from+1) bis @(Math.min(from+hits.size,from+size)):
                     </div>
                     <div class="col-md-1" style="text-align: right; padding-right: 4px;">
@@ -105,7 +105,7 @@
                       @if(ids.split(",").forall(Application.currentlyStarred().split(" ").contains)) {
                         <a href='@resources.routes.Application.clearStars(ids)' title="Alle Titel dieser Seite von Merkliste entfernen"><span class="glyphicon glyphicon-star"></span></a>
                       } else {
-                        <a href='@resources.routes.Application.starAll(ids)' title="Alle Titel dieser Seite zur Merkliste hinzufügen"><span class="glyphicon glyphicon-star-empty"></span></a> 
+                        <a href='@resources.routes.Application.starAll(ids)' title="Alle Titel dieser Seite zur Merkliste hinzufügen"><span class="glyphicon glyphicon-star-empty"></span></a>
                       }
                       }
                     </div>

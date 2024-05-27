@@ -242,16 +242,28 @@ do put_macro("provenanceLinks")
     replace_all("describedBy.resultOf.object.sourceOrganization.id", "(.*)\\/NWBib$", "DE-$1")
   elsif any_match("$[field]",".*(dnb|DNB|GWDNB|GWDEB|GWDDB|DEDNM|DEDND).*")
     replace_all("$[field]", "^.*$", "DE-101")
+  elsif any_match("$[field]","MiAaPQ")
+    replace_all("$[field]", "^.*$", "https://ebookcentral.proquest.com/")
+  elsif any_match("$[field]","CaPaEBR")
+    replace_all("$[field]", "^.*$", "http://www.ebrary.com/")
   elsif any_match("$[field]", "^\\d{4}$")
     lookup("$[field]", "picaCreatorId2Isil")
   end
 
 
-  unless any_match("$[field]","[A-Za-z]{2}-.*")
+  if any_match("$[field]","\\d*")
     prepend("$[field]","DE-")
   end
-  prepend("$[field]", "http://lobid.org/organisations/")
-  append("$[field]", "#!")
+
+  unless any_match("$[field]","http.*")
+    unless any_match("$[field]","[A-Za-z]{2}-.*")
+      prepend("$[field]","XX-")
+    end
+    prepend("$[field]", "http://lobid.org/organisations/")
+    append("$[field]", "#!")
+  end
+
+
 end
 
 # holding institution differentiating between library and sublibrary (libraryCode) and adding opacLink
@@ -280,6 +292,9 @@ do put_macro("holdingLibrary+opacLink")
   end
   paste("hasItem[].$last.heldBy.id", "~http://lobid.org/organisations/", "hasItem[].$last.heldBy.isil", "~#!", join_char:"")
   copy_field("hasItem[].$last.heldBy.id", "hasItem[].$last.heldBy.label")
+  set_array("hasItem[].$last.inCollection[]")
+  paste("hasItem[].$last.inCollection[].$append.id", "~http://lobid.org/organisations/", "$i.@iz", "~#!", join_char:"")
+  copy_field("hasItem[].$last.inCollection[].$last.id", "hasItem[].$last.inCollection[].$last.label")
   # item id is constructed "http://lobid.org/items/[almaMmsId of the record]:[isil of the Owner]:[almaMmsId of the holding]#!"
   paste("hasItem[].$last.id", "~http://lobid.org/items/","almaMmsId", "~:", "hasItem[].$last.heldBy.isil","~:", "$[mmsIdField]","~#!", join_char: "")
 end

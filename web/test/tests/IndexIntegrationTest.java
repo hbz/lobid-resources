@@ -140,7 +140,8 @@ public class IndexIntegrationTest extends LocalIndexSetup {
 			{ "contribution.agent.altLabel.digibib:Nemack", /*->*/ 1 },
 			{ "contribution.agent.altLabel.digibib_unstemmed:Nemačke", /*->*/ 1 },
 			{ "contribution.agent.altLabel.digibib_unstemmed:Nemack", /*->*/ 0 },
-			{ "exampleOfWork.language.id:\"http\\://id.loc.gov/vocabulary/iso639-2/eng\"", /*->*/ 1 }
+			{ "exampleOfWork.language.id:\"http\\://id.loc.gov/vocabulary/iso639-2/eng\"", /*->*/ 1 },
+			{ "hasItem.inCollection.id:\"http://lobid.org/organisations/DE-468#!\"", /*->*/ 23 }
 		});
 	} // @formatter:on
 

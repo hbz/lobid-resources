@@ -18,7 +18,7 @@ import javax.mail.internet.MimeMultipart;
 /**
  * Sends an email via localhost smtp. Make sure the server is configured
  * properly.
- * 
+ *
  * @author Pascal Christoph (dr0i)
  *
  */
@@ -26,9 +26,9 @@ public class Email {
 
   /**
    * Sends an email.
-   * 
+   *
    * @author Pascal Christoph (dr0i)
-   * 
+   *
    * @param fromName the name before the "@" of an email
    * @param toEmail  the complete email address of the receiver
    * @param subject  the subject of the mail
