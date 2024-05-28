@@ -3,7 +3,7 @@
 package org.lobid.resources.run;
 
 import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.IOException;
 
 import org.metafacture.biblio.marc21.MarcXmlHandler;
 import org.metafacture.elasticsearch.JsonToElasticsearchBulk;
@@ -21,7 +21,8 @@ import org.metafacture.metafix.Metafix;
  * Filter resources with hbz holdings from culturegraph marcxml while tranform it with reject()
  * into JSON and write this as an elasticsearch bulk json file.
  *
- * @author Pascal Christoph(dr0i) & Tobias Bülte(TobiasNx)
+ * @author Pascal Christoph (dr0i)
+ * @author Tobias Bülte (TobiasNx)
  **/
 @SuppressWarnings("javadoc")
 public final class CulturegraphXmlFilterHbzToJson {
@@ -62,7 +63,7 @@ public final class CulturegraphXmlFilterHbzToJson {
             		.setReceiver(new JsonToElasticsearchBulk("rvk",
             				ELASTICSEARCH_INDEX_NAME))
             		.setReceiver(new ObjectWriter<>(JSON_FILE));
-        } catch (FileNotFoundException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
 		return sr;
