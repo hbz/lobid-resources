@@ -76,32 +76,43 @@ public final class EtikettJson
 
   private String getEtikettForEveryUri(final Map<String, Object> jsonMap)
       throws IOException {
-    // don't label the root id
-    Object rootId = jsonMap.remove("id");
-    getAllJsonNodes(jsonMap);
-    jsonMap.put("id", rootId);
-
-    return pretty ? JsonUtils.toPrettyString(jsonMap)
-        : JsonUtils.toString(jsonMap);
+      // don't label the root id
+      Iterator<String> it = jsonMap.keySet().iterator();
+      while (it.hasNext()) {
+          String key = it.next();
+          getAllNodesRecursivelyAndLabelThemIfNecessary(jsonMap, key);
+      }
+      return pretty ? JsonUtils.toPrettyString(jsonMap)
+          : JsonUtils.toString(jsonMap);
   }
 
-  @SuppressWarnings({ "rawtypes", "unchecked" })
-  private Map<String, Object> getAllJsonNodes(Map<String, Object> jsonMap) {
+  private void getAllNodesRecursivelyAndLabelThemIfNecessary(Map<String, Object> jsonMap, String key) {
+      if (jsonMap.get(key) instanceof ArrayList) {
+          ((ArrayList) jsonMap.get(key))//
+              .stream().filter(e -> (e instanceof LinkedHashMap))
+              .forEach(e -> labelNodesWithKeyId((Map<String, Object>) e));
+      }
+      else if (jsonMap.get(key) instanceof LinkedHashMap) {
+          labelNodesWithKeyId((Map<String, Object>) jsonMap.get(key));
+      }
+  }
+
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+  private Map<String, Object> labelNodesWithKeyId(Map<String, Object> jsonMap) {
     Iterator<String> it = jsonMap.keySet().iterator();
     boolean hasLabel = false;
     String id = null;
     while (it.hasNext()) {
       String key = it.next();
-      if (key.equals("label"))
-        hasLabel = true;
-      else if (!hasLabel && key.equals("id"))
-        id = (String) jsonMap.get(key);
-      if (jsonMap.get(key) instanceof ArrayList)
-        ((ArrayList) jsonMap.get(key))//
-            .stream().filter(e -> (e instanceof LinkedHashMap))
-            .forEach(e -> getAllJsonNodes((Map<String, Object>) e));
-      else if (jsonMap.get(key) instanceof LinkedHashMap)
-        getAllJsonNodes((Map<String, Object>) jsonMap.get(key));
+      if (key.equals("label")) {
+          hasLabel = true;
+      }
+      else if (!hasLabel && key.equals("id")) {
+          id = (String) jsonMap.get(key);
+      }
+      else {
+          getAllNodesRecursivelyAndLabelThemIfNecessary(jsonMap, key);
+      }
     }
     if (id != null && !(hasLabel))
       jsonMap.put("label", etikettMaker.getEtikett(id).label);
