@@ -1,0 +1,47 @@
+/* Copyright 2020 hbz, Pascal Christoph. Licensed under the EPL 2.0*/
+
+package org.lobid.resources.run;
+
+import java.io.File;
+import java.io.IOException;
+
+import org.metafacture.biblio.marc21.MarcXmlHandler;
+import org.metafacture.csv.CsvEncoder;
+import org.metafacture.io.FileOpener;
+import org.metafacture.io.ObjectWriter;
+import org.metafacture.xml.XmlDecoder;
+import org.metafacture.metafix.Metafix;
+
+/**
+ * Filter resources with hbz holdings from culturegraph's MARCXML while tranform it with reject()
+ * into a CSV file.
+ *
+ * @author Pascal Christoph (dr0i)
+ * @author Tobias Bülte (TobiasNx)
+ **/
+public final class CulturegraphXmlFilterHbzRvkToCsv {
+	private static String OUTPUT_FILE="cg-concordance.csv";
+
+	public static void main(String... args) {
+		String XML_INPUT_FILE = new File(args[0]).getAbsolutePath();
+
+		if (args.length > 1) OUTPUT_FILE = args[1];
+
+		final FileOpener opener = new FileOpener();
+		try {
+			opener.setReceiver(new XmlDecoder()).setReceiver(new MarcXmlHandler())
+					.setReceiver(new Metafix("src/main/resources/fix-cg-to-es.fix"))
+					.setReceiver(new CsvEncoder())
+					.setReceiver(new ObjectWriter<>(OUTPUT_FILE));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		opener.process(
+				new File(XML_INPUT_FILE).getAbsolutePath());
+		try {
+			opener.closeStream();
+		} catch (final NullPointerException e) {
+			// ignore, see https://github.com/hbz/lobid-resources/issues/1030
+		}
+	}
+}

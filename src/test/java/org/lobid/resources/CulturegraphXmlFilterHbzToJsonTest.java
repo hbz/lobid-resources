@@ -49,9 +49,9 @@ public final class CulturegraphXmlFilterHbzToJsonTest {
 
 	private static final String PATH_TO_TEST = "src/test/resources/";
 	public static final String JSON_OUTPUT_FILE =
-			PATH_TO_TEST + "jsonld-cg/bulk.ndjson";
+			PATH_TO_TEST + "cg/output-es-bulk.ndjson";
 
-	private static final String XML_INPUT_FILE = "aggregate_20240507_example.marcxml";
+	private static final String XML_INPUT_FILE = "cg/aggregate_20240507_example.marcxml";
 	private static PluginConfigurableNode node;
 	private static Client client;
 	private static final int ELASTICSEARCH_HTTP_PORT = 19200;
