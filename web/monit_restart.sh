@@ -34,6 +34,7 @@ ETL_TOKEN=$(cat scripts/.secrets/ETL_TOKEN)
 
 case $ACTION in
   start)
+       cd ..; mvn clean install -DskipTests=true; cd -
        if [ -f target/universal/stage/RUNNING_PID ]; then
           kill $(cat target/universal/stage/RUNNING_PID)
           rm target/universal/stage/RUNNING_PID
