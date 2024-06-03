@@ -33,7 +33,7 @@ public final class CulturegraphXmlFilterHbzToJson {
 		final FileOpener opener = new FileOpener();
 		try {
 			opener.setReceiver(new XmlDecoder()).setReceiver(new MarcXmlHandler())
-					.setReceiver(new Metafix("src/main/resources/fix-cg-to-es.fix"))
+					.setReceiver(new Metafix("src/main/resources/rvk/cg-to-rvk-json.fix"))
 					.setReceiver(new JsonEncoder())
 					.setReceiver(new JsonToElasticsearchBulk(ELASTICSEARCH_INDEX_TYPE_NAME, ELASTICSEARCH_INDEX_NAME))
 					.setReceiver(new ObjectWriter<>(JSON_FILE));

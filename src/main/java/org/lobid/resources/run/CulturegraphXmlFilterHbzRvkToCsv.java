@@ -7,6 +7,8 @@ import java.io.IOException;
 
 import org.metafacture.biblio.marc21.MarcXmlHandler;
 import org.metafacture.csv.CsvEncoder;
+import org.metafacture.json.JsonDecoder;
+import org.metafacture.json.JsonEncoder;
 import org.metafacture.io.FileOpener;
 import org.metafacture.io.ObjectWriter;
 import org.metafacture.xml.XmlDecoder;
@@ -28,9 +30,13 @@ public final class CulturegraphXmlFilterHbzRvkToCsv {
 		if (args.length > 1) OUTPUT_FILE = args[1];
 
 		final FileOpener opener = new FileOpener();
+		JsonDecoder jsonDecoder = new JsonDecoder();
+		jsonDecoder.setRecordPath("records");
 		try {
 			opener.setReceiver(new XmlDecoder()).setReceiver(new MarcXmlHandler())
-					.setReceiver(new Metafix("src/main/resources/fix-cg-to-es.fix"))
+					.setReceiver(new Metafix("src/main/resources/rvk/cg-to-rvk-csv.fix"))
+					.setReceiver(new JsonEncoder())
+					.setReceiver(jsonDecoder)
 					.setReceiver(new CsvEncoder())
 					.setReceiver(new ObjectWriter<>(OUTPUT_FILE));
 		} catch (IOException e) {

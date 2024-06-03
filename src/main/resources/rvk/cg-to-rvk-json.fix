@@ -1,10 +1,3 @@
-do list(path: "035??", "var": "$i")
-    if any_match("$i.a", "^\\(DE-605\\)(.*)")
-        copy_field("$i.a","id")
-    end
-end
-replace_all("id","^\\(DE-605\\)(.*)","$1")
-
 set_array("rvk[]")
 
 do list(path: "084??", "var": "$i")
@@ -12,7 +5,15 @@ do list(path: "084??", "var": "$i")
         copy_field("$i.a","rvk[].$append")
     end
 end
-join_field("rvk[]",", ")
+
+set_array("id")
+do list(path: "035??", "var": "$i")
+    if any_match("$i.a", "^\\(DE-605\\)(.*)")
+        copy_field("$i.a","id.$append")
+    end
+end
+replace_all("id.*","^\\(DE-605\\)(.*)","$1")
+join_field("id",", ")
 
 retain("rvk[]","id")
 vacuum()
