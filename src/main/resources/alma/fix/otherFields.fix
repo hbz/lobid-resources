@@ -106,28 +106,7 @@ uniq("note[]")
 
 
 do list(path:"500  ","var":"$i")
-  if exists("$i.6")
-    copy_field("$i.6","$i.linkageTest")
-    do list(path:"880??","var":"$880")
-      if in ("$i.linkageTest","$880.linkageTest")
-        if in ("$880.@script.id","alternateGraphicRepresentation[].*.script.id")
-          do list(path:"alternateGraphicRepresentation[]","var":"$AGR")
-            if in ("$880.@script.id","$AGR.script.id")
-              unless exists("$AGR.record.note[]")
-                set_array("$AGR.record.note[]")
-              end
-              copy_field("$880.a","$AGR.record.note[].$append")
-            end
-          end
-        else
-          copy_field("$880.@script.id","alternateGraphicRepresentation[].$append.script.id")
-          copy_field("$880.@script.label","alternateGraphicRepresentation[].$last.script.label")
-          set_array("alternateGraphicRepresentation[].$last.record.note[]")
-          copy_field("$880.a","alternateGraphicRepresentation[].$last.record.note[].$append")
-        end
-      end
-    end
-  end
+  call_macro("alternateGraphicRepresationArrayOfStrings",targetArray:"note[]",variable:"$i")
 end
 
 

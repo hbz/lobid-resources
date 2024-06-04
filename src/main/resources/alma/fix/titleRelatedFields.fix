@@ -144,28 +144,7 @@ set_array("alternativeTitle[]")
 copy_field("246?[ 345678].a","alternativeTitle[].$append")
 
 do list(path:"246?[ 345678]","var":"$i")
-  if exists("$i.6")
-    copy_field("$i.6","$i.linkageTest")
-    do list(path:"880??","var":"$880")
-      if in ("$i.linkageTest","$880.linkageTest")
-        if in ("$880.@script.id","alternateGraphicRepresentation[].*.script.id")
-          do list(path:"alternateGraphicRepresentation[]","var":"$AGR")
-            if in ("$880.@script.id","$AGR.script.id")
-              unless exists("$AGR.record.alternativeTitle[]")
-                set_array("$AGR.record.alternativeTitle[]")
-              end
-              copy_field("$880.a","$AGR.record.alternativeTitle[].$append")
-            end
-          end
-        else
-          copy_field("$880.@script.id","alternateGraphicRepresentation[].$append.script.id")
-          copy_field("$880.@script.label","alternateGraphicRepresentation[].$last.script.label")
-          set_array("alternateGraphicRepresentation[].$last.record.alternativeTitle[]")
-          copy_field("$880.a","alternateGraphicRepresentation[].$last.record.alternativeTitle[].$append")
-        end
-      end
-    end
-  end
+  call_macro("alternateGraphicRepresationArrayOfStrings",targetArray:"alternativeTitle[]",variable:"$i")
 end
 
 
@@ -182,6 +161,13 @@ replace_all("alternativeTitle[].*","<<|>>","")
 
 set_array("otherTitleInformation[]")
 copy_field("245??.b","otherTitleInformation[].$append")
+
+
+# 249 beigefügtes Werk Subfield $a
+do list(path:"249  ","var":"$i")
+  copy_field("$i.a","otherTitleInformation[].$append")
+  call_macro("alternateGraphicRepresationArrayOfStrings",targetArray:"otherTitleInformation[]",variable:"$i")
+end
 unless any_match("otherTitleInformation[].*",".*\\.\\.\\.")
   replace_all("otherTitleInformation[].*","\\s?[./]\\s?$","")
 end
@@ -193,28 +179,8 @@ copy_field("250  .a","edition[].$append")
 replace_all("edition[].*","\\s?[./]\\s?$","")
 
 do list(path:"250  ","var":"$i")
-  if exists("$i.6")
-    copy_field("$i.6","$i.linkageTest")
-    do list(path:"880??","var":"$880")
-      if in ("$i.linkageTest","$880.linkageTest")
-        if in ("$880.@script.id","alternateGraphicRepresentation[].*.script.id")
-          do list(path:"alternateGraphicRepresentation[]","var":"$AGR")
-            if in ("$880.@script.id","$AGR.script.id")
-                unless exists("$AGR.record.edition[]")
-                  set_array("$AGR.record.edition[]")
-                end
-              copy_field("$880.a","$AGR.record.edition[].$append")
-            end
-          end
-        else
-          copy_field("$880.@script.id","alternateGraphicRepresentation[].$append.script.id")
-          copy_field("$880.@script.label","alternateGraphicRepresentation[].$last.script.label")
-          set_array("alternateGraphicRepresentation[].$last.record.edition[]")
-          copy_field("$880.a","alternateGraphicRepresentation[].$last.record.edition[].$append")
-        end
-      end
-    end
-  end
+  call_macro("alternateGraphicRepresationArrayOfStrings",targetArray:"edition[]",variable:"$i")
+
 end
 
 # 260 - Publication, Distribution, etc. (Imprint) (R) - Subfield: $a (R), $b (R), $c (R)

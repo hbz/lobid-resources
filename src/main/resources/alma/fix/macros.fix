@@ -24,6 +24,31 @@ do put_macro("alternateGraphicRepresationArrayOfObjects")
   end
 end
 
+do put_macro("alternateGraphicRepresationArrayOfStrings")
+  if exists("$[variable].6")
+    copy_field("$[variable].6","$[variable].linkageTest")
+    do list(path:"880??","var":"$880")
+      if in ("$[variable].linkageTest","$880.linkageTest")
+        if in ("$880.@script.id","alternateGraphicRepresentation[].*.script.id")
+          do list(path:"alternateGraphicRepresentation[]","var":"$AGR")
+            if in ("$880.@script.id","$AGR.script.id")
+              unless exists("$AGR.record.$[targetArray]")
+                set_array("$AGR.record.$[targetArray]")
+              end
+              copy_field("$880.a","$AGR.record.$[targetArray].$append")
+            end
+          end
+        else
+          copy_field("$880.@script.id","alternateGraphicRepresentation[].$append.script.id")
+          copy_field("$880.@script.label","alternateGraphicRepresentation[].$last.script.label")
+          set_array("alternateGraphicRepresentation[].$last.record.$[targetArray]")
+          copy_field("$880.a","alternateGraphicRepresentation[].$last.record.$[targetArray].$append")
+        end
+      end
+    end
+  end
+end
+
 do put_macro("alternateGraphicRepresationIsPartOf")
   if exists("$[variable].6")
     copy_field("$[variable].6","$[variable].linkageTest")
