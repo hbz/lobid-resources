@@ -125,6 +125,7 @@ public class AlmaMarcXmlFix2lobidJsonEs {
                 fixVariables.put("classification.tsv", "./maps/classification.tsv");
                 fixVariables.put("formangabe.tsv", "./maps/formangabe.tsv");
                 fixVariables.put("almaMmsId2rpbId", "../../../../../../lookup-tables/data/almaMmsId2rpbId.tsv");
+                fixVariables.put("rvk.csv", "../../../../../../lookup-tables/data/rvk.csv");
                 fixVariables.put("lobidOrganisationsMapping.tsv", "./maps/lobidOrganisationsMapping.tsv");
                 fixVariables.put("hbzowner2sigel.tsv", "./maps/hbzowner2sigel.tsv");
                 fixVariables.put("rpb2.ttl", "../../../../../../vocabs/rpb/rpb2.ttl");
