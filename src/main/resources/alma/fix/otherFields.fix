@@ -140,10 +140,10 @@ do list(path:"520[ 23] ", "var": "$i")
 end
 
 # 502 - Dissertation Note (R) Subfield: $a (R)
-# TODO: Get testdata.
 set_array("thesisInformation[]")
 do list(path:"502  ", "var": "$i")
   copy_field("$i.a", "thesisInformation[].$append")
+  paste("thesisInformation[].$append","$i.c","$i.b","$i.d","$i.o","$i.g", join_char:", ")
 end
 
 
