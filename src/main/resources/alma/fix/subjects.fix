@@ -330,12 +330,14 @@ end
 
 # RVK via Culturegraph
 
-copy_field("almaMmsId","rvkNotations")
-lookup("rvkNotations","rvk",delete:"true")
-if exists("rvkNotations")
-    set_array("subject[].$append.type[]","Concept")
-    add_field("subject[].$last.source.label","RVK")
-    copy_field("subject[].$last.notation","rvkNotations")
+copy_field("almaMmsId","@rvkNotations")
+lookup("@rvkNotations","rvk",delete:"true")
+split_field("@rvkNotations", ", ")
+do list(path: "@rvkNotations","var":"$i")
+  copy_field("$i","subject[].$append.notation")
+  set_array("subject[].$last.type[]","Concept")
+  add_field("subject[].$last.source.label","RVK (Regensburger Verbundklassifikation)")
+  add_field("subject[].$last.source.id","https://d-nb.info/gnd/4449787-8")
 end
 
 # 689 RSWK Schlagwortfolgen fka: Schlagwortketten 1 - 10 - no info on repeatability
