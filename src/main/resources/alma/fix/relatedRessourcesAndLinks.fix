@@ -392,6 +392,21 @@ if exists("@inNZ")
   add_field("inCollection[].$last.label", "hbz - Hochschulbibliothekszentrum des Landes Nordrhein-Westfalen, Netzwerkzone")
 end
 
+# digiBib hbz Vk
+
+if any_equal("MBD  .M", "49HBZ_NETWORK")
+  if any_match("POR  .A", ".*")
+    add_field("@inDigibibVK", "true")
+  else
+    add_field("@inDigibibVK", "true")
+  end
+end
+
+if exists("@inDigibibVK")
+  add_field("inCollection[].$append.id", "https://nrw.digibib.net/search/hbzvk/")
+  add_field("inCollection[].$last.label", "Digibib hbz Verbundkatalog")
+end
+
 # zdb
 
 if exists("zdbId")
