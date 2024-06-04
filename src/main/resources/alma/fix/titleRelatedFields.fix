@@ -166,6 +166,7 @@ copy_field("245??.b","otherTitleInformation[].$append")
 # 249 beigefügtes Werk Subfield $a
 do list(path:"249  ","var":"$i")
   copy_field("$i.a","otherTitleInformation[].$append")
+  call_macro("alternateGraphicRepresationArrayOfStrings",targetArray:"otherTitleInformation[]",variable:"$i")
 end
 unless any_match("otherTitleInformation[].*",".*\\.\\.\\.")
   replace_all("otherTitleInformation[].*","\\s?[./]\\s?$","")
