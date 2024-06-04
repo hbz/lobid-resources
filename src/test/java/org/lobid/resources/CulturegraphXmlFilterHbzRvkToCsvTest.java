@@ -26,7 +26,7 @@ public final class CulturegraphXmlFilterHbzRvkToCsvTest {
 
 	private static final String PATH_TO_TEST = "src/test/resources/";
 	public static final String OUTPUT_FILE =
-			PATH_TO_TEST + "cg/output.csv";
+			PATH_TO_TEST + "cg/rvk.csv";
 
 	private static final String XML_INPUT_FILE = "cg/aggregate_20240507_example.marcxml";
 
