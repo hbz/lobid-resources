@@ -162,22 +162,25 @@
                         "modifiedBy": {
                             "title": "Organization from which the record was last modified",
                             "type": "array",
-                            "properties": {
-                                "id": {
-                                    "title": "lobid-organisations URI",
-                                    "type": "string",
-                                    "format": "uri",
-                                    "pattern": "^http:\\/\\/lobid.org\\/organisations\\/\\D{1,4}-[A-Za-z0-9-:\\/]{1,11}"
+                            "items": {
+                                "properties": {
+                                    "id": {
+                                        "title": "lobid-organisations URI",
+                                        "type": "string",
+                                        "format": "uri",
+                                        "pattern": "^http:\\/\\/lobid.org\\/organisations\\/\\D{1,4}-[A-Za-z0-9-:\\/]{1,11}"
+                                    },
+                                    "label": {
+                                        "title": "label",
+                                        "type": "string"
+                                    }
                                 },
-                                "label": {
-                                    "title": "label",
-                                    "type": "string"
-                                }
-                            },
-                            "required": [
-                                "id",
-                                "label"
-                            ]
+                                "type": "object",
+                                "required": [
+                                    "id",
+                                    "label"
+                                ]
+                            }
                         }
                     },
                     "required": [
