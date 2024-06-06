@@ -332,7 +332,7 @@ end
 
 copy_field("almaMmsId","@rvkNotations")
 lookup("@rvkNotations","rvk",delete:"true")
-split_field("@rvkNotations", ", ")
+split_field("@rvkNotations", ",")
 do list(path: "@rvkNotations","var":"$i")
   copy_field("$i","subject[].$append.notation")
   set_array("subject[].$last.type[]","Concept")

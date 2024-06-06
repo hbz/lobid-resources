@@ -27,7 +27,7 @@ put_filemap("$[classification.tsv]","classificationCode2Label", sep_char:"\t",ke
 put_filemap("$[classification.tsv]","classificationCode2Uri", sep_char:"\t",key_column:"0",value_column:"2",expected_columns:"-1")
 
 # RVK via Culturegraph
-put_filemap("$[rvk.csv]","rvk", sep_char:",")
+put_filemap("$[rvk.tsv]","rvk", sep_char:"\t")
 
 # RPB SKOS Maps
 put_rdfmap("$[rpb2.ttl]", "rpb2", target: "skos:prefLabel", select_language: "de") # LBZ-Notationen aka rpb2 fka RPB-Sachgruppen und Zusätze
