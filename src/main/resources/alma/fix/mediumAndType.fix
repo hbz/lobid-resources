@@ -392,7 +392,7 @@ elsif any_match("006", "^[cdij](.{12}|.{13})[ab].*") # Pos00+13-14
   add_field("type[].$append","Biography")
 elsif any_match("006", "^[s](.{6}|.{7}|.{8}|.{9})h.*") # Pos00+07-10
   add_field("type[].$append","Biography")
-elsif any_match("natureOfContent[].*.label", ".*(Autobiographie|Autobiografie|Biographie|Biografie).*")
+elsif any_match("natureOfContent[].*.label", ".*(Autobiographie|Autobiografie|[Bb]iographie|[Bb]iografie).*")
   add_field("type[].$append","Biography")
 end
 
@@ -522,9 +522,9 @@ unless any_match("@300a_mainExtend", ".*(CD|Schallpl).*")
     add_field("type[].$append", "PublishedScore")
   elsif exists("ismn[].1")
     add_field("type[].$append", "PublishedScore")
-  elsif any_match("natureOfContent[].*.label", "Musikhandschrift")
+  elsif any_match("natureOfContent[].*.label", ".*(Musikhandschrift|[Pp]artitur|Klavierauszug|Stimme.*Musikalische Ausgabeform).*")
     add_field("type[].$append", "PublishedScore")
-  elsif any_match("@300a_mainExtend", ".*Partitur.*")
+  elsif any_match("@300a_mainExtend", ".*[Pp]artitur.*")
     add_field("type[].$append", "PublishedScore")
   end
 end
@@ -699,7 +699,7 @@ unless exists("zdbId")
             add_field("type[].$append","Book")
           elsif any_match("006", "^[at].*")
             add_field("type[].$append","Book")
-          elsif any_match("natureOfContent[].*.label", ".*(Adressbuch|Anthologie|Atlas|Auktionskatalog|Ausstellungskatalog|Backbuch|Bestimmungsbuch|Bildband|Bilderbuch|Drehbuch|Jugendbuch|Jugendsachbuch|Kinderbuch|Kindersachbuch|Kochbuch|Künstlerbuch|Lehrbuch|Lehrerhandbuch|Lesebuch|Liederbuch|Sachbilderbuch|Schulbuch|Tagebuch|Telefonbuch|[Ww]örterbuch).*")
+          elsif any_match("natureOfContent[].*.label", ".*(Adressbuch|Anthologie|Atlas|Auktionskatalog|Ausstellungskatalog|Backbuch|Bestimmungsbuch|Bildband|Bilderbuch|Drehbuch|Führer|Hörbuch|Jugendbuch|Jugendsachbuch|Kinderbuch|Kindersachbuch|Kommentar|Kochbuch|Künstlerbuch|Lehrbuch|Lehrerhandbuch|Lesebuch|Liederbuch|Ratgeber|Sachbilderbuch|Schulbuch|Tagebuch|Telefonbuch|[Ww]örterbuch|[Bbuch]).*")
             add_field("type[].$append", "Book")
           elsif any_match("090  .h", "[abcdefgh]")
             add_field("type[].$append","Book")
