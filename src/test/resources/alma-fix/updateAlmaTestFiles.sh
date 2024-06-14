@@ -28,6 +28,9 @@ function getAlmaXmlWriteFile() {
 	sed -i "1s/.*/$XML_HEAD/" $resourceId.xml.tmp
 	xmllint $resourceId.xml.tmp > $resourceId.xml
 	rm *.tmp
+  if [ ! -s "$resourceId.xml" ]; then
+  echo "ALMA XML for $resourceId is not available anymore" ; rm "$resourceId.xml" ; rm "$resourceId.json"
+  fi
 }
 
 case $1 in
