@@ -328,6 +328,18 @@ do list(path:"084??", "var":"$i")
   end
 end
 
+# RVK via Culturegraph
+
+copy_field("almaMmsId","@rvkNotations")
+lookup("@rvkNotations","rvk",delete:"true")
+split_field("@rvkNotations", ",")
+do list(path: "@rvkNotations","var":"$i")
+  copy_field("$i","subject[].$append.notation")
+  set_array("subject[].$last.type[]","Concept")
+  add_field("subject[].$last.source.label","RVK (Regensburger Verbundklassifikation)")
+  add_field("subject[].$last.source.id","https://d-nb.info/gnd/4449787-8")
+end
+
 # 689 RSWK Schlagwortfolgen fka: Schlagwortketten 1 - 10 - no info on repeatability
 
 call_macro("schlagwortfolge", field: "6890?")

@@ -21,8 +21,8 @@ import org.metafacture.metafix.Metafix;
  * @author Pascal Christoph (dr0i)
  * @author Tobias Bülte (TobiasNx)
  **/
-public final class CulturegraphXmlFilterHbzRvkToCsv {
-	private static String OUTPUT_FILE="cg-concordance.csv";
+public final class CulturegraphXmlFilterHbzRvkToTsv {
+	private static String OUTPUT_FILE="rvk.tsv";
 
 	public static void main(String... args) {
 		String XML_INPUT_FILE = new File(args[0]).getAbsolutePath();
@@ -32,12 +32,16 @@ public final class CulturegraphXmlFilterHbzRvkToCsv {
 		final FileOpener opener = new FileOpener();
 		JsonDecoder jsonDecoder = new JsonDecoder();
 		jsonDecoder.setRecordPath("records");
+		CsvEncoder csvEncoder = new CsvEncoder();
+		csvEncoder.setSeparator("\t");
+		csvEncoder.setNoQuotes(true);
+
 		try {
 			opener.setReceiver(new XmlDecoder()).setReceiver(new MarcXmlHandler())
-					.setReceiver(new Metafix("src/main/resources/rvk/cg-to-rvk-csv.fix"))
+					.setReceiver(new Metafix("src/main/resources/rvk/cg-to-rvk-tsv.fix"))
 					.setReceiver(new JsonEncoder())
 					.setReceiver(jsonDecoder)
-					.setReceiver(new CsvEncoder())
+					.setReceiver(csvEncoder)
 					.setReceiver(new ObjectWriter<>(OUTPUT_FILE));
 		} catch (IOException e) {
 			e.printStackTrace();

@@ -13,7 +13,7 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({
     TestGenerateContext.class,
     org.lobid.resources.AlmaMarc21XmlToLobidJsonMetafixTest.class,
-    org.lobid.resources.CulturegraphXmlFilterHbzRvkToCsvTest.class,
+    org.lobid.resources.CulturegraphXmlFilterHbzRvkToTsvTest.class,
     org.lobid.resources.CulturegraphXmlFilterHbzToJsonTest.class})
 
 public final class UnitTests {
