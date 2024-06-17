@@ -359,6 +359,11 @@ lookup("subject[].*.componentList[].*.type[].*","rswk-indicator")
 
 do list (path: "subject[]", "var": "$i")
   do list(path: "$i.componentList[]", "var": "$j")
+    if any_match("$j.label",".+") # Due to special cataloguing there can be empty label-properties. That are cleaned up at the end. These need to be skipped.
+      unless exists("$j.type[].1")
+        set_array("$j.type[]","SubjectHeading") # type: SubjectHeading as Fallback.
+      end
+    end
     if any_match("$j.dateOfBirthAndDeath", "^([012][0-9]{3})-.*")
       copy_field("$j.dateOfBirthAndDeath","$j.dateOfBirth")
       replace_all("$j.dateOfBirth", "^([012][0-9]{3})-.*","$1")
