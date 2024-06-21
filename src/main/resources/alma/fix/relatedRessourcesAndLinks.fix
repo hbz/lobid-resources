@@ -28,11 +28,11 @@ do list(path: "dnbId", "var": "$i")
   add_field("sameAs[].$last.label","DNB-Ressource")
 end
 
-# rpb TODO: Add this if RPB is productive with the correct URL.
-# do list(path: "rpbId", "var": "$i")
-#   paste("sameAs[].$append.id","~http://rpb.lobid.org/RPB-", "$i", "~#!",join_char:"")
-#   add_field("sameAs[].$last.label","RPB-Ressource")
-# end
+# rpb
+do list(path: "rpbId", "var": "$i")
+  paste("sameAs[].$append.id","~https://rpb.lbz-rlp.de/", "$i",join_char:"")
+  add_field("sameAs[].$last.label","RPB-Ressource")
+end
 
 # nwbib, see below inCollection nwbib
 
