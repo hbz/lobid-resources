@@ -78,6 +78,10 @@ unless any_match("leader", "^.{7}[ad].*")
         set_hash( "isPartOf[].$last.hasSuperordinate[].$append")
         if all_match("$j", "^\\((?:DE-600|DE-605)\\)(.*)$")
           copy_field("$j", "isPartOf[].$last.hasSuperordinate[].$last.id")
+         
+        else
+          retain("almaMmsId")
+          print_record(destination: "almaMMSIDs_with_erroneous773_w.txt")
         end
         copy_field("$i.t", "isPartOf[].$last.hasSuperordinate[].$last.label")
         call_macro("alternateGraphicRepresationIsPartOf",variable:"$i")
