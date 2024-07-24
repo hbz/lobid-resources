@@ -18,9 +18,9 @@ end
 # 856 - Electronic Location and Access (R) - Subfield: $u (R) $3 (NR)
 # 1. Indicator: 4 = HTTP
 do list(path:"8564?", "var":"$i")
-  if all_match("$i.u", "^http[s]?:\\/\\/nbn-resolving.(de|org)\\/(.*)")
+  if all_match("$i.u", "^.*[/=]urn:nbn.*")
     copy_field("$i.u", "urn[].$append")
-    replace_all("urn[].$last", "^http[s]?:\\/\\/nbn-resolving.(de|org)\\/(.*)", "$2")
+    replace_all("urn[].$last", "(^http.+)(urn:.+$)", "$2")
   end
 end
 
