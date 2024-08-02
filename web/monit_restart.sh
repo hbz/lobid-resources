@@ -34,6 +34,7 @@ ETL_TOKEN=$(cat scripts/.secrets/ETL_TOKEN)
 
 case $ACTION in
   start)
+       cd ..; mvn clean install -DskipTests=true; cd -
        if [ -f target/universal/stage/RUNNING_PID ]; then
           kill $(cat target/universal/stage/RUNNING_PID)
           rm target/universal/stage/RUNNING_PID
@@ -42,7 +43,7 @@ case $ACTION in
        sbt clean
        sbt --java-home $JAVA_HOME stage
        ./target/universal/stage/bin/lobid-resources-web -Dhttp.port=$PORT -no-version-check > monit_start.log &
-       if [ -n "$DO_ETL_UPDATE" -a $(tail -n100 logs/etl.log  |grep -c "Finishing indexing of ES index 'resources-alma-fix'") -eq 0 ]; then
+       if [ -n "$DO_ETL_UPDATE" -a $(tail -n100 logs/etl.log  |grep -c "Finishing indexing of ES index 'resources-alma-fix") -eq 0 ]; then
           echo "Automatical updates-ETL triggered and last entries were not ok, thus starting ETL. Sleep 100s before starting ETL ..." >> monit_start.log
           sleep 100
           curl http://localhost:$PORT/resources/webhook/update-alma?token=$ETL_TOKEN

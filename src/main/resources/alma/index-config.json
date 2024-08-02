@@ -265,13 +265,15 @@
               "type": "text"
             },
             "issn": {
-              "type": "keyword",
+              "type": "text",
+              "analyzer": "hyphen_analyzer",
               "copy_to": [
                 "q.all"
               ]
             },
             "isbn": {
-              "type": "keyword",
+              "type": "text",
+              "analyzer": "hyphen_analyzer",
               "copy_to": [
                 "q.all"
               ]
@@ -492,6 +494,17 @@
             },
             "currentLibrary": {
               "type": "keyword"
+            },
+            "inCollection": {
+              "properties": {
+                "id": {
+                   "type": "keyword"
+                },
+                "label": {
+                  "type": "text",
+                  "index": false
+                }
+              }
             }
           }
         },

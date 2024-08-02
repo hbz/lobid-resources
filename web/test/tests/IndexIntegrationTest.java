@@ -33,7 +33,7 @@ public class IndexIntegrationTest extends LocalIndexSetup {
 	public static Collection<Object[]> data() {
 		// @formatter:off
 		return queries(new Object[][] {
-			{ "title:der", /*->*/ 16 },
+			{ "title:der", /*->*/ 18 },
 			{ "title:Westfalen", /*->*/ 8 },
 			{ "contribution.agent.label:Westfalen", /*->*/ 3 },
 			{ "contribution.agent.label:Westfälen", /*->*/ 3 },
@@ -57,7 +57,7 @@ public class IndexIntegrationTest extends LocalIndexSetup {
 			{ "spatial.label:Westfälen", /*->*/ 8 },
 			{ "subject.componentList.id:1113670827", /*->*/ 0 },
 			{ "subject.componentList.type:PlaceOrGeographicName", /*->*/ 22 },
-			{ "publication.location:Berlin", /*->*/ 14 },
+			{ "publication.location:Berlin", /*->*/ 16 },
 			{ "subject.notation:914.3", /*->*/ 6 },
 			{ "subject.notation:914", /*->*/ 0 },
 			{ "subject.notation:914*", /*->*/ 6 },
@@ -65,8 +65,9 @@ public class IndexIntegrationTest extends LocalIndexSetup {
 			{ "publication.location:Koln", /*->*/ 5 },
 			{ "publication.startDate:1993", /*->*/ 3 },
 			{ "publication.location:Berlin AND publication.startDate:1993", /*->*/ 1 },
-			{ "publication.location:Berlin AND publication.startDate:[1992 TO 2017]", /*->*/ 4 },
-			{ "inCollection.id:\"http\\://lobid.org/organisations/DE-655#\\!\"", /*->*/ 131 },
+			{ "publication.location:Berlin AND publication.startDate:[1992 TO 2017]", /*->*/ 5 },
+			{ "inCollection.id:\"http\\://lobid.org/organisations/DE-655#\\!\"", /*->*/ 133 },
+			{ "inCollection.id:\"https\\://nrw.digibib.net/search/hbzvk/\"", /*->*/ 150 },
 			{ "inCollection.id:NWBib", /*->*/ 0 },
 			{ "publication.publishedBy:Quedenfeldt", /*->*/ 2 },
 			{ "publication.publishedBy:Quedenfeld", /*->*/ 2 },
@@ -80,6 +81,10 @@ public class IndexIntegrationTest extends LocalIndexSetup {
 			{ "isbn:9780702075551", /*->*/ 1},
 			{ "isbn:070-2075-558", /*->*/ 1},
 			{ "isbn:0702075558", /*->*/ 1},
+			{ "related.issn:07206763", /*->*/ 1 },
+			{ "related.issn:0720\\-6763", /*->*/ 1 },
+			{ "issn:21914664", /*->*/ 1 },
+			{ "issn:2191\\-4664", /*->*/ 1 },
 			{ "\"Handbook on policy, process and governing\"", /*->*/ 1},
 			{ "(+Handbook +on +policy +process +and +governing)", /*->*/ 1},
 			{ "\"Mülheim an der Ruhr\"", /*->*/ 1},
@@ -87,10 +92,11 @@ public class IndexIntegrationTest extends LocalIndexSetup {
 			{ "\"Amtliche Publikation\"", /*->*/ 1},
 			{ "describedBy.resultOf.object.dateCreated:\"2023-03-22\"", /*->*/ 1},
 			{ "describedBy.resultOf.object.dateModified:\"2023-07-30\"", /*->*/ 3},
-			{ "describedBy.resultOf.object.sourceOrganization.id:\"http\\://lobid.org/organisations/DE-5#\\!\"", /*->*/ 4},
+			{ "describedBy.resultOf.object.sourceOrganization.id:\"http\\://lobid.org/organisations/DE-5#\\!\"", /*->*/ 5},
 			{ "describedBy.resultOf.object.modifiedBy.id:\"http\\://lobid.org/organisations/DE-6#\\!\"", /*->*/ 15 },
 			{ "\"Reader-friendly\"", /*->*/ 1},
 			{ "\"Reader friendly\"", /*->*/ 1},
+			// all q tests are related to DigiBib
 			{ "q.date:2000", /*->*/ 3 },
 			{ "q.publisher:Aachen", /*->*/ 2 },
 			{ "q.publisher:Aachen\\-Eilendorf", /*->*/ 1 },
@@ -115,9 +121,11 @@ public class IndexIntegrationTest extends LocalIndexSetup {
 			{ "q.all:(Courtillon cinema)", /*->*/ 1 },
 			{ "q.all:(Courtillon cinéma)", /*->*/ 1 },
 			{ "q.all:0702075558", /*->*/ 1 },
-			{ "q.all:07\\-0207\\-555\\-8", /*->*/ 1 },
-			{ "q.all:07206763", /*->*/ 0 },
-			{ "q.all:0720\\-6763", /*->*/ 1 },
+			{ "q.all:07\\-0207\\-555\\-8", /*->*/ 1 }, // search with hyphens possible due to digibib_standardnumber
+			{ "q.all:07206763", /*->*/ 1 },
+			{ "q.all:0720\\-6763", /*->*/ 0 }, // search with hyphens not possible, different to lobid general search
+			{ "q.all:21914664", /*->*/ 1 },
+			{ "q.all:2191\\-4664", /*->*/ 0 }, // search with hyphens not possible, different to lobid general search
 			{ "q.all:HT072067630", /*->*/ 0 },
 			{ "q.all:(Erleben \\- Verstehen & Lernen)", /*->*/ 3 },
 			{ "q.all:(Lexicography \\: Selected Papers)", /*->*/ 1 },
@@ -133,7 +141,8 @@ public class IndexIntegrationTest extends LocalIndexSetup {
 			{ "contribution.agent.altLabel.digibib:Nemack", /*->*/ 1 },
 			{ "contribution.agent.altLabel.digibib_unstemmed:Nemačke", /*->*/ 1 },
 			{ "contribution.agent.altLabel.digibib_unstemmed:Nemack", /*->*/ 0 },
-			{ "exampleOfWork.language.id:\"http\\://id.loc.gov/vocabulary/iso639-2/eng\"", /*->*/ 1 }
+			{ "exampleOfWork.language.id:\"http\\://id.loc.gov/vocabulary/iso639-2/eng\"", /*->*/ 1 },
+			{ "hasItem.inCollection.id:\"http://lobid.org/organisations/DE-468#!\"", /*->*/ 23 }
 		});
 	} // @formatter:on
 

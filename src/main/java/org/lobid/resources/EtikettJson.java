@@ -26,7 +26,7 @@ import de.hbz.lobid.helper.EtikettMaker;
 /**
  * Enriches a JSON document using Etikett. Thus every's object "id" will have a
  * "label". Optionally creates a JSON-LD context from the labels.
- * 
+ *
  * @author Pascal Christoph (dr0i)
  */
 @In(String.class)
@@ -76,32 +76,43 @@ public final class EtikettJson
 
   private String getEtikettForEveryUri(final Map<String, Object> jsonMap)
       throws IOException {
-    // don't label the root id
-    Object rootId = jsonMap.remove("id");
-    getAllJsonNodes(jsonMap);
-    jsonMap.put("id", rootId);
-
-    return pretty ? JsonUtils.toPrettyString(jsonMap)
-        : JsonUtils.toString(jsonMap);
+      // don't label the root id
+      Iterator<String> it = jsonMap.keySet().iterator();
+      while (it.hasNext()) {
+          String key = it.next();
+          getAllNodesRecursivelyAndLabelThemIfNecessary(jsonMap, key);
+      }
+      return pretty ? JsonUtils.toPrettyString(jsonMap)
+          : JsonUtils.toString(jsonMap);
   }
 
-  @SuppressWarnings({ "rawtypes", "unchecked" })
-  private Map<String, Object> getAllJsonNodes(Map<String, Object> jsonMap) {
+  private void getAllNodesRecursivelyAndLabelThemIfNecessary(Map<String, Object> jsonMap, String key) {
+      if (jsonMap.get(key) instanceof ArrayList) {
+          ((ArrayList) jsonMap.get(key))//
+              .stream().filter(e -> (e instanceof LinkedHashMap))
+              .forEach(e -> labelNodesWithKeyId((Map<String, Object>) e));
+      }
+      else if (jsonMap.get(key) instanceof LinkedHashMap) {
+          labelNodesWithKeyId((Map<String, Object>) jsonMap.get(key));
+      }
+  }
+
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+  private Map<String, Object> labelNodesWithKeyId(Map<String, Object> jsonMap) {
     Iterator<String> it = jsonMap.keySet().iterator();
     boolean hasLabel = false;
     String id = null;
     while (it.hasNext()) {
       String key = it.next();
-      if (key.equals("label"))
-        hasLabel = true;
-      else if (!hasLabel && key.equals("id"))
-        id = (String) jsonMap.get(key);
-      if (jsonMap.get(key) instanceof ArrayList)
-        ((ArrayList) jsonMap.get(key))//
-            .stream().filter(e -> (e instanceof LinkedHashMap))
-            .forEach(e -> getAllJsonNodes((Map<String, Object>) e));
-      else if (jsonMap.get(key) instanceof LinkedHashMap)
-        getAllJsonNodes((Map<String, Object>) jsonMap.get(key));
+      if (key.equals("label")) {
+          hasLabel = true;
+      }
+      else if (!hasLabel && key.equals("id")) {
+          id = (String) jsonMap.get(key);
+      }
+      else {
+          getAllNodesRecursivelyAndLabelThemIfNecessary(jsonMap, key);
+      }
     }
     if (id != null && !(hasLabel))
       jsonMap.put("label", etikettMaker.getEtikett(id).label);
@@ -111,9 +122,9 @@ public final class EtikettJson
   /**
    * Sets the name of the directory of the label(s). Will be used to create
    * jsonld-context.
-   * 
+   *
    * @param DIR_TO_LABELS the directory ehre the labels reside
-   * 
+   *
    */
   public void setLabelsDirectoryName(final String DIR_TO_LABELS) {
     this.labelsDirectoryName = DIR_TO_LABELS;
@@ -121,9 +132,9 @@ public final class EtikettJson
 
   /**
    * Sets the name of the file of the context that is generated from the labels.
-   * 
+   *
    * @param FILENAME_OF_CONTEXT the directory wehre the labels reside
-   * 
+   *
    */
   public void setFilenameOfContext(final String FILENAME_OF_CONTEXT) {
     contextFilenameLocation = FILENAME_OF_CONTEXT;
@@ -131,9 +142,9 @@ public final class EtikettJson
 
   /**
    * Generate the context from labels and store it.
-   * 
+   *
    * @param GENERATE_CONTEXT if true generate the context. Defaults to false.
-   * 
+   *
    */
   public void setGenerateContext(final boolean GENERATE_CONTEXT) {
     generateContext = GENERATE_CONTEXT;
@@ -141,9 +152,9 @@ public final class EtikettJson
 
   /**
    * Result pretty json or jsonl (json in one line). Defaults to jsonl.
-   * 
+   *
    * @param PRETTY if true pretty json is generated
-   * 
+   *
    */
   public void setPretty(final boolean PRETTY) {
     pretty = PRETTY;

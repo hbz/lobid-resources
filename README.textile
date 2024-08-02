@@ -104,7 +104,7 @@ This should result in *BUILD SUCCESS*. Push your changes.
 
 Check if the play tests work, e.g.:
 
-@sbt "test:testOnly *IntegrationTest"@
+@cd web; sbt "test:testOnly *IntegrationTest"@
 
 If that fails, check the tests. Most of the time the "fix" is to update the test
 as new data introduce more/less hits.
@@ -114,7 +114,9 @@ You're done :)
 
 h2. Tables as gitsubmodules
 
-Some lookup tables are provided through gitsubmodules. To make a @git pull@ also
+Some lookup tables are provided through gitsubmodules.
+To initialize the submodules do @git submodule update --init --remote@.
+ To make a @git pull@ also
 update these tables you can e.g. do @git config --local submodule.recurse true@ once and @git submodule update --recursive --remote@ after every @git pull@ ! This is necessary
 to be on the HEAD of the master of the submodules.
 

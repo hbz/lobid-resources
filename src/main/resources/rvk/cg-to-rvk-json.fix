@@ -1,0 +1,29 @@
+set_array("rvk[]")
+
+do list(path: "084??", "var": "$i")
+    if any_match("$i.2", "rvk")
+        copy_field("$i.a","rvk[].$append")
+    end
+end
+uniq("rvk[]")
+set_array("id")
+do list(path: "035??", "var": "$i")
+    if any_match("$i.a", "^\\(DE-605\\)(.*)")
+        copy_field("$i.a","id.$append")
+    end
+end
+replace_all("id.*","^\\(DE-605\\)(.*)","$1")
+join_field("id",", ")
+
+retain("rvk[]","id")
+vacuum()
+
+# Filter records without RVK
+unless exists("rvk[]")
+    reject()
+end
+
+# Filter records without hbz ids
+unless exists("id")
+    reject()
+end

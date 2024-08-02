@@ -1,9 +1,18 @@
 {
   "@context" : "http://lobid.org/resources/context.jsonld",
+  "id" : "http://lobid.org/resources/99371447897606441#!",
+  "type" : [ "BibliographicResource", "Book" ],
+  "medium" : [ {
+    "label" : "Datenträger",
+    "id" : "http://rdaregistry.info/termList/RDAMediaType/1003"
+  }, {
+    "label" : "Online-Ressource",
+    "id" : "http://rdaregistry.info/termList/RDACarrierType/1018"
+  } ],
+  "title" : "Wheater's Pathology",
   "almaMmsId" : "99371447897606441",
   "isbn" : [ "0702075558", "9780702075551" ],
   "oclcNumber" : [ "1091655034" ],
-  "title" : "Wheater's Pathology",
   "otherTitleInformation" : [ "A Text, Atlas and Review of Histopathology" ],
   "edition" : [ "Sixth Edition" ],
   "publication" : [ {
@@ -39,46 +48,46 @@
           "label" : "hbz_unioncatalog"
         },
         "sourceOrganization" : {
-          "id" : "http://lobid.org/organisations/DE-YDX#!",
+          "id" : "http://lobid.org/organisations/XX-YDX#!",
           "label" : "lobid Organisation"
         },
         "provider" : {
-          "id" : "http://lobid.org/organisations/DE-YDX#!",
+          "id" : "http://lobid.org/organisations/XX-YDX#!",
           "label" : "lobid Organisation"
         },
         "modifiedBy" : [ {
-          "id" : "http://lobid.org/organisations/DE-TMC#!",
+          "id" : "http://lobid.org/organisations/XX-TMC#!",
           "label" : "lobid Organisation"
         }, {
-          "id" : "http://lobid.org/organisations/DE-COU#!",
+          "id" : "http://lobid.org/organisations/XX-COU#!",
           "label" : "lobid Organisation"
         }, {
-          "id" : "http://lobid.org/organisations/DE-OCLCO#!",
+          "id" : "http://lobid.org/organisations/XX-OCLCO#!",
           "label" : "lobid Organisation"
         }, {
-          "id" : "http://lobid.org/organisations/DE-USU#!",
+          "id" : "http://lobid.org/organisations/XX-USU#!",
           "label" : "lobid Organisation"
         }, {
-          "id" : "http://lobid.org/organisations/DE-INM#!",
+          "id" : "http://lobid.org/organisations/XX-INM#!",
           "label" : "lobid Organisation"
         }, {
-          "id" : "http://lobid.org/organisations/DE-MMU#!",
+          "id" : "http://lobid.org/organisations/XX-MMU#!",
           "label" : "lobid Organisation"
         }, {
-          "id" : "http://lobid.org/organisations/DE-UAB#!",
+          "id" : "http://lobid.org/organisations/XX-UAB#!",
           "label" : "lobid Organisation"
         }, {
-          "id" : "http://lobid.org/organisations/DE-UKMGB#!",
+          "id" : "http://lobid.org/organisations/XX-UKMGB#!",
           "label" : "lobid Organisation"
         }, {
-          "id" : "http://lobid.org/organisations/DE-CASUM#!",
+          "id" : "http://lobid.org/organisations/XX-CASUM#!",
           "label" : "lobid Organisation"
         }, {
-          "id" : "http://lobid.org/organisations/DE-UIU#!",
+          "id" : "http://lobid.org/organisations/XX-UIU#!",
           "label" : "lobid Organisation"
         }, {
-          "id" : "http://lobid.org/organisations/DE-MiAaPQ#!",
-          "label" : "lobid Organisation"
+          "id" : "https://ebookcentral.proquest.com/",
+          "label" : "ebookcentral.proquest.com"
         } ]
       }
     },
@@ -88,6 +97,9 @@
     } ]
   },
   "sameAs" : [ {
+    "id" : "https://hub.culturegraph.org/resource/(DE-605)99371447897606441",
+    "label" : "Culturegraph Ressource"
+  }, {
     "id" : "http://worldcat.org/oclc/1091655034",
     "label" : "OCLC Ressource"
   } ],
@@ -99,6 +111,11 @@
   } ],
   "related" : [ {
     "isbn" : [ "9780702075599", "0702075590" ]
+  } ],
+  "inCollection" : [ {
+    "id" : "https://nrw.digibib.net/search/hbzvk/",
+    "label" : "DigiBib hbz Verbundkatalog",
+    "type" : [ "Collection" ]
   } ],
   "language" : [ {
     "id" : "http://id.loc.gov/vocabulary/iso639-2/eng",
@@ -148,6 +165,10 @@
       "label" : "Fachhochschule Südwestfalen, Fachbibliothek Hagen, Zentralbibliothek"
     },
     "seeAlso" : [ "https://kai.fh-swf.de/permalink/49HBZ_FSW/ou32r9/alma99371447897606441" ],
+    "inCollection" : [ {
+      "id" : "http://lobid.org/organisations/DE-Hag4#!",
+      "label" : "Fachhochschule Südwestfalen, Fachbibliothek Hagen, Zentralbibliothek"
+    } ],
     "id" : "http://lobid.org/items/99371447897606441:DE-Hag4:5395685400006461#!"
   }, {
     "type" : [ "Item", "DigitalDocument" ],
@@ -160,6 +181,10 @@
       "label" : "Hochschul- und Kreisbibliothek Bonn-Rhein-Sieg"
     },
     "seeAlso" : [ "https://bib-discover.bib.h-brs.de/discovery/search?query=any,contains,99371447897606441&tab=Everything&search_scope=1044_and_CI&vid=49HBZ_BRS:1044&offset=0" ],
+    "inCollection" : [ {
+      "id" : "http://lobid.org/organisations/DE-1044#!",
+      "label" : "Hochschul- und Kreisbibliothek Bonn-Rhein-Sieg"
+    } ],
     "id" : "http://lobid.org/items/99371447897606441:DE-1044:5353633400006452#!"
   }, {
     "type" : [ "Item", "DigitalDocument" ],
@@ -172,20 +197,16 @@
       "label" : "Universitätsbibliothek Trier"
     },
     "seeAlso" : [ "https://tricat.uni-trier.de/permalink/49HBZ_UBT/1hikhph/alma99371447897606441" ],
+    "inCollection" : [ {
+      "id" : "http://lobid.org/organisations/DE-385#!",
+      "label" : "Universitätsbibliothek Trier"
+    } ],
     "id" : "http://lobid.org/items/99371447897606441:DE-385:53322423530006470#!"
-  } ],
-  "medium" : [ {
-    "label" : "Datenträger",
-    "id" : "http://rdaregistry.info/termList/RDAMediaType/1003"
-  }, {
-    "label" : "Online-Ressource",
-    "id" : "http://rdaregistry.info/termList/RDACarrierType/1018"
   } ],
   "bibliographicLevel" : {
     "label" : "Monograph/Item",
     "id" : "https://www.loc.gov/marc/bibliographic/bdleader.html#Monograph_Item"
   },
-  "type" : [ "BibliographicResource", "Book" ],
   "responsibilityStatement" : [ "Geraldine O'Dowd, Sarah Bell, Sylvia Wright." ],
   "contribution" : [ {
     "agent" : {
@@ -217,6 +238,5 @@
       "label" : "Herausgeber/in"
     },
     "type" : [ "Contribution" ]
-  } ],
-  "id" : "http://lobid.org/resources/99371447897606441#!"
+  } ]
 }

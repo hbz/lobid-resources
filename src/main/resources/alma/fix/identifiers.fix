@@ -155,9 +155,11 @@ do list(path:"028??", "var":"$i")
   copy_field("$i.a", "stockNumber[].$append")
 end
 
-copy_field("zdbId","@hbzId")
-lookup("@hbzId","zdbId2oldHbzId",delete:"true")
-if exists("@hbzId")
-  paste("deprecatedUri", "~http://lobid.org/resources/", "@hbzId", "~#!", join_char: "")
+if exists("@inNZ")
+  copy_field("zdbId","@hbzId")
+  lookup("@hbzId","zdbId2oldHbzId",delete:"true")
+  if exists("@hbzId")
+    paste("deprecatedUri", "~http://lobid.org/resources/", "@hbzId", "~#!", join_char: "")
+  end
+  copy_field("@hbzId","hbzId")
 end
-copy_field("@hbzId","hbzId")

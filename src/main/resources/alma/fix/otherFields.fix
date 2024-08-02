@@ -23,21 +23,31 @@ prepend("language[].*.id", "http://id.loc.gov/vocabulary/iso639-2/")
 # We reuse the introx transformation here.
 
 set_array("@300a")
-copy_field("300  .a", "@300a.$append")
+set_array("@300c")
+do list(path: "300  ", "var": "$i")
+  copy_field("$i.a", "@300a.$append")
+  do list(path: "$i.b", "var": "$j")
+    replace_all("$j", "\\s?[:;+(]?$", "")
+    copy_field("$j", "@300b")
+  end
+  copy_field("$i.c", "@300c.$append")
+  do list(path: "$i.e", "var": "$j")
+    replace_all("$j", "[.]?\\s?\\(?$", "")
+    copy_field("$j", "@300e")
+  end
+end
 if exists("@300a.1")
   copy_field("@300a.1", "@300a1")
   replace_all("@300a1", "\\s?[:;+(]?$", "")
 end
 if exists("@300a.2")
   copy_field("@300a.2", "@300a2")
-  replace_all("@300a2", "\\s?[:;+)]?$", "")
+  replace_all("@300a2", "\\s?[:;+]?$", "")
 end
-do list(path: "300  .b", "var": "$i")
-  replace_all("$i", "\\s?[:;+(]?$", "")
-  copy_field("$i", "@300b")
+if exists("@300a.3")
+  copy_field("@300a.3", "@300a3")
+  replace_all("@300a3", "\\s?[:;+]?$", "")
 end
-set_array("@300c")
-copy_field("300  .c", "@300c.$append")
 if exists("@300c.1")
   copy_field("@300c.1", "@300c1")
   replace_all("@300c1", "[.]?\\s?[:;+(]?$", "")
@@ -46,16 +56,15 @@ if exists("@300c.2")
   copy_field("@300c.2", "@300c2")
   replace_all("@300c2", "[.]?\\s?[:;+)]?$", "")
 end
-do list(path: "300  .e", "var": "$i")
-  replace_all("$i", "[.]?\\s?\\(?$", "")
-  copy_field("$i", "@300e")
-end
 if exists("@300a2")
   if exists("@300c2")
-    paste("@300a2_punct", "@300a2", "~ ; ", join_char: "")
+    paste("@300a2_punct", "@300a2", "~) ; ", join_char: "")
   else
     paste("@300a2_punct", "@300a2", "~)", join_char: "")
   end
+if exists("@300a3")
+  paste("@300a2_punct", "@300a2_punct", "~, (","@300a3", "~)", join_char: "")
+end
 end
 if exists("@300b")
   if exists("@300a1")
@@ -84,6 +93,8 @@ if exists("300  .e")
   end
 end
 paste("extent", "@300a1", "@300b_punct", "@300c1_punct", "@300e_punct", "@300a2_punct", "@300c2_punct", join_char: "")
+replace_all("extent", "  ", " ")
+
 
 
 # 500 - General Note (R) Subfield: $a (NR)
@@ -95,28 +106,7 @@ uniq("note[]")
 
 
 do list(path:"500  ","var":"$i")
-  if exists("$i.6")
-    copy_field("$i.6","$i.linkageTest")
-    do list(path:"880??","var":"$880")
-      if in ("$i.linkageTest","$880.linkageTest")
-        if in ("$880.@script.id","alternateGraphicRepresentation[].*.script.id")
-          do list(path:"alternateGraphicRepresentation[]","var":"$AGR")
-            if in ("$880.@script.id","$AGR.script.id")
-              unless exists("$AGR.record.note[]")
-                set_array("$AGR.record.note[]")
-              end
-              copy_field("$880.a","$AGR.record.note[].$append")
-            end
-          end
-        else
-          copy_field("$880.@script.id","alternateGraphicRepresentation[].$append.script.id")
-          copy_field("$880.@script.label","alternateGraphicRepresentation[].$last.script.label")
-          set_array("alternateGraphicRepresentation[].$last.record.note[]")
-          copy_field("$880.a","alternateGraphicRepresentation[].$last.record.note[].$append")
-        end
-      end
-    end
-  end
+  call_macro("alternateGraphicRepresationArrayOfStrings",targetArray:"note[]",variable:"$i")
 end
 
 
@@ -129,10 +119,10 @@ do list(path:"520[ 23] ", "var": "$i")
 end
 
 # 502 - Dissertation Note (R) Subfield: $a (R)
-# TODO: Get testdata.
 set_array("thesisInformation[]")
 do list(path:"502  ", "var": "$i")
   copy_field("$i.a", "thesisInformation[].$append")
+  paste("thesisInformation[].$append","$i.c","$i.b","$i.d","$i.o","$i.g", join_char:", ")
 end
 
 
@@ -154,9 +144,6 @@ do list(path: "500??", "var":"$i")
 end
 
 unless exists("bibliographicCitation.1")
-  if exists("501??")
-    copy_field("501??.a","bibliographicCitation.$append")
-  else
     copy_field("77308.t","bibliographicCitation.$append")
     copy_field("77308.b","bibliographicCitation.$append")
     copy_field("77308.d","bibliographicCitation.$append")
@@ -166,7 +153,6 @@ unless exists("bibliographicCitation.1")
     do list(path:"77308.n", "var":"$i")
       copy_field("$i","bibliographicCitation.$append")
     end
-  end
 end
 
 

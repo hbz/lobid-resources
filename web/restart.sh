@@ -23,8 +23,6 @@ REPO=$1
 HOME="/home/sol"
 PID_FILE="target/universal/stage/RUNNING_PID"
 
-cd $HOME/git/$REPO/
-mvn clean install -DskipTests=true
 cd $HOME/git/$REPO/web
 
 if [ ! -f $PID_FILE ]; then

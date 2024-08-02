@@ -8,7 +8,7 @@ import play.api.http.MediaRange;
 
 /**
  * Helper class for dealing with content negotiation for the `Accept` header.
- * 
+ *
  * @author Fabian Steeg (fsteeg)
  *
  */
