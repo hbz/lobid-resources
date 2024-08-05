@@ -17,15 +17,18 @@ end
 # Sometimes urn are not set in 024 then we could pick up the missing from 856.
 # 856 - Electronic Location and Access (R) - Subfield: $u (R) $3 (NR)
 # 1. Indicator: 4 = HTTP
+set_array("@urnLinks")
+
 do list(path:"8564?", "var":"$i")
-  if all_match("$i.u", "^http.*[/=]urn:nbn.*")
+  if all_match("$i.u", "^http.*(urn=|[org|de]/)(urn:.+$)") # This should ignore repository links like: https://sammlungen.ulb.uni-muenster.de/urn/urn:nbn:de:hbz:6-85659520092
     copy_field("$i.u", "urn[].$append")
-    replace_all("urn[].$last", "(^http.+)(urn:.+$)", "$2")
+    copy_field("$i.u", "@urnLinks.$append")
+    replace_all("urn[].$last", "^http.*[/=](urn:.+$)", "$1")
   end
 end
 
 replace_all("urn[].*","^(nbn:de:.*\\d)$","urn:$1")
-
+uniq("@urnLinks")
 uniq("urn[]")
 
 # 035 - System Control Number (R) - Subfield: $a (NR)
