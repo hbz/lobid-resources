@@ -271,7 +271,7 @@ set_array("fulltextOnline[]")
 
 do list(path: "8564?", "var":"$i")
   if exists("$i.u")
-    unless any_match("$i.u",".*(doi.org|nbn-resolving).*")
+    unless any_match("$i.u",".*(doi.org|urn=urn:|(org|de)/urn:).*") # This should not skip repository links like: https://sammlungen.ulb.uni-muenster.de/urn/urn:nbn:de:hbz:6-85659520092
       if all_equal("$i.z", "kostenfrei") # kostenfrei, added Digitalisierung not only Verlag or Agentur as filter
           if all_match("$i.x", "Verlag|Agentur|Digitalisierung")
             copy_field("$i.x", "fulltextOnline[].$append.label")
@@ -301,12 +301,21 @@ end
 
 # urn for fullTextOnline and sameAs
 
-do list(path:"urn[]","var":"$i")
+do list(path:"@urnLinks","var":"$i")
   copy_field("$i", "fulltextOnline[].$append.id")
-  prepend("fulltextOnline[].$last.id","https://nbn-resolving.org/")
   copy_field("fulltextOnline[].$last.id", "sameAs[].$append.id")
   add_field("fulltextOnline[].$last.label", "URN-Link")
 end
+
+if is_empty("@urnLinks")
+  do list(path:"urn[]","var":"$i")
+    copy_field("$i", "fulltextOnline[].$append.id")
+    prepend("fulltextOnline[].$last.id","https://nbn-resolving.org/")
+    copy_field("fulltextOnline[].$last.id", "sameAs[].$append.id")
+    add_field("fulltextOnline[].$last.label", "URN-Link")
+  end
+end
+
 
 # TODO: hasVersion is outcommented since it needs some remodelling
 # See https://github.com/hbz/lobid-resources/issues/1242
