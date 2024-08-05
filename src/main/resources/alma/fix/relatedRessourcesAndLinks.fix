@@ -303,7 +303,7 @@ end
 
 do list(path:"urn[]","var":"$i")
   copy_field("$i", "fulltextOnline[].$append.id")
-  prepend("fulltextOnline[].$last.id","https://nbn-resolving.de/")
+  prepend("fulltextOnline[].$last.id","https://nbn-resolving.org/")
   copy_field("fulltextOnline[].$last.id", "sameAs[].$append.id")
   add_field("fulltextOnline[].$last.label", "URN-Link")
 end
