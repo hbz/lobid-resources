@@ -2,7 +2,7 @@
     "$id": "spatial.json",
     "$schema": "http://json-schema.org/draft-07/schema#",
     "title": "Spatial",
-    "description": "Object for NWBib spatial classification",
+    "description": "Object for NWBib and RPB spatial classification",
     "type": "array",
     "items": {
         "type": "object",
@@ -30,7 +30,10 @@
                     "id": {
                         "type": "string",
                         "format": "uri",
-                        "const": "https://nwbib.de/spatial"
+                        "enum": [
+                          "https://nwbib.de/spatial",
+                          "https://rpb.lobid.org/spatial"
+                        ]
                     },
                     "label": {
                         "type": "string"
@@ -58,10 +61,12 @@
                         "type": "object",
                         "properties": {
                             "lat": {
-                                "type": "number"
+                                "type": "string",
+                                "pattern": "[\\d]*\\.[\\d]*"
                             },
                             "lon": {
-                                "type": "number"
+                                "type": "string",
+                                "pattern": "[\\d]*\\.[\\d]*"
                             }
                         }
                     }
