@@ -267,7 +267,7 @@ do list(path:"084??", "var":"$i")
   end
   unless any_contain("$i.0", "https://nwbib.de/") # filter out any nwbib concepts
     unless any_match("$i.a", "^rpbr.*") # filter out any RPB Spatial
-      unless any_match("$i.2", "ssgn|fid") # filter out any Sondersammelgebiete and Fachinformationsdienste
+      unless any_match("$i.2", "ssgn|fid|z") # filter out any Sondersammelgebiete and Fachinformationsdienste
         do list(path:"$i.a", "var":"$j")
           copy_field("$j", "subject[].$append.notation")
           set_array("subject[].$last.type[]","Concept")
