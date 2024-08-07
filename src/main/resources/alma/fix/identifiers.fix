@@ -20,7 +20,7 @@ end
 set_array("@urnLinks")
 
 do list(path:"8564?", "var":"$i")
-  if all_match("$i.u", "^http.*(urn=|[org|de]/)(urn:.+$)") # This should ignore repository links like: https://sammlungen.ulb.uni-muenster.de/urn/urn:nbn:de:hbz:6-85659520092
+  if all_match("$i.u", "^http.*(urn=|\\.(org|de)/)urn:.+$") # This should ignore repository links like: https://sammlungen.ulb.uni-muenster.de/urn/urn:nbn:de:hbz:6-85659520092
     copy_field("$i.u", "urn[].$append")
     copy_field("$i.u", "@urnLinks.$append")
     replace_all("urn[].$last", "^http.*[/=](urn:.+$)", "$1")
