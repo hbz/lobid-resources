@@ -1,52 +1,80 @@
 {
-    "$id": "skosConcept.json",
-    "$schema": "http://json-schema.org/draft-07/schema#",
-    "title": "SKOS Concept",
-    "description": "A SKOS concept a dedicated controlled vocabulary (e.g. for NWBib, RPB, DDC).",
-    "type": "object",
-    "properties": {
+  "$id": "skosConcept.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "SKOS Concept",
+  "description": "A SKOS concept a dedicated controlled vocabulary (e.g. for NWBib, RPB, DDC).",
+  "type": "object",
+  "properties": {
+    "id": {
+      "title": "Concept URI",
+      "type": "string",
+      "format": "uri"
+    },
+    "type": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "const": "Concept"
+      }
+    },
+    "source": {
+      "title": "Source controlled vocabulary",
+      "type": "object",
+      "properties": {
         "id": {
-            "title": "Concept URI",
-            "type": "string",
-            "format": "uri"
-        },
-        "type": {
-            "type": "array",
-            "items": {
-                "type": "string",
-                "const": "Concept"
-            }
-        },
-        "source": {
-            "title": "Source controlled vocabulary",
-            "type": "object",
-            "properties": {
-                "id": {
-                    "title": "URI of the controlled vocabulary/concept scheme",
-                    "type": "string",
-                    "format": "uri"
-                },
-                "label": {
-                    "title": "German name of the concept scheme",
-                    "type": "string"
-                }
-            },
-            "required": [
-                "id",
-                "label"
-            ]
+          "title": "URI of the controlled vocabulary/concept scheme",
+          "type": "string",
+          "format": "uri"
         },
         "label": {
-            "title": "Preferred name of the concept",
-            "type": "string"
-        },
-        "notation": {
-            "title": "Notation for the concept",
-            "type": "string"
+          "title": "German name of the concept scheme",
+          "type": "string"
         }
+      },
+      "required": [
+        "id",
+        "label"
+      ]
     },
-    "required": [
+    "label": {
+      "title": "Preferred name of the concept",
+      "type": "string"
+    },
+    "notation": {
+      "title": "Notation for the concept",
+      "type": "string"
+    }
+  },
+  "required": [
+    "source"
+  ],
+  "anyOf": [
+    {
+      "description": "For SKOS Vocabularies with concept ids.",
+      "required": [
         "label",
-        "source"
-    ]
+        "id"
+      ]
+    },
+    {
+      "description": "For notation systems (notation no label)/uncontrolled keywords (label no notation) without concept ids.",
+      "not": {
+        "required": [
+          "id"
+        ]
+      },
+      "anyOf": [
+        {
+          "required": [
+            "notation"
+          ]
+        },
+        {
+          "required": [
+            "label"
+          ]
+        }
+      ]
+    }
+  ]
 }
