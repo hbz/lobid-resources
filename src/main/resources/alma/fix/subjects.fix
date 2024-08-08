@@ -316,6 +316,12 @@ do list(path:"084??", "var":"$i")
               add_field("subject[].$last.source.label","Systematik der DNB (bis 2003)")
               add_field("subject[].$last.source.id","https://bartoc.org/en/node/18497")
             end
+          # RVK notation & label
+          elsif any_match("$i.2", "rvk")
+            copy_field("$j","subject[].$last.label")
+            lookup("subject[].$last.label", "rvkLabels", delete:"true")
+            add_field("subject[].$last.source.label", "RVK (Regensburger Verbundklassifikation)")
+            add_field("subject[].$last.source.id", "https://d-nb.info/gnd/4449787-8")
           else
             copy_field("$i.2", "subject[].$last.source.label")
             lookup("subject[].$last.source.label","classificationCode2Label")
