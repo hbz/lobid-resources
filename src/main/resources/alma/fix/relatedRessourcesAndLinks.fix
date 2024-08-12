@@ -377,10 +377,21 @@ do list(path:"related[]", "var":"$i")
   replace_all("$i.issn[].*","-","")
 end
 
+
+
+do list(path: "50580", "var":"$i")
+  if any_match("$i.6","[A-Z]{2}\\d*")
+    set_hash("related[].$append")
+    paste("related[].$last.id","~http://lobid.org/resources/","$i.6","~#!",join_char:"")
+    copy_field("$i.t","related[].$last.label")
+    set_array("related[].$last.note[]")
+    copy_field("$i.g","related[].$last.note[].$append")
+  end
+end
+
 replace_all("related[].*.id", "^\\(DE-605\\)(.*)$", "http://lobid.org/resources/$1#!")
 replace_all("related[].*.id", "^\\(DE-600\\)(.*)$", "http://lobid.org/resources/ZDB-$1#!")
 replace_all("related[].*.label","<<|>>","")
-
 
 set_array("inCollection[]")
 
