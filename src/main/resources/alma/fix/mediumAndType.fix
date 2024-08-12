@@ -529,15 +529,18 @@ unless any_match("@300a_mainExtend", ".*(CD|Schallpl).*")
   end
 end
 
-# type: "Newspaper"
+# type: "Newspaper" are always Periodicals too
 
 
 if any_match("@leaderTyp+008", "(Continuing Resources)(.{21})n.*")  # Pos21
   add_field("type[].$append","Newspaper")
+  add_field("type[].$append","Periodical")
 elsif any_match("006", "^s(.{3})n.*") # Pos00+04
   add_field("type[].$append","Newspaper")
+  add_field("type[].$append","Periodical")
 elsif any_match("natureOfContent[].*.label", ".*Zeitung.*")
   add_field("type[].$append", "Newspaper")
+  add_field("type[].$append","Periodical")
 end
 
 # type: "Standard"
