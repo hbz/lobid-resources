@@ -405,9 +405,13 @@ end
 # TODO: HT018860300 should also be tagged as Biography but it seems that 008 has no info for Biografie and is not transformed properly.
 
 # type: "Database
-if any_match("natureOfContent[].*.label", ".*[Da]tenbank.*")
+if any_match("@leaderTyp+008", "(Continuing Resources)(.{21})d.*")  # Pos21 # d - Updating database
+  add_field("type[].$append","Database")
+elsif any_match("natureOfContent[].*.label", ".*[Da]tenbank.*")
   add_field("type[].$append", "Database")
 elsif any_equal("@PORtype","DATABASE")
+  add_field("type[].$append","Database")
+elsif any_match("090  .g", "a")
   add_field("type[].$append","Database")
 end
 
