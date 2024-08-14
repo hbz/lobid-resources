@@ -398,6 +398,11 @@ end
 
 # TODO: HT018860300 should also be tagged as Biography but it seems that 008 has no info for Biografie and is not transformed properly.
 
+# type: "Database
+if any_match("natureOfContent[].*.label", ".*[Da]tenbank.*")
+  add_field("type[].$append", "Database")
+end
+
 # type: "EditedVolume"
 
 if any_match("natureOfContent[].*.label", ".*Aufsatzsammlung.*")
