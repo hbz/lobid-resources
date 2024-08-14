@@ -37,6 +37,16 @@ jobs:
       run: |
         mvn install
         mvn editorconfig:check
+    - name: Setup NodeJS
+      uses: actions/setup-node@v1
+      with:
+        node-version: 12.x
+    - name: Test json file s with ajv
+      run: |
+        npm install -g ajv-cli ajv-formats
+        cd src/test/resources/
+        bash validateJsonTestFiles.sh
+        cd -
     - name: Cache SBT
       uses: actions/cache@v3
       with:
