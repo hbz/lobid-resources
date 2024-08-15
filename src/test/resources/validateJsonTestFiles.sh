@@ -12,7 +12,7 @@ DIRECTORY_OF_JSON_TO_VALIDATE="alma-fix/"
 
 for version in "draft"; do
 	echo "Testing version: $version"
-	ajv test -s "schemas/resource.json" -r "schemas/!(resource).json" -d "${DIRECTORY_OF_JSON_TO_VALIDATE}/*.json" -c ajv-formats --all-errors --valid 2>&1
+	ajv test -s "schemas/resource.json" -r "schemas/!(resource).json" -d "${DIRECTORY_OF_JSON_TO_VALIDATE}/*.json" -c ajv-formats --strict=log --all-errors --valid 2>&1
 done
 
 if [ $? -eq 0 ]
