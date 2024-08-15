@@ -20,4 +20,5 @@ then
 	echo -e "All tests \033[0;32mPASSED\033[0m\n"
 	else
 		echo -e "Test \033[0;31mFAILED\033[0m\n"
+    exit 1
 fi
