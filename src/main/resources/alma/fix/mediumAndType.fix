@@ -413,6 +413,12 @@ elsif any_equal("@PORtype","DATABASE")
   add_field("type[].$append","Database")
 elsif any_match("090  .g", "a")
   add_field("type[].$append","Database")
+else
+  do list(path: "856??", "var": "$i")
+    if any_equal("$i.x", "DBIS")
+      add_field("type[].$append","Database")
+    end
+  end
 end
 
 # type: "EditedVolume"
