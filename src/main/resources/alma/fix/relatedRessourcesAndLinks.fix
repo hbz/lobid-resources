@@ -38,7 +38,7 @@ end
 do list(path: "8564?", "var":"$i")
   if exists("$i.u")
     if all_match("$i.x", ".*DBIS.*")
-      copy_field("$i.u", "sameAs[].$last.id")
+      copy_field("$i.u", "sameAs[].$append.id")
       add_field("sameAs[].$last.label","DBIS-Ressource")
       add_field("@dbis","DBIS-Ressource")
     end
