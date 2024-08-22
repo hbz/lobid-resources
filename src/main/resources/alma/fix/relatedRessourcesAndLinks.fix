@@ -34,6 +34,18 @@ do list(path: "rpbId", "var": "$i")
   add_field("sameAs[].$last.label","RPB-Ressource")
 end
 
+# DBIS
+do list(path: "8564?", "var":"$i")
+  if exists("$i.u")
+    if all_match("$i.x", ".*DBIS.*")
+      copy_field("$i.u", "sameAs[].$append.id")
+      add_field("sameAs[].$last.label","DBIS-Ressource")
+      add_field("@dbis","DBIS-Ressource")
+    end
+  end
+end
+
+
 # nwbib, see below inCollection nwbib
 
 
@@ -512,6 +524,12 @@ do list(path:"084??", "var":"$i")
   end
 end
 
+
+# DBIS
+if exists("@dbis")
+    add_field("inCollection[].$append.id", "https://dbis.ur.de/")
+    add_field("inCollection[].$last.label", "Datenbank-Infosystem (DBIS)")
+end
 
 
 #    eResource package
