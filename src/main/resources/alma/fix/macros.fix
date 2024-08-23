@@ -222,6 +222,9 @@ do put_macro("gndOtherCombinedLabel")
   if exists("$[field].c")
     paste("$[field].@combinedLabel", "$[field].@combinedLabel", "~, ", "$[field].c", join_char:"")
   end
+  if exists("$[field].f")
+    paste("$[field].@combinedLabel", "$[field].@combinedLabel", "~ (", "$[field].f", "~)", join_char:"")
+  end
   if exists("$[field].g")
     paste("$[field].@combinedLabel", "$[field].@combinedLabel", "~ (", "$[field].g", "~)", join_char:"")
   end
