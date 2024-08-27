@@ -22,7 +22,7 @@ import org.metafacture.metafix.Metafix;
  * @author Tobias Bülte (TobiasNx)
  **/
 public final class CulturegraphXmlFilterHbzRvkToTsv {
-	private static String OUTPUT_FILE="rvk.tsv";
+	private static String OUTPUT_FILE="lookup-tables/data/rvk.tsv";
 
 	public static void main(String... args) {
 		String XML_INPUT_FILE = new File(args[0]).getAbsolutePath();
