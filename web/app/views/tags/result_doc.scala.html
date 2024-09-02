@@ -188,8 +188,8 @@
   @for(pub <- sortedPublications((doc\"publication").asOpt[Seq[JsValue]].getOrElse(Seq()))){ @publication(pub) }
 
   @result_field("Auflage", "edition", doc, TableRow.VALUES)
-  @result_field("ISBN", "isbn", doc, TableRow.VALUES)
-  @result_field("ISSN", "issn", doc, TableRow.VALUES)
+  @result_field("ISBN", "isbn", doc, TableRow.VALUES, node = Option(doc))
+  @result_field("ISSN", "issn", doc, TableRow.VALUES, node = Option(doc))
   @withPrefixedLink("DOI", "https://dx.doi.org/", doc \ "doi")
   @withPrefixedLink("URN", "https://nbn-resolving.org/", doc \ "urn")
   @result_field("Umfang", "extent", doc, TableRow.VALUES)
