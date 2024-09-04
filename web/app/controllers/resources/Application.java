@@ -394,7 +394,7 @@ public class Application extends Controller {
 								: typeText));
 			});
 		});
-		return Json.toJson(suggestions.collect(Collectors.toSet()));
+		return Json.toJson(suggestions.collect(Collectors.toList()));
 	}
 
 	private static Stream<JsonNode> fieldValues(String field, JsonNode document) {
