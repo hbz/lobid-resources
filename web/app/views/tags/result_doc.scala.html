@@ -91,8 +91,11 @@
   }}}
 }
 
-@lobidUrl(doc: JsValue) = @{
-  "http://lobid.org/resources/" + (doc\"almaMmsId").asOpt[String].orElse((doc\"hbzId").asOpt[String]).orElse((doc\"rpbId").asOpt[String]).getOrElse("") + "#!"
+@lobidUrlWithHbzId(doc: JsValue) = @{
+    "http://lobid.org/resources/" + ((doc\"hbzId").asOpt[String]).getOrElse("") + "#!"
+}
+@lobidUrlWithZdbId(doc: JsValue) = @{
+    "http://lobid.org/resources/ZDB-" + (doc\"zdbId").asOpt[String].getOrElse("") + "#!"
 }
 
 @lobid2_part_of(field: String, subField: String) = {
@@ -197,9 +200,13 @@
   @result_field("In", "containedIn", doc, TableRow.LINKS)
 
   @lobid2_part_of("isPartOf", "hasSuperordinate")
-  @defining(lobidUrl(doc)){ id =>
-   @subordinated("isPartOf.hasSuperordinate.id", id, "Bände", ("zugehöriger Band", "zugehörige Bände"))
-   @subordinated("containedIn.id", id, "Enthält", ("Beitrag", "Beiträge"))
+  @defining(lobidUrlWithZdbId(doc)){ id =>
+    @subordinated("isPartOf.hasSuperordinate.id", id, "Bände", ("zugehöriger Band", "zugehörige Bände"))
+    @subordinated("containedIn.id", id, "Enthält", ("Beitrag", "Beiträge"))
+  }
+  @defining(lobidUrlWithHbzId(doc)){ id =>
+    @subordinated("isPartOf.hasSuperordinate.id", id, "Bände", ("zugehöriger Band", "zugehörige Bände"))
+    @subordinated("containedIn.id", id, "Enthält", ("Beitrag", "Beiträge"))
   }
 
 
