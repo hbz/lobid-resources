@@ -72,7 +72,7 @@ public final class AlmaMarc21XmlToLobidJsonMetafixTest {
         fixVariables.put("rvk.tsv", "src/test/resources/cg/rvk.tsv");
         fixVariables.put("lobidOrganisationsMapping.tsv", "src/test/resources/alma/maps/lobidOrganisationsMapping.tsv");
         fixVariables.put("hbzowner2sigel.tsv", "src/main/resources/alma/maps/hbzowner2sigel.tsv");
-        fixVariables.put("rpb2.ttl", "src/test/resources/alma/maps/rpb2.ttl");
+        fixVariables.put("lbz-notationen.ttl", "src/test/resources/alma/maps/lbz-notationen.ttl");
         fixVariables.put("rpb-spatial.ttl", "src/test/resources/alma/maps/rpb-spatial.ttl");
         fixVariables.put("rpb.ttl", "src/test/resources/alma/maps/rpb.ttl");
         fixVariables.put("nwbib.ttl", "src/test/resources/alma/maps/nwbib.ttl");
