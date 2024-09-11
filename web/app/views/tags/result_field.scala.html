@@ -6,9 +6,10 @@
 @import java.util.Optional
 @import controllers.resources.Lobid
 
-@jsonVal(p: String) = @{ node match {
-  case Some(node) => node
-  case None => if ((doc \\ p).isEmpty) (doc \ p) else (doc \\ p).head
+@jsonVal(p: String) = @{
+	node match {
+		case Some(node) => (node \ p).asOpt[JsValue].getOrElse(node \ p)
+		case None => if ((doc \\ p).isEmpty) (doc \ p) else (doc \\ p).head
 	}
 }
 
