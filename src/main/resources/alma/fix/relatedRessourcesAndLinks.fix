@@ -35,7 +35,7 @@ do list(path: "rpbId", "var": "$i")
 end
 
 # DBIS
-do list(path: "8564?", "var":"$i")
+do list(path: "856??", "var":"$i")
   if exists("$i.u")
     if all_match("$i.x", ".*DBIS.*")
       copy_field("$i.u", "sameAs[].$append.id")
@@ -254,7 +254,7 @@ replace_all("secondaryForm[].*.id", "^\\(DE-600\\)(.*)$", "http://lobid.org/reso
 
 set_array("tableOfContents[]")
 
-do list(path: "8564?", "var":"$i")
+do list(path: "856??", "var":"$i")
   if all_match("$i.3", "^[Ii][Nn][Hh][aA][lL][tT][sS][vV].*") # Inhaltsverzeichnis
     copy_field("$i.3", "tableOfContents[].$append.label")
     copy_field("$i.u", "tableOfContents[].$last.id")
@@ -263,7 +263,7 @@ end
 
 set_array("description[]")
 
-do list(path: "8564?", "var":"$i")
+do list(path: "856??", "var":"$i")
   if all_match("$i.3", "^[Ii][Nn][Hh][aA][lL][tT][sS][tT].*") # Inhaltstext
     copy_field("$i.3", "description[].$append.label")
     copy_field("$i.u", "description[].$last.id")
@@ -272,7 +272,7 @@ end
 
 set_array("seeAlso[]")
 
-do list(path: "8564?", "var":"$i")
+do list(path: "856??", "var":"$i")
   if all_match("$i.3", "^[zZ][uU][sS].*") # Zusätzliche Angaben
     copy_field("$i.3", "seeAlso[].$append.label")
     copy_field("$i.u", "seeAlso[].$last.id")
@@ -281,7 +281,7 @@ end
 
 set_array("fulltextOnline[]")
 
-do list(path: "8564?", "var":"$i")
+do list(path: "856??", "var":"$i")
   if exists("$i.u")
     unless any_match("$i.u",".*(doi.org|urn=urn:|\\.(org|de)/urn:).*") # This should not skip repository links like: https://sammlungen.ulb.uni-muenster.de/urn/urn:nbn:de:hbz:6-85659520092
       if all_equal("$i.z", "kostenfrei") # kostenfrei, added Digitalisierung not only Verlag or Agentur as filter
@@ -439,7 +439,7 @@ end
 
 # 856 - Electronic Location and Access (R) - Subfield: $x - Nonpublic note (R)
 # TODO: Check if src/test/resources/alma-fix/(CKB)5280000000199164.xml is also an EZB titel even when it has no 865.
-do list(path:"8564?", "var":"$i")
+do list(path:"856??", "var":"$i")
   if any_equal("$i.x","EZB") # can test x and x.*
     add_field("inCollection[].$append.id", "http://lobid.org/resources/HT016356466#!")
     add_field("inCollection[].$last.label", "Elektronische Zeitschriftenbibliothek (EZB)")
@@ -452,7 +452,7 @@ end
 
 # edoweb
 
-do list(path:"8564?", "var":"$i")
+do list(path:"856??", "var":"$i")
   if any_match("$i.u","^.*edoweb.*") # can test x and x.*
     add_field("inCollection[].$append.id", "http://lobid.org/resources/HT016925914#!")
     add_field("inCollection[].$last.label", "Edoweb Rheinland-Pfalz")
@@ -463,7 +463,7 @@ end
 
 
 # TODO: AlephMorph checked for ellinet in "078r1.a" but publisso is also stated in the Link URI is that enough?
-do list(path:"8564?", "var":"$i")
+do list(path:"856??", "var":"$i")
   if any_match("$i.u","^.*publisso.*") # can test x and x.*
     add_field("inCollection[].$append.id", "http://repository.publisso.de")
     add_field("inCollection[].$last.label", "Fachrepositorium Lebenswissenschaften")
