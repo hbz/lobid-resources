@@ -14,6 +14,9 @@ do list(path:"@language", "var":"$i")
     if any_match("$i","[A-Za-z]{3}")
       copy_field("$i", "language[].$append.id")
       copy_field("$i", "language[].$last.label")
+    elsif any_match("$i","[dD]eutsch")
+      add_field("language[].$append.id","ger")
+      add_field("language[].$last.label","ger")
     end
   end
 end
