@@ -6,18 +6,22 @@ substring("@008-lang", "35", "3")
 copy_field("@008-lang", "@language.$append")
 copy_field("041[ 01] .[adj]", "@language.$append")
 
-uniq("@language")
+flatten("@language")
 
 set_array("language[]")
 do list(path:"@language", "var":"$i")
   unless any_match("$i","zxx|mul|sgn|und|.*[\\|\\#].*|\\s*")
-    copy_field("$i", "language[].$append.id")
-    copy_field("$i", "language[].$last.label")
+    if any_match("$i","[A-Za-z]{3}")
+      copy_field("$i", "language[].$append.id")
+      copy_field("$i", "language[].$last.label")
+    end
   end
 end
 
 lookup("language[].*.label","ISO639-2-to-GND")
 prepend("language[].*.id", "http://id.loc.gov/vocabulary/iso639-2/")
+
+uniq("language[]")
 
 # 300 - Physical Description (R)
 # We reuse the introx transformation here.
