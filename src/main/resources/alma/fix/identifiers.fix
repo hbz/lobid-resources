@@ -19,7 +19,7 @@ end
 # 1. Indicator: 4 = HTTP
 set_array("@urnLinks")
 
-do list(path:"8564?", "var":"$i")
+do list(path:"856??", "var":"$i")
   if all_match("$i.u", "^http.*(urn=|\\.(org|de)/)urn:.+$") # This should ignore repository links like: https://sammlungen.ulb.uni-muenster.de/urn/urn:nbn:de:hbz:6-85659520092
     copy_field("$i.u", "urn[].$append")
     copy_field("$i.u", "@urnLinks.$append")
@@ -100,12 +100,12 @@ end
 # Sometimes dois are not set in 024 then we could pick up the missing from 856.
 # 856 - Electronic Location and Access (R) - Subfield: $u (R) $3 (NR)
 # 1. Indicator: 4 = HTTP
-do list(path:"8564?", "var":"$i")
+do list(path:"856??", "var":"$i")
   if all_match("$i.u", ".*doi.org.*(10\\.(\\d)+/(\\S)+).*") # Volltext
     copy_field("$i.u", "doi[].$append")
-    replace_all("doi[].$last", ".*doi.org.*(10\\.(\\d)+/(\\S)+).*", "$1")
   end
 end
+replace_all("doi[].*", ".*doi.org.*(10\\.(\\d)+/(\\S)+).*", "$1")
 uniq("doi[]")
 
 # 035 - System Control Number (R) - Subfield: $a (NR)
