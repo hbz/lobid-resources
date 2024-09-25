@@ -52,6 +52,13 @@ include ("./fix/mediumAndType.fix")
 # mediumAndType.fix is needed ahead of contribution.fix because of dependencies
 include ("./fix/contribution.fix")
 
+# Skip all records with only suppressed holdings/items/portfolios
+if exists("@suppressed")
+  unless exists("@unsuppressed")
+    reject()
+  end
+end
+
 vacuum()
 retain(
   "@context",
