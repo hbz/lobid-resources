@@ -1,27 +1,32 @@
 # 008 - Fixed-Length Data Elements-General Information (NR) - No subfields
+# 041 - 041 - Language Code (R)
 
 set_array("@language")
 copy_field("008", "@008-lang")
 substring("@008-lang", "35", "3")
-copy_field("@008-lang", "@language.$append")
-copy_field("041[ 01] .[adj]", "@language.$append")
+copy_field("@008-lang", "@language.$append.id")
+copy_field("@008-lang", "@language.$last.label")
+do list(path: "041[ 01] ","var":"$i")
+  copy_field("$i.[adj]", "@language.$append.id")
+  copy_field("$i.[adj]", "@language.$last.label")
+end
 
-flatten("@language")
+lookup("@language.*.label","ISO639-2-to-GND", delete:"true")
 
 set_array("language[]")
 do list(path:"@language", "var":"$i")
-  unless any_match("$i","zxx|mul|sgn|und|.*[\\|\\#].*|\\s*")
-    if any_match("$i","[A-Za-z]{3}")
-      copy_field("$i", "language[].$append.id")
-      copy_field("$i", "language[].$last.label")
-    elsif any_match("$i","[dD]eutsch")
+  unless any_match("$i.id","zxx|mul|sgn|und|.*[\\|\\#].*|\\s*")
+    if exists("$i.label")
+      copy_field("$i.id", "language[].$append.id")
+      copy_field("$i.label", "language[].$last.label")
+    elsif any_match("$i.id","[dD]eutsch")
       add_field("language[].$append.id","ger")
-      add_field("language[].$last.label","ger")
+      add_field("language[].$last.label","Deutsch")
     end
   end
 end
 
-lookup("language[].*.label","ISO639-2-to-GND")
+
 prepend("language[].*.id", "http://id.loc.gov/vocabulary/iso639-2/")
 
 uniq("language[]")
