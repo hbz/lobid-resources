@@ -330,6 +330,8 @@ end
 # opacLink
 
 do put_macro("opacLink")
+  # 1. Sets the opac link with help of lookup-tables mapping list based on ALMA-MMS-ID, ZDBID,HBZID,ISSN.
+  # 2. Chooses which opac-link to uses: Order: 1) ALMA-MMS-ID, 2) ZDBID 3) HBZID 4) ISSN.
   if exists("zdbId")
     copy_field("$i.$[field]", "$i.@opacLinkZdbId")
     lookup("$i.@opacLinkZdbId","isil2opac_zdbId", delete:"true")
@@ -341,6 +343,11 @@ do put_macro("opacLink")
   end
   copy_field("$i.$[field]", "$i.@opacAlmaMmsId")
   lookup("$i.@opacAlmaMmsId","isil2opac_almaMmsId", delete:"true")
+  if any_contain("$i.@opacAlmaMmsId","digibib") # For Introx only keep ALMA MMS ID Opac links if they are CZ.
+    unless any_match("035  .a", "^\\(EXLCZ\\).*")
+      remove_field("$i.@opacAlmaMmsId")
+    end
+  end
   split_field("$i.@opacAlmaMmsId","\\{almaMmsId\\}")
   if exists("issn[].1")
     copy_field("$i.$[field]", "$i.@opacLinkIssn")
