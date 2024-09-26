@@ -3,7 +3,10 @@ set_array("@ITM-H") # Helper element for creating Holding from HOL ("Physikalisc
 do list(path:"ITM  ", "var": "$i")
   paste("$i.supressedLocation", "$i.M", "~+", "$i.x",join_char:"")
   lookup("$i.supressedLocation","suppressedLocations",delete:"true")
-  unless exists("$i.supressedLocation") # Test if location is suppressed with mapping provided by the libraries.
+  if exists("$i.supressedLocation") # Test if location is suppressed with mapping provided by the libraries.
+    add_field("@suppressed", "true")
+  else
+    add_field("@unsuppressed", "true")
     set_hash( "hasItem[].$append")
     add_field("hasItem[].$last.label", "lobid Bestandsressource")
     set_array("hasItem[].$last.type[]", "Item","PhysicalObject")
@@ -31,7 +34,10 @@ do list(path: "HOL  ", "var": "$i")
         if exists("$H52.b")
           paste("$H52.supressedLocation", "$i.M", "~+", "$H52.c",join_char:"")
           lookup("$H52.supressedLocation","suppressedLocations",delete:"true")
-          unless exists("$H52.supressedLocation") # Test if location is suppressed with mapping provided by the libraries.
+          if exists("$H52.supressedLocation") # Test if location is suppressed with mapping provided by the libraries.
+            add_field("@suppressed", "true")
+          else
+            add_field("@unsuppressed", "true")
             set_hash( "hasItem[].$append")
             add_field("hasItem[].$last.label", "lobid Bestandsressource")
             set_array("hasItem[].$last.type[]", "Item","PhysikalischerTitel")
@@ -55,6 +61,11 @@ do list(path: "HOL  ", "var": "$i")
 end
 
 do list(path:"POR  ", "var": "$i")
+  if none_equal("$i.b", "Not Available")
+    add_field("@unsuppressed", "true")
+  else
+    add_field("@suppressed", "true")
+  end
   copy_field("$i.M","@HOL-M_POR-M.$append")
 # entity for every POR  .a without POR  .A
   unless any_match("$i.a",".*6441$") # filter out hbz
