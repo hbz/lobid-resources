@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -24,6 +25,8 @@ import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
@@ -48,6 +51,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Lists;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 
@@ -103,7 +107,8 @@ public class Application extends Controller {
 	public final static Config CONFIG =
 			ConfigFactory.parseFile(RESOURCES_CONF).resolve();
 	public final static String MARC_XML_API = CONFIG.getString("mrcx.api");
-
+	/** Value delimiter for multiple values in suggest responses. */
+	public static final String VALUE_DELIMITER = "; ";
 
 	static Form<String> queryForm = Form.form(String.class);
 
@@ -293,8 +298,8 @@ public class Application extends Controller {
 										queryDetails)).as("application/rss+xml");
 							default:
 								return responseFormat.startsWith("json:")
-										? withCallback(
-												toSuggestions(json, responseFormat.split(":")[1]))
+										? withCallback(Json.parse(
+												toSuggestions(json, responseFormat.split(":")[1])))
 										: responseFor(withQueryMetadata(json, index),
 												Accept.Format.JSON_LD.queryParamString);
 							}
@@ -366,49 +371,113 @@ public class Application extends Controller {
 		final String[] callback =
 				request() == null || request().queryString() == null ? null
 						: request().queryString().get("callback");
-		return callback != null ? ok(String.format("/**/%s(%s)", callback[0], json))
-				.as("application/javascript; charset=utf-8") : ok(json);
+		return callback != null
+				? ok(String.format("/**/%s(%s)", callback[0], json))
+						.as("application/javascript; charset=utf-8")
+				: ok(Json.prettyPrint(json)).as("application/json; charset=utf-8");
 	}
 
-	private static JsonNode toSuggestions(JsonNode json, String field) {
-		Stream<JsonNode> documents = StreamSupport
-				.stream(Spliterators.spliteratorUnknownSize(json.elements(), 0), false);
-		Stream<JsonNode> suggestions = documents.flatMap((JsonNode document) -> {
-			Stream<JsonNode> nodes = fieldValues(field, document);
-			return nodes.map((JsonNode node) -> {
-				boolean isTextual = node.isTextual();
-				Optional<JsonNode> label = isTextual ? Optional.ofNullable(node)
-						: findValueOptional(node, "label");
-				Optional<JsonNode> id = isTextual ? getOptional(document, "id")
-						: findValueOptional(node, "id");
-				Optional<JsonNode> type = isTextual ? getOptional(document, "type")
-						: findValueOptional(node, "type");
-				JsonNode types = type.orElseGet(() -> Json.toJson(new String[] { "" }));
-				String typeText = types.elements().next().textValue();
-				return Json.toJson(ImmutableMap.of(//
-						"label", label.orElseGet(() -> Json.toJson("")), //
-						"id", id.orElseGet(() -> label.orElseGet(() -> Json.toJson(""))), //
-						"category",
-						typeText.equals("BibliographicResource")
-								? Lobid.typeLabel(Json.fromJson(types, List.class))
-								: typeText));
-			});
+	static String toSuggestions(JsonNode json, String labelFields) {
+		Stream<String> defaultFields =
+				Stream.of("title", "contribution", "medium", "startDate-endDate");
+		String fields = labelFields.equals("suggest")
+				? defaultFields.collect(Collectors.joining(",")) : labelFields;
+		Stream<JsonNode> documents = Lists.newArrayList(json.elements()).stream();
+		Stream<JsonNode> suggestions = documents.map((JsonNode document) -> {
+			Optional<JsonNode> id = getOptional(document, "id");
+			Optional<JsonNode> type = getOptional(document, "type");
+			Stream<String> labels = Arrays.asList(fields.split(",")).stream()
+					.map(String::trim).map(field -> fieldValues(field, document)
+							.map(Json::toJson).map((JsonNode node) -> //
+			(node.isTextual() ? Optional.ofNullable(node)
+					: Optional.ofNullable(node.findValue("label")))
+							.orElseGet(() -> Json.toJson("")).asText())
+							.collect(Collectors.joining("; ")));
+			List<String> categories =
+					Lists.newArrayList(type.orElseGet(() -> Json.toJson("[]")).elements())
+							.stream().map(JsonNode::asText)
+							.filter(t -> !t.equals("BibliographicResource"))
+							.collect(Collectors.toList());
+			return Json.toJson(toSuggestionsMap(id, labels, categories));
 		});
-		return Json.toJson(suggestions.collect(Collectors.toList()));
+		return Json.toJson(suggestions.distinct().collect(Collectors.toList()))
+				.toString();
 	}
 
-	private static Stream<JsonNode> fieldValues(String field, JsonNode document) {
-		return document.findValues(field).stream().flatMap((node) -> {
-			return node.isArray()
-					? StreamSupport.stream(
-							Spliterators.spliteratorUnknownSize(node.elements(), 0), false)
-					: Arrays.asList(node).stream();
-		});
+	@SuppressWarnings("serial")
+	private static Map<String, Object> toSuggestionsMap(Optional<JsonNode> id,
+			Stream<String> labels, List<String> categories) {
+		return new HashMap<String, Object>() {
+			{
+				put("label", labels.filter(t -> !t.trim().isEmpty())
+						.collect(Collectors.joining(" | ")));
+				put("id", id.orElseGet(() -> Json.toJson("")));
+				put("category",
+						categories.stream().sorted().collect(Collectors.joining(" | ")));
+			}
+		};
 	}
 
-	private static Optional<JsonNode> findValueOptional(JsonNode json,
-			String field) {
-		return Optional.ofNullable(json.findValue(field));
+	private static Stream<String> fieldValues(String f, JsonNode document) {
+		String field = f;
+		// standard case: `field` is a plain field name, use that:
+		List<String> result = flatStrings(document.findValues(field));
+		if (result.isEmpty()) {
+			// `label_fieldName` template, e.g. `since_startDate`
+			if (field.contains("_")) {
+				Matcher matcher = Pattern.compile("([^_]+)_([A-Za-z]+)").matcher(field);
+				while (matcher.find()) {
+					String label = matcher.group(1);
+					String fieldName = matcher.group(2);
+					List<JsonNode> findValues = document.findValues(fieldName);
+					if (!findValues.isEmpty()) {
+						String values = flatStrings(findValues).stream()
+								.collect(Collectors.joining(VALUE_DELIMITER));
+						field = field.replace(matcher.group(), label + " " + values);
+					} else {
+						field = field.replace(matcher.group(), "");
+					}
+				}
+				result =
+						field.trim().isEmpty() ? Arrays.asList() : Arrays.asList(field);
+			}
+			// date ranges, e.g. `startDate-endDate`
+			else if (field.contains("-")) {
+				String[] fields = field.split("-");
+				String v1 = year(document.findValue(fields[0]));
+				String v2 = year(document.findValue(fields[1]));
+				result = v1.isEmpty() && v2.isEmpty() ? Lists.newArrayList()
+						: Arrays.asList(String.format("%s–%s", v1, v2));
+			}
+		}
+		return result.stream();
+	}
+
+	private static List<String> flatStrings(List<JsonNode> values) {
+		return values.stream().flatMap(node -> toArray(node))
+				.map(node -> toString(node)).collect(Collectors.toList());
+	}
+
+	private static Stream<JsonNode> toArray(JsonNode node) {
+		return node.isArray() ? Lists.newArrayList(node.elements()).stream()
+				: Arrays.asList(node).stream();
+	}
+
+	private static String toString(JsonNode node) {
+		return year((node.isTextual() ? Optional.ofNullable(node)
+				: Optional.ofNullable(node.findValue("label")))
+						.orElseGet(() -> Json.toJson("")).asText());
+	}
+
+	private static String year(JsonNode node) {
+		if (node == null || !node.isTextual()) {
+			return "";
+		}
+		return year(node.asText());
+	}
+
+	private static String year(String text) {
+		return text.matches("\\d{4}-\\d{2}-\\d{2}") ? text.split("-")[0] : text;
 	}
 
 	private static Optional<JsonNode> getOptional(JsonNode json, String field) {
