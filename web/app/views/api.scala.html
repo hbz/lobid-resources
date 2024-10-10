@@ -91,10 +91,11 @@ $('input.search-resources').autocomplete({
 	<p>Siehe auch diesen Abschnitt zu <a href="https://blog.lobid.org/2018/07/02/lobid-update.html#bulk-downloads">Bulk-Downloads in unserem Blog</a>.</p>
 
 	<h2 id="auto-complete">Autovervollständigung <small><a href='#auto-complete'><span class='glyphicon glyphicon-link'></span></a></small></h2>
-	<p>Die API unterstützt ein spezielles Antwortformat mit Vorschlägen zur Vervollständigung aus einem angegebenen Feld:</p>
-	@desc("Titel vorschlagen: \"format=json:title\"", resources.routes.Application.query("title:Werth", format="json:title"))
-	@desc("Mitwirkende vorschlagen: \"format=json:agent\"", resources.routes.Application.query("contribution.agent.label:Hein", format="json:agent"))
-	@desc("Schlagwort vorschlagen: \"format=json:subject\"", resources.routes.Application.query("subject.componentList.label:Pferd", format="json:subject"))
+	<p>Die API unterstützt ein spezielles Antwortformat mit Vorschlägen zur Vervollständigung.</p>
+	@desc("Standardformat für Vorschläge verwenden: \"format=json:suggest\"", resources.routes.Application.query("Twain", format="json:suggest"))
+	@desc("Bestimmtes Feld für Vorschläge verwenden: \"format=json:title\"", resources.routes.Application.query("Twain", format="json:title"))
+	@desc("Vorschläge aus mehreren Feldern zusammenbauen: \"format=json:title,contribution\"", resources.routes.Application.query("Twain", format="json:title,contribution"))
+	@desc("Feld-Templates zur Anpassung und Gruppierung: \"format=json:title,Erschienen_startDate bei_publishedBy\"", resources.routes.Application.query("Twain", format="json:title,Erschienen_startDate bei_publishedBy"))
 	<p>Damit kann z.B. eine Autovervollständigung umgesetzt werden, bei der zur Suche an Stelle des gewählten Labels die entsprechende ID verwendet werden kann:</p>
 	<p><form method="GET" class="form-inline" action="/resources/search"> <!-- use full URL in your code, i.e. https://lobid.org/resources/search -->
 		<input type="text" class="search-resources" id="label" style="width:350px" placeholder="Suchbegriff für Vorschläge eingeben"/>
