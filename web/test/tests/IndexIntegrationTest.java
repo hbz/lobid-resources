@@ -33,7 +33,7 @@ public class IndexIntegrationTest extends LocalIndexSetup {
 	public static Collection<Object[]> data() {
 		// @formatter:off
 		return queries(new Object[][] {
-			{ "title:der", /*->*/ 18 },
+			{ "title:der", /*->*/ 19 },
 			{ "title:Westfalen", /*->*/ 8 },
 			{ "contribution.agent.label:Westfalen", /*->*/ 3 },
 			{ "contribution.agent.label:Westfälen", /*->*/ 3 },
@@ -43,7 +43,7 @@ public class IndexIntegrationTest extends LocalIndexSetup {
 			{ "title:Westfalen AND contribution.agent.label:Prause", /*->*/ 1 },
 			{ "title:Westfalen OR title:Munsterland", /*->*/ 8 },
 			{ "(title:Westfalen OR title:Münsterland) AND contribution.agent.id:\"https\\://d-nb.info/gnd/5253963-5\"", /*->*/ 0 },
-			{ "bibliographicLevel.label.raw:\"Monographic component part\"", /*->*/ 15 },
+			{ "bibliographicLevel.label.raw:\"Monographic component part\"", /*->*/ 16 },
 			{ "subject.componentList.label:Düsseldorf", /*->*/ 1 },
 			{ "subject.componentList.label:Duesseldorf", /*->*/ 1 },
 			{ "subject.componentList.label:Dusseldorf", /*->*/ 1 },
@@ -66,8 +66,8 @@ public class IndexIntegrationTest extends LocalIndexSetup {
 			{ "publication.startDate:1993", /*->*/ 3 },
 			{ "publication.location:Berlin AND publication.startDate:1993", /*->*/ 1 },
 			{ "publication.location:Berlin AND publication.startDate:[1992 TO 2017]", /*->*/ 5 },
-			{ "inCollection.id:\"http\\://lobid.org/organisations/DE-655#\\!\"", /*->*/ 137 },
-			{ "inCollection.id:\"https\\://nrw.digibib.net/search/hbzvk/\"", /*->*/ 154 },
+			{ "inCollection.id:\"http\\://lobid.org/organisations/DE-655#\\!\"", /*->*/ 139 },
+			{ "inCollection.id:\"https\\://nrw.digibib.net/search/hbzvk/\"", /*->*/ 156 },
 			{ "inCollection.id:NWBib", /*->*/ 0 },
 			{ "publication.publishedBy:Quedenfeldt", /*->*/ 2 },
 			{ "publication.publishedBy:Quedenfeld", /*->*/ 2 },
