@@ -150,6 +150,36 @@ public class IntegrationTests extends LocalIndexSetup {
 	}
 
 	@Test
+	public void sizeRequestIdAlmaMmsId() {
+		idTest("990053976760206441");
+	}
+
+	@Test
+	public void sizeRequestIdZdbId() {
+		idTest("123550-3");
+	}
+
+	@Test
+	public void sizeRequestIdIsbn10() {
+		idTest("0-40503-920-4");
+		idTest("0405039204");
+	}
+
+	@Test
+	public void sizeRequestIdIsbn13() {
+		idTest("978-0-40503-920-1");
+		idTest("9780405039201");
+	}
+
+	private static void idTest(String id) {
+		running(testServer(3333), () -> {
+			Search index = new Search.Builder()
+					.query(new Queries.Builder().id(id).build()).build();
+			assertThat(index.totalHits()).isGreaterThan(0);
+		});
+	}
+
+	@Test
 	public void agentRequest() {
 		running(testServer(3333), () -> {
 			for (String s : Arrays.asList("Westfalen",

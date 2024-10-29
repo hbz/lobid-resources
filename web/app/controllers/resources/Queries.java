@@ -412,7 +412,8 @@ public class Queries {
 	public static class IdQuery extends AbstractIndexQuery {
 		@Override
 		public List<String> fields() {
-			return Arrays.asList("isbn", "issn", "hbzId", "rpbId", "schoeneNummer");
+			return Arrays.asList("almaMmsId", "hbzId", "isbn", "issn", "rpbId",
+					"schoeneNummer", "zdbId");
 		}
 
 		@Override
@@ -424,11 +425,9 @@ public class Queries {
 		private static String normalizedLobidResourceIdQueryString(
 				final String queryString) {
 			String normalizedQueryString = queryString.replaceAll(" ", "");
-			if (!normalizedQueryString.contains("/")) // thus: doi or isbn
-				if (normalizedQueryString.matches("\"?\\d.*\"?")) { // thus: isbn
-					normalizedQueryString = normalizedQueryString.replaceAll("-", "");
-				}
-			return normalizedQueryString;
+			String withoutDashes = normalizedQueryString.replaceAll("-", "");
+			return withoutDashes.matches("\\d{10}|\\d{13}") ? // ISBN
+					withoutDashes : normalizedQueryString;
 		}
 	}
 
