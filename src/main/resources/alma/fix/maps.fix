@@ -40,6 +40,7 @@ put_rdfmap("$[nwbib.ttl]", "nwbib", target: "skos:prefLabel", select_language: "
 
 # Formschlagwort/Formangaben-Mapping -> GND (based on: https://wiki.dnb.de/download/attachments/106042227/AH-007.pdf)
 put_filemap("$[formangabe.tsv]","formschlagwort2Gnd", sep_char:"\t",key_column:"0",value_column:"2",expected_columns:"-1")
+put_filemap("$[formangabe.tsv]","Gnd2formschlagwort", sep_char:"\t",key_column:"2",value_column:"0",expected_columns:"-1")
 
 # almaMmsId -> rpbId
 put_filemap("$[almaMmsId2rpbId]","almaMmsId2rpbId", sep_char:"\t",key_column:"0",value_column:"1",expected_columns:"-1")

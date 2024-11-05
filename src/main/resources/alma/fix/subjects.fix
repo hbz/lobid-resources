@@ -7,7 +7,14 @@ set_array("natureOfContent[]")
 # Ind: 2. 7= Source specified in subfield $2.
 
 do list(path:"655 7", "var":"$i")
- unless in("$i.a","natureOfContent[].*.label")
+  unless exists("$i.a")
+    copy_field("$i.0", "natureOfContent[].$append.label")
+    do list(path: "natureOfContent[]", "var":"$i")
+      replace_all("$i.label", "^\\(DE-588\\)(.*)$", "$1")
+      lookup("$i.label", "Gnd2formschlagwort", delete:"true")
+    end
+  end
+  unless in("$i.a","natureOfContent[].*.label")
     unless any_equal("$i.2","gnd-carrier")
       unless any_match("$i.a",".*(Audiovisuelles Material|Bildplatte|CD|CD-ROM|Dia|Diskette|DVD-Audio|DVD-ROM|DVD-Video|Elektronische Publikation|Film|Medienkombination|Mikroform|Musikdruck|Online-Publikation|Schallplatte|Text|Tonbildreihe|Tonkassette|Tonträger|Videokassette).*")
         copy_field("$i.a","natureOfContent[].$append.label")
