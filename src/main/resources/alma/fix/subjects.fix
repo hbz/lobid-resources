@@ -7,27 +7,27 @@ set_array("natureOfContent[]")
 # Ind: 2. 7= Source specified in subfield $2.
 
 do list(path:"655 7", "var":"$i")
-    unless exists("$i.a")
-      copy_field("$i.0", "natureOfContent[].$append.label")
-      do list(path: "natureOfContent[]", "var":"$i")
-        replace_all("$i.label", "^\\(DE-588\\)(.*)$", "$1")
-        lookup("$i.label", "Gnd2formschlagwort", delete:"true")
-      end
+  unless exists("$i.a")
+    copy_field("$i.0", "natureOfContent[].$append.label")
+    do list(path: "natureOfContent[]", "var":"$i")
+      replace_all("$i.label", "^\\(DE-588\\)(.*)$", "$1")
+      lookup("$i.label", "Gnd2formschlagwort", delete:"true")
     end
-    unless in("$i.a","natureOfContent[].*.label")
-      unless any_equal("$i.2","gnd-carrier")
-        unless any_match("$i.a",".*(Audiovisuelles Material|Bildplatte|CD|CD-ROM|Dia|Diskette|DVD-Audio|DVD-ROM|DVD-Video|Elektronische Publikation|Film|Medienkombination|Mikroform|Musikdruck|Online-Publikation|Schallplatte|Text|Tonbildreihe|Tonkassette|Tonträger|Videokassette).*")
-          copy_field("$i.a","natureOfContent[].$append.label")
-          do list(path:"$i.0","var":"$j")
-            # This is only DNB, should we also check for other uris for keywords?
-            if any_match("$j","^\\(DE-588\\)(.+)$")
-              copy_field("$j","natureOfContent[].$last.id")
-              replace_all("natureOfContent[].$last.id", "^\\(DE-588\\)(.*)$", "https://d-nb.info/gnd/$1")
-            end
+  end
+  unless in("$i.a","natureOfContent[].*.label")
+    unless any_equal("$i.2","gnd-carrier")
+      unless any_match("$i.a",".*(Audiovisuelles Material|Bildplatte|CD|CD-ROM|Dia|Diskette|DVD-Audio|DVD-ROM|DVD-Video|Elektronische Publikation|Film|Medienkombination|Mikroform|Musikdruck|Online-Publikation|Schallplatte|Text|Tonbildreihe|Tonkassette|Tonträger|Videokassette).*")
+        copy_field("$i.a","natureOfContent[].$append.label")
+        do list(path:"$i.0","var":"$j")
+          # This is only DNB, should we also check for other uris for keywords?
+          if any_match("$j","^\\(DE-588\\)(.+)$")
+            copy_field("$j","natureOfContent[].$last.id")
+            replace_all("natureOfContent[].$last.id", "^\\(DE-588\\)(.*)$", "https://d-nb.info/gnd/$1")
           end
         end
       end
     end
+  end
 end
 
 # 689 - not MARC standard element/DNB specific keywords (R), Subfields: $A (seems NR)
