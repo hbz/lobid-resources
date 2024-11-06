@@ -146,7 +146,7 @@ end
 # clean up ZDB
 replace_all("zdbId", "\\(DE-600\\)","")
 replace_all("zdbId", "\\(DE-599\\)ZDB","")
-replace_all("zdbId", " ","-") # CZ entries have incorrect spaces sometimes in the zdbId, we need to replace them with "-".
+replace_all("zdbId", "(\\d{1,7})-* ?-*([Xx\\d])","$1-$2") # CZ entries have incorrect whitespaces sometimes in the zdbId, we need to adjust them so only one "-" separates the first group of numbers from the last number.
 
 
 copy_field("almaMmsId","rpbId")
