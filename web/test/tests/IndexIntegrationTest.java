@@ -56,17 +56,17 @@ public class IndexIntegrationTest extends LocalIndexSetup {
 			{ "spatial.label:Westfalen", /*->*/ 8 },
 			{ "spatial.label:Westfälen", /*->*/ 8 },
 			{ "subject.componentList.id:1113670827", /*->*/ 0 },
-			{ "subject.componentList.type:PlaceOrGeographicName", /*->*/ 23 },
+			{ "subject.componentList.type:PlaceOrGeographicName", /*->*/ 24 },
 			{ "publication.location:Berlin", /*->*/ 16 },
 			{ "subject.notation:914.3", /*->*/ 6 },
 			{ "subject.notation:914", /*->*/ 0 },
 			{ "subject.notation:914*", /*->*/ 6 },
-			{ "publication.location:Köln", /*->*/ 5 },
-			{ "publication.location:Koln", /*->*/ 5 },
+			{ "publication.location:Köln", /*->*/ 6 },
+			{ "publication.location:Koln", /*->*/ 6 },
 			{ "publication.startDate:1993", /*->*/ 3 },
 			{ "publication.location:Berlin AND publication.startDate:1993", /*->*/ 1 },
 			{ "publication.location:Berlin AND publication.startDate:[1992 TO 2017]", /*->*/ 5 },
-			{ "inCollection.id:\"http\\://lobid.org/organisations/DE-655#\\!\"", /*->*/ 139 },
+			{ "inCollection.id:\"http\\://lobid.org/organisations/DE-655#\\!\"", /*->*/ 140 },
 			{ "inCollection.id:\"https\\://nrw.digibib.net/search/hbzvk/\"", /*->*/ 158 },
 			{ "inCollection.id:NWBib", /*->*/ 0 },
 			{ "publication.publishedBy:Quedenfeldt", /*->*/ 2 },
@@ -93,7 +93,7 @@ public class IndexIntegrationTest extends LocalIndexSetup {
 			{ "describedBy.resultOf.object.dateCreated:\"2023-03-22\"", /*->*/ 1},
 			{ "describedBy.resultOf.object.dateModified:\"2023-07-30\"", /*->*/ 3},
 			{ "describedBy.resultOf.object.sourceOrganization.id:\"http\\://lobid.org/organisations/DE-5#\\!\"", /*->*/ 5},
-			{ "describedBy.resultOf.object.modifiedBy.id:\"http\\://lobid.org/organisations/DE-6#\\!\"", /*->*/ 15 },
+			{ "describedBy.resultOf.object.modifiedBy.id:\"http\\://lobid.org/organisations/DE-6#\\!\"", /*->*/ 16 },
 			{ "\"Reader-friendly\"", /*->*/ 1},
 			{ "\"Reader friendly\"", /*->*/ 1},
 			// all q tests are related to DigiBib
@@ -142,7 +142,7 @@ public class IndexIntegrationTest extends LocalIndexSetup {
 			{ "contribution.agent.altLabel.digibib_unstemmed:Nemačke", /*->*/ 1 },
 			{ "contribution.agent.altLabel.digibib_unstemmed:Nemack", /*->*/ 0 },
 			{ "exampleOfWork.language.id:\"http\\://id.loc.gov/vocabulary/iso639-2/eng\"", /*->*/ 1 },
-			{ "hasItem.inCollection.id:\"http://lobid.org/organisations/DE-468#!\"", /*->*/ 24 }
+			{ "hasItem.inCollection.id:\"http://lobid.org/organisations/DE-468#!\"", /*->*/ 25 }
 		});
 	} // @formatter:on
 
