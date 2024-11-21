@@ -1,9 +1,8 @@
 set_array("hasItem[]")
 set_array("@ITM-H") # Helper element for creating Holding from HOL ("PhysikalischerTitel")
 do list(path:"ITM  ", "var": "$i")
-  paste("$i.supressedLocation", "$i.M", "~+", "$i.x",join_char:"")
-  lookup("$i.supressedLocation","suppressedLocations",delete:"true")
-  unless exists("$i.supressedLocation") # Test if location is suppressed with mapping provided by the libraries.
+  call_macro("suppressedLocation", targetField: "$i", libraryCodeSubfield: "w", locationCodeSubfield: "x")
+  unless exists("$i.suppressedLocation") # Test if location is suppressed with mapping provided by the libraries.
     set_hash( "hasItem[].$append")
     add_field("hasItem[].$last.label", "lobid Bestandsressource")
     set_array("hasItem[].$last.type[]", "Item","PhysicalObject")
@@ -29,9 +28,8 @@ do list(path: "HOL  ", "var": "$i")
     do list(path:"H52??", "var": "$H52")
       if in("$i.8", "$H52.8")
         if exists("$H52.b")
-          paste("$H52.supressedLocation", "$i.M", "~+", "$H52.c",join_char:"")
-          lookup("$H52.supressedLocation","suppressedLocations",delete:"true")
-          unless exists("$H52.supressedLocation") # Test if location is suppressed with mapping provided by the libraries.
+          call_macro("suppressedLocation", targetField: "$H52", libraryCodeSubfield: "b", locationCodeSubfield: "c")
+          unless exists("$H52.suppressedLocation") # Test if location is suppressed with mapping provided by the libraries.
             set_hash( "hasItem[].$append")
             add_field("hasItem[].$last.label", "lobid Bestandsressource")
             set_array("hasItem[].$last.type[]", "Item","PhysikalischerTitel")

@@ -294,6 +294,19 @@ do put_macro("provenanceLinks")
 
 end
 
+# suppressed location
+
+do put_macro("suppressedLocation")
+  # MemberCode+LibraryCode+LocationCode
+  paste("$[targetField].suppressedLocation", "$i.M", "$[targetField].$[libraryCodeSubfield]", "$[targetField].$[locationCodeSubfield]", join_char: "+")
+  lookup("$[targetField].suppressedLocation", "suppressedLocations", delete: "true")
+  unless exists("$[targetField].suppressedLocation")
+    # MemberCode+LocationCode
+    paste("$[targetField].suppressedLocation", "$i.M", "$[targetField].$[locationCodeSubfield]", join_char: "+")
+    lookup("$[targetField].suppressedLocation", "suppressedLocations", delete: "true")
+  end
+end
+
 # holding institution differentiating between library and sublibrary (libraryCode) and adding opacLink
 
 do put_macro("holdingLibrary+opacLink")
