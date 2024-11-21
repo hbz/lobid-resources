@@ -292,7 +292,7 @@ public class Queries {
 
 		@Override
 		public List<String> fields() {
-			return Arrays.asList("title", "otherTitleInformation");
+			return Arrays.asList("title", "otherTitleInformation", "alternativeTitle");
 		}
 
 		@Override
