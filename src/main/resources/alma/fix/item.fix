@@ -125,3 +125,21 @@ do list(path: "hasItem[]","var":"$i")
     add_field("$i.inCollection[].1.label","Bibliotheken ohne zentrale Katalogisierung (IZ Bridge)")
   end
 end
+
+set_array("rvk[]")
+do list(path:"hasItem[]","var":"$i")
+  if any_match("$i.callNumber","[A-Z][A-Z] \\d* .*")
+    copy_field("$i.callNumber","rvk[].$append")
+  end
+end
+
+replace_all("rvk[].*","([A-Z][A-Z] \\d*) .*","$1")
+
+do list(path:"rvk[]","var":"$i")
+  copy_field("$i","subject[].$append.notation")
+  set_array("subject[].$last.type[]","Concept")
+  add_field("subject[].$last.source.label","RVK (Regensburger Verbundklassifikation)")
+  add_field("subject[].$last.source.id","https://d-nb.info/gnd/4449787-8")
+end
+
+uniq("subject[]")
