@@ -174,14 +174,19 @@ replace_all("bibliographicCitation.*","^In: ","")
 
 join_field("bibliographicCitation", "; ")
 
+# 540 - Terms Governing Use and Reproduction Note (R)
+
 # 542 - Information Relating to Copyright Status (R) - $n - Note (R)  $u - Uniform Resource Identifier (R)
 
 set_array("license[]")
-do list(path: "542??", "var": "$i")
+do list(path: "540??|542??", "var": "$i")
   copy_field("$i.u", "license[].$append.id")
+  replace_all("license[].$last.id", "^(http://|https://)(.*)$","https://$2")
   copy_field("$i.u", "license[].$last.label")
   replace_all("license[].$last.label", "^(http://|https://)(.*)$","$2")
 end
+
+uniq("license[]")
 
 set_array("langNote[]")
 do list(path: "546??", "var": "$i")
