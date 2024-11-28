@@ -128,7 +128,7 @@ end
 
 set_array("@callNumberRvk[]")
 do list(path:"hasItem[]","var":"$i")
-  if any_match("$i.callNumber","[A-Z][A-Z] \\d{3,6} .*")
+  if any_match("$i.callNumber","([A-Z]{2} \\d{3,6})(\\.\\d*)?( [A-Z]\\d+)+([\\.\\d\\-\\(\\)+]*)?")
     copy_field("$i.callNumber","@callNumberRvk[].$append")
   end
 end
