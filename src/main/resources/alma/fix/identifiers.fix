@@ -137,8 +137,6 @@ do list(path:"035  ", "var":"$i")
   unless exists("zdbId")
     if all_match("$i.a", "\\(DE-600\\)(.*)")
       copy_field("$i.a", "zdbId")
-    elsif all_match("$i.a", "\\(DE-599\\)(ZDB.*)")
-      copy_field("$i.a", "zdbId")
     end
   end
 end
