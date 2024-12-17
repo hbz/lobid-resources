@@ -47,6 +47,7 @@ jobs:
         cd src/test/resources/
         bash validateJsonTestFiles.sh
         cd -
+    - uses: sbt/setup-sbt@v1
     - name: Cache SBT
       uses: actions/cache@v3
       with:
