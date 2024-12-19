@@ -31,9 +31,19 @@ add_field("describedBy.resultOf.instrument.label","Software lobid-resources")
 copy_field("almaMmsId","describedBy.resultOf.object.id")
 prepend("describedBy.resultOf.object.id","https://lobid.org/marcxml/")
 
-# MNG is a ALMA-specific element
+# MNG is a ALMA-specific element (MNG  .b only states the indexing date into ALMA, while 008 is the initial cataloguing date.)
 
-copy_field("MNG  .b","describedBy.resultOf.object.dateCreated")
+copy_field("008","@initialCataloguingDate")
+substring("@initialCataloguingDate","0","6")
+if any_match("@initialCataloguingDate","^[0-4].*")
+  prepend("@initialCataloguingDate","20")
+elsif any_match("@initialCataloguingDate","\\d*")
+  prepend("@initialCataloguingDate","19")
+else
+  copy_field("MNG  .b","@initialCataloguingDate")
+end
+copy_field("@initialCataloguingDate","describedBy.resultOf.object.dateCreated")
+
 copy_field("MNG  .d","describedBy.resultOf.object.dateModified")
 replace_all("describedBy.resultOf.object.dateCreated","-","")
 replace_all("describedBy.resultOf.object.dateCreated"," .*","")
@@ -41,12 +51,12 @@ replace_all("describedBy.resultOf.object.dateCreated","c|©|\\s?|,|.|:|;|/|=",""
 replace_all("describedBy.resultOf.object.dateModified","-","")
 replace_all("describedBy.resultOf.object.dateModified"," .*","")
 replace_all("describedBy.resultOf.object.dateModified","c|©|\\s?|,|.|:|;|/|=","")
-unless any_match("describedBy.resultOf.object.dateCreated","\\d{8}|\\d{4}")
-	remove_field("describedBy.resultOf.object.dateCreated")
-end
-unless any_match("describedBy.resultOf.object.dateModified","\\d{8}|\\d{4}")
-	remove_field("describedBy.resultOf.object.dateModified")
-end
+#unless any_match("describedBy.resultOf.object.dateCreated","\\d{8}|\\d{4}")
+#	remove_field("describedBy.resultOf.object.dateCreated")
+#end
+#unless any_match("describedBy.resultOf.object.dateModified","\\d{8}|\\d{4}")
+#	remove_field("describedBy.resultOf.object.dateModified")
+#end
 replace_all("describedBy.resultOf.object.dateCreated","^(\\d{4})(\\d{2})(\\d{2})$","$1-$2-$3")
 replace_all("describedBy.resultOf.object.dateModified","^(\\d{4})(\\d{2})(\\d{2})$","$1-$2-$3")
 replace_all("describedBy.resultOf.object.dateCreated","^(\\d{4})$","$1-01-01")
