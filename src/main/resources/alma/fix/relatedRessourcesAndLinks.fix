@@ -242,7 +242,7 @@ do list(path: "77608", "var":"$i")
     if all_match("$i.w", "^\\((?:DE-600|DE-605)\\)(.*)$")
       do list(path:"$i.w", "var":"$j")
         replace_all("$j", "^\\(DE-605\\)(.*)$", "http://lobid.org/resources/$1#!")
-        replace_all("$j", "^\\(DE-600\\)(.*)$", "http://lobid.org/resources/$1#!")
+        replace_all("$j", "^\\(DE-600\\)(.*)$", "http://lobid.org/resources/ZDB-$1#!")
         copy_field("$j", "secondaryForm[].$append.id")
         copy_field("$i.i", "secondaryForm[].$last.label")
       end
