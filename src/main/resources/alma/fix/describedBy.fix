@@ -34,14 +34,12 @@ prepend("describedBy.resultOf.object.id","https://lobid.org/marcxml/")
 # 008/00-05 has the initial cataloguing date. We use MNG info as fallback.
 # MNG is a ALMA-specific element (MNG  .b only states the indexing date into ALMA.)
 
-copy_field("008","@initialCataloguingDate")
-if any_match("@initialCataloguingDate", "^\\d{8}.*") # Due to cataloguing errors there seem to be year not represented by two but by four digits. The first step is a workaround.
-  substring("@initialCataloguingDate","2","6")
-elsif any_match("@initialCataloguingDate", "^\\d{6}.*") # 008/00-05 is the correct form for the cataloguing date in MARC.
+if any_match("008", "^\\d{6}\\D.*") # 008/00-05 is the correct form for the cataloguing date in MARC.
+  copy_field("008","@initialCataloguingDate")
   substring("@initialCataloguingDate","0","6")
 end
 
-if any_match("@initialCataloguingDate","^[0-4].*")
+if any_match("@initialCataloguingDate","^[0-4]\\d*")
   prepend("@initialCataloguingDate","20")
 elsif any_match("@initialCataloguingDate","\\d*")
   prepend("@initialCataloguingDate","19")
