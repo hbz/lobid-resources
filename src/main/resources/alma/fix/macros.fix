@@ -8,7 +8,7 @@ do put_macro("alternateGraphicRepresationArrayOfObjects")
           do list(path:"alternateGraphicRepresentation[]","var":"$AGR")
             if in ("$880.@script.id","$AGR.script.id")
               unless exists("$AGR.record.$[targetArray]")
-                set_array("$AGR.record.$[targetArray]")
+                add_array("$AGR.record.$[targetArray]")
               end
               copy_field("$880.a","$AGR.record.$[targetArray].$append$[targetField].label")
             end
@@ -16,7 +16,7 @@ do put_macro("alternateGraphicRepresationArrayOfObjects")
         else
           copy_field("$880.@script.id","alternateGraphicRepresentation[].$append.script.id")
           copy_field("$880.@script.label","alternateGraphicRepresentation[].$last.script.label")
-          set_array("alternateGraphicRepresentation[].$last.record.$[targetArray]")
+          add_array("alternateGraphicRepresentation[].$last.record.$[targetArray]")
           copy_field("$880.a","alternateGraphicRepresentation[].$last.record.$[targetArray].$append$[targetField].label")
         end
       end
@@ -33,7 +33,7 @@ do put_macro("alternateGraphicRepresationArrayOfStrings")
           do list(path:"alternateGraphicRepresentation[]","var":"$AGR")
             if in ("$880.@script.id","$AGR.script.id")
               unless exists("$AGR.record.$[targetArray]")
-                set_array("$AGR.record.$[targetArray]")
+                add_array("$AGR.record.$[targetArray]")
               end
               copy_field("$880.a","$AGR.record.$[targetArray].$append")
             end
@@ -41,7 +41,7 @@ do put_macro("alternateGraphicRepresationArrayOfStrings")
         else
           copy_field("$880.@script.id","alternateGraphicRepresentation[].$append.script.id")
           copy_field("$880.@script.label","alternateGraphicRepresentation[].$last.script.label")
-          set_array("alternateGraphicRepresentation[].$last.record.$[targetArray]")
+          add_array("alternateGraphicRepresentation[].$last.record.$[targetArray]")
           copy_field("$880.a","alternateGraphicRepresentation[].$last.record.$[targetArray].$append")
         end
       end
@@ -58,9 +58,9 @@ do put_macro("alternateGraphicRepresationIsPartOf")
           do list(path:"alternateGraphicRepresentation[]","var":"$AGR")
             if in ("$880.@script.id","$AGR.script.id")
               unless exists("$AGR.record.isPartOf[]")
-                set_array("$AGR.record.isPartOf[]")
+                add_array("$AGR.record.isPartOf[]")
               end
-              set_array("$AGR.record.isPartOf[].$append.hasSuperordinate[]")
+              add_array("$AGR.record.isPartOf[].$append.hasSuperordinate[]")
               copy_field("$880.a","$AGR.record.isPartOf[].$last.hasSuperordinate[].$append.label")
               copy_field("$880.v", "$AGR.record.isPartOf[].$last.numbering")
             end
@@ -68,8 +68,8 @@ do put_macro("alternateGraphicRepresationIsPartOf")
         else
           copy_field("$880.@script.id","alternateGraphicRepresentation[].$append.script.id")
           copy_field("$880.@script.label","alternateGraphicRepresentation[].$last.script.label")
-          set_array("alternateGraphicRepresentation[].$last.record.isPartOf[]")
-          set_array("alternateGraphicRepresentation[].$last.record.isPartOf[].$append.hasSuperordinate[]")
+          add_array("alternateGraphicRepresentation[].$last.record.isPartOf[]")
+          add_array("alternateGraphicRepresentation[].$last.record.isPartOf[].$append.hasSuperordinate[]")
           copy_field("$880.a","alternateGraphicRepresentation[].$last.record.isPartOf[].$last.hasSuperordinate[].$append.label")
           copy_field("$880.v", "alternateGraphicRepresentation[].$last.record.isPartOf[].$last.numbering")
         end
@@ -83,7 +83,7 @@ do put_macro("rolesFromSubfieldE")
   if exists("$i.e")
     unless is_array("$i.4")
       move_field("$i.4","$i.@4")
-      set_array("$i.4")
+      add_array("$i.4")
       move_field("$i.@4","$i.4.$append")
     end
     do list(path:"$i.e","var":"$e")
@@ -171,11 +171,11 @@ end
 # Macro for combinedLabel Event / Meeting
 
 do put_macro("gndEventCombinedLabel")
-  set_array("$[field].@combinedLabel")  # check if GND concept has combined variant
+  add_array("$[field].@combinedLabel")  # check if GND concept has combined variant
   copy_field("$[field].a","$[field].@combinedLabel.$append")
   copy_field("$[field].b","$[field].@combinedLabel.$append")
   join_field("$[field].@combinedLabel", ". ") # This is the difference to gnd person
-  set_array("$[field].@combinedDetailsForEvents")
+  add_array("$[field].@combinedDetailsForEvents")
   copy_field("$[field].n","$[field].@combinedDetailsForEvents.$append")
   copy_field("$[field].g","$[field].@combinedDetailsForEvents.$append")
   copy_field("$[field].d","$[field].@combinedDetailsForEvents.$append")
@@ -192,7 +192,7 @@ end
 # Macro for combinedLabel Person
 
 do put_macro("gndPersonCombinedLabel")
-    set_array("$[field].@combinedLabel")  # check if GND concept has combined variant
+    add_array("$[field].@combinedLabel")  # check if GND concept has combined variant
     copy_field("$[field].a","$[field].@combinedLabel.$append")
     copy_field("$[field].b","$[field].@combinedLabel.$append")
     join_field("$[field].@combinedLabel", " ") # This is the difference to gnd non person
@@ -214,7 +214,7 @@ end
 # Macro for combinedLabel Non-Person and Non-Event
 
 do put_macro("gndOtherCombinedLabel")
-  set_array("$[field].@combinedLabel")  # check if GND concept has combined variant
+  add_array("$[field].@combinedLabel")  # check if GND concept has combined variant
   copy_field("$[field].a","$[field].@combinedLabel.$append")
   copy_field("$[field].p","$[field].@combinedLabel.$append")
   copy_field("$[field].b","$[field].@combinedLabel.$append")
@@ -333,7 +333,7 @@ do put_macro("holdingLibrary+opacLink")
   end
   paste("hasItem[].$last.heldBy.id", "~http://lobid.org/organisations/", "hasItem[].$last.heldBy.isil", "~#!", join_char:"")
   copy_field("hasItem[].$last.heldBy.id", "hasItem[].$last.heldBy.label")
-  set_array("hasItem[].$last.inCollection[]")
+  add_array("hasItem[].$last.inCollection[]")
   paste("hasItem[].$last.inCollection[].$append.id", "~http://lobid.org/organisations/", "$i.@iz", "~#!", join_char:"")
   copy_field("hasItem[].$last.inCollection[].$last.id", "hasItem[].$last.inCollection[].$last.label")
   # item id is constructed "http://lobid.org/items/[almaMmsId of the record]:[isil of the Owner]:[almaMmsId of the holding]#!"
@@ -365,7 +365,7 @@ do put_macro("opacLink")
 #    lookup("$i.@opacLinkIsbn","isil2opac_isbn", delete:"true")
 #    split_field("$i.@opacLinkZdbId","\\{isbn\\}")
 #  end
-  set_array("hasItem[].$last.seeAlso[]")
+  add_array("hasItem[].$last.seeAlso[]")
   if exists("$i.@opacLinkZdbId.1")
     paste("hasItem[].$last.seeAlso[].$append","$i.@opacLinkZdbId.1","zdbId","$i.@opacLinkZdbId.2",join_char:"")
   elsif exists("$i.@opacLinkHbzId.1")
@@ -383,11 +383,11 @@ end
 
 do put_macro("schlagwortfolge")
   if exists("$[field]")
-    set_array("subject[].$append.type[]","ComplexSubject")
-    set_array("subject[].$last.label")
-    set_array("subject[].$last.componentList[]")
+    add_array("subject[].$append.type[]","ComplexSubject")
+    add_array("subject[].$last.label")
+    add_array("subject[].$last.componentList[]")
     do list(path:"$[field]", "var":"$i")
-      set_array("subject[].$last.componentList[].$append.type[]")
+      add_array("subject[].$last.componentList[].$append.type[]")
       if exists("$i.t") # Marker for Werktitel/Work even when the GND-enrichment is falsly labeld as Peron or differently
         add_field("subject[].$last.componentList[].$last.type[].$append","Work")
       else
@@ -438,8 +438,8 @@ end
 
 
 do put_macro("subjectLabel")
-  set_array("subject[].$last.label")
-  set_array("$i.@name")
+  add_array("subject[].$last.label")
+  add_array("$i.@name")
   copy_field("$i.a","$i.@name.$append")
   copy_field("$i.b","$i.@name.$append")
   copy_field("$i.c","$i.@name.$append")
@@ -455,7 +455,7 @@ end
 
 do put_macro("publication")
   do list(path:"$[field]", "var":"$i")
-    set_hash( "publication[].$append")
+    add_hash( "publication[].$append")
     do list(path: "$i.c", "var":"$j")
       replace_all("$j", "\\[|\\]|ca. |c ", "")
       unless exists("publication[].$last.startDate")
@@ -469,10 +469,10 @@ do put_macro("publication")
         end
       end
     end
-    set_array("publication[].$last.type[]","PublicationEvent")
-    set_array("publication[].$last.location[]")
+    add_array("publication[].$last.type[]","PublicationEvent")
+    add_array("publication[].$last.location[]")
     copy_field("$i.a", "publication[].$last.location[].$append")
-    set_array("publication[].$last.publishedBy[]")
+    add_array("publication[].$last.publishedBy[]")
     copy_field("$i.b", "publication[].$last.publishedBy[].$append")
     if exists("$i.6")
       copy_field("$i.6","$i.linkageTest")
@@ -482,23 +482,23 @@ do put_macro("publication")
             do list(path:"alternateGraphicRepresentation[]","var":"$AGR")
               if in ("$880.@script.id","$AGR.script.id")
                 unless exists("$AGR.record.publication[]")
-                  set_array("$AGR.record.publication[]")
+                  add_array("$AGR.record.publication[]")
                 end
-                set_hash( "$AGR.record.publication[].$append")
-                set_array("$AGR.record.publication[].$last.location[]")
+                add_hash( "$AGR.record.publication[].$append")
+                add_array("$AGR.record.publication[].$last.location[]")
                 copy_field("$880.a", "$AGR.record.publication[].$last.location[].$append")
-                set_array("$AGR.record.publication[].$last.publishedBy[]")
+                add_array("$AGR.record.publication[].$last.publishedBy[]")
                 copy_field("$880.b", "$AGR.record.publication[].$last.publishedBy[].$append")
               end
             end
           else
             copy_field("$880.@script.id","alternateGraphicRepresentation[].$append.script.id")
             copy_field("$880.@script.label","alternateGraphicRepresentation[].$last.script.label")
-            set_array("alternateGraphicRepresentation[].$last.publication[]")
-            set_hash( "alternateGraphicRepresentation[].$last.publication[].$append")
-            set_array("alternateGraphicRepresentation[].$last.publication[].$last.location[]")
+            add_array("alternateGraphicRepresentation[].$last.publication[]")
+            add_hash( "alternateGraphicRepresentation[].$last.publication[].$append")
+            add_array("alternateGraphicRepresentation[].$last.publication[].$last.location[]")
             copy_field("$880.a", "alternateGraphicRepresentation[].$last.publication[].$last.location[].$append")
-            set_array("alternateGraphicRepresentation[].$last.publication[].$last.publishedBy[]")
+            add_array("alternateGraphicRepresentation[].$last.publication[].$last.publishedBy[]")
             copy_field("$880.b", "alternateGraphicRepresentation[].$last.publication[].$last.publishedBy[].$append")
           end
         end
@@ -509,7 +509,7 @@ end
 
 do put_macro("manufacture")
   do list(path:"$[field]", "var":"$i")
-    set_hash( "manufacture[].$append")
+    add_hash( "manufacture[].$append")
     do list(path: "$i.c", "var":"$j")
       replace_all("$j", "\\[|\\]|ca. |c ", "")
       unless exists("manufacture[].$last.startDate")
@@ -523,10 +523,10 @@ do put_macro("manufacture")
         end
       end
     end
-    set_array("manufacture[].$last.type[]","Event")
-    set_array("manufacture[].$last.location[]")
+    add_array("manufacture[].$last.type[]","Event")
+    add_array("manufacture[].$last.location[]")
     copy_field("$i.a", "manufacture[].$last.location[].$append")
-    set_array("manufacture[].$last.manufacturedBy[]")
+    add_array("manufacture[].$last.manufacturedBy[]")
     copy_field("$i.b", "manufacture[].$last.manufacturedBy[].$append")
     if exists("$i.6")
       copy_field("$i.6","$i.linkageTest")
@@ -536,23 +536,23 @@ do put_macro("manufacture")
             do list(path:"alternateGraphicRepresentation[]","var":"$AGR")
               if in ("$880.@script.id","$AGR.script.id")
                 unless exists("$AGR.record.manufacture[]")
-                  set_array("$AGR.record.manufacture[]")
+                  add_array("$AGR.record.manufacture[]")
                 end
-                set_hash( "$AGR.record.manufacture[].$append")
-                set_array("$AGR.record.manufacture[].$last.location[]")
+                add_hash( "$AGR.record.manufacture[].$append")
+                add_array("$AGR.record.manufacture[].$last.location[]")
                 copy_field("$880.a", "$AGR.record.manufacture[].$last.location[].$append")
-                set_array("$AGR.record.manufacture[].$last.manufacturedBy[]")
+                add_array("$AGR.record.manufacture[].$last.manufacturedBy[]")
                 copy_field("$880.b", "$AGR.record.manufacture[].$last.manufacturedBy[].$append")
               end
             end
           else
             copy_field("$880.@script.id","alternateGraphicRepresentation[].$append.script.id")
             copy_field("$880.@script.label","alternateGraphicRepresentation[].$last.script.label")
-            set_array("alternateGraphicRepresentation[].$last.manufacture[]")
-            set_hash( "alternateGraphicRepresentation[].$last.manufacture[].$append")
-            set_array("alternateGraphicRepresentation[].$last.manufacture[].$last.location[]")
+            add_array("alternateGraphicRepresentation[].$last.manufacture[]")
+            add_hash( "alternateGraphicRepresentation[].$last.manufacture[].$append")
+            add_array("alternateGraphicRepresentation[].$last.manufacture[].$last.location[]")
             copy_field("$880.a", "alternateGraphicRepresentation[].$last.manufacture[].$last.location[].$append")
-            set_array("alternateGraphicRepresentation[].$last.manufacture[].$last.publishedBy[]")
+            add_array("alternateGraphicRepresentation[].$last.manufacture[].$last.publishedBy[]")
             copy_field("$880.b", "alternateGraphicRepresentation[].$last.manufacture[].$last.publishedBy[].$append")
           end
         end

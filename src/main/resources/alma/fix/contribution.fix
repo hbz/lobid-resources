@@ -1,9 +1,9 @@
 
 # 245 - Title Statement (NR) - Subfield: $c (NR)
-set_array("responsibilityStatement[]")
+add_array("responsibilityStatement[]")
 copy_field("245??.c", "responsibilityStatement[].$append")
 
-set_array("contribution[]")
+add_array("contribution[]")
 
 # 100 and 700
 
@@ -31,7 +31,7 @@ do list(path:"100[01] ", "var":"$i")
       end
     end
     do list(path: "$i.4", "var":"$j")
-      set_hash("contribution[].$append.agent")
+      add_hash("contribution[].$append.agent")
       do list(path:"$i.0","var":"$k")
         if all_match("$k", "^\\(DE-588\\).*$")
       # GND identifier
@@ -58,7 +58,7 @@ do list(path:"100[01] ", "var":"$i")
       call_macro("gndPersonCombinedLabel",field:"$i")
       copy_field("$i.@combinedLabel","contribution[].$last.agent.label")
       # type
-      set_array("contribution[].$last.agent.type[]","Person")
+      add_array("contribution[].$last.agent.type[]","Person")
       # role
       copy_field("$j","contribution[].$last.role.id")
       # dateOfBirthAndDeath #will be split on a later stage
@@ -83,7 +83,7 @@ do list(path:"700[01] ", "var":"$i")
       add_field("$i.4","ctb")
     end
     do list(path: "$i.4", "var":"$j")
-      set_hash("contribution[].$append.agent")
+      add_hash("contribution[].$append.agent")
       do list(path:"$i.0","var":"$k")
         if all_match("$k", "^\\(DE-588\\).*$")
       # GND identifier
@@ -110,7 +110,7 @@ do list(path:"700[01] ", "var":"$i")
       call_macro("gndPersonCombinedLabel",field:"$i")
       copy_field("$i.@combinedLabel","contribution[].$last.agent.label")
       # type
-      set_array("contribution[].$last.agent.type[]","Person")
+      add_array("contribution[].$last.agent.type[]","Person")
       # role
       copy_field("$j","contribution[].$last.role.id")
       # dateOfBirthAndDeath #will be split on a later stage
@@ -145,7 +145,7 @@ do list(path:"110[012] ", "var":"$i")
       end
     end
     do list(path: "$i.4", "var":"$j")
-      set_hash("contribution[].$append.agent")
+      add_hash("contribution[].$append.agent")
       do list(path:"$i.0","var":"$k")
         if all_match("$k", "^\\(DE-588\\).*$")
       # GND identifier
@@ -172,7 +172,7 @@ do list(path:"110[012] ", "var":"$i")
         call_macro("gndOtherCombinedLabel",field:"$i")
         copy_field("$i.@combinedLabel", "contribution[].$last.agent.label")
       # type
-      set_array("contribution[].$last.agent.type[]","CorporateBody")
+      add_array("contribution[].$last.agent.type[]","CorporateBody")
       # role
       copy_field("$j","contribution[].$last.role.id")
       call_macro("alternateGraphicRepresationArrayOfObjects",targetArray:"contribution[]",targetField:".agent",variable:"$i")
@@ -194,7 +194,7 @@ do list(path:"710[012] ", "var":"$i")
       add_field("$i.4","ctb")
     end
     do list(path: "$i.4", "var":"$j")
-      set_hash("contribution[].$append.agent")
+      add_hash("contribution[].$append.agent")
       do list(path:"$i.0","var":"$k")
         if all_match("$k", "^\\(DE-588\\).*$")
       # GND identifier
@@ -221,7 +221,7 @@ do list(path:"710[012] ", "var":"$i")
         call_macro("gndOtherCombinedLabel",field:"$i")
         copy_field("$i.@combinedLabel", "contribution[].$last.agent.label")
       # type
-      set_array("contribution[].$last.agent.type[]","CorporateBody")
+      add_array("contribution[].$last.agent.type[]","CorporateBody")
       # role
       copy_field("$j","contribution[].$last.role.id")
       call_macro("alternateGraphicRepresationArrayOfObjects",targetArray:"contribution[]",targetField:".agent",variable:"$i")
@@ -242,7 +242,7 @@ do list(path:"111[012] |711[012] ", "var":"$i")
       add_field("$i.4","oth")
     end
     do list(path: "$i.4", "var":"$j")
-      set_hash("contribution[].$append.agent")
+      add_hash("contribution[].$append.agent")
       do list(path:"$i.0","var":"$k")
         if all_match("$k", "^\\(DE-588\\).*$")
       # GND identifier
@@ -269,7 +269,7 @@ do list(path:"111[012] |711[012] ", "var":"$i")
       call_macro("gndEventCombinedLabel",field:"$i")
       copy_field("$i.@combinedLabel", "contribution[].$last.agent.label")
       # type
-      set_array("contribution[].$last.agent.type[]","ConferenceOrEvent")
+      add_array("contribution[].$last.agent.type[]","ConferenceOrEvent")
       # role
       copy_field("$j","contribution[].$last.role.id")
       call_macro("alternateGraphicRepresationArrayOfObjects",targetArray:"contribution[]",targetField:".agent",variable:"$i")
@@ -278,7 +278,7 @@ do list(path:"111[012] |711[012] ", "var":"$i")
 end
 
 
-set_array("contribution[].*.type[]", "Contribution")
+add_array("contribution[].*.type[]", "Contribution")
 replace_all("contribution[].*.agent.id","^\\(DE-588\\)(.*$)","https://d-nb.info/gnd/$1")
 replace_all("contribution[].*.agent.gndIdentifier","^\\(DE-588\\)(.*$)","$1")
 replace_all("contribution[].*.agent.label","(?<!\\p{Upper})\\.$|[,]$","")
@@ -340,7 +340,7 @@ do list (path: "contribution[]", "var": "$i")
   end
 
   # compare GND identifier (idn) with ALMA GND enrichment elements:
-  set_array("$i.agent.altLabel[]")
+  add_array("$i.agent.altLabel[]")
   do list(path:"GPN??", "var": "$z")
     if in ("$i.agent.@gndIdn", "$z.B") # Person labels have no character between $a (Name) and $b (Number).
       call_macro("gndPersonCombinedLabel",field:"$z")
@@ -365,7 +365,7 @@ do list (path: "contribution[]", "var": "$i")
   end
 
   # orcid
-  set_array("$i.agent.sameAs[]")
+  add_array("$i.agent.sameAs[]")
   do list(path:"GSI??", "var": "$z")
     if in ("$i.agent.@gndIdn", "$z.B")
       if any_equal("$z.2","orcid")
