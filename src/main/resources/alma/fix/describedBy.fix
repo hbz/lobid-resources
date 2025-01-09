@@ -31,13 +31,18 @@ add_field("describedBy.resultOf.instrument.label","Software lobid-resources")
 copy_field("almaMmsId","describedBy.resultOf.object.id")
 prepend("describedBy.resultOf.object.id","https://lobid.org/marcxml/")
 
-# MNG is a ALMA-specific element (MNG  .b only states the indexing date into ALMA, while 008 is the initial cataloguing date.)
+# 008/00-05 has the initial cataloguing date. We test strictly if 008 only has 6 digits, sometimes records have 8 digits that are not valid.
+# We use MNG info as fallback.
+# MNG is a ALMA-specific element (MNG  .b only states the indexing date into ALMA.)
 
-copy_field("008","@initialCataloguingDate")
-substring("@initialCataloguingDate","0","6")
-if any_match("@initialCataloguingDate","^[0-4].*")
+if any_match("008", "^\\d{6}\\D.*") # 008/00-05 is the correct form for the cataloguing date in MARC.
+  copy_field("008","@initialCataloguingDate")
+  substring("@initialCataloguingDate","0","6")
+end
+
+if any_match("@initialCataloguingDate","^[0-4]\\d*") # Complete dates after 2000
   prepend("@initialCataloguingDate","20")
-elsif any_match("@initialCataloguingDate","\\d*")
+elsif any_match("@initialCataloguingDate","\\d*") # Complete dates before 2000
   prepend("@initialCataloguingDate","19")
 else
   copy_field("MNG  .b","@initialCataloguingDate")
