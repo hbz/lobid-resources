@@ -557,7 +557,7 @@ do list(path:"962  ", "var":"$i")
   do list(path:"$i.e", "var": "$j")
     unless any_match("$j", "^ZDB.*")
       copy_field("$j", "inCollection[].$append.id")
-      replace_all("inCollection[].$last.id", "^(.*)$", "https://lobid.org/collections#$1")
+      replace_all("inCollection[].$last.id", "^(.*)$", "http://lobid.org/collections#$1")
       # TODO: Do we need a label?
     end
   end
@@ -571,7 +571,7 @@ end
 # do list(path:"960??", "var":"$i")
 #   do list(path:"$i.?", "var": "$j")
 #       copy_field("$j", "inCollection[].$append.id")
-#       replace_all("inCollection[].$last.id", "^(.*)$", "https://lobid.org/collections#$1")
+#       replace_all("inCollection[].$last.id", "^(.*)$", "http://lobid.org/collections#$1")
 #       # TODO: Do we need a label? https://github.com/hbz/lobid-resources/issues/1305#issuecomment-912312471, also labels seem wrong.
 #   end
 # end
@@ -579,6 +579,12 @@ end
 
 add_array("inCollection[].*.type[]","Collection")
 
+do list(path:"inCollection[]", "var":"$i")
+  unless exists("$i.label")
+    copy_field("$i.id","$i.label")
+    lookup("$i.label","collectionLabels",delete:"true")
+  end
+end
 
 # predecessor
 
