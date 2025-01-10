@@ -31,41 +31,43 @@ do list(path:"100[01] ", "var":"$i")
       end
     end
     do list(path: "$i.4", "var":"$j")
-      add_hash("contribution[].$append.agent")
-      do list(path:"$i.0","var":"$k")
-        if all_match("$k", "^\\(DE-588\\).*$")
-      # GND identifier
-          paste("contribution[].$last.agent.gndIdentifier","$k")
-      # GND Identifier id
-          paste("contribution[].$last.agent.id","$k")
-        end
-      # GND idn as variable
-        if exists("$i.B")
-          do list(path: "$i.B","var":"$gnd")
-            unless exists("contribution[].$last.agent.@gndIdn")
-              copy_field("$gnd","contribution[].$last.agent.@gndIdn")
-            end
+      if any_match("$j","[A-Za-z]{3}")
+        add_hash("contribution[].$append.agent")
+        do list(path:"$i.0","var":"$k")
+          if all_match("$k", "^\\(DE-588\\).*$")
+        # GND identifier
+            paste("contribution[].$last.agent.gndIdentifier","$k")
+        # GND Identifier id
+            paste("contribution[].$last.agent.id","$k")
           end
-        elsif any_match("$k","^.*DNB\\|(.*)$")
-          copy_field("$k", "contribution[].$last.agent.@gndIdn")
-          replace_all("contribution[].$last.agent.@gndIdn", "^.*DNB\\|(.*)$","GND-$1")
-        elsif any_match("$k","^\\(DE-101\\)(.*)$")
-          copy_field("$k", "contribution[].$last.agent.@gndIdn")
-          replace_all("contribution[].$last.agent.@gndIdn", "^\\(DE-101\\)(.*)$","GND-$1")
+        # GND idn as variable
+          if exists("$i.B")
+            do list(path: "$i.B","var":"$gnd")
+              unless exists("contribution[].$last.agent.@gndIdn")
+                copy_field("$gnd","contribution[].$last.agent.@gndIdn")
+              end
+            end
+          elsif any_match("$k","^.*DNB\\|(.*)$")
+            copy_field("$k", "contribution[].$last.agent.@gndIdn")
+            replace_all("contribution[].$last.agent.@gndIdn", "^.*DNB\\|(.*)$","GND-$1")
+          elsif any_match("$k","^\\(DE-101\\)(.*)$")
+            copy_field("$k", "contribution[].$last.agent.@gndIdn")
+            replace_all("contribution[].$last.agent.@gndIdn", "^\\(DE-101\\)(.*)$","GND-$1")
+          end
         end
+        # name
+        call_macro("gndPersonCombinedLabel",field:"$i")
+        copy_field("$i.@combinedLabel","contribution[].$last.agent.label")
+        # type
+        add_array("contribution[].$last.agent.type[]","Person")
+        # role
+        copy_field("$j","contribution[].$last.role.id")
+        # dateOfBirthAndDeath #will be split on a later stage
+        unless exists("$i.d.1")
+          copy_field("$i.d","contribution[].$last.agent.dateOfBirthAndDeath")
+        end
+        call_macro("alternateGraphicRepresationArrayOfObjects",targetArray:"contribution[]",targetField:".agent",variable:"$i")
       end
-      # name
-      call_macro("gndPersonCombinedLabel",field:"$i")
-      copy_field("$i.@combinedLabel","contribution[].$last.agent.label")
-      # type
-      add_array("contribution[].$last.agent.type[]","Person")
-      # role
-      copy_field("$j","contribution[].$last.role.id")
-      # dateOfBirthAndDeath #will be split on a later stage
-      unless exists("$i.d.1")
-        copy_field("$i.d","contribution[].$last.agent.dateOfBirthAndDeath")
-      end
-      call_macro("alternateGraphicRepresationArrayOfObjects",targetArray:"contribution[]",targetField:".agent",variable:"$i")
     end
   end
 end
@@ -83,41 +85,43 @@ do list(path:"700[01] ", "var":"$i")
       add_field("$i.4","ctb")
     end
     do list(path: "$i.4", "var":"$j")
-      add_hash("contribution[].$append.agent")
-      do list(path:"$i.0","var":"$k")
-        if all_match("$k", "^\\(DE-588\\).*$")
-      # GND identifier
-          paste("contribution[].$last.agent.gndIdentifier","$k")
-      # GND Identifier id
-          paste("contribution[].$last.agent.id","$k")
-        end
-      # GND idn as variable
-        if exists("$i.B")
-          do list(path: "$i.B","var":"$gnd")
-            unless exists("contribution[].$last.agent.@gndIdn")
-              copy_field("$gnd","contribution[].$last.agent.@gndIdn")
-            end
+      if any_match("$j","[A-Za-z]{3}")
+        add_hash("contribution[].$append.agent")
+        do list(path:"$i.0","var":"$k")
+          if all_match("$k", "^\\(DE-588\\).*$")
+        # GND identifier
+            paste("contribution[].$last.agent.gndIdentifier","$k")
+        # GND Identifier id
+            paste("contribution[].$last.agent.id","$k")
           end
-        elsif any_match("$k","^.*DNB\\|(.*)$")
-          copy_field("$k", "contribution[].$last.agent.@gndIdn")
-          replace_all("contribution[].$last.agent.@gndIdn", "^.*DNB\\|(.*)$","GND-$1")
-        elsif any_match("$k","^\\(DE-101\\)(.*)$")
-          copy_field("$k", "contribution[].$last.agent.@gndIdn")
-          replace_all("contribution[].$last.agent.@gndIdn", "^\\(DE-101\\)(.*)$","GND-$1")
+        # GND idn as variable
+          if exists("$i.B")
+            do list(path: "$i.B","var":"$gnd")
+              unless exists("contribution[].$last.agent.@gndIdn")
+                copy_field("$gnd","contribution[].$last.agent.@gndIdn")
+              end
+            end
+          elsif any_match("$k","^.*DNB\\|(.*)$")
+            copy_field("$k", "contribution[].$last.agent.@gndIdn")
+            replace_all("contribution[].$last.agent.@gndIdn", "^.*DNB\\|(.*)$","GND-$1")
+          elsif any_match("$k","^\\(DE-101\\)(.*)$")
+            copy_field("$k", "contribution[].$last.agent.@gndIdn")
+            replace_all("contribution[].$last.agent.@gndIdn", "^\\(DE-101\\)(.*)$","GND-$1")
+          end
         end
+        # name
+        call_macro("gndPersonCombinedLabel",field:"$i")
+        copy_field("$i.@combinedLabel","contribution[].$last.agent.label")
+        # type
+        add_array("contribution[].$last.agent.type[]","Person")
+        # role
+        copy_field("$j","contribution[].$last.role.id")
+        # dateOfBirthAndDeath #will be split on a later stage
+        unless exists("$i.d.1")
+          copy_field("$i.d","contribution[].$last.agent.dateOfBirthAndDeath")
+        end
+        call_macro("alternateGraphicRepresationArrayOfObjects",targetArray:"contribution[]",targetField:".agent",variable:"$i")
       end
-      # name
-      call_macro("gndPersonCombinedLabel",field:"$i")
-      copy_field("$i.@combinedLabel","contribution[].$last.agent.label")
-      # type
-      add_array("contribution[].$last.agent.type[]","Person")
-      # role
-      copy_field("$j","contribution[].$last.role.id")
-      # dateOfBirthAndDeath #will be split on a later stage
-      unless exists("$i.d.1")
-        copy_field("$i.d","contribution[].$last.agent.dateOfBirthAndDeath")
-      end
-      call_macro("alternateGraphicRepresationArrayOfObjects",targetArray:"contribution[]",targetField:".agent",variable:"$i")
     end
   end
 end
@@ -145,37 +149,39 @@ do list(path:"110[012] ", "var":"$i")
       end
     end
     do list(path: "$i.4", "var":"$j")
-      add_hash("contribution[].$append.agent")
-      do list(path:"$i.0","var":"$k")
-        if all_match("$k", "^\\(DE-588\\).*$")
-      # GND identifier
-          paste("contribution[].$last.agent.gndIdentifier","$k")
-      # GND Identifier id
-          paste("contribution[].$last.agent.id","$k")
-        end
-      # GND idn as variable
-        if exists("$i.B")
-          do list(path: "$i.B","var":"$gnd")
-            unless exists("contribution[].$last.agent.@gndIdn")
-              copy_field("$gnd","contribution[].$last.agent.@gndIdn")
-            end
+      if any_match("$j","[A-Za-z]{3}")
+        add_hash("contribution[].$append.agent")
+        do list(path:"$i.0","var":"$k")
+          if all_match("$k", "^\\(DE-588\\).*$")
+        # GND identifier
+            paste("contribution[].$last.agent.gndIdentifier","$k")
+        # GND Identifier id
+            paste("contribution[].$last.agent.id","$k")
           end
-        elsif any_match("$k","^.*DNB\\|(.*)$")
-          copy_field("$k", "contribution[].$last.agent.@gndIdn")
-          replace_all("contribution[].$last.agent.@gndIdn", "^.*DNB\\|(.*)$","GND-$1")
-        elsif any_match("$k","^\\(DE-101\\)(.*)$")
-          copy_field("$k", "contribution[].$last.agent.@gndIdn")
-          replace_all("contribution[].$last.agent.@gndIdn", "^\\(DE-101\\)(.*)$","GND-$1")
+        # GND idn as variable
+          if exists("$i.B")
+            do list(path: "$i.B","var":"$gnd")
+              unless exists("contribution[].$last.agent.@gndIdn")
+                copy_field("$gnd","contribution[].$last.agent.@gndIdn")
+              end
+            end
+          elsif any_match("$k","^.*DNB\\|(.*)$")
+            copy_field("$k", "contribution[].$last.agent.@gndIdn")
+            replace_all("contribution[].$last.agent.@gndIdn", "^.*DNB\\|(.*)$","GND-$1")
+          elsif any_match("$k","^\\(DE-101\\)(.*)$")
+            copy_field("$k", "contribution[].$last.agent.@gndIdn")
+            replace_all("contribution[].$last.agent.@gndIdn", "^\\(DE-101\\)(.*)$","GND-$1")
+          end
         end
+        # name
+          call_macro("gndOtherCombinedLabel",field:"$i")
+          copy_field("$i.@combinedLabel", "contribution[].$last.agent.label")
+        # type
+        add_array("contribution[].$last.agent.type[]","CorporateBody")
+        # role
+        copy_field("$j","contribution[].$last.role.id")
+        call_macro("alternateGraphicRepresationArrayOfObjects",targetArray:"contribution[]",targetField:".agent",variable:"$i")
       end
-      # name
-        call_macro("gndOtherCombinedLabel",field:"$i")
-        copy_field("$i.@combinedLabel", "contribution[].$last.agent.label")
-      # type
-      add_array("contribution[].$last.agent.type[]","CorporateBody")
-      # role
-      copy_field("$j","contribution[].$last.role.id")
-      call_macro("alternateGraphicRepresationArrayOfObjects",targetArray:"contribution[]",targetField:".agent",variable:"$i")
     end
   end
 end
@@ -194,37 +200,39 @@ do list(path:"710[012] ", "var":"$i")
       add_field("$i.4","ctb")
     end
     do list(path: "$i.4", "var":"$j")
-      add_hash("contribution[].$append.agent")
-      do list(path:"$i.0","var":"$k")
-        if all_match("$k", "^\\(DE-588\\).*$")
-      # GND identifier
-          paste("contribution[].$last.agent.gndIdentifier","$k")
-      # GND Identifier id
-          paste("contribution[].$last.agent.id","$k")
-        end
-      # GND idn as variable
-        if exists("$i.B")
-          do list(path: "$i.B","var":"$gnd")
-            unless exists("contribution[].$last.agent.@gndIdn")
-              copy_field("$gnd","contribution[].$last.agent.@gndIdn")
-            end
+      if any_match("$j","[A-Za-z]{3}")
+        add_hash("contribution[].$append.agent")
+        do list(path:"$i.0","var":"$k")
+          if all_match("$k", "^\\(DE-588\\).*$")
+        # GND identifier
+            paste("contribution[].$last.agent.gndIdentifier","$k")
+        # GND Identifier id
+            paste("contribution[].$last.agent.id","$k")
           end
-        elsif any_match("$k","^.*DNB\\|(.*)$")
-          copy_field("$k", "contribution[].$last.agent.@gndIdn")
-          replace_all("contribution[].$last.agent.@gndIdn", "^.*DNB\\|(.*)$","GND-$1")
-        elsif any_match("$k","^\\(DE-101\\)(.*)$")
-          copy_field("$k", "contribution[].$last.agent.@gndIdn")
-          replace_all("contribution[].$last.agent.@gndIdn", "^\\(DE-101\\)(.*)$","GND-$1")
+        # GND idn as variable
+          if exists("$i.B")
+            do list(path: "$i.B","var":"$gnd")
+              unless exists("contribution[].$last.agent.@gndIdn")
+                copy_field("$gnd","contribution[].$last.agent.@gndIdn")
+              end
+            end
+          elsif any_match("$k","^.*DNB\\|(.*)$")
+            copy_field("$k", "contribution[].$last.agent.@gndIdn")
+            replace_all("contribution[].$last.agent.@gndIdn", "^.*DNB\\|(.*)$","GND-$1")
+          elsif any_match("$k","^\\(DE-101\\)(.*)$")
+            copy_field("$k", "contribution[].$last.agent.@gndIdn")
+            replace_all("contribution[].$last.agent.@gndIdn", "^\\(DE-101\\)(.*)$","GND-$1")
+          end
         end
+        # name
+          call_macro("gndOtherCombinedLabel",field:"$i")
+          copy_field("$i.@combinedLabel", "contribution[].$last.agent.label")
+        # type
+        add_array("contribution[].$last.agent.type[]","CorporateBody")
+        # role
+        copy_field("$j","contribution[].$last.role.id")
+        call_macro("alternateGraphicRepresationArrayOfObjects",targetArray:"contribution[]",targetField:".agent",variable:"$i")
       end
-      # name
-        call_macro("gndOtherCombinedLabel",field:"$i")
-        copy_field("$i.@combinedLabel", "contribution[].$last.agent.label")
-      # type
-      add_array("contribution[].$last.agent.type[]","CorporateBody")
-      # role
-      copy_field("$j","contribution[].$last.role.id")
-      call_macro("alternateGraphicRepresationArrayOfObjects",targetArray:"contribution[]",targetField:".agent",variable:"$i")
     end
   end
 end
@@ -242,37 +250,39 @@ do list(path:"111[012] |711[012] ", "var":"$i")
       add_field("$i.4","oth")
     end
     do list(path: "$i.4", "var":"$j")
-      add_hash("contribution[].$append.agent")
-      do list(path:"$i.0","var":"$k")
-        if all_match("$k", "^\\(DE-588\\).*$")
-      # GND identifier
-          paste("contribution[].$last.agent.gndIdentifier","$k")
-      # GND Identifier id
-          paste("contribution[].$last.agent.id","$k")
-        end
-      # GND idn as variable
-        if exists("$i.B")
-          do list(path: "$i.B","var":"$gnd")
-            unless exists("contribution[].$last.agent.@gndIdn")
-              copy_field("$gnd","contribution[].$last.agent.@gndIdn")
-            end
+      if any_match("$j","[A-Za-z]{3}")
+        add_hash("contribution[].$append.agent")
+        do list(path:"$i.0","var":"$k")
+          if all_match("$k", "^\\(DE-588\\).*$")
+        # GND identifier
+            paste("contribution[].$last.agent.gndIdentifier","$k")
+        # GND Identifier id
+            paste("contribution[].$last.agent.id","$k")
           end
-        elsif any_match("$k","^.*DNB\\|(.*)$")
-          copy_field("$k", "contribution[].$last.agent.@gndIdn")
-          replace_all("contribution[].$last.agent.@gndIdn", "^.*DNB\\|(.*)$","GND-$1")
-        elsif any_match("$k","^\\(DE-101\\)(.*)$")
-          copy_field("$k", "contribution[].$last.agent.@gndIdn")
-          replace_all("contribution[].$last.agent.@gndIdn", "^\\(DE-101\\)(.*)$","GND-$1")
+        # GND idn as variable
+          if exists("$i.B")
+            do list(path: "$i.B","var":"$gnd")
+              unless exists("contribution[].$last.agent.@gndIdn")
+                copy_field("$gnd","contribution[].$last.agent.@gndIdn")
+              end
+            end
+          elsif any_match("$k","^.*DNB\\|(.*)$")
+            copy_field("$k", "contribution[].$last.agent.@gndIdn")
+            replace_all("contribution[].$last.agent.@gndIdn", "^.*DNB\\|(.*)$","GND-$1")
+          elsif any_match("$k","^\\(DE-101\\)(.*)$")
+            copy_field("$k", "contribution[].$last.agent.@gndIdn")
+            replace_all("contribution[].$last.agent.@gndIdn", "^\\(DE-101\\)(.*)$","GND-$1")
+          end
         end
+        # name
+        call_macro("gndEventCombinedLabel",field:"$i")
+        copy_field("$i.@combinedLabel", "contribution[].$last.agent.label")
+        # type
+        add_array("contribution[].$last.agent.type[]","ConferenceOrEvent")
+        # role
+        copy_field("$j","contribution[].$last.role.id")
+        call_macro("alternateGraphicRepresationArrayOfObjects",targetArray:"contribution[]",targetField:".agent",variable:"$i")
       end
-      # name
-      call_macro("gndEventCombinedLabel",field:"$i")
-      copy_field("$i.@combinedLabel", "contribution[].$last.agent.label")
-      # type
-      add_array("contribution[].$last.agent.type[]","ConferenceOrEvent")
-      # role
-      copy_field("$j","contribution[].$last.role.id")
-      call_macro("alternateGraphicRepresationArrayOfObjects",targetArray:"contribution[]",targetField:".agent",variable:"$i")
     end
   end
 end
