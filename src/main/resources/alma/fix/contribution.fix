@@ -376,10 +376,10 @@ do list (path: "contribution[]", "var": "$i")
 
 
   remove_field("$i.agent.@gndIdn")
-end
 
+  copy_field("$i.role.id", "$i.role.label")
+  lookup("$i.role.label","marcRel")
 
-do list (path:"contribution[]", "var":"$i")
   replace_all("$i.agent.label","<<|>>","")
   uniq("$i.agent.altLabel[]")
   replace_all("$i.agent.altLabel[].*","<<|>>","")
