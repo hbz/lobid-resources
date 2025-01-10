@@ -1,4 +1,4 @@
-set_array("rvk[]")
+add_array("rvk[]")
 
 do list(path: "084??", "var": "$i")
     if any_match("$i.2", "rvk")
@@ -6,7 +6,7 @@ do list(path: "084??", "var": "$i")
     end
 end
 uniq("rvk[]")
-set_array("id")
+add_array("id")
 do list(path: "035??", "var": "$i")
     if any_match("$i.a", "^\\(DE-605\\)(.*)")
         copy_field("$i.a","id.$append")

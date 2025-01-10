@@ -1,6 +1,6 @@
 # natureOfContent combines Formschlagwörter (`689 $A: f`) and Formangaben (`655`)
 
-set_array("natureOfContent[]")
+add_array("natureOfContent[]")
 
 
 # 655 - Index Term-Genre/Form (R),  Subfield: $a (NR), $0 (R)
@@ -51,7 +51,7 @@ do list(path: "natureOfContent[]", "var":"$i")
   end
 end
 
-set_array("subject[]")
+add_array("subject[]")
 
 
 # I change the approach from element oriented (all 630) to a subject/concept kind oriented approach (all LCSH, all GND, all keywords, etc.)
@@ -67,7 +67,7 @@ set_array("subject[]")
 
 
 do list(path:"600?4|610?4|611?4|630?4|648?4|650?4|651?4|653??|688??", "var":"$i")
-  set_array("subject[].$append.type[]","Concept")
+  add_array("subject[].$append.type[]","Concept")
   add_field("subject[].$last.source.label","Freie Verschlagwortung")
   add_field("subject[].$last.source.id","https://www.wikidata.org/wiki/Q47524318")
   call_macro("subjectLabel")
@@ -75,7 +75,7 @@ do list(path:"600?4|610?4|611?4|630?4|648?4|650?4|651?4|653??|688??", "var":"$i"
 end
 
 do list(path:"600?0|610?0|611?0|630?0|648?0|650?0|651?0", "var":"$i")
-  set_array("subject[].$append.type[]","Concept")
+  add_array("subject[].$append.type[]","Concept")
   add_field("subject[].$last.source.label","Library of Congress Subject Headings")
   add_field("subject[].$last.source.id","https://id.loc.gov/authorities/subjects.html")
   call_macro("subjectLabel")
@@ -84,7 +84,7 @@ end
 
 do list(path:"600?7|610?7|611?7|630?7|648?7|650?7|651?7", "var":"$i")
   if any_match("$i.2",".*fast.*")
-    set_array("subject[].$append.type[]","Concept")
+    add_array("subject[].$append.type[]","Concept")
     add_field("subject[].$last.source.label","FAST (Faceted Application of Subject Terminology)")
     add_field("subject[].$last.source.id","http://fast.oclc.org/")
     call_macro("subjectLabel")
@@ -93,7 +93,7 @@ do list(path:"600?7|610?7|611?7|630?7|648?7|650?7|651?7", "var":"$i")
 end
 
 do list(path:"600?2|610?2|611?2|630?2|648?2|650?2|651?2", "var":"$i")
-    set_array("subject[].$append.type[]","Concept")
+    add_array("subject[].$append.type[]","Concept")
     add_field("subject[].$last.source.label","Medical Subject Headings")
     add_field("subject[].$last.source.id","https://www.nlm.nih.gov/mesh/meshhome.html")
     call_macro("subjectLabel")
@@ -102,7 +102,7 @@ end
 
 do list(path:"600?7|610?7|611?7|630?7|648?7|650?7|651?7", "var":"$i")
   if any_match("$i.2",".*(mesh|MeSH).*")
-    set_array("subject[].$append.type[]","Concept")
+    add_array("subject[].$append.type[]","Concept")
     add_field("subject[].$last.source.label","Medical Subject Headings")
     add_field("subject[].$last.source.id","https://www.nlm.nih.gov/mesh/meshhome.html")
     call_macro("subjectLabel")
@@ -114,7 +114,7 @@ end
 
 do list(path:"600??", "var":"$i")
   if any_match("$i.0","^\\(DE-588\\)(.*)$")
-    set_array("subject[].$append.type[]","Concept")
+    add_array("subject[].$append.type[]","Concept")
     add_field("subject[].$last.source.label","Gemeinsame Normdatei (GND)")
     add_field("subject[].$last.source.id","https://d-nb.info/gnd/7749153-1")
     call_macro("gndPersonCombinedLabel",field:"$i")
@@ -147,7 +147,7 @@ end
 
 do list(path:"611??", "var":"$i")
   if any_match("$i.0","^\\(DE-588\\)(.*)$")
-    set_array("subject[].$append.type[]","Concept")
+    add_array("subject[].$append.type[]","Concept")
     add_field("subject[].$last.source.label","Gemeinsame Normdatei (GND)")
     add_field("subject[].$last.source.id","https://d-nb.info/gnd/7749153-1")
     call_macro("gndEventCombinedLabel",field:"$i")
@@ -180,7 +180,7 @@ end
 
 do list(path:"610??|630??|648??|650??|651??", "var":"$i")
   if any_match("$i.0","^\\(DE-588\\)(.*)$")
-    set_array("subject[].$append.type[]","Concept")
+    add_array("subject[].$append.type[]","Concept")
     add_field("subject[].$last.source.label","Gemeinsame Normdatei (GND)")
     add_field("subject[].$last.source.id","https://d-nb.info/gnd/7749153-1")
     call_macro("gndOtherCombinedLabel",field:"$i")
@@ -214,7 +214,7 @@ end
 
 # compare GND identifier (idn) with ALMA GND enrichment elements:
 do list(path:"subject[]", "var":"$i")
-  set_array("$i.altLabel[]")
+  add_array("$i.altLabel[]")
   do list(path:"GPN??", "var": "$z")
     if in ("$i.@gndIdn", "$z.B") # Person labels have no character between $a (Name) and $b (Number).
       call_macro("gndPersonCombinedLabel",field:"$z")
@@ -244,7 +244,7 @@ end
 
 do list(path:"0820 |08200", "var":"$i")
   do list(path:"$i.a", "var": "$j")
-    set_array("subject[].$append.type[]","Concept")
+    add_array("subject[].$append.type[]","Concept")
     add_field("subject[].$last.source.label","Dewey-Dezimalklassifikation")
     add_field("subject[].$last.source.id","https://d-nb.info/gnd/4149423-4")
     copy_field("$j","subject[].$last.label")
@@ -267,7 +267,7 @@ do list(path:"084??", "var":"$i")
         copy_field("$j", "subject[].$last.notation")
         replace_all("subject[].$last.notation","https://nwbib.de/subjects#N(.*)$","$1")
       end
-      set_array("subject[].$last.type[]","Concept")
+      add_array("subject[].$last.type[]","Concept")
       add_field("subject[].$last.source.id","https://nwbib.de/subjects")
       add_field("subject[].$last.source.label","Sachsystematik der Nordrhein-Westfälischen Bibliographie")
     end
@@ -277,7 +277,7 @@ do list(path:"084??", "var":"$i")
       unless any_match("$i.2", "z") # filter out any z Other - Classification
         do list(path:"$i.a", "var":"$j")
           copy_field("$j", "subject[].$append.notation")
-          set_array("subject[].$last.type[]","Concept")
+          add_array("subject[].$last.type[]","Concept")
           # LBZ-Notationen fka rpb2 fka RPB-Sachgruppen und Zusätze
           if any_match("$i.2", "rpb")
             if any_match("$j","\\d{3}")
@@ -314,7 +314,7 @@ do list(path:"084??", "var":"$i")
               copy_field("$j","subject[].$last.label")
               lookup("subject[].$last.label", "dnbSachgruppen")
               # Also use all DNB and ZDB Sachgruppen as DDC too.
-              set_array("subject[].$append.type[]","Concept")
+              add_array("subject[].$append.type[]","Concept")
               add_field("subject[].$last.source.label","Dewey-Dezimalklassifikation")
               add_field("subject[].$last.source.id","https://d-nb.info/gnd/4149423-4")
               copy_field("$j","subject[].$last.label")
@@ -344,7 +344,7 @@ lookup("@rvkNotations","rvk",delete:"true")
 split_field("@rvkNotations", ",")
 do list(path: "@rvkNotations","var":"$i")
   copy_field("$i","subject[].$append.notation")
-  set_array("subject[].$last.type[]","Concept")
+  add_array("subject[].$last.type[]","Concept")
   add_field("subject[].$last.source.label","RVK (Regensburger Verbundklassifikation)")
   add_field("subject[].$last.source.id","https://d-nb.info/gnd/4449787-8")
 end
@@ -370,7 +370,7 @@ do list (path: "subject[]", "var": "$i")
   do list(path: "$i.componentList[]", "var": "$j")
     if any_match("$j.label",".+") # Due to special cataloguing there can be empty label-properties. That are cleaned up at the end. These need to be skipped.
       unless exists("$j.type[].1")
-        set_array("$j.type[]","SubjectHeading") # type: SubjectHeading as Fallback.
+        add_array("$j.type[]","SubjectHeading") # type: SubjectHeading as Fallback.
       end
     end
     if any_match("$j.dateOfBirthAndDeath", "^([012][0-9]{3})-.*")
@@ -428,7 +428,7 @@ do list (path: "subject[]", "var": "$i")
     end
     replace_all("$j.label","<<|>>","")
     # compare GND identifier (idn) with ALMA GND enrichment elements:
-    set_array("$j.altLabel[]")
+    add_array("$j.altLabel[]")
     do list(path:"GPN??", "var": "$z")
       if in ("$j.@gndIdn", "$z.B") # Person labels have no character between $a (Name) and $b (Number).
         call_macro("gndPersonCombinedLabel",field:"$z")
@@ -461,7 +461,7 @@ uniq("subject[]")
 
 # spatial
 
-set_array("spatial[]")
+add_array("spatial[]")
 
 do list(path:"084??", "var":"$i")
   do list(path:"$i.0", "var":"$j")
@@ -474,7 +474,7 @@ do list(path:"084??", "var":"$i")
       if any_match("$j", "https://nwbib.de/spatial#N(.*)$")
         copy_field("$j", "spatial[].$last.notation")
       end
-      set_array("spatial[].$last.type[]","Concept")
+      add_array("spatial[].$last.type[]","Concept")
       add_field("spatial[].$last.source.id","https://nwbib.de/spatial")
       add_field("spatial[].$last.source.label","Raumsystematik der Nordrhein-Westfälischen Bibliographie")
       copy_field("$j", "spatial[].$last.focus.id")
@@ -483,7 +483,7 @@ do list(path:"084??", "var":"$i")
   do list(path:"$i.a", "var":"$j")
     # RPB spatial
     if any_match("$j","^rpbr.*")
-      set_array("spatial[].$append.type[]","Concept")
+      add_array("spatial[].$append.type[]","Concept")
       copy_field("$j","$i.@rpbrNotationId")
       replace_all("$i.@rpbrNotationId","rpbr_(99_o)?(.*)_","https://rpb.lobid.org/spatial#n$2")
       copy_field("$i.@rpbrNotationId","spatial[].$last.id")
@@ -500,7 +500,7 @@ do list(path:"spatial[]", "var":"$i")
   if any_contain("$i.source.id","https://nwbib.de/spatial")
     replace_all("$i.notation","https://nwbib.de/spatial#N(.*)$","$1")
     copy_field("$i.focus.id","$i.focus.label")
-    set_array("$i.focus.type[]")
+    add_array("$i.focus.type[]")
     copy_field("$i.focus.id","$i.focus.type[].$append")
     copy_field("$i.focus.id","$i.focus.@geoData")
     lookup("$i.focus.id","nwbibWikidataId",delete:"true")
@@ -519,7 +519,7 @@ do list(path:"spatial[]", "var":"$i")
   end
 end
 
-set_array("subjectslabels[]")
+add_array("subjectslabels[]")
 do list(path:"subject[]","var":"$i")
   if any_match("$i.type[]","Concept")
     unless exists("$i.notation")

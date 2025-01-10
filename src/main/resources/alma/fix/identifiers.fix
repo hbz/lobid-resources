@@ -6,7 +6,7 @@ paste("id", "~http://lobid.org/resources/", "001", "~#!", join_char: "")
 # 024 - Other Standard Identifier (R) Subfield: $a (NR) $2 (NR)
 # urn
 
-set_array("urn[]")
+add_array("urn[]")
 
 do list(path: "0247?", "var": "$i")
   if any_equal("$i.2","urn")
@@ -17,7 +17,7 @@ end
 # Sometimes urn are not set in 024 then we could pick up the missing from 856.
 # 856 - Electronic Location and Access (R) - Subfield: $u (R) $3 (NR)
 # 1. Indicator: 4 = HTTP
-set_array("@urnLinks")
+add_array("@urnLinks")
 
 do list(path:"856??", "var":"$i")
   if all_match("$i.u", "^http.*(urn=|\\.(org|de)/)urn:.+$") # This should ignore repository links like: https://sammlungen.ulb.uni-muenster.de/urn/urn:nbn:de:hbz:6-85659520092
@@ -50,8 +50,8 @@ end
 # 020 - International Standard Book Number (R) - $a (NR)
 # source data sometimes provides repeated subfield $a even if this is not valid marc
 
-set_array("@isbn[]")
-set_array("isbn[]")
+add_array("@isbn[]")
+add_array("isbn[]")
 
 do list(path:"020  ", "var": "$i")
   do list(path:"$i.a", "var": "$j")
@@ -74,7 +74,7 @@ uniq("isbn[]")
 
 
 # 022 - International Standard Serial Number (R) - Subfield $a (NR)
-set_array("issn[]")
+add_array("issn[]")
 do list(path:"022? ", "var":"$i")
   copy_field("$i.a", "issn[].$append")
 end
@@ -82,7 +82,7 @@ replace_all("issn[].*", "-","")
 uniq("issn[]")
 
 # 024 - Other Standard Identifier (R) - Subfield a (NR) 1. Indicator 2 = ISMN
-set_array("ismn[]")
+add_array("ismn[]")
 do list(path:"0242?", "var":"$i")
   copy_field("$i.a", "ismn[].$append")
 end
@@ -90,7 +90,7 @@ replace_all("ismn[].*", "-","")
 
 
 # 024 (R) Subfield a (NR) 1. Indicator 7 = to defined Identifier
-set_array("doi[]")
+add_array("doi[]")
 do list(path:"0247?", "var":"$i")
   if all_equal("$i.2","doi")
     copy_field("$i.a", "doi[].$append")
@@ -109,7 +109,7 @@ replace_all("doi[].*", ".*doi.org.*(10\\.(\\d)+/(\\S)+).*", "$1")
 uniq("doi[]")
 
 # 035 - System Control Number (R) - Subfield: $a (NR)
-set_array("oclcNumber[]")
+add_array("oclcNumber[]")
 
 do list(path:"035  ", "var":"$i")
     if all_match("$i.a", "\\(OCoLC\\)(.*)")
@@ -151,7 +151,7 @@ copy_field("almaMmsId","rpbId")
 lookup("rpbId","almaMmsId2rpbId",delete:"true")
 replace_all("rpbId", "^RPB","")
 
-set_array("stockNumber[]")
+add_array("stockNumber[]")
 do list(path:"028??", "var":"$i")
   copy_field("$i.a", "stockNumber[].$append")
 end
