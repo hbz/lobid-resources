@@ -216,6 +216,8 @@ if exists("publication[].$first")
       unless any_match("008","^.{18}[#\\| u].*$") # filters out not matching values and also the value unknown
         copy_field("008","publication[].$first.frequency[].$append.id")
         replace_all("publication[].$first.frequency[].$last.id", "^.{18}(.).*$", "http://marc21rdf.info/terms/continuingfre#$1")
+        copy_field("publication[].$first.frequency[].$last.id","publication[].$first.frequency[].$last.label")
+        lookup("publication[].$first.frequency[].$last.label","marc-publication-frequency-label")
       end
     elsif any_match("006","^s.*$")
       do list(path: "006", "var":"$z")
@@ -223,6 +225,8 @@ if exists("publication[].$first")
           unless any_match("$z","^.[#\\| u].*$")
             copy_field("$z","publication[].$first.frequency[].$append.id")
             replace_all("publication[].$first.frequency[].$last.id", "^.(.).*$", "http://marc21rdf.info/terms/continuingfre#$1")
+            copy_field("publication[].$first.frequency[].$last.id","publication[].$first.frequency[].$last.label")
+            lookup("publication[].$first.frequency[].$last.label","marc-publication-frequency-label")
           end
         end
       end
