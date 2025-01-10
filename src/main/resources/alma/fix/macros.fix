@@ -289,6 +289,13 @@ do put_macro("provenanceLinks")
     end
     prepend("$[field]", "http://lobid.org/organisations/")
     append("$[field]", "#!")
+    copy_field("$[field]","$[label]")
+    lookup("$[label]","lobidOrgLabels",delete:"true")
+    unless exists("$[label]")
+      if any_contain("$[field]","lobid")
+        add_field("$[label]","lobid Organisation")
+      end
+    end
   end
 
 
