@@ -72,6 +72,7 @@ end
 replace_all("supplement[].*.id","^\\(DE-605\\)(.*)$","http://lobid.org/resources/$1#!")
 replace_all("supplement[].*.id","^\\(DE-600\\)(.*)$","http://lobid.org/resources/ZDB-$1#!")
 replace_all("supplement[].*.label","<<|>>","")
+call_macro("lobidResourcesFallbackLabel",field:"supplement[]")
 
 # isPartOf
 # it describes the relation between a published ressource and its superordinate series or collection.
@@ -201,10 +202,15 @@ replace_all("isPartOf[].*.hasSuperordinate[].*.id", "^\\(DE-605\\)(.*)$", "http:
 replace_all("isPartOf[].*.hasSuperordinate[].*.id", "^\\(DE-600\\)(.*)$", "http://lobid.org/resources/ZDB-$1#!")
 
 replace_all("isPartOf[].*.numbering", "^[©]|\\s?[,.:;/=]?$", "")
+do list(path:"isPartOf[]","var":"$i")
+  call_macro("lobidResourcesFallbackLabel",field:"$i.hasSuperordinate[]")
+end
+
 uniq("isPartOf[]")
 replace_all("containedIn[].*.id", "^\\(DE-605\\)(.*)$", "http://lobid.org/resources/$1#!")
 replace_all("containedIn[].*.id", "^\\(DE-600\\)(.*)$", "http://lobid.org/resources/ZDB-$1#!")
 replace_all("containedIn[].*.label","<<|>>","")
+call_macro("lobidResourcesFallbackLabel",field:"containedIn[]")
 
 uniq("containedIn[]")
 
@@ -231,6 +237,7 @@ end
 
 replace_all("primaryForm[].*.id", "^\\(DE-605\\)(.*)$", "http://lobid.org/resources/$1#!")
 replace_all("primaryForm[].*.id", "^\\(DE-600\\)(.*)$", "http://lobid.org/resources/ZDB-$1#!")
+call_macro("lobidResourcesFallbackLabel",field:"primaryForm[]")
 
 # secondaryForm
 
@@ -249,6 +256,9 @@ do list(path: "77608", "var":"$i")
     end
   end
 end
+
+call_macro("lobidResourcesFallbackLabel",field:"secondaryForm[]")
+
 
 
 # 856 - Electronic Location and Access (R) - Subfield: $u (R) $3 (NR)
@@ -406,6 +416,7 @@ end
 replace_all("related[].*.id", "^\\(DE-605\\)(.*)$", "http://lobid.org/resources/$1#!")
 replace_all("related[].*.id", "^\\(DE-600\\)(.*)$", "http://lobid.org/resources/ZDB-$1#!")
 replace_all("related[].*.label","<<|>>","")
+call_macro("lobidResourcesFallbackLabel",field:"related[]")
 
 add_array("inCollection[]")
 
@@ -609,7 +620,7 @@ end
 
 replace_all("predecessor[].*.id", "^\\(DE-605\\)(.*)$", "http://lobid.org/resources/$1#!")
 replace_all("predecessor[].*.id", "^\\(DE-600\\)(.*)$", "http://lobid.org/resources/ZDB-$1#!")
-
+call_macro("lobidResourcesFallbackLabel",field:"predecessor[]")
 
 replace_all("predecessor[].*.label","Vorg. ---> ","")
 

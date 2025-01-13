@@ -567,3 +567,16 @@ do put_macro("manufacture")
     end
   end
 end
+
+
+# lobid resources label
+do put_macro("lobidResourcesFallbackLabel")
+  do list(path:"$[field]","var":"$array")
+    unless exists("$array.label")
+      if any_contain("$array.id","lobid")
+        add_field("$array.label","lobid Ressource")
+      end
+    end
+  end
+end
+
