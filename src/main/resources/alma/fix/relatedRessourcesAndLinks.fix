@@ -571,7 +571,7 @@ do list(path:"962  ", "var":"$i")
   do list(path:"$i.e", "var": "$j")
     unless any_match("$j", "^ZDB.*")
       copy_field("$j", "inCollection[].$append.id")
-      replace_all("inCollection[].$last.id", "^(.*)$", "http://lobid.org/collections#$1")
+      replace_all("inCollection[].$last.id", "^(.*)$", "https://lobid.org/collections#$1")
       # TODO: Do we need a label?
     end
   end
