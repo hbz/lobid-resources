@@ -40,9 +40,9 @@ if any_match("008", "^\\d{6}\\D.*") # 008/00-05 is the correct form for the cata
   substring("@initialCataloguingDate","0","6")
 end
 
-if any_match("@initialCataloguingDate","^[0-4]\\d*") # Complete dates after 2000
+if any_match("@initialCataloguingDate","^[0-4]\\d(0[1-9]|1[012])(0[1-9]|[12][0-9]|3[01])") # Complete dates after 2000
   prepend("@initialCataloguingDate","20")
-elsif any_match("@initialCataloguingDate","\\d*") # Complete dates before 2000
+elsif any_match("@initialCataloguingDate","\\d{2}(0[1-9]|1[012])(0[1-9]|[12][0-9]|3[01])") # Complete dates before 2000
   prepend("@initialCataloguingDate","19")
 else
   copy_field("MNG  .b","@initialCataloguingDate")
