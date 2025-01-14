@@ -575,11 +575,14 @@ do list(path:"962  ", "var":"$i")
     unless any_match("$j", "^ZDB.*")
       copy_field("$j", "inCollection[].$append.id")
       replace_all("inCollection[].$last.id", "^(.*)$", "https://lobid.org/collections#$1")
-      # TODO: Do we need a label?
+      copy_field("inCollection[].$last.id","inCollection[].$last.label")
+      lookup("inCollection[].$last.label","collectionLabels")
+      if any_match("inCollection[].$last.label","https://lobid.org/collections.*") #Fallback label for hbz collections
+        replace_all("inCollection[].$last.label","https://lobid.org/collections#(.*)","$1 Collection")
+      end
     end
   end
 end
-
 
 # 960 ## no Information about repeatability
 # TODO: This needs further inspection if we need a collection fr all subfields: https://service-wiki.hbz-nrw.de/display/VDBE/960+-+Selektionskennzeichen+NZ
@@ -595,13 +598,6 @@ end
 
 
 add_array("inCollection[].*.type[]","Collection")
-
-do list(path:"inCollection[]", "var":"$i")
-  unless exists("$i.label")
-    copy_field("$i.id","$i.label")
-    lookup("$i.label","collectionLabels",delete:"true")
-  end
-end
 
 # predecessor
 
