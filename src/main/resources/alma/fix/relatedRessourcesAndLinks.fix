@@ -321,6 +321,7 @@ do list(path:"doi[]","var":"$i")
   prepend("fulltextOnline[].$last.id","https://doi.org/")
   copy_field("fulltextOnline[].$last.id", "sameAs[].$append.id")
   add_field("fulltextOnline[].$last.label", "DOI-Link")
+  add_field("sameAs[].$last.label", "DOI-Link")
 end
 
 # urn for fullTextOnline and sameAs
@@ -329,6 +330,7 @@ do list(path:"@urnLinks","var":"$i")
   copy_field("$i", "fulltextOnline[].$append.id")
   copy_field("fulltextOnline[].$last.id", "sameAs[].$append.id")
   add_field("fulltextOnline[].$last.label", "URN-Link")
+  add_field("sameAs[].$last.label", "URN-Link")
 end
 
 if is_empty("@urnLinks")
@@ -337,6 +339,7 @@ if is_empty("@urnLinks")
     prepend("fulltextOnline[].$last.id","https://nbn-resolving.org/")
     copy_field("fulltextOnline[].$last.id", "sameAs[].$append.id")
     add_field("fulltextOnline[].$last.label", "URN-Link")
+    add_field("sameAs[].$last.label", "URN-Link")
   end
 end
 
