@@ -291,10 +291,15 @@ do put_macro("provenanceLinks")
     append("$[field]", "#!")
     copy_field("$[field]","$[label]")
     lookup("$[label]","lobidOrgLabels",delete:"true")
-    unless exists("$[label]")
-      if any_contain("$[field]","lobid")
-        add_field("$[label]","lobid Organisation")
-      end
+  end
+
+  unless exists("$[label]")
+    if any_contain("$[field]","lobid")
+      add_field("$[label]","lobid Organisation")
+    elsif any_contain("$[field]","ebookcentral")
+      add_field("$[label]","Ebookcentral Proquest")
+    elsif any_contain("$[field]","ebrary")
+      add_field("$[label]","Ebrary")
     end
   end
 
