@@ -178,6 +178,7 @@
 }
 
 @table(){
+  @result_field("URI", "id", doc, TableRow.VALUES, node = Option(doc))
   <tr><td>Titel</td><td>@((doc\"title").asOpt[String].getOrElse(""))@for(corporateBodyForTitle <- (doc \ "corporateBodyForTitle").asOpt[Seq[String]]){. @corporateBodyForTitle}</td></tr>
   @result_field("Titelzusatz", "otherTitleInformation", doc, TableRow.VALUES)
   @result_field("Alternativer Titel", "alternativeTitle", doc, TableRow.VALUES)
