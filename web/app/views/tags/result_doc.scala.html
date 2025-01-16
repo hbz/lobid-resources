@@ -78,8 +78,10 @@
 
 @with_icon(label: String, property: String, fullField: String) = {
   @if((doc\property).asOpt[JsValue].isDefined) {
-    @defining(if(property != "type") { nestedIds(property) } else { singleOrMultiString(property) }){ v =>
-      <tr><td>@label</td><td><span class="@Lobid.facetIcon(v,fullField)"></span> @Lobid.facetLabel(v,fullField,"")</td></tr>
+    @defining((if(property != "type") { nestedIds(property) } else { singleOrMultiString(property) }).filter(v => v != "BibliographicResource")){ vs =>
+     @for(v <- vs) {
+      <tr><td>@if(v==vs.head){@label}</td><td><span class="@Lobid.facetIcon(Seq(v),fullField)"></span> @Lobid.facetLabel(Seq(v),fullField,"")</td></tr>
+     }
     }
   }
 }
