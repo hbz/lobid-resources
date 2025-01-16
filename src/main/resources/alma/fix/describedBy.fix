@@ -42,7 +42,7 @@ end
 
 if any_match("@initialCataloguingDate","^[0-4]\\d(0[1-9]|1[012])(0[1-9]|[12][0-9]|3[01])") # Assume dates from 2000-01-01 to  2049-12-31 ( e.g. matching 491231)
   prepend("@initialCataloguingDate","20")
-elsif any_match("@initialCataloguingDate","\\d{2}(0[1-9]|1[012])(0[1-9]|[12][0-9]|3[01])") # Complete dates before 2000
+elsif any_match("@initialCataloguingDate","\\d{2}(0[1-9]|1[012])(0[1-9]|[12][0-9]|3[01])") # Assume dates from 1900-01-01 to  1999-12-31 ( e.g. matching 991231)
   prepend("@initialCataloguingDate","19")
 else
   copy_field("MNG  .b","@initialCataloguingDate")
