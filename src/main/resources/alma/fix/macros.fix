@@ -289,6 +289,18 @@ do put_macro("provenanceLinks")
     end
     prepend("$[field]", "http://lobid.org/organisations/")
     append("$[field]", "#!")
+    copy_field("$[field]","$[label]")
+    lookup("$[label]","lobidOrgLabels",delete:"true")
+  end
+
+  unless exists("$[label]")
+    if any_contain("$[field]","lobid")
+      add_field("$[label]","lobid Organisation")
+    elsif any_contain("$[field]","ebookcentral")
+      add_field("$[label]","Ebookcentral Proquest")
+    elsif any_contain("$[field]","ebrary")
+      add_field("$[label]","Ebrary")
+    end
   end
 
 
@@ -560,3 +572,16 @@ do put_macro("manufacture")
     end
   end
 end
+
+
+# lobid resources label
+do put_macro("lobidResourcesFallbackLabel")
+  do list(path:"$[field]","var":"$array")
+    unless exists("$array.label")
+      if any_contain("$array.id","lobid")
+        add_field("$array.label","lobid Ressource")
+      end
+    end
+  end
+end
+

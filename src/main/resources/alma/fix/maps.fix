@@ -55,6 +55,13 @@ put_filemap("$[isil2opac_issn.tsv]","isil2opac_issn", sep_char:"\t")
 put_filemap("$[isil2opac_zdbId.tsv]","isil2opac_zdbId", sep_char:"\t")
 put_filemap("$[isil2opac_almaMmsId.tsv]","isil2opac_almaMmsId", sep_char:"\t")
 
+# marcRel
+put_filemap("$[marcRel.tsv]","marcRel", sep_char:"\t",key_column:"0",value_column:"1",expected_columns:"-1")
+
+# collection labels
+put_filemap("$[collectionLabels.tsv]","collectionLabels", sep_char:"\t",key_column:"0",value_column:"1",expected_columns:"-1")
+
+
 
 put_map("rswk-indicator",
   "p": "Person",
@@ -65,8 +72,22 @@ put_map("rswk-indicator",
   "s": "SubjectHeading"
 )
 
-
-
+put_map("marc-publication-frequency-label",
+  "http://marc21rdf.info/terms/continuingfre#d" : "täglich",
+  "http://marc21rdf.info/terms/continuingfre#i" : "dreimal wöchentlich",
+  "http://marc21rdf.info/terms/continuingfre#c" : "zweimal wöchentlich",
+  "http://marc21rdf.info/terms/continuingfre#w" : "wöchentlich",
+  "http://marc21rdf.info/terms/continuingfre#e" : "vierzehntägig",
+  "http://marc21rdf.info/terms/continuingfre#s" : "halbmonatlich",
+  "http://marc21rdf.info/terms/continuingfre#m" : "monatlich",
+  "http://marc21rdf.info/terms/continuingfre#b" : "alle zwei Monate",
+  "http://marc21rdf.info/terms/continuingfre#q" : "vierteljährlich",
+  "http://marc21rdf.info/terms/continuingfre#f" : "halbjährlich",
+  "http://marc21rdf.info/terms/continuingfre#a" : "jährlich",
+  "http://marc21rdf.info/terms/continuingfre#g" : "alle zwei Jahre",
+  "http://marc21rdf.info/terms/continuingfre#h" : "alle drei Jahre",
+  "http://marc21rdf.info/terms/continuingfre#z" : "unregelmäßig oder sonstige Erscheinungsfrequenz"
+)
 
 put_map("medium-id-to-label",
   "Audio-Dokument":	"http://purl.org/ontology/bibo/AudioDocument",

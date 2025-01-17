@@ -107,16 +107,10 @@ add_array("describedBy.resultOf.object.modifiedBy[]")
 
 end
 
-call_macro("provenanceLinks",field: "describedBy.resultOf.object.sourceOrganization.id")
-copy_field("describedBy.resultOf.object.sourceOrganization.id","describedBy.resultOf.object.sourceOrganization.label")
-lookup("describedBy.resultOf.object.sourceOrganization.label","lobidOrgLabels",delete:"true")
-call_macro("provenanceLinks",field: "describedBy.resultOf.object.provider.id")
-copy_field("describedBy.resultOf.object.provider.id","describedBy.resultOf.object.provider.label")
-lookup("describedBy.resultOf.object.provider.label","lobidOrgLabels",delete:"true")
+call_macro("provenanceLinks",field: "describedBy.resultOf.object.sourceOrganization.id",label: "describedBy.resultOf.object.sourceOrganization.label")
+call_macro("provenanceLinks",field: "describedBy.resultOf.object.provider.id",label: "describedBy.resultOf.object.provider.label")
 do list(path:"describedBy.resultOf.object.modifiedBy[]","var":"$i")
-  call_macro("provenanceLinks",field: "$i.id")
-  copy_field("$i.id","$i.label")
+  call_macro("provenanceLinks",field: "$i.id",label:"$i.label")
 end
-lookup("describedBy.resultOf.object.modifiedBy[].*.label","lobidOrgLabels",delete:"true")
 
 uniq("describedBy.resultOf.object.modifiedBy[]")

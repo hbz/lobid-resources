@@ -364,6 +364,8 @@ if any_equal("natureOfContent[].*.label","Website")
   do list(path: "856??", "var": "$i")
     unless any_contain("$i.u", "edoweb")
       copy_field("$i.u","webPageArchived[].$append.id")
+      copy_field("$i.u","webPageArchived[].$last.label")
+      replace_all("webPageArchived[].$last.label","http[s]?://(.*?)[/]?$","$1")
     end
   end
 end

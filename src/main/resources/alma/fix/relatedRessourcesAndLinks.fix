@@ -72,6 +72,7 @@ end
 replace_all("supplement[].*.id","^\\(DE-605\\)(.*)$","http://lobid.org/resources/$1#!")
 replace_all("supplement[].*.id","^\\(DE-600\\)(.*)$","http://lobid.org/resources/ZDB-$1#!")
 replace_all("supplement[].*.label","<<|>>","")
+call_macro("lobidResourcesFallbackLabel",field:"supplement[]")
 
 # isPartOf
 # it describes the relation between a published ressource and its superordinate series or collection.
@@ -201,10 +202,15 @@ replace_all("isPartOf[].*.hasSuperordinate[].*.id", "^\\(DE-605\\)(.*)$", "http:
 replace_all("isPartOf[].*.hasSuperordinate[].*.id", "^\\(DE-600\\)(.*)$", "http://lobid.org/resources/ZDB-$1#!")
 
 replace_all("isPartOf[].*.numbering", "^[©]|\\s?[,.:;/=]?$", "")
+do list(path:"isPartOf[]","var":"$i")
+  call_macro("lobidResourcesFallbackLabel",field:"$i.hasSuperordinate[]")
+end
+
 uniq("isPartOf[]")
 replace_all("containedIn[].*.id", "^\\(DE-605\\)(.*)$", "http://lobid.org/resources/$1#!")
 replace_all("containedIn[].*.id", "^\\(DE-600\\)(.*)$", "http://lobid.org/resources/ZDB-$1#!")
 replace_all("containedIn[].*.label","<<|>>","")
+call_macro("lobidResourcesFallbackLabel",field:"containedIn[]")
 
 uniq("containedIn[]")
 
@@ -231,6 +237,7 @@ end
 
 replace_all("primaryForm[].*.id", "^\\(DE-605\\)(.*)$", "http://lobid.org/resources/$1#!")
 replace_all("primaryForm[].*.id", "^\\(DE-600\\)(.*)$", "http://lobid.org/resources/ZDB-$1#!")
+call_macro("lobidResourcesFallbackLabel",field:"primaryForm[]")
 
 # secondaryForm
 
@@ -249,6 +256,9 @@ do list(path: "77608", "var":"$i")
     end
   end
 end
+
+call_macro("lobidResourcesFallbackLabel",field:"secondaryForm[]")
+
 
 
 # 856 - Electronic Location and Access (R) - Subfield: $u (R) $3 (NR)
@@ -311,6 +321,7 @@ do list(path:"doi[]","var":"$i")
   prepend("fulltextOnline[].$last.id","https://doi.org/")
   copy_field("fulltextOnline[].$last.id", "sameAs[].$append.id")
   add_field("fulltextOnline[].$last.label", "DOI-Link")
+  add_field("sameAs[].$last.label", "DOI-Link")
 end
 
 # urn for fullTextOnline and sameAs
@@ -319,6 +330,7 @@ do list(path:"@urnLinks","var":"$i")
   copy_field("$i", "fulltextOnline[].$append.id")
   copy_field("fulltextOnline[].$last.id", "sameAs[].$append.id")
   add_field("fulltextOnline[].$last.label", "URN-Link")
+  add_field("sameAs[].$last.label", "URN-Link")
 end
 
 if is_empty("@urnLinks")
@@ -327,6 +339,7 @@ if is_empty("@urnLinks")
     prepend("fulltextOnline[].$last.id","https://nbn-resolving.org/")
     copy_field("fulltextOnline[].$last.id", "sameAs[].$append.id")
     add_field("fulltextOnline[].$last.label", "URN-Link")
+    add_field("sameAs[].$last.label", "URN-Link")
   end
 end
 
@@ -406,6 +419,7 @@ end
 replace_all("related[].*.id", "^\\(DE-605\\)(.*)$", "http://lobid.org/resources/$1#!")
 replace_all("related[].*.id", "^\\(DE-600\\)(.*)$", "http://lobid.org/resources/ZDB-$1#!")
 replace_all("related[].*.label","<<|>>","")
+call_macro("lobidResourcesFallbackLabel",field:"related[]")
 
 add_array("inCollection[]")
 
@@ -544,6 +558,9 @@ do list(path:"912  ", "var":"$i")
     replace_all("inCollection[].$last.id", "(ZDB-[0-9]{1,6}-[a-zA-Z|0-9\\-]*).*", "http://lobid.org/organisations/$1#!")
     copy_field("inCollection[].$last.id","$i.@label")
     lookup("$i.@label","lobidOrgLabels",delete:"true")
+    unless exists("$i.@label")
+      add_field("$i.@label","lobid Organisation ZDB Collection")
+    end
     move_field("$i.@label","inCollection[].$last.label")
   end
 end
@@ -558,11 +575,14 @@ do list(path:"962  ", "var":"$i")
     unless any_match("$j", "^ZDB.*")
       copy_field("$j", "inCollection[].$append.id")
       replace_all("inCollection[].$last.id", "^(.*)$", "https://lobid.org/collections#$1")
-      # TODO: Do we need a label?
+      copy_field("inCollection[].$last.id","inCollection[].$last.label")
+      lookup("inCollection[].$last.label","collectionLabels")
+      if any_match("inCollection[].$last.label","https://lobid.org/collections.*") #Fallback label for hbz collections
+        replace_all("inCollection[].$last.label","https://lobid.org/collections#(.*)","$1 Collection")
+      end
     end
   end
 end
-
 
 # 960 ## no Information about repeatability
 # TODO: This needs further inspection if we need a collection fr all subfields: https://service-wiki.hbz-nrw.de/display/VDBE/960+-+Selektionskennzeichen+NZ
@@ -571,14 +591,13 @@ end
 # do list(path:"960??", "var":"$i")
 #   do list(path:"$i.?", "var": "$j")
 #       copy_field("$j", "inCollection[].$append.id")
-#       replace_all("inCollection[].$last.id", "^(.*)$", "https://lobid.org/collections#$1")
+#       replace_all("inCollection[].$last.id", "^(.*)$", "http://lobid.org/collections#$1")
 #       # TODO: Do we need a label? https://github.com/hbz/lobid-resources/issues/1305#issuecomment-912312471, also labels seem wrong.
 #   end
 # end
 
 
 add_array("inCollection[].*.type[]","Collection")
-
 
 # predecessor
 
@@ -603,7 +622,7 @@ end
 
 replace_all("predecessor[].*.id", "^\\(DE-605\\)(.*)$", "http://lobid.org/resources/$1#!")
 replace_all("predecessor[].*.id", "^\\(DE-600\\)(.*)$", "http://lobid.org/resources/ZDB-$1#!")
-
+call_macro("lobidResourcesFallbackLabel",field:"predecessor[]")
 
 replace_all("predecessor[].*.label","Vorg. ---> ","")
 

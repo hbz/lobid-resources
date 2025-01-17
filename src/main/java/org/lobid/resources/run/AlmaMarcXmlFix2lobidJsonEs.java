@@ -139,6 +139,9 @@ public class AlmaMarcXmlFix2lobidJsonEs {
                 fixVariables.put("isil2opac_issn.tsv", "../../../../../../lookup-tables/data/opacLinks/isil2opac_issn.tsv");
                 fixVariables.put("isil2opac_zdbId.tsv", "../../../../../../lookup-tables/data/opacLinks/isil2opac_zdbId.tsv");
                 fixVariables.put("isil2opac_almaMmsId.tsv", "../../../../../../lookup-tables/data/opacLinks/isil2opac_almaMmsId.tsv");
+                fixVariables.put("marcRel.tsv", "./maps/marcRel.tsv");
+                fixVariables.put("collectionLabels.tsv", "./maps/collectionLabels.tsv");
+
 
 
                 XmlElementSplitter xmlElementSplitter = new XmlElementSplitter();
