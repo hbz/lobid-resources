@@ -192,7 +192,7 @@ if any_match("leader", "^.{7}[ad].*")
   end
 end
 
-do list(path: "isPartOf[].*.hasSuperordinate[]", "var": "$i")
+do list(path: "isPartOf[].*.hasSuperordinate[]", "var": "$i") ## This is the fallback for isPartOf[].*.hasSuperordinate[].*.label
   unless exists("$i.label")
     copy_field("@title", "$i.label")
   end
@@ -202,9 +202,6 @@ replace_all("isPartOf[].*.hasSuperordinate[].*.id", "^\\(DE-605\\)(.*)$", "http:
 replace_all("isPartOf[].*.hasSuperordinate[].*.id", "^\\(DE-600\\)(.*)$", "http://lobid.org/resources/ZDB-$1#!")
 
 replace_all("isPartOf[].*.numbering", "^[©]|\\s?[,.:;/=]?$", "")
-do list(path:"isPartOf[]","var":"$i")
-  call_macro("lobidResourcesFallbackLabel",field:"$i.hasSuperordinate[]")
-end
 add_array("isPartOf[].*.type[]", "IsPartOfRelation")
 
 uniq("isPartOf[]")
