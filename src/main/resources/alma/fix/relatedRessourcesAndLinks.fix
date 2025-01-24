@@ -86,7 +86,7 @@ unless any_match("leader", "^.{7}[ad].*")
   do list(path: "773??", "var": "$i")
     unless any_equal("$i.9","LOCAL")
       do list(path: "$i.w", "var": "$j")
-        add_array("isPartOf[].$append.type[]", "IsPartOfRelation")
+        add_hash("isPartOf[].$append")
         add_array("isPartOf[].$last.hasSuperordinate[]")
         add_hash( "isPartOf[].$last.hasSuperordinate[].$append")
         if all_match("$j", "^\\((?:DE-600|DE-605)\\)(.*)$")
@@ -108,7 +108,7 @@ end
 # 490 with 1. Indicator 1 has an identical entry in 830. So only 490 with 1. Indicator 0
 
 do list(path: "4900?", "var": "$i")
-  add_array("isPartOf[].$append.type[]", "IsPartOfRelation")
+  add_hash("isPartOf[].$append")
   add_array("isPartOf[].$last.hasSuperordinate[]")
   add_hash( "isPartOf[].$last.hasSuperordinate[].$append")
   add_array("isPartOf[].$last.hasSuperordinate[].$last.label")
@@ -130,18 +130,19 @@ end
 # Element can be repeatable with local entries they have subfield $M.
 
 do list(path: "830??", "var": "$i")
-  add_array("isPartOf[].$append.type[]", "IsPartOfRelation")
+  add_hash("isPartOf[].$append")
   add_array("isPartOf[].$last.hasSuperordinate[]")
   add_hash( "isPartOf[].$last.hasSuperordinate[].$append")
   if all_match("$i.w", "^\\((?:DE-600|DE-605)\\)(.*)$")
     copy_field("$i.w", "isPartOf[].$last.hasSuperordinate[].$last.id")
   end
-  add_array("isPartOf[].$last.hasSuperordinate[].$last.label")
   do list(path:"$i.a", "var":"$j")
     copy_field("$j", "isPartOf[].$last.hasSuperordinate[].$last.label.$append")
   end
   join_field("isPartOf[].$last.hasSuperordinate[].$last.label", " / ")
-  copy_field("$i.v", "isPartOf[].$last.numbering")
+  unless is_empty("isPartOf[].$last.hasSuperordinate[].1")
+    copy_field("$i.v", "isPartOf[].$last.numbering")
+  end
 end
 
 do list(path: "4901?", "var": "$j")
@@ -164,7 +165,7 @@ if any_match("leader", "^.{7}[ad].*")
     do list(path: "773??", "var": "$i")
       unless any_equal("$i.9","LOCAL")
         do list(path: "$i.w", "var": "$j")
-          add_array("isPartOf[].$append.type[]", "IsPartOfRelation")
+          add_hash("isPartOf[].$append")
           add_array("isPartOf[].$last.hasSuperordinate[]")
           add_hash( "isPartOf[].$last.hasSuperordinate[].$append")
           if all_match("$j", "^\\((?:DE-600|DE-605)\\)(.*)$")
@@ -192,9 +193,14 @@ if any_match("leader", "^.{7}[ad].*")
   end
 end
 
-do list(path: "isPartOf[].*.hasSuperordinate[]", "var": "$i")
-  unless exists("$i.label")
-    copy_field("@title", "$i.label")
+do list(path: "isPartOf[]","var":"$i")
+  unless is_empty("$i.hasSuperordinate[].1")
+    do list(path:"$i.hasSuperordinate[]", "var": "$j") ## This is the fallback for isPartOf[].*.hasSuperordinate[].*.label
+      unless exists("$j.label")
+        copy_field("@title", "$j.label")
+      end
+    end
+    add_array("$i.type[]", "IsPartOfRelation")
   end
 end
 
@@ -202,11 +208,11 @@ replace_all("isPartOf[].*.hasSuperordinate[].*.id", "^\\(DE-605\\)(.*)$", "http:
 replace_all("isPartOf[].*.hasSuperordinate[].*.id", "^\\(DE-600\\)(.*)$", "http://lobid.org/resources/ZDB-$1#!")
 
 replace_all("isPartOf[].*.numbering", "^[©]|\\s?[,.:;/=]?$", "")
-do list(path:"isPartOf[]","var":"$i")
-  call_macro("lobidResourcesFallbackLabel",field:"$i.hasSuperordinate[]")
-end
+
 
 uniq("isPartOf[]")
+
+
 replace_all("containedIn[].*.id", "^\\(DE-605\\)(.*)$", "http://lobid.org/resources/$1#!")
 replace_all("containedIn[].*.id", "^\\(DE-600\\)(.*)$", "http://lobid.org/resources/ZDB-$1#!")
 replace_all("containedIn[].*.label","<<|>>","")
