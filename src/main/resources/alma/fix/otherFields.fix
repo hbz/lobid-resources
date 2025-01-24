@@ -130,6 +130,9 @@ do list(path:"520[ 23] ", "var": "$i")
   copy_field("$i.[ab]", "abstract[].$append")
 end
 
+replace_all("abstract[].*","^<!\\[CDATA\\[(.*)\\]\\]>$","$1")
+replace_all("abstract[].*","<[\\/]?.{1,2}>","")
+
 # 502 - Dissertation Note (R) Subfield: $a (R)
 add_array("thesisInformation[]")
 do list(path:"502  ", "var": "$i")
