@@ -633,6 +633,12 @@
                 },
                 "id": {
                   "type": "keyword"
+                },
+                "gndIdentifier": {
+                  "type": "keyword",
+                  "copy_to": [
+                    "q.all"
+                  ]
                 }
               }
             },
@@ -726,6 +732,13 @@
                 "id": {
                   "type": "keyword"
                 },
+                "gndIdentifier": {
+                  "type": "keyword",
+                  "copy_to": [
+                    "q.all",
+                    "q.subject"
+                  ]
+                },
                 "dateOfBirthAndDeath": {
                   "type": "text"
                 },
@@ -769,6 +782,13 @@
             },
             "id": {
               "type": "keyword"
+            },
+            "gndIdentifier": {
+              "type": "keyword",
+              "copy_to": [
+                "q.all",
+                "q.subject"
+              ]
             },
             "label": {
               "type": "text",
