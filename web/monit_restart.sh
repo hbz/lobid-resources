@@ -39,7 +39,7 @@ case $ACTION in
           kill $(cat target/universal/stage/RUNNING_PID)
           rm target/universal/stage/RUNNING_PID
        fi
-       JAVA_OPTS="$JAVA_OPTS -XX:+ExitOnOutOfMemoryError -XX:+HeapDumpOnOutOfMemoryError -DpreferIPv4Stack"
+       export JAVA_OPTS="$JAVA_OPTS -XX:+ExitOnOutOfMemoryError -XX:+HeapDumpOnOutOfMemoryError -DpreferIPv4Stack"
        sbt clean
        sbt --java-home $JAVA_HOME stage
        ./target/universal/stage/bin/lobid-resources-web -Dhttp.port=$PORT -no-version-check > monit_start.log &
