@@ -585,3 +585,11 @@ do put_macro("lobidResourcesFallbackLabel")
   end
 end
 
+# validate leap years
+do put_macro("leapYearChecker")
+  if any_match("$[date]","....-02-29")
+    unless any_match("$[date]","(((18|19|20)(04|08|[2468][048]|[13579][26]))|2000)-02-29")
+      replace_all("$[date]","(....-02)-29","$1-28")
+    end
+  end
+end
