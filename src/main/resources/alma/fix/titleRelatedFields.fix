@@ -326,6 +326,8 @@ do list(path: "publication[]", "var": "$i")
   replace_all("$i.location[].*", "^\\[(.*)\\]$", "$1")
   replace_all("$i.location[].*", "\\s?[,:;]$", "")
   replace_all("$i.publishedBy[].*", "^[©]|\\s?[,:;/=]?$", "")
+  call_macro("leapYearChecker",date:"$i.startDate")
+  call_macro("leapYearChecker",date:"$i.endDate")
   uniq("$i.location[]")
 end
 
