@@ -131,3 +131,11 @@ do list(path: "hasItem[]","var":"$i")
     add_field("$i.inCollection[].1.label","Bibliotheken ohne zentrale Katalogisierung (IZ Bridge)")
   end
 end
+
+copy_field("id", "@DE-Sol1-Holdings")
+lookup("@DE-Sol1-Holdings","sol1Holdings",delete:"true")
+replace_all("@DE-Sol1-Holdings",'""','"')
+from_json("@DE-Sol1-Holdings")
+do list(path:"@DE-Sol1-Holdings","var":"$i")
+  copy_field("$i","hasItem[].$append")
+end
