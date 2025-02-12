@@ -61,7 +61,8 @@ put_filemap("$[marcRel.tsv]","marcRel", sep_char:"\t",key_column:"0",value_colum
 # collection labels
 put_filemap("$[collectionLabels.tsv]","collectionLabels", sep_char:"\t",key_column:"0",value_column:"1",expected_columns:"-1")
 
-
+# map record id to holdings of DE-Sol1. see: https://github.com/hbz/lobid-extra-holdings/issues/2
+put_filemap("$[sol1Holding_seq.tsv]","sol1Holdings", sep_char:"\t",key_column:"0",value_column:"1",expected_columns:"-1")
 
 put_map("rswk-indicator",
   "p": "Person",
