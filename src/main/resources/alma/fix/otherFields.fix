@@ -112,7 +112,9 @@ replace_all("extent", "  ", " ")
 # 500 - General Note (R) Subfield: $a (NR)
 add_array("note[]")
 do list(path:"500  ", "var": "$i")
-  copy_field("$i.a", "note[].$append")
+  unless any_contain("$i.a","In:")
+    copy_field("$i.a", "note[].$append")
+  end
 end
 uniq("note[]")
 
