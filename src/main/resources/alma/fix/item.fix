@@ -14,6 +14,7 @@ do list(path:"ITM  ", "var": "$i")
       else # $c = Call number subfield
         copy_field("$i.c", "hasItem[].$last.callNumber")
       end
+      copy_field("$i.B", "hasItem[].$last.inventoryNumber")
       copy_field("$i.H", "@ITM-H.$append")
       copy_field("$i.b", "hasItem[].$last.serialNumber")
       copy_field("$i.w","hasItem[].$last.currentLibrary")
