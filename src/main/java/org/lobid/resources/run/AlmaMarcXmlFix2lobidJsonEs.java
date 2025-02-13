@@ -141,7 +141,7 @@ public class AlmaMarcXmlFix2lobidJsonEs {
                 fixVariables.put("isil2opac_almaMmsId.tsv", "../../../../../../lookup-tables/data/opacLinks/isil2opac_almaMmsId.tsv");
                 fixVariables.put("marcRel.tsv", "./maps/marcRel.tsv");
                 fixVariables.put("collectionLabels.tsv", "./maps/collectionLabels.tsv");
-
+                fixVariables.put("sol1Holding_seq.tsv", "./maps/sol1Holding_seq.tsv.gz");
 
 
                 XmlElementSplitter xmlElementSplitter = new XmlElementSplitter();
