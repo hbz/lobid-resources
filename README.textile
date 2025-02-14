@@ -27,9 +27,11 @@ Build lobid-resources:
 Build the web application:
 
 * @cd web@
-* @wget http://downloads.typesafe.com/typesafe-activator/1.3.10/typesafe-activator-1.3.10-minimal.zip@
-* @unzip typesafe-activator-1.3.10-minimal.zip@
-* @./activator-1.3.10-minimal/bin/activator test@
+* Make sure you have the proper version of sbt:
+* @sbt --version sbt@
+* @version in this project: 1.8.2@
+
+Then follow the script in @web/monit_restart.sh@.
 
 See the @.github/workflows/build.yml@ file for details on the CI config used by Github Actions.
 
