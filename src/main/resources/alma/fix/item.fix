@@ -1,7 +1,8 @@
 add_array("hasItem[]")
 add_array("@ITM-H") # Helper element for creating Holding from HOL ("PhysikalischerTitel")
 do list(path:"ITM  ", "var": "$i")
-  unless any_match("$i.a",".*7830$") # exclude DE-Sol1-Bridge items/holdings because we add them otherwise
+  call_macro("deSol1BridgeTester", holdingId: "$i.a")
+  unless exists("$i.deSol1Bridge") # exclude DE-Sol1-Bridge items/holdings because we add them otherwise
     call_macro("suppressedLocation", targetField: "$i", libraryCodeSubfield: "w", locationCodeSubfield: "x")
     unless exists("$i.suppressedLocation") # Test if location is suppressed with mapping provided by the libraries.
       add_hash( "hasItem[].$append")
@@ -26,7 +27,8 @@ end
 
 add_array("@HOL-M_POR-M") # Helper element for creating Holding from MBD ("NurTitel")
 do list(path: "HOL  ", "var": "$i")
-  unless any_match("$i.8",".*7830$") # exclude DE-Sol1-Bridge items/holdings because we add them otherwise
+  call_macro("deSol1BridgeTester", holdingId: "$i.8")
+  unless exists("$i.deSol1Bridge") # exclude DE-Sol1-Bridge items/holdings because we add them otherwise
     copy_field("$i.M","@HOL-M_POR-M.$append")
     unless in("$i.8", "@ITM-H") # Checks if there is no corresponding ITM-Field
       do list(path:"H52??", "var": "$H52")
@@ -100,7 +102,8 @@ do list(path:"POR  ", "var": "$i")
 end
 
 do list(path: "MBD  ", "var": "$i")
-  unless any_match("$i.i",".*7830$") # exclude DE-Sol1-Bridge items/holdings because we add them otherwise
+  call_macro("deSol1BridgeTester", holdingId: "$i.i")
+  unless exists("$i.deSol1Bridge") # exclude DE-Sol1-Bridge items/holdings because we add them otherwise
     unless any_match("$i.M","49HBZ_NETWORK")
       unless in("$i.M", "@HOL-M_POR-M") # Checks if there is no corresponding HOL or POR-Field
         add_hash( "hasItem[].$append")
@@ -133,10 +136,12 @@ do list(path: "hasItem[]","var":"$i")
   end
 end
 
-copy_field("id", "@DE-Sol1-Holdings")
-lookup("@DE-Sol1-Holdings","sol1Holdings",delete:"true")
-replace_all("@DE-Sol1-Holdings",'""','"')
-from_json("@DE-Sol1-Holdings")
-do list(path:"@DE-Sol1-Holdings","var":"$i")
-  copy_field("$i","hasItem[].$append")
+unless exists("zdbId")
+  copy_field("id", "@DE-Sol1-Holdings")
+  lookup("@DE-Sol1-Holdings","sol1Holdings",delete:"true")
+  replace_all("@DE-Sol1-Holdings",'""','"')
+  from_json("@DE-Sol1-Holdings")
+  do list(path:"@DE-Sol1-Holdings","var":"$i")
+    copy_field("$i","hasItem[].$append")
+  end
 end
