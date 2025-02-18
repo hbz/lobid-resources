@@ -599,6 +599,8 @@ end
 
 do put_macro("deSol1BridgeTester")
   if any_match("$[holdingId]",".*7830$")
-    add_field("$i.deSol1Bridge","true")
+    unless exists("zdbId")
+      add_field("$i.deSol1Bridge","true")
+    end
   end
 end
