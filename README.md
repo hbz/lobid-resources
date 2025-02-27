@@ -1,4 +1,6 @@
-# About
+# README
+
+## About
 
 Transform Alma MARC-XML to JSON for Elasticsearch indexing with
 [Metafacture](https://github.com/culturegraph/metafacture-core/wiki),
@@ -12,9 +14,9 @@ This repo replaces the lobid-resources part of
 For information about the Lobid architecture and development process,
 see <http://hbz.github.io/#lobid>.
 
-# Build
+## Build
 
-[![](https://github.com/hbz/lobid-resources/workflows/Build/badge.svg?branch=master)](https://github.com/hbz/lobid-resources/actions?query=branch%3Amaster)
+[![Build No Status](https://github.com/hbz/lobid-resources/workflows/Build/badge.svg?branch=master)](https://github.com/hbz/lobid-resources/actions?query=branch%3Amaster)
 
 Prerequisites: Java 11, Maven 3; verify with `mvn -version`
 
@@ -61,7 +63,7 @@ the background, you can use the included `restart.sh` script (configured
 to use port 8000). For more information, see the [Play
 documentation](https://playframework.com/documentation/2.4.x/Home).
 
-# Example of getting the data
+## Example of getting the data
 
 In the online test the data is indexed into a living elasticsearch
 instance.
@@ -70,13 +72,13 @@ test
 must be executed manually. Then elasticsearch can be looked up like
 this:
 
-https://lobid.org/resources/990054215550206441
+<https://lobid.org/resources/990054215550206441>
 
 For querying it you can use the elasticsearch query DSL, like:
 
-https://lobid.org/resources/search?q=title:%22Moby%20dick%22
+<https://lobid.org/resources/search?q=title:%22Moby%20dick%22>
 
-# Developer instructions
+## Developer instructions
 
 This section explains how to make a successful build after changing the
 transformations,
@@ -92,14 +94,14 @@ the build must be executed:
 
 Two possible outcomes:
 
-- **BUILD SUCCESS**: the tested resources don’t reflect the changes.
+- **BUILD SUCCESS**: the tested resources don't reflect the changes.
   In this case you should add an Alma-MARC-XML resource to
   [src/test/resources/alma-fix/](https://github.com/hbz/lobid-resources/blob/master/src/test/resources/alma-fix)
   that *would* reflect your changes.
 
 <!-- -->
 
-- **BUILD FAILURE**: the newly generated data isn’t equal to the test
+- **BUILD FAILURE**: the newly generated data isn't equal to the test
   resources.
   This is a good thing because you wanted the change.
 
@@ -110,11 +112,11 @@ you would rebuild now, the build will pass successfully.
 You just must approve the new outcome by committing it.
 
 Now you must approve the new outcome.
-Let’s see what has changed:
+Let's see what has changed:
 
 `git status`
 
-Let’s make a diff on the changes, e.g. all JSON-LD documents:
+Let's make a diff on the changes, e.g. all JSON-LD documents:
 
 `git diff src/test/resources/alma-fix/`
 
@@ -128,7 +130,7 @@ If you are satisfied with the changes, go ahead and add and commit them:
 `git add src/test/resources/alma-fix/; git commit`
 
 Do this respectivly for all other test files (Ntriples …).
-If you’ve added and commited everything, check again if all is ok:
+If you've added and commited everything, check again if all is ok:
 
 `mvn clean install`
 
@@ -138,12 +140,12 @@ Check if the play tests work, e.g.:
 
 `cd web; sbt "test:testOnly *IntegrationTest"`
 
-If that fails, check the tests. Most of the time the “fix” is to update
+If that fails, check the tests. Most of the time the "fix" is to update
 the test
 as new data introduce more/less hits.
 Then, at last:
 
-You’re done :)
+You're done :)
 
 ## Tables as gitsubmodules
 
@@ -170,7 +172,7 @@ When the small test set is indexed by using *buildAndETLTestAlmaFix.sh*
 deploy your branch in
 the staging directory of the web application. The *context* for the
 resources is adapted
-to use the “staging.lobid.org”~~domain and thus the
+to use the "staging.lobid.org"~~domain and thus the
 staging~~*context.jsonld* will resolve using the one in that directory.
 
 ### Elasticsearch index
@@ -183,6 +185,6 @@ plugin.](https://github.com/hbz/lobid-resources/issues/1615#issuecomment-1516331
 Have a look at the [maintaining
 guide.](https://github.com/hbz/lobid-resources/wiki/Maintaining-lobid-API)
 
-# License
+## License
 
 Eclipse Public License: <http://www.eclipse.org/legal/epl-v10.html>
