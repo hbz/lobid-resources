@@ -74,6 +74,11 @@ public final class EtikettJson
     }
   }
 
+  @Override
+  protected void onCloseStream() {
+    etikettMaker.close();
+  }
+
   private String getEtikettForEveryUri(final Map<String, Object> jsonMap)
       throws IOException {
       // don't label the root id

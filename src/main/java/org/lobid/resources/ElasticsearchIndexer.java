@@ -137,6 +137,16 @@ public class ElasticsearchIndexer
 		usrb.setSettings(settings);
 		usrb.execute().actionGet();
 		LOG.info("... finished indexing of ES index '" + indexName + "'");
+		LOG.info("Closing ES resources ...");
+		if (tc!=null) {
+			tc.close();
+		}
+		if (client!=null) {
+			client.close();
+		}
+		if (unsuccessfullyLookup!=null) {
+			unsuccessfullyLookup.clear();
+		}
 	}
 
 	@Override
