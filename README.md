@@ -172,8 +172,8 @@ When the small test set is indexed by using *buildAndETLTestAlmaFix.sh*
 deploy your branch in
 the staging directory of the web application. The *context* for the
 resources is adapted
-to use the "staging.lobid.org"~~domain and thus the
-staging~~*context.jsonld* will resolve using the one in that directory.
+to use the "staging.lobid.org"-domain and thus the
+staging-*context.jsonld* will resolve using the one in that directory.
 
 ### Elasticsearch index
 
