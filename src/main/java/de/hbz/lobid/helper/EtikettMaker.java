@@ -307,4 +307,18 @@ public class EtikettMaker implements EtikettMakerInterface {
         contextLocation = contextFname;
     }
 
+    public void close(){
+        if (pMap!=null) {
+            pMap.clear();
+        }
+        if (nMap!=null) {
+            nMap.clear();
+        }
+        if (context!= null) {
+            context.clear();
+        }
+        if (labels!=null) {
+            labels.clear();
+        }
+    }
 }
