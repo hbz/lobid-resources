@@ -38,6 +38,9 @@ put_rdfmap("$[rpb.ttl]", "rpb", target: "skos:prefLabel", select_language: "de")
 put_rdfmap("$[nwbib-spatial.ttl]", "nwbib-spatial", target: "skos:prefLabel", select_language: "de") # NWBib-Raumsystematik
 put_rdfmap("$[nwbib.ttl]", "nwbib", target: "skos:prefLabel", select_language: "de") # Sachsystematik der Nordrhein-Westfälischen Bibliographie
 
+# GND-Systematik SKOS Map
+put_rdfmap("$[gnd-sc.ttl]", "gnd-sc-notationen", target: "skos:prefLabel", select_language: "de") # GND-Systematik
+
 # Formschlagwort/Formangaben-Mapping -> GND (based on: https://wiki.dnb.de/download/attachments/106042227/AH-007.pdf)
 put_filemap("$[formangabe.tsv]","formschlagwort2Gnd", sep_char:"\t",key_column:"0",value_column:"2",expected_columns:"-1")
 put_filemap("$[formangabe.tsv]","Gnd2formschlagwort", sep_char:"\t",key_column:"2",value_column:"0",expected_columns:"-1")
