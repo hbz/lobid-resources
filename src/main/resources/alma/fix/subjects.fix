@@ -337,6 +337,15 @@ do list(path:"084??", "var":"$i")
   end
 end
 
+do list(path: "subject[]","var":"$i") # Delete all notations without mapped source.
+  if exists("$i.notation")
+    unless exists("$i.source")
+      remove_field("$i.notation")
+      remove_field("$i.type[]")
+    end
+  end
+end
+
 # RVK via Culturegraph
 
 copy_field("almaMmsId","@rvkNotations")
