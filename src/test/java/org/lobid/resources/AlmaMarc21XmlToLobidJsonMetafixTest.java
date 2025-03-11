@@ -86,6 +86,7 @@ public final class AlmaMarc21XmlToLobidJsonMetafixTest {
         fixVariables.put("marcRel.tsv", "src/main/resources/alma/maps/marcRel.tsv");
         fixVariables.put("collectionLabels.tsv", "src/main/resources/alma/maps/collectionLabels.tsv");
         fixVariables.put("sol1Holding_seq.tsv", "src/main/resources/alma/maps/sol1Holding_seq.tsv.gz");
+        fixVariables.put("gnd-sc.ttl", "src/test/resources/alma/maps/gnd-sc.ttl");
     }
 
     /**
