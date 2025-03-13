@@ -66,8 +66,8 @@ replace_all("describedBy.resultOf.object.dateCreated","^(\\d{4})(\\d{2})(\\d{2})
 replace_all("describedBy.resultOf.object.dateModified","^(\\d{4})(\\d{2})(\\d{2})$","$1-$2-$3")
 replace_all("describedBy.resultOf.object.dateCreated","^(\\d{4})$","$1-01-01")
 replace_all("describedBy.resultOf.object.dateModified","^(\\d{4})$","$1-01-01")
-call_macro("leapYearChecker",date:"describedBy.resultOf.object.dateCreated")
-call_macro("leapYearChecker",date:"describedBy.resultOf.object.dateModified")
+call_macro("leapYearAndMonthLenghtChecker",date:"describedBy.resultOf.object.dateCreated")
+call_macro("leapYearAndMonthLenghtChecker",date:"describedBy.resultOf.object.dateModified")
 
 add_array("describedBy.resultOf.object.type[]", "DataFeedItem")
 
