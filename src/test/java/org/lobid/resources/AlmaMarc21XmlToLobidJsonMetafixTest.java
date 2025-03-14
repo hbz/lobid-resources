@@ -59,16 +59,16 @@ public final class AlmaMarc21XmlToLobidJsonMetafixTest {
         fixVariables.put("catalogid", "DE-605");
         fixVariables.put("createEndTime", "0"); // 0 <=> false
         fixVariables.put("institution-code", "DE-605");
-        fixVariables.put("deweyLabels", "src/test/resources/alma/maps/deweyLabels.tsv");
-        fixVariables.put("dnbSachgruppen", "src/main/resources/alma/maps/dnbSachgruppen.tsv");
+        fixVariables.put("deweyLabels.tsv", "src/test/resources/alma/maps/deweyLabels.tsv");
+        fixVariables.put("dnbSachgruppen.tsv", "src/main/resources/alma/maps/dnbSachgruppen.tsv");
         fixVariables.put("classification.tsv", "src/main/resources/alma/maps/classification.tsv");
         fixVariables.put("formangabe.tsv", "src/main/resources/alma/maps/formangabe.tsv");
-        fixVariables.put("maps-institutions.tsv", "src/main/resources/alma/maps/institutions.tsv");
-        fixVariables.put("sublibraryIsil", "src/test/resources/alma/maps/generatedAlmaSublibraryCode2Isil.tsv");
-        fixVariables.put("suppressedLocations", "src/test/resources/alma/maps/generatedAlmaSuppressedLocations.tsv");
+        fixVariables.put("institutions.tsv", "src/main/resources/alma/maps/institutions.tsv");
+        fixVariables.put("generatedAlmaSublibraryCode2Isil.tsv", "src/test/resources/alma/maps/generatedAlmaSublibraryCode2Isil.tsv");
+        fixVariables.put("generatedAlmaSuppressedLocations.tsv", "src/test/resources/alma/maps/generatedAlmaSuppressedLocations.tsv");
         fixVariables.put("picaCreatorId2Isil.tsv", "src/main/resources/alma/maps/picaCreatorId2Isil.tsv");
         fixVariables.put("nwbibWikidataLabelTypeCoords.tsv", "src/main/resources/alma/maps/nwbibWikidataLabelTypeCoords.tsv");
-        fixVariables.put("almaMmsId2rpbId", "src/test/resources/alma/maps/almaMmsId2rpbId.tsv");
+        fixVariables.put("almaMmsId2rpbId.tsv", "src/test/resources/alma/maps/almaMmsId2rpbId.tsv");
         fixVariables.put("rvk.tsv", "src/test/resources/cg/rvk.tsv");
         fixVariables.put("lobidOrganisationsMapping.tsv", "src/test/resources/alma/maps/lobidOrganisationsMapping.tsv");
         fixVariables.put("hbzowner2sigel.tsv", "src/main/resources/alma/maps/hbzowner2sigel.tsv");
@@ -77,7 +77,7 @@ public final class AlmaMarc21XmlToLobidJsonMetafixTest {
         fixVariables.put("rpb.ttl", "src/test/resources/alma/maps/rpb.ttl");
         fixVariables.put("nwbib.ttl", "src/test/resources/alma/maps/nwbib.ttl");
         fixVariables.put("nwbib-spatial.ttl", "src/test/resources/alma/maps/nwbib-spatial.ttl");
-        fixVariables.put("hbzId2zdbId.tsv", "src/main/resources/alma/maps/hbzId2zdbId.tsv.gz");
+        fixVariables.put("hbzId2zdbId.tsv.gz", "src/main/resources/alma/maps/hbzId2zdbId.tsv.gz");
         fixVariables.put("isil2opac_hbzId.tsv", "src/test/resources/alma/maps/isil2opac_hbzId.tsv");
         fixVariables.put("isil2opac_isbn.tsv", "src/test/resources/alma/maps/isil2opac_isbn.tsv");
         fixVariables.put("isil2opac_issn.tsv", "src/test/resources/alma/maps/isil2opac_issn.tsv");
@@ -85,7 +85,7 @@ public final class AlmaMarc21XmlToLobidJsonMetafixTest {
         fixVariables.put("isil2opac_almaMmsId.tsv", "src/test/resources/alma/maps/isil2opac_almaMmsId.tsv");
         fixVariables.put("marcRel.tsv", "src/main/resources/alma/maps/marcRel.tsv");
         fixVariables.put("collectionLabels.tsv", "src/main/resources/alma/maps/collectionLabels.tsv");
-        fixVariables.put("sol1Holding_seq.tsv", "src/main/resources/alma/maps/sol1Holding_seq.tsv.gz");
+        fixVariables.put("sol1Holding_seq.tsv.gz", "src/main/resources/alma/maps/sol1Holding_seq.tsv.gz");
         fixVariables.put("gnd-sc.ttl", "src/test/resources/alma/maps/gnd-sc.ttl");
     }
 

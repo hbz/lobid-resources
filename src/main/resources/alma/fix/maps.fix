@@ -1,71 +1,143 @@
-put_filemap("$[maps-institutions.tsv]","alma-iz-code-to-isil", sep_char:"\t",key_column:"2",value_column:"4",expected_columns:"-1")
-put_filemap("$[maps-institutions.tsv]","alma-institution-code-to-isil", sep_char:"\t",key_column:"3",value_column:"4",expected_columns:"-1")
+# Map of hbz ALMA libraries, IZ, institution codes and isil
+# static file: src/main/resources/alma/maps/institutions.tsv
+# based on: https://service-wiki.hbz-nrw.de/spaces/GOALI/pages/949911658/NZ-Publishing+f%C3%BCr+Discovery-Anbindung+Lobid#NZPublishingf%C3%BCrDiscoveryAnbindung%3ALobid-Members
+put_filemap("$[institutions.tsv]","alma-iz-code-to-isil", sep_char:"\t",key_column:"2",value_column:"4",expected_columns:"-1")
+put_filemap("$[institutions.tsv]","alma-institution-code-to-isil", sep_char:"\t",key_column:"3",value_column:"4",expected_columns:"-1")
 
-put_filemap("$[sublibraryIsil]","sublibraryIsil", sep_char:"\t")
-put_filemap("$[suppressedLocations]","suppressedLocations", sep_char:"\t")
+# Map for library location of IZ provided in holding data
+# dynamic file from git submodule: lookup-tables/data/almaSublibraryCode2Isil/generated/generatedAlmaSublibraryCode2Isil.tsv
+# test file: src/test/resources/alma/maps/generatedAlmaSublibraryCode2Isil.tsv
+# based on: provided mapping of alma institutions in https://github.com/hbz/lookup-tables/
+put_filemap("$[generatedAlmaSublibraryCode2Isil.tsv]","sublibraryIsil", sep_char:"\t")
 
-# lobid Organisations id -> label
+# Map for supressed holding locations
+# dynamic file from git submodule: lookup-tables/data/almaSuppressedLocations/generated/generatedAlmaSuppressedLocations.tsv
+# test file: src/test/resources/alma/maps/generatedAlmaSuppressedLocations.tsv
+# based on: provided mapping of alma institutions in https://github.com/hbz/lookup-tables/
+put_filemap("$[generatedAlmaSuppressedLocations.tsv]","suppressedLocations", sep_char:"\t")
+
+# Map of lobid Organisations id, isil, sigil, name
+# dynamic file from cronjob: src/main/resources/alma/maps/lobidOrganisationsMapping.tsv
+# test file:  src/test/resources/alma/maps/lobidOrganisationsMapping.tsv
+# based on bulk download from lobid-organisation
 put_filemap("$[lobidOrganisationsMapping.tsv]","lobidOrgLabels", sep_char:"\t",key_column:"0",value_column:"3",expected_columns:"-1")
-
 put_filemap("$[lobidOrganisationsMapping.tsv]","sigel2isilMap", sep_char:"\t",key_column:"2",value_column:"1",expected_columns:"-1")
+
+# Map of owner, sigil (fka. Sigilliste) from Verbund, was relevant for Aleph and its bridges
+# static file: src/main/resources/alma/maps/hbzowner2sigel.tsv
+# based on export from https://service-wiki.hbz-nrw.de/display/VDBE/Liste+der+Sigel+und+Owner+der+hbz-Verbundbibliotheken
 put_filemap("$[hbzowner2sigel.tsv]","hbzowner2sigel", sep_char:"\t",key_column:"0",value_column:"2",expected_columns:"-1")
 
+# Map of pica code from DNB
+# static file: src/main/resources/alma/maps/picaCreatorId2Isil.tsv
+# based on: https://wiki.dnb.de/display/ILTIS/Liste+der+Urheberkennungen%2C+ISILs+und+Katalogisierungslevel
 put_filemap("$[picaCreatorId2Isil.tsv]","picaCreatorId2Isil", sep_char:"\t", sep_char:"\t",key_column:"0",value_column:"2",expected_columns:"-1")
 
-# NWbib-> Wikidata Lookup
+# Map of different NWbib and Wikidata info
+# dynamic file from cronjob: src/main/resources/alma/maps/nwbibWikidataLabelTypeCoords.tsv
+# test file:  src/test/resources/alma/maps/nwbibWikidataLabelTypeCoords.tsv
+# based on wikidata sparql query via cron job
 put_filemap("$[nwbibWikidataLabelTypeCoords.tsv]","nwbibWikidataId", sep_char:"\t",key_column:"0",value_column:"1",expected_columns:"-1")
 put_filemap("$[nwbibWikidataLabelTypeCoords.tsv]","nwbibWikidataLabel", sep_char:"\t",key_column:"0",value_column:"2",expected_columns:"-1")
 put_filemap("$[nwbibWikidataLabelTypeCoords.tsv]","nwbibWikidataTypes", sep_char:"\t",key_column:"0",value_column:"3",expected_columns:"-1")
 put_filemap("$[nwbibWikidataLabelTypeCoords.tsv]","nwbibWikidataGeodata", sep_char:"\t",key_column:"0",value_column:"4",expected_columns:"-1")
 
-# DDC & DNB-Sachgruppen
-put_filemap("$[deweyLabels]","deweyLabels",sep_char:"\t")
-put_filemap("$[dnbSachgruppen]","dnbSachgruppen",sep_char:"\t")
+# Map for DDC
+# not public file: src/main/resources/alma/maps/deweyLabels.tsv
+# test file: src/test/resources/alma/maps/deweyLabels.tsv
+# based on internal ddc mapping for german labels
+put_filemap("$[deweyLabels.tsv]","deweyLabels",sep_char:"\t")
 
-# Library Classifications
+# Map for DNB-Sachgruppen based on DDC
+# static file: src/main/resources/alma/maps/dnbSachgruppen.tsv
+# based on https://www.dnb.de/SharedDocs/Downloads/DE/Professionell/DDC/ddcSachgruppenDNBAb2013.pdf?__blob=publicationFile&v=7, https://www.dnb.de/SharedDocs/Downloads/DE/Professionell/DDC/ddcSachgruppenMundTAb2020.pdf?__blob=publicationFile&v=2
+put_filemap("$[dnbSachgruppen.tsv]","dnbSachgruppen",sep_char:"\t")
+
+# Map for different Library Classifications, Uri, Labels
+# static file: src/main/resources/alma/maps/dnbSachgruppen.tsv
+# based on old csv list and ALMA Config XML as well as individually researched URIs based on bartoc and others.
 put_filemap("$[classification.tsv]","classificationCode2Label", sep_char:"\t",key_column:"0",value_column:"1",expected_columns:"-1")
 put_filemap("$[classification.tsv]","classificationCode2Uri", sep_char:"\t",key_column:"0",value_column:"2",expected_columns:"-1")
 
-# RVK via Culturegraph
+# Map of RVK Notations via Culturegraph
+# TODO: CHANGE THIS TO .maps/... It conflates generated files based from submodules and java job
+# dynamic file from java process: lookup-tables/data/rvk.tsv
+# test file: src/test/resources/cg/rvk.tsv
+# based on aggregated culturegraph data, filtered to only those with RVK data
 put_filemap("$[rvk.tsv]","rvk", sep_char:"\t")
 
 # RPB SKOS Maps
-put_rdfmap("$[lbz-notationen.ttl]", "lbz-notationen", target: "skos:prefLabel", select_language: "de") # LBZ-Notationen fka rpb2 fka RPB-Sachgruppen und Zusätze
-put_rdfmap("$[rpb-spatial.ttl]", "rpbr", target: "skos:prefLabel", select_language: "de") # RPB-Raumsystematik aka rpbr
-put_rdfmap("$[rpb.ttl]", "rpb", target: "skos:prefLabel", select_language: "de") # RPB-Sachsystematik fka. Systematik der Rheinland-Pfälzischen Bibliographie
+# all based on LBZ specified vocabularies in repo https://github.com/hbz/lbz-vocabs
+# all included via submodule lbz-vocabs
+# all testfiles in: src/test/resources/alma/maps/
+# LBZ-Notationen fka rpb2 fka RPB-Sachgruppen und Zusätze
+put_rdfmap("$[lbz-notationen.ttl]", "lbz-notationen", target: "skos:prefLabel", select_language: "de")
+# RPB-Raumsystematik aka rpb-spatial aka rpbr
+put_rdfmap("$[rpb-spatial.ttl]", "rpbr", target: "skos:prefLabel", select_language: "de")
+# RPB-Sachsystematik fka. Systematik der Rheinland-Pfälzischen Bibliographie
+put_rdfmap("$[rpb.ttl]", "rpb", target: "skos:prefLabel", select_language: "de")
 
 # NWBib SKOS Maps
-put_rdfmap("$[nwbib-spatial.ttl]", "nwbib-spatial", target: "skos:prefLabel", select_language: "de") # NWBib-Raumsystematik
-put_rdfmap("$[nwbib.ttl]", "nwbib", target: "skos:prefLabel", select_language: "de") # Sachsystematik der Nordrhein-Westfälischen Bibliographie
+# TODO: Set submodule lobid vocabs to correct path: https://github.com/hbz/lobid-vocabs in .gitmodules
+# all based on nwbib specified vocabularies in repo https://github.com/hbz/lobid-vocabs
+# all included via submodule lobid-vocabs https://github.com/hbz/lobid-vocabs
+# all testfiles in: src/test/resources/alma/maps/
+# NWBib-Raumsystematik
+put_rdfmap("$[nwbib-spatial.ttl]", "nwbib-spatial", target: "skos:prefLabel", select_language: "de")
+# Sachsystematik der Nordrhein-Westfälischen Bibliographie
+put_rdfmap("$[nwbib.ttl]", "nwbib", target: "skos:prefLabel", select_language: "de")
 
 # GND-Systematik SKOS Map
+# dynamic file from cronjob: src/main/resources/alma/maps/gnd-sc.ttl
+# test file: src/test/resources/alma/maps/gnd-sc.ttl
+# based on https://d-nb.info/standards/vocab/gnd/gnd-sc.ttl
 put_rdfmap("$[gnd-sc.ttl]", "gnd-sc-notationen", target: "skos:prefLabel", select_language: "de") # GND-Systematik
 
-# Formschlagwort/Formangaben-Mapping -> GND (based on: https://wiki.dnb.de/download/attachments/106042227/AH-007.pdf)
+
+# Formschlagwort/Formangaben-Mapping -> GND
+# static file: src/main/resources/alma/maps/formangabe.tsv
+# manually generated, based on: https://wiki.dnb.de/download/attachments/106042227/AH-007.pdf Version: 2017
+# TODO: Update to current version
 put_filemap("$[formangabe.tsv]","formschlagwort2Gnd", sep_char:"\t",key_column:"0",value_column:"2",expected_columns:"-1")
 put_filemap("$[formangabe.tsv]","Gnd2formschlagwort", sep_char:"\t",key_column:"2",value_column:"0",expected_columns:"-1")
 
-# almaMmsId -> rpbId
-put_filemap("$[almaMmsId2rpbId]","almaMmsId2rpbId", sep_char:"\t",key_column:"0",value_column:"1",expected_columns:"-1")
+# Map of almaMmsId -> rpbId
+# dynamic map individually pushed by @fsteeg to server: src/main/resources/alma/maps/almaMmsId2rpbId.tsv
+# test file: src/test/resources/alma/maps/almaMmsId2rpbId.tsv
+# based on generated file by @fsteeg
+put_filemap("$[almaMmsId2rpbId.tsv]","almaMmsId2rpbId", sep_char:"\t",key_column:"0",value_column:"1",expected_columns:"-1")
 
-# map zdbId to old hbzId(HT Nummer) based on the last aleph transformation
-put_filemap("$[hbzId2zdbId.tsv]","zdbId2oldHbzId", sep_char:"\t",key_column:"1",value_column:"0",expected_columns:"-1")
+# Map of zdbId to old hbzId(HT Nummer) based on the last aleph transformation
+# HBZ discontinued the old HT Nummer for zdb publication but old links are heavily relying on these
+# static map: src/main/resources/alma/maps/hbzId2zdbId.tsv.gz
+# based on last aleph lobid transformation bulk download
+put_filemap("$[hbzId2zdbId.tsv.gz]","zdbId2oldHbzId", sep_char:"\t",key_column:"1",value_column:"0",expected_columns:"-1")
 
-# opac links
+# Maps for different opac links to isil from https://github.com/hbz/lookup-tables/tree/master/data/opacLinks
+# dynamic file from git submodule: lookup-tables/data/opacLinks
+# all testfiles in: src/test/resources/alma/maps/
+# based on mapping by @eschackmann and @TobiasNx
 put_filemap("$[isil2opac_hbzId.tsv]","isil2opac_hbzId", sep_char:"\t")
 put_filemap("$[isil2opac_isbn.tsv]","isil2opac_isbn", sep_char:"\t")
 put_filemap("$[isil2opac_issn.tsv]","isil2opac_issn", sep_char:"\t")
 put_filemap("$[isil2opac_zdbId.tsv]","isil2opac_zdbId", sep_char:"\t")
 put_filemap("$[isil2opac_almaMmsId.tsv]","isil2opac_almaMmsId", sep_char:"\t")
 
-# marcRel
+# marcRel map incl. uri, labels and codes
+# TODO: Check if the file needs to be updated.
+# static map: src/main/resources/alma/maps/marcRel.tsv
+# manually generated, based on based on https://www.loc.gov/marc/relators/ loc version has no german language tags
 put_filemap("$[marcRel.tsv]","marcRel", sep_char:"\t",key_column:"0",value_column:"1",expected_columns:"-1")
 
-# collection labels
+# hbz and alma internal collection labels map
+# static map: src/main/resources/alma/maps/collectionLabels.tsv
+# based on manually created map of collections that are not part of the ZDB/ISIL
 put_filemap("$[collectionLabels.tsv]","collectionLabels", sep_char:"\t",key_column:"0",value_column:"1",expected_columns:"-1")
 
-# map record id to holdings of DE-Sol1. see: https://github.com/hbz/lobid-extra-holdings/issues/2
-put_filemap("$[sol1Holding_seq.tsv]","sol1Holdings", sep_char:"\t",key_column:"0",value_column:"1",expected_columns:"-1")
+# Map containing record ids to holdings of DE-Sol1. see: https://github.com/hbz/lobid-extra-holdings/issues/2
+# currently static file: src/main/resources/alma/maps/sol1Holding_seq.tsv.gz
+# TODO: Will be dynamic when additionally ZDB data via SRU as well as data via Strapi is fetched:
+put_filemap("$[sol1Holding_seq.tsv.gz]","sol1Holdings", sep_char:"\t",key_column:"0",value_column:"1",expected_columns:"-1")
 
 put_map("rswk-indicator",
   "p": "Person",
