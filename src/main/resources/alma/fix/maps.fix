@@ -23,7 +23,7 @@ put_filemap("$[generatedAlmaSuppressedLocations.tsv]","suppressedLocations", sep
 put_filemap("$[lobidOrganisationsMapping.tsv]","lobidOrgLabels", sep_char:"\t",key_column:"0",value_column:"3",expected_columns:"-1")
 put_filemap("$[lobidOrganisationsMapping.tsv]","sigel2isilMap", sep_char:"\t",key_column:"2",value_column:"1",expected_columns:"-1")
 
-# Map of owner, sigil (fka. Sigilliste) from Aleph
+# Map of owner, sigil (fka. Sigilliste) from Verbund, was relevant for Aleph and its bridges
 # static file: src/main/resources/alma/maps/hbzowner2sigel.tsv
 # based on export from https://service-wiki.hbz-nrw.de/display/VDBE/Liste+der+Sigel+und+Owner+der+hbz-Verbundbibliotheken
 put_filemap("$[hbzowner2sigel.tsv]","hbzowner2sigel", sep_char:"\t",key_column:"0",value_column:"2",expected_columns:"-1")
@@ -42,7 +42,7 @@ put_filemap("$[nwbibWikidataLabelTypeCoords.tsv]","nwbibWikidataLabel", sep_char
 put_filemap("$[nwbibWikidataLabelTypeCoords.tsv]","nwbibWikidataTypes", sep_char:"\t",key_column:"0",value_column:"3",expected_columns:"-1")
 put_filemap("$[nwbibWikidataLabelTypeCoords.tsv]","nwbibWikidataGeodata", sep_char:"\t",key_column:"0",value_column:"4",expected_columns:"-1")
 
-# Map fo DDC
+# Map for DDC
 # not public file: src/main/resources/alma/maps/deweyLabels.tsv
 # test file: src/test/resources/alma/maps/deweyLabels.tsv
 # based on internal ddc mapping for german labels
@@ -55,7 +55,7 @@ put_filemap("$[dnbSachgruppen.tsv]","dnbSachgruppen",sep_char:"\t")
 
 # Map for different Library Classifications, Uri, Labels
 # static file: src/main/resources/alma/maps/dnbSachgruppen.tsv
-# based on old cv liste and ALMA Config XML as well as individually researched URIs based on bartoc and others.
+# based on old csv list and ALMA Config XML as well as individually researched URIs based on bartoc and others.
 put_filemap("$[classification.tsv]","classificationCode2Label", sep_char:"\t",key_column:"0",value_column:"1",expected_columns:"-1")
 put_filemap("$[classification.tsv]","classificationCode2Uri", sep_char:"\t",key_column:"0",value_column:"2",expected_columns:"-1")
 
@@ -63,7 +63,7 @@ put_filemap("$[classification.tsv]","classificationCode2Uri", sep_char:"\t",key_
 # TODO: CHANGE THIS TO .maps/... It conflates generated files based from submodules and java job
 # dynamic file from java process: lookup-tables/data/rvk.tsv
 # test file: src/test/resources/cg/rvk.tsv
-# based on aggregated culturegraph data, filterd to only those with RVK data
+# based on aggregated culturegraph data, filtered to only those with RVK data
 put_filemap("$[rvk.tsv]","rvk", sep_char:"\t")
 
 # RPB SKOS Maps
