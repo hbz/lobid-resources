@@ -303,7 +303,7 @@ do list(path: "856??", "var":"$i")
   if exists("$i.u")
     unless any_match("$i.u",".*(doi.org|urn=urn:|\\.(org|de)/urn:).*") # This should not skip repository links like: https://sammlungen.ulb.uni-muenster.de/urn/urn:nbn:de:hbz:6-85659520092
       if all_equal("$i.z", "kostenfrei") # kostenfrei, added Digitalisierung not only Verlag or Agentur as filter
-          if all_match("$i.x", "Verlag|Agentur|Digitalisierung")
+          if all_match("$i.x", ".*(Verlag|Agentur|Digitalisierung).*")
             copy_field("$i.x", "fulltextOnline[].$append.label")
             copy_field("$i.u", "fulltextOnline[].$last.id")
           end
