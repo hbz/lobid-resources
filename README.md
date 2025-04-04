@@ -18,7 +18,11 @@ see <http://hbz.github.io/#lobid>.
 
 [![Build No Status](https://github.com/hbz/lobid-resources/workflows/Build/badge.svg?branch=master)](https://github.com/hbz/lobid-resources/actions?query=branch%3Amaster)
 
-Prerequisites: Java 11, Maven 3; verify with `mvn -version`
+### Prerequisites: 
+
+- Java 11, Maven 3; verify with `mvn -version`
+- sbt 1.8.2 or higher should work; verify with `sbt --version`
+- A working installation of [metafacture-core standalone application](https://github.com/metafacture/metafacture-core?tab=readme-ov-file#metafacture-as-a-stand-alone-application)
 
 Create and change into a folder where you want to store the projects:
 
@@ -33,11 +37,7 @@ Build lobid-resources:
 Build the web application:
 
 - `cd web`
-- Make sure you have the proper version of sbt:
-- `sbt --version sbt`
-- `version in this project: 1.8.2`
-
-Then follow the script in `web/monit_restart.sh`.
+- Then follow the script in `web/monit_restart.sh`.   
 
 See the `.github/workflows/build.yml` file for details on the CI config
 used by Github Actions.
