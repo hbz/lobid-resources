@@ -18,7 +18,7 @@ see <http://hbz.github.io/#lobid>.
 
 [![Build No Status](https://github.com/hbz/lobid-resources/workflows/Build/badge.svg?branch=master)](https://github.com/hbz/lobid-resources/actions?query=branch%3Amaster)
 
-### Prerequisites: 
+### Prerequisites:
 
 - Java 11, Maven 3; verify with `mvn -version`
 - sbt 1.8.2 or higher should work; verify with `sbt --version`
@@ -37,7 +37,7 @@ Build lobid-resources:
 Build the web application:
 
 - `cd web`
-- Then follow the script in `web/monit_restart.sh`.   
+- Then follow the script in `web/monit_restart.sh`.
 
 See the `.github/workflows/build.yml` file for details on the CI config
 used by Github Actions.
