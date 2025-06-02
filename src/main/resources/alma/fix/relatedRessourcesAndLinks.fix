@@ -96,8 +96,8 @@ unless any_match("leader", "^.{7}[ad].*")
         call_macro("alternateGraphicRepresationIsPartOf",variable:"$i")
         copy_field("$i.q", "isPartOf[].$last.numbering")
         add_array("isPartOf[].$last.note[]")
-        do list(path:"$i.i","var":"$j")
-          copy_field("$j","isPartOf[].$last.note[].$append")
+        do list(path:"$i.i","var":"$k")
+          copy_field("$k","isPartOf[].$last.note[].$append")
         end
       end
     end
@@ -174,8 +174,8 @@ if any_match("leader", "^.{7}[ad].*")
           copy_field("$i.t", "isPartOf[].$last.hasSuperordinate[].$last.label")
           copy_field("$i.q", "isPartOf[].$last.numbering")
           add_array("isPartOf[].$last.note[]")
-          do list(path:"$i.i","var":"$j")
-            copy_field("$j","isPartOf[].$last.note[].$append")
+          do list(path:"$i.i","var":"$k")
+            copy_field("$k","isPartOf[].$last.note[].$append")
           end
         end
       end
