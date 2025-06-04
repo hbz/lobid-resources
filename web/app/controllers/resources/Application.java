@@ -95,6 +95,8 @@ public class Application extends Controller {
 	public static final String OWNER_AGGREGATION = "hasItem.heldBy.id";
 	/** The internal ES field for the topics. */
 	public static final String TOPIC_AGGREGATION = "subject.label.raw";
+    /** The internal ES field for the topics. */
+	public static final String COLLECTION_AGGREGATION = "inCollection.label.raw";
 	/** The internal ES field for subjects. */
 	public static final String SUBJECT_FIELD = "subject.componentList.id";
 	/** The internal ES field for contributing agents. */
@@ -174,6 +176,7 @@ public class Application extends Controller {
 	 * @param publisher Query for the resource publisher
 	 * @param issued Query for the resource issued year
 	 * @param medium Query for the resource medium
+	 * @param collection Query for the resource collection     *
 	 * @param from The page start (offset of page of resource to return)
 	 * @param size The page size (size of page of resource to return)
 	 * @param owner Owner filter for resource queries
@@ -189,7 +192,7 @@ public class Application extends Controller {
 	 */
 	public static Promise<Result> query(final String q, final String agent,
 			final String name, final String subject, final String id,
-			final String publisher, final String issued, final String medium,
+			final String publisher, final String issued, final String medium, final String collection,
 			final int from, final int size, final String owner, String t, String sort,
 			String word, String f, String aggs, String location, String nested,
 			String filter) {
@@ -217,7 +220,7 @@ public class Application extends Controller {
 		Logger.debug("Not cached: {}, will cache for one hour", cacheId);
 		QueryBuilder queryBuilder = new Queries.Builder().q(q).agent(agent)
 				.name(name).subject(subject).id(id).publisher(publisher).issued(issued)
-				.medium(medium).t(t).owner(owner).nested(nested).location(location)
+				.medium(medium).t(t).owner(owner).nested(nested).location(location).collection(collection)
 				.filter(filter).word(word).build();
 		String sortBy =
 				responseFormat.equals(Accept.Format.RSS.queryParamString) ? "newest"
@@ -226,7 +229,7 @@ public class Application extends Controller {
 				.size(size).sort(sortBy).aggs(aggregations).build();
 
 		Promise<Result> result =
-				createResult(q, agent, name, subject, id, publisher, issued, medium,
+				createResult(q, agent, name, subject, id, publisher, issued, medium, collection,
 						from, size, owner, t, sort, word, nested, responseFormat, index);
 		cacheOnRedeem(cacheId, result, ONE_HOUR);
 
@@ -273,7 +276,7 @@ public class Application extends Controller {
 	private static Promise<Result> createResult(final String q,
 			final String agent, final String name, final String subject,
 			final String id, final String publisher, final String issued,
-			final String medium, final int from, final int size, final String owner,
+			final String medium, final String collection, final int from, final int size, final String owner,
 			String t, String sort, String word, String nested, String responseFormat,
 			Search index) {
 		Promise<Result> result =
@@ -286,7 +289,7 @@ public class Application extends Controller {
 							switch (Format.of(responseFormat)) {
 							case HTML:
 								return ok(query.render(s, q, agent, name, subject, id,
-										publisher, issued, medium, from, size,
+										publisher, issued, medium, collection, from, size,
 										queryResources.getTotal(), owner, t, sort, word));
 							case RSS:
 								String[] segments = request().uri().split("/");
@@ -379,7 +382,7 @@ public class Application extends Controller {
 
 	static String toSuggestions(JsonNode json, String labelFields) {
 		Stream<String> defaultFields =
-				Stream.of("title", "contribution", "medium", "startDate-endDate");
+				Stream.of("title", "contribution", "medium", "collection", "startDate-endDate");
 		String fields = labelFields.equals("suggest")
 				? defaultFields.collect(Collectors.joining(",")) : labelFields;
 		Stream<JsonNode> documents = Lists.newArrayList(json.elements()).stream();
@@ -670,6 +673,7 @@ public class Application extends Controller {
 	 * @param publisher Query for the resource publisher
 	 * @param issued Query for the resource issued year
 	 * @param medium Query for the resource medium
+	 * @param collection Query for the resource collection     *
 	 * @param from The page start (offset of page of resource to return)
 	 * @param size The page size (size of page of resource to return)
 	 * @param owner Owner filter for resource queries
@@ -683,12 +687,12 @@ public class Application extends Controller {
 	 * @return The search results
 	 */
 	public static Promise<Result> facets(String q, String agent, String name,
-			String subject, String id, String publisher, String issued, String medium,
+			String subject, String id, String publisher, String issued, String medium, String collection,
 			int from, int size, String owner, String t, String field, String sort,
 			String word, String location, String nested, String filter) {
 
 		String key = String.format("facets.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s",
-				field, q, agent, name, id, publisher, word, subject, issued, medium,
+				field, q, agent, name, id, publisher, word, subject, issued, medium, collection,
 				owner, t, nested);
 		Result cachedResult = (Result) Cache.get(key);
 		if (cachedResult != null) {
@@ -719,9 +723,9 @@ public class Application extends Controller {
 			String t1 = p1.getLeft().get("key").asText();
 			String t2 = p2.getLeft().get("key").asText();
 			boolean t1Current =
-					current(subject, agent, medium, owner, t, field, t1, location);
+					current(subject, agent, medium, collection, owner, t, field, t1, location);
 			boolean t2Current =
-					current(subject, agent, medium, owner, t, field, t2, location);
+					current(subject, agent, medium, collection, owner, t, field, t2, location);
 			if (t1Current == t2Current) {
 				if (!field.equals(ISSUED_FIELD)) {
 					Integer c1 = p1.getLeft().get("doc_count").asInt();
@@ -742,6 +746,9 @@ public class Application extends Controller {
 			String mediumQuery = !field.equals(MEDIUM_FIELD) //
 					? medium
 					: queryParam(medium, term);
+            String collectionQuery = !field.equals(COLLECTION_AGGREGATION) //
+					? collection
+					: queryParam(collection, term);
 			String typeQuery = !field.equals(TYPE_FIELD) //
 					? t
 					: queryParam(t, term);
@@ -762,10 +769,10 @@ public class Application extends Controller {
 					: queryParam(location, term);
 
 			boolean current =
-					current(subject, agent, medium, owner, t, field, term, location);
+					current(subject, agent, medium, collection, owner, t, field, term, location);
 
 			String routeUrl = routes.Application.query(q, agentQuery, name,
-					subjectQuery, id, publisher, issuedQuery, mediumQuery, from, size,
+					subjectQuery, id, publisher, issuedQuery, mediumQuery, collectionQuery, from, size,
 					ownerQuery, typeQuery, sort(sort, subjectQuery), word, null, field,
 					locationQuery, nested, filter).url();
 
@@ -780,7 +787,7 @@ public class Application extends Controller {
 		};
 
 		Promise<Result> promise =
-				query(q, agent, name, subject, id, publisher, issued, medium, from,
+				query(q, agent, name, subject, id, publisher, issued, medium, collection, from,
 						size, owner, t, sort, word, "json", field, location, nested, filter)
 								.map(result -> {
 									JsonNode json = Json.parse(Helpers.contentAsString(result))
@@ -791,7 +798,7 @@ public class Application extends Controller {
 									String labelKey = String.format(
 											"facets-labels.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s.%s",
 											field, q, agent, name, id, publisher, word, subject,
-											issued, medium,
+											issued, medium, collection,
 											field.equals(OWNER_AGGREGATION) ? "" : owner, t);
 									@SuppressWarnings("unchecked")
 									List<Pair<JsonNode, String>> labelledFacets =
@@ -812,9 +819,10 @@ public class Application extends Controller {
 		return subjectQuery.contains(",") ? "" /* relevance */ : sort;
 	}
 
-	private static boolean current(String subject, String agent, String medium,
+	private static boolean current(String subject, String agent, String medium, String collection,
 			String owner, String t, String field, String term, String location) {
 		return field.equals(MEDIUM_FIELD) && contains(medium, term)
+                || field.equals(COLLECTION_AGGREGATION) && contains(collection, term)
 				|| field.equals(TYPE_FIELD) && contains(t, term)
 				|| field.equals(OWNER_AGGREGATION) && contains(owner, term)
 				|| field.equals(SUBJECT_FIELD) && contains(subject, term)
