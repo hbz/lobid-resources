@@ -413,7 +413,7 @@ public class Queries {
 		@Override
 		public List<String> fields() {
 			return Arrays.asList("almaMmsId", "hbzId", "isbn", "issn", "rpbId",
-					"schoeneNummer", "zdbId");
+					"schoeneNummer", "zdbId", "hebisId");
 		}
 
 		@Override
