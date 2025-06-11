@@ -515,6 +515,8 @@ do list(path:"084??", "var":"$i")
       add_array("spatial[].$last.type[]","Concept")
       add_field("spatial[].$last.source.id", "https://rpb.lobid.org/spatial")
       add_field("spatial[].$last.source.label", "RPB-Raumsystematik")
+      copy_field("$j", "spatial[].$last.notation")
+      replace_all("spatial[].$last.notation","https://rpb.lobid.org/spatial#n(.*)$","$1")
     end
   end
   do list(path:"$i.a", "var":"$j")
