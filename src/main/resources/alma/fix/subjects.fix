@@ -495,10 +495,19 @@ do list(path:"084??", "var":"$i")
       add_field("spatial[].$last.source.id","https://nwbib.de/spatial")
       add_field("spatial[].$last.source.label","Raumsystematik der Nordrhein-Westfälischen Bibliographie")
       copy_field("$j", "spatial[].$last.focus.id")
+    # new RPB spatial version -- follows pattern of NWBib $$a holds label and $$0 holds URI
+    elsif any_contain("$j","https://rpb.lobid.org/spatial#")
+      copy_field("$j", "spatial[].$append.id")
+      copy_field("$j","$i.@rpbrNotationId")
+      lookup("$i.@rpbrNotationId","rpbr")
+      copy_field("$i.@rpbrNotationId", "spatial[].$last.label")
+      add_array("spatial[].$last.type[]","Concept")
+      add_field("spatial[].$last.source.id", "https://rpb.lobid.org/spatial")
+      add_field("spatial[].$last.source.label", "RPB-Raumsystematik")
     end
   end
   do list(path:"$i.a", "var":"$j")
-    # RPB spatial
+    # old RPB spatial Verion -- hold $$a holds notation
     if any_match("$j","^rpbr.*")
       add_array("spatial[].$append.type[]","Concept")
       copy_field("$j","$i.@rpbrNotationId")
