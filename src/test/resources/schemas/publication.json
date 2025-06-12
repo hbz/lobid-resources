@@ -5,7 +5,7 @@
     "type": "array",
     "items": {
         "type": "object",
-  "additionalProperties":false,
+        "additionalProperties":false,
         "properties": {
             "type": {
                 "type": "array",
@@ -38,6 +38,52 @@
             "endDate": {
                 "title": "End date of the publication",
                 "type": "string"
+            },
+            "frequency": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uri",
+                        "pattern": "http://marc21rdf.info/terms/continuingfre#.*"
+                    },
+                    "label": {
+                        "type": "string",
+                        "enum": [
+                            "täglich",
+                            "dreimal wöchentlich",
+                            "zweimal wöchentlich",
+                            "wöchentlich",
+                            "vierzehntägig",
+                            "halbmonatlich",
+                            "monatlich",
+                            "alle zwei Monate",
+                            "vierteljährlich",
+                            "halbjährlich",
+                            "jährlich",
+                            "alle zwei Jahre",
+                            "alle drei Jahre",
+                            "unregelmäßig oder sonstige Erscheinungsfrequenz"
+                        ]
+                    }
+                }
+            },
+            "note": {
+              "title": "Note",
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "publicationHistory": {
+                "type": "string"
+            },
+            "description": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
             }
         },
         "required": [
