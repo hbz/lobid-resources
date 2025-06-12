@@ -6,6 +6,7 @@
     "type": "array",
     "items": {
         "type": "object",
+        "additionalProperties":false,
         "properties": {
             "id": {
                 "type": "string",
@@ -13,6 +14,13 @@
             },
             "label": {
                 "type": "string"
+            },
+            "note": {
+              "title": "Note",
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
             }
         }
     }
