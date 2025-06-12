@@ -5,12 +5,37 @@
     "type": "array",
     "items": {
         "type": "object",
+        "additionalProperties":false,
         "properties": {
             "id": {
                 "type": "string",
                 "format": "uri"
             },
             "label": {
+                "type": "string"
+            },
+            "creatorOfWork": {
+                "type": "string"
+            },
+            "type": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "Work"
+                ]
+              }
+            },
+            "instrumentation": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "musicalKey": {
+                "type": "string"
+            },
+            "workNumbering": {
                 "type": "string"
             }
         }
