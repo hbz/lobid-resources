@@ -7,6 +7,12 @@
     "@context": {
       "$ref": "context.json"
     },
+    "id": {
+      "$ref": "id.json"
+    },
+    "type": {
+      "$ref": "type.json"
+    },
     "abstract": {
       "title": "Abstract",
       "type": "array"
@@ -16,6 +22,13 @@
       "type": "string",
       "pattern": "\\d{17}"
     },
+    "alternativeTitle": {
+      "title": "Variations of the title",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
     "bibliographicCitation": {
       "type": "string"
     },
@@ -24,19 +37,6 @@
     },
     "containedIn": {
       "$ref": "containedIn.json"
-    },
-    "id": {
-      "$ref": "id.json"
-    },
-    "type": {
-      "$ref": "type.json"
-    },
-    "alternativeTitle": {
-      "title": "Variations of the title",
-      "type": "array",
-      "items": {
-        "type": "string"
-      }
     },
     "contribution": {
       "$ref": "contribution.json"
