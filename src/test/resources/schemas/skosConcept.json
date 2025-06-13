@@ -49,6 +49,18 @@
     "version": {
       "title": "Version of the concept",
       "type": "string"
+    },
+    "gndIdentifier": {
+        "title": "GND ID",
+        "type": "string",
+        "pattern": "1[012]?\\d{7}[0-9X]|[47]\\d{6}-\\d|[1-9]\\d{0,7}-[0-9X]|3\\d{7}[0-9X]"
+    },
+    "altLabel": {
+        "title": "Alternative name of the agent",
+        "type": "array",
+        "items": {
+            "type": "string"
+        }
     }
   },
   "required": [
