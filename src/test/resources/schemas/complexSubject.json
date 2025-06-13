@@ -4,6 +4,7 @@
     "title": "Complex Subject",
     "description": "A complex subject",
     "type": "object",
+    "additionalProperties":false,
     "properties": {
         "type": {
             "title": "Type",
@@ -21,6 +22,7 @@
             "type": "array",
             "items": {
                 "type": "object",
+                "additionalProperties":false,
                 "properties": {
                     "id": {
                         "title": "Subject URI",
@@ -46,6 +48,7 @@
                     "source": {
                         "title": "Source authority file",
                         "type": "object",
+                        "additionalProperties":false,
                         "properties": {
                             "id": {
                                 "title": "Authority File URI",
@@ -87,8 +90,10 @@
                     "dateOfDeath": {
                         "title": "Date of death of ta person as subject heading",
                         "type": "string"
+                    },
+                    "dateOfBirthAndDeath": {
+                        "type": "string"
                     }
-
                 },
                 "required": [
                     "type",

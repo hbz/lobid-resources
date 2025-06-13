@@ -1,0 +1,28 @@
+{
+    "$id": "exampleOfWork.json",
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Example of work",
+    "type": "object",
+    "additionalProperties":false,
+    "properties": {
+        "id": {
+            "type": "string",
+            "format": "uri"
+        },
+        "label": {
+            "type": "string"
+        },
+        "type": {
+        "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "Work"
+              ]
+            }
+        },
+        "language" : {
+          "$ref" : "language.json"
+        }
+    }
+}

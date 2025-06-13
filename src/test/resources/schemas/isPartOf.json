@@ -6,12 +6,20 @@
   "type": "array",
   "items": {
     "type": "object",
+    "additionalProperties":false,
     "properties": {
       "type": {
         "type": "array",
         "items": {
           "type": "string",
           "const": "IsPartOfRelation"
+        }
+      },
+      "note": {
+        "title": "Note",
+        "type": "array",
+        "items": {
+          "type": "string"
         }
       },
       "numbering": {
@@ -21,6 +29,7 @@
         "type": "array",
         "items": {
           "type": "object",
+          "additionalProperties":false,
           "properties": {
             "id": {
               "type": "string",

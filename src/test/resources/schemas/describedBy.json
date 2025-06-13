@@ -4,6 +4,7 @@
     "title": "Description of the description",
     "description": "An object containing metametadata",
     "type": "object",
+    "additionalProperties":false,
     "properties": {
         "id": {
             "title": "Description URL",
@@ -24,6 +25,7 @@
         "inDataset": {
             "title": "Link to the dataset that contains the record",
             "type": "object",
+  "additionalProperties":false,
             "properties": {
                 "id": {
                     "title": "Dataset URI",
@@ -48,6 +50,7 @@
         },
         "resultOf": {
             "type": "object",
+  "additionalProperties":false,
             "properties": {
                 "type": {
                     "type": "array",
@@ -57,6 +60,7 @@
                 },
                 "instrument": {
                     "type": "object",
+  "additionalProperties":false,
                     "properties": {
                         "id": {
                             "const": "https://github.com/hbz/lobid-resources"
@@ -79,6 +83,7 @@
                 },
                 "object": {
                     "type": "object",
+  "additionalProperties":false,
                     "properties": {
                         "id": {
                             "type": "string",
@@ -107,6 +112,7 @@
                         },
                         "inDataset": {
                             "type": "object",
+  "additionalProperties":false,
                             "properties": {
                                 "id": {
                                     "type": "string",
@@ -122,6 +128,7 @@
                         "sourceOrganization": {
                             "title": "Organization that added the record to the union catalog",
                             "type": "object",
+  "additionalProperties":false,
                             "properties": {
                                 "id": {
                                     "title": "lobid-organisations URI",
@@ -141,6 +148,7 @@
                         "provider": {
                             "title": "Provider of the metadata record",
                             "type": "object",
+  "additionalProperties":false,
                             "properties": {
                                 "id": {
                                     "title": "lobid-organisations URI",
@@ -173,6 +181,7 @@
                                     }
                                 },
                                 "type": "object",
+  "additionalProperties":false,
                                 "required": [
                                     "id",
                                     "label"
@@ -205,6 +214,7 @@
             "type": "array",
             "items": {
                 "type": "object",
+  "additionalProperties":false,
                 "properties": {
                     "id": {
                         "title": "License URI",
