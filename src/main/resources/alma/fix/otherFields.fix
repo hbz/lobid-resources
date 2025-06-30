@@ -202,3 +202,13 @@ do list(path: "546??", "var": "$i")
   join_field("$i.@langNote", "; ")
   move_field("$i.@langNote", "langNote[].$append")
 end
+
+
+# --- disambiguatingDescription ----
+# --- helper element for deduplication efforts ---
+
+add_array("disambiguatingDescription[]")
+do list(path:"591??", "var":"$i")
+  copy_field("$i.a","disambiguatingDescription[].$append")
+end
+
