@@ -6,6 +6,7 @@
     "type": "array",
     "items": {
         "type": "object",
+        "additionalProperties":false,
         "properties": {
             "id": {
                 "title": "Item URI",
@@ -22,9 +23,16 @@
             "label": {
                 "type": "string"
             },
+            "currentLibrary": {
+                "type": "string"
+            },
+            "currentLocation": {
+                "type": "string"
+            },
             "heldBy": {
                 "title": "Held by",
                 "type": "object",
+                "additionalProperties":false,
                 "properties": {
                     "id": {
                         "title": "URI of the holding organisation",
@@ -33,7 +41,42 @@
                     },
                     "label": {
                         "type": "string"
+                    },
+                    "isil": {
+                      "type": "string",
+                      "pattern": "[A-Z]{2}-.*"
                     }
+                }
+            },
+            "inCollection": {
+                "type": "array",
+                "items":{
+                  "type": "object",
+                  "additionalProperties":false,
+                  "properties": {
+                      "id": {
+                          "title": "lobid-organisations URI",
+                          "type": "string",
+                          "format": "uri"
+                      },
+                      "label": {
+                          "title": "label",
+                          "type": "string"
+                      }
+                  },
+                  "required": [
+                      "id",
+                      "label"
+                  ]
+                }
+            },
+            "seeAlso": {
+                "title": "Type",
+                "type": "array",
+                "items": {
+                  "type":"string",
+                  "format":"url"
+
                 }
             },
             "note": {
@@ -41,6 +84,14 @@
             },
             "callNumber": {
                 "title": "Call number",
+                "type": "string"
+            },
+            "inventoryNumber": {
+                "title": "Inventory number",
+                "type": "string"
+            },
+            "serialNumber": {
+                "title": "Serial number",
                 "type": "string"
             },
             "electronicLocator": {
