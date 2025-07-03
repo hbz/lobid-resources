@@ -1,8 +1,7 @@
 {
-    "$id": "supplement.json",
+    "$id": "related.json",
     "$schema": "http://json-schema.org/draft-07/schema#",
-    "title": "Supplement",
-    "description": "URI & label of a supplement",
+    "title": "Related resource",
     "type": "array",
     "items": {
         "type": "object",
@@ -21,6 +20,12 @@
               "items": {
                 "type": "string"
               }
+            },
+            "isbn": {
+              "$ref": "isbn.json"
+            },
+            "issn": {
+              "$ref": "issn.json"
             }
         }
     }
