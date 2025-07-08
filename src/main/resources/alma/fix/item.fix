@@ -52,6 +52,11 @@ do list(path: "HOL  ", "var": "$i")
               else
                 call_macro("holdingLibrary+opacLink", mmsIdField:"$i.8",libraryCodeField:"$H52.b")
               end
+              do list(path:"H66??", "var": "$H66")
+                if in("$i.8", "$H66.8")
+                  copy_field("$H66.a","hasItem[].$last.enumerationAndChronology")
+                end
+              end
             end
           end
         end
