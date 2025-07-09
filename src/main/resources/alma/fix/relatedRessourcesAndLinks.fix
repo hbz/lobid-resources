@@ -595,6 +595,14 @@ do list(path:"912  ", "var":"$i")
       add_field("$i.@label","lobid Organisation ZDB Collection")
     end
     move_field("$i.@label","inCollection[].$last.label")
+  elsif any_match("$i.a", "ZDB-(.*)")
+    copy_field("$i.a", "inCollection[].$append.id")
+    replace_all("inCollection[].$last.id", "ZDB-(.*)", "https://lobid.org/collections#$1")
+    copy_field("inCollection[].$last.id","inCollection[].$last.label")
+    lookup("inCollection[].$last.label","collectionLabels")
+    if any_match("inCollection[].$last.label","https://lobid.org/collections.*") #Fallback label for hbz collections
+      replace_all("inCollection[].$last.label","https://lobid.org/collections#(.*)","$1 Collection")
+    end
   end
 end
 
