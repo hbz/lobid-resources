@@ -2,7 +2,9 @@ add_array("rvk[]")
 
 do list(path: "084??", "var": "$i")
     if any_match("$i.2", "rvk")
+      if any_match("$i.a", "(LD,)?[A-Z]([A-Z]( [0-9]+([a-z]|\\.[0-9]+)?( [A-Z][0-9]*)?)?)?( - [A-Z]([A-Z]( [0-9]+([a-z]|\\.[0-9]+)?( [A-Z][0-9]*)?)?)?)?")
         copy_field("$i.a","rvk[].$append")
+      end
     end
 end
 uniq("rvk[]")
