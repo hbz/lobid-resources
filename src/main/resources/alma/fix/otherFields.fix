@@ -206,9 +206,13 @@ end
 
 # --- disambiguatingDescription ----
 # --- helper element for deduplication efforts ---
+# --- currently mapping duplicates from NWBib resources of DE-6, hbzId starting with BT, see https://github.com/hbz/nwbib/issues/658
 
 add_array("disambiguatingDescription[]")
-do list(path:"591??", "var":"$i")
-  copy_field("$i.a","disambiguatingDescription[].$append")
+if any_equal("inCollection[].*.id","http://lobid.org/resources/HT014176012#!") # Filter only NWBib Ressources
+  if any_match("hbzId","BT.*") # Filter only hbzId starting with BT, hinting to a specific old NWBib Subset.
+    do list(path:"591??", "var":"$i")
+      copy_field("$i.a","disambiguatingDescription[].$append")
+    end
+  end
 end
-
