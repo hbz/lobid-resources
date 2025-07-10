@@ -138,12 +138,11 @@ do list(path: "hasItem[]","var":"$i")
   end
 end
 
-unless exists("zdbId")
-  copy_field("id", "@DE-Sol1-Holdings")
-  lookup("@DE-Sol1-Holdings","sol1Holdings",delete:"true")
-  replace_all("@DE-Sol1-Holdings",'""','"')
-  from_json("@DE-Sol1-Holdings")
-  do list(path:"@DE-Sol1-Holdings","var":"$i")
-    copy_field("$i","hasItem[].$append")
-  end
+copy_field("id", "@DE-Sol1-Holdings")
+lookup("@DE-Sol1-Holdings","sol1Holdings",delete:"true")
+replace_all("@DE-Sol1-Holdings",'""','"')
+from_json("@DE-Sol1-Holdings")
+do list(path:"@DE-Sol1-Holdings","var":"$i")
+  copy_field("$i","hasItem[].$append")
 end
+

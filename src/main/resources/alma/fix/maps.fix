@@ -135,9 +135,10 @@ put_filemap("$[marcRel.tsv]","marcRel", sep_char:"\t",key_column:"0",value_colum
 put_filemap("$[collectionLabels.tsv]","collectionLabels", sep_char:"\t",key_column:"0",value_column:"1",expected_columns:"-1")
 
 # Map containing record ids to holdings of DE-Sol1. see: https://github.com/hbz/lobid-extra-holdings/issues/2
-# currently static file: src/main/resources/alma/maps/sol1Holding_seq.tsv.gz
+# currently static file: src/main/resources/alma/maps/combinedDe-Sol1Holdings.tsv.gz
+# This is currently static from seq dump and current SRU harvest from 09-07-25.
 # TODO: Will be dynamic when additionally ZDB data via SRU as well as data via Strapi is fetched:
-put_filemap("$[sol1Holding_seq.tsv.gz]","sol1Holdings", sep_char:"\t",key_column:"0",value_column:"1",expected_columns:"-1")
+put_filemap("$[combinedDe-Sol1Holdings.tsv.gz]","sol1Holdings", sep_char:"\t",key_column:"0",value_column:"1",expected_columns:"-1")
 
 put_map("rswk-indicator",
   "p": "Person",

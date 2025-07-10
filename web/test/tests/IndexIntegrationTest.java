@@ -58,7 +58,7 @@ public class IndexIntegrationTest extends LocalIndexSetup {
 			{ "spatial.label:Westfalen", /*->*/ 9 },
 			{ "spatial.label:Westfälen", /*->*/ 9 },
 			{ "subject.componentList.id:1113670827", /*->*/ 0 },
-			{ "subject.componentList.type:PlaceOrGeographicName", /*->*/ 26 },
+			{ "subject.componentList.type:PlaceOrGeographicName", /*->*/ 27 },
 			{ "publication.location:Berlin", /*->*/ 16 },
 			{ "subject.gndIdentifier:4040795-0", /*->*/ 1 },
 			{ "subject.notation:914.3", /*->*/ 8 },
@@ -69,8 +69,8 @@ public class IndexIntegrationTest extends LocalIndexSetup {
 			{ "publication.startDate:1993", /*->*/ 4 },
 			{ "publication.location:Berlin AND publication.startDate:1993", /*->*/ 1 },
 			{ "publication.location:Berlin AND publication.startDate:[1992 TO 2017]", /*->*/ 5 },
-			{ "inCollection.id:\"http\\://lobid.org/organisations/DE-655#\\!\"", /*->*/ 152 },
-			{ "inCollection.id:\"https\\://nrw.digibib.net/search/hbzvk/\"", /*->*/ 173 },
+			{ "inCollection.id:\"http\\://lobid.org/organisations/DE-655#\\!\"", /*->*/ 155 },
+			{ "inCollection.id:\"https\\://nrw.digibib.net/search/hbzvk/\"", /*->*/ 176 },
 			{ "inCollection.id:NWBib", /*->*/ 0 },
 			{ "publication.publishedBy:Quedenfeldt", /*->*/ 2 },
 			{ "publication.publishedBy:Quedenfeld", /*->*/ 2 },
@@ -115,7 +115,7 @@ public class IndexIntegrationTest extends LocalIndexSetup {
 			{ "q.subject:Westfalen", /*->*/ 11 },
 			{ "q.subject:Westfälen", /*->*/ 11 },
 			{ "q.subject:Lithuania", /*->*/ 1 },
-			{ "q.subject:Baukem", /*->*/ 1 },
+			{ "q.subject:Baukem", /*->*/ 2 },
 			{ "q.subject:\"https\\://d-nb.info/gnd/4040795-0\"", /*->*/ 1 },
 			{ "q.subject:\"https\\://d-nb.info/gnd/4042570-8\"", /*->*/ 2 },
 			{ "q.subject:4040795-0", /*->*/ 1 },
@@ -155,7 +155,7 @@ public class IndexIntegrationTest extends LocalIndexSetup {
 			{ "contribution.agent.altLabel.digibib_unstemmed:Nemačke", /*->*/ 1 },
 			{ "contribution.agent.altLabel.digibib_unstemmed:Nemack", /*->*/ 0 },
 			{ "exampleOfWork.language.id:\"http\\://id.loc.gov/vocabulary/iso639-2/eng\"", /*->*/ 1 },
-			{ "hasItem.inCollection.id:\"http://lobid.org/organisations/DE-468#!\"", /*->*/ 25 }
+			{ "hasItem.inCollection.id:\"http://lobid.org/organisations/DE-468#!\"", /*->*/ 26 }
 		});
 	} // @formatter:on
 
