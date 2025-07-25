@@ -1172,6 +1172,42 @@
             }
           }
         },
+        "structuredOwnershipAndCustodialHistory": {
+          "properties": {
+            "name": {
+              "type": "text",
+              "analyzer": "german_analyzer",
+              "copy_to": [
+                "q.provenance"
+              ]
+            },
+            "ownershipAndCustodialHistoryEvidenceTerm": {
+              "type": "text",
+              "copy_to": [
+                "q.provenance"
+              ]
+            },
+            "shelfMarkOfCopyDescribed": {
+              "type": "keyword",
+              "copy_to": [
+                "q.provenance"
+              ]
+            },
+            "publicNote": {
+              "type": "text",
+              "analyzer": "german_analyzer",
+              "copy_to": [
+                "q.provenance"
+              ]
+            },
+            "authorityRecordControlNumberOrStandardNumber": {
+              "type": "keyword",
+              "copy_to": [
+                "q.provenance"
+              ]
+            }
+          }
+        },
         "q": {
           "properties": {
             "all": {
@@ -1181,6 +1217,11 @@
             },
             "date": {
               "type": "short"
+            },
+            "provenance": {
+              "type": "text",
+              "analyzer": "digibib_default",
+              "search_analyzer": "digibib_search"
             },
             "publisher": {
               "type": "text",
