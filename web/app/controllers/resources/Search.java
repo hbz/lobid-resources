@@ -156,7 +156,7 @@ public class Search {
 			List<JsonNode> results = new ArrayList<>();
 			this.aggregations = response.getAggregations();
 			for (SearchHit sh : hits.getHits()) {
-				results.add(Json.toJson(sh.getSource()));
+				results.add(Json.parse(sh.getSourceAsString()));
 			}
 			result = Json.toJson(results);
 			total = hits.getTotalHits();
