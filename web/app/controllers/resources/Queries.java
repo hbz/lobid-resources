@@ -56,6 +56,7 @@ public class Queries {
 		T(new Queries.TypeQuery()), //
 		FILTER(new Queries.FilterQuery()), //
 		OWNER(new Queries.OwnerQuery()), //
+		COLLECTION(new Queries.CollectionQuery()), //
 		WORD(new Queries.WordQuery());
 
 		private AbstractIndexQuery q;
@@ -106,6 +107,7 @@ public class Queries {
 	private final String location;
 	private final String filter;
 	private final String word;
+	private final String collection;
 
 	/**
 	 * @param builder The builder to use for this
@@ -125,6 +127,7 @@ public class Queries {
 		this.location = builder.location;
 		this.filter = builder.filter;
 		this.word = builder.word;
+		this.collection = builder.collection;
 	}
 
 	@SuppressWarnings("javadoc")
@@ -143,6 +146,7 @@ public class Queries {
 		private String location = "";
 		private String filter = "";
 		private String word = "";
+		private String collection = "";
 
 		//@formatter:off
 		public Builder() {}
@@ -160,6 +164,7 @@ public class Queries {
 		public Builder location(String val) { location = val; return this; }
 		public Builder filter(String val) { filter = val; return this; }
 		public Builder word(String val) { word = val; return this; }
+		public Builder collection(String val) { collection = val; return this; }
 		public QueryBuilder build() { return new Queries(this).query(); }
 		//@formatter:on
 
@@ -181,6 +186,7 @@ public class Queries {
 							.put(Parameter.FILTER, filter)
 							.put(Parameter.OWNER, owner)
 							.put(Parameter.WORD, word)
+							.put(Parameter.COLLECTION, collection)
 							.build());/*@formatter:on*/
 
 			return parameters.toString();
@@ -205,6 +211,7 @@ public class Queries {
 						.put(Parameter.FILTER, filter)
 						.put(Parameter.OWNER, owner)
 						.put(Parameter.WORD, word)
+						.put(Parameter.COLLECTION, collection)
 						.build());/*@formatter:on*/
 
 		BoolQueryBuilder result = QueryBuilders.boolQuery();
@@ -667,6 +674,23 @@ public class Queries {
 			}
 			return ownersQuery;
 		}
+	}
+
+	/**
+	 * Query the lobid-resources index for a given collection.
+	 */
+	public static class CollectionQuery extends AbstractIndexQuery {
+
+		@Override
+		public List<String> fields() {
+			return Arrays.asList("inCollection.id");
+		}
+
+		@Override
+		public QueryBuilder build(String queryString) {
+			return multiValueMatchQuery(queryString);
+		}
+
 	}
 
 }

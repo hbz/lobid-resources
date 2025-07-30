@@ -1,6 +1,6 @@
 @* Copyright 2014-2017 Fabian Steeg, hbz. Licensed under the EPL 2.0 *@
 
-@(result: String, q:String, agent:String, name:String, subject:String, id:String, publisher:String, issued:String, medium: String, from: Int, size: Int, allHits: Long, owner: String, t: String, sortParam: String, word: String)
+@(result: String, q:String, agent:String, name:String, subject:String, id:String, publisher:String, issued:String, medium: String, collection: String, from: Int, size: Int, allHits: Long, owner: String, t: String, sortParam: String, word: String)
 
 @import helper._
 @import tags._
@@ -14,17 +14,17 @@
   <nav>
     <ul class="pagination">
       <li class="previous @if(from==0){disabled}">
-        <a href="@if(from==0){#} else {@resources.routes.Application.query(q,agent,name,subject,id,publisher,issued,medium,from-size,size,owner,t,sortParam,word=word)}">&larr;</a>
+        <a href="@if(from==0){#} else {@resources.routes.Application.query(q,agent,name,subject,id,publisher,issued,medium,collection,from-size,size,owner,t,sortParam,word=word)}">&larr;</a>
       </li>
       @defining((((from+1)/size)+1,(if(allHits%size==0) allHits/size else allHits/size+1).toInt)) { case (currentPage,lastPage) =>
           @defining(Math.min(Math.max(1,currentPage-4)+9,lastPage)) { toPage =>
               @for(i <- Math.max(1,toPage-9) to toPage){
-                  <li @if(currentPage==i){class="active"}><a href="@resources.routes.Application.query(q,agent,name,subject,id,publisher,issued,medium,(i*size)-size,size,owner,t,sortParam,word=word)">@i</a></li>
+                  <li @if(currentPage==i){class="active"}><a href="@resources.routes.Application.query(q,agent,name,subject,id,publisher,issued,medium,collection,(i*size)-size,size,owner,t,sortParam,word=word)">@i</a></li>
               }
           }
       }
       <li class="next @if(from+size >= allHits){disabled}">
-        <a href="@if(from+size >= allHits){#} else {@resources.routes.Application.query(q,agent,name,subject,id,publisher,issued,medium,from+size,size,owner,t,sortParam,word=word)}">&rarr;</a>
+        <a href="@if(from+size >= allHits){#} else {@resources.routes.Application.query(q,agent,name,subject,id,publisher,issued,medium,collection,from+size,size,owner,t,sortParam,word=word)}">&rarr;</a>
       </li>
     </ul>
   </nav>
@@ -32,13 +32,13 @@
 
 @sort(param: String, label: String)={
 <li role="tab" @if(sortParam==param){class="active" aria-selected="true"} else {aria-selected="false" tabindex="-1" aria-controls="@label"}>
-  <a href="@resources.routes.Application.query(q,agent,name,subject,id,publisher,issued,medium,from,size,owner,t,param,word=word)">@label</a>
+  <a href="@resources.routes.Application.query(q,agent,name,subject,id,publisher,issued,medium,collection,from,size,owner,t,param,word=word)">@label</a>
 </li>
 }
 
 @pageLink(num: Int)={
 <li role="tab" @if(size==num){class="active" aria-selected="true"} else {aria-selected="false" tabindex="-1" aria-controls="@num"}>
-  <a href="@resources.routes.Application.query(q,agent,name,subject,id,publisher,issued,medium,from,num,owner,t,sortParam,word=word)">@num</a>
+  <a href="@resources.routes.Application.query(q,agent,name,subject,id,publisher,issued,medium,collection,from,num,owner,t,sortParam,word=word)">@num</a>
 </li>
 }
 
@@ -54,7 +54,7 @@
 	(doc\"almaMmsId").asOpt[String].orElse((doc\"hbzId").asOpt[String]).orElse((doc\"rpbId").asOpt[String]).getOrElse("")
 }
 
-@main(q, "lobid-resources - Ergebnisliste", rss = Some(resources.routes.Application.query(q,agent,name,subject,id,publisher,issued,medium,from,size,owner,t,word=word,format="rss").toString)) {
+@main(q, "lobid-resources - Ergebnisliste", rss = Some(resources.routes.Application.query(q,agent,name,subject,id,publisher,issued,medium,collection,from,size,owner,t,word=word,format="rss").toString)) {
     @if(Seq(name, id, publisher).exists(!_.isEmpty)){ @* advanced search, not shown in facets *@
       @tags.search_advanced("Suche aktualisieren", q, agent, name, subject, id, publisher, issued, sortParam)
       <script>$("#search-simple").hide()</script>
@@ -87,10 +87,10 @@
                  <div class="panel-body" style="text-align:center">
                  <div class="row">
                     <div class="col-md-1 text-left">
-                    <a rel='alternate' type='application/rss+xml' href='@resources.routes.Application.query(q,agent,name,subject,id,publisher,issued,medium,from,size,owner,t,word=word,format="rss")'>
+                    <a rel='alternate' type='application/rss+xml' href='@resources.routes.Application.query(q,agent,name,subject,id,publisher,issued,medium,collection,from,size,owner,t,word=word,format="rss")'>
                         <span class="octicon octicon-rss" title='RSS-Feed für diese Suchanfrage'></span>
                     </a>
-                    <a rel='alternate' type='application/ld+json' href='@resources.routes.Application.query(q,agent,name,subject,id,publisher,issued,medium,from,size,owner,t,word=word,format="json")'>
+                    <a rel='alternate' type='application/ld+json' href='@resources.routes.Application.query(q,agent,name,subject,id,publisher,issued,medium,collection,from,size,owner,t,word=word,format="json")'>
                         <img class='json-ld-icon' src='@routes.Assets.at("images/json-ld.png")' title='JSON-LD für diese Suchanfrage'>
                     </a>
                     </div>
@@ -142,7 +142,7 @@
            }
          }
         </div>
-        @if(allHits > 0) {@facets(q,agent,name,subject,id,publisher,issued,medium,owner,t,sortParam,word,from,size)}
+        @if(allHits > 0) {@facets(q,agent,name,subject,id,publisher,issued,medium,owner,collection,t,sortParam,word,from,size)}
       </div>
     }
     @if(allHits > 0) {<p>@map_credits()</p>}

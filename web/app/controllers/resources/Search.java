@@ -236,7 +236,8 @@ public class Search {
 			final SearchRequestBuilder searchRequest, String... fields) {
 		Arrays.asList(fields).forEach(field -> {
 			int size =
-					Arrays.asList(TOPIC_AGGREGATION, SPATIAL_ID_FIELD, SUBJECT_ID_FIELD)
+					Arrays.asList(
+						TOPIC_AGGREGATION, SPATIAL_ID_FIELD, SUBJECT_ID_FIELD, COLLECTION_AGGREGATION)
 							.contains(field) ? 9999
 									: (field.equals(ISSUED_FIELD) ? 1000 : 100);
 			if (field.equals(SPATIAL_GEO_FIELD)) {

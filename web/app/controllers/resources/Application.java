@@ -96,7 +96,7 @@ public class Application extends Controller {
 	/** The internal ES field for the topics. */
 	public static final String TOPIC_AGGREGATION = "subject.label.raw";
     /** The internal ES field for the topics. */
-	public static final String COLLECTION_AGGREGATION = "inCollection.label.raw";
+	public static final String COLLECTION_AGGREGATION = "inCollection.id";
 	/** The internal ES field for subjects. */
 	public static final String SUBJECT_FIELD = "subject.componentList.id";
 	/** The internal ES field for contributing agents. */
