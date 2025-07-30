@@ -1,4 +1,4 @@
-set_array("medium[]")
+add_array("medium[]")
 
 # The type and medium transformation has to be completly remodeled since the transformation was not identical with
 # the old ALEPH Moprh Transformation.
@@ -52,7 +52,7 @@ end
 paste("@leaderTyp+008","@leaderTyp","008", join_char:"")
 
 # Collects Portfolio resource types
-set_array("@PORtype")
+add_array("@PORtype")
 do list(path: "POR  ","var":"$i")
   copy_field("$i.f","@PORtype.$append")
 end
@@ -65,7 +65,7 @@ end
 
 # TODO: Check introx concerning possible mappings of 340 https://github.com/hbz/limetrans/blob/d2dff10e1b5cdf5699239a8f3474f8b652d582a3/src/main/resources/transformation/alma.fix#L629
 
-set_array("@300a_mainExtend")
+add_array("@300a_mainExtend")
 do list(path:"300  ", "var":"$i")
   do list(path:"$i.a", "var":"$j")
     copy_field("$j","@300a_mainExtend.$append") # All extent infos listed after : or ; are only refering to parts not the resource itself.
@@ -338,7 +338,7 @@ end
 # All metadata records have type: "BibliographicResource"
 # Base for type list is schema: https://github.com/hbz/lobid-resources/blob/eb1cbfaf013b03aee49291d8b3a4d00aa046e333/src/test/resources/schemas/type.json
 
-set_array("type[]","BibliographicResource")
+add_array("type[]","BibliographicResource")
 
 # There seems to be a discrepancy between the values in the schema enum and in the aggregation.
 # Real data: http://lobid.org/resources/search?format=json&aggregations=type
@@ -360,10 +360,12 @@ if any_equal("natureOfContent[].*.label","Website")
     end
   end
   # if type is ArchivedWebPage also add element `webPageArchived`
-  set_array("webPageArchived[]")
+  add_array("webPageArchived[]")
   do list(path: "856??", "var": "$i")
     unless any_contain("$i.u", "edoweb")
       copy_field("$i.u","webPageArchived[].$append.id")
+      copy_field("$i.u","webPageArchived[].$last.label")
+      replace_all("webPageArchived[].$last.label","http[s]?://(.*?)[/]?$","$1")
     end
   end
 end

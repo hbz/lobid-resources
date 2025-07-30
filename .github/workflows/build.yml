@@ -13,24 +13,17 @@ jobs:
       with:
         java-version: 11
     - name: Cache Maven packages
-      uses: actions/cache@v2
+      uses: actions/cache@v4
       with:
         path: ~/.m2
         key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
         restore-keys: ${{ runner.os }}-m2
-    #- name: Install metafacture-core-snapshots
-    #  run: |
-    #    git clone https://github.com/metafacture/metafacture-core.git
-    #    cd metafacture-core
-    #    git checkout 5.7.0-rc1
-    #    ./gradlew publishToMavenLocal
-    #    cd ..
-    - name: Install metafacture-fix
+    - name: Install metafacture-core-snapshots
       run: |
         cd ..
-        git clone https://github.com/metafacture/metafacture-fix.git
-        cd metafacture-fix
-        git checkout 1.1.2
+        git clone https://github.com/metafacture/metafacture-core.git
+        cd metafacture-core
+        git checkout master
         ./gradlew publishToMavenLocal
         cd -
     - name: Build with Maven
@@ -49,7 +42,7 @@ jobs:
         cd -
     - uses: sbt/setup-sbt@v1
     - name: Cache SBT
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         path: |
           ~/.ivy2/cache

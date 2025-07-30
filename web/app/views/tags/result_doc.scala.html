@@ -78,8 +78,10 @@
 
 @with_icon(label: String, property: String, fullField: String) = {
   @if((doc\property).asOpt[JsValue].isDefined) {
-    @defining(if(property != "type") { nestedIds(property) } else { singleOrMultiString(property) }){ v =>
-      <tr><td>@label</td><td><span class="@Lobid.facetIcon(v,fullField)"></span> @Lobid.facetLabel(v,fullField,"")</td></tr>
+    @defining((if(property != "type") { nestedIds(property) } else { singleOrMultiString(property) }).filter(v => v != "BibliographicResource")){ vs =>
+     @for(v <- vs) {
+      <tr><td>@if(v==vs.head){@label}</td><td><span class="@Lobid.facetIcon(Seq(v),fullField)"></span> @Lobid.facetLabel(Seq(v),fullField,"")</td></tr>
+     }
     }
   }
 }
@@ -191,10 +193,6 @@
   @for(pub <- sortedPublications((doc\"publication").asOpt[Seq[JsValue]].getOrElse(Seq()))){ @publication(pub) }
 
   @result_field("Auflage", "edition", doc, TableRow.VALUES)
-  @result_field("ISBN", "isbn", doc, TableRow.VALUES, node = Option(doc))
-  @result_field("ISSN", "issn", doc, TableRow.VALUES, node = Option(doc))
-  @withPrefixedLink("DOI", "https://dx.doi.org/", doc \ "doi")
-  @withPrefixedLink("URN", "https://nbn-resolving.org/", doc \ "urn")
   @result_field("Umfang", "extent", doc, TableRow.VALUES)
   @result_field("Quelle", "bibliographicCitation", doc, TableRow.VALUES)
   @result_field("In", "containedIn", doc, TableRow.LINKS)
@@ -213,4 +211,18 @@
   @labelled("Inhaltsangabe", "description")
   @labelled("Inhaltsverzeichnis", "tableOfContents")
 }
+
+@table(){
+    <tr><td><b>Identifier:</b></td><td></td></tr>
+    @result_field("ISBN", "isbn", doc, TableRow.VALUES, node = Option(doc))
+    @result_field("ISSN", "issn", doc, TableRow.VALUES, node = Option(doc))
+    @result_field("hbz-ID", "hbzId", doc, TableRow.VALUES, node = Option(doc))
+    @result_field("ZDB-ID", "zdbId", doc, TableRow.VALUES, node = Option(doc))
+    @result_field("Alma-MMS-ID", "almaMmsId", doc, TableRow.VALUES, node = Option(doc))
+    @withPrefixedLink("DOI", "https://dx.doi.org/", doc \ "doi")
+    @withPrefixedLink("URN", "https://nbn-resolving.org/", doc \ "urn")
+    @result_field("URI", "id", doc, TableRow.VALUES, node = Option(doc))
+  }
+
+
 @subjects((doc \ "subject").asOpt[Seq[JsValue]].getOrElse(Seq()))

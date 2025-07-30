@@ -7,7 +7,7 @@ end
 replace_all("@title","<<|>>","")
 
 
-set_array("@titleOfSubSeries_n") # Subvolume numbering
+add_array("@titleOfSubSeries_n") # Subvolume numbering
 do list(path:"245??.n", "var":"$i")
   unless all_equal("$i","[...]")
     copy_field("$i","@titleOfSubSeries_n.$append")
@@ -15,7 +15,7 @@ do list(path:"245??.n", "var":"$i")
 end
 join_field("@titleOfSubSeries_n", ". ")
 
-set_array("@titleOfSubSeries_p")
+add_array("@titleOfSubSeries_p")
 
 do list(path:"245??.p", "var":"$i") # Subvolume title
   unless all_equal("$i","[...]")
@@ -59,15 +59,15 @@ do list(path:"245??","var":"$i")
             copy_field("$880.a","$AGR.record.@title")
             copy_field("$880.n","$AGR.record.@titleOfSubSeries_n")
             unless exists("$AGR.record.@titleOfSubSeries_p")
-              set_array("$AGR.record.@titleOfSubSeries_p")
+              add_array("$AGR.record.@titleOfSubSeries_p")
             end
             copy_field("$880.p","$AGR.record.@titleOfSubSeries_p.$append")
             unless exists("$AGR.record.otherTitleInformation[]")
-              set_array("$AGR.record.otherTitleInformation[]")
+              add_array("$AGR.record.otherTitleInformation[]")
             end
             copy_field("$880.b","$AGR.record.otherTitleInformation[].$append")
             unless exists("$AGR.record.responsibilityStatement[]")
-              set_array("$AGR.record.responsibilityStatement[]")
+              add_array("$AGR.record.responsibilityStatement[]")
             end
             copy_field("$880.c","$AGR.record.responsibilityStatement[].$append")
             end
@@ -77,11 +77,11 @@ do list(path:"245??","var":"$i")
         copy_field("$880.@script.label","alternateGraphicRepresentation[].$last.script.label")
         copy_field("$880.a","alternateGraphicRepresentation[].$last.record.@title")
         copy_field("$880.n","alternateGraphicRepresentation[].$last.record.@titleOfSubSeries_n")
-        set_array("alternateGraphicRepresentation[].$last.record.@titleOfSubSeries_p")
+        add_array("alternateGraphicRepresentation[].$last.record.@titleOfSubSeries_p")
         copy_field("$880.p","alternateGraphicRepresentation[].$last.record.@titleOfSubSeries_p.$append")
-        set_array("alternateGraphicRepresentation[].$last.record.otherTitleInformation[]")
+        add_array("alternateGraphicRepresentation[].$last.record.otherTitleInformation[]")
         copy_field("$880.b","alternateGraphicRepresentation[].$last.record.otherTitleInformation[].$append")
-        set_array("alternateGraphicRepresentation[].$last.record.responsibilityStatement[]")
+        add_array("alternateGraphicRepresentation[].$last.record.responsibilityStatement[]")
         copy_field("$880.c","alternateGraphicRepresentation[].$last.record.responsibilityStatement[].$append")
         end
       end
@@ -140,7 +140,7 @@ end
 
 # 246 - Varying Form of Title (R) - Subfields: $a (NR)
 
-set_array("alternativeTitle[]")
+add_array("alternativeTitle[]")
 copy_field("246?[ 345678].a","alternativeTitle[].$append")
 
 do list(path:"246?[ 345678]","var":"$i")
@@ -159,7 +159,7 @@ end
 
 replace_all("alternativeTitle[].*","<<|>>","")
 
-set_array("otherTitleInformation[]")
+add_array("otherTitleInformation[]")
 copy_field("245??.b","otherTitleInformation[].$append")
 
 
@@ -174,7 +174,7 @@ end
 
 # 250 - Edition Statement (R) - Subfields: $a (NR)
 
-set_array("edition[]")
+add_array("edition[]")
 copy_field("250  .a","edition[].$append")
 replace_all("edition[].*","\\s?[./]\\s?$","")
 
@@ -189,7 +189,7 @@ end
 # 515 - Numbering Peculiarities Note (R)
 # Prefer 264 over 260 since it can create duplicate info and 260 is discontinued in RDA.
 
-set_array("publication[]")
+add_array("publication[]")
 if exists("264[ 23][ 1]")
   call_macro("publication",field:"2643[ 1]") # 3 - Current/Latest
   call_macro("publication",field:"2642[ 1]") # 2 - Intervening
@@ -200,7 +200,7 @@ else
   call_macro("publication",field:"260 [ 1]") # # - Not applicable/No information provided/Earliest
 end
 
-set_array("manufacture[]")
+add_array("manufacture[]")
 if exists("264[ 23]3")
   call_macro("manufacture",field:"26433") # 3 - Current/Latest
   call_macro("manufacture",field:"26423") # 2 - Intervening
@@ -211,11 +211,13 @@ end
 
 if exists("publication[].$first")
   copy_field("362??.a","publication[].$first.publicationHistory")
-    set_array("publication[].$first.frequency[]")
+    add_array("publication[].$first.frequency[]")
     if any_match("leader","^.{6}(a[bis]|m[bis]).*$") # checks if continous ressource
       unless any_match("008","^.{18}[#\\| u].*$") # filters out not matching values and also the value unknown
         copy_field("008","publication[].$first.frequency[].$append.id")
         replace_all("publication[].$first.frequency[].$last.id", "^.{18}(.).*$", "http://marc21rdf.info/terms/continuingfre#$1")
+        copy_field("publication[].$first.frequency[].$last.id","publication[].$first.frequency[].$last.label")
+        lookup("publication[].$first.frequency[].$last.label","marc-publication-frequency-label")
       end
     elsif any_match("006","^s.*$")
       do list(path: "006", "var":"$z")
@@ -223,11 +225,13 @@ if exists("publication[].$first")
           unless any_match("$z","^.[#\\| u].*$")
             copy_field("$z","publication[].$first.frequency[].$append.id")
             replace_all("publication[].$first.frequency[].$last.id", "^.(.).*$", "http://marc21rdf.info/terms/continuingfre#$1")
+            copy_field("publication[].$first.frequency[].$last.id","publication[].$first.frequency[].$last.label")
+            lookup("publication[].$first.frequency[].$last.label","marc-publication-frequency-label")
           end
         end
       end
     end
-    set_array("publication[].$first.note[]")
+    add_array("publication[].$first.note[]")
     copy_field("515??.a","publication[].$first.note[].$append")
   do list(path:"500  ", "var":"$i")
     if any_match("$i.a", "^.*saṃ. \\d{4}=(\\d{4}).*Chr.*")
@@ -283,15 +287,15 @@ end
 # 533 - Reproduction Note (R)
 
 do list(path:"533  ", "var": "$i")
-  set_hash( "publication[].$append")
-  set_array("publication[].$last.type[]","SecondaryPublicationEvent")
-  set_array("publication[].$last.location[]")
+  add_hash( "publication[].$append")
+  add_array("publication[].$last.type[]","SecondaryPublicationEvent")
+  add_array("publication[].$last.location[]")
   do list(path:"$i.b","var":"$j")
     copy_field("$j", "publication[].$last.location[].$append")
   end
-  set_array("publication[].$last.description[]")
+  add_array("publication[].$last.description[]")
   copy_field("$i.a", "publication[].$last.description[].$append")
-  set_array("publication[].$last.publishedBy[]")
+  add_array("publication[].$last.publishedBy[]")
   copy_field("$i.c", "publication[].$last.publishedBy[].$append")
   do list(path: "$i.d", "var":"$j")
     replace_all("$j", "\\[|\\]|ca. |c ", "")
@@ -322,20 +326,22 @@ do list(path: "publication[]", "var": "$i")
   replace_all("$i.location[].*", "^\\[(.*)\\]$", "$1")
   replace_all("$i.location[].*", "\\s?[,:;]$", "")
   replace_all("$i.publishedBy[].*", "^[©]|\\s?[,:;/=]?$", "")
+  call_macro("leapYearAndMonthLenghtChecker",date:"$i.startDate")
+  call_macro("leapYearAndMonthLenghtChecker",date:"$i.endDate")
   uniq("$i.location[]")
 end
 
 
 # 246 - Varying Form of Title (R) - $a - Title proper/short title (NR)
 
-set_array("titleKeyword[]")
+add_array("titleKeyword[]")
 do list(path: "24610", "var": "$i")
   copy_field("$i.a","titleKeyword[].$append")
 end
 
 
 # 210 - Abbreviated Title (R) - $a - Abbreviated title (NR)
-set_array("shortTitle[]")
+add_array("shortTitle[]")
 do list(path: "210??", "var": "$i")
   copy_field("$i.a","shortTitle[].$append")
 end

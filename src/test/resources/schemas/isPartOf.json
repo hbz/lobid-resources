@@ -1,37 +1,49 @@
 {
-    "$id": "isPartOf.json",
-    "$schema": "http://json-schema.org/draft-07/schema#",
-    "title": "Is part of",
-    "description": "The isPartOf relation",
-    "type": "array",
-    "items": {
-        "type": "object",
-        "properties": {
-            "type": {
-                "type": "array",
-                "items": {
-                    "type": "string",
-                    "const": "IsPartOfRelation"
-                }
-            },
-            "numbering": {
-                "type": "string"
-            },
-            "hasSuperordinate": {
-                "type": "array",
-                "items": {
-                    "type": "object",
-                    "properties": {
-                        "id": {
-                            "type": "string",
-                            "format": "uri"
-                        },
-                        "label": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
+  "$id": "isPartOf.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Is part of",
+  "description": "The isPartOf relation",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "additionalProperties":false,
+    "properties": {
+      "type": {
+        "type": "array",
+        "items": {
+          "type": "string",
+          "const": "IsPartOfRelation"
         }
-    }
+      },
+      "note": {
+        "title": "Note",
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "numbering": {
+        "type": "string"
+      },
+      "hasSuperordinate": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "additionalProperties":false,
+          "properties": {
+            "id": {
+              "type": "string",
+              "format": "uri"
+            },
+            "label": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "required": [
+      "hasSuperordinate"
+    ]
+  }
 }

@@ -8,6 +8,7 @@ import static controllers.resources.Application.MEDIUM_FIELD;
 import static controllers.resources.Application.COLLECTION_AGGREGATION;
 import static controllers.resources.Application.OWNER_AGGREGATION;
 import static controllers.resources.Application.SUBJECT_FIELD;
+import static controllers.resources.Application.SUBJECT_NOTATION;
 import static controllers.resources.Application.TOPIC_AGGREGATION;
 import static controllers.resources.Application.TYPE_FIELD;
 
@@ -120,9 +121,10 @@ public class Search {
 	 * The values supported for the `aggregations` query parameter.
 	 */
 	public static final List<String> SUPPORTED_AGGREGATIONS = Arrays.asList(
-			ISSUED_FIELD, SUBJECT_FIELD, TYPE_FIELD, MEDIUM_FIELD, COLLECTION_AGGREGATION, OWNER_AGGREGATION,
-			AGENT_FIELD, SPATIAL_LABEL_FIELD, SPATIAL_GEO_FIELD, SPATIAL_ID_FIELD,
-			SUBJECT_ID_FIELD, TOPIC_AGGREGATION);
+			ISSUED_FIELD, SUBJECT_FIELD, SUBJECT_NOTATION, TYPE_FIELD,
+			MEDIUM_FIELD, COLLECTION_AGGREGATION, OWNER_AGGREGATION,
+			AGENT_FIELD, SPATIAL_LABEL_FIELD, SPATIAL_GEO_FIELD,
+			SPATIAL_ID_FIELD, SUBJECT_ID_FIELD, TOPIC_AGGREGATION);
 
 	/**
 	 * @return The number of result for this search

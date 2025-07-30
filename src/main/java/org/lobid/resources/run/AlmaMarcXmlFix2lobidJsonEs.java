@@ -115,16 +115,16 @@ public class AlmaMarcXmlFix2lobidJsonEs {
                 fixVariables.put("createEndTime", "1"); // 1 <=> true
                 fixVariables.put("institution-code", "DE-605");
                 // the './' is mandatory to get play to use the "conf" directory. Base is the root directory of the fix, which is "alma":
-                fixVariables.put("deweyLabels", "./maps/deweyLabels.tsv");
-                fixVariables.put("dnbSachgruppen", "./maps/dnbSachgruppen.tsv");
-                fixVariables.put("maps-institutions.tsv", "./maps/institutions.tsv");
-                fixVariables.put("sublibraryIsil", "../../../../../../lookup-tables/data/almaSublibraryCode2Isil/generated/generatedAlmaSublibraryCode2Isil.tsv");
-                fixVariables.put("suppressedLocations", "../../../../../../lookup-tables/data/almaSuppressedLocations/generated/generatedAlmaSuppressedLocations.tsv");
+                fixVariables.put("deweyLabels.tsv", "./maps/deweyLabels.tsv");
+                fixVariables.put("dnbSachgruppen.tsv", "./maps/dnbSachgruppen.tsv");
+                fixVariables.put("institutions.tsv", "./maps/institutions.tsv");
+                fixVariables.put("generatedAlmaSublibraryCode2Isil.tsv", "../../../../../../lookup-tables/data/almaSublibraryCode2Isil/generated/generatedAlmaSublibraryCode2Isil.tsv");
+                fixVariables.put("generatedAlmaSuppressedLocations.tsv", "../../../../../../lookup-tables/data/almaSuppressedLocations/generated/generatedAlmaSuppressedLocations.tsv");
                 fixVariables.put("picaCreatorId2Isil.tsv", "./maps/picaCreatorId2Isil.tsv");
                 fixVariables.put("nwbibWikidataLabelTypeCoords.tsv", "./maps/nwbibWikidataLabelTypeCoords.tsv");
                 fixVariables.put("classification.tsv", "./maps/classification.tsv");
                 fixVariables.put("formangabe.tsv", "./maps/formangabe.tsv");
-                fixVariables.put("almaMmsId2rpbId", "../../../../../../lookup-tables/data/almaMmsId2rpbId.tsv");
+                fixVariables.put("almaMmsId2rpbId.tsv", "../../../../../../lookup-tables/data/almaMmsId2rpbId.tsv");
                 fixVariables.put("rvk.tsv", "../../../../../../lookup-tables/data/rvk.tsv");
                 fixVariables.put("lobidOrganisationsMapping.tsv", "./maps/lobidOrganisationsMapping.tsv");
                 fixVariables.put("hbzowner2sigel.tsv", "./maps/hbzowner2sigel.tsv");
@@ -133,13 +133,16 @@ public class AlmaMarcXmlFix2lobidJsonEs {
                 fixVariables.put("rpb.ttl", "../../../../../../lbz-vocabs/rpb.ttl");
                 fixVariables.put("nwbib.ttl", "../../../../../../vocabs/nwbib/nwbib.ttl");
                 fixVariables.put("nwbib-spatial.ttl", "../../../../../../vocabs/nwbib/nwbib-spatial.ttl");
-                fixVariables.put("hbzId2zdbId.tsv", "./maps/hbzId2zdbId.tsv.gz");
+                fixVariables.put("hbzId2zdbId.tsv.gz", "./maps/hbzId2zdbId.tsv.gz");
                 fixVariables.put("isil2opac_hbzId.tsv", "../../../../../../lookup-tables/data/opacLinks/isil2opac_hbzId.tsv");
                 fixVariables.put("isil2opac_isbn.tsv", "../../../../../../lookup-tables/data/opacLinks/isil2opac_isbn.tsv");
                 fixVariables.put("isil2opac_issn.tsv", "../../../../../../lookup-tables/data/opacLinks/isil2opac_issn.tsv");
                 fixVariables.put("isil2opac_zdbId.tsv", "../../../../../../lookup-tables/data/opacLinks/isil2opac_zdbId.tsv");
                 fixVariables.put("isil2opac_almaMmsId.tsv", "../../../../../../lookup-tables/data/opacLinks/isil2opac_almaMmsId.tsv");
-
+                fixVariables.put("marcRel.tsv", "./maps/marcRel.tsv");
+                fixVariables.put("collectionLabels.tsv", "./maps/collectionLabels.tsv");
+                fixVariables.put("combinedDe-Sol1Holdings.tsv.gz", "./maps/combinedDe-Sol1Holdings.tsv.gz");
+                fixVariables.put("gnd-sc.ttl", "./maps/gnd-sc.ttl");
 
                 XmlElementSplitter xmlElementSplitter = new XmlElementSplitter();
                 xmlElementSplitter.setElementName("record");

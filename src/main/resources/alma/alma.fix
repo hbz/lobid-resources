@@ -25,8 +25,8 @@ add_field("@context","http://lobid.org/resources/context.jsonld")
 
 # Set empty elements to manipulate the order winthin the record.
 add_field("id","")
-set_array("type[]")
-set_array("medium[]")
+add_array("type[]")
+add_array("medium[]")
 add_field("title","")
 
 do list(path:"880??","var":"$i")
@@ -38,7 +38,7 @@ do list(path:"880??","var":"$i")
   replace_all("$i.@script.label","(\\d{3}-\\d{2})/(.*)","$2")
   lookup("$i.@script.label","ISO15924-to-script")
 end
-set_array("alternateGraphicRepresentation[]")
+add_array("alternateGraphicRepresentation[]")
 
 include ("./fix/identifiers.fix")
 include ("./fix/titleRelatedFields.fix")
@@ -63,6 +63,7 @@ retain(
   "bibliographicLevel",
   "describedBy",
   "description[]",
+  "disambiguatingDescription[]",
   "containedIn[]",
   "containsExampleOfWork[]",
   "contribution[]",

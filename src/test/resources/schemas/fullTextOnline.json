@@ -1,0 +1,24 @@
+{
+    "$id": "fulltextOnline.json",
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Full text link",
+    "description": "Link to the online version of the full text",
+    "type": "array",
+    "items": {
+        "type": "object",
+        "additionalProperties":false,
+        "properties": {
+            "id": {
+                "type": "string",
+                "format": "uri"
+            },
+            "label": {
+                "type": "string"
+            }
+        },
+        "required": [
+          "id",
+          "label"
+        ]
+    }
+}

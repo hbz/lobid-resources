@@ -397,6 +397,10 @@
           "analyzer": "id_analyzer",
           "type": "text"
         },
+        "hebisId": {
+          "analyzer": "id_analyzer",
+          "type": "text"
+        },
         "subjectAltLabel": {
           "type": "text",
           "analyzer": "german_analyzer",
@@ -632,7 +636,16 @@
                   ]
                 },
                 "id": {
-                  "type": "keyword"
+                  "type": "keyword",
+                  "copy_to": [
+                    "q.all"
+                  ]
+                },
+                "gndIdentifier": {
+                  "type": "keyword",
+                  "copy_to": [
+                    "q.all"
+                  ]
                 }
               }
             },
@@ -724,7 +737,18 @@
                   ]
                 },
                 "id": {
-                  "type": "keyword"
+                  "type": "keyword",
+                  "copy_to": [
+                    "q.all",
+                    "q.subject"
+                  ]
+                },
+                "gndIdentifier": {
+                  "type": "keyword",
+                  "copy_to": [
+                    "q.all",
+                    "q.subject"
+                  ]
                 },
                 "dateOfBirthAndDeath": {
                   "type": "text"
@@ -768,7 +792,18 @@
               }
             },
             "id": {
-              "type": "keyword"
+              "type": "keyword",
+              "copy_to": [
+                "q.all",
+                "q.subject"
+              ]
+            },
+            "gndIdentifier": {
+              "type": "keyword",
+              "copy_to": [
+                "q.all",
+                "q.subject"
+              ]
             },
             "label": {
               "type": "text",
@@ -888,7 +923,6 @@
                   "type": "keyword"
                 },
                 "label": {
-                  "index": false,
                   "type": "text",
                   "copy_to": [
                     "q.all"
@@ -975,7 +1009,6 @@
           ]
         },
         "note": {
-          "index": false,
           "type": "text"
         },
         "ismn": {
@@ -1089,6 +1122,9 @@
           "copy_to": [
             "q.all"
           ]
+        },
+        "disambiguatingDescription": {
+          "type": "text"
         },
         "spatial": {
           "type": "nested",

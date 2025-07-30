@@ -3,15 +3,10 @@
   "title": "lobid-resources",
   "description": "This is a generic JSON schema for validating a JSON document against the lobid-resources data model",
   "type": "object",
+  "additionalProperties":false,
   "properties": {
     "@context": {
       "$ref": "context.json"
-    },
-    "bibliographicCitation": {
-      "type": "string"
-    },
-    "containedIn": {
-      "$ref": "containedIn.json"
     },
     "id": {
       "$ref": "id.json"
@@ -19,14 +14,62 @@
     "type": {
       "$ref": "type.json"
     },
+    "abstract": {
+      "title": "Abstract",
+      "type": "array"
+    },
+    "almaMmsId": {
+      "title": "ALMA MMS identifier",
+      "type": "string",
+      "pattern": "\\d{17}"
+    },
+    "alternateGraphicRepresentation": {
+      "$ref": "alternateGraphicRepresentation.json"
+    },
+    "alternativeTitle": {
+      "title": "Variations of the title",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "bibliographicCitation": {
+      "type": "string"
+    },
+    "bibliographicLevel": {
+      "$ref": "bibliographicLevel.json"
+    },
+    "containedIn": {
+      "$ref": "containedIn.json"
+    },
+    "containsExampleOfWork": {
+      "$ref": "containsExampleOfWork.json"
+    },
     "contribution": {
       "$ref": "contribution.json"
     },
     "describedBy": {
       "$ref": "describedBy.json"
     },
+    "deprecatedUri": {
+      "$ref": "id.json"
+    },
     "description": {
       "$ref": "description.json"
+    },
+    "disambiguatingDescription": {
+      "title": "Dynamic helper element for deduplicating efforts.",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "dnbId": {
+      "title": "DNB identifier",
+      "type": "string"
+    },
+    "doi": {
+      "$ref": "doi.json"
     },
     "edition": {
       "title": "Statement on the edition of the resource",
@@ -35,9 +78,15 @@
         "type": "string"
       }
     },
+    "exampleOfWork": {
+      "$ref": "exampleOfWork.json"
+    },
     "extent": {
       "title": "Extent",
       "type": "string"
+    },
+    "fulltextOnline": {
+      "$ref": "fulltextOnline.json"
     },
     "hasItem": {
       "$ref": "hasItem.json"
@@ -58,15 +107,37 @@
     "issn": {
       "$ref": "issn.json"
     },
+    "ismn": {
+      "$ref": "ismn.json"
+    },
+    "langNote": {
+      "title": "Note concerning the language of a resource",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
     "language": {
       "$ref": "language.json"
+    },
+    "license": {
+      "$ref": "license.json"
+    },
+    "manufacture": {
+      "$ref": "manufacture.json"
+    },
+    "medium": {
+      "$ref": "medium.json"
     },
     "natureOfContent": {
       "$ref": "natureOfContent.json"
     },
     "note": {
       "title": "Note",
-      "type": "array"
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
     },
     "oclcNumber": {
       "title": "OCLC number",
@@ -84,8 +155,17 @@
         "type": "string"
       }
     },
+    "predecessor": {
+      "$ref": "predecessor.json"
+    },
+    "primaryForm": {
+      "$ref": "primaryForm.json"
+    },
     "publication": {
       "$ref": "publication.json"
+    },
+    "related": {
+      "$ref": "related.json"
     },
     "responsibilityStatement": {
       "title": "Responsibility Statement",
@@ -94,14 +174,38 @@
         "type": "string"
       }
     },
+    "rpbId": {
+      "title": "RPB identifier",
+      "type": "string"
+    },
     "sameAs": {
       "$ref": "sameAs.json"
+    },
+    "secondaryForm": {
+      "$ref": "secondaryForm.json"
+    },
+    "seeAlso": {
+      "$ref": "seeAlso.json"
+    },
+    "shortTitle": {
+      "title": "Short version of title",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
     },
     "similar": {
       "$ref": "similar.json"
     },
     "spatial": {
       "$ref": "spatial.json"
+    },
+    "stockNumber": {
+      "title": "Product identifier from retail or publisher",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
     },
     "subject": {
       "title": "Subject",
@@ -125,18 +229,53 @@
         "type": "string"
       }
     },
+    "subjectslabels": {
+      "title": "Labels for all subjects needed by Digibib",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "successor": {
+      "$ref": "successor.json"
+    },
     "supplement": {
       "$ref": "supplement.json"
     },
     "tableOfContents": {
       "$ref": "tableOfContents.json"
     },
+    "thesisInformation": {
+      "title": "Information specific to the doctoral thesis",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
     "title": {
       "title": "Title",
       "type": "string"
     },
+    "titleKeyword": {
+      "title": "Keywords taken from the title",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "urn": {
+      "title": "urn",
+      "description": "urn of the resource",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "webPageArchived": {
+      "$ref": "webPageArchived.json"
+    },
     "zdbId": {
-      "title": "hbz identifier",
+      "title": "ZDB identifier",
       "type": "string",
       "pattern": "\\d{1,7}-[Xx\\d]"
     }

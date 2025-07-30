@@ -1,7 +1,7 @@
 # 008 - Fixed-Length Data Elements-General Information (NR) - No subfields
 # 041 - 041 - Language Code (R)
 
-set_array("@language")
+add_array("@language")
 copy_field("008", "@008-lang")
 substring("@008-lang", "35", "3")
 copy_field("@008-lang", "@language.$append.id")
@@ -13,7 +13,7 @@ end
 
 lookup("@language.*.label","ISO639-2-to-GND", delete:"true")
 
-set_array("language[]")
+add_array("language[]")
 do list(path:"@language", "var":"$i")
   unless any_match("$i.id","zxx|mul|sgn|und|.*[\\|\\#].*|\\s*")
     if exists("$i.label")
@@ -34,8 +34,8 @@ uniq("language[]")
 # 300 - Physical Description (R)
 # We reuse the introx transformation here.
 
-set_array("@300a")
-set_array("@300c")
+add_array("@300a")
+add_array("@300c")
 do list(path: "300  ", "var": "$i")
   copy_field("$i.a", "@300a.$append")
   do list(path: "$i.b", "var": "$j")
@@ -110,9 +110,11 @@ replace_all("extent", "  ", " ")
 
 
 # 500 - General Note (R) Subfield: $a (NR)
-set_array("note[]")
+add_array("note[]")
 do list(path:"500  ", "var": "$i")
-  copy_field("$i.a", "note[].$append")
+  unless any_contain("$i.a","In:")
+    copy_field("$i.a", "note[].$append")
+  end
 end
 uniq("note[]")
 
@@ -125,13 +127,16 @@ end
 # 520 - Summary, Etc. (R) Subfield: $a (NR), $b (NR)
 # TODO: Check if 1. Indicator 1 (REVIEW) is really to count as abstract. Perhaps 2 (Scope and content) is a better fit.
 # TODO: Get testdata.
-set_array("abstract[]")
+add_array("abstract[]")
 do list(path:"520[ 23] ", "var": "$i")
   copy_field("$i.[ab]", "abstract[].$append")
 end
 
+replace_all("abstract[].*","^<!\\[CDATA\\[(.*)\\]\\]>$","$1")
+replace_all("abstract[].*","<[\\/]?.{1,2}>","")
+
 # 502 - Dissertation Note (R) Subfield: $a (R)
-set_array("thesisInformation[]")
+add_array("thesisInformation[]")
 do list(path:"502  ", "var": "$i")
   copy_field("$i.a", "thesisInformation[].$append")
   paste("thesisInformation[].$append","$i.c","$i.b","$i.d","$i.o","$i.g", join_char:", ")
@@ -143,7 +148,7 @@ end
 # Also the element bibliographicCitation is confusing since it has a broader concept than the scope in lobid: only bibliographicInfo about issues/collection that an article belongs to.
 # Do we need a filter only for articles?
 
-set_array("bibliographicCitation")
+add_array("bibliographicCitation")
 
 
 # 773 - Host Item Entry (R) - $t - Title (NR), $b - Edition (NR), $d - Place, publisher, and date of publication (NR), $g - Related parts (R), $n - Note (R)
@@ -178,7 +183,7 @@ join_field("bibliographicCitation", "; ")
 
 # 542 - Information Relating to Copyright Status (R) - $n - Note (R)  $u - Uniform Resource Identifier (R)
 
-set_array("license[]")
+add_array("license[]")
 do list(path: "540??|542??", "var": "$i")
   copy_field("$i.u", "license[].$append.id")
   replace_all("license[].$last.id", "^(http://|https://)(.*)$","https://$2")
@@ -188,12 +193,26 @@ end
 
 uniq("license[]")
 
-set_array("langNote[]")
+add_array("langNote[]")
 do list(path: "546??", "var": "$i")
-  set_array("$i.@langNote")
+  add_array("$i.@langNote")
   copy_field("$i.a", "$i.@langNote.$append")
   copy_field("$i.b", "$i.@langNote.$append")
   replace_all("$i.@langNote.*", "[.;]$", "")
   join_field("$i.@langNote", "; ")
   move_field("$i.@langNote", "langNote[].$append")
+end
+
+
+# --- disambiguatingDescription ----
+# --- helper element for deduplication efforts ---
+# --- currently mapping duplicates from NWBib resources of DE-6, hbzId starting with BT, see https://github.com/hbz/nwbib/issues/658
+
+add_array("disambiguatingDescription[]")
+if any_equal("inCollection[].*.id","http://lobid.org/resources/HT014176012#!") # Filter only NWBib Ressources
+  if any_match("hbzId","BT.*") # Filter only hbzId starting with BT, hinting to a specific old NWBib Subset.
+    do list(path:"591??", "var":"$i")
+      copy_field("$i.a","disambiguatingDescription[].$append")
+    end
+  end
 end

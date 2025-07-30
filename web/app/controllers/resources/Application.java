@@ -103,6 +103,8 @@ public class Application extends Controller {
 	public static final String AGENT_FIELD = "contribution.agent.id";
 	/** The internal ES field for issued years. */
 	public static final String ISSUED_FIELD = "publication.startDate";
+	/** The internal ES field for subject notation. */
+	public static final String SUBJECT_NOTATION = "subject.notation";
 	/** Access to the resources.conf config file. */
 	private final static File RESOURCES_CONF = new File("conf/resources.conf").exists() ?
 			new File("conf/resources.conf") : new File("conf/resources.conf_template")  ;
