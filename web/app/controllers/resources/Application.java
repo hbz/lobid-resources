@@ -712,14 +712,6 @@ public class Application extends Controller {
 			return Pair.of(json, fullLabel);
 		};
 
-		Predicate<Pair<JsonNode, String>> labelled = pair -> {
-			JsonNode json = pair.getLeft();
-			String label = pair.getRight();
-			int count = json.get("doc_count").asInt();
-			return (!label.contains("http") || label.contains("nwbib")) && label
-					.length() > String.format(labelTemplate, "", "", count).length();
-		};
-
 		Collator collator = Collator.getInstance(Locale.GERMAN);
 		Comparator<Pair<JsonNode, String>> sorter = (p1, p2) -> {
 			String t1 = p1.getLeft().get("key").asText();
@@ -806,7 +798,7 @@ public class Application extends Controller {
 									List<Pair<JsonNode, String>> labelledFacets =
 											(List<Pair<JsonNode, String>>) Cache.get(labelKey);
 									if (labelledFacets == null) {
-										labelledFacets = stream.map(toLabel).filter(labelled)
+										labelledFacets = stream.map(toLabel)
 												.collect(Collectors.toList());
 										Cache.set(labelKey, labelledFacets, ONE_DAY);
 									}
