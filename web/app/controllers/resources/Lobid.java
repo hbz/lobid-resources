@@ -246,6 +246,9 @@ public class Lobid {
 		else if (uris.size() == 1 && isGnd(uris.get(0))) {
 			return Lobid.gndLabel(uris.get(0), field);
 		}
+		else if (uris.size() == 1 && isRes(uris.get(0))) {
+			return Lobid.resourceLabel(uris.get(0));
+		}
 		String configKey = keys.getOrDefault(field, "");
 		String type = selectType(uris, configKey);
 		if (type.isEmpty())
@@ -345,6 +348,10 @@ public class Lobid {
 
 	private static boolean isGnd(String term) {
 		return term.startsWith("https://d-nb.info/gnd");
+	}
+
+	private static boolean isRes(String term) {
+		return term.startsWith("http://lobid.org/resources");
 	}
 
 	/**
