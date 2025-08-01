@@ -9,8 +9,8 @@ GET    /*path/                controllers.resources.Application.redirectTo(path:
 GET    /resources                       controllers.resources.Application.index()
 GET    /resources/api                   controllers.resources.Application.api()
 GET    /resources/advanced              controllers.resources.Application.advanced()
-GET    /resources/search                controllers.resources.Application.query(q?="", agent?="", name?="", subject?="", id?="", publisher?="", issued?="", medium ?= "", from:Int?=0, size:Int?=15, owner?="", t?="", sort ?= "", word?="", format ?= null, aggregations ?= "", location ?= "", nested ?= "", filter ?= "")
-GET    /resources/facets                controllers.resources.Application.facets(q,agent?="", name?="", subject?="", id?="", publisher?="", issued?="", medium ?= "", from:Int,size:Int,owner,t,field,sort,word?="", location ?= "", nested ?= "", filter ?= "")
+GET    /resources/search                controllers.resources.Application.query(q?="", agent?="", name?="", subject?="", id?="", publisher?="", issued?="", medium ?= "", collection ?= "", from:Int?=0, size:Int?=15, owner?="", t?="", sort ?= "", word?="", format ?= null, aggregations ?= "", location ?= "", nested ?= "", filter ?= "")
+GET    /resources/facets                controllers.resources.Application.facets(q,agent?="", name?="", subject?="", id?="", publisher?="", issued?="", medium ?= "", collection ?= "", from:Int,size:Int,owner,t,field,sort,word?="", location ?= "", nested ?= "", filter ?= "")
 
 GET    /resources/stars                 controllers.resources.Application.showStars(format?="", ids?="")
 GET    /resources/stars/clear           controllers.resources.Application.clearStars(ids ?= "")
