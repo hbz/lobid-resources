@@ -108,17 +108,9 @@ public class Lobid {
 		JsonNode json = Optional.ofNullable(org.findValue("alternateName"))
 				.orElse(Json.toJson(Arrays.asList(org.findValue("name"))));
 		String label = HtmlEscapers.htmlEscaper()
-				.escape(json == null ? "" : last(json.elements()).asText());
+				.escape(json == null ? "" : json.elements().next().asText());
 		Logger.trace("Get org label, {} -> {} -> {}", id, simpleId, label);
 		return label.isEmpty() ? simpleId : label;
-	}
-
-	private static JsonNode last(Iterator<JsonNode> iterator) {
-		JsonNode result = null;
-		while (iterator.hasNext()) {
-			result = iterator.next();
-		}
-		return result;
 	}
 
 	/**
