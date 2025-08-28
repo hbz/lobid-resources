@@ -199,7 +199,8 @@ public class Lobid {
 
 	private static final Map<String, String> keys =
 			ImmutableMap.of(Application.TYPE_FIELD, "type.labels", //
-					Application.MEDIUM_FIELD, "medium.labels");
+					Application.MEDIUM_FIELD, "medium.labels",
+					Application.COLLECTION_AGGREGATION, "inCollection.labels");
 
 	/**
 	 * @param types Some type URIs
