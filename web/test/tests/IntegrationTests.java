@@ -272,4 +272,15 @@ public class IntegrationTests extends LocalIndexSetup {
 		});
 	}
 
+	@Test
+	public void jsonResponseRetainFieldOrder() {
+		running(fakeApplication(), () -> {
+			Result result = route(fakeRequest(GET,
+					"/resources/search?q=*&size=1&format=json"));
+			JsonNode json = Json.parse(Helpers.contentAsString(result));
+			assertThat(json.get("member").toString())
+					.matches(".*\"@context\"[^,]+?,\"id\"[^,]+?,\"type\".*");
+		});
+	}
+
 }
