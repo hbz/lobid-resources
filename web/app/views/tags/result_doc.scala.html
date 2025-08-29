@@ -9,12 +9,24 @@
 @import controllers.resources.Application.CONFIG
 @import scala.collection.immutable.SortedMap
 
+@idAndLabelLink(e: JsValue) = {
+  <a href='@((e\"id").asOpt[String].getOrElse("--"))'>@((e\"label").asOpt[String].getOrElse("--"))</a>
+}
+
 @labelled(label: String, key: String) = {
   @if((doc\key).asOpt[Seq[JsValue]].isDefined) {
+    @defining((doc\key).asOpt[Seq[JsValue]].getOrElse(Seq(doc\key))) { elems =>
     <tr>
       <td>@label</td>
-      <td><a href='@(((doc\key)(0)\"id").asOpt[String].getOrElse("--"))'>@(((doc\key)(0)\"label").asOpt[String].getOrElse("--"))</a></td>
+      <td>@idAndLabelLink(elems.head.asOpt[JsValue].get)</td>
     </tr>
+      @for(elem <- elems.tail; e <- elem.asOpt[JsValue]) {
+        <tr>
+          <td></td>
+          <td>@idAndLabelLink(e)</td>
+        </tr>
+      }
+    }
   }
 }
 
@@ -210,6 +222,7 @@
 
   @labelled("Inhaltsangabe", "description")
   @labelled("Inhaltsverzeichnis", "tableOfContents")
+  @labelled("Kollektionen", "inCollection")
 }
 
 @table(){

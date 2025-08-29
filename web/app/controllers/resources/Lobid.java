@@ -94,9 +94,6 @@ public class Lobid {
 		// e.g. take DE-6 from http://lobid.org/organisations/DE-6#!
 		String simpleId =
 				id.replaceAll("https?://lobid.org/organisations?/(.+?)(#!)?$", "$1");
-		if (simpleId.startsWith("ZDB-")) {
-			return "Paket elektronischer Ressourcen: " + simpleId;
-		}
 		JsonNode org =
 				cachedJsonCall(id.startsWith("http") ? id : ORGS_ROOT + id);
 		if (org.size() == 0) {
@@ -111,17 +108,9 @@ public class Lobid {
 		JsonNode json = Optional.ofNullable(org.findValue("alternateName"))
 				.orElse(Json.toJson(Arrays.asList(org.findValue("name"))));
 		String label = HtmlEscapers.htmlEscaper()
-				.escape(json == null ? "" : last(json.elements()).asText());
+				.escape(json == null ? "" : json.elements().next().asText());
 		Logger.trace("Get org label, {} -> {} -> {}", id, simpleId, label);
 		return label.isEmpty() ? simpleId : label;
-	}
-
-	private static JsonNode last(Iterator<JsonNode> iterator) {
-		JsonNode result = null;
-		while (iterator.hasNext()) {
-			result = iterator.next();
-		}
-		return result;
 	}
 
 	/**
@@ -210,7 +199,8 @@ public class Lobid {
 
 	private static final Map<String, String> keys =
 			ImmutableMap.of(Application.TYPE_FIELD, "type.labels", //
-					Application.MEDIUM_FIELD, "medium.labels");
+					Application.MEDIUM_FIELD, "medium.labels",
+					Application.COLLECTION_AGGREGATION, "inCollection.labels");
 
 	/**
 	 * @param types Some type URIs
@@ -257,6 +247,9 @@ public class Lobid {
 		else if (uris.size() == 1 && isGnd(uris.get(0))) {
 			return Lobid.gndLabel(uris.get(0), field);
 		}
+		else if (uris.size() == 1 && isRes(uris.get(0))) {
+			return Lobid.resourceLabel(uris.get(0));
+		}
 		String configKey = keys.getOrDefault(field, "");
 		String type = selectType(uris, configKey);
 		if (type.isEmpty())
@@ -277,7 +270,10 @@ public class Lobid {
 	 * @return An icon CSS class for the given URIs
 	 */
 	public static String facetIcon(List<String> uris, String field) {
-		if ((uris.size() == 1 && isOrg(uris.get(0)))
+		if ((uris.size() == 1)
+				&& field.equals(Application.COLLECTION_AGGREGATION))
+			return "glyphicon glyphicon-folder-close";
+		else if ((uris.size() == 1 && isOrg(uris.get(0)))
 				|| field.equals(Application.OWNER_AGGREGATION))
 			return "octicon octicon-home";
 		else if ((uris.size() == 1 && isGnd(uris.get(0)))
@@ -353,6 +349,10 @@ public class Lobid {
 
 	private static boolean isGnd(String term) {
 		return term.startsWith("https://d-nb.info/gnd");
+	}
+
+	private static boolean isRes(String term) {
+		return term.startsWith("http://lobid.org/resources");
 	}
 
 	/**
