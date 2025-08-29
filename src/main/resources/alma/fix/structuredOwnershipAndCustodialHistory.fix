@@ -1,0 +1,56 @@
+# 361 - Structured Ownership and Custodial History (R)
+# 1. Indicator (Privacy): # = No information provided, 0 = Private, 1 = Not private
+# Subfields: $a (NR), $f (R), $k (NR), $l (NR), $o (R), $s (NR), $u (R), $x (R), $y (NR),
+#            $z (R), $0 (R), $1 (R), $3 (NR), $5 (NR), $6 (NR), $7 (R), $8 (R)
+
+add_array("structuredOwnershipAndCustodialHistory[]")
+
+do list(path: "361[ 1]?", "var": "$i")
+  add_hash("structuredOwnershipAndCustodialHistory[].$append")
+  copy_field("$i.a", "structuredOwnershipAndCustodialHistory[].$last.name")
+  add_array("structuredOwnershipAndCustodialHistory[].$last.ownershipAndCustodialHistoryEvidenceTerm[]")
+  do list(path: "$i.f", "var": "$j")
+    copy_field("$j", "structuredOwnershipAndCustodialHistory[].$last.ownershipAndCustodialHistoryEvidenceTerm[].$append")
+  end
+  copy_field("$i.k", "structuredOwnershipAndCustodialHistory[].$last.formattedDate")
+  copy_field("$i.l", "structuredOwnershipAndCustodialHistory[].$last.date")
+  add_array("structuredOwnershipAndCustodialHistory[].$last.typeOfOwnershipAndCustodialHistoryInformation[]")
+  do list(path: "$i.o", "var": "$j")
+    copy_field("$j", "structuredOwnershipAndCustodialHistory[].$last.typeOfOwnershipAndCustodialHistoryInformation[].$append")
+  end
+  copy_field("$i.s", "structuredOwnershipAndCustodialHistory[].$last.shelfMarkOfCopyDescribed")
+  add_array("structuredOwnershipAndCustodialHistory[].$last.uniformResourceIdentifier[]")
+  do list(path: "$i.u", "var": "$j")
+    copy_field("$j", "structuredOwnershipAndCustodialHistory[].$last.uniformResourceIdentifier[].$append")
+  end
+  add_array("structuredOwnershipAndCustodialHistory[].$last.nonpublicNote[]")
+  do list(path: "$i.x", "var": "$j")
+    copy_field("$j", "structuredOwnershipAndCustodialHistory[].$last.nonpublicNote[].$append")
+  end
+  copy_field("$i.y", "structuredOwnershipAndCustodialHistory[].$last.identifierOfTheCopyDescribed")
+  add_array("structuredOwnershipAndCustodialHistory[].$last.publicNote[]")
+  do list(path: "$i.z", "var": "$j")
+    copy_field("$j", "structuredOwnershipAndCustodialHistory[].$last.publicNote[].$append")
+  end
+  add_array("structuredOwnershipAndCustodialHistory[].$last.authorityRecordControlNumberOrStandardNumber[]")
+  do list(path: "$i.0", "var": "$j")
+    copy_field("$j", "structuredOwnershipAndCustodialHistory[].$last.authorityRecordControlNumberOrStandardNumber[].$append")
+  end
+  add_array("structuredOwnershipAndCustodialHistory[].$last.realWorldObjectURI[]")
+  do list(path: "$i.1", "var": "$j")
+    copy_field("$j", "structuredOwnershipAndCustodialHistory[].$last.realWorldObjectURI[].$append")
+  end
+  copy_field("$i.3", "structuredOwnershipAndCustodialHistory[].$last.materialsSpecified")
+  copy_field("$i.5", "structuredOwnershipAndCustodialHistory[].$last.institutionToWhichFieldApplies")
+  paste("structuredOwnershipAndCustodialHistory[].$last.label", "~http://lobid.org/organisations/", "$i.5", "~#!", join_char: "")
+  lookup("structuredOwnershipAndCustodialHistory[].$last.label", "lobidOrgLabels", delete: "true")
+  copy_field("$i.6", "structuredOwnershipAndCustodialHistory[].$last.linkage")
+  add_array("structuredOwnershipAndCustodialHistory[].$last.dataProvenance[]")
+  do list(path: "$i.7", "var": "$j")
+    copy_field("$j", "structuredOwnershipAndCustodialHistory[].$last.dataProvenance[].$append")
+  end
+  add_array("structuredOwnershipAndCustodialHistory[].$last.fieldLinkAndSequenceNumber[]")
+  do list(path: "$i.8", "var": "$j")
+    copy_field("$j", "structuredOwnershipAndCustodialHistory[].$last.fieldLinkAndSequenceNumber[].$append")
+  end
+end
