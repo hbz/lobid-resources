@@ -1,6 +1,13 @@
 # Get type and coordinates for all Wikidata resources having the NWBid property
 # use like: $ bash getAllNwbibTypeAndCoordinatesFromWikidata.sparql
 # see https://github.com/hbz/lobid-resources/issues/1471
+# and https://github.com/hbz/lobid-resources/issues/2204
+
+OUT_FN=./src/main/resources/alma/maps/nwbibWikidataLabelTypeCoords.tsv
+OUT_FN_TMP=${OUT_FN}.toBeChecked
+
+MAIL_TO=$(cat web/scripts/.secrets/MAIL_TO)
+MAIL_FROM=$(cat web/scripts/.secrets/MAIL_FROM)
 
 curl --header "Accept: text/tab-separated-values" -G 'https://query.wikidata.org/sparql' --data-urlencode query='
 SELECT DISTINCT
@@ -18,4 +25,13 @@ WHERE {
  SERVICE wikibase:label {  bd:serviceParam wikibase:language "de" }
 }
 GROUP BY ?nwbibIdLabel ?item ?itemLabel ?coordinates
-'  |sed 's#^"##g'|sed 's#"\t<#\t#g'|sed 's#>\t"#\t#g' |sed 's#"@..#\t#g'  |sed 's#\t"#\t#g' |sed 's#"\t#\t#g' |sed 's#"\^\^.*##g' |sed 's#\t\t#\t#g' > ./src/main/resources/alma/maps/nwbibWikidataLabelTypeCoords.tsv
+'  |sed 's#^"##g'|sed 's#"\t<#\t#g'|sed 's#>\t"#\t#g' |sed 's#"@..#\t#g'  |sed 's#\t"#\t#g' |sed 's#"\t#\t#g' |sed 's#"\^\^.*##g' |sed 's#\t\t#\t#g' > $OUT_FN_TMP
+grep "https://nwbib.de/spatial#Q365" $OUT_FN_TMP
+if [ ! $(echo $?) -eq 0 -o "$(wc -l < $OUT_FN_TMP)" -lt 4000 ]; then
+    mail -s "Probleme beim Holen von nwbibWikidataLabelTypeCoords.tsv" "${MAIL_TO}" -a "From: ${MAIL_FROM}" << EOF
+Getriggert von crontab, ausgeführt durch
+src/main/resources/getAllNwbibTypeAndCoordinatesFromWikidata.sparql.
+EOF
+  else
+  mv  $OUT_FN_TMP $OUT_FN
+fi
