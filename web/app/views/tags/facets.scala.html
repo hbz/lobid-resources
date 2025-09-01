@@ -1,6 +1,6 @@
 @* Copyright 2015-2018 Fabian Steeg, hbz. Licensed under the EPL 2.0 *@
 
-@(q:String, agent:String, name:String, subject:String, id:String, publisher:String, issued:String, medium: String, owner: String, t: String, sortParam: String, word: String, from: Int, size: Int)
+@(q:String, agent:String, name:String, subject:String, id:String, publisher:String, issued:String, medium: String, owner: String, collection: String, t: String, sortParam: String, word: String, from: Int, size: Int)
 
 @import controllers.resources.Application
 @import helper._
@@ -56,7 +56,7 @@
             });
           }
           $.ajax({
-            url: '/resources/facets?q=@urlEncode(q)&agent=@urlEncode(agent)&name=@urlEncode(name)&subject=@urlEncode(subject)&publisher=@urlEncode(publisher)&issued=@urlEncode(issued)&medium=@urlEncode(medium)&from=0&size=@size&owner=@urlEncode(owner)&t=@urlEncode(t)&field=@urlEncode(field)&sort=@urlEncode(sortParam)&word=@urlEncode(word)',
+            url: '/resources/facets?q=@urlEncode(q)&agent=@urlEncode(agent)&name=@urlEncode(name)&subject=@urlEncode(subject)&publisher=@urlEncode(publisher)&issued=@urlEncode(issued)&medium=@urlEncode(medium)&collection=@urlEncode(collection)&from=0&size=@size&owner=@urlEncode(owner)&t=@urlEncode(t)&field=@urlEncode(field)&sort=@urlEncode(sortParam)&word=@urlEncode(word)',
             success: function(data, textStatus, jqXHR) {
               var lis = data.split("</li>");
               lis = lis.slice(0, lis.length-1);
@@ -109,7 +109,7 @@
 @facetLabel(current: String, label: String, activeCountId: String = "", currentCount: String = "") = {
   @if(!current.isEmpty){
      <span class="badge" id="facet-filter"><span id="@activeCountId">@currentCount</span> @label</span>
-     <a href="@resources.routes.Application.query(q,if(agent==current) "" else agent,name,if (urisOnly(subject)==current) "" else subject,id,publisher,if(issued==current) "" else issued,if (medium==current) "" else medium,from,size,if (owner==current) "" else owner,if (t==current) "" else t,sortParam,word=word).toString" title="Filter entfernen"><span class="octicon octicon-x"></span></a>
+     <a href="@resources.routes.Application.query(q,if(agent==current) "" else agent,name,if (urisOnly(subject)==current) "" else subject,id,publisher,if(issued==current) "" else issued,if (medium==current) "" else medium,if (collection==current) "" else collection,from,size,if (owner==current) "" else owner,if (t==current) "" else t,sortParam,word=word).toString" title="Filter entfernen"><span class="octicon octicon-x"></span></a>
    }
 }
 
@@ -126,7 +126,7 @@
   <div class="row facet"><div class="col-md-12"><canvas id="issued-chart"></canvas></div></div>
   <div id="slider-range"></div>
   <input type="text" id="issued-range" readonly value="Lade Erscheinungsjahre..." aria-label="Erscheinungsjahre">
-  <div id="issued-div"> <a id="issued-link" style="display:none" href="@resources.routes.Application.query(q,agent,name,subject,id,publisher,issued,medium,from,size,owner,t,sortParam,word=word)">Anwenden</a> </div>
+  <div id="issued-div"> <a id="issued-link" style="display:none" href="@resources.routes.Application.query(q,agent,name,subject,id,publisher,issued,medium,collection,from,size,owner,t,sortParam,word=word)">Anwenden</a> </div>
   </div>
   <p/>
   <div class="row facet"><div class="col-md-12">@facets("Mitwirkende", Application.AGENT_FIELD, agent, "dropup")</div></div>
@@ -134,4 +134,5 @@
   <div class="row facet"><div class="col-md-12">@facets("Medientypen", Application.MEDIUM_FIELD, medium, "dropup")</div></div>
   <div class="row facet"><div class="col-md-12">@facets("Publikationstypen", Application.TYPE_FIELD, t, "dropup")</div></div>
   <div class="row facet"><div class="col-md-12">@facets("Bestand in Bibliotheken", Application.OWNER_AGGREGATION, owner, "dropup")</div></div>
+  <div class="row facet"><div class="col-md-12">@facets("Kollektionen", Application.COLLECTION_AGGREGATION, collection, "dropup")</div></div>
 </div>
