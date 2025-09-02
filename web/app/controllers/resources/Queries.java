@@ -377,6 +377,7 @@ public class Queries {
 			String queryValues = withoutBooleanOperator(queryString);
 			boolean isAndQuery = isAndQuery(queryString);
 			boolean hasLabel = hasLabel(queryValues);
+			boolean mustMatch = hasLabel || isAndQuery;
 			if (!queryString.contains("http") && Arrays.asList(queryString.split(","))
 					.stream().filter(x -> x.trim().matches("[\\d\\-X]+")).count() == 0) {
 				// no URI or GND-ID in queryString, ignore commas, e.g. "Ney, Elisabet":
@@ -387,23 +388,27 @@ public class Queries {
 				if (qTrimmed.startsWith("http") || qTrimmed.matches("[\\d\\-X]+")) {
 					final String query = qTrimmed.startsWith("http") ? qTrimmed
 							: "https://d-nb.info/gnd/" + qTrimmed;
-					final MatchQueryBuilder subjectIdQuery =
-							matchQuery(!query.contains("d-nb.info/gnd") ? "subject.id"
-									: "subject.componentList.id", query.trim())
-											.operator(Operator.AND);
-					boolQuery = hasLabel || isAndQuery ? boolQuery.must(subjectIdQuery)
-							: boolQuery.should(subjectIdQuery);
+					boolQuery = addMultiMatch(boolQuery, mustMatch, query,
+							new String[] { "subject.id",
+									"subject.componentList.id" });
 				} else {
-					final MultiMatchQueryBuilder subjectLabelQuery =
-							multiMatchQuery(qTrimmed,
-									new String[] { "subject.componentList.label.unstemmed",
-											"subjectAltLabel.unstemmed" }).operator(Operator.AND)
-													.type(Type.CROSS_FIELDS);
-					boolQuery = hasLabel || isAndQuery ? boolQuery.must(subjectLabelQuery)
-							: boolQuery.should(subjectLabelQuery);
+					boolQuery = addMultiMatch(boolQuery, mustMatch, qTrimmed,
+							new String[] { "subject.label",
+									"subject.componentList.label.unstemmed",
+									"subjectAltLabel.unstemmed" });
 				}
 			}
 			return boolQuery;
+		}
+
+		private static BoolQueryBuilder addMultiMatch(
+				BoolQueryBuilder boolQuery, boolean mustMatch,
+				final String query, String[] fieldNames) {
+			MultiMatchQueryBuilder multiMatchQuery =
+					multiMatchQuery(query.trim(), fieldNames)
+							.operator(Operator.AND).type(Type.CROSS_FIELDS);
+			return mustMatch ? boolQuery.must(multiMatchQuery)
+					: boolQuery.should(multiMatchQuery);
 		}
 
 		private static boolean hasLabel(String queryString) {

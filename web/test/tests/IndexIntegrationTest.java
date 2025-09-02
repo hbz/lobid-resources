@@ -33,7 +33,7 @@ public class IndexIntegrationTest extends LocalIndexSetup {
 	public static Collection<Object[]> data() {
 		// @formatter:off
 		return queries(new Object[][] {
-			{ "title:der", /*->*/ 21 },
+			{ "title:der", /*->*/ 22 },
 			{ "title:Westfalen", /*->*/ 8 },
 			{ "contribution.agent.label:Westfalen", /*->*/ 4 },
 			{ "contribution.agent.label:Westfälen", /*->*/ 4 },
@@ -52,6 +52,8 @@ public class IndexIntegrationTest extends LocalIndexSetup {
 			{ "subject.componentList.label.unstemmed:Düsseldorfer", /*->*/ 0 },
 			{ "subject.componentList.id:\"https\\://d-nb.info/gnd/4042570-8\"", /*->*/ 2 },
 			{ "subject.componentList.gndIdentifier:4042570-8", /*->*/ 2 },
+			{ "subject=Eisstockclub Lauterecken", /*->*/ 1 },
+			{ "subject=http://rpb.lobid.org/sw/n920756", /*->*/ 1 },
 			{ "(title:Westfalen OR title:Münsterland) AND NOT contribution.agent.id:\"https\\://d-nb.info/gnd/2019209-5\"", /*->*/ 8 },
 			{ "subject.componentList.label:Westfalen", /*->*/ 11 },
 			{ "subject.componentList.label:Westfälen", /*->*/ 11 },
@@ -164,9 +166,18 @@ public class IndexIntegrationTest extends LocalIndexSetup {
 		for (Object[] testCase : objects) {
 			String s = (String) testCase[0];
 			Integer hits = (Integer) testCase[1];
-			result.add(new Object[] { new Queries.Builder().q(s), /*->*/ hits });
+			result.add(new Object[] { queryFor(s), /*->*/ hits });
 		}
 		return result;
+	}
+
+	private static Queries.Builder queryFor(String s) {
+		String[] queryParamNameAndValue = s.split("=");
+		Queries.Builder queryBuilder = new Queries.Builder();
+		return queryParamNameAndValue.length == 2
+				&& queryParamNameAndValue[0].equals("subject")
+						? queryBuilder.subject(queryParamNameAndValue[1])
+						: queryBuilder.q(queryParamNameAndValue[0]);
 	}
 
 	private int expectedResultCount;
