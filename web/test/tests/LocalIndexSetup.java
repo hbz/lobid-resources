@@ -19,11 +19,12 @@ public abstract class LocalIndexSetup {
 	private static LocalIndex index;
 	private static final String TEST_CONFIG =
 		"../src/main/resources/alma/index-config.json";
-	private static final String TEST_DATA = "../src/test/resources/alma-fix";
+	private static final String ALMA_TEST_DATA = "../src/test/resources/alma-fix";
+	private static final String RPB_TEST_DATA = "test/resources/rpb";
 
 	@BeforeClass
 	public static void setup() {
-		index = new LocalIndex(TEST_CONFIG,TEST_DATA,null);
+		index = new LocalIndex(TEST_CONFIG, ALMA_TEST_DATA, RPB_TEST_DATA);
 		Search.elasticsearchClient = index.getNode().client();
 	}
 
