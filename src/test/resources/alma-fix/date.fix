@@ -1,0 +1,13 @@
+copy_field("008","008-date")
+substring("008-date","6","9")
+add_array("264-date")
+do list(path:"264??","var":"$i")
+    copy_field("$i.c","264-date.$append")
+end
+join_field("264-date", ", ")
+add_array("260-date")
+do list(path:"260??","var":"$i")
+    copy_field("$i.c","260-date.$append")
+end
+join_field("260-date", ", ")
+retain("008-date", "264-date","260-date")
