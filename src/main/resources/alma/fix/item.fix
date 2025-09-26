@@ -23,6 +23,7 @@ do list(path:"ITM  ", "var": "$i")
       copy_field("$i.B", "hasItem[].$last.inventoryNumber")
       copy_field("$i.H", "@ITM-H.$append")
       copy_field("$i.b", "hasItem[].$last.serialNumber")
+      copy_field("$i.q", "hasItem[].$last.enumerationAndChronology")
       copy_field("$i.w","hasItem[].$last.currentLibrary")
       copy_field("$i.x","hasItem[].$last.currentLocation")
       call_macro("holdingLibrary+opacLink", mmsIdField:"$i.a",libraryCodeField:"$i.w")
@@ -56,6 +57,11 @@ do list(path: "HOL  ", "var": "$i")
               else
                 call_macro("holdingLibrary+opacLink", mmsIdField:"$i.8",libraryCodeField:"$H52.b")
               end
+              do list(path:"H66??", "var": "$H66")
+                if in("$i.8", "$H66.8")
+                  copy_field("$H66.a","hasItem[].$last.enumerationAndChronology")
+                end
+              end
             end
           end
         end
@@ -71,6 +77,7 @@ do list(path:"POR  ", "var": "$i")
     add_hash( "hasItem[].$append")
     add_array("hasItem[].$last.type[]", "Item", "DigitalDocument")
     add_field("hasItem[].$last.label", "Electronic Portfolio")
+    copy_field("$i.n", "hasItem[].$last.enumerationAndChronology")
     copy_field("$i.D", "$i.@electronicLocator")
     replace_all("$i.@electronicLocator","https://eu04.alma.exlibrisgroup.com/view/uresolver/49HBZ_NETWORK","")
     paste("hasItem[].$last.electronicLocator", "~https://eu04.alma.exlibrisgroup.com/view/uresolver/","$i.M","$i.@electronicLocator", join_char: "")
@@ -92,6 +99,7 @@ do list(path:"POR  ", "var": "$i")
         add_field("hasItem[].$last.label", "Electronic Portfolio")
         paste("hasItem[].$last.electronicLocator", "~https://eu04.alma.exlibrisgroup.com/view/uresolver/","$j","$i.@electronicLocator", join_char: "")
         paste("hasItem[].$last.sublocation", "~https://hbz-network.userservices.exlibrisgroup.com/view/uresolver/","$j","$i.@sublocation", join_char: "")
+        copy_field("$i.n", "hasItem[].$last.enumerationAndChronology")
         copy_field("$j", "$i.@iz")
         lookup("$i.@iz", "alma-iz-code-to-isil")
         call_macro("opacLink", field:"@iz")
