@@ -73,6 +73,8 @@ map.addLayer(layer);
                var sig = '<tr><td>@if(!signature.isEmpty){Signatur:}@if(!urls.isEmpty){Elektronische Ressource:}</td>'+
                '<td>@if(!url.isEmpty){<a href="@url">@shortItemId</a>} else {@if(!signature.isEmpty){@signature}}</td></tr>';
                @for(noteSeq <- (itemJson\"note").asOpt[Seq[String]]; note = noteSeq(0)) {sig += '<tr><td>Notiz:</td><td>' + '@note' + '</td></tr>';}
+               @for(enumerationAndChronology <- (itemJson\"enumerationAndChronology").asOpt[String]) {sig += '<tr><td>Bestandsverlauf:</td><td>' + '@enumerationAndChronology' + '</td></tr>';}
+               @for(inventoryNumber <- (itemJson\"inventoryNumber").asOpt[String]) {sig += '<tr><td>Inventarnummer:</td><td>' + '@inventoryNumber' + '</td></tr>';}
                tableDetails += sig;
                allTableDetails += sig;
         }
