@@ -142,7 +142,7 @@ public class IndexIntegrationTest extends LocalIndexSetup {
 			{ "q.all:21914664", /*->*/ 1 },
 			{ "q.all:2191\\-4664", /*->*/ 0 }, // search with hyphens not possible, different to lobid general search
 			{ "q.all:HT072067630", /*->*/ 0 },
-			{ "q.all:(Erleben \\- Verstehen & Lernen)", /*->*/ 4 },
+			{ "q.all:(Erleben \\- Verstehen & Lernen)", /*->*/ 5 },
 			{ "q.all:(Lexicography \\: Selected Papers)", /*->*/ 1 },
 			{ "contribution.agent.label.digibib:Westfalen", /*->*/ 4 },
 			{ "contribution.agent.label.digibib:Westfälen", /*->*/ 4 },
