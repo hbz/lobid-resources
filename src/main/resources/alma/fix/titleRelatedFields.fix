@@ -263,7 +263,7 @@ if exists("publication[].$first")
     end
   end
   unless exists("publication[].$first.startDate")
-    if any_match("008","^.{6}[brestikm](\\d{4}).*$")
+    if any_match("008","^.{6}[\\|brestikm](\\d{4}).*$")
       copy_field("008","@008startDate")
       replace_all("@008startDate","^.{7}(\\d{4}).*$","$1")
       copy_field("@008startDate","publication[].$first.startDate")
