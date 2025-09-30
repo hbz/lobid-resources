@@ -352,6 +352,12 @@ do put_macro("holdingLibrary+opacLink")
   paste("hasItem[].$last.id", "~http://lobid.org/items/","almaMmsId", "~:", "hasItem[].$last.heldBy.isil","~:", "$[mmsIdField]","~#!", join_char: "")
 end
 
+# lobid resources URI
+do put_macro("lobidResourcesUri")
+  replace_all("$[field]","^\\(DE-605\\)(.*)$","http://lobid.org/resources/$1#!")
+  replace_all("$[field]","^\\(DE-600\\)(.*)$","http://lobid.org/resources/ZDB-$1#!")
+end
+
 # opacLink
 
 do put_macro("opacLink")

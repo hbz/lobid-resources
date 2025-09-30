@@ -69,8 +69,8 @@ do list(path:"77008", "var":"$i")
   end
 end
 
-replace_all("supplement[].*.id","^\\(DE-605\\)(.*)$","http://lobid.org/resources/$1#!")
-replace_all("supplement[].*.id","^\\(DE-600\\)(.*)$","http://lobid.org/resources/ZDB-$1#!")
+call_macro("lobidResourcesUri", field:"supplement[].*.id")
+
 replace_all("supplement[].*.label","<<|>>","")
 call_macro("lobidResourcesFallbackLabel",field:"supplement[]")
 
@@ -231,8 +231,8 @@ do list(path: "isPartOf[]","var":"$i")
   end
 end
 
-replace_all("isPartOf[].*.hasSuperordinate[].*.id", "^\\(DE-605\\)(.*)$", "http://lobid.org/resources/$1#!")
-replace_all("isPartOf[].*.hasSuperordinate[].*.id", "^\\(DE-600\\)(.*)$", "http://lobid.org/resources/ZDB-$1#!")
+call_macro("lobidResourcesUri", field:"isPartOf[].*.hasSuperordinate[].*.id")
+
 
 replace_all("isPartOf[].*.numbering", "^[©]|\\s?[,.:;/=]?$", "")
 
@@ -240,8 +240,8 @@ replace_all("isPartOf[].*.numbering", "^[©]|\\s?[,.:;/=]?$", "")
 uniq("isPartOf[]")
 
 
-replace_all("containedIn[].*.id", "^\\(DE-605\\)(.*)$", "http://lobid.org/resources/$1#!")
-replace_all("containedIn[].*.id", "^\\(DE-600\\)(.*)$", "http://lobid.org/resources/ZDB-$1#!")
+call_macro("lobidResourcesUri", field:"containedIn[].*.id")
+
 replace_all("containedIn[].*.label","<<|>>","")
 call_macro("lobidResourcesFallbackLabel",field:"containedIn[]")
 
@@ -268,8 +268,8 @@ do list(path: "77608", "var":"$i")
   end
 end
 
-replace_all("primaryForm[].*.id", "^\\(DE-605\\)(.*)$", "http://lobid.org/resources/$1#!")
-replace_all("primaryForm[].*.id", "^\\(DE-600\\)(.*)$", "http://lobid.org/resources/ZDB-$1#!")
+call_macro("lobidResourcesUri", field:"primaryForm[].*.id")
+
 call_macro("lobidResourcesFallbackLabel",field:"primaryForm[]")
 
 # secondaryForm
@@ -281,8 +281,8 @@ do list(path: "77608", "var":"$i")
     add_hash( "secondaryForm[].$append")
     if all_match("$i.w", "^\\((?:DE-600|DE-605)\\)(.*)$")
       do list(path:"$i.w", "var":"$j")
-        replace_all("$j", "^\\(DE-605\\)(.*)$", "http://lobid.org/resources/$1#!")
-        replace_all("$j", "^\\(DE-600\\)(.*)$", "http://lobid.org/resources/ZDB-$1#!")
+        call_macro("lobidResourcesUri", field:"$j")
+
         copy_field("$j", "secondaryForm[].$append.id")
         copy_field("$i.i", "secondaryForm[].$last.label")
       end
@@ -449,8 +449,8 @@ do list(path: "50580", "var":"$i")
   end
 end
 
-replace_all("related[].*.id", "^\\(DE-605\\)(.*)$", "http://lobid.org/resources/$1#!")
-replace_all("related[].*.id", "^\\(DE-600\\)(.*)$", "http://lobid.org/resources/ZDB-$1#!")
+call_macro("lobidResourcesUri", field:"related[].*.id")
+
 replace_all("related[].*.label","<<|>>","")
 call_macro("lobidResourcesFallbackLabel",field:"related[]")
 
@@ -664,8 +664,8 @@ do list(path:"780??", "var":"$i")
   end
 end
 
-replace_all("predecessor[].*.id", "^\\(DE-605\\)(.*)$", "http://lobid.org/resources/$1#!")
-replace_all("predecessor[].*.id", "^\\(DE-600\\)(.*)$", "http://lobid.org/resources/ZDB-$1#!")
+call_macro("lobidResourcesUri", field:"predecessor[].*.id")
+
 call_macro("lobidResourcesFallbackLabel",field:"predecessor[]")
 
 replace_all("predecessor[].*.label","Vorg. ---> ","")
@@ -690,8 +690,8 @@ do list(path:"785??", "var":"$i")
   end
 end
 
-replace_all("successor[].*.id", "^\\(DE-605\\)(.*)$", "http://lobid.org/resources/$1#!")
-replace_all("successor[].*.id", "^\\(DE-600\\)(.*)$", "http://lobid.org/resources/ZDB-$1#!")
+call_macro("lobidResourcesUri", field:"successor[].*.id")
+
 
 
 # 130 - Main Entry-Uniform Title (NR)
