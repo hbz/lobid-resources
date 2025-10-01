@@ -15,6 +15,9 @@ do list(path: "0247?", "var": "$i")
     elsif any_match("$i.a",".*urn:nbn:de.*")
       replace_all("$i.a","^.*(urn:nbn:de.*)$","$1")
       copy_field("$i.a","urn[].$append")
+    elsif any_match("$i.a",".*doi.*((10\\.(\\d)+/(\\S)+).*)")
+      replace_all("$i.a",".*doi.*(10\\.(\\d)+/(\\S)+).*","$1")
+      copy_field("$i.a","@doiInUrn")
     end
   end
 end
@@ -101,6 +104,8 @@ do list(path:"0247?", "var":"$i")
     copy_field("$i.a", "doi[].$append")
   end
 end
+
+copy_field("@doiInUrn", "doi[].$append")
 
 # Sometimes dois are not set in 024 then we could pick up the missing from 856.
 # 856 - Electronic Location and Access (R) - Subfield: $u (R) $3 (NR)
