@@ -10,7 +10,12 @@ add_array("urn[]")
 
 do list(path: "0247?", "var": "$i")
   if any_equal("$i.2","urn")
+    if none_contain("$i.a","http")
       copy_field("$i.a","urn[].$append")
+    elsif any_match("$i.a",".*urn:nbn:de.*")
+      replace_all("$i.a","^.*(urn:nbn:de.*)$","$1")
+      copy_field("$i.a","urn[].$append")
+    end
   end
 end
 
