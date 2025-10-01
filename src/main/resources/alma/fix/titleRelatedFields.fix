@@ -248,7 +248,7 @@ if exists("publication[].$first")
         call_macro("publicationStartDate",date:"$j",dateTarget:"publication[].$first.startDate")
       end
       unless exists("publication[].$first.endDate")
-        call_macro("publicationEndDate",date:"$j",dateTarget:"publication[].$last.endDate")
+        call_macro("publicationEndDate",date:"$j",dateTarget:"publication[].$first.endDate")
       end
       unless exists("publication[].$first.location[].1")
         copy_field("$i.a", "publication[].$first.location[].$append")
