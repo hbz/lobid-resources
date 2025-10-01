@@ -101,7 +101,12 @@ replace_all("ismn[].*", "-","")
 add_array("doi[]")
 do list(path:"0247?", "var":"$i")
   if all_equal("$i.2","doi")
-    copy_field("$i.a", "doi[].$append")
+    if none_contain("$i.a","http")
+      copy_field("$i.a","doi[].$append")
+    elsif any_match("$i.a",".*doi.*((10\\.(\\d)+/(\\S)+).*)")
+      replace_all("$i.a",".*doi.*(10\\.(\\d)+/(\\S)+).*","$1")
+      copy_field("$i.a","doi[].$append")
+    end
   end
 end
 
