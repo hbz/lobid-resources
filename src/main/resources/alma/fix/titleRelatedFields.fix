@@ -243,7 +243,7 @@ if exists("publication[].$first")
   # Add fallbacks for missing publication dates and other publication info.
   do list(path:"260[ 3][ 1]", "var":"$i")
     do list(path: "$i.c", "var":"$j")
-      replace_all("$j", "\\[|\\]|ca. |c ", "")
+      replace_all("$j", "\\[|\\]|ca.[ ]?|c[ ]?|um[ ]?", "")
       unless exists("publication[].$first.startDate")
         if any_match("$j",".*?([01]\\d{3}|20\\d{2}).*")
           paste("publication[].$first.startDate", "$j")
