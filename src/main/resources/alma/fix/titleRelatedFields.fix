@@ -243,16 +243,12 @@ if exists("publication[].$first")
   # Add fallbacks for missing publication dates and other publication info.
   do list(path:"260[ 3][ 1]", "var":"$i")
     do list(path: "$i.c", "var":"$j")
-      replace_all("$j", "\\[|\\]|ca.[ ]?|c[ ]?|um[ ]?", "")
+      call_macro("publicationDateCleaner",date:"$j")
       unless exists("publication[].$first.startDate")
-        if any_match("$j",".*?([01]\\d{3}|20\\d{2}).*")
-          paste("publication[].$first.startDate", "$j")
-        end
+        call_macro("publicationStartDate",date:"$j",dateTarget:"publication[].$first.startDate")
       end
       unless exists("publication[].$first.endDate")
-        if any_match("$j",".*-[ ]?([01]\\d{3}|20\\d{2})$")
-          paste("publication[].$last.endDate", "$j")
-        end
+        call_macro("publicationEndDate",date:"$j",dateTarget:"publication[].$last.endDate")
       end
       unless exists("publication[].$first.location[].1")
         copy_field("$i.a", "publication[].$first.location[].$append")
@@ -300,16 +296,12 @@ do list(path:"533  ", "var": "$i")
   add_array("publication[].$last.publishedBy[]")
   copy_field("$i.c", "publication[].$last.publishedBy[].$append")
   do list(path: "$i.d", "var":"$j")
-    replace_all("$j", "\\[|\\]|ca. |c ", "")
+    call_macro("publicationDateCleaner",date:"$j")
     unless exists("publication[].$last.startDate")
-      if any_match("$j",".*?([01]\\d{3}|20\\d{2}).*")
-        paste("publication[].$last.startDate", "$j")
-      end
+      call_macro("publicationStartDate",date:"$j",dateTarget:"publication[].$last.startDate")
     end
     unless exists("publication[].$last.endDate")
-      if any_match("$j",".*-[ ]?([01]\\d{3}|20\\d{2})$")
-        paste("publication[].$last.endDate", "$j")
-      end
+      call_macro("publicationEndDate",date:"$j",dateTarget:"publication[].$last.endDate")
     end
   end
 end
