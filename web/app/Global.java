@@ -35,6 +35,8 @@ public class Global extends GlobalSettings {
         controllers.resources.Application.CONFIG.getList("index.cluster.hosts")
             .stream().map(v -> v.unwrapped().toString())
             .collect(Collectors.toList());
+    private static final int CLUSTER_HOST9300 =
+        controllers.resources.Application.CONFIG.getInt("index.cluster.hosts9300");
     private static final int CLUSTER_PORT =
         controllers.resources.Application.CONFIG.getInt("index.cluster.port");
     private static final String CLUSTER_NAME =
@@ -59,9 +61,13 @@ public class Global extends GlobalSettings {
             Settings settings =
                 Settings.builder().put("cluster.name", CLUSTER_NAME).build();
             TransportClient c = new PreBuiltTransportClient(settings);
+            // the search API can have multiple hosts (or an webserver balancer) configured 
             addHosts(c);
             client = c;
-            WebhookAlmaFix.clusterHost = CLUSTER_HOSTS.get(0);
+            // the ETL, triggered by the Webhook, always takes the first entry in the config
+            // and since this is a binary protocol we cannot use a web server's balancer
+            // thus this extra entry (must be a hostname or IP )
+            WebhookAlmaFix.clusterHost = CLUSTER_HOST9300;
             WebhookAlmaFix.clusterName = CLUSTER_NAME;
             AlmaMarcXmlFix2lobidJsonEs.setMailtoInfo(MAILTO_INFO);
             AlmaMarcXmlFix2lobidJsonEs.setMailtoError(MAILTO_ERROR);
