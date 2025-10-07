@@ -35,8 +35,8 @@ public class Global extends GlobalSettings {
         controllers.resources.Application.CONFIG.getList("index.cluster.hosts")
             .stream().map(v -> v.unwrapped().toString())
             .collect(Collectors.toList());
-    private static final int CLUSTER_HOST9300 =
-        controllers.resources.Application.CONFIG.getInt("index.cluster.hosts9300");
+    private static final String CLUSTER_HOST9300 =
+        controllers.resources.Application.CONFIG.getString("index.cluster.hosts9300");
     private static final int CLUSTER_PORT =
         controllers.resources.Application.CONFIG.getInt("index.cluster.port");
     private static final String CLUSTER_NAME =
