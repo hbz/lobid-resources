@@ -96,10 +96,9 @@ put_rdfmap("$[gnd-sc.ttl]", "gnd-sc-notationen", target: "skos:prefLabel", selec
 
 # Formschlagwort/Formangaben-Mapping -> GND
 # static file: src/main/resources/alma/maps/formangabe.tsv
-# manually generated, based on: https://wiki.dnb.de/download/attachments/106042227/AH-007.pdf Version: 2017
-# TODO: Update to current version
-put_filemap("$[formangabe.tsv]","formschlagwort2Gnd", sep_char:"\t",key_column:"0",value_column:"2",expected_columns:"-1")
-put_filemap("$[formangabe.tsv]","Gnd2formschlagwort", sep_char:"\t",key_column:"2",value_column:"0",expected_columns:"-1")
+# manually generated and cleaned, based on: https://tinyurl.com/29qbx2u9 Status: 2025
+put_filemap("$[formangabe.tsv]","formschlagwort2Gnd", sep_char:"\t",key_column:"0",value_column:"1",expected_columns:"-1")
+put_filemap("$[formangabe.tsv]","Gnd2formschlagwort", sep_char:"\t",key_column:"1",value_column:"0",expected_columns:"-1")
 
 # Map of almaMmsId -> rpbId
 # dynamic map individually pushed by @fsteeg to server: src/main/resources/alma/maps/almaMmsId2rpbId.tsv

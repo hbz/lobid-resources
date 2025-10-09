@@ -61,7 +61,7 @@ public class Global extends GlobalSettings {
             Settings settings =
                 Settings.builder().put("cluster.name", CLUSTER_NAME).build();
             TransportClient c = new PreBuiltTransportClient(settings);
-            // the search API can have multiple hosts (or an webserver balancer) configured 
+            // the search API can have multiple hosts (or an webserver balancer) configured
             addHosts(c);
             client = c;
             // the ETL, triggered by the Webhook, always takes the first entry in the config
