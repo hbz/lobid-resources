@@ -40,6 +40,12 @@ do list(path:"880??","var":"$i")
 end
 add_array("alternateGraphicRepresentation[]")
 
+if any_match("leader",".{6}(a[bis]|m[bis]).*")
+  add_field("@ContinuingResources","true")
+elsif any_match("006", "^[s]")
+  add_field("@ContinuingResources","true")
+end
+
 include ("./fix/identifiers.fix")
 include ("./fix/titleRelatedFields.fix")
 include ("./fix/describedBy.fix")
