@@ -216,3 +216,13 @@ if any_equal("inCollection[].*.id","http://lobid.org/resources/HT014176012#!") #
     end
   end
 end
+
+
+# ---conditionsOfAccess ---
+
+do list(path:"506??","var":"$i")
+  if any_match("$i.u","http://w3id.org/kim/conditionsOfAccess/.*")
+    copy_field("$i.f.2","conditionsOfAccess.label")
+    copy_field("$i.u","conditionsOfAccess.id")
+  end
+end
