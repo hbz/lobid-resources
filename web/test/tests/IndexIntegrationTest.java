@@ -44,7 +44,7 @@ public class IndexIntegrationTest extends LocalIndexSetup {
 			{ "title:Westfalen AND contribution.agent.label:Prause", /*->*/ 1 },
 			{ "title:Westfalen OR title:Munsterland", /*->*/ 8 },
 			{ "(title:Westfalen OR title:Münsterland) AND contribution.agent.id:\"https\\://d-nb.info/gnd/5253963-5\"", /*->*/ 0 },
-			{ "bibliographicLevel.label.raw:\"Monographic component part\"", /*->*/ 16 },
+			{ "bibliographicLevel.label.raw:\"Monographic component part\"", /*->*/ 17 },
 			{ "subject.componentList.label:Düsseldorf", /*->*/ 1 },
 			{ "subject.componentList.label:Duesseldorf", /*->*/ 1 },
 			{ "subject.componentList.label:Dusseldorf", /*->*/ 1 },
@@ -71,8 +71,8 @@ public class IndexIntegrationTest extends LocalIndexSetup {
 			{ "publication.startDate:1993", /*->*/ 4 },
 			{ "publication.location:Berlin AND publication.startDate:1993", /*->*/ 1 },
 			{ "publication.location:Berlin AND publication.startDate:[1992 TO 2017]", /*->*/ 5 },
-			{ "inCollection.id:\"http\\://lobid.org/organisations/DE-655#\\!\"", /*->*/ 159 },
-			{ "inCollection.id:\"https\\://nrw.digibib.net/search/hbzvk/\"", /*->*/ 180 },
+			{ "inCollection.id:\"http\\://lobid.org/organisations/DE-655#\\!\"", /*->*/ 165 },
+			{ "inCollection.id:\"https\\://nrw.digibib.net/search/hbzvk/\"", /*->*/ 186 },
 			{ "inCollection.id:NWBib", /*->*/ 0 },
 			{ "publication.publishedBy:Quedenfeldt", /*->*/ 2 },
 			{ "publication.publishedBy:Quedenfeld", /*->*/ 2 },
@@ -157,7 +157,7 @@ public class IndexIntegrationTest extends LocalIndexSetup {
 			{ "contribution.agent.altLabel.digibib_unstemmed:Nemačke", /*->*/ 1 },
 			{ "contribution.agent.altLabel.digibib_unstemmed:Nemack", /*->*/ 0 },
 			{ "exampleOfWork.language.id:\"http\\://id.loc.gov/vocabulary/iso639-2/eng\"", /*->*/ 1 },
-			{ "hasItem.inCollection.id:\"http://lobid.org/organisations/DE-468#!\"", /*->*/ 26 }
+			{ "hasItem.inCollection.id:\"http://lobid.org/organisations/DE-468#!\"", /*->*/ 27 }
 		});
 	} // @formatter:on
 
