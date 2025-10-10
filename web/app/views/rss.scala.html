@@ -12,12 +12,17 @@
             @for((doc, i) <- hits;
                 ids <- (doc \ "almaMmsId").asOpt[JsValue].orElse((doc \ "hbzId").asOpt[JsValue]).orElse((doc \ "rpbId").asOpt[JsValue]);
                 id = ids.asOpt[Seq[JsValue]].getOrElse(Seq(ids))(0).as[String];
-                dateCreated = ((doc \ "describedBy" \ "dateCreated").asOpt[String].getOrElse((doc \ "describedBy" \ "resultOf"  \ "object" \ "dateCreated").as[String]))
+                describedBy = (doc \ "describedBy").asOpt[JsValue]
             ) {
                 <item>
                     <title>@((doc \ "title").asOpt[String].getOrElse(id))</title>
                     <link>@controllers.resources.Application.CONFIG.getString("host") @resources.routes.Application.resource(id, null)</link>
-                    <pubDate>@controllers.resources.Application.RSS_DATE_FORMAT.format(controllers.resources.Application.LOBID_DATE_FORMAT.parse(dateCreated))</pubDate>
+                    @describedBy.map(description =>
+                        <pubDate>
+                            @controllers.resources.Application.RSS_DATE_FORMAT.format(controllers.resources.Application.LOBID_DATE_FORMAT.parse(
+                            ((description \ "dateCreated").asOpt[String].getOrElse((description \ "resultOf"  \ "object" \ "dateCreated").as[String]))))
+                        </pubDate>
+                    )
                     <description><![CDATA[@tags.result_doc(doc)]]></description>
                 </item>
             }

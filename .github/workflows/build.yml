@@ -41,6 +41,8 @@ jobs:
         bash validateJsonTestFiles.sh
         cd -
     - uses: sbt/setup-sbt@v1
+      with:
+        sbt-runner-version: 1.11.5
     - name: Cache SBT
       uses: actions/cache@v4
       with:
