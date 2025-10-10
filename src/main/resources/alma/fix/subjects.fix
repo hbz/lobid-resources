@@ -487,10 +487,15 @@ end
 replace_all("subject[].*.label","<<|>>","")
 uniq("subject[]")
 
-## RVK-Cleaner
+## RVK-Cleaner and URI adder
 do list(path:"subject[]", "var": "$i")
   if any_equal("$i.source.id","https://d-nb.info/gnd/4449787-8")
-    unless any_match("$i.notation","(LD,)?[A-Z]([A-Z]( [0-9]+([a-z]|\\.[0-9]+)?( [A-Z][0-9]*)?)?)?( - [A-Z]([A-Z]( [0-9]+([a-z]|\\.[0-9]+)?( [A-Z][0-9]*)?)?)?)?")
+    if any_match("$i.notation","(LD,)?[A-Z]([A-Z]( [0-9]+([a-z]|\\.[0-9]+)?( [A-Z][0-9]*)?)?)?( - [A-Z]([A-Z]( [0-9]+([a-z]|\\.[0-9]+)?( [A-Z][0-9]*)?)?)?)?")
+      copy_field("$i.notation","$i.id")
+      copy_field("$i.notation","$i.label")
+      uri_encode ("$i.id",plus_for_space:"false")
+      prepend("$i.id","http://rvk.uni-regensburg.de/nt/")
+    else
       remove_field("$i.*")
     end
   end
