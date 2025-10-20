@@ -96,7 +96,19 @@ put_rdfmap("$[gnd-sc.ttl]", "gnd-sc-notationen", target: "skos:prefLabel", selec
 
 # Formschlagwort/Formangaben-Mapping -> GND
 # static file: src/main/resources/alma/maps/formangabe.tsv
-# manually generated and cleaned, based on: https://tinyurl.com/29qbx2u9 Status: 2025
+# manually generated and cleaned, based on: https://sta.dnb.de/query/
+# with:
+# PREFIX sta: <https://sta.dnb.de/entity/>
+# PREFIX staprop: <https://sta.dnb.de/prop/direct/>
+#
+# SELECT DISTINCT ?item ?itemLabel ?identifier WHERE {
+#   ?subject staprop:P8 ?item .
+#   ?item staprop:P295 ?identifier .
+#   VALUES ?subject { sta:Q2657 sta:Q9761 sta:Q2656 }
+#   SERVICE wikibase:label { bd:serviceParam wikibase:language "de". }
+# }
+# ----
+# Status: 2025, currently not able to generate this automatically since there are some errors in the data that needs to be cleaned
 put_filemap("$[formangabe.tsv]","formschlagwort2Gnd", sep_char:"\t",key_column:"0",value_column:"1",expected_columns:"-1")
 put_filemap("$[formangabe.tsv]","Gnd2formschlagwort", sep_char:"\t",key_column:"1",value_column:"0",expected_columns:"-1")
 
