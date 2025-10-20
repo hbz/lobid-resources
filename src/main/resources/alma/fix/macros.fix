@@ -469,15 +469,26 @@ do put_macro("publication")
   do list(path:"$[field]", "var":"$i")
     add_hash( "publication[].$append")
     do list(path: "$i.c", "var":"$j")
-      replace_all("$j", "\\[|\\]|ca. |c ", "")
+      call_macro("publicationDateCleaner",date:"$j")
       unless exists("publication[].$last.startDate")
-        if any_match("$j",".*?([01]\\d{3}|20\\d{2}).*")
-          paste("publication[].$last.startDate", "$j")
-        end
+        call_macro("publicationStartDate",date:"$j",dateTarget:"publication[].$last.startDate")
       end
       unless exists("publication[].$last.endDate")
-        if any_match("$j",".*-[ ]?([01]\\d{3}|20\\d{2})$")
-          paste("publication[].$last.endDate", "$j")
+        if any_equal("@ContinuingResources","true")
+          call_macro("publicationEndDate",date:"$j",dateTarget:"publication[].$last.endDate")
+        end
+      end
+    end
+    # ZDB reported that with periodicals `$3` is used for specific publication dates
+    # while $c states the complete publication time.
+    do list(path: "$i.3", "var":"$j")
+      call_macro("publicationDateCleaner",date:"$j")
+      unless exists("publication[].$last.startDate")
+        call_macro("publicationStartDate",date:"$j",dateTarget:"publication[].$last.startDate")
+      end
+      unless exists("publication[].$last.endDate")
+        if any_equal("@ContinuingResources","true")
+          call_macro("publicationEndDate",date:"$j",dateTarget:"publication[].$last.endDate")
         end
       end
     end
@@ -519,20 +530,33 @@ do put_macro("publication")
   end
 end
 
+do put_macro("publicationDateCleaner")
+  replace_all("$[date]", "\\[|\\]|ca.[ ]?|c[ ]?|um[ ]?", "")
+end
+
+do put_macro("publicationStartDate")
+  if any_match("$[date]","[^-]*?([01]\\d{3}|20\\d{2}).*")
+    paste("$[dateTarget]", "$[date]")
+  end
+end
+
+do put_macro("publicationEndDate")
+  if any_match("$[date]",".*-.*([01]\\d{3}|20\\d{2}).*$")
+    paste("$[dateTarget]", "$[date]")
+  end
+end
+
+
 do put_macro("manufacture")
   do list(path:"$[field]", "var":"$i")
     add_hash( "manufacture[].$append")
     do list(path: "$i.c", "var":"$j")
-      replace_all("$j", "\\[|\\]|ca. |c ", "")
+      call_macro("publicationDateCleaner",date:"$j")
       unless exists("manufacture[].$last.startDate")
-        if any_match("$j",".*?([01]\\d{3}|20\\d{2}).*")
-          paste("manufacture[].$last.startDate", "$j")
-        end
+        call_macro("publicationStartDate",date:"$j",dateTarget:"manufacture[].$last.startDate")
       end
       unless exists("manufacture[].$last.endDate")
-        if any_match("$j",".*-[ ]?([01]\\d{3}|20\\d{2})$")
-          paste("manufacture[].$last.endDate", "$j")
-        end
+        call_macro("publicationEndDate",date:"$j",dateTarget:"manufacture[].$last.endDate")
       end
     end
     add_array("manufacture[].$last.type[]","Event")

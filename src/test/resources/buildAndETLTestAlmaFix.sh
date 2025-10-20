@@ -13,4 +13,4 @@ mkdir -p log
 # index alma test resources:
 # don't forget to build and install metafatcure-core and metafacture-fix if there are any changes!
 mvn install -DskipTests=true
-mvn exec:java -Dexec.mainClass="org.lobid.resources.run.AlmaMarcXmlFix2lobidJsonEs" -Dexec.args="${TEST_FILE} resources-almatest NOALIAS weywot4.hbz-nrw.de weywot exact src/main/resources/alma/alma.fix" -DjsonLdContext="http://test.lobid.org/resources/context.jsonld" -Dexec.cleanupDaemonThreads=false
+mvn exec:java -Dexec.mainClass="org.lobid.resources.run.AlmaMarcXmlFix2lobidJsonEs" -Dexec.args="${TEST_FILE} resources-almatest NOALIAS indexcluster.lobid.org weywot exact src/main/resources/alma/alma.fix" -DjsonLdContext="http://test.lobid.org/resources/context.jsonld" -Dexec.cleanupDaemonThreads=false

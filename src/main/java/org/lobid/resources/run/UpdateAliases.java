@@ -28,6 +28,8 @@ import org.lobid.resources.ElasticsearchIndexer;
 import de.hbz.lobid.helper.Email;
 
 /**
+ * !Not in use since SwitchEsAlmaAlias.java (which is called from the Webhook).!
+ *
  * Useful after a complete ETL to switch the 'staging' index with the alias of
  * production. Makes the staging index productive (if it's the newer one) and
  * the productive index aliased to 'staging'. If a sanity check is successful
@@ -57,7 +59,7 @@ public class UpdateAliases {
         TransportClient tc = new PreBuiltTransportClient(
             Settings.builder().put("cluster.name", "weywot").build());
         Client client = tc.addTransportAddress(new InetSocketTransportAddress(
-            InetAddress.getByName("weywot4.hbz-nrw.de"), 9300))) {
+            InetAddress.getByName("weywot13.hbz-nrw.de"), 9300))) {
       ElasticsearchIndexer esIndexer = new ElasticsearchIndexer();
       testIndexSanity();
       esIndexer.setElasticsearchClient(client);
@@ -93,7 +95,7 @@ public class UpdateAliases {
   private static JsonNode queryEsAndGetJNode(final String QUERY)
       throws IOException {
     JsonNode node = null;
-    URL url = new URL("http://weywot4.hbz-nrw.de:9200/" + QUERY);
+    URL url = new URL("http://indexcluster.lobid.org:9200/" + QUERY);
     node = objectMapper.readTree(url);
     return node;
   }
