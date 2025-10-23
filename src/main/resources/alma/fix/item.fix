@@ -159,3 +159,37 @@ do list(path:"@DE-Sol1-Holdings","var":"$i")
   copy_field("$i","hasItem[].$append")
 end
 
+
+# ----hasItemWithProvenanceInformation---
+
+do list(path: "361??", "var":"$i")
+  paste("$i.@ownerAndCallnumber","$i.5","$i.s")
+  unless in("$i.@ownerAndCallnumber","hasItemWithProvenanceInformation[].*.@ownerAndCallnumber")
+    copy_field("$i.@ownerAndCallnumber","hasItemWithProvenanceInformation[].$append.@ownerAndCallnumber")
+    add_array("hasItemWithProvenanceInformation[].$last.type[]", "Item")
+    paste("hasItemWithProvenanceInformation[].$last.heldBy.id", "~http://lobid.org/organisations/", "$i.5", "~#!", join_char:"")
+    copy_field("hasItemWithProvenanceInformation[].$last.heldBy.id", "hasItemWithProvenanceInformation[].$last.heldBy.label")
+    copy_field("$i.s", "hasItemWithProvenanceInformation[].$last.callNumber")
+  end
+  do list(path:"hasItemWithProvenanceInformation[]","var":"$x")
+    if in("$i.@ownerAndCallnumber","$x.@ownerAndCallnumber")
+      copy_field("$i.a","$x.custodialHistory[].$append.owner.label")
+      copy_field("$i.0","$x.custodialHistory[].$last.owner.id")
+      replace_all("$x.custodialHistory[].$last.heldBy.id","\\(DE-588\\)","https://d-nb.info/gnd/")
+      copy_field("$i.o","$x.custodialHistory[].$last.typeOfOwnership")
+      copy_field("$i.f","$x.custodialHistory[].$last.proof")
+      copy_field("$i.z","$x.custodialHistory[].$last.note[].$append")
+      copy_field("$i.l","$x.custodialHistory[].$last.dateOfOwnership")
+      copy_field("$i.k","$x.custodialHistory[].$last.dateOfOwnership")
+    end
+  end
+end
+
+do list(path:"hasItemWithProvenanceInformation[]","var":"$i")
+  remove_field("$i.@ownerAndCallnumber")
+end
+
+# 3611$5 - 3611$s - 3611$o - 3611$a - 3611$0 - 3611$f - 3611$z - 3611$l
+
+
+lookup("hasItemWithProvenanceInformation[].*.heldBy.label", "lobidOrgLabels",delete:"true")
