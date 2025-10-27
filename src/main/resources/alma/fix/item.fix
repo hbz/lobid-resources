@@ -154,11 +154,12 @@ do list(path: "361??", "var":"$i")
   end
   do list(path:"hasItem[]","var":"$x")
     if in("$i.@ownerAndCallnumber","$x.@ownerAndCallnumber")
-      copy_field("$i.a","$x.custodialHistory[].$append.owner.label")
+      add_hash("$x.custodialHistory[].$append")
+      copy_field("$i.a","$x.custodialHistory[].$last.constribution[].$append.agent.label")
       do list(path:"$i.0", "var":"$j")
         if any_match("$j","^\\(DE-588\\)(.*)$")
-          copy_field("$j","$x.custodialHistory[].$last.owner.id")
-          replace_all("$x.custodialHistory[].$last.owner.id", "^\\(DE-588\\)(.*)$", "https://d-nb.info/gnd/$1")
+          copy_field("$j","$x.custodialHistory[].$last.constribution[].$last.agent.id")
+          replace_all("$x.custodialHistory[].$last.constribution[].$last.agent.id", "^\\(DE-588\\)(.*)$", "https://d-nb.info/gnd/$1")
         end
       end
       copy_field("$i.o","$x.custodialHistory[].$last.typeOfOwnership")
