@@ -162,8 +162,12 @@ do list(path: "361??", "var":"$i")
           replace_all("$x.custodialHistory[].$last.constribution[].$last.agent.id", "^\\(DE-588\\)(.*)$", "https://d-nb.info/gnd/$1")
         end
       end
-      copy_field("$i.o","$x.custodialHistory[].$last.typeOfOwnership")
-      copy_field("$i.f","$x.custodialHistory[].$last.proof")
+      do list(path:"$i.o", "var":"$j")
+        copy_field("$j","$x.custodialHistory[].$last.typeOfOwnership[].$append")
+      end
+      do list(path:"$i.f", "var":"$j")
+        copy_field("$j","$x.custodialHistory[].$last.proof[].$append")
+      end
       copy_field("$i.z","$x.custodialHistory[].$last.note[].$append")
       copy_field("$i.k","$x.custodialHistory[].$last.startDate")
       replace_all("$x.custodialHistory[].$last.startDate","^(\\d{4})(\\d{2})(\\d{2})$","$1-$2-$3")
