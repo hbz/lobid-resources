@@ -154,7 +154,7 @@ do list(path: "361??", "var":"$i")
   end
   do list(path:"hasItem[]","var":"$x")
     if in("$i.@ownerAndCallnumber","$x.@ownerAndCallnumber")
-      add_hash("$x.custodialHistory[].$append")
+      add_array("$x.custodialHistory[].$append.type[]","Event")
       copy_field("$i.a","$x.custodialHistory[].$last.constribution[].$append.agent.label")
       do list(path:"$i.0", "var":"$j")
         if any_match("$j","^\\(DE-588\\)(.*)$")
