@@ -485,6 +485,9 @@ do put_macro("publication")
     # ZDB reported that with periodicals `$3` is used for specific publication dates
     # while $c states the complete publication time.
     do list(path: "$i.3", "var":"$j")
+      unless exists("publication[].$last.dateStatement")
+        copy_field("$j","publication[].$last.dateStatement")
+      end
       call_macro("publicationDateCleaner",date:"$j")
       unless exists("publication[].$last.startDate")
         call_macro("publicationStartDate",date:"$j",dateTarget:"publication[].$last.startDate")
