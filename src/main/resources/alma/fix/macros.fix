@@ -442,7 +442,9 @@ do put_macro("schlagwortfolge")
             replace_all("subject[].$last.componentList[].$last.@gndIdn", "^\\(DE-101\\)(.*)$","GND-$1")
         end
       end
-      copy_field("$i.d","subject[].$last.componentList[].$last.dateOfBirthAndDeath") # dates will be differentiated later in the process
+      unless exists("$i.t") # Work/Werktitel should not receive dateOfBirthAndDeath, datesOfBirth or dateOfDeath
+        copy_field("$i.d","subject[].$last.componentList[].$last.dateOfBirthAndDeath") # dates will be differentiated later in the process
+      end
     end
     join_field("subject[].$last.label"," | ")
   end
