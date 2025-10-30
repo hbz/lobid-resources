@@ -573,6 +573,25 @@ do list(path:"084??", "var":"$i")
   end
 end
 
+if any_equal("inCollection[].*.id", "http://lobid.org/organisations/DE-655#!") # only assign hbz NZ records and filter out CZ oder IZ records
+  do list(path:"960??", "var":"$i")
+    if any_contain("$i.r","rpb")
+      unless any_equal("inCollection[].*.id","http://lobid.org/resources/HT013494180#!")
+        add_field("inCollection[].$append.id", "http://lobid.org/resources/HT013494180#!")
+        add_field("inCollection[].$last.label", "Rheinland-Pfälzische Bibliographie")
+      end
+    end
+  end
+
+  # bibliovino
+  do list(path:"960??", "var":"$i")
+    if any_contain("$i.r","bibliovino")
+      add_field("inCollection[].$append.id", "https://lobid.org/resources/990120000550206441#!")
+      add_field("inCollection[].$last.label", "BiblioVino")
+    end
+  end
+end
+
 
 # DBIS
 if exists("@dbis")
