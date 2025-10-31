@@ -143,6 +143,7 @@ public class AlmaMarcXmlFix2lobidJsonEs {
                 fixVariables.put("collectionLabels.tsv", "./maps/collectionLabels.tsv");
                 fixVariables.put("combinedDe-Sol1Holdings.tsv.gz", "./maps/combinedDe-Sol1Holdings.tsv.gz");
                 fixVariables.put("gnd-sc.ttl", "./maps/gnd-sc.ttl");
+                fixVariables.put("tpro.tsv", "./maps/tpro.tsv");
 
                 XmlElementSplitter xmlElementSplitter = new XmlElementSplitter();
                 xmlElementSplitter.setElementName("record");

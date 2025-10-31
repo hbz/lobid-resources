@@ -150,6 +150,12 @@ put_filemap("$[collectionLabels.tsv]","collectionLabels", sep_char:"\t",key_colu
 # result of https://github.com/hbz/lobid-extra-holdings/blob/main/harvestHoldings_prod.sh
 put_filemap("$[combinedDe-Sol1Holdings.tsv.gz]","sol1Holdings", sep_char:"\t",key_column:"0",value_column:"1",expected_columns:"-1")
 
+
+# TPRO T-PRO Thesaurus der Provenienzbegriffe
+# Static map containing tpro concepts to uri created from https://api.dante.gbv.de/search?voc=tpro
+
+put_filemap("$[tpro.tsv]","tpro", sep_char:"\t",key_column:"0",value_column:"1",expected_columns:"-1")
+
 put_map("rswk-indicator",
   "p": "Person",
   "b": "CorporateBody",

@@ -163,10 +163,12 @@ do list(path: "361??", "var":"$i")
         end
       end
       do list(path:"$i.o", "var":"$j")
-        copy_field("$j","$x.custodialHistory[].$last.typeOfOwnership[].$append")
+        copy_field("$j","$x.custodialHistory[].$last.typeOfOwnership[].$append.label")
+        copy_field("$j","$x.custodialHistory[].$last.typeOfOwnership[].$last.id")
       end
       do list(path:"$i.f", "var":"$j")
-        copy_field("$j","$x.custodialHistory[].$last.proof[].$append")
+        copy_field("$j","$x.custodialHistory[].$last.proof[].$append.label")
+        copy_field("$j","$x.custodialHistory[].$last.proof[].$last.id")
       end
       copy_field("$i.z","$x.custodialHistory[].$last.note[].$append")
       copy_field("$i.k","$x.custodialHistory[].$last.startDate")
@@ -186,6 +188,8 @@ end
 
 lookup("hasItem[].*.heldBy.label", "lobidOrgLabels",delete:"true")
 lookup("hasItem[].*.inCollection[].*.label", "lobidOrgLabels",delete:"true")
+lookup("hasItem[].*.custodialHistory[].*.proof[].*.id", "tpro",delete:"true")
+lookup("hasItem[].*.custodialHistory[].*.typeOfOwnership[].*.id", "tpro",delete:"true")
 
 do list(path: "hasItem[]","var":"$i")
   if any_match("$i.inCollection[].*.id","http:\\/\\/lobid.org\\/organisations\\/7816..")
