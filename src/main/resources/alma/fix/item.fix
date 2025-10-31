@@ -150,6 +150,7 @@ do list(path: "361??", "var":"$i")
     add_array("hasItem[].$last.type[]", "Item")
     paste("hasItem[].$last.heldBy.id", "~http://lobid.org/organisations/", "$i.5", "~#!", join_char:"")
     copy_field("hasItem[].$last.heldBy.id", "hasItem[].$last.heldBy.label")
+    copy_field("$i.5","hasItem[].$last.heldBy.isil")
     copy_field("$i.s", "hasItem[].$last.callNumber")
   end
   do list(path:"hasItem[]","var":"$x")
