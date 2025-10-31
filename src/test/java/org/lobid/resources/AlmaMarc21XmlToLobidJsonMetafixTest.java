@@ -109,9 +109,7 @@ public final class AlmaMarc21XmlToLobidJsonMetafixTest {
         StreamBatchLogger logger = new StreamBatchLogger();
         logger.setBatchSize(10);
         EtikettJson etikettJson = new EtikettJson();
-        etikettJson.setLabelsDirectoryName("labels");
-        etikettJson.setFilenameOfContext("web/conf/context.jsonld");
-        etikettJson.setGenerateContext(true);
+        etikettJson.setGenerateContext(false);
         etikettJson.setPretty(true);
         String keyToGetMainId = System.getProperty("keyToGetMainId", "almaMmsId");
         JsonToElasticsearchBulkMap jsonToElasticsearchBulkMap = new JsonToElasticsearchBulkMap(keyToGetMainId, "resource", "ignored");

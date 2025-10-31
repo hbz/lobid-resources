@@ -10,7 +10,15 @@ add_array("urn[]")
 
 do list(path: "0247?", "var": "$i")
   if any_equal("$i.2","urn")
+    if none_contain("$i.a","http")
       copy_field("$i.a","urn[].$append")
+    elsif any_match("$i.a",".*urn:nbn:de.*")
+      replace_all("$i.a","^.*(urn:nbn:de.*)$","$1")
+      copy_field("$i.a","urn[].$append")
+    elsif any_match("$i.a",".*doi.*((10\\.(\\d)+/(\\S)+).*)")
+      replace_all("$i.a",".*doi.*(10\\.(\\d)+/(\\S)+).*","$1")
+      copy_field("$i.a","@doiInUrn")
+    end
   end
 end
 
@@ -93,9 +101,16 @@ replace_all("ismn[].*", "-","")
 add_array("doi[]")
 do list(path:"0247?", "var":"$i")
   if all_equal("$i.2","doi")
-    copy_field("$i.a", "doi[].$append")
+    if none_contain("$i.a","http")
+      copy_field("$i.a","doi[].$append")
+    elsif any_match("$i.a",".*doi.*((10\\.(\\d)+/(\\S)+).*)")
+      replace_all("$i.a",".*doi.*(10\\.(\\d)+/(\\S)+).*","$1")
+      copy_field("$i.a","doi[].$append")
+    end
   end
 end
+
+copy_field("@doiInUrn", "doi[].$append")
 
 # Sometimes dois are not set in 024 then we could pick up the missing from 856.
 # 856 - Electronic Location and Access (R) - Subfield: $u (R) $3 (NR)

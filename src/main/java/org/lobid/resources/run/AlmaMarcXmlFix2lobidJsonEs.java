@@ -247,8 +247,7 @@ public class AlmaMarcXmlFix2lobidJsonEs {
         marcXmlHandler.setNamespace(null);
         EtikettJson etikettJson = new EtikettJson();
         etikettJson.setLabelsDirectoryName("labels");
-        etikettJson.setFilenameOfContext("context.jsonld");
-        etikettJson.setGenerateContext(true);
+        etikettJson.setGenerateContext(false);
         JsonEncoder jsonEncoder = new JsonEncoder();
         StringReader sr = new StringReader();
         try {

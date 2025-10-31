@@ -443,7 +443,9 @@ do put_macro("schlagwortfolge")
             replace_all("subject[].$last.componentList[].$last.@gndIdn", "^\\(DE-101\\)(.*)$","GND-$1")
         end
       end
-      copy_field("$i.d","subject[].$last.componentList[].$last.dateOfBirthAndDeath") # dates will be differentiated later in the process
+      unless exists("$i.t") # Work/Werktitel should not receive dateOfBirthAndDeath, datesOfBirth or dateOfDeath
+        copy_field("$i.d","subject[].$last.componentList[].$last.dateOfBirthAndDeath") # dates will be differentiated later in the process
+      end
     end
     join_field("subject[].$last.label"," | ")
   end
@@ -470,6 +472,9 @@ do put_macro("publication")
   do list(path:"$[field]", "var":"$i")
     add_hash( "publication[].$append")
     do list(path: "$i.c", "var":"$j")
+      unless exists("publication[].$last.dateStatement")
+        copy_field("$j","publication[].$last.dateStatement")
+      end
       call_macro("publicationDateCleaner",date:"$j")
       unless exists("publication[].$last.startDate")
         call_macro("publicationStartDate",date:"$j",dateTarget:"publication[].$last.startDate")
@@ -483,6 +488,9 @@ do put_macro("publication")
     # ZDB reported that with periodicals `$3` is used for specific publication dates
     # while $c states the complete publication time.
     do list(path: "$i.3", "var":"$j")
+      unless exists("publication[].$last.dateStatement")
+        copy_field("$j","publication[].$last.dateStatement")
+      end
       call_macro("publicationDateCleaner",date:"$j")
       unless exists("publication[].$last.startDate")
         call_macro("publicationStartDate",date:"$j",dateTarget:"publication[].$last.startDate")
@@ -552,6 +560,9 @@ do put_macro("manufacture")
   do list(path:"$[field]", "var":"$i")
     add_hash( "manufacture[].$append")
     do list(path: "$i.c", "var":"$j")
+      unless exists("manufacture[].$last.dateStatement")
+        copy_field("$j","manufacture[].$last.dateStatement")
+      end
       call_macro("publicationDateCleaner",date:"$j")
       unless exists("manufacture[].$last.startDate")
         call_macro("publicationStartDate",date:"$j",dateTarget:"manufacture[].$last.startDate")
