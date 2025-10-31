@@ -167,8 +167,16 @@ do list(path: "361??", "var":"$i")
         copy_field("$j","$x.custodialHistory[].$last.typeOfOwnership[].$last.id")
       end
       do list(path:"$i.f", "var":"$j")
-        copy_field("$j","$x.custodialHistory[].$last.proof[].$append.label")
-        copy_field("$j","$x.custodialHistory[].$last.proof[].$last.id")
+        if any_match("$j","(Nummer|Zugangsnummer|Signatur|Initiale|Monogramm) .+")
+          copy_field("$j","$i.@proof") # Some concepts can have additional infos in oder to keep this info move to note and clean the concept for proof
+          replace_all("$i.@proof","(Nummer|Zugangsnummer|Signatur|Initiale|Monogramm) .+","$1")
+          copy_field("$i.@proof","$x.custodialHistory[].$last.proof[].$append.label")
+          copy_field("$i.@proof","$x.custodialHistory[].$last.proof[].$last.id")
+          copy_field("$j","$x.custodialHistory[].$last.note[].$append")
+        else
+          copy_field("$j","$x.custodialHistory[].$last.proof[].$append.label")
+          copy_field("$j","$x.custodialHistory[].$last.proof[].$last.id")
+        end
       end
       copy_field("$i.z","$x.custodialHistory[].$last.note[].$append")
       copy_field("$i.k","$x.custodialHistory[].$last.startDate")
