@@ -105,6 +105,87 @@
             "enumerationAndChronology": {
                 "title": "Numbering or other enumeration and dates associated with issues or items held",
                 "type": "string"
+            },
+            "custodialHistory": {
+                "title": "provenance information",
+                "type": "array",
+                "items":{
+                  "type": "object",
+                  "additionalProperties":false,
+                  "properties": {
+                        "dateStatement": {
+                            "title": "Unformated date as catalogued",
+                            "type": "string"
+                        },
+                        "startDate": {
+                            "title": "Formated date as catalogued",
+                            "type": "string"
+                        },
+                        "seeAlso": {
+                            "title": "Links to further info.",
+                            "type": "array",
+                            "items": {
+                              "type":"string",
+                              "format":"url"
+                            }
+                        },
+                        "contribution": {
+                          "$ref": "contribution.json"
+                        },
+                        "type": {
+                            "title": "Type",
+                            "type": "array",
+                            "contains": {
+                                "const": "Event"
+                            }
+                        },
+                        "proof": {
+                            "title": "Ownership and custodial history evidence term",
+                            "type": "array",
+                            "items":{
+                              "type": "object",
+                              "additionalProperties":false,
+                              "properties": {
+                                  "id": {
+                                      "title": "Concept id usually T-Pro",
+                                      "type": "string",
+                                      "format": "uri"
+                                  },
+                                  "label": {
+                                      "title": "label",
+                                      "type": "string"
+                                  }
+                              }
+                            }
+                        },
+                        "typeOfOwnership": {
+                            "title": "Type of ownership and custodial history information",
+                            "type": "array",
+                            "items":{
+                              "type": "object",
+                              "additionalProperties":false,
+                              "properties": {
+                                  "id": {
+                                      "title": "Concept id usually T-Pro",
+                                      "type": "string",
+                                      "format": "uri"
+                                  },
+                                  "label": {
+                                      "title": "label",
+                                      "type": "string"
+                                  }
+                              }
+                            }
+                        },
+                        "note": {
+                            "title": "Note",
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                        }
+                    }
+                }
             }
         }
     }

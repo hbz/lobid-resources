@@ -141,8 +141,66 @@ do list(path: "MBD  ", "var": "$i")
   end
 end
 
+# ----provenanceInformation---
+
+do list(path: "361??", "var":"$i")
+  paste("$i.@ownerAndCallnumber","$i.5","$i.s")
+  unless in("$i.@ownerAndCallnumber","hasItem[].*.@ownerAndCallnumber")
+    copy_field("$i.@ownerAndCallnumber","hasItem[].$append.@ownerAndCallnumber")
+    add_array("hasItem[].$last.type[]", "Item")
+    paste("hasItem[].$last.heldBy.id", "~http://lobid.org/organisations/", "$i.5", "~#!", join_char:"")
+    copy_field("hasItem[].$last.heldBy.id", "hasItem[].$last.heldBy.label")
+    copy_field("$i.5","hasItem[].$last.heldBy.isil")
+    copy_field("$i.s", "hasItem[].$last.callNumber")
+  end
+  do list(path:"hasItem[]","var":"$x")
+    if in("$i.@ownerAndCallnumber","$x.@ownerAndCallnumber")
+      add_array("$x.custodialHistory[].$append.type[]","Event")
+      copy_field("$i.a","$x.custodialHistory[].$last.contribution[].$append.agent.label")
+      add_field("$x.custodialHistory[].$last.contribution[].$last.role.id","http://id.loc.gov/vocabulary/relators/own")
+      add_field("$x.custodialHistory[].$last.contribution[].$last.role.label","Eigentümer/in")
+      do list(path:"$i.0", "var":"$j")
+        if any_match("$j","^\\(DE-588\\)(.*)$")
+          copy_field("$j","$x.custodialHistory[].$last.contribution[].$last.agent.id")
+          replace_all("$x.custodialHistory[].$last.contribution[].$last.agent.id", "^\\(DE-588\\)(.*)$", "https://d-nb.info/gnd/$1")
+        end
+      end
+      do list(path:"$i.o", "var":"$j")
+        copy_field("$j","$x.custodialHistory[].$last.typeOfOwnership[].$append.label")
+        copy_field("$j","$x.custodialHistory[].$last.typeOfOwnership[].$last.id")
+      end
+      do list(path:"$i.f", "var":"$j")
+        if any_match("$j","(Nummer|Zugangsnummer|Signatur|Initiale|Monogramm) .+")
+          copy_field("$j","$i.@proof") # Some concepts can have additional infos in oder to keep this info move to note and clean the concept for proof
+          replace_all("$i.@proof","(Nummer|Zugangsnummer|Signatur|Initiale|Monogramm) .+","$1")
+          copy_field("$i.@proof","$x.custodialHistory[].$last.proof[].$append.label")
+          copy_field("$i.@proof","$x.custodialHistory[].$last.proof[].$last.id")
+          copy_field("$j","$x.custodialHistory[].$last.note[].$append")
+        else
+          copy_field("$j","$x.custodialHistory[].$last.proof[].$append.label")
+          copy_field("$j","$x.custodialHistory[].$last.proof[].$last.id")
+        end
+      end
+      copy_field("$i.z","$x.custodialHistory[].$last.note[].$append")
+      copy_field("$i.k","$x.custodialHistory[].$last.startDate")
+      replace_all("$x.custodialHistory[].$last.startDate","^(\\d{4})(\\d{2})(\\d{2})$","$1-$2-$3")
+      copy_field("$i.l","$x.custodialHistory[].$last.dateStatement")
+      copy_field("$i.u","$x.custodialHistory[].$last.seeAlso[].$append")
+    end
+  end
+end
+
+do list(path:"hasItem[]","var":"$i")
+  remove_field("$i.@ownerAndCallnumber")
+end
+
+# 3611$5 - 3611$s - 3611$o - 3611$a - 3611$0 - 3611$f - 3611$z - 3611$l
+
+
 lookup("hasItem[].*.heldBy.label", "lobidOrgLabels",delete:"true")
 lookup("hasItem[].*.inCollection[].*.label", "lobidOrgLabels",delete:"true")
+lookup("hasItem[].*.custodialHistory[].*.proof[].*.id", "tpro",delete:"true")
+lookup("hasItem[].*.custodialHistory[].*.typeOfOwnership[].*.id", "tpro",delete:"true")
 
 do list(path: "hasItem[]","var":"$i")
   if any_match("$i.inCollection[].*.id","http:\\/\\/lobid.org\\/organisations\\/7816..")
@@ -158,4 +216,5 @@ from_json("@DE-Sol1-Holdings")
 do list(path:"@DE-Sol1-Holdings","var":"$i")
   copy_field("$i","hasItem[].$append")
 end
+
 
