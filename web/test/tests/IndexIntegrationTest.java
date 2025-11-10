@@ -103,6 +103,11 @@ public class IndexIntegrationTest extends LocalIndexSetup {
 			{ "\"Reader friendly\"", /*->*/ 1},
 			// all q tests are related to DigiBib
 			{ "q.date:2000", /*->*/ 4 },
+			{ "q.provenance:\"https\\://d-nb.info/gnd/131844024\"", /*->*/ 1 },
+			{ "q.provenance:hoboken", /*->*/ 1 },
+			{ "q.provenance:stempel", /*->*/ 2 },
+			{ "q.provenance:regi*", /*->*/ 2 },
+			{ "q.provenance:\"Sk 5130\"", /*->*/ 1 },
 			{ "q.publisher:Aachen", /*->*/ 2 },
 			{ "q.publisher:Aachen\\-Eilendorf", /*->*/ 1 },
 			{ "q.publisher:Eilendörf", /*->*/ 1 },
