@@ -6,8 +6,8 @@ Transform Alma MARC-XML to JSON for Elasticsearch indexing with
 [Metafacture](https://github.com/culturegraph/metafacture-core/wiki),
 serve API and UI with [Play Framework](https://playframework.com/).
 
-The resulting JSON is [JSON-LD](https://json-ld.org/) which includes an `@context`-property and
-therefore provides machinereadable Linked Data. The context file lists all used properties and classes:
+The resulting JSON is [JSON-LD](https://json-ld.org/) and therefore provides machine-readable 
+Linked Data. The context file lists all used RDF properties and classes:
 http://lobid.org/resources/context.jsonld
 
 
