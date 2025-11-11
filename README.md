@@ -85,8 +85,7 @@ For querying it you can use the elasticsearch query DSL, like:
 ## Developer instructions
 
 This section explains how to make a successful build after changing the
-transformations,
-how to update the JSON-LD and its context, and how to index the data.
+transformations and how to index the data.
 
 ## Changing transformations
 
@@ -164,20 +163,6 @@ update these tables you can e.g. do
 `git submodule update --recursive --remote` after every `git pull` !
 This is necessary
 to be on the HEAD of the master of the submodules.
-
-## Propagate the context.json to lobid-resources-web
-
-The generated *context.jsonld* is automatically written to the proper
-directory
-so that it is automatically deployed when the web application is
-deployed.
-
-When the small test set is indexed by using *buildAndETLTestAlmaFix.sh*
-deploy your branch in
-the staging directory of the web application. The *context* for the
-resources is adapted
-to use the "staging.lobid.org"-domain and thus the
-staging-*context.jsonld* will resolve using the one in that directory.
 
 ### Elasticsearch index
 
