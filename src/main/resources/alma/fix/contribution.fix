@@ -344,6 +344,9 @@ do list (path: "contribution[]", "var": "$i")
   replace_all("$i.agent.label","<<|>>","")
   uniq("$i.agent.altLabel[]")
   replace_all("$i.agent.altLabel[].*","<<|>>","")
+
+  replace_all("$i.agent.id","x","X")
+  replace_all("$i.agent.gndIdentifier","x","X")
 end
 
 uniq("contribution[]")
