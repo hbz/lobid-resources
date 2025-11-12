@@ -423,6 +423,7 @@ do put_macro("schlagwortfolge")
       end
       do list(path:"$i.0", "var": "$j")
         if any_match("$j","^\\(DE-588\\)(.*)$")
+          upcase("$j") #gnd ids only have upper case X
           add_field("subject[].$last.componentList[].$last.source.label","Gemeinsame Normdatei (GND)")
           add_field("subject[].$last.componentList[].$last.source.id","https://d-nb.info/gnd/7749153-1")
           copy_field("$j", "subject[].$last.componentList[].$last.id")
