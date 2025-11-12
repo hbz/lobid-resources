@@ -289,6 +289,8 @@ end
 
 
 add_array("contribution[].*.type[]", "Contribution")
+upcase("contribution[].*.agent.id") #gnd ids only have upper case X
+upcase("contribution[].*.agent.gndIdentifier") #gnd ids only have upper case X
 replace_all("contribution[].*.agent.id","^\\(DE-588\\)(.*$)","https://d-nb.info/gnd/$1")
 replace_all("contribution[].*.agent.gndIdentifier","^\\(DE-588\\)(.*$)","$1")
 replace_all("contribution[].*.agent.label","(?<!\\p{Upper})\\.$|[,]$","")
