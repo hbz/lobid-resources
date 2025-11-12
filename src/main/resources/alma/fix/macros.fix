@@ -422,13 +422,13 @@ do put_macro("schlagwortfolge")
         copy_field("subject[].$last.componentList[].$last.label","subject[].$last.label.$append")
       end
       do list(path:"$i.0", "var": "$j")
-        if any_match("$j","^\\(DE-588\\)(.*)$")
+        if any_match("$j","^\\(DE-588\\)(.+)$")
           add_field("subject[].$last.componentList[].$last.source.label","Gemeinsame Normdatei (GND)")
           add_field("subject[].$last.componentList[].$last.source.id","https://d-nb.info/gnd/7749153-1")
           copy_field("$j", "subject[].$last.componentList[].$last.id")
-          replace_all("subject[].$last.componentList[].$last.id","^\\(DE-588\\)(.*)$","https://d-nb.info/gnd/$1")
+          replace_all("subject[].$last.componentList[].$last.id","^\\(DE-588\\)(.+)$","https://d-nb.info/gnd/$1")
           copy_field("$j", "subject[].$last.componentList[].$last.gndIdentifier")
-          replace_all("subject[].$last.componentList[].$last.gndIdentifier","^\\(DE-588\\)(.*)$","$1")
+          replace_all("subject[].$last.componentList[].$last.gndIdentifier","^\\(DE-588\\)(.+)$","$1")
         end
         # GND idn as variable
         if exists("$i.B")
@@ -440,9 +440,9 @@ do put_macro("schlagwortfolge")
         elsif any_match("$j","^.*DNB\\|(.*)$")
           copy_field("$j", "subject[].$last.componentList[].$last.@gndIdn")
           replace_all("subject[].$last.componentList[].$last.@gndIdn", "^.*DNB\\|(.*)$","GND-$1")
-        elsif any_match("$j","^\\(DE-101\\)(.*)$")
+        elsif any_match("$j","^\\(DE-101\\)(.+)$")
             copy_field("$j", "subject[].$last.componentList[].$last.@gndIdn")
-            replace_all("subject[].$last.componentList[].$last.@gndIdn", "^\\(DE-101\\)(.*)$","GND-$1")
+            replace_all("subject[].$last.componentList[].$last.@gndIdn", "^\\(DE-101\\)(.+)$","GND-$1")
         end
       end
       unless exists("$i.t") # Work/Werktitel should not receive dateOfBirthAndDeath, datesOfBirth or dateOfDeath
