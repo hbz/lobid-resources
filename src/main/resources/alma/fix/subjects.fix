@@ -432,9 +432,13 @@ end
 do list(path:"subject[]", "var": "$i")
   replace_all("$i.altLabel[].*","<<|>>","")
   uniq("$i.altLabel[]")
+  replace_all("$i.id","x","X")
+  replace_all("$i.gndIdentifier","x","X")
   do list(path:"$i.componentList[]","var":"$j")
     replace_all("$j.altLabel[].*","<<|>>","")
     uniq("$j.altLabel[]")
+    replace_all("$j.id","x","X")
+    replace_all("$j.gndIdentifier","x","X")
   end
 end
 
