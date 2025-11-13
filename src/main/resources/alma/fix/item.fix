@@ -162,9 +162,9 @@ do list(path: "361??", "var":"$i")
         add_field("$x.custodialHistory[].$last.contribution[].$last.role.label","Eigentümer/in")
       end
       do list(path:"$i.0", "var":"$j")
-        if any_match("$j","^\\(DE-588\\)(.*)$")
+        if any_match("$j","^\\(DE-588\\)(.+)$")
           copy_field("$j","$x.custodialHistory[].$last.contribution[].$last.agent.id")
-          replace_all("$x.custodialHistory[].$last.contribution[].$last.agent.id", "^\\(DE-588\\)(.*)$", "https://d-nb.info/gnd/$1")
+          replace_all("$x.custodialHistory[].$last.contribution[].$last.agent.id", "^\\(DE-588\\)(.+)$", "https://d-nb.info/gnd/$1")
         end
       end
       do list(path:"$i.o", "var":"$j")
