@@ -1,100 +1,125 @@
 {
-    "$id": "publication.json",
-    "$schema": "http://json-schema.org/draft-07/schema#",
-    "title": "Publication statements",
-    "type": "array",
-    "items": {
-        "type": "object",
-        "additionalProperties":false,
-        "properties": {
-            "type": {
-                "type": "array",
-                "items": {
-                    "type": "string",
-                    "enum": [
-                        "PublicationEvent",
-                        "SecondaryPublicationEvent"
-                    ]
-                }
+  "$id": "publication.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Publication statements",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "type": {
+        "type": "array",
+        "items": {
+          "type": "string",
+          "enum": [
+            "PublicationEvent",
+            "SecondaryPublicationEvent"
+          ]
+        }
+      },
+      "location": {
+        "title": "Place of publication",
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "publishedBy": {
+        "title": "Agent of publication",
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "dateStatement": {
+        "title": "Publication date as catalogued",
+        "type": "string"
+      },
+      "startDate": {
+        "title": "(Start) date of the publication",
+        "type": "string"
+      },
+      "endDate": {
+        "title": "End date of the publication",
+        "type": "string"
+      },
+      "frequency": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "type": "string",
+              "format": "uri",
+              "pattern": "http://marc21rdf.info/terms/continuingfre#.*"
             },
-            "location": {
-                "title": "Place of publication",
-                "type": "array",
-                "items": {
-                    "type": "string"
-                }
-            },
-            "publishedBy": {
-                "title": "Agent of publication",
-                "type": "array",
-                "items": {
-                    "type": "string"
-                }
-            },
-            "dateStatement": {
-                "title": "Publication date as catalogued",
-                "type": "string"
-            },
-            "startDate": {
-                "title": "(Start) date of the publication",
-                "type": "string"
-            },
-            "endDate": {
-                "title": "End date of the publication",
-                "type": "string"
-            },
-            "frequency": {
-                "type": "array",
-                "items": {
-                    "type": "object",
-                    "additionalProperties": false,
-                    "properties": {
-                        "id": {
-                            "type": "string",
-                            "format": "uri",
-                            "pattern": "http://marc21rdf.info/terms/continuingfre#.*"
-                        },
-                        "label": {
-                            "type": "string",
-                            "enum": [
-                                "täglich",
-                                "dreimal wöchentlich",
-                                "zweimal wöchentlich",
-                                "wöchentlich",
-                                "vierzehntägig",
-                                "halbmonatlich",
-                                "monatlich",
-                                "alle zwei Monate",
-                                "vierteljährlich",
-                                "halbjährlich",
-                                "jährlich",
-                                "alle zwei Jahre",
-                                "alle drei Jahre",
-                                "unregelmäßig oder sonstige Erscheinungsfrequenz"
-                            ]
-                        }
-                    }
-                }
-            },
-            "note": {
-              "title": "Note",
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            },
-            "publicationHistory": {
-                "type": "string"
-            },
-            "description": {
-                "type": "array",
-                "items": {
-                    "type": "string"
-                }
+            "label": {
+              "type": "string",
+              "enum": [
+                "täglich",
+                "dreimal wöchentlich",
+                "zweimal wöchentlich",
+                "wöchentlich",
+                "vierzehntägig",
+                "halbmonatlich",
+                "monatlich",
+                "alle zwei Monate",
+                "vierteljährlich",
+                "halbjährlich",
+                "jährlich",
+                "alle zwei Jahre",
+                "alle drei Jahre",
+                "unregelmäßig oder sonstige Erscheinungsfrequenz"
+              ]
             }
+          }
+        }
+      },
+      "note": {
+        "title": "Note",
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "publicationHistory": {
+        "type": "string"
+      },
+      "status": {
+        "title": "Publication status of periodicals",
+        "description": "Based on Marc 008/06 describing if a publication is current, ceased or unknown.",
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uri",
+            "pattern": "http://id.loc.gov/vocabulary/mstatus/.*"
+          },
+          "label": {
+            "type": "string",
+            "enum": [
+              "laufend",
+              "eingestellt",
+              "unbekannt"
+            ]
+          }
         },
         "required": [
-            "type"
+          "id",
+          "label"
         ]
-    }
+      },
+      "description": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      }
+    },
+    "required": [
+      "type"
+    ]
+  }
 }
