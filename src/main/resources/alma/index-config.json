@@ -480,6 +480,50 @@
                 }
               }
             },
+            "custodialHistory": {
+              "properties": {
+                "contribution": {
+                  "properties": {
+                    "agent": {
+                      "properties": {
+                        "id": {
+                          "type": "keyword",
+                          "index": false,
+                          "copy_to": [
+                            "q.provenance"
+                          ]
+                        },
+                        "label": {
+                          "type": "text",
+                          "index": false,
+                          "copy_to": [
+                            "q.provenance"
+                          ]
+                        }
+                      }
+                    }
+                  }
+                },
+                "note": {
+                  "type": "text",
+                  "index": false,
+                  "copy_to": [
+                    "q.provenance"
+                  ]
+                },
+                "proof": {
+                  "properties": {
+                    "label": {
+                      "type": "text",
+                      "index": false,
+                      "copy_to": [
+                        "q.provenance"
+                      ]
+                    }
+                  }
+                }
+              }
+            },
             "note": {
               "type": "text",
               "index": false,
@@ -488,7 +532,10 @@
               ]
             },
             "callNumber": {
-              "type": "keyword"
+              "type": "keyword",
+              "copy_to": [
+                "q.provenance"
+              ]
             },
             "serialNumber": {
               "type": "keyword"
@@ -502,7 +549,7 @@
             "inCollection": {
               "properties": {
                 "id": {
-                   "type": "keyword"
+                  "type": "keyword"
                 },
                 "label": {
                   "type": "text",
@@ -1181,6 +1228,11 @@
             },
             "date": {
               "type": "short"
+            },
+            "provenance": {
+              "type": "text",
+              "analyzer": "digibib_default",
+              "search_analyzer": "digibib_search"
             },
             "publisher": {
               "type": "text",
