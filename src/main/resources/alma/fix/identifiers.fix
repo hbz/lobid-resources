@@ -47,7 +47,7 @@ do list(path: "035  ", "var":"$i")
   end
 end
 
-replace_all("hbzId","\\(DE-605\\)(.*)","$1")
+replace_all("hbzId","\\(DE-605\\)(.+)","$1")
 
 # add a deprecatedUri to all records with hbzId to document all old lobid urls.
 if exists("hbzId")
@@ -127,7 +127,7 @@ uniq("doi[]")
 add_array("oclcNumber[]")
 
 do list(path:"035  ", "var":"$i")
-    if all_match("$i.a", "\\(OCoLC\\)(.*)")
+    if all_match("$i.a", "\\(OCoLC\\)(.+)")
       copy_field("$i.a", "oclcNumber[].$append")
     end
 end
@@ -150,7 +150,7 @@ end
 # 035 - System Control Number (R) - Subfield: $a (NR)
 do list(path:"035  ", "var":"$i")
   unless exists("zdbId")
-    if all_match("$i.a", "\\(DE-600\\)(.*)")
+    if all_match("$i.a", "\\(DE-600\\)(.+)")
       copy_field("$i.a", "zdbId")
     end
   end
