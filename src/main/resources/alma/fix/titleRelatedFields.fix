@@ -140,10 +140,9 @@ end
 
 # 246 - Varying Form of Title (R) - Subfields: $a (NR)
 
-add_array("alternativeTitle[]")
-copy_field("246?[ 345678].a","alternativeTitle[].$append")
-
 do list(path:"246?[ 345678]","var":"$i")
+  prepend("$i.b",". ")
+  paste("alternativeTitle[].$append", "$i.a",  "$i.b", join_char: "")
   call_macro("alternateGraphicRepresationArrayOfStrings",targetArray:"alternativeTitle[]",variable:"$i")
 end
 
