@@ -277,6 +277,19 @@ if exists("publication[].$first")
   end
 end
 
+if any_match("008","^.{6}[cdu].*$")
+  if any_match("008","^.{6}[c].*$",)
+    add_field("publication[].$first.status.id","http://id.loc.gov/vocabulary/mstatus/current")
+    add_field("publication[].$first.status.label","laufend")
+  elsif any_match("008","^.{6}[d].*$",)
+    add_field("publication[].$first.status.id","http://id.loc.gov/vocabulary/mstatus/ceased")
+    add_field("publication[].$first.status.label","eingestellt")
+  elsif any_match("008","^.{6}[u].*$",)
+    add_field("publication[].$first.status.id","http://id.loc.gov/vocabulary/mstatus/u")
+    add_field("publication[].$first.status.label","unbekannt")
+  end
+end
+
 
 
 
@@ -324,6 +337,28 @@ do list(path: "publication[]", "var": "$i")
   uniq("$i.location[]")
 end
 
+# Clean up unrealistic publication dates if they provide a realistic one in 008/07-15
+
+timestamp("@todaysYear",format:"yyyy")
+to_var("@todaysYear","todaysYear")
+if greater_than("publication[].1.startDate","$[todaysYear]")
+    copy_field("008","@008startDateTest")
+    replace_all("@008startDateTest","^.{7}(\\d{4}).*$","$1")
+    if less_than("@008startDateTest","$[todaysYear]")
+      copy_field("@008startDateTest","publication[].1.startDate")
+    elsif any_equal("@008startDateTest","$[todaysYear]")
+      copy_field("@008startDateTest","publication[].1.startDate")
+    end
+end
+if greater_than("publication[].1.endDate","$[todaysYear]")
+    copy_field("008","@008endDateTest")
+    replace_all("@008endDateTest","^.{11}(\\d{4}).*$","$1")
+    if less_than("@008endDateTest","$[todaysYear]")
+      copy_field("@008endDateTest","publication[].1.endDate")
+    elsif any_equal("@008endDateTest","$[todaysYear]")
+      copy_field("@008endDateTest","publication[].1.endDate")
+    end
+end
 
 # 246 - Varying Form of Title (R) - $a - Title proper/short title (NR)
 
