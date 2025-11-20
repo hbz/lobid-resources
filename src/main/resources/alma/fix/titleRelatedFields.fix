@@ -275,18 +275,18 @@ if exists("publication[].$first")
       end
     end
   end
-end
 
-if any_match("008","^.{6}[cdu].*$")
-  if any_match("008","^.{6}[c].*$",)
-    add_field("publication[].$first.status.id","http://id.loc.gov/vocabulary/mstatus/current")
-    add_field("publication[].$first.status.label","laufend")
-  elsif any_match("008","^.{6}[d].*$",)
-    add_field("publication[].$first.status.id","http://id.loc.gov/vocabulary/mstatus/ceased")
-    add_field("publication[].$first.status.label","eingestellt")
-  elsif any_match("008","^.{6}[u].*$",)
-    add_field("publication[].$first.status.id","http://id.loc.gov/vocabulary/mstatus/u")
-    add_field("publication[].$first.status.label","unbekannt")
+  if any_match("008","^.{6}[cdu].*$")
+    if any_match("008","^.{6}[c].*$",)
+      add_field("publication[].$first.status.id","http://id.loc.gov/vocabulary/mstatus/current")
+      add_field("publication[].$first.status.label","laufend")
+    elsif any_match("008","^.{6}[d].*$",)
+      add_field("publication[].$first.status.id","http://id.loc.gov/vocabulary/mstatus/ceased")
+      add_field("publication[].$first.status.label","eingestellt")
+    elsif any_match("008","^.{6}[u].*$",)
+      add_field("publication[].$first.status.id","http://id.loc.gov/vocabulary/mstatus/u")
+      add_field("publication[].$first.status.label","unbekannt")
+    end
   end
 end
 

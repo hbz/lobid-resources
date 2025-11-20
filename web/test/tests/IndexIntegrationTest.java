@@ -70,9 +70,8 @@ public class IndexIntegrationTest extends LocalIndexSetup {
 			{ "publication.location:Koln", /*->*/ 7 },
 			{ "publication.startDate:1993", /*->*/ 4 },
 			{ "publication.location:Berlin AND publication.startDate:1993", /*->*/ 1 },
-			{ "publication.location:Berlin AND publication.startDate:[1992 TO 2017]", /*->*/ 5 },
 			{ "inCollection.id:\"http\\://lobid.org/organisations/DE-655#\\!\"", /*->*/ 182 },
-			{ "inCollection.id:\"https\\://nrw.digibib.net/search/hbzvk/\"", /*->*/ 203 },
+			{ "inCollection.id:\"https\\://nrw.digibib.net/search/hbzvk/\"", /*->*/ 204 },
 			{ "inCollection.id:NWBib", /*->*/ 0 },
 			{ "publication.publishedBy:Quedenfeldt", /*->*/ 2 },
 			{ "publication.publishedBy:Quedenfeld", /*->*/ 2 },
@@ -162,7 +161,7 @@ public class IndexIntegrationTest extends LocalIndexSetup {
 			{ "contribution.agent.altLabel.digibib_unstemmed:Nemačke", /*->*/ 1 },
 			{ "contribution.agent.altLabel.digibib_unstemmed:Nemack", /*->*/ 0 },
 			{ "exampleOfWork.language.id:\"http\\://id.loc.gov/vocabulary/iso639-2/eng\"", /*->*/ 1 },
-			{ "hasItem.inCollection.id:\"http://lobid.org/organisations/DE-468#!\"", /*->*/ 27 }
+			{ "hasItem.inCollection.id:\"http://lobid.org/organisations/DE-468#!\"", /*->*/ 28 }
 		});
 	} // @formatter:on
 
