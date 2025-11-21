@@ -193,6 +193,15 @@ end
 
 uniq("license[]")
 
+
+if exists("5060?")
+  add_field("accessRights.id","http://purl.org/coar/access_right/c_abf2")
+  add_field("accessRights.label","Open Access")
+elsif any_match("85640.7","0")
+  add_field("accessRights.id","http://purl.org/coar/access_right/c_abf2")
+  add_field("accessRights.label","Open Access")
+end
+
 add_array("langNote[]")
 do list(path: "546??", "var": "$i")
   add_array("$i.@langNote")
