@@ -657,6 +657,13 @@ do list(path:"940??","var":"$i")
   end
 end
 
+do list(path:"subject[]","var":"$i")
+  if any_match("$i.id","https:\\/\\/nwbib.de\\/subjects#N(630100|631000|632000|632050|635000|636000|637000|638000)")
+    add_field("inCollection[].$append.id","https://lobid.org/resources/990225637530206441#!")
+    add_field("inCollection[].$last.label","Judaica-Portal")
+  end
+end
+
 # 960 ## no Information about repeatability
 # TODO: This needs further inspection if we need a collection fr all subfields: https://service-wiki.hbz-nrw.de/display/VDBE/960+-+Selektionskennzeichen+NZ
 # Values from r can be invalid.
