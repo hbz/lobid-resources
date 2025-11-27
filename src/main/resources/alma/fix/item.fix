@@ -219,4 +219,10 @@ do list(path:"@DE-Sol1-Holdings","var":"$i")
   copy_field("$i","hasItem[].$append")
 end
 
+do list(path: "hasItem[]","var":"$i")
+  do list(path: "$i.inCollection[]","var":"$j")
+    add_array("$j.type[]","Collection")
+  end
+end
+
 
