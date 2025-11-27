@@ -49,11 +49,11 @@ end
 include ("./fix/identifiers.fix")
 include ("./fix/titleRelatedFields.fix")
 include ("./fix/describedBy.fix")
-# identifiers.fix and titleRelatedFields.fix are needed ahead of relatedRessourcesAndLinks.fix because of dependencies
-include ("./fix/relatedRessourcesAndLinks.fix")
-include ("./fix/otherFields.fix")
 include ("./fix/subjects.fix")
 include ("./fix/item.fix")
+# identifiers.fix, items.fix, subjects.fix and titleRelatedFields.fix are needed ahead of relatedRessourcesAndLinks.fix because of dependencies
+include ("./fix/relatedRessourcesAndLinks.fix")
+include ("./fix/otherFields.fix")
 include ("./fix/mediumAndType.fix")
 # mediumAndType.fix is needed ahead of contribution.fix because of dependencies
 include ("./fix/contribution.fix")
