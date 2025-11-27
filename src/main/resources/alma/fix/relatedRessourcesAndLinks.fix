@@ -664,6 +664,13 @@ do list(path:"subject[]","var":"$i")
   end
 end
 
+do list(path:"hasItem[]","var":"$i")
+  if any_equal("$i.heldBy.isil","DE-6-336")
+    add_field("inCollection[].$append.id","https://lobid.org/resources/990225637530206441#!")
+    add_field("inCollection[].$last.label","Judaica-Portal")
+  end
+end
+
 # 960 ## no Information about repeatability
 # TODO: This needs further inspection if we need a collection fr all subfields: https://service-wiki.hbz-nrw.de/display/VDBE/960+-+Selektionskennzeichen+NZ
 # Values from r can be invalid.
