@@ -2,25 +2,33 @@
   "$id": "alternateGraphicRepresentation.json",
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "Record information in other scripture",
+  "description": "The property provides certain properties in additional scriptures.",
   "type": "array",
   "items": {
     "type": "object",
     "additionalProperties": false,
     "properties": {
       "script": {
+        "description": "The additionally provided scripture",
         "type": "object",
         "additionalProperties": false,
         "properties": {
           "id": {
             "type": "string",
-            "format": "uri"
+            "format": "uri",
+            "pattern": "https://unicode.org/iso15924/iso15924.txt#.+"
           },
           "label": {
             "type": "string"
           }
-        }
+        },
+        "required": [
+          "id",
+          "label"
+        ]
       },
       "record": {
+        "description": "The record in the alternative scripture, but no identifiers or type infos for properties. This is the only element that does not have the limit of 'additionalProperties' because of the additional complexity.",
         "type": "object"
       }
     },
