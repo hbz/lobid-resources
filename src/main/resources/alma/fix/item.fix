@@ -160,16 +160,17 @@ do list(path: "361??", "var":"$i")
   do list(path:"hasItem[]","var":"$x")
     if in("$i.@ownerAndCallnumber","$x.@ownerAndCallnumber")
       add_array("$x.custodialHistory[].$append.type[]","Event")
-      copy_field("$i.a","$x.custodialHistory[].$last.contribution[].$append.agent.label")
-      if exists("$i.a")
-        add_field("$x.custodialHistory[].$last.contribution[].$last.role.id","http://id.loc.gov/vocabulary/relators/own")
-        add_field("$x.custodialHistory[].$last.contribution[].$last.role.label","Eigentümer/in")
-      end
+      add_hash("$x.custodialHistory[].$last.contribution[].$append")
+      copy_field("$i.a","$x.custodialHistory[].$last.contribution[].$last.agent.label")
       do list(path:"$i.0", "var":"$j")
         if any_match("$j","^\\(DE-588\\)(.+)$")
           copy_field("$j","$x.custodialHistory[].$last.contribution[].$last.agent.id")
           replace_all("$x.custodialHistory[].$last.contribution[].$last.agent.id", "^\\(DE-588\\)(.+)$", "https://d-nb.info/gnd/$1")
         end
+      end
+      if exists("$x.custodialHistory[].$last.contribution[].$last.agent")
+        add_field("$x.custodialHistory[].$last.contribution[].$last.role.id","http://id.loc.gov/vocabulary/relators/own")
+        add_field("$x.custodialHistory[].$last.contribution[].$last.role.label","Eigentümer/in")
       end
       do list(path:"$i.o", "var":"$j")
         copy_field("$j","$x.custodialHistory[].$last.typeOfOwnership[].$append.label")
