@@ -11,7 +11,8 @@
       "id": {
         "title": "Item URI",
         "type": "string",
-        "format": "uri"
+        "format": "uri",
+        "pattern": "http://lobid.org/items/.+"
       },
       "type": {
         "title": "Type",
@@ -35,9 +36,10 @@
         "additionalProperties": false,
         "properties": {
           "id": {
-            "title": "URI of the holding organisation",
+            "title": "lobid-organisations URI of the holding organisation",
             "type": "string",
-            "format": "uri"
+            "format": "uri",
+            "pattern": "http://lobid.org/organisations/.+"
           },
           "label": {
             "type": "string"
@@ -129,7 +131,8 @@
                   "id": {
                     "title": "Concept id usually T-Pro",
                     "type": "string",
-                    "format": "uri"
+                    "format": "uri",
+                    "pattern": "https://provenienz.gbv.de/Kategorie:.+"
                   },
                   "label": {
                     "title": "label",
@@ -148,7 +151,8 @@
                   "id": {
                     "title": "Concept id usually T-Pro",
                     "type": "string",
-                    "format": "uri"
+                    "format": "uri",
+                    "pattern": "https://provenienz.gbv.de/Kategorie:.+"
                   },
                   "label": {
                     "title": "label",
@@ -163,6 +167,12 @@
           }
         }
       }
-    }
+    },
+    "required": [
+      "id",
+      "label",
+      "type",
+      "heldBy"
+    ]
   }
 }
