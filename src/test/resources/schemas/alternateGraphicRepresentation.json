@@ -1,32 +1,32 @@
 {
-    "$id": "alternateGraphicRepresentation.json",
-    "$schema": "http://json-schema.org/draft-07/schema#",
-    "title": "Record information in other scripture",
-    "type": "array",
-    "items": {
+  "$id": "alternateGraphicRepresentation.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Record information in other scripture",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "script": {
         "type": "object",
-        "additionalProperties":false,
+        "additionalProperties": false,
         "properties": {
-            "script": {
-              "type": "object",
-              "additionalProperties":false,
-              "properties": {
-                  "id": {
-                      "type": "string",
-                      "format": "uri"
-                  },
-                  "label": {
-                      "type": "string"
-                  }
-              }
-            },
-            "record": {
-              "type": "object"
-            }
-        },
-        "required": [
-            "script",
-            "record"
-        ]
-    }
+          "id": {
+            "type": "string",
+            "format": "uri"
+          },
+          "label": {
+            "type": "string"
+          }
+        }
+      },
+      "record": {
+        "type": "object"
+      }
+    },
+    "required": [
+      "script",
+      "record"
+    ]
+  }
 }

@@ -1,110 +1,110 @@
 {
-    "$id": "complexSubject.json",
-    "$schema": "http://json-schema.org/draft-07/schema#",
-    "title": "Complex Subject",
-    "description": "A complex subject",
-    "type": "object",
-    "additionalProperties":false,
-    "properties": {
-        "type": {
-            "title": "Type",
-            "type": "array",
-            "items": {
-                "const": "ComplexSubject"
-            }
-        },
-        "label": {
-            "title": "The label of the whole complex subject",
-            "type": "string"
-        },
-        "componentList": {
-            "title": "Component List",
-            "type": "array",
-            "items": {
-                "type": "object",
-                "additionalProperties":false,
-                "properties": {
-                    "id": {
-                        "title": "Subject URI",
-                        "type": "string",
-                        "format": "uri",
-                        "pattern": "^https:\/\/d-nb.info\/gnd\/1[012]?\\d{7}[0-9X]|[47]\\d{6}-\\d|[1-9]\\d{0,7}-[0-9X]|3\\d{7}[0-9X]"
-                    },
-                    "type": {
-                        "type": "array",
-                        "items": {
-                            "type": "string",
-                            "enum": [
-                                "Person",
-                                "CorporateBody",
-                                "ConferenceOrEvent",
-                                "Work",
-                                "PlaceOrGeographicName",
-                                "SubjectHeading",
-                                "Family"
-                            ]
-                        }
-                    },
-                    "source": {
-                        "title": "Source authority file",
-                        "type": "object",
-                        "additionalProperties":false,
-                        "properties": {
-                            "id": {
-                                "title": "Authority File URI",
-                                "type": "string",
-                                "format": "uri",
-                                "const": "https://d-nb.info/gnd/7749153-1"
-                            },
-                            "label": {
-                                "title": "German name of the role",
-                                "type": "string",
-                                "const": "Gemeinsame Normdatei (GND)"
-                            }
-                        },
-                        "required": [
-                            "id",
-                            "label"
-                        ]
-                    },
-                    "label": {
-                        "title": "Preferred name of the subject heading",
-                        "type": "string"
-                    },
-                    "gndIdentifier": {
-                        "title": "GND ID",
-                        "type": "string",
-                        "pattern": "1[012]?\\d{7}[0-9X]|[47]\\d{6}-\\d|[1-9]\\d{0,7}-[0-9X]|3\\d{7}[0-9X]"
-                    },
-                    "altLabel": {
-                        "title": "Alternative name of the agent",
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        }
-                    },
-                    "dateOfBirth": {
-                        "title": "Date of birth of a person as subject heading",
-                        "type": "string"
-                    },
-                    "dateOfDeath": {
-                        "title": "Date of death of ta person as subject heading",
-                        "type": "string"
-                    },
-                    "dateOfBirthAndDeath": {
-                        "type": "string"
-                    }
-                },
-                "required": [
-                    "type",
-                    "label"
-                ]
-            }
-        }
+  "$id": "complexSubject.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Complex Subject",
+  "description": "A complex subject",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "type": {
+      "title": "Type",
+      "type": "array",
+      "items": {
+        "const": "ComplexSubject"
+      }
     },
-    "required": [
-        "type",
-        "label",
-        "componentList"
-    ]
+    "label": {
+      "title": "The label of the whole complex subject",
+      "type": "string"
+    },
+    "componentList": {
+      "title": "Component List",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "title": "Subject URI",
+            "type": "string",
+            "format": "uri",
+            "pattern": "^https:\/\/d-nb.info\/gnd\/1[012]?\\d{7}[0-9X]|[47]\\d{6}-\\d|[1-9]\\d{0,7}-[0-9X]|3\\d{7}[0-9X]"
+          },
+          "type": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "Person",
+                "CorporateBody",
+                "ConferenceOrEvent",
+                "Work",
+                "PlaceOrGeographicName",
+                "SubjectHeading",
+                "Family"
+              ]
+            }
+          },
+          "source": {
+            "title": "Source authority file",
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "id": {
+                "title": "Authority File URI",
+                "type": "string",
+                "format": "uri",
+                "const": "https://d-nb.info/gnd/7749153-1"
+              },
+              "label": {
+                "title": "German name of the role",
+                "type": "string",
+                "const": "Gemeinsame Normdatei (GND)"
+              }
+            },
+            "required": [
+              "id",
+              "label"
+            ]
+          },
+          "label": {
+            "title": "Preferred name of the subject heading",
+            "type": "string"
+          },
+          "gndIdentifier": {
+            "title": "GND ID",
+            "type": "string",
+            "pattern": "1[012]?\\d{7}[0-9X]|[47]\\d{6}-\\d|[1-9]\\d{0,7}-[0-9X]|3\\d{7}[0-9X]"
+          },
+          "altLabel": {
+            "title": "Alternative name of the agent",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "dateOfBirth": {
+            "title": "Date of birth of a person as subject heading",
+            "type": "string"
+          },
+          "dateOfDeath": {
+            "title": "Date of death of ta person as subject heading",
+            "type": "string"
+          },
+          "dateOfBirthAndDeath": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "type",
+          "label"
+        ]
+      }
+    }
+  },
+  "required": [
+    "type",
+    "label",
+    "componentList"
+  ]
 }
