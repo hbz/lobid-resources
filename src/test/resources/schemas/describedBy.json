@@ -1,246 +1,246 @@
 {
-    "$id": "describedBy.json",
-    "$schema": "http://json-schema.org/draft-07/schema#",
-    "title": "Description of the description",
-    "description": "An object containing metametadata",
-    "type": "object",
-    "additionalProperties":false,
-    "properties": {
+  "$id": "describedBy.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Description of the description",
+  "description": "An object containing metametadata",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "title": "Description URL",
+      "type": "string",
+      "format": "uri"
+    },
+    "type": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "const": "BibliographicDescription"
+      }
+    },
+    "label": {
+      "title": "Label of the description",
+      "type": "string"
+    },
+    "inDataset": {
+      "title": "Link to the dataset that contains the record",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
         "id": {
-            "title": "Description URL",
-            "type": "string",
-            "format": "uri"
-        },
-        "type": {
-            "type": "array",
-            "items": {
-                "type": "string",
-                "const": "BibliographicDescription"
-            }
+          "title": "Dataset URI",
+          "type": "string",
+          "format": "uri",
+          "enum": [
+            "http://lobid.org/resources/dataset#!"
+          ]
         },
         "label": {
-            "title": "Label of the description",
-            "type": "string"
+          "title": "Name of the dataset",
+          "type": "string",
+          "enum": [
+            "lobid-resources – Der hbz-Verbundkatalog als Linked Open Data"
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "label"
+      ]
+    },
+    "resultOf": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "type": "array",
+          "items": {
+            "const": "CreateAction"
+          }
         },
-        "inDataset": {
-            "title": "Link to the dataset that contains the record",
-            "type": "object",
-  "additionalProperties":false,
-            "properties": {
+        "instrument": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "const": "https://github.com/hbz/lobid-resources"
+            },
+            "label": {
+              "const": "Software lobid-resources"
+            },
+            "type": {
+              "type": "array",
+              "items": {
+                "const": "SoftwareApplication"
+              }
+            }
+          },
+          "required": [
+            "id",
+            "type",
+            "label"
+          ]
+        },
+        "object": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "type": "string",
+              "format": "uri"
+            },
+            "dateCreated": {
+              "title": "Creation date of the metadata record",
+              "type": "string",
+              "format": "date",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}"
+            },
+            "dateModified": {
+              "title": "Modification date of the metadata record",
+              "type": "string",
+              "format": "date",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}"
+            },
+            "label": {
+              "type": "string"
+            },
+            "type": {
+              "type": "array",
+              "items": {
+                "const": "DataFeedItem"
+              }
+            },
+            "inDataset": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
                 "id": {
-                    "title": "Dataset URI",
-                    "type": "string",
-                    "format": "uri",
-                    "enum": [
-                        "http://lobid.org/resources/dataset#!"
-                    ]
+                  "type": "string",
+                  "format": "uri",
+                  "const": "https://datahub.io/dataset/hbz_unioncatalog"
                 },
                 "label": {
-                    "title": "Name of the dataset",
-                    "type": "string",
-                    "enum": [
-                        "lobid-resources – Der hbz-Verbundkatalog als Linked Open Data"
-                    ]
+                  "type": "string",
+                  "const": "hbz_unioncatalog"
                 }
+              }
             },
-            "required": [
+            "sourceOrganization": {
+              "title": "Organization that added the record to the union catalog",
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "title": "lobid-organisations URI",
+                  "type": "string",
+                  "format": "uri"
+                },
+                "label": {
+                  "title": "label",
+                  "type": "string"
+                }
+              },
+              "required": [
                 "id",
                 "label"
-            ]
-        },
-        "resultOf": {
-            "type": "object",
-  "additionalProperties":false,
-            "properties": {
-                "type": {
-                    "type": "array",
-                    "items": {
-                        "const": "CreateAction"
-                    }
-                },
-                "instrument": {
-                    "type": "object",
-  "additionalProperties":false,
-                    "properties": {
-                        "id": {
-                            "const": "https://github.com/hbz/lobid-resources"
-                        },
-                        "label": {
-                            "const": "Software lobid-resources"
-                        },
-                        "type": {
-                            "type": "array",
-                            "items": {
-                                "const": "SoftwareApplication"
-                            }
-                        }
-                    },
-                    "required": [
-                        "id",
-                        "type",
-                        "label"
-                    ]
-                },
-                "object": {
-                    "type": "object",
-  "additionalProperties":false,
-                    "properties": {
-                        "id": {
-                            "type": "string",
-                            "format": "uri"
-                        },
-                        "dateCreated": {
-                            "title": "Creation date of the metadata record",
-                            "type": "string",
-                            "format": "date",
-                            "pattern": "^\\d{4}-\\d{2}-\\d{2}"
-                        },
-                        "dateModified": {
-                            "title": "Modification date of the metadata record",
-                            "type": "string",
-                            "format": "date",
-                            "pattern": "^\\d{4}-\\d{2}-\\d{2}"
-                        },
-                        "label": {
-                            "type": "string"
-                        },
-                        "type": {
-                            "type": "array",
-                            "items": {
-                                "const": "DataFeedItem"
-                            }
-                        },
-                        "inDataset": {
-                            "type": "object",
-  "additionalProperties":false,
-                            "properties": {
-                                "id": {
-                                    "type": "string",
-                                    "format": "uri",
-                                    "const": "https://datahub.io/dataset/hbz_unioncatalog"
-                                },
-                                "label": {
-                                    "type": "string",
-                                    "const": "hbz_unioncatalog"
-                                }
-                            }
-                        },
-                        "sourceOrganization": {
-                            "title": "Organization that added the record to the union catalog",
-                            "type": "object",
-  "additionalProperties":false,
-                            "properties": {
-                                "id": {
-                                    "title": "lobid-organisations URI",
-                                    "type": "string",
-                                    "format": "uri"
-                                },
-                                "label": {
-                                    "title": "label",
-                                    "type": "string"
-                                }
-                            },
-                            "required": [
-                                "id",
-                                "label"
-                            ]
-                        },
-                        "provider": {
-                            "title": "Provider of the metadata record",
-                            "type": "object",
-  "additionalProperties":false,
-                            "properties": {
-                                "id": {
-                                    "title": "lobid-organisations URI",
-                                    "type": "string",
-                                    "format": "uri"
-                                },
-                                "label": {
-                                    "title": "label",
-                                    "type": "string"
-                                }
-                            },
-                            "required": [
-                                "id",
-                                "label"
-                            ]
-                        },
-                        "modifiedBy": {
-                            "title": "Organization from which the record was last modified",
-                            "type": "array",
-                            "items": {
-                                "properties": {
-                                    "id": {
-                                        "title": "lobid-organisations URI",
-                                        "type": "string",
-                                        "format": "uri"
-                                    },
-                                    "label": {
-                                        "title": "label",
-                                        "type": "string"
-                                    }
-                                },
-                                "type": "object",
-  "additionalProperties":false,
-                                "required": [
-                                    "id",
-                                    "label"
-                                ]
-                            }
-                        }
-                    },
-                    "required": [
-                        "id",
-                        "type",
-                        "label",
-                        "inDataset",
-                        "dateCreated"
-                    ]
-                },
-                "endTime": {
-                    "type": "string",
-                    "pattern": "(\\d{4})-(\\d{2})-(\\d{2})T(\\d{2}):(\\d{2}):(\\d{2})"
-                }
+              ]
             },
-            "required": [
-                "type",
-                "instrument",
-                "object",
-                "endTime"
-            ]
-        },
-        "license": {
-            "title": "License of the metadata record",
-            "type": "array",
-            "items": {
-                "type": "object",
-  "additionalProperties":false,
-                "properties": {
-                    "id": {
-                        "title": "License URI",
-                        "type": "string",
-                        "format": "uri",
-                        "const": "http://creativecommons.org/publicdomain/zero/1.0"
-                    },
-                    "label": {
-                        "title": "Name of the license",
-                        "type": "string",
-                        "const": "Creative Commons-Lizenz CC0 1.0 Universal"
-                    }
+            "provider": {
+              "title": "Provider of the metadata record",
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "title": "lobid-organisations URI",
+                  "type": "string",
+                  "format": "uri"
                 },
+                "label": {
+                  "title": "label",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "id",
+                "label"
+              ]
+            },
+            "modifiedBy": {
+              "title": "Organization from which the record was last modified",
+              "type": "array",
+              "items": {
+                "properties": {
+                  "id": {
+                    "title": "lobid-organisations URI",
+                    "type": "string",
+                    "format": "uri"
+                  },
+                  "label": {
+                    "title": "label",
+                    "type": "string"
+                  }
+                },
+                "type": "object",
+                "additionalProperties": false,
                 "required": [
-                    "id",
-                    "label"
+                  "id",
+                  "label"
                 ]
+              }
             }
+          },
+          "required": [
+            "id",
+            "type",
+            "label",
+            "inDataset",
+            "dateCreated"
+          ]
+        },
+        "endTime": {
+          "type": "string",
+          "pattern": "(\\d{4})-(\\d{2})-(\\d{2})T(\\d{2}):(\\d{2}):(\\d{2})"
         }
-    },
-    "required": [
-        "id",
+      },
+      "required": [
         "type",
-        "label",
-        "inDataset",
-        "resultOf",
-        "license"
-    ]
+        "instrument",
+        "object",
+        "endTime"
+      ]
+    },
+    "license": {
+      "title": "License of the metadata record",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "title": "License URI",
+            "type": "string",
+            "format": "uri",
+            "const": "http://creativecommons.org/publicdomain/zero/1.0"
+          },
+          "label": {
+            "title": "Name of the license",
+            "type": "string",
+            "const": "Creative Commons-Lizenz CC0 1.0 Universal"
+          }
+        },
+        "required": [
+          "id",
+          "label"
+        ]
+      }
+    }
+  },
+  "required": [
+    "id",
+    "type",
+    "label",
+    "inDataset",
+    "resultOf",
+    "license"
+  ]
 }

@@ -1,81 +1,81 @@
 {
-    "$id": "spatial.json",
-    "$schema": "http://json-schema.org/draft-07/schema#",
-    "title": "Spatial",
-    "description": "Object for NWBib and RPB spatial classification",
-    "type": "array",
-    "items": {
-        "type": "object",
-        "additionalProperties":false,
-        "properties": {
-            "id": {
-                "type": "string",
-                "format": "uri"
-            },
-            "type": {
-                "type": "array",
-                "items": {
-                    "type": "string",
-                    "const": "Concept"
-                }
-            },
-            "label": {
-                "type": "string"
-            },
-            "notation": {
-                "type": "string"
-            },
-            "source": {
-                "type": "object",
-                "additionalProperties":false,
-                "properties": {
-                    "id": {
-                        "type": "string",
-                        "format": "uri",
-                        "enum": [
-                          "https://nwbib.de/spatial",
-                          "https://rpb.lobid.org/spatial"
-                        ]
-                    },
-                    "label": {
-                        "type": "string"
-                    }
-                }
-            },
-            "focus": {
-                "type": "object",
-                "additionalProperties":false,
-                "properties": {
-                    "id": {
-                        "type": "string",
-                        "format": "uri"
-                    },
-                    "type": {
-                        "type": "array",
-                        "items": {
-                            "type": "string",
-                            "format": "uri"
-                        }
-                    },
-                    "label": {
-                        "type": "string"
-                    },
-                    "geo": {
-                        "type": "object",
-                        "additionalProperties":false,
-                        "properties": {
-                            "lat": {
-                                "type": "string",
-                                "pattern": "[\\d]*\\.[\\d]*"
-                            },
-                            "lon": {
-                                "type": "string",
-                                "pattern": "[\\d]*\\.[\\d]*"
-                            }
-                        }
-                    }
-                }
-            }
+  "$id": "spatial.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Spatial",
+  "description": "Object for NWBib and RPB spatial classification",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "id": {
+        "type": "string",
+        "format": "uri"
+      },
+      "type": {
+        "type": "array",
+        "items": {
+          "type": "string",
+          "const": "Concept"
         }
+      },
+      "label": {
+        "type": "string"
+      },
+      "notation": {
+        "type": "string"
+      },
+      "source": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uri",
+            "enum": [
+              "https://nwbib.de/spatial",
+              "https://rpb.lobid.org/spatial"
+            ]
+          },
+          "label": {
+            "type": "string"
+          }
+        }
+      },
+      "focus": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uri"
+          },
+          "type": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uri"
+            }
+          },
+          "label": {
+            "type": "string"
+          },
+          "geo": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "lat": {
+                "type": "string",
+                "pattern": "[\\d]*\\.[\\d]*"
+              },
+              "lon": {
+                "type": "string",
+                "pattern": "[\\d]*\\.[\\d]*"
+              }
+            }
+          }
+        }
+      }
     }
+  }
 }

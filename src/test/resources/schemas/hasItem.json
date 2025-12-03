@@ -1,173 +1,172 @@
 {
-    "$id": "hasItem.json",
-    "$schema": "http://json-schema.org/draft-07/schema#",
-    "title": "Item and holding information",
-    "description": "Descriptions of the items and the holding library",
-    "type": "array",
-    "items": {
+  "$id": "hasItem.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Item and holding information",
+  "description": "Descriptions of the items and the holding library",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "id": {
+        "title": "Item URI",
+        "type": "string",
+        "format": "uri"
+      },
+      "type": {
+        "title": "Type",
+        "type": "array",
+        "contains": {
+          "const": "Item"
+        }
+      },
+      "label": {
+        "type": "string"
+      },
+      "currentLibrary": {
+        "type": "string"
+      },
+      "currentLocation": {
+        "type": "string"
+      },
+      "heldBy": {
+        "title": "Held by",
         "type": "object",
-        "additionalProperties":false,
+        "additionalProperties": false,
         "properties": {
-            "id": {
-                "title": "Item URI",
-                "type": "string",
-                "format": "uri"
+          "id": {
+            "title": "URI of the holding organisation",
+            "type": "string",
+            "format": "uri"
+          },
+          "label": {
+            "type": "string"
+          },
+          "isil": {
+            "type": "string",
+            "pattern": "[A-Z]{2}-.*"
+          }
+        }
+      },
+      "inCollection": {
+        "$ref": "inCollection.json"
+      },
+      "seeAlso": {
+        "title": "Type",
+        "type": "array",
+        "items": {
+          "type": "string",
+          "format": "url"
+        }
+      },
+      "note": {
+        "type": "string"
+      },
+      "callNumber": {
+        "title": "Call number",
+        "type": "string"
+      },
+      "inventoryNumber": {
+        "title": "Inventory number",
+        "type": "string"
+      },
+      "serialNumber": {
+        "title": "Serial number",
+        "type": "string"
+      },
+      "electronicLocator": {
+        "title": "Direct Link",
+        "type": "string"
+      },
+      "sublocation": {
+        "title": "Access URL",
+        "type": "string"
+      },
+      "enumerationAndChronology": {
+        "title": "Numbering or other enumeration and dates associated with issues or items held",
+        "type": "string"
+      },
+      "custodialHistory": {
+        "title": "provenance information",
+        "type": "array",
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "dateStatement": {
+              "title": "Unformated date as catalogued",
+              "type": "string"
             },
-            "type": {
-                "title": "Type",
-                "type": "array",
-                "contains": {
-                    "const": "Item"
-                }
-            },
-            "label": {
-                "type": "string"
-            },
-            "currentLibrary": {
-                "type": "string"
-            },
-            "currentLocation": {
-                "type": "string"
-            },
-            "heldBy": {
-                "title": "Held by",
-                "type": "object",
-                "additionalProperties":false,
-                "properties": {
-                    "id": {
-                        "title": "URI of the holding organisation",
-                        "type": "string",
-                        "format": "uri"
-                    },
-                    "label": {
-                        "type": "string"
-                    },
-                    "isil": {
-                      "type": "string",
-                      "pattern": "[A-Z]{2}-.*"
-                    }
-                }
-            },
-            "inCollection": {
-                "$ref": "inCollection.json"
+            "startDate": {
+              "title": "Formated date as catalogued",
+              "type": "string"
             },
             "seeAlso": {
-                "title": "Type",
-                "type": "array",
-                "items": {
-                  "type":"string",
-                  "format":"url"
-
+              "title": "Links to further info.",
+              "type": "array",
+              "items": {
+                "type": "string",
+                "format": "url"
+              }
+            },
+            "contribution": {
+              "$ref": "contribution.json"
+            },
+            "type": {
+              "title": "Type",
+              "type": "array",
+              "contains": {
+                "const": "Event"
+              }
+            },
+            "proof": {
+              "title": "Ownership and custodial history evidence term",
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "id": {
+                    "title": "Concept id usually T-Pro",
+                    "type": "string",
+                    "format": "uri"
+                  },
+                  "label": {
+                    "title": "label",
+                    "type": "string"
+                  }
                 }
+              }
+            },
+            "typeOfOwnership": {
+              "title": "Type of ownership and custodial history information",
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "id": {
+                    "title": "Concept id usually T-Pro",
+                    "type": "string",
+                    "format": "uri"
+                  },
+                  "label": {
+                    "title": "label",
+                    "type": "string"
+                  }
+                }
+              }
             },
             "note": {
+              "title": "Note",
+              "type": "array",
+              "items": {
                 "type": "string"
-            },
-            "callNumber": {
-                "title": "Call number",
-                "type": "string"
-            },
-            "inventoryNumber": {
-                "title": "Inventory number",
-                "type": "string"
-            },
-            "serialNumber": {
-                "title": "Serial number",
-                "type": "string"
-            },
-            "electronicLocator": {
-                "title": "Direct Link",
-                "type": "string"
-            },
-            "sublocation": {
-                "title": "Access URL",
-                "type": "string"
-            },
-            "enumerationAndChronology": {
-                "title": "Numbering or other enumeration and dates associated with issues or items held",
-                "type": "string"
-            },
-            "custodialHistory": {
-                "title": "provenance information",
-                "type": "array",
-                "items":{
-                  "type": "object",
-                  "additionalProperties":false,
-                  "properties": {
-                        "dateStatement": {
-                            "title": "Unformated date as catalogued",
-                            "type": "string"
-                        },
-                        "startDate": {
-                            "title": "Formated date as catalogued",
-                            "type": "string"
-                        },
-                        "seeAlso": {
-                            "title": "Links to further info.",
-                            "type": "array",
-                            "items": {
-                              "type":"string",
-                              "format":"url"
-                            }
-                        },
-                        "contribution": {
-                          "$ref": "contribution.json"
-                        },
-                        "type": {
-                            "title": "Type",
-                            "type": "array",
-                            "contains": {
-                                "const": "Event"
-                            }
-                        },
-                        "proof": {
-                            "title": "Ownership and custodial history evidence term",
-                            "type": "array",
-                            "items":{
-                              "type": "object",
-                              "additionalProperties":false,
-                              "properties": {
-                                  "id": {
-                                      "title": "Concept id usually T-Pro",
-                                      "type": "string",
-                                      "format": "uri"
-                                  },
-                                  "label": {
-                                      "title": "label",
-                                      "type": "string"
-                                  }
-                              }
-                            }
-                        },
-                        "typeOfOwnership": {
-                            "title": "Type of ownership and custodial history information",
-                            "type": "array",
-                            "items":{
-                              "type": "object",
-                              "additionalProperties":false,
-                              "properties": {
-                                  "id": {
-                                      "title": "Concept id usually T-Pro",
-                                      "type": "string",
-                                      "format": "uri"
-                                  },
-                                  "label": {
-                                      "title": "label",
-                                      "type": "string"
-                                  }
-                              }
-                            }
-                        },
-                        "note": {
-                            "title": "Note",
-                            "type": "array",
-                            "items": {
-                              "type": "string"
-                            }
-                        }
-                    }
-                }
+              }
             }
+          }
         }
+      }
     }
+  }
 }
