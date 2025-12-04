@@ -666,12 +666,16 @@ end
 
 
 # lobid resources label
-do put_macro("lobidResourcesFallbackLabel")
+do put_macro("fallbackLabel")
   do list(path:"$[field]","var":"$array")
     unless exists("$array.label")
-      if any_contain("$array.id","lobid")
+      if any_contain("$array.id","lobid.org/resources")
         add_field("$array.label","lobid Ressource")
       end
+    end
+    unless exists("$array.label")
+      copy_field("$array.id","$array.label")
+      replace_all("$array.label","^.*/(.+)$","$1")
     end
   end
 end

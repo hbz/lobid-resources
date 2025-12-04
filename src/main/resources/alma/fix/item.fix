@@ -199,13 +199,14 @@ end
 
 do list(path:"hasItem[]","var":"$i")
   remove_field("$i.@ownerAndCallnumber")
+  call_macro("fallbackLabel",field:"$i.custodialHistory[].$first.contribution[].$first.agent")
 end
 
 # 3611$5 - 3611$s - 3611$o - 3611$a - 3611$0 - 3611$f - 3611$z - 3611$l
 
 
-lookup("hasItem[].*.heldBy.label", "lobidOrgLabels",delete:"true")
-lookup("hasItem[].*.inCollection[].*.label", "lobidOrgLabels",delete:"true")
+lookup("hasItem[].*.heldBy.label", "lobidOrgLabels")
+lookup("hasItem[].*.inCollection[].*.label", "lobidOrgLabels")
 lookup("hasItem[].*.custodialHistory[].*.proof[].*.id", "tpro",delete:"true")
 lookup("hasItem[].*.custodialHistory[].*.typeOfOwnership[].*.id", "tpro",delete:"true")
 
