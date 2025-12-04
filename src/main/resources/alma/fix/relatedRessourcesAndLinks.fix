@@ -72,7 +72,7 @@ end
 replace_all("supplement[].*.id","^\\(DE-605\\)(.+)$","http://lobid.org/resources/$1#!")
 replace_all("supplement[].*.id","^\\(DE-600\\)(.+)$","http://lobid.org/resources/ZDB-$1#!")
 replace_all("supplement[].*.label","<<|>>","")
-call_macro("lobidResourcesFallbackLabel",field:"supplement[]")
+call_macro("fallbackLabel",field:"supplement[]")
 
 # isPartOf
 # it describes the relation between a published ressource and its superordinate series or collection.
@@ -243,7 +243,7 @@ uniq("isPartOf[]")
 replace_all("containedIn[].*.id", "^\\(DE-605\\)(.+)$", "http://lobid.org/resources/$1#!")
 replace_all("containedIn[].*.id", "^\\(DE-600\\)(.+)$", "http://lobid.org/resources/ZDB-$1#!")
 replace_all("containedIn[].*.label","<<|>>","")
-call_macro("lobidResourcesFallbackLabel",field:"containedIn[]")
+call_macro("fallbackLabel",field:"containedIn[]")
 
 uniq("containedIn[]")
 
@@ -270,7 +270,7 @@ end
 
 replace_all("primaryForm[].*.id", "^\\(DE-605\\)(.+)$", "http://lobid.org/resources/$1#!")
 replace_all("primaryForm[].*.id", "^\\(DE-600\\)(.+)$", "http://lobid.org/resources/ZDB-$1#!")
-call_macro("lobidResourcesFallbackLabel",field:"primaryForm[]")
+call_macro("fallbackLabel",field:"primaryForm[]")
 
 # secondaryForm
 
@@ -290,7 +290,7 @@ do list(path: "77608", "var":"$i")
   end
 end
 
-call_macro("lobidResourcesFallbackLabel",field:"secondaryForm[]")
+call_macro("fallbackLabel",field:"secondaryForm[]")
 
 
 
@@ -376,6 +376,7 @@ if is_empty("@urnLinks")
   end
 end
 
+call_macro("fallbackLabel",field:"fulltextOnline[]")
 
 # TODO: hasVersion is outcommented since it needs some remodelling
 # See https://github.com/hbz/lobid-resources/issues/1242
@@ -452,7 +453,7 @@ end
 replace_all("related[].*.id", "^\\(DE-605\\)(.+)$", "http://lobid.org/resources/$1#!")
 replace_all("related[].*.id", "^\\(DE-600\\)(.+)$", "http://lobid.org/resources/ZDB-$1#!")
 replace_all("related[].*.label","<<|>>","")
-call_macro("lobidResourcesFallbackLabel",field:"related[]")
+call_macro("fallbackLabel",field:"related[]")
 
 add_array("inCollection[]")
 
@@ -709,7 +710,7 @@ end
 
 replace_all("predecessor[].*.id", "^\\(DE-605\\)(.+)$", "http://lobid.org/resources/$1#!")
 replace_all("predecessor[].*.id", "^\\(DE-600\\)(.+)$", "http://lobid.org/resources/ZDB-$1#!")
-call_macro("lobidResourcesFallbackLabel",field:"predecessor[]")
+call_macro("fallbackLabel",field:"predecessor[]")
 
 replace_all("predecessor[].*.label","Vorg. ---> ","")
 
@@ -735,6 +736,8 @@ end
 
 replace_all("successor[].*.id", "^\\(DE-605\\)(.+)$", "http://lobid.org/resources/$1#!")
 replace_all("successor[].*.id", "^\\(DE-600\\)(.+)$", "http://lobid.org/resources/ZDB-$1#!")
+
+call_macro("fallbackLabel",field:"successor[]")
 
 
 # 130 - Main Entry-Uniform Title (NR)
@@ -810,7 +813,19 @@ do list(path:"700?2|710?2|711?2|730?2", "var": "$i")
       replace_all("containsExampleOfWork[].$last.id","^\\(DE-588\\)(.+$)","https://d-nb.info/gnd/$1")
     end
   end
+
 end
 
+
+
 replace_all("containsExampleOfWork[].*.label","<<|>>","")
+
+
+do list(path:"isPartOf[]","var":"$i")
+  call_macro("fallbackLabel",field:"$i.hasSuperordinate[]")
+end
+call_macro("fallbackLabel",field:"inCollection[]")
+call_macro("fallbackLabel",field:"sameAs[]")
+call_macro("fallbackLabel",field:"exampleOfWork")
+call_macro("fallbackLabel",field:"containsExampleOfWork[]")
 uniq("inCollection[]")

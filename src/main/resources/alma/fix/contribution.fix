@@ -339,6 +339,8 @@ do list (path: "contribution[]", "var": "$i")
 
 
   remove_field("$i.agent.@gndIdn")
+  call_macro("fallbackLabel",field:"$i.agent")
+
 
   copy_field("$i.role.id", "$i.role.label")
   lookup("$i.role.label","marcRel")
