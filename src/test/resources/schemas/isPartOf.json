@@ -16,11 +16,7 @@
         }
       },
       "note": {
-        "title": "Note",
-        "type": "array",
-        "items": {
-          "type": "string"
-        }
+        "$ref": "note.json"
       },
       "numbering": {
         "type": "string"
@@ -38,12 +34,16 @@
             "label": {
               "type": "string"
             }
-          }
+          },
+          "required": [
+            "label"
+          ]
         }
       }
     },
     "required": [
-      "hasSuperordinate"
+      "hasSuperordinate",
+      "type"
     ]
   }
 }

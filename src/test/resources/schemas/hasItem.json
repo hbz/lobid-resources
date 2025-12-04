@@ -11,7 +11,8 @@
       "id": {
         "title": "Item URI",
         "type": "string",
-        "format": "uri"
+        "format": "uri",
+        "pattern": "http://lobid.org/items/.+"
       },
       "type": {
         "title": "Type",
@@ -35,9 +36,10 @@
         "additionalProperties": false,
         "properties": {
           "id": {
-            "title": "URI of the holding organisation",
+            "title": "lobid-organisations URI of the holding organisation",
             "type": "string",
-            "format": "uri"
+            "format": "uri",
+            "pattern": "http://lobid.org/organisations/.+"
           },
           "label": {
             "type": "string"
@@ -60,7 +62,7 @@
         }
       },
       "note": {
-        "type": "string"
+        "$ref": "note.json"
       },
       "callNumber": {
         "title": "Call number",
@@ -129,7 +131,8 @@
                   "id": {
                     "title": "Concept id usually T-Pro",
                     "type": "string",
-                    "format": "uri"
+                    "format": "uri",
+                    "pattern": "https://provenienz.gbv.de/Kategorie:.+"
                   },
                   "label": {
                     "title": "label",
@@ -148,7 +151,8 @@
                   "id": {
                     "title": "Concept id usually T-Pro",
                     "type": "string",
-                    "format": "uri"
+                    "format": "uri",
+                    "pattern": "https://provenienz.gbv.de/Kategorie:.+"
                   },
                   "label": {
                     "title": "label",
@@ -158,15 +162,17 @@
               }
             },
             "note": {
-              "title": "Note",
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
+              "$ref": "note.json"
             }
           }
         }
       }
-    }
+    },
+    "required": [
+      "id",
+      "label",
+      "type",
+      "heldBy"
+    ]
   }
 }

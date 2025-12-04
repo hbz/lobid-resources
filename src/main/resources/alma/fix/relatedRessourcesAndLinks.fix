@@ -701,9 +701,11 @@ do list(path:"780??", "var":"$i")
     end
   end
   replace_all("predecessor[].$last.label", "\\((?:DE-600|DE-605)\\)", "")
-  add_array("predecessor[].$last.note[]")
-  do list(path:"$i.i","var":"$j")
-    copy_field("$j","predecessor[].$last.note[].$append")
+  unless is_empty("predecessor[].$last")
+    add_array("predecessor[].$last.note[]")
+    do list(path:"$i.i","var":"$j")
+      copy_field("$j","predecessor[].$last.note[].$append")
+    end
   end
 end
 
