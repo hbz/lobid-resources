@@ -108,9 +108,8 @@ public final class AlmaMarc21XmlToLobidJsonMetafixTest {
         marcXmlHandler.setNamespace(null);
         StreamBatchLogger logger = new StreamBatchLogger();
         logger.setBatchSize(10);
-        EtikettJson etikettJson = new EtikettJson();
-        etikettJson.setGenerateContext(false);
-        etikettJson.setPretty(true);
+        JsonEncoder jsonEncoder = new JsonEncoder();
+        jsonEncoder.setPrettyPrinting(true);
         String keyToGetMainId = System.getProperty("keyToGetMainId", "almaMmsId");
         JsonToElasticsearchBulkMap jsonToElasticsearchBulkMap = new JsonToElasticsearchBulkMap(keyToGetMainId, "resource", "ignored");
         try {
@@ -118,8 +117,8 @@ public final class AlmaMarc21XmlToLobidJsonMetafixTest {
                 .setReceiver(marcXmlHandler)//
                 .setReceiver(logger)//
                 .setReceiver(new Metafix(FIX, fixVariables))//
-                .setReceiver(new JsonEncoder())//
-                .setReceiver(etikettJson).setReceiver(jsonToElasticsearchBulkMap);
+                .setReceiver(jsonEncoder)//
+                .setReceiver(jsonToElasticsearchBulkMap);
             if (GENERATE_TESTDATA) {
                 jsonToElasticsearchBulkMap.setReceiver(new JsonFileWriter<HashMap<String, String>>(DIRECTORY.getPath()));
             }

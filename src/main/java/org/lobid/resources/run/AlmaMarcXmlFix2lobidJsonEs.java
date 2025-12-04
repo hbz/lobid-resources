@@ -12,7 +12,6 @@ import java.util.stream.Stream;
 
 import de.hbz.lobid.helper.HttpPoster;
 import org.lobid.resources.ElasticsearchIndexer;
-import org.lobid.resources.EtikettJson;
 import org.lobid.resources.JsonToElasticsearchBulkMap;
 import org.metafacture.biblio.marc21.MarcXmlHandler;
 import org.metafacture.flowcontrol.ObjectThreader;
@@ -245,9 +244,6 @@ public class AlmaMarcXmlFix2lobidJsonEs {
         batchLogger.setBatchSize(10000);
         MarcXmlHandler marcXmlHandler = new MarcXmlHandler();
         marcXmlHandler.setNamespace(null);
-        EtikettJson etikettJson = new EtikettJson();
-        etikettJson.setLabelsDirectoryName("labels");
-        etikettJson.setGenerateContext(false);
         JsonEncoder jsonEncoder = new JsonEncoder();
         StringReader sr = new StringReader();
         try {
@@ -260,7 +256,6 @@ public class AlmaMarcXmlFix2lobidJsonEs {
                 .setReceiver(metafix)
                 .setReceiver(batchLogger)//
                 .setReceiver(jsonEncoder)//
-                .setReceiver(etikettJson)//
                 .setReceiver(new JsonToElasticsearchBulkMap(keyToGetMainId, "resource",
                     "ignored"))//
                 .setReceiver(getElasticsearchIndexer());
