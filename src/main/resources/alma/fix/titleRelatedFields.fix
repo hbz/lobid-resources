@@ -143,7 +143,7 @@ end
 do list(path:"246?[ 345678]","var":"$i")
   prepend("$i.b",". ")
   paste("alternativeTitle[].$append", "$i.a",  "$i.b", join_char: "")
-  call_macro("alternateGraphicRepresationArrayOfStrings",targetArray:"alternativeTitle[]",variable:"$i")
+  call_macro("alternateGraphicRepresentationArrayOfStrings",targetArray:"alternativeTitle[]",variable:"$i")
 end
 
 
@@ -165,7 +165,7 @@ copy_field("245??.b","otherTitleInformation[].$append")
 # 249 beigefügtes Werk Subfield $a
 do list(path:"249  ","var":"$i")
   copy_field("$i.a","otherTitleInformation[].$append")
-  call_macro("alternateGraphicRepresationArrayOfStrings",targetArray:"otherTitleInformation[]",variable:"$i")
+  call_macro("alternateGraphicRepresentationArrayOfStrings",targetArray:"otherTitleInformation[]",variable:"$i")
 end
 unless any_match("otherTitleInformation[].*",".*\\.\\.\\.")
   replace_all("otherTitleInformation[].*","\\s?[./]\\s?$","")
@@ -178,7 +178,7 @@ copy_field("250  .a","edition[].$append")
 replace_all("edition[].*","\\s?[./]\\s?$","")
 
 do list(path:"250  ","var":"$i")
-  call_macro("alternateGraphicRepresationArrayOfStrings",targetArray:"edition[]",variable:"$i")
+  call_macro("alternateGraphicRepresentationArrayOfStrings",targetArray:"edition[]",variable:"$i")
 
 end
 
