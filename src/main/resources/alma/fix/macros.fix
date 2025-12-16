@@ -529,12 +529,12 @@ do put_macro("publication")
           else
             copy_field("$880.@script.id","alternateGraphicRepresentation[].$append.script.id")
             copy_field("$880.@script.label","alternateGraphicRepresentation[].$last.script.label")
-            add_array("alternateGraphicRepresentation[].$last.publication[]")
-            add_hash( "alternateGraphicRepresentation[].$last.publication[].$append")
-            add_array("alternateGraphicRepresentation[].$last.publication[].$last.location[]")
-            copy_field("$880.a", "alternateGraphicRepresentation[].$last.publication[].$last.location[].$append")
-            add_array("alternateGraphicRepresentation[].$last.publication[].$last.publishedBy[]")
-            copy_field("$880.b", "alternateGraphicRepresentation[].$last.publication[].$last.publishedBy[].$append")
+            add_array("alternateGraphicRepresentation[].$last.record.publication[]")
+            add_hash( "alternateGraphicRepresentation[].$last.record.publication[].$append")
+            add_array("alternateGraphicRepresentation[].$last.record.publication[].$last.location[]")
+            copy_field("$880.a", "alternateGraphicRepresentation[].$last.record.publication[].$last.location[].$append")
+            add_array("alternateGraphicRepresentation[].$last.record.publication[].$last.publishedBy[]")
+            copy_field("$880.b", "alternateGraphicRepresentation[].$last.record.publication[].$last.publishedBy[].$append")
           end
         end
       end
