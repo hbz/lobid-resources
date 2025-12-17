@@ -1,4 +1,4 @@
-# README
+# lobid-resources
 
 ## About
 
@@ -41,7 +41,9 @@ Build lobid-resources:
 Build the web application:
 
 - `cd web`
-- Then follow the script in `web/monit_restart.sh`.
+- `sbt clean`
+- `sbt stage`
+- `./target/universal/stage/bin/lobid-resources-web -no-version-check`
 
 See the `.github/workflows/build.yml` file for details on the CI config
 used by Github Actions.
