@@ -2,6 +2,18 @@
 
 add_array("natureOfContent[]")
 
+# 348 - Notated Music Characteristics (R)
+
+do list(path:"348  ", "var":"$i")
+  do list(path:"$i.0","var":"$j")
+    copy_field("$i.a", "natureOfContent[].$append.label")
+    # This is only DNB, should we also check for other uris for keywords?
+    if any_match("$j","^\\(DE-588\\)(.+)$")
+      copy_field("$j","natureOfContent[].$last.id")
+      replace_all("natureOfContent[].$last.id", "^\\(DE-588\\)(.+)$", "https://d-nb.info/gnd/$1")
+    end
+  end
+end
 
 # 655 - Index Term-Genre/Form (R),  Subfield: $a (NR), $0 (R)
 # Ind: 2. 7= Source specified in subfield $2.
@@ -45,9 +57,15 @@ end
 # maps missing GND URIs to Formschlagwörtern with matching Formangaben-Values: https://wiki.dnb.de/download/attachments/106042227/AH-007.pdf
 do list(path: "natureOfContent[]", "var":"$i")
   unless exists("$i.id")
+    if any_contain("$i.label","Periodical")
+      add_field("$i.label","Zeitschrift")
+    end
     copy_field("$i.label","$i.id")
     lookup("$i.id","formschlagwort2Gnd", delete:"true")
     prepend("$i.id", "https://d-nb.info/gnd/")
+    unless exists("$i.id")
+      remove_field("$i.label")
+    end
   end
 end
 
@@ -71,7 +89,7 @@ do list(path:"600?4|610?4|611?4|630?4|648?4|650?4|651?4|653??|688??", "var":"$i"
   add_field("subject[].$last.source.label","Freie Verschlagwortung")
   add_field("subject[].$last.source.id","https://www.wikidata.org/wiki/Q47524318")
   call_macro("subjectLabel")
-  call_macro("alternateGraphicRepresationArrayOfObjects",targetArray:"subject[]",targetField:"",variable:"$i")
+  call_macro("alternateGraphicRepresentationArrayOfObjects",targetArray:"subject[]",targetField:"",variable:"$i")
 end
 
 do list(path:"600?0|610?0|611?0|630?0|648?0|650?0|651?0", "var":"$i")
@@ -79,7 +97,7 @@ do list(path:"600?0|610?0|611?0|630?0|648?0|650?0|651?0", "var":"$i")
   add_field("subject[].$last.source.label","Library of Congress Subject Headings")
   add_field("subject[].$last.source.id","https://id.loc.gov/authorities/subjects.html")
   call_macro("subjectLabel")
-  call_macro("alternateGraphicRepresationArrayOfObjects",targetArray:"subject[]",targetField:"",variable:"$i")
+  call_macro("alternateGraphicRepresentationArrayOfObjects",targetArray:"subject[]",targetField:"",variable:"$i")
 end
 
 do list(path:"600?7|610?7|611?7|630?7|648?7|650?7|651?7", "var":"$i")
@@ -88,7 +106,7 @@ do list(path:"600?7|610?7|611?7|630?7|648?7|650?7|651?7", "var":"$i")
     add_field("subject[].$last.source.label","FAST (Faceted Application of Subject Terminology)")
     add_field("subject[].$last.source.id","http://fast.oclc.org/")
     call_macro("subjectLabel")
-  call_macro("alternateGraphicRepresationArrayOfObjects",targetArray:"subject[]",targetField:"",variable:"$i")
+  call_macro("alternateGraphicRepresentationArrayOfObjects",targetArray:"subject[]",targetField:"",variable:"$i")
   end
 end
 
@@ -97,7 +115,7 @@ do list(path:"600?2|610?2|611?2|630?2|648?2|650?2|651?2", "var":"$i")
     add_field("subject[].$last.source.label","Medical Subject Headings")
     add_field("subject[].$last.source.id","https://www.nlm.nih.gov/mesh/meshhome.html")
     call_macro("subjectLabel")
-  call_macro("alternateGraphicRepresationArrayOfObjects",targetArray:"subject[]",targetField:"",variable:"$i")
+  call_macro("alternateGraphicRepresentationArrayOfObjects",targetArray:"subject[]",targetField:"",variable:"$i")
 end
 
 do list(path:"600?7|610?7|611?7|630?7|648?7|650?7|651?7", "var":"$i")
@@ -106,7 +124,7 @@ do list(path:"600?7|610?7|611?7|630?7|648?7|650?7|651?7", "var":"$i")
     add_field("subject[].$last.source.label","Medical Subject Headings")
     add_field("subject[].$last.source.id","https://www.nlm.nih.gov/mesh/meshhome.html")
     call_macro("subjectLabel")
-  call_macro("alternateGraphicRepresationArrayOfObjects",targetArray:"subject[]",targetField:"",variable:"$i")
+  call_macro("alternateGraphicRepresentationArrayOfObjects",targetArray:"subject[]",targetField:"",variable:"$i")
   end
 end
 
@@ -119,7 +137,7 @@ do list(path:"600??", "var":"$i")
     add_field("subject[].$last.source.id","https://d-nb.info/gnd/7749153-1")
     call_macro("gndPersonCombinedLabel",field:"$i")
     copy_field("$i.@combinedLabel", "subject[].$last.label")
-    call_macro("alternateGraphicRepresationArrayOfObjects",targetArray:"subject[]",targetField:"",variable:"$i")
+    call_macro("alternateGraphicRepresentationArrayOfObjects",targetArray:"subject[]",targetField:"",variable:"$i")
     do list(path:"$i.0", "var":"$j")
       if any_match("$j","^\\(DE-588\\)(.+)$")
         upcase("$j") #gnd ids only have upper case X
@@ -153,7 +171,7 @@ do list(path:"611??", "var":"$i")
     add_field("subject[].$last.source.id","https://d-nb.info/gnd/7749153-1")
     call_macro("gndEventCombinedLabel",field:"$i")
     copy_field("$i.@combinedLabel", "subject[].$last.label")
-    call_macro("alternateGraphicRepresationArrayOfObjects",targetArray:"subject[]",targetField:"",variable:"$i")
+    call_macro("alternateGraphicRepresentationArrayOfObjects",targetArray:"subject[]",targetField:"",variable:"$i")
     do list(path:"$i.0", "var":"$j")
       if any_match("$j","^\\(DE-588\\)(.+)$")
         upcase("$j") #gnd ids only have upper case X
@@ -187,7 +205,7 @@ do list(path:"610??|630??|648??|650??|651??", "var":"$i")
     add_field("subject[].$last.source.id","https://d-nb.info/gnd/7749153-1")
     call_macro("gndOtherCombinedLabel",field:"$i")
     copy_field("$i.@combinedLabel", "subject[].$last.label")
-    call_macro("alternateGraphicRepresationArrayOfObjects",targetArray:"subject[]",targetField:"",variable:"$i")
+    call_macro("alternateGraphicRepresentationArrayOfObjects",targetArray:"subject[]",targetField:"",variable:"$i")
     do list(path:"$i.0", "var":"$j")
       if any_match("$j","^\\(DE-588\\)(.+)$")
         upcase("$j") #gnd ids only have upper case X
@@ -245,7 +263,7 @@ end
 
 # 082 - Dewey Decimal Classification Number (R) - Subfield: $a (R), $2 (NR)
 
-do list(path:"0820 |08200", "var":"$i")
+do list(path:"0820?", "var":"$i")
   do list(path:"$i.a", "var": "$j")
     add_array("subject[].$append.type[]","Concept")
     add_field("subject[].$last.source.label","Dewey-Dezimalklassifikation")
@@ -351,7 +369,7 @@ do list(path:"084??", "var":"$i")
             copy_field("$i.2", "subject[].$last.source.label")
             lookup("subject[].$last.source.label","classificationCode2Label")
             copy_field("$i.2","subject[].$last.source.id")
-            lookup("subject[].$last.source.id","classificationCode2Uri", delete:"true")
+            lookup("subject[].$last.source.id","classificationCode2Uri", delete:"true") # currently the delete option is still broken
           end
         end
       end
@@ -364,6 +382,11 @@ do list(path: "subject[]","var":"$i") # Delete all notations without mapped sour
     unless exists("$i.source")
       remove_field("$i.notation")
       remove_field("$i.type[]")
+    end
+    unless any_contain("$i.source.id","http")
+      remove_field("$i.notation")
+      remove_field("$i.type[]")
+      remove_field("$i.source")
     end
   end
 end

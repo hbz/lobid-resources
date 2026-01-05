@@ -551,6 +551,8 @@ unless any_match("@300a_mainExtend", ".*(CD|Schallpl).*")
     add_field("type[].$append", "PublishedScore")
   elsif any_match("@300a_mainExtend", ".*Partitur.*")
     add_field("type[].$append", "PublishedScore")
+  elsif exists("348  ") # 348 - Notated Music Characteristics (R)
+    add_field("type[].$append", "PublishedScore")
   end
 end
 

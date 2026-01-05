@@ -1,5 +1,5 @@
-# alternateGraphicRepresation
-do put_macro("alternateGraphicRepresationArrayOfObjects")
+# alternateGraphicRepresentation
+do put_macro("alternateGraphicRepresentationArrayOfObjects")
   if exists("$[variable].6")
     copy_field("$[variable].6","$[variable].linkageTest")
     do list(path:"880??","var":"$880")
@@ -24,7 +24,7 @@ do put_macro("alternateGraphicRepresationArrayOfObjects")
   end
 end
 
-do put_macro("alternateGraphicRepresationArrayOfStrings")
+do put_macro("alternateGraphicRepresentationArrayOfStrings")
   if exists("$[variable].6")
     copy_field("$[variable].6","$[variable].linkageTest")
     do list(path:"880??","var":"$880")
@@ -49,7 +49,7 @@ do put_macro("alternateGraphicRepresationArrayOfStrings")
   end
 end
 
-do put_macro("alternateGraphicRepresationIsPartOf")
+do put_macro("alternateGraphicRepresentationIsPartOf")
   if exists("$[variable].6")
     copy_field("$[variable].6","$[variable].linkageTest")
     do list(path:"880??","var":"$880")
@@ -529,12 +529,12 @@ do put_macro("publication")
           else
             copy_field("$880.@script.id","alternateGraphicRepresentation[].$append.script.id")
             copy_field("$880.@script.label","alternateGraphicRepresentation[].$last.script.label")
-            add_array("alternateGraphicRepresentation[].$last.publication[]")
-            add_hash( "alternateGraphicRepresentation[].$last.publication[].$append")
-            add_array("alternateGraphicRepresentation[].$last.publication[].$last.location[]")
-            copy_field("$880.a", "alternateGraphicRepresentation[].$last.publication[].$last.location[].$append")
-            add_array("alternateGraphicRepresentation[].$last.publication[].$last.publishedBy[]")
-            copy_field("$880.b", "alternateGraphicRepresentation[].$last.publication[].$last.publishedBy[].$append")
+            add_array("alternateGraphicRepresentation[].$last.record.publication[]")
+            add_hash( "alternateGraphicRepresentation[].$last.record.publication[].$append")
+            add_array("alternateGraphicRepresentation[].$last.record.publication[].$last.location[]")
+            copy_field("$880.a", "alternateGraphicRepresentation[].$last.record.publication[].$last.location[].$append")
+            add_array("alternateGraphicRepresentation[].$last.record.publication[].$last.publishedBy[]")
+            copy_field("$880.b", "alternateGraphicRepresentation[].$last.record.publication[].$last.publishedBy[].$append")
           end
         end
       end
