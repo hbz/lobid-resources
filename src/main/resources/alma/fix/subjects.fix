@@ -48,6 +48,9 @@ do list(path: "natureOfContent[]", "var":"$i")
     copy_field("$i.label","$i.id")
     lookup("$i.id","formschlagwort2Gnd", delete:"true")
     prepend("$i.id", "https://d-nb.info/gnd/")
+    unless exists("$i.id")
+      remove_field("$i.label")
+    end
   end
 end
 
