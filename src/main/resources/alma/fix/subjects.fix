@@ -351,7 +351,7 @@ do list(path:"084??", "var":"$i")
             copy_field("$i.2", "subject[].$last.source.label")
             lookup("subject[].$last.source.label","classificationCode2Label")
             copy_field("$i.2","subject[].$last.source.id")
-            lookup("subject[].$last.source.id","classificationCode2Uri", delete:"true")
+            lookup("subject[].$last.source.id","classificationCode2Uri", delete:"true") # currently the delete option is still broken
           end
         end
       end
@@ -364,6 +364,11 @@ do list(path: "subject[]","var":"$i") # Delete all notations without mapped sour
     unless exists("$i.source")
       remove_field("$i.notation")
       remove_field("$i.type[]")
+    end
+    unless any_contain("$i.source.id","http")
+      remove_field("$i.notation")
+      remove_field("$i.type[]")
+      remove_field("$i.source")
     end
   end
 end
