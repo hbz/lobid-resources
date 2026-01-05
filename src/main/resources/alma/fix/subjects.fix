@@ -45,6 +45,9 @@ end
 # maps missing GND URIs to Formschlagwörtern with matching Formangaben-Values: https://wiki.dnb.de/download/attachments/106042227/AH-007.pdf
 do list(path: "natureOfContent[]", "var":"$i")
   unless exists("$i.id")
+    if any_contain("$i.label","Periodical")
+      add_field("$i.label","Zeitschrift")
+    end
     copy_field("$i.label","$i.id")
     lookup("$i.id","formschlagwort2Gnd", delete:"true")
     prepend("$i.id", "https://d-nb.info/gnd/")
