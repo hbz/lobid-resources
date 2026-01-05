@@ -2,6 +2,18 @@
 
 add_array("natureOfContent[]")
 
+# 348 - Notated Music Characteristics (R)
+
+do list(path:"348  ", "var":"$i")
+  do list(path:"$i.0","var":"$j")
+    copy_field("$i.a", "natureOfContent[].$append.label")
+    # This is only DNB, should we also check for other uris for keywords?
+    if any_match("$j","^\\(DE-588\\)(.+)$")
+      copy_field("$j","natureOfContent[].$last.id")
+      replace_all("natureOfContent[].$last.id", "^\\(DE-588\\)(.+)$", "https://d-nb.info/gnd/$1")
+    end
+  end
+end
 
 # 655 - Index Term-Genre/Form (R),  Subfield: $a (NR), $0 (R)
 # Ind: 2. 7= Source specified in subfield $2.
