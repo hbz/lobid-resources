@@ -58,6 +58,12 @@ include ("./fix/mediumAndType.fix")
 # mediumAndType.fix is needed ahead of contribution.fix because of dependencies
 include ("./fix/contribution.fix")
 
+do list(path:"alternateGraphicRepresentation[]","var":"$i")
+  unless any_match("$i.script.id","https://unicode.org/iso15924/iso15924.txt#.+")
+    add_field("$i.script.id","https://unicode.org/iso15924/iso15924.txt#Zzzz")
+    add_field("$i.script.label","Kein Schriftcode vergeben")
+  end
+end
 vacuum()
 retain(
   "@context",
