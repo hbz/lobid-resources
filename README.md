@@ -1,4 +1,4 @@
-# README
+# lobid-resources
 
 ## About
 
@@ -41,10 +41,17 @@ Build lobid-resources:
 Build the web application:
 
 - `cd web`
-- Then follow the script in `web/monit_restart.sh`.
+- `sbt clean`
+- `sbt stage`
+- `./target/universal/stage/bin/lobid-resources-web -no-version-check`
 
 See the `.github/workflows/build.yml` file for details on the CI config
 used by Github Actions.
+
+To run the tests:
+
+- `cd web`
+- `sbt test`
 
 ## Eclipse setup
 
@@ -60,12 +67,6 @@ in Eclipse: `Preferences` \> `General` \> `Workspace` \>
 
 Copy `web/conf/resources.conf_template` to `conf/resources.conf` and
 configure that file to your need.
-
-Use `"start 8000"` to run in production background mode on port 8000
-(hit Ctrl+D to exit logs). To restart a production instance running in
-the background, you can use the included `restart.sh` script (configured
-to use port 8000). For more information, see the [Play
-documentation](https://playframework.com/documentation/2.4.x/Home).
 
 ## Example of getting the data
 
