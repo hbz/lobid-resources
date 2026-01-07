@@ -1,6 +1,6 @@
 {
   "$id": "related.json",
-  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "Related resource",
   "type": "array",
   "items": {
@@ -15,11 +15,7 @@
         "type": "string"
       },
       "note": {
-        "title": "Note",
-        "type": "array",
-        "items": {
-          "type": "string"
-        }
+        "$ref": "note.json"
       },
       "isbn": {
         "$ref": "isbn.json"
@@ -27,6 +23,11 @@
       "issn": {
         "$ref": "issn.json"
       }
+    },
+    "dependentRequired": {
+      "id": [
+        "label"
+      ]
     }
   }
 }

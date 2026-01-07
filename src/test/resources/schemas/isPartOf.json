@@ -1,6 +1,6 @@
 {
   "$id": "isPartOf.json",
-  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "Is part of",
   "description": "The isPartOf relation",
   "type": "array",
@@ -16,11 +16,7 @@
         }
       },
       "note": {
-        "title": "Note",
-        "type": "array",
-        "items": {
-          "type": "string"
-        }
+        "$ref": "note.json"
       },
       "numbering": {
         "type": "string"
@@ -38,12 +34,16 @@
             "label": {
               "type": "string"
             }
-          }
+          },
+          "required": [
+            "label"
+          ]
         }
       }
     },
     "required": [
-      "hasSuperordinate"
+      "hasSuperordinate",
+      "type"
     ]
   }
 }

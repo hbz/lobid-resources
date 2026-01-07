@@ -1,6 +1,6 @@
 {
   "$id": "spatial.json",
-  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "Spatial",
   "description": "Object for NWBib and RPB spatial classification",
   "type": "array",
@@ -10,7 +10,8 @@
     "properties": {
       "id": {
         "type": "string",
-        "format": "uri"
+        "format": "uri",
+        "pattern":"(https://nwbib.de/spatial|https://rpb.lobid.org/spatial).+"
       },
       "type": {
         "type": "array",

@@ -1,7 +1,8 @@
 {
   "$id": "containsExampleOfWork.json",
-  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "Contains example of work",
+  "description": "Item in hand contains the work that is represented by the added entry in MARC 700/710/711/730 with Ind2=2.",
   "type": "array",
   "items": {
     "type": "object",
@@ -9,7 +10,8 @@
     "properties": {
       "id": {
         "type": "string",
-        "format": "uri"
+        "format": "uri",
+        "pattern": "^https:\/\/d-nb.info\/gnd\/1[012]?\\d{7}[0-9X]|[47]\\d{6}-\\d|[1-9]\\d{0,7}-[0-9X]|3\\d{7}[0-9X]"
       },
       "label": {
         "type": "string"
@@ -38,6 +40,9 @@
       "workNumbering": {
         "type": "string"
       }
-    }
+    },
+    "required": [
+      "label"
+    ]
   }
 }

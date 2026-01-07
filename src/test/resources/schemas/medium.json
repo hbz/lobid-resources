@@ -1,6 +1,6 @@
 {
   "$id": "medium.json",
-  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "Medium",
   "description": "Medium of the resource",
   "type": "array",
@@ -11,42 +11,148 @@
       "id": {
         "title": "Medium URL",
         "type": "string",
-        "format": "uri",
-        "enum": [
-          "http://purl.org/ontology/bibo/AudioDocument",
-          "http://id.loc.gov/vocabulary/carriers/ss",
-          "http://purl.org/ontology/bibo/AudioVisualDocument",
-          "http://purl.org/library/BrailleBook",
-          "http://rdaregistry.info/termList/RDAproductionMethod/1010",
-          "http://rdaregistry.info/termList/RDAMediaType/1003",
-          "http://purl.org/ontology/bibo/Manuscript",
-          "http://rdaregistry.info/termList/RDAMediaType/1002",
-          "http://iflastandards.info/ns/isbd/terms/mediatype/T1008",
-          "http://rdaregistry.info/termList/RDACarrierType/1018",
-          "http://rdaregistry.info/termList/RDAMediaType/1008",
-          "http://purl.org/ontology/mo/Vinyl",
-          "http://purl.org/lobid/lv#Miscellaneous"
-        ]
+        "format": "uri"
       },
       "label": {
         "description": "The human-readable German name of the medium",
-        "type": "string",
-        "enum": [
-          "Audio-Dokument",
-          "Audio-Kassette",
-          "Audio-Visuell",
-          "Blindenschrift",
-          "Print",
-          "Datenträger",
-          "Manuskript",
-          "Mikroformat",
-          "Kombination",
-          "Online-Ressource",
-          "Video",
-          "Schallplatte",
-          "Sonstige"
-        ]
+        "type": "string"
       }
-    }
+    },
+    "anyOf": [
+      {
+        "properties": {
+          "id": {
+            "const": "http://purl.org/ontology/bibo/AudioDocument"
+          },
+          "label": {
+            "const": "Audio-Dokument"
+          }
+        }
+      },
+      {
+        "properties": {
+          "id": {
+            "const": "http://id.loc.gov/vocabulary/carriers/ss"
+          },
+          "label": {
+            "const": "Audio-Kassette"
+          }
+        }
+      },
+      {
+        "properties": {
+          "id": {
+            "const": "http://purl.org/ontology/bibo/AudioVisualDocument"
+          },
+          "label": {
+            "const": "Audio-Visuell"
+          }
+        }
+      },
+      {
+        "properties": {
+          "id": {
+            "const": "http://purl.org/library/BrailleBook"
+          },
+          "label": {
+            "const": "Blindenschrift"
+          }
+        }
+      },
+      {
+        "properties": {
+          "id": {
+            "const": "http://rdaregistry.info/termList/RDAproductionMethod/1010"
+          },
+          "label": {
+            "const": "Print"
+          }
+        }
+      },
+      {
+        "properties": {
+          "id": {
+            "const": "http://rdaregistry.info/termList/RDAMediaType/1003"
+          },
+          "label": {
+            "const": "Datenträger"
+          }
+        }
+      },
+      {
+        "properties": {
+          "id": {
+            "const": "http://purl.org/ontology/bibo/Manuscript"
+          },
+          "label": {
+            "const": "Manuskript"
+          }
+        }
+      },
+      {
+        "properties": {
+          "id": {
+            "const": "http://rdaregistry.info/termList/RDAMediaType/1002"
+          },
+          "label": {
+            "const": "Mikroformat"
+          }
+        }
+      },
+      {
+        "properties": {
+          "id": {
+            "const": "http://iflastandards.info/ns/isbd/terms/mediatype/T1008"
+          },
+          "label": {
+            "const": "Kombination"
+          }
+        }
+      },
+      {
+        "properties": {
+          "id": {
+            "const": "http://rdaregistry.info/termList/RDACarrierType/1018"
+          },
+          "label": {
+            "const": "Online-Ressource"
+          }
+        }
+      },
+      {
+        "properties": {
+          "id": {
+            "const": "http://rdaregistry.info/termList/RDAMediaType/1008"
+          },
+          "label": {
+            "const": "Video"
+          }
+        }
+      },
+      {
+        "properties": {
+          "id": {
+            "const": "http://purl.org/ontology/mo/Vinyl"
+          },
+          "label": {
+            "const": "Schallplatte"
+          }
+        }
+      },
+      {
+        "properties": {
+          "id": {
+            "const": "http://purl.org/lobid/lv#Miscellaneous"
+          },
+          "label": {
+            "const": "Sonstige"
+          }
+        }
+      }
+    ],
+    "required": [
+      "id",
+      "label"
+    ]
   }
 }

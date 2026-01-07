@@ -1,6 +1,6 @@
 {
   "$id": "contribution.json",
-  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "Contribution",
   "description": "The contributions to the creation of the resource",
   "type": "array",
@@ -23,7 +23,8 @@
           "id": {
             "title": "Agent URI",
             "type": "string",
-            "format": "uri"
+            "format": "uri",
+            "pattern": "^https:\/\/d-nb.info\/gnd\/1[012]?\\d{7}[0-9X]|[47]\\d{6}-\\d|[1-9]\\d{0,7}-[0-9X]|3\\d{7}[0-9X]"
           },
           "type": {
             "type": "array",
@@ -85,7 +86,8 @@
           "id": {
             "title": "Role URI",
             "type": "string",
-            "format": "uri"
+            "format": "uri",
+            "pattern": "http:\/\/id.loc.gov\/vocabulary\/relators\/.+"
           },
           "label": {
             "title": "German name of the role",

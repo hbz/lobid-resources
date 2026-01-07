@@ -1,6 +1,6 @@
 {
   "$id": "primaryForm.json",
-  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "Primary Form",
   "description": "The resource that has been digitized",
   "type": "array",
@@ -16,12 +16,11 @@
         "type": "string"
       },
       "note": {
-        "title": "Note",
-        "type": "array",
-        "items": {
-          "type": "string"
-        }
+        "$ref": "note.json"
       }
-    }
+    },
+    "required": [
+      "label"
+    ]
   }
 }
