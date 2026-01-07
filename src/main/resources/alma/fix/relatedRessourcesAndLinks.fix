@@ -335,10 +335,13 @@ do list(path: "856??", "var":"$i")
             copy_field("$i.u", "fulltextOnline[].$last.id")
           else
             unless exists("$i.x") # also map if kostenfrei and no specific link description
-              add_field("fulltextOnline[].$append.label","Ressource-Link")
+              add_field("fulltextOnline[].$append.label","Online-Ressource")
               copy_field("$i.u", "fulltextOnline[].$last.id")
             end
           end
+      elsif any_equal("$i.7","0") # Open Access Marker
+        add_field("fulltextOnline[].$append.label","Online-Ressource")
+        copy_field("$i.u", "fulltextOnline[].$last.id")
       end
       if all_match("$i.x", ".*(Archivierte Online|EZB|Online-Ausg|Resolving-System|Volltext).*")
         copy_field("$i.x", "fulltextOnline[].$append.label")
