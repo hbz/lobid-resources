@@ -349,6 +349,12 @@ do list(path: "856??", "var":"$i")
         copy_field("$i.u", "fulltextOnline[].$last.id")
       end
     end
+    if all_match("$i.x", ".*(Aggregator).*")
+      if any_contain("$i.u","oersi")
+        add_field("sameAs[].$append.label","OERSI Ressource")
+        copy_field("$i.u", "sameAs[].$last.id")
+      end
+    end
   end
 end
 
