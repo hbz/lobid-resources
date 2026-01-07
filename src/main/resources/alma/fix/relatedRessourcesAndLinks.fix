@@ -4,14 +4,14 @@ add_array("sameAs[]")
 # 035 - System Control Number (R) - Subfield: $a (NR)
 if any_match("almaMmsId","^.*6441$")
     paste("sameAs[].$append.id", "~https://hub.culturegraph.org/resource/(DE-605)","almaMmsId",join_char:"")
-    add_field("sameAs[].$last.label","Culturegraph Ressource")
+    add_field("sameAs[].$last.label","Culturegraph-Ressource")
 end
 
 # oclc
 
 do list(path: "oclcNumber[]", "var": "$i")
   paste("sameAs[].$append.id","~http://worldcat.org/oclc/", "$i", join_char:"")
-  add_field("sameAs[].$last.label","OCLC Ressource")
+  add_field("sameAs[].$last.label","OCLC-Ressource")
 end
 
 # zdb
@@ -333,7 +333,15 @@ do list(path: "856??", "var":"$i")
           if all_match("$i.x", ".*(Verlag|Agentur|Digitalisierung).*")
             copy_field("$i.x", "fulltextOnline[].$append.label")
             copy_field("$i.u", "fulltextOnline[].$last.id")
+          else
+            unless exists("$i.x") # also map if kostenfrei and no specific link description
+              add_field("fulltextOnline[].$append.label","Online-Ressource")
+              copy_field("$i.u", "fulltextOnline[].$last.id")
+            end
           end
+      elsif any_equal("$i.7","0") # Open Access Marker
+        add_field("fulltextOnline[].$append.label","Online-Ressource")
+        copy_field("$i.u", "fulltextOnline[].$last.id")
       end
       if all_match("$i.x", ".*(Archivierte Online|EZB|Online-Ausg|Resolving-System|Volltext).*")
         copy_field("$i.x", "fulltextOnline[].$append.label")
@@ -342,6 +350,12 @@ do list(path: "856??", "var":"$i")
       if all_match("$i.3", "^[vV][oO][lL].*") # Volltext
         copy_field("$i.3", "fulltextOnline[].$append.label")
         copy_field("$i.u", "fulltextOnline[].$last.id")
+      end
+    end
+    if all_match("$i.x", ".*(Aggregator).*")
+      if any_contain("$i.u","oersi")
+        add_field("sameAs[].$append.label","OERSI-Ressource")
+        copy_field("$i.u", "sameAs[].$last.id")
       end
     end
   end
