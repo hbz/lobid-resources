@@ -333,6 +333,11 @@ do list(path: "856??", "var":"$i")
           if all_match("$i.x", ".*(Verlag|Agentur|Digitalisierung).*")
             copy_field("$i.x", "fulltextOnline[].$append.label")
             copy_field("$i.u", "fulltextOnline[].$last.id")
+          else
+            unless exists("$i.x") # also map if kostenfrei and no specific link description
+              add_field("fulltextOnline[].$append.label","Ressource-Link")
+              copy_field("$i.u", "fulltextOnline[].$last.id")
+            end
           end
       end
       if all_match("$i.x", ".*(Archivierte Online|EZB|Online-Ausg|Resolving-System|Volltext).*")
