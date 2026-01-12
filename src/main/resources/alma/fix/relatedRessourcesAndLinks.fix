@@ -502,35 +502,29 @@ end
 
 # 856 - Electronic Location and Access (R) - Subfield: $x - Nonpublic note (R)
 # TODO: Check if src/test/resources/alma-fix/(CKB)5280000000199164.xml is also an EZB titel even when it has no 865.
-do list(path:"856??", "var":"$i")
-  if any_equal("$i.x","EZB") # can test x and x.*
-    add_field("inCollection[].$append.id", "http://lobid.org/resources/HT016356466#!")
-    add_field("inCollection[].$last.label", "Elektronische Zeitschriftenbibliothek (EZB)")
-  elsif any_match("$i.u","http://www.bibliothek.uni-regensburg.de/ezeit.*")
-    add_field("inCollection[].$append.id", "http://lobid.org/resources/HT016356466#!")
-    add_field("inCollection[].$last.label", "Elektronische Zeitschriftenbibliothek (EZB)")
-  end
+if any_equal("856??.x","EZB") # can test x and x.*
+  add_field("inCollection[].$append.id", "http://lobid.org/resources/HT016356466#!")
+  add_field("inCollection[].$last.label", "Elektronische Zeitschriftenbibliothek (EZB)")
+elsif any_match("856??.u","http://www.bibliothek.uni-regensburg.de/ezeit.*")
+  add_field("inCollection[].$append.id", "http://lobid.org/resources/HT016356466#!")
+  add_field("inCollection[].$last.label", "Elektronische Zeitschriftenbibliothek (EZB)")
 end
 
 
 # edoweb
 
-do list(path:"856??", "var":"$i")
-  if any_match("$i.u","^.*edoweb.*") # can test x and x.*
-    add_field("inCollection[].$append.id", "http://lobid.org/resources/HT016925914#!")
-    add_field("inCollection[].$last.label", "Edoweb Rheinland-Pfalz")
-  end
+if any_match("856??.u","^.*edoweb.*") # can test x and x.*
+  add_field("inCollection[].$append.id", "http://lobid.org/resources/HT016925914#!")
+  add_field("inCollection[].$last.label", "Edoweb Rheinland-Pfalz")
 end
 
 # publisso
 
 
 # TODO: AlephMorph checked for ellinet in "078r1.a" but publisso is also stated in the Link URI is that enough?
-do list(path:"856??", "var":"$i")
-  if any_match("$i.u","^.*publisso.*") # can test x and x.*
-    add_field("inCollection[].$append.id", "http://repository.publisso.de")
-    add_field("inCollection[].$last.label", "Fachrepositorium Lebenswissenschaften")
-  end
+if any_match("856??.u","^.*publisso.*") # can test x and x.*
+  add_field("inCollection[].$append.id", "http://repository.publisso.de")
+  add_field("inCollection[].$last.label", "Fachrepositorium Lebenswissenschaften")
 end
 
 # nwbib
@@ -538,21 +532,17 @@ end
 # 084 - Other Classification Number (R), Subfield: $2 (NR)
 
 if any_equal("inCollection[].*.id", "http://lobid.org/organisations/DE-655#!") # only assign hbz NZ records and filter out CZ oder IZ records
-  do list(path:"084  ", "var":"$i")
-    if any_equal("$i.2","nwbib")
-      unless any_equal("inCollection[].*.id","http://lobid.org/resources/HT014176012#!")
-        add_field("inCollection[].$append.id", "http://lobid.org/resources/HT014176012#!")
-        add_field("inCollection[].$last.label", "Nordrhein-Westfälische Bibliographie (NWBib)")
-      end
+  if any_equal("084  .2","nwbib")
+    unless any_equal("inCollection[].*.id","http://lobid.org/resources/HT014176012#!")
+      add_field("inCollection[].$append.id", "http://lobid.org/resources/HT014176012#!")
+      add_field("inCollection[].$last.label", "Nordrhein-Westfälische Bibliographie (NWBib)")
     end
   end
 
-  do list(path:"960??", "var":"$i")
-    if any_contain("$i.n","NWBib")
-      unless any_equal("inCollection[].*.id","http://lobid.org/resources/HT014176012#!")
-        add_field("inCollection[].$append.id", "http://lobid.org/resources/HT014176012#!")
-        add_field("inCollection[].$last.label", "Nordrhein-Westfälische Bibliographie (NWBib)")
-      end
+  if any_contain("960??.n","NWBib")
+    unless any_equal("inCollection[].*.id","http://lobid.org/resources/HT014176012#!")
+      add_field("inCollection[].$append.id", "http://lobid.org/resources/HT014176012#!")
+      add_field("inCollection[].$last.label", "Nordrhein-Westfälische Bibliographie (NWBib)")
     end
   end
 
@@ -562,11 +552,9 @@ if any_equal("inCollection[].*.id", "http://lobid.org/organisations/DE-655#!") #
   end
 
   # nwbib Zeitschriften
-  do list(path:"960??", "var":"$i")
-    if any_contain("$i.n","NWBib-Zeitschrift-6")
-      add_field("inCollection[].$append.id", "https://nwbib.de/journals")
-      add_field("inCollection[].$last.label", "Laufend ausgewertete NWBib-Zeitschriften")
-    end
+  if any_contain("960??.n","NWBib-Zeitschrift-6")
+    add_field("inCollection[].$append.id", "https://nwbib.de/journals")
+    add_field("inCollection[].$last.label", "Laufend ausgewertete NWBib-Zeitschriften")
   end
 end
 
@@ -588,21 +576,17 @@ do list(path:"084??", "var":"$i")
 end
 
 if any_equal("inCollection[].*.id", "http://lobid.org/organisations/DE-655#!") # only assign hbz NZ records and filter out CZ oder IZ records
-  do list(path:"960??", "var":"$i")
-    if any_contain("$i.r","rpb")
-      unless any_equal("inCollection[].*.id","http://lobid.org/resources/HT013494180#!")
-        add_field("inCollection[].$append.id", "http://lobid.org/resources/HT013494180#!")
-        add_field("inCollection[].$last.label", "Rheinland-Pfälzische Bibliographie")
-      end
+  if any_contain("960??.r","rpb")
+    unless any_equal("inCollection[].*.id","http://lobid.org/resources/HT013494180#!")
+      add_field("inCollection[].$append.id", "http://lobid.org/resources/HT013494180#!")
+      add_field("inCollection[].$last.label", "Rheinland-Pfälzische Bibliographie")
     end
   end
 
   # bibliovino
-  do list(path:"960??", "var":"$i")
-    if any_contain("$i.r","bibliovino")
-      add_field("inCollection[].$append.id", "https://lobid.org/resources/990120000550206441#!")
-      add_field("inCollection[].$last.label", "BiblioVino")
-    end
+  if any_contain("960??.r","bibliovino")
+    add_field("inCollection[].$append.id", "https://lobid.org/resources/990120000550206441#!")
+    add_field("inCollection[].$last.label", "BiblioVino")
   end
 end
 
@@ -664,25 +648,20 @@ end
 # 940 BVB specific field
 # DE-61 also assigns marker for Judaica
 
-do list(path:"940??","var":"$i")
-  if any_equal("$i.n","jfk")
-    add_field("inCollection[].$append.id","https://lobid.org/resources/990225637530206441#!")
-    add_field("inCollection[].$last.label","Judaica-Portal")
-  end
+
+if any_equal("940??.n","jfk")
+  add_field("inCollection[].$append.id","https://lobid.org/resources/990225637530206441#!")
+  add_field("inCollection[].$last.label","Judaica-Portal")
 end
 
-do list(path:"subject[]","var":"$i")
-  if any_match("$i.id","https:\\/\\/nwbib.de\\/subjects#N(630100|631000|632000|632050|635000|636000|637000|638000)")
-    add_field("inCollection[].$append.id","https://lobid.org/resources/990225637530206441#!")
-    add_field("inCollection[].$last.label","Judaica-Portal")
-  end
+if any_match("subject[].*.id","https:\\/\\/nwbib.de\\/subjects#N(630100|631000|632000|632050|635000|636000|637000|638000)")
+  add_field("inCollection[].$append.id","https://lobid.org/resources/990225637530206441#!")
+  add_field("inCollection[].$last.label","Judaica-Portal")
 end
 
-do list(path:"hasItem[]","var":"$i")
-  if any_equal("$i.heldBy.isil","DE-6-336")
-    add_field("inCollection[].$append.id","https://lobid.org/resources/990225637530206441#!")
-    add_field("inCollection[].$last.label","Judaica-Portal")
-  end
+if any_equal("hasItem[].*.heldBy.isil","DE-6-336")
+  add_field("inCollection[].$append.id","https://lobid.org/resources/990225637530206441#!")
+  add_field("inCollection[].$last.label","Judaica-Portal")
 end
 
 # 960 ## no Information about repeatability
