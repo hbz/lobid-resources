@@ -567,6 +567,12 @@ if any_equal("inCollection[].*.id", "http://lobid.org/organisations/DE-655#!") #
       add_field("inCollection[].$append.id", "https://nwbib.de/journals")
       add_field("inCollection[].$last.label", "Laufend ausgewertete NWBib-Zeitschriften")
     end
+
+  # E-Pflicht NRW
+    if any_contain("$i.r","epfl-")
+      add_field("inCollection[].$append.id", "https://lobid.org/collections#epflichtnrw")
+      add_field("inCollection[].$last.label", "E-Pflicht-NRW-Sammlung")
+    end
   end
 end
 
