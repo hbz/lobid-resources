@@ -554,15 +554,8 @@ if any_equal("inCollection[].*.id", "http://lobid.org/organisations/DE-655#!") #
         add_field("inCollection[].$last.label", "Nordrhein-Westfälische Bibliographie (NWBib)")
       end
     end
-  end
-
-  if any_equal("inCollection[].*.id", "http://lobid.org/resources/HT014176012#!")
-    paste("sameAs[].$append.id","~http://nwbib.de/", "almaMmsId", "~#!",join_char:"")
-    add_field("sameAs[].$last.label","NWBib-Ressource")
-  end
 
   # nwbib Zeitschriften
-  do list(path:"960??", "var":"$i")
     if any_contain("$i.n","NWBib-Zeitschrift-6")
       add_field("inCollection[].$append.id", "https://nwbib.de/journals")
       add_field("inCollection[].$last.label", "Laufend ausgewertete NWBib-Zeitschriften")
@@ -573,6 +566,11 @@ if any_equal("inCollection[].*.id", "http://lobid.org/organisations/DE-655#!") #
       add_field("inCollection[].$append.id", "https://lobid.org/collections#epflichtnrw")
       add_field("inCollection[].$last.label", "E-Pflicht-NRW-Sammlung")
     end
+  end
+
+  if any_equal("inCollection[].*.id", "http://lobid.org/resources/HT014176012#!")
+    paste("sameAs[].$append.id","~http://nwbib.de/", "almaMmsId", "~#!",join_char:"")
+    add_field("sameAs[].$last.label","NWBib-Ressource")
   end
 end
 
