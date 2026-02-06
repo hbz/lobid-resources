@@ -45,6 +45,11 @@ do list(path: "856??", "var":"$i")
   end
 end
 
+# JOP link
+if exists("zdbId")
+  paste("sameAs[].$append.id","~https://services.dnb.de/fize-service/gvr/html-service.htm?sid=admin:info&genre=journal&pid=zdbid%3D","zdbId",join_char:"")
+  add_field("sameAs[].$last.label","Journals Online & Print-Ressource")
+end
 
 # nwbib, see below inCollection nwbib
 
