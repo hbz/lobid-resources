@@ -162,7 +162,8 @@ public class IndexIntegrationTest extends LocalIndexSetup {
 			{ "contribution.agent.altLabel.digibib_unstemmed:Nemack", /*->*/ 0 },
 			{ "exampleOfWork.language.id:\"http\\://id.loc.gov/vocabulary/iso639-2/eng\"", /*->*/ 2 },
 			{ "hasItem.inCollection.id:\"http://lobid.org/organisations/DE-468#!\"", /*->*/ 29 },
-			{ "accessRights.id:\"http://purl.org/coar/access_right/c_abf2\"", /*->*/ 8 }
+			{ "accessRights.id:\"http://purl.org/coar/access_right/c_abf2\"", /*->*/ 8 },
+			{ "dnbId:1045213144", /*->*/ 1 }
 		});
 	} // @formatter:on
 
