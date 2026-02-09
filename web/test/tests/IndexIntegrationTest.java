@@ -71,7 +71,7 @@ public class IndexIntegrationTest extends LocalIndexSetup {
 			{ "publication.startDate:1993", /*->*/ 4 },
 			{ "publication.location:Berlin AND publication.startDate:1993", /*->*/ 1 },
 			{ "inCollection.id:\"http\\://lobid.org/organisations/DE-655#\\!\"", /*->*/ 191 },
-			{ "inCollection.id:\"https\\://nrw.digibib.net/search/hbzvk/\"", /*->*/ 213 },
+			{ "inCollection.id:\"https\\://nrw.digibib.net/search/hbzvk/\"", /*->*/ 214 },
 			{ "inCollection.id:NWBib", /*->*/ 0 },
 			{ "publication.publishedBy:Quedenfeldt", /*->*/ 2 },
 			{ "publication.publishedBy:Quedenfeld", /*->*/ 2 },

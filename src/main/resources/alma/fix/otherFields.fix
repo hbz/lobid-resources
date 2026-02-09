@@ -2,7 +2,10 @@
 # 041 - 041 - Language Code (R)
 
 add_array("@language")
-copy_field("008", "@008-lang")
+unless is_array("008")
+  copy_field("008", "@008-lang")
+end
+
 substring("@008-lang", "35", "3")
 copy_field("@008-lang", "@language.$append.id")
 copy_field("@008-lang", "@language.$last.label")

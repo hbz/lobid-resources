@@ -212,11 +212,13 @@ if exists("publication[].$first")
   copy_field("362??.a","publication[].$first.publicationHistory")
     add_array("publication[].$first.frequency[]")
     if any_match("leader","^.{6}(a[bis]|m[bis]).*$") # checks if continous ressource
-      unless any_match("008","^.{18}[#\\| u].*$") # filters out not matching values and also the value unknown
-        copy_field("008","publication[].$first.frequency[].$append.id")
-        replace_all("publication[].$first.frequency[].$last.id", "^.{18}(.).*$", "http://marc21rdf.info/terms/continuingfre#$1")
-        copy_field("publication[].$first.frequency[].$last.id","publication[].$first.frequency[].$last.label")
-        lookup("publication[].$first.frequency[].$last.label","marc-publication-frequency-label")
+      unless is_array("008")
+        unless any_match("008","^.{18}[#\\| u].*$") # filters out not matching values and also the value unknown
+          copy_field("008","publication[].$first.frequency[].$append.id")
+          replace_all("publication[].$first.frequency[].$last.id", "^.{18}(.).*$", "http://marc21rdf.info/terms/continuingfre#$1")
+          copy_field("publication[].$first.frequency[].$last.id","publication[].$first.frequency[].$last.label")
+          lookup("publication[].$first.frequency[].$last.label","marc-publication-frequency-label")
+        end
       end
     elsif any_match("006","^s.*$")
       do list(path: "006", "var":"$z")
@@ -258,20 +260,24 @@ if exists("publication[].$first")
     end
   end
   unless exists("publication[].$first.startDate")
-    if any_match("008","^.{6}[\\|bresticdkmu](\\d{4}).*$")
-      copy_field("008","@008startDate")
-      replace_all("@008startDate","^.{7}(\\d{4}).*$","$1")
-      if any_match("@008startDate",".*?([01]\\d{3}|20\\d{2}).*")
-        copy_field("@008startDate","publication[].$first.startDate")
+    unless is_array("008")
+      if any_match("008","^.{6}[\\|bresticdkmu](\\d{4}).*$")
+        copy_field("008","@008startDate")
+        replace_all("@008startDate","^.{7}(\\d{4}).*$","$1")
+        if any_match("@008startDate",".*?([01]\\d{3}|20\\d{2}).*")
+          copy_field("@008startDate","publication[].$first.startDate")
+        end
       end
     end
   end
   unless exists("publication[].$first.endDate")
-    if any_match("008","^.{6}[cdkmu]\\d{4}(\\d{4}).*$")
-      copy_field("008","@008endDate")
-      replace_all("@008endDate","^.{11}(\\d{4}).*$","$1")
-      unless any_equal("@008endDate","9999")
-        copy_field("@008endDate","publication[].$first.endDate")
+    unless is_array("008")
+      if any_match("008","^.{6}[cdkmu]\\d{4}(\\d{4}).*$")
+        copy_field("008","@008endDate")
+        replace_all("@008endDate","^.{11}(\\d{4}).*$","$1")
+        unless any_equal("@008endDate","9999")
+          copy_field("@008endDate","publication[].$first.endDate")
+        end
       end
     end
   end
@@ -342,6 +348,7 @@ end
 timestamp("@todaysYear",format:"yyyy")
 to_var("@todaysYear","todaysYear")
 if greater_than("publication[].1.startDate","$[todaysYear]")
+  unless is_array("008")
     copy_field("008","@008startDateTest")
     replace_all("@008startDateTest","^.{7}(\\d{4}).*$","$1")
     if less_than("@008startDateTest","$[todaysYear]")
@@ -349,8 +356,10 @@ if greater_than("publication[].1.startDate","$[todaysYear]")
     elsif any_equal("@008startDateTest","$[todaysYear]")
       copy_field("@008startDateTest","publication[].1.startDate")
     end
+  end
 end
 if greater_than("publication[].1.endDate","$[todaysYear]")
+  unless is_array("008")
     copy_field("008","@008endDateTest")
     replace_all("@008endDateTest","^.{11}(\\d{4}).*$","$1")
     if less_than("@008endDateTest","$[todaysYear]")
@@ -358,6 +367,7 @@ if greater_than("publication[].1.endDate","$[todaysYear]")
     elsif any_equal("@008endDateTest","$[todaysYear]")
       copy_field("@008endDateTest","publication[].1.endDate")
     end
+  end
 end
 
 # 246 - Varying Form of Title (R) - $a - Title proper/short title (NR)
