@@ -35,9 +35,11 @@ prepend("describedBy.resultOf.object.id","https://lobid.org/marcxml/")
 # We use MNG info as fallback.
 # MNG is a ALMA-specific element (MNG  .b only states the indexing date into ALMA.)
 
-if any_match("008", "^\\d{6}\\D.*") # 008/00-05 is the correct form for the cataloguing date in MARC.
-  copy_field("008","@initialCataloguingDate")
-  substring("@initialCataloguingDate","0","6")
+unless is_array("008")
+  if any_match("008", "^\\d{6}\\D.*") # 008/00-05 is the correct form for the cataloguing date in MARC.
+    copy_field("008","@initialCataloguingDate")
+    substring("@initialCataloguingDate","0","6")
+  end
 end
 
 if any_match("@initialCataloguingDate","^[0-4]\\d(0[1-9]|1[012])(0[1-9]|[12][0-9]|3[01])") # Assume dates from 2000-01-01 to  2049-12-31 ( e.g. matching 491231)
