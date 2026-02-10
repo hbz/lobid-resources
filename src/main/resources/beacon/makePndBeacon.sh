@@ -16,7 +16,7 @@ TIMESTAMP=$(date "+%Y-%m-%d")
 sed -i "s#TIMESTAMP.*#TIMESTAMP: $TIMESTAMP#g" hbzlod-pndbeacon.bf
 
 echo "Start: get updates at $(date)"
-#get data updates 
+#get data updates
 curl -L "http://localhost:7507/resources/search?q=%28describedBy.resultOf.object.dateModified%3A%3E${DATE}+OR+describedBy.resultOf.object.dateCreated%3A%3E${DATE}%29+AND+contribution.agent.id%3A*&format=bulk" |gzip  > ${UPDATES_FNAME}
 
 echo "Start: merge updates at $(date)"
