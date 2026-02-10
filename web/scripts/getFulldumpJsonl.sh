@@ -10,7 +10,7 @@ FULLDUMP_FNAME=${DATE}_lobid-resources.jsonl.gz
 cd /data/DE-605/resources/
 
 echo "Start: get fulldump at $(date)"
-# get fulldump 
+# get fulldump
 curl -L "http://localhost:7507/resources/search?q=*&format=bulk" |gzip  > ${FULLDUMP_FNAME}
 if [[ $(find ${FULLDUMP_FNAME} -type f -size +19G 2>/dev/null) ]]; then
   echo "size seems good"
