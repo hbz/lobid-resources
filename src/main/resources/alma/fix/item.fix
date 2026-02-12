@@ -228,6 +228,7 @@ do list(path: "hasItem[]","var":"$i")
   do list(path: "$i.inCollection[]","var":"$j")
     add_array("$j.type[]","Collection")
   end
+  if exists("zdbId")
+    paste("$i.seeAlso[].$append","~https://services.dnb.de/fize-service/gvr/html-service.htm?sid=admin:info&genre=journal&pid=isil%3D","$i.heldBy.isil","~%26zdbid%3D","zdbId", join_char:"")
+  end
 end
-
-
