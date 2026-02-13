@@ -3,7 +3,7 @@
 # when scheduled: change into this (./) directory first!
 
 DATE=$(date +%Y-%m-%d)
-FULLDUMP_FNAME=/data/DE-605/resources/${DATE}_lobid-resources.jsonl.gz
+FULLDUMP_FNAME=/data/DE-605/resources/latestLobidResources.jsonl.gz
 UPDATES_FNAME=/data/DE-605/resources/resources-starting-from-${DATE}.jsonl.gz
 
 cd data
