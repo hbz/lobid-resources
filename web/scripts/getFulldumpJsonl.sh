@@ -1,6 +1,8 @@
 #!/bin/bash
 # see https://github.com/hbz/lobid-resources/issues/2252
 # should be scheduled after weekly ETL
+# TODO:
+# 1. remove old data (4 weeks aka files are enough)
 
 set -euo pipefail # See http://redsymbol.net/articles/unofficial-bash-strict-mode/
 
@@ -24,6 +26,6 @@ rm latestLobidResources.jsonl.gz
 ln -s ${FULLDUMP_FNAME} latestLobidResources.jsonl.gz
 
 mail -s "Fulldump lobid-resources published" "${MAIL_TO_WEBHOOK_SUBSCRIBER}" -a "From: ${MAIL_FROM}" << EOF
-Siehe ${FULLDUMP_FNAME} aka
+Siehe https://lobid.org/download/dumps/lobid-resources/${FULLDUMP_FNAME} aka
 https://lobid.org/download/dumps/lobid-resources/latestLobidResources.jsonl.gz
 EOF
