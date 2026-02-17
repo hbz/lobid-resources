@@ -18,6 +18,7 @@ if [[ $(find ${FULLDUMP_FNAME} -type f -size +19G 2>/dev/null) ]]; then
   echo "size seems good"
   else
     echo "size seems to be too small ..."
+    mv ${FULLDUMP_FNAME} broken_${FULLDUMP_FNAME}
     exit 1
 fi
 
