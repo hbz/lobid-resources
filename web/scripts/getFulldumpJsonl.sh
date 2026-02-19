@@ -1,15 +1,29 @@
 #!/bin/bash
 # see https://github.com/hbz/lobid-resources/issues/2252
 # should be scheduled after weekly ETL
-# TODO:
-# 1. remove old data (4 weeks aka files are enough)
+# If bulk download not > 20 GB the filename ois prefixed with "broken".
+# Removes old data (4 weeks aka files are enough).
+# Creates a symlink "latestLobidResources.jsonl.gz" to the latest bulk file.:
 
 set -euo pipefail # See http://redsymbol.net/articles/unofficial-bash-strict-mode/
 
 MAIL_TO_WEBHOOK_SUBSCRIBER=$(cat .secrets/MAIL_TO_WEBHOOK_SUBSCRIBER)
 DATE=$(date +%Y-%m-%d)
-FULLDUMP_FNAME=${DATE}_lobid-resources.jsonl.gz
+
+FULLDUMP_FNAME_SUFFIX="_lobid-resources.jsonl.gz"
+FULLDUMP_FNAME=${DATE}${FULLDUMP_FNAME_SUFFIX}
+
 cd /data/DE-605/resources/
+
+function rmOldData {
+        if [ $(ls *${FULLDUMP_FNAME_SUFFIX}| wc -l) -gt 4 ]; then
+                echo "more than 4 fulldumps - deleting oldest and test again ..."
+                rm $(ls *${FULLDUMP_FNAME_SUFFIX} |head -n1)
+                rmOldData
+        fi
+}
+
+rmOldData
 
 echo "Start: get fulldump at $(date)"
 # get fulldump
