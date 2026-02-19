@@ -161,7 +161,7 @@ To add a submodule do `git submodule add $repoUrl`.
 To make a `git pull` also
 update these tables you can e.g. do
 `git config --local submodule.recurse true` once and
-`git submodule update --recursive --remote` after every `git pull` !
+`git submodule update --init --recursive --remote` after every `git pull` !
 This is necessary
 to be on the HEAD of the master of the submodules.
 
