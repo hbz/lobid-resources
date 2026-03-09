@@ -14,11 +14,12 @@ DATE=$(date +%Y-%m-%d)
 
 FULLDUMP_FNAME_SUFFIX="_lobid-resources.jsonl.gz"
 FULLDUMP_FNAME=${DATE}${FULLDUMP_FNAME_SUFFIX}
+FULLDUMPS_KEPT=3
 
 FULLDUMP_DIR="/data/DE-605/resources"
 
 function rmOldData {
-        if [ $(ls ${FULLDUMP_DIR}/*${FULLDUMP_FNAME_SUFFIX}| wc -l) -gt 4 ]; then
+        if [ $(ls ${FULLDUMP_DIR}/*${FULLDUMP_FNAME_SUFFIX}| wc -l) -gt $FULLDUMPS_KEPT ]; then
                 echo "more than 4 fulldumps - deleting oldest and test again ..."
                 rm -f $(ls ${FULLDUMP_DIR}/*${FULLDUMP_FNAME_SUFFIX} |head -n1)
                 rmOldData
