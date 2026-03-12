@@ -437,12 +437,14 @@ if any_match("@leaderTyp+008", "Book(.{30})1.*")  # Pos30
   add_field("type[].$append","Festschrift")
 elsif any_match("006", "^[at](.{12})1.*") # Pos00+13
   add_field("type[].$append","Festschrift")
-elsif any_match("title", ".*Festschrift.*") # often Festschrift is not stated as such in Control fields but in the title.
-  add_field("type[].$append","Festschrift")
-elsif any_match("otherTitleInformation[]", ".*Festschrift.*")
-  add_field("type[].$append","Festschrift")
 elsif any_match("natureOfContent[].*.label", ".*Festschrift.*")
   add_field("type[].$append","Festschrift")
+elsif none_match("@leaderPos06-07",".a")
+  if any_match("title", ".*Festschrift.*") # often Festschrift is not stated as such in Control fields but in the title.
+    add_field("type[].$append","Festschrift")
+  elsif any_match("otherTitleInformation[]", ".*Festschrift.*")
+    add_field("type[].$append","Festschrift")
+  end
 end
 
 # type: "image"
