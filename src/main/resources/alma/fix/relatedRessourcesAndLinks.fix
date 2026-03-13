@@ -102,15 +102,17 @@ unless any_match("leader", "^.{7}[ad].*")
           end
         end
       else
-        add_hash("isPartOf[].$append")
-        add_array("isPartOf[].$last.hasSuperordinate[]")
-        add_hash( "isPartOf[].$last.hasSuperordinate[].$append")
-        copy_field("$i.t", "isPartOf[].$last.hasSuperordinate[].$last.label")
-        call_macro("alternateGraphicRepresentationIsPartOf",variable:"$i")
-        copy_field("$i.q", "isPartOf[].$last.numbering")
-        add_array("isPartOf[].$last.note[]")
-        do list(path:"$i.i","var":"$k")
-          copy_field("$k","isPartOf[].$last.note[].$append")
+        unless exists("isPartOf[].1.hasSuperordinate[].1.id") # This skips if already a isPartOf[] Object exists that links to a lobid resource.
+          add_hash("isPartOf[].$append")
+          add_array("isPartOf[].$last.hasSuperordinate[]")
+          add_hash( "isPartOf[].$last.hasSuperordinate[].$append")
+          copy_field("$i.t", "isPartOf[].$last.hasSuperordinate[].$last.label")
+          call_macro("alternateGraphicRepresentationIsPartOf",variable:"$i")
+          copy_field("$i.q", "isPartOf[].$last.numbering")
+          add_array("isPartOf[].$last.note[]")
+          do list(path:"$i.i","var":"$k")
+            copy_field("$k","isPartOf[].$last.note[].$append")
+          end
         end
       end
     end
@@ -194,15 +196,17 @@ if any_match("leader", "^.{7}[ad].*")
             end
           end
         else
-          add_hash("isPartOf[].$append")
-          add_array("isPartOf[].$last.hasSuperordinate[]")
-          add_hash( "isPartOf[].$last.hasSuperordinate[].$append")
-          copy_field("$i.t", "isPartOf[].$last.hasSuperordinate[].$last.label")
-          call_macro("alternateGraphicRepresentationIsPartOf",variable:"$i")
-          copy_field("$i.q", "isPartOf[].$last.numbering")
-          add_array("isPartOf[].$last.note[]")
-          do list(path:"$i.i","var":"$k")
-            copy_field("$k","isPartOf[].$last.note[].$append")
+          unless exists("isPartOf[].1.hasSuperordinate[].1.id") # This skips if already a isPartOf[] Object exists that links to a lobid resource.
+            add_hash("isPartOf[].$append")
+            add_array("isPartOf[].$last.hasSuperordinate[]")
+            add_hash( "isPartOf[].$last.hasSuperordinate[].$append")
+            copy_field("$i.t", "isPartOf[].$last.hasSuperordinate[].$last.label")
+            call_macro("alternateGraphicRepresentationIsPartOf",variable:"$i")
+            copy_field("$i.q", "isPartOf[].$last.numbering")
+            add_array("isPartOf[].$last.note[]")
+            do list(path:"$i.i","var":"$k")
+              copy_field("$k","isPartOf[].$last.note[].$append")
+            end
           end
         end
       end
