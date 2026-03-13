@@ -221,9 +221,17 @@ if any_match("leader", "^.{7}[ad].*")
 end
 
 do list(path: "isPartOf[]","var":"$i")
+  if is_empty("$i.hasSuperordinate[].1")
+    if exists("$i.numbering")
+      add_field("$i.hasSuperordinate[].1.label","") # Add dummi field
+    end
+  end
   unless is_empty("$i.hasSuperordinate[].1")
     do list(path:"$i.hasSuperordinate[]", "var": "$j") ## This is the fallback for isPartOf[].*.hasSuperordinate[].*.label
       unless exists("$j.label")
+        copy_field("@title", "$j.label")
+      end
+      if is_empty("$j.label")
         copy_field("@title", "$j.label")
       end
     end
