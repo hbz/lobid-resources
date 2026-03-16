@@ -395,7 +395,8 @@ public class Queries {
 					boolQuery = addMultiMatch(boolQuery, mustMatch, qTrimmed,
 							new String[] { "subject.label",
 									"subject.componentList.label.unstemmed",
-									"subjectAltLabel.unstemmed" });
+									"subjectAltLabel.unstemmed",
+									"subject.componentList.altLabel"});
 				}
 			}
 			return boolQuery;

@@ -54,6 +54,7 @@ public class IndexIntegrationTest extends LocalIndexSetup {
 			{ "subject.componentList.gndIdentifier:4042570-8", /*->*/ 3 },
 			{ "subject=Eisstockclub Lauterecken", /*->*/ 1 },
 			{ "subject=http://rpb.lobid.org/sw/n920756", /*->*/ 1 },
+			{ "subject=EVLKS", /*->*/ 1 },
 			{ "(title:Westfalen OR title:Münsterland) AND NOT contribution.agent.id:\"https\\://d-nb.info/gnd/2019209-5\"", /*->*/ 8 },
 			{ "subject.componentList.label:Westfalen", /*->*/ 12 },
 			{ "subject.componentList.label:Westfälen", /*->*/ 12 },
