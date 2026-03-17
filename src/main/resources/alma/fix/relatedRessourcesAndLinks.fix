@@ -85,7 +85,7 @@ add_array("isPartOf[]")
 unless any_match("leader", "^.{7}[ad].*")
   do list(path: "773??", "var": "$i")
     unless any_equal("$i.9","LOCAL")
-      if any_match("$i.w","^\\((?:DE-600|DE-605)\\)(.+)$")
+      if any_match("$i.w","^\\((?:DE-600|DE-605)\\)(.+)$") # Handling of relations to HBZ/ZDB resources.
         do list(path: "$i.w", "var": "$j")
           if all_match("$j", "^\\((?:DE-600|DE-605)\\)(.+)$")
             add_hash("isPartOf[].$append")
@@ -101,8 +101,8 @@ unless any_match("leader", "^.{7}[ad].*")
             end
           end
         end
-      else
-        unless exists("isPartOf[].1.hasSuperordinate[].1.id") # This skips if already a isPartOf[] Object exists that links to a lobid resource.
+      else # Handling of relations without HBZ/ZDB identifier
+        unless exists("isPartOf[].1.hasSuperordinate[].1.id") # This skips the mapping of relations without HBZ/ZDB refrence if already an isPartOf[] Object exists that links to a HBZ/ZDB resource.
           add_hash("isPartOf[].$append")
           add_array("isPartOf[].$last.hasSuperordinate[]")
           add_hash( "isPartOf[].$last.hasSuperordinate[].$append")
@@ -179,7 +179,7 @@ if any_match("leader", "^.{7}[ad].*")
   if exists("@titleOfSubSeries")
     do list(path: "773??", "var": "$i")
       unless any_equal("$i.9","LOCAL")
-        if any_match("$i.w","^\\((?:DE-600|DE-605)\\)(.+)$")
+        if any_match("$i.w","^\\((?:DE-600|DE-605)\\)(.+)$")  # Handling of relations to HBZ/ZDB resources.
           do list(path: "$i.w", "var": "$j")
             if all_match("$j", "^\\((?:DE-600|DE-605)\\)(.+)$")
               add_hash("isPartOf[].$append")
@@ -195,8 +195,8 @@ if any_match("leader", "^.{7}[ad].*")
               end
             end
           end
-        else
-          unless exists("isPartOf[].1.hasSuperordinate[].1.id") # This skips if already a isPartOf[] Object exists that links to a lobid resource.
+        else # Handling of relations without HBZ/ZDB identifier
+          unless exists("isPartOf[].1.hasSuperordinate[].1.id")  # This skips the mapping of relations without HBZ/ZDB refrence if already an isPartOf[] Object exists that links to a HBZ/ZDB resource.
             add_hash("isPartOf[].$append")
             add_array("isPartOf[].$last.hasSuperordinate[]")
             add_hash( "isPartOf[].$last.hasSuperordinate[].$append")
