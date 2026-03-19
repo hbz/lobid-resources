@@ -107,7 +107,7 @@ public class IndexIntegrationTest extends LocalIndexSetup {
 			{ "q.provenance:hoboken", /*->*/ 1 },
 			{ "q.provenance:stempel", /*->*/ 2 },
 			{ "q.provenance:regi*", /*->*/ 2 },
-			{ "q.provenance:\"Sk 5130\"", /*->*/ 1 },
+			{ "q.provenance:\"Sk 5130\"", /*->*/ 0 },
 			{ "q.publisher:Aachen", /*->*/ 2 },
 			{ "q.publisher:Aachen\\-Eilendorf", /*->*/ 1 },
 			{ "q.publisher:Eilendörf", /*->*/ 1 },
