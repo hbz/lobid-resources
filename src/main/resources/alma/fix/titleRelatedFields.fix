@@ -213,7 +213,7 @@ if exists("publication[].$first")
     add_array("publication[].$first.frequency[]")
     if any_match("leader","^.{6}(a[bis]|m[bis]).*$") # checks if continous ressource
       unless is_array("008")
-        unless any_match("008","^.{18}[#\\| u].*$") # filters out not matching values and also the value unknown
+        if any_match("008","^.{18}[abcdefghijkmqstuwz].*$") # filters out not matching values
           copy_field("008","publication[].$first.frequency[].$append.id")
           replace_all("publication[].$first.frequency[].$last.id", "^.{18}(.).*$", "http://marc21rdf.info/terms/continuingfre#$1")
           copy_field("publication[].$first.frequency[].$last.id","publication[].$first.frequency[].$last.label")
@@ -223,7 +223,7 @@ if exists("publication[].$first")
     elsif any_match("006","^s.*$")
       do list(path: "006", "var":"$z")
         if any_match("$z","^s.*$")
-          unless any_match("$z","^.[#\\| u].*$")
+          if any_match("$z","^.[abcdefghijkmqstuwz].*$") # filters out not matching values
             copy_field("$z","publication[].$first.frequency[].$append.id")
             replace_all("publication[].$first.frequency[].$last.id", "^.(.).*$", "http://marc21rdf.info/terms/continuingfre#$1")
             copy_field("publication[].$first.frequency[].$last.id","publication[].$first.frequency[].$last.label")
