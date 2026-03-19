@@ -140,6 +140,25 @@ do list(path: "4900?", "var": "$i")
   join_field("isPartOf[].$last.numbering")
 end
 
+unless exists("830??")
+  do list(path: "4901?", "var": "$i")
+    add_hash("isPartOf[].$append")
+    add_array("isPartOf[].$last.hasSuperordinate[]")
+    add_hash( "isPartOf[].$last.hasSuperordinate[].$append")
+    add_array("isPartOf[].$last.hasSuperordinate[].$last.label")
+    do list(path:"$i.a", "var":"$j")
+      copy_field("$j", "isPartOf[].$last.hasSuperordinate[].$last.label.$append")
+    end
+    join_field("isPartOf[].$last.hasSuperordinate[].$last.label", " / ")
+    call_macro("alternateGraphicRepresentationIsPartOf",variable:"$i")
+
+    add_array("isPartOf[].$last.numbering")
+    do list(path:"$i.v", "var":"$j")
+      copy_field("$j", "isPartOf[].$last.numbering.$append")
+    end
+    join_field("isPartOf[].$last.numbering")
+  end
+end
 
 # 830 - Series Added Entry-Uniform Title (R) - Subfield: $w (R), $a (NR), $v (NR)
 # Element can be repeatable with local entries they have subfield $M.
@@ -160,7 +179,7 @@ do list(path: "830??", "var": "$i")
   end
 end
 
-do list(path: "4901?", "var": "$j")
+do list(path: "4901?", "var": "$j") #alternateGraphicRepresentation for 830 is included in 4901?
   call_macro("alternateGraphicRepresentationIsPartOf",variable:"$j")
 end
 
