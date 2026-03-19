@@ -619,7 +619,7 @@ end
 # type: "PublicationIssue"
 
 
-if exists("zdbId")
+if any_contain("isPartOf[].*.hasSuperordinate[].*.id","ZDB")
   if exists("245??.n")
     unless any_contain("245??.n","...")
       add_field("type[].$append", "PublicationIssue")
@@ -628,10 +628,6 @@ if exists("zdbId")
     add_field("type[].$append", "PublicationIssue")
   end
 end
-
-# TODO: HT003176544 transforms but is not PublicationIssue in lobid ALEPH.
-# TODO: Also check if PublicationIssue and Periodical as type are mutual exclusive.
-# TODO: Check if there are other versions of PublicationIssue
 
 
 # type:"ReferenceSource"
