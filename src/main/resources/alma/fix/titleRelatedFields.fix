@@ -213,7 +213,7 @@ if exists("publication[].$first")
     add_array("publication[].$first.frequency[]")
     if any_match("leader","^.{6}(a[bis]|m[bis]).*$") # checks if continous ressource
       unless is_array("008")
-        unless any_match("008","^.{18}[#\\| u].*$") # filters out not matching values and also the value unknown
+        if any_match("008","^.{18}[abcdefghijkmqstuwz].*$") # filters out not matching values
           copy_field("008","publication[].$first.frequency[].$append.id")
           replace_all("publication[].$first.frequency[].$last.id", "^.{18}(.).*$", "http://marc21rdf.info/terms/continuingfre#$1")
           copy_field("publication[].$first.frequency[].$last.id","publication[].$first.frequency[].$last.label")
@@ -223,7 +223,7 @@ if exists("publication[].$first")
     elsif any_match("006","^s.*$")
       do list(path: "006", "var":"$z")
         if any_match("$z","^s.*$")
-          unless any_match("$z","^.[#\\| u].*$")
+          if any_match("$z","^.[abcdefghijkmqstuwz].*$") # filters out not matching values
             copy_field("$z","publication[].$first.frequency[].$append.id")
             replace_all("publication[].$first.frequency[].$last.id", "^.(.).*$", "http://marc21rdf.info/terms/continuingfre#$1")
             copy_field("publication[].$first.frequency[].$last.id","publication[].$first.frequency[].$last.label")
@@ -303,23 +303,46 @@ end
 # 533 - Reproduction Note (R)
 
 do list(path:"533  ", "var": "$i")
-  add_hash( "publication[].$append")
-  add_array("publication[].$last.type[]","SecondaryPublicationEvent")
-  add_array("publication[].$last.location[]")
-  do list(path:"$i.b","var":"$j")
-    copy_field("$j", "publication[].$last.location[].$append")
-  end
-  add_array("publication[].$last.description[]")
-  copy_field("$i.a", "publication[].$last.description[].$append")
-  add_array("publication[].$last.publishedBy[]")
-  copy_field("$i.c", "publication[].$last.publishedBy[].$append")
-  do list(path: "$i.d", "var":"$j")
-    call_macro("publicationDateCleaner",date:"$j")
-    unless exists("publication[].$last.startDate")
-      call_macro("publicationStartDate",date:"$j",dateTarget:"publication[].$last.startDate")
+  unless is_array("$i.c") # Check if multiple SecondaryPublication are combined in 533
+    add_hash( "publication[].$append")
+    add_array("publication[].$last.type[]","SecondaryPublicationEvent")
+    add_array("publication[].$last.location[]")
+    do list(path:"$i.b","var":"$j")
+      copy_field("$j", "publication[].$last.location[].$append")
     end
-    unless exists("publication[].$last.endDate")
-      call_macro("publicationEndDate",date:"$j",dateTarget:"publication[].$last.endDate")
+    add_array("publication[].$last.description[]")
+    copy_field("$i.a", "publication[].$last.description[].$append")
+    add_array("publication[].$last.publishedBy[]")
+    copy_field("$i.c", "publication[].$last.publishedBy[].$append")
+    do list(path: "$i.d", "var":"$j")
+      call_macro("publicationDateCleaner",date:"$j")
+      unless exists("publication[].$last.startDate")
+        call_macro("publicationStartDate",date:"$j",dateTarget:"publication[].$last.startDate")
+      end
+      unless exists("publication[].$last.endDate")
+        call_macro("publicationEndDate",date:"$j",dateTarget:"publication[].$last.endDate")
+      end
+    end
+  end
+  if is_array("$i.c")  # Check if multiple SecondaryPublication are combined in 533
+    do list_as($LOCATION:"$i.b",$PUBLISHER:"$i.c")
+      add_hash( "publication[].$append")
+      add_array("publication[].$last.type[]","SecondaryPublicationEvent")
+      add_array("publication[].$last.location[]")
+      copy_field("$LOCATION", "publication[].$last.location[].$append")
+      add_array("publication[].$last.description[]")
+      copy_field("$i.a", "publication[].$last.description[].$append")
+      add_array("publication[].$last.publishedBy[]")
+      copy_field("$PUBLISHER", "publication[].$last.publishedBy[].$append")
+      do list(path: "$i.d", "var":"$j")
+        call_macro("publicationDateCleaner",date:"$j")
+        unless exists("publication[].$last.startDate")
+          call_macro("publicationStartDate",date:"$j",dateTarget:"publication[].$last.startDate")
+        end
+        unless exists("publication[].$last.endDate")
+          call_macro("publicationEndDate",date:"$j",dateTarget:"publication[].$last.endDate")
+        end
+      end
     end
   end
 end
