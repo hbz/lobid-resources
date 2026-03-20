@@ -500,6 +500,12 @@ end
 if exists("@inNZ")
   add_field("inCollection[].$append.id", "http://lobid.org/organisations/DE-655#!")
   add_field("inCollection[].$last.label", "hbz - Hochschulbibliothekszentrum des Landes Nordrhein-Westfalen, Netzwerkzone")
+
+  if any_match("@numberOfHolders[]","[123]")
+    add_field("inCollection[].$append.id", "https://lobid.org/collections#lastOfItsKind")
+    add_field("inCollection[].$last.label", "Last of its kind in NRW")
+  end
+
 end
 
 # zdb
@@ -845,4 +851,5 @@ do list(path:"700?2|710?2|711?2|730?2", "var": "$i")
 end
 
 replace_all("containsExampleOfWork[].*.label","<<|>>","")
+
 uniq("inCollection[]")
