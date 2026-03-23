@@ -25,7 +25,7 @@ if [ -n "$ERRORS" ]; then
                 ERRORS="$ERRORS_TAILED $(echo "$ERRORS"|tail -n30)"
         fi
 	echo "$ERRORS"
-       mail -s "$ERROR_PATTERN errors in Alma Fix ETL" "${MAIL_TO}" -a "From: ${MAIL_FROM}" << EOF
+       mail -s "[sysad] [lobid-resources] $ERROR_PATTERN errors in Alma Fix ETL" "${MAIL_TO}" -a "From: ${MAIL_FROM}" << EOF
 Getriggert von ausgeführt in $(pwd)/scripts/getLogsErrorsETL.sh :
 
 Achte auf das Datum der ERROR-Zeilen - evtl. sind das alte Fehler!

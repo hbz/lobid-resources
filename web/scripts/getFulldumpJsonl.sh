@@ -44,7 +44,7 @@ cd  ${FULLDUMP_DIR}
 rm latestLobidResources.jsonl.gz
 ln -s ${FULLDUMP_FNAME} latestLobidResources.jsonl.gz
 
-mail -s "Fulldump lobid-resources published" "${MAIL_TO_WEBHOOK_SUBSCRIBER}" -a "From: ${MAIL_FROM}" << EOF
+mail -s "[sysad] [lobid-resources] Fulldump lobid-resources published" "${MAIL_TO_WEBHOOK_SUBSCRIBER}" -a "From: ${MAIL_FROM}" << EOF
 Siehe https://lobid.org/download/dumps/lobid-resources/${FULLDUMP_FNAME} aka
 https://lobid.org/download/dumps/lobid-resources/latestLobidResources.jsonl.gz
 EOF
