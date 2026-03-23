@@ -334,7 +334,7 @@ public class AlmaMarcXmlFix2lobidJsonEs {
         String mailto = (SUCCESS ? mailtoInfo : mailtoError);
         try {
             Email.sendEmail("sol", mailto,
-                "Webhook '" + KIND + "' " + (SUCCESS ? "success :)" : "fails :("),
+                "[sysad] [lobid-resources] Webhook '" + KIND + "' " + (SUCCESS ? "success :)" : "fails :("),
                 MESSAGE);
         }
         catch (Exception e) {
