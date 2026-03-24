@@ -36,6 +36,9 @@ case $ACTION in
   start)
        cd ..
        git fetch; git reset --hard origin/master; git submodule update --init --recursive --remote;
+       if [ ! -f ../lookup-tables/data/opacLinks/isil2opac_issn.tsv ]; then
+          exit # see #2306
+       fi
        mvn clean install -DskipTests=true; cd -
        if [ -f target/universal/stage/RUNNING_PID ]; then
           kill $(cat target/universal/stage/RUNNING_PID)
