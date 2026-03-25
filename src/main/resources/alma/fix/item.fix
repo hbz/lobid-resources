@@ -232,10 +232,10 @@ end
 
 do list(path:"hasItem[]","var":"$i")
   if any_contain("$i.type[]","PhysicalObject")
-    copy_field("$i.inCollection[].*.id","@holderIzs[].$append")
+    copy_field("$i.heldBy.id","@holder[].$append")
   end
 end
 
-uniq("@holderIzs[]")
-copy_field("@holderIzs[].*","@numberOfHolders[].$append")
+uniq("@holder[]")
+copy_field("@holder[].*","@numberOfHolders[].$append")
 count("@numberOfHolders[]")
