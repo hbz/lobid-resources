@@ -69,11 +69,13 @@ end
 if exists("@inNZ")
   if any_match("@numberOfHolders[]","[123]")
     if less_than("@standardPubDate","$[todaysYearMinus9]")
-      if any_match("type[]","Book|Map|PublishedScore")
-        if any_match("bibliographicLevel.label","Serial component part|Monograph/Item")
-          add_field("inCollection[].$append.id", "https://lobid.org/collections#lastOfItsKind")
-          add_field("inCollection[].$last.label", "Last of its kind in NRW")
-          add_array("inCollection[].$last.type[]", "Collection")
+      if greater_than("@standardPubDate","1851")
+        if any_match("type[]","Book|Map|PublishedScore")
+          if any_match("bibliographicLevel.label","Serial component part|Monograph/Item")
+            add_field("inCollection[].$append.id", "https://lobid.org/collections#lastOfItsKind")
+            add_field("inCollection[].$last.label", "Last of its kind in NRW")
+            add_array("inCollection[].$last.type[]", "Collection")
+          end
         end
       end
     end
