@@ -1,6 +1,7 @@
 import de.hbz.lobid.helper.Minus;
 
 import org.metafacture.framework.StreamReceiver;
+import org.metafacture.metafix.MetafixTestHelpers;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
