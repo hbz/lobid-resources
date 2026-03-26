@@ -236,7 +236,7 @@ do list(path:"hasItem[]","var":"$i")
   end
 end
 
-# replace_all("@holder[].*","(DE-\\d*)-.+","$1")
+replace_all("@holder[].*","(DE-\\d*)-.+","$1")
 
 uniq("@holder[]")
 copy_field("@holder[].*","@numberOfHolders[].$append")
