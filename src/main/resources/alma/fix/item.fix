@@ -232,9 +232,11 @@ end
 
 do list(path:"hasItem[]","var":"$i")
   if any_contain("$i.type[]","PhysicalObject")
-    copy_field("$i.heldBy.id","@holder[].$append")
+    copy_field("$i.heldBy.isil","@holder[].$append")
   end
 end
+
+# replace_all("@holder[].*","(DE-\\d*)-.+","$1")
 
 uniq("@holder[]")
 copy_field("@holder[].*","@numberOfHolders[].$append")
