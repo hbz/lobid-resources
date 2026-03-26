@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE log4j:configuration SYSTEM "http://logging.apache.org/log4j/1.2/apidocs/org/apache/log4j/xml/doc-files/log4j.dtd">
+<log4j:configuration>
+  <appender name="console" class="org.apache.log4j.ConsoleAppender">
+    <layout class="org.apache.log4j.PatternLayout">
+      <param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss} %5p [%t] (%F:%L) - %m%n"/>
+    </layout>
+  </appender>
+
+<!--  <appender name="FILE_ETL" class="org.apache.log4j.FileAppender">
+    <param name="File" value="./logs/etl.log"/>
+    <param name="Append" value="true"/>
+    <layout class="org.apache.log4j.PatternLayout">
+      <param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss} [%p] %C{4} in %thread - %m%n"/>
+-->
+      <!--<param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss} %p %t %c - %m%n"/>
+    </layout>
+  </appender>
+-->
+
+  <appender name="FILE_ETL" class="org.apache.log4j.rolling.RollingFileAppender">
+    <rollingPolicy class="org.apache.log4j.rolling.FixedWindowRollingPolicy">
+        <param name="ActiveFileName" value="./logs/etl.log" />
+        <param name="FileNamePattern" value="etl-log-%d{yyyy-MM-dd}.%i.gz" />
+        <param name="MinIndex" value="7" />
+        <param name="MaxIndex" value="10" />
+    </rollingPolicy>
+    <triggeringPolicy class="org.apache.log4j.rolling.SizeBasedTriggeringPolicy">
+        <param name="MaxFileSize" value="100" />
+    </triggeringPolicy>
+    <layout class="org.apache.log4j.PatternLayout">
+        <param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss} [%p] %C{4} in %thread - %m%n" />
+    </layout>
+  </appender>
+
+<appender name="FILE_APPLICATION" class="org.apache.log4j.rolling.RollingFileAppender">
+    <rollingPolicy class="org.apache.log4j.rolling.FixedWindowRollingPolicy">
+        <param name="ActiveFileName" value="./logs/application.log" />
+        <param name="FileNamePattern" value="application-log-%d{yyyy-MM-dd}.%i.gz" />
+        <param name="MinIndex" value="7" />
+        <param name="MaxIndex" value="10" />
+    </rollingPolicy>
+    <triggeringPolicy class="org.apache.log4j.rolling.SizeBasedTriggeringPolicy">
+        <param name="MaxFileSize" value="100" />
+    </triggeringPolicy>
+    <layout class="org.apache.log4j.PatternLayout">
+        <param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss} %p %t %c - %m%n" />
+    </layout>
+</appender>
+<!--
+  <appender name="FILE_APPLICATION" class="org.apache.log4j.RollingFileAppender">
+    <param name="File" value="./logs/application.log"/>
+    <param name="append" value="true"/>
+    <layout class="org.apache.log4j.PatternLayout">
+      <param name="ConversionPattern" value="application-log-%d{yyyy-MM-dd}.%i.gz"/>
+    </layout>
+  </appender>
+-->
+
+<!--
+  <appender name="FILE_APPLICATION" class="org.apache.log4j.FileAppender">
+    <param name="File" value="./logs/application.log"/>
+    <param name="Append" value="true"/>
+    <layout class="org.apache.log4j.PatternLayout">
+      <param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss} %p %t %c - %m%n"/>
+    </layout>
+  </appender>
+-->
+  <logger name="external">
+    <level value="INFO"/>
+    <appender-ref ref="FILE_ETL"/>
+  </logger>
+  <logger name="org.metafacture">
+    <level value="INFO"/>
+    <appender-ref ref="FILE_ETL"/>
+  </logger>
+ <logger name="org.lobid">
+    <level value="INFO"/>
+    <appender-ref ref="FILE_ETL"/>
+  </logger>
+  <logger name="de.hbz.lobid">
+    <level value="INFO"/>
+    <appender-ref ref="FILE_ETL"/>
+  </logger>
+  <logger name="play">
+    <level value="info"/>
+    <appender-ref ref="FILE_APPLICATION"/>
+  </logger>
+  <logger name="application">
+    <level value="INFO"/>
+    <appender-ref ref="FILE_APPLICATION"/>
+  </logger>
+  <root>
+    <priority value="INFO"/>
+    <appender-ref ref="console"/>
+  </root>
+</log4j:configuration>
