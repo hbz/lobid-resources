@@ -65,14 +65,15 @@ do list(path:"alternateGraphicRepresentation[]","var":"$i")
   end
 end
 
-
 # This tests for various fields from different outsourced fixes so that i cannot be placed in
 if exists("@inNZ")
   if any_match("@numberOfHolders[]","[123]")
     if less_than("@standardPubDate","$[todaysYearMinus9]")
-      add_field("inCollection[].$append.id", "https://lobid.org/collections#lastOfItsKind")
-      add_field("inCollection[].$last.label", "Last of its kind in NRW")
-      add_array("inCollection[].$last.type[]", "Collection")
+      if any_match("type[]","Book|Map|PublishedScore")
+        add_field("inCollection[].$append.id", "https://lobid.org/collections#lastOfItsKind")
+        add_field("inCollection[].$last.label", "Last of its kind in NRW")
+        add_array("inCollection[].$last.type[]", "Collection")
+      end
     end
   end
 end
