@@ -228,28 +228,23 @@ do list(path: "hasItem[]","var":"$i")
   do list(path: "$i.inCollection[]","var":"$j")
     add_array("$j.type[]","Collection")
   end
-end
 
-do list(path:"hasItem[]","var":"$i")
+  # Check if resource is a Physical Object
   if any_contain("$i.type[]","PhysicalObject")
-    copy_field("$i.heldBy.isil","@holder[].$append")
+    copy_field("$i.heldBy.isil","@holder[].$append") # Copy holder ISIL for listing and counting
   end
 end
 
-replace_all("@holder[].*","(DE-\\d*)-.+","$1")
+replace_all("@holder[].*","(DE-\\d*)-.+","$1") # Subsume libraries to their parent library
 
 uniq("@holder[]")
-copy_field("@holder[].*","@numberOfHolders[].$append")
 
-
-do list(path: "@holder[]","var":"$i")
+do list(path: "@holder[]","var":"$i") # Filter out all libraries that are not part of hbz
   unless any_match("$i","DE-1042|DE-386|DE-987|DE-929|DE-Kob7|DE-Lan1|DE-1116|DE-B23|DE-1105|DE-Tr2|DE-Tr5|DE-385|DE-121|DE-1117|DE-Zw1")
     copy_field("$i","@filteredHolders[].$append")
   end
 end
-if exists("@numberOfHolders[]")
-  add_array("@numberOfHolders[]")
-end
-copy_field("@filteredHolders[].*","@numberOfHolders[].$append")
+
+copy_field("@filteredHolders[].*","@numberOfHolders[].$append") # Copy list of holders for counting
 
 count("@numberOfHolders[]")
