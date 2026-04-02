@@ -37,6 +37,8 @@ public class IndexIntegrationTest extends LocalIndexSetup {
 			{ "title:Westfalen", /*->*/ 8 },
 			{ "contribution.agent.label:Westfalen", /*->*/ 5 },
 			{ "contribution.agent.label:Westfälen", /*->*/ 5 },
+			{ "contribution.agent.altLabel:Akvinietis", /*->*/ 2 },
+			{ "agent=Akvinietis", /*->*/ 2 },
 			{ "contribution.agent.id:\"https\\://d-nb.info/gnd/5253963-5\"", /*->*/ 1 },
 			{ "contribution.agent.gndIdentifier:5253963-5", /*->*/ 1 },
 			{ "contribution.agent.id:5265186-1", /*->*/ 0 },
@@ -181,10 +183,11 @@ public class IndexIntegrationTest extends LocalIndexSetup {
 	private static Queries.Builder queryFor(String s) {
 		String[] queryParamNameAndValue = s.split("=");
 		Queries.Builder queryBuilder = new Queries.Builder();
-		return queryParamNameAndValue.length == 2
-				&& queryParamNameAndValue[0].equals("subject")
-						? queryBuilder.subject(queryParamNameAndValue[1])
-						: queryBuilder.q(queryParamNameAndValue[0]);
+		switch(queryParamNameAndValue[0]) {
+			case "subject" : return queryBuilder.subject(queryParamNameAndValue[1]);
+			case "agent" : return queryBuilder.agent(queryParamNameAndValue[1]);
+			default: return queryBuilder.q(queryParamNameAndValue[0]);
+		}
 	}
 
 	private int expectedResultCount;
