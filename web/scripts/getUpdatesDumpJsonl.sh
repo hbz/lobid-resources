@@ -64,6 +64,6 @@ if [[ $(find ${UPDATES_FNAME} -type f -size +1k 2>/dev/null) ]]; then
     exit 1
 fi
 
-mail -s "Updates of lobid-resources published" "${MAIL_TO_WEBHOOK_SUBSCRIBER}" -a "From: ${MAIL_FROM}" << EOF
+mail -s "[sysad] [lobid-resources] Updates of lobid-resources published" "${MAIL_TO_WEBHOOK_SUBSCRIBER}" -a "From: ${MAIL_FROM}" << EOF
 Siehe https://lobid.org/download/dumps/lobid-resources/${UPDATES_FNAME}.
 EOF

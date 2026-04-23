@@ -101,7 +101,7 @@ public class WebhookAlmaFix extends Controller {
     }
     if (AlmaMarcXmlFix2lobidJsonEs.threadAlreadyStarted) {
       msg = composeMessage(String.format(MSG_UPDATE_ALREADY_RUNNING, indexNameOfUpdate));
-      AlmaMarcXmlFix2lobidJsonEs.sendMail(ETL_OF + KIND, false,
+      AlmaMarcXmlFix2lobidJsonEs.sendMail("Triggering of " + ETL_OF + KIND, false,
           msg);
       Logger.warn(msg);
       return status(423, msg);
@@ -173,7 +173,7 @@ public class WebhookAlmaFix extends Controller {
         .format(DateTimeFormatter.ofPattern("yyyyMMdd-kkmm"));
     if (AlmaMarcXmlFix2lobidJsonEs.threadAlreadyStarted) {
       msg = composeMessage(String.format(MSG_CREATE_INDEX_ALREADY_RUNNING, createIndexNameOfBasedump));
-      AlmaMarcXmlFix2lobidJsonEs.sendMail(ETL_OF + KIND, false, msg);
+      AlmaMarcXmlFix2lobidJsonEs.sendMail("Triggering of "+ ETL_OF + KIND, false, msg);
       Logger.warn(msg);
       return status(423, msg);
     }
@@ -188,7 +188,7 @@ public class WebhookAlmaFix extends Controller {
     AlmaMarcXmlFix2lobidJsonEs.main(filenameBasedump, createIndexNameOfBasedump,
         indexBasedumpAliasSuffix, clusterHost, clusterName, CREATE_INDEX,
         FIX_FILENAME);
-    AlmaMarcXmlFix2lobidJsonEs.sendMail(ETL_OF + KIND, true,
+    AlmaMarcXmlFix2lobidJsonEs.sendMail("Triggering of " + ETL_OF + KIND, true,
         msg + "Going to create new index with name " + createIndexNameOfBasedump
             + " , adding " + indexBasedumpAliasSuffix + " to alias of index");
     return ok("... started ETL " + KIND);
@@ -213,7 +213,7 @@ public class WebhookAlmaFix extends Controller {
     boolean success;
     if (AlmaMarcXmlFix2lobidJsonEs.threadAlreadyStarted) {
       msg = composeMessage(String.format(MSG_CREATE_INDEX_ALREADY_RUNNING, createIndexNameOfBasedump));
-      AlmaMarcXmlFix2lobidJsonEs.sendMail("Failed: " + subject, false, msg);
+      AlmaMarcXmlFix2lobidJsonEs.sendMail("Triggering of '" + subject, false, msg);
       Logger.warn(msg);
       return status(423, msg);
     }
@@ -233,7 +233,7 @@ public class WebhookAlmaFix extends Controller {
       final String GIVEN_TOKEN) {
     String msg = composeMessage(String.format(msgWrongToken, GIVEN_TOKEN, KIND));
     Logger.warn(msg);
-    AlmaMarcXmlFix2lobidJsonEs.sendMail(KIND, false, msg);
+    AlmaMarcXmlFix2lobidJsonEs.sendMail("Triggering of " + KIND, false, msg);
     return forbidden(msg);
   }
 
