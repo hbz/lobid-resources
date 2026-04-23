@@ -73,10 +73,9 @@ if exists("@inNZ") # only NZ resources no local IZ resources
       if greater_than("@standardPubDate","1851") # check if resource is newer than 1851
         if any_match("type[]","Book|Map|PublishedScore") # check if resource is of type Book, Map or Published Score
           if any_match("bibliographicLevel.label","Serial component part|Monograph/Item") # Check for serials component parts or Monographs or Multivolum Book items
-            add_field("inCollection[].$append.id", "https://lobid.org/collections#hbzLastCopies")
-            add_field("inCollection[].$last.label", "hbz Last Copies")
+            add_field("inCollection[].$append.id", "https://lobid.org/collections#nrwLastCopies")
+            add_field("inCollection[].$last.label", "nrwLastCopies")
             add_array("inCollection[].$last.type[]", "Collection")
-            copy_field("@filteredHolders[]","inCollection[].$last.note[]")
           end
         end
       end
