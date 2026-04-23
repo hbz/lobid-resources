@@ -239,7 +239,7 @@ replace_all("@holder[].*","(DE-\\d*)-.+","$1") # Subsume libraries to their pare
 
 uniq("@holder[]")
 
-do list(path: "@holder[]","var":"$i") # Filter out all libraries that are not part of hbz
+do list(path: "@holder[]","var":"$i") # Filter out all libraries that are not in NRW
   unless any_match("$i","DE-1042|DE-386|DE-987|DE-929|DE-Kob7|DE-Lan1|DE-1116|DE-B23|DE-1105|DE-Tr2|DE-Tr5|DE-385|DE-121|DE-1117|DE-Zw1")
     copy_field("$i","@filteredHolders[].$append")
   end
