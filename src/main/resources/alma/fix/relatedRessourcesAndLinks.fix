@@ -837,7 +837,7 @@ prepend("exampleOfWork.language[].*.id", "http://id.loc.gov/vocabulary/iso639-2/
 # 730 - Added Entry-Uniform Title (R)
 
 add_array("containsExampleOfWork[]")
-do list(path:"700?2|710?2|711?2|730?2", "var": "$i")
+do list(path:"700?2|710?2|711?2", "var": "$i")
   add_array("containsExampleOfWork[].$append.label")
   add_array("containsExampleOfWork[].$last.creatorOfWork")
   copy_field("$i.a","containsExampleOfWork[].$last.creatorOfWork.$append")
@@ -848,6 +848,26 @@ do list(path:"700?2|710?2|711?2|730?2", "var": "$i")
   copy_field("$i.r","containsExampleOfWork[].$last.label.$append")
   join_field("containsExampleOfWork[].$last.label", ". ")
   join_field("containsExampleOfWork[].$last.creatorOfWork", " ")
+  copy_field("$i.n","containsExampleOfWork[].$last.workNumbering")
+  copy_field("$i.r","containsExampleOfWork[].$last.musicalKey")
+  add_array("containsExampleOfWork[].$last.type[]","Work")
+  add_array("containsExampleOfWork[].$last.instrumentation[]")
+  do list(path:"$i.m","var":"$j")
+    copy_field("$j","containsExampleOfWork[].$last.instrumentation[].$append")
+  end
+  do list(path: "$i.0", "var":"$k")
+    if any_match("$k", "^\\(DE-588\\).+$")
+      copy_field("$k", "containsExampleOfWork[].$last.id")
+      replace_all("containsExampleOfWork[].$last.id","^\\(DE-588\\)(.+$)","https://d-nb.info/gnd/$1")
+    end
+  end
+end
+
+do list(path:"730?2", "var": "$i")
+  add_array("containsExampleOfWork[].$append.label")
+  copy_field("$i.a","containsExampleOfWork[].$last.label.$append")
+  copy_field("$i.d","containsExampleOfWork[].$last.label.$append")
+  join_field("containsExampleOfWork[].$last.label", " ")
   copy_field("$i.n","containsExampleOfWork[].$last.workNumbering")
   copy_field("$i.r","containsExampleOfWork[].$last.musicalKey")
   add_array("containsExampleOfWork[].$last.type[]","Work")
