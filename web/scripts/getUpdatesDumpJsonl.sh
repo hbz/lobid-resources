@@ -13,9 +13,11 @@
 # 4 test if >1kB . If it's not, remove the file and bail out
 # 5. inform subscribers
 
-set -euo pipefail # See http://redsymbol.net/articles/unofficial-bash-strict-mode/
+# deliberately not bailing out if something get wrong (e.g. validation of jsonschema errors :
+# set -euo pipefail # See http://redsymbol.net/articles/unofficial-bash-strict-mode/
 
 MAIL_TO_WEBHOOK_SUBSCRIBER=$(cat .secrets/MAIL_TO_WEBHOOK_SUBSCRIBER)
+MAIL_TO=$(cat .secrets/MAIL_TO)
 MAIL_FROM=$(cat .secrets/MAIL_FROM)
 
 # default is yesterday
@@ -53,7 +55,16 @@ UPDATES_FNAME=${DATE_FROM}_to_${DATE_TO}${UPDATES_FNAME_SUFFIX}
 
 echo "Start: get updates from $DATE_FROM"
 # get updates
-curl -L "http://localhost:7507/resources/search?q=describedBy.resultOf.object.dateModified:>${DATE_FROM}+OR+describedBy.resultOf.object.dateCreated:>${DATE_FROM}&format=bulk" |gzip > ${UPDATES_FNAME}
+curl -L "http://localhost:7507/resources/search?q=describedBy.resultOf.object.dateModified:>${DATE_FROM}+OR+describedBy.resultOf.object.dateCreated:>${DATE_FROM}&format=bulk" > /tmp/${UPDATES_FNAME}.jsonl
+
+gzip -k /tmp/${UPDATES_FNAME}.jsonl
+mv /tmp/${UPDATES_FNAME}.jsonl.gz ${UPDATES_FNAME}
+
+cd ~/git/lobid-resources/src/test/resources/schemas
+jsonschema validate resource.json /tmp/${UPDATES_FNAME}.jsonl > /tmp/jsonschemaValidationOutput.log 2>&1
+rm /tmp/${UPDATES_FNAME}.jsonl
+
+cd -
 
 # if file is too small, remove it and bail out
 if [[ $(find ${UPDATES_FNAME} -type f -size +1k 2>/dev/null) ]]; then
@@ -67,3 +78,8 @@ fi
 mail -s "[sysad] [lobid-resources] Updates of lobid-resources published" "${MAIL_TO_WEBHOOK_SUBSCRIBER}" -a "From: ${MAIL_FROM}" << EOF
 Siehe https://lobid.org/download/dumps/lobid-resources/${UPDATES_FNAME}.
 EOF
+
+if [ -s /tmp/jsonschemaValidationOutput.log ]; then
+        mail -s "[sysad] [lobid-resources] Jsonschema validated with errors" "${MAIL_TO}" -a "From: ${MAIL_FROM}" < "/tmp/jsonschemaValidationOutput.log"
+fi
+rm /tmp/jsonschemaValidationOutput.log
