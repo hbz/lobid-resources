@@ -24,7 +24,7 @@ resolvers += "Local Maven Repository" at Path.userHome.asFile.toURI.toURL + ".m2
 
 lazy val root = (project in file(".")).enablePlugins(PlayJava)
 
-javacOptions ++= Seq("-source", "11", "-target", "11")
+javacOptions ++= Seq("-source", "17", "-target", "17")
 
 import com.typesafe.sbteclipse.core.EclipsePlugin.EclipseKeys
 
