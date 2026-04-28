@@ -14,8 +14,8 @@ echo "$HBZIDS" >> $NEWEST_LOG_FN
 
 if [ -n "$HBZIDS" ]; then
        echo "non null: $HBZIDS"
-       mail -s "Multiple hbzId entries in Alma" "${MAIL_TO}" -a "From: ${MAIL_FROM}" << EOF
-       Triggered by crontab@weywot1
+       mail -s "[sysad] [lobid-resources] Multiple hbzId entries in Alma" "${MAIL_TO}" -a "From: ${MAIL_FROM}" << EOF
+       Triggered by crontab@weywot11
        To be send to ${SEND_TO} with subject "Doppelte hbz-Id":
 $HBZIDS
 EOF

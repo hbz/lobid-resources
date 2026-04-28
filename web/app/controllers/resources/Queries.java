@@ -318,7 +318,8 @@ public class Queries {
 	public static class AuthorQuery extends AbstractIndexQuery {
 		@Override
 		public List<String> fields() {
-			return Arrays.asList("contribution.agent.id", "contribution.agent.label");
+			return Arrays.asList("contribution.agent.id",
+					"contribution.agent.label", "contribution.agent.altLabel");
 		}
 
 		@Override
@@ -358,7 +359,7 @@ public class Queries {
 		}
 
 		private QueryBuilder nameMatchQuery(final String search) {
-			return multiMatchQuery(search, fields().get(1)).operator(Operator.AND);
+			return multiMatchQuery(search, fields().get(1), fields().get(2)).operator(Operator.AND);
 		}
 	}
 

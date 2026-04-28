@@ -516,6 +516,19 @@ if any_equal("MBD  .M", "49HBZ_NETWORK")
   end
 end
 
+copy_field("@todaysYear","@todaysYearMinus9")
+de.hbz.lobid.helper.Minus("@todaysYearMinus9","9")
+to_var("@todaysYearMinus9","todaysYearMinus9")
+unless is_array("008")
+  if any_match("008","^.{6}[\\|bresticdkmu](\\d{4}).*$")
+    copy_field("008","@008standardPubDate")
+    replace_all("@008standardPubDate","^.{7}(\\d{4}).*$","$1")
+    if any_match("@008standardPubDate",".*?([01]\\d{3}|20\\d{2}).*")
+      copy_field("@008standardPubDate","@standardPubDate")
+    end
+  end
+end
+
 if exists("@inNZ")
   add_field("inCollection[].$append.id", "http://lobid.org/organisations/DE-655#!")
   add_field("inCollection[].$last.label", "hbz - Hochschulbibliothekszentrum des Landes Nordrhein-Westfalen, Netzwerkzone")
@@ -884,4 +897,5 @@ do list(path:"730?2", "var": "$i")
 end
 
 replace_all("containsExampleOfWork[].*.label","<<|>>","")
+
 uniq("inCollection[]")

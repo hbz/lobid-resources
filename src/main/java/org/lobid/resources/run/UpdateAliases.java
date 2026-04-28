@@ -77,7 +77,7 @@ public class UpdateAliases {
     }
     String emailTo = System.getProperty("emailTo");
     if (emailTo != null)
-      Email.sendEmail("hduser", emailTo,
+      Email.sendEmail("sol", emailTo,
           "Alias switching " + (success ? "success :)" : "fails :("),
           logMessages.toString());
     else

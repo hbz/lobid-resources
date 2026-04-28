@@ -28,7 +28,7 @@ GROUP BY ?nwbibIdLabel ?item ?itemLabel ?coordinates
 '  |sed 's#^"##g'|sed 's#"\t<#\t#g'|sed 's#>\t"#\t#g' |sed 's#"@..#\t#g'  |sed 's#\t"#\t#g' |sed 's#"\t#\t#g' |sed 's#"\^\^.*##g' |sed 's#\t\t#\t#g' > $OUT_FN_TMP
 grep "https://nwbib.de/spatial#Q365" $OUT_FN_TMP
 if [ ! $(echo $?) -eq 0 -o "$(wc -l < $OUT_FN_TMP)" -lt 4000 ]; then
-    mail -s "Probleme beim Holen von nwbibWikidataLabelTypeCoords.tsv" "${MAIL_TO}" -a "From: ${MAIL_FROM}" << EOF
+    mail -s "[sysad] [lobid-resources] Probleme beim Holen von nwbibWikidataLabelTypeCoords.tsv" "${MAIL_TO}" -a "From: ${MAIL_FROM}" << EOF
 Getriggert von crontab, ausgeführt durch
 src/main/resources/getAllNwbibTypeAndCoordinatesFromWikidata.sparql.
 EOF
