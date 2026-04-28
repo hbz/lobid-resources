@@ -18,7 +18,8 @@ libraryDependencies ++= Seq(
   "org.easytesting" % "fest-assert" % "1.4" %Test,
   "org.xbib.elasticsearch.plugin" % "elasticsearch-plugin-bundle" % "5.4.1.0",
   "org.lobid" % "lobid-resources" % "1.0.2-SNAPSHOT" changing(),
-  "javax.inject" % "javax.inject" % "1"
+  "javax.inject" % "javax.inject" % "1",
+  "com.google.inject" % "guice" % "4.1.0"
 )
 
 resolvers += "Local Maven Repository" at Path.userHome.asFile.toURI.toURL + ".m2/repository"
