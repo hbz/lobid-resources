@@ -23,7 +23,8 @@ jobs:
         cd ..
         git clone https://github.com/metafacture/metafacture-core.git
         cd metafacture-core
-        git checkout master
+        git checkout -b 7a64c159a2e2dfc7d1673c83699254ad148f4011
+        git reset --hard 7a64c159a2e2dfc7d1673c83699254ad148f4011
         ./gradlew publishToMavenLocal
         cd -
     - name: Build with Maven
