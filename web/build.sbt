@@ -10,6 +10,7 @@ unmanagedResourceDirectories in Compile += baseDirectory.value / "../src/main/re
 libraryDependencies ++= Seq(
   cache,
   javaWs,
+  "com.google.inject" % "guice" % "6.0.0",
   "com.typesafe.play" % "play-test_2.11" % "2.4.11",
   "org.apache.logging.log4j" % "log4j-core" % "2.9.1",
   "org.elasticsearch.plugin" % "parent-join-client" % "5.6.3",
@@ -19,6 +20,8 @@ libraryDependencies ++= Seq(
   "org.xbib.elasticsearch.plugin" % "elasticsearch-plugin-bundle" % "5.4.1.0",
   "org.lobid" % "lobid-resources" % "1.0.2-SNAPSHOT" changing()
 )
+
+dependencyOverrides += "com.google.inject" % "guice" % "6.0.0"
 
 resolvers += "Local Maven Repository" at Path.userHome.asFile.toURI.toURL + ".m2/repository"
 
