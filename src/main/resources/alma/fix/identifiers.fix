@@ -15,8 +15,8 @@ do list(path: "0247?", "var": "$i")
     elsif any_match("$i.a",".*urn:nbn:de.*")
       replace_all("$i.a","^.*(urn:nbn:de.*)$","$1")
       copy_field("$i.a","urn[].$append")
-    elsif any_match("$i.a",".*doi.*((10\\.(\\d)+/(\\S)+).*)")
-      replace_all("$i.a",".*doi.*(10\\.(\\d)+/(\\S)+).*","$1")
+    elsif any_match("$i.a",".*doi.*((10\\.(\\d){4,9}/(\\S)+).*)")
+      replace_all("$i.a",".*doi.*(10\\.(\\d){4,9}/(\\S)+).*","$1")
       copy_field("$i.a","@doiInUrn")
     end
   end
@@ -102,9 +102,11 @@ add_array("doi[]")
 do list(path:"0247?", "var":"$i")
   if all_equal("$i.2","doi")
     if none_contain("$i.a","http")
-      copy_field("$i.a","doi[].$append")
-    elsif any_match("$i.a",".*doi.*((10\\.(\\d)+/(\\S)+).*)")
-      replace_all("$i.a",".*doi.*(10\\.(\\d)+/(\\S)+).*","$1")
+      if any_match("$i.a","(10\\.(\\d){4,9}/(\\S)+)")
+        copy_field("$i.a","doi[].$append")
+      end
+    elsif any_match("$i.a",".*doi.*((10\\.(\\d){4,9}/(\\S)+).*)")
+      replace_all("$i.a",".*doi.*(10\\.(\\d){4,9}/(\\S)+).*","$1")
       copy_field("$i.a","doi[].$append")
     end
   end
@@ -116,11 +118,11 @@ copy_field("@doiInUrn", "doi[].$append")
 # 856 - Electronic Location and Access (R) - Subfield: $u (R) $3 (NR)
 # 1. Indicator: 4 = HTTP
 do list(path:"856??", "var":"$i")
-  if all_match("$i.u", ".*doi.org.*(10\\.(\\d)+/(\\S)+).*") # Volltext
+  if all_match("$i.u", ".*doi.org.*(10\\.(\\d){4,9}/(\\S)+).*") # Volltext
     copy_field("$i.u", "doi[].$append")
   end
 end
-replace_all("doi[].*", ".*doi.org.*(10\\.(\\d)+/(\\S)+).*", "$1")
+replace_all("doi[].*", ".*doi.org.*(10\\.(\\d){4,9}/(\\S)+).*", "$1")
 uniq("doi[]")
 
 # 035 - System Control Number (R) - Subfield: $a (NR)
