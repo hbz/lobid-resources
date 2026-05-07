@@ -163,7 +163,7 @@ public final class AlmaMarc21XmlToLobidJsonMetafixTest {
 
     private String getJsonStringFromFile(String filenameJson, ObjectMapper mapper) throws IOException {
         JsonNode expectedJsonNode = mapper.readTree(new File(filenameJson));
-        Object expectedJsonObject = mapper.readValue(expectedJsonNode.toString(), Object.class);
+        Object expectedJsonObject = mapper.convertValue(expectedJsonNode, Object.class);
         return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(expectedJsonObject) + "\n";
     }
 }
