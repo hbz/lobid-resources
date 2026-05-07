@@ -167,10 +167,13 @@ do list(path:"0167 ", "var":"$i")
   end
 end
 
-# clean up ZDB
+# clean up ZDB & DNB id
 replace_all("zdbId", "\\(DE-600\\)","")
 replace_all("zdbId", "\\(DE-599\\)ZDB","")
 replace_all("zdbId", "(\\d{1,7})-* ?-*([Xx\\d])","$1-$2") # CZ entries have incorrect whitespaces sometimes in the zdbId, we need to adjust them so only one "-" separates the first group of numbers from the last number.
+unless any_match("zdbId","\\d{1,7}-[Xx\\d]")
+  remove_field("zdbId")
+end
 replace_all("dnbId", "\\(DE-101\\)","")
 
 copy_field("almaMmsId","rpbId")
