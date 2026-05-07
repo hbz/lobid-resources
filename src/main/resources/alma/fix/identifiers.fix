@@ -143,10 +143,10 @@ do list(path:"035  ", "var":"$i")
     end
   end
   unless exists("dnbId")
-    if all_match("$i.a", "\\(DE-101\\)")
-    copy_field("$i.a", "dnbId")
+    if all_match("$i.a", "\\(DE-101\\)(\\d{8,9}[X\\d]?)")
+      copy_field("$i.a", "dnbId")
+    end
   end
-end
 end
 
 #160 - 016 - National Bibliographic Agency Control Number (R)
@@ -160,7 +160,9 @@ do list(path:"0167 ", "var":"$i")
 # dnbId
   unless exists("dnbId")
     if any_match("$i.2","DE-101")
-      copy_field("$i.a","dnbId")
+      if any_match("$i.a","\\d{8,9}[X\\d]?")
+        copy_field("$i.a","dnbId")
+      end
     end
   end
 end
