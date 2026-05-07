@@ -1,4 +1,6 @@
 #!/bin/bash
+# Needs jsonschema >= 15.1
+#
 # Get lobid-reosurces bulk download updates.
 # See https://github.com/hbz/lobid-resources/issues/2252
 # Should be scheduled daily besides Saturday and Sunday.
@@ -25,8 +27,9 @@ DATE_FROM=$(date  --date="yesterday" +"%Y-%m-%d")
 DATE_TO=$(date  +"%Y-%m-%d")
 
 UPDATES_FNAME_SUFFIX="_lobid-resources-updates.jsonl.gz"
+DUMP_DIRECTORY="/data/DE-605/resources/"
 
-cd /data/DE-605/resources/
+cd $DUMP_DIRECTORY
 
 function rmOldData {
         if [ $(ls *${UPDATES_FNAME_SUFFIX}| wc -l) -gt 10 ]; then
@@ -73,7 +76,7 @@ EOF
 
 # validate schema
 cd ~/git/lobid-resources/src/test/resources/schemas
-jsonschema validate resource.json ${UPDATES_FNAME} > /tmp/jsonschemaValidationOutput.log 2>&1
+jsonschema validate resource.json ${DUMP_DIRECTORY}${UPDATES_FNAME} > /tmp/jsonschemaValidationOutput.log 2>&1
 
 if [ -s /tmp/jsonschemaValidationOutput.log ]; then
         mail -s "[sysad] [lobid-resources] Jsonschema validated with errors" "${MAIL_TO}" -a "From: ${MAIL_FROM}" < "/tmp/jsonschemaValidationOutput.log"
