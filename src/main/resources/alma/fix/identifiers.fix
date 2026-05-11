@@ -15,8 +15,8 @@ do list(path: "0247?", "var": "$i")
     elsif any_match("$i.a",".*urn:nbn:de.*")
       replace_all("$i.a","^.*(urn:nbn:de.*)$","$1")
       copy_field("$i.a","urn[].$append")
-    elsif any_match("$i.a",".*doi.*((10\\.(\\d)+/(\\S)+).*)")
-      replace_all("$i.a",".*doi.*(10\\.(\\d)+/(\\S)+).*","$1")
+    elsif any_match("$i.a",".*doi.*((10\\.(\\d){4,9}/(\\S)+).*)")
+      replace_all("$i.a",".*doi.*(10\\.(\\d){4,9}/(\\S)+).*","$1")
       copy_field("$i.a","@doiInUrn")
     end
   end
@@ -102,9 +102,11 @@ add_array("doi[]")
 do list(path:"0247?", "var":"$i")
   if all_equal("$i.2","doi")
     if none_contain("$i.a","http")
-      copy_field("$i.a","doi[].$append")
-    elsif any_match("$i.a",".*doi.*((10\\.(\\d)+/(\\S)+).*)")
-      replace_all("$i.a",".*doi.*(10\\.(\\d)+/(\\S)+).*","$1")
+      if any_match("$i.a","(10\\.(\\d){4,9}/(\\S)+)")
+        copy_field("$i.a","doi[].$append")
+      end
+    elsif any_match("$i.a",".*doi.*((10\\.(\\d){4,9}/(\\S)+).*)")
+      replace_all("$i.a",".*doi.*(10\\.(\\d){4,9}/(\\S)+).*","$1")
       copy_field("$i.a","doi[].$append")
     end
   end
@@ -116,11 +118,11 @@ copy_field("@doiInUrn", "doi[].$append")
 # 856 - Electronic Location and Access (R) - Subfield: $u (R) $3 (NR)
 # 1. Indicator: 4 = HTTP
 do list(path:"856??", "var":"$i")
-  if all_match("$i.u", ".*doi.org.*(10\\.(\\d)+/(\\S)+).*") # Volltext
+  if all_match("$i.u", ".*doi.org.*(10\\.(\\d){4,9}/(\\S)+).*") # Volltext
     copy_field("$i.u", "doi[].$append")
   end
 end
-replace_all("doi[].*", ".*doi.org.*(10\\.(\\d)+/(\\S)+).*", "$1")
+replace_all("doi[].*", ".*doi.org.*(10\\.(\\d){4,9}/(\\S)+).*", "$1")
 uniq("doi[]")
 
 # 035 - System Control Number (R) - Subfield: $a (NR)
@@ -133,6 +135,20 @@ do list(path:"035  ", "var":"$i")
 end
 replace_all("oclcNumber[].*", "\\(OCoLC\\)","")
 
+# 035 - System Control Number (R) - Subfield: $a (NR)
+do list(path:"035  ", "var":"$i")
+  unless exists("zdbId")
+    if all_match("$i.a", "\\(DE-600\\)(.+)")
+      copy_field("$i.a", "zdbId")
+    end
+  end
+  unless exists("dnbId")
+    if all_match("$i.a", "\\(DE-101\\)(\\d{8,9}[X\\d]?)")
+      copy_field("$i.a", "dnbId")
+    end
+  end
+end
+
 #160 - 016 - National Bibliographic Agency Control Number (R)
 do list(path:"0167 ", "var":"$i")
   unless exists("zdbId")
@@ -142,25 +158,23 @@ do list(path:"0167 ", "var":"$i")
   end
 
 # dnbId
-  if any_match("$i.2","DE-101")
-    copy_field("$i.a","dnbId")
-  end
-end
-
-# 035 - System Control Number (R) - Subfield: $a (NR)
-do list(path:"035  ", "var":"$i")
-  unless exists("zdbId")
-    if all_match("$i.a", "\\(DE-600\\)(.+)")
-      copy_field("$i.a", "zdbId")
+  unless exists("dnbId")
+    if any_match("$i.2","DE-101")
+      if any_match("$i.a","\\d{8,9}[X\\d]?")
+        copy_field("$i.a","dnbId")
+      end
     end
   end
 end
 
-# clean up ZDB
+# clean up ZDB & DNB id
 replace_all("zdbId", "\\(DE-600\\)","")
 replace_all("zdbId", "\\(DE-599\\)ZDB","")
 replace_all("zdbId", "(\\d{1,7})-* ?-*([Xx\\d])","$1-$2") # CZ entries have incorrect whitespaces sometimes in the zdbId, we need to adjust them so only one "-" separates the first group of numbers from the last number.
-
+unless any_match("zdbId","\\d{1,7}-[Xx\\d]")
+  remove_field("zdbId")
+end
+replace_all("dnbId", "\\(DE-101\\)","")
 
 copy_field("almaMmsId","rpbId")
 lookup("rpbId","almaMmsId2rpbId",delete:"true")

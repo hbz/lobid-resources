@@ -1,4 +1,6 @@
 #!/bin/bash
+# Needs jsonschema >= 15.1
+#
 # Get lobid-reosurces bulk download updates.
 # See https://github.com/hbz/lobid-resources/issues/2252
 # Should be scheduled daily besides Saturday and Sunday.
@@ -25,8 +27,9 @@ DATE_FROM=$(date  --date="yesterday" +"%Y-%m-%d")
 DATE_TO=$(date  +"%Y-%m-%d")
 
 UPDATES_FNAME_SUFFIX="_lobid-resources-updates.jsonl.gz"
+DUMP_DIRECTORY="/data/DE-605/resources/"
 
-cd /data/DE-605/resources/
+cd $DUMP_DIRECTORY
 
 function rmOldData {
         if [ $(ls *${UPDATES_FNAME_SUFFIX}| wc -l) -gt 10 ]; then
@@ -55,16 +58,7 @@ UPDATES_FNAME=${DATE_FROM}_to_${DATE_TO}${UPDATES_FNAME_SUFFIX}
 
 echo "Start: get updates from $DATE_FROM"
 # get updates
-curl -L "http://localhost:7507/resources/search?q=describedBy.resultOf.object.dateModified:>${DATE_FROM}+OR+describedBy.resultOf.object.dateCreated:>${DATE_FROM}&format=bulk" > /tmp/${UPDATES_FNAME}.jsonl
-
-gzip -k /tmp/${UPDATES_FNAME}.jsonl
-mv /tmp/${UPDATES_FNAME}.jsonl.gz ${UPDATES_FNAME}
-
-cd ~/git/lobid-resources/src/test/resources/schemas
-jsonschema validate resource.json /tmp/${UPDATES_FNAME}.jsonl > /tmp/jsonschemaValidationOutput.log 2>&1
-rm /tmp/${UPDATES_FNAME}.jsonl
-
-cd -
+curl -L "http://localhost:7507/resources/search?q=describedBy.resultOf.object.dateModified:>${DATE_FROM}+OR+describedBy.resultOf.object.dateCreated:>${DATE_FROM}&format=bulk"|gzip  > ${UPDATES_FNAME}
 
 # if file is too small, remove it and bail out
 if [[ $(find ${UPDATES_FNAME} -type f -size +1k 2>/dev/null) ]]; then
@@ -77,7 +71,12 @@ fi
 
 mail -s "[sysad] [lobid-resources] Updates of lobid-resources published" "${MAIL_TO_WEBHOOK_SUBSCRIBER}" -a "From: ${MAIL_FROM}" << EOF
 Siehe https://lobid.org/download/dumps/lobid-resources/${UPDATES_FNAME}.
+Übersichtsseite https://lobid.org/download/dumps/lobid-resources/ .
 EOF
+
+# validate schema
+cd ~/git/lobid-resources/src/test/resources/schemas
+jsonschema validate resource.json ${DUMP_DIRECTORY}${UPDATES_FNAME} > /tmp/jsonschemaValidationOutput.log 2>&1
 
 if [ -s /tmp/jsonschemaValidationOutput.log ]; then
         mail -s "[sysad] [lobid-resources] Jsonschema validated with errors" "${MAIL_TO}" -a "From: ${MAIL_FROM}" < "/tmp/jsonschemaValidationOutput.log"

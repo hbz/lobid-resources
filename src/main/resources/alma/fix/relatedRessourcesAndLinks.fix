@@ -140,6 +140,25 @@ do list(path: "4900?", "var": "$i")
   join_field("isPartOf[].$last.numbering")
 end
 
+unless exists("830??")
+  do list(path: "4901?", "var": "$i")
+    add_hash("isPartOf[].$append")
+    add_array("isPartOf[].$last.hasSuperordinate[]")
+    add_hash( "isPartOf[].$last.hasSuperordinate[].$append")
+    add_array("isPartOf[].$last.hasSuperordinate[].$last.label")
+    do list(path:"$i.a", "var":"$j")
+      copy_field("$j", "isPartOf[].$last.hasSuperordinate[].$last.label.$append")
+    end
+    join_field("isPartOf[].$last.hasSuperordinate[].$last.label", " / ")
+    call_macro("alternateGraphicRepresentationIsPartOf",variable:"$i")
+
+    add_array("isPartOf[].$last.numbering")
+    do list(path:"$i.v", "var":"$j")
+      copy_field("$j", "isPartOf[].$last.numbering.$append")
+    end
+    join_field("isPartOf[].$last.numbering")
+  end
+end
 
 # 830 - Series Added Entry-Uniform Title (R) - Subfield: $w (R), $a (NR), $v (NR)
 # Element can be repeatable with local entries they have subfield $M.
@@ -160,7 +179,7 @@ do list(path: "830??", "var": "$i")
   end
 end
 
-do list(path: "4901?", "var": "$j")
+do list(path: "4901?", "var": "$j") #alternateGraphicRepresentation for 830 is included in 4901?
   call_macro("alternateGraphicRepresentationIsPartOf",variable:"$j")
 end
 
@@ -831,7 +850,7 @@ prepend("exampleOfWork.language[].*.id", "http://id.loc.gov/vocabulary/iso639-2/
 # 730 - Added Entry-Uniform Title (R)
 
 add_array("containsExampleOfWork[]")
-do list(path:"700?2|710?2|711?2|730?2", "var": "$i")
+do list(path:"700?2|710?2|711?2", "var": "$i")
   add_array("containsExampleOfWork[].$append.label")
   add_array("containsExampleOfWork[].$last.creatorOfWork")
   copy_field("$i.a","containsExampleOfWork[].$last.creatorOfWork.$append")
@@ -842,6 +861,26 @@ do list(path:"700?2|710?2|711?2|730?2", "var": "$i")
   copy_field("$i.r","containsExampleOfWork[].$last.label.$append")
   join_field("containsExampleOfWork[].$last.label", ". ")
   join_field("containsExampleOfWork[].$last.creatorOfWork", " ")
+  copy_field("$i.n","containsExampleOfWork[].$last.workNumbering")
+  copy_field("$i.r","containsExampleOfWork[].$last.musicalKey")
+  add_array("containsExampleOfWork[].$last.type[]","Work")
+  add_array("containsExampleOfWork[].$last.instrumentation[]")
+  do list(path:"$i.m","var":"$j")
+    copy_field("$j","containsExampleOfWork[].$last.instrumentation[].$append")
+  end
+  do list(path: "$i.0", "var":"$k")
+    if any_match("$k", "^\\(DE-588\\).+$")
+      copy_field("$k", "containsExampleOfWork[].$last.id")
+      replace_all("containsExampleOfWork[].$last.id","^\\(DE-588\\)(.+$)","https://d-nb.info/gnd/$1")
+    end
+  end
+end
+
+do list(path:"730?2", "var": "$i")
+  add_array("containsExampleOfWork[].$append.label")
+  copy_field("$i.a","containsExampleOfWork[].$last.label.$append")
+  copy_field("$i.d","containsExampleOfWork[].$last.label.$append")
+  join_field("containsExampleOfWork[].$last.label", " ")
   copy_field("$i.n","containsExampleOfWork[].$last.workNumbering")
   copy_field("$i.r","containsExampleOfWork[].$last.musicalKey")
   add_array("containsExampleOfWork[].$last.type[]","Work")
