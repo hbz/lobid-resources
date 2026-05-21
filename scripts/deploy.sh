@@ -10,16 +10,16 @@ set -euo pipefail
 ## Configuration
 ##
 
-REPO=$1 # "lobid-resources-rpb-test" 
+REPO=$1 # "lobid-resources-rpb-test"
 JAVA_OPTS=$2 # -Xmx2048m,-Xms1024m
 
 HOME="/home/sol"
-BASE_DIR="${HOME}/git/${REPO}" 
-WEB_DIR="$BASE_DIR/web" 
-  
+BASE_DIR="${HOME}/git/${REPO}"
+WEB_DIR="$BASE_DIR/web"
+
 LOG_FILE="${WEB_DIR}/logs/deploy.log"
 
-SERVICE_NAME="${REPO}.service" 
+SERVICE_NAME="${REPO}.service"
 
 # it is important to set the proper locale
 . $HOME/.locale
@@ -32,35 +32,35 @@ JAVA_OPTS=$(echo "$JAVA_OPTS" |sed 's#,#\ #g')
 
 # Log everything to console and logfile
 # same as executing `./deploy.sh lobid-resources-rpb-test -Xmx2048m,-Xms1024m 2>&1 | tee -a ../logs/deploy.log`
-exec > >(tee -a "$LOG_FILE") 
-exec 2>&1 
+exec > >(tee -a "$LOG_FILE")
+exec 2>&1
 
-echo 
-echo "==================================================" 
-echo "[$(date '+%Y-%m-%d %H:%M:%S')] Starting deployment" 
+echo
+echo "=================================================="
+echo "[$(date '+%Y-%m-%d %H:%M:%S')] Starting deployment"
 echo "=================================================="
 
 ##
 ## Cleanup / Error handling
 ##
 
-cleanup() { 
-    echo "[$(date '+%Y-%m-%d %H:%M:%S')] Cleanup finished" 
-} 
+cleanup() {
+    echo "[$(date '+%Y-%m-%d %H:%M:%S')] Cleanup finished"
+}
 
-error_handler() { 
+error_handler() {
     # Capture the exit code of the failed command
-    local exit_code=$? 
-    echo 
-    echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" 
-    echo "[$(date '+%Y-%m-%d %H:%M:%S')] DEPLOYMENT FAILED" 
-    echo "Exit code: ${exit_code}" 
-    echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" 
-    exit "$exit_code" 
-} 
+    local exit_code=$?
+    echo
+    echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+    echo "[$(date '+%Y-%m-%d %H:%M:%S')] DEPLOYMENT FAILED"
+    echo "Exit code: ${exit_code}"
+    echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+    exit "$exit_code"
+}
 
 # Cleanup on script exit
-trap cleanup EXIT 
+trap cleanup EXIT
 # Call error handler on any error
 trap error_handler ERR
 
@@ -92,7 +92,7 @@ mvn clean install -DskipTests=true
 echo "==> Building Play stage"
 cd "${WEB_DIR}"
 export JAVA_OPTS="$JAVA_OPTS -XX:+ExitOnOutOfMemoryError -DpreferIPv4Stack"
-sbt clean 
+sbt clean
 sbt --java-home $JAVA_HOME stage
 
 echo "==> Restarting service"
@@ -104,7 +104,7 @@ sleep 10
 echo "==> Checking service state"
 systemctl is-active --quiet "$SERVICE_NAME"
 
-echo 
-echo "==================================================" 
-echo "[$(date '+%Y-%m-%d %H:%M:%S')] Deployment successful" 
+echo
+echo "=================================================="
+echo "[$(date '+%Y-%m-%d %H:%M:%S')] Deployment successful"
 echo "=================================================="
