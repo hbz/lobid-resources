@@ -53,7 +53,7 @@
               "digibib_string_normalizer",
               "snowball",
               "digibib_standardnumber",
-              "unique"
+              "digibib_remove_duplicates"
             ]
           },
           "digibib_search": {
@@ -68,7 +68,7 @@
               "digibib_string_normalizer",
               "snowball",
               "digibib_standardnumber",
-              "unique"
+              "digibib_remove_duplicates"
             ]
           },
           "digibib_unstemmed": {
@@ -82,7 +82,7 @@
               "icu_folding",
               "digibib_simple_hyphen",
               "german_normalize",
-              "unique"
+              "digibib_remove_duplicates"
             ]
           }
         },
@@ -152,6 +152,10 @@
               "zur",
               "über"
             ]
+          },
+          "digibib_remove_duplicates": {
+            "type": "unique",
+            "only_on_same_position": true
           },
           "digibib_simple_hyphen": {
             "type": "hyphen",
