@@ -151,6 +151,8 @@ public class IndexIntegrationTest extends LocalIndexSetup {
 			{ "q.all:HT072067630", /*->*/ 0 },
 			{ "q.all:(Erleben \\- Verstehen & Lernen)", /*->*/ 5 },
 			{ "q.all:(Lexicography \\: Selected Papers)", /*->*/ 1 },
+			{ "q.all:(Lernen Lernen)", /*->*/ 4 },
+			{ "q.all:\"Lernen Lernen\"", /*->*/ 4 },
 			{ "contribution.agent.label.digibib:Westfalen", /*->*/ 5 },
 			{ "contribution.agent.label.digibib:Westfälen", /*->*/ 5 },
 			{ "contribution.agent.label.digibib:Westfälisch", /*->*/ 5 },
