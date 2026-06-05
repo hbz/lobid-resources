@@ -134,10 +134,9 @@ put_filemap("$[isil2opac_issn.tsv]","isil2opac_issn", sep_char:"\t")
 put_filemap("$[isil2opac_zdbId.tsv]","isil2opac_zdbId", sep_char:"\t")
 put_filemap("$[isil2opac_almaMmsId.tsv]","isil2opac_almaMmsId", sep_char:"\t")
 
-# marc-relators map incl. uri, labels and codes
-# TODO: Check if the file needs to be updated.
-# static map: src/main/resources/alma/maps/marc-relators.tsv
-# manually generated, based on based on https://www.loc.gov/marc/relators/ loc version has no german language tags
+# marc-relators map incl. uri, labels and codes from https://github.com/hbz/lookup-tables/tree/master/data/marc-relators.tsv
+# dynamic map from git submodule: lookup-tables/data/marc-relators.tsv
+# generated, based on based on https://www.loc.gov/marc/relators/ loc version has no german language tags and RDA Arbeitshilfe
 put_filemap("$[marc-relators.tsv]","marc-relators", sep_char:"\t",key_column:"0",value_column:"4",expected_columns:"-1")
 
 # hbz and alma internal collection labels map
