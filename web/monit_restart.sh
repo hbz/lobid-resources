@@ -45,7 +45,7 @@ case $ACTION in
           rm target/universal/stage/RUNNING_PID
        fi
        export JAVA_OPTS="$JAVA_OPTS -XX:+ExitOnOutOfMemoryError -DpreferIPv4Stack"
-       sbt clean
+       sbt  -Djava.security.manager=allow clean
        sbt --java-home $JAVA_HOME stage
        ./target/universal/stage/bin/lobid-resources-web -Dhttp.port=$PORT -no-version-check > monit_start.log &
        if [ -n "$DO_ETL_UPDATE" -a $(tail -n100 logs/etl.log  |grep -c "Finishing indexing of ES index 'resources-alma-fix") -eq 0 ]; then
