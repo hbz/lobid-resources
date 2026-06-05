@@ -351,7 +351,7 @@ do list (path: "contribution[]", "var": "$i")
   remove_field("$i.agent.@gndIdn")
 
   copy_field("$i.role.id", "$i.role.label")
-  lookup("$i.role.label","marcRel")
+  lookup("$i.role.label","marc-relators")
 
   replace_all("$i.agent.label","<<|>>","")
   uniq("$i.agent.altLabel[]")

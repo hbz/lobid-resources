@@ -83,7 +83,7 @@ public final class AlmaMarc21XmlToLobidJsonMetafixTest {
         fixVariables.put("isil2opac_issn.tsv", "src/test/resources/alma/maps/isil2opac_issn.tsv");
         fixVariables.put("isil2opac_zdbId.tsv", "src/test/resources/alma/maps/isil2opac_zdbId.tsv");
         fixVariables.put("isil2opac_almaMmsId.tsv", "src/test/resources/alma/maps/isil2opac_almaMmsId.tsv");
-        fixVariables.put("marcRel.tsv", "src/main/resources/alma/maps/marcRel.tsv");
+        fixVariables.put("marc-relators.tsv", "src/test/resources/alma/maps/marc-relators.tsv");
         fixVariables.put("collectionLabels.tsv", "src/main/resources/alma/maps/collectionLabels.tsv");
         fixVariables.put("combinedDe-Sol1Holdings.tsv.gz", "src/test/resources/alma/maps/combinedDe-Sol1Holdings.tsv.gz");
         fixVariables.put("gnd-sc.ttl", "src/test/resources/alma/maps/gnd-sc.ttl");

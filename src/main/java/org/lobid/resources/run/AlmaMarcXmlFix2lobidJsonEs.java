@@ -139,7 +139,7 @@ public class AlmaMarcXmlFix2lobidJsonEs {
                 fixVariables.put("isil2opac_issn.tsv", "../../../../../../lookup-tables/data/opacLinks/isil2opac_issn.tsv");
                 fixVariables.put("isil2opac_zdbId.tsv", "../../../../../../lookup-tables/data/opacLinks/isil2opac_zdbId.tsv");
                 fixVariables.put("isil2opac_almaMmsId.tsv", "../../../../../../lookup-tables/data/opacLinks/isil2opac_almaMmsId.tsv");
-                fixVariables.put("marcRel.tsv", "./maps/marcRel.tsv");
+                fixVariables.put("marc-relators.tsv", "../../../../../../lookup-tables/data/marc-relators.tsv");
                 fixVariables.put("collectionLabels.tsv", "./maps/collectionLabels.tsv");
                 fixVariables.put("combinedDe-Sol1Holdings.tsv.gz", "./maps/combinedDe-Sol1Holdings.tsv.gz");
                 fixVariables.put("gnd-sc.ttl", "./maps/gnd-sc.ttl");
