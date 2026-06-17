@@ -40,6 +40,12 @@ do list(path: "k10PlusId", "var": "$i")
   add_field("sameAs[].$last.label","K10plus-Ressource")
 end
 
+# hebis
+do list(path: "hebisId", "var": "$i")
+  paste("sameAs[].$append.id","~http://cbsopac.rz.uni-frankfurt.de/DB=2.1/PPNSET?PPN=", "$i", join_char:"")
+  add_field("sameAs[].$last.label","hebis-Ressource")
+end
+
 # rpb
 do list(path: "rpbId", "var": "$i")
   paste("sameAs[].$append.id","~https://rpb.lbz-rlp.de/", "$i",join_char:"")
