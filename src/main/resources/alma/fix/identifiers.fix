@@ -152,6 +152,11 @@ do list(path:"035  ", "var":"$i")
       copy_field("$i.a", "k10PlusId")
     end
   end
+  unless exists("b3KatId")
+    if all_match("$i.a", "\\((DE-604)\\)BV\\d{9}")
+      copy_field("$i.a", "b3KatId")
+    end
+  end
 end
 
 #160 - 016 - National Bibliographic Agency Control Number (R)
@@ -180,6 +185,7 @@ unless any_match("zdbId","\\d{1,7}-[Xx\\d]")
   remove_field("zdbId")
 end
 replace_all("dnbId", "\\(DE-101\\)","")
+replace_all("b3KatId", "\\(DE-604\\)","")
 replace_all("k10PlusId", "\\(DE-627\\)","")
 
 copy_field("almaMmsId","rpbId")
