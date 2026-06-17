@@ -1,8 +1,7 @@
 #!/bin/bash
 # Description: Tests generated JSON files against schemas
-# Prerequisites: install ajv and ajv-formats
-#	$ npm install -g ajv-cli
-#	$ npm install -g ajv-formats
+# Prerequisites: install sourcemeta/jsonschema
+#	$ npm install --global @sourcemeta/jsonschema
 
 # old transformation of Aleph data, known to be often invalid:
 # DIRECTORY_OF_JSON_TO_VALIDATE="jsonld/"
