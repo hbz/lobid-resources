@@ -46,6 +46,12 @@ do list(path: "hebisId", "var": "$i")
   add_field("sameAs[].$last.label","hebis-Ressource")
 end
 
+# obv
+do list(path: "obvId", "var": "$i")
+  paste("sameAs[].$append.id","~https://permalink.obvsg.at/", "$i", join_char:"")
+  add_field("sameAs[].$last.label","obv-Ressource")
+end
+
 # rpb
 do list(path: "rpbId", "var": "$i")
   paste("sameAs[].$append.id","~https://rpb.lbz-rlp.de/", "$i",join_char:"")

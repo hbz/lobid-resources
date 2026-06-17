@@ -162,6 +162,11 @@ do list(path:"035  ", "var":"$i")
       copy_field("$i.a", "hebisId")
     end
   end
+  unless exists("obvId")
+    if all_match("$i.a", "\\((AT-OBV)\\)AC[\\d]{8}")
+      copy_field("$i.a", "obvId")
+    end
+  end
 end
 
 #160 - 016 - National Bibliographic Agency Control Number (R)
@@ -182,7 +187,7 @@ do list(path:"0167 ", "var":"$i")
   end
 end
 
-# clean up ZDB & DNB id
+# clean up ZDB & DNB id & unioncatalogie ids
 replace_all("zdbId", "\\(DE-600\\)","")
 replace_all("zdbId", "\\(DE-599\\)ZDB","")
 replace_all("zdbId", "(\\d{1,7})-* ?-*([Xx\\d])","$1-$2") # CZ entries have incorrect whitespaces sometimes in the zdbId, we need to adjust them so only one "-" separates the first group of numbers from the last number.
@@ -193,6 +198,7 @@ replace_all("dnbId", "\\(DE-101\\)","")
 replace_all("b3KatId", "\\(DE-604\\)","")
 replace_all("k10PlusId", "\\(DE-627\\)","")
 replace_all("hebisId", "\\(DE-603\\)","")
+replace_all("obvId", "\\(AT-OBV\\)","")
 
 copy_field("almaMmsId","rpbId")
 lookup("rpbId","almaMmsId2rpbId",delete:"true")
