@@ -373,12 +373,10 @@ do list(path: "856??", "var":"$i")
       elsif any_equal("$i.7","0") # Open Access Marker
         add_field("fulltextOnline[].$append.label","Online-Ressource")
         copy_field("$i.u", "fulltextOnline[].$last.id")
-      end
-      if all_match("$i.x", ".*(Archivierte Online|EZB|Online-Ausg|Resolving-System|Volltext).*")
+      elsif all_match("$i.x", ".*(Archivierte Online|EZB|Online-Ausg|Resolving-System|Volltext).*")
         copy_field("$i.x", "fulltextOnline[].$append.label")
         copy_field("$i.u", "fulltextOnline[].$last.id")
-      end
-      if all_match("$i.3", "^[vV][oO][lL].*") # Volltext
+      elsif all_match("$i.3", "^[vV][oO][lL].*") # Volltext
         copy_field("$i.3", "fulltextOnline[].$append.label")
         copy_field("$i.u", "fulltextOnline[].$last.id")
       end
