@@ -76,9 +76,10 @@ EOF
 
 # validate schema
 cd ~/git/lobid-resources/src/test/resources/schemas
-jsonschema validate resource.json ${DUMP_DIRECTORY}${UPDATES_FNAME} > /tmp/jsonschemaValidationOutput.log 2>&1
+jsonschema validate resource.json ${DUMP_DIRECTORY}${UPDATES_FNAME} --continue > /tmp/jsonschemaValidationOutput.log 2>&1
 
 if [ -s /tmp/jsonschemaValidationOutput.log ]; then
-        mail -s "[sysad] [lobid-resources] Jsonschema validated with errors" "${MAIL_TO}" -a "From: ${MAIL_FROM}" < "/tmp/jsonschemaValidationOutput.log"
+        NUMBER_OF_INVALID_RECORDS = $(grep -c "fail:")
+        mail -s "[sysad] [lobid-resources] Jsonschema validated with ${NUMBER_OF_INVALID_RECORDS} invalid records" "${MAIL_TO}" -a "From: ${MAIL_FROM}" < "/tmp/jsonschemaValidationOutput.log"
 fi
 rm /tmp/jsonschemaValidationOutput.log
