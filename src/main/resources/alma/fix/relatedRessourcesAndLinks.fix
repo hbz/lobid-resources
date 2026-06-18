@@ -360,8 +360,8 @@ add_array("fulltextOnline[]")
 do list(path: "856??", "var":"$i")
   if exists("$i.u")
     unless any_match("$i.u",".*(doi.org|urn=urn:|\\.(org|de)/urn:).*") # This should not skip repository links like: https://sammlungen.ulb.uni-muenster.de/urn/urn:nbn:de:hbz:6-85659520092
-      if any_equal("$i.z", "kostenfrei") # kostenfrei, added Digitalisierung not only Verlag or Agentur as filter
-          if any_match("$i.x", ".*(Verlag|Agentur|Digitalisierung).*")
+      if any_equal("$i.z", "kostenfrei") # kostenfrei, added more types of resources
+          if any_match("$i.x", ".*(Verlag|Agentur|Digitalisierung|Archivierte Online|EZB|Online-Ausg|Resolving-System|Volltext).*")
             copy_field("$i.x", "fulltextOnline[].$append.label")
             copy_field("$i.u", "fulltextOnline[].$last.id")
           else
