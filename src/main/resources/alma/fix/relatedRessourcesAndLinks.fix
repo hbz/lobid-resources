@@ -34,6 +34,18 @@ do list(path: "bvbId", "var": "$i")
   add_field("sameAs[].$last.label","BVB-Ressource")
 end
 
+# kobv
+do list(path: "kobvId", "var": "$i")
+  paste("sameAs[].$append.id","~https://portal.kobv.de/uid.do?query=", "$i", "~&index=internal&plv=2", join_char:"")
+  add_field("sameAs[].$last.label","kobv-Ressource")
+end
+
+# k10Plus
+do list(path: "kobvId", "var": "$i")
+  paste("sameAs[].$append.id","~https://opac.k10plus.de/DB=2.299/PPNSET?PPN=", "$i", "~&PRS=HOL&INDEXSET=21", join_char:"")
+  add_field("sameAs[].$last.label","K10plus-Ressource")
+end
+
 # k10Plus
 do list(path: "k10PlusId", "var": "$i")
   paste("sameAs[].$append.id","~https://opac.k10plus.de/DB=2.299/PPNSET?PPN=", "$i", "~&PRS=HOL&INDEXSET=21", join_char:"")
