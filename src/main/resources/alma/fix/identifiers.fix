@@ -147,6 +147,11 @@ do list(path:"035  ", "var":"$i")
       copy_field("$i.a", "dnbId")
     end
   end
+  unless exists("gbvId")
+    if all_match("$i.a", "\\(DE-601\\).*?")
+      copy_field("$i.a", "gbvId")
+    end
+  end
   unless exists("kobvId")
     if all_match("$i.a", "\\(DE-602\\).*?")
       copy_field("$i.a", "kobvId")
@@ -200,6 +205,7 @@ unless any_match("zdbId","\\d{1,7}-[Xx\\d]")
   remove_field("zdbId")
 end
 replace_all("dnbId", "\\(DE-101\\)","")
+replace_all("gbvId", "\\(DE-601\\)","")
 replace_all("bvbId", "\\(DE-604\\)","")
 replace_all("kobvId", "\\(DE-602\\)","")
 replace_all("k10PlusId", "\\(DE-627\\)","")
