@@ -28,10 +28,10 @@ do list(path: "dnbId", "var": "$i")
   add_field("sameAs[].$last.label","DNB-Ressource")
 end
 
-# b3kat
-do list(path: "b3KatId", "var": "$i")
+# bvb
+do list(path: "bvbId", "var": "$i")
   paste("sameAs[].$append.id","~https://gateway-bayern.de/", "$i", join_char:"")
-  add_field("sameAs[].$last.label","B3Kat-Ressource")
+  add_field("sameAs[].$last.label","BVB-Ressource")
 end
 
 # k10Plus
