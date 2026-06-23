@@ -83,7 +83,6 @@ public class ElasticsearchIndexer
 	private static ObjectMapper mapper = new ObjectMapper();
 	private HashMap<String, Object> settings = new HashMap<>();
 	/** Defines if the mabxml lookup should be done */
-	public boolean lookupMabxmlDeletion;
 	private static HashSet<String> unsuccessfullyLookup = new HashSet<>();
 	private static final LocalDateTime now = LocalDateTime.now();
 
@@ -200,12 +199,9 @@ public class ElasticsearchIndexer
 		String jsonDoc = json.get(Properties.GRAPH.getName());
 		if (json.containsKey(Properties.PARENT.getName())) { // items
 			indexRequest.parent(json.get(Properties.PARENT.getName()));
-		} else {
-            if (lookupMabxmlDeletion) {
-                jsonDoc = enrichMabxmlDeletions(json.get(Properties.ID.getName())
-                    .replaceAll(".*/", "").replaceAll("#!", ""), jsonDoc);
-            }
-        }
+			System.out.print("pchbz: 202");
+		}
+		System.out.print("pchbz: 204");
 		indexRequest.source(jsonDoc, JSON);
 		bulkRequest.add(indexRequest);
 		docs++;
