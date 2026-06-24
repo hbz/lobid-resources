@@ -147,6 +147,41 @@ do list(path:"035  ", "var":"$i")
       copy_field("$i.a", "dnbId")
     end
   end
+  unless exists("bszId")
+    if all_match("$i.a", "\\(DE-576\\).*?")
+      copy_field("$i.a", "bszId")
+    end
+  end
+  unless exists("gbvId")
+    if all_match("$i.a", "\\(DE-601\\).*?")
+      copy_field("$i.a", "gbvId")
+    end
+  end
+  unless exists("kobvId")
+    if all_match("$i.a", "\\(DE-602\\).*?")
+      copy_field("$i.a", "kobvId")
+    end
+  end
+  unless exists("k10PlusId")
+    if all_match("$i.a", "\\(DE-627\\)\\d{8,9}[0-9X]")
+      copy_field("$i.a", "k10PlusId")
+    end
+  end
+  unless exists("bvbId")
+    if all_match("$i.a", "\\((DE-604)\\)BV\\d{9}")
+      copy_field("$i.a", "bvbId")
+    end
+  end
+  unless exists("hebisId")
+    if all_match("$i.a", "\\((DE-603)\\)\\d{9,10}")
+      copy_field("$i.a", "hebisId")
+    end
+  end
+  unless exists("obvId")
+    if all_match("$i.a", "\\((AT-OBV)\\)AC[\\d]{8}")
+      copy_field("$i.a", "obvId")
+    end
+  end
 end
 
 #160 - 016 - National Bibliographic Agency Control Number (R)
@@ -167,7 +202,36 @@ do list(path:"0167 ", "var":"$i")
   end
 end
 
-# clean up ZDB & DNB id
+# DE-599 as fallback
+do list(path:"035  ", "var":"$i")
+  if all_match("$i.a", "\\(DE-599\\)BSZ.*?")
+    unless exists("bszId")
+      copy_field("$i.a", "bszId")
+    end
+  elsif all_match("$i.a", "\\(DE-599\\)GBV.*?")
+    unless exists("gbvId")
+      copy_field("$i.a", "gbvID")
+    end
+  elsif all_match("$i.a", "\\(DE-599\\)OBV.*?")
+    unless exists("obvId")
+      copy_field("$i.a", "obvId")
+    end
+  elsif all_match("$i.a", "\\(DE-599\\)HEB.*?")
+    unless exists("hebisId")
+      copy_field("$i.a", "hebisId")
+    end
+  elsif all_match("$i.a", "\\(DE-599\\)BVB.*?")
+    unless exists("bvbId")
+      copy_field("$i.a", "bvbId")
+    end
+  elsif all_match("$i.a", "\\(DE-599\\)KXP.*?")
+    unless exists("k10PlusId")
+      copy_field("$i.a", "k10PlusId")
+    end
+  end
+end
+
+# clean up ZDB & DNB id & unioncatalogie ids
 replace_all("zdbId", "\\(DE-600\\)","")
 replace_all("zdbId", "\\(DE-599\\)ZDB","")
 replace_all("zdbId", "(\\d{1,7})-* ?-*([Xx\\d])","$1-$2") # CZ entries have incorrect whitespaces sometimes in the zdbId, we need to adjust them so only one "-" separates the first group of numbers from the last number.
@@ -175,6 +239,20 @@ unless any_match("zdbId","\\d{1,7}-[Xx\\d]")
   remove_field("zdbId")
 end
 replace_all("dnbId", "\\(DE-101\\)","")
+replace_all("gbvId", "\\(DE-601\\)","")
+replace_all("gbvId", "\\(DE-599\\)GBV","")
+replace_all("bszId", "\\(DE-576\\)","")
+replace_all("bszId", "\\(DE-599\\)BSZ","")
+replace_all("bvbId", "\\(DE-604\\)","")
+replace_all("bvbId", "\\(DE-599\\)BVB","")
+replace_all("kobvId", "\\(DE-602\\)","")
+replace_all("k10PlusId", "\\(DE-627\\)","")
+replace_all("k10PlusId", "\\(DE-599\\)KXP","")
+replace_all("hebisId", "\\(DE-603\\)","")
+replace_all("hebisId", "\\(DE-599\\)HEB","")
+replace_all("obvId", "\\(AT-OBV\\)","")
+replace_all("obvId", "\\(599\\)OBV","")
+
 
 copy_field("almaMmsId","rpbId")
 lookup("rpbId","almaMmsId2rpbId",delete:"true")

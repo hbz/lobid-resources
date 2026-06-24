@@ -36,11 +36,20 @@
         "type": "string"
       }
     },
+    "bvbId": {
+      "title": "B3Kat identifier",
+      "type": "string",
+      "pattern": "BV\\d{9}"
+    },
     "bibliographicCitation": {
       "type": "string"
     },
     "bibliographicLevel": {
       "$ref": "bibliographicLevel.json"
+    },
+    "bszId": {
+      "title": "bsz identifier",
+      "type": "string"
     },
     "conditionsOfAccess": {
       "$ref": "conditionsOfAccess.json"
@@ -72,7 +81,8 @@
     },
     "dnbId": {
       "title": "DNB identifier",
-      "type": "string"
+      "type": "string",
+      "pattern": "\\d{8,9}[X\\d]?"
     },
     "doi": {
       "$ref": "doi.json"
@@ -94,12 +104,22 @@
     "fulltextOnline": {
       "$ref": "fulltextOnline.json"
     },
+    "gbvId": {
+      "title": "gbv identifier",
+      "type": "string"
+    },
     "hasItem": {
       "$ref": "hasItem.json"
     },
     "hbzId": {
       "title": "hbz identifier",
-      "type": "string"
+      "type": "string",
+      "pattern": "[BCHT]T\\d+"
+    },
+    "hebisId": {
+      "title": "hebis PPN identifier",
+      "type": "string",
+      "pattern": "\\d{9,10}"
     },
     "inCollection": {
       "$ref": "inCollection.json"
@@ -115,6 +135,15 @@
     },
     "ismn": {
       "$ref": "ismn.json"
+    },
+    "kobvId": {
+      "title": "kobv identifier",
+      "type": "string"
+    },
+    "k10PlusId": {
+      "title": "K10Plus identifier",
+      "type": "string",
+      "pattern": "\\d{8,9}[0-9X]"
     },
     "langNote": {
       "title": "Note concerning the language of a resource",
@@ -140,6 +169,11 @@
     },
     "note": {
       "$ref": "note.json"
+    },
+    "obvId": {
+      "title": "OBV identifier",
+      "type": "string",
+      "pattern": "AC[\\d]{8}"
     },
     "oclcNumber": {
       "title": "OCLC number",
