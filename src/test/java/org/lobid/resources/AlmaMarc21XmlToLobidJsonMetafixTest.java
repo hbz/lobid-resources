@@ -11,14 +11,8 @@ import org.metafacture.biblio.marc21.MarcXmlHandler;
 import org.metafacture.io.FileOpener;
 import org.metafacture.files.DirReader;
 import org.metafacture.json.JsonEncoder;
-import org.metafacture.mangling.LiteralToObject;
 import org.metafacture.monitoring.StreamBatchLogger;
-import org.metafacture.strings.StringFilter;
-import org.metafacture.strings.StringReader;
-import org.metafacture.xml.SimpleXmlEncoder;
 import org.metafacture.xml.XmlDecoder;
-import org.metafacture.xml.XmlElementSplitter;
-import org.metafacture.xml.XmlFilenameWriter;
 import org.metafacture.metafix.Metafix;
 
 import org.slf4j.Logger;
@@ -46,8 +40,6 @@ public final class AlmaMarc21XmlToLobidJsonMetafixTest {
     final HashMap<String, String> fixVariables = new HashMap<>();
     private static final boolean GENERATE_TESTDATA = System.getProperty("generateTestData", "false").equals("true");
     private static final Logger LOG = LoggerFactory.getLogger(AlmaMarc21XmlToLobidJsonMetafixTest.class);
-    // try patterns like e.g."662", NOT".*662" (which just would slow down)
-    private static final String PATTERN_TO_IDENTIFY_XML_RECORDS = "";
 
     /**
      * Sets necessary morph variables.

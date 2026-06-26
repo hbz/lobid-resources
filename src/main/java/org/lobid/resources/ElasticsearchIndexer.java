@@ -13,13 +13,11 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.concurrent.TimeUnit;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.SortedSetMultimap;
 import com.google.common.collect.TreeMultimap;
 import com.google.gdata.util.common.io.CharStreams;
@@ -41,6 +39,7 @@ import org.elasticsearch.client.transport.NoNodeAvailableException;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
+import org.elasticsearch.index.query.MatchPhraseQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.QueryStringQueryBuilder;
 import org.elasticsearch.rest.action.admin.indices.AliasesNotFoundException;
@@ -79,13 +78,19 @@ public class ElasticsearchIndexer
 	private String indexName;
 	private boolean updateNewestIndex;
 	private String aliasSuffix = "";
-	private static QueryStringQueryBuilder deleteQuery =
-			QueryBuilders.queryStringQuery("title: DELETED from lobid-resources");
+
+/*
+SearchRequestBuilder searchRequestBuilder = client.prepareSearch()
+            .setIndices("resume")
+ .setTypes("docs").setQuery(qb).addHighlightedField("file");
+
+SearchResponse response = searchRequestBuilder.execute().actionGet(); */
+
+	private static MatchPhraseQueryBuilder deleteQuery =
+			QueryBuilders.matchPhraseQuery("title","DELETED from lobid-resources");
 	private static String indexConfig;
-	private static ObjectMapper mapper = new ObjectMapper();
 	private HashMap<String, Object> settings = new HashMap<>();
 	/** Defines if the mabxml lookup should be done */
-	private static HashSet<String> unsuccessfullyLookup = new HashSet<>();
 	private static final LocalDateTime now = LocalDateTime.now();
 
 	/**
@@ -143,13 +148,8 @@ public class ElasticsearchIndexer
 		if (tc != null) {
 			tc.close();
 		}
-		if (client != null) {
-			client.close();
 		}
-		if (unsuccessfullyLookup != null) {
-			unsuccessfullyLookup.clear();
-		}
-	}
+	
 
 	@Override
 	public void onSetReceiver() {
@@ -182,7 +182,7 @@ public class ElasticsearchIndexer
 			createIndex();
 		UpdateSettingsRequest request = new UpdateSettingsRequest(indexName);
 		LOG.info("Set index.refresh_interval to -1");
-		settings.put("indreex.refresh_interval", "-1");
+		settings.put("index.refresh_interval", "-1");
 		request.settings(settings);
 		client.admin().indices().updateSettings(request).actionGet();
 	}
@@ -200,6 +200,10 @@ public class ElasticsearchIndexer
 		indexRequest = new IndexRequest(indexName,
 				json.get(Properties.TYPE.getName()), json.get(Properties.ID.getName()));
 		String jsonDoc = json.get(Properties.GRAPH.getName());
+		if (json.containsKey(Properties.PARENT.getName())) { // items
+        indexRequest.parent(json.get(Properties.PARENT.getName()));
+					LOG.info("PARENT gesetzt");
+    }
 		indexRequest.source(jsonDoc, JSON);
 		bulkRequest.add(indexRequest);
 		docs++;
@@ -229,20 +233,23 @@ public class ElasticsearchIndexer
 	}
 
 	@SuppressWarnings("resource")
-	public void deleteMarkedResources() {
+	public long deleteMarkedResources() {
+		long amountOfDeletedResources=0;
 		try {
 			SearchResponse deleteResponse = getElasticsearchClient()
-					.prepareSearch(indexName).setQuery(deleteQuery).get();
-			final BulkRequestBuilder brb = client.prepareBulk();
+					.prepareSearch(indexName).setQuery(deleteQuery).setSize(10000).get();
 			SearchHits searchHits = deleteResponse.getHits();
+			amountOfDeletedResources=searchHits.getTotalHits();
 			if (searchHits.totalHits > 0) {
 				if (LOG.isInfoEnabled()) {
 					LOG.info(String.format(
 							"Found %s resources to be deleted. Going to delete them ...",
-							searchHits));
+							);
 				}
+				bulkRequest = getElasticsearchClient().prepareBulk();
 				for (final SearchHit hit : deleteResponse.getHits()) {
-					brb.add(
+					LOG.info("add one to delete");
+					bulkRequest.add(
 							new DeleteRequest(hit.getIndex(), hit.getType(), hit.getId()));
 				}
 				BulkResponse bulkResponse = bulkRequest.execute().actionGet();
@@ -253,7 +260,10 @@ public class ElasticsearchIndexer
 			}
 		} catch (final Exception ex) {
 			LOG.warn(ex.getMessage());
+		}  finally {
+			this.onCloseStream();
 		}
+		return amountOfDeletedResources;
 	}
 
 	/**
