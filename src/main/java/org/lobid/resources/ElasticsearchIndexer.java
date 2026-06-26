@@ -182,7 +182,7 @@ public class ElasticsearchIndexer
 			createIndex();
 		UpdateSettingsRequest request = new UpdateSettingsRequest(indexName);
 		LOG.info("Set index.refresh_interval to -1");
-		settings.put("indreex.refresh_interval", "-1");
+		settings.put("index.refresh_interval", "-1");
 		request.settings(settings);
 		client.admin().indices().updateSettings(request).actionGet();
 	}
