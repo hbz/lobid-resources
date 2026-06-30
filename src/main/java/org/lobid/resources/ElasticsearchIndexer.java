@@ -200,6 +200,10 @@ public class ElasticsearchIndexer
 		indexRequest = new IndexRequest(indexName,
 				json.get(Properties.TYPE.getName()), json.get(Properties.ID.getName()));
 		String jsonDoc = json.get(Properties.GRAPH.getName());
+		if (json.containsKey(Properties.PARENT.getName())) { // items
+        indexRequest.parent(json.get(Properties.PARENT.getName()));
+					LOG.info("PARENT gesetzt");
+    }
 		indexRequest.source(jsonDoc, JSON);
 		bulkRequest.add(indexRequest);
 		docs++;
