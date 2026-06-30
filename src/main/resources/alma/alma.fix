@@ -5,11 +5,6 @@ do once("setup")
   put_var("member", "-")
 end
 
-# Skip all deleted records
-if any_equal("DEL??.a", "Y")
-  reject()
-end
-
 # Helper element that states if a record is part of the hbz NZ
 if any_equal("MBD  .M", "49HBZ_NETWORK")
   if any_match("POR  .A", ".*")
@@ -81,6 +76,11 @@ if exists("@inNZ") # only NZ resources no local IZ resources
       end
     end
   end
+end
+
+# Mark all deleted records in the title
+if any_equal("DEL??.a", "Y")
+  add_field("title","DELETED from lobid-resources")
 end
 
 vacuum()
@@ -156,3 +156,13 @@ retain(
   "zdbId",
   "subjectslabels[]"
   )
+
+if any_equal("title","DELETED from lobid-resources")
+  retain(
+    "@context",
+    "id",
+    "almaMmsId", # needed for elasticSearchBulk
+    "title",
+    "type[]"
+  )
+end
