@@ -171,14 +171,14 @@ public class AlmaMarcXmlFix2lobidJsonEs {
                         .setReceiver(xmlElementSplitter)//
                         .setReceiver(new LiteralToObject())//
                         .setReceiver(new ObjectThreader<>())//
-                        .addReceiver(receiverThread())//
-                        .addReceiver(receiverThread())//
-                        .addReceiver(receiverThread())//
-                        .addReceiver(receiverThread())//
-                        .addReceiver(receiverThread())//
-                        .addReceiver(receiverThread())//
-                        .addReceiver(receiverThread())//
-                        .addReceiver(receiverThread());
+                        // .addReceiver(receiverThread())//
+                        // .addReceiver(receiverThread())//
+                        // .addReceiver(receiverThread())//
+                        // .addReceiver(receiverThread())//
+                        // .addReceiver(receiverThread())//
+                        // .addReceiver(receiverThread())//
+                        // .addReceiver(receiverThread())//
+                         .addReceiver(receiverThread());
                 }
                 StringBuilder message = new StringBuilder();
                 boolean success;
@@ -186,7 +186,7 @@ public class AlmaMarcXmlFix2lobidJsonEs {
                     String inputPathes[] = inputPath.split(";");
                     for (int i=0;i < inputPathes.length; i++ ) {
                         LOG.info(String.format("Going to process inputFile=%s", inputPathes[i]));
-                        opener.process(inputPathes[i]);
+                   //     opener.process(inputPathes[i]);
                         opener.closeStream();
                     }
                     success = true;
