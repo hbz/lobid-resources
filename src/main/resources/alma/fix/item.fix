@@ -239,8 +239,8 @@ replace_all("@holder[].*","(DE-\\d*)-.+","$1") # Subsume libraries to their pare
 
 uniq("@holder[]")
 
-do list(path: "@holder[]","var":"$i") # Filter out all libraries that are not in NRW and DE-Sol1
-  unless any_match("$i","DE-1042|DE-386|DE-987|DE-929|DE-Kob7|DE-Lan1|DE-1116|DE-B23|DE-1105|DE-Tr2|DE-Tr5|DE-385|DE-121|DE-1117|DE-Zw1|DE-Sol1")
+do list(path: "@holder[]","var":"$i") # Filter out all libraries that are not in NRW, are Bridge-Libraries inkl. all (49HBZ_BRIDGE_FIZ) and DE-Sol1
+  unless any_match("$i","DE-00|DE-1018|DE-1042|DE-110|DE-1105|DE-1116|DE-1117|DE-121|DE-131|DE-133|DE-136|DE-142|DE-157|DE-174|DE-211|DE-217|DE-2192|DE-221|DE-227|DE-230|DE-231|DE-236|DE-242|DE-243|DE-247|DE-260|DE-268|DE-273|DE-278|DE-287|DE-290E|DE-362|DE-364|DE-369|DE-373|DE-374|DE-379|DE-380|DE-385|DE-386|DE-393|DE-399|DE-405|DE-415|DE-431|DE-436|DE-444|DE-446|DE-447|DE-454|DE-52|DE-587|DE-60|DE-62|DE-64|DE-69|DE-710|DE-713|DE-714|DE-72|DE-733|DE-734|DE-738|DE-831|DE-918|DE-927|DE-929|DE-977|DE-987|DE-992|DE-A2|DE-B23|DE-Bed1|DE-Bet1|DE-Bg1|DE-Bg2|DE-Bi12|DE-Bi15|DE-Bi5|DE-Bi7|DE-Bi8|DE-Bm2|DE-Bm53|DE-Bo102|DE-Bo127|DE-Bo131|DE-Bo133|DE-Bo146|DE-Bo170|DE-Bo171|DE-Bo206|DE-Bo400|DE-Bo405|DE-Bo410|DE-Bo56|DE-Bo59|DE-Bri2|DE-Brl1|DE-Cla1|DE-Det2|DE-Dm11|DE-Due20|DE-Due48|DE-Due51|DE-Due58|DE-Due59|DE-Due63|DE-Due65|DE-E10|DE-Eus2|DE-Gk1|DE-Grv1|DE-Hef1|DE-Hen2|DE-Hoer1|DE-Huer1|DE-Hzr1|DE-Jhn1|DE-Juel1|DE-Kn125|DE-Kn126|DE-Kn133|DE-Kn166|DE-Kn184|DE-Kn192|DE-Kn195|DE-Kn39|DE-Kn55|DE-Kob1|DE-Kob2|DE-Kob3|DE-Kob7|DE-Kob9|DE-Kow1|DE-Kow2|DE-Kv1|DE-Lan1|DE-Mch1|DE-Ml1|DE-Mtl1|DE-Mue27|DE-Mue73|DE-Mue78|DE-Net1|DE-Ob1|DE-Rag1|DE-Rem4|DE-Rn1|DE-Se1|DE-Sol1|DE-Tr1|DE-Tr16|DE-Tr18|DE-Tr19|DE-Tr2|DE-Tr20|DE-Tr5|DE-Vln1|DE-Wit1|DE-Wrf1|DE-Wrl1|DE-X1|DE-Zlp1|DE-Zw1")
     copy_field("$i","@filteredHolders[].$append")
   end
 end
