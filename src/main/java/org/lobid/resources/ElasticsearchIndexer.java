@@ -79,8 +79,16 @@ public class ElasticsearchIndexer
 	private String indexName;
 	private boolean updateNewestIndex;
 	private String aliasSuffix = "";
+
+/*
+SearchRequestBuilder searchRequestBuilder = client.prepareSearch()
+            .setIndices("resume")
+ .setTypes("docs").setQuery(qb).addHighlightedField("file");
+
+SearchResponse response = searchRequestBuilder.execute().actionGet(); */
+
 	private static QueryStringQueryBuilder deleteQuery =
-			QueryBuilders.queryStringQuery("title: DELETED from lobid-resources");
+			QueryBuilders.queryStringQuery("title:\"DELETED from lobid-resources\"");
 	private static String indexConfig;
 	private static ObjectMapper mapper = new ObjectMapper();
 	private HashMap<String, Object> settings = new HashMap<>();
@@ -230,6 +238,7 @@ public class ElasticsearchIndexer
 				LOG.warn(ex.getMessage());
 			}
 		}
+		this.onCloseStream();
 	}
 
 	@SuppressWarnings("resource")
@@ -237,16 +246,16 @@ public class ElasticsearchIndexer
 		try {
 			SearchResponse deleteResponse = getElasticsearchClient()
 					.prepareSearch(indexName).setQuery(deleteQuery).get();
-			final BulkRequestBuilder brb = client.prepareBulk();
 			SearchHits searchHits = deleteResponse.getHits();
 			if (searchHits.totalHits > 0) {
 				if (LOG.isInfoEnabled()) {
 					LOG.info(String.format(
 							"Found %s resources to be deleted. Going to delete them ...",
-							searchHits));
+							searchHits.totalHits));
 				}
+				bulkRequest = getElasticsearchClient().prepareBulk();
 				for (final SearchHit hit : deleteResponse.getHits()) {
-					brb.add(
+					bulkRequest.add(
 							new DeleteRequest(hit.getIndex(), hit.getType(), hit.getId()));
 				}
 				BulkResponse bulkResponse = bulkRequest.execute().actionGet();
