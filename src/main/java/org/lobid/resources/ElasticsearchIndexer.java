@@ -41,6 +41,7 @@ import org.elasticsearch.client.transport.NoNodeAvailableException;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
+import org.elasticsearch.index.query.MatchPhraseQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.QueryStringQueryBuilder;
 import org.elasticsearch.rest.action.admin.indices.AliasesNotFoundException;
@@ -87,13 +88,11 @@ SearchRequestBuilder searchRequestBuilder = client.prepareSearch()
 
 SearchResponse response = searchRequestBuilder.execute().actionGet(); */
 
-	private static QueryStringQueryBuilder deleteQuery =
-			QueryBuilders.queryStringQuery("title:\"DELETED from lobid-resources\"");
+	private static MatchPhraseQueryBuilder deleteQuery =
+			QueryBuilders.matchPhraseQuery("title","DELETED from lobid-resources");
 	private static String indexConfig;
-	private static ObjectMapper mapper = new ObjectMapper();
 	private HashMap<String, Object> settings = new HashMap<>();
 	/** Defines if the mabxml lookup should be done */
-	private static HashSet<String> unsuccessfullyLookup = new HashSet<>();
 	private static final LocalDateTime now = LocalDateTime.now();
 
 	/**
@@ -151,13 +150,8 @@ SearchResponse response = searchRequestBuilder.execute().actionGet(); */
 		if (tc != null) {
 			tc.close();
 		}
-		if (client != null) {
-			client.close();
 		}
-		if (unsuccessfullyLookup != null) {
-			unsuccessfullyLookup.clear();
-		}
-	}
+	
 
 	@Override
 	public void onSetReceiver() {
@@ -238,23 +232,23 @@ SearchResponse response = searchRequestBuilder.execute().actionGet(); */
 				LOG.warn(ex.getMessage());
 			}
 		}
-		this.onCloseStream();
 	}
 
 	@SuppressWarnings("resource")
 	public void deleteMarkedResources() {
 		try {
 			SearchResponse deleteResponse = getElasticsearchClient()
-					.prepareSearch(indexName).setQuery(deleteQuery).get();
+					.prepareSearch(indexName).setQuery(deleteQuery).setSize(10000).get();
 			SearchHits searchHits = deleteResponse.getHits();
 			if (searchHits.totalHits > 0) {
 				if (LOG.isInfoEnabled()) {
 					LOG.info(String.format(
 							"Found %s resources to be deleted. Going to delete them ...",
-							searchHits.totalHits));
+							searchHits.getTotalHits()));
 				}
 				bulkRequest = getElasticsearchClient().prepareBulk();
 				for (final SearchHit hit : deleteResponse.getHits()) {
+					LOG.info("add one to delete");
 					bulkRequest.add(
 							new DeleteRequest(hit.getIndex(), hit.getType(), hit.getId()));
 				}
@@ -266,6 +260,8 @@ SearchResponse response = searchRequestBuilder.execute().actionGet(); */
 			}
 		} catch (final Exception ex) {
 			LOG.warn(ex.getMessage());
+		}  finally {
+			this.onCloseStream();
 		}
 	}
 

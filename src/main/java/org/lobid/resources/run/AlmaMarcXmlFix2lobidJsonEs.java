@@ -171,7 +171,7 @@ public class AlmaMarcXmlFix2lobidJsonEs {
                         .setReceiver(xmlElementSplitter)//
                         .setReceiver(new LiteralToObject())//
                         .setReceiver(new ObjectThreader<>())//
-                        // .addReceiver(receiverThread())//
+                        .addReceiver(receiverThread())//
                         // .addReceiver(receiverThread())//
                         // .addReceiver(receiverThread())//
                         // .addReceiver(receiverThread())//
@@ -186,7 +186,7 @@ public class AlmaMarcXmlFix2lobidJsonEs {
                     String inputPathes[] = inputPath.split(";");
                     for (int i=0;i < inputPathes.length; i++ ) {
                         LOG.info(String.format("Going to process inputFile=%s", inputPathes[i]));
-                   //     opener.process(inputPathes[i]);
+                        opener.process(inputPathes[i]);
                         opener.closeStream();
                     }
                     success = true;
@@ -205,8 +205,8 @@ public class AlmaMarcXmlFix2lobidJsonEs {
                 String timeNeeded="Time needed: " + getTimeNeeded(startMilliseconds);
                 LOG.info(timeNeeded);
                 message.append("\n"+timeNeeded);
-                sendMail(kind, success, message.toString());
                 deleteMarkedResources();
+                sendMail(kind, success, message.toString());
                 if (switchAutomatically) {
                     success = switchAlias();
                 }
@@ -221,12 +221,13 @@ public class AlmaMarcXmlFix2lobidJsonEs {
 
     }
 
-     static void deleteMarkedResources() {
-        				if (LOG.isInfoEnabled()) {
-					LOG.info("Query if resources are marked as DELETED (looking in the title field)");
-				}
-      ElasticsearchIndexer esIndexer = getElasticsearchIndexer();
-      esIndexer.deleteMarkedResources();
+    static void deleteMarkedResources() {
+        if (LOG.isInfoEnabled()) {
+            LOG.info(
+                    "Query if resources are marked as DELETED (looking in the title field)");
+        }
+        ElasticsearchIndexer esIndexer = getElasticsearchIndexer();
+        esIndexer.deleteMarkedResources();
     }
 
     private static String getTimeNeeded(long startMilliseconds) {
