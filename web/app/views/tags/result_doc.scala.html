@@ -177,6 +177,28 @@
   }}
 }
 
+@idInCollectionQuery(e: JsValue) = {
+  <a title='Nach weiteren Titeln der Kollektion &#39;@((e\"label").asOpt[String].getOrElse("--"))&#39; suchen' href='@resources.routes.Application.query(collection=((e\"id").asOpt[String].getOrElse("--")))'>@((e\"label").asOpt[String].getOrElse("--"))</a>
+}
+
+@inCollection(label: String, key: String) = {
+  @if((doc\key).asOpt[Seq[JsValue]].isDefined) {
+    @defining((doc\key).asOpt[Seq[JsValue]].getOrElse(Seq(doc\key))) { elems =>
+    <tr>
+      <td>@label</td>
+      <td>@idInCollectionQuery(elems.head.asOpt[JsValue].get)</td>
+    </tr>
+      @for(elem <- elems.tail; e <- elem.asOpt[JsValue]) {
+        <tr>
+          <td></td>
+          <td>@idInCollectionQuery(e)</td>
+        </tr>
+      }
+    }
+  }
+}
+
+
 @first(seq: Seq[JsValue]) = @{
   seq(0).asOpt[String].getOrElse("--")
 }
@@ -222,7 +244,7 @@
 
   @labelled("Inhaltsangabe", "description")
   @labelled("Inhaltsverzeichnis", "tableOfContents")
-  @labelled("Kollektionen", "inCollection")
+  @inCollection("Kollektionen", "inCollection")
 }
 
 @table(){
