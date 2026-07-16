@@ -29,6 +29,7 @@ import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
 import org.elasticsearch.action.admin.indices.settings.put.UpdateSettingsRequest;
 import org.elasticsearch.action.admin.indices.settings.put.UpdateSettingsRequestBuilder;
 import org.elasticsearch.action.delete.DeleteRequest;
+import org.elasticsearch.action.bulk.BulkProcessor;
 import org.elasticsearch.action.bulk.BulkRequestBuilder;
 import org.elasticsearch.action.bulk.BulkResponse;
 import org.elasticsearch.action.index.IndexRequest;
@@ -39,6 +40,7 @@ import org.elasticsearch.client.transport.NoNodeAvailableException;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
+import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.index.query.MatchPhraseQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.QueryStringQueryBuilder;
@@ -233,37 +235,54 @@ SearchResponse response = searchRequestBuilder.execute().actionGet(); */
 	}
 
 	@SuppressWarnings("resource")
-	public long deleteMarkedResources() {
-		long amountOfDeletedResources=0;
+	public void deleteMarkedResources(StringBuilder message) {
+		int amountOfToBeDeletedResources=0;
+		int batchSizeOfResourcesToBeDeleted =10;
+		String logMessage ;
 		try {
 			SearchResponse deleteResponse = getElasticsearchClient()
-					.prepareSearch(indexName).setQuery(deleteQuery).setSize(10000).get();
-			SearchHits searchHits = deleteResponse.getHits();
-			amountOfDeletedResources=searchHits.getTotalHits();
-			if (searchHits.totalHits > 0) {
-				if (LOG.isInfoEnabled()) {
-					LOG.info(String.format(
-							"Found %s resources to be deleted. Going to delete them ...",
-							);
+					.prepareSearch(indexName).setQuery(deleteQuery).setSize(batchSizeOfResourcesToBeDeleted).setScroll(TimeValue.timeValueMinutes(30)).get();
+			SearchHits deleteHits = deleteResponse.getHits();
+			boolean hasNext=true;
+			String scrollId = deleteResponse.getScrollId();
+		  logMessage = "Found resources found to be deleted: "+ deleteHits.getTotalHits() + ". Going to delete them ...";
+			message.append("\n"+logMessage);
+			if (LOG.isInfoEnabled()) {
+					LOG.info(logMessage);
 				}
-				bulkRequest = getElasticsearchClient().prepareBulk();
-				for (final SearchHit hit : deleteResponse.getHits()) {
-					LOG.info("add one to delete");
+			while (hasNext){
+			if (deleteHits.totalHits > amountOfToBeDeletedResources) {
+	      bulkRequest = getElasticsearchClient().prepareBulk();
+				for (final SearchHit hit : deleteHits) {
 					bulkRequest.add(
 							new DeleteRequest(hit.getIndex(), hit.getType(), hit.getId()));
+							amountOfToBeDeletedResources++;
 				}
 				BulkResponse bulkResponse = bulkRequest.execute().actionGet();
 				if (bulkResponse.hasFailures() && LOG.isWarnEnabled()) {
 					LOG.warn(String.format("Bulk insert failed: %s ", bulkResponse.buildFailureMessage()));
 				}
-				LOG.info("... deleted those");
-			}
+				deleteResponse =   getElasticsearchClient()
+				.prepareSearchScroll(scrollId)
+          .setScroll(TimeValue.timeValueMinutes(5))
+          .execute()
+          .actionGet();
+					deleteHits=deleteResponse.getHits();
+			} else
+				hasNext=false;
+		}
 		} catch (final Exception ex) {
 			LOG.warn(ex.getMessage());
 		}  finally {
 			this.onCloseStream();
 		}
-		return amountOfDeletedResources;
+		if (amountOfToBeDeletedResources >0 ){
+		logMessage = "... deleted resources:"+ amountOfToBeDeletedResources;
+		message.append("\n"+logMessage);
+		if (LOG.isInfoEnabled()) {
+					LOG.info(logMessage);
+				}
+		}
 	}
 
 	/**
