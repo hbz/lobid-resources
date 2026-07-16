@@ -27,9 +27,12 @@ resolvers += "Local Maven Repository" at Path.userHome.asFile.toURI.toURL + ".m2
 
 lazy val root = (project in file(".")).enablePlugins(PlayJava)
 
-javacOptions ++= Seq("-source", "11", "-target", "11")
+javacOptions ++= Seq("-source", "21", "-target", "21")
 javaOptions in (Test,run) += "--add-opens=java.base/java.lang=ALL-UNNAMED"
 javaOptions in (Test,run) += "--add-opens=java.base/java.util=ALL-UNNAMED"
+javaOptions in (Test,run) += "--add-opens=java.base/sun.net.www.protocol.file=ALL-UNNAMED"
+javaOptions in (Test,run) += "--add-exports=java.base/sun.net.www.protocol.file=ALL-UNNAMED"
+
 
 import com.typesafe.sbteclipse.core.EclipsePlugin.EclipseKeys
 
