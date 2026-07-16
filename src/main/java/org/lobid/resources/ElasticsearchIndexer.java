@@ -10,6 +10,7 @@ import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -39,9 +40,9 @@ import org.elasticsearch.client.transport.NoNodeAvailableException;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
+import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.index.query.MatchPhraseQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.index.query.QueryStringQueryBuilder;
 import org.elasticsearch.rest.action.admin.indices.AliasesNotFoundException;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
@@ -67,8 +68,7 @@ public class ElasticsearchIndexer
 	private String hostname;
 	private String clustername;
 	private BulkRequestBuilder bulkRequest;
-	private InetSocketTransportAddress NODE;
-	private IndexRequest indexRequest;
+	private InetSocketTransportAddress node;
 	private TransportClient tc;
 	private Client client;
 	private int retries = 40;
@@ -79,19 +79,12 @@ public class ElasticsearchIndexer
 	private boolean updateNewestIndex;
 	private String aliasSuffix = "";
 
-/*
-SearchRequestBuilder searchRequestBuilder = client.prepareSearch()
-            .setIndices("resume")
- .setTypes("docs").setQuery(qb).addHighlightedField("file");
-
-SearchResponse response = searchRequestBuilder.execute().actionGet(); */
-
 	private static MatchPhraseQueryBuilder deleteQuery =
 			QueryBuilders.matchPhraseQuery("title","DELETED from lobid-resources");
 	private static String indexConfig;
 	private HashMap<String, Object> settings = new HashMap<>();
 	/** Defines if the mabxml lookup should be done */
-	private static final LocalDateTime now = LocalDateTime.now();
+	private static final LocalDateTime now = LocalDateTime.now(ZoneId.of("Europe/Berlin"));
 
 	/**
 	 * The date now. Handy to append to index-name to build multiple index' in
@@ -148,8 +141,7 @@ SearchResponse response = searchRequestBuilder.execute().actionGet(); */
 		if (tc != null) {
 			tc.close();
 		}
-		}
-	
+	}
 
 	@Override
 	public void onSetReceiver() {
@@ -161,13 +153,13 @@ SearchResponse response = searchRequestBuilder.execute().actionGet(); */
 					.put("client.transport.sniff", false)
 					.put("client.transport.ping_timeout", 120, TimeUnit.SECONDS).build();
 			try {
-				this.NODE = new InetSocketTransportAddress(
+				this.node = new InetSocketTransportAddress(
 						InetAddress.getByName(this.hostname), 9300);
 			} catch (UnknownHostException e) {
-				e.printStackTrace();
+				LOG.error(e.getMessage());
 			}
 			this.tc = new PreBuiltTransportClient(nodeSettings);
-			this.client = this.tc.addTransportAddress(this.NODE);
+			this.client = this.tc.addTransportAddress(this.node);
 		}
 		bulkRequest = client.prepareBulk();
 		if (!indexExists()) {
@@ -197,7 +189,7 @@ SearchResponse response = searchRequestBuilder.execute().actionGet(); */
 		LOG.debug("Try to index " + json.get(Properties.ID.getName())
 				+ " in ES type " + json.get(Properties.TYPE.getName()) + " Source:"
 				+ json.get(Properties.GRAPH.getName()));
-		indexRequest = new IndexRequest(indexName,
+		IndexRequest indexRequest = new IndexRequest(indexName,
 				json.get(Properties.TYPE.getName()), json.get(Properties.ID.getName()));
 		String jsonDoc = json.get(Properties.GRAPH.getName());
 		if (json.containsKey(Properties.PARENT.getName())) { // items
@@ -232,38 +224,60 @@ SearchResponse response = searchRequestBuilder.execute().actionGet(); */
 		}
 	}
 
+	/**
+	 * @param message
+	 */
 	@SuppressWarnings("resource")
-	public long deleteMarkedResources() {
-		long amountOfDeletedResources=0;
+	public void deleteMarkedResources(StringBuilder message) {
+		int amountOfToBeDeletedResources = 0;
+		int batchSizeOfResourcesToBeDeleted = 10;
+		String logMessage;
 		try {
-			SearchResponse deleteResponse = getElasticsearchClient()
-					.prepareSearch(indexName).setQuery(deleteQuery).setSize(10000).get();
-			SearchHits searchHits = deleteResponse.getHits();
-			amountOfDeletedResources=searchHits.getTotalHits();
-			if (searchHits.totalHits > 0) {
-				if (LOG.isInfoEnabled()) {
-					LOG.info(String.format(
-							"Found %s resources to be deleted. Going to delete them ...",
-							);
-				}
-				bulkRequest = getElasticsearchClient().prepareBulk();
-				for (final SearchHit hit : deleteResponse.getHits()) {
-					LOG.info("add one to delete");
-					bulkRequest.add(
-							new DeleteRequest(hit.getIndex(), hit.getType(), hit.getId()));
-				}
-				BulkResponse bulkResponse = bulkRequest.execute().actionGet();
-				if (bulkResponse.hasFailures() && LOG.isWarnEnabled()) {
-					LOG.warn(String.format("Bulk insert failed: %s ", bulkResponse.buildFailureMessage()));
-				}
-				LOG.info("... deleted those");
+			SearchResponse deleteResponse =
+					getElasticsearchClient().prepareSearch(indexName)
+							.setQuery(deleteQuery).setSize(batchSizeOfResourcesToBeDeleted)
+							.setScroll(TimeValue.timeValueMinutes(30)).get();
+			SearchHits deleteHits = deleteResponse.getHits();
+			String scrollId = deleteResponse.getScrollId();
+			logMessage = "Found resources found to be deleted: "
+					+ deleteHits.getTotalHits() + ". Going to delete them ...";
+			message.append("\n" + logMessage);
+			if (LOG.isInfoEnabled()) {
+				LOG.info(logMessage);
+			}
+			boolean hasNext = true;
+			while (hasNext) {
+				if (deleteHits.totalHits > amountOfToBeDeletedResources) {
+					bulkRequest = getElasticsearchClient().prepareBulk();
+					for (final SearchHit hit : deleteHits) {
+						bulkRequest.add(
+								new DeleteRequest(hit.getIndex(), hit.getType(), hit.getId()));
+						amountOfToBeDeletedResources++;
+					}
+					BulkResponse bulkResponse = bulkRequest.execute().actionGet();
+					if (bulkResponse.hasFailures() && LOG.isWarnEnabled()) {
+						LOG.warn(String.format("Bulk insert failed: %s ",
+								bulkResponse.buildFailureMessage()));
+					}
+					deleteResponse = getElasticsearchClient()
+							.prepareSearchScroll(scrollId)
+							.setScroll(TimeValue.timeValueMinutes(5)).execute().actionGet();
+					deleteHits = deleteResponse.getHits();
+				} else
+					hasNext = false;
 			}
 		} catch (final Exception ex) {
 			LOG.warn(ex.getMessage());
-		}  finally {
+		} finally {
 			this.onCloseStream();
 		}
-		return amountOfDeletedResources;
+		if (amountOfToBeDeletedResources > 0) {
+			logMessage = "... deleted resources:" + amountOfToBeDeletedResources;
+			message.append("\n" + logMessage);
+			if (LOG.isInfoEnabled()) {
+				LOG.info(logMessage);
+			}
+		}
 	}
 
 	/**
