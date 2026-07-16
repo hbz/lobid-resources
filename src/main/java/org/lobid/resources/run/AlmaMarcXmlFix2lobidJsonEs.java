@@ -205,7 +205,7 @@ public class AlmaMarcXmlFix2lobidJsonEs {
                 String timeNeeded="Time needed: " + getTimeNeeded(startMilliseconds);
                 LOG.info(timeNeeded);
                 message.append("\n"+timeNeeded);
-                deleteMarkedResources();
+                message.append("\n" + deleteMarkedResources());
                 sendMail(kind, success, message.toString());
                 if (switchAutomatically) {
                     success = switchAlias();
@@ -218,16 +218,15 @@ public class AlmaMarcXmlFix2lobidJsonEs {
                     MSG_THREAD_ALREADY_STARTED + " false");
             }
         }.start();
-
     }
 
-    static void deleteMarkedResources() {
+    static long deleteMarkedResources() {
         if (LOG.isInfoEnabled()) {
             LOG.info(
                     "Query if resources are marked as DELETED (looking in the title field)");
         }
         ElasticsearchIndexer esIndexer = getElasticsearchIndexer();
-        esIndexer.deleteMarkedResources();
+        return esIndexer.deleteMarkedResources();
     }
 
     private static String getTimeNeeded(long startMilliseconds) {

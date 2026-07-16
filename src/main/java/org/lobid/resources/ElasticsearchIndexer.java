@@ -233,16 +233,18 @@ SearchResponse response = searchRequestBuilder.execute().actionGet(); */
 	}
 
 	@SuppressWarnings("resource")
-	public void deleteMarkedResources() {
+	public long deleteMarkedResources() {
+		long amountOfDeletedResources=0;
 		try {
 			SearchResponse deleteResponse = getElasticsearchClient()
 					.prepareSearch(indexName).setQuery(deleteQuery).setSize(10000).get();
 			SearchHits searchHits = deleteResponse.getHits();
+			amountOfDeletedResources=searchHits.getTotalHits();
 			if (searchHits.totalHits > 0) {
 				if (LOG.isInfoEnabled()) {
 					LOG.info(String.format(
 							"Found %s resources to be deleted. Going to delete them ...",
-							searchHits.getTotalHits()));
+							);
 				}
 				bulkRequest = getElasticsearchClient().prepareBulk();
 				for (final SearchHit hit : deleteResponse.getHits()) {
@@ -261,6 +263,7 @@ SearchResponse response = searchRequestBuilder.execute().actionGet(); */
 		}  finally {
 			this.onCloseStream();
 		}
+		return amountOfDeletedResources;
 	}
 
 	/**
