@@ -199,6 +199,13 @@ unless is_array("008")
     end
   end
 end
+to_var("@standardPubDate","standardPubDate")
+copy_field("@standardPubDate","@standardPubDateMinus4")
+de.hbz.lobid.helper.Minus("@standardPubDateMinus4","4")
+to_var("@standardPubDateMinus4","standardPubDateMinus4")
+copy_field("@standardPubDate","@standardPubDatePlus4")
+de.hbz.lobid.helper.Minus("@standardPubDatePlus4","-4")
+to_var("@standardPubDatePlus4","standardPubDatePlus4")
 
 # 260 - Publication, Distribution, etc. (Imprint) (R) - Subfield: $a (R), $b (R), $c (R)
 # 264 - Production, Publication, Distribution, Manufacture, and Copyright Notice (R) -  Subfield: $a (R), $b (R), $c  (R)
@@ -405,6 +412,17 @@ if greater_than("publication[].1.endDate","$[todaysYear]")
       copy_field("@008endDateTest","publication[].1.endDate")
     elsif any_equal("@008endDateTest","$[todaysYear]")
       copy_field("@008endDateTest","publication[].1.endDate")
+    end
+  end
+end
+
+# Fallback for non-gregorian startDates
+unless greater_than("@standardPubDate","$[todaysYear]")
+  if any_match("leader","^(.{7})[abdm].*")
+    if less_than("publication[].1.startDate","$[standardPubDateMinus4]")
+      copy_field("@standardPubDate","publication[].1.startDate")
+    elsif greater_than("publication[].1.startDate","$[standardPubDatePlus4]")
+      copy_field("@standardPubDate","publication[].1.startDate")
     end
   end
 end
