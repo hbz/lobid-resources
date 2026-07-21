@@ -259,13 +259,6 @@ if exists("publication[].$first")
     end
     add_array("publication[].$first.note[]")
     copy_field("515??.a","publication[].$first.note[].$append")
-  do list(path:"500  ", "var":"$i")
-    if any_match("$i.a", "^.*saṃ. \\d{4}=(\\d{4}).*Chr.*")
-      remove_field("publication[].$first.startDate")
-      copy_field("$i.a","publication[].$first.startDate")
-      replace_all("publication[].$first.startDate","^.*saṃ. \\d{4}=(\\d{4}).*Chr.*","$1")
-    end
-  end
   # Add fallbacks for missing publication dates and other publication info.
   do list(path:"260[ 3][ 1]", "var":"$i")
     do list(path: "$i.c", "var":"$j")
