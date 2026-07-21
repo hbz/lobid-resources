@@ -182,6 +182,24 @@ do list(path:"250  ","var":"$i")
 
 end
 
+# dateHelper
+
+timestamp("@todaysYear",format:"yyyy")
+to_var("@todaysYear","todaysYear")
+
+copy_field("@todaysYear","@todaysYearMinus9")
+de.hbz.lobid.helper.Minus("@todaysYearMinus9","9")
+to_var("@todaysYearMinus9","todaysYearMinus9")
+unless is_array("008")
+  if any_match("008","^.{6}[\\|bresticdkmu](\\d{4}).*$")
+    copy_field("008","@008standardPubDate")
+    replace_all("@008standardPubDate","^.{7}(\\d{4}).*$","$1")
+    if any_match("@008standardPubDate",".*?([01]\\d{3}|20\\d{2}).*")
+      copy_field("@008standardPubDate","@standardPubDate")
+    end
+  end
+end
+
 # 260 - Publication, Distribution, etc. (Imprint) (R) - Subfield: $a (R), $b (R), $c (R)
 # 264 - Production, Publication, Distribution, Manufacture, and Copyright Notice (R) -  Subfield: $a (R), $b (R), $c  (R)
 # 008,18 for frequency
@@ -368,8 +386,6 @@ end
 
 # Clean up unrealistic publication dates if they provide a realistic one in 008/07-15
 
-timestamp("@todaysYear",format:"yyyy")
-to_var("@todaysYear","todaysYear")
 if greater_than("publication[].1.startDate","$[todaysYear]")
   unless is_array("008")
     copy_field("008","@008startDateTest")
