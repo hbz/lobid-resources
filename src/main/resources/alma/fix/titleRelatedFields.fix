@@ -182,6 +182,31 @@ do list(path:"250  ","var":"$i")
 
 end
 
+# dateHelper
+
+timestamp("@todaysYear",format:"yyyy")
+to_var("@todaysYear","todaysYear")
+
+copy_field("@todaysYear","@todaysYearMinus9")
+de.hbz.lobid.helper.Minus("@todaysYearMinus9","9")
+to_var("@todaysYearMinus9","todaysYearMinus9")
+unless is_array("008")
+  if any_match("008","^.{6}[\\|bresticdkmu](\\d{4}).*$")
+    copy_field("008","@008standardPubDate")
+    replace_all("@008standardPubDate","^.{7}(\\d{4}).*$","$1")
+    if any_match("@008standardPubDate",".*?([01]\\d{3}|20\\d{2}).*")
+      copy_field("@008standardPubDate","@standardPubDate")
+    end
+  end
+end
+to_var("@standardPubDate","standardPubDate")
+copy_field("@standardPubDate","@standardPubDateMinus4")
+de.hbz.lobid.helper.Minus("@standardPubDateMinus4","4")
+to_var("@standardPubDateMinus4","standardPubDateMinus4")
+copy_field("@standardPubDate","@standardPubDatePlus4")
+de.hbz.lobid.helper.Minus("@standardPubDatePlus4","-4")
+to_var("@standardPubDatePlus4","standardPubDatePlus4")
+
 # 260 - Publication, Distribution, etc. (Imprint) (R) - Subfield: $a (R), $b (R), $c (R)
 # 264 - Production, Publication, Distribution, Manufacture, and Copyright Notice (R) -  Subfield: $a (R), $b (R), $c  (R)
 # 008,18 for frequency
@@ -234,13 +259,6 @@ if exists("publication[].$first")
     end
     add_array("publication[].$first.note[]")
     copy_field("515??.a","publication[].$first.note[].$append")
-  do list(path:"500  ", "var":"$i")
-    if any_match("$i.a", "^.*saṃ. \\d{4}=(\\d{4}).*Chr.*")
-      remove_field("publication[].$first.startDate")
-      copy_field("$i.a","publication[].$first.startDate")
-      replace_all("publication[].$first.startDate","^.*saṃ. \\d{4}=(\\d{4}).*Chr.*","$1")
-    end
-  end
   # Add fallbacks for missing publication dates and other publication info.
   do list(path:"260[ 3][ 1]", "var":"$i")
     do list(path: "$i.c", "var":"$j")
@@ -368,8 +386,6 @@ end
 
 # Clean up unrealistic publication dates if they provide a realistic one in 008/07-15
 
-timestamp("@todaysYear",format:"yyyy")
-to_var("@todaysYear","todaysYear")
 if greater_than("publication[].1.startDate","$[todaysYear]")
   unless is_array("008")
     copy_field("008","@008startDateTest")
@@ -389,6 +405,17 @@ if greater_than("publication[].1.endDate","$[todaysYear]")
       copy_field("@008endDateTest","publication[].1.endDate")
     elsif any_equal("@008endDateTest","$[todaysYear]")
       copy_field("@008endDateTest","publication[].1.endDate")
+    end
+  end
+end
+
+# Fallback for non-gregorian startDates
+unless greater_than("@standardPubDate","$[todaysYear]")
+  if any_match("leader","^(.{7})[abdm].*")
+    if less_than("publication[].1.startDate","$[standardPubDateMinus4]")
+      copy_field("@standardPubDate","publication[].1.startDate")
+    elsif greater_than("publication[].1.startDate","$[standardPubDatePlus4]")
+      copy_field("@standardPubDate","publication[].1.startDate")
     end
   end
 end
