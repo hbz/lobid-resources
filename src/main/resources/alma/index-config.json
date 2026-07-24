@@ -360,6 +360,46 @@
             }
           }
         },
+        "manufacture": {
+          "properties": {
+            "location": {
+              "type": "text",
+              "analyzer": "german_analyzer",
+              "copy_to": [
+                "q.all",
+                "q.publisher"
+              ]
+            },
+            "endDate": {
+              "type": "date",
+              "format": "yyyy",
+              "copy_to": [
+                "q.all",
+                "q.date"
+              ]
+            },
+            "manufacturedBy": {
+              "type": "text",
+              "search_analyzer": "german_analyzer",
+              "analyzer": "ngram_analyzer",
+              "copy_to": [
+                "q.all",
+                "q.publisher"
+              ]
+            },
+            "type": {
+              "type": "keyword"
+            },
+            "startDate": {
+              "type": "date",
+              "format": "yyyy",
+              "copy_to": [
+                "q.all",
+                "q.date"
+              ]
+            }
+          }
+        },
         "language": {
           "properties": {
             "label": {
