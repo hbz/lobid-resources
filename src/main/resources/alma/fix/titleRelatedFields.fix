@@ -420,6 +420,15 @@ unless greater_than("@standardPubDate","$[todaysYear]")
   end
 end
 
+# Clean manufacture
+
+do list(path: "manufacture[]","var":"$i")
+  replace_all("$i.location[].*", "^\\[(.*)\\]$", "$1")
+  replace_all("$i.location[].*", "\\s?[,:;]$", "")
+  replace_all("$i.manufacturedBy[].*", "^[©]|\\s?[,:;/=]?$", "")
+  uniq("$i.location[]")
+end
+
 # 246 - Varying Form of Title (R) - $a - Title proper/short title (NR)
 
 add_array("titleKeyword[]")
