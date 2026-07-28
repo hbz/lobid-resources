@@ -68,7 +68,7 @@
         @optional(pub \ "publishedBy")
         @optional(pub \ "manufacturedBy")
         @((pub\"frequency").asOpt[Seq[JsValue]].map { freq =>
-        optional(freq.head \ "label")
+          optional(freq.head \ "label")
         })
       </td>
     </tr>
