@@ -45,7 +45,11 @@
         @if((pub \ "type").toString.contains("SecondaryPublicationEvent")){
           Sekundärpublikation
         } else {
-          Erschienen
+          @if(pub.toString.contains("manufacturedBy")) {
+            Hergestellt
+          } else {
+            Erschienen
+          }
         }
       </td>
       <td>
@@ -62,6 +66,7 @@
         @if(start.toOption.isDefined || end.toOption.isDefined) { <br/> }
         @optional(pub \ "location")
         @optional(pub \ "publishedBy")
+        @optional(pub \ "manufacturedBy")
         @((pub\"frequency").asOpt[Seq[JsValue]].map { freq =>
           optional(freq.head \ "label")
         })
@@ -225,6 +230,7 @@
   @result_field("", "thesisInformation", doc, TableRow.VALUES)
 
   @for(pub <- sortedPublications((doc\"publication").asOpt[Seq[JsValue]].getOrElse(Seq()))){ @publication(pub) }
+  @for(pub <- sortedPublications((doc\"manufacture").asOpt[Seq[JsValue]].getOrElse(Seq()))){ @publication(pub) }
 
   @result_field("Auflage", "edition", doc, TableRow.VALUES)
   @result_field("Umfang", "extent", doc, TableRow.VALUES)
