@@ -136,6 +136,7 @@ public class IndexIntegrationTest extends LocalIndexSetup {
 			{ "q.subject:4042570-8", /*->*/ 3 },
 			{ "q.title:der", /*->*/ 0 },
 			{ "q.title:Westfalen", /*->*/ 8 },
+			{ "q.title:Köln", /*->*/ 2 },
 			{ "q.title:Eilendorf", /*->*/ 1 },
 			{ "q.all:Federale", /*->*/ 6 },
 			{ "q.all:Fédérale", /*->*/ 6 },
