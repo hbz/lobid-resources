@@ -280,11 +280,13 @@ if exists("publication[].$first")
   unless exists("publication[].$first.startDate")
     unless is_array("008")
       if any_match("008","^.{6}[\\|bresticdkmu](\\d{4}).*$")
-        copy_field("008","@008startDate")
-        replace_all("@008startDate","^.{7}(\\d{4}).*$","$1")
-        if any_match("@008startDate",".*?([01]\\d{3}|20\\d{2}).*")
-          copy_field("@008startDate","publication[].$first.startDate")
-        end
+          copy_field("008","@008startDate")
+          replace_all("@008startDate","^.{7}(\\d{4}).*$","$1")
+          unless any_equal("@008startDate","0000")
+            if any_match("@008startDate",".*?([01]\\d{3}|20\\d{2}).*")
+              copy_field("@008startDate","publication[].$first.startDate")
+            end
+          end
       end
     end
   end
@@ -293,7 +295,7 @@ if exists("publication[].$first")
       if any_match("008","^.{6}[cdkmu]\\d{4}(\\d{4}).*$")
         copy_field("008","@008endDate")
         replace_all("@008endDate","^.{11}(\\d{4}).*$","$1")
-        unless any_equal("@008endDate","9999")
+        unless any_match("@008endDate","0000|9999")
           copy_field("@008endDate","publication[].$first.endDate")
         end
       end
@@ -390,10 +392,12 @@ if greater_than("publication[].1.startDate","$[todaysYear]")
   unless is_array("008")
     copy_field("008","@008startDateTest")
     replace_all("@008startDateTest","^.{7}(\\d{4}).*$","$1")
-    if less_than("@008startDateTest","$[todaysYear]")
-      copy_field("@008startDateTest","publication[].1.startDate")
-    elsif any_equal("@008startDateTest","$[todaysYear]")
-      copy_field("@008startDateTest","publication[].1.startDate")
+    unless any_equal ("@008startDateTest","0000")
+      if less_than("@008startDateTest","$[todaysYear]")
+        copy_field("@008startDateTest","publication[].1.startDate")
+      elsif any_equal("@008startDateTest","$[todaysYear]")
+        copy_field("@008startDateTest","publication[].1.startDate")
+      end
     end
   end
 end
@@ -401,10 +405,12 @@ if greater_than("publication[].1.endDate","$[todaysYear]")
   unless is_array("008")
     copy_field("008","@008endDateTest")
     replace_all("@008endDateTest","^.{11}(\\d{4}).*$","$1")
-    if less_than("@008endDateTest","$[todaysYear]")
-      copy_field("@008endDateTest","publication[].1.endDate")
-    elsif any_equal("@008endDateTest","$[todaysYear]")
-      copy_field("@008endDateTest","publication[].1.endDate")
+    unless any_match ("@008endDateTest","0000|9999")
+      if less_than("@008endDateTest","$[todaysYear]")
+        copy_field("@008endDateTest","publication[].1.endDate")
+      elsif any_equal("@008endDateTest","$[todaysYear]")
+        copy_field("@008endDateTest","publication[].1.endDate")
+      end
     end
   end
 end
