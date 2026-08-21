@@ -411,11 +411,13 @@ end
 
 # Fallback for non-gregorian startDates
 unless greater_than("@standardPubDate","$[todaysYear]")
-  if any_match("leader","^(.{7})[abdm].*")
-    if less_than("publication[].1.startDate","$[standardPubDateMinus4]")
-      copy_field("@standardPubDate","publication[].1.startDate")
-    elsif greater_than("publication[].1.startDate","$[standardPubDatePlus4]")
-      copy_field("@standardPubDate","publication[].1.startDate")
+  unless any_equal ("@standardPubDate","0000")
+    if any_match("leader","^(.{7})[abdm].*")
+      if less_than("publication[].1.startDate","$[standardPubDateMinus4]")
+        copy_field("@standardPubDate","publication[].1.startDate")
+      elsif greater_than("publication[].1.startDate","$[standardPubDatePlus4]")
+        copy_field("@standardPubDate","publication[].1.startDate")
+      end
     end
   end
 end
