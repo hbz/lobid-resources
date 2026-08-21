@@ -547,14 +547,18 @@ do put_macro("publicationDateCleaner")
 end
 
 do put_macro("publicationStartDate")
-  if any_match("$[date]","[^-]*?([01]\\d{3}|20\\d{2}).*")
-    paste("$[dateTarget]", "$[date]")
+  unless any_match("$[date]","0000")
+    if any_match("$[date]","[^-]*?([01]\\d{3}|20\\d{2}).*")
+      paste("$[dateTarget]", "$[date]")
+    end
   end
 end
 
 do put_macro("publicationEndDate")
-  if any_match("$[date]",".*-.*([01]\\d{3}|20\\d{2}).*$")
-    paste("$[dateTarget]", "$[date]")
+  unless any_match("$[date]","0000")
+    if any_match("$[date]",".*-.*([01]\\d{3}|20\\d{2}).*$")
+      paste("$[dateTarget]", "$[date]")
+    end
   end
 end
 
