@@ -8,10 +8,10 @@ jobs:
       MAVEN_OPTS: "-Xmx768M"
     steps:
     - uses: actions/checkout@v7
-    - name: Set up JDK 17
+    - name: Set up JDK 21
       uses: actions/setup-java@v5
       with:
-        java-version: 17
+        java-version: 21
         distribution: temurin
     - name: Cache Maven packages
       uses: actions/cache@v6
@@ -24,13 +24,12 @@ jobs:
         cd ..
         git clone https://github.com/metafacture/metafacture-core.git
         cd metafacture-core
-        git checkout -b f2cf79da098258a2bc034da6bf7178f704fb5db4
-        git reset --hard f2cf79da098258a2bc034da6bf7178f704fb5db4
+        git checkout -b 765-raiseJavaVersionTo21
         ./gradlew publishToMavenLocal
         cd -
     - name: Build with Maven
       run: |
-        mvn install
+        mvn clean install
         mvn editorconfig:check
     - name: Install the JSON Schema CLI
       uses: sourcemeta/jsonschema@v15.11.0
@@ -52,4 +51,6 @@ jobs:
     - name: Build and Test with play
       run: |
         cd web
+        export JAVA_OPTS="--add-opens=java.base/sun.net.www.protocol.file=ALL-UNNAMED; --add-exports=java.base/sun.net.www.protocol.file=ALL-UNNAMED"
+        sbt clean -Djava.security.manager=allow
         sbt  --java-home $JAVA_HOME test
