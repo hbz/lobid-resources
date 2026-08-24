@@ -26,8 +26,9 @@ HOME="/home/sol"
 
 # it is important to set the proper locale
 . $HOME/.locale
-export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64/
+export JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64/
 JAVA_OPTS=$(echo "$JAVA_OPTS" |sed 's#,#\ #g')
+JAVA_OPTS="$JAVA_OPTS --add-exports=java.base/sun.net.www.protocol.file=ALL-UNNAMED --add-opens=java.base/sun.net.www.protocol.file=ALL-UNNAMED"
 
 cd $HOME/git/$REPO
 ETL_TOKEN=$(cat scripts/.secrets/ETL_TOKEN)
@@ -45,9 +46,9 @@ case $ACTION in
           rm target/universal/stage/RUNNING_PID
        fi
        export JAVA_OPTS="$JAVA_OPTS -XX:+ExitOnOutOfMemoryError -DpreferIPv4Stack"
-       sbt  -Djava.security.manager=allow clean
-       sbt --java-home $JAVA_HOME stage
-       ./target/universal/stage/bin/lobid-resources-web -Dhttp.port=$PORT -no-version-check > monit_start.log &
+       sbt -Djava.security.manager=allow clean
+       sbt -Djava.security.manager=allow stage
+       ./target/universal/stage/bin/lobid-resources-web -Djava.security.manager=allow -Dhttp.port=$PORT -no-version-check > monit_start.log &
        if [ -n "$DO_ETL_UPDATE" -a $(tail -n100 logs/etl.log  |grep -c "Finishing indexing of ES index 'resources-alma-fix") -eq 0 ]; then
           echo "Automatical updates-ETL triggered and last entries were not ok, thus starting ETL. Sleep 100s before starting ETL ..." >> monit_start.log
           sleep 100
