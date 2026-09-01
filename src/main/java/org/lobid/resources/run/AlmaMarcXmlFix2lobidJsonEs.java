@@ -42,6 +42,7 @@ import de.hbz.lobid.helper.Email;
  * @author Pascal Christoph (dr0i)
  */
 public class AlmaMarcXmlFix2lobidJsonEs {
+    public static final String ES_TYPE = "resource";
     public static final String MSG_THREAD_ALREADY_STARTED = "Setting 'AlmaMarcXmlFix2lobidJsonEs.threadAlreadyStarted =";
     private static String indexAliasSuffix;
     private static String node;
@@ -171,13 +172,13 @@ public class AlmaMarcXmlFix2lobidJsonEs {
                         .setReceiver(new LiteralToObject())//
                         .setReceiver(new ObjectThreader<>())//
                         .addReceiver(receiverThread())//
-                        .addReceiver(receiverThread())//
-                        .addReceiver(receiverThread())//
-                        .addReceiver(receiverThread())//
-                        .addReceiver(receiverThread())//
-                        .addReceiver(receiverThread())//
-                        .addReceiver(receiverThread())//
-                        .addReceiver(receiverThread());
+                        // .addReceiver(receiverThread())//
+                        // .addReceiver(receiverThread())//
+                        // .addReceiver(receiverThread())//
+                        // .addReceiver(receiverThread())//
+                        // .addReceiver(receiverThread())//
+                        // .addReceiver(receiverThread())//
+                         .addReceiver(receiverThread());
                 }
                 StringBuilder message = new StringBuilder();
                 boolean success;
@@ -202,6 +203,7 @@ public class AlmaMarcXmlFix2lobidJsonEs {
                     success = false;
                 }
                 String timeNeeded="Time needed: " + getTimeNeeded(startMilliseconds);
+                deleteMarkedResources(message);
                 LOG.info(timeNeeded);
                 message.append("\n"+timeNeeded);
                 sendMail(kind, success, message.toString());
@@ -216,7 +218,15 @@ public class AlmaMarcXmlFix2lobidJsonEs {
                     MSG_THREAD_ALREADY_STARTED + " false");
             }
         }.start();
+    }
 
+    static void deleteMarkedResources(StringBuilder message) {
+        if (LOG.isInfoEnabled()) {
+            LOG.info(
+                    "Query if resources are marked as DELETED (looking in the title field)");
+        }
+        ElasticsearchIndexer esIndexer = getElasticsearchIndexer();
+        esIndexer.deleteMarkedResources(message);
     }
 
     private static String getTimeNeeded(long startMilliseconds) {
@@ -261,7 +271,7 @@ public class AlmaMarcXmlFix2lobidJsonEs {
                 .setReceiver(batchLogger)//
                 .setReceiver(jsonEncoder)//
                 .setReceiver(etikettJson)//
-                .setReceiver(new JsonToElasticsearchBulkMap(keyToGetMainId, "resource",
+                .setReceiver(new JsonToElasticsearchBulkMap(keyToGetMainId, ES_TYPE,
                     "ignored"))//
                 .setReceiver(getElasticsearchIndexer());
         }

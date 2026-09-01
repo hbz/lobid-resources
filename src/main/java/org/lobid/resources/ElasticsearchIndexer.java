@@ -13,14 +13,10 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.concurrent.TimeUnit;
-
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import com.google.common.collect.SortedSetMultimap;
 import com.google.common.collect.TreeMultimap;
@@ -28,26 +24,30 @@ import com.google.gdata.util.common.io.CharStreams;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import org.elasticsearch.action.admin.cluster.state.ClusterStateRequest;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
 import org.elasticsearch.action.admin.indices.settings.put.UpdateSettingsRequest;
 import org.elasticsearch.action.admin.indices.settings.put.UpdateSettingsRequestBuilder;
+import org.elasticsearch.action.delete.DeleteRequest;
+import org.elasticsearch.action.bulk.BulkProcessor;
 import org.elasticsearch.action.bulk.BulkRequestBuilder;
 import org.elasticsearch.action.bulk.BulkResponse;
 import org.elasticsearch.action.index.IndexRequest;
+import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.Requests;
 import org.elasticsearch.client.transport.NoNodeAvailableException;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
+import org.elasticsearch.common.unit.TimeValue;
+import org.elasticsearch.index.query.MatchPhraseQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.QueryStringQueryBuilder;
 import org.elasticsearch.rest.action.admin.indices.AliasesNotFoundException;
+import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.transport.client.PreBuiltTransportClient;
-
 import org.metafacture.framework.ObjectReceiver;
 import org.metafacture.framework.annotations.In;
 import org.metafacture.framework.annotations.Out;
@@ -64,7 +64,8 @@ import org.metafacture.framework.helpers.DefaultObjectPipe;
 public class ElasticsearchIndexer
 		extends DefaultObjectPipe<HashMap<String, String>, ObjectReceiver<Void>> {
 
-	private static final Logger LOG = LoggerFactory.getLogger(ElasticsearchIndexer.class);
+	private static final Logger LOG =
+			LoggerFactory.getLogger(ElasticsearchIndexer.class);
 	private String hostname;
 	private String clustername;
 	private BulkRequestBuilder bulkRequest;
@@ -79,12 +80,19 @@ public class ElasticsearchIndexer
 	private String indexName;
 	private boolean updateNewestIndex;
 	private String aliasSuffix = "";
+
+/*
+SearchRequestBuilder searchRequestBuilder = client.prepareSearch()
+            .setIndices("resume")
+ .setTypes("docs").setQuery(qb).addHighlightedField("file");
+
+SearchResponse response = searchRequestBuilder.execute().actionGet(); */
+
+	private static MatchPhraseQueryBuilder deleteQuery =
+			QueryBuilders.matchPhraseQuery("title","DELETED from lobid-resources");
 	private static String indexConfig;
-	private static ObjectMapper mapper = new ObjectMapper();
 	private HashMap<String, Object> settings = new HashMap<>();
 	/** Defines if the mabxml lookup should be done */
-	public boolean lookupMabxmlDeletion;
-	private static HashSet<String> unsuccessfullyLookup = new HashSet<>();
 	private static final LocalDateTime now = LocalDateTime.now();
 
 	/**
@@ -102,6 +110,7 @@ public class ElasticsearchIndexer
 	public static enum Properties {
 		INDEX("_index"), TYPE("_type"), ID("_id"), PARENT("_parent"), GRAPH(
 				"graph");
+
 		private final String name;
 
 		Properties(final String name) {
@@ -138,16 +147,11 @@ public class ElasticsearchIndexer
 		usrb.execute().actionGet();
 		LOG.info("... finished indexing of ES index '" + indexName + "'");
 		LOG.info("Closing ES resources ...");
-		if (tc!=null) {
+		if (tc != null) {
 			tc.close();
 		}
-		if (client!=null) {
-			client.close();
 		}
-		if (unsuccessfullyLookup!=null) {
-			unsuccessfullyLookup.clear();
-		}
-	}
+	
 
 	@Override
 	public void onSetReceiver() {
@@ -199,13 +203,9 @@ public class ElasticsearchIndexer
 				json.get(Properties.TYPE.getName()), json.get(Properties.ID.getName()));
 		String jsonDoc = json.get(Properties.GRAPH.getName());
 		if (json.containsKey(Properties.PARENT.getName())) { // items
-			indexRequest.parent(json.get(Properties.PARENT.getName()));
-		} else {
-            if (lookupMabxmlDeletion) {
-                jsonDoc = enrichMabxmlDeletions(json.get(Properties.ID.getName())
-                    .replaceAll(".*/", "").replaceAll("#!", ""), jsonDoc);
-            }
-        }
+        indexRequest.parent(json.get(Properties.PARENT.getName()));
+					LOG.info("PARENT gesetzt");
+    }
 		indexRequest.source(jsonDoc, JSON);
 		bulkRequest.add(indexRequest);
 		docs++;
@@ -234,28 +234,55 @@ public class ElasticsearchIndexer
 		}
 	}
 
-	/*
-	 * Replace all aleph internal sysnumbers with lobid resources ids.
-	 */
-	private String enrichMabxmlDeletions(String alephId, String node) {
-		String ret = null;
+	@SuppressWarnings("resource")
+	public void deleteMarkedResources(StringBuilder message) {
+		int amountOfToBeDeletedResources=0;
+		int batchSizeOfResourcesToBeDeleted =10;
+		String logMessage ;
 		try {
-			JsonNode jnode = mapper.readTree(node);
-			QueryStringQueryBuilder query =
-					QueryBuilders.queryStringQuery("alephInternalSysnumber:"
-							+ jnode.findValue("alephInternalSysnumber"));
-			SearchHits hits = null;
-			hits = getElasticsearchClient().prepareSearch("hbz01").setQuery(query)
-					.get().getHits();
-			if (hits.getTotalHits() > 0) {
-				ret = node.toString().replaceAll("/" + alephId,
-						"/" + hits.getAt(0).getId());
-			}
-		} catch (Exception e) {
-			LOG.warn(e.getMessage(), node);
+			SearchResponse deleteResponse = getElasticsearchClient()
+					.prepareSearch(indexName).setQuery(deleteQuery).setSize(batchSizeOfResourcesToBeDeleted).setScroll(TimeValue.timeValueMinutes(30)).get();
+			SearchHits deleteHits = deleteResponse.getHits();
+			boolean hasNext=true;
+			String scrollId = deleteResponse.getScrollId();
+		  logMessage = "Found resources found to be deleted: "+ deleteHits.getTotalHits() + ". Going to delete them ...";
+			message.append("\n"+logMessage);
+			if (LOG.isInfoEnabled()) {
+					LOG.info(logMessage);
+				}
+			while (hasNext){
+			if (deleteHits.totalHits > amountOfToBeDeletedResources) {
+	      bulkRequest = getElasticsearchClient().prepareBulk();
+				for (final SearchHit hit : deleteHits) {
+					bulkRequest.add(
+							new DeleteRequest(hit.getIndex(), hit.getType(), hit.getId()));
+							amountOfToBeDeletedResources++;
+				}
+				BulkResponse bulkResponse = bulkRequest.execute().actionGet();
+				if (bulkResponse.hasFailures() && LOG.isWarnEnabled()) {
+					LOG.warn(String.format("Bulk insert failed: %s ", bulkResponse.buildFailureMessage()));
+				}
+				deleteResponse =   getElasticsearchClient()
+				.prepareSearchScroll(scrollId)
+          .setScroll(TimeValue.timeValueMinutes(5))
+          .execute()
+          .actionGet();
+					deleteHits=deleteResponse.getHits();
+			} else
+				hasNext=false;
 		}
-		System.out.println(ret);
-		return ret;
+		} catch (final Exception ex) {
+			LOG.warn(ex.getMessage());
+		}  finally {
+			this.onCloseStream();
+		}
+		if (amountOfToBeDeletedResources >0 ){
+		logMessage = "... deleted resources:"+ amountOfToBeDeletedResources;
+		message.append("\n"+logMessage);
+		if (LOG.isInfoEnabled()) {
+					LOG.info(logMessage);
+				}
+		}
 	}
 
 	/**
@@ -313,7 +340,7 @@ public class ElasticsearchIndexer
 	}
 
 	/**
-	 * Sets the elasticsearch client.
+	 * Gets the elasticsearch client.
 	 *
 	 * @return client the elasticsearch client
 	 *
@@ -396,8 +423,8 @@ public class ElasticsearchIndexer
 	 * newest index name.
 	 *
 	 * @param productivePrefix the productive alias (and also the prefix of the
-	 *          names of the indices)
-	 * @param staging the "-staging" alias
+	 *                           names of the indices)
+	 * @param staging          the "-staging" alias
 	 */
 	public void swapProductionAndStagingAliases(final String productivePrefix,
 			final String staging) {
