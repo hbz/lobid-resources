@@ -24,13 +24,22 @@ see <http://hbz.github.io/#lobid>.
 
 ### Prerequisites:
 
-- Java 11, Maven 3; verify with `mvn -version`
-- sbt 1.8.2 or higher should work; verify with `sbt --version`
-- A working installation of [metafacture-core standalone application](https://github.com/metafacture/metafacture-core?tab=readme-ov-file#metafacture-as-a-stand-alone-application)
+- Java 21, Maven 3; verify with `mvn -version`
+- sbt 0.13.18 or higher should work; verify with `sbt --version`
 
 Create and change into a folder where you want to store the projects:
 
 - `mkdir ~/git ; cd ~/git`
+
+Create local Metafacture SNAPSHOT of commit ddf031d1a5c792da16fc632354bded3bdcdda611 and publish to local maven:
+
+- `cd ..`
+- `git clone https://github.com/metafacture/metafacture-core.git`
+- `cd metafacture-core`
+- `git checkout -b ddf031d1a5c792da16fc632354bded3bdcdda611`
+- `git reset --hard ddf031d1a5c792da16fc632354bded3bdcdda611`
+- `./gradlew publishToMavenLocal`
+- `cd -`
 
 Build lobid-resources:
 
@@ -41,9 +50,10 @@ Build lobid-resources:
 Build the web application:
 
 - `cd web`
-- `sbt clean`
-- `sbt stage`
-- `./target/universal/stage/bin/lobid-resources-web -no-version-check`
+- `export JAVA_OPTS="--add-opens=java.base/sun.net.www.protocol.file=ALL-UNNAMED --add-exports=java.base/sun.net.www.protocol.file=ALL-UNNAMED"`
+- `sbt -Djava.security.manager=allow clean`
+- `sbt -Djava.security.manager=allow stage`
+- `./target/universal/stage/bin/lobid-resources-web -Djava.security.manager=allow -no-version-check`
 
 See the `.github/workflows/build.yml` file for details on the CI config
 used by Github Actions.
@@ -51,7 +61,10 @@ used by Github Actions.
 To run the tests:
 
 - `cd web`
-- `sbt test`
+- `export JAVA_OPTS="--add-opens=java.base/sun.net.www.protocol.file=ALL-UNNAMED --add-exports=java.base/sun.net.www.protocol.file=ALL-UNNAMED"`
+- `sbt -Djava.security.manager=allow clean`
+- `sbt -Djava.security.manager=allow stage`
+- `sbt -Djava.security.manager=allow test`
 
 ## Eclipse setup
 
