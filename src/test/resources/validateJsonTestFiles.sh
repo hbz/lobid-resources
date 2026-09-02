@@ -11,7 +11,7 @@ DIRECTORY_OF_JSON_TO_VALIDATE="alma-fix/"
 
 for version in "draft"; do
 	echo "Testing version: $version"
-	jsonschema validate "schemas/resource.json" "${DIRECTORY_OF_JSON_TO_VALIDATE}" 2>&1
+	jsonschema validate "schemas/resource.json" "${DIRECTORY_OF_JSON_TO_VALIDATE}" --resolve "schemas/" 2>&1
 done
 
 if [ $? -eq 0 ]

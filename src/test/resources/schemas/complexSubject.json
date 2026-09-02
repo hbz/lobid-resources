@@ -25,10 +25,7 @@
         "additionalProperties": false,
         "properties": {
           "id": {
-            "title": "Subject URI",
-            "type": "string",
-            "format": "uri",
-            "pattern": "^https:\/\/d-nb.info\/gnd\/1[012]?\\d{7}[0-9X]|[47]\\d{6}-\\d|[1-9]\\d{0,7}-[0-9X]|3\\d{7}[0-9X]"
+            "$ref": "gndSubjectUri.json"
           },
           "type": {
             "type": "array",
@@ -72,9 +69,7 @@
             "type": "string"
           },
           "gndIdentifier": {
-            "title": "GND ID",
-            "type": "string",
-            "pattern": "1[012]?\\d{7}[0-9X]|[47]\\d{6}-\\d|[1-9]\\d{0,7}-[0-9X]|3\\d{7}[0-9X]"
+            "$ref": "gndIdentifier.json"
           },
           "altLabel": {
             "title": "Alternative name of the subject heading",
