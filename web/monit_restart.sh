@@ -36,7 +36,7 @@ ETL_TOKEN=$(cat scripts/.secrets/ETL_TOKEN)
 case $ACTION in
   start)
        cd ..
-       git fetch; git reset --hard origin/master; git submodule update --init --recursive --remote;
+       git fetch; git reset --hard ssh/master; git submodule update --init --recursive --remote;
        if [ ! -f lookup-tables/data/opacLinks/isil2opac_issn.tsv ]; then
           exit # see #2306
        fi
