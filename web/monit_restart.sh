@@ -42,7 +42,7 @@ ETL_TOKEN=$(cat scripts/.secrets/ETL_TOKEN)
 case $ACTION in
   start)
        cd ..
-       git fetch && git reset --hard ssh/master && git submodule update --init --recursive --remote || ( echo "ERROR when using git. Aborting restart ..."; exit 1)
+       git fetch ssh && git reset --hard ssh/master && git submodule update --init --recursive --remote || ( echo "ERROR when using git. Aborting restart ..."; exit 1)
        if [ ! -f lookup-tables/data/opacLinks/isil2opac_issn.tsv ]; then
           echo "ERROR: The file lookup-tables/data/opacLinks/isil2opac_issn.tsv is missing. Aborting the restart ..."
           exit 1 # see #2306
