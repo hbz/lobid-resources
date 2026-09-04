@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 set -euo pipefail # See http://redsymbol.net/articles/unofficial-bash-strict-mode/
 
 USAGE="<GIT REPO NAME> {start|stop} <PORT> [<JAVA OPTS>]"
