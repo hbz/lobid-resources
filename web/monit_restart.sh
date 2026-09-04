@@ -17,6 +17,20 @@ if [ $# -lt 3 ]; then
  exit 65
 fi
 
+############# <functions> #####
+
+killPid () {
+  fileOfPid="target/universal/stage/RUNNING_PID"
+  if [ -f $fileOfPid ]; then
+    PID=$(cat $fileOfPid)
+    kill $PID ||
+    sleep 14
+    kill -9 $PID ||
+    rm $fileOfPid
+  fi
+}
+############# </functions> #####
+
 REPO=$1
 ACTION=$2
 PORT=$3
@@ -48,10 +62,7 @@ case $ACTION in
           exit 1 # see #2306
        fi
        mvn clean install -DskipTests=true; cd -
-       if [ -f target/universal/stage/RUNNING_PID ]; then
-          kill $(cat target/universal/stage/RUNNING_PID)
-          rm target/universal/stage/RUNNING_PID
-       fi
+       killPid
        export JAVA_OPTS="$JAVA_OPTS -XX:+ExitOnOutOfMemoryError -DpreferIPv4Stack"
        sbt -Djava.security.manager=allow clean
        sbt -Djava.security.manager=allow stage
@@ -64,14 +75,10 @@ case $ACTION in
         echo "Done starting!" >> monit_start.log
   ;;
  stop)
-  kill $(cat target/universal/stage/RUNNING_PID)
-  sleep 14
-  kill -9 $(cat target/universal/stage/RUNNING_PID)
-  rm target/universal/stage/RUNNING_PID
+   killPid
   ;;
  *)
   echo "usage: $USAGE"
   ;;
 esac
 exit 0
-
