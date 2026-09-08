@@ -9,6 +9,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -72,17 +73,15 @@ public class ElasticsearchIndexer
 	private TransportClient tc;
 	private Client client;
 	private int retries = 40;
-	// collect so many documents before bulk indexing them all
-	private int bulkSize = 5000;
 	private int docs = 0;
 	private String indexName;
 	private boolean updateNewestIndex;
 	private String aliasSuffix = "";
 
-	private static MatchPhraseQueryBuilder deleteQuery =
+	private final static MatchPhraseQueryBuilder deleteQuery =
 			QueryBuilders.matchPhraseQuery("title","DELETED from lobid-resources");
 	private static String indexConfig;
-	private HashMap<String, Object> settings = new HashMap<>();
+	private final HashMap<String, Object> settings = new HashMap<>();
 	/** Defines if the mabxml lookup should be done */
 	private static final LocalDateTime now = LocalDateTime.now(ZoneId.of("Europe/Berlin"));
 
@@ -97,8 +96,7 @@ public class ElasticsearchIndexer
 	/**
 	 * Keys to get index properties and the json document ("graph")
 	 */
-	@SuppressWarnings("javadoc")
-	public static enum Properties {
+	public enum Properties {
 		INDEX("_index"), TYPE("_type"), ID("_id"), PARENT("_parent"), GRAPH(
 				"graph");
 
@@ -194,12 +192,12 @@ public class ElasticsearchIndexer
 		String jsonDoc = json.get(Properties.GRAPH.getName());
 		if (json.containsKey(Properties.PARENT.getName())) { // items
         indexRequest.parent(json.get(Properties.PARENT.getName()));
-					LOG.info("PARENT gesetzt");
     }
 		indexRequest.source(jsonDoc, JSON);
 		bulkRequest.add(indexRequest);
 		docs++;
-
+		// collect so many documents before bulk indexing them all
+		final int bulkSize = 5000;
 		while (docs > bulkSize && retries > 0) {
 			try {
 				BulkResponse bulkResponse = bulkRequest.execute().actionGet();
@@ -225,9 +223,8 @@ public class ElasticsearchIndexer
 	}
 
 	/**
-	 * @param message
+	 * @param message Accumulated log messages
 	 */
-	@SuppressWarnings("resource")
 	public void deleteMarkedResources(StringBuilder message) {
 		int amountOfToBeDeletedResources = 0;
 		int batchSizeOfResourcesToBeDeleted = 10;
@@ -241,7 +238,7 @@ public class ElasticsearchIndexer
 			String scrollId = deleteResponse.getScrollId();
 			logMessage = "Found resources found to be deleted: "
 					+ deleteHits.getTotalHits() + ". Going to delete them ...";
-			message.append("\n" + logMessage);
+			message.append("\n").append(logMessage);
 			if (LOG.isInfoEnabled()) {
 				LOG.info(logMessage);
 			}
@@ -263,8 +260,9 @@ public class ElasticsearchIndexer
 							.prepareSearchScroll(scrollId)
 							.setScroll(TimeValue.timeValueMinutes(5)).execute().actionGet();
 					deleteHits = deleteResponse.getHits();
-				} else
+				} else {
 					hasNext = false;
+				}
 			}
 		} catch (final Exception ex) {
 			LOG.warn(ex.getMessage());
@@ -273,7 +271,7 @@ public class ElasticsearchIndexer
 		}
 		if (amountOfToBeDeletedResources > 0) {
 			logMessage = "... deleted resources:" + amountOfToBeDeletedResources;
-			message.append("\n" + logMessage);
+			message.append("\n").append(logMessage);
 			if (LOG.isInfoEnabled()) {
 				LOG.info(logMessage);
 			}
@@ -319,7 +317,7 @@ public class ElasticsearchIndexer
 	/**
 	 * Sets an optional suffix to the elasticsearch index alias.
 	 *
-	 * @param aliasSuffix
+	 * @param aliasSuffix an optional suffix of the name of the index alias
 	 */
 	public void setIndexAliasSuffix(String aliasSuffix) {
 		this.aliasSuffix = aliasSuffix;
@@ -383,7 +381,8 @@ public class ElasticsearchIndexer
 			final InputStream config =
 					Thread.currentThread().getContextClassLoader().getResourceAsStream(
 							indexConfig == null ? "index-config.json" : indexConfig);
-			try (InputStreamReader reader = new InputStreamReader(config, "UTF-8")) {
+			assert config != null;
+			try (InputStreamReader reader = new InputStreamReader(config, StandardCharsets.UTF_8)) {
 				res = CharStreams.toString(reader);
 			}
 		} catch (IOException e) {
