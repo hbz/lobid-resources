@@ -543,7 +543,11 @@ do put_macro("publication")
 end
 
 do put_macro("publicationDateCleaner")
-  replace_all("$[date]", "\\[|\\]|ca.[ ]?|c[ ]?|um[ ]?", "")
+  if any_contain("$[date]","=")
+    remove_field("$[date]")
+  else
+    replace_all("$[date]", "\\[|\\]|ca.[ ]?|c[ ]?|um[ ]?", "")
+  end
 end
 
 do put_macro("publicationStartDate")
