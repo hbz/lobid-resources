@@ -545,6 +545,8 @@ end
 do put_macro("publicationDateCleaner")
   if any_contain("$[date]","=")
     remove_field("$[date]")
+  elsif any_match("$[date]","\\d{4}\\s?\\[\\s?(\\d{4})\\s?\\]")
+      replace_all("$[date]", "\\d{4}\\s?\\[\\s?(\\d{4})\\s?\\]", "$1")
   else
     replace_all("$[date]", "\\[|\\]|ca.[ ]?|c[ ]?|um[ ]?", "")
   end
