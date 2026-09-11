@@ -1,0 +1,35 @@
+[Unit]
+Description=lobid-resources-rpb-test
+After=network.target
+
+[Service]
+Type=simple
+User=sol
+Group=sol
+WorkingDirectory=/home/sol/git/lobid-resources-rpb-test/web
+
+Environment="JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64"
+Environment="JAVA_OPTS=-Xmx2048m -Xms1024m -XX:+ExitOnOutOfMemoryError -DpreferIPv4Stack"
+
+ExecStart=/home/sol/git/lobid-resources-rpb-test/web/target/universal/stage/bin/lobid-resources-web -Dhttp.port=2090 -no-version-check
+
+Restart=on-failure
+RestartSec=10
+
+TimeoutStartSec=300
+TimeoutStopSec=30
+
+KillSignal=SIGTERM
+
+StandardOutput=journal
+StandardError=journal
+
+# notwendig bei Java-Prozessen
+SuccessExitStatus=143
+
+# Hardening?
+#NoNewPrivileges=true
+#PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target
