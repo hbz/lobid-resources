@@ -4,7 +4,6 @@ package org.lobid.resources.run;
 
 import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
-import java.time.Duration;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.stream.Collectors;
@@ -42,6 +41,7 @@ import de.hbz.lobid.helper.Email;
  * @author Pascal Christoph (dr0i)
  */
 public class AlmaMarcXmlFix2lobidJsonEs {
+    public static final String ES_TYPE = "resource";
     public static final String MSG_THREAD_ALREADY_STARTED = "Setting 'AlmaMarcXmlFix2lobidJsonEs.threadAlreadyStarted =";
     private static String indexAliasSuffix;
     private static String node;
@@ -182,14 +182,14 @@ public class AlmaMarcXmlFix2lobidJsonEs {
                 StringBuilder message = new StringBuilder();
                 boolean success;
                 try {
-                    String inputPathes[] = inputPath.split(";");
-                    for (int i=0;i < inputPathes.length; i++ ) {
-                        LOG.info(String.format("Going to process inputFile=%s", inputPathes[i]));
-                        opener.process(inputPathes[i]);
+                    String[] inputPathes = inputPath.split(";");
+                    for (String inputPathe : inputPathes) {
+                        LOG.info(String.format("Going to process inputFile=%s", inputPathe));
+                        opener.process(inputPathe);
                         opener.closeStream();
                     }
                     success = true;
-                    message.append("ETL succeeded, index name: " + indexName);
+                    message.append("ETL succeeded, index name: ").append(indexName);
                 }
                 catch (Exception e) {
                     e.printStackTrace();
@@ -202,8 +202,9 @@ public class AlmaMarcXmlFix2lobidJsonEs {
                     success = false;
                 }
                 String timeNeeded="Time needed: " + getTimeNeeded(startMilliseconds);
+                deleteMarkedResources(message);
                 LOG.info(timeNeeded);
-                message.append("\n"+timeNeeded);
+                message.append("\n").append(timeNeeded);
                 sendMail(kind, success, message.toString());
                 if (switchAutomatically) {
                     success = switchAlias();
@@ -216,12 +217,19 @@ public class AlmaMarcXmlFix2lobidJsonEs {
                     MSG_THREAD_ALREADY_STARTED + " false");
             }
         }.start();
+    }
 
+    static void deleteMarkedResources(StringBuilder message) {
+        if (LOG.isInfoEnabled()) {
+            LOG.info(
+                    "Query if resources are marked as DELETED (looking in the title field)");
+        }
+        ElasticsearchIndexer esIndexer = getElasticsearchIndexer();
+        esIndexer.deleteMarkedResources(message);
     }
 
     private static String getTimeNeeded(long startMilliseconds) {
         long tookSeconds = (System.currentTimeMillis()- startMilliseconds) / 1000;
-        Duration duration = Duration.ofSeconds(tookSeconds);
         long HH = tookSeconds / 3600;
         long MM = (tookSeconds % 3600) / 60;
         long SS = tookSeconds % 60;
@@ -261,7 +269,7 @@ public class AlmaMarcXmlFix2lobidJsonEs {
                 .setReceiver(batchLogger)//
                 .setReceiver(jsonEncoder)//
                 .setReceiver(etikettJson)//
-                .setReceiver(new JsonToElasticsearchBulkMap(keyToGetMainId, "resource",
+                .setReceiver(new JsonToElasticsearchBulkMap(keyToGetMainId, ES_TYPE,
                     "ignored"))//
                 .setReceiver(getElasticsearchIndexer());
         }

@@ -9,18 +9,16 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.concurrent.TimeUnit;
-
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import com.google.common.collect.SortedSetMultimap;
 import com.google.common.collect.TreeMultimap;
@@ -28,26 +26,28 @@ import com.google.gdata.util.common.io.CharStreams;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import org.elasticsearch.action.admin.cluster.state.ClusterStateRequest;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
 import org.elasticsearch.action.admin.indices.settings.put.UpdateSettingsRequest;
 import org.elasticsearch.action.admin.indices.settings.put.UpdateSettingsRequestBuilder;
+import org.elasticsearch.action.delete.DeleteRequest;
 import org.elasticsearch.action.bulk.BulkRequestBuilder;
 import org.elasticsearch.action.bulk.BulkResponse;
 import org.elasticsearch.action.index.IndexRequest;
+import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.Requests;
 import org.elasticsearch.client.transport.NoNodeAvailableException;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
+import org.elasticsearch.common.unit.TimeValue;
+import org.elasticsearch.index.query.MatchPhraseQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.index.query.QueryStringQueryBuilder;
 import org.elasticsearch.rest.action.admin.indices.AliasesNotFoundException;
+import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.transport.client.PreBuiltTransportClient;
-
 import org.metafacture.framework.ObjectReceiver;
 import org.metafacture.framework.annotations.In;
 import org.metafacture.framework.annotations.Out;
@@ -64,28 +64,26 @@ import org.metafacture.framework.helpers.DefaultObjectPipe;
 public class ElasticsearchIndexer
 		extends DefaultObjectPipe<HashMap<String, String>, ObjectReceiver<Void>> {
 
-	private static final Logger LOG = LoggerFactory.getLogger(ElasticsearchIndexer.class);
+	private static final Logger LOG =
+			LoggerFactory.getLogger(ElasticsearchIndexer.class);
 	private String hostname;
 	private String clustername;
 	private BulkRequestBuilder bulkRequest;
-	private InetSocketTransportAddress NODE;
-	private IndexRequest indexRequest;
+	private InetSocketTransportAddress node;
 	private TransportClient tc;
 	private Client client;
 	private int retries = 40;
-	// collect so many documents before bulk indexing them all
-	private int bulkSize = 5000;
 	private int docs = 0;
 	private String indexName;
 	private boolean updateNewestIndex;
 	private String aliasSuffix = "";
+
+	private final static MatchPhraseQueryBuilder deleteQuery =
+			QueryBuilders.matchPhraseQuery("title","DELETED from lobid-resources");
 	private static String indexConfig;
-	private static ObjectMapper mapper = new ObjectMapper();
-	private HashMap<String, Object> settings = new HashMap<>();
+	private final HashMap<String, Object> settings = new HashMap<>();
 	/** Defines if the mabxml lookup should be done */
-	public boolean lookupMabxmlDeletion;
-	private static HashSet<String> unsuccessfullyLookup = new HashSet<>();
-	private static final LocalDateTime now = LocalDateTime.now();
+	private static final LocalDateTime now = LocalDateTime.now(ZoneId.of("Europe/Berlin"));
 
 	/**
 	 * The date now. Handy to append to index-name to build multiple index' in
@@ -98,10 +96,10 @@ public class ElasticsearchIndexer
 	/**
 	 * Keys to get index properties and the json document ("graph")
 	 */
-	@SuppressWarnings("javadoc")
-	public static enum Properties {
+	public enum Properties {
 		INDEX("_index"), TYPE("_type"), ID("_id"), PARENT("_parent"), GRAPH(
 				"graph");
+
 		private final String name;
 
 		Properties(final String name) {
@@ -138,14 +136,8 @@ public class ElasticsearchIndexer
 		usrb.execute().actionGet();
 		LOG.info("... finished indexing of ES index '" + indexName + "'");
 		LOG.info("Closing ES resources ...");
-		if (tc!=null) {
+		if (tc != null) {
 			tc.close();
-		}
-		if (client!=null) {
-			client.close();
-		}
-		if (unsuccessfullyLookup!=null) {
-			unsuccessfullyLookup.clear();
 		}
 	}
 
@@ -159,13 +151,13 @@ public class ElasticsearchIndexer
 					.put("client.transport.sniff", false)
 					.put("client.transport.ping_timeout", 120, TimeUnit.SECONDS).build();
 			try {
-				this.NODE = new InetSocketTransportAddress(
+				this.node = new InetSocketTransportAddress(
 						InetAddress.getByName(this.hostname), 9300);
 			} catch (UnknownHostException e) {
-				e.printStackTrace();
+				LOG.error(e.getMessage());
 			}
 			this.tc = new PreBuiltTransportClient(nodeSettings);
-			this.client = this.tc.addTransportAddress(this.NODE);
+			this.client = this.tc.addTransportAddress(this.node);
 		}
 		bulkRequest = client.prepareBulk();
 		if (!indexExists()) {
@@ -195,21 +187,17 @@ public class ElasticsearchIndexer
 		LOG.debug("Try to index " + json.get(Properties.ID.getName())
 				+ " in ES type " + json.get(Properties.TYPE.getName()) + " Source:"
 				+ json.get(Properties.GRAPH.getName()));
-		indexRequest = new IndexRequest(indexName,
+		IndexRequest indexRequest = new IndexRequest(indexName,
 				json.get(Properties.TYPE.getName()), json.get(Properties.ID.getName()));
 		String jsonDoc = json.get(Properties.GRAPH.getName());
 		if (json.containsKey(Properties.PARENT.getName())) { // items
-			indexRequest.parent(json.get(Properties.PARENT.getName()));
-		} else {
-            if (lookupMabxmlDeletion) {
-                jsonDoc = enrichMabxmlDeletions(json.get(Properties.ID.getName())
-                    .replaceAll(".*/", "").replaceAll("#!", ""), jsonDoc);
-            }
-        }
+        indexRequest.parent(json.get(Properties.PARENT.getName()));
+    }
 		indexRequest.source(jsonDoc, JSON);
 		bulkRequest.add(indexRequest);
 		docs++;
-
+		// collect so many documents before bulk indexing them all
+		final int bulkSize = 5000;
 		while (docs > bulkSize && retries > 0) {
 			try {
 				BulkResponse bulkResponse = bulkRequest.execute().actionGet();
@@ -234,28 +222,60 @@ public class ElasticsearchIndexer
 		}
 	}
 
-	/*
-	 * Replace all aleph internal sysnumbers with lobid resources ids.
+	/**
+	 * @param message Accumulated log messages
 	 */
-	private String enrichMabxmlDeletions(String alephId, String node) {
-		String ret = null;
+	public void deleteMarkedResources(StringBuilder message) {
+		int amountOfToBeDeletedResources = 0;
+		int batchSizeOfResourcesToBeDeleted = 10;
+		String logMessage;
 		try {
-			JsonNode jnode = mapper.readTree(node);
-			QueryStringQueryBuilder query =
-					QueryBuilders.queryStringQuery("alephInternalSysnumber:"
-							+ jnode.findValue("alephInternalSysnumber"));
-			SearchHits hits = null;
-			hits = getElasticsearchClient().prepareSearch("hbz01").setQuery(query)
-					.get().getHits();
-			if (hits.getTotalHits() > 0) {
-				ret = node.toString().replaceAll("/" + alephId,
-						"/" + hits.getAt(0).getId());
+			SearchResponse deleteResponse =
+					getElasticsearchClient().prepareSearch(indexName)
+							.setQuery(deleteQuery).setSize(batchSizeOfResourcesToBeDeleted)
+							.setScroll(TimeValue.timeValueMinutes(30)).get();
+			SearchHits deleteHits = deleteResponse.getHits();
+			String scrollId = deleteResponse.getScrollId();
+			logMessage = "Found resources found to be deleted: "
+					+ deleteHits.getTotalHits() + ". Going to delete them ...";
+			message.append("\n").append(logMessage);
+			if (LOG.isInfoEnabled()) {
+				LOG.info(logMessage);
 			}
-		} catch (Exception e) {
-			LOG.warn(e.getMessage(), node);
+			boolean hasNext = true;
+			while (hasNext) {
+				if (deleteHits.totalHits > amountOfToBeDeletedResources) {
+					bulkRequest = getElasticsearchClient().prepareBulk();
+					for (final SearchHit hit : deleteHits) {
+						bulkRequest.add(
+								new DeleteRequest(hit.getIndex(), hit.getType(), hit.getId()));
+						amountOfToBeDeletedResources++;
+					}
+					BulkResponse bulkResponse = bulkRequest.execute().actionGet();
+					if (bulkResponse.hasFailures() && LOG.isWarnEnabled()) {
+						LOG.warn(String.format("Bulk insert failed: %s ",
+								bulkResponse.buildFailureMessage()));
+					}
+					deleteResponse = getElasticsearchClient()
+							.prepareSearchScroll(scrollId)
+							.setScroll(TimeValue.timeValueMinutes(5)).execute().actionGet();
+					deleteHits = deleteResponse.getHits();
+				} else {
+					hasNext = false;
+				}
+			}
+		} catch (final Exception ex) {
+			LOG.warn(ex.getMessage());
+		} finally {
+			this.onCloseStream();
 		}
-		System.out.println(ret);
-		return ret;
+		if (amountOfToBeDeletedResources > 0) {
+			logMessage = "... deleted resources:" + amountOfToBeDeletedResources;
+			message.append("\n").append(logMessage);
+			if (LOG.isInfoEnabled()) {
+				LOG.info(logMessage);
+			}
+		}
 	}
 
 	/**
@@ -297,7 +317,7 @@ public class ElasticsearchIndexer
 	/**
 	 * Sets an optional suffix to the elasticsearch index alias.
 	 *
-	 * @param aliasSuffix
+	 * @param aliasSuffix an optional suffix of the name of the index alias
 	 */
 	public void setIndexAliasSuffix(String aliasSuffix) {
 		this.aliasSuffix = aliasSuffix;
@@ -313,7 +333,7 @@ public class ElasticsearchIndexer
 	}
 
 	/**
-	 * Sets the elasticsearch client.
+	 * Gets the elasticsearch client.
 	 *
 	 * @return client the elasticsearch client
 	 *
@@ -361,7 +381,8 @@ public class ElasticsearchIndexer
 			final InputStream config =
 					Thread.currentThread().getContextClassLoader().getResourceAsStream(
 							indexConfig == null ? "index-config.json" : indexConfig);
-			try (InputStreamReader reader = new InputStreamReader(config, "UTF-8")) {
+			assert config != null;
+			try (InputStreamReader reader = new InputStreamReader(config, StandardCharsets.UTF_8)) {
 				res = CharStreams.toString(reader);
 			}
 		} catch (IOException e) {
@@ -396,8 +417,8 @@ public class ElasticsearchIndexer
 	 * newest index name.
 	 *
 	 * @param productivePrefix the productive alias (and also the prefix of the
-	 *          names of the indices)
-	 * @param staging the "-staging" alias
+	 *                           names of the indices)
+	 * @param staging          the "-staging" alias
 	 */
 	public void swapProductionAndStagingAliases(final String productivePrefix,
 			final String staging) {
