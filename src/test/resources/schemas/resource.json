@@ -24,7 +24,7 @@
     "almaMmsId": {
       "title": "ALMA MMS identifier",
       "type": "string",
-      "pattern": "\\d{17}"
+      "pattern": "^\\d{17}$"
     },
     "alternateGraphicRepresentation": {
       "$ref": "alternateGraphicRepresentation.json"
@@ -39,7 +39,7 @@
     "bvbId": {
       "title": "B3Kat identifier",
       "type": "string",
-      "pattern": "BV\\d{9}"
+      "pattern": "^BV\\d{9}$"
     },
     "bibliographicCitation": {
       "type": "string"
@@ -82,7 +82,7 @@
     "dnbId": {
       "title": "DNB identifier",
       "type": "string",
-      "pattern": "\\d{8,9}[X\\d]?"
+      "pattern": "^\\d{8,9}[X\\d]?$"
     },
     "doi": {
       "$ref": "doi.json"
@@ -114,12 +114,12 @@
     "hbzId": {
       "title": "hbz identifier",
       "type": "string",
-      "pattern": "[BCHT]T\\d+"
+      "pattern": "^[BCHT]T\\d+$"
     },
     "hebisId": {
       "title": "hebis PPN identifier",
       "type": "string",
-      "pattern": "\\d{9,10}"
+      "pattern": "^\\d{9,10}$"
     },
     "inCollection": {
       "$ref": "inCollection.json"
@@ -143,7 +143,7 @@
     "k10PlusId": {
       "title": "K10Plus identifier",
       "type": "string",
-      "pattern": "\\d{8,9}[0-9X]"
+      "pattern": "^\\d{8,9}[0-9X]$"
     },
     "langNote": {
       "title": "Note concerning the language of a resource",
@@ -173,7 +173,7 @@
     "obvId": {
       "title": "OBV identifier",
       "type": "string",
-      "pattern": "AC[\\d]{8}"
+      "pattern": "^AC[\\d]{8}$"
     },
     "oclcNumber": {
       "title": "OCLC number",
@@ -181,7 +181,7 @@
       "type": "array",
       "items": {
         "type": "string",
-        "pattern": "\\d{1,14}"
+        "pattern": "^\\d{1,14}$"
       }
     },
     "otherTitleInformation": {
@@ -310,7 +310,7 @@
     "zdbId": {
       "title": "ZDB identifier",
       "type": "string",
-      "pattern": "\\d{1,7}-[Xx\\d]"
+      "pattern": "^\\d{1,7}-[Xx\\d]$"
     }
   },
   "required": [
