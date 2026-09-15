@@ -11,7 +11,7 @@
       "id": {
         "type": "string",
         "format": "uri",
-        "pattern":"(https://nwbib.de/spatial|https://rpb.lobid.org/spatial).+"
+        "pattern":"^(https://nwbib.de/spatial|https://rpb.lobid.org/spatial).+$"
       },
       "type": {
         "type": "array",
@@ -67,11 +67,11 @@
             "properties": {
               "lat": {
                 "type": "string",
-                "pattern": "[\\d]*\\.[\\d]*"
+                "pattern": "^[\\d]*\\.[\\d]*$"
               },
               "lon": {
                 "type": "string",
-                "pattern": "[\\d]*\\.[\\d]*"
+                "pattern": "^[\\d]*\\.[\\d]*$"
               }
             }
           }
