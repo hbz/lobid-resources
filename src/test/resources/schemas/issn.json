@@ -2,10 +2,10 @@
   "$id": "issn.json",
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "ISSN",
-  "description": "The ISSN of the resource",
+  "description": "The ISSN without hyphen of the resource. Index allow for search with and without hyphen.",
   "type": "array",
   "items": {
     "type": "string",
-    "pattern": "^[0-9]{4}-[0-9]{3}[0-9X]|$"
+    "pattern": "^\\d{4}\\d{3}(\\d|X)$"
   }
 }
