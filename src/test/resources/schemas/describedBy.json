@@ -10,7 +10,7 @@
       "title": "Description URL",
       "type": "string",
       "format": "uri",
-      "pattern": "http:\/\/lobid.org\/resources\/.+"
+      "pattern": "^http:\/\/lobid.org\/resources\/.+$"
     },
     "type": {
       "type": "array",
@@ -89,19 +89,19 @@
             "id": {
               "type": "string",
               "format": "uri",
-              "pattern": "https:\/\/lobid.org\/marcxml\/.+"
+              "pattern": "^https:\/\/lobid.org\/marcxml\/.+$"
             },
             "dateCreated": {
               "title": "Creation date of the metadata record",
               "type": "string",
               "format": "date",
-              "pattern": "^\\d{4}-\\d{2}-\\d{2}"
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
             },
             "dateModified": {
               "title": "Modification date of the metadata record",
               "type": "string",
               "format": "date",
-              "pattern": "^\\d{4}-\\d{2}-\\d{2}"
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
             },
             "label": {
               "type": "string"
@@ -201,7 +201,7 @@
         },
         "endTime": {
           "type": "string",
-          "pattern": "(\\d{4})-(\\d{2})-(\\d{2})T(\\d{2}):(\\d{2}):(\\d{2})"
+          "pattern": "^(\\d{4})-(\\d{2})-(\\d{2})T(\\d{2}):(\\d{2}):(\\d{2})$"
         }
       },
       "required": [
