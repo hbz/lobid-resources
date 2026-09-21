@@ -66,7 +66,7 @@ case $ACTION in
        export JAVA_OPTS="$JAVA_OPTS -XX:+ExitOnOutOfMemoryError -DpreferIPv4Stack"
        sbt -Djava.security.manager=allow clean
        sbt -Djava.security.manager=allow stage
-       ( ./target/universal/stage/bin/lobid-resources-web -Djava.security.manager=allow -Dhttp.port=$PORT -no-version-check > monit_start.log & ) && echo "Done starting!" >> monit_start.log
+       ( ./target/universal/stage/bin/lobid-resources-web -Djava.security.manager=allow -Dorg.metafacture.metafix.maxExceptionCount=1000 -Dhttp.port=$PORT -no-version-check > monit_start.log & ) && echo "Done starting!" >> monit_start.log
        if [ -n "$DO_ETL_UPDATE" -a $(tail -n100 logs/etl.log  |grep -c "Finishing indexing of ES index 'resources-alma-fix") -eq 0 ]; then
           echo "Automatical updates-ETL triggered and last entries were not ok, thus starting ETL. Sleep 100s before starting ETL ..." >> monit_start.log
           sleep 100
