@@ -236,7 +236,7 @@ public class ElasticsearchIndexer
 							.setScroll(TimeValue.timeValueMinutes(30)).get();
 			SearchHits deleteHits = deleteResponse.getHits();
 			String scrollId = deleteResponse.getScrollId();
-			logMessage = "Found resources found to be deleted: "
+			logMessage = "Found resources to be deleted: "
 					+ deleteHits.getTotalHits() + ". Going to delete them ...";
 			message.append("\n").append(logMessage);
 			if (LOG.isInfoEnabled()) {
