@@ -76,7 +76,7 @@ EOF
 
 # validate schema
 cd ~/git/lobid-resources/src/test/resources/schemas
-jsonschema validate resource.json ${DUMP_DIRECTORY}${UPDATES_FNAME} --continue > /tmp/jsonschemaValidationOutput.log 2>&1
+jsonschema validate resource.json ${DUMP_DIRECTORY}${UPDATES_FNAME} --continue --resolve "." > /tmp/jsonschemaValidationOutput.log 2>&1
 
 if [ -s /tmp/jsonschemaValidationOutput.log ]; then
         NUMBER_OF_INVALID_RECORDS=$(grep -c "fail:" /tmp/jsonschemaValidationOutput.log)
