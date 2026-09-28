@@ -88,7 +88,7 @@ public class IndexIntegrationTest extends LocalIndexSetup {
 			{ "hasItem.id:\"http\\://lobid.org/items/990021367710206441\\:DE-290\\:23198604440006445#\\!\"", /*->*/ 1 },
 			{ "hasItem.id:990021367710206441\\:DE-290\\:23198604440006445", /*->*/ 0 },
 			{ "hasItem.callNumber:\"5200/Mars\"", /*->*/ 1 },
-			{ "hasItem.callNumber:Hist*", /*->*/ 1 },
+			{ "hasItem.callNumber:Hist*", /*->*/ 2 },
 			{ "hasItem.serialNumber:20098056", /*->*/ 1 },
 			{ "isbn:9780702075551", /*->*/ 1},
 			{ "isbn:070-2075-558", /*->*/ 1},
