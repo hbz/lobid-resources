@@ -174,19 +174,23 @@ do list(path: "361??", "var":"$i")
       end
       do list(path:"$i.o", "var":"$j")
         copy_field("$j","$x.custodialHistory[].$last.typeOfOwnership[].$append.label")
-        copy_field("$j","$x.custodialHistory[].$last.typeOfOwnership[].$last.id")
+        copy_field("$j","$i.@typeOfOwnershipId")
+        lookup("$i.@typeOfOwnershipId", "tpro", delete: "true")
+        move_field("$i.@typeOfOwnershipId","$x.custodialHistory[].$last.typeOfOwnership[].$last.id")
       end
       do list(path:"$i.f", "var":"$j")
         if any_match("$j","(Nummer|Zugangsnummer|Signatur|Initiale|Monogramm) .+")
           copy_field("$j","$i.@proof") # Some concepts can have additional infos in oder to keep this info move to note and clean the concept for proof
           replace_all("$i.@proof","(Nummer|Zugangsnummer|Signatur|Initiale|Monogramm) .+","$1")
           copy_field("$i.@proof","$x.custodialHistory[].$last.proof[].$append.label")
-          copy_field("$i.@proof","$x.custodialHistory[].$last.proof[].$last.id")
+          copy_field("$i.@proof","$i.@proofId")
           copy_field("$j","$x.custodialHistory[].$last.note[].$append")
         else
           copy_field("$j","$x.custodialHistory[].$last.proof[].$append.label")
-          copy_field("$j","$x.custodialHistory[].$last.proof[].$last.id")
+          copy_field("$j","$i.@proofId")
         end
+        lookup("$i.@proofId", "tpro", delete: "true")
+        move_field("$i.@proofId","$x.custodialHistory[].$last.proof[].$last.id")
       end
       copy_field("$i.z","$x.custodialHistory[].$last.note[].$append")
       copy_field("$i.k","$x.custodialHistory[].$last.startDate")
@@ -206,8 +210,6 @@ end
 
 lookup("hasItem[].*.heldBy.label", "lobidOrgLabels",delete:"true")
 lookup("hasItem[].*.inCollection[].*.label", "lobidOrgLabels",delete:"true")
-lookup("hasItem[].*.custodialHistory[].*.proof[].*.id", "tpro",delete:"true")
-lookup("hasItem[].*.custodialHistory[].*.typeOfOwnership[].*.id", "tpro",delete:"true")
 
 do list(path: "hasItem[]","var":"$i")
   if any_match("$i.inCollection[].*.id","http:\\/\\/lobid.org\\/organisations\\/7816..")
