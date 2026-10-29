@@ -16,14 +16,14 @@ XML_HEAD='<?xml version="1.0" encoding="UTF-8"?>'
 function getAlmaXmlWriteFile() {
 	resourceId=$1
 	URL_BASE="https://lobid.org/marcxml/"
-	echo "getting Alma Xml for $hbzId ..."
+	echo "getting Alma Xml for $resourceId ..."
 	# if it's a hbzId, we have to lookup the almaId first
 	if [[ $resourceId =~ ^[A-Z\(] ]]; then
 		# lookup and filter alma url
 		resourceId=$(curl $URL_BASE$resourceId |jq .|grep -A2 -B2 '"type": "alma"'|grep id|cut -d '"' -f4)
 	fi
 	# get AlmaMarcXml
-	curl --silent $URL_BASE$resourceId | xmllint --format - > $resourceId.xml.tmp
+	curl --silent --location $URL_BASE$resourceId | xmllint --format - > $resourceId.xml.tmp
 	#set proper XML header
 	sed -i "1s/.*/$XML_HEAD/" $resourceId.xml.tmp
 	xmllint $resourceId.xml.tmp > $resourceId.xml
