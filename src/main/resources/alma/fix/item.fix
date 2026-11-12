@@ -1,5 +1,5 @@
 add_array("hasItem[]")
-add_array("@ITM-H") # Helper element for creating Holding from HOL ("PhysikalischerTitel")
+add_array("@ITM-H") # Helper element for creating Holding from HOL ("LocatableDocument")
 do list(path:"ITM  ", "var": "$i")
   call_macro("deSol1BridgeTester", holdingId: "$i.a")
   unless exists("$i.deSol1Bridge") # exclude DE-Sol1-Bridge items/holdings because we add them otherwise
@@ -44,7 +44,7 @@ do list(path: "HOL  ", "var": "$i")
             unless exists("$H52.suppressedLocation") # Test if location is suppressed with mapping provided by the libraries.
               add_hash( "hasItem[].$append")
               add_field("hasItem[].$last.label", "lobid Bestandsressource")
-              add_array("hasItem[].$last.type[]", "Item","PhysikalischerTitel")
+              add_array("hasItem[].$last.type[]", "Item","LocatableDocument")
               if exists("$H52.b.1")
                 copy_field("$H52.b.1","hasItem[].$last.currentLibrary")
               else
