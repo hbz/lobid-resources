@@ -1,3 +1,23 @@
+# holdings in the ALMA publishing are descriped with alphabetical fields MBD [Members Information], ITM [Items Information], POR [Electronic Portfolio Information], Hxx [Holdings information], HOL [Additional Holdings Fields]
+
+# With regard to item-types there are four specific types that differentiate how holdings are expressed in ALMA:
+## We decided and implemented based on the old modelling in ALEPH:
+# type <-> ALMA <-> Aleph
+## PhysicalObject <-> ITM <-> Bestandsresourcen
+##
+## DigitalDocument <-> POR (new Elecotronic Portfolio) <-> Elektronischer Titel (ET)
+##
+## LocatableDocument <-> HOL without ITM <-> Physikalischer Titel from ALEPH (PT)
+## from hbz documentation: PT = Physikalischer Titel: Titel besitzt nur einen Lokalsatz (ohne Exemplare) in der ## Alma-IZ
+## Beispiele: Überordnungen mit zusätzlichen lokalen Informationen, die für alle Bände gelten (z.B. Signaturvergabe)
+##
+## VirtualDocument <-> MBD without POR or HOL <-> Nur Titel from ALEPH (NT)
+## from hbz-documentation: NT = Nur Titel: Titel ohne jegliches Inventar in Alma-IZ (kein Exemplar, kein ## Lokalsatz, kein Portfolio, keine Datenbank zum Titel vorhanden)
+## Beispiele: Überordnungen, Aufsätze, Bindeeinheiten, ....
+
+
+##     for every ITM => hasItem-Object, with "type"=["Item","PhysicalObject"], "callNumber", "serialNumber" (both from ITM-element),"heldBy"-Info
+
 add_array("hasItem[]")
 add_array("@ITM-H") # Helper element for creating Holding from HOL ("LocatableDocument")
 do list(path:"ITM  ", "var": "$i")
@@ -30,6 +50,8 @@ do list(path:"ITM  ", "var": "$i")
     end
   end
 end
+
+##     for every HOL without a correscponding ITM (linked in ITM.H) => hasItem-Object, with "type"=["Item","LocatableObject"], "callNumber", "serialNumber"(both from H52-element),"heldBy"-Info
 
 add_array("@HOL-M_POR-M") # Helper element for creating Holding from MBD ("VirtualDocument")
 do list(path: "HOL  ", "var": "$i")
@@ -69,6 +91,8 @@ do list(path: "HOL  ", "var": "$i")
     end
   end
 end
+
+##     for every POR => hasItem-Object, with "type"=["Item","DigitalDocument"], electronicLocator,sublocation,"heldBy"-Info either from POR a or from POR A
 
 do list(path:"POR  ", "var": "$i")
   copy_field("$i.M","@HOL-M_POR-M.$append")
@@ -115,6 +139,8 @@ do list(path:"POR  ", "var": "$i")
     end
   end
 end
+
+##     for every MBD without a correscponding HOL (linked in HOL.M) or POR (linked in POR.M) => hasItem-Object, with "type"=["Item","VirtualObject"], "heldBy"-Info
 
 do list(path: "MBD  ", "var": "$i")
   call_macro("deSol1BridgeTester", holdingId: "$i.i")
