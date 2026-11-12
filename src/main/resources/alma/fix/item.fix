@@ -31,7 +31,7 @@ do list(path:"ITM  ", "var": "$i")
   end
 end
 
-add_array("@HOL-M_POR-M") # Helper element for creating Holding from MBD ("NurTitel")
+add_array("@HOL-M_POR-M") # Helper element for creating Holding from MBD ("VirtualDocument")
 do list(path: "HOL  ", "var": "$i")
   call_macro("deSol1BridgeTester", holdingId: "$i.8")
   unless exists("$i.deSol1Bridge") # exclude DE-Sol1-Bridge items/holdings because we add them otherwise
@@ -123,7 +123,7 @@ do list(path: "MBD  ", "var": "$i")
       unless in("$i.M", "@HOL-M_POR-M") # Checks if there is no corresponding HOL or POR-Field
         add_hash( "hasItem[].$append")
         add_field("hasItem[].$last.label", "lobid Bestandsressource")
-        add_array("hasItem[].$last.type[]", "Item","NurTitel")
+        add_array("hasItem[].$last.type[]", "Item","VirtualDocument")
         copy_field("$i.i", "$i.@iz")
         replace_all("$i.@iz",".*(\\d{4})$","$1")
         lookup("$i.@iz", "alma-institution-code-to-isil")
