@@ -1,5 +1,25 @@
+# holdings in the ALMA publishing are descriped with alphabetical fields MBD [Members Information], ITM [Items Information], POR [Electronic Portfolio Information], Hxx [Holdings information], HOL [Additional Holdings Fields]
+
+# With regard to item-types there are four specific types that differentiate how holdings are expressed in ALMA:
+## We decided and implemented based on the old modelling in ALEPH:
+# type <-> ALMA <-> Aleph
+## PhysicalObject <-> ITM <-> Bestandsresourcen
+##
+## DigitalDocument <-> POR (new Elecotronic Portfolio) <-> Elektronischer Titel (ET)
+##
+## LocatableDocument <-> HOL without ITM <-> Physikalischer Titel from ALEPH (PT)
+## from hbz documentation: PT = Physikalischer Titel: Titel besitzt nur einen Lokalsatz (ohne Exemplare) in der ## Alma-IZ
+## Beispiele: Überordnungen mit zusätzlichen lokalen Informationen, die für alle Bände gelten (z.B. Signaturvergabe)
+##
+## VirtualDocument <-> MBD without POR or HOL <-> Nur Titel from ALEPH (NT)
+## from hbz-documentation: NT = Nur Titel: Titel ohne jegliches Inventar in Alma-IZ (kein Exemplar, kein ## Lokalsatz, kein Portfolio, keine Datenbank zum Titel vorhanden)
+## Beispiele: Überordnungen, Aufsätze, Bindeeinheiten, ....
+
+
+##     for every ITM => hasItem-Object, with "type"=["Item","PhysicalObject"], "callNumber", "serialNumber" (both from ITM-element),"heldBy"-Info
+
 add_array("hasItem[]")
-add_array("@ITM-H") # Helper element for creating Holding from HOL ("PhysikalischerTitel")
+add_array("@ITM-H") # Helper element for creating Holding from HOL ("LocatableDocument")
 do list(path:"ITM  ", "var": "$i")
   call_macro("deSol1BridgeTester", holdingId: "$i.a")
   unless exists("$i.deSol1Bridge") # exclude DE-Sol1-Bridge items/holdings because we add them otherwise
@@ -31,7 +51,9 @@ do list(path:"ITM  ", "var": "$i")
   end
 end
 
-add_array("@HOL-M_POR-M") # Helper element for creating Holding from MBD ("NurTitel")
+##     for every HOL without a correscponding ITM (linked in ITM.H) => hasItem-Object, with "type"=["Item","LocatableObject"], "callNumber", "serialNumber"(both from H52-element),"heldBy"-Info
+
+add_array("@HOL-M_POR-M") # Helper element for creating Holding from MBD ("VirtualDocument")
 do list(path: "HOL  ", "var": "$i")
   call_macro("deSol1BridgeTester", holdingId: "$i.8")
   unless exists("$i.deSol1Bridge") # exclude DE-Sol1-Bridge items/holdings because we add them otherwise
@@ -44,7 +66,7 @@ do list(path: "HOL  ", "var": "$i")
             unless exists("$H52.suppressedLocation") # Test if location is suppressed with mapping provided by the libraries.
               add_hash( "hasItem[].$append")
               add_field("hasItem[].$last.label", "lobid Bestandsressource")
-              add_array("hasItem[].$last.type[]", "Item","PhysikalischerTitel")
+              add_array("hasItem[].$last.type[]", "Item","LocatableDocument")
               if exists("$H52.b.1")
                 copy_field("$H52.b.1","hasItem[].$last.currentLibrary")
               else
@@ -69,6 +91,8 @@ do list(path: "HOL  ", "var": "$i")
     end
   end
 end
+
+##     for every POR => hasItem-Object, with "type"=["Item","DigitalDocument"], electronicLocator,sublocation,"heldBy"-Info either from POR a or from POR A
 
 do list(path:"POR  ", "var": "$i")
   copy_field("$i.M","@HOL-M_POR-M.$append")
@@ -116,6 +140,8 @@ do list(path:"POR  ", "var": "$i")
   end
 end
 
+##     for every MBD without a correscponding HOL (linked in HOL.M) or POR (linked in POR.M) => hasItem-Object, with "type"=["Item","VirtualObject"], "heldBy"-Info
+
 do list(path: "MBD  ", "var": "$i")
   call_macro("deSol1BridgeTester", holdingId: "$i.i")
   unless exists("$i.deSol1Bridge") # exclude DE-Sol1-Bridge items/holdings because we add them otherwise
@@ -123,7 +149,7 @@ do list(path: "MBD  ", "var": "$i")
       unless in("$i.M", "@HOL-M_POR-M") # Checks if there is no corresponding HOL or POR-Field
         add_hash( "hasItem[].$append")
         add_field("hasItem[].$last.label", "lobid Bestandsressource")
-        add_array("hasItem[].$last.type[]", "Item","NurTitel")
+        add_array("hasItem[].$last.type[]", "Item","VirtualDocument")
         copy_field("$i.i", "$i.@iz")
         replace_all("$i.@iz",".*(\\d{4})$","$1")
         lookup("$i.@iz", "alma-institution-code-to-isil")
