@@ -31,16 +31,6 @@ Create and change into a folder where you want to store the projects:
 
 - `mkdir ~/git ; cd ~/git`
 
-Create local Metafacture SNAPSHOT of commit ddf031d1a5c792da16fc632354bded3bdcdda611 and publish to local maven:
-
-- `cd ..`
-- `git clone https://github.com/metafacture/metafacture-core.git`
-- `cd metafacture-core`
-- `git checkout -b ddf031d1a5c792da16fc632354bded3bdcdda611`
-- `git reset --hard ddf031d1a5c792da16fc632354bded3bdcdda611`
-- `./gradlew publishToMavenLocal`
-- `cd -`
-
 Build lobid-resources:
 
 - `git clone https://github.com/hbz/lobid-resources.git`
